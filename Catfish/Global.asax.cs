@@ -21,8 +21,7 @@ namespace Catfish
                 str.Append("<script src=\"/Scripts/jquery-3.1.1.min.js\" type=\"text/javascript\" ></script>");
                 str.Append("<script src=\"/Scripts/bootstrap.min.js\" type=\"text/javascript\" ></script>");
                 str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/bootstrap.min.css\" />");
-
-
+                str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/Catfish.css\" />");
             };
         }
     }

@@ -13,14 +13,14 @@
 @{
     var cssId = Model.CssId;
     var cssClasses = Model.CssClasses;
-    var urls = Model.ImageUrls.Split(new char[] { ',', ' ', ';' }, StringSplitOptions.RemoveEmptyEntries);
+    var slides = Model.Slides;
 }
 
 <div id="@cssId" class="carousel slide @cssClasses" data-ride="carousel">
     @if (Model.EnableControls)
     {
         <ol class="carousel-indicators">
-            @for (var i = 0; i < urls.Length; ++i)
+            @for (var i = 0; i < slides.Count; ++i)
             {
                 var isActive = i == 0 ? "active" : "";
                 <li data-target="#@cssId" data-slide-to="@i" class="@isActive"></li>
@@ -29,11 +29,30 @@
     }
     <div class="carousel-inner" role="listbox">
         @{
-            for (var i = 0; i < urls.Length; ++i)
+            for (var i = 0; i < slides.Count; ++i)
             {
                 var isActive = i == 0 ? "active" : "";
-                var inlineStyles = "background-image:url('" + urls[i] + "');";
-                <div class="item @isActive" style="@inlineStyles"></div>
+                var inlineStyles = "background-image:url('" + slides[i].ImageURL + "');";
+                <div class="item @isActive" style="@inlineStyles">
+                    @if(!string.IsNullOrEmpty(@slides[i].CaptionHeading) || !string.IsNullOrEmpty(@slides[i].CaptionDescription))
+                    {
+                        <div class="carousel-caption">
+                            @if(!string.IsNullOrEmpty(@slides[i].CaptionHeading))
+                            {
+                                <h3>@slides[i].CaptionHeading</h3>
+                            }
+                            @if (!string.IsNullOrEmpty(@slides[i].CaptionDescription))
+                            {
+                                <p>@slides[i].CaptionDescription</p>
+                            }
+                            @if (!string.IsNullOrEmpty(@slides[i].ReadMoreLink))
+                            {
+                                var linkText = string.IsNullOrEmpty(@slides[i].ReadMoreLinkText) ? "more ..." : @slides[i].ReadMoreLinkText;
+                                <p><a href="@slides[i].ReadMoreLink">@linkText</a></p>
+                            }
+                        </div>
+                    }
+                </div>
             }
         }
     </div>

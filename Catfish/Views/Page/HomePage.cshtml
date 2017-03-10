@@ -13,7 +13,7 @@
     }
     
     Catfish.Models.Widgets.Carousel carousel = Model.Regions.Carousel as Catfish.Models.Widgets.Carousel;
-    if (!string.IsNullOrEmpty(carousel.ImageUrls))
+    if (carousel.Slides.Count > 0)
     {
         @Html.DisplayFor(m => carousel)
     }

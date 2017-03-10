@@ -1,9 +1,23 @@
 ﻿@model Catfish.Models.Widgets.Carousel
 
+@{
+    if (Model.Slides.Count < Model.SlideCount)
+    {
+        for (var i = Model.Slides.Count; i < Model.SlideCount; ++i)
+        {
+            Model.Slides.Add(new Catfish.Models.Widgets.CarouselSlide());
+        }
+    }
+    else if (Model.Slides.Count > Model.SlideCount)
+    {
+        Model.Slides = Model.Slides.Take(Model.SlideCount).ToList();
+    }
+}
+
 <ul class="form">
     <li>
-        @Html.LabelFor(m => m.ImageUrls)
-        <div class="input">@Html.TextAreaFor(m => m.ImageUrls)</div>
+        @Html.LabelFor(m => m.SlideCount)
+        <div class="input">@Html.TextBoxFor(m => m.SlideCount, new { @type = "number" })</div>
     </li>
     <li>
         @Html.LabelFor(m => m.Interval)
@@ -26,4 +40,8 @@
         @Html.LabelFor(m => m.CssStyles)
         <div class="input">@Html.TextAreaFor(m => m.CssStyles)</div>
     </li>
+    <li>
+        @Html.LabelFor(m => m.Slides)
+        <div class="input">@Html.EditorFor(m => m.Slides)</div>
+</li>
 </ul>

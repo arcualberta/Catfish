@@ -17,8 +17,8 @@ namespace Catfish.Models.Widgets
     [Serializable]
     public class Carousel : Extension
     {
-        [Display(Name = "Image URLs")]
-        public string ImageUrls { get; set; }
+        [Display(Name = "Slide Count")]
+        public int SlideCount { get; set; }
 
         [Display(Name = "Interval (ms)")]
         public int Interval { get; set; }
@@ -35,10 +35,32 @@ namespace Catfish.Models.Widgets
         [Display(Name = "CSS Styles")]
         public string CssStyles { get; set; }
 
+        [Display(Name = "Slides")]
+        public List<CarouselSlide> Slides { get; set; }
+
         public Carousel()
         {
             CssClasses = "col-lg-12";
             CssStyles = "height:400px;";
+            Slides = new List<CarouselSlide>();
         }
+    }
+
+    public class CarouselSlide
+    {
+        [Display(Name = "Image URL")]
+        public string ImageURL { get; set; }
+
+        [Display(Name = "Caption")]
+        public string CaptionHeading { get; set; }
+
+        [Display(Name = "Description")]
+        public string CaptionDescription { get; set; }
+
+        [Display(Name = "Link Text")]
+        public string ReadMoreLinkText { get; set; }
+
+        [Display(Name = "Link")]
+        public string ReadMoreLink { get; set; }
     }
 }

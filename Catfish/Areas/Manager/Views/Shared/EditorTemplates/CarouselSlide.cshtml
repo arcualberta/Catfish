@@ -1,0 +1,24 @@
+﻿@model Catfish.Models.Widgets.CarouselSlide
+
+<ul style="border:solid 1px #808080; margin: 10px 0;padding:5px;">
+    <li>
+        @Html.LabelFor(m => m.ImageURL)
+        <div class="input">@Html.TextBoxFor(m => m.ImageURL)</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.CaptionHeading)
+        <div class="input">@Html.TextBoxFor(m => m.CaptionHeading)</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.CaptionDescription)
+        <div class="input">@Html.TextAreaFor(m => m.CaptionDescription)</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.ReadMoreLinkText)
+        <div class="input">@Html.TextBoxFor(m => m.ReadMoreLinkText)</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.ReadMoreLink)
+        <div class="input">@Html.TextBoxFor(m => m.ReadMoreLink)</div>
+    </li>
+</ul>

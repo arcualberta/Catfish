@@ -149,6 +149,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Catfish.css" />
     <Content Include="Content\Css\bootstrap.min.css" />
     <Content Include="Content\Css\style.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -164,6 +165,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Manager\Views\Extensions\SiteHeader.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\CarouselSlide.cshtml" />
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
@@ -177,7 +179,9 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\Shared\DisplayTemplates\Carousel.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -214,7 +218,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Areas\Manager\Views\Shared\" />
     <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>
   <PropertyGroup>
