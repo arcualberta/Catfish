@@ -13,28 +13,27 @@
 @{
     var cssId = Model.CssId;
     var cssClasses = Model.CssClasses;
+    var urls = Model.ImageUrls.Split(new char[] { ',', ' ', ';' }, StringSplitOptions.RemoveEmptyEntries);
 }
 
 <div id="@cssId" class="carousel slide @cssClasses" data-ride="carousel">
     @if (Model.EnableControls)
     {
         <ol class="carousel-indicators">
-            <li data-target="#@cssId" data-slide-to="0" class="active"></li>
-            <li data-target="#@cssId" data-slide-to="1"></li>
-            <li data-target="#@cssId" data-slide-to="2"></li>
+            @for (var i = 0; i < urls.Length; ++i)
+            {
+                var isActive = i == 0 ? "active" : "";
+                <li data-target="#@cssId" data-slide-to="@i" class="@isActive"></li>
+            }
         </ol>
     }
     <div class="carousel-inner" role="listbox">
         @{
-            var urls = Model.ImageUrls.Split(new char[] { ',', ' ', ';' }, StringSplitOptions.RemoveEmptyEntries);
             for (var i = 0; i < urls.Length; ++i)
             {
                 var isActive = i == 0 ? "active" : "";
                 var inlineStyles = "background-image:url('" + urls[i] + "');";
-                <div class="item @isActive" style="@inlineStyles">
-
-                </div>
-
+                <div class="item @isActive" style="@inlineStyles"></div>
             }
         }
     </div>
