@@ -7,6 +7,8 @@ using System.ComponentModel.Composition;
 using Piranha.Extend;
 using System.ComponentModel.DataAnnotations;
 
+using Catfish.Models.Fields;
+
 namespace Catfish.Models.Widgets
 {
     [Export(typeof(IExtension))]
@@ -25,6 +27,11 @@ namespace Catfish.Models.Widgets
         [Display(Name = "Styles")]
         public string Styles { get; set; }
 
-        public Piranha.Extend.Regions.PostRegion Items { get; set; }
+        public List<ImageTile> Items { get; set; }
+
+        public FlexBox()
+        {
+            Items = new List<ImageTile>();
+        }
     }
 }

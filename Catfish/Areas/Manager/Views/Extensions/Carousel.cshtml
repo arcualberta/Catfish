@@ -5,7 +5,7 @@
     {
         for (var i = Model.Slides.Count; i < Model.SlideCount; ++i)
         {
-            Model.Slides.Add(new Catfish.Models.Widgets.CarouselSlide());
+            Model.Slides.Add(new Catfish.Models.Fields.ImageTile());
         }
     }
     else if (Model.Slides.Count > Model.SlideCount)

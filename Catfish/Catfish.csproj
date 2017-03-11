@@ -165,10 +165,9 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Manager\Views\Extensions\SiteHeader.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\CarouselSlide.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\ImageTile.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\ImageRegion.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\FlexBox.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\PostRegion.cshtml" />
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
@@ -193,6 +192,8 @@
     <Compile Include="App_Start\RouteConfig.PiranhaCMS.cs" />
     <Compile Include="Controllers\PageController.cs" />
     <Compile Include="Controllers\PostController.cs" />
+    <Compile Include="Models\Fields\ImageTile.cs" />
+    <Compile Include="Models\Fields\Tile.cs" />
     <Compile Include="Models\Pages\HomePage.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

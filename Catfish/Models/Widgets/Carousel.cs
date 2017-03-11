@@ -7,6 +7,8 @@ using System.ComponentModel.Composition;
 using Piranha.Extend;
 using System.ComponentModel.DataAnnotations;
 
+using Catfish.Models.Fields;
+
 namespace Catfish.Models.Widgets
 {
     [Export(typeof(IExtension))]
@@ -35,31 +37,13 @@ namespace Catfish.Models.Widgets
         public string CssStyles { get; set; }
 
         [Display(Name = "Slides")]
-        public List<CarouselSlide> Slides { get; set; }
+        public List<ImageTile> Slides { get; set; }
 
         public Carousel()
         {
             CssClasses = "col-lg-12";
             CssStyles = "height:400px;";
-            Slides = new List<CarouselSlide>();
+            Slides = new List<ImageTile>();
         }
-    }
-
-    public class CarouselSlide
-    {
-        [Display(Name = "Image")]
-        public Piranha.Extend.Regions.ImageRegion Image { get; set; }
-
-        [Display(Name = "Caption")]
-        public string CaptionHeading { get; set; }
-
-        [Display(Name = "Description")]
-        public string CaptionDescription { get; set; }
-
-        [Display(Name = "Link Text")]
-        public string ReadMoreLinkText { get; set; }
-
-        [Display(Name = "Link")]
-        public string ReadMoreLink { get; set; }
     }
 }
