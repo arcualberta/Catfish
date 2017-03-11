@@ -8,10 +8,10 @@ using Piranha.Extend.Regions;
 
 namespace Catfish.Models.Fields
 {
-    public class ImageTile : Tile<string>
+    public class ImageTile : Tile<ImageRegion, string>
     {
-        [Display(Name = "Image")]
-        public ImageRegion Image { get; set; }
+        //[Display(Name = "Image")]
+        //public ImageRegion Image { get; set; }
 
         //[Display(Name = "Caption")]
         //public string CaptionHeading { get; set; }

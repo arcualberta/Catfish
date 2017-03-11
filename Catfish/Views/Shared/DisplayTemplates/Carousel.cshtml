@@ -32,7 +32,7 @@
             for (var i = 0; i < slides.Count; ++i)
             {
                 var isActive = i == 0 ? "active" : "";
-                var imageUrl = slides[i].Image.Id == Guid.Empty ? null : "/media/" + slides[i].Image.Id;
+                var imageUrl = slides[i].PrimaryMedia.Id == Guid.Empty ? null : "/media/" + slides[i].PrimaryMedia.Id;
                 var inlineStyles = imageUrl == null ? "background-color:#808080;" : "background-image:url('" + imageUrl + "');";
                 <div class="item @isActive" style="@inlineStyles">
                     @if(!string.IsNullOrEmpty(@slides[i].CaptionHeading) || !string.IsNullOrEmpty(@slides[i].CaptionDescription))
