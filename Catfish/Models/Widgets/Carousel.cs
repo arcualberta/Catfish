@@ -33,7 +33,8 @@ namespace Catfish.Models.Widgets
         [Display(Name = "CSS Classes")]
         public string CssClasses { get; set; }
 
-        [Display(Name = "CSS Styles")]
+        [Display(Name = "Styles")]
+        [DataType(DataType.MultilineText)]
         public string CssStyles { get; set; }
 
         [Display(Name = "Slides")]

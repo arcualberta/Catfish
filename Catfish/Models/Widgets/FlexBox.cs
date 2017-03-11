@@ -18,6 +18,19 @@ namespace Catfish.Models.Widgets
     [Serializable]
     public class FlexBox : Extension
     {
+        [Display(Name = "Title")]
+        public string Title { get; set; }
+
+        [Display(Name = "Description")]
+        [DataType(DataType.MultilineText)]
+        public string Description { get; set; }
+
+        [Display(Name = "Item Count")]
+        public int ItemCount { get; set; }
+
+        [Display(Name = "CSS Id")]
+        public string CssId { get; set; }
+
         [Display(Name = "Panel Classes")]
         public string PanelClasses { get; set; }
 
@@ -25,12 +38,18 @@ namespace Catfish.Models.Widgets
         public string ItemClasses { get; set; }
 
         [Display(Name = "Styles")]
+        [DataType(DataType.MultilineText)]
         public string Styles { get; set; }
+
+        [Display(Name = "Clear Row")]
+        public bool ClearRow { get; set; }
 
         public List<ImageTile> Items { get; set; }
 
         public FlexBox()
         {
+            PanelClasses = "col-lg-12";
+            ItemClasses = "col-md-4";
             Items = new List<ImageTile>();
         }
     }
