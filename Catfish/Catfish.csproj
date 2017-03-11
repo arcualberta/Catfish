@@ -167,6 +167,8 @@
     <Content Include="Areas\Manager\Views\Extensions\SiteHeader.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\CarouselSlide.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\ImageRegion.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\FlexBox.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\PostRegion.cshtml" />
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
@@ -212,6 +214,7 @@
     <Content Include="Views\Page\Index.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Page\HomePage.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FlexBox.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

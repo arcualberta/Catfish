@@ -1,0 +1,21 @@
+﻿@*@model Catfish.Models.Widgets.FlexBox
+
+@try
+{
+    if(Model.Items.Count > 0){
+        var panelClasses = Model.PanelClasses;
+        var itemClasses = Model.ItemClasses;
+        
+        <div class="d-flex flex-row @panelClasses">
+            @for (var i = 0; i < Model.Posts.Count; ++i)
+            {
+                var post = Model.Posts[i];
+                var body = post.Body;
+                <div class="@itemClasses">@body</div>
+            }
+        </div>
+    }
+}
+catch(Exception)
+{ }*@
+

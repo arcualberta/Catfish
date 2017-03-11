@@ -16,16 +16,15 @@ namespace Catfish.Models.Widgets
     [Serializable]
     public class FlexBox : Extension
     {
-        [Display(Name = "Item Count")]
-        public int ItemCount { get; set; }
+        [Display(Name = "Panel Classes")]
+        public string PanelClasses { get; set; }
 
-        public List<FlexBoxItem> Items { get; set; }
-    }
+        [Display(Name = "Item Classes")]
+        public string ItemClasses { get; set; }
 
-    public class FlexBoxItem
-    {
-        public string Title { get; set; }
+        [Display(Name = "Styles")]
+        public string Styles { get; set; }
 
-        public string Content { get; set; }
+        public Piranha.Extend.Regions.PostRegion Items { get; set; }
     }
 }

@@ -1,0 +1,8 @@
+﻿@model Piranha.Extend.Regions.PostRegion
+
+@{
+    var m = Model != null ? Model : new Piranha.Extend.Regions.PostRegion();
+}
+
+@Html.Partial("PostRegion", m)
+

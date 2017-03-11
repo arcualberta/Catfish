@@ -1,0 +1,18 @@
+﻿@model Catfish.Models.Widgets.FlexBox
+
+<ul class="form">
+    <li>
+        @Html.LabelFor(m => m.PanelClasses)
+        <div class="input">@Html.TextBoxFor(m => m.PanelClasses)</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.ItemClasses)
+        <div class="input">@Html.TextBoxFor(m => m.ItemClasses)</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.Styles)
+        <div class="input">@Html.TextAreaFor(m => m.Styles)</div>
+    </li>
+</ul>
+@Html.EditorFor(m => m.Items)
+

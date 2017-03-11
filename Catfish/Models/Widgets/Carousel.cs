@@ -7,7 +7,6 @@ using System.ComponentModel.Composition;
 using Piranha.Extend;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace Catfish.Models.Widgets
 {
     [Export(typeof(IExtension))]

@@ -21,10 +21,17 @@ namespace Catfish.Models.Pages
             Name="Home Page";
             Description = "Default home page which contains an optional carousel and a main HTML body area";
             Preview = @"
-                <table class='template'>
-                    <tr><td></td></tr>
-                    <tr><td></td></tr>
-                </table>";
+<table class='template'>
+    <tr><td>Carousel</td></tr>
+    <tr><td>Top Content</td></tr>
+    <tr><td style='background:transparent'>
+            <table class='template'>
+                <tr><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td></tr>
+            </table>
+    </td></tr>
+    <tr><td>Bottom Content</td></tr>
+</table>";
             Controller = "Page";
             View = "HomePage";
 
@@ -44,8 +51,22 @@ namespace Catfish.Models.Pages
 
             Regions.Add(new RegionType()
             {
-                InternalId = "Content",
-                Name = "Content",
+                InternalId = "TopContent",
+                Name = "Top Content",
+                Type = typeof(Piranha.Extend.Regions.HtmlRegion)
+            });
+
+            Regions.Add(new RegionType()
+            {
+                InternalId = "FlexPanel",
+                Name = "Flex Panel",
+                Type = typeof(FlexBox)
+            });
+
+            Regions.Add(new RegionType()
+            {
+                InternalId = "BottomContent",
+                Name = "Bottom Content",
                 Type = typeof(Piranha.Extend.Regions.HtmlRegion)
             });
         }
