@@ -48,8 +48,8 @@ namespace Catfish.Models.Widgets
 
     public class CarouselSlide
     {
-        [Display(Name = "Image URL")]
-        public string ImageURL { get; set; }
+        [Display(Name = "Image")]
+        public Piranha.Extend.Regions.ImageRegion Image { get; set; }
 
         [Display(Name = "Caption")]
         public string CaptionHeading { get; set; }

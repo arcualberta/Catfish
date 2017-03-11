@@ -1,0 +1,11 @@
+﻿@model Piranha.Extend.Regions.ImageRegion
+
+@{
+    var m = Model;
+    if(m == null)
+    {
+        m = new Piranha.Extend.Regions.ImageRegion();
+    }
+}
+
+@Html.Partial("ImageRegion", m)

@@ -166,6 +166,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Manager\Views\Extensions\SiteHeader.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\CarouselSlide.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\ImageRegion.cshtml" />
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
@@ -194,6 +195,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Widgets\FlexBox.cs" />
     <Compile Include="Models\Widgets\SiteHeader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Widgets\Carousel.cs" />

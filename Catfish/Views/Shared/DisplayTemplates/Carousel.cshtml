@@ -32,7 +32,8 @@
             for (var i = 0; i < slides.Count; ++i)
             {
                 var isActive = i == 0 ? "active" : "";
-                var inlineStyles = "background-image:url('" + slides[i].ImageURL + "');";
+                var imageUrl = slides[i].Image.Id == Guid.Empty ? null : "/media/" + slides[i].Image.Id;
+                var inlineStyles = imageUrl == null ? "background-color:#808080;" : "background-image:url('" + imageUrl + "');";
                 <div class="item @isActive" style="@inlineStyles">
                     @if(!string.IsNullOrEmpty(@slides[i].CaptionHeading) || !string.IsNullOrEmpty(@slides[i].CaptionDescription))
                     {
@@ -71,8 +72,9 @@
 @{var interval = Model.Interval == 0 ? 1000 : Model.Interval;}
 <script language="JavaScript" type="text/javascript">
     $(document).ready(function () {
-        $('#carouselExampleIndicators').carousel({
-            interval: @interval
-        })
+        $('#@cssId').carousel({
+            interval: @interval,
+            pause: "false"
+            });
     });
 </script>
