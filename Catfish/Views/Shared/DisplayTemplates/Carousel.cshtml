@@ -35,16 +35,16 @@
                 var imageUrl = slides[i].PrimaryMedia.Id == Guid.Empty ? null : "/media/" + slides[i].PrimaryMedia.Id;
                 var inlineStyles = imageUrl == null ? "background-color:#808080;" : "background-image:url('" + imageUrl + "');";
                 <div class="item @isActive" style="@inlineStyles">
-                    @if(!string.IsNullOrEmpty(@slides[i].CaptionHeading) || !string.IsNullOrEmpty(@slides[i].CaptionDescription))
+                    @if (!string.IsNullOrEmpty(@slides[i].Title) || !string.IsNullOrEmpty(@slides[i].Body))
                     {
                         <div class="carousel-caption">
-                            @if(!string.IsNullOrEmpty(@slides[i].CaptionHeading))
+                            @if (!string.IsNullOrEmpty(@slides[i].Title))
                             {
-                                <h3>@slides[i].CaptionHeading</h3>
+                                <h3>@slides[i].Title</h3>
                             }
-                            @if (!string.IsNullOrEmpty(@slides[i].CaptionDescription))
+                            @if (!string.IsNullOrEmpty(@slides[i].Body))
                             {
-                                <p>@slides[i].CaptionDescription</p>
+                                <p>@slides[i].Body</p>
                             }
                             @if (!string.IsNullOrEmpty(@slides[i].ReadMoreLink))
                             {
