@@ -165,7 +165,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Manager\Views\Extensions\SiteHeader.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\ImageTile.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\Tile.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\ImageRegion.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\FlexBox.cshtml" />
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
