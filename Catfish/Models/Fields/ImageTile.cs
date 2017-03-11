@@ -8,7 +8,8 @@ using Piranha.Extend.Regions;
 
 namespace Catfish.Models.Fields
 {
-    public class ImageTile : Tile<ImageRegion, string>
+    [Serializable]
+    public class ImageTile : Tile<ImageRegion>
     {
     }
 }

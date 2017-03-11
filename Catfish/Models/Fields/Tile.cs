@@ -6,7 +6,8 @@ using System.Web;
 
 namespace Catfish.Models.Fields
 {
-    public class Tile<MediaType, BodyType>
+    [Serializable]
+    public class Tile<MediaType>
     {
         [Display(Name = "Image")]
         public MediaType PrimaryMedia { get; set; }
@@ -15,7 +16,8 @@ namespace Catfish.Models.Fields
         public string Title { get; set; }
 
         [Display(Name = "Body")]
-        public BodyType Body { get; set; }
+        [DataType(DataType.MultilineText)]
+        public string Body { get; set; }
 
         [Display(Name = "Link Text")]
         public string ReadMoreLinkText { get; set; }

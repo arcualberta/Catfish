@@ -1,22 +1,27 @@
 ﻿@model Catfish.Models.Widgets.Carousel
 
+@{
+    var cssId = Model.CssId != null ? Model.CssId : "DefaultCarouselId";
+    var cssClasses = Model.CssClasses;
+}
+
 <style>
-    div.carousel-inner > div.item{
+    #@cssId{
+        padding:0;
+        margin-top:-20px;
+    }
+    #@cssId div.carousel-inner > div.item{
         background-repeat: no-repeat;
         background-size: cover;
-    background-position: center;
+        background-position: center;
         height: 400px;
     }
 
     @Model.CssStyles
 </style>
-@{
-    var cssId = Model.CssId;
-    var cssClasses = Model.CssClasses;
-    var slides = Model.Slides;
-}
 
 <div id="@cssId" class="carousel slide @cssClasses" data-ride="carousel">
+    @{ var slides = Model.Slides; }
     @if (Model.EnableControls)
     {
         <ol class="carousel-indicators">
@@ -35,23 +40,27 @@
                 var imageUrl = slides[i].PrimaryMedia.Id == Guid.Empty ? null : "/media/" + slides[i].PrimaryMedia.Id;
                 var inlineStyles = imageUrl == null ? "background-color:#808080;" : "background-image:url('" + imageUrl + "');";
                 <div class="item @isActive" style="@inlineStyles">
-                    @if (!string.IsNullOrEmpty(@slides[i].Title) || !string.IsNullOrEmpty(@slides[i].Body))
-                    {
-                        <div class="carousel-caption">
-                            @if (!string.IsNullOrEmpty(@slides[i].Title))
-                            {
-                                <h3>@slides[i].Title</h3>
-                            }
-                            @if (!string.IsNullOrEmpty(@slides[i].Body))
-                            {
-                                <p>@slides[i].Body</p>
-                            }
-                            @if (!string.IsNullOrEmpty(@slides[i].ReadMoreLink))
-                            {
-                                var linkText = string.IsNullOrEmpty(@slides[i].ReadMoreLinkText) ? "more ..." : @slides[i].ReadMoreLinkText;
-                                <p><a href="@slides[i].ReadMoreLink">@linkText</a></p>
-                            }
-                        </div>
+                    @{
+                        var showCaption = !string.IsNullOrEmpty(slides[i].Title);
+                        var showBody = !(slides[i].Body == null || string.IsNullOrEmpty(slides[i].Body.ToString()));
+                        if (showCaption || showBody)
+                        {
+                            <div class="carousel-caption">
+                                @if (showCaption)
+                                {
+                                    <h3>@slides[i].Title</h3>
+                                }
+                                @if (showBody)
+                                {
+                                    <p>@Html.Raw(slides[i].Body)</p>
+                                }
+                                @if (!string.IsNullOrEmpty(@slides[i].ReadMoreLink))
+                                {
+                                    var linkText = string.IsNullOrEmpty(@slides[i].ReadMoreLinkText) ? "more ..." : @slides[i].ReadMoreLinkText;
+                                    <p><a href="@slides[i].ReadMoreLink">@linkText</a></p>
+                                }
+                            </div>
+                        }
                     }
                 </div>
             }
@@ -69,7 +78,7 @@
         </a>
     @*}*@
 </div>
-@{var interval = Model.Interval == 0 ? 1000 : Model.Interval;}
+@{var interval = Model.Interval == 0 ? 3000 : Model.Interval;}
 <script language="JavaScript" type="text/javascript">
     $(document).ready(function () {
         $('#@cssId').carousel({

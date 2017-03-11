@@ -1,5 +1,4 @@
-﻿@model Catfish.Models.Fields.Tile<Piranha.Extend.Regions.ImageRegion, string>
-
+﻿@model Catfish.Models.Fields.ImageTile
 <ul style="border:solid 1px #808080; margin: 10px 0;padding:5px;">
     <li>
         @Html.LabelFor(m => m.PrimaryMedia)
@@ -11,7 +10,7 @@
     </li>
     <li>
         @Html.LabelFor(m => m.Body)
-        <div class="input">@Html.TextAreaFor(m => m.Body)</div>
+        <div class="input">@Html.EditorFor(m => m.Body)</div>
     </li>
     <li>
         @Html.LabelFor(m => m.ReadMoreLinkText)

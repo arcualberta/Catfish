@@ -21,7 +21,7 @@
     </li>
     <li>
         @Html.LabelFor(m => m.Interval)
-        @{if (Model.Interval == 0) { Model.Interval = 1000; }}
+        @{if (Model.Interval == 0) { Model.Interval = 3000; }}
         <div class="input">@Html.TextBoxFor(m => m.Interval, new {@type = "number" })</div>
     </li>
     <li>
