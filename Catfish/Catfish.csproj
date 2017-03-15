@@ -168,6 +168,8 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\ImageTile.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\ImageRegion.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\FlexBox.cshtml" />
+    <Content Include="Areas\Manager\Views\Collection\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\Collection\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
@@ -190,8 +192,10 @@
     <Compile Include="App_Start\BootstrapBundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\RouteConfig.PiranhaCMS.cs" />
+    <Compile Include="Areas\Manager\Controllers\CollectionController.cs" />
     <Compile Include="Controllers\PageController.cs" />
     <Compile Include="Controllers\PostController.cs" />
+    <Compile Include="Models\Entities\Collection.cs" />
     <Compile Include="Models\Fields\ImageTile.cs" />
     <Compile Include="Models\Fields\Tile.cs" />
     <Compile Include="Models\Pages\HomePage.cs" />
@@ -224,6 +228,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Views\Collection\" />
     <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>
   <PropertyGroup>

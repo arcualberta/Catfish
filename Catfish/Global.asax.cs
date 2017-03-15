@@ -23,6 +23,33 @@ namespace Catfish
                 str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/bootstrap.min.css\" />");
                 str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/Catfish.css\" />");
             };
+
+            Manager.Menu.Add(new Manager.MenuGroup()
+            {
+                InternalId = "CollectionsMenu",
+                Name = "Collections",
+                CssClass = "collections-icon"
+            });
+
+            Manager.Menu.Where(m => m.InternalId == "Content").Single().Items.Insert(0,
+                new Manager.MenuItem()
+                {
+                    Name = "Items",
+                    Controller = "item",
+                    Action = "index",
+                    Permission = "ADMIN_CONTENT",
+                    SelectedActions = ""
+                });
+
+            Manager.Menu.Where(m => m.InternalId == "Content").Single().Items.Insert(0,
+                new Manager.MenuItem()
+                {
+                    Name = "Collections",
+                    Controller = "collection",
+                    Action = "index",
+                    Permission = "ADMIN_CONTENT",
+                    SelectedActions = "index"
+                });
         }
     }
 }
