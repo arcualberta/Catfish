@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Catfish.Models.Entities
 {
-    public class Collection : Piranha.Models.PageModel
+    public class Collection
     {
         public int Id { get; set; }
 

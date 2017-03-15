@@ -192,9 +192,14 @@
     <Compile Include="App_Start\BootstrapBundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\RouteConfig.PiranhaCMS.cs" />
+    <Compile Include="Areas\Manager\Controllers\CatfishManagerController.cs" />
     <Compile Include="Areas\Manager\Controllers\CollectionController.cs" />
     <Compile Include="Controllers\PageController.cs" />
     <Compile Include="Controllers\PostController.cs" />
+    <Compile Include="Migrations\201703152312036_CreatedBasicCollectionModel.cs" />
+    <Compile Include="Migrations\201703152312036_CreatedBasicCollectionModel.Designer.cs">
+      <DependentUpon>201703152312036_CreatedBasicCollectionModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\CatfishDbContext.cs" />
     <Compile Include="Models\Entities\Collection.cs" />
@@ -230,8 +235,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Areas\Manager\Views\CatfishManager\" />
     <Folder Include="Views\Collection\" />
     <Folder Include="Views\Shared\EditorTemplates\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201703152312036_CreatedBasicCollectionModel.resx">
+      <DependentUpon>201703152312036_CreatedBasicCollectionModel.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
