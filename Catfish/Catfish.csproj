@@ -195,6 +195,8 @@
     <Compile Include="Areas\Manager\Controllers\CollectionController.cs" />
     <Compile Include="Controllers\PageController.cs" />
     <Compile Include="Controllers\PostController.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\CatfishDbContext.cs" />
     <Compile Include="Models\Entities\Collection.cs" />
     <Compile Include="Models\Fields\ImageTile.cs" />
     <Compile Include="Models\Fields\Tile.cs" />
