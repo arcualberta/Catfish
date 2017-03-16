@@ -15,6 +15,30 @@ namespace Catfish.Models
 
         }
 
+        protected override void OnModelCreating(DbModelBuilder builder)
+        {
+            builder.Entity<Aggregation>()
+                .HasMany<Aggregation>(p => p.ChildMembers)
+                .WithMany(c => c.ParentMembers)
+                .Map(t =>
+                {
+                    t.MapLeftKey("ParentId");
+                    t.MapRightKey("ChildId");
+                    t.ToTable("AggregationHasMembers");
+                });
+
+            builder.Entity<Aggregation>()
+                .HasMany<DigitalObject>(p => p.ChildRelations)
+                .WithMany(c => c.ParentRelations)
+                .Map(t =>
+                {
+                    t.MapLeftKey("ParentId");
+                    t.MapRightKey("ChildId");
+                    t.ToTable("AggregationHasRelatedObjects");
+                });
+
+        }
+
         public DbSet<Collection> Collections { get; set; }
 
     }

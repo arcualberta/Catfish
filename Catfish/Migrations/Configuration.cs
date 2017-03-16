@@ -1,5 +1,6 @@
 namespace Catfish.Migrations
 {
+    using Catfish.Models.Entities;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;

@@ -6,13 +6,11 @@ using System.Web;
 
 namespace Catfish.Models.Entities
 {
-    public class Collection
+    public class Collection : Aggregation
     {
-        public int Id { get; set; }
+        //public string Name { get; set; }
 
-        public string Name { get; set; }
-
-        [DataType(DataType.MultilineText)]
-        public string Description { get; set; }
+        //[DataType(DataType.MultilineText)]
+        //public string Description { get; set; }
     }
 }

@@ -168,8 +168,8 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\ImageTile.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\ImageRegion.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\FlexBox.cshtml" />
-    <Content Include="Areas\Manager\Views\Collection\Index.cshtml" />
-    <Content Include="Areas\Manager\Views\Collection\Edit.cshtml" />
+    <Content Include="Areas\Manager\Views\Collection2\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\Collection2\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
@@ -193,16 +193,18 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\RouteConfig.PiranhaCMS.cs" />
     <Compile Include="Areas\Manager\Controllers\CatfishManagerController.cs" />
-    <Compile Include="Areas\Manager\Controllers\CollectionController.cs" />
+    <Compile Include="Areas\Manager\Controllers\CollectionController2.cs" />
     <Compile Include="Controllers\PageController.cs" />
     <Compile Include="Controllers\PostController.cs" />
-    <Compile Include="Migrations\201703152312036_CreatedBasicCollectionModel.cs" />
-    <Compile Include="Migrations\201703152312036_CreatedBasicCollectionModel.Designer.cs">
-      <DependentUpon>201703152312036_CreatedBasicCollectionModel.cs</DependentUpon>
+    <Compile Include="Migrations\201703162019523_InitialPcdmModels.cs" />
+    <Compile Include="Migrations\201703162019523_InitialPcdmModels.Designer.cs">
+      <DependentUpon>201703162019523_InitialPcdmModels.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\CatfishDbContext.cs" />
+    <Compile Include="Models\Entities\Aggregation.cs" />
     <Compile Include="Models\Entities\Collection.cs" />
+    <Compile Include="Models\Entities\DigitalObject.cs" />
     <Compile Include="Models\Fields\ImageTile.cs" />
     <Compile Include="Models\Fields\Tile.cs" />
     <Compile Include="Models\Pages\HomePage.cs" />
@@ -240,8 +242,8 @@
     <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201703152312036_CreatedBasicCollectionModel.resx">
-      <DependentUpon>201703152312036_CreatedBasicCollectionModel.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201703162019523_InitialPcdmModels.resx">
+      <DependentUpon>201703162019523_InitialPcdmModels.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
