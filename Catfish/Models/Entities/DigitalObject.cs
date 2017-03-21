@@ -7,6 +7,6 @@ namespace Catfish.Models.Entities
 {
     public class DigitalObject : Aggregation
     {
-        public ICollection<Aggregation> ParentRelations { get; set; }
+        public virtual ICollection<Aggregation> ParentRelations { get; set; }
     }
 }

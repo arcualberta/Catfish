@@ -5,14 +5,12 @@ using System.Web;
 
 namespace Catfish.Models.Entities
 {
-    public class Aggregation
+    public class Aggregation : DigitalEntity
     {
-        public int Id { get; set; }
+        public virtual ICollection<Aggregation> ParentMembers { get; set; }
+        public virtual ICollection<Aggregation> ChildMembers { get; set; }
 
-        public ICollection<Aggregation> ParentMembers { get; set; }
-        public ICollection<Aggregation> ChildMembers { get; set; }
-
-        public ICollection<DigitalObject> ChildRelations { get; set; }
+        public virtual ICollection<DigitalObject> ChildRelations { get; set; }
 
     }
 }

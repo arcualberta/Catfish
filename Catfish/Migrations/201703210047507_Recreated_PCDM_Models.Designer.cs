@@ -7,13 +7,13 @@ namespace Catfish.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class InitialPcdmModels : IMigrationMetadata
+    public sealed partial class Recreated_PCDM_Models : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialPcdmModels));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Recreated_PCDM_Models));
         
         string IMigrationMetadata.Id
         {
-            get { return "201703162019523_InitialPcdmModels"; }
+            get { return "201703210047507_Recreated_PCDM_Models"; }
         }
         
         string IMigrationMetadata.Source

@@ -3,15 +3,18 @@ namespace Catfish.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialPcdmModels : DbMigration
+    public partial class Recreated_PCDM_Models : DbMigration
     {
         public override void Up()
         {
             CreateTable(
-                "dbo.Aggregations",
+                "dbo.DigitalEntities",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
+                        Created = c.DateTime(nullable: false),
+                        Updated = c.DateTime(),
+                        Title = c.String(),
                         Discriminator = c.String(nullable: false, maxLength: 128),
                     })
                 .PrimaryKey(t => t.Id);
@@ -24,8 +27,8 @@ namespace Catfish.Migrations
                         ChildId = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => new { t.ParentId, t.ChildId })
-                .ForeignKey("dbo.Aggregations", t => t.ParentId)
-                .ForeignKey("dbo.Aggregations", t => t.ChildId)
+                .ForeignKey("dbo.DigitalEntities", t => t.ParentId)
+                .ForeignKey("dbo.DigitalEntities", t => t.ChildId)
                 .Index(t => t.ParentId)
                 .Index(t => t.ChildId);
             
@@ -37,8 +40,8 @@ namespace Catfish.Migrations
                         ChildId = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => new { t.ParentId, t.ChildId })
-                .ForeignKey("dbo.Aggregations", t => t.ParentId)
-                .ForeignKey("dbo.Aggregations", t => t.ChildId)
+                .ForeignKey("dbo.DigitalEntities", t => t.ParentId)
+                .ForeignKey("dbo.DigitalEntities", t => t.ChildId)
                 .Index(t => t.ParentId)
                 .Index(t => t.ChildId);
             
@@ -46,17 +49,17 @@ namespace Catfish.Migrations
         
         public override void Down()
         {
-            DropForeignKey("dbo.AggregationHasRelatedObjects", "ChildId", "dbo.Aggregations");
-            DropForeignKey("dbo.AggregationHasRelatedObjects", "ParentId", "dbo.Aggregations");
-            DropForeignKey("dbo.AggregationHasMembers", "ChildId", "dbo.Aggregations");
-            DropForeignKey("dbo.AggregationHasMembers", "ParentId", "dbo.Aggregations");
+            DropForeignKey("dbo.AggregationHasRelatedObjects", "ChildId", "dbo.DigitalEntities");
+            DropForeignKey("dbo.AggregationHasRelatedObjects", "ParentId", "dbo.DigitalEntities");
+            DropForeignKey("dbo.AggregationHasMembers", "ChildId", "dbo.DigitalEntities");
+            DropForeignKey("dbo.AggregationHasMembers", "ParentId", "dbo.DigitalEntities");
             DropIndex("dbo.AggregationHasRelatedObjects", new[] { "ChildId" });
             DropIndex("dbo.AggregationHasRelatedObjects", new[] { "ParentId" });
             DropIndex("dbo.AggregationHasMembers", new[] { "ChildId" });
             DropIndex("dbo.AggregationHasMembers", new[] { "ParentId" });
             DropTable("dbo.AggregationHasRelatedObjects");
             DropTable("dbo.AggregationHasMembers");
-            DropTable("dbo.Aggregations");
+            DropTable("dbo.DigitalEntities");
         }
     }
 }

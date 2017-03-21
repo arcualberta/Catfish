@@ -27,16 +27,20 @@
         <thead>
             <tr>
                 <th>Name</th>
-                <th></th>
+                <th>Created</th>
+                <th>Updated</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var collection in Model) {
+            @foreach (var c in Model)
+            {
+                var title = string.IsNullOrEmpty(c.Title) ? "untitled" : c.Title;
                 <tr>
-                    <td><a href="@Url.Action("edit", new { @id = collection.Id })">@collection.Name</a></td>
-                    <td></td>
+                    <td><a href="@Url.Action("edit", new { @id = c.Id })">@title</a></td>
+                    <td>@Html.DisplayFor(m => c.Created)</td>
+                    <td>@Html.DisplayFor(m => c.Updated)</td>
                 </tr>
-      }
+            }
         </tbody>
     </table>
 </div>
