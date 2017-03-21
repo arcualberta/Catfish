@@ -195,6 +195,7 @@
     <Compile Include="Areas\Manager\Controllers\CatfishManagerController.cs" />
     <Compile Include="Areas\Manager\Controllers\CollectionController.cs" />
     <Compile Include="Controllers\PageController.cs" />
+    <Compile Include="Controllers\PingController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Migrations\201703210047507_Recreated_PCDM_Models.cs" />
     <Compile Include="Migrations\201703210047507_Recreated_PCDM_Models.Designer.cs">
@@ -240,6 +241,7 @@
   <ItemGroup>
     <Folder Include="Areas\Manager\Views\CatfishManager\" />
     <Folder Include="Views\Collection\" />
+    <Folder Include="Views\Ping\" />
     <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>
   <ItemGroup>
