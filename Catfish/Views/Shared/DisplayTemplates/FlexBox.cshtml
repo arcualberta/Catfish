@@ -4,13 +4,16 @@
     var cssId = Model.CssId != null ? Model.CssId : "DefaultFlexBoxId";
 
     <style>
-        #@cssId{
+        #@cssId .flex-row{
+			display:flex;
+			flex-wrap:wrap;
         }
         #@cssId div.flexbox-item{
             min-height:200px;
             /*border:solid 1px #808080;*/
-            margin: 50px 0;
-            padding:20px;
+            margin: 40px 0;
+            padding:20px 30px;
+			text-align:justify;
         }
         #@cssId div.primary-media {
             background-repeat: no-repeat;
