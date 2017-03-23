@@ -11,7 +11,7 @@
         #@cssId div.flexbox-item{
             min-height:50px;
             /*border:solid 1px #808080;*/
-            margin: 40px 0;
+            margin: 10px 0;
             padding:0px 30px;
 			text-align:justify;			
 			text-overflow: ellipsis;
@@ -54,16 +54,16 @@
             @foreach (var item in Model.Items)
             {
                 <div class="flexbox-item @itemClasses">
+                    @if (!string.IsNullOrEmpty(item.Title))
+                    {
+                        <h3>@item.Title</h3>
+                    }
+
                     @if (item.PrimaryMedia != null && item.PrimaryMedia.Id != Guid.Empty)
                     {
                         var imageUrl = "/media/" + item.PrimaryMedia.Id;
                         var inlineStyles = "background-image:url('" + imageUrl + "');";
                         <div class="primary-media" style="@inlineStyles"></div>
-                    }
-
-                    @if (!string.IsNullOrEmpty(item.Title))
-                    {
-                        <h3>@item.Title</h3>
                     }
 
                     @if (!string.IsNullOrEmpty(item.Body))
