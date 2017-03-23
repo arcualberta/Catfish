@@ -82,6 +82,12 @@ header #logo{
     text-shadow: rgba(0,0,0,0.3) 1px 1px 1px;
     }
     
+.footer {
+    background: #313186;
+    color: white;
+    padding: 5px;
+    text-align:center;
+}
     
 /** 
  * Simple media query
