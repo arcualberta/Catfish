@@ -27,6 +27,9 @@
 }
 @{ Html.BeginForm() ; }
 @Html.HiddenFor(m => m.Id)
+@Html.HiddenFor(m => m.Created)
+@Html.HiddenFor(m => m.Updated)
+@Html.AntiForgeryToken()
 <div class="grid_12">
     <div class="box">
         <div class="title"><h2>Collection Information</h2></div>
