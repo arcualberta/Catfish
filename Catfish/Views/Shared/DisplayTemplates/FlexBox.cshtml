@@ -9,11 +9,13 @@
 			flex-wrap:wrap;
         }
         #@cssId div.flexbox-item{
-            min-height:200px;
+            min-height:50px;
             /*border:solid 1px #808080;*/
             margin: 40px 0;
-            padding:20px 30px;
-			text-align:justify;
+            padding:0px 30px;
+			text-align:justify;			
+			text-overflow: ellipsis;
+
         }
         #@cssId div.primary-media {
             background-repeat: no-repeat;
@@ -22,10 +24,16 @@
             height: 100px;
         }
         #@cssId h3{
+			#@cssId div.flexbox-item{
+				margin: 10px 0;
+			}
         }
+		
+		@Html.Raw("@")media (max-width: 768px){ 
+		
+		}
         @Model.Styles
-    </style>
-}
+    </style>}
 
 @if (Model.Items.Count > 0 || !string.IsNullOrEmpty(Model.Title) || !string.IsNullOrEmpty(Model.Description))
 {
