@@ -35,8 +35,8 @@ body {
 header[role="banner"] {
     background: #f8f8f8;
     border-bottom: solid 1px #eee;
-    margin-bottom: 27px;
-    padding: 10px 0 5px 0;
+    margin-bottom: 20px;
+    padding: 10px 0;
     }
 .site-title {
     font-weight: bold;
@@ -52,12 +52,7 @@ header[role="banner"] {
     color: #666;
     font-style: italic;
     }
-header #logo{
-    float:left;
-    width:60px;
-    height:60px;
-    margin-right:10px;
-}    
+    
 /**
  * Main navigation
  */
@@ -82,12 +77,6 @@ header #logo{
     text-shadow: rgba(0,0,0,0.3) 1px 1px 1px;
     }
     
-.footer {
-    background: #313186;
-    color: white;
-    padding: 5px;
-    text-align:center;
-}
     
 /** 
  * Simple media query
