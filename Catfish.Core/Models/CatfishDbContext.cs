@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using Catfish.Core.Models.Metadata;
 
 namespace Catfish.Core.Models
 {
@@ -59,11 +60,29 @@ namespace Catfish.Core.Models
                     t.ToTable("AggregationHasRelatedObjects");
                 });
 
+            builder.Entity<EntityType>()
+                .HasMany<MetadataSet>(et => et.MetadataSets)
+                .WithMany(ms => ms.EntityTypes)
+                .Map(t =>
+                {
+                    t.MapLeftKey("MetadataSetId");
+                    t.MapRightKey("EntityTypesId");
+                    t.ToTable("EntityTypeHasMetadataSets");
+                });
         }
 
         public DbSet<Entity> Entities { get; set; }
+
         public DbSet<Collection> Collections { get; set; }
+
         public DbSet<Item> Items { get; set; }
 
+        public DbSet<EntityType> EntityTypes { get; set; }
+
+        public DbSet<MetadataSet> MetadataSets { get; set; }
+
+        public DbSet<MetadataField> MetadataFields { get; set; }
+
+        public DbSet<FieldValue> FieldValues { get; set; }
     }
 }

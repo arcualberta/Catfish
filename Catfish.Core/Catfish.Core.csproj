@@ -51,12 +51,26 @@
     <Compile Include="Migrations\201705031907145_CreatedBasicCollectionAndItemModels.Designer.cs">
       <DependentUpon>201705031907145_CreatedBasicCollectionAndItemModels.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705032318050_AddedMetadataModels.cs" />
+    <Compile Include="Migrations\201705032318050_AddedMetadataModels.Designer.cs">
+      <DependentUpon>201705032318050_AddedMetadataModels.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Aggregation.cs" />
     <Compile Include="Models\CatfishDbContext.cs" />
     <Compile Include="Models\Collection.cs" />
     <Compile Include="Models\Entity.cs" />
+    <Compile Include="Models\EntityType.cs" />
     <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\Metadata\CheckBoxSet.cs" />
+    <Compile Include="Models\Metadata\DateField.cs" />
+    <Compile Include="Models\Metadata\DropDownMenu.cs" />
+    <Compile Include="Models\Metadata\MetadataSet.cs" />
+    <Compile Include="Models\Metadata\MetadataField.cs" />
+    <Compile Include="Models\Metadata\FieldValue.cs" />
+    <Compile Include="Models\Metadata\OptionsField.cs" />
+    <Compile Include="Models\Metadata\RadioButtonSet.cs" />
+    <Compile Include="Models\Metadata\TextField.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -66,6 +80,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201705031907145_CreatedBasicCollectionAndItemModels.resx">
       <DependentUpon>201705031907145_CreatedBasicCollectionAndItemModels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705032318050_AddedMetadataModels.resx">
+      <DependentUpon>201705032318050_AddedMetadataModels.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
