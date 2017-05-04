@@ -72,6 +72,8 @@
     <Compile Include="Models\Metadata\RadioButtonSet.cs" />
     <Compile Include="Models\Metadata\TextField.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\MetadataService.cs" />
+    <Compile Include="Services\ServiceBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

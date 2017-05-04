@@ -52,6 +52,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj">
+      <Project>{5d2c027e-76f8-4cf0-8c58-cfd5219e3d18}</Project>
+      <Name>Catfish.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Catfish\Catfish.csproj">
       <Project>{3EE219A0-08C9-4DCE-9CB8-7BF16007F6F6}</Project>
       <Name>Catfish</Name>
