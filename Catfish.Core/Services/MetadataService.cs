@@ -16,5 +16,11 @@ namespace Catfish.Core.Services
         {
             return Db.MetadataSets;
         }
+
+        public MetadataSet GetMetadataSet(int id)
+        {
+            return Db.MetadataSets.Where(m => m.Id == id).FirstOrDefault();
+        }
+
     }
 }
