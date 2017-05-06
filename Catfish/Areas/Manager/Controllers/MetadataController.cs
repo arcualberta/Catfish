@@ -40,5 +40,13 @@ namespace Catfish.Areas.Manager.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public ActionResult FieldTypes()
+        {
+            var filedTypes = typeof(MetadataField).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(MetadataField))).ToList();
+            return Json(filedTypes.Select(t => t.ToString()).ToList(), JsonRequestBehavior.AllowGet);
+        }
+
+
     }
 }
