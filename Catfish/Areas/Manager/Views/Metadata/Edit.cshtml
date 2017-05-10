@@ -29,16 +29,16 @@
 @Html.HiddenFor(m => m.Id)
 <div class="grid_12">
     <div class="box">
-        <div class="title"><h2>Product information</h2></div>
+        <div class="title"><h2>Metadata Set</h2></div>
         <div class="inner">
             <ul class="form">
                 <li>
                     @Html.LabelFor(m => m.Name)
-                    <div class="input">@Html.TextBoxFor(m => m.Name)</div>
+                    <div class="input">@Html.EditorFor(m => m.Name)</div>
                 </li>
                 <li>
                     @Html.LabelFor(m => m.Description)
-                    <div class="input">@Html.TextAreaFor(m => m.Description)</div>
+                    <div class="input">@Html.EditorFor(m => m.Description)</div>
                 </li>
             </ul>
         </div>
