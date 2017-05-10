@@ -160,6 +160,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Manager\Controllers\CatfishController.cs" />
     <Compile Include="Areas\Manager\Controllers\MetadataController.cs" />
+    <Compile Include="Areas\Manager\Models\FieldDefinitionViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\FieldPropertyViewModel.cs" />
     <Compile Include="Controllers\PageController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Global.asax.cs">
