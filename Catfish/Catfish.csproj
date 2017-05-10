@@ -146,6 +146,8 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Manager\Views\Metadata\Edit.cshtml" />
+    <Content Include="Areas\Manager\Views\Metadata\SampleForm.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataField.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -192,7 +194,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Manager\Views\Catfish\" />
-    <Folder Include="Areas\Manager\Views\Shared\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

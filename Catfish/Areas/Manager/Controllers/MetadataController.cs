@@ -16,6 +16,28 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpGet]
+        public ActionResult SampleForm()
+        {
+            MetadataSet model = new MetadataSet();
+            model.Name = "Sample Form";
+            model.Description = "Sample form description";
+
+            model.Fields.Add(new TextField()
+            {
+                Name = "Text Field 1",
+                Description = "Text filed 1 description"
+            });
+
+            model.Fields.Add(new TextArea()
+            {
+                Name = "Text Area 1",
+                Description = "Text area 1 description"
+            });
+
+            return View(model);
+        }
+
+        [HttpGet]
         public ActionResult Edit(int? id)
         {
             MetadataSet model = id.HasValue ? MetadataService.GetMetadataSet(id.Value) : new MetadataSet();
