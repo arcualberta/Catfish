@@ -134,7 +134,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpGet]
         public ActionResult FieldTypes()
         {
-            var fieldTypes = typeof(MetadataField).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(OptionsField))).ToList();
+            var fieldTypes = typeof(MetadataField).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(MetadataField))).ToList();
             var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToList();
             //Type ft = filedTypes.First();
 

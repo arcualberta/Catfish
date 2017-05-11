@@ -8,6 +8,8 @@ using System.Web.Security;
 using System.Web.SessionState;
 using System.Web.Http;
 using Piranha.WebPages;
+using Catfish.Core.Models.Metadata;
+using Catfish.Areas.Manager.ModelBinders;
 
 namespace Catfish
 {
@@ -19,6 +21,10 @@ namespace Catfish
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            //Custom model binders
+            System.Web.Mvc.ModelBinders.Binders.Add(typeof(MetadataField), new MetadataFieldDefinitionBinder());
+
 
             //Adding menu items
             var menubar = Manager.Menu.Where(m => m.InternalId == "Content").FirstOrDefault();
