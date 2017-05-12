@@ -13,6 +13,7 @@ namespace Catfish.Areas.Manager.Models
     public class FieldDefinitionViewModel
     {
         public string ModelType { get; set; }
+        public string TypeLabel { get; set; }
 
         public ICollection<FieldPropertyViewModel> Properties { get; set; }
 
@@ -24,8 +25,12 @@ namespace Catfish.Areas.Manager.Models
             IEnumerable<PropertyInfo> properties = filedType.GetProperties()
                 .Where(p => p.GetCustomAttribute<IgnoreAttribute>() == null);
 
-            foreach(PropertyInfo info in properties)
+            TypeLabelAttribute typeLabel = filedType.GetCustomAttribute<TypeLabelAttribute>(true);
+            TypeLabel = typeLabel == null ? filedType.ToString() : typeLabel.Name;
+
+            foreach (PropertyInfo info in properties)
             {
+
                 FieldPropertyViewModel fi = new FieldPropertyViewModel()
                 {
                     Name = info.Name,

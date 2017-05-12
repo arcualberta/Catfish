@@ -8,7 +8,6 @@ namespace Catfish.Core.Models.Metadata
     {
         public int Id { get; set; }
 
-        [Rank(1)]
         public string Name { get; set; }
 
         [Rank(2)]

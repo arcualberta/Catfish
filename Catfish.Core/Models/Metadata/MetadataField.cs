@@ -14,9 +14,11 @@ namespace Catfish.Core.Models.Metadata
         [HiddenInput(DisplayValue = false)]
         public int Id { get; set; }
 
+        [Rank(1)]
         [Required]
         public string Name { get; set; }
 
+        [Rank(2)]
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 

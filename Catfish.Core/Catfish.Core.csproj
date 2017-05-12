@@ -69,6 +69,7 @@
     <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
     <Compile Include="Models\Attributes\InputTypeAttribute.cs" />
     <Compile Include="Models\Attributes\RankAttribute.cs" />
+    <Compile Include="Models\Attributes\TypeLabelAttribute.cs" />
     <Compile Include="Models\CatfishDbContext.cs" />
     <Compile Include="Models\Collection.cs" />
     <Compile Include="Models\Entity.cs" />
