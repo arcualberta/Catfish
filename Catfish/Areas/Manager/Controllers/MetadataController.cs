@@ -134,19 +134,10 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpGet]
         public ActionResult FieldTypes()
         {
-            var fieldTypes = typeof(MetadataField).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(MetadataField))).ToList();
+            var fieldTypes = this.MetadataService.GetMetadataFieldTypes();
             var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToList();
-            //Type ft = filedTypes.First();
-
-            //PropertyInfo[] info = ft.GetProperties();
-
-            //DataTypeAttribute attribute = info.First().GetCustomAttribute<DataTypeAttribute>(true);
-            
-            //Type propType = info.First().PropertyType;
-            //string name = info.First().Name;
 
             return Json(fieldTypeViewModels, JsonRequestBehavior.AllowGet);
-            //return Json(filedTypes.Select(t => t.ToString()).ToList(), JsonRequestBehavior.AllowGet);
         }
 
 

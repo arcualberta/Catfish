@@ -60,8 +60,15 @@
     <Compile Include="Migrations\201705032318050_AddedMetadataModels.Designer.cs">
       <DependentUpon>201705032318050_AddedMetadataModels.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705121835020_AddedIsRequiredAndToolTipToMetadataField.cs" />
+    <Compile Include="Migrations\201705121835020_AddedIsRequiredAndToolTipToMetadataField.Designer.cs">
+      <DependentUpon>201705121835020_AddedIsRequiredAndToolTipToMetadataField.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Aggregation.cs" />
+    <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
+    <Compile Include="Models\Attributes\InputTypeAttribute.cs" />
+    <Compile Include="Models\Attributes\RankAttribute.cs" />
     <Compile Include="Models\CatfishDbContext.cs" />
     <Compile Include="Models\Collection.cs" />
     <Compile Include="Models\Entity.cs" />
@@ -92,9 +99,10 @@
     <EmbeddedResource Include="Migrations\201705032318050_AddedMetadataModels.resx">
       <DependentUpon>201705032318050_AddedMetadataModels.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705121835020_AddedIsRequiredAndToolTipToMetadataField.resx">
+      <DependentUpon>201705121835020_AddedIsRequiredAndToolTipToMetadataField.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\Attributes\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
