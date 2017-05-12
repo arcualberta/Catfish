@@ -12,6 +12,10 @@
         @RenderSection("head", required: false)
     </head>
     <body>
+
+        <script>
+                    require(["./Built/app"]);
+        </script>
         <header role="banner">
             <div class="wrapper">
                 <a class="site-title" href="~/">@Site.SiteTitle</a>

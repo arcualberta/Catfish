@@ -1,0 +1,76 @@
+﻿<!--
+<p>Name: <input data-bind="value: name" /></p>
+<p>desc: <input data-bind="value: description" /></p>
+
+<button data-bind="click: addField">Add</button>
+<button data-bind="click: show">Show</button>
+
+<ul data-bind="foreach: metadataFields">
+    <li>
+        <p>Name: <input data-bind="value: name" /></p>
+        <p>Description: <input data-bind="value: description" /></p>
+    </li>
+</ul>
+
+-->
+<!--
+<div class="grid_12">
+    <div class="box">
+        <div class="title"><h2>Metadata Set</h2></div>
+        <div class="inner">
+            <ul class="form">
+                <li>
+                    @Html.LabelFor(m => m.Name)
+                    <div class="input">@Html.EditorFor(m => m.Name)</div>
+                </li>
+                <li>
+                    @Html.LabelFor(m => m.Description)
+                    <div class="input">@Html.EditorFor(m => m.Description)</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    @Html.EditorFor(model => model.Fields)
+</div>
+-->
+<div class="grid_12">
+    <div class="box">
+        <div class="title"><!--<h2>Metadata Set</h2>--><div class="input"><input class="text-box single-line" id="Name" name="Name" type="text" value="Sample Form" data-bind="value: name" placeholder="Metadata set name"></div></div>
+        <div class="inner">
+            <ul class="form">
+                 <!--
+                <li>
+                    <label for="Name">Name</label>
+                    <div class="input"><input class="text-box single-line" id="Name" name="Name" type="text" value="Sample Form" data-bind="value: name"></div>
+                </li>
+                     -->
+                <li>
+                    <label for="Description">Description</label>
+                    <div class="input"><textarea class="text-box multi-line" id="Description" name="Description" data-bind="value: description">Sample form description</textarea></div>
+                </li>
+            </ul>
+            <hr />
+            <ul class="form" data-bind="foreach: metadataFields">
+                <li>
+                    <p>Name: <input data-bind="value: name" /></p>
+                    <p>Description: <input data-bind="value: description" /></p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<button data-bind="click: addField">Add</button>
+<button data-bind="click: show">Show</button>
+
+
+<!--
+<ul data-bind="foreach: metadataFields">
+    <li>
+        <p>Name: <input data-bind="value: name" /></p>
+        <p>Description: <input data-bind="value: description" /></p>
+    </li>
+</ul>
+
+-->
