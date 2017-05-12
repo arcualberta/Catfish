@@ -74,6 +74,7 @@
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Linq" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -164,6 +165,9 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Manager\Controllers\CatfishController.cs" />
     <Compile Include="Areas\Manager\Controllers\MetadataController.cs" />
+    <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
+    <Compile Include="Areas\Manager\Models\FieldDefinitionViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\FieldPropertyViewModel.cs" />
     <Compile Include="Controllers\PageController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Global.asax.cs">

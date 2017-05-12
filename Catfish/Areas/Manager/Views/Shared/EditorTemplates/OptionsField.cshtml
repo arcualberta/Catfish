@@ -3,7 +3,7 @@
 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 @Html.HiddenFor(model => model.Id)
 @Html.HiddenFor(model => model.MetadataSetId)
-@Html.Hidden("ModelType", Model.GetType())
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName)
 
 <div class="box">
     <div class="title"><h2>@Model.GetType()</h2></div>

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
+using Catfish.Areas.Manager.Models;
 using Catfish.Core.Models.Metadata;
 using Piranha.Areas.Manager.Controllers;
 
@@ -131,8 +134,19 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpGet]
         public ActionResult FieldTypes()
         {
-            var filedTypes = typeof(MetadataField).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(MetadataField))).ToList();
-            return Json(filedTypes.Select(t => t.ToString()).ToList(), JsonRequestBehavior.AllowGet);
+            var fieldTypes = typeof(MetadataField).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(MetadataField))).ToList();
+            var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToList();
+            //Type ft = filedTypes.First();
+
+            //PropertyInfo[] info = ft.GetProperties();
+
+            //DataTypeAttribute attribute = info.First().GetCustomAttribute<DataTypeAttribute>(true);
+            
+            //Type propType = info.First().PropertyType;
+            //string name = info.First().Name;
+
+            return Json(fieldTypeViewModels, JsonRequestBehavior.AllowGet);
+            //return Json(filedTypes.Select(t => t.ToString()).ToList(), JsonRequestBehavior.AllowGet);
         }
 
 
