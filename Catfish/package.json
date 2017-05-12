@@ -1,0 +1,17 @@
+{
+  "name": "catfish",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/knockout": "^3.4.40",
+    "knockout": "^3.4.2",
+    "requirejs": "^2.3.3",
+    "text": "github:requirejs/text"
+  }
+}

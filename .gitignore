@@ -158,3 +158,6 @@ $RECYCLE.BIN/
 Catfish/App_Data
 /Catfish/Web.config
 /packages
+
+/Catfish/node_modules/
+/Catfish/Built
