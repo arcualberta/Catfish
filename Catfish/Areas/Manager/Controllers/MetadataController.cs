@@ -73,6 +73,35 @@ namespace Catfish.Areas.Manager.Controllers
             if (id.HasValue)
                 model = MetadataService.GetMetadataSet(id.Value);
             else
+                model = new MetadataSet();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(MetadataSet model)
+        {
+            if(ModelState.IsValid)
+            {
+                if (model.Id > 0)
+                    Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
+                else
+                    Db.MetadataSets.Add(model);
+
+                Db.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        public ActionResult EditTest(int? id)
+        {
+            MetadataSet model;
+            if (id.HasValue)
+                model = MetadataService.GetMetadataSet(id.Value);
+            else
             {
                 model = new MetadataSet();
                 model.Name = "Sample Form";
@@ -115,9 +144,9 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(MetadataSet model)
+        public ActionResult EditTest(MetadataSet model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 if (model.Id > 0)
                     Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
@@ -131,22 +160,14 @@ namespace Catfish.Areas.Manager.Controllers
             return View(model);
         }
 
+
         [HttpGet]
         public ActionResult FieldTypes()
         {
-            var fieldTypes = typeof(MetadataField).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(MetadataField))).ToList();
+            var fieldTypes = this.MetadataService.GetMetadataFieldTypes();
             var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToList();
-            //Type ft = filedTypes.First();
-
-            //PropertyInfo[] info = ft.GetProperties();
-
-            //DataTypeAttribute attribute = info.First().GetCustomAttribute<DataTypeAttribute>(true);
-            
-            //Type propType = info.First().PropertyType;
-            //string name = info.First().Name;
 
             return Json(fieldTypeViewModels, JsonRequestBehavior.AllowGet);
-            //return Json(filedTypes.Select(t => t.ToString()).ToList(), JsonRequestBehavior.AllowGet);
         }
 
 

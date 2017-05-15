@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catfish.Core.Models;
+using Catfish.Core.Models.Attributes;
 using Catfish.Core.Models.Metadata;
 
 namespace Catfish.Core.Services
@@ -20,6 +21,22 @@ namespace Catfish.Core.Services
         public MetadataSet GetMetadataSet(int id)
         {
             return Db.MetadataSets.Where(m => m.Id == id).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Returns the list of metadata filed types that can be used as metadata fileds. 
+        /// This excludes base classes that are not directly usable as fields in a form.
+        /// </summary>
+        /// <returns></returns>
+        public List<Type> GetMetadataFieldTypes()
+        {
+            var fieldTypes = typeof(MetadataField).Assembly.GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(MetadataField)) 
+                    && !t.CustomAttributes.Where(a => a.AttributeType.IsAssignableFrom(typeof(IgnoreAttribute))).Any())
+                .ToList();
+
+
+            return fieldTypes;
         }
 
     }

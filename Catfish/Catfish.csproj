@@ -151,6 +151,7 @@
     <Content Include="Areas\Manager\Views\Metadata\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataField.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\OptionsField.cshtml" />
+    <Content Include="Areas\Manager\Views\Metadata\EditTest.cshtml" />
     <Content Include="package.json" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
