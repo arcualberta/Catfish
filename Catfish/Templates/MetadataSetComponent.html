@@ -55,6 +55,13 @@
                 <li>
                     <p>Name: <input data-bind="value: name" /></p>
                     <p>Description: <input data-bind="value: description" /></p>
+                    <select data-bind="options: $parent.fieldTypes,
+                                        optionsText: 'ModelType',
+                                        value: type"></select>
+                    <ul data-bind="foreach: type().Properties">
+                        <li><span data-bind="text: DisplayType"></span></li>
+                    </ul>
+                    <button data-bind="click: $parent.removeField">X</button>
                 </li>
             </ul>
         </div>

@@ -216,6 +216,7 @@
     <TypeScriptCompile Include="Source\Components\MetadataSetEdit.ts" />
     <TypeScriptCompile Include="Source\ImportModules.ts" />
     <TypeScriptCompile Include="Source\require-config.ts" />
+    <TypeScriptCompile Include="Source\ViewModels\Metadata\MetadataFieldTypeDefinition.ts" />
     <TypeScriptCompile Include="Source\ViewModels\Metadata\MetadataField.ts" />
     <TypeScriptCompile Include="Source\ViewModels\Metadata\MetadataOptionsField.ts" />
     <TypeScriptCompile Include="Source\ViewModels\Metadata\MetadataSet.ts" />
