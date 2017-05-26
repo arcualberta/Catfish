@@ -7,7 +7,7 @@
         public string Value { get; set; }
 
         public int FieldId { get; set; }
-        public MetadataField Field { get; set; }
+        public SimpleField Field { get; set; }
 
         public int EntityId { get; set; }
         public Entity Entity { get; set; }

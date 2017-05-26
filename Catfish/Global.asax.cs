@@ -23,7 +23,7 @@ namespace Catfish
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
             //Custom model binders
-            System.Web.Mvc.ModelBinders.Binders.Add(typeof(MetadataField), new MetadataFieldDefinitionBinder());
+            System.Web.Mvc.ModelBinders.Binders.Add(typeof(SimpleField), new MetadataFieldDefinitionBinder());
 
 
             //Adding menu items

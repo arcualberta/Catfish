@@ -81,7 +81,7 @@ namespace Catfish.Core.Models
 
         public DbSet<MetadataSet> MetadataSets { get; set; }
 
-        public DbSet<MetadataField> MetadataFields { get; set; }
+        public DbSet<SimpleField> MetadataFields { get; set; }
 
         public DbSet<FieldValue> FieldValues { get; set; }
     }
