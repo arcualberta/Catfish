@@ -1,4 +1,7 @@
-﻿@model Catfish.Core.Models.Metadata.MetadataSet
+﻿<script src="/node_modules/requirejs/require.js"></script>
+<script type="text/javascript" src="/built/require-config.js"></script>
+
+@model Catfish.Core.Models.Metadata.MetadataSet
 @{  ViewBag.Title = "Edit Metadata Set"; }
 @section Toolbar {
     @Html.Partial("Partial/Tabs")
@@ -25,9 +28,6 @@
         </div>
     </div>
 }
-
-
-<!--
 @{ Html.BeginForm(); }
 @Html.HiddenFor(m => m.Id)
 <div class="grid_12">
@@ -46,17 +46,15 @@
             </ul>
         </div>
     </div>
-
-    @Html.EditorFor(model => model.Fields)
+    <div id="fields-container">
+        @Html.EditorFor(model => model.Fields)
+    </div>
+    
 </div>
 @{ Html.EndForm(); }
--->
 
+<button id="add-field">Add</button>
 
-<script src="/node_modules/requirejs/require.js"></script>
-<script type="text/javascript" src="/built/require-config.js"></script>
 <script>
-    require(["/Built/Components/MetadataSetEdit.js"]);
+    require(["/Built/Forms/MetadataSetForm.js"]);
 </script>
-
-<metadataset></metadataset>

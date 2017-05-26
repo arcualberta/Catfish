@@ -153,10 +153,15 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\OptionsField.cshtml" />
     <Content Include="Areas\Manager\Views\Metadata\EditTest.cshtml" />
     <Content Include="package.json" />
+    <Content Include="Areas\Manager\Views\Metadata\Edit - Copy.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Templates\Input\Line.html" />
+    <Content Include="Templates\Input\MultilineText.html" />
+    <Content Include="Templates\Input\Hidden.html" />
+    <Content Include="Templates\Input\StringArray.html" />
     <Content Include="Templates\MetadataSetComponent.html" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -213,14 +218,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="Source\app.ts" />
-    <TypeScriptCompile Include="Source\Components\MetadataSetEdit.ts" />
+    <TypeScriptCompile Include="Source\Fields\MetadataSetFields.ts" />
+    <TypeScriptCompile Include="Source\Forms\MetadataSetForm.ts" />
     <TypeScriptCompile Include="Source\ImportModules.ts" />
     <TypeScriptCompile Include="Source\require-config.ts" />
-    <TypeScriptCompile Include="Source\ViewModels\Metadata\MetadataFieldTypeDefinition.ts" />
-    <TypeScriptCompile Include="Source\ViewModels\Metadata\MetadataField.ts" />
-    <TypeScriptCompile Include="Source\ViewModels\Metadata\MetadataOptionsField.ts" />
-    <TypeScriptCompile Include="Source\ViewModels\Metadata\MetadataSet.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

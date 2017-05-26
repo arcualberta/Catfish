@@ -9,8 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/knockout": "^3.4.40",
-    "knockout": "^3.4.2",
+    "@types/jquery": "2.0.43",
     "requirejs": "^2.3.3",
     "text": "github:requirejs/text"
   }
