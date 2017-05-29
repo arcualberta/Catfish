@@ -14,13 +14,13 @@ namespace Catfish.Core.Models.Metadata
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        public virtual ICollection<MetadataField> Fields { get; set; }
+        public virtual ICollection<SimpleField> Fields { get; set; }
 
         public virtual ICollection<EntityType> EntityTypes { get; set; }
 
         public MetadataSet()
         {
-            Fields = new List<MetadataField>();
+            Fields = new List<SimpleField>();
         }
     }
 }

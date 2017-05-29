@@ -3,7 +3,7 @@
 namespace Catfish.Core.Models.Metadata
 {
     [TypeLabel("Short text")]
-    public class TextField : MetadataField
+    public class TextField : SimpleField
     {
     }
 }

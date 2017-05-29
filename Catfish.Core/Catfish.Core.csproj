@@ -64,6 +64,10 @@
     <Compile Include="Migrations\201705121835020_AddedIsRequiredAndToolTipToMetadataField.Designer.cs">
       <DependentUpon>201705121835020_AddedIsRequiredAndToolTipToMetadataField.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705262229084_RenamedMetadataFieldoSimpleField.cs" />
+    <Compile Include="Migrations\201705262229084_RenamedMetadataFieldoSimpleField.Designer.cs">
+      <DependentUpon>201705262229084_RenamedMetadataFieldoSimpleField.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Aggregation.cs" />
     <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
@@ -79,7 +83,7 @@
     <Compile Include="Models\Metadata\DateField.cs" />
     <Compile Include="Models\Metadata\DropDownMenu.cs" />
     <Compile Include="Models\Metadata\MetadataSet.cs" />
-    <Compile Include="Models\Metadata\MetadataField.cs" />
+    <Compile Include="Models\Metadata\SimpleField.cs" />
     <Compile Include="Models\Metadata\FieldValue.cs" />
     <Compile Include="Models\Metadata\OptionsField.cs" />
     <Compile Include="Models\Metadata\RadioButtonSet.cs" />
@@ -102,6 +106,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705121835020_AddedIsRequiredAndToolTipToMetadataField.resx">
       <DependentUpon>201705121835020_AddedIsRequiredAndToolTipToMetadataField.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705262229084_RenamedMetadataFieldoSimpleField.resx">
+      <DependentUpon>201705262229084_RenamedMetadataFieldoSimpleField.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

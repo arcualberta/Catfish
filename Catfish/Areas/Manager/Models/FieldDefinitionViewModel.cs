@@ -7,58 +7,62 @@ using System.Runtime.Serialization;
 using System.Web;
 using System.Web.Mvc;
 using Catfish.Core.Models.Attributes;
+using Catfish.Core.Models.Metadata;
 
 namespace Catfish.Areas.Manager.Models
 {
     public class FieldDefinitionViewModel
     {
         public string ModelType { get; set; }
-        public string TypeLabel { get; set; }
+        public string Label { get; set; }
+        public string Template { get; set; }
+        //public ICollection<FieldPropertyViewModel> Properties { get; set; }
 
-        public ICollection<FieldPropertyViewModel> Properties { get; set; }
-
-        public FieldDefinitionViewModel(Type filedType)
+        public FieldDefinitionViewModel(Type fieldType)
         {
-            ModelType = filedType.ToString();
+            ModelType = fieldType.ToString();
 
-            Properties = new List<FieldPropertyViewModel>();
-            IEnumerable<PropertyInfo> properties = filedType.GetProperties()
-                .Where(p => p.GetCustomAttribute<IgnoreAttribute>() == null);
+            //Properties = new List<FieldPropertyViewModel>();
+            //IEnumerable<PropertyInfo> properties = filedType.GetProperties()
+            //    .Where(p => p.GetCustomAttribute<IgnoreAttribute>() == null);
 
-            TypeLabelAttribute typeLabel = filedType.GetCustomAttribute<TypeLabelAttribute>(true);
-            TypeLabel = typeLabel == null ? filedType.ToString() : typeLabel.Name;
+            TypeLabelAttribute typeLabel = fieldType.GetCustomAttribute<TypeLabelAttribute>(true);
+            Label = typeLabel == null ? fieldType.ToString() : typeLabel.Name;
+            Template = typeof(OptionsField).IsAssignableFrom(fieldType) 
+                ? typeof(OptionsField).ToString() 
+                : typeof(SimpleField).ToString();
 
-            foreach (PropertyInfo info in properties)
-            {
+            //foreach (PropertyInfo info in properties)
+            //{
 
-                FieldPropertyViewModel fi = new FieldPropertyViewModel()
-                {
-                    Name = info.Name,
-                    DataType = info.PropertyType.ToString(),
-                    DisplayType = GetDisplayType(info),
-                    IsRequired = info.GetCustomAttribute<RequiredAttribute>(true) != null
-                };
+            //    FieldPropertyViewModel fi = new FieldPropertyViewModel()
+            //    {
+            //        Name = info.Name,
+            //        DataType = info.PropertyType.ToString(),
+            //        DisplayType = GetDisplayType(info),
+            //        IsRequired = info.GetCustomAttribute<RequiredAttribute>(true) != null
+            //    };
 
-                Properties.Add(fi);
-            }
+            //    Properties.Add(fi);
+            //}
         }
 
-        protected string GetDisplayType(PropertyInfo info)
-        {
-            HiddenInputAttribute hiddenInputAtt = info.GetCustomAttribute<HiddenInputAttribute>(true);
-            InputTypeAttribute inputTypeAtt = info.GetCustomAttribute<InputTypeAttribute>(true);
-            DataTypeAttribute dataTypeAtt = info.GetCustomAttribute<DataTypeAttribute>(true);
+        //protected string GetDisplayType(PropertyInfo info)
+        //{
+        //    HiddenInputAttribute hiddenInputAtt = info.GetCustomAttribute<HiddenInputAttribute>(true);
+        //    InputTypeAttribute inputTypeAtt = info.GetCustomAttribute<InputTypeAttribute>(true);
+        //    DataTypeAttribute dataTypeAtt = info.GetCustomAttribute<DataTypeAttribute>(true);
 
-            string displayType = "";
+        //    string displayType = "";
 
-            if (hiddenInputAtt != null)
-                displayType = "Hidden";
-            else if (inputTypeAtt != null)
-                displayType = inputTypeAtt.InputType.ToString();
-            else if (dataTypeAtt != null)
-                displayType = dataTypeAtt.DataType.ToString();
+        //    if (hiddenInputAtt != null)
+        //        displayType = "Hidden";
+        //    else if (inputTypeAtt != null)
+        //        displayType = inputTypeAtt.InputType.ToString();
+        //    else if (dataTypeAtt != null)
+        //        displayType = dataTypeAtt.DataType.ToString();
 
-            return displayType;
-        }
+        //    return displayType;
+        //}
     }
 }

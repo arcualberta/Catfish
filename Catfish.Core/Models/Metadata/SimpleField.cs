@@ -9,7 +9,7 @@ using Catfish.Core.Models.Attributes;
 
 namespace Catfish.Core.Models.Metadata
 {
-    public class MetadataField
+    public class SimpleField
     {
         [HiddenInput(DisplayValue = false)]
         public int Id { get; set; }
