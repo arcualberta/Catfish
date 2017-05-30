@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 using Catfish.Areas.Manager.Models;
 using Catfish.Core.Models.Metadata;
 using Piranha.Areas.Manager.Controllers;
@@ -111,6 +112,10 @@ namespace Catfish.Areas.Manager.Controllers
                     Options = "menu 1\nmenu 2\nmenu 3"
                 });
             }
+
+            var fieldTypes = this.MetadataService.GetMetadataFieldTypes();
+            var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToList();
+            ViewBag.FieldTypes = new JavaScriptSerializer().Serialize(fieldTypeViewModels);
             return View(model);
         }
 
@@ -203,6 +208,14 @@ namespace Catfish.Areas.Manager.Controllers
         {
             var fieldTypes = this.MetadataService.GetMetadataFieldTypes();
             var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToList();
+
+            //Dictionary<string, object> dummy = new Dictionary<string, object>();
+            //dummy.Add("Simple", new SimpleField());
+            //dummy.Add("Options", new OptionsField());
+
+
+            //HtmlHelper<Dictionary<string, object>> html = new HtmlHelper<Dictionary<string, object>>();
+
 
             return Json(fieldTypeViewModels, JsonRequestBehavior.AllowGet);
         }
