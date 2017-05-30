@@ -1,6 +1,31 @@
-﻿<script src="/node_modules/requirejs/require.js"></script>
-<script type="text/javascript" src="/built/require-config.js"></script>
+﻿@using Catfish.Core.Models.Metadata;
+@using Catfish.Areas.Manager.Helpers;
 
+<script src="/node_modules/requirejs/require.js"></script>
+<script type="text/javascript" src="/built/require-config.js"></script>
+@{ 
+    var viewData = new ViewDataDictionary(Html.ViewData)
+    {
+        TemplateInfo = new System.Web.Mvc.TemplateInfo
+        {
+            HtmlFieldPrefix = "Fields[CATFISH_GUID]"
+        }
+    };
+
+    string simpleTemplate = Html.Partial("EditorTemplates/SimpleField", new SimpleField(), viewData).ToHtmlString();
+    string optionsTemplate = Html.Partial("EditorTemplates/OptionsField", new OptionsField(), viewData).ToHtmlString();
+
+
+    <script>
+        var fieldTypes = {
+                templates: {
+                    "@Html.Raw(typeof(SimpleField).FullName)": @Html.Raw(Json.Encode(simpleTemplate)),
+                    "@Html.Raw(typeof(OptionsField).FullName)" : @Html.Raw(Json.Encode(optionsTemplate))
+                },
+                fields: @Html.Raw(ViewBag.FieldTypes)
+            }
+</script>
+}
 @model Catfish.Core.Models.Metadata.MetadataSet
 @{  ViewBag.Title = "Edit Metadata Set"; }
 @section Toolbar {
@@ -47,7 +72,8 @@
         </div>
     </div>
     <div id="fields-container">
-        @Html.EditorFor(model => model.Fields)
+        @Html.EditorForList(m => m.Fields)
+       @*Html.EditorFor(model => model.Fields)*@
     </div>
     
 </div>
