@@ -17,10 +17,12 @@ interface FieldTypes {
 }
 
 declare var fieldTypes: any;
+declare var metadataSetId: any;
 
 export class MetadataSetFields {
 
     private fieldTypes: FieldTypes
+    private metadataSetId: string
     private addButton: JQuery
     private removeFieldButtons: JQuery
     private fieldsContainer: JQuery
@@ -42,6 +44,7 @@ export class MetadataSetFields {
     private initializeFieldTypes() {
         // window.fieldTypes is provided by back end
         this.fieldTypes = fieldTypes
+        this.metadataSetId = metadataSetId
     }
 
     private populateSelect() {
@@ -76,12 +79,12 @@ export class MetadataSetFields {
         })
     }
 
-    private getTemplate(modelType: string): string {
+    private getTemplate(modelType: string): JQuery {
         let guid: string = this.getGUID()
         //let template: string = this.fieldTypes.templates[modelType].replace(/CATFISH_GUID/g, guid)
         let hiddenGUID = '<input type="hidden" name="Fields.Index" value="' + guid + '">'
         let template: string = hiddenGUID + this.fieldTypes.templates[modelType].replace(/CATFISH_GUID/g, guid)
-        return template
+        return $(template)
     }
 
     private bindElements() {
@@ -89,17 +92,7 @@ export class MetadataSetFields {
         this.listenForRemoveFieldButton()
         this.listenTemplateSelector()
     }
-
-    private listenForAddButton() {
-        this.addButton.click((e) => {
-            console.log(this.fieldTypes.fields[0].ModelType)
-            let template: string = this.getTemplate(this.fieldTypes.fields[0].Template)
-            let node: JQuery = this.fieldsContainer.append(template)
-            this.bindElements()           
-            node.find(".model-type").val(this.fieldTypes.fields[0].ModelType)
-        })
-    }
-
+    
     private getTemplateType(modelType: string): string {
         for (let field of this.fieldTypes.fields) {
             if (field.ModelType == modelType) {
@@ -107,22 +100,37 @@ export class MetadataSetFields {
             } 
         }
     }
-
+    
     private setTemplate(target: JQuery) {
         let selectedType: string = target.val()
-        let template: string = this.getTemplate(this.getTemplateType(selectedType))
-        let newField: JQuery = $(template)
-        target.closest(".field-entry").replaceWith(newField)
+        let template: JQuery = this.getTemplate(this.getTemplateType(selectedType))
+        target.closest(".field-entry").replaceWith(template)
+        template.find(".metadataset-id").attr("value", this.metadataSetId)
         this.bindElements()
-        newField.find(".template-selector").val(selectedType)
-        newField.find(".model-type").val(selectedType)
+        template.find(".template-selector").val(selectedType)
+        template.find(".model-type").val(selectedType)
+    }
+
+    private listenForAddButton() {
+        this.addButton.click((e) => {
+            // add new guid
+            let template: JQuery = this.getTemplate(this.fieldTypes.fields[0].Template)
+            this.fieldsContainer.append(template)
+            template.find(".metadataset-id").attr("value", this.metadataSetId)
+            this.bindElements()
+            template.find(".model-type").val(this.fieldTypes.fields[0].ModelType)
+        })
     }
 
     private listenTemplateSelector() {
 
         let templateSelectors: JQuery = $(".template-selector")
         templateSelectors.change((e) => {
+            console.log($(e.target).closest(".field-entry").prev())
+            $(e.target).closest(".field-entry").prev().remove()
+            // save values
             this.setTemplate($(e.target))
+            // restore values
         })
     }
 

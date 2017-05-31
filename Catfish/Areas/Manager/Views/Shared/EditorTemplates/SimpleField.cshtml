@@ -3,7 +3,10 @@
 <div class="box field-entry">
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.HiddenFor(model => model.Id)
-    @Html.HiddenFor(model => model.MetadataSetId)
+    @Html.HiddenFor(model => model.MetadataSetId, new Dictionary<string, object>()
+    {
+        {"class", "metadataset-id" }
+    })
     @Html.Hidden("ModelType", Model.GetType().FullName, new Dictionary<string, object>()
     {
        {"class", "model-type"}
