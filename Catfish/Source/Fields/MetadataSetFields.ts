@@ -78,6 +78,7 @@ export class MetadataSetFields {
 
     private getTemplate(modelType: string): string {
         let guid: string = this.getGUID()
+        //let template: string = this.fieldTypes.templates[modelType].replace(/CATFISH_GUID/g, guid)
         let hiddenGUID = '<input type="hidden" name="Fields.Index" value="' + guid + '">'
         let template: string = hiddenGUID + this.fieldTypes.templates[modelType].replace(/CATFISH_GUID/g, guid)
         return template
@@ -91,10 +92,11 @@ export class MetadataSetFields {
 
     private listenForAddButton() {
         this.addButton.click((e) => {
-            console.log(this.fieldTypes.fields[0].Template)
+            console.log(this.fieldTypes.fields[0].ModelType)
             let template: string = this.getTemplate(this.fieldTypes.fields[0].Template)
-            this.fieldsContainer.append(template)
+            let node: JQuery = this.fieldsContainer.append(template)
             this.bindElements()           
+            node.find(".model-type").val(this.fieldTypes.fields[0].ModelType)
         })
     }
 
@@ -114,7 +116,6 @@ export class MetadataSetFields {
         this.bindElements()
         newField.find(".template-selector").val(selectedType)
         newField.find(".model-type").val(selectedType)
-
     }
 
     private listenTemplateSelector() {

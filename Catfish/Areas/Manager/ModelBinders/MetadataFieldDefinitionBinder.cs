@@ -1,4 +1,5 @@
 ﻿
+using Catfish.Core.Models.Metadata;
 using System;
 using System.Web.Mvc;
 
@@ -12,7 +13,7 @@ namespace Catfish.Areas.Manager.ModelBinders
             {
                 var key = bindingContext.ModelName + ".ModelType";
                 var typeStr = bindingContext.ValueProvider.GetValue(key).AttemptedValue;
-                var type = Type.GetType(typeStr);
+                var type = typeof(SimpleField).Assembly.GetType(typeStr);
                 object obj = Activator.CreateInstance(type);
                 return obj;
             }

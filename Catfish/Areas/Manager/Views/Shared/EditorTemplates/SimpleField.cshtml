@@ -1,12 +1,15 @@
 ﻿@model Catfish.Core.Models.Metadata.SimpleField
 
-@Html.ValidationSummary(true, "", new { @class = "text-danger" })
-@Html.HiddenFor(model => model.Id)
-@Html.HiddenFor(model => model.MetadataSetId)
-@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName)
-
 <div class="box field-entry">
-    <input class="model-type" type="hidden" value="@Model.GetType()" />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.MetadataSetId)
+    @Html.Hidden("ModelType", Model.GetType().FullName, new Dictionary<string, object>()
+    {
+       {"class", "model-type"}
+    })
+
+
     <div class="title"><select class="template-selector"></select><button class="remove-field" type="button">X</button></div>
     <div class="inner">
         <ul class="form">
