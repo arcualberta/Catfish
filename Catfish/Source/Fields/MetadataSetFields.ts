@@ -12,99 +12,49 @@ interface FieldDefinition {
 }
 
 interface FieldTypes {
-    templates: Templates
+    templates: any // Templates interfaces do not allow dots in key names
     fields: FieldDefinition[]
 }
+
+declare var fieldTypes: any;
 
 export class MetadataSetFields {
 
     private fieldTypes: FieldTypes
-    private fieldTypesUrl: string
     private addButton: JQuery
     private removeFieldButtons: JQuery
     private fieldsContainer: JQuery
-    private templateSelectors: JQuery
+    //private templateSelectors: JQuery
     private fieldEntryTemplate: string
-
-    // XXX Move html templates to external file
-    //Fields_0__
-    //Fields[0]
-    private singleTemplate: string = `
-    <div class="field-entry">
-    <ul class="form">
-        <li>
-            <label class="control-label col-md-2" for="Fields_0__Name"> Name </label>
-            <div class="input">
-                <input class="form-control text-box single-line" data-val="true" data-val-required="The Name field is required." id= "Fields_0__Name" name= "Fields[0].Name" type= "text" value= "">
-                <span class="field-validation-valid text-danger" data-valmsg-for="Fields[0].Name" data-valmsg-replace="true" > </span>
-            </div>
-        </li>
-        <li>
-            <label class="control-label col-md-2" for="Fields_0__Description"> Description </label>
-            <div class="input">
-                <textarea class="form-control text-box multi-line" id="Fields_0__Description" name= "Fields[0].Description" ></textarea>
-                <span class="field-validation-valid text-danger" data-valmsg-for="Fields[0].Description" data-valmsg - replace="true"> </span>
-            </div>
-        </li>
-    </ul>
-    </div>
-    `
-
-    private multipleTemplate: string = `
-    <div class="field-entry">
-    <ul class="form">
-        <li>
-            <label class="control-label col-md-2" for="Fields_0__Name"> Name </label>
-            <div class="input">
-                <input class="form-control text-box single-line" data-val="true" data-val-required="The Name field is required." id= "Fields_0__Name" name= "Fields[0].Name" type= "text" value= "" >
-                <span class="field-validation-valid text-danger" data-valmsg-for="Fields[0].Name" data-valmsg-replace="true" > </span>
-            </div>
-        </li>
-        <li>
-            <label class="control-label col-md-2" for="Fields_0__Description"> Description </label>
-            <div class="input">
-                <textarea class="form-control text-box multi-line" id="Fields_0__Description" name= "Fields[0].Description" ></textarea>
-                <span class="field-validation-valid text-danger" data-valmsg-for="Fields[0].Description" data-valmsg-replace="true"> </span>
-            </div>
-        </li>
-        <li>
-            <label class="control-label col-md-2" for="Fields_0__Options"> Options </label>
-            <div class="input">
-                <textarea class="form-control text-box multi-line" id= "Fields_0__Options" name= "Fields[0].Options"></textarea>
-                <span class="field-validation-valid text-danger" data-valmsg-for="Fields[0].Options" data-valmsg-replace="true"> </span>
-            </div>
-        </li>
-    </ul>
-    </div>
-    `
 
     constructor() {
         this.initializeFieldTypes()
-        this.fieldTypesUrl = "/manager/metadata/fieldTypes"
-        this.fetchFieldTypes()
+        this.populateSelect()
         this.addButton = $("#add-field")
         this.removeFieldButtons = $(".remove-field")
         this.fieldsContainer = $("#fields-container")
         this.listenForAddButton()
+        this.setSelectOptionFromHidden()
+        this.listenTemplateSelector()
+        this.listenForRemoveFieldButton()
     }
 
     private initializeFieldTypes() {
-        this.fieldTypes = <FieldTypes>{}
-        //let test: any = require("text/Templates/Input/single.html")
-        //console.log(test)
-        this.fieldTypes.templates = {
-            single: this.singleTemplate,
-            multiple: this.multipleTemplate
-        }
+        // window.fieldTypes is provided by back end
+        this.fieldTypes = fieldTypes
     }
 
-    private fetchFieldTypes() {
-        $.getJSON(this.fieldTypesUrl, "",
-            (data) => {
-                this.fieldTypes.fields = data as FieldDefinition[]
-                this.buildFieldEntryTemplate()
-            }
-        )
+    private populateSelect() {
+        let templateSelectors: JQuery = $(".template-selector")
+
+        templateSelectors.each((index, templateSelector) => {
+            if ($(templateSelector).children("option").length == 0) {
+                for (let field of this.fieldTypes.fields) {
+                    let option: string = "<option value='"+field.ModelType+"'>" + field.Label + "</option>"
+                    $(templateSelector).append(option)
+                }
+            } 
+        })
     }
 
     private getGUID() {
@@ -114,65 +64,63 @@ export class MetadataSetFields {
                 .substring(1);
         }
 
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
+        return s4() + s4() + '_' + s4() + '_' + s4() + '_' +
+            s4() + '_' + s4() + s4() + s4();
     }
 
-    /*
-    function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-    }
-    */
-
-    private selectTemplate(templateType: string): string {
-        if (templateType == "Catfish.Core.Models.Metadata.OptionsField") {
-            return this.fieldTypes.templates.multiple
-        }
-        // "Catfish.Core.Models.Metadata.SimpleField"
-        return this.fieldTypes.templates.single      
-    }
-
-    private buildFieldEntryTemplate() {
-        // Remove template text from code
-        this.fieldEntryTemplate = '<div class="field-entry-container"><select class="template-selector">'
-      
-        for (let field of this.fieldTypes.fields) {
-            this.fieldEntryTemplate += "<option value ='" + field.Template + "'>"
-            this.fieldEntryTemplate += field.Label + "</option>"
-        }
-
-        this.fieldEntryTemplate += `
-            </select>
-            <button type="button" class='remove-field'>X</button>
-            <div class="field-area">
-            <div>
-        </div>
-    `}
-
-    private listenForAddButton() {
-        this.addButton.click((e) => {
-            this.fieldsContainer.append(this.fieldEntryTemplate)
-            this.listenForRemoveFieldButton()
-            this.listenTemplateSelector()
-            this.setNameIds()
+    private setSelectOptionFromHidden() {
+        let fields: JQuery = $(".field-entry")
+        fields.each((index, element) => {
+            let value: string = $(element).children(".model-type").val()
+            $(element).find(".template-selector").val(value)
         })
     }
 
+    private getTemplate(modelType: string): string {
+        let guid: string = this.getGUID()
+        let hiddenGUID = '<input type="hidden" name="Fields.Index" value="' + guid + '">'
+        let template: string = hiddenGUID + this.fieldTypes.templates[modelType].replace(/CATFISH_GUID/g, guid)
+        return template
+    }
+
+    private bindElements() {
+        this.populateSelect()
+        this.listenForRemoveFieldButton()
+        this.listenTemplateSelector()
+    }
+
+    private listenForAddButton() {
+        this.addButton.click((e) => {
+            console.log(this.fieldTypes.fields[0].Template)
+            let template: string = this.getTemplate(this.fieldTypes.fields[0].Template)
+            this.fieldsContainer.append(template)
+            this.bindElements()           
+        })
+    }
+
+    private getTemplateType(modelType: string): string {
+        for (let field of this.fieldTypes.fields) {
+            if (field.ModelType == modelType) {
+                return field.Template
+            } 
+        }
+    }
+
     private setTemplate(target: JQuery) {
-        let template: string = this.selectTemplate($(target).val())
-        $(target).siblings(".field-area").html(template)
+        let selectedType: string = target.val()
+        let template: string = this.getTemplate(this.getTemplateType(selectedType))
+        let newField: JQuery = $(template)
+        target.closest(".field-entry").replaceWith(newField)
+        this.bindElements()
+        newField.find(".template-selector").val(selectedType)
+        newField.find(".model-type").val(selectedType)
+
     }
 
     private listenTemplateSelector() {
-        this.templateSelectors = $(".template-selector")
-        this.setTemplate(this.templateSelectors.last())
-        this.templateSelectors.change((e) => {
+
+        let templateSelectors: JQuery = $(".template-selector")
+        templateSelectors.change((e) => {
             this.setTemplate($(e.target))
         })
     }
@@ -180,13 +128,9 @@ export class MetadataSetFields {
     private listenForRemoveFieldButton() {
         this.removeFieldButtons = $(".remove-field")
         this.removeFieldButtons.click((e) => {
-            e.target.closest(".field-entry-container").remove()
-            this.setNameIds()
+            e.target.closest(".field-entry").remove()
         })
     }
 
-    private setNameIds() {
-      
-        console.log(this.fieldsContainer.children())
-    }
+
 }

@@ -5,8 +5,10 @@
 @Html.HiddenFor(model => model.MetadataSetId)
 @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName)
 
-<div class="box">
+<div class="box field-entry">
     <div class="title"><h2>@Model.GetType()</h2></div>
+    <input class="model-type" type="hidden" value="@Model.GetType()" />
+    <div class="title"><select class="template-selector"></select><button class="remove-field" type="button">X</button></div>
     <div class="inner">
         <ul class="form">
             <li>
