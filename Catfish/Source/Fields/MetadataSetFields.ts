@@ -28,6 +28,9 @@ export class MetadataSetFields {
     private fieldsContainer: JQuery
     //private templateSelectors: JQuery
     private fieldEntryTemplate: string
+    private previousName: string
+    private previousDescription: string
+    private previousOptions: string
 
     constructor() {
         this.initializeFieldTypes()
@@ -60,6 +63,7 @@ export class MetadataSetFields {
         })
     }
 
+    // from https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
     private getGUID() {
         function s4(): string {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -100,13 +104,38 @@ export class MetadataSetFields {
             } 
         }
     }
-    
+
+    private savePrevioustValues(source: JQuery) {
+
+        let options: JQuery = source.find(".field-options")
+        this.previousName = source.find(".field-name").first().val()
+        this.previousDescription = source.find(".field-description").first().val()
+        if (options.length > 0) {
+            this.previousOptions = options.first().val()
+        }
+            
+    }
+
+    private restorePreviousValues(template: JQuery) {
+        let options: JQuery = template.find(".field-options")
+
+        template.find(".field-name").first().val(this.previousName)
+        template.find(".field-description").first().val(this.previousDescription)
+        if (options.length > 0) {
+            template.find(".field-options").first().val(this.previousOptions)
+        }
+        
+    }
+
     private setTemplate(target: JQuery) {
         let selectedType: string = target.val()
         let template: JQuery = this.getTemplate(this.getTemplateType(selectedType))
-        target.closest(".field-entry").replaceWith(template)
+        let closest: JQuery = target.closest(".field-entry")
+        this.savePrevioustValues(closest)
+        closest.replaceWith(template)
         template.find(".metadataset-id").attr("value", this.metadataSetId)
         this.bindElements()
+        this.restorePreviousValues(template)
         template.find(".template-selector").val(selectedType)
         template.find(".model-type").val(selectedType)
     }
@@ -122,14 +151,14 @@ export class MetadataSetFields {
         })
     }
 
+
+
     private listenTemplateSelector() {
 
         let templateSelectors: JQuery = $(".template-selector")
         templateSelectors.change((e) => {
             $(e.target).closest(".field-entry").prev().remove()
-            // save values
             this.setTemplate($(e.target))
-            // restore values
         })
     }
 
