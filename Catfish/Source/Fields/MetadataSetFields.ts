@@ -42,6 +42,10 @@ export class MetadataSetFields {
         this.setSelectOptionFromHidden()
         this.listenTemplateSelector()
         this.listenForRemoveFieldButton()
+
+        if (this.fieldsContainer.children().length == 0) {
+            this.addField()
+        }
     }
 
     private initializeFieldTypes() {
@@ -142,19 +146,21 @@ export class MetadataSetFields {
 
     private listenForAddButton() {
         this.addButton.click((e) => {
-            // add new guid
-            let template: JQuery = this.getTemplate(this.fieldTypes.fields[0].Template)
-            this.fieldsContainer.append(template)
-            template.find(".metadataset-id").attr("value", this.metadataSetId)
-            this.bindElements()
-            template.find(".model-type").val(this.fieldTypes.fields[0].ModelType)
+            this.addField()
         })
+    }
+
+    private addField() {
+        let template: JQuery = this.getTemplate(this.fieldTypes.fields[0].Template)
+        this.fieldsContainer.append(template)
+        template.find(".metadataset-id").attr("value", this.metadataSetId)
+        this.bindElements()
+        template.find(".model-type").val(this.fieldTypes.fields[0].ModelType)
     }
 
 
 
     private listenTemplateSelector() {
-
         let templateSelectors: JQuery = $(".template-selector")
         templateSelectors.change((e) => {
             $(e.target).closest(".field-entry").prev().remove()
