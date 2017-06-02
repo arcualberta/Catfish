@@ -126,7 +126,6 @@ export class MetadataSetFields {
 
         let templateSelectors: JQuery = $(".template-selector")
         templateSelectors.change((e) => {
-            console.log($(e.target).closest(".field-entry").prev())
             $(e.target).closest(".field-entry").prev().remove()
             // save values
             this.setTemplate($(e.target))
