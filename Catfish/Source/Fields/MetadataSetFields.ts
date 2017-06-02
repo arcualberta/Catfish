@@ -26,7 +26,6 @@ export class MetadataSetFields {
     private addButton: JQuery
     private removeFieldButtons: JQuery
     private fieldsContainer: JQuery
-    //private templateSelectors: JQuery
     private fieldEntryTemplate: string
     private previousName: string
     private previousDescription: string
@@ -49,7 +48,7 @@ export class MetadataSetFields {
     }
 
     private initializeFieldTypes() {
-        // window.fieldTypes is provided by back end
+        // window.fieldTypes and window.metadataSetId are provided by back end
         this.fieldTypes = fieldTypes
         this.metadataSetId = metadataSetId
     }
@@ -89,7 +88,6 @@ export class MetadataSetFields {
 
     private getTemplate(modelType: string): JQuery {
         let guid: string = this.getGUID()
-        //let template: string = this.fieldTypes.templates[modelType].replace(/CATFISH_GUID/g, guid)
         let hiddenGUID = '<input type="hidden" name="Fields.Index" value="' + guid + '">'
         let template: string = hiddenGUID + this.fieldTypes.templates[modelType].replace(/CATFISH_GUID/g, guid)
         return $(template)
