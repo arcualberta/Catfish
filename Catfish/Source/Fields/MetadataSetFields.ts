@@ -23,15 +23,7 @@ export class MetadataSetFields {
     private removeFieldButtons: JQuery
     private fieldsContainer: JQuery
 
-    private fieldEntryTemplate: string = `
-        <div class="field-container">
-            <select></select>
-            <button>X</button>
-            <div class="field-area">
-            <div>
-        </div>
-
-    `
+    private fieldEntryTemplate: string
 
     private data: string = `
     {
@@ -65,6 +57,7 @@ export class MetadataSetFields {
                 "label": "Check box",
                 "template": "single"
             },
+
             {
                 "type": "Catfish.Core.Models.Metadata.TextField",
                 "label": "Check box",
@@ -74,13 +67,13 @@ export class MetadataSetFields {
     }`
 
     constructor() {
+        this.buildFieldEntryTemplate()
         this.fieldTypesUrl = "/manager/metadata/fieldTypes"
         this.fetchFieldTypes()
         this.addButton = $("#add-field")
         this.removeFieldButtons = $(".remove-field")
         this.fieldsContainer = $("#fields-container")
         this.listenForAddButton()
-        console.log(this.fieldTypes)
     }
 
     private fetchFieldTypes() {
@@ -90,40 +83,35 @@ export class MetadataSetFields {
         //        this.fieldTypes = data as FieldTypes
         //    }
         //)
-
+        
         this.fieldTypes = JSON.parse(this.data) as FieldTypes
 
     }
 
+    private buildFieldEntryTemplate() {
+        this.fieldEntryTemplate = '<div class="field-container"><select>'
+           
+
+        this.fieldEntryTemplate += `
+            </select>
+            <button type="button" class='remove-field'>X</button>
+            <div class="field-area">
+            <div>
+        </div>
+    `}
+
     private listenForAddButton() {
         this.addButton.click((e) => {
-            console.log(e)
-            this.fieldsContainer.append("<div>added</div>")
+            this.fieldsContainer.append(this.fieldEntryTemplate)
+            this.listenForRemoveFieldButton()
         })
     }
 
     private listenForRemoveFieldButton() {
-        this.removeFieldButtons = $(".removeField")
+        this.removeFieldButtons = $(".remove-field")
         this.removeFieldButtons.click((e) => {
-            console.log("removing " + e)
+            e.target.parentElement.remove()
+            console.log(e)
         })
     }
 }
-
-//private fetchFieldTypes() {
-//    $.getJSON("/manager/metadata/fieldTypes", "",
-//        (data) => {
-//            // Should DisplayType for input be fixed on back end ?
-//            //for (let type: MetadataFieldType in data) {
-//            let fieldTypes: Array<MetadataFieldType> = data as Array<MetadataFieldType>;
-//            for (let type of fieldTypes) {
-//                for (let property of type.Properties) {
-//                    if (property.DisplayType == "") {
-//                        property.DisplayType = "Line"
-//                    }
-//                }
-//            }
-//            this.fieldTypes = ko.observableArray(fieldTypes);
-//        }
-//    );
-//}
