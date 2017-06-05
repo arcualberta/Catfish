@@ -1,4 +1,5 @@
 ﻿
+using Catfish.Core.Models.Metadata;
 using System;
 using System.Web.Mvc;
 
