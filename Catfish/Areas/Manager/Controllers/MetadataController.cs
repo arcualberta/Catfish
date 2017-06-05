@@ -74,52 +74,17 @@ namespace Catfish.Areas.Manager.Controllers
             if (id.HasValue)
                 model = MetadataService.GetMetadataSet(id.Value);
             else
-            {
                 model = new MetadataSet();
-                model.Name = "Sample Form";
-                model.Description = "Sample form description";
-
-                model.Fields.Add(new TextField()
-                {
-                    Name = "Text Field 1",
-                    Description = "Text filed 1 description"
-                });
-
-                model.Fields.Add(new TextArea()
-                {
-                    Name = "Text Area 1",
-                    Description = "Text area 1 description"
-                });
-
-                model.Fields.Add(new RadioButtonSet()
-                {
-                    Name = "Radio Button Set 1",
-                    Description = "Radio button set 1 description",
-                    Options = "radio-option 1\nradio-option 2\nradio-option 3"
-                });
-
-                model.Fields.Add(new CheckBoxSet()
-                {
-                    Name = "Check Box Set 1",
-                    Description = "Check box set 1 description",
-                    Options = "check 1\ncheck 2\ncheck 3"
-                });
-
-                model.Fields.Add(new DropDownMenu()
-                {
-                    Name = "Drop Down Menu 1",
-                    Description = "Drop down menu 1 description",
-                    Options = "menu 1\nmenu 2\nmenu 3"
-                });
-            }
 
             var fieldTypes = this.MetadataService.GetMetadataFieldTypes();
             var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToList();
             ViewBag.FieldTypes = new JavaScriptSerializer().Serialize(fieldTypeViewModels);
+
             return View(model);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(MetadataSet model)
         {
 

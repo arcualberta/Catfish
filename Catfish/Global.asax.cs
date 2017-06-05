@@ -29,9 +29,19 @@ namespace Catfish
             //Adding menu items
             var menubar = Manager.Menu.Where(m => m.InternalId == "Content").FirstOrDefault();
             var idx = 0;
+
+            menubar.Items.Insert(idx++, new Manager.MenuItem()
+            {
+                Name = "Entity Types",
+                Action = "index",
+                Controller = "entitytypes",
+                Permission = "ADMIN_CONTENT"
+                //,SelectedActions = "productlist,productedit"
+            });
+
             menubar.Items.Insert(idx++, new Manager.MenuItem()
               {
-                  Name = "Metadata",
+                  Name = "Metadata Sets",
                   Action = "index",
                   Controller = "metadata",
                   Permission = "ADMIN_CONTENT"
