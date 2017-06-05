@@ -159,6 +159,10 @@
     <Content Include="Areas\Manager\Views\Shared\Partial\IndexToolbar.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\EditToolbar.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\ObjectList.cshtml" />
+    <Content Include="Areas\Manager\Views\Metadata\Details.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\Partial\DetailsToolbar.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\SimpleField.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\OptionsField.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -178,6 +182,7 @@
     <Compile Include="Areas\Manager\Controllers\EntityTypesController.cs" />
     <Compile Include="Areas\Manager\Controllers\MetadataController.cs" />
     <Compile Include="Areas\Manager\Helpers\HtmlHelperExtensions.cs" />
+    <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\Models\FieldDefinitionViewModel.cs" />
     <Compile Include="Areas\Manager\Models\FieldPropertyViewModel.cs" />

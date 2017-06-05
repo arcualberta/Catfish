@@ -22,6 +22,9 @@ namespace Catfish
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
+            //Metadata provider
+            ModelMetadataProviders.Current = new Catfish.Areas.Manager.Helpers.ModelMetadataProvider();
+
             //Custom model binders
             System.Web.Mvc.ModelBinders.Binders.Add(typeof(SimpleField), new MetadataFieldDefinitionBinder());
 

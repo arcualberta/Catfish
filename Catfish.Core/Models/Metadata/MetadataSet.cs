@@ -4,10 +4,12 @@ using Catfish.Core.Models.Attributes;
 
 namespace Catfish.Core.Models.Metadata
 {
+    [TypeLabel("Metadata Set")]
     public class MetadataSet
     {
         public int Id { get; set; }
 
+        [TypeLabel("String")]
         public string Name { get; set; }
 
         [Rank(2)]

@@ -68,6 +68,16 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpGet]
+        public ActionResult Details(int id)
+        {
+            MetadataSet model = MetadataService.GetMetadataSet(id);
+            if (model == null)
+                return HttpNotFound();
+
+            return View(model);
+        }
+
+        [HttpGet]
         public ActionResult Edit(int? id)
         {
             MetadataSet model;

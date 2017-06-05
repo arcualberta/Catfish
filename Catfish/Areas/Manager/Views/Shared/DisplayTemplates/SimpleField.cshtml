@@ -1,0 +1,23 @@
+﻿@model Catfish.Core.Models.Metadata.SimpleField
+@using Catfish.Areas.Manager.Helpers;
+
+<div class="box">
+    <div class="title"><h2>@Html.TypeLabelFor(m => m)</h2></div>
+    <div class="inner">
+        <ul class="form">
+            <li>
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="input">
+                    @Html.TypeLabelFor(model => model.Name)
+                </div>
+            </li>
+
+            <li>
+                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="input">
+                    @Html.TypeLabelFor(model => model.Description)
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
