@@ -8,12 +8,13 @@ using System.Web;
 using System.Web.Mvc;
 using Catfish.Core.Models;
 using Catfish.Core.Services;
+using Catfish.Core.Models.Metadata;
 
 namespace Catfish.Areas.Manager.Controllers
 {
     public class EntityTypesController : CatfishController
     {
-        private CatfishDbContext db = new CatfishDbContext();
+        //private CatfishDbContext db = new CatfishDbContext();
 
         // GET: Manager/EntityTypes
         public ActionResult Index()
@@ -27,10 +28,25 @@ namespace Catfish.Areas.Manager.Controllers
         {
             EntityType model = null;
             if (id.HasValue)
+            {
                 model = EntityService.GetEntityType(id.Value);
+                if (model.MetadataSets.Count > 1)
+                    model.MetadataSets.Remove(model.MetadataSets.Last());
+            }
             else
+            {
                 model = new EntityType();
-            
+
+                //TODO:Remove the following testing code
+                List<MetadataSet> metadata = MetadataService.GetMetadataSets().ToList();
+                int i = 0;
+                foreach (var s in metadata)
+                {
+                    model.MetadataSets.Add(s);
+                    if (++i >= 2)
+                        break;
+                }
+            }
             return View(model);
         }
 
@@ -45,13 +61,13 @@ namespace Catfish.Areas.Manager.Controllers
             {
                 if(entityType.Id > 0)
                 {
-                    db.Entry(entityType).State = EntityState.Modified;
+                    EntityService.UpdateEntityType(entityType);
                 }
                 else
                 {
-                    db.EntityTypes.Add(entityType);
+                    EntityService.CreateEntityType(entityType);
                 }
-                db.SaveChanges();
+                Db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(entityType);
@@ -87,7 +103,7 @@ namespace Catfish.Areas.Manager.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                Db.Dispose();
             }
             base.Dispose(disposing);
         }

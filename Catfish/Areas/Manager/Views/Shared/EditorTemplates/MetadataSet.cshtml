@@ -1,0 +1,8 @@
+﻿@model Catfish.Core.Models.Metadata.MetadataSet
+
+<div class="box">
+    <div class="inner">
+        @Html.HiddenFor(m => m.Id)
+        @Model.Id: @Html.Label(string.IsNullOrWhiteSpace(Model.Name) ? "Unnamed Metadata Set" : Model.Name)
+    </div> 
+</div>

@@ -86,9 +86,7 @@ namespace Catfish.Areas.Manager.Controllers
             else
                 model = new MetadataSet();
 
-            var fieldTypes = this.MetadataService.GetMetadataFieldTypes();
-            var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToList();
-            ViewBag.FieldTypes = new JavaScriptSerializer().Serialize(fieldTypeViewModels);
+            ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
 
             return View(model);
         }
@@ -113,6 +111,9 @@ namespace Catfish.Areas.Manager.Controllers
 
                 return RedirectToAction("Index");
             }
+
+            ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
+
             return View(model);
         }
 
@@ -199,6 +200,12 @@ namespace Catfish.Areas.Manager.Controllers
             return Json(fieldTypeViewModels, JsonRequestBehavior.AllowGet);
         }
 
+        private string GetSerializedMetadataFieldTypes()
+        {
+            var fieldTypes = this.MetadataService.GetMetadataFieldTypes();
+            var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToList();
+            return new JavaScriptSerializer().Serialize(fieldTypeViewModels);
+        }
 
     }
 }

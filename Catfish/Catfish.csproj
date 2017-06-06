@@ -163,6 +163,7 @@
     <Content Include="Areas\Manager\Views\Shared\Partial\DetailsToolbar.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\SimpleField.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\OptionsField.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataSet.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
