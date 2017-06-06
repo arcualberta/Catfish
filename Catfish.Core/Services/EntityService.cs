@@ -30,7 +30,15 @@ namespace Catfish.Core.Services
         }
         public void UpdateEntityType(EntityType entityType)
         {
-            Db.EntityTypes.Attach(entityType);
+            using (CatfishDbContext newCtx = new CatfishDbContext())
+            {
+                EntityType dbEntity = newCtx.EntityTypes.Where(e => e.Id == entityType.Id).FirstOrDefault();
+                var deletedMetaData = dbEntity.MetadataSets.Except(entityType.MetadataSets, new CustomComparer<MetadataSet>((x, y) => x.Id == y.Id)).ToList();
+                deletedMetaData.ForEach(md => dbEntity.MetadataSets.Remove(md));
+                newCtx.SaveChanges();
+            }
+
+            Db.Entry(entityType).State = System.Data.Entity.EntityState.Modified;
             foreach (var m in entityType.MetadataSets)
                 Db.MetadataSets.Attach(m);
         }

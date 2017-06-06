@@ -14,5 +14,25 @@ namespace Catfish.Core.Services
         {
             Db = db;
         }
+
+        public class CustomComparer<T> : IEqualityComparer<T>
+        {
+            private readonly Func<T, T, bool> mExpression;
+
+            public CustomComparer(Func<T, T, bool> lambda)
+            {
+                mExpression = lambda;
+            }
+
+            public bool Equals(T x, T y)
+            {
+                return mExpression(x, y);
+            }
+
+            public int GetHashCode(T obj)
+            {
+                return 0;
+            }
+        }
     }
 }
