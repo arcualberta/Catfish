@@ -8,7 +8,7 @@
     {
         {"class", "metadataset-id" }
     })
-    @Html.Hidden("ModelType", Model.GetType().FullName, new Dictionary<string, object>()
+    @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
     {
        {"class", "model-type"}
     })
