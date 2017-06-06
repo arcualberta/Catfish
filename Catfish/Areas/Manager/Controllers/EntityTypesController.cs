@@ -30,22 +30,22 @@ namespace Catfish.Areas.Manager.Controllers
             if (id.HasValue)
             {
                 model = EntityService.GetEntityType(id.Value);
-                if (model.MetadataSets.Count > 1)
-                    model.MetadataSets.Remove(model.MetadataSets.Last());
+                //if (model.MetadataSets.Count > 1)
+                //    model.MetadataSets.Remove(model.MetadataSets.Last());
             }
             else
             {
                 model = new EntityType();
 
-                //TODO:Remove the following testing code
-                List<MetadataSet> metadata = MetadataService.GetMetadataSets().ToList();
-                int i = 0;
-                foreach (var s in metadata)
-                {
-                    model.MetadataSets.Add(s);
-                    if (++i >= 2)
-                        break;
-                }
+                ////TODO:Remove the following testing code
+                //List<MetadataSet> metadata = MetadataService.GetMetadataSets().ToList();
+                //int i = 0;
+                //foreach (var s in metadata)
+                //{
+                //    model.MetadataSets.Add(s);
+                //    if (++i >= 2)
+                //        break;
+                //}
             }
             return View(model);
         }
