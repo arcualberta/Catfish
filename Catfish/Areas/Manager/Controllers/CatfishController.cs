@@ -16,5 +16,8 @@ namespace Catfish.Areas.Manager.Controllers
 
         private MetadataService mMetadataService;
         public MetadataService MetadataService { get { if (mMetadataService == null) mMetadataService = new MetadataService(Db); return mMetadataService; } }
+
+        private EntityService mEntityService;
+        public EntityService EntityService { get { if (mEntityService == null) mEntityService = new EntityService(Db); return mEntityService; } }
     }
 }

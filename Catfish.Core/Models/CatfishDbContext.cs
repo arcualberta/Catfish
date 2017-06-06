@@ -65,8 +65,10 @@ namespace Catfish.Core.Models
                 .WithMany(ms => ms.EntityTypes)
                 .Map(t =>
                 {
-                    t.MapLeftKey("MetadataSetId");
-                    t.MapRightKey("EntityTypesId");
+                    t.MapLeftKey("EntityTypesId");
+                    t.MapRightKey("MetadataSetId");
+                    //t.MapLeftKey("MetadataSetId");
+                    //t.MapRightKey("EntityTypesId");
                     t.ToTable("EntityTypeHasMetadataSets");
                 });
         }

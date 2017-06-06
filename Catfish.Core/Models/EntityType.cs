@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Attributes;
 
 namespace Catfish.Core.Models
 {
+    [TypeLabel("Entity Type")]
     public class EntityType
     {
         public int Id { get; set; }

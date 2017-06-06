@@ -1,0 +1,13 @@
+﻿.tabs {
+    float: left;
+    width: 100%;
+    overflow: hidden;
+    clear: both;
+    margin-right: 10px;
+    margin-bottom: 0px;
+    margin-top: 32px;
+}
+
+.inner p{
+    margin:0 0 10px 0;
+}

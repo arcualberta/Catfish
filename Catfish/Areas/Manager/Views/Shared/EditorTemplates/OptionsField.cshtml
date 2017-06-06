@@ -1,4 +1,5 @@
 ﻿@model Catfish.Core.Models.Metadata.OptionsField
+@using Catfish.Core.Models.Attributes
 
 
 <div class="box field-entry">
@@ -12,7 +13,10 @@
     {
        {"class", "model-type"}
     })
-
+    @{
+        TypeLabelAttribute att = Attribute.GetCustomAttribute(Model.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
+        string title = att == null ? Model.GetType().ToString() : att.Name;
+    }
     <div class="title contentright"><select class="template-selector"></select> <button class="remove-field" type="button">x</button></div>
     <div class="inner">
         <ul class="form">

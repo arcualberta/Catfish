@@ -1,0 +1,24 @@
+﻿<div class="grid_12">
+    <table class="list">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var m in Model)
+            {
+                <tr>
+                    <td>@m.Name</td>
+                    <td>@m.Description</td>
+                    <td>
+                        <a href="@Url.Action("details", new { @id = m.Id })">Details</a> | 
+                        <a href="@Url.Action("edit", new { @id = m.Id })">Edit</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

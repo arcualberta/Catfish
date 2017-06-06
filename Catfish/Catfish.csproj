@@ -137,6 +137,7 @@
     <Content Include="App_Data\Content\index.html" />
     <Content Include="App_Data\Uploads\index.html" />
     <Content Include="Areas\Manager\Content\Css\Editor.css" />
+    <Content Include="Areas\Manager\Content\Css\style.css" />
     <Content Include="Areas\Manager\Views\Extensions\index.html" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
@@ -153,7 +154,16 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\OptionsField.cshtml" />
     <Content Include="Areas\Manager\Views\Metadata\EditTest.cshtml" />
     <Content Include="package.json" />
-    <Content Include="Areas\Manager\Views\Metadata\Edit - Copy.cshtml" />
+    <Content Include="Areas\Manager\Views\EntityTypes\Edit.cshtml" />
+    <Content Include="Areas\Manager\Views\EntityTypes\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\Partial\IndexToolbar.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\Partial\EditToolbar.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\Partial\ObjectList.cshtml" />
+    <Content Include="Areas\Manager\Views\Metadata\Details.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\Partial\DetailsToolbar.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\SimpleField.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\OptionsField.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataSet.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -170,8 +180,10 @@
     <Compile Include="App_Start\RouteConfig.PiranhaCMS.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Manager\Controllers\CatfishController.cs" />
+    <Compile Include="Areas\Manager\Controllers\EntityTypesController.cs" />
     <Compile Include="Areas\Manager\Controllers\MetadataController.cs" />
     <Compile Include="Areas\Manager\Helpers\HtmlHelperExtensions.cs" />
+    <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\Models\FieldDefinitionViewModel.cs" />
     <Compile Include="Areas\Manager\Models\FieldPropertyViewModel.cs" />

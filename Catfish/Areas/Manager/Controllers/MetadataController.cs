@@ -31,6 +31,16 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpGet]
+        public ActionResult Details(int id)
+        {
+            MetadataSet model = MetadataService.GetMetadataSet(id);
+            if (model == null)
+                return HttpNotFound();
+
+            return View(model);
+        }
+
+        [HttpGet]
         public ActionResult Edit(int? id)
         {
             MetadataSet model;
@@ -38,15 +48,14 @@ namespace Catfish.Areas.Manager.Controllers
                 model = MetadataService.GetMetadataSet(id.Value);
             else
                 model = new MetadataSet();
-            
 
-            var fieldTypes = this.MetadataService.GetMetadataFieldTypes();
-            var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToList();
-            ViewBag.FieldTypes = new JavaScriptSerializer().Serialize(fieldTypeViewModels);
+            ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
+
             return View(model);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(MetadataSet model)
         {
 
@@ -55,8 +64,8 @@ namespace Catfish.Areas.Manager.Controllers
                 if (model.Id > 0)
                 {
                     Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
-                    foreach (var f in model.Fields)
-                        Db.Entry(f).State = System.Data.Entity.EntityState.Modified;
+                    foreach (var field in model.Fields)
+                        Db.Entry(field).State = System.Data.Entity.EntityState.Modified;
                 }
                 else
                     Db.MetadataSets.Add(model);
@@ -65,6 +74,9 @@ namespace Catfish.Areas.Manager.Controllers
 
                 return RedirectToAction("Index");
             }
+
+            ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
+
             return View(model);
         }
 
@@ -151,6 +163,12 @@ namespace Catfish.Areas.Manager.Controllers
             return Json(fieldTypeViewModels, JsonRequestBehavior.AllowGet);
         }
 
+        private string GetSerializedMetadataFieldTypes()
+        {
+            var fieldTypes = this.MetadataService.GetMetadataFieldTypes();
+            var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToList();
+            return new JavaScriptSerializer().Serialize(fieldTypeViewModels);
+        }
 
     }
 }

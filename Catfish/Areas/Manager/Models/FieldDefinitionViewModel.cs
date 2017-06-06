@@ -20,7 +20,7 @@ namespace Catfish.Areas.Manager.Models
 
         public FieldDefinitionViewModel(Type fieldType)
         {
-            ModelType = fieldType.ToString();
+            ModelType = fieldType.AssemblyQualifiedName.ToString();
 
             //Properties = new List<FieldPropertyViewModel>();
             //IEnumerable<PropertyInfo> properties = filedType.GetProperties()

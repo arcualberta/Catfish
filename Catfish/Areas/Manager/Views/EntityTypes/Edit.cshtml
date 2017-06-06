@@ -1,0 +1,40 @@
+﻿@model Catfish.Core.Models.EntityType
+@using Catfish.Core.Models.Attributes
+
+@{  ViewBag.Title = Model.Id > 0 ? "Edit Entity Type" : "Create Entity Type"; }
+
+@section Toolbar {
+    @Html.Partial("Partial/EditToolbar")
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="grid_12">
+        <div class="box">
+            @{ 
+                TypeLabelAttribute att = Attribute.GetCustomAttribute(Model.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
+                string title = att == null ? Model.GetType().ToString() : att.Name;
+             }
+            <div class="title"><h2>@title</h2></div>
+            <div class="inner">
+                <ul class="form">
+                    <li>
+                        @Html.LabelFor(m => m.Name)
+                        <div class="input">@Html.EditorFor(m => m.Name)</div>
+                    </li>
+                    <li>
+                        @Html.LabelFor(m => m.Description)
+                        <div class="input">@Html.EditorFor(m => m.Description)</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="fields-container">
+            @Html.EditorFor(m => m.MetadataSets)
+        </div>
+
+    </div>
+
+}

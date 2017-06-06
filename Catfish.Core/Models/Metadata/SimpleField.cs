@@ -16,10 +16,12 @@ namespace Catfish.Core.Models.Metadata
 
         [Rank(1)]
         [Required]
+        [TypeLabel("String")]
         public string Name { get; set; }
 
         [Rank(2)]
         [DataType(DataType.MultilineText)]
+        [TypeLabel("String")]
         public string Description { get; set; }
 
         public bool IsRequired { get; set; }
