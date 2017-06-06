@@ -25,6 +25,8 @@
                 },
                 fields: @Html.Raw(ViewBag.FieldTypes)
             }
+
+        var metadataSetId = "@Html.Raw(Model.Id)"
 </script>
 }
 @model Catfish.Core.Models.Metadata.MetadataSet
@@ -64,7 +66,9 @@
 </div>
 @{ Html.EndForm(); }
 
-<button id="add-field">Add</button>
+<div class="grid_12 contentright">
+    <button id="add-field">Add field</button>
+</div>
 
 <script>
     require(["/Built/Forms/MetadataSetForm.js"]);

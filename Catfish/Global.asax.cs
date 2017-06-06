@@ -27,7 +27,7 @@ namespace Catfish
 
             //Custom model binders
             System.Web.Mvc.ModelBinders.Binders.Add(typeof(SimpleField), new MetadataFieldDefinitionBinder());
-
+            System.Web.Mvc.ModelBinders.Binders.Add(typeof(OptionsField), new MetadataFieldDefinitionBinder());
 
             //Adding menu items
             var menubar = Manager.Menu.Where(m => m.InternalId == "Content").FirstOrDefault();
