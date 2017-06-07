@@ -72,6 +72,10 @@
     <Compile Include="Migrations\201706060551401_SwappedKeysInEntityTypeHasMetadataSetsTable.Designer.cs">
       <DependentUpon>201706060551401_SwappedKeysInEntityTypeHasMetadataSetsTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706070439102_RemovedFieldValueModel.cs" />
+    <Compile Include="Migrations\201706070439102_RemovedFieldValueModel.Designer.cs">
+      <DependentUpon>201706070439102_RemovedFieldValueModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Aggregation.cs" />
     <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
@@ -117,6 +121,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706060551401_SwappedKeysInEntityTypeHasMetadataSetsTable.resx">
       <DependentUpon>201706060551401_SwappedKeysInEntityTypeHasMetadataSetsTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706070439102_RemovedFieldValueModel.resx">
+      <DependentUpon>201706070439102_RemovedFieldValueModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
