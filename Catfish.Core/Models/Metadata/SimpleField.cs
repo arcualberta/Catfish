@@ -10,8 +10,16 @@ using System.Xml.Serialization;
 
 namespace Catfish.Core.Models.Metadata
 {
+    [XmlInclude(typeof(CheckBoxSet))]
+    [XmlInclude(typeof(DateField))]
+    [XmlInclude(typeof(DropDownMenu))]
+    [XmlInclude(typeof(OptionsField))]
+    [XmlInclude(typeof(RadioButtonSet))]
+    [XmlInclude(typeof(TextArea))]
+    [XmlInclude(typeof(TextField))]
     public class SimpleField
     {
+        [XmlIgnore]
         [HiddenInput(DisplayValue = false)]
         public int Id { get; set; }
 
@@ -34,8 +42,8 @@ namespace Catfish.Core.Models.Metadata
         [HiddenInput(DisplayValue = false)]
         public int MetadataSetId { get; set; }
 
-        [XmlIgnore]
-        [Ignore]
-        public MetadataSet MetadataSet { get; set; }
+        ////[XmlIgnore]
+        ////[Ignore]
+        ////public MetadataSet MetadataSet { get; set; }
     }
 }

@@ -37,7 +37,7 @@ namespace Catfish.Areas.Manager.Controllers
             if (model == null)
                 return HttpNotFound();
 
-            return View(model);
+            return View(model.Definition);
         }
 
         [HttpGet]
@@ -50,38 +50,40 @@ namespace Catfish.Areas.Manager.Controllers
                 model = new MetadataSet();
 
             ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
-            ViewBag.Id = id;
-            return View(model);
+            return View(model.Definition);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(MetadataSet model)
+        public ActionResult Edit(MetadataDefinition model)
         {
 
             if(ModelState.IsValid)
             {
-                if (model.Id > 0)
-                {
-                    Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
-                    foreach (var field in model.Fields)
-                    {
-                        if (field.Id > 0)
-                            Db.Entry(field).State = System.Data.Entity.EntityState.Modified;
-                        else
-                            Db.MetadataFields.Add(field);
-                    }
-                }
-                else
-                    Db.MetadataSets.Add(model);
-
+                MetadataSet ms = MetadataService.UpdateMetadataSet(model);
+                if (ms == null)
+                    return HttpNotFound();
+                ////if (id > 0)
+                ////{
+                ////    Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
+                ////    foreach (var field in model.Fields)
+                ////    {
+                ////        if (field.Id > 0)
+                ////            Db.Entry(field).State = System.Data.Entity.EntityState.Modified;
+                ////        else
+                ////            Db.MetadataFields.Add(field);
+                ////    }
+                ////}
+                ////else
+                ////{
+                ////    Db.MetadataSets.Add(model);
+                ////}
                 Db.SaveChanges();
 
                 return RedirectToAction("Index");
             }
 
             ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
-
             return View(model);
         }
 

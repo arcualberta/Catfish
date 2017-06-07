@@ -26,11 +26,11 @@
                 fields: @Html.Raw(ViewBag.FieldTypes)
             }
 
-        var metadataSetId = "@Html.Raw(Model.Id)"
+        var metadataSetId = "@Html.Raw(ViewBag.Id)"
 </script>
 }
-@model Catfish.Core.Models.Metadata.MetadataSet
-@{  ViewBag.Title = Model.Id > 0 ? "Edit Metadata Set" : "Create Metadata Set"; }
+@model Catfish.Core.Models.Metadata.MetadataDefinition
+@{  ViewBag.Title = ViewBag.Id > 0 ? "Edit Metadata Definition" : "Create Metadata Definition"; }
 
 @section Toolbar {
     @Html.Partial("Partial/EditToolbar")

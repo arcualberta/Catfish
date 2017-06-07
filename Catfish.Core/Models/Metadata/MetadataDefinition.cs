@@ -9,8 +9,12 @@ using System.Xml.Serialization;
 
 namespace Catfish.Core.Models.Metadata
 {
+    [TypeLabel("Metadata Definition")]
     public class MetadataDefinition
     {
+        [XmlIgnore]
+        public int Id { get; set; }
+
         [TypeLabel("String")]
         public string Name { get; set; }
 
