@@ -38,14 +38,14 @@ namespace Catfish.Areas.Manager.Controllers
                 model = new EntityType();
 
                 ////TODO:Remove the following testing code
-                //List<MetadataSet> metadata = MetadataService.GetMetadataSets().ToList();
-                //int i = 0;
-                //foreach (var s in metadata)
-                //{
-                //    model.MetadataSets.Add(s);
-                //    if (++i >= 2)
-                //        break;
-                //}
+                List<MetadataSet> metadata = MetadataService.GetMetadataSets().ToList();
+                int i = 0;
+                foreach (var s in metadata)
+                {
+                    model.MetadataSets.Add(s);
+                    if (++i >= 2)
+                        break;
+                }
             }
             return View(model);
         }

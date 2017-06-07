@@ -1,4 +1,5 @@
 ﻿import * as $ from "jquery"
+import { FormFields } from "./FormFields.js"
 
 interface Templates {
     single: string
@@ -19,28 +20,21 @@ interface FieldTypes {
 declare var fieldTypes: any;
 declare var metadataSetId: any;
 
-export class MetadataSetFields {
+export class MetadataSetFields extends FormFields {
 
     private fieldTypes: FieldTypes
     private metadataSetId: string
-    private addButton: JQuery
-    private removeFieldButtons: JQuery
-    private fieldsContainer: JQuery
     private fieldEntryTemplate: string
     private previousName: string
     private previousDescription: string
     private previousOptions: string
 
     constructor() {
+        super()
         this.initializeFieldTypes()
         this.populateSelect()
-        this.addButton = $("#add-field")
-        this.removeFieldButtons = $(".remove-field")
-        this.fieldsContainer = $("#fields-container")
-        this.listenForAddButton()
         this.setSelectOptionFromHidden()
         this.listenTemplateSelector()
-        this.listenForRemoveFieldButton()
 
         if (this.fieldsContainer.children().length == 0) {
             this.addField()
@@ -66,20 +60,11 @@ export class MetadataSetFields {
         })
     }
 
-    // from https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-    private getGUID() {
-        function s4(): string {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
 
-        return s4() + s4() + '_' + s4() + '_' + s4() + '_' +
-            s4() + '_' + s4() + s4() + s4();
-    }
 
     private setSelectOptionFromHidden() {
         let fields: JQuery = $(".field-entry")
+
         fields.each((index, element) => {
             let value: string = $(element).children(".model-type").val()
             $(element).find(".template-selector").val(value)
@@ -90,6 +75,7 @@ export class MetadataSetFields {
         let guid: string = this.getGUID()
         let hiddenGUID = '<input type="hidden" name="Fields.Index" value="' + guid + '">'
         let template: string = hiddenGUID + this.fieldTypes.templates[modelType].replace(/CATFISH_GUID/g, guid)
+
         return $(template)
     }
 
@@ -108,14 +94,13 @@ export class MetadataSetFields {
     }
 
     private savePrevioustValues(source: JQuery) {
-
         let options: JQuery = source.find(".field-options")
+
         this.previousName = source.find(".field-name").first().val()
         this.previousDescription = source.find(".field-description").first().val()
         if (options.length > 0) {
             this.previousOptions = options.first().val()
-        }
-            
+        }            
     }
 
     private restorePreviousValues(template: JQuery) {
@@ -125,14 +110,14 @@ export class MetadataSetFields {
         template.find(".field-description").first().val(this.previousDescription)
         if (options.length > 0) {
             template.find(".field-options").first().val(this.previousOptions)
-        }
-        
+        }        
     }
 
     private setTemplate(target: JQuery) {
         let selectedType: string = target.val()
         let template: JQuery = this.getTemplate(this.getTemplateType(selectedType))
         let closest: JQuery = target.closest(".field-entry")
+
         this.savePrevioustValues(closest)
         closest.replaceWith(template)
         template.find(".metadataset-id").attr("value", this.metadataSetId)
@@ -142,36 +127,21 @@ export class MetadataSetFields {
         template.find(".model-type").val(selectedType)
     }
 
-    private listenForAddButton() {
-        this.addButton.click((e) => {
-            this.addField()
-        })
-    }
-
-    private addField() {
+    protected addField() {
         let template: JQuery = this.getTemplate(this.fieldTypes.fields[0].Template)
+
         this.fieldsContainer.append(template)
         template.find(".metadataset-id").attr("value", this.metadataSetId)
         this.bindElements()
         template.find(".model-type").val(this.fieldTypes.fields[0].ModelType)
     }
 
-
-
     private listenTemplateSelector() {
         let templateSelectors: JQuery = $(".template-selector")
+
         templateSelectors.change((e) => {
             $(e.target).closest(".field-entry").prev().remove()
             this.setTemplate($(e.target))
         })
     }
-
-    private listenForRemoveFieldButton() {
-        this.removeFieldButtons = $(".remove-field")
-        this.removeFieldButtons.click((e) => {
-            e.target.closest(".field-entry").remove()
-        })
-    }
-
-
 }

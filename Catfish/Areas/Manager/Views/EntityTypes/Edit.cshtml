@@ -1,6 +1,9 @@
 ﻿@model Catfish.Core.Models.EntityType
 @using Catfish.Core.Models.Attributes
 
+<script src="/node_modules/requirejs/require.js"></script>
+<script type="text/javascript" src="/built/require-config.js"></script>
+
 @{  ViewBag.Title = Model.Id > 0 ? "Edit Entity Type" : "Create Entity Type"; }
 
 @section Toolbar {
@@ -34,7 +37,14 @@
         <div id="fields-container">
             @Html.EditorFor(m => m.MetadataSets)
         </div>
-
     </div>
 
 }
+
+<div class="grid_12 contentright">
+    <button id="add-field">Add MetadataSet</button>
+</div>
+
+<script>
+    require(["/Built/Forms/EntityTypeForm.js"]);
+</script>
