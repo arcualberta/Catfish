@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Catfish.Core.Models.Attributes;
+using System.Xml.Serialization;
 
 namespace Catfish.Core.Models.Metadata
 {
@@ -29,9 +30,11 @@ namespace Catfish.Core.Models.Metadata
         [DataType(DataType.MultilineText)]
         public string ToolTip { get; set; }
 
+        [XmlIgnore]
         [HiddenInput(DisplayValue = false)]
         public int MetadataSetId { get; set; }
 
+        [XmlIgnore]
         [Ignore]
         public MetadataSet MetadataSet { get; set; }
     }
