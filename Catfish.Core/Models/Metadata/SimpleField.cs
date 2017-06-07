@@ -19,9 +19,9 @@ namespace Catfish.Core.Models.Metadata
     [XmlInclude(typeof(TextField))]
     public class SimpleField
     {
-        [XmlIgnore]
-        [HiddenInput(DisplayValue = false)]
-        public int Id { get; set; }
+        ////[XmlIgnore]
+        ////[HiddenInput(DisplayValue = false)]
+        ////public int Id { get; set; }
 
         [Rank(1)]
         [Required]
