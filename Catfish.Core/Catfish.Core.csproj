@@ -88,6 +88,10 @@
     <Compile Include="Migrations\201706070644087_RemovedSimpleFieldFromMetadataSet.Designer.cs">
       <DependentUpon>201706070644087_RemovedSimpleFieldFromMetadataSet.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706070723531_RemoveSimpleFieldFromDatabase.cs" />
+    <Compile Include="Migrations\201706070723531_RemoveSimpleFieldFromDatabase.Designer.cs">
+      <DependentUpon>201706070723531_RemoveSimpleFieldFromDatabase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Aggregation.cs" />
     <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
@@ -146,6 +150,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706070644087_RemovedSimpleFieldFromMetadataSet.resx">
       <DependentUpon>201706070644087_RemovedSimpleFieldFromMetadataSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706070723531_RemoveSimpleFieldFromDatabase.resx">
+      <DependentUpon>201706070723531_RemoveSimpleFieldFromDatabase.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
