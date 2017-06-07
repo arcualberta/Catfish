@@ -13,7 +13,7 @@ namespace Catfish.Areas.Manager.Helpers
 {
     public static class HtmlHelperExtensions
     {
-        public static MvcHtmlString EditorForList<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, ICollection<TValue>>> propertyExpression) where TModel : class where TValue : SimpleField
+        public static MvcHtmlString EditorForList<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, ICollection<TValue>>> propertyExpression) where TModel : class where TValue : MetadataField
         {
             // Based on the tutorial from http://www.mattlunn.me.uk/blog/2014/08/how-to-dynamically-via-ajax-add-new-items-to-a-bound-list-model-in-asp-mvc-net/
             var items = propertyExpression.Compile()(html.ViewData.Model);
@@ -49,7 +49,7 @@ namespace Catfish.Areas.Manager.Helpers
         ////    builder.Append(html.EditorFor(singleItemExp, null, String.Format("{0}[{1}]", htmlFieldName, guid)));
         ////}
 
-        public static MvcHtmlString TypeLabelFor<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, TValue>> propertyExpression)// where TModel : class where TValue : SimpleField
+        public static MvcHtmlString TypeLabelFor<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, TValue>> propertyExpression)
         {
             ModelMetadata metaData = ModelMetadata.FromLambdaExpression(propertyExpression, html.ViewData);
 

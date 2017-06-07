@@ -3,7 +3,7 @@
 namespace Catfish.Core.Models.Metadata
 {
     [TypeLabel("Date")]
-    public class DateField : SimpleField
+    public class DateField : MetadataField
     {
     }
 }

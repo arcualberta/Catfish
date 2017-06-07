@@ -108,7 +108,7 @@
     <Compile Include="Models\Metadata\DropDownMenu.cs" />
     <Compile Include="Models\Metadata\MetadataDefinition.cs" />
     <Compile Include="Models\Metadata\MetadataSet.cs" />
-    <Compile Include="Models\Metadata\SimpleField.cs" />
+    <Compile Include="Models\Metadata\MetadataField.cs" />
     <Compile Include="Models\Metadata\FieldValue.cs" />
     <Compile Include="Models\Metadata\OptionsField.cs" />
     <Compile Include="Models\Metadata\RadioButtonSet.cs" />

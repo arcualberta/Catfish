@@ -17,7 +17,7 @@ namespace Catfish.Core.Models.Metadata
     [XmlInclude(typeof(RadioButtonSet))]
     [XmlInclude(typeof(TextArea))]
     [XmlInclude(typeof(TextField))]
-    public class SimpleField
+    public class MetadataField
     {
         ////[XmlIgnore]
         ////[HiddenInput(DisplayValue = false)]

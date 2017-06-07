@@ -13,14 +13,14 @@
         }
     };
 
-    string simpleTemplate = Html.Partial("EditorTemplates/SimpleField", new SimpleField(), viewData).ToHtmlString();
+    string simpleTemplate = Html.Partial("EditorTemplates/MetadataField", new MetadataField(), viewData).ToHtmlString();
     string optionsTemplate = Html.Partial("EditorTemplates/OptionsField", new OptionsField(), viewData).ToHtmlString();
 
 
     <script>
         var fieldTypes = {
                 templates: {
-                    "@Html.Raw(typeof(SimpleField).FullName)": @Html.Raw(Json.Encode(simpleTemplate)),
+                    "@Html.Raw(typeof(MetadataField).FullName)": @Html.Raw(Json.Encode(simpleTemplate)),
                     "@Html.Raw(typeof(OptionsField).FullName)" : @Html.Raw(Json.Encode(optionsTemplate))
                 },
                 fields: @Html.Raw(ViewBag.FieldTypes)

@@ -21,11 +21,11 @@ namespace Catfish.Core.Models.Metadata
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        public virtual List<SimpleField> Fields { get; set; }
+        public virtual List<MetadataField> Fields { get; set; }
 
         public MetadataDefinition()
         {
-            Fields = new List<SimpleField>();
+            Fields = new List<MetadataField>();
         }
     }
 }

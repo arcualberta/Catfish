@@ -5,7 +5,7 @@ using Catfish.Core.Models.Attributes;
 namespace Catfish.Core.Models.Metadata
 {
     [Ignore]
-    public class OptionsField: SimpleField
+    public class OptionsField: MetadataField
     {
         [Rank(3)]
         [InputType(InputTypeAttribute.eInputType.StringArray)]

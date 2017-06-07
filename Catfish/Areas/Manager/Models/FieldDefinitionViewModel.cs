@@ -30,7 +30,7 @@ namespace Catfish.Areas.Manager.Models
             Label = typeLabel == null ? fieldType.ToString() : typeLabel.Name;
             Template = typeof(OptionsField).IsAssignableFrom(fieldType) 
                 ? typeof(OptionsField).ToString() 
-                : typeof(SimpleField).ToString();
+                : typeof(MetadataField).ToString();
 
             //foreach (PropertyInfo info in properties)
             //{
