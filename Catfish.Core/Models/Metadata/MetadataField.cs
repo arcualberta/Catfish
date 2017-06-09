@@ -7,43 +7,40 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Catfish.Core.Models.Attributes;
 using System.Xml.Serialization;
+using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Metadata
 {
-    [XmlInclude(typeof(CheckBoxSet))]
-    [XmlInclude(typeof(DateField))]
-    [XmlInclude(typeof(DropDownMenu))]
-    [XmlInclude(typeof(OptionsField))]
-    [XmlInclude(typeof(RadioButtonSet))]
-    [XmlInclude(typeof(TextArea))]
-    [XmlInclude(typeof(TextField))]
-    public class MetadataField
+    public class MetadataField : XmlModel
     {
-        ////[XmlIgnore]
-        ////[HiddenInput(DisplayValue = false)]
-        ////public int Id { get; set; }
-
-        [Rank(1)]
-        [Required]
-        [TypeLabel("String")]
-        public string Name { get; set; }
-
-        [Rank(2)]
-        [DataType(DataType.MultilineText)]
-        [TypeLabel("String")]
-        public string Description { get; set; }
-
         public bool IsRequired { get; set; }
 
         [DataType(DataType.MultilineText)]
-        public string ToolTip { get; set; }
+        public string Help { get; set; }
 
         [XmlIgnore]
         [HiddenInput(DisplayValue = false)]
         public int MetadataSetId { get; set; }
 
-        ////[XmlIgnore]
-        ////[Ignore]
-        ////public MetadataSet MetadataSet { get; set; }
+        public override XElement ToXml()
+        {
+            XElement ele = base.ToXml();
+
+            if (IsRequired)
+                ele.SetAttributeValue("IsRequired", IsRequired);
+
+            if (!string.IsNullOrWhiteSpace(Help))
+                ele.Add(new XElement("Help") { Value = Help });
+
+            return ele;
+        }
+
+        public override void Initialize(XElement ele)
+        {
+            base.Initialize(ele);
+            this.IsRequired = bool.Parse(GetAtt(ele, "IsRequired", "false"));
+            this.Help = GetChildText(ele, "Help");
+        }
+
     }
 }

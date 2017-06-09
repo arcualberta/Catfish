@@ -4,6 +4,7 @@ using Catfish.Core.Models.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using System.Xml.Serialization;
+using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Metadata
 {
@@ -45,22 +46,28 @@ namespace Catfish.Core.Models.Metadata
 
         public void Serialize()
         {
-            using (StringWriter writer = new StringWriter())
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(MetadataDefinition));
-                serializer.Serialize(writer, mDefinition);
-                Content = writer.ToString();
-            }
+            XElement xml = Definition.ToXml();
+            Content = xml.ToString();
+            ////using (StringWriter writer = new StringWriter())
+            ////{
+            ////    XmlSerializer serializer = new XmlSerializer(typeof(MetadataDefinition));
+            ////    serializer.Serialize(writer, mDefinition);
+            ////    Content = writer.ToString();
+            ////}
         }
 
         public void Deserialize()
         {
-            using (StringReader reader = new StringReader(Content))
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(MetadataDefinition));
-                mDefinition = serializer.Deserialize(reader) as MetadataDefinition;
-            }
+            XElement xml = XElement.Parse(Content);
+            mDefinition = XmlModel.Parse(xml) as MetadataDefinition;
             mDefinition.Id = this.Id;
+
+            ////using (StringReader reader = new StringReader(Content))
+            ////{
+            ////    XmlSerializer serializer = new XmlSerializer(typeof(MetadataDefinition));
+            ////    mDefinition = serializer.Deserialize(reader) as MetadataDefinition;
+            ////}
+            ////mDefinition.Id = this.Id;
         }
 
         [NotMapped]
