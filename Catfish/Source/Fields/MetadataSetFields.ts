@@ -71,7 +71,7 @@ export class MetadataSetFields extends FormFields {
         })
     }
 
-    private getTemplate(modelType: string): JQuery {
+    protected getTemplate(modelType: string): JQuery {
         let guid: string = this.getGUID()
         let hiddenGUID = '<input type="hidden" name="Fields.Index" value="' + guid + '">'
         let template: string = hiddenGUID + this.fieldTypes.templates[modelType].replace(/CATFISH_GUID/g, guid)

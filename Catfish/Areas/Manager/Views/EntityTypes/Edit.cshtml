@@ -1,8 +1,31 @@
 ﻿@model Catfish.Core.Models.EntityType
 @using Catfish.Core.Models.Attributes
+@using Catfish.Core.Models.Metadata;
+
 
 <script src="/node_modules/requirejs/require.js"></script>
 <script type="text/javascript" src="/built/require-config.js"></script>
+
+@{ 
+
+    var viewData = new ViewDataDictionary(Html.ViewData)
+    {
+        TemplateInfo = new System.Web.Mvc.TemplateInfo
+        {
+            HtmlFieldPrefix = "MetadataSets[CATFISH_GUID]"
+        }
+    };
+
+    string metadataSetTemplate = Html.Partial("EditorTemplates/MetadataSet", new MetadataSet(), viewData).ToHtmlString();
+}
+
+<script>
+    var metadataSets = {
+        sets: @Html.Raw(ViewBag.MetadataSets),
+        template: @Html.Raw(Json.Encode(metadataSetTemplate))
+    }
+</script>
+
 
 @{  ViewBag.Title = Model.Id > 0 ? "Edit Entity Type" : "Create Entity Type"; }
 

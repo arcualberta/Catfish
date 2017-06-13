@@ -43,5 +43,9 @@ export class FormFields {
         console.log("aqui")
     }
 
+    protected getTemplate(modelType: string): JQuery {
+        return $('')
+    }
+
     
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Catfish.Core.Models.Attributes;
+using System.Web.Script.Serialization;
 
 namespace Catfish.Core.Models.Metadata
 {
@@ -16,8 +17,10 @@ namespace Catfish.Core.Models.Metadata
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
+        [ScriptIgnore]
         public virtual ICollection<SimpleField> Fields { get; set; }
 
+        [ScriptIgnore]
         public virtual ICollection<EntityType> EntityTypes { get; set; }
 
         public MetadataSet()

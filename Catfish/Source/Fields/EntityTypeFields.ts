@@ -1,26 +1,42 @@
 ﻿import * as $ from "jquery"
 import { FormFields } from "./FormFields.js"
 
+/*
 interface MetadataSet {
     label: string
     value: string
     chosen: boolean
 }
+*/
+
+interface Field {
+    Options: string;
+    Id: number;
+    Name: string;
+    Description: string;
+    IsRequired: boolean;
+    ToolTip?: any;
+    MetadataSetId: number;
+}
+
+interface Set {
+    EntityTypes: any[];
+    Fields: Field[];
+    Id: number;
+    Name: string;
+    Description: string;
+}
+
+interface MetadataSet {
+    sets: Set[];
+    template: string;
+}
+
+declare var metadataSets: any
 
 export class EntityTypeFields extends FormFields {
 
-    private metadatasets: MetadataSet[]
-    //private templateString: string = "<div>template</div>"
-    private templateString: string = `
-    <div class="box field-entry">
-        <div class="inner">
-            <button type="button" class="remove-field">x</button>
-            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id="MetadataSets_0__Id" name="MetadataSets[0].Id" type="hidden" value="1">
-            1: <label for="MetadataSets_0__New_metadata_set_ed">New metadata set ed</label>
-        </div> 
-    </div>
-    `
-
+    private metadataSets: MetadataSet
 
     constructor() {
         super()
@@ -29,16 +45,47 @@ export class EntityTypeFields extends FormFields {
     }
 
     private fetchMetdataSets() {
-        this.metadatasets = []
-        this.metadatasets.push(<MetadataSet>{ label: "1", value: "val", chosen: false })
-        this.metadatasets.push(<MetadataSet>{ label: "2", value: "val 2", chosen: false })
+        this.metadataSets = metadataSets
+        console.log(this.metadataSets)
     }
 
-
     protected addField() {
-        let template: JQuery = $(this.templateString)
+        let template: JQuery = this.getTemplate('')
         this.fieldsContainer.append(template)
         this.listenForRemoveFieldButton()
+        this.populateSelect()
+        this.listenMetadataSetChange()
+    }
+
+    private populateSelect() {
+        let selectors: JQuery = $(".metadataset-selector")
+
+        selectors.each((index, selector) => {
+            if ($(selector).children("option").length == 0) {
+                for (let set of this.metadataSets.sets) {
+                    let option: string = "<option value='" + set.Id + "'>" + set.Name + "</option>"
+                    $(selector).append(option)
+                }
+            }
+        })
+    }
+
+    protected getTemplate(modelType: string): JQuery {
+        let guid: string = this.getGUID()
+        let hiddenGUID = '<input type="hidden" name="MetadataSets.Index" value="' + guid + '">'
+        let template: string = hiddenGUID + this.metadataSets.template.replace(/CATFISH_GUID/g, guid)
+        return $(template)
+    }
+
+    private listenMetadataSetChange() {
+        let selectors: JQuery = $(".metadataset-selector")
+        selectors.change((e: JQueryEventObject) => {
+            //console.log($(e.target).val())
+            let value: string = $(e.target).val()
+            console.log(e.target)
+            console.log($(e.target).closest(".metadataset-id"))
+            $(e.target).closest(".metadataset-id").attr("value", value)
+        })
     }
 
 

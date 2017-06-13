@@ -58,8 +58,8 @@ namespace Catfish.Areas.Manager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(MetadataSet model)
         {
-
-            if(ModelState.IsValid)
+            var test = Request.Params;
+            if (ModelState.IsValid)
             {
                 if (model.Id > 0)
                 {

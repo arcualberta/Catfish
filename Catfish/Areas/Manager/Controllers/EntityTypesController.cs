@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Catfish.Core.Models.Metadata;
+using System.Web.Script.Serialization;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -38,15 +39,16 @@ namespace Catfish.Areas.Manager.Controllers
                 model = new EntityType();
 
                 ////TODO:Remove the following testing code
-                List<MetadataSet> metadata = MetadataService.GetMetadataSets().ToList();
-                int i = 0;
-                foreach (var s in metadata)
-                {
-                    model.MetadataSets.Add(s);
-                    if (++i >= 2)
-                        break;
-                }
+                //List<MetadataSet> metadata = MetadataService.GetMetadataSets().ToList();
+                //int i = 0;
+                //foreach (var s in metadata)
+                //{
+                //    model.MetadataSets.Add(s);
+                //    if (++i >= 2)
+                //        break;
+                //}
             }
+            ViewBag.MetadataSets = GetSerializedMetadataSets();
             return View(model);
         }
 
@@ -57,6 +59,7 @@ namespace Catfish.Areas.Manager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(EntityType entityType)
         {
+            var test = Request.Params;
             if (ModelState.IsValid)
             {
                 if(entityType.Id > 0)
@@ -106,6 +109,16 @@ namespace Catfish.Areas.Manager.Controllers
                 Db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private string GetSerializedMetadataSets()
+        {
+            //var metadataSets = this.MetadataService.
+            var metadataSets = MetadataService.GetMetadataSets().ToList();
+            //var metadataSetViewModels = metadataSets.Select(ft => new MetadataSetDefinitionViewModel(ft));
+            return new JavaScriptSerializer().Serialize(metadataSets);
+            //return metadataSets;
+
         }
     }
 }

@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Catfish.Core.Models.Metadata;
+using System.Web.Script.Serialization;
+using Catfish.Core.Models.Attributes;
 
 namespace Catfish.Core.Models
 {
@@ -18,6 +20,7 @@ namespace Catfish.Core.Models
         public int? EntityTypeId { get; set; }
         public EntityType EntityType { get; set; }
 
+        [ScriptIgnore]
         public virtual ICollection<FieldValue> Metadata { get; set; }
 
         public Entity()
