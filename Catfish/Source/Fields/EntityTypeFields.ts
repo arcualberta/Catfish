@@ -42,11 +42,14 @@ export class EntityTypeFields extends FormFields {
         super()
         // fetch definitions
         this.fetchMetdataSets()
+        this.populateSelect()
+        this.setSelectedOptionFromHidden()
+        // select from id
     }
 
     private fetchMetdataSets() {
         this.metadataSets = metadataSets
-        console.log(this.metadataSets)
+        //console.log(this.metadataSets)
     }
 
     protected addField() {
@@ -80,13 +83,17 @@ export class EntityTypeFields extends FormFields {
     private listenMetadataSetChange() {
         let selectors: JQuery = $(".metadataset-selector")
         selectors.change((e: JQueryEventObject) => {
-            //console.log($(e.target).val())
             let value: string = $(e.target).val()
-            console.log(e.target)
-            console.log($(e.target).closest(".metadataset-id"))
-            $(e.target).closest(".metadataset-id").attr("value", value)
+            $(e.target).parent().siblings(".metadataset-id").attr("value", value)
         })
     }
 
+    private setSelectedOptionFromHidden() {
+        let fields: JQuery = $(".field-entry")
 
+        fields.each((index, element) => {
+            let value: string = $(element).children(".metadataset-id").val()
+            $(element).find(".metadataset-selector").val(value)
+        })
+    }
 }

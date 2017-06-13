@@ -93,7 +93,7 @@ export class MetadataSetFields extends FormFields {
         }
     }
 
-    private savePrevioustValues(source: JQuery) {
+    private savePreviousValues(source: JQuery) {
         let options: JQuery = source.find(".field-options")
 
         this.previousName = source.find(".field-name").first().val()
@@ -118,7 +118,7 @@ export class MetadataSetFields extends FormFields {
         let template: JQuery = this.getTemplate(this.getTemplateType(selectedType))
         let closest: JQuery = target.closest(".field-entry")
 
-        this.savePrevioustValues(closest)
+        this.savePreviousValues(closest)
         closest.replaceWith(template)
         template.find(".metadataset-id").attr("value", this.metadataSetId)
         this.bindElements()
