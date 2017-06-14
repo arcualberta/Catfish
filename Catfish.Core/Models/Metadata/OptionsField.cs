@@ -45,11 +45,4 @@ namespace Catfish.Core.Models.Metadata
         }
     }
 
-
-
-
-    public partial class OptionsField : MetadataField
-    {
-
-    }
 }
