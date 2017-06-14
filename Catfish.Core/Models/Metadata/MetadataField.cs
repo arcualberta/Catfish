@@ -13,8 +13,10 @@ namespace Catfish.Core.Models.Metadata
 {
     public class MetadataField : XmlModel
     {
+        [Display(Name="Is Required")]
         public bool IsRequired { get; set; }
 
+        [Display(Name="Tooltip Help")]
         [DataType(DataType.MultilineText)]
         public string Help { get; set; }
 
