@@ -170,10 +170,18 @@ namespace Catfish.Areas.Manager.Controllers
             return Json(fieldTypeViewModels, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public ActionResult MetadataSets()
+        {
+            var metadatasets = Db.MetadataSets.Select(ms => ms.Content).ToList();
+
+            return Json(metadatasets, JsonRequestBehavior.AllowGet);
+        }
+
         private string GetSerializedMetadataFieldTypes()
         {
             var fieldTypes = this.MetadataService.GetMetadataFieldTypes();
-            var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToList();
+            var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToArray();
             return new JavaScriptSerializer().Serialize(fieldTypeViewModels);
         }
 
