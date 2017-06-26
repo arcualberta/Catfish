@@ -29,6 +29,7 @@ export class FormFields {
     protected listenForRemoveFieldButton() {
         this.removeFieldButtons = $(".remove-field")
         this.removeFieldButtons.click((e) => {
+            $(e.target).closest(".field-entry").prev().remove()
             e.target.closest(".field-entry").remove()
         })
     }
