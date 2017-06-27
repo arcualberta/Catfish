@@ -29,6 +29,11 @@ export class FormFields {
     protected listenForRemoveFieldButton() {
         this.removeFieldButtons = $(".remove-field")
         this.removeFieldButtons.click((e) => {
+            // add id to #deletedFields
+            let deleteId: string = $(e.target).closest(".field-entry").children(".field-id").first().val()
+            let prevDeleted: string = $("#deletedFields").val()
+            prevDeleted += " " + deleteId
+            $("#deletedFields").val(prevDeleted)
             $(e.target).closest(".field-entry").prev().remove()
             e.target.closest(".field-entry").remove()
         })
@@ -41,7 +46,7 @@ export class FormFields {
     }
 
     protected addField() {
-        console.log("aqui")
+        console.log("")
     }
 
     protected getTemplate(modelType: string): JQuery {
