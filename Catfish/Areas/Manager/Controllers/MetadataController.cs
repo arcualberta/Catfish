@@ -65,7 +65,13 @@ namespace Catfish.Areas.Manager.Controllers
                 {
                     Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     foreach (var field in model.Fields)
-                        Db.Entry(field).State = System.Data.Entity.EntityState.Modified;
+                        if (field.Id != 0)
+                        {
+                            Db.Entry(field).State = System.Data.Entity.EntityState.Modified;
+                        } else
+                        {
+                            Db.MetadataFields.Add(field);
+                        }
                 }
                 else
                     Db.MetadataSets.Add(model);
