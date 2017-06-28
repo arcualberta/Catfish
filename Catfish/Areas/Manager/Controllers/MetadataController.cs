@@ -58,7 +58,6 @@ namespace Catfish.Areas.Manager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(MetadataSet model, string deletedFields = null)
         {
-            var test = Request.Params;
             //var deletedFields = test["deletedFields"];
 
             if (ModelState.IsValid)

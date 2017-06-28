@@ -36,6 +36,7 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
+<input type="hidden" id="deletedFields" name="deletedFields" value=""/>
 
     <div class="grid_12">
         <div class="box">
