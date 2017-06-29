@@ -93,7 +93,11 @@ export class EntityTypeFields extends FormFields {
 
         fields.each((index, element) => {
             let value: string = $(element).children(".metadataset-id").val()
+            alert(value)
+            console.log($(element).find(".metadataset-selector"))
             $(element).find(".metadataset-selector").val(value)
         })
     }
+
+
 }
