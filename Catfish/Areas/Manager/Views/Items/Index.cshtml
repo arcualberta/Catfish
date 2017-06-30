@@ -1,0 +1,11 @@
+﻿@model IQueryable<Catfish.Core.Models.Entity>
+
+@{ ViewBag.Title = "Items"; }
+
+@section Toolbar {
+    @Html.Partial("Partial/IndexToolbar")
+}
+
+@Html.Partial("Partial/ObjectList")
+
+

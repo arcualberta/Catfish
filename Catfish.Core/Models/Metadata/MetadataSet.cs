@@ -17,10 +17,10 @@ namespace Catfish.Core.Models.Metadata
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        [ScriptIgnore]
+        [ScriptIgnore(ApplyToOverrides = true)]
         public virtual ICollection<SimpleField> Fields { get; set; }
 
-        [ScriptIgnore]
+        [ScriptIgnore(ApplyToOverrides = true)]
         public virtual ICollection<EntityType> EntityTypes { get; set; }
 
         public MetadataSet()

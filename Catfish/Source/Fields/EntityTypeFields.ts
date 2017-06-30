@@ -56,16 +56,21 @@ export class EntityTypeFields extends FormFields {
         let template: JQuery = this.getTemplate('')
         this.fieldsContainer.append(template)
         this.listenForRemoveFieldButton()
+        console.log("adding")
         this.populateSelect()
         this.listenMetadataSetChange()
     }
 
     private populateSelect() {
         let selectors: JQuery = $(".metadataset-selector")
-
+        console.log("pupolating")
+        console.log(this.metadataSets)
         selectors.each((index, selector) => {
             if ($(selector).children("option").length == 0) {
+                console.log("adding")
                 for (let set of this.metadataSets.sets) {
+                    console.log(set)
+                    console.log("set")
                     let option: string = "<option value='" + set.Id + "'>" + set.Name + "</option>"
                     $(selector).append(option)
                 }
@@ -93,7 +98,6 @@ export class EntityTypeFields extends FormFields {
 
         fields.each((index, element) => {
             let value: string = $(element).children(".metadataset-id").val()
-            alert(value)
             console.log($(element).find(".metadataset-selector"))
             $(element).find(".metadataset-selector").val(value)
         })

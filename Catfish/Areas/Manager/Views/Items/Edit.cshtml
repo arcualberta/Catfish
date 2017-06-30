@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = "Edit";
+}
+
+
+xx
+<script src="/node_modules/requirejs/require.js"></script>
+<script type="text/javascript" src="/built/require-config.js"></script>
+
+<script>
+        var data = {
+            entityTypes: @Html.Raw(Json.Encode(ViewBag.EntityTypes)),
+            metadataSets: @Html.Raw(Json.Encode(ViewBag.MetadataSets))
+        }
+</script>
+vv

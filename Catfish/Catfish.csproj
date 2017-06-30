@@ -164,6 +164,8 @@
     <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\SimpleField.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\OptionsField.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataSet.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\Edit.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -181,6 +183,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Manager\Controllers\CatfishController.cs" />
     <Compile Include="Areas\Manager\Controllers\EntityTypesController.cs" />
+    <Compile Include="Areas\Manager\Controllers\ItemsController.cs" />
     <Compile Include="Areas\Manager\Controllers\MetadataController.cs" />
     <Compile Include="Areas\Manager\Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
@@ -222,6 +225,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Manager\Views\Catfish\" />
+    <Folder Include="Areas\Manager\Views\Entity\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

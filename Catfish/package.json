@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "@types/jquery": "2.0.43",
+    "@types/knockout": "3.4.41",
+    "knockout": "3.4.2",
     "requirejs": "^2.3.3",
     "text": "github:requirejs/text"
   }
