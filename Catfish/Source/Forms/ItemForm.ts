@@ -51,7 +51,10 @@ class ItemForm {
             for (let metadataSet of entityType.MetadataSets) {
                 for (let field of metadataSet.Fields) {
                     field.Value = ""
-                    field.OptionsArray = field.Options.split("\n")
+                    if (field.Options) {
+                        field.OptionsArray = field.Options.split("\n")
+                    }
+                    
                 }                
             }            
         }

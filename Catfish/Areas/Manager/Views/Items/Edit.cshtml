@@ -44,14 +44,15 @@
 </ul>
 
 
-<script type="text/javascript" id="field-template">
-    <span data-bind="text: Name"> </span>
+<script type="text/html" id="field-template">
+    <span data-bind="text: Name"></span>
     <input data-bind="value: Value" />
 </script>
 
-<script type="text/javascript" id="select-template">
-    <span data-bind="text: Name"> </span>
-    <select data- bind="options: OptionsArray"> </select>
+<script type="text/html" id="select-template">
+    <span data-bind="text: Name"></span>
+    <select data-bind="options: OptionsArray"> </select>
+    <div data-bind="text: OptionsArray"></div>
 </script>
 
  
