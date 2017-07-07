@@ -79,7 +79,7 @@ namespace Catfish.Areas.Manager.Controllers
 
                 // Remove deletedFields
 
-                if (deletedFields != null)
+                if (deletedFields != null && deletedFields != "" )
                 {
                     string[] toDelete = deletedFields.Trim().Split(' ');
                     foreach (string id in toDelete)

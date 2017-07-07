@@ -239,6 +239,7 @@
     <TypeScriptCompile Include="Source\Fields\MetadataSetFields.ts" />
     <TypeScriptCompile Include="Source\Fields\EntityTypeFields.ts" />
     <TypeScriptCompile Include="Source\Forms\EntityTypeForm.ts" />
+    <TypeScriptCompile Include="Source\Forms\ItemForm.ts" />
     <TypeScriptCompile Include="Source\Forms\MetadataSetForm.ts" />
     <TypeScriptCompile Include="Source\ImportModules.ts" />
     <TypeScriptCompile Include="Source\require-config.ts" />

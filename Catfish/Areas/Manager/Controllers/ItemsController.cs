@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Catfish.Core.Models;
+using System.Web.Script.Serialization;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -72,9 +73,11 @@ namespace Catfish.Areas.Manager.Controllers
             else
                 model = new Entity();
 
-           // Rendering these as json objects in view result in circular references 
-           ViewBag.EntityTypes = Json(db.EntityTypes.ToList());
-           ViewBag.MetadataSets = Json(db.MetadataSets.ToList());
+            // Rendering these as json objects in view result in circular references 
+            var metadataSets = db.MetadataSets.ToList();
+            var entityTypes = db.EntityTypes.ToList();
+            ViewBag.EntityTypes = new JavaScriptSerializer().Serialize(entityTypes);//Json(db.EntityTypes.ToList());
+            ViewBag.MetadataSets = new JavaScriptSerializer().Serialize(metadataSets);//Json(db.MetadataSets.ToList());
 
             return View(model);
         }

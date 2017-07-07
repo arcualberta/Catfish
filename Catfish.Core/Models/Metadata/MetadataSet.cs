@@ -17,7 +17,6 @@ namespace Catfish.Core.Models.Metadata
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        [ScriptIgnore(ApplyToOverrides = true)]
         public virtual ICollection<SimpleField> Fields { get; set; }
 
         [ScriptIgnore(ApplyToOverrides = true)]
