@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Catfish.Core.Models.Metadata;
+using System.Web.Script.Serialization;
+using Catfish.Core.Models.Attributes;
 
 namespace Catfish.Core.Models
 {

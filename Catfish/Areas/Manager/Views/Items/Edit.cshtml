@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "Edit";
+}
+
+@section HEAD 
+{
+    <script src="/node_modules/requirejs/require.js"></script>
+    <script type="text/javascript" src="/built/require-config.js"></script>
+
+    <script>
+        var metadata = {
+            'entityTypes': @Html.Raw(ViewBag.EntityTypes),
+            'metadataSets': @Html.Raw(ViewBag.MetadataSets)
+        }
+    </script>
+
+
+
+    <script>
+            require(["/Built/Forms/ItemForm.js"])
+    </script>
+
+    <link href="/node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet"  type="text/css" />
+}
+
+
+<select data-bind="options: entityTypes, 
+               optionsText: function(type) {
+                return type.Name
+                },
+               value: selectedEntityType">
+</select>
+
+
+<ul id="metadataset-tabs" data-bind="foreach: selectedEntityType().MetadataSets" class="nav nav-tabs" role="tablist">
+    <li role="presentation">
+        <a class="tab" role="tab" data-toggle="tab" data-bind="{
+           attr: {
+            href: '#',
+            'aria-controls': Id
+           },
+           text: Name}">
+        </a>
+    </li>
+</ul>
+
+<hr />
+
+<ul data-bind="foreach: selectedEntityType().MetadataSets">
+    <li data-bind="text: Name">
+    </li>
+    <li>
+        <ul data-bind="foreach: Fields">
+            <li>
+                <div data-bind="template: {name: Type}"></div>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+
+
+
+<!--
+Catfish.Core.Models.Metadata.TextField
+Catfish.Core.Models.Metadata.CheckBoxSet
+Catfish.Core.Models.Metadata.Datefield
+Catfish.Core.Models.Metadata.DropDownMenu
+Catfish.Core.Models.Metadata.RadioButtonSet
+Catfish.Core.Models.Metadata.TextArea
+-->
+
+
+<script type="text/html" id="Catfish.Core.Models.Metadata.TextField">
+    <span data-bind="text: Name"></span>
+    <span data-bind="text: Description"></span>
+    <input data-bind="value: Value" />
+</script>
+
+<script type="text/html" id="Catfish.Core.Models.Metadata.CheckBoxSet">
+    <span data-bind="text: Name"></span>
+    <span data-bind="text: Description"></span>
+    <ul data-bind="foreach: OptionsArray">
+        <li>
+            <input type="checkbox" data-bind="attr: {name: $parent.Id,  value: $data}, value: $parent.Value" />
+            <span data-bind="text: $data"></span>
+        </li>
+    </ul>    
+</script>
+
+<script type="text/html" id="Catfish.Core.Models.Metadata.DateField">
+    <span data-bind="text: Name"></span>
+    <span data-bind="text: Description"></span>
+    <input data-bind="value: Value" />
+</script>
+
+<script type="text/html" id="Catfish.Core.Models.Metadata.DropDownMenu">
+    <span data-bind="text: Name"></span>
+    <span data-bind="text: Description"></span>
+    <select data-bind="options: OptionsArray, value: Value"> </select>
+</script>
+
+<script type="text/html" id="Catfish.Core.Models.Metadata.RadioButtonSet">
+    <span data-bind="text: Name"></span>
+    <span data-bind="text: Description"></span>
+    <ul data-bind="foreach: OptionsArray">
+        <li>
+            <input type="radio" data-bind="attr: {name: $parent.Id,  value: $data}, value: $parent.Value"/>
+            <span data-bind="text: $data"></span>
+        </li>
+    </ul>    
+</script>
+
+<script type="text/html" id="Catfish.Core.Models.Metadata.TextArea">
+    <span data-bind="text: Name"></span>
+    <span data-bind="text: Description"></span>
+    <textarea data-bind="value: Value"></textarea>
+</script>
+

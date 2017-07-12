@@ -57,8 +57,9 @@ namespace Catfish.Areas.Manager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(MetadataDefinition model)
         {
+            //var deletedFields = test["deletedFields"];
 
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 MetadataSet ms = MetadataService.UpdateMetadataSet(model);
                 if (ms == null)
@@ -78,6 +79,21 @@ namespace Catfish.Areas.Manager.Controllers
                 ////{
                 ////    Db.MetadataSets.Add(model);
                 ////}
+                // Remove deletedFields
+
+                ////////////////if (deletedFields != null && deletedFields != "" )
+                ////////////////{
+                ////////////////    string[] toDelete = deletedFields.Trim().Split(' ');
+                ////////////////    foreach (string id in toDelete)
+                ////////////////    {
+                ////////////////        var field = Db.MetadataFields.Find(Int32.Parse(id));
+                ////////////////        Db.MetadataFields.Remove(field);
+                ////////////////        //var entry = Db.Entry(id);
+                ////////////////        //entry.State = System.Data.Entity.EntityState.Deleted;
+                ////////////////    }
+                ////////////////}
+                
+
                 Db.SaveChanges();
 
                 return RedirectToAction("Index");

@@ -1,3 +1,8 @@
-﻿import { MetadataSetFields } from "../Fields/MetadataSetFields.js"
+﻿import * as $ from "jquery"
+import { MetadataSetFields } from "../Fields/MetadataSetFields.js"
 
-let metadataSetFields: MetadataSetFields = new MetadataSetFields()
+
+$(document).ready(() => {
+    let metadataSetFields: MetadataSetFields = new MetadataSetFields()
+})
+

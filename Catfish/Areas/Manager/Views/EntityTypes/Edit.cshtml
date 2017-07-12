@@ -1,5 +1,31 @@
 ﻿@model Catfish.Core.Models.EntityType
 @using Catfish.Core.Models.Attributes
+@using Catfish.Core.Models.Metadata;
+
+
+<script src="/node_modules/requirejs/require.js"></script>
+<script type="text/javascript" src="/built/require-config.js"></script>
+
+@{ 
+
+    var viewData = new ViewDataDictionary(Html.ViewData)
+    {
+        TemplateInfo = new System.Web.Mvc.TemplateInfo
+        {
+            HtmlFieldPrefix = "MetadataSets[CATFISH_GUID]"
+        }
+    };
+
+    string metadataSetTemplate = Html.Partial("EditorTemplates/MetadataSet", new MetadataSet(), viewData).ToHtmlString();
+}
+
+<script>
+    var metadataSets = {
+        sets: @Html.Raw(ViewBag.MetadataSets),
+        template: @Html.Raw(Json.Encode(metadataSetTemplate))
+    }
+</script>
+
 
 @{  ViewBag.Title = Model.Id > 0 ? "Edit Entity Type" : "Create Entity Type"; }
 
@@ -10,6 +36,7 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
+<input type="hidden" id="deletedFields" name="deletedFields" value=""/>
 
     <div class="grid_12">
         <div class="box">
@@ -34,7 +61,14 @@
         <div id="fields-container">
             @Html.EditorFor(m => m.MetadataSets)
         </div>
-
     </div>
 
 }
+
+<div class="grid_12 contentright">
+    <button id="add-field">Add MetadataSet</button>
+</div>
+
+<script>
+    require(["/Built/Forms/EntityTypeForm.js"]);
+</script>

@@ -35,6 +35,14 @@ namespace Catfish
 
             menubar.Items.Insert(idx++, new Manager.MenuItem()
             {
+                Name = "Items",
+                Action = "index",
+                Controller = "items",
+                Permission = "ADMIN_CONTENT"
+            });
+
+            menubar.Items.Insert(idx++, new Manager.MenuItem()
+            {
                 Name = "Entity Types",
                 Action = "index",
                 Controller = "entitytypes",
@@ -43,13 +51,13 @@ namespace Catfish
             });
 
             menubar.Items.Insert(idx++, new Manager.MenuItem()
-              {
+            {
                   Name = "Metadata Sets",
                   Action = "index",
                   Controller = "metadata",
                   Permission = "ADMIN_CONTENT"
                   //,SelectedActions = "productlist,productedit"
-              });
+            });
         }
     }
 }

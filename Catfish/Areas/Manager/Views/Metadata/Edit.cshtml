@@ -39,6 +39,7 @@
 @Html.HiddenFor(m => m.Id)
 @Html.AntiForgeryToken()
 @Html.ValidationSummary(true);
+<input type="hidden" id="deletedFields" name="deletedFields" value=""/>
 
 <div class="grid_12">
     <div class="box">
