@@ -30,8 +30,8 @@ namespace Catfish.Areas.Manager.Controllers
             if (id.HasValue)
             {
                 model = EntityService.GetEntityType(id.Value);
-                //if (model.MetadataSets.Count > 1)
-                //    model.MetadataSets.Remove(model.MetadataSets.Last());
+                if (model.MetadataSets.Count > 1)
+                    model.MetadataSets.Remove(model.MetadataSets.Last());
             }
             else
             {
