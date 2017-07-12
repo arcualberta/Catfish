@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Catfish.Core.Models.Attributes;
 using System.Web.Script.Serialization;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Catfish.Core.Models.Metadata
 {
@@ -36,5 +37,8 @@ namespace Catfish.Core.Models.Metadata
         [Ignore]
         [ScriptIgnore]
         public MetadataSet MetadataSet { get; set; }
+
+        [NotMapped]
+        public string Type { get { return this.GetType().ToString(); } }
     }
 }

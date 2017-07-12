@@ -1,5 +1,6 @@
 ﻿import * as $ from "jquery"
 import * as ko from "knockout"
+import * as bs from "bootstrap"
 
 interface EntityType {
     MetadataSets: Metadataset[];
@@ -8,11 +9,27 @@ interface EntityType {
     Description: string;
 }
 
-interface Metadataset {
+class Metadataset {
     Fields: Field[];
     Id: number;
     Name: string;
     Description: string;
+    getUrlId: Function;
+
+    public constructor() {
+        this.getUrlId = () => {
+            return "#" + this.Id
+        }
+
+        $('.tab').click(function (e) {
+            console.log("here")
+            e.preventDefault()
+            $(this).tab('show')
+        })
+
+        $('#metadataset-tabs a:first').tab('show')
+
+    }
 }
 
 interface Field {
