@@ -45,6 +45,8 @@ export class EntityTypeFields extends FormFields {
         this.populateSelect()
         this.setSelectedOptionFromHidden()
         // select from id
+        this.listenMetadataSetChange()
+        this.addMissingIndexFields()
     }
 
     private fetchMetdataSets() {
@@ -68,6 +70,7 @@ export class EntityTypeFields extends FormFields {
         selectors.each((index, selector) => {
             if ($(selector).children("option").length == 0) {
                 console.log("adding")
+                $(selector).append($("<option></option>"));
                 for (let set of this.metadataSets.sets) {
                     console.log(set)
                     console.log("set")
@@ -89,7 +92,7 @@ export class EntityTypeFields extends FormFields {
         let selectors: JQuery = $(".metadataset-selector")
         selectors.change((e: JQueryEventObject) => {
             let value: string = $(e.target).val()
-            $(e.target).parent().siblings(".metadataset-id").attr("value", value)
+            $(e.target).parent().siblings(".metadataset-id").val(value)
         })
     }
 
@@ -103,5 +106,12 @@ export class EntityTypeFields extends FormFields {
         })
     }
 
+    private addMissingIndexFields() {
+        let fields: JQuery = $(".field-entry")
 
+        fields.each((index, element) => {
+            let hiddenGUID = '<input type="hidden" name="MetadataSets.Index" value="' + index + '">'
+            $(element).before($(hiddenGUID))
+        })
+    }
 }
