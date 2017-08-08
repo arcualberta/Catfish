@@ -1,6 +1,6 @@
 ﻿import * as $ from "jquery"
 import * as ko from "knockout"
-import * as bs from "bootstrap"
+import "bootstrap"
 
 interface EntityType {
     MetadataSets: Metadataset[];
@@ -21,6 +21,8 @@ class Metadataset {
             return "#" + this.Id
         }
 
+
+        /*
         $('.tab').click(function (e) {
             console.log("here")
             e.preventDefault()
@@ -28,7 +30,7 @@ class Metadataset {
         })
 
         $('#metadataset-tabs a:first').tab('show')
-
+        */
     }
 }
 
@@ -61,6 +63,15 @@ class ItemForm {
         this.entityTypes = metadata['entityTypes']
         this.selectedEntityType = ko.observable<EntityType>(this.entityTypes[0])
         this.addValuesToEntityTypes()
+
+        this.selectedEntityType.subscribe((latest) => {
+            $('#metadataset-tabs a').click(function (e) {
+                console.log("here")
+                e.preventDefault()
+                $(this).tab('show')
+            })
+
+            $('#metadataset-tabs a:first').tab('show')        })
     }
 
     private addValuesToEntityTypes() {
