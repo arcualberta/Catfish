@@ -26,21 +26,34 @@ namespace Catfish.Core.Services
         {
             Db.EntityTypes.Add(entityType);
             foreach (var m in entityType.MetadataSets)
+            {
+                if (m.Id < 1)
+                    continue;
+
                 Db.MetadataSets.Attach(m);
+            }
         }
         public void UpdateEntityType(EntityType entityType)
         {
-            using (CatfishDbContext newCtx = new CatfishDbContext())
+            CustomComparer<MetadataSet> compare = new CustomComparer<MetadataSet>((x, y) => x.Id == y.Id);
+            EntityType dbEntity = Db.EntityTypes.Where(e => e.Id == entityType.Id).FirstOrDefault();
+            dbEntity.Name = entityType.Name;
+            dbEntity.Description = entityType.Description;
+
+            var deletedMetaData = dbEntity.MetadataSets.Except(entityType.MetadataSets, compare).ToList();
+            deletedMetaData.ForEach(md => dbEntity.MetadataSets.Remove(md));
+
+            var addedMetaData = entityType.MetadataSets.Except(dbEntity.MetadataSets, compare).ToList();
+            foreach(MetadataSet md in addedMetaData)
             {
-                EntityType dbEntity = newCtx.EntityTypes.Where(e => e.Id == entityType.Id).FirstOrDefault();
-                var deletedMetaData = dbEntity.MetadataSets.Except(entityType.MetadataSets, new CustomComparer<MetadataSet>((x, y) => x.Id == y.Id)).ToList();
-                deletedMetaData.ForEach(md => dbEntity.MetadataSets.Remove(md));
-                newCtx.SaveChanges();
+                if (md.Id < 1)
+                    continue;
+
+                var mdDb = Db.MetadataSets.Attach(md);
+                dbEntity.MetadataSets.Add(mdDb);
             }
 
-            Db.Entry(entityType).State = System.Data.Entity.EntityState.Modified;
-            foreach (var m in entityType.MetadataSets)
-                Db.MetadataSets.Attach(m);
+            Db.Entry(dbEntity).State = System.Data.Entity.EntityState.Modified;
         }
 
     }
