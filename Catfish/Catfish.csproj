@@ -24,7 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TypeScriptToolsVersion>2.1</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -62,7 +62,7 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Piranha, Version=2.2.6231.40074, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\PiranhaCMS.Core.2.2.6.1\lib\net45\Piranha.dll</HintPath>
@@ -150,7 +150,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Manager\Views\Metadata\Edit.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\SimpleField.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataField.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\OptionsField.cshtml" />
     <Content Include="Areas\Manager\Views\Metadata\EditTest.cshtml" />
     <Content Include="package.json" />
@@ -161,7 +161,7 @@
     <Content Include="Areas\Manager\Views\Shared\Partial\ObjectList.cshtml" />
     <Content Include="Areas\Manager\Views\Metadata\Details.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\DetailsToolbar.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\SimpleField.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\MetadataField.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\OptionsField.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataSet.cshtml" />
     <Content Include="Areas\Manager\Views\Items\Index.cshtml" />

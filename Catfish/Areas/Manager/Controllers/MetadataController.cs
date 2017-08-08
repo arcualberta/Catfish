@@ -37,7 +37,7 @@ namespace Catfish.Areas.Manager.Controllers
             if (model == null)
                 return HttpNotFound();
 
-            return View(model);
+            return View(model.Definition);
         }
 
         [HttpGet]
@@ -50,46 +50,48 @@ namespace Catfish.Areas.Manager.Controllers
                 model = new MetadataSet();
 
             ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
-
-            return View(model);
+            return View(model.Definition);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(MetadataSet model, string deletedFields = null)
+        public ActionResult Edit(MetadataDefinition model)
         {
             //var deletedFields = test["deletedFields"];
 
             if (ModelState.IsValid)
             {
-                if (model.Id > 0)
-                {
-                    Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
-                    foreach (var field in model.Fields)
-                        if (field.Id != 0)
-                        {
-                            Db.Entry(field).State = System.Data.Entity.EntityState.Modified;
-                        } else
-                        {
-                            Db.MetadataFields.Add(field);
-                        }
-                }
-                else
-                    Db.MetadataSets.Add(model);
-
+                MetadataSet ms = MetadataService.UpdateMetadataSet(model);
+                if (ms == null)
+                    return HttpNotFound();
+                ////if (id > 0)
+                ////{
+                ////    Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
+                ////    foreach (var field in model.Fields)
+                ////    {
+                ////        if (field.Id > 0)
+                ////            Db.Entry(field).State = System.Data.Entity.EntityState.Modified;
+                ////        else
+                ////            Db.MetadataFields.Add(field);
+                ////    }
+                ////}
+                ////else
+                ////{
+                ////    Db.MetadataSets.Add(model);
+                ////}
                 // Remove deletedFields
 
-                if (deletedFields != null && deletedFields != "" )
-                {
-                    string[] toDelete = deletedFields.Trim().Split(' ');
-                    foreach (string id in toDelete)
-                    {
-                        var field = Db.MetadataFields.Find(Int32.Parse(id));
-                        Db.MetadataFields.Remove(field);
-                        //var entry = Db.Entry(id);
-                        //entry.State = System.Data.Entity.EntityState.Deleted;
-                    }
-                }
+                ////////////////if (deletedFields != null && deletedFields != "" )
+                ////////////////{
+                ////////////////    string[] toDelete = deletedFields.Trim().Split(' ');
+                ////////////////    foreach (string id in toDelete)
+                ////////////////    {
+                ////////////////        var field = Db.MetadataFields.Find(Int32.Parse(id));
+                ////////////////        Db.MetadataFields.Remove(field);
+                ////////////////        //var entry = Db.Entry(id);
+                ////////////////        //entry.State = System.Data.Entity.EntityState.Deleted;
+                ////////////////    }
+                ////////////////}
                 
 
                 Db.SaveChanges();
@@ -98,7 +100,6 @@ namespace Catfish.Areas.Manager.Controllers
             }
 
             ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
-
             return View(model);
         }
 
@@ -111,41 +112,41 @@ namespace Catfish.Areas.Manager.Controllers
             else
             {
                 model = new MetadataSet();
-                model.Name = "Sample Form";
-                model.Description = "Sample form description";
+                ////model.Name = "Sample Form";
+                ////model.Description = "Sample form description";
 
-                model.Fields.Add(new TextField()
-                {
-                    Name = "Text Field 1",
-                    Description = "Text filed 1 description"
-                });
+                ////model.Fields.Add(new TextField()
+                ////{
+                ////    Name = "Text Field 1",
+                ////    Description = "Text filed 1 description"
+                ////});
 
-                model.Fields.Add(new TextArea()
-                {
-                    Name = "Text Area 1",
-                    Description = "Text area 1 description"
-                });
+                ////model.Fields.Add(new TextArea()
+                ////{
+                ////    Name = "Text Area 1",
+                ////    Description = "Text area 1 description"
+                ////});
 
-                model.Fields.Add(new RadioButtonSet()
-                {
-                    Name = "Radio Button Set 1",
-                    Description = "Radio button set 1 description",
-                    Options = "radio-option 1\nradio-option 2\nradio-option 3"
-                });
+                ////model.Fields.Add(new RadioButtonSet()
+                ////{
+                ////    Name = "Radio Button Set 1",
+                ////    Description = "Radio button set 1 description",
+                ////    Options = "radio-option 1\nradio-option 2\nradio-option 3"
+                ////});
 
-                model.Fields.Add(new CheckBoxSet()
-                {
-                    Name = "Check Box Set 1",
-                    Description = "Check box set 1 description",
-                    Options = "check 1\ncheck 2\ncheck 3"
-                });
+                ////model.Fields.Add(new CheckBoxSet()
+                ////{
+                ////    Name = "Check Box Set 1",
+                ////    Description = "Check box set 1 description",
+                ////    Options = "check 1\ncheck 2\ncheck 3"
+                ////});
 
-                model.Fields.Add(new DropDownMenu()
-                {
-                    Name = "Drop Down Menu 1",
-                    Description = "Drop down menu 1 description",
-                    Options = "menu 1\nmenu 2\nmenu 3"
-                });
+                ////model.Fields.Add(new DropDownMenu()
+                ////{
+                ////    Name = "Drop Down Menu 1",
+                ////    Description = "Drop down menu 1 description",
+                ////    Options = "menu 1\nmenu 2\nmenu 3"
+                ////});
             }
             return View(model);
         }
@@ -185,10 +186,18 @@ namespace Catfish.Areas.Manager.Controllers
             return Json(fieldTypeViewModels, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public ActionResult MetadataSets()
+        {
+            var metadatasets = Db.MetadataSets.Select(ms => ms.Content).ToList();
+
+            return Json(metadatasets, JsonRequestBehavior.AllowGet);
+        }
+
         private string GetSerializedMetadataFieldTypes()
         {
             var fieldTypes = this.MetadataService.GetMetadataFieldTypes();
-            var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToList();
+            var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToArray();
             return new JavaScriptSerializer().Serialize(fieldTypeViewModels);
         }
 

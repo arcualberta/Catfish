@@ -1,9 +1,9 @@
-﻿@model Catfish.Core.Models.Metadata.SimpleField
+﻿@model Catfish.Core.Models.Metadata.MetadataField
 @using Catfish.Core.Models.Attributes
 
 <div class="box field-entry">
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.HiddenFor(model => model.Id, new { @class = "field-id" })
+    @*@Html.HiddenFor(model => model.Id, new { @class = "field-id" })*@
     @Html.HiddenFor(model => model.MetadataSetId, new Dictionary<string, object>()
     {
         {"class", "metadataset-id" }
@@ -24,7 +24,7 @@
                 @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="input">
                     @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control field-name" } })
-                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.Name, "This is a required field", new { @class = "text-danger" })
                 </div>
             </li>
 
@@ -33,6 +33,14 @@
                 <div class="input">
                     @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control field-description" } })
                     @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                </div>
+            </li>
+
+            <li>
+                @Html.LabelFor(model => model.IsRequired, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="input">
+                    @Html.EditorFor(model => model.IsRequired, new { htmlAttributes = new { @class = "form-control field-description" } })
+                    @Html.ValidationMessageFor(model => model.IsRequired, "", new { @class = "text-danger" })
                 </div>
             </li>
         </ul>

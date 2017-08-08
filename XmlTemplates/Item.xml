@@ -1,0 +1,60 @@
+<item type="Video">
+	<description></description>
+	<metadata-sets>
+		<metadata-set ModelType="Catfish.Core.Models.Metadata.MetadataDefinition, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2">
+			<name>Dublin Core</name>
+			<description></description>
+			<fields>
+				<filed type="Catfish.Core.Models.Metadata.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true">
+					<name xml:lang="en">Subject</name>
+					<name xml:lang="fr">Sujet</name>
+					<description xml:lang="en"></description>
+					<value xml:lang="en"></value>
+				</field>
+				<filed type="Catfish.Core.Models.Metadata.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false">
+					<name xml:lang="en">Description</name>
+					<description></description>
+					<value></value>
+				</field>
+			<fields>
+		</metadata-set>
+		<metadata name="custom" type="descriptive">
+		</metadat>
+	</metadata-sets>
+	<files>
+	<file>
+	<metadata-sets>
+		<metadata name="xxxx" type="technical" version="1.0.0>
+			
+		</metadata>
+		<metadata name="custom" type="descriptive">
+		</metadat>
+	</metadata-sets>
+	</file>
+	</files>
+
+
+</item>
+
+<Item>
+<Metadat-Sets>
+
+<MetadataSet Name="Dublin Core" ModelType="Catfish.Core.Models.Metadata.MetadataDefinition, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+  <Description>Metadata set #3 description</Description>
+  <Fields>
+    <Field Name="Subject" ModelType="Catfish.Core.Models.Metadata.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true">
+      <Description>Subject field</Description>
+	  <Value></Value>
+    </Field>
+    <Field Name="Created" ModelType="Catfish.Core.Models.Metadata.DateField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <Description>Created date</Description>
+    </Field>
+    <Consent ModelType="Catfish.Core.Models.Metadata.DropDownMenu, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <Description>Consent field</Description>
+      <Options>
+        <Option>Agree</Option>
+        <Option>Disagree</Option>
+      </Options>
+    </Consent>
+  </Fields>
+</MetadataSet3>

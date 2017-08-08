@@ -20,13 +20,12 @@ namespace Catfish.Core.Models
         public int? EntityTypeId { get; set; }
         public EntityType EntityType { get; set; }
 
-        [ScriptIgnore]
-        public virtual ICollection<FieldValue> Metadata { get; set; }
+        ////public virtual ICollection<FieldValue> Metadata { get; set; }
 
         public Entity()
         {
             Created = DateTime.Now;
-            Metadata = new List<FieldValue>();
+            ////Metadata = new List<FieldValue>();
         }
     }
 }

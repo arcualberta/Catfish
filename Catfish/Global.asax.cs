@@ -26,7 +26,7 @@ namespace Catfish
             ModelMetadataProviders.Current = new Catfish.Areas.Manager.Helpers.ModelMetadataProvider();
 
             //Custom model binders
-            System.Web.Mvc.ModelBinders.Binders.Add(typeof(SimpleField), new MetadataFieldDefinitionBinder());
+            System.Web.Mvc.ModelBinders.Binders.Add(typeof(MetadataField), new MetadataFieldDefinitionBinder());
             System.Web.Mvc.ModelBinders.Binders.Add(typeof(OptionsField), new MetadataFieldDefinitionBinder());
 
             //Adding menu items

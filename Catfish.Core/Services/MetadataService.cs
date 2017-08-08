@@ -30,13 +30,34 @@ namespace Catfish.Core.Services
         /// <returns></returns>
         public List<Type> GetMetadataFieldTypes()
         {
-            var fieldTypes = typeof(SimpleField).Assembly.GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(SimpleField)) 
+            var fieldTypes = typeof(MetadataField).Assembly.GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(MetadataField)) 
                     && !t.CustomAttributes.Where(a => a.AttributeType.IsAssignableFrom(typeof(IgnoreAttribute))).Any())
                 .ToList();
 
 
             return fieldTypes;
+        }
+
+        public MetadataSet UpdateMetadataSet(MetadataDefinition metadataDefinition)
+        {
+            MetadataSet ms;
+            if (metadataDefinition.Id > 0)
+            {
+                ms = Db.MetadataSets.Where(m => m.Id == metadataDefinition.Id).FirstOrDefault();
+                if (ms == null)
+                    return null;
+
+                Db.Entry(ms).State = System.Data.Entity.EntityState.Modified;
+            }
+            else
+            {
+                ms = new MetadataSet();
+                Db.MetadataSets.Add(ms);
+            }
+            ms.Definition = metadataDefinition;
+            ms.Serialize();
+            return ms;
         }
 
 
