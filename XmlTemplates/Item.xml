@@ -1,19 +1,19 @@
-<item type="Video">
+<item entity-type="Video">
 	<description></description>
 	<metadata-sets>
-		<metadata-set ModelType="Catfish.Core.Models.Metadata.MetadataDefinition, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2">
-			<name>Dublin Core</name>
-			<description></description>
+		<metadata-set model-type="Catfish.Core.Models.Metadata.MetadataDefinition, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2">
+			<name xml:lang="en">Dublin Core</name>
+			<description xml:lang="en"></description>
 			<fields>
-				<filed type="Catfish.Core.Models.Metadata.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true">
+				<field model-type="Catfish.Core.Models.Metadata.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true">
 					<name xml:lang="en">Subject</name>
 					<name xml:lang="fr">Sujet</name>
 					<description xml:lang="en"></description>
-					<value xml:lang="en"></value>
+					<value xml:lang="en">Hello World</value>
 				</field>
 				<filed type="Catfish.Core.Models.Metadata.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false">
 					<name xml:lang="en">Description</name>
-					<description></description>
+					<description xml:lang="en"></description>
 					<value></value>
 				</field>
 			<fields>

@@ -67,11 +67,11 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Items/Edit/5
         public ActionResult Edit(int? id)
         {
-            Entity model;
+            Item model;
             if (id.HasValue)
-                model = db.Entities.Find(id);
+                model = db.Entities.Find(id) as Item;
             else
-                model = new Entity();
+                model = new Item();
 
             // Rendering these as json objects in view result in circular references 
             var metadataSets = db.MetadataSets.ToList();
@@ -87,16 +87,16 @@ namespace Catfish.Areas.Manager.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Created,Updated,EntityTypeId")] Entity entity)
+        public ActionResult Edit(Item model)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(entity).State = EntityState.Modified;
+                db.Entry(model).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.EntityTypeId = new SelectList(db.EntityTypes, "Id", "Name", entity.EntityTypeId);
-            return View(entity);
+            ViewBag.EntityTypeId = new SelectList(db.EntityTypes, "Id", "Name", model.EntityTypeId);
+            return View(model);
         }
 
         // GET: Manager/Items/Delete/5
