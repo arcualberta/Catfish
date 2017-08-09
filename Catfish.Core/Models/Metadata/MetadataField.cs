@@ -20,9 +20,9 @@ namespace Catfish.Core.Models.Metadata
         [DataType(DataType.MultilineText)]
         public string Help { get; set; }
 
-        [XmlIgnore]
-        [HiddenInput(DisplayValue = false)]
-        public int MetadataSetId { get; set; }
+        ////[XmlIgnore]
+        ////[HiddenInput(DisplayValue = false)]
+        ////public int MetadataSetId { get; set; }
 
         public override XElement ToXml()
         {
