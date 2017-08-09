@@ -1,4 +1,6 @@
-﻿@using Catfish.Core.Models.Metadata;
+﻿@model Catfish.Core.Models.Metadata.MetadataDefinition
+
+@using Catfish.Core.Models.Metadata;
 @using Catfish.Areas.Manager.Helpers;
 @using Catfish.Core.Models.Attributes
 
@@ -29,7 +31,6 @@
         var metadataSetId = "@Html.Raw(ViewBag.Id)"
 </script>
 }
-@model Catfish.Core.Models.Metadata.MetadataDefinition
 @{  ViewBag.Title = ViewBag.Id > 0 ? "Edit Metadata Definition" : "Create Metadata Definition"; }
 
 @section Toolbar {
