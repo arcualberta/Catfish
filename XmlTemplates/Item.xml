@@ -15,10 +15,10 @@
 					<description xml:lang="en"></description>
 					<value></value>
 				</field>
-			<fields>
+			</fields>
 		</metadata-set>
-		<metadata name="custom" type="descriptive">
-		</metadat>
+		<metadata-set name="custom" type="descriptive">
+		</metadata-set>
 	</metadata-sets>
 	<files>
 		<file>
