@@ -1,5 +1,4 @@
-<item entity-type="Video">
-	<description></description>
+<entity entity-type="Video" model-type="Catfish.Core.Model.Item">
 	<metadata-sets>
 		<metadata-set model-type="Catfish.Core.Models.Metadata.MetadataDefinition, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2">
 			<name xml:lang="en">Dublin Core</name>
@@ -22,39 +21,15 @@
 		</metadat>
 	</metadata-sets>
 	<files>
-	<file>
-	<metadata-sets>
-		<metadata name="xxxx" type="technical" version="1.0.0>
-			
-		</metadata>
-		<metadata name="custom" type="descriptive">
-		</metadat>
-	</metadata-sets>
-	</file>
+		<file>
+			<metadata-sets>
+				<metadata-set model-type="Catfish.Core.Models.Metadata.MetadataDefinition, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2">
+					<name xml:lang="en">Technical Metadata</name>
+				</metadata-set>
+				<metadata-set model-type="Catfish.Core.Models.Metadata.MetadataDefinition, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2">
+						<name xml:lang="en">Access Metadata</name>
+				</metadata-set>
+			</metadata-sets>
+		</file>
 	</files>
-
-
-</item>
-
-<Item>
-<Metadat-Sets>
-
-<MetadataSet Name="Dublin Core" ModelType="Catfish.Core.Models.Metadata.MetadataDefinition, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-  <Description>Metadata set #3 description</Description>
-  <Fields>
-    <Field Name="Subject" ModelType="Catfish.Core.Models.Metadata.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true">
-      <Description>Subject field</Description>
-	  <Value></Value>
-    </Field>
-    <Field Name="Created" ModelType="Catfish.Core.Models.Metadata.DateField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <Description>Created date</Description>
-    </Field>
-    <Consent ModelType="Catfish.Core.Models.Metadata.DropDownMenu, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <Description>Consent field</Description>
-      <Options>
-        <Option>Agree</Option>
-        <Option>Disagree</Option>
-      </Options>
-    </Consent>
-  </Fields>
-</MetadataSet3>
+</entity>
