@@ -39,12 +39,25 @@ export class MetadataSetFields extends FormFields {
         if (this.fieldsContainer.children().length == 0) {
             this.addField()
         }
+
+        this.populateFieldTypeSelector()
     }
 
     private initializeFieldTypes() {
         // window.fieldTypes and window.metadataSetId are provided by back end
         this.fieldTypes = fieldTypes
         this.metadataSetId = metadataSetId
+    }
+
+    private populateFieldTypeSelector() {
+        let fieldTypeSelector: JQuery = $("#field-type-selector")
+        for (let field of this.fieldTypes.fields) {
+            $(fieldTypeSelector).append($('<option>', {
+                value: field.ModelType,
+                text: field.Label
+            }))
+
+        }
     }
 
     private populateSelect() {

@@ -71,7 +71,8 @@ class ItemForm {
                 $(this).tab('show')
             })
 
-            $('#metadataset-tabs a:first').tab('show')        })
+            $('#metadataset-tabs a:first').tab('show')
+        })
     }
 
     private addValuesToEntityTypes() {
