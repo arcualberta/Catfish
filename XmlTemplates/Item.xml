@@ -10,7 +10,7 @@
 					<description xml:lang="en"></description>
 					<value xml:lang="en">Hello World</value>
 				</field>
-				<filed type="Catfish.Core.Models.Metadata.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false">
+				<field type="Catfish.Core.Models.Metadata.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false">
 					<name xml:lang="en">Description</name>
 					<description xml:lang="en"></description>
 					<value></value>
