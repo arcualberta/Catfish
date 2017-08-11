@@ -6,23 +6,24 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using System.Xml.Serialization;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace Catfish.Core.Models.Metadata
 {
     public class MetadataSet : XmlModel
     {
-        public int Id { get; set; }
-
         [Column(TypeName = "xml")]
         public string Content { get; set; }
 
+        [NotMapped]
         public virtual List<MetadataField> Fields
         {
             get
             {
-                GetChildModels()
+                List<XmlModel> fields = GetChildModels("/fields/field", Data);
+                return fields.Select(f => f as MetadataField).ToList();
             }
-            set;
+            //set;
         }
 
         private MetadataDefinition mDefinition;

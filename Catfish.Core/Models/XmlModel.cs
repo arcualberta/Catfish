@@ -16,8 +16,10 @@ namespace Catfish.Core.Models
 {
     public class XmlModel
     {
+        public int Id { get; set; }
+
         [NotMapped]
-       public XElement Data { get; protected set; }
+        public XElement Data { get; protected set; }
 
         [NotMapped]
         public string DefaultLanguage { get; set; }
@@ -64,13 +66,27 @@ namespace Catfish.Core.Models
 
         public IEnumerable<string> GetValues(string lang = null)
         {
-            var matches = GetMatches("value", Data, Lang(lang));
+            var matches = GetChildTextElements("value", Data, Lang(lang));
             return matches.Select(m => (m.FirstNode as XText).Value);
         }
 
         public void SetValues(IEnumerable<string> values, string lang = null)
         {
             SetChildText("value", values, Data, Lang(lang));
+        }
+
+        public List<XmlModel> GetChildModels(string xpath, XElement ele)
+        {
+            List<XmlModel> result = new List<XmlModel>();
+
+            IEnumerable<XElement> children = GetChildElements(xpath, ele);
+            foreach(XElement c in children)
+            {
+                XmlModel model = XmlModel.Parse(c);
+                result.Add(model);
+            }
+
+            return result;
         }
 
         protected string Lang(string lang)
@@ -80,7 +96,7 @@ namespace Catfish.Core.Models
 
         protected string GetChildText(string childTagName, XElement ele, string lang)
         {
-            var matches = GetMatches(childTagName, ele, lang);
+            var matches = GetChildTextElements(childTagName, ele, lang);
             return matches.Any() ? (matches.First().FirstNode as XText).Value : null;
         }
 
@@ -96,7 +112,7 @@ namespace Catfish.Core.Models
         /// <param name="lang"></param>
         protected void SetChildText(string childTagName, string val, XElement ele, string lang)
         {
-            var matches = GetMatches(childTagName, ele, lang);
+            var matches = GetChildTextElements(childTagName, ele, lang);
 
             XElement textEelemnt = null;
             if (matches.Any())
@@ -150,18 +166,22 @@ namespace Catfish.Core.Models
         /// <param name="lang"></param>
         protected void RemoveChildTextElements(string childTagName, XElement ele, string lang)
         {
-            var matches = GetMatches(childTagName, ele, lang).ToList();
+            var matches = GetChildTextElements(childTagName, ele, lang).ToList();
             foreach (var text in matches)
                 text.Remove();
         }
 
-        protected IEnumerable<XElement> GetMatches(string childTagName, XElement ele, string lang)
+        protected IEnumerable<XElement> GetChildTextElements(string childTagName, XElement ele, string lang)
         {
-            var xpath = "/" + childTagName + "/text[@xml:lang='" + lang + "']";
+            var xpath = "./" + childTagName + "/text[@xml:lang='" + lang + "']";
 
-            var matches = ((IEnumerable)ele.XPathEvaluate(xpath, NamespaceManager)).Cast<XElement>();
+            //var matches = ((IEnumerable)ele.XPathEvaluate(xpath, NamespaceManager)).Cast<XElement>();
+            return GetChildElements(xpath, ele);
+        }
 
-            return matches;
+        protected IEnumerable<XElement> GetChildElements(string xpath, XElement ele)
+        {
+            return ((IEnumerable)ele.XPathEvaluate(xpath, NamespaceManager)).Cast<XElement>();
         }
 
         protected XmlNamespaceManager NamespaceManager
@@ -230,23 +250,24 @@ namespace Catfish.Core.Models
             Data = ele;
         }
 
-        public static XmlModel Parse(XElement ele)
+        public static XmlModel Parse(XElement ele, string defaultLang = "en")
         {
             string typeString = ele.Attribute("model-type").Value;
             var type = Type.GetType(typeString);
-            XmlModel field = Activator.CreateInstance(type) as XmlModel;
-            field.Initialize(ele);
-            return field;
+            XmlModel model = Activator.CreateInstance(type) as XmlModel;
+            model.Initialize(ele);
+            model.DefaultLanguage = defaultLang;
+            return model;
         }
 
-        public List<XmlModel> GetChildModels(string xPath)
-        {
-            IEnumerable<XElement> children = Data.Elements(childTagName);
-            List<XmlModel> result = new List<XmlModel>();
-            foreach (XElement c in children)
-                result.Add(XmlModel.Parse(c));
-            return result;
-        }
+        //public List<XmlModel> GetChildModels(string xPath)
+        //{
+        //    IEnumerable<XElement> children = Data.Elements(childTagName);
+        //    List<XmlModel> result = new List<XmlModel>();
+        //    foreach (XElement c in children)
+        //        result.Add(XmlModel.Parse(c));
+        //    return result;
+        //}
 
         protected static string GetAtt(XElement ele, string attName, string defaultValue = null)
         {

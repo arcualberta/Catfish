@@ -1,14 +1,15 @@
 <entity entity-type="Video" model-type="Catfish.Core.Model.Item">
 	<metadata-sets>
-		<metadata-set model-type="Catfish.Core.Models.Metadata.MetadataDefinition, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2">
+		<metadata-set model-type="Catfish.Core.Models.Metadata.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2">
 			<name>
 				<text xml:lang="en">Dublin Core</text>
 				<text xml:lang="fr">Dublin Core</text>
 			</name>
 			<description>
 				<text xml:lang="en">This is the Dublin Core metadata set.</text>
-				<text xml:lang="fr">Il s'agit du jeu de métadonnées Dublin Core.</text>
+				<text xml:lang="fr">Il s` agit du jeu de métadonnées Dublin Core.</text>
 			</description>
+			<value/>
 			<fields>
 				<field model-type="Catfish.Core.Models.Metadata.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true">
 					<name>
@@ -31,7 +32,7 @@
 						<text xml:lang="en">Bonjour salut le monde</text>
 					</value>
 				</field>
-				<field type="Catfish.Core.Models.Metadata.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false">
+				<field model-type="Catfish.Core.Models.Metadata.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false">
 					<name>
 						<text xml:lang="en">Description</text>
 						<text xml:lang="fr">La description</text>
@@ -49,17 +50,17 @@
 						<text xml:lang="en">Hello Hello World</text>
 						<text xml:lang="en">Hello Hello Hello World</text>
 						<text xml:lang="fr">Bonjour le monde</text>
-						<text xml:lang="en">Bonjour salut le monde</text>
+						<text xml:lang="fr">Bonjour salut le monde</text>
 					</value>
 				</field>
 				<field model-type="Catfish.Core.Models.Metadata.RadioButtonSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true">
 					<name>
-						<text xml:lang="en">Check box 1</text>
-						<text xml:lang="fr">Cochez la case 1</text>
+						<text xml:lang="en">Radio button set 1</text>
+						<text xml:lang="fr">Réglage du bouton radio 1</text>
 					</name>
 					<description>
-						<text xml:lang="en">This is a check box.</text>
-						<text xml:lang="fr">Ceci est une case à cocher.</text>
+						<text xml:lang="en">This is a radio button set.</text>
+						<text xml:lang="fr">Il s`agit d`un jeu de boutons radio</text>
 					</description>
 					<help>
 						<text xml:lang="en"></text>
@@ -68,10 +69,10 @@
 					<options>
 						<option>
 							<text xml:lang="en">First option</text>
-							<text xml:lang="fr">Second option</text>
+							<text xml:lang="fr">Première option</text>
 						</option>
 						<option selected="true">
-							<text xml:lang="en">First option</text>
+							<text xml:lang="en">Second option</text>
 							<text xml:lang="fr">Deuxième option</text>
 						</option>
 						<option>

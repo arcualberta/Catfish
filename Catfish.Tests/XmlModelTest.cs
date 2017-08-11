@@ -43,7 +43,7 @@ namespace Catfish.Tests
             Assert.AreEqual("Dublin Core", name);
 
             var desc = model.GetDescription("fr");
-            Assert.AreEqual("Il s'agit du jeu de métadonnées Dublin Core.", desc);
+            Assert.AreEqual("Il sagit du jeu de métadonnées Dublin Core.", desc);
 
             var vals = model.GetValues();
 

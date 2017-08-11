@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 using Catfish.Core.Models.Attributes;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Catfish.Core.Models.Metadata
 {
@@ -11,7 +12,26 @@ namespace Catfish.Core.Models.Metadata
     {
         [DataType(DataType.MultilineText)]
         [TypeLabel("List of options, one option per line")]
-        public string Options { get; set; }
+        public string Options
+        {
+            get
+            {
+                return GetOptions("en");
+            }
+            //set;
+        }
+
+        public string GetOptions(string lang = null)
+        {
+            if (lang == null)
+                lang = DefaultLanguage;
+
+            XElement options_element = Data.Element("options");
+            IEnumerable<XElement> option_text_elements = GetChildTextElements("option", options_element, lang);
+            IEnumerable<string> options = option_text_elements.Select(op => op.Value);
+            string result = string.Join("\n", options);
+            return result;
+        }
 
         ////////public override XElement ToXml()
         ////////{
