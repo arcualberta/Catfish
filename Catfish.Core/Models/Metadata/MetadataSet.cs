@@ -16,6 +16,15 @@ namespace Catfish.Core.Models.Metadata
         [Column(TypeName = "xml")]
         public string Content { get; set; }
 
+        public virtual List<MetadataField> Fields
+        {
+            get
+            {
+                GetChildModels()
+            }
+            set;
+        }
+
         private MetadataDefinition mDefinition;
         [NotMapped]
         public MetadataDefinition Definition

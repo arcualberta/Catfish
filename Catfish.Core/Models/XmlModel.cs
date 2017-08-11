@@ -239,6 +239,15 @@ namespace Catfish.Core.Models
             return field;
         }
 
+        public List<XmlModel> GetChildModels(string xPath)
+        {
+            IEnumerable<XElement> children = Data.Elements(childTagName);
+            List<XmlModel> result = new List<XmlModel>();
+            foreach (XElement c in children)
+                result.Add(XmlModel.Parse(c));
+            return result;
+        }
+
         protected static string GetAtt(XElement ele, string attName, string defaultValue = null)
         {
             var att = ele.Attribute(attName);
