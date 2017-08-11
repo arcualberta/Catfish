@@ -24,25 +24,25 @@ namespace Catfish.Core.Models.Metadata
         ////[HiddenInput(DisplayValue = false)]
         ////public int MetadataSetId { get; set; }
 
-        public override XElement ToXml()
-        {
-            XElement ele = base.ToXml();
+        ////////public override XElement ToXml()
+        ////////{
+        ////////    XElement ele = base.ToXml();
 
-            if (IsRequired)
-                ele.SetAttributeValue("IsRequired", IsRequired);
+        ////////    if (IsRequired)
+        ////////        ele.SetAttributeValue("IsRequired", IsRequired);
 
-            if (!string.IsNullOrWhiteSpace(Help))
-                ele.Add(new XElement("Help") { Value = Help });
+        ////////    if (!string.IsNullOrWhiteSpace(Help))
+        ////////        ele.Add(new XElement("Help") { Value = Help });
 
-            return ele;
-        }
+        ////////    return ele;
+        ////////}
 
-        public override void Initialize(XElement ele)
-        {
-            base.Initialize(ele);
-            this.IsRequired = bool.Parse(GetAtt(ele, "IsRequired", "false"));
-            this.Help = GetChildText(ele, "Help");
-        }
+        ////////public override void Initialize(XElement ele)
+        ////////{
+        ////////    base.Initialize(ele);
+        ////////    this.IsRequired = bool.Parse(GetAtt(ele, "IsRequired", "false"));
+        ////////    this.Help = GetChildText(ele, "Help");
+        ////////}
 
     }
 }

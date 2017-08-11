@@ -11,7 +11,7 @@ using System.Xml.Linq;
 namespace Catfish.Core.Models.Metadata
 {
     [TypeLabel("Metadata Definition")]
-    public class MetadataDefinition : XmlModel
+    public class MetadataDefinition
     {
         [XmlIgnore]
         public int Id { get; set; }
@@ -23,29 +23,37 @@ namespace Catfish.Core.Models.Metadata
             Fields = new List<MetadataField>();
         }
 
-        public override XElement ToXml()
+        private XmlModel Data;
+
+        public MetadataDefinition(XmlModel data, int id)
         {
-            XElement ele = base.ToXml();
-
-            XElement fieldEnvelope = new XElement("Fields");
-
-            foreach (var field in Fields)
-                fieldEnvelope.Add(field.ToXml());
-
-            ele.Add(fieldEnvelope);
-
-            return ele;
+            Id = id;
+            Data = data;
         }
-        public override void Initialize(XElement ele)
-        {
-            base.Initialize(ele);
 
-            var fields = ele.Element("Fields").Elements();
-            foreach(var xml in fields)
-            {
-                MetadataField field = XmlModel.Parse(xml) as MetadataField;
-                this.Fields.Add(field);
-            }
-        }
+        ////////public override XElement ToXml()
+        ////////{
+        ////////    XElement ele = base.ToXml();
+
+        ////////    XElement fieldEnvelope = new XElement("Fields");
+
+        ////////    foreach (var field in Fields)
+        ////////        fieldEnvelope.Add(field.ToXml());
+
+        ////////    ele.Add(fieldEnvelope);
+
+        ////////    return ele;
+        ////////}
+        ////////public override void Initialize(XElement ele)
+        ////////{
+        ////////    base.Initialize(ele);
+
+        ////////    var fields = ele.Element("Fields").Elements();
+        ////////    foreach(var xml in fields)
+        ////////    {
+        ////////        MetadataField field = XmlModel.Parse(xml) as MetadataField;
+        ////////        this.Fields.Add(field);
+        ////////    }
+        ////////}
     }
 }

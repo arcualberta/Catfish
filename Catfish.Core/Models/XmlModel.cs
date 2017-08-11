@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,18 +16,21 @@ namespace Catfish.Core.Models
 {
     public class XmlModel
     {
+        [NotMapped]
        public XElement Data { get; protected set; }
 
+        [NotMapped]
         public string DefaultLanguage { get; set; }
 
-        public XmlModel()
+        public XmlModel(string defaultLang = "en")
         {
+            DefaultLanguage = defaultLang;
         }
 
-        public XmlModel(XElement ele, string lang = "en")
+        public XmlModel(XElement ele, string defaultLang = "en")
         {
             Data = ele;
-            DefaultLanguage = lang;
+            DefaultLanguage = defaultLang;
         }
 
         public string GetName(string lang = null)
@@ -175,59 +179,60 @@ namespace Catfish.Core.Models
         }
         private XmlNamespaceManager mXmlNamespaceManager;
 
-        [Required]
-        [TypeLabel("String")]
-        public string Name { get; set; }
+        ////////[Required]
+        ////////[TypeLabel("String")]
+        ////////public string Name { get; set; }
 
-        [DataType(DataType.MultilineText)]
-        [TypeLabel("String")]
-        public string Description { get; set; }
+        ////////[DataType(DataType.MultilineText)]
+        ////////[TypeLabel("String")]
+        ////////public string Description { get; set; }
 
 
-        public virtual XElement ToXml()
-        {
-            string tagName = Name;
+        ////////public virtual XElement ToXml()
+        ////////{
+        ////////    string tagName = Name;
 
-            if (string.IsNullOrWhiteSpace(tagName))
-                tagName = GetType().ToString();
+        ////////    if (string.IsNullOrWhiteSpace(tagName))
+        ////////        tagName = GetType().ToString();
 
-            tagName = Regex.Replace(tagName, @"\s+", string.Empty);
+        ////////    tagName = Regex.Replace(tagName, @"\s+", string.Empty);
 
-            try
-            {
-                tagName = XmlConvert.VerifyName(tagName);
-            }
-            catch(ArgumentNullException)
-            {
-                tagName = "Document";
-            }
-            catch(XmlException)
-            {
-                tagName = XmlConvert.EncodeName(tagName);
-            }
+        ////////    try
+        ////////    {
+        ////////        tagName = XmlConvert.VerifyName(tagName);
+        ////////    }
+        ////////    catch(ArgumentNullException)
+        ////////    {
+        ////////        tagName = "Document";
+        ////////    }
+        ////////    catch(XmlException)
+        ////////    {
+        ////////        tagName = XmlConvert.EncodeName(tagName);
+        ////////    }
 
-            XElement ele = new XElement(tagName);
+        ////////    XElement ele = new XElement(tagName);
 
-            if (Name != tagName)
-                ele.SetAttributeValue("Name", string.IsNullOrEmpty(Name) ? "" : Name);
+        ////////    if (Name != tagName)
+        ////////        ele.SetAttributeValue("Name", string.IsNullOrEmpty(Name) ? "" : Name);
 
-            ele.SetAttributeValue("ModelType", GetType().AssemblyQualifiedName);
+        ////////    ele.SetAttributeValue("ModelType", GetType().AssemblyQualifiedName);
 
-            if (!string.IsNullOrWhiteSpace(Description))
-                ele.Add(new XElement("Description") { Value = Description });
+        ////////    if (!string.IsNullOrWhiteSpace(Description))
+        ////////        ele.Add(new XElement("Description") { Value = Description });
 
-            return ele;
-        }
+        ////////    return ele;
+        ////////}
 
         public virtual void Initialize(XElement ele)
         {
-            this.Name = GetAtt(ele, "Name", ele.Name.LocalName);
-            this.Description = GetChildText(ele, "Description");
+            ////////this.Name = GetAtt(ele, "Name", ele.Name.LocalName);
+            ////////this.Description = GetChildText(ele, "Description");
+            Data = ele;
         }
 
         public static XmlModel Parse(XElement ele)
         {
-            string typeString = ele.Attribute("ModelType").Value;
+            string typeString = ele.Attribute("model-type").Value;
             var type = Type.GetType(typeString);
             XmlModel field = Activator.CreateInstance(type) as XmlModel;
             field.Initialize(ele);
