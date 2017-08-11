@@ -1,0 +1,83 @@
+<metadata-set model-type="Catfish.Core.Models.Metadata.MetadataDefinition, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2">
+	<name>
+		<text xml:lang="en">Dublin Core</text>
+		<text xml:lang="fr">Dublin Core</text>
+	</name>
+	<description>
+		<text xml:lang="en">This is the Dublin Core metadata set.</text>
+		<text xml:lang="fr">Il s'agit du jeu de métadonnées Dublin Core.</text>
+	</description>
+	<value/>
+	<fields>
+		<field model-type="Catfish.Core.Models.Metadata.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true">
+			<name>
+				<text xml:lang="en">Subject</text>
+				<text xml:lang="fr">Sujet</text>
+			</name>
+			<description>
+				<text xml:lang="en">Enter the subject here.</text>
+				<text xml:lang="fr">Entrez le sujet ici.</text>
+			</description>
+			<help>
+				<text xml:lang="en"></text>
+				<text xml:lang="fr"></text>
+			</help>
+			<value>
+				<text xml:lang="en">Hello World</text>
+				<text xml:lang="en">Hello Hello World</text>
+				<text xml:lang="en">Hello Hello Hello World</text>
+				<text xml:lang="fr">Bonjour le monde</text>
+				<text xml:lang="en">Bonjour salut le monde</text>
+			</value>
+		</field>
+		<field type="Catfish.Core.Models.Metadata.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false">
+			<name>
+				<text xml:lang="en">Description</text>
+				<text xml:lang="fr">La description</text>
+			</name>
+			<description>
+				<text xml:lang="en">Enter the description here.</text>
+				<text xml:lang="fr">Entrez la description ici.</text>
+			</description>
+			<help>
+				<text xml:lang="en"></text>
+				<text xml:lang="fr"></text>
+			</help>
+			<value>
+				<text xml:lang="en">Hello World</text>
+				<text xml:lang="en">Hello Hello World</text>
+				<text xml:lang="en">Hello Hello Hello World</text>
+				<text xml:lang="fr">Bonjour le monde</text>
+				<text xml:lang="fr">Bonjour salut le monde</text>
+			</value>
+		</field>
+		<field model-type="Catfish.Core.Models.Metadata.RadioButtonSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true">
+			<name>
+				<text xml:lang="en">Check box 1</text>
+				<text xml:lang="fr">Cochez la case 1</text>
+			</name>
+			<description>
+				<text xml:lang="en">This is a check box.</text>
+				<text xml:lang="fr">Ceci est une case à cocher.</text>
+			</description>
+			<help>
+				<text xml:lang="en"></text>
+				<text xml:lang="fr"></text>
+			</help>					
+			<options>
+				<option>
+					<text xml:lang="en">First option</text>
+					<text xml:lang="fr">Second option</text>
+				</option>
+				<option selected="true">
+					<text xml:lang="en">First option</text>
+					<text xml:lang="fr">Deuxième option</text>
+				</option>
+				<option>
+					<text xml:lang="en">Third option</text>
+					<text xml:lang="fr">Troisième option</text>
+				</option>
+			</options>
+		</field>
+	</fields>
+</metadata-set>

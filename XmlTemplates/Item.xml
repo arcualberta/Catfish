@@ -88,12 +88,6 @@
 	<files>
 		<file>
 			<metadata-sets>
-				<metadata-set model-type="Catfish.Core.Models.Metadata.MetadataDefinition, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2">
-					<name xml:lang="en">Technical Metadata</name>
-				</metadata-set>
-				<metadata-set model-type="Catfish.Core.Models.Metadata.MetadataDefinition, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2">
-						<name xml:lang="en">Access Metadata</name>
-				</metadata-set>
 			</metadata-sets>
 		</file>
 	</files>
