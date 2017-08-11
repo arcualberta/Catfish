@@ -72,7 +72,7 @@ namespace Catfish.Core.Models
         public IEnumerable<string> GetValues(string lang = null)
         {
             var matches = GetChildTextElements("value", Data, Lang(lang));
-            return matches.Select(m => (m.FirstNode as XText).Value);
+            return matches.Select(m => (m.Value));
         }
 
         public void SetValues(IEnumerable<string> values, string lang = null)
@@ -102,7 +102,7 @@ namespace Catfish.Core.Models
         protected string GetChildText(string childTagName, XElement ele, string lang)
         {
             var matches = GetChildTextElements(childTagName, ele, lang);
-            return matches.Any() ? (matches.First().FirstNode as XText).Value : null;
+            return matches.Any() ? matches.First().Value : null;
         }
 
         /// <summary>
