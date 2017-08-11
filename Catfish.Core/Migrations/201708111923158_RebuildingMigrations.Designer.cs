@@ -7,13 +7,13 @@ namespace Catfish.Core.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class RemoveSimpleFieldFromDatabase : IMigrationMetadata
+    public sealed partial class RebuildingMigrations : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(RemoveSimpleFieldFromDatabase));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(RebuildingMigrations));
         
         string IMigrationMetadata.Id
         {
-            get { return "201706070723531_RemoveSimpleFieldFromDatabase"; }
+            get { return "201708111923158_RebuildingMigrations"; }
         }
         
         string IMigrationMetadata.Source

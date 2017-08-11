@@ -166,6 +166,13 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataSet.cshtml" />
     <Content Include="Areas\Manager\Views\Items\Index.cshtml" />
     <Content Include="Areas\Manager\Views\Items\Edit.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\EditItem.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataInput.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\TextField.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\TextArea.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\CheckBoxSet.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DateField.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\RadioButtonSet.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

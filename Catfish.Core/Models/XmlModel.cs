@@ -29,6 +29,11 @@ namespace Catfish.Core.Models
             DefaultLanguage = defaultLang;
         }
 
+        public XmlModel()
+        {
+            DefaultLanguage = "en";
+        }
+
         public XmlModel(XElement ele, string defaultLang = "en")
         {
             Data = ele;
@@ -260,6 +265,12 @@ namespace Catfish.Core.Models
             return model;
         }
 
+        public static XmlModel Load(string uri, string defaultLang = "en")
+        {
+            XElement root = XElement.Load(uri);
+            return Parse(root, defaultLang);
+        }
+
         //public List<XmlModel> GetChildModels(string xPath)
         //{
         //    IEnumerable<XElement> children = Data.Elements(childTagName);
@@ -269,16 +280,16 @@ namespace Catfish.Core.Models
         //    return result;
         //}
 
-        protected static string GetAtt(XElement ele, string attName, string defaultValue = null)
-        {
-            var att = ele.Attribute(attName);
-            return att == null ? defaultValue : att.Value;
-        }
-        protected static string GetChildText(XElement ele, string childTagName, string defaultValue = null)
-        {
-            var child = ele.Element(childTagName);
-            return child == null ? defaultValue : child.Value;
-        }
+        ////protected static string GetAtt(XElement ele, string attName, string defaultValue = null)
+        ////{
+        ////    var att = ele.Attribute(attName);
+        ////    return att == null ? defaultValue : att.Value;
+        ////}
+        ////protected static string GetChildText(XElement ele, string childTagName, string defaultValue = null)
+        ////{
+        ////    var child = ele.Element(childTagName);
+        ////    return child == null ? defaultValue : child.Value;
+        ////}
 
     }
 }

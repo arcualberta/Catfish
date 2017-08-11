@@ -53,45 +53,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Migrations\201705031907145_CreatedBasicCollectionAndItemModels.cs" />
-    <Compile Include="Migrations\201705031907145_CreatedBasicCollectionAndItemModels.Designer.cs">
-      <DependentUpon>201705031907145_CreatedBasicCollectionAndItemModels.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201705032318050_AddedMetadataModels.cs" />
-    <Compile Include="Migrations\201705032318050_AddedMetadataModels.Designer.cs">
-      <DependentUpon>201705032318050_AddedMetadataModels.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201705121835020_AddedIsRequiredAndToolTipToMetadataField.cs" />
-    <Compile Include="Migrations\201705121835020_AddedIsRequiredAndToolTipToMetadataField.Designer.cs">
-      <DependentUpon>201705121835020_AddedIsRequiredAndToolTipToMetadataField.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201705262229084_RenamedMetadataFieldoSimpleField.cs" />
-    <Compile Include="Migrations\201705262229084_RenamedMetadataFieldoSimpleField.Designer.cs">
-      <DependentUpon>201705262229084_RenamedMetadataFieldoSimpleField.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201706060551401_SwappedKeysInEntityTypeHasMetadataSetsTable.cs" />
-    <Compile Include="Migrations\201706060551401_SwappedKeysInEntityTypeHasMetadataSetsTable.Designer.cs">
-      <DependentUpon>201706060551401_SwappedKeysInEntityTypeHasMetadataSetsTable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201706070439102_RemovedFieldValueModel.cs" />
-    <Compile Include="Migrations\201706070439102_RemovedFieldValueModel.Designer.cs">
-      <DependentUpon>201706070439102_RemovedFieldValueModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201706070457140_AddedXmlContentPropertyToMetadataSet.cs" />
-    <Compile Include="Migrations\201706070457140_AddedXmlContentPropertyToMetadataSet.Designer.cs">
-      <DependentUpon>201706070457140_AddedXmlContentPropertyToMetadataSet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201706070511301_RemovedNameAndDescriptionFromMetadataSetModel.cs" />
-    <Compile Include="Migrations\201706070511301_RemovedNameAndDescriptionFromMetadataSetModel.Designer.cs">
-      <DependentUpon>201706070511301_RemovedNameAndDescriptionFromMetadataSetModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201706070644087_RemovedSimpleFieldFromMetadataSet.cs" />
-    <Compile Include="Migrations\201706070644087_RemovedSimpleFieldFromMetadataSet.Designer.cs">
-      <DependentUpon>201706070644087_RemovedSimpleFieldFromMetadataSet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201706070723531_RemoveSimpleFieldFromDatabase.cs" />
-    <Compile Include="Migrations\201706070723531_RemoveSimpleFieldFromDatabase.Designer.cs">
-      <DependentUpon>201706070723531_RemoveSimpleFieldFromDatabase.cs</DependentUpon>
+    <Compile Include="Migrations\201708111923158_RebuildingMigrations.cs" />
+    <Compile Include="Migrations\201708111923158_RebuildingMigrations.Designer.cs">
+      <DependentUpon>201708111923158_RebuildingMigrations.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Aggregation.cs" />
@@ -125,37 +89,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201705031907145_CreatedBasicCollectionAndItemModels.resx">
-      <DependentUpon>201705031907145_CreatedBasicCollectionAndItemModels.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705032318050_AddedMetadataModels.resx">
-      <DependentUpon>201705032318050_AddedMetadataModels.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705121835020_AddedIsRequiredAndToolTipToMetadataField.resx">
-      <DependentUpon>201705121835020_AddedIsRequiredAndToolTipToMetadataField.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705262229084_RenamedMetadataFieldoSimpleField.resx">
-      <DependentUpon>201705262229084_RenamedMetadataFieldoSimpleField.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201706060551401_SwappedKeysInEntityTypeHasMetadataSetsTable.resx">
-      <DependentUpon>201706060551401_SwappedKeysInEntityTypeHasMetadataSetsTable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201706070439102_RemovedFieldValueModel.resx">
-      <DependentUpon>201706070439102_RemovedFieldValueModel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201706070457140_AddedXmlContentPropertyToMetadataSet.resx">
-      <DependentUpon>201706070457140_AddedXmlContentPropertyToMetadataSet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201706070511301_RemovedNameAndDescriptionFromMetadataSetModel.resx">
-      <DependentUpon>201706070511301_RemovedNameAndDescriptionFromMetadataSetModel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201706070644087_RemovedSimpleFieldFromMetadataSet.resx">
-      <DependentUpon>201706070644087_RemovedSimpleFieldFromMetadataSet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201706070723531_RemoveSimpleFieldFromDatabase.resx">
-      <DependentUpon>201706070723531_RemoveSimpleFieldFromDatabase.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201708111923158_RebuildingMigrations.resx">
+      <DependentUpon>201708111923158_RebuildingMigrations.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

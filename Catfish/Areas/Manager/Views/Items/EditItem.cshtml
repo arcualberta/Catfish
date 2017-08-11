@@ -1,0 +1,35 @@
+﻿@model Catfish.Core.Models.Item
+
+@{  ViewBag.Title = Model.Id > 0 ? "Edit Item" : "Create Item"; }
+
+@section Toolbar {
+    @Html.Partial("Partial/EditToolbar")
+}
+
+@ViewBag.Status
+<br />
+
+@{ Html.BeginForm(); }
+@Html.HiddenFor(m => m.Id)
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(true)
+<div>
+@{ int idx = 0;}
+
+    <ul>
+        @foreach (var name in Model.MetadataSets.Select(ms => ms.GetName()))
+        {
+            <li>@name</li>
+            ++idx;
+        }
+    </ul>
+    @{ idx = 0;}
+    @foreach (var ms in Model.MetadataSets)
+    {
+        <div>@Html.EditorFor(m => ms, "MetadataInput")</div>
+        ++idx;
+    }
+</div>
+
+
+@{ Html.EndForm(); }

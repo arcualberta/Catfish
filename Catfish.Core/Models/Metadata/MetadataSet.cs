@@ -20,7 +20,7 @@ namespace Catfish.Core.Models.Metadata
         {
             get
             {
-                List<XmlModel> fields = GetChildModels("/fields/field", Data);
+                List<XmlModel> fields = GetChildModels("fields/field", Data);
                 return fields.Select(f => f as MetadataField).ToList();
             }
             //set;
