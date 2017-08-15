@@ -32,7 +32,53 @@
 </select>
 
 
-<ul id="metadataset-tabs" data-bind="foreach: selectedEntityType().MetadataSets" class="nav nav-tabs" role="tablist">
+<div class="container">
+
+    <ul class="tabs">
+        <li class="tab-link current" data-tab="tab-1">Tab One</li>
+        <li class="tab-link" data-tab="tab-2">Tab Two</li>
+        <li class="tab-link" data-tab="tab-3">Tab Three</li>
+        <li class="tab-link" data-tab="tab-4">Tab Four</li>
+    </ul>
+
+    <div id="tab-1" class="tab-content current">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    </div>
+    <div id="tab-2" class="tab-content">
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </div>
+    <div id="tab-3" class="tab-content">
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+    </div>
+    <div id="tab-4" class="tab-content">
+        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    </div>
+
+</div><!-- container -->
+
+<!--
+    <div id="tabs">
+    <ul>
+        <li><a href="#fragment-1"><span>One</span></a></li>
+        <li><a href="#fragment-2"><span>Two</span></a></li>
+        <li><a href="#fragment-3"><span>Three</span></a></li>
+    </ul>
+    <div id="fragment-1">
+        <p>First tab is active by default:</p>
+        <pre><code>$( "#tabs" ).tabs(); </code></pre>
+    </div>
+    <div id="fragment-2">
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+    </div>
+    <div id="fragment-3">
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+    </div>
+</div>
+    -->
+<!--<ul id="metadataset-tabs" data-bind="foreach: selectedEntityType().MetadataSets" class="nav nav-tabs" role="tablist">
     <li role="presentation">
         <a class="tab" role="tab" data-toggle="tab" data-bind="{
            attr: {
@@ -50,7 +96,8 @@
     <li data-bind="text: Name">
     </li>
     <li>
-        <ul data-bind="foreach: Fields">
+        <div data-bind="text: Definition.Fields.length"></div>
+        <ul data-bind="foreach: Definition.Fields">
             <li>
                 <div data-bind="template: {name: Type}"></div>
             </li>
@@ -59,7 +106,7 @@
 </ul>
 
 
-
+-->
 
 <!--
 Catfish.Core.Models.Metadata.TextField

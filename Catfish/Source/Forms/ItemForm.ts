@@ -1,6 +1,7 @@
 ﻿import * as $ from "jquery"
 import * as ko from "knockout"
-import "bootstrap"
+import "jquery-ui"
+//import "bootstrap"
 
 interface EntityType {
     MetadataSets: Metadataset[];
@@ -9,11 +10,13 @@ interface EntityType {
     Description: string;
 }
 
+
 class Metadataset {
     Fields: Field[];
     Id: number;
     Name: string;
     Description: string;
+    Definition: any;
     getUrlId: Function;
 
     public constructor() {
@@ -21,6 +24,8 @@ class Metadataset {
             return "#" + this.Id
         }
 
+
+      
 
         /*
         $('.tab').click(function (e) {
@@ -61,7 +66,9 @@ class ItemForm {
 
     constructor() {
         this.entityTypes = metadata['entityTypes']
+        console.log(this.entityTypes)
         this.selectedEntityType = ko.observable<EntityType>(this.entityTypes[0])
+        console.log(this.selectedEntityType().MetadataSets)
         this.addValuesToEntityTypes()
 
         this.selectedEntityType.subscribe((latest) => {
@@ -71,14 +78,26 @@ class ItemForm {
                 $(this).tab('show')
             })
 
-            $('#metadataset-tabs a:first').tab('show')
+            //$('#metadataset-tabs a:first').tab('show')
+        })
+        //$("#tabs").tabs();
+
+        $('ul.tabs li').click(function () {
+            console.log("test")
+            var tab_id = $(this).attr('data-tab');
+
+            $('ul.tabs li').removeClass('current');
+            $('.tab-content').removeClass('current');
+
+            $(this).addClass('current');
+            $("#" + tab_id).addClass('current');
         })
     }
 
     private addValuesToEntityTypes() {
         for (let entityType of this.entityTypes) {          
             for (let metadataSet of entityType.MetadataSets) {
-                for (let field of metadataSet.Fields) {
+                for (let field of metadataSet.Definition.Fields) {
                     field.Value = ""
                     if (field.Options) {
                         field.OptionsArray = field.Options.split("\n")
