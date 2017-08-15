@@ -8,6 +8,9 @@ using System.Web;
 using System.Web.Mvc;
 using Catfish.Core.Models;
 using System.Web.Script.Serialization;
+using System.IO;
+using System.Xml.Linq;
+using System.Web.Configuration;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -19,7 +22,7 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Index()
         {
 
-            var entities = db.Entities.Include(e => e.EntityType);
+            var entities = db.XmlModels.Where(m => m is Entity).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
             return View(entities);
         }
 
@@ -30,7 +33,7 @@ namespace Catfish.Areas.Manager.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Entity entity = db.Entities.Find(id);
+            Entity entity = db.XmlModels.Find(id) as Entity;
             if (entity == null)
             {
                 return HttpNotFound();
@@ -67,19 +70,25 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Items/Edit/5
         public ActionResult Edit(int? id)
         {
-            Entity model;
+            Item model;
             if (id.HasValue)
-                model = db.Entities.Find(id);
+                model = db.XmlModels.Find(id) as Item;
             else
-                model = new Entity();
+            {
+                string filename = "Item.xml";
+                var path = WebConfigurationManager.AppSettings["TestDataFolder"];
+                path = Path.Combine(path, filename);
+                model = XmlModel.Load(path) as Item;
 
-            // Rendering these as json objects in view result in circular references 
-            var metadataSets = db.MetadataSets.ToList();
-            var entityTypes = db.EntityTypes.ToList();
-            ViewBag.EntityTypes = new JavaScriptSerializer().Serialize(entityTypes);//Json(db.EntityTypes.ToList());
-            ViewBag.MetadataSets = new JavaScriptSerializer().Serialize(metadataSets);//Json(db.MetadataSets.ToList());
+            }
 
-            return View(model);
+            ////// Rendering these as json objects in view result in circular references 
+            ////var metadataSets = db.MetadataSets.ToList();
+            ////var entityTypes = db.EntityTypes.ToList();
+            ////ViewBag.EntityTypes = new JavaScriptSerializer().Serialize(entityTypes);//Json(db.EntityTypes.ToList());
+            ////ViewBag.MetadataSets = new JavaScriptSerializer().Serialize(metadataSets);//Json(db.MetadataSets.ToList());
+
+            return View("EditItem", model);
         }
 
         // POST: Manager/Items/Edit/5
@@ -87,16 +96,19 @@ namespace Catfish.Areas.Manager.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Created,Updated,EntityTypeId")] Entity entity)
+        public ActionResult Edit(Item model)
         {
+            HttpContextBase ctx = this.HttpContext;
+
             if (ModelState.IsValid)
             {
-                db.Entry(entity).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                ViewBag.Status = "Validation Passed";
+                //db.Entry(model).State = EntityState.Modified;
+                //db.SaveChanges();
+                //return RedirectToAction("Index");
             }
-            ViewBag.EntityTypeId = new SelectList(db.EntityTypes, "Id", "Name", entity.EntityTypeId);
-            return View(entity);
+            //ViewBag.EntityTypeId = new SelectList(db.EntityTypes, "Id", "Name", model.EntityTypeId);
+            return View("EditItem", model);
         }
 
         // GET: Manager/Items/Delete/5
@@ -106,7 +118,7 @@ namespace Catfish.Areas.Manager.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Entity entity = db.Entities.Find(id);
+            Entity entity = db.XmlModels.Find(id) as Entity;
             if (entity == null)
             {
                 return HttpNotFound();
@@ -119,8 +131,8 @@ namespace Catfish.Areas.Manager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Entity entity = db.Entities.Find(id);
-            db.Entities.Remove(entity);
+            Entity entity = db.XmlModels.Find(id) as Entity;
+            db.XmlModels.Remove(entity);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

@@ -13,14 +13,20 @@ namespace Catfish.Core.Services
     {
         public MetadataService(CatfishDbContext db) : base(db) { }
 
-        public IQueryable<MetadataSet> GetMetadataSets()
+        public IEnumerable<MetadataSet> GetMetadataSets()
         {
-            return Db.MetadataSets;
+            List<MetadataSet> ms = Db.MetadataSets.ToList();
+            foreach (var m in ms)
+                m.Deserialize();
+            return ms;
         }
 
         public MetadataSet GetMetadataSet(int id)
         {
-            return Db.MetadataSets.Where(m => m.Id == id).FirstOrDefault();
+            MetadataSet metadata = Db.MetadataSets.Where(m => m.Id == id).FirstOrDefault();
+            if (metadata != null)
+                metadata.Deserialize();
+            return metadata;
         }
 
         /// <summary>

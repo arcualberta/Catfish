@@ -73,7 +73,9 @@ namespace Catfish.Core.Models
                 });
         }
 
-        public DbSet<Entity> Entities { get; set; }
+        public DbSet<XmlModel> XmlModels { get; set; }
+
+ //       public DbSet<Entity> Entities { get; set; }
 
         public DbSet<Collection> Collections { get; set; }
 
@@ -82,6 +84,8 @@ namespace Catfish.Core.Models
         public DbSet<EntityType> EntityTypes { get; set; }
 
         public DbSet<MetadataSet> MetadataSets { get; set; }
+
+        public System.Data.Entity.DbSet<Catfish.Core.Models.Metadata.TextField> TextFields { get; set; }
 
         ////public DbSet<SimpleField> MetadataFields { get; set; }
 

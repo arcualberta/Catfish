@@ -6,15 +6,25 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using System.Xml.Serialization;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace Catfish.Core.Models.Metadata
 {
-    public class MetadataSet
+    public class MetadataSet : XmlModel
     {
-        public int Id { get; set; }
-
         [Column(TypeName = "xml")]
         public string Content { get; set; }
+
+        [NotMapped]
+        public virtual List<MetadataField> Fields
+        {
+            get
+            {
+                List<XmlModel> fields = GetChildModels("fields/field", Data);
+                return fields.Select(f => f as MetadataField).ToList();
+            }
+            //set;
+        }
 
         private MetadataDefinition mDefinition;
         [NotMapped]
@@ -47,8 +57,8 @@ namespace Catfish.Core.Models.Metadata
 
         public void Serialize()
         {
-            XElement xml = Definition.ToXml();
-            Content = xml.ToString();
+            //XElement xml = Definition.ToXml();
+            Content = Data.ToString();
             ////using (StringWriter writer = new StringWriter())
             ////{
             ////    XmlSerializer serializer = new XmlSerializer(typeof(MetadataDefinition));
@@ -60,23 +70,17 @@ namespace Catfish.Core.Models.Metadata
         public void Deserialize()
         {
             XElement xml = XElement.Parse(Content);
-            mDefinition = XmlModel.Parse(xml) as MetadataDefinition;
-            mDefinition.Id = this.Id;
-
-            ////using (StringReader reader = new StringReader(Content))
-            ////{
-            ////    XmlSerializer serializer = new XmlSerializer(typeof(MetadataDefinition));
-            ////    mDefinition = serializer.Deserialize(reader) as MetadataDefinition;
-            ////}
-            ////mDefinition.Id = this.Id;
+            Initialize(xml);
+            ////////mDefinition = XmlModel.Parse(xml) as MetadataDefinition;
+            ////////mDefinition.Id = this.Id;
         }
 
         [NotMapped]
         [TypeLabel("String")]
-        public string Name { get { return Definition.Name; } }
+        public string Name { get { return GetName(); } }
 
         [DataType(DataType.MultilineText)]
-        public string Description { get { return Definition.Description; } }
+        public string Description { get { return GetDescription(); } }
 
         ////public virtual ICollection<SimpleField> Fields { get; set; }
 

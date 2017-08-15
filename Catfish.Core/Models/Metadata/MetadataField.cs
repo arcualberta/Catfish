@@ -8,41 +8,96 @@ using System.Web.Mvc;
 using Catfish.Core.Models.Attributes;
 using System.Xml.Serialization;
 using System.Xml.Linq;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Catfish.Core.Models.Metadata
 {
     public class MetadataField : XmlModel
     {
-        [Display(Name="Is Required")]
-        public bool IsRequired { get; set; }
+        [NotMapped]
+        public string Name
+        {
+            get
+            {
+                return GetName();
+            }
+            set
+            {
+                SetName(value);
+            }
+        }
 
+        [NotMapped]
+        [Display(Name="Is Required")]
+        public bool IsRequired
+        {
+            get
+            {
+                var att = Data.Attribute("IsRequired");
+                return att != null ? att.Value == "true" : false;
+            }
+
+            set
+            {
+                Data.SetAttributeValue("IsRequired", value);
+            }
+        }
+
+        [NotMapped]
         [Display(Name="Tooltip Help")]
         [DataType(DataType.MultilineText)]
-        public string Help { get; set; }
+        public string Help
+        {
+            get
+            {
+                return GetHelp();
+            }
+
+            set
+            {
+                SetHelp(value);
+            }
+        }
+
+        [NotMapped]
+        public string Value
+        {
+            get
+            {
+                IEnumerable<string> values = GetValues();
+                return values.Any() ? values.First() : "";
+            }
+
+            set
+            {
+                List<string> values = new List<string>(){ value };
+                SetValues(values);
+            }
+        }
 
         ////[XmlIgnore]
         ////[HiddenInput(DisplayValue = false)]
         ////public int MetadataSetId { get; set; }
 
-        public override XElement ToXml()
-        {
-            XElement ele = base.ToXml();
+        ////////public override XElement ToXml()
+        ////////{
+        ////////    XElement ele = base.ToXml();
 
-            if (IsRequired)
-                ele.SetAttributeValue("IsRequired", IsRequired);
+        ////////    if (IsRequired)
+        ////////        ele.SetAttributeValue("IsRequired", IsRequired);
 
-            if (!string.IsNullOrWhiteSpace(Help))
-                ele.Add(new XElement("Help") { Value = Help });
+        ////////    if (!string.IsNullOrWhiteSpace(Help))
+        ////////        ele.Add(new XElement("Help") { Value = Help });
 
-            return ele;
-        }
+        ////////    return ele;
+        ////////}
 
-        public override void Initialize(XElement ele)
-        {
-            base.Initialize(ele);
-            this.IsRequired = bool.Parse(GetAtt(ele, "IsRequired", "false"));
-            this.Help = GetChildText(ele, "Help");
-        }
+        ////////public override void Initialize(XElement ele)
+        ////////{
+        ////////    base.Initialize(ele);
+        ////////    this.IsRequired = bool.Parse(GetAtt(ele, "IsRequired", "false"));
+        ////////    this.Help = GetChildText(ele, "Help");
+        ////////}
 
     }
 }

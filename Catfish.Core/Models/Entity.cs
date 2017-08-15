@@ -7,15 +7,15 @@ using Catfish.Core.Models.Attributes;
 
 namespace Catfish.Core.Models
 {
-    public class Entity
+    public class Entity : XmlModel
     {
-        public int Id { get; set; }
+//        public int Id { get; set; }
 
-        public string Name { get; set; }
+//        public string Name { get; set; }
 
-        public DateTime Created { get; set; }
+//        public DateTime Created { get; set; }
 
-        public DateTime? Updated { get; set; }
+//        public DateTime? Updated { get; set; }
 
         public int? EntityTypeId { get; set; }
         public EntityType EntityType { get; set; }
@@ -24,7 +24,7 @@ namespace Catfish.Core.Models
 
         public Entity()
         {
-            Created = DateTime.Now;
+//            Created = DateTime.Now;
             ////Metadata = new List<FieldValue>();
         }
     }

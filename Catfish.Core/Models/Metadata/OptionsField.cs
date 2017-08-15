@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 using Catfish.Core.Models.Attributes;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Catfish.Core.Models.Metadata
 {
@@ -11,38 +12,57 @@ namespace Catfish.Core.Models.Metadata
     {
         [DataType(DataType.MultilineText)]
         [TypeLabel("List of options, one option per line")]
-        public string Options { get; set; }
-
-        public override XElement ToXml()
+        public string Options
         {
-            XElement ele = base.ToXml();
-            XElement options = new XElement("Options");
-            ele.Add(options);
-
-            ////options.Value = Options;
-            foreach (var x in Options.Split(new char[] { '\n' }))
+            get
             {
-                string opStr = x.Trim();
-                if (!string.IsNullOrEmpty(opStr))
-                {
-                    XElement op = new XElement("Option") { Value = opStr };
-                    options.Add(op);
-                }
+                return GetOptions("en");
             }
-            return ele;
+            //set;
         }
 
-        public override void Initialize(XElement ele)
+        public string GetOptions(string lang = null)
         {
-            base.Initialize(ele);
-            var optionEnvelop = ele.Element("Options");
-            List<string> options = new List<string>();
-            foreach(var op in optionEnvelop.Elements("Option"))
-            {
-                options.Add(op.Value);
-            }
-            this.Options = string.Join("\n", options);
+            if (lang == null)
+                lang = DefaultLanguage;
+
+            XElement options_element = Data.Element("options");
+            IEnumerable<XElement> option_text_elements = GetChildTextElements("option", options_element, lang);
+            IEnumerable<string> options = option_text_elements.Select(op => op.Value);
+            string result = string.Join("\n", options);
+            return result;
         }
+
+        ////////public override XElement ToXml()
+        ////////{
+        ////////    XElement ele = base.ToXml();
+        ////////    XElement options = new XElement("Options");
+        ////////    ele.Add(options);
+
+        ////////    ////options.Value = Options;
+        ////////    foreach (var x in Options.Split(new char[] { '\n' }))
+        ////////    {
+        ////////        string opStr = x.Trim();
+        ////////        if (!string.IsNullOrEmpty(opStr))
+        ////////        {
+        ////////            XElement op = new XElement("Option") { Value = opStr };
+        ////////            options.Add(op);
+        ////////        }
+        ////////    }
+        ////////    return ele;
+        ////////}
+
+        ////////public override void Initialize(XElement ele)
+        ////////{
+        ////////    base.Initialize(ele);
+        ////////    var optionEnvelop = ele.Element("Options");
+        ////////    List<string> options = new List<string>();
+        ////////    foreach(var op in optionEnvelop.Elements("Option"))
+        ////////    {
+        ////////        options.Add(op.Value);
+        ////////    }
+        ////////    this.Options = string.Join("\n", options);
+        ////////}
     }
 
 }

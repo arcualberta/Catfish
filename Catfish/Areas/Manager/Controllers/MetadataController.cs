@@ -37,7 +37,7 @@ namespace Catfish.Areas.Manager.Controllers
             if (model == null)
                 return HttpNotFound();
 
-            return View(model.Definition);
+            return View(new MetadataDefinition(model, model.Id));
         }
 
         [HttpGet]
@@ -50,7 +50,7 @@ namespace Catfish.Areas.Manager.Controllers
                 model = new MetadataSet();
 
             ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
-            return View(model.Definition);
+            return View(new MetadataDefinition(model, model.Id));
         }
 
         [HttpPost]

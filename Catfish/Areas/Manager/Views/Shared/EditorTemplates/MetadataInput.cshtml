@@ -1,0 +1,14 @@
+﻿@model Catfish.Core.Models.Metadata.MetadataSet
+
+@*@Html.EditorFor(m => Model.Fields)*@
+<h3>@Model.Name</h3>
+
+@Html.EditorFor(m => m.Fields)
+
+@*@{ 
+    foreach(var field in Model.Fields)
+    {
+        @Html.EditorFor(m => field)
+    }
+}*@
+
