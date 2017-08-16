@@ -1,5 +1,10 @@
 ﻿@model Catfish.Core.Models.Metadata.RadioButtonSet
 
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+{
+    {"class", "model-type"}
+})
+@Html.HiddenFor(m => m.Ref)
 
 RadioButtonSet
 

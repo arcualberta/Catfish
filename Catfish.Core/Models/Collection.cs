@@ -11,6 +11,8 @@ namespace Catfish.Core.Models
         //[DataType(DataType.MultilineText)]
         //public string Description { get; set; }
 
+        public override string GetTagName() { return "collection"; }
+
         [NotMapped]
         public virtual IEnumerable<Aggregation> ChildCollections 
         {

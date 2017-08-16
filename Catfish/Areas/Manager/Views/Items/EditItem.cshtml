@@ -13,6 +13,11 @@
 @Html.HiddenFor(m => m.Id)
 @Html.AntiForgeryToken()
 @Html.ValidationSummary(true)
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+{
+    {"class", "model-type"}
+})
+
 <div>
 @{ int idx = 0;}
 
@@ -24,10 +29,10 @@
         }
     </ul>
     @{ idx = 0;}
-    @foreach (var ms in Model.MetadataSets)
+
+    @for (idx=0;idx < Model.MetadataSets.Count(); ++idx)
     {
-        <div>@Html.EditorFor(m => ms, "MetadataInput")</div>
-        ++idx;
+        <div>@Html.EditorFor(m => m.MetadataSets[idx], "MetadataInput")</div>
     }
 </div>
 

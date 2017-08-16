@@ -18,11 +18,28 @@ namespace Catfish.Core.Models
     {
         public int Id { get; set; }
 
+        [Column(TypeName = "xml")]
+        public string Content { get; set; }
+
         [NotMapped]
-        public XElement Data { get; protected set; }
+        public virtual XElement Data { get; set; }
 
         [NotMapped]
         public string DefaultLanguage { get; set; }
+
+        [NotMapped]
+        public string Ref
+        {
+            get
+            {
+                var att = Data.Attribute("ref");
+                return att != null ? att.Value : null;
+            }
+            set
+            {
+                Data.SetAttributeValue("ref", value);
+            }
+        }
 
         public XmlModel(string defaultLang = "en")
         {
@@ -32,7 +49,13 @@ namespace Catfish.Core.Models
         public XmlModel()
         {
             DefaultLanguage = "en";
+            Data = new XElement(GetTagName());
+            Data.SetAttributeValue("model-type", this.GetType().AssemblyQualifiedName);
+            Data.SetAttributeValue("IsRequired", false);
+            
         }
+
+        public virtual string GetTagName() { return "catfish-model"; }
 
         public XmlModel(XElement ele, string defaultLang = "en")
         {
@@ -71,8 +94,12 @@ namespace Catfish.Core.Models
 
         public IEnumerable<string> GetValues(string lang = null)
         {
-            var matches = GetChildTextElements("value", Data, Lang(lang));
-            return matches.Select(m => (m.Value));
+            if (Data != null)
+            {
+                var matches = GetChildTextElements("value", Data, Lang(lang));
+                return matches.Select(m => (m.Value));
+            }
+            return Enumerable.Empty<string>();
         }
 
         public void SetValues(IEnumerable<string> values, string lang = null)
@@ -153,7 +180,13 @@ namespace Catfish.Core.Models
         /// <param name="lang"></param>
         protected void InsertChildText(string childTagName, IEnumerable<string> values, XElement ele, string lang)
         {
-            XElement parent = ele.Elements(childTagName).First();
+            XElement parent = ele.Elements(childTagName).FirstOrDefault();
+            if(parent == null)
+            {
+                parent = new XElement(childTagName);
+                ele.Add(parent);
+            }
+
             foreach (string val in values)
             {
                 XElement textEelemnt = new XElement("text", new XAttribute(XNamespace.Xml + "lang", lang));
@@ -174,6 +207,19 @@ namespace Catfish.Core.Models
             var matches = GetChildTextElements(childTagName, ele, lang).ToList();
             foreach (var text in matches)
                 text.Remove();
+        }
+
+        protected void RemoveAllElements(string xpath, XElement ele)
+        {
+            var chidlren = GetChildElements(xpath, ele).ToList();
+            foreach (var e in chidlren)
+                e.Remove();
+        }
+
+        protected void InsertChildElement(string parentXPath, XElement child)
+        {
+            XElement parent = GetChildElements(parentXPath, Data).FirstOrDefault();
+            parent.Add(child);
         }
 
         protected IEnumerable<XElement> GetChildTextElements(string childTagName, XElement ele, string lang)
@@ -204,54 +250,8 @@ namespace Catfish.Core.Models
         }
         private XmlNamespaceManager mXmlNamespaceManager;
 
-        ////////[Required]
-        ////////[TypeLabel("String")]
-        ////////public string Name { get; set; }
-
-        ////////[DataType(DataType.MultilineText)]
-        ////////[TypeLabel("String")]
-        ////////public string Description { get; set; }
-
-
-        ////////public virtual XElement ToXml()
-        ////////{
-        ////////    string tagName = Name;
-
-        ////////    if (string.IsNullOrWhiteSpace(tagName))
-        ////////        tagName = GetType().ToString();
-
-        ////////    tagName = Regex.Replace(tagName, @"\s+", string.Empty);
-
-        ////////    try
-        ////////    {
-        ////////        tagName = XmlConvert.VerifyName(tagName);
-        ////////    }
-        ////////    catch(ArgumentNullException)
-        ////////    {
-        ////////        tagName = "Document";
-        ////////    }
-        ////////    catch(XmlException)
-        ////////    {
-        ////////        tagName = XmlConvert.EncodeName(tagName);
-        ////////    }
-
-        ////////    XElement ele = new XElement(tagName);
-
-        ////////    if (Name != tagName)
-        ////////        ele.SetAttributeValue("Name", string.IsNullOrEmpty(Name) ? "" : Name);
-
-        ////////    ele.SetAttributeValue("ModelType", GetType().AssemblyQualifiedName);
-
-        ////////    if (!string.IsNullOrWhiteSpace(Description))
-        ////////        ele.Add(new XElement("Description") { Value = Description });
-
-        ////////    return ele;
-        ////////}
-
         public virtual void Initialize(XElement ele)
         {
-            ////////this.Name = GetAtt(ele, "Name", ele.Name.LocalName);
-            ////////this.Description = GetChildText(ele, "Description");
             Data = ele;
         }
 
@@ -271,25 +271,21 @@ namespace Catfish.Core.Models
             return Parse(root, defaultLang);
         }
 
-        //public List<XmlModel> GetChildModels(string xPath)
-        //{
-        //    IEnumerable<XElement> children = Data.Elements(childTagName);
-        //    List<XmlModel> result = new List<XmlModel>();
-        //    foreach (XElement c in children)
-        //        result.Add(XmlModel.Parse(c));
-        //    return result;
-        //}
+        public void Deserialize()
+        {
+            this.Data = XElement.Parse(this.Content);
+        }
 
-        ////protected static string GetAtt(XElement ele, string attName, string defaultValue = null)
-        ////{
-        ////    var att = ele.Attribute(attName);
-        ////    return att == null ? defaultValue : att.Value;
-        ////}
-        ////protected static string GetChildText(XElement ele, string childTagName, string defaultValue = null)
-        ////{
-        ////    var child = ele.Element(childTagName);
-        ////    return child == null ? defaultValue : child.Value;
-        ////}
+        public void Serialize()
+        {
+            this.Content = Data.ToString();
+        }
+
+        public virtual void UpdateValues(XmlModel src)
+        {
+            //TODO: Deal with multiple languages later
+            this.SetValues(src.GetValues());
+        }
 
     }
 }

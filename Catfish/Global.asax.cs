@@ -10,6 +10,7 @@ using System.Web.Http;
 using Piranha.WebPages;
 using Catfish.Core.Models.Metadata;
 using Catfish.Areas.Manager.ModelBinders;
+using Catfish.Core.Models;
 
 namespace Catfish
 {
@@ -25,9 +26,9 @@ namespace Catfish
             //Metadata provider
             ModelMetadataProviders.Current = new Catfish.Areas.Manager.Helpers.ModelMetadataProvider();
 
-            //Custom model binders
-            System.Web.Mvc.ModelBinders.Binders.Add(typeof(MetadataField), new MetadataFieldDefinitionBinder());
-            System.Web.Mvc.ModelBinders.Binders.Add(typeof(OptionsField), new MetadataFieldDefinitionBinder());
+            //Custom model binders 
+            System.Web.Mvc.ModelBinders.Binders.Add(typeof(MetadataField), new XmlModelBinder());
+            System.Web.Mvc.ModelBinders.Binders.Add(typeof(OptionsField), new XmlModelBinder());
 
             //Adding menu items
             var menubar = Manager.Menu.Where(m => m.InternalId == "Content").FirstOrDefault();

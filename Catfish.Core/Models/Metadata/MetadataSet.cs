@@ -12,19 +12,47 @@ namespace Catfish.Core.Models.Metadata
 {
     public class MetadataSet : XmlModel
     {
-        [Column(TypeName = "xml")]
-        public string Content { get; set; }
+        public override string GetTagName() { return "metadata-set"; }
 
         [NotMapped]
-        public virtual List<MetadataField> Fields
+        public List<MetadataField> Fields
         {
             get
             {
-                List<XmlModel> fields = GetChildModels("fields/field", Data);
-                return fields.Select(f => f as MetadataField).ToList();
+                return GetChildModels("fields/field", Data).Select(c => c as MetadataField).ToList();
             }
-            //set;
+
+            set
+            {
+                //Removing all children inside the metadata set element
+                RemoveAllElements("fields/field", Data);
+
+                foreach (MetadataField ms in value)
+                    InsertChildElement("./fields", ms.Data);
+            }
         }
+
+        ////[NotMapped]
+        ////public virtual List<MetadataField> Fields
+        ////{
+        ////    get
+        ////    {
+        ////        if (mFields == null)
+        ////        {
+        ////            if (Data != null)
+        ////            {
+        ////                List<XmlModel> fields = GetChildModels("fields/field", Data);
+        ////                mFields = fields.Select(f => f as MetadataField).ToList();
+        ////            }
+        ////            else
+        ////            {
+        ////                mFields = new List<MetadataField>();
+        ////            }
+        ////        }
+        ////        return mFields;
+        ////    }
+        ////    //set;
+        ////}
 
         private MetadataDefinition mDefinition;
         [NotMapped]
@@ -89,7 +117,20 @@ namespace Catfish.Core.Models.Metadata
 
         public MetadataSet()
         {
-            ////Fields = new List<SimpleField>();
+            Data.Add(new XElement("fields"));
+        }
+
+        public override void UpdateValues(XmlModel src)
+        {
+            base.UpdateValues(src);
+
+            var src_item = src as MetadataSet;
+
+            foreach (MetadataField field in this.Fields)
+            {
+                var src_field = src_item.Fields.Where(x => x.Ref == field.Ref).FirstOrDefault();
+                field.UpdateValues(src_field);
+            }
         }
     }
 }

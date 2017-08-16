@@ -1,6 +1,6 @@
-<Item entity-type="Video" model-type="Catfish.Core.Models.Item, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+<item entity-type="Video" model-type="Catfish.Core.Models.Item, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
 	<metadata-sets>
-		<metadata-set model-type="Catfish.Core.Models.Metadata.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2">
+		<metadata-set model-type="Catfish.Core.Models.Metadata.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2" ref="1">
 			<name>
 				<text xml:lang="en">Dublin Core</text>
 				<text xml:lang="fr">Dublin Core</text>
@@ -11,7 +11,7 @@
 			</description>
 			<value/>
 			<fields>
-				<field model-type="Catfish.Core.Models.Metadata.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true">
+				<field model-type="Catfish.Core.Models.Metadata.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" ref="1">
 					<name>
 						<text xml:lang="en">Subject</text>
 						<text xml:lang="fr">Sujet</text>
@@ -29,10 +29,10 @@
 						<text xml:lang="en">Hello Hello World</text>
 						<text xml:lang="en">Hello Hello Hello World</text>
 						<text xml:lang="fr">Bonjour le monde</text>
-						<text xml:lang="en">Bonjour salut le monde</text>
+						<text xml:lang="fr">Bonjour salut le monde</text>
 					</value>
 				</field>
-				<field model-type="Catfish.Core.Models.Metadata.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false">
+				<field model-type="Catfish.Core.Models.Metadata.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" ref="2">
 					<name>
 						<text xml:lang="en">Description</text>
 						<text xml:lang="fr">La description</text>
@@ -53,7 +53,8 @@
 						<text xml:lang="fr">Bonjour salut le monde</text>
 					</value>
 				</field>
-				<field model-type="Catfish.Core.Models.Metadata.RadioButtonSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true">
+				<!--
+				<field model-type="Catfish.Core.Models.Metadata.RadioButtonSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true" ref="3">
 					<name>
 						<text xml:lang="en">Radio button set 1</text>
 						<text xml:lang="fr">Réglage du bouton radio 1</text>
@@ -81,9 +82,10 @@
 						</option>
 					</options>
 				</field>
+				-->
 			</fields>
 		</metadata-set>
-		<metadata-set model-type="Catfish.Core.Models.Metadata.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2">
+		<metadata-set model-type="Catfish.Core.Models.Metadata.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2" ref="2">
 			<name>
 				<text xml:lang="en">Custom</text>
 			</name>
@@ -92,7 +94,7 @@
 			</description>
 			<value/>
 			<fields>
-				<field model-type="Catfish.Core.Models.Metadata.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true">
+				<field model-type="Catfish.Core.Models.Metadata.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true" ref="1">
 					<name>
 						<text xml:lang="en">Custom TF</text>
 					</name>
@@ -106,7 +108,7 @@
 						<text xml:lang="en">Hello Custom Text Field</text>
 					</value>
 				</field>
-				<field model-type="Catfish.Core.Models.Metadata.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false">
+				<field model-type="Catfish.Core.Models.Metadata.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" ref="2">
 					<name>
 						<text xml:lang="en">Custom TA</text>
 					</name>
@@ -121,7 +123,8 @@
 						<text xml:lang="en"></text>
 					</value>
 				</field>
-				<field model-type="Catfish.Core.Models.Metadata.CheckBoxSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true">
+				<!--
+				<field model-type="Catfish.Core.Models.Metadata.CheckBoxSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true" ref="3">
 					<name>
 						<text xml:lang="en">Custom Check Box Set 1</text>
 					</name>
@@ -146,6 +149,7 @@
 						</option>
 					</options>
 				</field>
+				-->
 			</fields>
 		</metadata-set>		
 	</metadata-sets>
@@ -155,4 +159,4 @@
 			</metadata-sets>
 		</file>
 	</files>
-</Item>
+</item>

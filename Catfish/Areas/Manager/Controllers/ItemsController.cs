@@ -23,7 +23,10 @@ namespace Catfish.Areas.Manager.Controllers
         {
 
             var entities = db.XmlModels.Where(m => m is Entity).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
-            return View(entities);
+            if(entities != null)
+                return View(entities);
+
+            return View();
         }
 
         // GET: Manager/Items/Details/5
@@ -72,7 +75,10 @@ namespace Catfish.Areas.Manager.Controllers
         {
             Item model;
             if (id.HasValue)
+            {
                 model = db.XmlModels.Find(id) as Item;
+                model.Deserialize();
+            }
             else
             {
                 string filename = "Item.xml";
@@ -82,6 +88,7 @@ namespace Catfish.Areas.Manager.Controllers
 
             }
 
+            ViewBag.JSONModel = Newtonsoft.Json.JsonConvert.SerializeObject(model.Data);
             ////// Rendering these as json objects in view result in circular references 
             ////var metadataSets = db.MetadataSets.ToList();
             ////var entityTypes = db.EntityTypes.ToList();
@@ -103,6 +110,22 @@ namespace Catfish.Areas.Manager.Controllers
             if (ModelState.IsValid)
             {
                 ViewBag.Status = "Validation Passed";
+
+                if(model.Id > 0)
+                {
+                    Item dbModel = db.XmlModels.Find(model.Id) as Item;
+                    dbModel.Deserialize();
+
+
+                    dbModel.UpdateValues(model);
+                    db.Entry(dbModel).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    return View("EditItem", dbModel);
+                }
+
+                //model.Data.SetValue(ctx.Request["Data"]);
+
                 //db.Entry(model).State = EntityState.Modified;
                 //db.SaveChanges();
                 //return RedirectToAction("Index");

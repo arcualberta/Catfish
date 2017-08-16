@@ -27,14 +27,20 @@ namespace Catfish.Core.Models.Metadata
             }
         }
 
+        public override string GetTagName() { return "field"; }
+
         [NotMapped]
         [Display(Name="Is Required")]
         public bool IsRequired
         {
             get
             {
-                var att = Data.Attribute("IsRequired");
-                return att != null ? att.Value == "true" : false;
+                if (Data != null)
+                {
+                    var att = Data.Attribute("IsRequired");
+                    return att != null ? att.Value == "true" : false;
+                }
+                return false;
             }
 
             set
