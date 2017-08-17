@@ -18,11 +18,47 @@ namespace Catfish.Core.Models
     {
         public int Id { get; set; }
 
+        ////[Column(TypeName = "xml")]
+        ////public string Content { get; set; }
+
         [Column(TypeName = "xml")]
-        public string Content { get; set; }
+        public string Content
+        {
+            get { return mContent; }
+            set { mContent = value; this.Data = XElement.Parse(this.Content); }
+        }
+
+        [NotMapped]
+        private string mContent;
 
         [NotMapped]
         public virtual XElement Data { get; set; }
+        ////{
+        ////    get
+        ////    {
+        ////        if (mData == null)
+        ////        {
+        ////            if(string.IsNullOrEmpty(Content))
+        ////            {
+        ////                Data = new XElement(GetTagName());
+        ////                Data.SetAttributeValue("model-type", this.GetType().AssemblyQualifiedName);
+        ////                Data.SetAttributeValue("IsRequired", false);
+        ////            }
+        ////            else
+        ////            {
+        ////                this.Data = XElement.Parse(this.Content);
+        ////            }
+        ////        }
+        ////        return mData;
+        ////    }
+        ////    set
+        ////    {
+        ////        mData = value;
+        ////    }
+        ////}
+
+        [NotMapped]
+        private XElement mData;
 
         [NotMapped]
         public string DefaultLanguage { get; set; }
@@ -52,7 +88,7 @@ namespace Catfish.Core.Models
             Data = new XElement(GetTagName());
             Data.SetAttributeValue("model-type", this.GetType().AssemblyQualifiedName);
             Data.SetAttributeValue("IsRequired", false);
-            
+
         }
 
         public virtual string GetTagName() { return "catfish-model"; }

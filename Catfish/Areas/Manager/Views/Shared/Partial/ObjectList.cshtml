@@ -8,11 +8,12 @@
             </tr>
         </thead>
         <tbody>
+           
             @foreach (var m in Model)
             {
                 <tr>
-                    <td>@m.Name</td>
-                    <td>@m.Description</td>
+                    <td>@m.GetName()</td>
+                    <td>@m.GetDescription()</td>
                     <td>
                         <a href="@Url.Action("details", new { @id = m.Id })">Details</a> | 
                         <a href="@Url.Action("edit", new { @id = m.Id })">Edit</a>

@@ -21,10 +21,18 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Items
         public ActionResult Index()
         {
-
-            var entities = db.XmlModels.Where(m => m is Entity).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
-            if(entities != null)
+            var entities = db.XmlModels.Where(m => m is Item).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
+            //var entities = db.XmlModels.Where(m => m is Item).Select(e => e as Item);
+            ////foreach (var e in entities)
+            ////    e.Deserialize();
+            if (entities != null)
+            {
+                //foreach(var e in entities)
+                //{
+                //    e.Data = XElement.Parse(e.Content);
+                //}
                 return View(entities);
+            }
 
             return View();
         }

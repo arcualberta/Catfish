@@ -6,11 +6,11 @@
 })
 @Html.HiddenFor(m => m.Ref)
 
-@{ 
-    var required = Model.IsRequired ? "required" : "false";
-}
+
 <div>
     @Html.Label(Model.Name)
-    @Html.TextAreaFor(m => m.Value, new { @required = required })
+    @Html.TextAreaFor(m => m.Value)
+     
+   
 </div>
 
