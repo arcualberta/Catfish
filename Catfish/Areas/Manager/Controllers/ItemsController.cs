@@ -11,6 +11,7 @@ using System.Web.Script.Serialization;
 using System.IO;
 using System.Xml.Linq;
 using System.Web.Configuration;
+using Catfish.Core.Services;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -121,12 +122,14 @@ namespace Catfish.Areas.Manager.Controllers
 
                 if(model.Id > 0)
                 {
-                    Item dbModel = db.XmlModels.Find(model.Id) as Item;
-                    dbModel.Deserialize();
+                    ////Item dbModel = db.XmlModels.Find(model.Id) as Item;
+                    ////dbModel.Deserialize();
+                    ////dbModel.UpdateValues(model);
+                    ////db.Entry(dbModel).State = EntityState.Modified;
 
+                    ItemService srv = new ItemService(db);
 
-                    dbModel.UpdateValues(model);
-                    db.Entry(dbModel).State = EntityState.Modified;
+                    Item dbModel = srv.UpdateStoredItem(model);
                     db.SaveChanges();
 
                     return View("EditItem", dbModel);
@@ -167,6 +170,7 @@ namespace Catfish.Areas.Manager.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+
 
         protected override void Dispose(bool disposing)
         {

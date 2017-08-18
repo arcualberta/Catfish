@@ -1,4 +1,5 @@
 ﻿@model Catfish.Core.Models.Item
+@using Catfish.Core.Models;
 
 @{  ViewBag.Title = Model.Id > 0 ? "Edit Item" : "Create Item"; }
 
@@ -34,7 +35,12 @@
     {
         <div>@Html.EditorFor(m => m.MetadataSets[idx], "MetadataInput")</div>
     }
-</div>
+
+    <h3>Files</h3>
+    @for (idx = 0; idx < Model.Files.Count(); ++idx)
+    {
+        <div class="file">@Html.EditorFor(m => m.Files[idx])</div>
+    }
 
 
 @{ Html.EndForm(); }

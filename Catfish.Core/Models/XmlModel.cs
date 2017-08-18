@@ -57,8 +57,6 @@ namespace Catfish.Core.Models
         ////    }
         ////}
 
-        [NotMapped]
-        private XElement mData;
 
         [NotMapped]
         public string DefaultLanguage { get; set; }
@@ -252,7 +250,7 @@ namespace Catfish.Core.Models
                 e.Remove();
         }
 
-        protected void InsertChildElement(string parentXPath, XElement child)
+        public void InsertChildElement(string parentXPath, XElement child)
         {
             XElement parent = GetChildElements(parentXPath, Data).FirstOrDefault();
             parent.Add(child);
@@ -269,6 +267,17 @@ namespace Catfish.Core.Models
         protected IEnumerable<XElement> GetChildElements(string xpath, XElement ele)
         {
             return ((IEnumerable)ele.XPathEvaluate(xpath, NamespaceManager)).Cast<XElement>();
+        }
+
+        public string GetAttribute(string attName)
+        {
+            XAttribute att = Data.Attribute(attName);
+            return att == null ? null : att.Value;
+        }
+
+        public void SetAttribute(string attName, string attValue)
+        {
+            Data.SetAttributeValue(attName, attValue);
         }
 
         protected XmlNamespaceManager NamespaceManager

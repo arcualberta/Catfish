@@ -154,7 +154,7 @@
 		</metadata-set>		
 	</metadata-sets>
 	<files>
-		<file>
+		<file model-type="Catfish.Core.Models.DataFile, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" file-name="example.jpg" url="uploads/1/files/sddff.jpg" thumbnail="uploads/1/thumbnails/sddff.jpg">
 			<metadata-sets>
 			</metadata-sets>
 		</file>

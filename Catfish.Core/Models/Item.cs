@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models.Metadata;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Catfish.Core.Models
             : base()
         {
             ParentRelations = new List<Aggregation>();
-            Data.Add(new XElement("metadata-sets"));
+            Data.Add(new XElement("files"));
         }
 
         public override string GetTagName() { return "item"; }
@@ -37,6 +38,24 @@ namespace Catfish.Core.Models
             }
         }
 
+        [NotMapped]
+        public virtual List<DataFile> Files
+        {
+            get
+            {
+                return GetChildModels("files/file", Data).Select(c => c as DataFile).ToList();
+            }
+
+            set
+            {
+                //Removing all children inside the files element
+                RemoveAllElements("files/file", Data);
+
+                foreach (DataFile df in value)
+                    InsertChildElement("./files", df.Data);
+            }
+        }
+
         public override void UpdateValues(XmlModel src)
         {
             base.UpdateValues(src);
@@ -49,8 +68,8 @@ namespace Catfish.Core.Models
                 ms.UpdateValues(src_ms);
             }
 
+
             this.Serialize();
         }
-
     }
 }
