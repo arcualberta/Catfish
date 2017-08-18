@@ -21,19 +21,21 @@
     <script>
             require(["/Built/Forms/ItemForm.js"])
     </script>
+    <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
+    
 
-    <link href="/node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet"  type="text/css" />
 }
 
 
-<select data-bind="options: entityTypes, 
+@*<select data-bind="options: entityTypes, 
                optionsText: function(type) {
                 return type.Name
                 },
                value: selectedEntityType">
-</select>
+</select>*@
 
 
+<!--
 <div class="container">
 
     <ul class="tabs">
@@ -56,113 +58,6 @@
         Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
     </div>
 
-</div><!-- container -->
-
-<!--
-    <div id="tabs">
-    <ul>
-        <li><a href="#fragment-1"><span>One</span></a></li>
-        <li><a href="#fragment-2"><span>Two</span></a></li>
-        <li><a href="#fragment-3"><span>Three</span></a></li>
-    </ul>
-    <div id="fragment-1">
-        <p>First tab is active by default:</p>
-        <pre><code>$( "#tabs" ).tabs(); </code></pre>
-    </div>
-    <div id="fragment-2">
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-    </div>
-    <div id="fragment-3">
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-    </div>
 </div>
-    -->
-<!--<ul id="metadataset-tabs" data-bind="foreach: selectedEntityType().MetadataSets" class="nav nav-tabs" role="tablist">
-    <li role="presentation">
-        <a class="tab" role="tab" data-toggle="tab" data-bind="{
-           attr: {
-            href: '#',
-            'aria-controls': Id
-           },
-           text: Name}">
-        </a>
-    </li>
-</ul>
-
-<hr />
-
-<ul data-bind="foreach: selectedEntityType().MetadataSets">
-    <li data-bind="text: Name">
-    </li>
-    <li>
-        <div data-bind="text: Definition.Fields.length"></div>
-        <ul data-bind="foreach: Definition.Fields">
-            <li>
-                <div data-bind="template: {name: Type}"></div>
-            </li>
-        </ul>
-    </li>
-</ul>
-
-
--->
-
-<!--
-Catfish.Core.Models.Metadata.TextField
-Catfish.Core.Models.Metadata.CheckBoxSet
-Catfish.Core.Models.Metadata.Datefield
-Catfish.Core.Models.Metadata.DropDownMenu
-Catfish.Core.Models.Metadata.RadioButtonSet
-Catfish.Core.Models.Metadata.TextArea
--->
-
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.TextField">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <input data-bind="value: Value" />
-</script>
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.CheckBoxSet">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <ul data-bind="foreach: OptionsArray">
-        <li>
-            <input type="checkbox" data-bind="attr: {name: $parent.Id,  value: $data}, value: $parent.Value" />
-            <span data-bind="text: $data"></span>
-        </li>
-    </ul>    
-</script>
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.DateField">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <input data-bind="value: Value" />
-</script>
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.DropDownMenu">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <select data-bind="options: OptionsArray, value: Value"> </select>
-</script>
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.RadioButtonSet">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <ul data-bind="foreach: OptionsArray">
-        <li>
-            <input type="radio" data-bind="attr: {name: $parent.Id,  value: $data}, value: $parent.Value"/>
-            <span data-bind="text: $data"></span>
-        </li>
-    </ul>    
-</script>
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.TextArea">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <textarea data-bind="value: Value"></textarea>
-</script>
-
+-->    
+    <!-- container -->

@@ -14,7 +14,6 @@
     "@types/bootstrap": "3.3.34",
     "jquery": "3.2.1",
     "knockout": "3.4.2",
-    "bootstrap": "^3.3.7",
     "requirejs": "^2.3.3",
     "text": "github:requirejs/text"
   }

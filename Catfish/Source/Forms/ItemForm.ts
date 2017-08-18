@@ -1,7 +1,6 @@
 ﻿import * as $ from "jquery"
 import * as ko from "knockout"
-import "jquery-ui"
-//import "bootstrap"
+import "knockout-file-bindings"
 
 interface EntityType {
     MetadataSets: Metadataset[];
@@ -58,29 +57,21 @@ class Item {
 
 }
 
-declare var metadata: any;
+class MultipleFileData {
+    dataURLArray: KnockoutObservableArray<string>
+}
+
+interface FileDescription {
+    name: string;
+    source: string;
+}
 
 class ItemForm {
-    private entityTypes: EntityType[]
-    private selectedEntityType: KnockoutObservable<EntityType> 
+
+    files: KnockoutObservableArray<FileDescription>
+    //reader: FileReader
 
     constructor() {
-        this.entityTypes = metadata['entityTypes']
-        console.log(this.entityTypes)
-        this.selectedEntityType = ko.observable<EntityType>(this.entityTypes[0])
-        console.log(this.selectedEntityType().MetadataSets)
-        this.addValuesToEntityTypes()
-
-        this.selectedEntityType.subscribe((latest) => {
-            $('#metadataset-tabs a').click(function (e) {
-                console.log("here")
-                e.preventDefault()
-                $(this).tab('show')
-            })
-
-            //$('#metadataset-tabs a:first').tab('show')
-        })
-        //$("#tabs").tabs();
 
         $('ul.tabs li').click(function () {
             console.log("test")
@@ -92,20 +83,52 @@ class ItemForm {
             $(this).addClass('current');
             $("#" + tab_id).addClass('current');
         })
+
+        // Multifile upload
+        
+        this.files = ko.observableArray([])
+        //this.reader = new FileReader()
+
+        let dropZone: HTMLElement = document.getElementById("drop-zone")
+
+        dropZone.addEventListener("dragover", this.handleDragOver)
+        dropZone.addEventListener("drop", this.dropListener)
+
     }
 
-    private addValuesToEntityTypes() {
-        for (let entityType of this.entityTypes) {          
-            for (let metadataSet of entityType.MetadataSets) {
-                for (let field of metadataSet.Definition.Fields) {
-                    field.Value = ""
-                    if (field.Options) {
-                        field.OptionsArray = field.Options.split("\n")
-                    }
-                    
-                }                
-            }            
+    private dropListener = (event: DragEvent) => {
+        event.stopPropagation()
+        event.preventDefault()
+        let fileList: FileList = event.dataTransfer.files
+        for (let i: number = 0; i < fileList.length; ++i) {
+            let reader: FileReader = new FileReader()
+            reader.onload = ((file) => {
+                return (event: any) => {
+                    this.addFileToList(event, file)
+                }
+            })(fileList[i])
+     
+            reader.readAsDataURL(fileList[i])
         }
+    }
+
+    private addFileToList(event: any, file: File) {
+        let fileDescription: FileDescription = {
+            name: file.name,
+            source: event.target.result
+        };
+
+        this.files.push(fileDescription)
+    }
+
+    private removeFile = (file: FileDescription) => {
+        this.files.remove(file)
+    }
+
+    private handleDragOver(event: DragEvent) {
+        event.stopPropagation()
+        event.preventDefault()
+        event.dataTransfer.dropEffect = "copy"
     }
 }
 

@@ -4,8 +4,9 @@ require.config({
         "jquery": "/node_modules/jquery/dist/jquery",
         "knockout": "/node_modules/knockout/build/output/knockout-latest",
         "text": "/node_modules/text/text",
+        "knockout-file-bindings": "/node_modules/knockout-file-bindings/knockout-file-bindings"
         //"jquery": "/Scripts/jquery-1.10.2",
-        "bootstrap": "/node_modules/bootstrap/dist/js/bootstrap",
+        //"bootstrap": "/node_modules/bootstrap/dist/js/bootstrap",
         //"jquery-ui": "/Scripts/jquery-ui-1.9.2"
     }
 });
