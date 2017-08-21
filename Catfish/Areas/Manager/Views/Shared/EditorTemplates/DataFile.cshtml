@@ -5,9 +5,7 @@
     {"class", "model-type"}
 })
 @Html.HiddenFor(m => m.Id)
-@Html.HiddenFor(m => m.Url)
-@Html.HiddenFor(m => m.FileName)
-@Html.HiddenFor(m => m.Thumbnail)
+@Html.HiddenFor(m => m.GuidName)
 
 <img src="@Model.Thumbnail" width="40" height="30" alt="@Model.FileName" /> @Model.FileName
 

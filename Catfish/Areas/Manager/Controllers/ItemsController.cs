@@ -19,8 +19,16 @@ namespace Catfish.Areas.Manager.Controllers
     {
         private CatfishDbContext db = new CatfishDbContext();
 
-        // GET: Manager/Items
-        public ActionResult Index()
+        public string ThumbnailRoot
+        {
+            get
+            {
+                return Request.RequestContext.HttpContext.Server.MapPath("~/Content/Thumbnails");
+            }
+        }
+
+            // GET: Manager/Items
+            public ActionResult Index()
         {
             var entities = db.XmlModels.Where(m => m is Item).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
             //var entities = db.XmlModels.Where(m => m is Item).Select(e => e as Item);
@@ -198,7 +206,7 @@ namespace Catfish.Areas.Manager.Controllers
                 return HttpNotFound("File not found");
 
             string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared
-                ? Path.Combine(srv.UploadRoot, file.Thumbnail)
+                ? Path.Combine(ThumbnailRoot, file.Thumbnail)
                 : Path.Combine(srv.UploadRoot, file.Path, file.Thumbnail);
 
             return new FilePathResult(path_name, file.ContentType);

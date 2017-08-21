@@ -19,8 +19,6 @@ namespace Catfish.Core.Services
 
         public string DataRoot { get { return Path.Combine(UploadRoot, "Data"); } }
 
-        public string ThumbnailRoot { get { return Path.Combine(UploadRoot, "Thumbnails"); } }
-
         public string GetURL(string pathName)
         {
             var uri = new System.Uri(pathName);
@@ -125,38 +123,37 @@ namespace Catfish.Core.Services
 
         public string GetThumbnail(string contentType)
         {
-            string icon_path = Path.Combine(ThumbnailRoot, "Shared");
             if (contentType == "application/pdf")
-                return Path.Combine(icon_path, "pdf.png");
+                return "pdf.png";
 
             if (contentType == "application/msword")
-                return Path.Combine(icon_path, "doc.png");
+                return "doc.png";
 
             if (contentType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-                return Path.Combine(icon_path, "docx.png");
+                return "docx.png";
 
             if (contentType == "application/vnd.ms-excel")
-                return Path.Combine(icon_path, "xls.png");
+                return "xls.png";
 
             if (contentType == "application/x-zip-compressed")
-                return Path.Combine(icon_path, "zip.png");
+                return "zip.png";
 
             if (contentType == "image/jpeg")
-                return Path.Combine(icon_path, "jpg.png");
+                return "jpg.png";
 
             if (contentType == "image/png")
-                return Path.Combine(icon_path, "png.png");
+                return "png.png";
 
             if (contentType == "image/tiff")
-                return Path.Combine(icon_path, "tiff.png");
+                return "tiff.png";
 
             if (contentType == "text/html")
-                return Path.Combine(icon_path, "html.png");
+                return "html.png";
 
             if (contentType == "text/xml")
-                return Path.Combine(icon_path, "xml.png");
+                return "xml.png";
 
-            return Path.Combine(icon_path, "other.png");
+            return "other.png";
         }
     }
 }
