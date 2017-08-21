@@ -174,6 +174,7 @@ namespace Catfish.Areas.Manager.Controllers
                 var ret = files.Select(f => new
                 {
                     Id = f.Id,
+                    Guid = f.GuidName,
                     FileName = f.FileName,
                     Thumbnail = u.Action("Thumbnail", "Items", new { id = f.Id, name = f.GuidName }),
                     Url = u.Action("File", "Items", new {id = f.Id, name = f.GuidName })
