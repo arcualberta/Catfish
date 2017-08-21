@@ -1,10 +1,13 @@
 ﻿using Catfish.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Catfish.Core.Services
 {
@@ -12,10 +15,75 @@ namespace Catfish.Core.Services
     {
         public ItemService(CatfishDbContext db) : base(db) { }
 
-        protected void DeleteFileOnDisk(string url)
+        public string UploadRoot { get { return ConfigurationManager.AppSettings["UploadRoot"]; } }
+
+        public string DataRoot { get { return Path.Combine(UploadRoot, "Data"); } }
+
+        public string ThumbnailRoot { get { return Path.Combine(UploadRoot, "Thumbnails"); } }
+
+        public string GetURL(string pathName)
+        {
+            var uri = new System.Uri(pathName);
+            var converted = uri.AbsoluteUri;
+            return converted;
+        }
+
+        protected void DeleteFile(DataFile file)
         {
 
         }
+
+        protected string CreateGuidName(string baseName)
+        {
+            string filename = Guid.NewGuid().ToString();
+            var idx = baseName.LastIndexOf(".");
+            if (idx > 0)
+                filename = filename + "." + baseName.Substring(idx + 1);
+            return filename;
+        }
+
+        public List<DataFile> UploadFile(HttpContextBase context, HttpRequestBase request)
+        {
+            List<DataFile> files = new List<DataFile>();
+            string folder = Path.Combine(UploadRoot, "Temp");
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+                if (!Directory.Exists(folder))
+                    throw new Exception("Unable to create the upload folder " + folder);
+            }
+
+            for (int i = 0; i < request.Files.Count; i++)
+            {
+                DataFile file = new DataFile();
+
+                file.FileName = request.Files[i].FileName;
+                file.GuidName = CreateGuidName(file.FileName);
+                file.Path = "Temp";
+                file.ContentType = request.Files[i].ContentType;
+                file.Thumbnail = GetThumbnail(file.ContentType);
+                file.ThumbnailType = DataFile.eThumbnailTypes.Shared;
+                
+                request.Files[i].SaveAs(Path.Combine(UploadRoot, file.Path, file.GuidName));
+
+                file.Serialize();
+                Db.XmlModels.Add(file);
+                files.Add(file);
+            }
+            return files;
+        }
+
+        public DataFile GetFile(int id, string name)
+        {
+            XmlModel model = Db.XmlModels.Find(id);
+            if (model is DataFile)
+                return model as DataFile;
+            else if (model is Item)
+                return (model as Item).Files.Where(f => f.GuidName == name).FirstOrDefault();
+            else
+                return null;
+        }
+
 
         public Item UpdateStoredItem(Item changedItem)
         {
@@ -28,19 +96,17 @@ namespace Catfish.Core.Services
             //Deleting files in the dbModel item if those files are not in the changedItem
             foreach (DataFile df in dbModel.Files)
             {
-                if (changedItem.Files.Where(f => f.Url == df.Url).Any() == false)
+                if (changedItem.Files.Where(f => f.GuidName == df.GuidName).Any() == false)
                 {
                     df.Data.Remove();
-                    DeleteFileOnDisk(df.Url);
-                    if (df.ThumbnailType == DataFile.eThumbnailTypes.NonShared)
-                        DeleteFileOnDisk(df.Thumbnail);
+                    DeleteFile(df);
                 }
             }
 
             //Inserting new files that are in the source item that are still not in this item
             foreach (DataFile df in changedItem.Files)
             {
-                if (dbModel.Files.Select(f => f.Url == df.Url).Any() == false)
+                if (dbModel.Files.Select(f => f.GuidName == df.GuidName).Any() == false)
                 {
                     dbModel.InsertChildElement("./files", df.Data);
 
@@ -55,6 +121,42 @@ namespace Catfish.Core.Services
             Db.Entry(dbModel).State = EntityState.Modified;
 
             return dbModel;
+        }
+
+        public string GetThumbnail(string contentType)
+        {
+            string icon_path = Path.Combine(ThumbnailRoot, "Shared");
+            if (contentType == "application/pdf")
+                return Path.Combine(icon_path, "pdf.png");
+
+            if (contentType == "application/msword")
+                return Path.Combine(icon_path, "doc.png");
+
+            if (contentType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+                return Path.Combine(icon_path, "docx.png");
+
+            if (contentType == "application/vnd.ms-excel")
+                return Path.Combine(icon_path, "xls.png");
+
+            if (contentType == "application/x-zip-compressed")
+                return Path.Combine(icon_path, "zip.png");
+
+            if (contentType == "image/jpeg")
+                return Path.Combine(icon_path, "jpg.png");
+
+            if (contentType == "image/png")
+                return Path.Combine(icon_path, "png.png");
+
+            if (contentType == "image/tiff")
+                return Path.Combine(icon_path, "tiff.png");
+
+            if (contentType == "text/html")
+                return Path.Combine(icon_path, "html.png");
+
+            if (contentType == "text/xml")
+                return Path.Combine(icon_path, "xml.png");
+
+            return Path.Combine(icon_path, "other.png");
         }
     }
 }

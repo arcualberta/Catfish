@@ -175,6 +175,7 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\RadioButtonSet.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\string.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DataFile.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\UploadTest.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

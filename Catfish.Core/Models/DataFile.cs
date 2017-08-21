@@ -11,13 +11,19 @@ namespace Catfish.Core.Models
     public class DataFile: Entity
     {
         [NotMapped]
+        public string ContentType { get { return GetAttribute("content-type"); } set { SetAttribute("content-type", value); } }
+
+        [NotMapped]
         public string FileName { get { return GetAttribute("file-name"); } set { SetAttribute("file-name", value); } }
 
         [NotMapped]
-        public string Url { get { return GetAttribute("url"); } set { SetAttribute("url", value); } }
+        public string GuidName { get { return GetAttribute("guid-name"); } set { SetAttribute("guid-name", value); } }
 
         [NotMapped]
         public string Thumbnail { get { return GetAttribute("thumbnail"); } set { SetAttribute("thumbnail", value); } }
+
+        [NotMapped]
+        public string Path { get { return GetAttribute("path"); } set { SetAttribute("path", value); } }
 
         [NotMapped]
         public eThumbnailTypes ThumbnailType

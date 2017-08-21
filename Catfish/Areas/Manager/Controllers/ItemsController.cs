@@ -145,9 +145,69 @@ namespace Catfish.Areas.Manager.Controllers
             return View("EditItem", model);
         }
 
+        [HttpGet]
+        public ActionResult UploadTest()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult Upload()
+        {
+            try
+            {
+                ItemService srv = new ItemService(db);
+                List<DataFile> files = srv.UploadFile(HttpContext, Request);
+                db.SaveChanges();
+
+                UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
+                string url = u.Action("About", "Home", null);
+
+                var ret = files.Select(f => new
+                {
+                    Id = f.Id,
+                    FileName = f.FileName,
+                    Thumbnail = u.Action("Thumbnail", "Items", new { id = f.Id, name = f.GuidName }),
+                    Url = u.Action("File", "Items", new {id = f.Id, name = f.GuidName })
+                });
+                return Json(ret);
+            }
+            catch (Exception)
+            {
+                //return 500 or something appropriate to show that an error occured.
+                return Json(string.Empty);
+            }
+        }
+
+        public ActionResult File(int id, string name)
+        {
+            ItemService srv = new ItemService(db);
+            DataFile file = srv.GetFile(id, name);
+            if (file == null)
+                return HttpNotFound("File not found");
+
+            string path_name = Path.Combine(srv.UploadRoot, file.Path, file.GuidName);
+            return new FilePathResult(path_name, file.ContentType);
+        }
+
+        public ActionResult Thumbnail(int id, string name)
+        {
+            ItemService srv = new ItemService(db);
+            DataFile file = srv.GetFile(id, name);
+            if (file == null)
+                return HttpNotFound("File not found");
+
+            string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared
+                ? Path.Combine(srv.UploadRoot, file.Thumbnail)
+                : Path.Combine(srv.UploadRoot, file.Path, file.Thumbnail);
+
+            return new FilePathResult(path_name, file.ContentType);
+        }
+
         // GET: Manager/Items/Delete/5
         public ActionResult Delete(int? id)
         {
+            throw new NotImplementedException("This method is yet to be implemented.");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -165,6 +225,7 @@ namespace Catfish.Areas.Manager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            throw new NotImplementedException("This method is yet to be implemented.");
             Entity entity = db.XmlModels.Find(id) as Entity;
             db.XmlModels.Remove(entity);
             db.SaveChanges();

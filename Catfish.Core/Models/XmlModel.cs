@@ -18,8 +18,19 @@ namespace Catfish.Core.Models
     {
         public int Id { get; set; }
 
-        ////[Column(TypeName = "xml")]
-        ////public string Content { get; set; }
+        [NotMapped]
+        public DateTime Created
+        {
+            get
+            {
+                string att = GetAttribute("created");
+                return string.IsNullOrEmpty(att) ? new DateTime() : DateTime.Parse(att);
+            }
+            set
+            {
+                SetAttribute("created", value.ToString());
+            }
+        }
 
         [Column(TypeName = "xml")]
         public string Content
@@ -84,6 +95,7 @@ namespace Catfish.Core.Models
         {
             DefaultLanguage = "en";
             Data = new XElement(GetTagName());
+            Created = DateTime.Now;
             Data.SetAttributeValue("model-type", this.GetType().AssemblyQualifiedName);
             Data.SetAttributeValue("IsRequired", false);
 
