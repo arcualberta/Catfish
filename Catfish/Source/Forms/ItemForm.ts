@@ -62,8 +62,8 @@ class MultipleFileData {
 }
 
 interface FileDescription {
-    name: string;
-    source: string;
+    name: KnockoutObservable<string>;
+    source: KnockoutObservable<string>;
 }
 
 class ItemForm {
@@ -73,15 +73,15 @@ class ItemForm {
 
     constructor() {
 
-        $('ul.tabs li').click(function () {
+        $('ul.custom-tabs li').click(function () {
             console.log("test")
             var tab_id = $(this).attr('data-tab');
 
-            $('ul.tabs li').removeClass('current');
-            $('.tab-content').removeClass('current');
+            $('ul.custom-tabs li').removeClass('active');
+            $('.tab-content').removeClass('active');
 
-            $(this).addClass('current');
-            $("#" + tab_id).addClass('current');
+            $(this).addClass('active');
+            $("#" + tab_id).addClass('active');
         })
 
         // Multifile upload
@@ -114,8 +114,8 @@ class ItemForm {
 
     private addFileToList(event: any, file: File) {
         let fileDescription: FileDescription = {
-            name: file.name,
-            source: event.target.result
+            name: ko.observable(file.name),
+            source: ko.observable(event.target.result)
         };
 
         this.files.push(fileDescription)

@@ -3,31 +3,66 @@
     Tabs widget
 */
 
-ul.tabs {
+ul.custom-tabs {
     margin: 0px;
     padding: 0px;
     list-style: none;
+    margin-bottom: -1px;
 }
 
-ul.tabs li {
-    background: none;
-    color: #222;
-    display: inline-block;
-    padding: 10px 15px;
-    cursor: pointer;
-}
+    ul.custom-tabs li {
+        background: #ddd;
+        color: #222;
+        display: inline-block;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-top: 1px solid #ddd;
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+    }
 
-ul.tabs li.current {
-    background: #ededed;
-    color: #222;
-}
+        ul.custom-tabs li.active {
+            background: #eee;
+            color: #222;
+            border-bottom: 0px solid #eee;
+        }
 
 .tab-content {
     display: none;
     background: #ededed;
     padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    border-top-left-radius: 0px;
+    box-shadow: 0 4px 10px rgba(0,0,0,.04);
 }
 
-.tab-content.current {
+.tab-content.active {
     display: inherit;
 }
+
+.custom-files {
+    background: #eee;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 10px;
+    margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,.04);
+}
+
+#drop-zone {
+    min-height: 50px;
+    border: 4px dashed #ddd;
+    padding: 20px;
+    background-color: #fff;
+    font-size: 1.5em;
+}
+
+.drop-zone-label {
+    text-align: center;
+    color: #bbb;
+}
+
+/* style="width: 100%; height:200px; background-color:blueviolet"*/
