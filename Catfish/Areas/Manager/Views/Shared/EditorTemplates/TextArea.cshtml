@@ -1,8 +1,16 @@
 ﻿@model Catfish.Core.Models.Metadata.TextArea
 
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+{
+    {"class", "model-type"}
+})
+@Html.HiddenFor(m => m.Ref)
+
 
 <div>
     @Html.Label(Model.Name)
     @Html.TextAreaFor(m => m.Value)
+     
+   
 </div>
 

@@ -104,7 +104,7 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpGet]
-        public ActionResult EditTest(int? id)
+        public ActionResult EditTest(int? id) //notes: Kamal use this one
         {
             MetadataSet model;
             if (id.HasValue)

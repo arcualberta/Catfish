@@ -1,4 +1,5 @@
 ﻿@model Catfish.Core.Models.Item
+@using Catfish.Core.Models;
 
 @{  ViewBag.Title = Model.Id > 0 ? "Edit Item" : "Create Item"; }
 
@@ -25,6 +26,13 @@
 @Html.HiddenFor(m => m.Id)
 @Html.AntiForgeryToken()
 @Html.ValidationSummary(true)
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+{
+    {"class", "model-type"}
+})
+
+<div>
+@{ int idx = 0;}
 
 <div class="grid_12">
     <div class="container">
@@ -46,7 +54,19 @@
             </div>
             ++idx;
         }
+    </ul>
+    @{ idx = 0;}
 
+    @for (idx=0;idx < Model.MetadataSets.Count(); ++idx)
+    {
+        <div>@Html.EditorFor(m => m.MetadataSets[idx], "MetadataInput")</div>
+    }
+
+    <h3>Files</h3>
+    @for (idx = 0; idx < Model.Files.Count(); ++idx)
+    {
+        <div class="file">@Html.EditorFor(m => m.Files[idx])</div>
+    }
 
 
 

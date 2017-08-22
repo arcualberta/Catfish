@@ -11,6 +11,7 @@ using System.Web.Script.Serialization;
 using System.IO;
 using System.Xml.Linq;
 using System.Web.Configuration;
+using Catfish.Core.Services;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -18,12 +19,31 @@ namespace Catfish.Areas.Manager.Controllers
     {
         private CatfishDbContext db = new CatfishDbContext();
 
-        // GET: Manager/Items
-        public ActionResult Index()
+        public string ThumbnailRoot
         {
+            get
+            {
+                return Request.RequestContext.HttpContext.Server.MapPath("~/Content/Thumbnails");
+            }
+        }
 
-            var entities = db.XmlModels.Where(m => m is Entity).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
-            return View(entities);
+            // GET: Manager/Items
+            public ActionResult Index()
+        {
+            var entities = db.XmlModels.Where(m => m is Item).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
+            //var entities = db.XmlModels.Where(m => m is Item).Select(e => e as Item);
+            ////foreach (var e in entities)
+            ////    e.Deserialize();
+            if (entities != null)
+            {
+                //foreach(var e in entities)
+                //{
+                //    e.Data = XElement.Parse(e.Content);
+                //}
+                return View(entities);
+            }
+
+            return View();
         }
 
         // GET: Manager/Items/Details/5
@@ -72,7 +92,10 @@ namespace Catfish.Areas.Manager.Controllers
         {
             Item model;
             if (id.HasValue)
+            {
                 model = db.XmlModels.Find(id) as Item;
+                model.Deserialize();
+            }
             else
             {
                 string filename = "Item.xml";
@@ -82,6 +105,7 @@ namespace Catfish.Areas.Manager.Controllers
 
             }
 
+            ViewBag.JSONModel = Newtonsoft.Json.JsonConvert.SerializeObject(model.Data);
             ////// Rendering these as json objects in view result in circular references 
             ////var metadataSets = db.MetadataSets.ToList();
             ////var entityTypes = db.EntityTypes.ToList();
@@ -103,6 +127,24 @@ namespace Catfish.Areas.Manager.Controllers
             if (ModelState.IsValid)
             {
                 ViewBag.Status = "Validation Passed";
+
+                if(model.Id > 0)
+                {
+                    ////Item dbModel = db.XmlModels.Find(model.Id) as Item;
+                    ////dbModel.Deserialize();
+                    ////dbModel.UpdateValues(model);
+                    ////db.Entry(dbModel).State = EntityState.Modified;
+
+                    ItemService srv = new ItemService(db);
+
+                    Item dbModel = srv.UpdateStoredItem(model);
+                    db.SaveChanges();
+
+                    return View("EditItem", dbModel);
+                }
+
+                //model.Data.SetValue(ctx.Request["Data"]);
+
                 //db.Entry(model).State = EntityState.Modified;
                 //db.SaveChanges();
                 //return RedirectToAction("Index");
@@ -111,9 +153,70 @@ namespace Catfish.Areas.Manager.Controllers
             return View("EditItem", model);
         }
 
+        [HttpGet]
+        public ActionResult UploadTest()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult Upload()
+        {
+            try
+            {
+                ItemService srv = new ItemService(db);
+                List<DataFile> files = srv.UploadFile(HttpContext, Request);
+                db.SaveChanges();
+
+                UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
+                string url = u.Action("About", "Home", null);
+
+                var ret = files.Select(f => new
+                {
+                    Id = f.Id,
+                    Guid = f.GuidName,
+                    FileName = f.FileName,
+                    Thumbnail = u.Action("Thumbnail", "Items", new { id = f.Id, name = f.GuidName }),
+                    Url = u.Action("File", "Items", new {id = f.Id, name = f.GuidName })
+                });
+                return Json(ret);
+            }
+            catch (Exception)
+            {
+                //return 500 or something appropriate to show that an error occured.
+                return Json(string.Empty);
+            }
+        }
+
+        public ActionResult File(int id, string name)
+        {
+            ItemService srv = new ItemService(db);
+            DataFile file = srv.GetFile(id, name);
+            if (file == null)
+                return HttpNotFound("File not found");
+
+            string path_name = Path.Combine(srv.UploadRoot, file.Path, file.GuidName);
+            return new FilePathResult(path_name, file.ContentType);
+        }
+
+        public ActionResult Thumbnail(int id, string name)
+        {
+            ItemService srv = new ItemService(db);
+            DataFile file = srv.GetFile(id, name);
+            if (file == null)
+                return HttpNotFound("File not found");
+
+            string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared
+                ? Path.Combine(ThumbnailRoot, file.Thumbnail)
+                : Path.Combine(srv.UploadRoot, file.Path, file.Thumbnail);
+
+            return new FilePathResult(path_name, file.ContentType);
+        }
+
         // GET: Manager/Items/Delete/5
         public ActionResult Delete(int? id)
         {
+            throw new NotImplementedException("This method is yet to be implemented.");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -131,11 +234,13 @@ namespace Catfish.Areas.Manager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            throw new NotImplementedException("This method is yet to be implemented.");
             Entity entity = db.XmlModels.Find(id) as Entity;
             db.XmlModels.Remove(entity);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+
 
         protected override void Dispose(bool disposing)
         {

@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewBag.Title = "UploadTest";
+}
+
+<h2>UploadTest</h2>
+
+<form action="/manager/items/upload" method="post" enctype="multipart/form-data">
+
+    <label for="file">Filename:</label>
+    <input type="file" name="file" id="file" multiple="true" />
+
+    <input id="upload_button" type="submit" />
+</form>
+
