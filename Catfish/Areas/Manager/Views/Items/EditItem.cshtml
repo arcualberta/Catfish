@@ -32,29 +32,30 @@
 })
 
 <div>
-@{ int idx = 0;}
 
 <div class="grid_12">
     <div class="container">
-
-        @{ int idx = 0;}
-
         <ul class="custom-tabs">
+
+        <!--omar-->
+            @{ int idx = 0;}
             @foreach (var name in Model.MetadataSets.Select(ms => ms.GetName()))
             {
                 <li class="tab-link @(idx == 0 ? "active" : "")" data-tab="tab-@idx">@name</li>
                 ++idx;
             }
         </ul>
-        @{ idx = 0;}
-        @foreach (var ms in Model.MetadataSets)
+        @for (idx = 0; idx < Model.MetadataSets.Count; ++idx)
         {
             <div id="tab-@idx" class="tab-content @(idx == 0 ? "active" : "inactive")">
-                @Html.EditorFor(m => ms, "MetadataInput")
+                @Html.EditorFor(m => m.MetadataSets[idx], "MetadataInput")
             </div>
-            ++idx;
         }
     </ul>
+
+<!--Kamal-->
+
+        <!--
     @{ idx = 0;}
 
     @for (idx=0;idx < Model.MetadataSets.Count(); ++idx)
@@ -67,7 +68,7 @@
     {
         <div class="file">@Html.EditorFor(m => m.Files[idx])</div>
     }
-
+    -->
 
 
         <div class="custom-files">
@@ -75,9 +76,10 @@
                 <div class="drop-zone-label">Drop files here</div>
                 <ul id="file-list" data-bind="foreach: files">
                     <li>
-                        <span data-bind="text: name"></span>
+                        <img data-bind="attr:{src: thumbnail}" />
+                        <span data-bind="text: fileName"></span>
+                        <span data-bind="text: status"></span>
                         <a href="#" data-bind="click: $parent.removeFile">X</a>
-                        <input type="hidden" id="" name="" data-bind="value: $data.source"> </input>
                     </li>
                 </ul>
             </div>

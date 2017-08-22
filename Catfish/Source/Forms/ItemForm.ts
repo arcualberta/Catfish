@@ -62,8 +62,14 @@ class MultipleFileData {
 }
 
 interface FileDescription {
-    name: KnockoutObservable<string>;
-    source: KnockoutObservable<string>;
+    id: KnockoutObservable<string>
+    guid: KnockoutObservable<string>
+    fileName: KnockoutObservable<string>
+    thumbnail: KnockoutObservable<string>
+    url: KnockoutObservable<string>
+    status: KnockoutObservable<string>
+
+    //source: KnockoutObservable<string>;
 }
 
 class ItemForm {
@@ -101,25 +107,71 @@ class ItemForm {
         event.preventDefault()
         let fileList: FileList = event.dataTransfer.files
         for (let i: number = 0; i < fileList.length; ++i) {
-            let reader: FileReader = new FileReader()
-            reader.onload = ((file) => {
-                return (event: any) => {
-                    this.addFileToList(event, file)
+            let request: XMLHttpRequest = new XMLHttpRequest()
+            let formData: FormData  = new FormData()
+            let file: File = fileList[i]
+
+            request.open('POST', '/manager/items/upload');
+            formData.append("Files", file, file.name)
+            
+            // add file to list
+
+            let fileDescrition: FileDescription = this.getFileDescription(file.name)
+            this.files.push(fileDescrition)
+
+            request.onreadystatechange = () => {
+                if (request.readyState == 4 && request.status == 200) {
+                    // response for single file
+                    let responseJson: any = JSON.parse(request.responseText)[0]
+                    this.updateFileDescription(fileDescrition, responseJson, "OK")
+                } else {
+                    // Render error 
+                    fileDescrition.status("Error")
                 }
-            })(fileList[i])
-     
-            reader.readAsDataURL(fileList[i])
+            }
+            request.send(formData)
         }
     }
 
-    private addFileToList(event: any, file: File) {
+    private updateFileDescription(fileDescription: FileDescription, description: any, status: string) {
+        fileDescription.id(description.Id)
+        fileDescription.guid(description.Guid)
+        console.log(description)
+        fileDescription.fileName(description.FileName)
+        fileDescription.thumbnail(description.Thumbnail)
+        fileDescription.url(description.Url)
+        fileDescription.status(status)
+    }
+
+    private getFileDescription(fileName: string): FileDescription {
+
         let fileDescription: FileDescription = {
-            name: ko.observable(file.name),
-            source: ko.observable(event.target.result)
-        };
+            id: ko.observable(""),
+            guid: ko.observable(""),
+            fileName: ko.observable(fileName),
+            thumbnail: ko.observable(""),
+            url: ko.observable(""),
+            status: ko.observable("Loading")
+        }
+        
+        return fileDescription
+    }
+
+    private addFileToList(fileName: string) {
+        let fileDescription: FileDescription = <FileDescription>{}
+               
 
         this.files.push(fileDescription)
     }
+
+    //private addFileToList(event: any, file: File) {
+    //    let fileDescription: FileDescription = {
+    //        name: ko.observable(file.name),
+    //        source: ko.observable(event.target.result)
+    //    };
+
+    //    this.files.push(fileDescription)
+    //}
 
     private removeFile = (file: FileDescription) => {
         this.files.remove(file)
