@@ -135,7 +135,7 @@ class ItemForm {
                 } else {
                     // Render error 
                     fileDescription.status("ERROR")
-                    console.log("error")
+                    fileDescription.progress("0%")
                 }
             }
             request.send(formData)

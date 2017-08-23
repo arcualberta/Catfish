@@ -76,6 +76,7 @@ ul.custom-tabs {
     background-color: #ddd;
     height: 24px;
     font-weight: bold;
+    padding-left: 5px;
 }
 
 .file-row {

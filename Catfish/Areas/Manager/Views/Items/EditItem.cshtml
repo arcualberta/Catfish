@@ -84,8 +84,9 @@
                     <div class="file-info-container">
                         <span class="file-name" data-bind="text: fileName"></span>                        
                         <div class="progress-bar-container" data-bind="css: {'file-error': status() == 'ERROR'}">
-                            <div class="progress-bar" data-bind="style: {width: progress}, text: progress, css:{'file-ok': progress() == '100%', 'file-error': status() == 'ERROR'}"></div>
+                            <div class="progress-bar" data-bind="style: {width: progress}, text: status() == 'ERROR' ? 'Error' : progress, css:{'file-ok': progress() == '100%', 'file-error': status() == 'ERROR'}"></div>
                         </div>
+                        <!--<span data-bind="text: status"></span>-->
                     </div>
                     <a href="#" class="file-remove" data-bind="click: $parent.removeFile">x</a>
                 </div>
