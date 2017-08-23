@@ -74,16 +74,36 @@
         <div class="custom-files">
             <div id="drop-zone">
                 <div class="drop-zone-label">Drop files here</div>
-                <ul id="file-list" data-bind="foreach: files">
-                    <li>
-                        <img data-bind="attr:{src: thumbnail}" />
-                        <span data-bind="text: fileName"></span>
-                        <span data-bind="text: status"></span>
-                        <a href="#" data-bind="click: $parent.removeFile">X</a>
-                    </li>
-                </ul>
             </div>
             
+            <div data-bind="foreach: files">
+                <div class="file-row">
+                    <div class="file-thumbnail-container">
+                        <img class="file-thumbnail" data-bind="attr:{src: thumbnail}" />
+                    </div>
+                    <div class="file-info-container">
+                        <span class="file-name" data-bind="text: fileName"></span>                        
+                        <div class="progress-bar-container" data-bind="css: {'file-error': status() == 'ERROR'}">
+                            <div class="progress-bar" data-bind="style: {width: progress}, text: progress, css:{'file-ok': progress() == '100%', 'file-error': status() == 'ERROR'}"></div>
+                        </div>
+                    </div>
+                    <a href="#" class="file-remove" data-bind="click: $parent.removeFile">x</a>
+                </div>
+            </div>
+            
+            <!--
+            <ul id="file-list" data-bind="foreach: files">
+                <li>
+                    <img data-bind="attr:{src: thumbnail}" />
+                    <span data-bind="text: fileName"></span>
+                    <span data-bind="text: status"></span>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" data-bind="style: {width: progress}, text: progress"></div>
+                    </div>
+                    <a href="#" data-bind="click: $parent.removeFile">X</a>
+                </li>            
+            </ul>
+            -->
         </div>
 
 

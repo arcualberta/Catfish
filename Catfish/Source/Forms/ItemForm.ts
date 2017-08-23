@@ -62,14 +62,15 @@ class MultipleFileData {
 }
 
 interface FileDescription {
+    // backend variables
     id: KnockoutObservable<string>
     guid: KnockoutObservable<string>
     fileName: KnockoutObservable<string>
     thumbnail: KnockoutObservable<string>
     url: KnockoutObservable<string>
+    // computed variables
     status: KnockoutObservable<string>
-
-    //source: KnockoutObservable<string>;
+    progress: KnockoutObservable<string>
 }
 
 class ItemForm {
@@ -116,17 +117,25 @@ class ItemForm {
             
             // add file to list
 
-            let fileDescrition: FileDescription = this.getFileDescription(file.name)
-            this.files.push(fileDescrition)
+            let fileDescription: FileDescription = this.getFileDescription(file.name)
+            this.files.push(fileDescription)
+
+            request.onprogress = (event: ProgressEvent) => {
+                if (event.lengthComputable) {
+                    let progress: string = Math.floor((event.loaded / event.total) * 100) + "%"
+                    fileDescription.progress(progress)
+                }
+            }
 
             request.onreadystatechange = () => {
                 if (request.readyState == 4 && request.status == 200) {
                     // response for single file
                     let responseJson: any = JSON.parse(request.responseText)[0]
-                    this.updateFileDescription(fileDescrition, responseJson, "OK")
+                    this.updateFileDescription(fileDescription, responseJson, "OK")
                 } else {
                     // Render error 
-                    fileDescrition.status("Error")
+                    fileDescription.status("ERROR")
+                    console.log("error")
                 }
             }
             request.send(formData)
@@ -149,9 +158,10 @@ class ItemForm {
             id: ko.observable(""),
             guid: ko.observable(""),
             fileName: ko.observable(fileName),
-            thumbnail: ko.observable(""),
+            thumbnail: ko.observable("/content/thumbnails/other.png"),
             url: ko.observable(""),
-            status: ko.observable("Loading")
+            status: ko.observable("LOADING"),
+            progress: ko.observable("0%")
         }
         
         return fileDescription
