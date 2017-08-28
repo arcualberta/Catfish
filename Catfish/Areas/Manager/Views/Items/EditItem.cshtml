@@ -1,6 +1,7 @@
 ﻿@model Catfish.Core.Models.Item
 @using Catfish.Core.Models;
 
+
 @{  ViewBag.Title = Model.Id > 0 ? "Edit Item" : "Create Item"; }
 
 @section HEAD
@@ -39,52 +40,8 @@
 
 <div class="grid_12">
     <div class="container">
-        <ul class="custom-tabs">
-
-        <!--omar-->
-            @{ int idx = 0;}
-            @foreach (var name in Model.MetadataSets.Select(ms => ms.GetName()))
-            {
-                <li class="tab-link @(idx == 0 ? "active" : "")" data-tab="tab-@idx">@name</li>
-                ++idx;
-            }
-        </ul>
-        @for (idx = 0; idx < Model.MetadataSets.Count; ++idx)
-        {
-            <div id="tab-@idx" class="tab-content @(idx == 0 ? "active" : "inactive")">
-                @Html.EditorFor(m => m.MetadataSets[idx], "MetadataInput")
-            </div>
-        }
-    </ul>
-
-
-
-        <!-- final elements -->
-<!--
-        <div class="file">
-            <input class="model-type" id="Files_0__ModelType" name="Files[0].ModelType" type="hidden" value="Catfish.Core.Models.DataFile, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id="Files_0__Id" name="Files[0].Id" type="hidden" value="0">
-            <input id="Files_0__GuidName" name="Files[0].GuidName" type="hidden" value="">
-
-            <img src="uploads/1/thumbnails/sddff.jpg" width="40" height="30" alt="example.jpg"> example.jpg
-        </div>
--->
-
-        <!--
-            
-        json result
-
-            FileName: "view-source_localhost_49696_manager_entitytypes_edit.html"
-            Guid: "08a6db37-f2d3-4d11-9e39-0377ffd5a663.html"
-            Id: 1107
-            Thumbnail: "/manager/Items/Thumbnail/1107?name=08a6db37-f2d3-4d11-9e39-0377ffd5a663.html"
-            Url: "/manager/Items/File/1107?name=08a6db37-f2d3-4d11-9e39-0377ffd5a663.html"
-            
-            
-            id="Files_0__ModelType" name="Files[0].ModelType"
-            
-            -->
-
+        
+        @Html.EditorFor(m => m)
         <div class="custom-files">
             <div id="drop-zone">
                 <div class="drop-zone-label">Drop files here</div>
