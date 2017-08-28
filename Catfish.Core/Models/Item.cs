@@ -21,24 +21,6 @@ namespace Catfish.Core.Models
         public override string GetTagName() { return "item"; }
 
         [NotMapped]
-        public List<MetadataSet> MetadataSets
-        {
-            get
-            {
-                return GetChildModels("metadata-sets/metadata-set", Data).Select(c => c as MetadataSet).ToList();
-            }
-
-            set
-            {
-                //Removing all children inside the metadata set element
-                RemoveAllElements("metadata-sets/metadata-set", Data);
-
-                foreach (MetadataSet ms in value)
-                    InsertChildElement("./metadata-sets", ms.Data);
-            }
-        }
-
-        [NotMapped]
         public virtual List<DataFile> Files
         {
             get
