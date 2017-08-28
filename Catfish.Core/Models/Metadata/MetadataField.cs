@@ -64,7 +64,7 @@ namespace Catfish.Core.Models.Metadata
                 SetHelp(value);
             }
         }
-
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         [NotMapped]
         public string Value
         {
