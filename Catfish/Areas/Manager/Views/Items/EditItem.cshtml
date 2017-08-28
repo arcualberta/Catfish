@@ -20,24 +20,12 @@
 })
 
 <div>
-@{ int idx = 0;}
 
-    <ul>
-        @foreach (var name in Model.MetadataSets.Select(ms => ms.GetName()))
-        {
-            <li>@name</li>
-            ++idx;
-        }
-    </ul>
-    @{ idx = 0;}
-
-    @for (idx=0;idx < Model.MetadataSets.Count(); ++idx)
-    {
-        <div>@Html.EditorFor(m => m.MetadataSets[idx], "MetadataInput")</div>
-    }
+    @* Rendering the metadata sets through the Entity.cshtml shared editor template *@
+    @Html.EditorFor(m => m)
 
     <h3>Files</h3>
-    @for (idx = 0; idx < Model.Files.Count(); ++idx)
+    @for (int idx = 0; idx < Model.Files.Count(); ++idx)
     {
         <div class="file">@Html.EditorFor(m => m.Files[idx])</div>
     }

@@ -175,6 +175,7 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\RadioButtonSet.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DataFile.cshtml" />
     <Content Include="Areas\Manager\Views\Items\UploadTest.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\Entity.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -205,6 +206,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\EntityViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -236,7 +238,6 @@
   <ItemGroup>
     <Folder Include="Areas\Manager\Views\Catfish\" />
     <Folder Include="Areas\Manager\Views\Entity\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj">

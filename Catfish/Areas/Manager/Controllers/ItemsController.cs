@@ -142,6 +142,18 @@ namespace Catfish.Areas.Manager.Controllers
 
                     return View("EditItem", dbModel);
                 }
+                else
+                {
+
+                    //TODO: Create a new service method on ItemService for the folowings, which returns a new Item
+                    // 1. Get the EntityType ID from the post call variable.
+                    // 2. Load the item type from the database
+                    // 3. Create a new item. Add the list of metadata sets in the item type into the newly created model
+                    // 4. Call srv.UpdateStoredItem(model); method to assign the values passed through the posted model into the newly created item
+
+
+                    //save the item
+                }
 
                 //model.Data.SetValue(ctx.Request["Data"]);
 

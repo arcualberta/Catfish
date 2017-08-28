@@ -1,0 +1,17 @@
+﻿@model Catfish.Core.Models.Entity
+@using Catfish.Core.Models;
+
+<ul>
+    @{ int idx = 0;}
+    @foreach (var name in Model.MetadataSets.Select(ms => ms.GetName()))
+    {
+        <li>@name</li>
+        ++idx;
+    }
+</ul>
+@{ idx = 0;}
+
+@for (idx = 0; idx < Model.MetadataSets.Count(); ++idx)
+{
+    <div>@Html.EditorFor(m => m.MetadataSets[idx], "MetadataInput")</div>
+}
