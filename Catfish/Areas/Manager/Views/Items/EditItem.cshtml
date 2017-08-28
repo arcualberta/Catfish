@@ -19,6 +19,11 @@
     @Html.Partial("Partial/EditToolbar")
 }
 
+<script>
+        var fileList = @Html.Raw(ViewBag.FileList)        
+</script>
+
+
 @ViewBag.Status
 <br />
 
@@ -31,7 +36,6 @@
     {"class", "model-type"}
 })
 
-<div>
 
 <div class="grid_12">
     <div class="container">
@@ -53,43 +57,59 @@
         }
     </ul>
 
-<!--Kamal-->
+
+
+        <!-- final elements -->
+<!--
+        <div class="file">
+            <input class="model-type" id="Files_0__ModelType" name="Files[0].ModelType" type="hidden" value="Catfish.Core.Models.DataFile, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id="Files_0__Id" name="Files[0].Id" type="hidden" value="0">
+            <input id="Files_0__GuidName" name="Files[0].GuidName" type="hidden" value="">
+
+            <img src="uploads/1/thumbnails/sddff.jpg" width="40" height="30" alt="example.jpg"> example.jpg
+        </div>
+-->
 
         <!--
-    @{ idx = 0;}
+            
+        json result
 
-    @for (idx=0;idx < Model.MetadataSets.Count(); ++idx)
-    {
-        <div>@Html.EditorFor(m => m.MetadataSets[idx], "MetadataInput")</div>
-    }
-
-    <h3>Files</h3>
-    @for (idx = 0; idx < Model.Files.Count(); ++idx)
-    {
-        <div class="file">@Html.EditorFor(m => m.Files[idx])</div>
-    }
-    -->
-
+            FileName: "view-source_localhost_49696_manager_entitytypes_edit.html"
+            Guid: "08a6db37-f2d3-4d11-9e39-0377ffd5a663.html"
+            Id: 1107
+            Thumbnail: "/manager/Items/Thumbnail/1107?name=08a6db37-f2d3-4d11-9e39-0377ffd5a663.html"
+            Url: "/manager/Items/File/1107?name=08a6db37-f2d3-4d11-9e39-0377ffd5a663.html"
+            
+            
+            id="Files_0__ModelType" name="Files[0].ModelType"
+            
+            -->
 
         <div class="custom-files">
             <div id="drop-zone">
                 <div class="drop-zone-label">Drop files here</div>
             </div>
             
+
             <div data-bind="foreach: files">
+
                 <div class="file-row">
+                    <input type="hidden" name="Files.Index" data-bind="attr: {value: guid}">
+                    <input class="model-type" data-bind="attr:{id: 'Files_' + $index() + '__ModelType' , name: 'Files[' + $index() + '\].ModelType'  }"  type="hidden" value="Catfish.Core.Models.DataFile, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">                    
                     <div class="file-thumbnail-container">
                         <img class="file-thumbnail" data-bind="attr:{src: thumbnail}" />
                     </div>
                     <div class="file-info-container">
-                        <span class="file-name" data-bind="text: fileName"></span>                        
+                        <a data-bind="href: url">
+                            <span class="file-name" data-bind="text: fileName"></span>
+                        </a>
                         <div class="progress-bar-container" data-bind="css: {'file-error': status() == 'ERROR'}">
                             <div class="progress-bar" data-bind="style: {width: progress}, text: status() == 'ERROR' ? 'Error' : progress, css:{'file-ok': progress() == '100%', 'file-error': status() == 'ERROR'}"></div>
                         </div>
-                        <!--<span data-bind="text: status"></span>-->
                     </div>
                     <a href="#" class="file-remove" data-bind="click: $parent.removeFile">x</a>
                 </div>
+
             </div>
             
             <!--

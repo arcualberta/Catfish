@@ -89,7 +89,8 @@ ul.custom-tabs {
 }
 
 .file-thumbnail-container {
-    width: 100px
+    width: 100px;
+    height: 100px;
 }
 
 .file-thumbnail {

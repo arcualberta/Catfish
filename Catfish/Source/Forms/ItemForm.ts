@@ -73,9 +73,23 @@ interface FileDescription {
     progress: KnockoutObservable<string>
 }
 
+//[{ "Id": 0, "Guid": null, "FileName": "example.jpg", "Thumbnail": "/manager/Items/Thumbnail/0", "Url": "/manager/Items/File/0" }]
+
+interface FileBackend {
+    Id: string,
+    Guid: string,
+    FileName: string,
+    Thumbnail: string,
+    Url: string
+}
+
+
+declare var fileList: any;
+
 class ItemForm {
 
     files: KnockoutObservableArray<FileDescription>
+    fileList: Array<FileBackend>
     //reader: FileReader
 
     constructor() {
@@ -100,7 +114,25 @@ class ItemForm {
 
         dropZone.addEventListener("dragover", this.handleDragOver)
         dropZone.addEventListener("drop", this.dropListener)
+        this.fileList = fileList
+        this.populateFiles()
+    }
 
+    private populateFiles() {
+        for (let fileBackend of this.fileList) {
+            console.log(fileBackend)
+
+            let fileDescription: FileDescription = this.getFileDescription(fileBackend.FileName);
+            fileDescription.id(fileBackend.Id)
+            fileDescription.guid("fileBackend.Guid")
+            fileDescription.thumbnail(fileBackend.Thumbnail)
+            fileDescription.url(fileBackend.Url)
+            console.log(fileDescription.id())
+            console.log(fileDescription.guid())
+            console.log(fileDescription.thumbnail())
+            console.log(fileDescription.url())
+            this.files.push(fileDescription)
+        }
     }
 
     private dropListener = (event: DragEvent) => {
@@ -132,6 +164,7 @@ class ItemForm {
                     // response for single file
                     let responseJson: any = JSON.parse(request.responseText)[0]
                     this.updateFileDescription(fileDescription, responseJson, "OK")
+                    console.log(responseJson)
                 } else {
                     // Render error 
                     fileDescription.status("ERROR")
