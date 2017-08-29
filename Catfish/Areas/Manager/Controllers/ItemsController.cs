@@ -91,11 +91,13 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Edit(int? id)
         {
             Item model;
+            ViewBag.FileList = "[]";
             if (id.HasValue)
             {
                 model = db.XmlModels.Find(id) as Item;
                 model.Deserialize();
                 //ViewBag.
+                ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files)).Data);
             }
             else
             {
@@ -106,7 +108,6 @@ namespace Catfish.Areas.Manager.Controllers
 
             }
 
-            ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files)).Data);
             //ViewBag.JSONModel = Newtonsoft.Json.JsonConvert.SerializeObject(model.Data);
             ////// Rendering these as json objects in view result in circular references 
             ////var metadataSets = db.MetadataSets.ToList();
@@ -141,7 +142,7 @@ namespace Catfish.Areas.Manager.Controllers
 
                     Item dbModel = srv.UpdateStoredItem(model);
                     db.SaveChanges();
-
+                    ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files)).Data);
                     return View("EditItem", dbModel);
                 }
 
@@ -174,7 +175,6 @@ namespace Catfish.Areas.Manager.Controllers
                 Thumbnail = u.Action("Thumbnail", "Items", new { id = f.Id, name = f.GuidName }),
                 Url = u.Action("File", "Items", new { id = f.Id, name = f.GuidName })
             });
-
             return result;
         }
 
