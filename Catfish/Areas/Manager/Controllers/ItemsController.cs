@@ -189,7 +189,8 @@ namespace Catfish.Areas.Manager.Controllers
                     Guid = f.GuidName,
                     FileName = f.FileName,
                     Thumbnail = u.Action("Thumbnail", "Items", new { id = f.Id, name = f.GuidName }),
-                    Url = u.Action("File", "Items", new {id = f.Id, name = f.GuidName })
+                    Url = u.Action("File", "Items", new {id = f.Id, name = f.GuidName }),
+                    ModelType = f.GetType().AssemblyQualifiedName
                 });
                 return Json(ret);
             }
