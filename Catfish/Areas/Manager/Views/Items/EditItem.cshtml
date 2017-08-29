@@ -20,6 +20,7 @@
 })
 
 <div>
+    @Html.HiddenFor(m=>m.EntityTypeId)
 
     @* Rendering the metadata sets through the Entity.cshtml shared editor template *@
     @Html.EditorFor(m => m)
