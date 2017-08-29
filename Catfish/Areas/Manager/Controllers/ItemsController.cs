@@ -94,7 +94,7 @@ namespace Catfish.Areas.Manager.Controllers
             if (id.HasValue)
             {
                 model = db.XmlModels.Find(id) as Item;
-                model.Deserialize();
+                model.Deserialize();  
             }
             else
             {
@@ -102,7 +102,13 @@ namespace Catfish.Areas.Manager.Controllers
                 var path = WebConfigurationManager.AppSettings["TestDataFolder"];
                 path = Path.Combine(path, filename);
                 model = XmlModel.Load(path) as Item;
-
+            }
+            //get entity type -- this won't be needed if from edit interface thereis a way to choose the EntityType
+            string eTypeName = model.Data.Attribute("entity-type").Value;
+            EntityType eType = db.EntityTypes.Where(e => e.Name == eTypeName).FirstOrDefault();
+            if (eType != null)
+            {
+                model.EntityTypeId = eType.Id;
             }
 
             ViewBag.JSONModel = Newtonsoft.Json.JsonConvert.SerializeObject(model.Data);
@@ -127,15 +133,13 @@ namespace Catfish.Areas.Manager.Controllers
             if (ModelState.IsValid)
             {
                 ViewBag.Status = "Validation Passed";
-
-                if(model.Id > 0)
+                ItemService srv = new ItemService(db);
+                if (model.Id > 0)
                 {
                     ////Item dbModel = db.XmlModels.Find(model.Id) as Item;
                     ////dbModel.Deserialize();
                     ////dbModel.UpdateValues(model);
                     ////db.Entry(dbModel).State = EntityState.Modified;
-
-                    ItemService srv = new ItemService(db);
 
                     Item dbModel = srv.UpdateStoredItem(model);
                     db.SaveChanges();
@@ -148,18 +152,19 @@ namespace Catfish.Areas.Manager.Controllers
                     //TODO: Create a new service method on ItemService for the folowings, which returns a new Item
                     // 1. Get the EntityType ID from the post call variable.
                     // 2. Load the item type from the database
-                    // 3. Create a new item. Add the list of metadata sets in the item type into the newly created model
-                    // 4. Call srv.UpdateStoredItem(model); method to assign the values passed through the posted model into the newly created item
+                    // Item itm = db.XmlModels.Where(x => (x as Entity).EntityTypeId == model.EntityTypeId).FirstOrDefault() as Item;
 
+                    // 3. Create a new item. Add the list of metadata sets in the item type into the newly created model
+                    // do we still need no 3, since Item retrieve from db contains all metadata already??
+
+                    // 4. Call srv.UpdateStoredItem(model); method to assign the values passed through the posted model into the newly created item
+                    Item dbModel = srv.UpdateStoredItem(model);
 
                     //save the item
+                    db.SaveChanges();
+                    return View("EditItem", dbModel);
                 }
-
-                //model.Data.SetValue(ctx.Request["Data"]);
-
-                //db.Entry(model).State = EntityState.Modified;
-                //db.SaveChanges();
-                //return RedirectToAction("Index");
+                
             }
             //ViewBag.EntityTypeId = new SelectList(db.EntityTypes, "Id", "Name", model.EntityTypeId);
             return View("EditItem", model);

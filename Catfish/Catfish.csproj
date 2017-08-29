@@ -176,6 +176,7 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DataFile.cshtml" />
     <Content Include="Areas\Manager\Views\Items\UploadTest.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\Entity.cshtml" />
+    <Content Include="Areas\Manager\Views\Collections\Edit.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -192,6 +193,7 @@
     <Compile Include="App_Start\RouteConfig.PiranhaCMS.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Manager\Controllers\CatfishController.cs" />
+    <Compile Include="Areas\Manager\Controllers\CollectionsController.cs" />
     <Compile Include="Areas\Manager\Controllers\EntityTypesController.cs" />
     <Compile Include="Areas\Manager\Controllers\ItemsController.cs" />
     <Compile Include="Areas\Manager\Controllers\MetadataController.cs" />

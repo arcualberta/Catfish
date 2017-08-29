@@ -1,0 +1,30 @@
+﻿@model Catfish.Core.Models.Collection
+
+
+@{  ViewBag.Title = Model.Id > 0 ? "Edit Collection" : "Create Collection"; }
+
+@section Toolbar {
+    @Html.Partial("Partial/EditToolbar")
+}
+
+@ViewBag.Status
+<br />
+
+@using (Html.BeginForm()) {
+
+    @Html.HiddenFor(m => m.Id)
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    //for model binding
+    @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+    {
+       {"class", "model-type"}
+    })
+
+   
+
+    @* Rendering the metadata sets through the Entity.cshtml shared editor template *@
+    @Html.EditorFor(m => m, "Entity")
+   
+ }
