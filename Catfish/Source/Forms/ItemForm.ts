@@ -124,7 +124,7 @@ class ItemForm {
 
             let fileDescription: FileDescription = this.getFileDescription(fileBackend.FileName);
             fileDescription.id(fileBackend.Id)
-            fileDescription.guid("fileBackend.Guid")
+            fileDescription.guid(fileBackend.Guid)
             fileDescription.thumbnail(fileBackend.Thumbnail)
             fileDescription.url(fileBackend.Url)
             console.log(fileDescription.id())
