@@ -11,10 +11,22 @@
         ++idx;
     }
 </ul>
+
+
+
+
+
 @for (idx = 0; idx < Model.MetadataSets.Count; ++idx)
 {
     <div id="tab-@idx" class="tab-content @(idx == 0 ? "active" : "inactive")">
-        @Html.EditorFor(m => m.MetadataSets[idx], "MetadataInput")
-    </div>
-}
-</ul>
+        <div class="box no-margin">
+
+            <div class="inner">
+                <ul class="form">
+                    @Html.EditorFor(m => m.MetadataSets[idx], "MetadataInput")
+                </ul>
+            </div>
+            </div>
+        </div>
+            }
+

@@ -63,7 +63,6 @@
                         <a data-bind="href: url">
                             <span class="file-name" data-bind="text: fileName"></span>
                         </a>
-                        <div data-bind="text: preloaded"></div>
                         <div class="progress-bar-container" data-bind="if: !preloaded(), css: {'file-error': status() == 'ERROR'}">
                             <div class="progress-bar" data-bind="style: {width: progress}, text: status() == 'ERROR' ? 'Error' : progress, css:{'file-ok': progress() == '100%', 'file-error': status() == 'ERROR'}"></div>
                         </div>

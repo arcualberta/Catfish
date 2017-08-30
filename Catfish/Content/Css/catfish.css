@@ -83,9 +83,11 @@ ul.custom-tabs {
     display: flex;
     padding: 20px;
     background-color: #fff;
-    margin: 20px;
+    margin: 20px 0px;
     border: 1px solid #ddd;
     position: relative;
+    border-radius: 3px;
+    box-shadow: 0 4px 10px rgba(0,0,0,.04);
 }
 
 .file-thumbnail-container {
@@ -128,4 +130,8 @@ ul.custom-tabs {
     background-color: #FC615D;
     color: #fff;
     
+}
+
+.no-margin {
+    margin: 0px !important;
 }
