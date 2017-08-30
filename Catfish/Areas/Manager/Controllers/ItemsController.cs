@@ -12,6 +12,7 @@ using System.IO;
 using System.Xml.Linq;
 using System.Web.Configuration;
 using Catfish.Core.Services;
+using Catfish.Core.Models.Metadata;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -103,7 +104,7 @@ namespace Catfish.Areas.Manager.Controllers
                 path = Path.Combine(path, filename);
                 model = XmlModel.Load(path) as Item;
             }
-            //get entity type -- this won't be needed if from edit interface thereis a way to choose the EntityType
+            //get entity type for testing-- this won't be needed if from edit interface there's a way to choose the EntityType
             string eTypeName = model.Data.Attribute("entity-type").Value;
             EntityType eType = db.EntityTypes.Where(e => e.Name == eTypeName).FirstOrDefault();
             if (eType != null)
@@ -148,21 +149,37 @@ namespace Catfish.Areas.Manager.Controllers
                 }
                 else
                 {
+                    // Item dbModel = srv.UpdateStoredItem(model); //this should be enough if follow current structure
 
                     //TODO: Create a new service method on ItemService for the folowings, which returns a new Item
                     // 1. Get the EntityType ID from the post call variable.
                     // 2. Load the item type from the database
                     // Item itm = db.XmlModels.Where(x => (x as Entity).EntityTypeId == model.EntityTypeId).FirstOrDefault() as Item;
-
+                    Item itm = new Item();
+                   
                     // 3. Create a new item. Add the list of metadata sets in the item type into the newly created model
                     // do we still need no 3, since Item retrieve from db contains all metadata already??
-
+                    EntityType et = db.EntityTypes.Where(e => e.Id == model.EntityTypeId).FirstOrDefault();
+                    XAttribute attribute = new XAttribute("entity-type", et.Name);
+                    itm.Data.Add(attribute);
+                    XElement meta = itm.Data.Element("metadata-sets");
+                    foreach (MetadataSet ms in et.MetadataSets)
+                    {
+                        MetadataSet mSet = db.XmlModels.Find(ms.Id) as MetadataSet; 
+                        meta.Add(mSet.Data);
+                    }
+                   
+                    
                     // 4. Call srv.UpdateStoredItem(model); method to assign the values passed through the posted model into the newly created item
-                    Item dbModel = srv.UpdateStoredItem(model);
 
+                    //updating the "value" text elements
+                    itm.UpdateValues(model);
+                    itm.EntityTypeId = model.EntityTypeId;
                     //save the item
-                    db.SaveChanges();
-                    return View("EditItem", dbModel);
+                    db.XmlModels.Add(itm);
+                     db.SaveChanges();
+                     return View("EditItem", itm);
+                   // return View();
                 }
                 
             }
