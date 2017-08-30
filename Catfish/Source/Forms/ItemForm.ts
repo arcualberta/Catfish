@@ -71,6 +71,7 @@ interface FileDescription {
     // computed variables
     status: KnockoutObservable<string>
     progress: KnockoutObservable<string>
+    preloaded: KnockoutObservable<boolean>
 }
 
 //[{ "Id": 0, "Guid": null, "FileName": "example.jpg", "Thumbnail": "/manager/Items/Thumbnail/0", "Url": "/manager/Items/File/0" }]
@@ -127,6 +128,7 @@ class ItemForm {
             fileDescription.guid(fileBackend.Guid)
             fileDescription.thumbnail(fileBackend.Thumbnail)
             fileDescription.url(fileBackend.Url)
+            fileDescription.preloaded(true)
             console.log(fileDescription.id())
             console.log(fileDescription.guid())
             console.log(fileDescription.thumbnail())
@@ -194,7 +196,8 @@ class ItemForm {
             thumbnail: ko.observable("/content/thumbnails/other.png"),
             url: ko.observable(""),
             status: ko.observable("LOADING"),
-            progress: ko.observable("0%")
+            progress: ko.observable("0%"),
+            preloaded: ko.observable(false)
         }
         
         return fileDescription
