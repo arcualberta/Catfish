@@ -146,7 +146,7 @@ namespace Catfish.Core.Services
         /// <returns></returns>
         public Item AddItem(Item changedItem, Item newItem)
         {
-            
+            Item dbModel = Db.XmlModels.Find(changedItem.Id) as Item;
             newItem.Deserialize();
 
             //updating the "value" text elements
