@@ -82,17 +82,78 @@ namespace Catfish.Core.Services
                 return null;
         }
 
-
+        // add entityTypeId for creating new item
         public Item UpdateStoredItem(Item changedItem)
         {
-            Item dbModel = Db.XmlModels.Find(changedItem.Id) as Item;
+            Item dbModel = new Item();
+            
+            if (changedItem.Id > 0)
+            {
+                dbModel = Db.XmlModels.Find(changedItem.Id) as Item;
+            }
+            else{
+                int entityTypeId = changedItem.EntityTypeId.Value;
+                dbModel = Db.XmlModels.Where(x => (x as Entity).EntityTypeId == entityTypeId).FirstOrDefault() as Item;
+            }
             dbModel.Deserialize();
 
             //updating the "value" text elements
             dbModel.UpdateValues(changedItem);
+            if (changedItem.Id > 0) //update Item
+            {
+                //Deleting files in the dbModel item if those files are not in the changedItem
+                if (dbModel.Files.Any()) //add checking if item contain any files
+                {
+                    foreach (DataFile df in dbModel.Files)
+                    {
+                        if (changedItem.Files.Where(f => f.GuidName == df.GuidName).Any() == false)
+                        {
+                            df.Data.Remove();
+                            DeleteFile(df);
+                        }
+                    }
+                }
+                //Inserting new files that are in the source item that are still not in this item
+                if (changedItem.Files.Any())
+                {
+                    foreach (DataFile df in changedItem.Files)
+                    {
+                        if (dbModel.Files.Select(f => f.GuidName == df.GuidName).Any() == false)
+                        {
+                            dbModel.InsertChildElement("./files", df.Data);
+
+                            //since we inserted the XML data of df into the XML model of the item,
+                            //we no longer need to keep it in the database table. Howeber, we DO NEED to keep the files
+                            //because these files are now referred by the XML File model which was inserted into the XML Item model.
+                            //Deleting the File table entry corresponding to df
+                            Db.XmlModels.Remove(Db.XmlModels.Find(df.Id));
+                        }
+                    }
+                }
+                Db.Entry(dbModel).State = EntityState.Modified;
+            }
+            else { //creating new Item --Aug 29
+                Db.XmlModels.Add(dbModel);
+            }
+            return dbModel;
+        }
+
+        /// <summary>
+        /// Adding new item to database
+        /// </summary>
+        /// <param name="changedItem">item that contain all modified/new value that coming from post</param>
+        /// <param name="newItem">reference Item that contain all proper name/label that changedItem is lack off</param>
+        /// <returns></returns>
+        public Item AddItem(Item changedItem, Item newItem)
+        {
+            
+            newItem.Deserialize();
+
+            //updating the "value" text elements
+            newItem.UpdateValues(changedItem);
 
             //Deleting files in the dbModel item if those files are not in the changedItem
-            foreach (DataFile df in dbModel.Files)
+            foreach (DataFile df in newItem.Files)
             {
                 if (changedItem.Files.Where(f => f.GuidName == df.GuidName).Any() == false)
                 {
@@ -104,9 +165,9 @@ namespace Catfish.Core.Services
             //Inserting new files that are in the source item that are still not in this item
             foreach (DataFile df in changedItem.Files)
             {
-                if (dbModel.Files.Select(f => f.GuidName == df.GuidName).Any() == false)
+                if (newItem.Files.Select(f => f.GuidName == df.GuidName).Any() == false)
                 {
-                    dbModel.InsertChildElement("./files", df.Data);
+                    newItem.InsertChildElement("./files", df.Data);
 
                     //since we inserted the XML data of df into the XML model of the item,
                     //we no longer need to keep it in the database table. Howeber, we DO NEED to keep the files
@@ -120,9 +181,8 @@ namespace Catfish.Core.Services
             dbModel.Serialize();
             Db.Entry(dbModel).State = EntityState.Modified;
 
-            return dbModel;
+            return newItem;
         }
-
         public string GetThumbnail(string contentType)
         {
             if (contentType == "application/pdf")

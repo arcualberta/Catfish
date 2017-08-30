@@ -75,7 +75,7 @@ namespace Catfish.Core.Models
 
         public DbSet<XmlModel> XmlModels { get; set; }
 
- //       public DbSet<Entity> Entities { get; set; }
+ //      public DbSet<Entity> Entities { get; set; }
 
         public DbSet<Collection> Collections { get; set; }
 

@@ -5,8 +5,8 @@ using Catfish.Core.Models.Metadata;
 using System.Web.Script.Serialization;
 using Catfish.Core.Models.Attributes;
 using System.Xml.Linq;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace Catfish.Core.Models
@@ -20,7 +20,6 @@ namespace Catfish.Core.Models
         {
             Data.Add(new XElement("metadata-sets"));
         }
-
 
         [NotMapped]
         public List<MetadataSet> MetadataSets

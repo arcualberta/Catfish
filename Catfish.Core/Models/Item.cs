@@ -20,7 +20,6 @@ namespace Catfish.Core.Models
 
         public override string GetTagName() { return "item"; }
 
-
         [NotMapped]
         public virtual List<DataFile> Files
         {
