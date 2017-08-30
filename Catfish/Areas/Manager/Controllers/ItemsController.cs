@@ -168,8 +168,6 @@ namespace Catfish.Areas.Manager.Controllers
                         MetadataSet mSet = db.XmlModels.Find(ms.Id) as MetadataSet; 
                         meta.Add(mSet.Data);
                     }
-                   
-                    
                     // 4. Call srv.UpdateStoredItem(model); method to assign the values passed through the posted model into the newly created item
 
                     //updating the "value" text elements
