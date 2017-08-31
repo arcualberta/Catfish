@@ -28,6 +28,7 @@ export class MetadataSetFields extends FormFields {
     private previousName: string
     private previousDescription: string
     private previousOptions: string
+    private selectedFieldType: string
 
     constructor() {
         super()
@@ -35,16 +36,30 @@ export class MetadataSetFields extends FormFields {
         this.populateSelect()
         this.setSelectOptionFromHidden()
         this.listenTemplateSelector()
+        this.listenFieldTypeSelector()
 
         if (this.fieldsContainer.children().length == 0) {
-            this.addField()
+            //this.addField()
         }
+
+        this.populateFieldTypeSelector()
     }
 
     private initializeFieldTypes() {
         // window.fieldTypes and window.metadataSetId are provided by back end
         this.fieldTypes = fieldTypes
         this.metadataSetId = metadataSetId
+    }
+
+    private populateFieldTypeSelector() {
+        let fieldTypeSelector: JQuery = $("#field-type-selector")
+        for (let field of this.fieldTypes.fields) {
+            $(fieldTypeSelector).append($('<option>', {
+                value: field.ModelType,
+                text: field.Label
+            }))
+
+        }
     }
 
     private populateSelect() {
@@ -127,8 +142,14 @@ export class MetadataSetFields extends FormFields {
         template.find(".model-type").val(selectedType)
     }
 
+    
+
     protected addField() {
-        let template: JQuery = this.getTemplate(this.fieldTypes.fields[0].Template)
+        //let template: JQuery = this.getTemplate(this.fieldTypes.fields[0].Template)
+        //console.log(this.fieldTypes.fields[0].Template)
+        console.log(this.selectedFieldType)
+        //let template: JQuery = this.getTemplate(this.selectedFieldType)
+        let template: JQuery = this.getTemplate(this.getTemplateType(this.selectedFieldType))
 
         this.fieldsContainer.append(template)
         template.find(".metadataset-id").attr("value", this.metadataSetId)
@@ -142,6 +163,14 @@ export class MetadataSetFields extends FormFields {
         templateSelectors.change((e) => {
             $(e.target).closest(".field-entry").prev().remove()
             this.setTemplate($(e.target))
+        })
+    }
+
+    private listenFieldTypeSelector() {
+        let fieldTypeSelector: JQuery = $("#field-type-selector")
+        fieldTypeSelector.change((e) => {
+            this.selectedFieldType = $(e.target).val()
+            //this.selectedFieldType = "Catfish.Core.Models.Metadata.OptionsField"
         })
     }
 }

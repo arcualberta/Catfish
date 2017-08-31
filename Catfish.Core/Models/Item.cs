@@ -37,8 +37,11 @@ namespace Catfish.Core.Models
                 //Removing all children inside the files element
                 RemoveAllElements("files/file", Data);
 
-                foreach (DataFile df in value)
-                    InsertChildElement("./files", df.Data);
+                if (value != null)
+                {
+                    foreach (DataFile df in value)
+                        InsertChildElement("./files", df.Data);
+                }
             }
         }
 
