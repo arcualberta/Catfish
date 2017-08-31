@@ -281,6 +281,12 @@ namespace Catfish.Core.Models
             return ((IEnumerable)ele.XPathEvaluate(xpath, NamespaceManager)).Cast<XElement>();
         }
 
+        public int GetAttribute(string attName, int defaultValue)
+        {
+            string val = GetAttribute(attName);
+            return string.IsNullOrEmpty(val) ? defaultValue : int.Parse(val);
+        }
+
         public string GetAttribute(string attName)
         {
             XAttribute att = Data.Attribute(attName);

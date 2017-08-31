@@ -146,7 +146,7 @@ namespace Catfish.Core.Services
         /// <returns></returns>
         public Item AddItem(Item changedItem, Item newItem)
         {
-            
+            Item dbModel = Db.XmlModels.Find(changedItem.Id) as Item;
             newItem.Deserialize();
 
             //updating the "value" text elements
@@ -173,11 +173,13 @@ namespace Catfish.Core.Services
                     //we no longer need to keep it in the database table. Howeber, we DO NEED to keep the files
                     //because these files are now referred by the XML File model which was inserted into the XML Item model.
                     //Deleting the File table entry corresponding to df
-                    Db.XmlModels.Remove(Db.XmlModels.Find(df.Id));
+                    //TODO: make the following works.
+                    //Db.XmlModels.Remove(Db.XmlModels.Find(df.Id));
                 }
             }
 
-            Db.XmlModels.Add(newItem);
+            dbModel.Serialize();
+            Db.Entry(dbModel).State = EntityState.Modified;
 
             return newItem;
         }

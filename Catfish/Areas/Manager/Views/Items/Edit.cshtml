@@ -21,101 +21,43 @@
     <script>
             require(["/Built/Forms/ItemForm.js"])
     </script>
+    <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
+    
 
-    <link href="/node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet"  type="text/css" />
 }
 
 
-<select data-bind="options: entityTypes, 
+@*<select data-bind="options: entityTypes, 
                optionsText: function(type) {
                 return type.Name
                 },
                value: selectedEntityType">
-</select>
-
-
-<ul id="metadataset-tabs" data-bind="foreach: selectedEntityType().MetadataSets" class="nav nav-tabs" role="tablist">
-    <li role="presentation">
-        <a class="tab" role="tab" data-toggle="tab" data-bind="{
-           attr: {
-            href: '#',
-            'aria-controls': Id
-           },
-           text: Name}">
-        </a>
-    </li>
-</ul>
-
-<hr />
-
-<ul data-bind="foreach: selectedEntityType().MetadataSets">
-    <li data-bind="text: Name">
-    </li>
-    <li>
-        <ul data-bind="foreach: Fields">
-            <li>
-                <div data-bind="template: {name: Type}"></div>
-            </li>
-        </ul>
-    </li>
-</ul>
-
-
+</select>*@
 
 
 <!--
-Catfish.Core.Models.Metadata.TextField
-Catfish.Core.Models.Metadata.CheckBoxSet
-Catfish.Core.Models.Metadata.Datefield
-Catfish.Core.Models.Metadata.DropDownMenu
-Catfish.Core.Models.Metadata.RadioButtonSet
-Catfish.Core.Models.Metadata.TextArea
--->
+<div class="container">
 
+    <ul class="tabs">
+        <li class="tab-link current" data-tab="tab-1">Tab One</li>
+        <li class="tab-link" data-tab="tab-2">Tab Two</li>
+        <li class="tab-link" data-tab="tab-3">Tab Three</li>
+        <li class="tab-link" data-tab="tab-4">Tab Four</li>
+    </ul>
 
-<script type="text/html" id="Catfish.Core.Models.Metadata.TextField">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <input data-bind="value: Value" />
-</script>
+    <div id="tab-1" class="tab-content current">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    </div>
+    <div id="tab-2" class="tab-content">
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </div>
+    <div id="tab-3" class="tab-content">
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+    </div>
+    <div id="tab-4" class="tab-content">
+        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    </div>
 
-<script type="text/html" id="Catfish.Core.Models.Metadata.CheckBoxSet">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <ul data-bind="foreach: OptionsArray">
-        <li>
-            <input type="checkbox" data-bind="attr: {name: $parent.Id,  value: $data}, value: $parent.Value" />
-            <span data-bind="text: $data"></span>
-        </li>
-    </ul>    
-</script>
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.DateField">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <input data-bind="value: Value" />
-</script>
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.DropDownMenu">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <select data-bind="options: OptionsArray, value: Value"> </select>
-</script>
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.RadioButtonSet">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <ul data-bind="foreach: OptionsArray">
-        <li>
-            <input type="radio" data-bind="attr: {name: $parent.Id,  value: $data}, value: $parent.Value"/>
-            <span data-bind="text: $data"></span>
-        </li>
-    </ul>    
-</script>
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.TextArea">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <textarea data-bind="value: Value"></textarea>
-</script>
-
+</div>
+-->    
+    <!-- container -->

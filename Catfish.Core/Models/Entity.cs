@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using System.Linq;
 using System.ComponentModel.DataAnnotations.Schema;
 
+
 namespace Catfish.Core.Models
 {
     public class Entity : XmlModel
