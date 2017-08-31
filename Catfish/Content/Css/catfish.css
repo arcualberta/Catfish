@@ -135,3 +135,12 @@ ul.custom-tabs {
 .no-margin {
     margin: 0px !important;
 }
+
+.no-background-border {
+    background-color: rgba(0, 0, 0, 0) !important;
+    border: 0px !important;
+}
+
+.auto-width {
+    width: auto !important;
+}

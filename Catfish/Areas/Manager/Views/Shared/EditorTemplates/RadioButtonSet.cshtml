@@ -6,5 +6,17 @@
 })
 @Html.HiddenFor(m => m.Ref)
 
-RadioButtonSet
-
+<li>
+    @Html.Label(Model.Name)
+    <div class="input">
+        <ul>
+        @foreach (var option in Model.Options.Split('\n'))
+        {
+            <li class="no-background-border">
+                @Html.RadioButtonFor(m => m.Id, option, new { @class = "auto-width" })
+                <span>@option</span>
+            </li>
+        }
+        </ul>
+    </div>
+</li>
