@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Metadata;
 using Catfish.Models;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Mvc;
+using System.Xml.Linq;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -76,11 +78,20 @@ namespace Catfish.Areas.Manager.Controllers
 
             ViewBag.JSONModel = Newtonsoft.Json.JsonConvert.SerializeObject(model.Data);
             ////// Rendering these as json objects in view result in circular references 
-            ////var metadataSets = db.MetadataSets.ToList();
+            //var metadataSets = db.MetadataSets.ToList();
             ////var entityTypes = db.EntityTypes.ToList();
             ////ViewBag.EntityTypes = new JavaScriptSerializer().Serialize(entityTypes);//Json(db.EntityTypes.ToList());
-            ////ViewBag.MetadataSets = new JavaScriptSerializer().Serialize(metadataSets);//Json(db.MetadataSets.ToList());
+            //ViewBag.MetadataSets = new JavaScriptSerializer().Serialize(metadataSets);//Json(db.MetadataSets.ToList());
+            
+                var collections = db.Collections.AsEnumerable();
+            var _collections = collections.Select(m => new SelectListItem
+            {
+                Value = m.Id.ToString(),
+                Text = m.Name
+                //Selected = bodyStyleId.Equals(m.Id.ToString())
 
+            });
+            ViewBag.Collections = _collections;
             return View("Edit", model);
            
         }
@@ -102,15 +113,39 @@ namespace Catfish.Areas.Manager.Controllers
                 }
                 else
                 {
+                    //get Parent CollectionId
+                    int parentColId = Convert.ToInt16(HttpContext.Request.Form["parentCollection"]);
+                    Collection parentCol = db.XmlModels.Find(parentColId) as Collection;
+
+                    collection.ParentMembers.Add(parentCol);
+                    //alternative 1
+                    // Collection dbModel = UpdateStoredItem(collection); // don't need anything else if query from db to get general structure of collection
 
                     //TODO: Create a new service method on ItemService for the folowings, which returns a new Item
                     // 1. Get the EntityType ID from the post call variable.
                     // 2. Load the item type from the database
                     // 3. Create a new item. Add the list of metadata sets in the item type into the newly created model
                     // 4. Call srv.UpdateStoredItem(model); method to assign the values passed through the posted model into the newly created item
-                    Collection dbModel = UpdateStoredItem(collection);
+                    //alternative 2
+                    Collection col = new Collection(); //for holding all xml labels that're non-existing in collection object that posted back, because it's contain only value
+                    col.Data.Add(new XElement("name", collection.Name)); //if it has its ownm <name> or using DC <title> field
+
+                    EntityType et = db.EntityTypes.Where(e => e.Id == collection.EntityTypeId).FirstOrDefault();
+                    XAttribute attribute = new XAttribute("entity-type", et.Name);
+                    col.Data.Add(attribute);
+                    XElement meta = col.Data.Element("metadata-sets");
+                    foreach (MetadataSet ms in et.MetadataSets)
+                    {
+                        MetadataSet mSet = db.XmlModels.Find(ms.Id) as MetadataSet;
+                        meta.Add(mSet.Data);
+                    }
+                    //update the values
+                    col.UpdateValues(collection);
+                    col.EntityTypeId = collection.EntityTypeId;
 
                     //save the item
+                    db.Collections.Add(col);
+                    db.SaveChanges();
                 }
 
                

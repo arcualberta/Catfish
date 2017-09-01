@@ -6,7 +6,8 @@ namespace Catfish.Core.Models
 {
     public class Collection : Aggregation
     {
-        //public string Name { get; set; }
+        [NotMapped]
+        public string Name { get { return GetName(); } }
 
         //[DataType(DataType.MultilineText)]
         //public string Description { get; set; }
