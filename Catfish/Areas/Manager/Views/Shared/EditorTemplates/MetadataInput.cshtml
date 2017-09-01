@@ -1,6 +1,7 @@
 ﻿@model Catfish.Core.Models.Metadata.MetadataSet
 
 @*@Html.EditorFor(m => Model.Fields)*@
+<p>@Model.Description</p>
 
 @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
 {
