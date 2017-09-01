@@ -6,30 +6,11 @@
 })
 @Html.HiddenFor(m => m.Ref)
 
-<li>
+
+<div class="form-field-header">
     @Html.Label(Model.Name)
-    <div class="input">
-        @Html.EditorFor(m => m.Value)
-    </div>
-</li>
+</div>
+<div class="form-field-content">
+    @Html.EditorFor(m => m.Value)
+</div>
 
-
-
-<!--
-    
-<li>
-    <label for="MetadataSets_0__Fields_0__Subject">Subject</label>
-    <input class="text-box single-line" id="MetadataSets_0__Fields_0__Value" name="MetadataSets[0].Fields[0].Value" type="text" value="Hello World">
-</li>
-
--->
-
-<!--
-<li>
-    <label for="Post_Title">Title</label>
-    <div class="input">
-        <input data-val="true" data-val-length="The title has a maximum length of 128 characters." data-val-length-max="128" data-val-required="The title is required." id="Post_Title" name="Post.Title" type="text" value="">
-    </div>
-    <span class="field-validation-valid" data-valmsg-for="Post.Title" data-valmsg-replace="true"></span>
-</li>
-    -->

@@ -6,11 +6,9 @@
 })
 @Html.HiddenFor(m => m.Ref)
 
-<li>
+<div class="form-field-header">
     @Html.Label(Model.Name)
-    <div class="input">
-        @Html.TextAreaFor(m => m.Value)
-    </div>
-
-</li>
-
+</div>
+<div class="form-field-content">
+    @Html.TextAreaFor(m => m.Value)
+</div>

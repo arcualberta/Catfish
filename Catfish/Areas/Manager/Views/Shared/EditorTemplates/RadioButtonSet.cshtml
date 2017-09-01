@@ -6,10 +6,12 @@
 })
 @Html.HiddenFor(m => m.Ref)
 
-<li>
+
+<div class="form-field-header">
     @Html.Label(Model.Name)
-    <div class="input">
-        <ul>
+</div>
+<div class="form-field-content">
+    <ul>
         @foreach (var option in Model.Options.Split('\n'))
         {
             <li class="no-background-border">
@@ -17,6 +19,6 @@
                 <span>@option</span>
             </li>
         }
-        </ul>
-    </div>
-</li>
+    </ul>
+</div>
+
