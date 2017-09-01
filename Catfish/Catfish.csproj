@@ -178,6 +178,7 @@
     <Content Include="Areas\Manager\Views\Items\UploadTest.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\Entity.cshtml" />
     <Content Include="Areas\Manager\Views\Collections\Edit.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\View.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

@@ -150,7 +150,6 @@ ul.custom-tabs {
     padding: 6px 10px;
     border-radius: 2px 2px 0px 0px;
     border: 1px solid #e2e2e2;
-    /*box-shadow: 0 0 4px #ececec*/
 }
 
 .form-field-content {
@@ -160,21 +159,13 @@ ul.custom-tabs {
     margin-bottom: 10px;
     border-radius: 0px 0px 2px 2px;
     border-top: 0px;
-    /*    box-shadow: 0 0 4px #ececec */
 }
 
-.form-field-content > input {
+ .form-field-content > input, .form-field-content > textarea {
     background: transparent;
     font: normal 14px Arial;
     border: none 0;
     width: 100%;
     max-width: 100%;
 }
-
-    .form-field-content > textarea {
-        background: transparent;
-        font: normal 14px Arial;
-        border: none 0;
-        width: 100%;
-        max-width: 100%;
-    }
+ 

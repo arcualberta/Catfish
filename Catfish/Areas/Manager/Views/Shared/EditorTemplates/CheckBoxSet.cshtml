@@ -6,10 +6,10 @@
 })
 @Html.HiddenFor(m => m.Ref)
 
-
 <div class="form-field-header">
-    @Html.Label(Model.Name))
+    @Html.Label(Model.Name)
 </div>
+
 <div class="form-field-content">
     <ul>
         @foreach (var option in Model.Options.Split('\n'))
