@@ -91,7 +91,12 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Edit(int? id)
         {
             Item model;
-            ViewBag.FileList = "[]";
+            ItemService srv = new ItemService(db);
+
+            ViewBag.FileList = "[]";            
+            ViewBag.UploadAction = Url.Action("Upload", "Items");
+            ViewBag.OtherPngUrl = Url.Content("~/content/thumbnails/other.png");
+
             if (id.HasValue)
             {
                 model = db.XmlModels.Find(id) as Item;
