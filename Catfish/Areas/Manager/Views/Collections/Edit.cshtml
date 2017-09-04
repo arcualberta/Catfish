@@ -35,19 +35,15 @@
     })
 
     @Html.HiddenFor(m=>m.EntityTypeId)
+
+
+    @* Rendering the metadata sets through the Entity.cshtml shared editor template *@
     @Html.EditorFor(m => m, "Entity")
 
 
-    <div style="width:800px">
-    <div style="width:70%; float:left;">
-
-        @* Rendering the metadata sets through the Entity.cshtml shared editor template *@
-        @*@Html.EditorFor(m => m, "Entity")*@
-    </div>
-        <div style="width:25%; float: right">
-            <h3>Parent Collection</h3>
-          @*  @Html.DropDownList("parentCollection",(IEnumerable<SelectListItem>)ViewBag.Collections, "No Parent Collection")*@
-        </div>
+    <div id="child-items">
+        <h3>Child Items</h3>
+        @*  @Html.DropDownList("parentCollection",(IEnumerable<SelectListItem>)ViewBag.Collections, "No Parent Collection")*@
     </div>
 
 }
