@@ -20,7 +20,8 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Collections
         public ActionResult Index()
         {
-            return View();
+            var entities = db.XmlModels.Where(m => m is Collection).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
+            return View(entities);
         }
 
         // GET: Manager/Collections/Details/5
@@ -58,6 +59,9 @@ namespace Catfish.Areas.Manager.Controllers
             if (id.HasValue)
             {
                 model = db.XmlModels.Find(id) as Collection;
+                if (model == null)
+                    return HttpNotFound();
+
                 model.Deserialize();
             }
             else

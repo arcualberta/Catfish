@@ -3,6 +3,18 @@
 
 @{  ViewBag.Title = Model.Id > 0 ? "Edit Collection" : "Create Collection"; }
 
+@section HEAD
+{
+    <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
+    <script src="/node_modules/requirejs/require.js"></script>
+    <script type="text/javascript" src="/built/require-config.js"></script>
+    <script>
+            require(["/Built/Forms/ItemForm.js"])
+    </script>
+
+
+}
+
 @section Toolbar {
     @Html.Partial("Partial/EditToolbar")
 }
@@ -23,15 +35,18 @@
     })
 
     @Html.HiddenFor(m=>m.EntityTypeId)
+    @Html.EditorFor(m => m, "Entity")
+
+
     <div style="width:800px">
     <div style="width:70%; float:left;">
 
         @* Rendering the metadata sets through the Entity.cshtml shared editor template *@
-        @Html.EditorFor(m => m, "Entity")
+        @*@Html.EditorFor(m => m, "Entity")*@
     </div>
         <div style="width:25%; float: right">
             <h3>Parent Collection</h3>
-            @Html.DropDownList("parentCollection",(IEnumerable<SelectListItem>)ViewBag.Collections, "No Parent Collection")
+          @*  @Html.DropDownList("parentCollection",(IEnumerable<SelectListItem>)ViewBag.Collections, "No Parent Collection")*@
         </div>
     </div>
 
