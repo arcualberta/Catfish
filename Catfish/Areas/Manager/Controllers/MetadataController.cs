@@ -51,8 +51,8 @@ namespace Catfish.Areas.Manager.Controllers
 
             ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
             // return View(new MetadataDefinition(model, model.Id));
-            //return View(model);
-            return View("EditTest", model);
+            return View(model);
+            //return View("EditTest", model);
         }
 
         [HttpPost]

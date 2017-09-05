@@ -23,13 +23,17 @@ namespace Catfish.Core.Models.Metadata
 
         public string GetOptions(string lang = null)
         {
+            string result = null;
             if (lang == null)
                 lang = DefaultLanguage;
 
             XElement options_element = Data.Element("options");
-            IEnumerable<XElement> option_text_elements = GetChildTextElements("option", options_element, lang);
-            IEnumerable<string> options = option_text_elements.Select(op => op.Value);
-            string result = string.Join("\n", options);
+            if (options_element != null)
+            {
+                IEnumerable<XElement> option_text_elements = GetChildTextElements("option", options_element, lang);
+                IEnumerable<string> options = option_text_elements.Select(op => op.Value);
+                result = string.Join("\n", options);
+            }
             return result;
         }
 
