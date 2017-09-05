@@ -1,5 +1,7 @@
-﻿using Catfish.Core.Models;
+﻿using Catfish.Areas.Manager.Models;
+using Catfish.Core.Models;
 using Catfish.Core.Models.Metadata;
+using Catfish.Core.Services;
 using Catfish.Models;
 using System;
 using System.Collections.Generic;
@@ -56,11 +58,18 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Edit(int? id)
         {
             Collection model;
+            EntityLinkViewModel childItems = new EntityLinkViewModel();
+            CollectionService srv = new CollectionService(db);
+
             if (id.HasValue)
             {
                 model = db.XmlModels.Find(id) as Collection;
                 if (model == null)
                     return HttpNotFound();
+
+                childItems.SetLinkedEntities(srv.GetChildItems(model.Id));
+
+                ViewBag.ChildItems = childItems;
 
                 model.Deserialize();
             }
