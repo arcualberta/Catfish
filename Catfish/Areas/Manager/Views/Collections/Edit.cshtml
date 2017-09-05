@@ -44,6 +44,16 @@
     <div id="child-items">
         <h3>Child Items</h3>
         @*  @Html.DropDownList("parentCollection",(IEnumerable<SelectListItem>)ViewBag.Collections, "No Parent Collection")*@
+
+        Use Knockout MVC to render the ViewBag.ChildItems object.<br />
+        - hidden field for Active entity id<br />
+        - one list for LinkedEntities array<br />
+        - one list for AllEntities array<br />
+        - an Add button => calls CollectionController.AddItems method ==> this method should add the selected items to the LinkedEntities array and return the updated view model<br />
+        - a Remove buttonn => calls CollectionController.RemoveItems method ==> xxxxx<br />
+        - selecting entities from either list should put them to the SelectedList array.<br />
+        
+
     </div>
 
 }

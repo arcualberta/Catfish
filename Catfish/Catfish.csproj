@@ -218,7 +218,7 @@
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
-    <Compile Include="Areas\Manager\Models\EntityLinkViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\EntityAssociationViewModel.cs" />
     <Compile Include="Areas\Manager\Models\FieldDefinitionViewModel.cs" />
     <Compile Include="Areas\Manager\Models\FieldPropertyViewModel.cs" />
     <Compile Include="Controllers\PageController.cs" />

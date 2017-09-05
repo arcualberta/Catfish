@@ -58,7 +58,7 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Edit(int? id)
         {
             Collection model;
-            EntityLinkViewModel childItems = new EntityLinkViewModel();
+            EntityAssociationViewModel childItems = new EntityAssociationViewModel();
             CollectionService srv = new CollectionService(db);
 
             if (id.HasValue)
@@ -67,7 +67,16 @@ namespace Catfish.Areas.Manager.Controllers
                 if (model == null)
                     return HttpNotFound();
 
-                childItems.SetLinkedEntities(srv.GetChildItems(model.Id));
+                int i = 1;
+                for(i=1; i<20; ++i)
+                {
+                    childItems.AllEntities.Add(new EntityViewModel() { Id = i, Label = "All " + i });
+                }
+
+                for (; i < 30; ++i)
+                {
+                    childItems.AssociatedEntities.Add(new EntityViewModel() { Id = i, Label = "Associated " + i });
+                }
 
                 ViewBag.ChildItems = childItems;
 
