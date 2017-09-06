@@ -1,7 +1,8 @@
 ﻿@model Catfish.Core.Models.EntityType
 @using Catfish.Core.Models.Attributes
+@using Catfish.Areas.Manager.Models
 @using Catfish.Models;
-
+@using System.Web.Script.Serialization;
 
 <script src="/node_modules/requirejs/require.js"></script>
 <script type="text/javascript" src="/built/require-config.js"></script>
@@ -17,11 +18,13 @@
     };
 
     string metadataSetTemplate = Html.Partial("EditorTemplates/EntityViewModel", new EntityViewModel(), viewData).ToHtmlString();
+
+    EntityTypeViewModel vm = ViewBag.EntityTypeViewModel as EntityTypeViewModel;
 }
 
 <script>
     var metadataSets = {
-        sets: @Html.Raw(ViewBag.MetadataSets),
+        sets: @Html.Raw(new JavaScriptSerializer().Serialize(vm.MetadataSetSummary)),
         template: @Html.Raw(Json.Encode(metadataSetTemplate))
     }
 </script>
