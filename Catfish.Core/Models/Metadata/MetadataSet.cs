@@ -10,6 +10,7 @@ using System.Linq;
 
 namespace Catfish.Core.Models.Metadata
 {
+    [TypeLabel("Metadata Set")]
     public class MetadataSet : XmlModel
     {
         public override string GetTagName() { return "metadata-set"; }

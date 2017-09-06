@@ -38,7 +38,10 @@
 <div class="grid_12">
     <div class="container">
         
+        <h3>Metadata</h3>
         @Html.EditorFor(m => m)
+        <br />
+        <h3>Files</h3>
         <div class="custom-files">
             <div id="drop-zone">
                 <div class="drop-zone-label">Drop files here</div>
@@ -47,7 +50,7 @@
             <div data-bind="foreach: files">
 
                 <div class="file-row">
-                    <input class="model-type" data-bind="attr:{id: 'Files_' + $index() + '__ModelType' , name: 'Files[' + $index() + '].ModelType'  }"  type="hidden" value="Catfish.Core.Models.DataFile, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">                    
+                    <input class="model-type" data-bind="attr:{id: 'Files_' + $index() + '__ModelType' , name: 'Files[' + $index() + '].ModelType'  }" type="hidden" value="Catfish.Core.Models.DataFile, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
 
                     <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." data-bind="value: id, attr:{id: 'Files_' + $index() + '__Id' , name: 'Files[' + $index() + '].Id'  }" type="hidden" value="0">
                     <input data-bind="value: guid, attr:{id: 'Files_' + $index() + '__GuidName' , name: 'Files[' + $index() + '].GuidName'  }" type="hidden" value="">
@@ -68,7 +71,7 @@
                 </div>
 
             </div>
-            
+
             <!--
             <ul id="file-list" data-bind="foreach: files">
                 <li>
@@ -79,13 +82,13 @@
                         <div class="progress-bar" data-bind="style: {width: progress}, text: progress"></div>
                     </div>
                     <a href="#" data-bind="click: $parent.removeFile">X</a>
-                </li>            
+                </li>
             </ul>
             -->
         </div>
 
 
-        
+
     </div>
     <!--
     <input type="file" multiple data-bind="fileInput: multiFileData">
