@@ -7,5 +7,10 @@
 @Html.HiddenFor(m => m.Ref)
 @Html.HiddenFor(m => m.Id)
 
-DateField
+<div class="form-field-header">
+    @Html.Label(Model.Name)
+</div>
+<div class="form-field-content">
+    @Html.TextBoxFor(m => m.Value, new { @type = "date" })
+</div>
 

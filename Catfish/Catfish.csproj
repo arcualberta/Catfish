@@ -188,6 +188,7 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\Entity.cshtml" />
     <Content Include="Areas\Manager\Views\Collections\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\Collections\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\View.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
