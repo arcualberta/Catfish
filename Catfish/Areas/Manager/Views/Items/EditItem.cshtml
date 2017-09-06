@@ -38,12 +38,10 @@
 
 
 <div class="grid_12">
-    <div class="container">
-        
-        <h3>Metadata</h3>
-        @Html.EditorFor(m => m)
+    <div class="container container-custom">
+                @Html.EditorFor(m => m)
         <br />
-        <h3>Files</h3>
+
         <div class="custom-files">
             <div id="drop-zone">
                 <div class="drop-zone-label">Drop files here</div>
