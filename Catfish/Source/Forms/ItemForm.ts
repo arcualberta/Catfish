@@ -86,9 +86,13 @@ interface FileBackend {
 
 
 declare var fileList: any;
+declare var uploadAction: any;
+declare var otherPngUrl: any;
 
 class ItemForm {
 
+    uploadAction: string
+    otherPngUrl: string
     files: KnockoutObservableArray<FileDescription>
     fileList: Array<FileBackend>
     //reader: FileReader
@@ -116,6 +120,8 @@ class ItemForm {
         dropZone.addEventListener("dragover", this.handleDragOver)
         dropZone.addEventListener("drop", this.dropListener)
         this.fileList = fileList
+        this.otherPngUrl = otherPngUrl
+        this.uploadAction = uploadAction
         this.populateFiles()
     }
 
@@ -146,7 +152,7 @@ class ItemForm {
             let formData: FormData  = new FormData()
             let file: File = fileList[i]
 
-            request.open('POST', '/manager/items/upload');
+            request.open('POST', this.uploadAction);
             formData.append("Files", file, file.name)
             
             // add file to list
@@ -166,7 +172,6 @@ class ItemForm {
                     // response for single file
                     let responseJson: any = JSON.parse(request.responseText)[0]
                     this.updateFileDescription(fileDescription, responseJson, "OK")
-                    console.log(responseJson)
                 } else {
                     // Render error 
                     fileDescription.status("ERROR")
@@ -180,7 +185,6 @@ class ItemForm {
     private updateFileDescription(fileDescription: FileDescription, description: any, status: string) {
         fileDescription.id(description.Id)
         fileDescription.guid(description.Guid)
-        console.log(description)
         fileDescription.fileName(description.FileName)
         fileDescription.thumbnail(description.Thumbnail)
         fileDescription.url(description.Url)
@@ -193,7 +197,7 @@ class ItemForm {
             id: ko.observable(""),
             guid: ko.observable(""),
             fileName: ko.observable(fileName),
-            thumbnail: ko.observable("/content/thumbnails/other.png"),
+            thumbnail: ko.observable(this.otherPngUrl),
             url: ko.observable(""),
             status: ko.observable("LOADING"),
             progress: ko.observable("0%"),
