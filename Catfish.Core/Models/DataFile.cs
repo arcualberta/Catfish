@@ -17,7 +17,7 @@ namespace Catfish.Core.Models
         public string FileName { get { return GetAttribute("file-name"); } set { SetAttribute("file-name", value); } }
 
         [NotMapped]
-        public string GuidName { get { return GetAttribute("guid-name"); } set { SetAttribute("guid-name", value); } }
+        public string GuidName { get { return GetAttribute("guid-name"); } set { SetAttribute("guid-name", value); Guid = value; } }
 
         [NotMapped]
         public string Thumbnail { get { return GetAttribute("thumbnail"); } set { SetAttribute("thumbnail", value); } }

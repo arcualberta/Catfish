@@ -82,7 +82,6 @@ namespace Catfish.Core.Services
                 return null;
         }
 
-        // add entityTypeId for creating new item
         public Item UpdateStoredItem(Item changedItem)
         {
             Item dbModel = new Item();
@@ -99,42 +98,87 @@ namespace Catfish.Core.Services
 
             //updating the "value" text elements
             dbModel.UpdateValues(changedItem);
-            if (changedItem.Id > 0) //update Item
-            {
-                //Deleting files in the dbModel item if those files are not in the changedItem
-                if (dbModel.Files.Any()) //add checking if item contain any files
-                {
-                    foreach (DataFile df in dbModel.Files)
-                    {
-                        if (changedItem.Files.Where(f => f.GuidName == df.GuidName).Any() == false)
-                        {
-                            df.Data.Remove();
-                            DeleteFile(df);
-                        }
-                    }
-                }
-                //Inserting new files that are in the source item that are still not in this item
-                if (changedItem.Files.Any())
-                {
-                    foreach (DataFile df in changedItem.Files)
-                    {
-                        if (dbModel.Files.Select(f => f.GuidName == df.GuidName).Any() == false)
-                        {
-                            dbModel.InsertChildElement("./files", df.Data);
 
-                            //since we inserted the XML data of df into the XML model of the item,
-                            //we no longer need to keep it in the database table. Howeber, we DO NEED to keep the files
-                            //because these files are now referred by the XML File model which was inserted into the XML Item model.
-                            //Deleting the File table entry corresponding to df
-                            Db.XmlModels.Remove(Db.XmlModels.Find(df.Id));
-                        }
+            //Deleting files in the dbModel item if those files are not in the changedItem
+            if (dbModel.Files.Any()) //add checking if item contain any files
+            {
+                foreach (DataFile df in dbModel.Files)
+                {
+                    if (changedItem.Files.Where(f => f.GuidName == df.GuidName).Any() == false)
+                    {
+                        df.Data.Remove();
+                        DeleteFile(df);
                     }
                 }
+            }
+
+            //Inserting new files that are in the source item that are still not in this item
+            if (changedItem.Files.Any())
+            {
+                foreach (DataFile df in changedItem.Files)
+                {
+                    if (dbModel.Files.Where(f => f.GuidName == df.GuidName).Any() == false)
+                    {
+                        dbModel.InsertChildElement("./files", df.Data);
+
+                        //since we inserted the XML data of df into the XML model of the item,
+                        //we no longer need to keep it in the database table. Howeber, we DO NEED to keep the files
+                        //because these files are now referred by the XML File model which was inserted into the XML Item model.
+                        //Deleting the File table entry corresponding to df
+                        XmlModel tmp_file_model = Db.XmlModels.Where(m => m.Guid == df.GuidName).FirstOrDefault();
+                        if (tmp_file_model != null)
+                            Db.XmlModels.Remove(Db.XmlModels.Find(tmp_file_model.Id));
+                    }
+                }
+            }
+
+            //Serializing the XML model into the Content field.
+            dbModel.Serialize();
+
+            if (changedItem.Id > 0) //update Item
                 Db.Entry(dbModel).State = EntityState.Modified;
-            }
-            else { //creating new Item --Aug 29
+            else
                 Db.XmlModels.Add(dbModel);
-            }
+
+
+            ////////if (changedItem.Id > 0) //update Item
+            ////////{
+            ////////    //Deleting files in the dbModel item if those files are not in the changedItem
+            ////////    if (dbModel.Files.Any()) //add checking if item contain any files
+            ////////    {
+            ////////        foreach (DataFile df in dbModel.Files)
+            ////////        {
+            ////////            if (changedItem.Files.Where(f => f.GuidName == df.GuidName).Any() == false)
+            ////////            {
+            ////////                df.Data.Remove();
+            ////////                DeleteFile(df);
+            ////////            }
+            ////////        }
+            ////////    }
+            ////////    //Inserting new files that are in the source item that are still not in this item
+            ////////    if (changedItem.Files.Any())
+            ////////    {
+            ////////        foreach (DataFile df in changedItem.Files)
+            ////////        {
+            ////////            if (dbModel.Files.Select(f => f.GuidName == df.GuidName).Any() == false)
+            ////////            {
+            ////////                dbModel.InsertChildElement("./files", df.Data);
+
+            ////////                //since we inserted the XML data of df into the XML model of the item,
+            ////////                //we no longer need to keep it in the database table. Howeber, we DO NEED to keep the files
+            ////////                //because these files are now referred by the XML File model which was inserted into the XML Item model.
+            ////////                //Deleting the File table entry corresponding to df
+            ////////                Db.XmlModels.Remove(Db.XmlModels.Find(df.Id));
+            ////////            }
+            ////////        }
+            ////////    }
+            ////////    Db.Entry(dbModel).State = EntityState.Modified;
+            ////////}
+            ////////else { //creating new Item --Aug 29
+            ////////    Db.XmlModels.Add(dbModel);
+            ////////}
+
+
             return dbModel;
         }
 

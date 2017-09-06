@@ -59,6 +59,10 @@
     <Compile Include="Migrations\201708111923158_RebuildingMigrations.Designer.cs">
       <DependentUpon>201708111923158_RebuildingMigrations.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709060620508_AddedGuidToXmlModel.cs" />
+    <Compile Include="Migrations\201709060620508_AddedGuidToXmlModel.Designer.cs">
+      <DependentUpon>201709060620508_AddedGuidToXmlModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Aggregation.cs" />
     <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
@@ -96,6 +100,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201708111923158_RebuildingMigrations.resx">
       <DependentUpon>201708111923158_RebuildingMigrations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709060620508_AddedGuidToXmlModel.resx">
+      <DependentUpon>201709060620508_AddedGuidToXmlModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

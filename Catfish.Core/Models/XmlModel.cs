@@ -18,6 +18,8 @@ namespace Catfish.Core.Models
     {
         public int Id { get; set; }
 
+        public string Guid { get; set; }
+
         [NotMapped]
         public DateTime Created
         {
