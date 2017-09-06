@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Catfish.Core.Models
 {
@@ -35,6 +36,11 @@ namespace Catfish.Core.Models
             parent.ChildMembers.Add(this);
             this.ParentMembers.Add(parent);
         }
+
+        [NotMapped]
+        public string Name { get { return GetName(); } set { SetName(value); } }
+        [NotMapped]
+        public string Description { get { return GetDescription(); } set { SetDescription(value); } }
 
     }
 }
