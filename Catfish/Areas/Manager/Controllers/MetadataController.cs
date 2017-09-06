@@ -50,12 +50,14 @@ namespace Catfish.Areas.Manager.Controllers
                 model = new MetadataSet();
 
             ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
-            return View(new MetadataDefinition(model, model.Id));
+            // return View(new MetadataDefinition(model, model.Id));
+            return View(model);
+            //return View("EditTest", model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(MetadataDefinition model)
+        public ActionResult Edit(MetadataSet model)
         {
             //var deletedFields = test["deletedFields"];
 

@@ -15,6 +15,7 @@
     "jquery": "3.2.1",
     "knockout": "3.4.2",
     "requirejs": "^2.3.3",
-    "text": "github:requirejs/text"
+    "text": "github:requirejs/text",
+    "knockout-file-bindings": "1.1.0"
   }
 }

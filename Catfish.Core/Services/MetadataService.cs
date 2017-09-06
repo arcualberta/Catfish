@@ -45,25 +45,25 @@ namespace Catfish.Core.Services
             return fieldTypes;
         }
 
-        public MetadataSet UpdateMetadataSet(MetadataDefinition metadataDefinition)
+        public MetadataSet UpdateMetadataSet(MetadataSet metadataSet)
         {
-            MetadataSet ms;
-            if (metadataDefinition.Id > 0)
+            ////MetadataSet ms;
+            if (metadataSet.Id > 0)
             {
-                ms = Db.MetadataSets.Where(m => m.Id == metadataDefinition.Id).FirstOrDefault();
-                if (ms == null)
-                    return null;
+                ////ms = Db.MetadataSets.Where(m => m.Id == metadataDefinition.Id).FirstOrDefault();
+                ////if (ms == null)
+                ////    return null;
 
-                Db.Entry(ms).State = System.Data.Entity.EntityState.Modified;
+                Db.Entry(metadataSet).State = System.Data.Entity.EntityState.Modified;
             }
             else
             {
-                ms = new MetadataSet();
-                Db.MetadataSets.Add(ms);
+                ////ms = new MetadataSet();
+                Db.MetadataSets.Add(metadataSet);
             }
-            ms.Definition = metadataDefinition;
-            ms.Serialize();
-            return ms;
+            ////ms.Definition = metadataDefinition;
+            metadataSet.Serialize();
+            return metadataSet;
         }
 
 

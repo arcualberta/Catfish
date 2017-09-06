@@ -18,6 +18,8 @@ namespace Catfish.Core.Models
     {
         public int Id { get; set; }
 
+        public string Guid { get; set; }
+
         [NotMapped]
         public DateTime Created
         {
@@ -197,8 +199,15 @@ namespace Catfish.Core.Models
                 textEelemnt = matches.First();
             else
             {
+
                 textEelemnt = new XElement("text", new XAttribute(XNamespace.Xml + "lang", lang));
-                ele.Add(textEelemnt);
+                XElement parent = ele.Element(childTagName);
+                if(parent == null)
+                {
+                    parent = new XElement(childTagName);
+                    ele.Add(parent);
+                }
+                parent.Add(textEelemnt);
             }
 
             textEelemnt.Value = val;

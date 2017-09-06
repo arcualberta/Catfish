@@ -36,6 +36,14 @@ namespace Catfish
 
             menubar.Items.Insert(idx++, new Manager.MenuItem()
             {
+                Name = "Collections",
+                Action = "index",
+                Controller = "collections",
+                Permission = "ADMIN_CONTENT"
+            });
+
+            menubar.Items.Insert(idx++, new Manager.MenuItem()
+            {
                 Name = "Items",
                 Action = "index",
                 Controller = "items",

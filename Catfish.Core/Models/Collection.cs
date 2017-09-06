@@ -6,12 +6,13 @@ namespace Catfish.Core.Models
 {
     public class Collection : Aggregation
     {
-        //public string Name { get; set; }
-
-        //[DataType(DataType.MultilineText)]
-        //public string Description { get; set; }
-
         public override string GetTagName() { return "collection"; }
+
+        [NotMapped]
+        public string Name { get { return GetName(); } }
+
+        [NotMapped]
+        public string Description { get { return GetDescription(); } }
 
         [NotMapped]
         public virtual IEnumerable<Aggregation> ChildCollections 
