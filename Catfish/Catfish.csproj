@@ -173,7 +173,7 @@
     <Content Include="Areas\Manager\Views\Shared\Partial\DetailsToolbar.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\MetadataField.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\OptionsField.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataSet.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\EntityViewModel.cshtml" />
     <Content Include="Areas\Manager\Views\Items\Index.cshtml" />
     <Content Include="Areas\Manager\Views\Items\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\Items\EditItem.cshtml" />

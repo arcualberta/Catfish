@@ -84,25 +84,10 @@ namespace Catfish.Core.Models.Metadata
             }
         }
 
-        public void Serialize()
-        {
-            //XElement xml = Definition.ToXml();
-            Content = Data.ToString();
-            ////using (StringWriter writer = new StringWriter())
-            ////{
-            ////    XmlSerializer serializer = new XmlSerializer(typeof(MetadataDefinition));
-            ////    serializer.Serialize(writer, mDefinition);
-            ////    Content = writer.ToString();
-            ////}
-        }
-
-        public void Deserialize()
-        {
-            XElement xml = XElement.Parse(Content);
-            Initialize(xml);
-            ////////mDefinition = XmlModel.Parse(xml) as MetadataDefinition;
-            ////////mDefinition.Id = this.Id;
-        }
+        ////public void Serialize()
+        ////{
+        ////    Content = Data.ToString();
+        ////}
 
         [NotMapped]
         [TypeLabel("String")]

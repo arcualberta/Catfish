@@ -322,17 +322,12 @@ namespace Catfish.Core.Models
         }
         private XmlNamespaceManager mXmlNamespaceManager;
 
-        public virtual void Initialize(XElement ele)
-        {
-            Data = ele;
-        }
-
         public static XmlModel Parse(XElement ele, string defaultLang = "en")
         {
             string typeString = ele.Attribute("model-type").Value;
             var type = Type.GetType(typeString);
             XmlModel model = Activator.CreateInstance(type) as XmlModel;
-            model.Initialize(ele);
+            model.Data = ele;
             model.DefaultLanguage = defaultLang;
             return model;
         }

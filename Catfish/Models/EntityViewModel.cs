@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,5 +22,12 @@ namespace Catfish.Models
             Id = src.Id;
             Label = src.GetName();
         }
+
+        public EntityViewModel(MetadataSet src)
+        {
+            Id = src.Id;
+            Label = src.GetName();
+        }
+
     }
 }

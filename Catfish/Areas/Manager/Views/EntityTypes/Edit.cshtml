@@ -1,6 +1,6 @@
 ﻿@model Catfish.Core.Models.EntityType
 @using Catfish.Core.Models.Attributes
-@using Catfish.Core.Models.Metadata;
+@using Catfish.Models;
 
 
 <script src="/node_modules/requirejs/require.js"></script>
@@ -16,7 +16,7 @@
         }
     };
 
-    string metadataSetTemplate = Html.Partial("EditorTemplates/MetadataSet", new MetadataSet(), viewData).ToHtmlString();
+    string metadataSetTemplate = Html.Partial("EditorTemplates/EntityViewModel", new EntityViewModel(), viewData).ToHtmlString();
 }
 
 <script>
@@ -59,7 +59,8 @@
             </div>
         </div>
         <div id="fields-container">
-            @Html.EditorFor(m => m.MetadataSets)
+            @{ var MetadataSets = Model.MetadataSets.Select(ms => new EntityViewModel(ms)).ToList();}
+            @Html.EditorFor(m => MetadataSets)
         </div>
     </div>
 
