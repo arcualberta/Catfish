@@ -49,6 +49,7 @@ export class MetadataSetFields extends FormFields {
         // window.fieldTypes and window.metadataSetId are provided by back end
         this.fieldTypes = fieldTypes
         this.metadataSetId = metadataSetId
+        this.selectedFieldType = this.fieldTypes.fields[0].ModelType
     }
 
     private populateFieldTypeSelector() {
@@ -154,7 +155,8 @@ export class MetadataSetFields extends FormFields {
         this.fieldsContainer.append(template)
         template.find(".metadataset-id").attr("value", this.metadataSetId)
         this.bindElements()
-        template.find(".model-type").val(this.fieldTypes.fields[0].ModelType)
+        template.find(".template-selector").val(this.selectedFieldType)
+        template.find(".model-type").val(this.selectedFieldType)
     }
 
     private listenTemplateSelector() {
