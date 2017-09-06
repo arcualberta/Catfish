@@ -12,6 +12,7 @@
 
 <div class="form-field-content">
     <ul>
+        @Html.Raw(Model)
         @foreach (var option in Model.Options.Split('\n'))
             {
             <li class="no-background-border">
