@@ -60,7 +60,7 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Edit(MetadataSet model)
         {
             //var deletedFields = test["deletedFields"];
-
+            var test = Request.Params;
             if (ModelState.IsValid)
             {
                 MetadataSet ms = MetadataService.UpdateMetadataSet(model);
