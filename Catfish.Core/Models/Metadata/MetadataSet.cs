@@ -106,10 +106,11 @@ namespace Catfish.Core.Models.Metadata
 
         [NotMapped]
         [TypeLabel("String")]
-        public string Name { get { return GetName(); } }
+        public string Name { get { return GetName(); } set { SetName(value); } }
 
+        [NotMapped]
         [DataType(DataType.MultilineText)]
-        public string Description { get { return GetDescription(); } }
+        public string Description { get { return GetDescription(); } set { SetDescription(value); } }
 
         ////public virtual ICollection<SimpleField> Fields { get; set; }
 
