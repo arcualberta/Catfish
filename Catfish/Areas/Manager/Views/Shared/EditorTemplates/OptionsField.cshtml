@@ -46,7 +46,7 @@
             <li>
                 @Html.LabelFor(model => model.IsRequired, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="input">
-                    @Html.EditorFor(model => model.IsRequired, new { htmlAttributes = new { @class = "form-control field-description" } })
+                    @Html.EditorFor(model => model.IsRequired, new { htmlAttributes = new { @class = "form-control field-is-required" } })
                     @Html.ValidationMessageFor(model => model.IsRequired, "", new { @class = "text-danger" })
                 </div>
             </li>

@@ -17,12 +17,23 @@ interface FieldTypes {
     fields: FieldDefinition[]
 }
 
+interface Field {
+    Description: string    
+    FieldType: string
+    IsRequired: boolean   
+    Name: string    
+    Options: string
+    ParentType: string
+}
+
 declare var fieldTypes: any;
 declare var metadataSetId: any;
+declare var fieldList: any
 
 export class MetadataSetFields extends FormFields {
 
     private fieldTypes: FieldTypes
+    private fieldList: Field[]
     private metadataSetId: string
     private fieldEntryTemplate: string
     private previousName: string
@@ -41,8 +52,9 @@ export class MetadataSetFields extends FormFields {
         if (this.fieldsContainer.children().length == 0) {
             //this.addField()
         }
-
+        
         this.populateFieldTypeSelector()
+        this.populateExistingFields()
     }
 
     private initializeFieldTypes() {
@@ -61,6 +73,26 @@ export class MetadataSetFields extends FormFields {
             }))
 
         }
+    }
+
+    private populateExistingFields() {
+        console.log(fieldList)
+        this.fieldList = fieldList
+        for (let field of this.fieldList) {
+            this.selectedFieldType = field.FieldType
+            this.addField()
+            this.SetFieldValues(field)
+        }
+    }
+
+    private SetFieldValues(field: Field) {
+        // set value to last defined field
+        console.log(field)
+        $(".field-entry:last .template-selector").val(field.FieldType)
+        $(".field-entry:last .field-name").val(field.Name)
+        $(".field-entry:last .field-description").text(field.Description)
+        $(".field-entry:last .field-options").text(field.Options)
+        //$(".field-entry:last .field-is-required").val(field.IsRequired as string)
     }
 
     private populateSelect() {
