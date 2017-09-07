@@ -82,7 +82,19 @@ namespace Catfish.Core.Models.Metadata
         }
 
         [DataType(DataType.MultilineText)]
-        public string Description { get { return GetDescription(); } }
+        [NotMapped]
+        public string Description
+        {
+            get
+            {
+                return GetDescription();
+            }
+
+            set
+            {
+                SetDescription(value);
+            }
+        }
 
 
 
