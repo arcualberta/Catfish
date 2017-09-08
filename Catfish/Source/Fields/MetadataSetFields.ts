@@ -92,9 +92,8 @@ export class MetadataSetFields extends FormFields {
         $(".field-entry:last .field-name").val(field.Name)
         $(".field-entry:last .field-description").text(field.Description)
         $(".field-entry:last .field-options").text(field.Options)
-        if (field.IsRequired) {
-            $(".field-entry:last .field-is-required").prop('checked', true)
-        }     
+        $(".field-entry:last .field-is-required").prop('checked', field.IsRequired)
+       
     }
 
     private populateSelect() {
