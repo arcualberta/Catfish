@@ -50,17 +50,20 @@ namespace Catfish.Areas.Manager.Controllers
                 model = new MetadataSet();
 
             ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
-            // return View(new MetadataDefinition(model, model.Id));
-            //return View(model);
-            return View("EditTest", model);
+            //ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files)).Data);
+            ViewBag.FieldList = GetSerializedMetadataFieldList(model);
+            //XXX Creates circular reference
+            //ViewBag.FieldList = new JavaScriptSerializer().Serialize(Json(model.Fields));
+            return View(model);
+
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(MetadataDefinition model)
+        public ActionResult Edit(MetadataSet model)
         {
             //var deletedFields = test["deletedFields"];
-
+            var test = Request.Params;
             if (ModelState.IsValid)
             {
                 MetadataSet ms = MetadataService.UpdateMetadataSet(model);
@@ -102,6 +105,8 @@ namespace Catfish.Areas.Manager.Controllers
             }
 
             ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
+            ViewBag.FieldList = GetSerializedMetadataFieldList(model);
+
             return View(model);
         }
 
@@ -201,6 +206,31 @@ namespace Catfish.Areas.Manager.Controllers
             var fieldTypes = this.MetadataService.GetMetadataFieldTypes();
             var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToArray();
             return new JavaScriptSerializer().Serialize(fieldTypeViewModels);
+        }
+
+        private string GetSerializedMetadataFieldList(MetadataSet model)
+        {
+            List<Object> fieldList = new List<Object>();
+
+            foreach (var field in model.Fields)
+            {
+                Type t = field.GetType();
+                bool IsOption = typeof(OptionsField).IsAssignableFrom(t);
+
+                var entry = new
+                {
+                    Name = field.Name,
+                    Description = field.Description,
+                    IsRequired = field.IsRequired,
+                    FieldType = t.AssemblyQualifiedName,
+                    Options = IsOption ? (field as OptionsField).Options : "",
+                    ParentType = IsOption ? typeof(OptionsField).ToString() : typeof(MetadataField).ToString()
+                };
+
+                fieldList.Add(entry);
+            }
+
+            return new JavaScriptSerializer().Serialize(fieldList);
         }
 
     }

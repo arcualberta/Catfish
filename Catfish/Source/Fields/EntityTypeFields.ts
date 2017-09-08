@@ -23,7 +23,7 @@ interface Set {
     EntityTypes: any[];
     Fields: Field[];
     Id: number;
-    Name: string;
+    Label: string;
     Description: string;
 }
 
@@ -74,7 +74,7 @@ export class EntityTypeFields extends FormFields {
                 for (let set of this.metadataSets.sets) {
                     console.log(set)
                     console.log("set")
-                    let option: string = "<option value='" + set.Id + "'>" + set.Name + "</option>"
+                    let option: string = "<option value='" + set.Id + "'>" + set.Label + "</option>"
                     $(selector).append(option)
                 }
             }

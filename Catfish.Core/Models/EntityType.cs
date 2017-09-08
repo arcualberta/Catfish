@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Catfish.Core.Models.Metadata;
 using Catfish.Core.Models.Attributes;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Catfish.Core.Models
 {

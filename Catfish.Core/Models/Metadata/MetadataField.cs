@@ -81,6 +81,23 @@ namespace Catfish.Core.Models.Metadata
             }
         }
 
+        [DataType(DataType.MultilineText)]
+        [NotMapped]
+        public string Description
+        {
+            get
+            {
+                return GetDescription();
+            }
+
+            set
+            {
+                SetDescription(value);
+            }
+        }
+
+
+
         ////[XmlIgnore]
         ////[HiddenInput(DisplayValue = false)]
         ////public int MetadataSetId { get; set; }

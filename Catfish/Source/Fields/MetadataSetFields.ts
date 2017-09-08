@@ -17,12 +17,23 @@ interface FieldTypes {
     fields: FieldDefinition[]
 }
 
+interface Field {
+    Description: string    
+    FieldType: string
+    IsRequired: boolean   
+    Name: string    
+    Options: string
+    ParentType: string
+}
+
 declare var fieldTypes: any;
 declare var metadataSetId: any;
+declare var fieldList: any
 
 export class MetadataSetFields extends FormFields {
 
     private fieldTypes: FieldTypes
+    private fieldList: Field[]
     private metadataSetId: string
     private fieldEntryTemplate: string
     private previousName: string
@@ -41,14 +52,16 @@ export class MetadataSetFields extends FormFields {
         if (this.fieldsContainer.children().length == 0) {
             //this.addField()
         }
-
+        
         this.populateFieldTypeSelector()
+        this.populateExistingFields()
     }
 
     private initializeFieldTypes() {
         // window.fieldTypes and window.metadataSetId are provided by back end
         this.fieldTypes = fieldTypes
         this.metadataSetId = metadataSetId
+        this.selectedFieldType = this.fieldTypes.fields[0].ModelType
     }
 
     private populateFieldTypeSelector() {
@@ -60,6 +73,27 @@ export class MetadataSetFields extends FormFields {
             }))
 
         }
+    }
+
+    private populateExistingFields() {
+        console.log(fieldList)
+        this.fieldList = fieldList
+        for (let field of this.fieldList) {
+            this.selectedFieldType = field.FieldType
+            this.addField()
+            this.SetFieldValues(field)
+        }
+    }
+
+    private SetFieldValues(field: Field) {
+        // set value to last defined field
+        console.log(field)
+        $(".field-entry:last .template-selector").val(field.FieldType)
+        $(".field-entry:last .field-name").val(field.Name)
+        $(".field-entry:last .field-description").text(field.Description)
+        $(".field-entry:last .field-options").text(field.Options)
+        $(".field-entry:last .field-is-required").prop('checked', field.IsRequired)
+       
     }
 
     private populateSelect() {
@@ -154,7 +188,8 @@ export class MetadataSetFields extends FormFields {
         this.fieldsContainer.append(template)
         template.find(".metadataset-id").attr("value", this.metadataSetId)
         this.bindElements()
-        template.find(".model-type").val(this.fieldTypes.fields[0].ModelType)
+        template.find(".template-selector").val(this.selectedFieldType)
+        template.find(".model-type").val(this.selectedFieldType)
     }
 
     private listenTemplateSelector() {

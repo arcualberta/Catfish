@@ -12,6 +12,8 @@ using Catfish.Core.Models.Metadata;
 using System.Web.Script.Serialization;
 using System.Web.Helpers;
 using Newtonsoft.Json;
+using Catfish.Models;
+using Catfish.Areas.Manager.Models;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -51,8 +53,14 @@ namespace Catfish.Areas.Manager.Controllers
                 ////}
             }
 
-            var metadataSets = MetadataService.GetMetadataSets().ToList();
-            ViewBag.MetadataSets = new JavaScriptSerializer().Serialize(metadataSets); //Json(MetadataService.GetMetadataSets().ToList());
+            EntityTypeViewModel vm = new EntityTypeViewModel()
+            {
+                EntityType = model,
+                AvailableMetadataSets = MetadataService.GetMetadataSets().ToList()
+            };
+
+            ViewBag.EntityTypeViewModel = vm;
+
             return View(model);
         }
 

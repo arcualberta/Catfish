@@ -10,6 +10,7 @@ using System.Linq;
 
 namespace Catfish.Core.Models.Metadata
 {
+    [TypeLabel("Metadata Set")]
     public class MetadataSet : XmlModel
     {
         public override string GetTagName() { return "metadata-set"; }
@@ -83,32 +84,18 @@ namespace Catfish.Core.Models.Metadata
             }
         }
 
-        public void Serialize()
-        {
-            //XElement xml = Definition.ToXml();
-            Content = Data.ToString();
-            ////using (StringWriter writer = new StringWriter())
-            ////{
-            ////    XmlSerializer serializer = new XmlSerializer(typeof(MetadataDefinition));
-            ////    serializer.Serialize(writer, mDefinition);
-            ////    Content = writer.ToString();
-            ////}
-        }
-
-        public void Deserialize()
-        {
-            XElement xml = XElement.Parse(Content);
-            Initialize(xml);
-            ////////mDefinition = XmlModel.Parse(xml) as MetadataDefinition;
-            ////////mDefinition.Id = this.Id;
-        }
+        ////public void Serialize()
+        ////{
+        ////    Content = Data.ToString();
+        ////}
 
         [NotMapped]
         [TypeLabel("String")]
-        public string Name { get { return GetName(); } }
+        public string Name { get { return GetName(); } set { SetName(value); } }
 
+        [NotMapped]
         [DataType(DataType.MultilineText)]
-        public string Description { get { return GetDescription(); } }
+        public string Description { get { return GetDescription(); } set { SetDescription(value); } }
 
         ////public virtual ICollection<SimpleField> Fields { get; set; }
 
