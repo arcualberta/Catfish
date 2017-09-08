@@ -60,7 +60,7 @@
                         <img class="file-thumbnail" data-bind="attr:{src: thumbnail}" />
                     </div>
                     <div class="file-info-container">
-                        <a data-bind="href: url">
+                        <a data-bind="attr: {href: url}">
                             <span class="file-name" data-bind="text: fileName"></span>
                         </a>
                         <div class="progress-bar-container" data-bind="if: !preloaded(), css: {'file-error': status() == 'ERROR'}">
