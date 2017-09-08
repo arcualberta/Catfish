@@ -1,0 +1,37 @@
+﻿@model Catfish.Areas.Manager.Models.EntityAssociationViewModel
+@using PerpetuumSoft.Knockout
+@{
+        ViewBag.Title = "Entity Association";
+        var ko = Html.CreateKnockoutContext();
+    }
+
+<h2>Entity Association</h2>
+
+@using (ko.Html.Form("AddAssociationItem", "EntityAssociationViewModel", null, new { id = "myForm" }))
+{
+    @ko.Html.ListBox(m => m.AllEntities, null, e => e.Label).SelectedOptions(m => m.SelectedEntities)
+    <br/>
+    <br />
+    @:<p>You have selected:[@ko.Html.Span(m => m.SelectedEntities.Count)]</p>
+     using (var e = ko.Foreach(m => m.SelectedEntities))
+     {
+         <div>
+            @e.Html.Span(i=>i.Label)
+        </div>
+    }
+    <br />
+    @ko.Html.Button("Add To Associated Items", "AddAssociationItem", "Collections")
+    <br />
+    <br />
+    <p>Associated Items</p>
+
+    using (var e = ko.Foreach(m => m.AssociatedEntities))
+    {
+        <div>
+            @e.Html.Span(i => i.Label)
+        </div>
+    }
+
+}
+
+@ko.Apply(Model)

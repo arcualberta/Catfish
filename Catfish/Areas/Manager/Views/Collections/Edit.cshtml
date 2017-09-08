@@ -1,10 +1,19 @@
 ﻿@model Catfish.Core.Models.Collection
 @using PerpetuumSoft.Knockout
 
-@{  ViewBag.Title = Model.Id > 0 ? "Edit Collection" : "Create Collection"; }
+ @*@model Catfish.Areas.Manager.Models.EntityAssociationViewModel*@
+
+@{  ViewBag.Title = Model.Id > 0 ? "Edit Collection" : "Create Collection";
+    var ko = Html.CreateKnockoutContext();
+
+    var ChildItems = (Catfish.Areas.Manager.Models.EntityAssociationViewModel)ViewBag.ChildItems;
+ }
 
 @section HEAD
 {
+<script type="text/javascript" src="~/Scripts/knockout-3.1.0.js"></script>
+<script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
+<script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
     <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
     <script src="/node_modules/requirejs/require.js"></script>
     <script type="text/javascript" src="/built/require-config.js"></script>
@@ -12,7 +21,9 @@
             require(["/Built/Forms/ItemForm.js"])
     </script>
 
-
+<script type="text/javascript" src="~/Scripts/knockout-3.1.0.js"></script>
+<script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
+<script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
 }
 
 @section Toolbar {
@@ -52,8 +63,9 @@
         - an Add button => calls CollectionController.AddItems method ==> this method should add the selected items to the LinkedEntities array and return the updated view model<br />
         - a Remove buttonn => calls CollectionController.RemoveItems method ==> xxxxx<br />
         - selecting entities from either list should put them to the SelectedList array.<br />
-        
-
+        @Html.EditorFor(m=>ChildItems,"EntityAssociation")
     </div>
 
 }
+
+

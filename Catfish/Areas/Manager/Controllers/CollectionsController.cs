@@ -105,15 +105,17 @@ namespace Catfish.Areas.Manager.Controllers
             ////ViewBag.EntityTypes = new JavaScriptSerializer().Serialize(entityTypes);//Json(db.EntityTypes.ToList());
             //ViewBag.MetadataSets = new JavaScriptSerializer().Serialize(metadataSets);//Json(db.MetadataSets.ToList());
             
-                var collections = db.Collections.AsEnumerable();
-            var _collections = collections.Select(m => new SelectListItem
-            {
-                Value = m.Id.ToString(),
-                Text = m.Name
-                //Selected = bodyStyleId.Equals(m.Id.ToString())
+            ////for dropdown collection name
+            //var collections = db.Collections.AsEnumerable();
+            //var _collections = collections.Select(m => new SelectListItem
+            //{
+            //    Value = m.Id.ToString(),
+            //    Text = m.Name
+            //});
+            //ViewBag.Collections = _collections;
 
-            });
-            ViewBag.Collections = _collections;
+            //populate WntityAssociationModel for knockout testing
+
             return View("Edit", model);
            
         }
@@ -248,6 +250,13 @@ namespace Catfish.Areas.Manager.Controllers
                     break;
             }
             return Json(lEntyties);
+        }
+
+        public JsonResult AddAssociationItem(EntityAssociationViewModel entityVM)
+        {
+            entityVM.Associate();
+            //ViewBag.ChildItems = entityVM;
+            return Json(entityVM);
         }
     }
 }
