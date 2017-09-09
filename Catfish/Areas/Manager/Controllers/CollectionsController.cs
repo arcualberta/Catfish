@@ -1,4 +1,4 @@
-﻿using Catfish.Areas.Manager.Models;
+﻿using Catfish.Areas.Manager.Models.ViewModels;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Metadata;
 using Catfish.Core.Services;

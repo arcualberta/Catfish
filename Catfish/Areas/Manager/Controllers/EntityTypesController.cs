@@ -13,7 +13,7 @@ using System.Web.Script.Serialization;
 using System.Web.Helpers;
 using Newtonsoft.Json;
 using Catfish.Models;
-using Catfish.Areas.Manager.Models;
+using Catfish.Areas.Manager.Models.ViewModels;
 
 namespace Catfish.Areas.Manager.Controllers
 {

@@ -9,7 +9,7 @@ using System.Web.Mvc;
 using Catfish.Core.Models.Attributes;
 using Catfish.Core.Models.Metadata;
 
-namespace Catfish.Areas.Manager.Models
+namespace Catfish.Areas.Manager.Models.ViewModels
 {
     public class FieldDefinitionViewModel
     {
