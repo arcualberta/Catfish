@@ -104,7 +104,7 @@ namespace Catfish.Areas.Manager.Controllers
                 model.Deserialize();
                 //ViewBag.
                 if(model.Files.Any()) //MR Sept 5 2017---chek if model has any file associated before pulling it
-                    ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files)).Data);
+                    ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
             }
             else
             {
@@ -154,7 +154,7 @@ namespace Catfish.Areas.Manager.Controllers
 
                     Item dbModel = srv.UpdateStoredItem(model);
                     db.SaveChanges();
-                    ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files)).Data);
+                    ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
                     return View("EditItem", dbModel);
                 }
                 else
@@ -201,7 +201,7 @@ namespace Catfish.Areas.Manager.Controllers
             return View();
         }
 
-        private IEnumerable<Object> GetFileArray(List<DataFile> files)
+        private IEnumerable<Object> GetFileArray(List<DataFile> files, int? itemId = null)
         {
 
             UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
@@ -211,8 +211,8 @@ namespace Catfish.Areas.Manager.Controllers
                 Id = f.Id,
                 Guid = f.GuidName,
                 FileName = f.FileName,
-                Thumbnail = u.Action("Thumbnail", "Items", new { id = f.Id, name = f.GuidName }),
-                Url = u.Action("File", "Items", new { id = f.Id, name = f.GuidName })
+                Thumbnail = u.Action("Thumbnail", "Items", new { id = itemId.HasValue ? itemId.Value : f.Id, name = f.GuidName }),
+                Url = u.Action("File", "Items", new { id = itemId.HasValue ? itemId.Value : f.Id, name = f.GuidName })
             });
             return result;
         }
