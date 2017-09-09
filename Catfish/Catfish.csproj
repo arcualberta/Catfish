@@ -220,11 +220,11 @@
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
-    <Compile Include="Areas\Manager\Models\EntityAssociationViewModel.cs" />
-    <Compile Include="Areas\Manager\Models\EntityTypeViewModel.cs" />
-    <Compile Include="Areas\Manager\Models\FieldDefinitionViewModel.cs" />
-    <Compile Include="Areas\Manager\Models\FieldPropertyViewModel.cs" />
-    <Compile Include="Areas\Manager\Models\MetadataFieldMappingViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\EntityAssociationViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\EntityTypeViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\FieldDefinitionViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\FieldPropertyViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\MetadataFieldMappingViewModel.cs" />
     <Compile Include="Controllers\PageController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Global.asax.cs">

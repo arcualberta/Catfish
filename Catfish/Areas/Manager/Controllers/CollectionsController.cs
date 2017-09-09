@@ -15,7 +15,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Areas.Manager.Controllers
 {
-    public class CollectionsController : Controller
+    public class CollectionsController : CatfishController
     {
         private CatfishDbContext db = new CatfishDbContext();
 

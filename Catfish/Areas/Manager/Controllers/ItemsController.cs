@@ -16,7 +16,7 @@ using Catfish.Core.Models.Metadata;
 
 namespace Catfish.Areas.Manager.Controllers
 {
-    public class ItemsController : Controller
+    public class ItemsController : CatfishController
     {
         private CatfishDbContext db = new CatfishDbContext();
 
