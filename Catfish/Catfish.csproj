@@ -188,6 +188,7 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\Entity.cshtml" />
     <Content Include="Areas\Manager\Views\Collections\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\Collections\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\EntityAssociationViewModel.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\View.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
@@ -210,6 +211,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\RouteConfig.PiranhaCMS.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Manager\Controllers\Api\EntityAssociationListController.cs" />
     <Compile Include="Areas\Manager\Controllers\CatfishController.cs" />
     <Compile Include="Areas\Manager\Controllers\CollectionsController.cs" />
     <Compile Include="Areas\Manager\Controllers\EntityTypesController.cs" />
@@ -219,11 +221,10 @@
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
-    <Compile Include="Areas\Manager\Models\EntityAssociationViewModel.cs" />
-    <Compile Include="Areas\Manager\Models\EntityTypeViewModel.cs" />
-    <Compile Include="Areas\Manager\Models\FieldDefinitionViewModel.cs" />
-    <Compile Include="Areas\Manager\Models\FieldPropertyViewModel.cs" />
-    <Compile Include="Areas\Manager\Models\MetadataFieldMappingViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\EntityAssociationViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\EntityTypeViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\FieldDefinitionViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\MetadataFieldMappingViewModel.cs" />
     <Compile Include="Controllers\PageController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Global.asax.cs">
@@ -260,6 +261,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Manager\Views\Catfish\" />
+    <Folder Include="Areas\Manager\Views\EntityAssociationList\" />
     <Folder Include="Areas\Manager\Views\Entity\" />
   </ItemGroup>
   <ItemGroup>

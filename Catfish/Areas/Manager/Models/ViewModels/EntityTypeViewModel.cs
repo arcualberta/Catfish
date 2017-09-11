@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace Catfish.Areas.Manager.Models
+namespace Catfish.Areas.Manager.Models.ViewModels
 {
     public class EntityTypeViewModel
     {

@@ -1,18 +1,25 @@
 ﻿@model Catfish.Core.Models.Collection
 @using PerpetuumSoft.Knockout
+@using Catfish.Areas.Manager.Models.ViewModels
+
+ @*@model Catfish.Areas.Manager.Models.EntityAssociationViewModel*@
 
 @{  ViewBag.Title = Model.Id > 0 ? "Edit Collection" : "Create Collection"; }
 
 @section HEAD
 {
     <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
+
+    <script type="text/javascript" src="~/Scripts/knockout-3.1.0.js"></script>
+    <script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
+    <script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
     <script src="/node_modules/requirejs/require.js"></script>
     <script type="text/javascript" src="/built/require-config.js"></script>
     <script>
-            require(["/Built/Forms/ItemForm.js"])
+        require(["/Built/Forms/ItemForm.js"])
     </script>
-
-
 }
 
 @section Toolbar {
@@ -52,8 +59,29 @@
         - an Add button => calls CollectionController.AddItems method ==> this method should add the selected items to the LinkedEntities array and return the updated view model<br />
         - a Remove buttonn => calls CollectionController.RemoveItems method ==> xxxxx<br />
         - selecting entities from either list should put them to the SelectedList array.<br />
+
+        @{
+            List<EntityAssociationViewModel> associationList = ViewBag.associationList as List<EntityAssociationViewModel>;
+
+            for (var i = 0; i < associationList.Count; ++i)
+            {
+                <br /> <br />
+                <h3>Association @i</h3>
+                @Html.EditorFor(m => associationList[i], new {  })
+            }
+        }
         
+
+        @*<br /> <br />
+        <h3>Association 1</h3>
+        @{ 
+            var ChildItems = ViewBag.ChildItems as EntityAssociationViewModel;
+            var cid = "pqr";
+         }
+        @Html.EditorFor(m => ChildItems, new { contanierId = cid })*@
 
     </div>
 
 }
+
+

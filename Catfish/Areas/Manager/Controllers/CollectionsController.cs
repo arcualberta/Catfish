@@ -1,4 +1,4 @@
-﻿using Catfish.Areas.Manager.Models;
+﻿using Catfish.Areas.Manager.Models.ViewModels;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Metadata;
 using Catfish.Core.Services;
@@ -15,7 +15,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Areas.Manager.Controllers
 {
-    public class CollectionsController : Controller
+    public class CollectionsController : CatfishController
     {
         private CatfishDbContext db = new CatfishDbContext();
 
@@ -58,7 +58,6 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Edit(int? id)
         {
             Collection model;
-            EntityAssociationViewModel childItems = new EntityAssociationViewModel();
             CollectionService srv = new CollectionService(db);
 
             if (id.HasValue)
@@ -67,18 +66,21 @@ namespace Catfish.Areas.Manager.Controllers
                 if (model == null)
                     return HttpNotFound();
 
-                int i = 1;
-                for(i=1; i<20; ++i)
+                List<EntityAssociationViewModel> associationList = new List<EntityAssociationViewModel>();
+                for (int n = 0; n < 2; ++n)
                 {
-                    childItems.AllEntities.Add(new EntityViewModel() { Id = i, Label = "All " + i });
+                    EntityAssociationViewModel childItems = new EntityAssociationViewModel();
+                    int i = 1;
+                    for (; i < 5; ++i)
+                        childItems.AssociatedEntities.Add(new EntityViewModel() { Id = i, Label = "Associated " + i });
+
+                    for (; i < 10; ++i)
+                        childItems.AllEntities.Add(new EntityViewModel() { Id = i, Label = "All " + i });
+
+                    associationList.Add(childItems);
                 }
 
-                for (; i < 30; ++i)
-                {
-                    childItems.AssociatedEntities.Add(new EntityViewModel() { Id = i, Label = "Associated " + i });
-                }
-
-                ViewBag.ChildItems = childItems;
+                ViewBag.associationList = associationList;
 
                 model.Deserialize();
             }
@@ -105,15 +107,17 @@ namespace Catfish.Areas.Manager.Controllers
             ////ViewBag.EntityTypes = new JavaScriptSerializer().Serialize(entityTypes);//Json(db.EntityTypes.ToList());
             //ViewBag.MetadataSets = new JavaScriptSerializer().Serialize(metadataSets);//Json(db.MetadataSets.ToList());
             
-                var collections = db.Collections.AsEnumerable();
-            var _collections = collections.Select(m => new SelectListItem
-            {
-                Value = m.Id.ToString(),
-                Text = m.Name
-                //Selected = bodyStyleId.Equals(m.Id.ToString())
+            ////for dropdown collection name
+            //var collections = db.Collections.AsEnumerable();
+            //var _collections = collections.Select(m => new SelectListItem
+            //{
+            //    Value = m.Id.ToString(),
+            //    Text = m.Name
+            //});
+            //ViewBag.Collections = _collections;
 
-            });
-            ViewBag.Collections = _collections;
+            //populate WntityAssociationModel for knockout testing
+
             return View("Edit", model);
            
         }
@@ -248,6 +252,13 @@ namespace Catfish.Areas.Manager.Controllers
                     break;
             }
             return Json(lEntyties);
+        }
+
+        public JsonResult AddAssociationItem(EntityAssociationViewModel entityVM)
+        {
+            entityVM.Associate();
+            //ViewBag.ChildItems = entityVM;
+            return Json(entityVM);
         }
     }
 }
