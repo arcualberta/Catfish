@@ -58,7 +58,6 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Edit(int? id)
         {
             Collection model;
-            EntityAssociationViewModel childItems = new EntityAssociationViewModel();
             CollectionService srv = new CollectionService(db);
 
             if (id.HasValue)
@@ -67,18 +66,21 @@ namespace Catfish.Areas.Manager.Controllers
                 if (model == null)
                     return HttpNotFound();
 
-                int i = 1;
-                for(i=1; i<20; ++i)
+                List<EntityAssociationViewModel> associationList = new List<EntityAssociationViewModel>();
+                for (int n = 0; n < 2; ++n)
                 {
-                    childItems.AllEntities.Add(new EntityViewModel() { Id = i, Label = "All " + i });
+                    EntityAssociationViewModel childItems = new EntityAssociationViewModel();
+                    int i = 1;
+                    for (; i < 5; ++i)
+                        childItems.AssociatedEntities.Add(new EntityViewModel() { Id = i, Label = "Associated " + i });
+
+                    for (; i < 10; ++i)
+                        childItems.AllEntities.Add(new EntityViewModel() { Id = i, Label = "All " + i });
+
+                    associationList.Add(childItems);
                 }
 
-                for (; i < 30; ++i)
-                {
-                    childItems.AssociatedEntities.Add(new EntityViewModel() { Id = i, Label = "Associated " + i });
-                }
-
-                ViewBag.ChildItems = childItems;
+                ViewBag.associationList = associationList;
 
                 model.Deserialize();
             }

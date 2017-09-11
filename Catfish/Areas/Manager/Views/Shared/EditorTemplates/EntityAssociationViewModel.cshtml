@@ -1,37 +1,51 @@
 ﻿@model Catfish.Areas.Manager.Models.ViewModels.EntityAssociationViewModel
 @using PerpetuumSoft.Knockout
+
 @{
-        ViewBag.Title = "Entity Association";
-        var ko = Html.CreateKnockoutContext();
+    var contextName = ViewBag.contanierId as string;
+    if (string.IsNullOrEmpty(contextName)) {
+        contextName = "ctx_" + Guid.NewGuid().ToString("N");
     }
 
-<h2>Entity Association</h2>
+    var ko = Html.CreateKnockoutContext(contextName);
+ }
 
-@using (ko.Html.Form("AddAssociationItem", "EntityAssociationViewModel", null, new { id = "myForm" }))
-{
-    @ko.Html.ListBox(m => m.AllEntities, null, e => e.Label).SelectedOptions(m => m.SelectedEntities)
-    <br/>
-    <br />
-    @:<p>You have selected:[@ko.Html.Span(m => m.SelectedEntities.Count)]</p>
-     using (var e = ko.Foreach(m => m.SelectedEntities))
-     {
-         <div>
-            @e.Html.Span(i=>i.Label)
-        </div>
-    }
-    <br />
-    @ko.Html.Button("Add To Associated Items", "AddAssociationItem", "Collections")
-    <br />
-    <br />
-    <p>Associated Items</p>
-
-    using (var e = ko.Foreach(m => m.AssociatedEntities))
+<div id="@contextName">
+    @using (ko.Html.Form("AddAssociationItem", "EntityAssociationViewModel", null, new { id = contextName + "Form" }))
     {
-        <div>
-            @e.Html.Span(i => i.Label)
+        <div class="col-sm-6">
+            @using (var e = ko.Foreach(m => m.AssociatedEntities))
+            {
+                <div class="">
+                    @e.Html.Span(i => i.Label)
+                </div>
+            }
         </div>
+        <div class="col-sm-6">
+            @ko.Html.ListBox(m => m.AllEntities, new { style = "width:80%" }, e => e.Label).SelectedOptions(m => m.SelectedEntities)
+        </div>
+        <br />
+        <br />
+        @:<p>You have selected:[@ko.Html.Span(m => m.SelectedEntities.Count)]</p>
+        using (var e = ko.Foreach(m => m.SelectedEntities))
+        {
+            <div>
+                @e.Html.Span(i => i.Label)
+            </div>
+        }
+        <br />
+        @ko.Html.Button("Add To Associated Items", "AddAssociationItem", "Collections")
+        <br />        
+        <br />
+        <p>Associated Items</p>
+
+        using (var e = ko.Foreach(m => m.AssociatedEntities))
+        {
+            <div>
+                @e.Html.Span(i => i.Label)
+            </div>
+        }
+
     }
-
-}
-
-@ko.Apply(Model)
+</div>
+@ko.Apply(Model, contextName)
