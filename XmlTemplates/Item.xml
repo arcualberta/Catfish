@@ -53,7 +53,7 @@
 						<text xml:lang="fr">Bonjour salut le monde</text>
 					</value>
 				</field>
-				<!--
+				
 				<field model-type="Catfish.Core.Models.Metadata.RadioButtonSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true" ref="3">
 					<name>
 						<text xml:lang="en">Radio button set 1</text>
@@ -82,7 +82,7 @@
 						</option>
 					</options>
 				</field>
-				-->
+				
 			</fields>
 		</metadata-set>
 		<metadata-set model-type="Catfish.Core.Models.Metadata.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2" ref="2">
@@ -123,7 +123,7 @@
 						<text xml:lang="en"></text>
 					</value>
 				</field>
-				<!--
+				
 				<field model-type="Catfish.Core.Models.Metadata.CheckBoxSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true" ref="3">
 					<name>
 						<text xml:lang="en">Custom Check Box Set 1</text>
@@ -149,7 +149,7 @@
 						</option>
 					</options>
 				</field>
-				-->
+				
 			</fields>
 		</metadata-set>		
 	</metadata-sets>

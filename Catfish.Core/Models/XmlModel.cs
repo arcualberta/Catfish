@@ -155,6 +155,11 @@ namespace Catfish.Core.Models
             SetChildText("value", values, Data, Lang(lang));
         }
 
+        public void SetMultipleValues(IEnumerable<string> values, string lang = null)
+        {
+            System.Diagnostics.Debug.WriteLine("Setting selected attributes");
+        }
+
         public List<XmlModel> GetChildModels(string xpath, XElement ele)
         {
             List<XmlModel> result = new List<XmlModel>();

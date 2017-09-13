@@ -114,7 +114,7 @@ namespace Catfish.Core.Models.Metadata
             var src_item = src as MetadataSet;
 
             foreach (MetadataField field in this.Fields)
-            {
+            { // checkhere type of 
                 var src_field = src_item.Fields.Where(x => x.Ref == field.Ref).FirstOrDefault();
                 field.UpdateValues(src_field);
             }
