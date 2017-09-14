@@ -223,7 +223,7 @@ namespace Catfish.Areas.Manager.Controllers
                     Description = field.Description,
                     IsRequired = field.IsRequired,
                     FieldType = t.AssemblyQualifiedName,
-                    Options = IsOption ? (field as OptionsField).Options : "",
+                    Options = IsOption ? (field as OptionsField).Options : new List<Option>(),
                     ParentType = IsOption ? typeof(OptionsField).ToString() : typeof(MetadataField).ToString()
                 };
 

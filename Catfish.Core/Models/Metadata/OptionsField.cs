@@ -7,12 +7,25 @@ using System.Linq;
 
 namespace Catfish.Core.Models.Metadata
 {
+
+    public class Option
+    {
+        public string Value = "";
+        public bool Selected = false;
+
+        public Option (string value = "", bool selected = false)
+        {
+            this.Value = value;
+            this.Selected = selected;
+        }
+    }
+
     [Ignore]
     public partial class OptionsField: MetadataField
     {
         [DataType(DataType.MultilineText)]
         [TypeLabel("List of options, one option per line")]
-        public string Options
+        public IEnumerable<Option> Options
         {
             get
             {
@@ -21,21 +34,50 @@ namespace Catfish.Core.Models.Metadata
             //set;
         }
 
-        public string GetOptions(string lang = null)
+        public IEnumerable<Option> GetOptions(string lang = "")
         {
-            string result = null;
-            if (lang == null)
-                lang = DefaultLanguage;
+            List<Option> options = new List<Option>();
 
-            XElement options_element = Data.Element("options");
-            if (options_element != null)
+            XElement optionsElement = Data.Element("options");
+            if (optionsElement != null)
             {
-                IEnumerable<XElement> option_text_elements = GetChildTextElements("option", options_element, lang);
-                IEnumerable<string> options = option_text_elements.Select(op => op.Value);
-                result = string.Join("\n", options);
+
+                IEnumerable<XElement> optionElements = optionsElement.Elements("option");
+
+                
+                foreach (XElement optionElement in optionElements)
+                {
+                    //XXX look fo get text on xmlmodel
+                    string value = optionElement.Element("text").Value;
+                    bool selected = false;
+                    string selectedString = optionElement.Attribute("selected").Value;
+                    if (selectedString == "true")
+                    {
+                        selected = true;
+                    }
+                    Option option = new Option(value, selected);
+                    options.Add(option);
+                }
             }
-            return result;
+
+            return options;
         }
+
+        //public string GetOptions(string lang = null)
+        //{
+        //    string result = null;
+        //    if (lang == null)
+        //        lang = DefaultLanguage;
+
+        //    XElement options_element = Data.Element("options");
+        //    if (options_element != null)
+        //    {
+        //        IEnumerable<XElement> option_text_elements = GetChildTextElements("option", options_element, lang);
+        //        IEnumerable<string> options = option_text_elements.Select(op => op.Value);
+        //        result = string.Join("\n", options);
+        //    }
+        //    return result;
+        //}
 
         
         public override void UpdateValues(XmlModel src)
