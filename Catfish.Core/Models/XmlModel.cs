@@ -155,9 +155,62 @@ namespace Catfish.Core.Models
             SetChildText("value", values, Data, Lang(lang));
         }
 
-        public void SetMultipleValues(IEnumerable<string> values, string lang = null)
+        public void SetMultipleValues(IEnumerable<string> values, string language = null)
         {
+            this.ClearSelected(Data);
+            this.SetSelected(values, Data, Lang(language));
             System.Diagnostics.Debug.WriteLine("Setting selected attributes");
+        }
+
+        private void ClearSelected(XElement data)
+        {
+            string xpath = "./options/option";
+            List<XElement> children = this.GetChildElements(xpath, data).ToList();
+            foreach (XElement child in children)
+            {
+                child.SetAttributeValue("selected", false);
+            }
+        }
+
+        private void SetSelected(IEnumerable<string> values, XElement data, string language = null)
+        {
+            string xpath = "./options/option";
+            List<XElement> children = this.GetChildElements(xpath, data).ToList();
+
+            foreach (string value in values)                
+            {
+                bool found = false;
+                foreach (XElement child in children)
+                {
+
+                    // for child get < text xml: lang = "language" >                    
+                    //bool isSameValue = value == this.GetChildText("option", child, Lang(language));
+                    //string test =
+                    IEnumerable<XElement> texts = this.GetTextElements(child, language);
+
+
+                    bool isSameValue = false;
+                    foreach(XElement text in texts)
+                    {
+                        if (value == text.Value)
+                        {
+                            isSameValue = true;
+                            break;
+                        }
+                    }
+                    
+                    if (isSameValue)
+                    {
+                        child.SetAttributeValue("selected", true);
+                        found = true;
+                    }
+                }
+
+                if (!found)
+                {
+                    // Add new option as selected in set language
+                }
+            }
         }
 
         public List<XmlModel> GetChildModels(string xpath, XElement ele)
@@ -288,6 +341,12 @@ namespace Catfish.Core.Models
 
             //var matches = ((IEnumerable)ele.XPathEvaluate(xpath, NamespaceManager)).Cast<XElement>();
             return GetChildElements(xpath, ele);
+        }
+
+        protected IEnumerable<XElement> GetTextElements(XElement xElement, string language)
+        {
+            string xpath = "./text[@xml:lang='" + Lang(language) + "']";            
+            return GetChildElements(xpath, xElement);
         }
 
         protected IEnumerable<XElement> GetChildElements(string xpath, XElement ele)

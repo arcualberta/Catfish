@@ -40,23 +40,7 @@ namespace Catfish.Core.Models.Metadata
         
         public override void UpdateValues(XmlModel src)
         {
-            //TODO: Deal with multiple languages later
-            //XXX Add selected options
-            // Omar
-
             OptionsField optionsField = src as OptionsField;
-            var test = optionsField.GetValues();
-            System.Diagnostics.Debug.WriteLine(optionsField);
-            System.Diagnostics.Debug.WriteLine(test);
-            System.Diagnostics.Debug.WriteLine(test.Count());
-            foreach (var item in test)
-            {
-                System.Diagnostics.Debug.WriteLine(item);
-            }
-            System.Diagnostics.Debug.WriteLine("XXXX");
-
-            // change from text entries to selected attributes
-            //this.SetValues(src.GetValues());
             this.SetMultipleValues(optionsField.GetValues());
         }
         
