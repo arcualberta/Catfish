@@ -253,12 +253,5 @@ namespace Catfish.Areas.Manager.Controllers
             }
             return Json(lEntyties);
         }
-
-        public JsonResult AddAssociationItem(EntityAssociationViewModel entityVM)
-        {
-            entityVM.Associate();
-            //ViewBag.ChildItems = entityVM;
-            return Json(entityVM);
-        }
     }
 }

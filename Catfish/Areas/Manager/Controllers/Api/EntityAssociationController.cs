@@ -5,9 +5,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Catfish.Areas.Manager.Controllers.Api
+namespace Catfish.Areas.Manager.Controllers
 {
-    public class EntityAssociationListController : Controller
+    public class EntityAssociationController : CatfishController
     {
         public JsonResult AddSelection(EntityAssociationViewModel entityVM)
         {
@@ -16,9 +16,9 @@ namespace Catfish.Areas.Manager.Controllers.Api
             return Json(entityVM);
         }
 
-        public JsonResult RemoveItem(EntityAssociationViewModel entityVM, int itemId)
+        public JsonResult RemoveItem(EntityAssociationViewModel entityVM, int itemIndex)
         {
-            entityVM.Associate();
+            entityVM.AssociatedEntities.RemoveAt(itemIndex);
             //ViewBag.ChildItems = entityVM;
             return Json(entityVM);
         }

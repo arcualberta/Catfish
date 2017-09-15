@@ -211,7 +211,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\RouteConfig.PiranhaCMS.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Areas\Manager\Controllers\Api\EntityAssociationListController.cs" />
+    <Compile Include="Areas\Manager\Controllers\Api\EntityAssociationController.cs" />
     <Compile Include="Areas\Manager\Controllers\CatfishController.cs" />
     <Compile Include="Areas\Manager\Controllers\CollectionsController.cs" />
     <Compile Include="Areas\Manager\Controllers\EntityTypesController.cs" />
