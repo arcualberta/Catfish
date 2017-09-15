@@ -95,7 +95,6 @@ class ItemForm {
     otherPngUrl: string
     files: KnockoutObservableArray<FileDescription>
     fileList: Array<FileBackend>
-    //reader: FileReader
 
     constructor() {
 
@@ -113,7 +112,6 @@ class ItemForm {
         // Multifile upload
         
         this.files = ko.observableArray([])
-        //this.reader = new FileReader()
 
         let dropZone: HTMLElement = document.getElementById("drop-zone")
 
@@ -135,10 +133,6 @@ class ItemForm {
             fileDescription.thumbnail(fileBackend.Thumbnail)
             fileDescription.url(fileBackend.Url)
             fileDescription.preloaded(true)
-            console.log(fileDescription.id())
-            console.log(fileDescription.guid())
-            console.log(fileDescription.thumbnail())
-            console.log(fileDescription.url())
             this.files.push(fileDescription)
         }
     }
@@ -178,11 +172,13 @@ class ItemForm {
                     fileDescription.progress("0%")
                 }
             }
+
             request.send(formData)
         }
     }
 
     private updateFileDescription(fileDescription: FileDescription, description: any, status: string) {
+        console.log(description)
         fileDescription.id(description.Id)
         fileDescription.guid(description.Guid)
         fileDescription.fileName(description.FileName)
@@ -209,19 +205,8 @@ class ItemForm {
 
     private addFileToList(fileName: string) {
         let fileDescription: FileDescription = <FileDescription>{}
-               
-
         this.files.push(fileDescription)
     }
-
-    //private addFileToList(event: any, file: File) {
-    //    let fileDescription: FileDescription = {
-    //        name: ko.observable(file.name),
-    //        source: ko.observable(event.target.result)
-    //    };
-
-    //    this.files.push(fileDescription)
-    //}
 
     private removeFile = (file: FileDescription) => {
         this.files.remove(file)

@@ -7,7 +7,7 @@
 @Html.HiddenFor(m => m.Ref)
 
 <div class="form-field-header">
-    @Html.Label(Model.Name)
+    @Html.Label(string.IsNullOrEmpty(Model.Name) ? "" : Model.Name)
 </div>
 <div class="form-field-content">
     @Html.TextAreaFor(m => m.Value)

@@ -119,15 +119,18 @@ namespace Catfish.Core.Services
                 {
                     if (dbModel.Files.Where(f => f.GuidName == df.GuidName).Any() == false)
                     {
-                        dbModel.InsertChildElement("./files", df.Data);
+                        //since the posted model doesn't have the full property list passed back from the POST call, 
+                        //we should reload it form the database and use it.
+                        XmlModel tmp_file_model = Db.XmlModels.Where(m => m.Guid == df.GuidName).FirstOrDefault();
+                        tmp_file_model.Deserialize();
+
+                        dbModel.InsertChildElement("./files", tmp_file_model.Data);
 
                         //since we inserted the XML data of df into the XML model of the item,
                         //we no longer need to keep it in the database table. Howeber, we DO NEED to keep the files
                         //because these files are now referred by the XML File model which was inserted into the XML Item model.
                         //Deleting the File table entry corresponding to df
-                        XmlModel tmp_file_model = Db.XmlModels.Where(m => m.Guid == df.GuidName).FirstOrDefault();
-                        if (tmp_file_model != null)
-                            Db.XmlModels.Remove(Db.XmlModels.Find(tmp_file_model.Id));
+                        Db.XmlModels.Remove(Db.XmlModels.Find(tmp_file_model.Id));
                     }
                 }
             }
