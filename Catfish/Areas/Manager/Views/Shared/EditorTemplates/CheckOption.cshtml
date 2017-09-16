@@ -1,0 +1,9 @@
+﻿@model Catfish.Core.Models.Metadata.Option
+
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+    {
+       {"class", "model-type"}
+    })
+
+@Html.CheckBoxFor(m => m.Selected)
+<span>@Model.Value</span>

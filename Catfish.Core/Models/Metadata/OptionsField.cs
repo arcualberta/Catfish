@@ -4,37 +4,48 @@ using System.Xml.Linq;
 using Catfish.Core.Models.Attributes;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Catfish.Core.Models.Metadata
 {
 
     public class Option
     {
-        public string Value = "";
-        public bool Selected = false;
+        public string Value { get; set; }
+        public bool Selected { get; set; }
 
         public Option (string value = "", bool selected = false)
         {
-            this.Value = value;
-            this.Selected = selected;
+            Value = value;
+            Selected = selected;
+        }
+
+        public Option()
+        {
+            Value = "";
+            Selected = false;
         }
     }
 
     [Ignore]
-    public partial class OptionsField: MetadataField
+    public class OptionsField: MetadataField
     {
-        [DataType(DataType.MultilineText)]
+        //[DataType(DataType.MultilineText)]
         [TypeLabel("List of options, one option per line")]
-        public IEnumerable<Option> Options
+        [NotMapped]
+        public List<Option> Options
         {
             get
             {
                 return GetOptions("en");
             }
-            //set;
+            set
+            {
+                var x = value;
+            }
         }
 
-        public IEnumerable<Option> GetOptions(string lang = "")
+        public List<Option> GetOptions(string lang = "")
         {
             List<Option> options = new List<Option>();
 
