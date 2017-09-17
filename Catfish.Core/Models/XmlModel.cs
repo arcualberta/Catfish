@@ -150,73 +150,9 @@ namespace Catfish.Core.Models
             return Enumerable.Empty<string>();
         }
 
-        public void SetValues(IEnumerable<string> values, string lang = null)
+        public virtual void SetValues(IEnumerable<string> values, string lang = null)
         {
             SetChildText("value", values, Data, Lang(lang));
-        }
-
-        public void SetMultipleValues(IEnumerable<string> values, string language = null)
-        {
-            this.ClearSelected(Data);
-            this.SetSelected(values, Data, Lang(language));
-        }
-
-        private void ClearSelected(XElement data)
-        {
-            string xpath = "./options/option";
-            List<XElement> children = this.GetChildElements(xpath, data).ToList();
-            foreach (XElement child in children)
-            {
-                child.SetAttributeValue("selected", false);
-            }
-        }
-
-        private void SetSelected(IEnumerable<string> values, XElement data, string language = null)
-        {
-            string xpath = "./options/option";
-            List<XElement> children = this.GetChildElements(xpath, data).ToList();
-
-            foreach (string value in values)                
-            {
-                bool found = false;
-                foreach (XElement child in children)
-                {
-
-                    IEnumerable<XElement> texts = this.GetTextElements(child, language);
-                                   
-                    foreach(XElement text in texts)
-                    {
-                        if (value == text.Value)
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-                    
-                    if (found)
-                    {
-                        child.SetAttributeValue("selected", true);
-                        break;
-                    }
-                }
-
-                if (!found)
-                {
-                    data.Add(this.CreateSelectedOption(value, language));
-                }
-            }
-        }
-
-        //XXX Test this method
-        private XElement CreateSelectedOption(string value, string language)
-        {
-            XElement optionElement = new XElement("option");
-            XElement textElement = new XElement("text");
-            optionElement.SetAttributeValue("xml:lang", Lang(language));
-            textElement.Value = value;
-            optionElement.Add(textElement);
-            optionElement.SetAttributeValue("selected", "true");
-            return optionElement;
         }
 
         public List<XmlModel> GetChildModels(string xpath, XElement ele)
@@ -235,7 +171,7 @@ namespace Catfish.Core.Models
 
         protected string Lang(string lang)
         {
-            return lang == null ? DefaultLanguage : lang;
+            return string.IsNullOrEmpty(lang) ? DefaultLanguage : lang;
         }
 
         protected string GetChildText(string childTagName, XElement ele, string lang)
@@ -367,21 +303,31 @@ namespace Catfish.Core.Models
             return ((IEnumerable)ele.XPathEvaluate(xpath, NamespaceManager)).Cast<XElement>();
         }
 
-        public int GetAttribute(string attName, int defaultValue)
+        public int GetAttribute(string attName, int defaultValue, XElement data = null)
         {
-            string val = GetAttribute(attName);
+            string val = GetAttribute(attName, data);
             return string.IsNullOrEmpty(val) ? defaultValue : int.Parse(val);
         }
 
-        public string GetAttribute(string attName)
+        public bool GetAttribute(string attName, bool defaultValue, XElement data = null)
         {
-            XAttribute att = Data.Attribute(attName);
+            string val = GetAttribute(attName, data);
+            return string.IsNullOrEmpty(val) ? defaultValue : bool.Parse(val);
+        }
+
+        public string GetAttribute(string attName, XElement data = null)
+        {
+            if (data == null)
+                data = Data;
+            XAttribute att = data.Attribute(attName);
             return att == null ? null : att.Value;
         }
 
-        public void SetAttribute(string attName, string attValue)
+        public void SetAttribute(string attName, string attValue, XElement data = null)
         {
-            Data.SetAttributeValue(attName, attValue);
+            if (data == null)
+                data = Data;
+            data.SetAttributeValue(attName, attValue);
         }
 
         protected XmlNamespaceManager NamespaceManager
