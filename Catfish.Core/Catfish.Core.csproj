@@ -83,6 +83,7 @@
     <Compile Include="Models\Metadata\MetadataField.cs" />
     <Compile Include="Models\Metadata\OptionsField.cs" />
     <Compile Include="Models\Metadata\RadioButtonSet.cs" />
+    <Compile Include="Models\Metadata\SingleSelectOptionsField.cs" />
     <Compile Include="Models\Metadata\TextArea.cs" />
     <Compile Include="Models\Metadata\TextField.cs" />
     <Compile Include="Models\XmlModel.cs" />

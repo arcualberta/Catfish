@@ -3,7 +3,7 @@
 namespace Catfish.Core.Models.Metadata
 {
     [TypeLabel("Dropdown")]
-    public class DropDownMenu : OptionsField
+    public class DropDownMenu : SingleSelectOptionsField
     {
     }
 }

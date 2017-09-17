@@ -3,7 +3,7 @@
 namespace Catfish.Core.Models.Metadata
 {
     [TypeLabel("Multiple choice")]
-    public class RadioButtonSet : OptionsField
+    public class RadioButtonSet : SingleSelectOptionsField
     {
     }
 }

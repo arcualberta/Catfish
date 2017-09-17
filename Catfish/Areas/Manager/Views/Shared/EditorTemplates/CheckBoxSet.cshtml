@@ -15,20 +15,3 @@
     @Html.EditorFor(m => m.Options[i], "CheckOption")
     @Html.HiddenFor(m => m.Options[i].Value)
 }
-
-@*
-<div class="form-field-content">
-    <ul>
-        @if(!string.IsNullOrEmpty(Model.Options))
-        {
-            foreach (var option in Model.Options.Split('\n'))
-            {
-                <li class="no-background-border">
-                    @Html.CheckBox(Model.Id.ToString(), new { value = option, @class = "auto-width" })
-                    <span>@option</span>
-                </li>
-            }
-        }
-    </ul>
-</div>
-*@
