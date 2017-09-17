@@ -46,30 +46,6 @@ namespace Catfish.Core.Models
 
         [NotMapped]
         public virtual XElement Data { get; set; }
-        ////{
-        ////    get
-        ////    {
-        ////        if (mData == null)
-        ////        {
-        ////            if(string.IsNullOrEmpty(Content))
-        ////            {
-        ////                Data = new XElement(GetTagName());
-        ////                Data.SetAttributeValue("model-type", this.GetType().AssemblyQualifiedName);
-        ////                Data.SetAttributeValue("IsRequired", false);
-        ////            }
-        ////            else
-        ////            {
-        ////                this.Data = XElement.Parse(this.Content);
-        ////            }
-        ////        }
-        ////        return mData;
-        ////    }
-        ////    set
-        ////    {
-        ////        mData = value;
-        ////    }
-        ////}
-
 
         [NotMapped]
         public string DefaultLanguage { get; set; }
@@ -276,13 +252,6 @@ namespace Catfish.Core.Models
             XElement parent = GetChildElements(parentXPath, Data).FirstOrDefault();
             parent.Add(child);
         }
-
-        //protected XElement AddChild(XElement parent, XName elementName)
-        //{
-        //    XElement element = new XElement(elementName);
-        //    parent.Add(element);
-        //    return element;
-        //}
 
         protected IEnumerable<XElement> GetChildTextElements(string childTagName, XElement ele, string lang)
         {

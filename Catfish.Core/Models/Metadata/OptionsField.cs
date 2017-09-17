@@ -58,26 +58,6 @@ namespace Catfish.Core.Models.Metadata
                 options.Add(option);
             }
 
-
-            ////XElement optionsElement = Data.Element("options");
-            ////if (optionsElement != null)
-            ////{
-            ////    IEnumerable<XElement> optionElements = GetChildElements("./options/option", Data);
-            ////    foreach (XElement optionElement in optionElements)
-            ////    {
-            ////        string value = GetChildText("option", Data, lang);
-                    
-            ////        bool selected = false;
-            ////        string selectedString = optionElement.Attribute("selected").Value;
-            ////        if (selectedString == "true")
-            ////        {
-            ////            selected = true;
-            ////        }
-            ////        Option option = new Option(value, selected);
-            ////        options.Add(option);
-            ////    }
-            ////}
-
             return options;
         }
 
@@ -119,39 +99,6 @@ namespace Catfish.Core.Models.Metadata
                     optionsParent.Add(opEle);
                 }
             }
-
-            //////setting selected=true for the apporpriate options
-            ////List<Option> selected = options.Where(op => op.Selected).ToList();
-            ////foreach (var opt in options)
-            ////{
-            ////    foreach(XElement dstOpt in optionList)
-            ////    {
-            ////        IEnumerable<string> vals = GetChildElements(val_path, dstOpt).Select(txt => txt.Value);
-            ////        if (vals.Contains(opt.Value))
-            ////            dstOpt.SetAttributeValue("selected", true);
-            ////    }
-            ////}
-
-
-
-            ////////////string val_path = "./text[@xml:lang='" + Lang(lang) + "']";
-            ////////////foreach (Option opt in  options)
-            ////////////{
-            ////////////    SetOption(opt.Value, opt.Selected, optionsParent, lang);
-            ////////////}
-
-            //////IEnumerable<string> selectedOptionValues = options.Where(op => op.Selected).Select(op => op.Value);
-            ////foreach(XElement opt in children)
-            ////{
-            ////    bool selected = false;
-            ////    try
-            ////    {
-            ////        string val = GetTextElements(opt, lang).First().Value;
-            ////        selected = bool.Parse(options.Where(op => op.Value == val).First().Value);
-            ////    }
-            ////    catch (Exception) { }
-            ////    opt.SetAttributeValue("selected", selected);
-            ////}
         }
 
         public void SetOption(string value, bool isSelected, XElement optionParent, string lang)
@@ -187,61 +134,6 @@ namespace Catfish.Core.Models.Metadata
             optionElement.SetAttributeValue("selected", isSelected);
             return optionElement;
         }
-
-
-        ////////public void SetMultipleValues(IEnumerable<string> values, string language = null)
-        ////////{
-        ////////    this.ClearSelectedOptions(Data);
-        ////////    this.SetSelectedOptions(values, Data, Lang(language));
-        ////////}
-
-
-        ////////protected void ClearSelectedOptions(XElement data)
-        ////////{
-        ////////    string xpath = "./options/option";
-        ////////    List<XElement> children = this.GetChildElements(xpath, data).ToList();
-        ////////    foreach (XElement child in children)
-        ////////    {
-        ////////        child.SetAttributeValue("selected", false);
-        ////////    }
-        ////////}
-
-        ////////protected void SetSelectedOptions(IEnumerable<string> values, XElement data, string language = null)
-        ////////{
-        ////////    string xpath = "./options/option";
-        ////////    List<XElement> children = this.GetChildElements(xpath, data).ToList();
-
-        ////////    foreach (string value in values)
-        ////////    {
-        ////////        bool found = false;
-        ////////        foreach (XElement child in children)
-        ////////        {
-
-        ////////            IEnumerable<XElement> texts = this.GetTextElements(child, language);
-
-        ////////            foreach (XElement text in texts)
-        ////////            {
-        ////////                if (value == text.Value)
-        ////////                {
-        ////////                    found = true;
-        ////////                    break;
-        ////////                }
-        ////////            }
-
-        ////////            if (found)
-        ////////            {
-        ////////                child.SetAttributeValue("selected", true);
-        ////////                break;
-        ////////            }
-        ////////        }
-
-        ////////        if (!found)
-        ////////        {
-        ////////            data.Add(this.CreateSelectedOption(value, language));
-        ////////        }
-        ////////    }
-        ////////}
-
 
         public override void UpdateValues(XmlModel src)
         {
