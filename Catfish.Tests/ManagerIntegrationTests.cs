@@ -13,6 +13,8 @@ namespace Catfish.Tests
     {
         public static string MetadatasetName = "Metadataset Name";
         public static string MetadatasetDescription = "Metadataset Description";
+        public static string EntityTypeName = "Entity Type Name";
+        public static string EntityTypeDescription = "Entity Type Description";
         public static string PostfixEdit = " Edit";
     }
 
@@ -44,20 +46,57 @@ namespace Catfish.Tests
         }
 
         [Test]
-        public void CanCreateMetadataset()
+        public void CanCreateSimpleMetadataset()
         {
             Driver.FindElement(By.LinkText("Metadata Sets")).Click();
             Driver.FindElement(By.ClassName("add")).Click();
-            Driver.FindElement(By.Id("Name")).SendKeys(TestStrings.MetadatasetName);
-            Driver.FindElement(By.Id("Description")).SendKeys(TestStrings.MetadatasetDescription);
+            this.AddNameDescription(TestStrings.MetadatasetName, TestStrings.MetadatasetDescription);
 
-            IWebElement selectWebElement = Driver.FindElement(By.Id("field-type-selector"));
-            SelectElement select = new SelectElement(selectWebElement);
+            //IWebElement selectWebElement = Driver.FindElement(By.Id("field-type-selector"));
+            //SelectElement select = new SelectElement(selectWebElement);
+            //IEnumerable<IWebElement> test = select.Options;
 
-            IEnumerable<IWebElement> test = select.Options;
-
-               
             Driver.FindElement(By.ClassName("save")).Click();
+
+            //XXX Add css classes to simplify selectors
+            //IWebElement nameElement = this.Driver.FindElement(By.CssSelector(".list tr:last-child td:nth-child(1)"));
+            //IWebElement descriptionElement = this.Driver.FindElement(By.CssSelector(".list tr:last-child td:nth-child(2)"));
+            //string name = nameElement.Text;
+            //string description = descriptionElement.Text;
+
+            Assert.AreEqual(this.GetLastNameFromList(), TestStrings.MetadatasetName);
+            Assert.AreEqual(this.GetLastDescriptionFromList(), TestStrings.MetadatasetDescription);
+            
+        }
+
+        [Test]
+        public void CanCreateSimpleEntityType()
+        {
+            Driver.FindElement(By.LinkText("Entity Types")).Click();
+            Driver.FindElement(By.ClassName("add")).Click();
+            this.AddNameDescription(TestStrings.EntityTypeName, TestStrings.EntityTypeDescription);
+            Driver.FindElement(By.ClassName("save")).Click();
+
+            Assert.AreEqual(this.GetLastNameFromList(), TestStrings.EntityTypeName);
+            Assert.AreEqual(this.GetLastDescriptionFromList(), TestStrings.EntityTypeDescription);
+        }
+
+        private string GetLastNameFromList()
+        {
+            IWebElement nameElement = this.Driver.FindElement(By.CssSelector(".list tr:last-child td:nth-child(1)"));    
+            return nameElement.Text;
+        }
+
+        private string GetLastDescriptionFromList()
+        {            
+            IWebElement descriptionElement = this.Driver.FindElement(By.CssSelector(".list tr:last-child td:nth-child(2)"));         
+            return descriptionElement.Text;
+        }
+
+        private void AddNameDescription(string name, string description)
+        {            
+            Driver.FindElement(By.Id("Name")).SendKeys(name);
+            Driver.FindElement(By.Id("Description")).SendKeys(description);            
         }
 
         private void Login()
