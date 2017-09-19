@@ -140,5 +140,21 @@ namespace Catfish.Tests
             Assert.AreEqual(2, metadatasets.Count());
 
         }
+
+        //[AssemblyInitialize]
+        //public static void SetUp(TestContext context)
+        //{
+        //    var xx = Directory.GetParent(Path.GetDirectoryName(context.TestDir).ToString()).ToString();
+        //    var y = Path.Combine(xx, @"packages\Selenium.WebDriver.ChromeDriver.2.32.0\driver\win32\chromedriver.exe");
+
+        //    string solution_dir = xx.ToString();
+        //}
+        //[TestMethod]
+        //public void Test()
+        //{
+        //    Assert.AreEqual(1, 1);
+        //}
+
+
     }
 }
