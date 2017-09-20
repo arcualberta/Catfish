@@ -240,7 +240,6 @@
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityAssociationViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityTypeViewModel.cs" />
-    <Compile Include="Areas\Manager\Models\ViewModels\FieldDefinitionViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\KoBaseViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\MetadataFieldMappingViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\MetadataSetViewModels.cs" />

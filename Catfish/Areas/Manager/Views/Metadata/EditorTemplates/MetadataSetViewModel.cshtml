@@ -43,6 +43,8 @@
                             @field.Html.Span(f => f.TypeLabel)
                             <div class="bs right">
                                 <span @field.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
+                                @ko.Html.Button("", "Move", "Metadata", new { idx = @field.GetIndex(), step = -1 }, new { @class = "glyphicon glyphicon glyphicon-arrow-up" })
+                                @ko.Html.Button("", "Move", "Metadata", new { idx = @field.GetIndex(), step = 1 }, new { @class = "glyphicon glyphicon glyphicon-arrow-down" })
                                 @ko.Html.Button("", "RemoveField", "Metadata", new { idx = @field.GetIndex() }, new { @class = "glyphicon glyphicon-remove" })
                             </div>
 

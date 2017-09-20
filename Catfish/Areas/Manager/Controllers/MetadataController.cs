@@ -20,17 +20,6 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetModel(int? id)
-        {
-            MetadataSet model;
-            if (id.HasValue)
-                model = MetadataService.GetMetadataSet(id.Value);
-            else
-                model = new MetadataSet();
-            return Json(model, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
         public ActionResult Details(int id)
         {
             MetadataSet model = MetadataService.GetMetadataSet(id);
@@ -49,35 +38,8 @@ namespace Catfish.Areas.Manager.Controllers
             else
                 model = new MetadataSet();
 
-            return View("Edit2", model);
-            //return View(model);
-
+            return View(model);
         }
-
-        ////private string GetSerializedMetadataFieldList(MetadataSet model)
-        ////{
-        ////    List<Object> fieldList = new List<Object>();
-
-        ////    foreach (var field in model.Fields)
-        ////    {
-        ////        Type t = field.GetType();
-        ////        bool IsOption = typeof(OptionsField).IsAssignableFrom(t);
-
-        ////        var entry = new
-        ////        {
-        ////            Name = field.Name,
-        ////            Description = field.Description,
-        ////            IsRequired = field.IsRequired,
-        ////            FieldType = t.AssemblyQualifiedName,
-        ////            Options = IsOption ? (field as OptionsField).Options : new List<Option>(),
-        ////            ParentType = IsOption ? typeof(OptionsField).ToString() : typeof(MetadataField).ToString()
-        ////        };
-
-        ////        fieldList.Add(entry);
-        ////    }
-
-        ////    return new JavaScriptSerializer().Serialize(fieldList);
-        ////}
 
 
         [HttpPost]
@@ -100,6 +62,24 @@ namespace Catfish.Areas.Manager.Controllers
         public JsonResult RemoveField(MetadataSetViewModel vm, int idx)
         {
             vm.Fields.RemoveAt(idx);
+            return Json(vm);
+        }
+
+        [HttpPost]
+        public JsonResult Move(MetadataSetViewModel vm, int idx, int step)
+        {
+            int newIdx = idx + step;
+            if (newIdx < 0)
+                newIdx = 0;
+            if (newIdx >= vm.Fields.Count)
+                newIdx = vm.Fields.Count - 1;
+
+            if(idx != newIdx)
+            {
+                var field = vm.Fields.ElementAt(idx);
+                vm.Fields.RemoveAt(idx);
+                vm.Fields.Insert(newIdx, field);
+            }
             return Json(vm);
         }
 
