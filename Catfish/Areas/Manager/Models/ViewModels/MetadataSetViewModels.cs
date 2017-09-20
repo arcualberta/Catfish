@@ -30,6 +30,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public MetadataSetViewModel()
         {
+            Fields = new List<MetadataFieldViewModel>();
+            SelectedFieldTypes = new List<MetadataFieldType>();
         }
 
         public MetadataSetViewModel(MetadataSet src)

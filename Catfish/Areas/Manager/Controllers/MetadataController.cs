@@ -33,7 +33,7 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Edit(int? id)
         {
             MetadataSet model;
-            if (id.HasValue)
+            if (id.HasValue && id > 0)
                 model = MetadataService.GetMetadataSet(id.Value);
             else
                 model = new MetadataSet();
@@ -86,6 +86,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpPost]
         public JsonResult Save(MetadataSetViewModel vm)
         {
+            bool creating = false;
             if (ModelState.IsValid)
             {
                 MetadataSet ms;
@@ -110,10 +111,12 @@ namespace Catfish.Areas.Manager.Controllers
                     ms = new MetadataSet();
                     vm.UpdateMetadataSet(ms);
                     Db.MetadataSets.Add(ms);
+                    creating = true;
                 }
 
                 ms.Serialize();
                 Db.SaveChanges();
+                vm.Id = ms.Id;
                 vm.Status = KoBaseViewModel.eStatus.Success;
             }
             else
