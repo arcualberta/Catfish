@@ -4,6 +4,8 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using System.Configuration;
 using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Interactions.Internal;
 using System.Collections.Generic;
 
 namespace Catfish.Tests
@@ -52,9 +54,7 @@ namespace Catfish.Tests
         [Test]
         public void CanCreateSimpleMetadataset()
         {
-            this.Driver.FindElement(By.LinkText("Metadata Sets")).Click();
-            this.Driver.FindElement(By.ClassName("add")).Click();
-            this.AddNameDescription(TestValues.MetadatasetName, TestValues.MetadatasetDescription);
+            this.AddFilledMetadataSet();
             this.Driver.FindElement(By.ClassName("save")).Click();
            
             Assert.AreEqual(this.GetLastNameFromList(), TestValues.MetadatasetName);
@@ -63,21 +63,24 @@ namespace Catfish.Tests
         }
 
         [Test]
-        public void CanCreateComplexMetadataset()
-        {           
-            this.Driver.FindElement(By.LinkText("Metadata Sets")).Click();
-            this.Driver.FindElement(By.ClassName("add")).Click();
-            this.AddNameDescription(TestValues.MetadatasetName, TestValues.MetadatasetDescription);
-
-            SelectElement typeSelector = new SelectElement(this.Driver.FindElement(By.Id("field-type-selector")));
+        public void CanCreateCompleteMetadataset()
+        {
+            this.AddFilledMetadataSet();
+            
+            SelectElement typeSelector = new SelectElement(this.Driver.FindElement(By.CssSelector("#field-type-selector")));
             IWebElement addFieldButton = this.Driver.FindElement(By.Id("add-field"));
+            IWebElement saveButton = this.Driver.FindElement(By.ClassName("save"));
+
             // Add all fields and enter data
-            for (int i=0; i < typeSelector.Options.Count; i++)
+            for (int i = 0; i < typeSelector.Options.Count; i++)
             {
+
                 IWebElement option = typeSelector.Options[i];
                 typeSelector.SelectByText(option.Text);
+                addFieldButton.Click();
 
-                IWebElement lastFieldElement = this.Driver.FindElement(By.ClassName("field-entry:last-child"));
+                IWebElement lastFieldElement = this.Driver.FindElement(By.CssSelector(".field-entry:last-child"));
+
                 lastFieldElement.FindElement(By.ClassName("field-name")).SendKeys(TestValues.FieldName + " " + i);
                 lastFieldElement.FindElement(By.ClassName("field-description")).SendKeys(TestValues.FieldDescription + " " + i);
 
@@ -86,22 +89,80 @@ namespace Catfish.Tests
                 //IWebElement options = lastFieldElement.FindElement(By.ClassName("field-options"))
 
                 lastFieldElement.FindElement(By.ClassName("field-is-required")).Click();
-
-                addFieldButton.Click();
-                
+             
             }
+
+            IJavaScriptExecutor js = (IJavaScriptExecutor)this.Driver;
+            js.ExecuteScript("arguments[0].scrollIntoView(false)", saveButton);
+            saveButton.Click();
+
+            // Go to see editor view for newly created metadataset
+            IWebElement editButton = this.Driver.FindElement(By.CssSelector(".list tr:last-child td:nth-child(3) a:nth-child(2)"));
+            editButton.Click();
+
+            //XXX need to come back to this test once options are working
+            Assert.AreEqual(true, false);
+
+        }
+
+        [Test]
+        public void CanCreateMetadatasetWithInputField()
+        {
+
+            this.AddFilledMetadataSet();
+            SelectElement typeSelector = new SelectElement(this.Driver.FindElement(By.CssSelector("#field-type-selector")));
+            IWebElement addFieldButton = this.Driver.FindElement(By.Id("add-field"));
+            IWebElement saveButton = this.Driver.FindElement(By.ClassName("save"));
+
+            typeSelector.SelectByText("Short text");
+            addFieldButton.Click();
+            IWebElement lastFieldElement = this.Driver.FindElement(By.CssSelector(".field-entry:last-child"));
+
+            lastFieldElement.FindElement(By.ClassName("field-name")).SendKeys(TestValues.FieldName);
+            lastFieldElement.FindElement(By.ClassName("field-description")).SendKeys(TestValues.FieldDescription);
+            lastFieldElement.FindElement(By.ClassName("field-is-required")).Click();
+
+            saveButton.Click();
+
+            // Go to see editor view for newly created metadataset
+            IWebElement editButton = this.Driver.FindElement(By.CssSelector(".list tr:last-child td:nth-child(3) a:nth-child(2)"));
+            editButton.Click();
+
+            // Check name and description
+            Assert.AreEqual(TestValues.MetadatasetName, this.Driver.FindElement(By.Id("Name")).GetAttribute("value"));
+            Assert.AreEqual(TestValues.MetadatasetDescription, this.Driver.FindElement(By.Id("Description")).GetAttribute("value"));
+
+            // Check field values    
+            IWebElement fieldEntry = this.Driver.FindElement(By.ClassName("field-entry"));
+            Assert.AreEqual(TestValues.FieldName, fieldEntry.FindElement(By.ClassName("field-name")).GetAttribute("value"));
+            Assert.AreEqual(TestValues.FieldDescription, fieldEntry.FindElement(By.ClassName("field-description")).GetAttribute("value"));
+            Assert.AreEqual(TestValues.FieldRequired, fieldEntry.FindElement(By.ClassName("field-is-required")).Selected);
+        }
+
+        [Test]
+        public void CanCreateMetadasetWithOptionsField()
+        {
+            Assert.AreEqual(true, false);
         }
 
         [Test]
         public void CanCreateSimpleEntityType()
         {
-            this.Driver.FindElement(By.LinkText("Entity Types")).Click();
+            this.Driver.FindElement(By.LinkText("Metadata Sets")).Click();
             this.Driver.FindElement(By.ClassName("add")).Click();
-            this.AddNameDescription(TestValues.EntityTypeName, TestValues.EntityTypeDescription);
+            this.AddNameDescription(TestValues.EntityTypeName, TestValues.EntityTypeDescription)
+                ;
             this.Driver.FindElement(By.ClassName("save")).Click();
 
             Assert.AreEqual(this.GetLastNameFromList(), TestValues.EntityTypeName);
             Assert.AreEqual(this.GetLastDescriptionFromList(), TestValues.EntityTypeDescription);
+        }
+
+        private void AddFilledMetadataSet()
+        {
+            this.Driver.FindElement(By.LinkText("Metadata Sets")).Click();
+            this.Driver.FindElement(By.ClassName("add")).Click();
+            this.AddNameDescription(TestValues.MetadatasetName, TestValues.MetadatasetDescription);
         }
 
         private string GetLastNameFromList()
@@ -127,8 +188,8 @@ namespace Catfish.Tests
         private void Login()
         {
             this.Driver.Navigate().GoToUrl(ManagerUrl);
-            this.Driver.FindElement(By.Id("login")).SendKeys("admin");
-            this.Driver.FindElement(By.Name("password")).SendKeys("admin");
+            this.Driver.FindElement(By.Id("login")).SendKeys(ConfigurationManager.AppSettings["AdminLogin"]);
+            this.Driver.FindElement(By.Name("password")).SendKeys(ConfigurationManager.AppSettings["AdminPassword"]);
             this.Driver.FindElement(By.Name("password")).SendKeys(Keys.Enter);
         }
 
