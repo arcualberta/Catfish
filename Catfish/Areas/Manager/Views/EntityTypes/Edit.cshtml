@@ -1,78 +1,55 @@
-﻿@model Catfish.Core.Models.EntityType
-@using Catfish.Core.Models.Attributes
+﻿@model Catfish.Areas.Manager.Models.ViewModels.EntityTypeViewModel
+@using PerpetuumSoft.Knockout
 @using Catfish.Areas.Manager.Models.ViewModels
-@using Catfish.Models;
-@using System.Web.Script.Serialization;
-
-<script src="/node_modules/requirejs/require.js"></script>
-<script type="text/javascript" src="/built/require-config.js"></script>
-
-@{ 
-
-    var viewData = new ViewDataDictionary(Html.ViewData)
-    {
-        TemplateInfo = new System.Web.Mvc.TemplateInfo
-        {
-            HtmlFieldPrefix = "MetadataSets[CATFISH_GUID]"
-        }
-    };
-
-    string metadataSetTemplate = Html.Partial("EditorTemplates/EntityViewModel", new EntityViewModel(), viewData).ToHtmlString();
-
-    EntityTypeViewModel vm = ViewBag.EntityTypeViewModel as EntityTypeViewModel;
-}
-
-<script>
-    var metadataSets = {
-        sets: @Html.Raw(new JavaScriptSerializer().Serialize(vm.MetadataSetSummary)),
-        template: @Html.Raw(Json.Encode(metadataSetTemplate))
-    }
-</script>
-
 
 @{  ViewBag.Title = Model.Id > 0 ? "Edit Entity Type" : "Create Entity Type"; }
 
-@section Toolbar {
-    @Html.Partial("Partial/EditToolbar")
-}
-
-@using (Html.BeginForm())
+@section HEAD
 {
-    @Html.AntiForgeryToken()
-<input type="hidden" id="deletedFields" name="deletedFields" value=""/>
-
-    <div class="grid_12">
-        <div class="box">
-            @{ 
-                TypeLabelAttribute att = Attribute.GetCustomAttribute(Model.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
-                string title = att == null ? Model.GetType().ToString() : att.Name;
-             }
-            <div class="title"><h2>@title</h2></div>
-            <div class="inner">
-                <ul class="form">
-                    <li>
-                        @Html.LabelFor(m => m.Name)
-                        <div class="input">@Html.EditorFor(m => m.Name)</div>
-                    </li>
-                    <li>
-                        @Html.LabelFor(m => m.Description)
-                        <div class="input">@Html.EditorFor(m => m.Description)</div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div id="fields-container">
-            @{ var MetadataSets = Model.MetadataSets.Select(ms => new EntityViewModel(ms)).ToList();}
-            @Html.EditorFor(m => MetadataSets)
-        </div>
-    </div>
-
+    <script type="text/javascript" src="~/Scripts/knockout-3.1.0.js"></script>
+    <script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
+    <script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
 }
 
-<div class="grid_12 contentright">
-    <button id="add-field">Add MetadataSet</button>
+@section Toolbar {
+    @Html.Partial("Partial/koEditToolbar")
+}
+
+@{
+    var context = "ctx_" + Guid.NewGuid().ToString("N");
+    var ko = Html.CreateKnockoutContext(context);
+}
+
+<div id="@context">
+    @using (ko.Html.Form("Save", "EntityTypes", null, new { id = context + "Form" }))
+    {
+        <div class="grid_12">
+            <div class="box">
+                <div class="title">
+                    <h2>@Model.TypeLabel</h2>
+                    <div class="bs right">
+                        <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
+                        <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
+                        @ko.Html.Button("Save", "Save", "Metadata")
+                    </div>
+                </div>
+                <div class="inner">
+                    <ul class="form form-custom">
+                        <li>
+                            <label class="control-label col-md-2">Name</label>
+                            <div class="input">@ko.Html.TextBox(m => m.Name)</div>
+                        </li>
+                        <li>
+                            <label class="control-label col-md-2">Description</label>
+                            <div class="input">@ko.Html.TextArea(m => m.Description)</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    }
+
 </div>
 
-<script>
-    require(["/Built/Forms/EntityTypeForm.js"]);
-</script>
+    @ko.Apply(Model, context)

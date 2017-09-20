@@ -7,17 +7,6 @@ using Catfish.Core.Models.Attributes;
 
 namespace Catfish.Areas.Manager.Models.ViewModels
 {
-    public class MetadataFieldType
-    {
-        public string FieldType { get; set; }
-        public string Label { get; set; }
-        public MetadataFieldType()
-        {
-            Label = "";
-            FieldType = "";
-        }
-    }
-
     public class MetadataSetViewModel : KoBaseViewModel
     {
         public string TypeLabel { get; set; }
@@ -98,4 +87,17 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             return mFieldTypes;
         }
     }
+
+    public class MetadataFieldType
+    {
+        public string FieldType { get; set; }
+        public string Label { get; set; }
+        public MetadataFieldType()
+        {
+            Label = "";
+            FieldType = "";
+        }
+    }
+
+
 }

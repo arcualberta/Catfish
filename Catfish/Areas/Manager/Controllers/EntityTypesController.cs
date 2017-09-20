@@ -32,36 +32,19 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Edit(int? id)
         {
             EntityType model = null;
-            if (id.HasValue)
+            if (id.HasValue && id.Value > 0)
             {
-                model = EntityService.GetEntityType(id.Value);
-                /*if (model.MetadataSets.Count > 1)
-                    model.MetadataSets.Remove(model.MetadataSets.Last());*/
+                model = Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
             }
             else
             {
                 model = new EntityType();
-
-                //////TODO:Remove the following testing code
-                ////List<MetadataSet> metadata = MetadataService.GetMetadataSets().ToList();
-                ////int i = 0;
-                ////foreach (var s in metadata)
-                ////{
-                ////    model.MetadataSets.Add(s);
-                ////    if (++i >= 3)
-                ////        break;
-                ////}
             }
 
-            EntityTypeViewModel vm = new EntityTypeViewModel()
-            {
-                EntityType = model,
-                AvailableMetadataSets = MetadataService.GetMetadataSets().ToList()
-            };
+            IQueryable<MetadataSet> metadataSets = Db.MetadataSets;
+            EntityTypeViewModel vm = new EntityTypeViewModel(model, metadataSets);
 
-            ViewBag.EntityTypeViewModel = vm;
-
-            return View(model);
+            return View(vm);
         }
 
         // POST: Manager/EntityTypes/Edit/5
