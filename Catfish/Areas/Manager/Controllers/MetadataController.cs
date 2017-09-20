@@ -49,12 +49,12 @@ namespace Catfish.Areas.Manager.Controllers
             else
                 model = new MetadataSet();
 
-            ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
-            //ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files)).Data);
-            ViewBag.FieldList = GetSerializedMetadataFieldList(model);
-            //XXX Creates circular reference
-            //ViewBag.FieldList = new JavaScriptSerializer().Serialize(Json(model.Fields));
-            return View(model);
+            ViewBag.FieldTypes = MetadataService.GetMetadataFieldTypes();
+            ////ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
+            ////ViewBag.FieldList = GetSerializedMetadataFieldList(model);
+
+            return View("Edit2", model);
+            //return View(model);
 
         }
 
@@ -107,7 +107,8 @@ namespace Catfish.Areas.Manager.Controllers
             ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
             ViewBag.FieldList = GetSerializedMetadataFieldList(model);
 
-            return View(model);
+            return View("Edit2", model);
+            //return View(model);
         }
 
         [HttpGet]
@@ -232,6 +233,51 @@ namespace Catfish.Areas.Manager.Controllers
 
             return new JavaScriptSerializer().Serialize(fieldList);
         }
+
+        
+        [HttpPost]
+        public JsonResult AddField(MetadataSetViewModel vm)
+        {
+            foreach (MetadataFieldType t in vm.SelectedFieldTypes)
+            {
+                Type type = Type.GetType(t.FieldType, true);
+                if (!typeof(MetadataField).IsAssignableFrom(type))
+                    throw new InvalidOperationException("Bad Type");
+
+                MetadataField field = Activator.CreateInstance(type) as MetadataField;
+                vm.Fields.Add(new MetadataFieldViewModel(field));
+            }
+
+            vm.SelectedFieldTypes.Clear();
+            //entityVM.Associate();
+            //ViewBag.ChildItems = entityVM;
+            return Json(vm);
+        }
+
+        [HttpPost]
+        public JsonResult RemoveField(MetadataSetViewModel vm, int idx)
+        {
+            try
+            {
+                vm.Fields.RemoveAt(idx);
+            }
+            catch(Exception ex)
+            {
+                vm.Fields[idx].Status = KoBaseViewModel.eStatus.Error;
+            }
+            return Json(vm);
+        }
+
+        [HttpPost]
+        public JsonResult Save(MetadataSetViewModel vm)
+        {
+            //entityVM.Associate();
+            //ViewBag.ChildItems = entityVM;
+            vm.Status = KoBaseViewModel.eStatus.Success;
+            return Json(vm);
+        }
+
+
 
     }
 }

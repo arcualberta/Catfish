@@ -11,3 +11,15 @@
 .inner p{
     margin:0 0 10px 0;
 }
+
+span.status{
+    margin-right:10px;
+}
+
+.glyphicon-remove {
+    color: #d83417 !important;
+}
+
+.field-desc {
+    background-color: #eee !important;
+}

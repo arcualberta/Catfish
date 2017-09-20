@@ -56,6 +56,8 @@ namespace Catfish.Core.Models.Metadata
         ////}
 
         private MetadataDefinition mDefinition;
+
+        [ScriptIgnore(ApplyToOverrides = true)]
         [NotMapped]
         public MetadataDefinition Definition
         {
