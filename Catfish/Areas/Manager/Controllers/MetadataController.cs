@@ -49,192 +49,37 @@ namespace Catfish.Areas.Manager.Controllers
             else
                 model = new MetadataSet();
 
-            ViewBag.FieldTypes = MetadataService.GetMetadataFieldTypes();
-            ////ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
-            ////ViewBag.FieldList = GetSerializedMetadataFieldList(model);
-
             return View("Edit2", model);
             //return View(model);
 
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(MetadataSet model)
-        {
-            //var deletedFields = test["deletedFields"];
-            var test = Request.Params;
-            if (ModelState.IsValid)
-            {
-                MetadataSet ms = MetadataService.UpdateMetadataSet(model);
-                if (ms == null)
-                    return HttpNotFound();
-                ////if (id > 0)
-                ////{
-                ////    Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
-                ////    foreach (var field in model.Fields)
-                ////    {
-                ////        if (field.Id > 0)
-                ////            Db.Entry(field).State = System.Data.Entity.EntityState.Modified;
-                ////        else
-                ////            Db.MetadataFields.Add(field);
-                ////    }
-                ////}
-                ////else
-                ////{
-                ////    Db.MetadataSets.Add(model);
-                ////}
-                // Remove deletedFields
+        ////private string GetSerializedMetadataFieldList(MetadataSet model)
+        ////{
+        ////    List<Object> fieldList = new List<Object>();
 
-                ////////////////if (deletedFields != null && deletedFields != "" )
-                ////////////////{
-                ////////////////    string[] toDelete = deletedFields.Trim().Split(' ');
-                ////////////////    foreach (string id in toDelete)
-                ////////////////    {
-                ////////////////        var field = Db.MetadataFields.Find(Int32.Parse(id));
-                ////////////////        Db.MetadataFields.Remove(field);
-                ////////////////        //var entry = Db.Entry(id);
-                ////////////////        //entry.State = System.Data.Entity.EntityState.Deleted;
-                ////////////////    }
-                ////////////////}
-                
+        ////    foreach (var field in model.Fields)
+        ////    {
+        ////        Type t = field.GetType();
+        ////        bool IsOption = typeof(OptionsField).IsAssignableFrom(t);
 
-                Db.SaveChanges();
+        ////        var entry = new
+        ////        {
+        ////            Name = field.Name,
+        ////            Description = field.Description,
+        ////            IsRequired = field.IsRequired,
+        ////            FieldType = t.AssemblyQualifiedName,
+        ////            Options = IsOption ? (field as OptionsField).Options : new List<Option>(),
+        ////            ParentType = IsOption ? typeof(OptionsField).ToString() : typeof(MetadataField).ToString()
+        ////        };
 
-                return RedirectToAction("Index");
-            }
+        ////        fieldList.Add(entry);
+        ////    }
 
-            ViewBag.FieldTypes = GetSerializedMetadataFieldTypes();
-            ViewBag.FieldList = GetSerializedMetadataFieldList(model);
-
-            return View("Edit2", model);
-            //return View(model);
-        }
-
-        [HttpGet]
-        public ActionResult EditTest(int? id) //notes: Kamal use this one
-        {
-            MetadataSet model;
-            if (id.HasValue)
-                model = MetadataService.GetMetadataSet(id.Value);
-            else
-            {
-                model = new MetadataSet();
-                ////model.Name = "Sample Form";
-                ////model.Description = "Sample form description";
-
-                ////model.Fields.Add(new TextField()
-                ////{
-                ////    Name = "Text Field 1",
-                ////    Description = "Text filed 1 description"
-                ////});
-
-                ////model.Fields.Add(new TextArea()
-                ////{
-                ////    Name = "Text Area 1",
-                ////    Description = "Text area 1 description"
-                ////});
-
-                ////model.Fields.Add(new RadioButtonSet()
-                ////{
-                ////    Name = "Radio Button Set 1",
-                ////    Description = "Radio button set 1 description",
-                ////    Options = "radio-option 1\nradio-option 2\nradio-option 3"
-                ////});
-
-                ////model.Fields.Add(new CheckBoxSet()
-                ////{
-                ////    Name = "Check Box Set 1",
-                ////    Description = "Check box set 1 description",
-                ////    Options = "check 1\ncheck 2\ncheck 3"
-                ////});
-
-                ////model.Fields.Add(new DropDownMenu()
-                ////{
-                ////    Name = "Drop Down Menu 1",
-                ////    Description = "Drop down menu 1 description",
-                ////    Options = "menu 1\nmenu 2\nmenu 3"
-                ////});
-            }
-            return View(model);
-        }
-
-        [HttpPost]
-        public ActionResult EditTest(MetadataSet model)
-        {
-            if (ModelState.IsValid)
-            {
-                if (model.Id > 0)
-                    Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
-                else
-                    Db.MetadataSets.Add(model);
-
-                Db.SaveChanges();
-
-                return RedirectToAction("Index");
-            }
-            return View(model);
-        }
+        ////    return new JavaScriptSerializer().Serialize(fieldList);
+        ////}
 
 
-        [HttpGet]
-        public ActionResult FieldTypes()
-        {
-            var fieldTypes = this.MetadataService.GetMetadataFieldTypes();
-            var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToList();
-
-            //Dictionary<string, object> dummy = new Dictionary<string, object>();
-            //dummy.Add("Simple", new SimpleField());
-            //dummy.Add("Options", new OptionsField());
-
-
-            //HtmlHelper<Dictionary<string, object>> html = new HtmlHelper<Dictionary<string, object>>();
-
-
-            return Json(fieldTypeViewModels, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
-        public ActionResult MetadataSets()
-        {
-            var metadatasets = Db.MetadataSets.Select(ms => ms.Content).ToList();
-
-            return Json(metadatasets, JsonRequestBehavior.AllowGet);
-        }
-
-        private string GetSerializedMetadataFieldTypes()
-        {
-            var fieldTypes = this.MetadataService.GetMetadataFieldTypes();
-            var fieldTypeViewModels = fieldTypes.Select(ft => new FieldDefinitionViewModel(ft)).ToArray();
-            return new JavaScriptSerializer().Serialize(fieldTypeViewModels);
-        }
-
-        private string GetSerializedMetadataFieldList(MetadataSet model)
-        {
-            List<Object> fieldList = new List<Object>();
-
-            foreach (var field in model.Fields)
-            {
-                Type t = field.GetType();
-                bool IsOption = typeof(OptionsField).IsAssignableFrom(t);
-
-                var entry = new
-                {
-                    Name = field.Name,
-                    Description = field.Description,
-                    IsRequired = field.IsRequired,
-                    FieldType = t.AssemblyQualifiedName,
-                    Options = IsOption ? (field as OptionsField).Options : new List<Option>(),
-                    ParentType = IsOption ? typeof(OptionsField).ToString() : typeof(MetadataField).ToString()
-                };
-
-                fieldList.Add(entry);
-            }
-
-            return new JavaScriptSerializer().Serialize(fieldList);
-        }
-
-        
         [HttpPost]
         public JsonResult AddField(MetadataSetViewModel vm)
         {
@@ -247,37 +92,58 @@ namespace Catfish.Areas.Manager.Controllers
                 MetadataField field = Activator.CreateInstance(type) as MetadataField;
                 vm.Fields.Add(new MetadataFieldViewModel(field));
             }
-
             vm.SelectedFieldTypes.Clear();
-            //entityVM.Associate();
-            //ViewBag.ChildItems = entityVM;
             return Json(vm);
         }
 
         [HttpPost]
         public JsonResult RemoveField(MetadataSetViewModel vm, int idx)
         {
-            try
-            {
-                vm.Fields.RemoveAt(idx);
-            }
-            catch(Exception ex)
-            {
-                vm.Fields[idx].Status = KoBaseViewModel.eStatus.Error;
-            }
+            vm.Fields.RemoveAt(idx);
             return Json(vm);
         }
 
         [HttpPost]
         public JsonResult Save(MetadataSetViewModel vm)
         {
-            //entityVM.Associate();
-            //ViewBag.ChildItems = entityVM;
-            vm.Status = KoBaseViewModel.eStatus.Success;
+            if (ModelState.IsValid)
+            {
+                MetadataSet ms;
+
+                if (vm.Id > 0)
+                {
+                    ms = Db.MetadataSets.Where(x => x.Id == vm.Id).FirstOrDefault();
+                    if (ms == null)
+                    {
+                        vm.Status = KoBaseViewModel.eStatus.Error;
+                        vm.Message = "Specified metadata set not found";
+                        return Json(vm);
+                    }
+                    else
+                    {
+                        vm.UpdateMetadataSet(ms);
+                        Db.Entry(ms).State = System.Data.Entity.EntityState.Modified;
+                    }
+                }
+                else
+                {
+                    ms = new MetadataSet();
+                    vm.UpdateMetadataSet(ms);
+                    Db.MetadataSets.Add(ms);
+                }
+
+                ms.Serialize();
+                Db.SaveChanges();
+                vm.Status = KoBaseViewModel.eStatus.Success;
+            }
+            else
+            {
+                vm.Status = KoBaseViewModel.eStatus.Success;
+                vm.Message = "Model validation failed";
+            }
+
             return Json(vm);
         }
-
-
 
     }
 }

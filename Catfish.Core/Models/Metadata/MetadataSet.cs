@@ -33,6 +33,8 @@ namespace Catfish.Core.Models.Metadata
             }
         }
 
+
+
         ////[NotMapped]
         ////public virtual List<MetadataField> Fields
         ////{

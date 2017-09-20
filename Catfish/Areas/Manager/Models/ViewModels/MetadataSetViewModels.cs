@@ -38,11 +38,29 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             TypeLabelAttribute att = Attribute.GetCustomAttribute(src.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
             TypeLabel = att == null ? src.GetType().ToString() : att.Name;
 
+            Name = src.Name;
+            Description = src.Description;
+
             Fields = new List<MetadataFieldViewModel>();
             foreach (var field in src.Fields)
                 Fields.Add(new MetadataFieldViewModel(field));
+        }
 
-            //SelectedFieldTypes = new List<MetadataFieldType>() { FieldTypes[0] };
+        public void UpdateMetadataSet(MetadataSet dst)
+        {
+            dst.Name = Name;
+            dst.Description = Description;
+
+            //Updating fields. 
+            //Note that it is necessary to create a new list of metadata fields
+            //as follows and assign that list to the field list of dst. Simply emptying the field
+            //list of dst and inserting fields into it would not work because such operation will
+            //not utilize the overridden get and set methods.
+            List<MetadataField> fields = new List<MetadataField>();
+            foreach (MetadataFieldViewModel field in this.Fields)
+                fields.Add(field.InstantiateDataModel());
+
+            dst.Fields = fields;
         }
 
         private List<MetadataFieldType> mFieldTypes;
