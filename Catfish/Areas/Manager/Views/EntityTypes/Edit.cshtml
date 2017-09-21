@@ -59,7 +59,7 @@
                             </div>
                         </div>
                         <div class="inner">
-                            @ms.Html.Span(m => m.Name)
+                            @ms.Html.Span(m => m.Name, new { @class = "metadataset-name" })
                         </div>
                     </div>
                 }
@@ -67,8 +67,8 @@
 
             <div id="fields-container">
                 <div class="right">
-                    @ko.Html.DropDownList(m => m.AvailableMetadataSets, new { }, m => m.Name).SelectedOptions(m => m.SelectedMetadataSets)
-                    @ko.Html.Button("Add Metadata Set", "AddMetadataSet", "EntityTypes", new { }, new { }).Enable(m => m.SelectedMetadataSets.Count > 0 && m.SelectedMetadataSets[0].Name != "")
+                    @ko.Html.DropDownList(m => m.AvailableMetadataSets, new { id = "metadataset-selector" }, m => m.Name).SelectedOptions(m => m.SelectedMetadataSets)
+                    @ko.Html.Button("Add Metadata Set", "AddMetadataSet", "EntityTypes", new { }, new { id = "add-field" }).Enable(m => m.SelectedMetadataSets.Count > 0 && m.SelectedMetadataSets[0].Name != "")
                 </div>
             </div>
 

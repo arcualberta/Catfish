@@ -140,47 +140,6 @@ namespace Catfish.Tests
         }
 
         [Test]
-        public void CanCreateMetadatasetWithInputField()
-        {
-
-            this.AddFilledMetadataSet();
-            SelectElement typeSelector = new SelectElement(this.Driver.FindElement(By.CssSelector("#field-type-selector")));
-            IWebElement addFieldButton = this.Driver.FindElement(By.Id("add-field"));
-            IWebElement saveButton = this.Driver.FindElement(By.ClassName("save"));
-
-            typeSelector.SelectByText("Short text");
-            addFieldButton.Click();
-            IWebElement lastFieldElement = this.Driver.FindElement(By.CssSelector(".field-entry:last-child"));
-
-            lastFieldElement.FindElement(By.ClassName("field-name")).SendKeys(TestValues.FieldName);
-            lastFieldElement.FindElement(By.ClassName("field-description")).SendKeys(TestValues.FieldDescription);
-            lastFieldElement.FindElement(By.ClassName("field-is-required")).Click();
-
-            saveButton.Click();
-
-            // Go to see editor view for newly created metadataset
-            IWebElement editButton = this.Driver.FindElement(By.CssSelector(".list tr:last-child td:nth-child(3) a:nth-child(2)"));
-            editButton.Click();
-
-            // Check name and description
-            Assert.AreEqual(TestValues.MetadatasetName, this.Driver.FindElement(By.Id("Name")).GetAttribute("value"));
-            Assert.AreEqual(TestValues.MetadatasetDescription, this.Driver.FindElement(By.Id("Description")).GetAttribute("value"));
-
-            // Check field values    
-            IWebElement fieldEntry = this.Driver.FindElement(By.ClassName("field-entry"));
-            Assert.AreEqual(TestValues.FieldName, fieldEntry.FindElement(By.ClassName("field-name")).GetAttribute("value"));
-            Assert.AreEqual(TestValues.FieldDescription, fieldEntry.FindElement(By.ClassName("field-description")).GetAttribute("value"));
-            Assert.AreEqual(TestValues.FieldRequired, fieldEntry.FindElement(By.ClassName("field-is-required")).Selected);
-        }
-
-        [Test]
-        public void CanCreateMetadasetWithOptionsField()
-        {
-            //XXX Need to have options available to be able to complete this test            
-            Assert.Fail("Options need to be available");
-        }
-
-        [Test]
         public void CanCreateSimpleEntityType()
         {
             this.AddFilledEntityType();
@@ -197,6 +156,7 @@ namespace Catfish.Tests
 
             int metadatsetCount = 2;
             string[] metadatasetNames = new string[metadatsetCount];
+            this.Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
 
             // Need to make sure there are two known metadata sets
             for (int i = 0; i < metadatasetNames.Length; ++i)
@@ -209,15 +169,26 @@ namespace Catfish.Tests
             this.AddFilledEntityType();
 
             // Add two created metadata sets
-            IWebElement addField = this.Driver.FindElement(By.Id("add-field"));
             
-            for (int i = 0; i < metadatasetNames.Length; ++i) {
+
+            //SelectElement typeSelector = new SelectElement(this.Driver.FindElement(By.Id("metadataset-selector")));
+
+            for (int i = 0; i < metadatasetNames.Length; ++i)
+            {
+                SelectElement typeSelector = new SelectElement(this.Driver.FindElement(By.Id("metadataset-selector")));
+                IWebElement addField = this.Driver.FindElement(By.Id("add-field"));
+                typeSelector.SelectByText(metadatasetNames[i]);                
                 addField.Click();
-                SelectElement typeSelector = new SelectElement(this.Driver.FindElement(By.CssSelector(".field-entry:last-child .metadataset-selector")));
-                typeSelector.SelectByText(metadatasetNames[i]);
             }
 
+                //for (int i = 0; i < metadatasetNames.Length; ++i) {
+                //    addField.Click();
+                //    SelectElement typeSelector = new SelectElement(this.Driver.FindElement(By.CssSelector(".field-entry:last-child .metadataset-selector")));
+                //    typeSelector.SelectByText(metadatasetNames[i]);
+                //}
+
             this.Driver.FindElement(By.ClassName("save")).Click();
+            this.Driver.FindElement(By.LinkText("Entity Types")).Click();
             this.Driver.FindElement(By.CssSelector(".list tr:last-child td:nth-child(3) a:nth-child(2)")).Click();
 
             // Check that values were saved
@@ -226,23 +197,36 @@ namespace Catfish.Tests
             Assert.AreEqual(TestValues.EntityTypeDescription, this.Driver.FindElement(By.Id("Description")).GetAttribute("value"));
 
             IReadOnlyCollection<IWebElement> fields = this.Driver.FindElements(By.ClassName("field-entry"));
-                    
 
-            
             if (metadatsetCount == fields.Count)
             {
-                int index = 0;                
+                int index = 0;
                 foreach (IWebElement field in fields)
                 {
-                    SelectElement typeSelector = new SelectElement(field.FindElement(By.ClassName("metadataset-selector")));
-                    Assert.AreEqual(metadatasetNames[index], typeSelector.SelectedOption.Text);
+                    string metadatasetName = field.FindElement(By.ClassName("metadataset-name")).Text;
+                    Assert.AreEqual(metadatasetNames[index], metadatasetName);
                     ++index;
-                }
+                }                   
             } else
             {
-                Assert.Fail("Wrong number of metadataset fields");
+                
+                Assert.Fail("Wrong number of metadataset fields. Expecting "+metadatsetCount+ " and found " + fields.Count + ".");
             }
-            
+
+            //if (metadatsetCount == fields.Count)
+            //{
+            //    int index = 0;                
+            //    foreach (IWebElement field in fields)
+            //    {
+            //        SelectElement typeSelector = new SelectElement(field.FindElement(By.ClassName("metadataset-selector")));
+            //        Assert.AreEqual(metadatasetNames[index], typeSelector.SelectedOption.Text);
+            //        ++index;
+            //    }
+            //} else
+            //{
+            //    Assert.Fail("Wrong number of metadataset fields");
+            //}
+
         }
 
         private void AddFilledEntityType()
