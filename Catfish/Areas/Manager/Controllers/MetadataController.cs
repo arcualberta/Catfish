@@ -68,12 +68,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpPost]
         public JsonResult Move(MetadataSetViewModel vm, int idx, int step)
         {
-            int newIdx = idx + step;
-            if (newIdx < 0)
-                newIdx = 0;
-            if (newIdx >= vm.Fields.Count)
-                newIdx = vm.Fields.Count - 1;
-
+            int newIdx = KoBaseViewModel.GetBoundedArrayIndex(idx + step, vm.Fields.Count);
             if(idx != newIdx)
             {
                 var field = vm.Fields.ElementAt(idx);
@@ -86,7 +81,6 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpPost]
         public JsonResult Save(MetadataSetViewModel vm)
         {
-            bool creating = false;
             if (ModelState.IsValid)
             {
                 MetadataSet ms;
@@ -111,7 +105,6 @@ namespace Catfish.Areas.Manager.Controllers
                     ms = new MetadataSet();
                     vm.UpdateMetadataSet(ms);
                     Db.MetadataSets.Add(ms);
-                    creating = true;
                 }
 
                 ms.Serialize();

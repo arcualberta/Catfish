@@ -46,7 +46,6 @@
                                 @ko.Html.Button("", "Move", "Metadata", new { idx = @field.GetIndex(), step = 1 }, new { @class = "glyphicon glyphicon glyphicon-arrow-down" })
                                 @ko.Html.Button("", "RemoveField", "Metadata", new { idx = @field.GetIndex() }, new { @class = "glyphicon glyphicon-remove" })
                             </div>
-
                         </div>
                         <div class="inner">
                             <ul class="form">
@@ -87,7 +86,6 @@
                     @ko.Html.DropDownList(m => m.FieldTypes, new { }, ft => ft.Label).SelectedOptions(m => m.SelectedFieldTypes)
                     @ko.Html.Button("Add Field", "AddField", "Metadata", new { }, new { }).Enable(m => m.SelectedFieldTypes.Count > 0 && m.SelectedFieldTypes[0].Label != "")
                 </div>
-
             </div>
         </div>
     }

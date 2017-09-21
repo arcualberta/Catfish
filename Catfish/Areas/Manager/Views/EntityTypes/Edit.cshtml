@@ -30,7 +30,7 @@
                     <div class="bs right">
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
-                        @ko.Html.Button("Save", "Save", "Metadata")
+                        @ko.Html.Button("Save", "Save", "EntityTypes")
                     </div>
                 </div>
                 <div class="inner">
@@ -46,10 +46,34 @@
                     </ul>
                 </div>
             </div>
+            <div id="fields-container">
+                @using (var ms = ko.Foreach(m => m.AssociatedMetadataSets))
+                {
+                    <div class="box">
+                        <div class="title">
+                            &nbsp;
+                            <div class="bs right">
+                                @ko.Html.Button("", "Move", "EntityTypes", new { idx = @ms.GetIndex(), step = -1 }, new { @class = "glyphicon glyphicon glyphicon-arrow-up" })
+                                @ko.Html.Button("", "Move", "EntityTypes", new { idx = @ms.GetIndex(), step = 1 }, new { @class = "glyphicon glyphicon glyphicon-arrow-down" })
+                                @ko.Html.Button("", "RemoveMetadataSet", "EntityTypes", new { idx = @ms.GetIndex() }, new { @class = "glyphicon glyphicon-remove" })
+                            </div>
+                        </div>
+                        <div class="inner">
+                            @ms.Html.Span(m => m.Name)
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div id="fields-container">
+                <div class="right">
+                    @ko.Html.DropDownList(m => m.AvailableMetadataSets, new { }, m => m.Name).SelectedOptions(m => m.SelectedMetadataSets)
+                    @ko.Html.Button("Add Metadata Set", "AddMetadataSet", "EntityTypes", new { }, new { }).Enable(m => m.SelectedMetadataSets.Count > 0 && m.SelectedMetadataSets[0].Name != "")
+                </div>
+            </div>
+
 
         </div>
     }
-
 </div>
-
-    @ko.Apply(Model, context)
+@ko.Apply(Model, context)

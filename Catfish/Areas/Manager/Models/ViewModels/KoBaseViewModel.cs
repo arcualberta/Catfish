@@ -16,5 +16,11 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         {
             Message = "";
         }
+
+        public static int GetBoundedArrayIndex(int candidate, int arraySize)
+        {
+            return (candidate < 0) ? 0 :
+                (candidate < arraySize) ? candidate : arraySize - 1;
+        }
     }
 }
