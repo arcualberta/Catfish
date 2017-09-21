@@ -186,7 +186,7 @@ namespace Catfish.Core.Models
                 parent.Add(textEelemnt);
             }
 
-            textEelemnt.Value = val;
+            textEelemnt.Value = val == null ? "" : val;
         }
         /// <summary>
         /// Finds the child element specified by the given tag name and then removes all text elements with

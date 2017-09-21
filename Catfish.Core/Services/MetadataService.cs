@@ -65,7 +65,5 @@ namespace Catfish.Core.Services
             metadataSet.Serialize();
             return metadataSet;
         }
-
-
     }
 }

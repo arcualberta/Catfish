@@ -19,8 +19,6 @@ namespace Catfish.Areas.Manager.Controllers
 {
     public class EntityTypesController : CatfishController
     {
-        //private CatfishDbContext db = new CatfishDbContext();
-
         // GET: Manager/EntityTypes
         public ActionResult Index()
         {
@@ -32,37 +30,60 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Edit(int? id)
         {
             EntityType model = null;
-            if (id.HasValue)
+            if (id.HasValue && id.Value > 0)
             {
-                model = EntityService.GetEntityType(id.Value);
-                /*if (model.MetadataSets.Count > 1)
-                    model.MetadataSets.Remove(model.MetadataSets.Last());*/
+                model = Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
             }
             else
             {
                 model = new EntityType();
-
-                //////TODO:Remove the following testing code
-                ////List<MetadataSet> metadata = MetadataService.GetMetadataSets().ToList();
-                ////int i = 0;
-                ////foreach (var s in metadata)
-                ////{
-                ////    model.MetadataSets.Add(s);
-                ////    if (++i >= 3)
-                ////        break;
-                ////}
             }
 
-            EntityTypeViewModel vm = new EntityTypeViewModel()
-            {
-                EntityType = model,
-                AvailableMetadataSets = MetadataService.GetMetadataSets().ToList()
-            };
-
-            ViewBag.EntityTypeViewModel = vm;
-
-            return View(model);
+            IQueryable<MetadataSet> metadataSets = Db.MetadataSets;
+            EntityTypeViewModel vm = new EntityTypeViewModel(model, metadataSets);
+            return View(vm);
         }
+
+        [HttpPost]
+        public JsonResult AddMetadataSet(EntityTypeViewModel vm)
+        {
+            vm.AssociatedMetadataSets.AddRange(vm.SelectedMetadataSets);
+            vm.SelectedMetadataSets.Clear();
+            return Json(vm);
+        }
+
+        [HttpPost]
+        public JsonResult Move(EntityTypeViewModel vm, int idx, int step)
+        {
+            int newIdx = KoBaseViewModel.GetBoundedArrayIndex(idx + step, vm.AssociatedMetadataSets.Count);
+            if (idx != newIdx)
+            {
+                var ms = vm.AssociatedMetadataSets.ElementAt(idx);
+                vm.AssociatedMetadataSets.RemoveAt(idx);
+                vm.AssociatedMetadataSets.Insert(newIdx, ms);
+            }
+            return Json(vm);
+        }
+
+        [HttpPost]
+        public JsonResult RemoveMetadataSet(EntityTypeViewModel vm, int idx)
+        {
+            vm.AssociatedMetadataSets.RemoveAt(idx);
+            return Json(vm);
+        }
+
+        [HttpPost]
+        public JsonResult Save(MetadataSetViewModel vm)
+        {
+            return Json(vm);
+        }
+
+
+
+
+
+
+
 
         // POST: Manager/EntityTypes/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -88,31 +109,6 @@ namespace Catfish.Areas.Manager.Controllers
             return View(entityType);
         }
 
-        ////// GET: Manager/EntityTypes/Delete/5
-        ////public ActionResult Delete(int? id)
-        ////{
-        ////    if (id == null)
-        ////    {
-        ////        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        ////    }
-        ////    EntityType entityType = db.EntityTypes.Find(id);
-        ////    if (entityType == null)
-        ////    {
-        ////        return HttpNotFound();
-        ////    }
-        ////    return View(entityType);
-        ////}
-
-        ////// POST: Manager/EntityTypes/Delete/5
-        ////[HttpPost, ActionName("Delete")]
-        ////[ValidateAntiForgeryToken]
-        ////public ActionResult DeleteConfirmed(int id)
-        ////{
-        ////    EntityType entityType = db.EntityTypes.Find(id);
-        ////    db.EntityTypes.Remove(entityType);
-        ////    db.SaveChanges();
-        ////    return RedirectToAction("Index");
-        ////}
 
         protected override void Dispose(bool disposing)
         {
@@ -123,40 +119,5 @@ namespace Catfish.Areas.Manager.Controllers
             base.Dispose(disposing);
         }
 
-        //private string GetSerializedMetadataSets()
-        //{
-        //    //var metadataSets = this.MetadataService.
-        //    var metadataSets = MetadataService.GetMetadataSets().ToList();
-        //    //var metadataSetViewModels = metadataSets.Select(ft => new MetadataSetDefinitionViewModel(ft));
-        //    //return new JavaScriptSerializer().Serialize(metadataSets);
-        //    //var test = Json(metadataSets).Data;
-        //    //var test = Json(metadataSets);
-        //    //test.RecursionLimit = 0;
-        //    //return test.ToString();
-
-        //    //var test = new JavaScriptSerializer();
-        //    //test.RecursionLimit = 2;
-        //    ////st.
-        //    ////test.
-
-        //    //return test.Serialize(metadataSets);
-
-        //    //var test = Json(metadataSets);
-        //    //test.Data(metadataSets
-        //    //return test.
-
-        //    //string result = JsonConvert.SerializeObject(metadataSets);
-
-        //    //return result;
-        //    //return metadataSets;
-
-        //    string test = JsonConvert.SerializeObject(metadataSets, Formatting.Indented,
-        //        new JsonSerializerSettings {
-        //            PreserveReferencesHandling = PreserveReferencesHandling.Objects
-        //        });
-
-        //    return test;
-
-        //}
     }
 }

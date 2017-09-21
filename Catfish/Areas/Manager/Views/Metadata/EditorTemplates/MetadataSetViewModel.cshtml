@@ -1,28 +1,10 @@
-﻿@*@model Catfish.Core.Models.Metadata.MetadataSet*@
-@model Catfish.Areas.Manager.Models.ViewModels.MetadataSetViewModel
+﻿@model Catfish.Areas.Manager.Models.ViewModels.MetadataSetViewModel
 @using PerpetuumSoft.Knockout
 @using Catfish.Areas.Manager.Models.ViewModels
 
-@{  ViewBag.Title = ViewBag.Id > 0 ? "Edit Metadata Set Definition" : "Create Metadata Set Definition"; }
-
-@section HEAD
-{
-    <script type="text/javascript" src="~/Scripts/knockout-3.1.0.js"></script>
-    <script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
-    <script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
-}
-
-@section Toolbar {
-    @Html.Partial("Partial/koEditToolbar")
-}
-
-@*@{ var viewModel = new MetadataSetViewModel(Model); }
-@Html.EditorFor(m => viewModel, "MetadataSetViewModel")*@
-
-
-@{
+@{ 
     var context = "ctx_" + Guid.NewGuid().ToString("N");
-    var ko = Html.CreateKnockoutContext(context);
+    var ko = Html.CreateKnockoutContext(context); 
 }
 
 <div id="@context">

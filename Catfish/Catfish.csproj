@@ -204,6 +204,8 @@
     <Content Include="Content\bs-bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Areas\Manager\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\CheckOption.cshtml" />
+    <Content Include="Areas\Manager\Views\Metadata\EditorTemplates\MetadataSetViewModel.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\Partial\koEditToolbar.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
@@ -237,8 +239,9 @@
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityAssociationViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityTypeViewModel.cs" />
-    <Compile Include="Areas\Manager\Models\ViewModels\FieldDefinitionViewModel.cs" />
-    <Compile Include="Areas\Manager\Models\ViewModels\MetadataFieldMappingViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\KoBaseViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\MetadataSetViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\MetadataFieldViewModel.cs" />
     <Compile Include="Controllers\PageController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Global.asax.cs">
