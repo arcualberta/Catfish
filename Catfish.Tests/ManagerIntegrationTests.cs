@@ -7,6 +7,7 @@ using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Interactions.Internal;
 using System.Collections.Generic;
+using System;
 
 namespace Catfish.Tests
 {
@@ -19,7 +20,7 @@ namespace Catfish.Tests
         public static string EntityTypeDescription = "Entity Type Description";
         public static string FieldName = "Field Name";
         public static string FieldDescription = "Field Description";
-        public static string FieldOptions = "Option 1\nOption 2\nOption 3";
+        public static string FieldOptions = "Option 1\r\nOption 2\r\nOption 3";
         public static bool FieldRequired = true;
         public static string PostfixEdit = " Edit";
     }
@@ -41,7 +42,7 @@ namespace Catfish.Tests
         [TearDown]
         public void TearDown()
         {
-           this.Driver.Close();
+            this.Driver.Close();
         }
 
         [Test]
@@ -56,7 +57,8 @@ namespace Catfish.Tests
         {
             this.AddFilledMetadataSet();
             this.Driver.FindElement(By.ClassName("save")).Click();
-           
+            this.Driver.FindElement(By.LinkText("Metadata Sets")).Click();
+
             Assert.AreEqual(this.GetLastNameFromList(), TestValues.MetadatasetName);
             Assert.AreEqual(this.GetLastDescriptionFromList(), TestValues.MetadatasetDescription);
             
@@ -66,13 +68,14 @@ namespace Catfish.Tests
         public void CanCreateCompleteMetadataset()
         {
             this.AddFilledMetadataSet();
-            
+            this.Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+
             SelectElement typeSelector = new SelectElement(this.Driver.FindElement(By.CssSelector("#field-type-selector")));
             IWebElement addFieldButton = this.Driver.FindElement(By.Id("add-field"));
             IWebElement saveButton = this.Driver.FindElement(By.ClassName("save"));
-
-            // Add all fields and enter data
-            for (int i = 0; i < typeSelector.Options.Count; i++)
+            int optionsCount = typeSelector.Options.Count;
+            // Ignore first empty option. Add all fields and enter data 
+            for (int i = 1; i < optionsCount; i++)
             {
 
                 IWebElement option = typeSelector.Options[i];
@@ -81,11 +84,15 @@ namespace Catfish.Tests
 
                 IWebElement lastFieldElement = this.Driver.FindElement(By.CssSelector(".field-entry:last-child"));
 
-                lastFieldElement.FindElement(By.ClassName("field-name")).SendKeys(TestValues.FieldName + " " + i);
-                lastFieldElement.FindElement(By.ClassName("field-description")).SendKeys(TestValues.FieldDescription + " " + i);
+                lastFieldElement.FindElement(By.ClassName("field-name")).SendKeys(TestValues.FieldName + i);
+                lastFieldElement.FindElement(By.ClassName("field-description")).SendKeys(TestValues.FieldDescription + i);
 
                 //XXX Check for options field
-
+                if (lastFieldElement.FindElement(By.ClassName("field-options")).Displayed)
+                {
+                    lastFieldElement.FindElement(By.ClassName("field-options")).SendKeys(TestValues.FieldOptions + i);
+                }
+                
                 lastFieldElement.FindElement(By.ClassName("field-is-required")).Click();
              
             }
@@ -93,14 +100,43 @@ namespace Catfish.Tests
             IJavaScriptExecutor js = (IJavaScriptExecutor)this.Driver;
             js.ExecuteScript("arguments[0].scrollIntoView(false)", saveButton);
             saveButton.Click();
+            this.Driver.FindElement(By.LinkText("Metadata Sets")).Click();
 
             // Go to see editor view for newly created metadataset
             IWebElement editButton = this.Driver.FindElement(By.CssSelector(".list tr:last-child td:nth-child(3) a:nth-child(2)"));
+            js.ExecuteScript("arguments[0].scrollIntoView(false)", editButton);
+
             editButton.Click();
 
             //XXX need to come back to this test once options are working
-            Assert.Fail("Options need to be available");
 
+            Assert.AreEqual(this.Driver.FindElement(By.Id("Name")).GetAttribute("value"), TestValues.MetadatasetName);
+            Assert.AreEqual(this.Driver.FindElement(By.Id("Description")).GetAttribute("value"), TestValues.MetadatasetDescription);
+
+            // Check all field values
+
+            IReadOnlyCollection<IWebElement> fields = this.Driver.FindElements(By.ClassName("field-entry"));
+
+            
+            // need to take into account and ignore the first empty option
+            if (optionsCount - 1 == fields.Count)
+            {
+               int index = 1;
+                foreach ( IWebElement fieldEntry in fields )
+                {
+                    Assert.AreEqual(TestValues.FieldName + index, fieldEntry.FindElement(By.ClassName("field-name")).GetAttribute("value"));
+                    Assert.AreEqual(TestValues.FieldDescription + index, fieldEntry.FindElement(By.ClassName("field-description")).GetAttribute("value"));
+                    if (fieldEntry.FindElement(By.ClassName("field-options")).Displayed)
+                    {
+                        Assert.AreEqual(TestValues.FieldOptions + index, fieldEntry.FindElement(By.ClassName("field-options")).GetAttribute("value"));
+                    }
+                    Assert.AreEqual(TestValues.FieldRequired, fieldEntry.FindElement(By.ClassName("field-is-required")).Selected);
+                    ++index;
+                }
+            } else
+            {
+                Assert.Fail("Wrong number of metadataset fields");
+            }
         }
 
         [Test]

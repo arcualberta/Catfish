@@ -35,18 +35,18 @@
                     <div class="bs right">
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
-                        @ko.Html.Button("Save", "Save", "Metadata")
+                        @ko.Html.Button("Save", "Save", "Metadata", new { }, new { @class = "save" } )
                     </div>
                 </div>
                 <div class="inner">
                     <ul class="form form-custom">
                         <li>
                             <label class="control-label col-md-2">Name</label>
-                            <div class="input">@ko.Html.TextBox(m => m.Name)</div>
+                            <div class="input">@ko.Html.TextBox(m => m.Name, new { @id = "Name"})</div>
                         </li>
                         <li>
                             <label class="control-label col-md-2">Description</label>
-                            <div class="input">@ko.Html.TextArea(m => m.Description)</div>
+                            <div class="input">@ko.Html.TextArea(m => m.Description, new { @id = "Description" })</div>
                         </li>
                     </ul>
                 </div>
@@ -55,7 +55,7 @@
             <div id="fields-container">
                 @using (var field = ko.Foreach(m => m.Fields))
                 {
-                    <div class="box">
+                    <div class="box field-entry">
                         <div class="title">
                             @field.Html.Span(f => f.TypeLabel)
                             <div class="bs right">
@@ -70,13 +70,13 @@
                                 <li>
                                     <label class="control-label col-md-2">Name</label>
                                     <div class="input">
-                                        @field.Html.TextBox(f => f.Name)
+                                        @field.Html.TextBox(f => f.Name, new { @class = "field-name"})
                                     </div>
                                 </li>
                                 <li>
                                     <label class="control-label col-md-2">Description</label>
                                     <div class="input">
-                                        @field.Html.TextArea(f => f.Description)
+                                        @field.Html.TextArea(f => f.Description, new { @class = "field-description" })
                                     </div>
                                 </li>
                                 <li @field.Bind.Visible(m => m.IsOptionField)>
@@ -85,13 +85,13 @@
                                         <span>Please define options, one per line below</span>
                                     </div>
                                     <div class="input">
-                                        @field.Html.TextArea(f => f.Options)
+                                        @field.Html.TextArea(f => f.Options, new { @class = "field-options" })
                                     </div>
                                 </li>
                                 <li>
                                     <label class="control-label col-md-2">Required</label>
                                     <div class="input">
-                                        @field.Html.CheckBox(f => f.IsRequired)
+                                        @field.Html.CheckBox(f => f.IsRequired, new { @class = "field-is-required" })
                                     </div>
                                 </li>
                             </ul>
@@ -101,8 +101,8 @@
             </div>
             <div id="fields-container">
                 <div class="right">
-                    @ko.Html.DropDownList(m => m.FieldTypes, new { }, ft => ft.Label).SelectedOptions(m => m.SelectedFieldTypes)
-                    @ko.Html.Button("Add Field", "AddField", "Metadata", new { }, new { }).Enable(m => m.SelectedFieldTypes.Count > 0 && m.SelectedFieldTypes[0].Label != "")
+                    @ko.Html.DropDownList(m => m.FieldTypes, new { id = "field-type-selector" }, ft => ft.Label).SelectedOptions(m => m.SelectedFieldTypes)
+                    @ko.Html.Button("Add Field", "AddField", "Metadata", new { }, new { id = "add-field" }).Enable(m => m.SelectedFieldTypes.Count > 0 && m.SelectedFieldTypes[0].Label != "")
                 </div>
             </div>
         </div>
