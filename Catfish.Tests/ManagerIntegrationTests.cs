@@ -41,7 +41,7 @@ namespace Catfish.Tests
         [TearDown]
         public void TearDown()
         {
-            this.Driver.Close();
+           // this.Driver.Close();
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace Catfish.Tests
             editButton.Click();
 
             //XXX need to come back to this test once options are working
-            Assert.AreEqual(true, false);
+            Assert.Fail("Options need to be available");
 
         }
 
@@ -142,27 +142,91 @@ namespace Catfish.Tests
         [Test]
         public void CanCreateMetadasetWithOptionsField()
         {
-            Assert.AreEqual(true, false);
+            //XXX Need to have options available to be able to complete this test            
+            Assert.Fail("Options need to be available");
         }
 
         [Test]
         public void CanCreateSimpleEntityType()
         {
-            this.Driver.FindElement(By.LinkText("Metadata Sets")).Click();
-            this.Driver.FindElement(By.ClassName("add")).Click();
-            this.AddNameDescription(TestValues.EntityTypeName, TestValues.EntityTypeDescription)
-                ;
+            this.AddFilledEntityType();
             this.Driver.FindElement(By.ClassName("save")).Click();
 
             Assert.AreEqual(this.GetLastNameFromList(), TestValues.EntityTypeName);
             Assert.AreEqual(this.GetLastDescriptionFromList(), TestValues.EntityTypeDescription);
         }
 
+        [Test]
+        public void CanCreateEntityTypeWithFields()
+        {
+
+            int metadatsetCount = 2;
+            string[] metadatasetNames = new string[metadatsetCount];
+
+            // Need to make sure there are two known metadata sets
+            for (int i = 0; i < metadatasetNames.Length; ++i)
+            {
+                metadatasetNames[i] = TestValues.EntityTypeName + i;
+                this.AddFilledMetadataSet(metadatasetNames[i]);
+                this.Driver.FindElement(By.ClassName("save")).Click();
+            }
+
+            this.AddFilledEntityType();
+
+            // Add two created metadata sets
+            IWebElement addField = this.Driver.FindElement(By.Id("add-field"));
+            
+            for (int i = 0; i < metadatasetNames.Length; ++i) {
+                addField.Click();
+                //SelectElement typeSelector = new SelectElement(this.Driver.FindElement(By.CssSelector(".metadataset-selector:last-child")));
+                //SelectElement typeSelector = new SelectElement(this.Driver.FindElement(By.CssSelector(".metadataset-selector")));
+                //SelectElement typeSelector = new SelectElement(this.Driver.FindElement(By.CssSelector(".metadataset-selector"))); 
+                SelectElement typeSelector = new SelectElement(this.Driver.FindElement(By.CssSelector(".field-entry:last-child .metadataset-selector")));
+                typeSelector.SelectByText(metadatasetNames[i]);
+            }
+
+            this.Driver.FindElement(By.ClassName("save")).Click();
+            this.Driver.FindElement(By.CssSelector(".list tr:last-child td:nth-child(3) a:nth-child(2)")).Click();
+
+            // Check that values were saved
+
+            Assert.AreEqual(TestValues.EntityTypeName, this.Driver.FindElement(By.Id("Name")).GetAttribute("value"));
+            Assert.AreEqual(TestValues.EntityTypeDescription, this.Driver.FindElement(By.Id("Description")).GetAttribute("value"));
+
+            IEnumerable<IWebElement> fields = this.Driver.FindElements(By.ClassName("field-entry"));
+            int index = 0;
+            foreach (IWebElement field in fields)
+            {
+                //Assert.AreEqual(metadatasetNames[index], field.GetAttribute("value"));
+
+                SelectElement typeSelector = new SelectElement(field.FindElement(By.ClassName("metadataset-selector")));
+                Assert.AreEqual(metadatasetNames[index], typeSelector.SelectedOption.Text);
+                //typeSelector.First
+                //typeSelector
+                //IWebElement typeSelector = field.FindElement(By.ClassName("metadataset-selector"));
+                //Assert.AreEqual(metadatasetNames[index], typeSelector.GetAttribute("value"));
+                ++index;
+            }
+        }
+
+        private void AddFilledEntityType()
+        {
+            this.Driver.FindElement(By.LinkText("Entity Types")).Click();
+            this.Driver.FindElement(By.ClassName("add")).Click();
+            this.AddNameDescription(TestValues.EntityTypeName, TestValues.EntityTypeDescription);
+        }
+
         private void AddFilledMetadataSet()
+        {
+            this.AddFilledMetadataSet(TestValues.MetadatasetName, TestValues.MetadatasetDescription);
+        }
+
+
+        private void AddFilledMetadataSet(string name = "Name", string description = "Description")
         {
             this.Driver.FindElement(By.LinkText("Metadata Sets")).Click();
             this.Driver.FindElement(By.ClassName("add")).Click();
-            this.AddNameDescription(TestValues.MetadatasetName, TestValues.MetadatasetDescription);
+            this.AddNameDescription(name, description);
         }
 
         private string GetLastNameFromList()
@@ -179,7 +243,7 @@ namespace Catfish.Tests
             return descriptionElement.Text;
         }
 
-        private void AddNameDescription(string name, string description)
+        private void AddNameDescription(string name = "", string description = "")
         {
             this.Driver.FindElement(By.Id("Name")).SendKeys(name);
             this.Driver.FindElement(By.Id("Description")).SendKeys(description);            
