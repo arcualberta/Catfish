@@ -30,18 +30,18 @@
                     <div class="bs right">
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
-                        @ko.Html.Button("Save", "Save", "EntityTypes")
+                        @ko.Html.Button("Save", "Save", "EntityTypes", new { }, new { @class = "save" })
                     </div>
                 </div>
                 <div class="inner">
                     <ul class="form form-custom">
                         <li>
                             <label class="control-label col-md-2">Name</label>
-                            <div class="input">@ko.Html.TextBox(m => m.Name)</div>
+                            <div class="input">@ko.Html.TextBox(m => m.Name, new { id = "Name" })</div>
                         </li>
                         <li>
                             <label class="control-label col-md-2">Description</label>
-                            <div class="input">@ko.Html.TextArea(m => m.Description)</div>
+                            <div class="input">@ko.Html.TextArea(m => m.Description, new { id = "Description" })</div>
                         </li>
                     </ul>
                 </div>

@@ -185,6 +185,7 @@ namespace Catfish.Tests
         {
             this.AddFilledEntityType();
             this.Driver.FindElement(By.ClassName("save")).Click();
+            this.Driver.FindElement(By.LinkText("Entity Types")).Click();
 
             Assert.AreEqual(this.GetLastNameFromList(), TestValues.EntityTypeName);
             Assert.AreEqual(this.GetLastDescriptionFromList(), TestValues.EntityTypeDescription);
