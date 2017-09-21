@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Attributes;
+﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Attributes;
 using Catfish.Core.Models.Metadata;
 using System;
 using System.Collections.Generic;
@@ -65,5 +66,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
             return optList;
         }
+
+        public override void UpdateDataModel(object dataModel, CatfishDbContext db) { }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Attributes;
 using Catfish.Core.Models.Metadata;
+using Catfish.Core.Services;
 using Catfish.Models;
 using System;
 using System.Collections.Generic;
@@ -27,12 +28,21 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             AssociatedMetadataSets = new List<MetadataSetListItem>();
             SelectedMetadataSets = new List<MetadataSetListItem>();
         }
-        public EntityTypeViewModel(EntityType src, IQueryable<MetadataSet> metadataSets)
+ 
+        public void UpdateViewModel(object dataModel, CatfishDbContext db)
         {
-            TypeLabelAttribute att = Attribute.GetCustomAttribute(src.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
-            TypeLabel = att == null ? src.GetType().ToString() : att.Name;
+            EntityType model = dataModel as EntityType;
 
-            AvailableMetadataSets = new List<MetadataSetListItem>();
+            Id = model.Id;
+            Name = model.Name;
+            Description = model.Description;
+
+            TypeLabelAttribute att = Attribute.GetCustomAttribute(model.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
+            TypeLabel = att == null ? model.GetType().ToString() : att.Name;
+
+            //populating the available metadata sets array
+            MetadataService srv = new MetadataService(db);
+            var metadataSets = srv.GetMetadataSets();
             AvailableMetadataSets.Add(new MetadataSetListItem(0, ""));
             foreach (var ms in metadataSets)
             {
@@ -40,8 +50,37 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                     AvailableMetadataSets.Add(new MetadataSetListItem(ms.Id, ms.Name));
             }
 
-            AssociatedMetadataSets = new List<MetadataSetListItem>();
-            SelectedMetadataSets = new List<MetadataSetListItem>();
+            //populating the associated metadata sets array
+            foreach (var ms in model.MetadataSets)
+                AssociatedMetadataSets.Add(new MetadataSetListItem(ms.Id, ms.Name));
+        }
+
+        public override void UpdateDataModel(object dataModel, CatfishDbContext db)
+        {
+            EntityType model = dataModel as EntityType;
+
+            model.Name = Name;
+            model.Description = Description;
+
+            List<int> dataModelMetadataSetIds = model.MetadataSets.Select(m => m.Id).ToList();
+            List<int> viewModelMetadataSetIds = AssociatedMetadataSets.Select(m => m.Id).ToList();
+
+            //Removing metadata sets that are already associated with the data model but not with the view model
+            foreach (int id in dataModelMetadataSetIds)
+            {
+                if (!viewModelMetadataSetIds.Contains(id))
+                    model.MetadataSets.Remove(model.MetadataSets.Where(m => m.Id == id).FirstOrDefault());
+            }
+
+            //Adding metadata sets that are in the view model but not in the data model to the data model.
+            foreach(int id in viewModelMetadataSetIds)
+            {
+                if(!dataModelMetadataSetIds.Contains(id))
+                {
+                    MetadataSet ms = db.MetadataSets.Where(s => s.Id == id).FirstOrDefault();
+                    model.MetadataSets.Add(ms);
+                }
+            }
         }
     }
 

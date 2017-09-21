@@ -84,40 +84,40 @@ namespace Catfish.Areas.Manager.Controllers
         {
             if (ModelState.IsValid)
             {
-                MetadataSet ms;
+                MetadataSet model;
 
                 if (vm.Id > 0)
                 {
-                    ms = Db.MetadataSets.Where(x => x.Id == vm.Id).FirstOrDefault();
-                    if (ms == null)
-                    {
-                        vm.Status = KoBaseViewModel.eStatus.Error;
-                        vm.Message = "Specified metadata set not found";
-                        return Json(vm);
-                    }
+                    model = Db.MetadataSets.Where(x => x.Id == vm.Id).FirstOrDefault();
+                    if (model == null)
+                        return Json(vm.Error("Specified metadata set not found"));
                     else
                     {
-                        vm.UpdateMetadataSet(ms);
-                        Db.Entry(ms).State = System.Data.Entity.EntityState.Modified;
+                        vm.UpdateDataModel(model, Db);
+                        Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     }
                 }
                 else
                 {
-                    ms = new MetadataSet();
-                    vm.UpdateMetadataSet(ms);
-                    Db.MetadataSets.Add(ms);
+                    model = new MetadataSet();
+                    vm.UpdateDataModel(model, Db);
+                    Db.MetadataSets.Add(model);
                 }
 
-                ms.Serialize();
+                model.Serialize();
                 Db.SaveChanges();
-                vm.Id = ms.Id;
                 vm.Status = KoBaseViewModel.eStatus.Success;
+
+                if (vm.Id == 0)
+                {
+                    //This is a newly created object, so we ask knockout MVC to redirect it to the edit page
+                    //so that the ID is added to the URL.
+                    vm.redirect = true;
+                    vm.url = Url.Action("Edit", "Metadata", new { id = model.Id });
+                }
             }
             else
-            {
-                vm.Status = KoBaseViewModel.eStatus.Success;
-                vm.Message = "Model validation failed";
-            }
+                return Json(vm.Error("Model validation failed"));
 
             return Json(vm);
         }

@@ -39,8 +39,8 @@ namespace Catfish.Areas.Manager.Controllers
                 model = new EntityType();
             }
 
-            IQueryable<MetadataSet> metadataSets = Db.MetadataSets;
-            EntityTypeViewModel vm = new EntityTypeViewModel(model, metadataSets);
+            EntityTypeViewModel vm = new EntityTypeViewModel();
+            vm.UpdateViewModel(model, Db);
             return View(vm);
         }
 
@@ -73,8 +73,43 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
-        public JsonResult Save(MetadataSetViewModel vm)
+        public JsonResult Save(EntityTypeViewModel vm)
         {
+            if (ModelState.IsValid)
+            {
+                EntityType model;
+                if (vm.Id > 0)
+                {
+                    model = Db.EntityTypes.Where(x => x.Id == vm.Id).FirstOrDefault();
+                    if (model == null)
+                        return Json(vm.Error("Specified entity type not found"));
+                    else
+                    {
+                        vm.UpdateDataModel(model, Db);
+                        Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
+                    }
+                }
+                else
+                {
+                    model = new EntityType();
+                    vm.UpdateDataModel(model, Db);
+                    Db.EntityTypes.Add(model);
+                }
+
+                Db.SaveChanges();
+                vm.Status = KoBaseViewModel.eStatus.Success;
+
+                if (vm.Id == 0)
+                {
+                    //This is a newly created object, so we ask knockout MVC to redirect it to the edit page
+                    //so that the ID is added to the URL.
+                    vm.redirect = true;
+                    vm.url = Url.Action("Edit", "EntityTypes", new { id = model.Id });
+                }
+            }
+            else
+                return Json(vm.Error("Model validation failed"));
+
             return Json(vm);
         }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using Catfish.Core.Models.Metadata;
 using Catfish.Core.Models.Attributes;
+using Catfish.Core.Models;
 
 namespace Catfish.Areas.Manager.Models.ViewModels
 {
@@ -37,8 +38,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 Fields.Add(new MetadataFieldViewModel(field));
         }
 
-        public void UpdateMetadataSet(MetadataSet dst)
+        public override void UpdateDataModel(object dataModel, CatfishDbContext db)
         {
+            MetadataSet dst = dataModel as MetadataSet;
             dst.Name = Name;
             dst.Description = Description;
 
