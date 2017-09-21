@@ -38,7 +38,8 @@ namespace Catfish.Areas.Manager.Controllers
             else
                 model = new MetadataSet();
 
-            return View(model);
+            var viewModel = new MetadataSetViewModel(model);
+            return View(viewModel);
         }
 
 
