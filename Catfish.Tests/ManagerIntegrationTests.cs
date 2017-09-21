@@ -41,7 +41,7 @@ namespace Catfish.Tests
         [TearDown]
         public void TearDown()
         {
-           // this.Driver.Close();
+           this.Driver.Close();
         }
 
         [Test]
