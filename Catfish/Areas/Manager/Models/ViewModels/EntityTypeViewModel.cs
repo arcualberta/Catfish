@@ -17,16 +17,22 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string Name { get; set; }
         public string Description { get; set; }
         public List<MetadataSetListItem> AvailableMetadataSets { get; set; }
-        public List<MetadataSetListItem> SelectedMetadataSets { get; set; }
+        public MetadataSetListItem SelectedMetadataSets { get; set; }
         public List<MetadataSetListItem> AssociatedMetadataSets { get; set; }
-        //public MetadataFieldMapping NameMapping { get; set; }
-        //public MetadataFieldMapping DescriptionMapping { get; set; }
+
+        public MetadataFieldMapping NameMapping { get; set; }
+        public MetadataSetListItem SelectedNameMappingMetadataSet { get; set; }
+
+        public MetadataFieldMapping DescriptionMapping { get; set; }
+        public MetadataSetListItem SelectedDescriptionMappingMetadataSet { get; set; }
 
         public EntityTypeViewModel()
         {
             AvailableMetadataSets = new List<MetadataSetListItem>();
             AssociatedMetadataSets = new List<MetadataSetListItem>();
-            SelectedMetadataSets = new List<MetadataSetListItem>();
+            SelectedMetadataSets = null;
+            NameMapping = new MetadataFieldMapping();
+            DescriptionMapping = new MetadataFieldMapping();
         }
  
         public void UpdateViewModel(object dataModel, CatfishDbContext db)
@@ -91,7 +97,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public MetadataSetListItem()
         {
-
+            Id = 0;
+            Name = "";
         }
 
         public MetadataSetListItem(int id, string name)
@@ -105,9 +112,15 @@ namespace Catfish.Areas.Manager.Models.ViewModels
     {
         public int MetadataSetId { get; set; }
 
-        public string MetadataSetName { get; set; }
+        public string MetadataSet{ get; set; }
 
-        public int FieldName { get; set; }
+        public string Field { get; set; }
+
+        public MetadataFieldMapping()
+        {
+            MetadataSet = "Not specified";
+            Field = "Not specified";
+        }
     }
 
 }

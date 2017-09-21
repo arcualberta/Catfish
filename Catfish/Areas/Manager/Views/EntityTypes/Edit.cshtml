@@ -26,7 +26,7 @@
         <div class="grid_12">
             <div class="box">
                 <div class="title">
-                    <h2>@Model.TypeLabel</h2>
+                    Basic Information
                     <div class="bs right">
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
@@ -46,13 +46,20 @@
                     </ul>
                 </div>
             </div>
+
             <div id="fields-container">
-                @using (var ms = ko.Foreach(m => m.AssociatedMetadataSets))
-                {
-                    <div class="box">
-                        <div class="title">
-                            &nbsp;
-                            <div class="bs right">
+                <div class="box">
+                    <div class="title">
+                        Metadata Sets
+                        <div class="right">
+                            @ko.Html.DropDownList(m => m.AvailableMetadataSets, new { }, m => m.Name).Value(m => m.SelectedMetadataSets)
+                            @ko.Html.Button("Add Metadata Set", "AddMetadataSet", "EntityTypes", new { }, new { }).Enable(m => m.SelectedMetadataSets != null && m.SelectedMetadataSets.Name != null)
+                        </div>
+                    </div>
+                    @using (var ms = ko.Foreach(m => m.AssociatedMetadataSets))
+                    {
+                        <div class="bs">
+                            <div class="right slip-button-panel">
                                 @ko.Html.Button("", "Move", "EntityTypes", new { idx = @ms.GetIndex(), step = -1 }, new { @class = "glyphicon glyphicon glyphicon-arrow-up" })
                                 @ko.Html.Button("", "Move", "EntityTypes", new { idx = @ms.GetIndex(), step = 1 }, new { @class = "glyphicon glyphicon glyphicon-arrow-down" })
                                 @ko.Html.Button("", "RemoveMetadataSet", "EntityTypes", new { idx = @ms.GetIndex() }, new { @class = "glyphicon glyphicon-remove" })
@@ -61,16 +68,90 @@
                         <div class="inner">
                             @ms.Html.Span(m => m.Name)
                         </div>
-                    </div>
-                }
+                    }
+              </div>
             </div>
 
-            <div id="fields-container">
-                <div class="right">
-                    @ko.Html.DropDownList(m => m.AvailableMetadataSets, new { }, m => m.Name).SelectedOptions(m => m.SelectedMetadataSets)
-                    @ko.Html.Button("Add Metadata Set", "AddMetadataSet", "EntityTypes", new { }, new { }).Enable(m => m.SelectedMetadataSets.Count > 0 && m.SelectedMetadataSets[0].Name != "")
+            @*<div id="fields-container">
+                <div class="box">
+                    <div class="title">
+                        Field Mappings
+                    </div>
+                    <div class="inner">
+                        <div id="fields-container">
+                            <div class="box">
+                                <div class="title">
+                                    Name Mapping
+                                    <div class="right">
+                                        @ko.Html.DropDownList(m => m.AssociatedMetadataSets, new { }, m => m.Name).Value(m => m.SelectedNameMappingMetadataSet)
+                                        @ko.Html.Button("Update", "UpdateMapping", "EntityTypes", new { }, new { }).Enable(m => m.SelectedNameMappingMetadataSet != null && m.SelectedNameMappingMetadataSet.Name != "")
+                                    </div>
+                                </div>
+                                <div class="bs">
+                                    <div class="inner">
+                                        <ul class="form form-custom">
+                                            <li>
+                                                <label class="control-label col-md-2">Metadata Set</label>
+                                                <div class="input">
+                                                    @using (var mapping = ko.With(m => m.NameMapping))
+                                                    {
+                                                        @ko.Html.Span(m => mapping.Model.MetadataSet)
+                                                    }
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <label class="control-label col-md-2">Field</label>
+                                                <div class="input">
+                                                    @using (var mapping = ko.With(m => m.NameMapping))
+                                                    {
+                                                        @ko.Html.Span(m => mapping.Model.Field)
+                                                    }
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="fields-container">
+                            <div class="box">
+                                <div class="title">
+                                    Description Mapping
+                                    <div class="right">
+                                        @ko.Html.DropDownList(m => m.AssociatedMetadataSets, new { }, m => m.Name).Value(m => m.SelectedDescriptionMappingMetadataSet)
+                                        @ko.Html.Button("Update", "UpdateMapping", "EntityTypes", new { }, new { }).Enable(m => m.SelectedDescriptionMappingMetadataSet != null && m.SelectedDescriptionMappingMetadataSet.Name != "")
+                                    </div>
+                                </div>
+                                <div class="bs">
+                                    <div class="inner">
+                                        <ul class="form form-custom">
+                                            <li>
+                                                <label class="control-label col-md-2">Metadata Set</label>
+                                                <div class="input">
+                                                    @using (var mapping = ko.With(m => m.NameMapping))
+                                                    {
+                                                        @ko.Html.Span(m => mapping.Model.MetadataSet)
+                                                    }
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <label class="control-label col-md-2">Field</label>
+                                                <div class="input">
+                                                    @using (var mapping = ko.With(m => m.NameMapping))
+                                                    {
+                                                        @ko.Html.Span(m => mapping.Model.Field)
+                                                    }
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
+            </div>*@
 
 
         </div>
