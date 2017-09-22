@@ -19,6 +19,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public List<MetadataSetListItem> AvailableMetadataSets { get; set; }
         public MetadataSetListItem SelectedMetadataSets { get; set; }
         public List<MetadataSetListItem> AssociatedMetadataSets { get; set; }
+        public List<MetadataSetListItem> MetadataSetMappingSrc { get; set; }
 
         public MetadataFieldMapping NameMapping { get; set; }
         public MetadataSetListItem SelectedNameMappingMetadataSet { get; set; }
@@ -59,6 +60,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             //populating the associated metadata sets array
             foreach (var ms in model.MetadataSets)
                 AssociatedMetadataSets.Add(new MetadataSetListItem(ms.Id, ms.Name));
+
+            MetadataSetMappingSrc = new List<MetadataSetListItem>() { new MetadataSetListItem() };
+            MetadataSetMappingSrc.AddRange(AssociatedMetadataSets);
         }
 
         public override void UpdateDataModel(object dataModel, CatfishDbContext db)

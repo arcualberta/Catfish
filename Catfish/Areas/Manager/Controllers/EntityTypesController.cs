@@ -48,6 +48,7 @@ namespace Catfish.Areas.Manager.Controllers
         public JsonResult AddMetadataSet(EntityTypeViewModel vm)
         {
             vm.AssociatedMetadataSets.Add(vm.SelectedMetadataSets);
+            vm.MetadataSetMappingSrc.Add(vm.SelectedMetadataSets);
             vm.SelectedMetadataSets = new MetadataSetListItem();
             return Json(vm);
         }
