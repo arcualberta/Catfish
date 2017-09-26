@@ -99,6 +99,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                     model.MetadataSets.Add(ms);
                 }
             }
+
+            //updating name and description mappings
+
         }
     }
 
