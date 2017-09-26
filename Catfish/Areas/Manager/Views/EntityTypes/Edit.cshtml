@@ -116,6 +116,45 @@
                             </div>
                         </div>
                     </div>
+                    <div class="inner">
+                        <div class="box">
+                            <div class="title">
+                                Description Mapping
+                            </div>
+                            <div class="bs">
+                                <div class="inner">
+                                    <ul class="form form-custom">
+                                        <li>
+                                            <label class="control-label col-md-2">Metadata Set</label>
+                                            <div class="right">
+                                                @ko.Html.DropDownList(m => m.MetadataSetMappingSrc, new { }, m => m.Name).Value(m => m.SelectedDescriptionMappingMetadataSet)
+                                                @ko.Html.Button("Update", "UpdateMappingMetadataSet", "EntityTypes", new { type = EntityTypeViewModel.eMappingType.DescriptionMapping }, new { }).Enable(m => m.SelectedDescriptionMappingMetadataSet != null && m.SelectedDescriptionMappingMetadataSet.Name != null && m.SelectedDescriptionMappingMetadataSet.Name != "")
+                                            </div>
+                                            <div class="input">
+                                                @using (var mapping = ko.With(m => m.DescriptionMapping))
+                                                {
+                                                    @ko.Html.Span(m => mapping.Model.MetadataSet)
+                                                }
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <label class="control-label col-md-2">Field</label>
+                                            <div class="right">
+                                                @ko.Html.DropDownList(m => m.SelectedDescriptionMappingFieldSrc, new { }, m => m).Value(m => m.SelectedDescriptionMappingField)
+                                                @ko.Html.Button("Update", "UpdateMappingField", "EntityTypes", new { type = EntityTypeViewModel.eMappingType.DescriptionMapping }, new { }).Enable(m => m.SelectedDescriptionMappingField != null && m.SelectedDescriptionMappingField != "")
+                                            </div>
+                                            <div class="input">
+                                                @using (var mapping = ko.With(m => m.DescriptionMapping))
+                                                {
+                                                    @ko.Html.Span(m => mapping.Model.Field)
+                                                }
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
      @*<div id="fields-container">
