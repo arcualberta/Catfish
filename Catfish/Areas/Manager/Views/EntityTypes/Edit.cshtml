@@ -89,7 +89,7 @@
                                             <label class="control-label col-md-2">Metadata Set</label>
                                             <div class="right">
                                                 @ko.Html.DropDownList(m => m.MetadataSetMappingSrc, new { }, m => m.Name).Value(m => m.SelectedNameMappingMetadataSet)
-                                                @ko.Html.Button("Update", "UpdateMappingMetadataSet", "EntityTypes", new { target = "name" }, new { }).Enable(m => m.SelectedNameMappingMetadataSet != null && m.SelectedNameMappingMetadataSet.Name != null)
+                                                @ko.Html.Button("Update", "UpdateMappingMetadataSet", "EntityTypes", new { type = EntityTypeViewModel.eMappingType.NameMapping }, new { }).Enable(m => m.SelectedNameMappingMetadataSet != null && m.SelectedNameMappingMetadataSet.Name != null && m.SelectedNameMappingMetadataSet.Name != "")
                                             </div>
                                             <div class="input">
                                                 @using (var mapping = ko.With(m => m.NameMapping))
@@ -99,14 +99,15 @@
                                             </div>
                                         </li>
                                         <li>
-                                            <label class="control-label col-md-2">Metadata Set</label>
+                                            <label class="control-label col-md-2">Field</label>
                                             <div class="right">
-                                                @ko.Html.DropDownList(m => m.MetadataSetMappingSrc, new { }, m => m.Name).Value(m => m.SelectedDescriptionMappingMetadataSet)
+                                                @ko.Html.DropDownList(m => m.SelectedNameMappingFieldSrc, new { }, m => m).Value(m => m.SelectedNameMappingField)
+                                                @ko.Html.Button("Update", "UpdateMappingField", "EntityTypes", new { type = EntityTypeViewModel.eMappingType.NameMapping }, new { }).Enable(m => m.SelectedNameMappingField != null && m.SelectedNameMappingField != "")
                                             </div>
                                             <div class="input">
-                                                @using (var mapping = ko.With(m => m.DescriptionMapping))
+                                                @using (var mapping = ko.With(m => m.NameMapping))
                                                 {
-                                                    @ko.Html.Span(m => mapping.Model.MetadataSet)
+                                                    @ko.Html.Span(m => mapping.Model.Field)
                                                 }
                                             </div>
                                         </li>

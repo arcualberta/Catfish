@@ -13,6 +13,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 {
     public class EntityTypeViewModel : KoBaseViewModel
     {
+        public enum eMappingType { NameMapping = 1, DescriptionMapping }
+
         public string TypeLabel { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -23,9 +25,13 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public MetadataFieldMapping NameMapping { get; set; }
         public MetadataSetListItem SelectedNameMappingMetadataSet { get; set; }
+        public string SelectedNameMappingField { get; set; }
+        public List<string> SelectedNameMappingFieldSrc { get; set; }
 
         public MetadataFieldMapping DescriptionMapping { get; set; }
         public MetadataSetListItem SelectedDescriptionMappingMetadataSet { get; set; }
+        public string SelectedDescriptionMappingField { get; set; }
+        public List<string> SelectedDescriptionMappingFieldSrc { get; set; }
 
         public EntityTypeViewModel()
         {
@@ -34,6 +40,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             SelectedMetadataSets = null;
             NameMapping = new MetadataFieldMapping();
             DescriptionMapping = new MetadataFieldMapping();
+            SelectedNameMappingFieldSrc = new List<string>();
+            SelectedDescriptionMappingFieldSrc = new List<string>();
         }
  
         public void UpdateViewModel(object dataModel, CatfishDbContext db)

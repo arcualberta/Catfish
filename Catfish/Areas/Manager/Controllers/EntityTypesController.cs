@@ -74,6 +74,57 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
+        public JsonResult UpdateMappingMetadataSet(EntityTypeViewModel vm, EntityTypeViewModel.eMappingType type)
+        {
+            if(type == EntityTypeViewModel.eMappingType.NameMapping)
+            {
+                vm.NameMapping.MetadataSet = vm.SelectedNameMappingMetadataSet.Name;
+                vm.NameMapping.MetadataSetId = vm.SelectedNameMappingMetadataSet.Id;
+
+                MetadataSet ms = Db.MetadataSets.Where(m => m.Id == vm.NameMapping.MetadataSetId).FirstOrDefault();
+                ms.Deserialize();
+                vm.NameMapping.Field = "Not specified";
+                vm.SelectedNameMappingField = "";
+                vm.SelectedNameMappingFieldSrc = ms.Fields.Select(f => f.Name).ToList();
+                vm.SelectedNameMappingFieldSrc.Sort();
+                vm.SelectedNameMappingFieldSrc.Insert(0, "");
+
+                vm.SelectedNameMappingMetadataSet = new MetadataSetListItem(0, "");
+            }
+            else if(type == EntityTypeViewModel.eMappingType.DescriptionMapping)
+            {
+                vm.DescriptionMapping.MetadataSet = vm.SelectedDescriptionMappingMetadataSet.Name;
+                vm.DescriptionMapping.MetadataSetId = vm.SelectedDescriptionMappingMetadataSet.Id;
+
+                MetadataSet ms = Db.MetadataSets.Where(m => m.Id == vm.DescriptionMapping.MetadataSetId).FirstOrDefault();
+                ms.Deserialize();
+                vm.DescriptionMapping.Field = "Not specified";
+                vm.SelectedDescriptionMappingField = "";
+                vm.SelectedDescriptionMappingFieldSrc = ms.Fields.Select(f => f.Name).ToList();
+                vm.SelectedDescriptionMappingFieldSrc.Sort();
+                vm.SelectedDescriptionMappingFieldSrc.Insert(0, "");
+
+                vm.SelectedDescriptionMappingMetadataSet = new MetadataSetListItem(0, "");
+            }
+            return Json(vm);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateMappingField(EntityTypeViewModel vm, EntityTypeViewModel.eMappingType type)
+        {
+            if (type == EntityTypeViewModel.eMappingType.NameMapping)
+            {
+                vm.NameMapping.Field = vm.SelectedNameMappingField;
+                vm.SelectedNameMappingField = "";
+            }
+            else if (type == EntityTypeViewModel.eMappingType.DescriptionMapping)
+            {
+                vm.DescriptionMapping.Field = vm.SelectedDescriptionMappingField;
+                vm.SelectedDescriptionMappingField = "";
+            }
+            return Json(vm);
+        }
+        [HttpPost]
         public JsonResult Save(EntityTypeViewModel vm)
         {
             if (ModelState.IsValid)
