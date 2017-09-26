@@ -83,6 +83,8 @@ namespace Catfish.Core.Models
 
         public DbSet<EntityType> EntityTypes { get; set; }
 
+        public DbSet<EntityTypeAttributeMapping> EntityTypeAttributeMappings { get; set; }
+
         public DbSet<MetadataSet> MetadataSets { get; set; }
  
         ////public DbSet<SimpleField> MetadataFields { get; set; }

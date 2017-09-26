@@ -101,6 +101,27 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
 
             //updating name and description mappings
+            var nameMapping = model.AttributeMappings.Where(mapping => mapping.Name == "Name Mapping").FirstOrDefault();
+            if(nameMapping != null)
+            {
+                NameMapping = new MetadataFieldMapping()
+                {
+                    MetadataSetId = nameMapping.MetadataSetId,
+                    Field = nameMapping.FieldName,
+                    MetadataSet = nameMapping.MetadataSet.Name
+                };
+            }
+
+            var descMapping = model.AttributeMappings.Where(mapping => mapping.Name == "Description Mapping").FirstOrDefault();
+            if (descMapping != null)
+            {
+                DescriptionMapping = new MetadataFieldMapping()
+                {
+                    MetadataSetId = descMapping.MetadataSetId,
+                    Field = descMapping.FieldName,
+                    MetadataSet = descMapping.MetadataSet.Name
+                };
+            }
 
         }
     }

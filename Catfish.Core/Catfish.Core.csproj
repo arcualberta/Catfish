@@ -63,6 +63,10 @@
     <Compile Include="Migrations\201709060620508_AddedGuidToXmlModel.Designer.cs">
       <DependentUpon>201709060620508_AddedGuidToXmlModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709262310147_AddedEntityAttributeMappingModel.cs" />
+    <Compile Include="Migrations\201709262310147_AddedEntityAttributeMappingModel.Designer.cs">
+      <DependentUpon>201709262310147_AddedEntityAttributeMappingModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Aggregation.cs" />
     <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
@@ -79,6 +83,7 @@
     <Compile Include="Models\Metadata\DateField.cs" />
     <Compile Include="Models\Metadata\DropDownMenu.cs" />
     <Compile Include="Models\Metadata\MetadataDefinition.cs" />
+    <Compile Include="Models\EntityTypeAttributeMapping.cs" />
     <Compile Include="Models\Metadata\MetadataSet.cs" />
     <Compile Include="Models\Metadata\MetadataField.cs" />
     <Compile Include="Models\Metadata\OptionsField.cs" />
@@ -104,6 +109,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709060620508_AddedGuidToXmlModel.resx">
       <DependentUpon>201709060620508_AddedGuidToXmlModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709262310147_AddedEntityAttributeMappingModel.resx">
+      <DependentUpon>201709262310147_AddedEntityAttributeMappingModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

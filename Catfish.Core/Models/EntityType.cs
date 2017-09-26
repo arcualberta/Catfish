@@ -16,9 +16,11 @@ namespace Catfish.Core.Models
 
         public virtual ICollection<MetadataSet> MetadataSets { get; set; }
 
+        public virtual ICollection<EntityTypeAttributeMapping> AttributeMappings { get; set; }
         public EntityType()
         {
             MetadataSets = new List<MetadataSet>();
+            AttributeMappings = new List<EntityTypeAttributeMapping>();
         }
     }
 }
