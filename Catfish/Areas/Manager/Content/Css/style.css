@@ -34,3 +34,8 @@ span.status{
     background-color: white;
     border-left: solid 1px #eee;
 }
+
+form.inline{
+    display:inline;
+    margin: 0 5px;
+}

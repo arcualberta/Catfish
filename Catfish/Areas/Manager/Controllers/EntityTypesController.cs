@@ -45,6 +45,22 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
+        public ActionResult Delete(int? id)
+        {
+            EntityType model = null;
+            if (id.HasValue && id.Value > 0)
+            {
+                model = Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
+                if (model != null)
+                {
+                    Db.Entry(model).State = EntityState.Deleted;
+                    Db.SaveChanges();
+                }
+            }
+            return RedirectToAction("index");
+        }
+
+        [HttpPost]
         public JsonResult AddMetadataSet(EntityTypeViewModel vm)
         {
             vm.AssociatedMetadataSets.Add(vm.SelectedMetadataSets);

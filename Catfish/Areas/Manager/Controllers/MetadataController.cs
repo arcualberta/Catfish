@@ -9,6 +9,7 @@ using System.Web.Script.Serialization;
 using Catfish.Areas.Manager.Models.ViewModels;
 using Catfish.Core.Models.Metadata;
 using Piranha.Areas.Manager.Controllers;
+using System.Data.Entity;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -40,6 +41,22 @@ namespace Catfish.Areas.Manager.Controllers
 
             var viewModel = new MetadataSetViewModel(model);
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult Delete(int? id)
+        {
+            MetadataSet model = null;
+            if (id.HasValue && id.Value > 0)
+            {
+                model = Db.MetadataSets.Where(et => et.Id == id).FirstOrDefault();
+                if (model != null)
+                    Db.Entry(model).State = EntityState.Deleted;
+            }
+
+            Db.SaveChanges();
+
+            return RedirectToAction("index");
         }
 
 

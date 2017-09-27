@@ -47,6 +47,23 @@ namespace Catfish.Areas.Manager.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult Delete(int? id)
+        {
+            Item model = null;
+            if (id.HasValue && id.Value > 0)
+            {
+                model = Db.Items.Where(et => et.Id == id).FirstOrDefault();
+                if (model != null)
+                {
+                    Db.Entry(model).State = EntityState.Deleted;
+                    Db.SaveChanges();
+                }
+            }
+            return RedirectToAction("index");
+        }
+
+
         // GET: Manager/Items/Details/5
         public ActionResult Details(int? id)
         {
@@ -265,35 +282,6 @@ namespace Catfish.Areas.Manager.Controllers
 
             return new FilePathResult(path_name, file.ContentType);
         }
-
-        // GET: Manager/Items/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            throw new NotImplementedException("This method is yet to be implemented.");
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Entity entity = db.XmlModels.Find(id) as Entity;
-            if (entity == null)
-            {
-                return HttpNotFound();
-            }
-            return View(entity);
-        }
-
-        // POST: Manager/Items/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            throw new NotImplementedException("This method is yet to be implemented.");
-            Entity entity = db.XmlModels.Find(id) as Entity;
-            db.XmlModels.Remove(entity);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
 
         protected override void Dispose(bool disposing)
         {

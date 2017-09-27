@@ -26,6 +26,23 @@ namespace Catfish.Areas.Manager.Controllers
             return View(entities);
         }
 
+        [HttpPost]
+        public ActionResult Delete(int? id)
+        {
+            Collection model = null;
+            if (id.HasValue && id.Value > 0)
+            {
+                model = Db.Collections.Where(et => et.Id == id).FirstOrDefault();
+                if (model != null)
+                {
+                    Db.Entry(model).State = EntityState.Deleted;
+                    Db.SaveChanges();
+                }
+            }
+            return RedirectToAction("index");
+        }
+
+
         // GET: Manager/Collections/Details/5
         public ActionResult Details(int id)
         {
