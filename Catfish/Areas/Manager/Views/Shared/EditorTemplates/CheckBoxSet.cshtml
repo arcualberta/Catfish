@@ -6,12 +6,13 @@
 })
 @Html.HiddenFor(m => m.Ref)
 
-<div class="form-field-header">
+<div class="form-field-name">
     @Html.Label(string.IsNullOrEmpty(Model.Name) ? "" : Model.Name)
 </div>
-
-@for(int i=0; i<Model.Options.Count; ++i)
-{
-    @Html.EditorFor(m => m.Options[i], "CheckOption")
-    @Html.HiddenFor(m => m.Options[i].Value)
-}
+<div class="form-field-value">
+    @for (int i = 0; i < Model.Options.Count; ++i)
+    {
+        @Html.EditorFor(m => m.Options[i], "CheckOption")
+        @Html.HiddenFor(m => m.Options[i].Value)
+    }
+</div>

@@ -1,12 +1,15 @@
 ﻿@model Catfish.Core.Models.Metadata.MetadataSet
 
-@*@Html.EditorFor(m => Model.Fields)*@
-<p>@Model.Description</p>
-
 @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
 {
     {"class", "model-type"}
 })
 @Html.HiddenFor(m => m.Ref)
 
-@Html.EditorFor(m => m.Fields)
+@for (int idx = 0; idx < Model.Fields.Count; ++idx)
+{
+    <div class="form-field">
+        @Html.EditorFor(m => Model.Fields[idx])
+    </div>
+}
+

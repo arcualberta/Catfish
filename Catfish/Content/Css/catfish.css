@@ -30,7 +30,6 @@ ul.custom-tabs {
         }
 
 .tab-content {
-    display: none;
     background: #ededed;
     padding: 15px;
     border: 1px solid #ddd;
@@ -201,18 +200,19 @@ ul.custom-tabs {
         }
 
 .tab-content {
-    display: none;
     background: #ededed;
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 3px;
     border-top-left-radius: 0px;
     box-shadow: 0 4px 10px rgba(0,0,0,.04);
+    clear:both;
 }
 
 .tab-content.active {
     display: inherit;
 }
+
 
 .custom-files {
     background: #eee;
@@ -344,3 +344,17 @@ ul.custom-tabs {
  .container-custom label {
      float: none !important;
  }
+
+.form-field{
+    margin-bottom: 20px;
+}
+
+.form-field span{
+    margin-right: 10px;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li > a:hover,
+.nav-tabs > li.active > a:focus {
+    background-color: #ededed !important;
+}

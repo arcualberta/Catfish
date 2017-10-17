@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Piranha.Areas.Manager.Controllers;
+using Catfish.Areas.Manager.Models.ViewModels;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -19,5 +20,21 @@ namespace Catfish.Areas.Manager.Controllers
 
         private EntityService mEntityService;
         public EntityService EntityService { get { if (mEntityService == null) mEntityService = new EntityService(Db); return mEntityService; } }
+
+        [HttpPost]
+        public JsonResult SelectEntity(SelectEntityTypeViewModel vm)
+        {
+            var id = vm.SelectedEntityType.Id;
+            if(id > 0)
+            {
+                vm.redirect = true;
+                string controller = this.GetType().Name;
+                controller = controller.Substring(0, controller.Length - "Controller".Length);
+                vm.url = Url.Action("edit", controller, new { entityTypeId = id });
+            }
+
+            return Json(vm);
+        }
+
     }
 }

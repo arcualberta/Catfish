@@ -6,10 +6,11 @@
 })
 @Html.HiddenFor(m => m.Ref)
 
-<div class="form-field-header">
+
+<div class="form-field-name">
     @Html.Label(string.IsNullOrEmpty(Model.Name) ? "" : Model.Name)
 </div>
-<div class="form-field-content">
+<div class="form-field-value">
     @Html.EditorFor(m => m.Value)
 </div>
 

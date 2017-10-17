@@ -13,6 +13,7 @@ using System.Xml.Linq;
 using System.Web.Configuration;
 using Catfish.Core.Services;
 using Catfish.Core.Models.Metadata;
+using Catfish.Areas.Manager.Models.ViewModels;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -106,7 +107,7 @@ namespace Catfish.Areas.Manager.Controllers
         }
         */
         // GET: Manager/Items/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? id, int? entityTypeId)
         {
             Item model;
             ItemService srv = new ItemService(db);
@@ -119,33 +120,30 @@ namespace Catfish.Areas.Manager.Controllers
             {
                 model = db.XmlModels.Find(id) as Item;
                 model.Deserialize();
-                //ViewBag.
+
                 if(model.Files.Any()) //MR Sept 5 2017---chek if model has any file associated before pulling it
                     ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
+
             }
             else
             {
-                string filename = "Item.xml";
-                var path = WebConfigurationManager.AppSettings["TestDataFolder"];
-                path = Path.Combine(path, filename);
-                model = XmlModel.Load(path) as Item;
-            }
-            //get entity type for testing-- this won't be needed if from edit interface there's a way to choose the EntityType
-            string eTypeName = model.Data.Attribute("entity-type").Value;
-            EntityType eType = db.EntityTypes.Where(e => e.Name == eTypeName).FirstOrDefault();
-            if (eType != null)
-            {
-                model.EntityTypeId = eType.Id;
+                if(entityTypeId.HasValue)
+                {
+                    model = srv.CreateEntity<Item>(entityTypeId.Value);
+                }
+                else
+                {
+                    List<EntityType> entityTypes = srv.GetEntityTypes().ToList();
+                    ViewBag.SelectEntityViewModel = new SelectEntityTypeViewModel()
+                    {
+                        EntityTypes = entityTypes
+                    };
+
+                    model = new Item();
+                }
             }
 
-            //ViewBag.JSONModel = Newtonsoft.Json.JsonConvert.SerializeObject(model.Data);
-            ////// Rendering these as json objects in view result in circular references 
-            ////var metadataSets = db.MetadataSets.ToList();
-            ////var entityTypes = db.EntityTypes.ToList();
-            ////ViewBag.EntityTypes = new JavaScriptSerializer().Serialize(entityTypes);//Json(db.EntityTypes.ToList());
-            ////ViewBag.MetadataSets = new JavaScriptSerializer().Serialize(metadataSets);//Json(db.MetadataSets.ToList());
-
-            return View("EditItem", model);
+            return View(model);
         }
 
         // POST: Manager/Items/Edit/5
