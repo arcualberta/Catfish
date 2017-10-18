@@ -3,6 +3,7 @@ using Catfish.Core.Models.Metadata;
 using Catfish.Core.Models.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace Catfish.Core.Models
 {
@@ -18,11 +19,23 @@ namespace Catfish.Core.Models
         [JsonIgnore] //Ignore this in JSON serialization to avoid stuck in a continuous loop
         public virtual ICollection<MetadataSet> MetadataSets { get; set; }
 
+        [JsonIgnore] //Ignore this in JSON serialization to avoid stuck in a continuous loop
         public virtual ICollection<EntityTypeAttributeMapping> AttributeMappings { get; set; }
         public EntityType()
         {
             MetadataSets = new List<MetadataSet>();
             AttributeMappings = new List<EntityTypeAttributeMapping>();
         }
+
+        public EntityTypeAttributeMapping GetNameMapping()
+        {
+            return AttributeMappings.Where(mapping => mapping.Name == "Name Mapping").FirstOrDefault();
+        }
+
+        public EntityTypeAttributeMapping GetDescriptionMapping()
+        {
+            return AttributeMappings.Where(mapping => mapping.Name == "Description Mapping").FirstOrDefault();
+        }
+
     }
 }

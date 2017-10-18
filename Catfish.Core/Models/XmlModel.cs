@@ -56,7 +56,7 @@ namespace Catfish.Core.Models
             get
             {
                 var att = Data.Attribute("ref");
-                return att != null ? att.Value : null;
+                return att != null ? att.Value : System.Guid.NewGuid().ToString("N");
             }
             set
             {
@@ -87,21 +87,21 @@ namespace Catfish.Core.Models
             DefaultLanguage = defaultLang;
         }
 
-        public string GetName(string lang = null)
+        public virtual string GetName(string lang = null)
         {
             return GetChildText("name", Data, Lang(lang));
         }
-        public void SetName(string val, string lang = null)
+        public virtual void SetName(string val, string lang = null)
         {
             SetChildText("name", val, Data, Lang(lang));
         }
 
-        public string GetDescription(string lang = null)
+        public virtual string GetDescription(string lang = null)
         {
             return GetChildText("description", Data, Lang(lang));
         }
 
-        public void SetDescription(string val, string lang = null)
+        public virtual void SetDescription(string val, string lang = null)
         {
             SetChildText("description", val, Data, Lang(lang));
         }

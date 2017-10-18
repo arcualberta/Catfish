@@ -73,7 +73,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             MetadataSetMappingSrc.AddRange(AssociatedMetadataSets);
 
             //updating name and description mappings
-            var nameMapping = model.AttributeMappings.Where(mapping => mapping.Name == "Name Mapping").FirstOrDefault();
+            var nameMapping = model.GetNameMapping();
             if (nameMapping != null)
             {
                 NameMapping = new MetadataFieldMapping()
@@ -84,7 +84,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 };
             }
 
-            var descMapping = model.AttributeMappings.Where(mapping => mapping.Name == "Description Mapping").FirstOrDefault();
+            var descMapping = model.GetDescriptionMapping();
             if (descMapping != null)
             {
                 DescriptionMapping = new MetadataFieldMapping()
@@ -124,7 +124,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
 
             //updating name and description mappings
-            var nameMapping = model.AttributeMappings.Where(mapping => mapping.Name == "Name Mapping").FirstOrDefault();
+            var nameMapping = model.GetNameMapping();
             if(nameMapping != null)
                 db.Entry(nameMapping).State = System.Data.Entity.EntityState.Modified;
             else
@@ -135,7 +135,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             nameMapping.MetadataSetId = NameMapping.MetadataSetId;
             nameMapping.FieldName = NameMapping.Field;
 
-             var descMapping = model.AttributeMappings.Where(mapping => mapping.Name == "Description Mapping").FirstOrDefault();
+            var descMapping = model.GetDescriptionMapping();
            if (descMapping != null)
                 db.Entry(descMapping).State = System.Data.Entity.EntityState.Modified;
             else

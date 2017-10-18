@@ -13,6 +13,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string TypeLabel { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Ref { get; set; }
         public List<MetadataFieldViewModel> Fields { get; set; }
 
         public List<MetadataFieldType> FieldTypes { get { return GetFieldTypes(); } }
@@ -32,6 +33,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
             Name = src.Name;
             Description = src.Description;
+            Ref = src.Ref;
+
 
             Fields = new List<MetadataFieldViewModel>();
             foreach (var field in src.Fields)
@@ -43,6 +46,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             MetadataSet dst = dataModel as MetadataSet;
             dst.Name = Name;
             dst.Description = Description;
+            dst.Ref = Ref;
 
             //Updating fields. 
             //Note that it is necessary to create a new list of metadata fields

@@ -29,7 +29,10 @@
         }
         else
         {
-            @Html.Partial("Partial/EditEntity")
+            using (Html.BeginForm("Edit", "Items", FormMethod.Post))
+            {
+                @Html.Partial("Partial/EditEntity")
+            }
         }
     </div>
 </div>

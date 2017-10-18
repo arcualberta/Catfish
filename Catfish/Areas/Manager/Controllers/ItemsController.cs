@@ -162,54 +162,60 @@ namespace Catfish.Areas.Manager.Controllers
                 ViewBag.Status = "Validation Passed";
 
                 ItemService srv = new ItemService(db);
-                if (model.Id > 0)
-                {
-                    ////Item dbModel = db.XmlModels.Find(model.Id) as Item;
-                    ////dbModel.Deserialize();
-                    ////dbModel.UpdateValues(model);
-                    ////db.Entry(dbModel).State = EntityState.Modified;
 
-                    Item dbModel = srv.UpdateStoredItem(model);
-                    db.SaveChanges();
-                    ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
-                    return View("EditItem", dbModel);
-                }
-                else
-                {
-                    // Item dbModel = srv.UpdateStoredItem(model); //this should be enough if follow current structure
+                Item dbModel = srv.UpdateStoredItem(model);
+                db.SaveChanges();
+                ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
+                return View(dbModel);
 
-                    //TODO: Create a new service method on ItemService for the folowings, which returns a new Item
-                    // 1. Get the EntityType ID from the post call variable.
-                    // 2. Load the item type from the database
-                    // Item itm = db.XmlModels.Where(x => (x as Entity).EntityTypeId == model.EntityTypeId).FirstOrDefault() as Item;
-                    Item itm = new Item();
+                ////if (model.Id > 0)
+                ////{
+                ////    ////Item dbModel = db.XmlModels.Find(model.Id) as Item;
+                ////    ////dbModel.Deserialize();
+                ////    ////dbModel.UpdateValues(model);
+                ////    ////db.Entry(dbModel).State = EntityState.Modified;
+
+                ////    Item dbModel = srv.UpdateStoredItem(model);
+                ////    db.SaveChanges();
+                ////    ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
+                ////    return View("EditItem", dbModel);
+                ////}
+                ////else
+                ////{
+                ////    // Item dbModel = srv.UpdateStoredItem(model); //this should be enough if follow current structure
+
+                ////    //TODO: Create a new service method on ItemService for the folowings, which returns a new Item
+                ////    // 1. Get the EntityType ID from the post call variable.
+                ////    // 2. Load the item type from the database
+                ////    // Item itm = db.XmlModels.Where(x => (x as Entity).EntityTypeId == model.EntityTypeId).FirstOrDefault() as Item;
+                ////    Item itm = new Item();
                    
-                    // 3. Create a new item. Add the list of metadata sets in the item type into the newly created model
-                    // do we still need no 3, since Item retrieve from db contains all metadata already??
-                    EntityType et = db.EntityTypes.Where(e => e.Id == model.EntityTypeId).FirstOrDefault();
-                    XAttribute attribute = new XAttribute("entity-type", et.Name);
-                    itm.Data.Add(attribute);
-                    XElement meta = itm.Data.Element("metadata-sets");
-                    foreach (MetadataSet ms in et.MetadataSets)
-                    {
-                        MetadataSet mSet = db.XmlModels.Find(ms.Id) as MetadataSet; 
-                        meta.Add(mSet.Data);
-                    }
-                    // 4. Call srv.UpdateStoredItem(model); method to assign the values passed through the posted model into the newly created item
+                ////    // 3. Create a new item. Add the list of metadata sets in the item type into the newly created model
+                ////    // do we still need no 3, since Item retrieve from db contains all metadata already??
+                ////    EntityType et = db.EntityTypes.Where(e => e.Id == model.EntityTypeId).FirstOrDefault();
+                ////    XAttribute attribute = new XAttribute("entity-type", et.Name);
+                ////    itm.Data.Add(attribute);
+                ////    XElement meta = itm.Data.Element("metadata-sets");
+                ////    foreach (MetadataSet ms in et.MetadataSets)
+                ////    {
+                ////        MetadataSet mSet = db.XmlModels.Find(ms.Id) as MetadataSet; 
+                ////        meta.Add(mSet.Data);
+                ////    }
+                ////    // 4. Call srv.UpdateStoredItem(model); method to assign the values passed through the posted model into the newly created item
 
-                    //updating the "value" text elements
-                    itm.UpdateValues(model);
-                    itm.EntityTypeId = model.EntityTypeId;
-                    //save the item
-                    db.XmlModels.Add(itm);
-                     db.SaveChanges();
-                     return View("EditItem", itm);
-                   // return View();
-                }
+                ////    //updating the "value" text elements
+                ////    itm.UpdateValues(model);
+                ////    itm.EntityTypeId = model.EntityTypeId;
+                ////    //save the item
+                ////    db.XmlModels.Add(itm);
+                ////     db.SaveChanges();
+                ////     return View("EditItem", itm);
+                ////   // return View();
+                ////}
                 
             }
             //ViewBag.EntityTypeId = new SelectList(db.EntityTypes, "Id", "Name", model.EntityTypeId);
-            return View("EditItem", model);
+            return View(model);
         }
 
         [HttpGet]

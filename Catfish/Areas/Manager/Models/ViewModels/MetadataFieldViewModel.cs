@@ -17,6 +17,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public bool IsRequired { get; set; }
         public bool IsOptionField { get; set; }
         public string Options { get; set; }
+        public string Ref { get; set; }
 
         public MetadataFieldViewModel() { }
 
@@ -32,6 +33,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
             TypeLabelAttribute att = Attribute.GetCustomAttribute(src.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
             TypeLabel = att == null ? src.GetType().ToString() : att.Name;
+
+            Ref = src.Ref;
         }
 
         public MetadataField InstantiateDataModel()
@@ -44,6 +47,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.Name = Name;
             field.Description = Description;
             field.IsRequired = IsRequired;
+            field.Ref = Ref;
             if (typeof(OptionsField).IsAssignableFrom(type))
             {
                 //Creating option list separately and assigning it to the Options propery of the Options field

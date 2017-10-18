@@ -14,7 +14,7 @@ namespace Catfish.Core.Models
     public class Entity : XmlModel
     {
         public int? EntityTypeId { get; set; }
-        public EntityType EntityType { get; set; }
+        public virtual EntityType EntityType { get; set; }
 
         public Entity()
         {
@@ -37,6 +37,44 @@ namespace Catfish.Core.Models
                 foreach (MetadataSet ms in value)
                     InsertChildElement("./metadata-sets", ms.Data);
             }
+        }
+
+        public override string GetName(string lang = null)
+        {
+            var mapping = EntityType.GetNameMapping();
+            if(mapping != null)
+            {
+                string msName = mapping.MetadataSet.Name;
+                string fieldName = mapping.FieldName;
+                MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
+                MetadataField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
+                return field.Value;
+            }
+
+            return GetChildText("name", Data, Lang(lang));
+        }
+        public override void SetName(string val, string lang = null)
+        {
+            throw new InvalidOperationException("Name of entities should be specified using metadata set mapping");
+        }
+        public override string GetDescription(string lang = null)
+        {
+            var mapping = EntityType.GetDescriptionMapping();
+            if (mapping != null)
+            {
+                string msName = mapping.MetadataSet.Name;
+                string fieldName = mapping.FieldName;
+                MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
+                MetadataField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
+                return field.Value;
+            }
+
+            return GetChildText("description", Data, Lang(lang));
+        }
+
+        public override void SetDescription(string val, string lang = null)
+        {
+            throw new InvalidOperationException("Description of entities should be specified using metadata set mapping");
         }
 
     }
