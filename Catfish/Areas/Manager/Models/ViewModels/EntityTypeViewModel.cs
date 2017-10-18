@@ -124,27 +124,33 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
 
             //updating name and description mappings
-            var nameMapping = model.GetNameMapping();
-            if(nameMapping != null)
-                db.Entry(nameMapping).State = System.Data.Entity.EntityState.Modified;
-            else
+            if (NameMapping.MetadataSetId != 0)
             {
-                nameMapping = new EntityTypeAttributeMapping() { Name = "Name Mapping" };
-                model.AttributeMappings.Add(nameMapping);
+                var nameMapping = model.GetNameMapping();
+                if (nameMapping != null)
+                    db.Entry(nameMapping).State = System.Data.Entity.EntityState.Modified;
+                else
+                {
+                    nameMapping = new EntityTypeAttributeMapping() { Name = "Name Mapping" };
+                    model.AttributeMappings.Add(nameMapping);
+                }
+                nameMapping.MetadataSetId = NameMapping.MetadataSetId;
+                nameMapping.FieldName = NameMapping.Field;
             }
-            nameMapping.MetadataSetId = NameMapping.MetadataSetId;
-            nameMapping.FieldName = NameMapping.Field;
 
-            var descMapping = model.GetDescriptionMapping();
-           if (descMapping != null)
-                db.Entry(descMapping).State = System.Data.Entity.EntityState.Modified;
-            else
+            if (DescriptionMapping.MetadataSetId != 0)
             {
-                descMapping = new EntityTypeAttributeMapping() { Name = "Description Mapping" };
-                model.AttributeMappings.Add(descMapping);
+                var descMapping = model.GetDescriptionMapping();
+                if (descMapping != null)
+                    db.Entry(descMapping).State = System.Data.Entity.EntityState.Modified;
+                else
+                {
+                    descMapping = new EntityTypeAttributeMapping() { Name = "Description Mapping" };
+                    model.AttributeMappings.Add(descMapping);
+                }
+                descMapping.MetadataSetId = DescriptionMapping.MetadataSetId;
+                descMapping.FieldName = DescriptionMapping.Field;
             }
-            descMapping.MetadataSetId = DescriptionMapping.MetadataSetId;
-            descMapping.FieldName = DescriptionMapping.Field;
         }
     }
 

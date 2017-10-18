@@ -13,10 +13,13 @@
 
 
 @section Toolbar {
-    @if (ViewBag.SelectEntityViewModel != null)
-    { @Html.Partial("Partial/koEditToolbar") }
-    else
-    { @Html.Partial("Partial/EditToolbar") }
+    @if (ViewBag.SelectEntityViewModel != null) {
+        @Html.Partial("Partial/koEditToolbar")
+    }
+    else { 
+
+        @Html.Partial("Partial/EditToolbar", Model, new ViewDataDictionary() { {"entityTypeId",  Model.EntityTypeId } }) 
+    }
 }
 @ViewBag.Status <br />
 
