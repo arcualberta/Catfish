@@ -17,6 +17,11 @@ namespace Catfish.Core.Services
             return Db.EntityTypes;
         }
 
+        public IQueryable<EntityType> GetEntityTypes(EntityType.eTarget target)
+        {
+            return Db.EntityTypes.Where(et => et.TargetType == target);
+        }
+
         public T CreateEntity<T>(int entityTypeId) where T : Entity, new()
         {
             EntityType et = Db.EntityTypes.Where(t => t.Id == entityTypeId).FirstOrDefault();

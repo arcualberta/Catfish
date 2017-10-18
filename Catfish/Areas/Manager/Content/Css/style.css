@@ -39,3 +39,12 @@ form.inline{
     display:inline;
     margin: 0 5px;
 }
+
+.inner .form .input input[type="radio"] {
+    width: auto;
+    margin-right: 0;
+}
+
+.inner .form .input span {
+    margin-right: 15px;
+}

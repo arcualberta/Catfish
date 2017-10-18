@@ -71,6 +71,10 @@
     <Compile Include="Migrations\201709262310147_AddedEntityAttributeMappingModel.Designer.cs">
       <DependentUpon>201709262310147_AddedEntityAttributeMappingModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710182254211_AddedTargetTypeToEntityType.cs" />
+    <Compile Include="Migrations\201710182254211_AddedTargetTypeToEntityType.Designer.cs">
+      <DependentUpon>201710182254211_AddedTargetTypeToEntityType.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Aggregation.cs" />
     <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
@@ -116,6 +120,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201709262310147_AddedEntityAttributeMappingModel.resx">
       <DependentUpon>201709262310147_AddedEntityAttributeMappingModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710182254211_AddedTargetTypeToEntityType.resx">
+      <DependentUpon>201710182254211_AddedTargetTypeToEntityType.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

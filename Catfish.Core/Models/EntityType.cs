@@ -10,11 +10,15 @@ namespace Catfish.Core.Models
     [TypeLabel("Entity Type")]
     public class EntityType
     {
+        public enum eTarget { None = 0, Collections, Items, Files };
+
         public int Id { get; set; }
 
         public string Name { get; set; }
 
         public string Description { get; set; }
+
+        public eTarget TargetType { get; set; }
 
         [JsonIgnore] //Ignore this in JSON serialization to avoid stuck in a continuous loop
         public virtual ICollection<MetadataSet> MetadataSets { get; set; }

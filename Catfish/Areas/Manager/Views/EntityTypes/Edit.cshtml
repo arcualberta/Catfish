@@ -1,6 +1,7 @@
 ﻿@model Catfish.Areas.Manager.Models.ViewModels.EntityTypeViewModel
 @using PerpetuumSoft.Knockout
 @using Catfish.Areas.Manager.Models.ViewModels
+@using Catfish.Core.Models
 
 @{  ViewBag.Title = Model.Id > 0 ? "Edit Entity Type" : "Create Entity Type"; }
 
@@ -43,6 +44,15 @@
                             <label class="control-label col-md-2">Description</label>
                             <div class="input">@ko.Html.TextArea(m => m.Description)</div>
                         </li>
+                        <li>
+                            <label class="control-label col-md-2">Applicability</label>
+                            <div class="input">
+                                @ko.Html.RadioButton(m => m.TargetType, new { value = EntityType.eTarget.Collections.ToString() }) Collections
+                                @ko.Html.RadioButton(m => m.TargetType, new { value = EntityType.eTarget.Items.ToString() }) Items
+                                @ko.Html.RadioButton(m => m.TargetType, new { value = EntityType.eTarget.Files.ToString() }) Files
+                            </div>
+                        </li>
+
                     </ul>
                 </div>
             </div>

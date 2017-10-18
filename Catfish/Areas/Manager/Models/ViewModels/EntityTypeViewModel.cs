@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using static Catfish.Core.Models.EntityType;
 
 namespace Catfish.Areas.Manager.Models.ViewModels
 {
@@ -18,6 +19,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string TypeLabel { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string TargetType { get; set; }
         public List<MetadataSetListItem> AvailableMetadataSets { get; set; }
         public MetadataSetListItem SelectedMetadataSets { get; set; }
         public List<MetadataSetListItem> AssociatedMetadataSets { get; set; }
@@ -51,6 +53,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Id = model.Id;
             Name = model.Name;
             Description = model.Description;
+            TargetType = model.TargetType.ToString();
 
             TypeLabelAttribute att = Attribute.GetCustomAttribute(model.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
             TypeLabel = att == null ? model.GetType().ToString() : att.Name;
@@ -102,6 +105,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
             model.Name = Name;
             model.Description = Description;
+            model.TargetType = (eTarget) Enum.Parse(typeof(eTarget), TargetType);
 
             List<int> dataModelMetadataSetIds = model.MetadataSets.Select(m => m.Id).ToList();
             List<int> viewModelMetadataSetIds = AssociatedMetadataSets.Select(m => m.Id).ToList();

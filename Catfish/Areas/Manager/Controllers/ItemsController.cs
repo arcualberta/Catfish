@@ -133,7 +133,7 @@ namespace Catfish.Areas.Manager.Controllers
                 }
                 else
                 {
-                    List<EntityType> entityTypes = srv.GetEntityTypes().ToList();
+                    List<EntityType> entityTypes = srv.GetEntityTypes(EntityType.eTarget.Items).ToList();
                     ViewBag.SelectEntityViewModel = new SelectEntityTypeViewModel()
                     {
                         EntityTypes = entityTypes
