@@ -112,9 +112,9 @@ namespace Catfish.Areas.Manager.Controllers
             Item model;
             ItemService srv = new ItemService(db);
 
-            ViewBag.FileList = "[]";
-            ViewBag.UploadAction = Url.Action("Upload", "Items");
-            ViewBag.OtherPngUrl = Url.Content("~/content/thumbnails/other.png");
+            //////ViewBag.FileList = "[]";
+            //////ViewBag.UploadAction = Url.Action("Upload", "Items");
+            //////ViewBag.OtherPngUrl = Url.Content("~/content/thumbnails/other.png");
 
             if (id.HasValue && id.Value > 0)
             {
@@ -154,9 +154,9 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Edit(Item model)
         {
 
-            HttpContextBase ctx = this.HttpContext;
-                ViewBag.UploadAction = Url.Action("Upload", "Items");
-                ViewBag.OtherPngUrl = Url.Content("~/content/thumbnails/other.png");
+            ////////HttpContextBase ctx = this.HttpContext;
+            ////////    ViewBag.UploadAction = Url.Action("Upload", "Items");
+            ////////    ViewBag.OtherPngUrl = Url.Content("~/content/thumbnails/other.png");
             if (ModelState.IsValid)
             {
                 ViewBag.Status = "Validation Passed";
