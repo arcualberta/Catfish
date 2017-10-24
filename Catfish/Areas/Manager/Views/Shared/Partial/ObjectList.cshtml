@@ -1,9 +1,17 @@
-﻿<div class="grid_12 bs">
+﻿
+@{ 
+    bool showType = ViewData["showType"] != null ? (bool)ViewData["showType"] : false;
+}
+<div class="grid_12 bs">
     <table class="list">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Description</th>
+                @if (showType)
+                {
+                    <th>Type</th>
+                }
                 <th>Action</th>
             </tr>
         </thead>
@@ -13,6 +21,11 @@
                 <tr>
                     <td>@m.Name</td>
                     <td>@m.Description</td>
+                    @if (showType)
+                    {
+                        string type = (m as Catfish.Core.Models.Entity).EntityType.Name;
+                        <td>@type</td>
+                    }
                     <td>
                         <form action="@Url.Action("edit", new { @id = m.Id })" method="get" class="inline">
                             <button type="submit" value="Submit" class="glyphicon glyphicon-edit"></button>

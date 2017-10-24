@@ -6,4 +6,4 @@
     @Html.Partial("Partial/IndexToolbar")
 }
 
-@Html.Partial("Partial/ObjectList", Model)
+@Html.Partial("Partial/ObjectList", Model, new ViewDataDictionary() { { "showType", true } })
