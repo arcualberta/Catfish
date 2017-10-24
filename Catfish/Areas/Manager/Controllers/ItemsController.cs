@@ -159,8 +159,6 @@ namespace Catfish.Areas.Manager.Controllers
             ////////    ViewBag.OtherPngUrl = Url.Content("~/content/thumbnails/other.png");
             if (ModelState.IsValid)
             {
-                ViewBag.Status = "Validation Passed";
-
                 ItemService srv = new ItemService(db);
 
                 Item dbModel = srv.UpdateStoredItem(model);

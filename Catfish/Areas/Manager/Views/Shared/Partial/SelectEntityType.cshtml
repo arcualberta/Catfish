@@ -16,7 +16,7 @@
         <div class="inner">
             <div>
                 @ko.Html.DropDownList(m => m.EntityTypes, new { id = "field-type-selector" }, ft => ft.Name).Value(m => m.SelectedEntityType)
-                @ko.Html.Button("Next", "SelectEntity", "Items", new { }, new { id = "add-field" }).Enable(m => m.SelectedEntityType != null && m.SelectedEntityType.Name != "")
+                @ko.Html.Button("Next", "SelectEntity", ViewData["controller"] as string, new { }, new { id = "add -field" }).Enable(m => m.SelectedEntityType != null && m.SelectedEntityType.Name != "")
             </div>
         </div>
     }

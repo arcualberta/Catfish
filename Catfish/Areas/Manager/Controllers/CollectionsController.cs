@@ -11,6 +11,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 using System.Xml.Linq;
 
 namespace Catfish.Areas.Manager.Controllers
@@ -49,152 +50,174 @@ namespace Catfish.Areas.Manager.Controllers
             return View();
         }
 
-        // GET: Manager/Collections/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Manager/Collections/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
         // GET: Manager/Collections/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? id, int? entityTypeId)
         {
             Collection model;
             CollectionService srv = new CollectionService(db);
 
-            if (id.HasValue)
+            if (id.HasValue && id.Value > 0)
             {
                 model = db.XmlModels.Find(id) as Collection;
-                if (model == null)
-                    return HttpNotFound();
-
-                List<EntityAssociationViewModel> associationList = new List<EntityAssociationViewModel>();
-                for (int n = 0; n < 2; ++n)
-                {
-                    EntityAssociationViewModel childItems = new EntityAssociationViewModel();
-                    int i = 1;
-                    for (; i < 5; ++i)
-                        childItems.AssociatedEntities.Add(new EntityViewModel() { Id = i, Label = "Associated " + i });
-
-                    for (; i < 10; ++i)
-                        childItems.AllEntities.Add(new EntityViewModel() { Id = i, Label = "All " + i });
-
-                    associationList.Add(childItems);
-                }
-
-                ViewBag.associationList = associationList;
-
                 model.Deserialize();
             }
             else
             {
-                string filename = "Collection.xml";
-                var path = WebConfigurationManager.AppSettings["TestDataFolder"];
-                path = Path.Combine(path, filename);
-                model = XmlModel.Load(path) as Collection;
+                if (entityTypeId.HasValue)
+                {
+                    model = srv.CreateEntity<Collection>(entityTypeId.Value);
+                }
+                else
+                {
+                    List<EntityType> entityTypes = srv.GetEntityTypes(EntityType.eTarget.Collections).ToList();
+                    ViewBag.SelectEntityViewModel = new SelectEntityTypeViewModel()
+                    {
+                        EntityTypes = entityTypes
+                    };
+
+                    model = new Collection();
+                }
             }
 
-            //get entity type -- this won't be needed if from edit interface thereis a way to choose the EntityType
-            string eTypeName = model.Data.Attribute("entity-type").Value;
-            EntityType eType = db.EntityTypes.Where(e => e.Name == eTypeName).FirstOrDefault();
-            if (eType != null)
-            {
-                model.EntityTypeId = eType.Id;
-            }
+            return View(model);
 
-            ViewBag.JSONModel = Newtonsoft.Json.JsonConvert.SerializeObject(model.Data);
-            ////// Rendering these as json objects in view result in circular references 
-            //var metadataSets = db.MetadataSets.ToList();
-            ////var entityTypes = db.EntityTypes.ToList();
-            ////ViewBag.EntityTypes = new JavaScriptSerializer().Serialize(entityTypes);//Json(db.EntityTypes.ToList());
-            //ViewBag.MetadataSets = new JavaScriptSerializer().Serialize(metadataSets);//Json(db.MetadataSets.ToList());
-            
-            ////for dropdown collection name
-            //var collections = db.Collections.AsEnumerable();
-            //var _collections = collections.Select(m => new SelectListItem
-            //{
-            //    Value = m.Id.ToString(),
-            //    Text = m.Name
-            //});
-            //ViewBag.Collections = _collections;
+            /***
+                        Collection model;
+                        CollectionService srv = new CollectionService(db);
 
-            //populate WntityAssociationModel for knockout testing
+                        if (id.HasValue)
+                        {
+                            model = db.XmlModels.Find(id) as Collection;
+                            if (model == null)
+                                return HttpNotFound();
 
-            return View("Edit", model);
-           
+                            List<EntityAssociationViewModel> associationList = new List<EntityAssociationViewModel>();
+                            for (int n = 0; n < 2; ++n)
+                            {
+                                EntityAssociationViewModel childItems = new EntityAssociationViewModel();
+                                int i = 1;
+                                for (; i < 5; ++i)
+                                    childItems.AssociatedEntities.Add(new EntityViewModel() { Id = i, Label = "Associated " + i });
+
+                                for (; i < 10; ++i)
+                                    childItems.AllEntities.Add(new EntityViewModel() { Id = i, Label = "All " + i });
+
+                                associationList.Add(childItems);
+                            }
+
+                            ViewBag.associationList = associationList;
+
+                            model.Deserialize();
+                        }
+                        else
+                        {
+                            string filename = "Collection.xml";
+                            var path = WebConfigurationManager.AppSettings["TestDataFolder"];
+                            path = Path.Combine(path, filename);
+                            model = XmlModel.Load(path) as Collection;
+                        }
+
+                        //get entity type -- this won't be needed if from edit interface thereis a way to choose the EntityType
+                        string eTypeName = model.Data.Attribute("entity-type").Value;
+                        EntityType eType = db.EntityTypes.Where(e => e.Name == eTypeName).FirstOrDefault();
+                        if (eType != null)
+                        {
+                            model.EntityTypeId = eType.Id;
+                        }
+
+                        ViewBag.JSONModel = Newtonsoft.Json.JsonConvert.SerializeObject(model.Data);
+                        ////// Rendering these as json objects in view result in circular references 
+                        //var metadataSets = db.MetadataSets.ToList();
+                        ////var entityTypes = db.EntityTypes.ToList();
+                        ////ViewBag.EntityTypes = new JavaScriptSerializer().Serialize(entityTypes);//Json(db.EntityTypes.ToList());
+                        //ViewBag.MetadataSets = new JavaScriptSerializer().Serialize(metadataSets);//Json(db.MetadataSets.ToList());
+
+                        ////for dropdown collection name
+                        //var collections = db.Collections.AsEnumerable();
+                        //var _collections = collections.Select(m => new SelectListItem
+                        //{
+                        //    Value = m.Id.ToString(),
+                        //    Text = m.Name
+                        //});
+                        //ViewBag.Collections = _collections;
+
+                        //populate WntityAssociationModel for knockout testing
+
+                        return View("Edit", model);
+            **/
         }
 
         // POST: Manager/Collections/Edit/5
         [HttpPost]
-        public ActionResult Edit(Collection collection)
+        public ActionResult Edit(Collection model)
         {
             if (ModelState.IsValid)
             {
-                ViewBag.Status = "Validation Passed";
+                CollectionService srv = new CollectionService(db);
 
-                if (collection.Id > 0)
-                { 
-                    Collection dbModel = UpdateStoredItem(collection);
-                    db.SaveChanges();
+                Collection dbModel = srv.UpdateStoredCollection(model);
+                db.SaveChanges();
 
-                    return View("Edit", dbModel);
-                }
+                if (model.Id == 0)
+                    return RedirectToAction("Edit", new { id = dbModel.Id });
                 else
-                {
-                    //get Parent CollectionId
-                    int parentColId = Convert.ToInt16(HttpContext.Request.Form["parentCollection"]);
-                    Collection parentCol = db.XmlModels.Find(parentColId) as Collection;
+                    return View(dbModel);
 
-                    collection.ParentMembers.Add(parentCol);
-                    //alternative 1
-                    // Collection dbModel = UpdateStoredItem(collection); // don't need anything else if query from db to get general structure of collection
+            }
+            return View(model);
 
-                    //TODO: Create a new service method on ItemService for the folowings, which returns a new Item
-                    // 1. Get the EntityType ID from the post call variable.
-                    // 2. Load the item type from the database
-                    // 3. Create a new item. Add the list of metadata sets in the item type into the newly created model
-                    // 4. Call srv.UpdateStoredItem(model); method to assign the values passed through the posted model into the newly created item
-                    //alternative 2
-                    Collection col = new Collection(); //for holding all xml labels that're non-existing in collection object that posted back, because it's contain only value
-                    col.Data.Add(new XElement("name", collection.Name)); //if it has its ownm <name> or using DC <title> field
+            ////////if (ModelState.IsValid)
+            ////////{
+            ////////    ViewBag.Status = "Validation Passed";
 
-                    EntityType et = db.EntityTypes.Where(e => e.Id == collection.EntityTypeId).FirstOrDefault();
-                    XAttribute attribute = new XAttribute("entity-type", et.Name);
-                    col.Data.Add(attribute);
-                    XElement meta = col.Data.Element("metadata-sets");
-                    foreach (MetadataSet ms in et.MetadataSets)
-                    {
-                        MetadataSet mSet = db.XmlModels.Find(ms.Id) as MetadataSet;
-                        meta.Add(mSet.Data);
-                    }
-                    //update the values
-                    col.UpdateValues(collection);
-                    col.EntityTypeId = collection.EntityTypeId;
+            ////////    if (collection.Id > 0)
+            ////////    { 
+            ////////        Collection dbModel = UpdateStoredItem(collection);
+            ////////        db.SaveChanges();
 
-                    //save the item
-                    db.Collections.Add(col);
-                    db.SaveChanges();
-                }
+            ////////        return View("Edit", dbModel);
+            ////////    }
+            ////////    else
+            ////////    {
+            ////////        //get Parent CollectionId
+            ////////        int parentColId = Convert.ToInt16(HttpContext.Request.Form["parentCollection"]);
+            ////////        Collection parentCol = db.XmlModels.Find(parentColId) as Collection;
+
+            ////////        collection.ParentMembers.Add(parentCol);
+            ////////        //alternative 1
+            ////////        // Collection dbModel = UpdateStoredItem(collection); // don't need anything else if query from db to get general structure of collection
+
+            ////////        //TODO: Create a new service method on ItemService for the folowings, which returns a new Item
+            ////////        // 1. Get the EntityType ID from the post call variable.
+            ////////        // 2. Load the item type from the database
+            ////////        // 3. Create a new item. Add the list of metadata sets in the item type into the newly created model
+            ////////        // 4. Call srv.UpdateStoredItem(model); method to assign the values passed through the posted model into the newly created item
+            ////////        //alternative 2
+            ////////        Collection col = new Collection(); //for holding all xml labels that're non-existing in collection object that posted back, because it's contain only value
+            ////////        col.Data.Add(new XElement("name", collection.Name)); //if it has its ownm <name> or using DC <title> field
+
+            ////////        EntityType et = db.EntityTypes.Where(e => e.Id == collection.EntityTypeId).FirstOrDefault();
+            ////////        XAttribute attribute = new XAttribute("entity-type", et.Name);
+            ////////        col.Data.Add(attribute);
+            ////////        XElement meta = col.Data.Element("metadata-sets");
+            ////////        foreach (MetadataSet ms in et.MetadataSets)
+            ////////        {
+            ////////            MetadataSet mSet = db.XmlModels.Find(ms.Id) as MetadataSet;
+            ////////            meta.Add(mSet.Data);
+            ////////        }
+            ////////        //update the values
+            ////////        col.UpdateValues(collection);
+            ////////        col.EntityTypeId = collection.EntityTypeId;
+
+            ////////        //save the item
+            ////////        db.Collections.Add(col);
+            ////////        db.SaveChanges();
+            ////////    }
 
                
-            }
+            ////////}
             
-            return View();
+            ////////return View();
         }
 
         public Collection UpdateStoredItem(Collection changedItem)

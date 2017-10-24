@@ -11,7 +11,6 @@
     <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
 }
 
-
 @section Toolbar {
     @if (ViewBag.SelectEntityViewModel != null) {
         @Html.Partial("Partial/koEditToolbar")
@@ -21,14 +20,13 @@
         @Html.Partial("Partial/EditToolbar", Model, new ViewDataDictionary() { {"entityTypeId",  Model.EntityTypeId } }) 
     }
 }
-@ViewBag.Status <br />
 
 <div class="grid_12">
     <div class="box">
 
         @if (ViewBag.SelectEntityViewModel != null)
         {
-            @Html.Partial("Partial/SelectEntityType", ViewBag.SelectEntityViewModel as SelectEntityTypeViewModel)
+            @Html.Partial("Partial/SelectEntityType", ViewBag.SelectEntityViewModel as SelectEntityTypeViewModel, new ViewDataDictionary() { { "controller", "items" } })
         }
         else
         {
