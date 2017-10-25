@@ -27,6 +27,12 @@
                         <td>@type</td>
                     }
                     <td>
+                        @if (typeof(Catfish.Core.Models.Collection).IsAssignableFrom(m.GetType()))
+                        {
+                            <form action="@Url.Action("items", new { @id = m.Id })" method="get" class="inline">
+                                <button type="submit" value="Submit" class="glyphicon glyphicon-folder-open"></button>
+                            </form>
+                        }
                         <form action="@Url.Action("edit", new { @id = m.Id })" method="get" class="inline">
                             <button type="submit" value="Submit" class="glyphicon glyphicon-edit"></button>
                         </form>

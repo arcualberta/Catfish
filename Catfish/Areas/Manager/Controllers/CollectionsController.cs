@@ -45,9 +45,10 @@ namespace Catfish.Areas.Manager.Controllers
 
 
         // GET: Manager/Collections/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Items(int id)
         {
-            return View();
+            Collection model = Db.Collections.Where(et => et.Id == id).FirstOrDefault();
+            return View(model);
         }
 
         // GET: Manager/Collections/Edit/5
@@ -219,6 +220,8 @@ namespace Catfish.Areas.Manager.Controllers
             
             ////////return View();
         }
+
+
 
         public Collection UpdateStoredItem(Collection changedItem)
         { 

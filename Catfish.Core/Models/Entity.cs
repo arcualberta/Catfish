@@ -77,5 +77,21 @@ namespace Catfish.Core.Models
             throw new InvalidOperationException("Description of entities should be specified using metadata set mapping");
         }
 
+        public override void UpdateValues(XmlModel src)
+        {
+            base.UpdateValues(src);
+
+            var src_item = src as Entity;
+
+            foreach (MetadataSet ms in this.MetadataSets)
+            {
+                var src_ms = src_item.MetadataSets.Where(x => x.Ref == ms.Ref).FirstOrDefault();
+                ms.UpdateValues(src_ms);
+            }
+
+            this.Serialize();
+        }
+
+
     }
 }

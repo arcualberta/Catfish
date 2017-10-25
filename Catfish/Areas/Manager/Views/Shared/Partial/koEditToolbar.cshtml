@@ -1,4 +1,7 @@
 ﻿@Html.Partial("Partial/Tabs")
+
+@{ string reloadAction = string.IsNullOrEmpty(ViewData["reloadAction"] as string) ? "edit" : ViewData["reloadAction"] as string; }
+
 <div class="toolbar">
     <div class="inner">
         <ul>
@@ -8,7 +11,7 @@
                 </a>
             </li>
             <li>
-                <a href="@Url.Action("edit", new { id = Model.Id })" class="refresh">
+                <a href="@Url.Action(@reloadAction, new { id = Model.Id })" class="refresh">
                     @Piranha.Resources.Global.ToolbarReload
                 </a>
             </li>
