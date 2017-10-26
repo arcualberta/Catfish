@@ -19,8 +19,8 @@
             @foreach (var m in Model)
             {
                 <tr>
-                    <td>@m.Name</td>
-                    <td>@m.Description</td>
+                    <td>@m.GetName()</td>
+                    <td>@m.GetDescription()</td>
                     @if (showType)
                     {
                         string type = (m as Catfish.Core.Models.Entity).EntityType.Name;
