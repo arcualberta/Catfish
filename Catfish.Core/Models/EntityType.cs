@@ -25,6 +25,10 @@ namespace Catfish.Core.Models
 
         [JsonIgnore] //Ignore this in JSON serialization to avoid stuck in a continuous loop
         public virtual ICollection<EntityTypeAttributeMapping> AttributeMappings { get; set; }
+
+        [NotMapped]
+        public bool HasAssociations { get { return false; } }
+
         public EntityType()
         {
             MetadataSets = new List<MetadataSet>();

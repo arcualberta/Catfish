@@ -38,7 +38,7 @@ namespace Catfish.Areas.Manager.Controllers
                         if (typeof(Collection).IsAssignableFrom(model.GetType()))
                         {
                             Collection parent = model as Collection;
-                            foreach(var c in vm.ChildEntityList)
+                            foreach (var c in vm.ChildEntityList)
                             {
                                 Aggregation c2 = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as Aggregation;
                                 parent.ChildMembers.Add(c2);
@@ -50,6 +50,13 @@ namespace Catfish.Areas.Manager.Controllers
                                 parent.ChildMembers.Remove(c2);
                             }
                         }
+                        else if (typeof(Item).IsAssignableFrom(model.GetType()))
+                        {
+
+                        }
+                        else
+                            throw new Exception("Save method is not defined for the model type " + model.GetType().ToString());
+
                         ////vm.UpdateDataModel(model, Db);
                         Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     }

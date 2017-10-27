@@ -10,6 +10,10 @@ namespace Catfish.Core.Models
 
         public virtual ICollection<Item> ChildRelations { get; set; }
 
+        [NotMapped]
+        public bool HasAssociations { get { return ParentMembers.Count > 0 || ChildMembers.Count > 0 || ChildRelations.Count > 0; } }
+
+
         public Aggregation()
         {
             ParentMembers = new List<Aggregation>();

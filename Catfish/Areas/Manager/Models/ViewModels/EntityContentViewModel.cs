@@ -33,7 +33,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
             ChildOffset = 0;
             MasterOffset = 0;
-            PageSize = 25;
+            PageSize = Int32.MaxValue; // 25;
         }
 
         public void LoadNextChildrenSet(IEnumerable<Entity> src)
@@ -51,7 +51,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             if (MasterCount == 0)
                 MasterCount = src.Count();
 
-            IEnumerable<Entity> elements = src.Skip(MasterOffset).Take(PageSize);
+            IEnumerable<Entity> elements = src.Where(e => e.Id != Id).Skip(MasterOffset).Take(PageSize);
             foreach (Entity e in elements)
                 MasterEntityList.Add(new EntityViewModel(e));
         }

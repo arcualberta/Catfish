@@ -32,6 +32,8 @@ namespace Catfish.Tests
             }
             db.SaveChanges();
         }
+
+        [TestMethod]
         public void CreateItems()
         {
             int COUNT = 50;

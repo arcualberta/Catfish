@@ -28,18 +28,19 @@
                     </div>
                 </div>
 
-                <div class="col-md-5">
+                <div class="col-sm-5">
                     <h4>Children</h4>
                     <div>@ko.Html.ListBox(m => m.ChildEntityList, new { }, e => e.Label).SelectedOptions(m => m.SelectedChildEntities)</div>
                 </div>
-                <div class="col-md-2 transfer-btn-panel">
-
+                <div class="col-sm-2 hidden-xs transfer-btn-panel">
                     <div>@ko.Html.Button("", "AddChildren", "EntityAssociation", new { }, new { @class = "glyphicon glyphicon-arrow-left" }).Enable(m => m.SelectedMasterEntities.Count > 0)</div>
                     <div>@ko.Html.Button("", "RemoveChildren", "EntityAssociation", new { }, new { @class = "glyphicon glyphicon-arrow-right" }).Enable(m => m.SelectedChildEntities.Count > 0)</div>
-                    @*glyphicon glyphicon-arrow-left*@
-
                 </div>
-                <div class="col-md-5">
+                <div class="col-sm-2 visible-xs transfer-btn-panel-vertical">
+                    <span>@ko.Html.Button("", "AddChildren", "EntityAssociation", new { }, new { @class = "glyphicon glyphicon-arrow-up" }).Enable(m => m.SelectedMasterEntities.Count > 0)</span>
+                    <span>@ko.Html.Button("", "RemoveChildren", "EntityAssociation", new { }, new { @class = "glyphicon glyphicon-arrow-down" }).Enable(m => m.SelectedChildEntities.Count > 0)</span>
+                </div>
+                <div class="col-sm-5">
                     <h4>Master List</h4>
                     <div>@ko.Html.ListBox(m => m.MasterEntityList, new { }, e => e.Label).SelectedOptions(m => m.SelectedMasterEntities)</div>
                 </div>

@@ -35,6 +35,11 @@ span.status{
     border-left: solid 1px #eee;
 }
 
+    .list button[disabled] {
+        color: #7d1a1a !important;
+        background: #808080;
+    } 
+
 form.inline{
     display:inline;
     margin: 0 5px;
@@ -84,3 +89,25 @@ form.inline{
         .entity-content .transfer-btn-panel button {
             margin: 5px;
         }
+
+    .entity-content .transfer-btn-panel-vertical {
+        text-align: center !important;
+    }
+
+    .entity-content table.list {
+        margin-bottom: 10px;
+        height: 300px;
+        display:; -moz-groupbox; 
+        width:97%;
+    }
+        .entity-content table.list tbody {
+            width: 100%;
+        }
+        .entity-content table.list tbody {
+            overflow-y: scroll;
+            height: 200px;
+            position: absolute
+        }
+    table.list td {
+        padding-left: 15px 0 !important;
+    }

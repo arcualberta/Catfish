@@ -1,47 +1,56 @@
 ﻿
 @{ 
     bool showType = ViewData["showType"] != null ? (bool)ViewData["showType"] : false;
+    bool showDeleteButton = ViewData["showDeleteButton"] != null ? (bool)ViewData["showDeleteButton"] : false;
 }
-<div class="grid_12 bs">
-    <table class="list">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                @if (showType)
-                {
-                    <th>Type</th>
-                }
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var m in Model)
-            {
-                <tr>
-                    <td class="col-md-1">@m.Id</td>
-                    <td class="col-md-7">@m.Name</td>
+@{ var nameclass = showType ? "col-md-7" : "col-md-8"; }
+<div class=" bs">
+    <div class="container">
+        <table class="list col-lg-12">
+            <thead class="list col-lg-12">
+                <tr class="list col-lg-12">
+                    <th class="col-md-1">Id</th>
+                    <th class="nameclass">Name</th>
                     @if (showType)
                     {
-                        string type = (m as Catfish.Core.Models.Entity).EntityType.Name;
-                        <td>@type</td>
+                        <th class="col-md-1">Type</th>
                     }
-                    <td>
-                        @if (typeof(Catfish.Core.Models.Collection).IsAssignableFrom(m.GetType()))
-                        {
-                            <form action="@Url.Action("content", new { @id = m.Id })" method="get" class="inline">
-                                <button type="submit" value="Submit" class="glyphicon glyphicon-folder-open"></button>
-                            </form>
-                        }
-                        <form action="@Url.Action("edit", new { @id = m.Id })" method="get" class="inline">
-                            <button type="submit" value="Submit" class="glyphicon glyphicon-edit"></button>
-                        </form>
-                        <form action="@Url.Action("delete", new { @id = m.Id })" method="post" class="inline">
-                            <button type="submit" value="Submit" class="glyphicon glyphicon-remove" onclick="return confirm('Confirm deletion');"></button>
-                        </form>
-                    </td>
+                    <th class="col-md-3">Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody class="list col-lg-12">
+                @foreach (var m in Model)
+            {
+                    <tr class="list col-lg-10">
+                        <td class="col-md-1">@m.Id</td>
+                        <td class="nameclass">@m.Name</td>
+                        @if (showType)
+                        {
+                            string type = (m as Catfish.Core.Models.Entity).EntityType.Name;
+                            <td class="col-md-1">@type</td>
+                        }
+                        <td class="col-md-3">
+                            <form action="@Url.Action("edit", new { @id = m.Id })" method="get" class="inline">
+                                <button type="submit" value="Submit" class="glyphicon glyphicon-edit"></button>
+                            </form>
+                            @if (typeof(Catfish.Core.Models.Collection).IsAssignableFrom(m.GetType()) ||
+                                 typeof(Catfish.Core.Models.Item).IsAssignableFrom(m.GetType()))
+                            {
+                                <form action="@Url.Action("associations", new { @id = m.Id })" method="get" class="inline">
+                                    <button type="submit" value="Submit" class="glyphicon glyphicon-link"></button>
+                                </form>
+                            }
+                            @if (showDeleteButton)
+                            {
+                                <form action="@Url.Action("delete", new { @id = m.Id })" method="post" class="inline">
+                                    @{ var isDisabled = m.HasAssociations ? "disabled='disabled'" : ""; }
+                                    <button type="submit" value="Submit" class="glyphicon glyphicon-remove" onclick="return confirm('Confirm deletion');" @isDisabled></button>
+                                </form>
+                                        }
+                        </td>
+                    </tr>
+                                        }
+            </tbody>
+        </table>
+    </div>
 </div>
