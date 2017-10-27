@@ -49,9 +49,18 @@ form.inline{
     margin-right: 15px;
 }
 
+.entity-content {
+    margin:25px 0;
+}
+
+.entity-content h4 {
+    font-size: 14px !important;
+}
+
 .entity-content select {
     width: 100%;
     height: 240px !important;
+    margin-bottom: 15px !important;
 }
 
 .entity-content .transfer-btn-panel{
