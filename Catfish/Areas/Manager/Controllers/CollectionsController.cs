@@ -38,7 +38,7 @@ namespace Catfish.Areas.Manager.Controllers
 
 
         // GET: Manager/Collections/children/5
-        public ActionResult Children(int id)
+        public ActionResult Content(int id)
         {
             Collection model = Db.Collections.Where(et => et.Id == id).FirstOrDefault();
             if (model == null)

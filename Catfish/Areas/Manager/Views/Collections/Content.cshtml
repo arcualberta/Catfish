@@ -1,0 +1,26 @@
+﻿@model Catfish.Core.Models.Collection
+@using Catfish.Areas.Manager.Models.ViewModels;
+
+@{ ViewBag.Title = "Collection Content"; }
+
+@section HEAD
+{
+    <script type="text/javascript" src="~/Scripts/knockout-3.1.0.js"></script>
+    <script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
+    <script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
+}
+
+@section Toolbar {
+    @Html.Partial("Partial/koEditToolbar", Model, new ViewDataDictionary() { { "reloadAction", "items" } })
+}
+
+<div class="grid_12">
+    <h3>@Model.GetName()</h3>
+
+    @{ EntityContentViewModel childCollections = ViewBag.ChildCollections as EntityContentViewModel; }
+    @Html.Partial("Partial/EntityContent", childCollections, new ViewDataDictionary() { { "title", "Child Collections" } })
+
+    @*@{ EntityContentViewModel parentCollections = ViewBag.ChildCollections as EntityContentViewModel; }
+    @Html.Partial("Partial/EntityContent", parentCollections, new ViewDataDictionary() { { "title", "Parent Collections" } })*@
+</div>

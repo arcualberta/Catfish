@@ -55,7 +55,15 @@ namespace Catfish.Core.Models
         }
         public override void SetName(string val, string lang = null)
         {
-            throw new InvalidOperationException("Name of entities should be specified using metadata set mapping");
+            EntityTypeAttributeMapping mapping = EntityType.GetNameMapping();
+            if (mapping == null)
+                throw new Exception("Name mapping metadata set is not specified for this entity type");
+
+            if (string.IsNullOrEmpty(mapping.FieldName))
+                throw new Exception("Field is not specified in the Name Mapping of this entity type");
+
+            MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == mapping.MetadataSet.Name).FirstOrDefault();
+            metadataSet.SetFieldValue(mapping.FieldName, val, lang);
         }
         public override string GetDescription(string lang = null)
         {
@@ -71,10 +79,17 @@ namespace Catfish.Core.Models
 
             return GetChildText("description", Data, Lang(lang));
         }
-
         public override void SetDescription(string val, string lang = null)
         {
-            throw new InvalidOperationException("Description of entities should be specified using metadata set mapping");
+            EntityTypeAttributeMapping mapping = EntityType.GetDescriptionMapping();
+            if (mapping == null)
+                throw new Exception("Description mapping metadata set is not specified for this entity type");
+
+            if (string.IsNullOrEmpty(mapping.FieldName))
+                throw new Exception("Field is not specified in the Description Mapping of this entity type");
+
+            MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == mapping.MetadataSet.Name).FirstOrDefault();
+            metadataSet.SetFieldValue(mapping.FieldName, val, lang);
         }
 
         public override void UpdateValues(XmlModel src)

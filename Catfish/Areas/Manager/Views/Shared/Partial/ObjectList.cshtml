@@ -6,8 +6,8 @@
     <table class="list">
         <thead>
             <tr>
+                <th>Id</th>
                 <th>Name</th>
-                <th>Description</th>
                 @if (showType)
                 {
                     <th>Type</th>
@@ -19,8 +19,8 @@
             @foreach (var m in Model)
             {
                 <tr>
-                    <td>@m.Name</td>
-                    <td>@m.Description</td>
+                    <td class="col-md-1">@m.Id</td>
+                    <td class="col-md-7">@m.Name</td>
                     @if (showType)
                     {
                         string type = (m as Catfish.Core.Models.Entity).EntityType.Name;
@@ -29,7 +29,7 @@
                     <td>
                         @if (typeof(Catfish.Core.Models.Collection).IsAssignableFrom(m.GetType()))
                         {
-                            <form action="@Url.Action("children", new { @id = m.Id })" method="get" class="inline">
+                            <form action="@Url.Action("content", new { @id = m.Id })" method="get" class="inline">
                                 <button type="submit" value="Submit" class="glyphicon glyphicon-folder-open"></button>
                             </form>
                         }

@@ -43,6 +43,12 @@ namespace Catfish.Areas.Manager.Controllers
                                 Aggregation c2 = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as Aggregation;
                                 parent.ChildMembers.Add(c2);
                             }
+
+                            foreach (var c in vm.RemovalPendingChildEntities)
+                            {
+                                Aggregation c2 = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as Aggregation;
+                                parent.ChildMembers.Remove(c2);
+                            }
                         }
                         ////vm.UpdateDataModel(model, Db);
                         Db.Entry(model).State = System.Data.Entity.EntityState.Modified;

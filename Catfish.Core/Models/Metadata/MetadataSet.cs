@@ -35,28 +35,6 @@ namespace Catfish.Core.Models.Metadata
 
 
 
-        ////[NotMapped]
-        ////public virtual List<MetadataField> Fields
-        ////{
-        ////    get
-        ////    {
-        ////        if (mFields == null)
-        ////        {
-        ////            if (Data != null)
-        ////            {
-        ////                List<XmlModel> fields = GetChildModels("fields/field", Data);
-        ////                mFields = fields.Select(f => f as MetadataField).ToList();
-        ////            }
-        ////            else
-        ////            {
-        ////                mFields = new List<MetadataField>();
-        ////            }
-        ////        }
-        ////        return mFields;
-        ////    }
-        ////    //set;
-        ////}
-
         private MetadataDefinition mDefinition;
 
         [ScriptIgnore(ApplyToOverrides = true)]
@@ -123,5 +101,16 @@ namespace Catfish.Core.Models.Metadata
                 field.UpdateValues(src_field);
             }
         }
+
+        public void SetFieldValue(string fieldName, string fieldValue, string language)
+        {
+            SetFieldValue(fieldName, new List<string> { fieldValue }, language);
+        }
+        public void SetFieldValue(string fieldName, IEnumerable<string> fieldValues, string language)
+        {
+            MetadataField field = Fields.Where(f => f.Name == fieldName).FirstOrDefault();
+            field.SetValues(fieldValues, language);
+        }
+
     }
 }

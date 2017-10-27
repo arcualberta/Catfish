@@ -17,13 +17,19 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public int PageSize { get; set; }
 
-        public List<EntityViewModel> SelectedEntities { get; set; }
+        public List<EntityViewModel> SelectedMasterEntities { get; set; }
+        public List<EntityViewModel> SelectedChildEntities { get; set; }
+
+        public List<EntityViewModel> RemovalPendingChildEntities { get; set; }
+
 
         public EntityContentViewModel()
         {
             ChildEntityList = new List<EntityViewModel>();
             MasterEntityList = new List<EntityViewModel>();
-            SelectedEntities = new List<EntityViewModel>();
+            SelectedMasterEntities = new List<EntityViewModel>();
+            SelectedChildEntities = new List<EntityViewModel>();
+            RemovalPendingChildEntities = new List<EntityViewModel>();
 
             ChildOffset = 0;
             MasterOffset = 0;
@@ -52,23 +58,26 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public void Associate()
         {
-            foreach (EntityViewModel e in SelectedEntities)
+            foreach (EntityViewModel e in SelectedMasterEntities)
             {
                 if (e.Id != this.Id && ChildEntityList.Where(c => c.Id == e.Id).Any() == false)
                     ChildEntityList.Add(e);
             }
-            SelectedEntities.Clear();
+            SelectedMasterEntities.Clear();
         }
 
         public void Disassociate()
         {
-            foreach (EntityViewModel e in SelectedEntities)
+            foreach (EntityViewModel e in SelectedChildEntities)
             {
                 EntityViewModel rem = ChildEntityList.Where(le => le.Id == e.Id).FirstOrDefault();
                 if (rem != null)
+                {
+                    RemovalPendingChildEntities.Add(rem);
                     ChildEntityList.Remove(rem);
+                }
             }
-            SelectedEntities.Clear();
+            SelectedChildEntities.Clear();
         }
 
 
