@@ -1,6 +1,5 @@
 ﻿@model Catfish.Core.Models.Collection
-
-@{  ViewBag.Title = "Collection Content"; }
+@using Catfish.Areas.Manager.Models.ViewModels;
 
 @section HEAD
 {
@@ -10,4 +9,13 @@
     <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
 }
 
+@{  
+    ViewBag.Title = "Collection Content";
+    EntityContentViewModel childCollections = ViewBag.ChildCollections as EntityContentViewModel;
+
+ }
+
 @Html.Partial("Partial/koEditToolbar", Model, new ViewDataDictionary() { { "reloadAction", "items" } })
+
+@Html.Partial("Partial/EntityContent", childCollections, new ViewDataDictionary() { { "title", "Child Collections" } })
+

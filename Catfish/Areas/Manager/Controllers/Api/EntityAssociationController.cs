@@ -9,19 +9,31 @@ namespace Catfish.Areas.Manager.Controllers
 {
     public class EntityAssociationController : CatfishController
     {
-        public JsonResult AddSelection(EntityAssociationViewModel entityVM)
+        public JsonResult AddChildren(EntityContentViewModel model)
         {
-            entityVM.Associate();
-            //ViewBag.ChildItems = entityVM;
-            return Json(entityVM);
+            model.Associate();
+            return Json(model);
         }
 
-        public JsonResult RemoveItem(EntityAssociationViewModel entityVM, int itemIndex)
+        public JsonResult RemoveChildren(EntityContentViewModel model)
         {
-            entityVM.AssociatedEntities.RemoveAt(itemIndex);
-            //ViewBag.ChildItems = entityVM;
-            return Json(entityVM);
+            model.Disassociate();
+            return Json(model);
         }
+
+        ////public JsonResult AddSelection(EntityContentViewModel entityVM)
+        ////{
+        ////    entityVM.Associate();
+        ////    //ViewBag.ChildItems = entityVM;
+        ////    return Json(entityVM);
+        ////}
+
+        ////public JsonResult RemoveItem(EntityContentViewModel entityVM, int itemIndex)
+        ////{
+        ////    entityVM.ChildEntityList.RemoveAt(itemIndex);
+        ////    //ViewBag.ChildItems = entityVM;
+        ////    return Json(entityVM);
+        ////}
 
     }
 }

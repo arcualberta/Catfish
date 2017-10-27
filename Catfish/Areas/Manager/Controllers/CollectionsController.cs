@@ -1,18 +1,11 @@
 ﻿using Catfish.Areas.Manager.Models.ViewModels;
 using Catfish.Core.Models;
-using Catfish.Core.Models.Metadata;
 using Catfish.Core.Services;
-using Catfish.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.IO;
 using System.Linq;
-using System.Web;
-using System.Web.Configuration;
 using System.Web.Mvc;
-using System.Web.Script.Serialization;
-using System.Xml.Linq;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -44,10 +37,22 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
 
-        // GET: Manager/Collections/Details/5
-        public ActionResult Items(int id)
+        // GET: Manager/Collections/children/5
+        public ActionResult Children(int id)
         {
             Collection model = Db.Collections.Where(et => et.Id == id).FirstOrDefault();
+            if (model == null)
+                throw new Exception("Collection not found");
+
+            CollectionService srv = new CollectionService(Db);
+
+            EntityContentViewModel childCollections = new EntityContentViewModel();
+            childCollections.Id = model.Id;
+            childCollections.LoadNextChildrenSet(model.ChildCollections);
+            childCollections.LoadNextMasterSet(db.Collections);
+
+            ViewBag.ChildCollections = childCollections;
+
             return View(model);
         }
 

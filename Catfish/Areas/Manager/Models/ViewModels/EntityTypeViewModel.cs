@@ -2,12 +2,9 @@
 using Catfish.Core.Models.Attributes;
 using Catfish.Core.Models.Metadata;
 using Catfish.Core.Services;
-using Catfish.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Web;
 using static Catfish.Core.Models.EntityType;
 
 namespace Catfish.Areas.Manager.Models.ViewModels

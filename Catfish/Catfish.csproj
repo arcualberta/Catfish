@@ -207,7 +207,8 @@
     <Content Include="Areas\Manager\Views\Shared\Partial\koEditToolbar.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\SelectEntityType.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\EditEntity.cshtml" />
-    <Content Include="Areas\Manager\Views\Collections\Items.cshtml" />
+    <Content Include="Areas\Manager\Views\Collections\Children.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\Partial\EntityContent.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
@@ -239,7 +240,7 @@
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
-    <Compile Include="Areas\Manager\Models\ViewModels\EntityAssociationViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\EntityContentViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\SelectEntityTypeViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityTypeViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\KoBaseViewModel.cs" />
@@ -250,7 +251,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\EntityViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\EntityViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -283,6 +284,7 @@
     <Folder Include="Areas\Manager\Views\Catfish\" />
     <Folder Include="Areas\Manager\Views\EntityAssociationList\" />
     <Folder Include="Areas\Manager\Views\Entity\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj">

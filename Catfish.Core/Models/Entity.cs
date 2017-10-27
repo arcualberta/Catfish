@@ -92,6 +92,20 @@ namespace Catfish.Core.Models
             this.Serialize();
         }
 
+        public string Name
+        {
+            get
+            {
+                return GetName();
+            }
+        }
+        public string Description
+        {
+            get
+            {
+                return GetDescription();
+            }
+        }
 
     }
 }

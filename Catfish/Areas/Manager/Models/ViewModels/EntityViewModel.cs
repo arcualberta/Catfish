@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Catfish.Models
+namespace Catfish.Areas.Manager.Models.ViewModels
 {
     public class EntityViewModel
     {
