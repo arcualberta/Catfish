@@ -9,31 +9,137 @@
     <script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
     <script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
     <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
+
+    <script type="text/javascript">
+        function updateFileListView(data) {
+
+        }
+
+        function uploadFile() {
+            var myFrm = new FormData();     //create a new form
+            myFrm.append("itemId", @Model.Id);
+
+            var uploadField = $("#uploadField")[0];     //grab the FileUpload object
+
+            for (var i = 0; i < uploadField.files.length; i++) {
+                myFrm.append("inputFile" + i, uploadField.files[i]);
+            }
+
+            $("#progressBar").show();
+            $("#uploadButton").attr('disabled', 'disabled');
+            $("#uploadField").attr('disabled', 'disabled');
+
+            var oReg = new XMLHttpRequest();
+
+            var stateChange = function (data) {
+                if (oReg.readyState === 4) {  //after successfull execute the function then it will execute what ever inside this if {}
+                    if (oReg.status === 200) {
+                        //Updating the value of the hidden field which carries the ID of this FileUpload object in the page
+                        updateFileListView(data);
+                        $("#uploadErrorMessage").text("");
+                    }
+                    else {
+                        //Error
+                        $("#uploadErrorMessage").text("File upload failed: " + oReg.statusText);
+                    }
+                    $("#uploadField").val("");
+                    $("#progressBar").hide();
+                    $("#uploadButton").prop('disabled', false);
+                    $("#uploadField").prop('disabled', false);
+                }
+            };
+
+            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                oReg.onload = function (event) { stateChange(event.target.response); };
+            } else {
+                oReg.onreadystatechange = function (data) { stateChange(data.srcElement.responseText); };
+            }
+            var uploadUrl = "@Url.Action("upload", "items", new { id = Model.Id })";
+            oReg.open('POST', uploadUrl);
+            oReg.send(myFrm);
+
+        }// END function uploadFile()
+
+        $(function () {
+            $("#progressBar").hide();
+        });
+    </script>
 }
 
 @section Toolbar {
-    @if (ViewBag.SelectEntityViewModel != null) {
+    @if (ViewBag.SelectEntityViewModel != null)
+    {
         @Html.Partial("Partial/koEditToolbar")
     }
-    else { 
+    else
+    {
 
-        @Html.Partial("Partial/EditToolbar", Model, new ViewDataDictionary() { {"entityTypeId",  Model.EntityTypeId } }) 
+        @Html.Partial("Partial/EditToolbar", Model, new ViewDataDictionary() { { "entityTypeId", Model.EntityTypeId } })
     }
 }
 
-<div class="grid_12">
-    <div class="box">
 
-        @if (ViewBag.SelectEntityViewModel != null)
-        {
+@if (ViewBag.SelectEntityViewModel != null)
+{
+    <div class="grid_12 bs">
+        <div class="box">
+
             @Html.Partial("Partial/SelectEntityType", ViewBag.SelectEntityViewModel as SelectEntityTypeViewModel, new ViewDataDictionary() { { "controller", "items" } })
-        }
-        else
-        {
-            using (Html.BeginForm("Edit", "Items", FormMethod.Post))
+        </div>
+    </div>
+
+}
+else
+{
+    <div class="grid_12 bs">
+        <div class="box">
+            <div class="title">
+                Metadata
+            </div>
+
+            @using (Html.BeginForm("Edit", "Items", FormMethod.Post))
             {
                 @Html.Partial("Partial/EditEntity")
             }
-        }
+        </div>
     </div>
-</div>
+
+    <div class="grid_12 bs">
+        <div class="box">
+            <div class="title">
+                Files
+            </div>
+            <div class="inner">
+                @if (Model.Id == 0)
+                {
+                    <div class="alert alert-info">Please save this item first in order to enable file uploading.</div>
+                }
+                else
+                {
+                    if (Model.Files.Count == 0)
+                    {
+                        <p>No files exist</p>
+                    }
+                }
+
+                <div id="thumbnailPanel">
+                    @foreach (var file in Model.Files)
+                    {
+                        FileViewModel vm = new FileViewModel(file, Model.Id, Request.RequestContext);
+                        <span class="fileThumbnail"><img src="@vm.Thumbnail" alt="@vm.FileName" /> @vm.FileName</span>
+                    }
+                </div>
+                <div class="inner" style="clear:both">
+                    <form enctype="multipart/form-data" id="fileUploadForm">
+                        <input type='file' id='uploadField' name="files" multiple="multiple" />
+                        <input type="button" value="Upload" id="uploadButton" onclick="uploadFile(); return false;" />
+                    </form>
+                    <div id="progressBar"><progress></progress></div>
+                    <div id="uploadErrorMessage"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+

@@ -40,9 +40,8 @@ namespace Catfish.Core.Services
             return filename;
         }
 
-        public List<DataFile> UploadFile(HttpContextBase context, HttpRequestBase request)
+        public List<DataFile> UploadFile(int itemId, HttpContextBase context, HttpRequestBase request)
         {
-            List<DataFile> files = new List<DataFile>();
             string folder = Path.Combine(UploadRoot, "Temp");
             if (!Directory.Exists(folder))
             {
@@ -51,6 +50,7 @@ namespace Catfish.Core.Services
                     throw new Exception("Unable to create the upload folder " + folder);
             }
 
+            List<DataFile> newFiles = new List<DataFile>();
             for (int i = 0; i < request.Files.Count; i++)
             {
                 DataFile file = new DataFile();
@@ -65,10 +65,18 @@ namespace Catfish.Core.Services
                 request.Files[i].SaveAs(Path.Combine(UploadRoot, file.Path, file.GuidName));
 
                 file.Serialize();
-                Db.XmlModels.Add(file);
-                files.Add(file);
+                newFiles.Add(file);
             }
-            return files;
+
+            Item parent = Db.Items.Where(i => i.Id == itemId).FirstOrDefault();
+            if (parent == null)
+                throw new Exception("Parent item not found");
+            List<DataFile> currentFiles = parent.Files;
+            currentFiles.AddRange(newFiles);
+            parent.Files = currentFiles; //NOTE: we have to assign the whole array by this way to make sure file info are added to the XML description of the item.
+            parent.Serialize();
+            Db.Entry(parent).State = EntityState.Modified;
+            return newFiles;
         }
 
         public DataFile GetFile(int id, string name)

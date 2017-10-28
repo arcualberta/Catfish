@@ -162,6 +162,7 @@ namespace Catfish.Areas.Manager.Controllers
                 ItemService srv = new ItemService(db);
 
                 Item dbModel = srv.UpdateStoredItem(model);
+
                 db.SaveChanges();
                 ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
 
@@ -222,12 +223,12 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
-        public JsonResult Upload()
+        public JsonResult Upload(int id)
         {
             try
             {
                 ItemService srv = new ItemService(db);
-                List<DataFile> files = srv.UploadFile(HttpContext, Request);
+                List<DataFile> files = srv.UploadFile(id, HttpContext, Request);
                 db.SaveChanges();
 
                 UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);

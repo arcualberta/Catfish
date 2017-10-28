@@ -111,3 +111,16 @@ form.inline{
     table.list td {
         /*padding-left: 15px 0 !important;*/
     }
+
+#thumbnailPanel{
+    margin: 10px;
+    float:left;
+}
+    #thumbnailPanel .fileThumbnail {
+        height: 40px;
+        margin: 10px 15px 10px 0;
+        font-size:smaller;
+    }
+    #thumbnailPanel .fileThumbnail img {
+        height: 40px;
+    }

@@ -243,6 +243,8 @@
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityContentViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\FileListViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\FileViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\SelectEntityTypeViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityTypeViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\KoBaseViewModel.cs" />
