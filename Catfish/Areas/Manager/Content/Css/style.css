@@ -109,5 +109,5 @@ form.inline{
             position: absolute
         }
     table.list td {
-        padding-left: 15px 0 !important;
+        /*padding-left: 15px 0 !important;*/
     }

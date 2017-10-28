@@ -6,11 +6,11 @@
 @{ var nameclass = showType ? "col-md-7" : "col-md-8"; }
 <div class=" bs">
     <div class="container">
-        <table class="list col-lg-12">
+        <table class="list col-md-12">
             <thead class="list col-lg-12">
                 <tr class="list col-lg-12">
                     <th class="col-md-1">Id</th>
-                    <th class="nameclass">Name</th>
+                    <th class="@nameclass">Name</th>
                     @if (showType)
                     {
                         <th class="col-md-1">Type</th>
@@ -23,7 +23,7 @@
             {
                     <tr class="list col-lg-10">
                         <td class="col-md-1">@m.Id</td>
-                        <td class="nameclass">@m.Name</td>
+                        <td class="@nameclass">@m.Name</td>
                         @if (showType)
                         {
                             string type = (m as Catfish.Core.Models.Entity).EntityType.Name;

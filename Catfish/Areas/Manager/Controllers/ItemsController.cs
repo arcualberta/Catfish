@@ -175,6 +175,30 @@ namespace Catfish.Areas.Manager.Controllers
             return View(model);
         }
 
+        public ActionResult Associations(int id)
+        {
+            Item model = Db.Items.Where(et => et.Id == id).FirstOrDefault();
+            if (model == null)
+                throw new Exception("Item not found");
+
+            ////CollectionService srv = new CollectionService(Db);
+
+            ////EntityContentViewModel childCollections = new EntityContentViewModel();
+            ////childCollections.Id = model.Id;
+            ////childCollections.LoadNextChildrenSet(model.ChildCollections);
+            ////childCollections.LoadNextMasterSet(db.Collections);
+            ////ViewBag.ChildCollections = childCollections;
+
+            ////EntityContentViewModel childItems = new EntityContentViewModel();
+            ////childItems.Id = model.Id;
+            ////childItems.LoadNextChildrenSet(model.ChildItems);
+            ////childItems.LoadNextMasterSet(db.Items);
+            ////ViewBag.ChildItems = childItems;
+
+            return View(model);
+        }
+
+
         [HttpGet]
         public ActionResult UploadTest()
         {

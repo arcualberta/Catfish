@@ -1,4 +1,4 @@
-﻿@model Catfish.Core.Models.Collection
+﻿@model Catfish.Core.Models.Item
 @using Catfish.Areas.Manager.Models.ViewModels;
 @using Catfish.Core.Models;
 
@@ -21,9 +21,10 @@
 
     @Html.Partial("Partial/ParentCollectionList", Model)
 
-    @{ EntityContentViewModel childCollections = ViewBag.ChildCollections as EntityContentViewModel; }
+
+    @*@{ EntityContentViewModel childCollections = ViewBag.ChildCollections as EntityContentViewModel; }
     @Html.Partial("Partial/EntityContent", childCollections, new ViewDataDictionary() { { "title", "Child Collections" } })
 
     @{ EntityContentViewModel childItems = ViewBag.ChildItems as EntityContentViewModel; }
-    @Html.Partial("Partial/EntityContent", childItems, new ViewDataDictionary() { { "title", "Items" } })
+    @Html.Partial("Partial/EntityContent", childItems, new ViewDataDictionary() { { "title", "Items" } })*@
 </div>
