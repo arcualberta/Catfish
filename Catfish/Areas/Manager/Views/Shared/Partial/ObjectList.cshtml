@@ -1,14 +1,14 @@
 ﻿
-@{ 
+@{
     bool showType = ViewData["showType"] != null ? (bool)ViewData["showType"] : false;
     bool showDeleteButton = ViewData["showDeleteButton"] != null ? (bool)ViewData["showDeleteButton"] : false;
 }
 @{ var nameclass = showType ? "col-md-7" : "col-md-8"; }
 <div class=" bs">
     <div class="container">
-        <table class="list col-md-12">
-            <thead class="list col-lg-12">
-                <tr class="list col-lg-12">
+        <table class="table">
+            <thead>
+                <tr>
                     <th class="col-md-1">Id</th>
                     <th class="@nameclass">Name</th>
                     @if (showType)
@@ -18,18 +18,18 @@
                     <th class="col-md-3">Actions</th>
                 </tr>
             </thead>
-            <tbody class="list col-lg-12">
+            <tbody class="">
                 @foreach (var m in Model)
-            {
-                    <tr class="list col-lg-10">
-                        <td class="col-md-1">@m.Id</td>
-                        <td class="@nameclass">@m.Name</td>
+                {
+                    <tr>
+                        <td>@m.Id</td>
+                        <td>@m.Name</td>
                         @if (showType)
                         {
                             string type = (m as Catfish.Core.Models.Entity).EntityType.Name;
-                            <td class="col-md-1">@type</td>
+                            <td class="">@type</td>
                         }
-                        <td class="col-md-3">
+                        <td>
                             <form action="@Url.Action("edit", new { @id = m.Id })" method="get" class="inline">
                                 <button type="submit" value="Submit" class="glyphicon glyphicon-edit"></button>
                             </form>

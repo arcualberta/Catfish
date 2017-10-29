@@ -97,9 +97,14 @@ form.inline{
     .entity-content table.list {
         margin-bottom: 10px;
         height: 300px;
-        display:; -moz-groupbox; 
+        display: -moz-groupbox; 
         width:97%;
     }
+
+    .entity-content table.list.short {
+        height: 150px;
+    }
+
         .entity-content table.list tbody {
             width: 100%;
         }
@@ -108,9 +113,6 @@ form.inline{
             height: 200px;
             position: absolute
         }
-    table.list td {
-        /*padding-left: 15px 0 !important;*/
-    }
 
 #thumbnailPanel{
     margin: 10px;
