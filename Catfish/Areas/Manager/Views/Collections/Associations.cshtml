@@ -22,8 +22,8 @@
     @Html.Partial("Partial/ParentCollectionList", Model)
 
     @{ EntityContentViewModel childCollections = ViewBag.ChildCollections as EntityContentViewModel; }
-    @Html.Partial("Partial/EntityContent", childCollections, new ViewDataDictionary() { { "title", "Child Collections" } })
+    @Html.Partial("Partial/EntityContent", childCollections, new ViewDataDictionary() { { "title", "Child Collections" }, { "saveAction", "Save" } })
 
     @{ EntityContentViewModel childItems = ViewBag.ChildItems as EntityContentViewModel; }
-    @Html.Partial("Partial/EntityContent", childItems, new ViewDataDictionary() { { "title", "Child Items" } })
+    @Html.Partial("Partial/EntityContent", childItems, new ViewDataDictionary() { { "title", "Child Items" }, { "saveAction", "Save" } })
 </div>

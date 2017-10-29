@@ -4,6 +4,7 @@
 
 @{ 
     string title = string.IsNullOrEmpty(ViewData["title"] as string) ? "Children" : ViewData["title"] as string;
+    string saveAction = ViewData["saveAction"] as string;
 
     var contextName = ViewBag.contanierId as string;
     if (string.IsNullOrEmpty(contextName))
@@ -24,7 +25,7 @@
                     <div class="bs right">
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
-                        @ko.Html.Button("Save", "Save", "EntityAssociation")
+                        @ko.Html.Button("Save", saveAction, "EntityAssociation")
                     </div>
                 </div>
 
