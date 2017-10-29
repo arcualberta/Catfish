@@ -121,8 +121,8 @@ namespace Catfish.Areas.Manager.Controllers
                 model = db.XmlModels.Find(id) as Item;
                 model.Deserialize();
 
-                if(model.Files.Any()) //MR Sept 5 2017---chek if model has any file associated before pulling it
-                    ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
+                ////if(model.Files.Any()) //MR Sept 5 2017---chek if model has any file associated before pulling it
+                ////    ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
 
             }
             else
@@ -164,7 +164,7 @@ namespace Catfish.Areas.Manager.Controllers
                 Item dbModel = srv.UpdateStoredItem(model);
 
                 db.SaveChanges();
-                ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
+                ////ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
 
                 if (model.Id == 0)
                     return RedirectToAction("Edit", new { id = dbModel.Id });
@@ -206,21 +206,21 @@ namespace Catfish.Areas.Manager.Controllers
             return View();
         }
 
-        private IEnumerable<Object> GetFileArray(List<DataFile> files, int? itemId = null)
-        {
+        ////private IEnumerable<Object> GetFileArray(List<DataFile> files, int? itemId = null)
+        ////{
 
-            UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
+        ////    UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
 
-            IEnumerable<Object> result = files.Select(f => new
-            {
-                Id = f.Id,
-                Guid = f.GuidName,
-                FileName = f.FileName,
-                Thumbnail = u.Action("Thumbnail", "Items", new { id = itemId.HasValue ? itemId.Value : f.Id, name = f.GuidName }),
-                Url = u.Action("File", "Items", new { id = itemId.HasValue ? itemId.Value : f.Id, name = f.GuidName })
-            });
-            return result;
-        }
+        ////    IEnumerable<Object> result = files.Select(f => new
+        ////    {
+        ////        Id = f.Id,
+        ////        Guid = f.GuidName,
+        ////        FileName = f.FileName,
+        ////        Thumbnail = u.Action("Thumbnail", "Items", new { id = itemId.HasValue ? itemId.Value : f.Id, name = f.GuidName }),
+        ////        Url = u.Action("File", "Items", new { id = itemId.HasValue ? itemId.Value : f.Id, name = f.GuidName })
+        ////    });
+        ////    return result;
+        ////}
 
         [HttpPost]
         public JsonResult Upload(int id)
@@ -231,10 +231,7 @@ namespace Catfish.Areas.Manager.Controllers
                 List<DataFile> files = srv.UploadFile(id, HttpContext, Request);
                 db.SaveChanges();
 
-                UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
-                string url = u.Action("About", "Home", null);
-
-                var ret = this.GetFileArray(files, id);
+                var ret = files.Select(f => new FileViewModel(f, id, ControllerContext.RequestContext));
                 return Json(ret);
             }
             catch (Exception)

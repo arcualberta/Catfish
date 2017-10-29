@@ -15,8 +15,9 @@
             data = JSON.parse(data);
             for (var i = 0; i < data.length; ++i) {
                 var d = data[i];
-                var ele = '<div class="fileThumbnail"><img src="' + d.Thumbnail + '" alt="' + d.FileName + '" />' +
-                    '<button class="glyphicon glyphicon-remove" onclick="deleteFile("' + d.Guid + '");"></button>' +
+                var eleId = d.Guid.substr(0, d.Guid.length - 4);
+                var ele = '<div class="fileThumbnail" id="' + eleId + '" > <img src="' + d.Thumbnail + '" alt="' + d.FileName + '" />' +
+                    '<button class="glyphicon glyphicon-remove" onclick="deleteFile(\'' + d.Guid + '\');"></button>' +
                     '<div class="label"><a href="' + d.Url + '">' + d.FileName + '</a></div>' +
                     '</div>';
 
@@ -87,7 +88,8 @@
                 if (oReg.readyState === 4) {  //after successfull execute the function then it will execute what ever inside this if {}
                     if (oReg.status === 200) {
                         var guid = JSON.parse(data)[0];
-                        $("#" + guid).remove();
+                        var eleId = guid.substr(0, guid.length - 4)
+                        $("#" + eleId).remove();
                     }
                     else {
                         //Error
@@ -172,7 +174,8 @@ else
                     @foreach (var file in Model.Files)
                     {
                         FileViewModel vm = new FileViewModel(file, Model.Id, Request.RequestContext);
-                        <div class="fileThumbnail" id="@vm.Guid">
+                        var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
+                        <div class="fileThumbnail" id="@eleId">
                             <img src="@vm.Thumbnail" alt="@vm.FileName" /> 
                             <button class="glyphicon glyphicon-remove" onclick="deleteFile('@vm.Guid');"></button>
                             <div class="label"><a href="@vm.Url">@vm.FileName</a></div>

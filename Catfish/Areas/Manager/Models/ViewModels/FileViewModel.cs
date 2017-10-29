@@ -21,7 +21,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             FileName = src.FileName;
             Guid = src.GuidName;
             Thumbnail = u.Action("Thumbnail", "Items", new { id = itemId.HasValue ? itemId.Value : src.Id, name = src.GuidName });
-            Url = u.Action("File", "Items", new { id = itemId.HasValue ? itemId.Value : src.Id, name = src.GuidName });
+            Url = u.Action("File", "Items", new { id = itemId.HasValue ? itemId.Value : src.Id, guidName = src.GuidName });
         }
     }
 }

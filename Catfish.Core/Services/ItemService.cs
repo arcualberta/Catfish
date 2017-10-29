@@ -28,7 +28,7 @@ namespace Catfish.Core.Services
 
         protected string CreateGuidName(string baseName)
         {
-            string filename = Guid.NewGuid().ToString();
+            string filename = Guid.NewGuid().ToString().Replace("-", "_");
             var idx = baseName.LastIndexOf(".");
             if (idx > 0)
                 filename = filename + "." + baseName.Substring(idx + 1);
