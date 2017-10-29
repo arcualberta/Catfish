@@ -15,7 +15,17 @@
             data = JSON.parse(data);
             for (var i = 0; i < data.length; ++i) {
                 var d = data[i];
-                var ele = '<span class="fileThumbnail"><img src="' + d.Thumbnail + '" alt="' + d.FileName + '" />' + d.FileName + '</span>';
+                var ele = '<div class="fileThumbnail"><img src="' + d.Thumbnail + '" alt="' + d.FileName + '" />' +
+                    '<button class="glyphicon glyphicon-remove" onclick="deleteFile("' + d.Guid + '");"></button>' +
+                    '<div class="label"><a href="' + d.Url + '">' + d.FileName + '</a></div>' +
+                    '</div>';
+
+                        @*<div class="fileThumbnail">
+                            <img src="@vm.Thumbnail" alt="@vm.FileName" />
+                            <button class="glyphicon glyphicon-remove" onclick="return delete(id, '@vm.Guid');"></button>
+                            <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
+                        </div>*@
+
                 $('#thumbnailPanel').append(ele);
             }
         }
@@ -64,6 +74,37 @@
             oReg.send(myFrm);
 
         }// END function uploadFile()
+
+        function deleteFile(guidName) {
+            if (confirm("Delete file?") == false)
+                return;
+
+            var myFrm = new FormData();     //create a new form
+            myFrm.append("guidName", guidName);
+
+            var oReg = new XMLHttpRequest();
+            var stateChange = function (data) {
+                if (oReg.readyState === 4) {  //after successfull execute the function then it will execute what ever inside this if {}
+                    if (oReg.status === 200) {
+                        var guid = JSON.parse(data)[0];
+                        $("#" + guid).remove();
+                    }
+                    else {
+                        //Error
+                        $("#uploadErrorMessage").text("File deletion failed: " + oReg.statusText);
+                    }
+                }
+            };
+
+            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                oReg.onload = function (event) { stateChange(event.target.response); };
+            } else {
+                oReg.onreadystatechange = function (data) { stateChange(data.srcElement.responseText); };
+            }
+            var uploadUrl = "@Url.Action("deleteFile", "items", new { id = Model.Id })";
+            oReg.open('POST', uploadUrl);
+            oReg.send(myFrm);
+        }
 
         $(function () {
             $("#progressBar").hide();
@@ -131,14 +172,16 @@ else
                     @foreach (var file in Model.Files)
                     {
                         FileViewModel vm = new FileViewModel(file, Model.Id, Request.RequestContext);
-                        <span class="fileThumbnail"><img src="@vm.Thumbnail" alt="@vm.FileName" /> @vm.FileName</span>
-                    }
+                        <div class="fileThumbnail" id="@vm.Guid">
+                            <img src="@vm.Thumbnail" alt="@vm.FileName" /> 
+                            <button class="glyphicon glyphicon-remove" onclick="deleteFile('@vm.Guid');"></button>
+                            <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
+                        </div>
+                    }                                                                       
                 </div>
                 <div class="inner" style="clear:both">
-                    @*<form enctype="multipart/form-data" id="fileUploadForm">*@
-                        <input type='file' id='uploadField' name="files" multiple="multiple" />
-                        <input type="button" value="Upload" id="uploadButton" onclick="uploadFile(); return false;" />
-                    @*</form>*@
+                    <input type='file' id='uploadField' name="files" multiple="multiple" />
+                    <input type="button" value="Upload" id="uploadButton" onclick="uploadFile(); return false;" />
                     <div id="progressBar"><progress></progress></div>
                     <div id="uploadErrorMessage"></div>
                 </div>

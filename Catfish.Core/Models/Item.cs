@@ -46,5 +46,14 @@ namespace Catfish.Core.Models
             InsertChildElement("./files", df.Data);
         }
 
+        public void RemoveFile(string fileGuidName)
+        {
+            var xpath = "./files/file[@guid-name='" + fileGuidName + "']";
+            XElement file = GetChildElements(xpath, Data).FirstOrDefault();
+            if (file == null)
+                throw new Exception("File does not exist.");
+            file.Remove();
+        }
+
     }
 }

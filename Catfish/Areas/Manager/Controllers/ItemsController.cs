@@ -244,10 +244,27 @@ namespace Catfish.Areas.Manager.Controllers
             }
         }
 
-        public ActionResult File(int id, string name)
+        [HttpPost]
+        public JsonResult DeleteFile(int id, string guidName)
+        {
+            try
+            {
+                ItemService srv = new ItemService(db);
+                srv.DeleteFile(id, guidName);
+                db.SaveChanges();
+                return Json(new List<string>() { guidName });
+            }
+            catch (Exception)
+            {
+                //return 500 or something appropriate to show that an error occured.
+                return Json(string.Empty);
+            }
+        }
+
+        public ActionResult File(int id, string guidName)
         {
             ItemService srv = new ItemService(db);
-            DataFile file = srv.GetFile(id, name);
+            DataFile file = srv.GetFile(id, guidName);
             if (file == null)
                 return HttpNotFound("File not found");
 

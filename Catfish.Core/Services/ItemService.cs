@@ -84,20 +84,26 @@ namespace Catfish.Core.Services
                 return null;
         }
 
-        public void DeletedFile(int itemId, string fileGuid)
+        public void DeleteFile(int itemId, string guidName)
         {
             Item item = Db.Items.Where(i => i.Id == itemId).FirstOrDefault();
             if (item == null)
                 throw new Exception("Item not found");
 
-            List<DataFile> files = item.Files;
-            DataFile file = files.Where(f => f.Guid == fileGuid).FirstOrDefault();
-            if (file == null)
-                throw new Exception("Specified file not found");
+            item.RemoveFile(guidName);
 
-            files.Remove(file);
-            item.Files = files;
-            item.Deserialize();
+            //Serializing the XML model into the Content field.
+            item.Serialize();
+            Db.Entry(item).State = EntityState.Modified;
+
+            ////List<DataFile> files = item.Files;
+            ////DataFile file = files.Where(f => f.Guid == fileGuid).FirstOrDefault();
+            ////if (file == null)
+            ////    throw new Exception("Specified file not found");
+
+            ////files.Remove(file);
+            ////item.Files = files;
+            ////item.Deserialize();
         }
 
         public Item UpdateStoredItem(Item changedItem)
@@ -121,7 +127,6 @@ namespace Catfish.Core.Services
                 dbModel.Deserialize();
                 dbModel.UpdateValues(changedItem);
             }
-
 
             //Serializing the XML model into the Content field.
             dbModel.Serialize();
