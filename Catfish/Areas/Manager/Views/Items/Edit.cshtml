@@ -12,7 +12,12 @@
 
     <script type="text/javascript">
         function updateFileListView(data) {
-
+            data = JSON.parse(data);
+            for (var i = 0; i < data.length; ++i) {
+                var d = data[i];
+                var ele = '<span class="fileThumbnail"><img src="' + d.Thumbnail + '" alt="' + d.FileName + '" />' + d.FileName + '</span>';
+                $('#thumbnailPanel').append(ele);
+            }
         }
 
         function uploadFile() {
@@ -130,10 +135,10 @@ else
                     }
                 </div>
                 <div class="inner" style="clear:both">
-                    <form enctype="multipart/form-data" id="fileUploadForm">
+                    @*<form enctype="multipart/form-data" id="fileUploadForm">*@
                         <input type='file' id='uploadField' name="files" multiple="multiple" />
                         <input type="button" value="Upload" id="uploadButton" onclick="uploadFile(); return false;" />
-                    </form>
+                    @*</form>*@
                     <div id="progressBar"><progress></progress></div>
                     <div id="uploadErrorMessage"></div>
                 </div>

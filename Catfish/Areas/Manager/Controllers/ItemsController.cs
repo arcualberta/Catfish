@@ -234,7 +234,7 @@ namespace Catfish.Areas.Manager.Controllers
                 UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
                 string url = u.Action("About", "Home", null);
 
-                var ret = this.GetFileArray(files);
+                var ret = this.GetFileArray(files, id);
                 return Json(ret);
             }
             catch (Exception)

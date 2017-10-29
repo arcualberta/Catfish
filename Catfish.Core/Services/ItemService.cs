@@ -26,11 +26,6 @@ namespace Catfish.Core.Services
             return converted;
         }
 
-        protected void DeleteFile(DataFile file)
-        {
-
-        }
-
         protected string CreateGuidName(string baseName)
         {
             string filename = Guid.NewGuid().ToString();
@@ -50,6 +45,10 @@ namespace Catfish.Core.Services
                     throw new Exception("Unable to create the upload folder " + folder);
             }
 
+            Item parent = Db.Items.Where(i => i.Id == itemId).FirstOrDefault();
+            if (parent == null)
+                throw new Exception("Parent item not found");
+
             List<DataFile> newFiles = new List<DataFile>();
             for (int i = 0; i < request.Files.Count; i++)
             {
@@ -64,16 +63,11 @@ namespace Catfish.Core.Services
                 
                 request.Files[i].SaveAs(Path.Combine(UploadRoot, file.Path, file.GuidName));
 
-                file.Serialize();
+                parent.AddFile(file);
+
                 newFiles.Add(file);
             }
 
-            Item parent = Db.Items.Where(i => i.Id == itemId).FirstOrDefault();
-            if (parent == null)
-                throw new Exception("Parent item not found");
-            List<DataFile> currentFiles = parent.Files;
-            currentFiles.AddRange(newFiles);
-            parent.Files = currentFiles; //NOTE: we have to assign the whole array by this way to make sure file info are added to the XML description of the item.
             parent.Serialize();
             Db.Entry(parent).State = EntityState.Modified;
             return newFiles;
@@ -90,6 +84,22 @@ namespace Catfish.Core.Services
                 return null;
         }
 
+        public void DeletedFile(int itemId, string fileGuid)
+        {
+            Item item = Db.Items.Where(i => i.Id == itemId).FirstOrDefault();
+            if (item == null)
+                throw new Exception("Item not found");
+
+            List<DataFile> files = item.Files;
+            DataFile file = files.Where(f => f.Guid == fileGuid).FirstOrDefault();
+            if (file == null)
+                throw new Exception("Specified file not found");
+
+            files.Remove(file);
+            item.Files = files;
+            item.Deserialize();
+        }
+
         public Item UpdateStoredItem(Item changedItem)
         {
             Item dbModel = new Item();
@@ -102,41 +112,7 @@ namespace Catfish.Core.Services
                 //updating the "value" text elements
                 dbModel.UpdateValues(changedItem);
 
-                //Deleting files in the dbModel item if those files are not in the changedItem
-                if (dbModel.Files.Any()) //add checking if item contain any files
-                {
-                    foreach (DataFile df in dbModel.Files)
-                    {
-                        if (changedItem.Files.Where(f => f.GuidName == df.GuidName).Any() == false)
-                        {
-                            df.Data.Remove();
-                            DeleteFile(df);
-                        }
-                    }
-                }
-
-                //Inserting new files that are in the source item that are still not in this item
-                if (changedItem.Files.Any())
-                {
-                    foreach (DataFile df in changedItem.Files)
-                    {
-                        if (dbModel.Files.Where(f => f.GuidName == df.GuidName).Any() == false)
-                        {
-                            //since the posted model doesn't have the full property list passed back from the POST call, 
-                            //we should reload it form the database and use it.
-                            XmlModel tmp_file_model = Db.XmlModels.Where(m => m.Guid == df.GuidName).FirstOrDefault();
-                            tmp_file_model.Deserialize();
-
-                            dbModel.InsertChildElement("./files", tmp_file_model.Data);
-
-                            //since we inserted the XML data of df into the XML model of the item,
-                            //we no longer need to keep it in the database table. Howeber, we DO NEED to keep the files
-                            //because these files are now referred by the XML File model which was inserted into the XML Item model.
-                            //Deleting the File table entry corresponding to df
-                            Db.XmlModels.Remove(Db.XmlModels.Find(tmp_file_model.Id));
-                        }
-                    }
-                }
+                //NOTE: Do not change files here. They are added and deleted through AJAX API calls, not when the item is saved.
 
             }
             else
@@ -224,51 +200,6 @@ namespace Catfish.Core.Services
         ////    return dbModel;
         ////}
 
-        /// <summary>
-        /// Adding new item to database
-        /// </summary>
-        /// <param name="changedItem">item that contain all modified/new value that coming from post</param>
-        /// <param name="newItem">reference Item that contain all proper name/label that changedItem is lack off</param>
-        /// <returns></returns>
-        public Item AddItem(Item changedItem, Item newItem)
-        {
-            Item dbModel = Db.XmlModels.Find(changedItem.Id) as Item;
-            newItem.Deserialize();
-
-            //updating the "value" text elements
-            newItem.UpdateValues(changedItem);
-
-            //Deleting files in the dbModel item if those files are not in the changedItem
-            foreach (DataFile df in newItem.Files)
-            {
-                if (changedItem.Files.Where(f => f.GuidName == df.GuidName).Any() == false)
-                {
-                    df.Data.Remove();
-                    DeleteFile(df);
-                }
-            }
-
-            //Inserting new files that are in the source item that are still not in this item
-            foreach (DataFile df in changedItem.Files)
-            {
-                if (newItem.Files.Select(f => f.GuidName == df.GuidName).Any() == false)
-                {
-                    newItem.InsertChildElement("./files", df.Data);
-
-                    //since we inserted the XML data of df into the XML model of the item,
-                    //we no longer need to keep it in the database table. Howeber, we DO NEED to keep the files
-                    //because these files are now referred by the XML File model which was inserted into the XML Item model.
-                    //Deleting the File table entry corresponding to df
-                    //TODO: make the following works.
-                    //Db.XmlModels.Remove(Db.XmlModels.Find(df.Id));
-                }
-            }
-
-            dbModel.Serialize();
-            Db.Entry(dbModel).State = EntityState.Modified;
-
-            return newItem;
-        }
         public string GetThumbnail(string contentType)
         {
             if (contentType == "application/pdf")

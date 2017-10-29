@@ -41,20 +41,10 @@ namespace Catfish.Core.Models
             }
         }
 
-        ////public override void UpdateValues(XmlModel src)
-        ////{
-        ////    base.UpdateValues(src);
+        public void AddFile(DataFile df)
+        {
+            InsertChildElement("./files", df.Data);
+        }
 
-        ////    var src_item = src as Item;
-
-        ////    foreach (MetadataSet ms in this.MetadataSets)
-        ////    {
-        ////        var src_ms = src_item.MetadataSets.Where(x => x.Ref == ms.Ref).FirstOrDefault();
-        ////        ms.UpdateValues(src_ms);
-        ////    }
-
-
-        ////    this.Serialize();
-        ////}
     }
 }
