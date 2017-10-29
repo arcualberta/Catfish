@@ -153,26 +153,17 @@ namespace Catfish.Areas.Manager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Item model)
         {
-
-            ////////HttpContextBase ctx = this.HttpContext;
-            ////////    ViewBag.UploadAction = Url.Action("Upload", "Items");
-            ////////    ViewBag.OtherPngUrl = Url.Content("~/content/thumbnails/other.png");
             if (ModelState.IsValid)
             {
                 ItemService srv = new ItemService(db);
-
                 Item dbModel = srv.UpdateStoredItem(model);
-
                 db.SaveChanges();
-                ////ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
 
                 if (model.Id == 0)
                     return RedirectToAction("Edit", new { id = dbModel.Id });
                 else
                     return View(dbModel);
-                
             }
-            //ViewBag.EntityTypeId = new SelectList(db.EntityTypes, "Id", "Name", model.EntityTypeId);
             return View(model);
         }
 
@@ -181,20 +172,6 @@ namespace Catfish.Areas.Manager.Controllers
             Item model = Db.Items.Where(et => et.Id == id).FirstOrDefault();
             if (model == null)
                 throw new Exception("Item not found");
-
-            ////CollectionService srv = new CollectionService(Db);
-
-            ////EntityContentViewModel childCollections = new EntityContentViewModel();
-            ////childCollections.Id = model.Id;
-            ////childCollections.LoadNextChildrenSet(model.ChildCollections);
-            ////childCollections.LoadNextMasterSet(db.Collections);
-            ////ViewBag.ChildCollections = childCollections;
-
-            ////EntityContentViewModel childItems = new EntityContentViewModel();
-            ////childItems.Id = model.Id;
-            ////childItems.LoadNextChildrenSet(model.ChildItems);
-            ////childItems.LoadNextMasterSet(db.Items);
-            ////ViewBag.ChildItems = childItems;
 
             return View(model);
         }
@@ -205,22 +182,6 @@ namespace Catfish.Areas.Manager.Controllers
         {
             return View();
         }
-
-        ////private IEnumerable<Object> GetFileArray(List<DataFile> files, int? itemId = null)
-        ////{
-
-        ////    UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
-
-        ////    IEnumerable<Object> result = files.Select(f => new
-        ////    {
-        ////        Id = f.Id,
-        ////        Guid = f.GuidName,
-        ////        FileName = f.FileName,
-        ////        Thumbnail = u.Action("Thumbnail", "Items", new { id = itemId.HasValue ? itemId.Value : f.Id, name = f.GuidName }),
-        ////        Url = u.Action("File", "Items", new { id = itemId.HasValue ? itemId.Value : f.Id, name = f.GuidName })
-        ////    });
-        ////    return result;
-        ////}
 
         [HttpPost]
         public JsonResult Upload(int id)

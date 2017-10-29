@@ -118,7 +118,7 @@ form.inline{
 }
     #thumbnailPanel .fileThumbnail {
         height: 40px;
-        margin: 10px 15px 10px 0;
+        margin: 15px 15px 15px 0;
         font-size:smaller;
         float:left;
     }
@@ -140,3 +140,7 @@ form.inline{
             color:#444;
         }
 
+#uploadField, #uploadButton {
+    margin-top: 15px;
+    padding: 2px 5px;
+}
