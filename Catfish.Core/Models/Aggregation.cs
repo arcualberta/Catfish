@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Catfish.Core.Models
 {
@@ -40,5 +41,14 @@ namespace Catfish.Core.Models
             parent.ChildMembers.Add(this);
             this.ParentMembers.Add(parent);
         }
+
+        public virtual IEnumerable<Aggregation> ChildItems
+        {
+            get
+            {
+                return ChildMembers.Where(c => typeof(Item).IsAssignableFrom(c.GetType()));
+            }
+        }
+
     }
 }

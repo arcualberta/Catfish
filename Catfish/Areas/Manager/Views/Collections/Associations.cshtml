@@ -13,7 +13,7 @@
 }
 
 @section Toolbar {
-    @Html.Partial("Partial/koEditToolbar", Model, new ViewDataDictionary() { { "reloadAction", "items" } })
+    @Html.Partial("Partial/koEditToolbar", Model, new ViewDataDictionary() { { "reloadAction", "associations" } })
 }
 
 <div class="grid_12">
@@ -25,5 +25,5 @@
     @Html.Partial("Partial/EntityContent", childCollections, new ViewDataDictionary() { { "title", "Child Collections" } })
 
     @{ EntityContentViewModel childItems = ViewBag.ChildItems as EntityContentViewModel; }
-    @Html.Partial("Partial/EntityContent", childItems, new ViewDataDictionary() { { "title", "Items" } })
+    @Html.Partial("Partial/EntityContent", childItems, new ViewDataDictionary() { { "title", "Child Items" } })
 </div>

@@ -94,7 +94,7 @@ form.inline{
         text-align: center !important;
     }
 
-    .entity-content table.list {
+    /*.entity-content table.list {
         margin-bottom: 10px;
         height: 300px;
         display: -moz-groupbox; 
@@ -112,7 +112,7 @@ form.inline{
             overflow-y: scroll;
             height: 200px;
             position: absolute
-        }
+        }*/
 
 #thumbnailPanel{
     margin: 10px;
