@@ -183,10 +183,13 @@ else
                     }                                                                       
                 </div>
                 <div class="inner" style="clear:both">
+                    @if (Model.Id > 0)
+                    {
                     <input type='file' id='uploadField' name="files" multiple="multiple" />
                     <input type="button" value="Upload" id="uploadButton" onclick="uploadFile(); return false;" />
                     <div id="progressBar"><progress></progress></div>
                     <div id="uploadErrorMessage"></div>
+                    }
                 </div>
             </div>
 

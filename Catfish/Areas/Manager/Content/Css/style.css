@@ -146,3 +146,17 @@ form.inline{
     margin-top: 15px;
     padding: 2px 5px;
 }
+
+.action-panel button {
+    background-color: #c6c1c1;;
+}
+
+.action-panel button:hover {
+    background-color: #6a81ef;
+}
+.action-panel button:disabled{
+    background-color:#eee;
+    color:#8f8d5d !important;
+    border-color:#eee !important;
+}
+
