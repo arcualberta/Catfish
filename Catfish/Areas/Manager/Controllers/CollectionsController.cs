@@ -58,6 +58,12 @@ namespace Catfish.Areas.Manager.Controllers
             childItems.LoadNextMasterSet(db.Items);
             ViewBag.ChildItems = childItems;
 
+            EntityContentViewModel relatedItems = new EntityContentViewModel();
+            relatedItems.Id = model.Id;
+            relatedItems.LoadNextChildrenSet(model.ChildRelations);
+            relatedItems.LoadNextMasterSet(db.Items);
+            ViewBag.RelatedItems = relatedItems;
+
             return View(model);
         }
 

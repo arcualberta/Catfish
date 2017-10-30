@@ -2,7 +2,7 @@
 @using Catfish.Areas.Manager.Models.ViewModels;
 @using Catfish.Core.Models;
 
-@{ ViewBag.Title = "Entity Associations"; }
+@{ ViewBag.Title = "Associations"; }
 
 @section HEAD
 {
@@ -26,4 +26,9 @@
 
     @{ EntityContentViewModel childItems = ViewBag.ChildItems as EntityContentViewModel; }
     @Html.Partial("Partial/EntityContent", childItems, new ViewDataDictionary() { { "title", "Child Items" }, { "saveAction", "UpdateChildren" } })
+
+    @{ EntityContentViewModel relatedItems = ViewBag.RelatedItems as EntityContentViewModel; }
+    @Html.Partial("Partial/EntityContent", relatedItems, new ViewDataDictionary() { { "title", "Related Items" }, { "saveAction", "UpdateRelatedItems" } })
+
+
 </div>

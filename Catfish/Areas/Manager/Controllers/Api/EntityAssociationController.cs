@@ -76,9 +76,9 @@ namespace Catfish.Areas.Manager.Controllers
                 if (vm.Id == 0)
                     throw new Exception("Parent model ID mnot specified");
 
-                Item model = Db.XmlModels.Where(x => x.Id == vm.Id).FirstOrDefault() as Item;
+                Aggregation model = Db.XmlModels.Where(x => x.Id == vm.Id).FirstOrDefault() as Aggregation;
                 if (model == null)
-                    throw new Exception("Specified parent Item not found");
+                    throw new Exception("Specified parent entity of type Aggregation not found");
 
                 //Associating children
                 foreach (var c in vm.ChildEntityList)
