@@ -1,10 +1,37 @@
 ﻿@model Piranha.Models.PageModel
+@using Catfish.Areas.Manager.Models.RegionModels;
+@using Piranha.Extend.Regions;
+
 @{
     ViewBag.Title = Model.Page.Title ;
 }
+
+@{
+    try
+    {
+        TextRegion styles = Model.Regions.Styles as TextRegion;
+        if (!string.IsNullOrEmpty(styles.Body))
+        {
+            <style type="text/css" scoped>
+                @Html.Raw(styles.Body)
+            </style>
+        }
+    }
+    catch (Exception) { }
+
+    try
+    {
+        Carousel carousel = Model.Regions.Carousel as Carousel;
+        @Html.DisplayFor(m => carousel)
+    }
+    catch (Exception) { }
+}
+
+
 <div class="content">
     <div class="main">
         <h1>@Model.Page.Title</h1>
+        Region Content:
         @Model.Regions.Content
     </div>
     <div class="sidebar">

@@ -30,6 +30,17 @@ namespace Catfish
             System.Web.Mvc.ModelBinders.Binders.Add(typeof(MetadataField), new XmlModelBinder());
             System.Web.Mvc.ModelBinders.Binders.Add(typeof(OptionsField), new XmlModelBinder());
 
+            //Additional CSS and Javascripts
+            Hooks.Head.Render += (ui, str, page, post) =>
+            {
+                // Do something
+                str.Append("<script src=\"/Scripts/jquery-2.1.1.min.js\" type=\"text/javascript\" ></script>");
+                str.Append("<script src=\"/Scripts/bootstrap.min.js\" type=\"text/javascript\" ></script>");
+                str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/bootstrap.min.css\" />");
+                str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/Custom.css\" />");
+            };
+
+
             //Adding menu items
             var menubar = Manager.Menu.Where(m => m.InternalId == "Content").FirstOrDefault();
             var idx = 0;

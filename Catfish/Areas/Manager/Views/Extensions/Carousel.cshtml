@@ -1,0 +1,48 @@
+﻿
+@model Catfish.Areas.Manager.Models.RegionModels.Carousel
+
+@*@{
+    if (Model.Slides.Count < Model.SlideCount)
+    {
+        for (var i = Model.Slides.Count; i < Model.SlideCount; ++i)
+        {
+            Model.Slides.Add(new Beehive.Models.Fields.ImageTile());
+        }
+    }
+    else if (Model.Slides.Count > Model.SlideCount)
+    {
+        Model.Slides = Model.Slides.Take(Model.SlideCount).ToList();
+    }
+}*@
+
+<ul class="form">
+    <li>
+        @Html.LabelFor(m => m.ImageUrls)
+        <div class="input">@Html.TextAreaFor(m => m.ImageUrls, new { placeholder = "Enter one URL per line" })</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.Interval)
+        @{if (Model.Interval == 0) { Model.Interval = 3000; }}
+        <div class="input">@Html.TextBoxFor(m => m.Interval, new { @type = "number" })</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.EnableControls)
+        <div class="input">@Html.CheckBoxFor(m => m.EnableControls)</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.CssId)
+        <div class="input">@Html.TextBoxFor(m => m.CssId)</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.CssClasses)
+        <div class="input">@Html.TextBoxFor(m => m.CssClasses)</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.CssStyles)
+        <div class="input">@Html.EditorFor(m => m.CssStyles)</div>
+    </li>
+    @*<li>
+        @Html.LabelFor(m => m.Slides)
+        <div class="input">@Html.EditorFor(m => m.Slides)</div>
+    </li>*@
+</ul>
