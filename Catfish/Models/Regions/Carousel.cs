@@ -6,7 +6,7 @@ using Piranha.Extend;
 using System.ComponentModel.Composition;
 using System.ComponentModel.DataAnnotations;
 
-namespace Catfish.Areas.Manager.Models.RegionModels
+namespace Catfish.Models.Regions
 {
     [Export(typeof(IExtension))]
     [ExportMetadata("InternalId", "CarouselExtension")]

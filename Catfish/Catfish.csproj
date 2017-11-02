@@ -222,11 +222,6 @@
     <Content Include="Scripts\knockout.mapping-latest.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\perpetuum.knockout.js" />
-    <Content Include="Templates\Input\Line.html" />
-    <Content Include="Templates\Input\MultilineText.html" />
-    <Content Include="Templates\Input\Hidden.html" />
-    <Content Include="Templates\Input\StringArray.html" />
-    <Content Include="Templates\MetadataSetComponent.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -243,7 +238,7 @@
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
-    <Compile Include="Areas\Manager\Models\RegionModels\Carousel.cs" />
+    <Compile Include="Models\Regions\Carousel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityContentViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\FileViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\SelectEntityTypeViewModel.cs" />
@@ -290,7 +285,6 @@
     <Folder Include="Areas\Manager\Views\Catfish\" />
     <Folder Include="Areas\Manager\Views\EntityAssociationList\" />
     <Folder Include="Areas\Manager\Views\Entity\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj">

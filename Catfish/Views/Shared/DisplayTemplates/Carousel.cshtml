@@ -1,4 +1,4 @@
-﻿@model Catfish.Areas.Manager.Models.RegionModels.Carousel
+﻿@model Catfish.Models.Regions.Carousel
 
 @if (string.IsNullOrEmpty(Model.ImageUrls)) { return; }
 
@@ -28,7 +28,7 @@
 
 <div class="bs">
     <div id="@cssId" class="carousel slide @cssClasses" data-ride="carousel">
-        @if (Model.EnableControls)
+        @if (slides.Length > 1 && Model.EnableControls)
         {
             <ol class="carousel-indicators">
                 @for (var i = 0; i < slides.Length; ++i)
@@ -50,7 +50,7 @@
                 }
             }
         </div>
-        @if (Model.EnableControls)
+        @if (slides.Length > 1 && Model.EnableControls)
         {
             <a class="carousel-control-prev" href="#@cssId" role="button" data-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
