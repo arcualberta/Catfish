@@ -99,6 +99,7 @@
     <Compile Include="Models\Metadata\SingleSelectOptionsField.cs" />
     <Compile Include="Models\Metadata\TextArea.cs" />
     <Compile Include="Models\Metadata\TextField.cs" />
+    <Compile Include="Models\TextValue.cs" />
     <Compile Include="Models\XmlModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CollectionService.cs" />

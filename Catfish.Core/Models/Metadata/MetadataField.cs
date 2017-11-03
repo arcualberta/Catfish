@@ -64,7 +64,21 @@ namespace Catfish.Core.Models.Metadata
                 SetHelp(value);
             }
         }
-        [DisplayFormat(ConvertEmptyStringToNull = false)]
+
+        [NotMapped]
+        public IEnumerable<TextValue> Values
+        {
+            get
+            {
+                return GetTextValues(null, true);
+            }
+
+            set
+            {
+                SetTextValues(value);
+            }
+        }
+
         [NotMapped]
         public string Value
         {

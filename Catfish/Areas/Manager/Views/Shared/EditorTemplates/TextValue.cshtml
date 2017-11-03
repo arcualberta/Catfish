@@ -1,0 +1,7 @@
+﻿@model Catfish.Core.Models.TextValue
+
+@Html.HiddenFor(m => m.Language)
+<div>
+    <span>@Model.Language: </span>@Html.EditorFor(m => m.Value)
+</div>
+

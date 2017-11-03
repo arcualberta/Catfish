@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -114,6 +115,52 @@ namespace Catfish.Core.Models
         public void SetHelp(string val, string lang = null)
         {
             SetChildText("help", val, Data, Lang(lang));
+        }
+
+        public virtual IEnumerable<TextValue> GetTextValues(string language = null, bool forceAllLanguages = false)
+        {
+            List<TextValue> ret = new List<TextValue>();
+            if (Data != null)
+            {
+                var matches = GetChildTextElements("value", Data, language);
+                foreach(XElement ele in matches)
+                {
+                    XAttribute att = ele.Attribute(XNamespace.Xml + "lang");
+                    string lang = att == null ? "" : att.Value;
+                    TextValue txt = new TextValue(lang, ele.Value);
+                    ret.Add(txt);
+                }
+            }
+
+            if (forceAllLanguages)
+            {
+                var langSpec = ConfigurationManager.AppSettings["Languages"];
+                if (langSpec != null)
+                {
+                    string[] languages = langSpec.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(s => s.Trim())
+                        .Where(s => s.Length > 0)
+                        .ToArray();
+
+                    foreach(var lang in languages)
+                    {
+                        if (!ret.Where(t => t.Language == lang).Any())
+                            ret.Add(new TextValue(lang, ""));
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        public virtual void SetTextValues(IEnumerable<TextValue> values)
+        {
+            string[] languages = values.Select(v => v.Language).Distinct().ToArray();
+            foreach(string lang in languages)
+            {
+                IEnumerable<string> vals = values.Where(v => v.Language == lang).Select(v => v.Value);
+                SetChildText("value", vals, Data, Lang(lang));
+            }
         }
 
         public IEnumerable<string> GetValues(string lang = null)
@@ -255,15 +302,19 @@ namespace Catfish.Core.Models
 
         protected IEnumerable<XElement> GetChildTextElements(string childTagName, XElement ele, string lang)
         {
-            var xpath = "./" + childTagName + "/text[@xml:lang='" + lang + "']";
+            var xpath = string.IsNullOrEmpty(lang) 
+                ? "./" + childTagName + "/text" 
+                : "./" + childTagName + "/text[@xml:lang='" + lang + "']";
 
-            //var matches = ((IEnumerable)ele.XPathEvaluate(xpath, NamespaceManager)).Cast<XElement>();
             return GetChildElements(xpath, ele);
         }
 
-        protected IEnumerable<XElement> GetTextElements(XElement xElement, string language)
+        protected IEnumerable<XElement> GetTextElements(XElement xElement, string lang)
         {
-            string xpath = "./text[@xml:lang='" + Lang(language) + "']";            
+            string xpath = string.IsNullOrEmpty(lang) 
+                ? "./text" 
+                : "./text[@xml:lang='" + Lang(lang) + "']";   
+            
             return GetChildElements(xpath, xElement);
         }
 
@@ -342,8 +393,8 @@ namespace Catfish.Core.Models
 
         public virtual void UpdateValues(XmlModel src)
         {
-            //TODO: Deal with multiple languages later
-            this.SetValues(src.GetValues());
+            SetTextValues(src.GetTextValues());
+            ////this.SetValues(src.GetValues());
         }
 
     }
