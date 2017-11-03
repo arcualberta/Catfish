@@ -25,6 +25,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -252,6 +253,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Areas\Manager\Models\ViewModels\EntityViewModel.cs" />
+    <Compile Include="Models\Regions\RegionBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -271,7 +273,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="tsconfig.json" />
     <Content Include="Scripts\jquery-2.1.1.min.map" />
     <Content Include="Views\Shared\DisplayTemplates\Carousel.cshtml" />
     <None Include="Web.Debug.config">
@@ -291,16 +292,6 @@
       <Project>{5d2c027e-76f8-4cf0-8c58-cfd5219e3d18}</Project>
       <Name>Catfish.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="Source\Fields\FormFields.ts" />
-    <TypeScriptCompile Include="Source\Fields\MetadataSetFields.ts" />
-    <TypeScriptCompile Include="Source\Fields\EntityTypeFields.ts" />
-    <TypeScriptCompile Include="Source\Forms\EntityTypeForm.ts" />
-    <TypeScriptCompile Include="Source\Forms\ItemForm.ts" />
-    <TypeScriptCompile Include="Source\Forms\MetadataSetForm.ts" />
-    <TypeScriptCompile Include="Source\ImportModules.ts" />
-    <TypeScriptCompile Include="Source\require-config.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

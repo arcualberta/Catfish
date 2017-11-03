@@ -13,7 +13,7 @@ namespace Catfish.Models.Regions
     [ExportMetadata("Name", "Carousel")]
     [ExportMetadata("Type", ExtensionType.Region)]
     [Serializable]
-    public class Carousel : Extension
+    public class Carousel : RegionBase
     {
         [Display(Name = "Image URLs")]
         public string ImageUrls { get; set; }
@@ -23,16 +23,6 @@ namespace Catfish.Models.Regions
 
         [Display(Name = "Show Controls")]
         public bool EnableControls { get; set; }
-
-        [Display(Name = "CSS Id")]
-        public string CssId { get; set; }
-
-        [Display(Name = "CSS Classes")]
-        public string CssClasses { get; set; }
-
-        [Display(Name = "Styles")]
-        [DataType(DataType.MultilineText)]
-        public string CssStyles { get; set; }
 
         public Carousel()
         {
