@@ -1,7 +1,20 @@
 ﻿@model Catfish.Core.Models.TextValue
 
 @Html.HiddenFor(m => m.Language)
-<div>
-    <span>@Model.Language: </span>@Html.EditorFor(m => m.Value)
+<div class="languageInputField">
+    @if (ViewBag.ShowLanguageLabel == true)
+    {
+        <span class="">@Model.Language: </span>
+    }
+        @if (ViewBag.MultiLine == true)
+        {
+            <div>
+                @Html.TextAreaFor(m => m.Value)
+            </div>
+        }
+        else
+        {
+            @Html.EditorFor(m => m.Value)
+        }
 </div>
 

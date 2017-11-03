@@ -160,3 +160,7 @@ form.inline{
     border-color:#eee !important;
 }
 
+.languageInputField{
+    margin: 5px 0;
+}
+
