@@ -9,6 +9,7 @@ using Catfish.Core.Models.Attributes;
 using System.Xml.Serialization;
 using System.Xml.Linq;
 using System.ComponentModel.DataAnnotations.Schema;
+using Catfish.Core.Helpers;
 
 namespace Catfish.Core.Models.Metadata
 {
@@ -21,6 +22,20 @@ namespace Catfish.Core.Models.Metadata
             {
                 return GetName();
             }
+            set
+            {
+                SetName(value);
+            }
+        }
+
+        //[Display(Name = "Name")]
+        public IEnumerable<TextValue> MultilingualName
+        {
+            get
+            {
+                return GetNames(true);
+            }
+
             set
             {
                 SetName(value);
@@ -70,7 +85,7 @@ namespace Catfish.Core.Models.Metadata
         {
             get
             {
-                return GetTextValues(null, true);
+                return XmlHelper.GetTextValues(Data, true);
             }
 
             set

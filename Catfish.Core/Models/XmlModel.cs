@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Attributes;
+﻿using Catfish.Core.Helpers;
+using Catfish.Core.Models.Attributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -48,6 +49,7 @@ namespace Catfish.Core.Models
         [NotMapped]
         public virtual XElement Data { get; set; }
 
+        [Obsolete]
         [NotMapped]
         public string DefaultLanguage { get; set; }
 
@@ -80,6 +82,63 @@ namespace Catfish.Core.Models
 
         }
 
+        public XElement GetWrapper(string tagName, bool createIfNotExist, bool enforceGuid)
+        {
+            XElement wrapper = Data.Element(tagName);
+
+            if(wrapper == null && createIfNotExist)
+                Data.Add(wrapper = new XElement(tagName));
+
+            if (wrapper != null && enforceGuid && wrapper.Attribute("guid") == null)
+                wrapper.Add(new XAttribute("guid", System.Guid.NewGuid().ToString()));
+
+            return wrapper;
+        }
+
+        public virtual IEnumerable<TextValue> GetNames(bool forceAllLanguages)
+        {
+            XElement wrapper = GetWrapper("name", true, false);
+            return XmlHelper.GetTextValues(wrapper, forceAllLanguages);
+        }
+
+        protected virtual void SetName(IEnumerable<TextValue> val)
+        {
+            XElement wrapper = Data.Element("name");
+            if (wrapper != null)
+            {
+                //removing all text elements in the wrapper
+                foreach (XElement text in wrapper.Elements().Where(e => e.Name == "text").ToList())
+                    text.Remove();
+            }
+            else
+            {
+                wrapper = CreateElement("name", false);
+                Data.Add(wrapper);
+            }
+
+            //inserting text elements representing languages and values specified by the input argument
+            foreach (TextValue v in val)
+                wrapper.Add(CreateTextElement(v.Value, v.Language));
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public virtual string GetTagName() { return "catfish-model"; }
 
         public XmlModel(XElement ele, string defaultLang = "en")
@@ -96,6 +155,23 @@ namespace Catfish.Core.Models
         {
             SetChildText("name", val, Data, Lang(lang));
         }
+
+        protected XElement CreateTextElement(string value, string lang)
+        {
+            XElement textElemnt = new XElement("text", new XAttribute(XNamespace.Xml + "lang", lang));
+            textElemnt.Value = value;
+            return textElemnt;
+        }
+
+        protected XElement CreateElement(string tagName, bool includeGuid)
+        {
+            XElement element = new XElement(tagName);
+            if (includeGuid)
+                element.Add(new XAttribute("guid", System.Guid.NewGuid().ToString()));
+
+            return element;
+        }
+
 
         public virtual string GetDescription(string lang = null)
         {
@@ -115,42 +191,6 @@ namespace Catfish.Core.Models
         public void SetHelp(string val, string lang = null)
         {
             SetChildText("help", val, Data, Lang(lang));
-        }
-
-        public virtual IEnumerable<TextValue> GetTextValues(string language = null, bool forceAllLanguages = false)
-        {
-            List<TextValue> ret = new List<TextValue>();
-            if (Data != null)
-            {
-                var matches = GetChildTextElements("value", Data, language);
-                foreach(XElement ele in matches)
-                {
-                    XAttribute att = ele.Attribute(XNamespace.Xml + "lang");
-                    string lang = att == null ? "" : att.Value;
-                    TextValue txt = new TextValue(lang, ele.Value);
-                    ret.Add(txt);
-                }
-            }
-
-            if (forceAllLanguages)
-            {
-                var langSpec = ConfigurationManager.AppSettings["Languages"];
-                if (langSpec != null)
-                {
-                    string[] languages = langSpec.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(s => s.Trim())
-                        .Where(s => s.Length > 0)
-                        .ToArray();
-
-                    foreach(var lang in languages)
-                    {
-                        if (!ret.Where(t => t.Language == lang).Any())
-                            ret.Add(new TextValue(lang, ""));
-                    }
-                }
-            }
-
-            return ret;
         }
 
         public virtual void SetTextValues(IEnumerable<TextValue> values)
@@ -309,24 +349,9 @@ namespace Catfish.Core.Models
             return GetChildElements(xpath, ele);
         }
 
-        protected IEnumerable<XElement> GetTextElements(XElement xElement, string lang)
-        {
-            string xpath = string.IsNullOrEmpty(lang) 
-                ? "./text" 
-                : "./text[@xml:lang='" + Lang(lang) + "']";   
-            
-            return GetChildElements(xpath, xElement);
-        }
-
         protected IEnumerable<XElement> GetChildElements(string xpath, XElement ele)
         {
             return ((IEnumerable)ele.XPathEvaluate(xpath, NamespaceManager)).Cast<XElement>();
-        }
-
-        public int GetAttribute(string attName, int defaultValue, XElement data = null)
-        {
-            string val = GetAttribute(attName, data);
-            return string.IsNullOrEmpty(val) ? defaultValue : int.Parse(val);
         }
 
         public bool GetAttribute(string attName, bool defaultValue, XElement data = null)
@@ -393,7 +418,7 @@ namespace Catfish.Core.Models
 
         public virtual void UpdateValues(XmlModel src)
         {
-            SetTextValues(src.GetTextValues());
+            SetTextValues(XmlHelper.GetTextValues(src.Data));
             ////this.SetValues(src.GetValues());
         }
 

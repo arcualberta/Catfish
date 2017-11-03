@@ -70,10 +70,18 @@
                         <div class="inner">
                             <ul class="form">
                                 <li>
-                                    <label class="control-label col-md-2">Name</label>
-                                    <div class="input">
-                                        @field.Html.TextBox(f => f.Name, new { @class = "field-name"})
-                                    </div>
+                                        <label class="control-label">Name</label>
+                                        <div class="input">
+                                            @*@field.Html.TextBox(f => f.Name, new { @class = "field-name" })*@
+                                            @using (var name = field.Foreach(f => f.Name))
+                                            {
+                                                <div class="languageInputField">
+                                                    @name.Html.TextBox(n => n.Language, new { style = "display:none" })
+                                                    @name.Html.Span(n => n.Language + ": ") @name.Html.TextBox(n => n.Value, new { @class = "field-name" })
+                                                </div>
+                                            }
+                                                    @*@field.Html.(f => f.Name, new { @class = "field-name"})*@
+                                        </div>
                                 </li>
                                 <li>
                                     <label class="control-label col-md-2">Description</label>

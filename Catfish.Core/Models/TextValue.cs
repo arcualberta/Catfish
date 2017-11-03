@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Catfish.Core.Models
 {
@@ -23,6 +24,13 @@ namespace Catfish.Core.Models
         {
             Language = lang;
             Value = val;
+        }
+
+        public TextValue(XElement txtElement)
+        {
+            XAttribute att = txtElement.Attribute(XNamespace.Xml + "lang");
+            Language = att == null ? "" : att.Value;
+            Value = txtElement.Value;
         }
     }
 }

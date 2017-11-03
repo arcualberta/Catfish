@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models;
+﻿using Catfish.Core.Helpers;
+using Catfish.Core.Models;
 using Catfish.Core.Models.Attributes;
 using Catfish.Core.Models.Metadata;
 using System;
@@ -12,7 +13,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
     {
         public string TypeLabel { get; set; }
         public string FieldType { get; set; }
-        public string Name { get; set; }
+        public List<TextValue> Name { get; set; }
         public string Description { get; set; }
         public bool IsRequired { get; set; }
         public bool IsOptionField { get; set; }
@@ -23,7 +24,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public MetadataFieldViewModel(MetadataField src)
         {
-            Name = src.Name;
+            Name = src.MultilingualName.ToList();
+
             Description = src.Description;
             IsRequired = src.IsRequired;
             FieldType = src.GetType().AssemblyQualifiedName;
@@ -44,7 +46,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 throw new InvalidOperationException("Bad Type");
 
             MetadataField field = Activator.CreateInstance(type) as MetadataField;
-            field.Name = Name;
+            field.MultilingualName = Name;
             field.Description = Description;
             field.IsRequired = IsRequired;
             field.Ref = Ref;
