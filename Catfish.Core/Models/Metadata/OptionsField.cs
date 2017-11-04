@@ -13,24 +13,28 @@ namespace Catfish.Core.Models.Metadata
     public class Option
     {
         public List<TextValue> Value { get; set; }
+        public string Guid { get; set; }
         public bool Selected { get; set; }
 
         public Option (XElement optElement)
         {
             Selected = XmlHelper.GetAttribute(optElement, "selected", false);
             Value = XmlHelper.GetTextValues(optElement, true).ToList();
+            Guid = XmlHelper.GetAttribute(optElement, "guid", System.Guid.NewGuid().ToString("N"));
         }
 
         public Option()
         {
             Value = new List<TextValue>();
             Selected = false;
+            Guid = System.Guid.NewGuid().ToString("N");
         }
 
         public XElement ToXml()
         {
             XElement optionElement = new XElement("option");
             optionElement.SetAttributeValue("selected", Selected);
+            optionElement.SetAttributeValue("guid", Guid);
             foreach (TextValue txt in Value)
             {
                 XElement textEelemnt = new XElement("text", new XAttribute(XNamespace.Xml + "lang", txt.Language));
@@ -63,8 +67,22 @@ namespace Catfish.Core.Models.Metadata
                 if (wrapper == null)
                     Data.Add(wrapper = new XElement("options"));
 
+                //Iterate through the source options and check if the same option appears in the destination.
+                //If it does, then set update the "selected" status of the destination option. Otherwise, add
+                //a clone of the source option to the destination option list.
+                var dstOptions = wrapper.Elements("option").ToList();
                 foreach (var op in value)
-                    wrapper.Add(op.ToXml());
+                {
+                    var dstOp = dstOptions.Where(x => x.Attribute("guid").Value == op.Guid).FirstOrDefault();
+                    if (dstOp == null)
+                    {
+                        dstOp = op.ToXml();
+                        dstOptions.Add(dstOp);
+                        wrapper.Add(dstOp);
+                    }
+                    else
+                        dstOp.SetAttributeValue("selected", op.Selected);
+                }
             }
         }
 
