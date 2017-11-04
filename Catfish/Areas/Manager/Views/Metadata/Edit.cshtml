@@ -72,15 +72,13 @@
                                 <li>
                                         <label class="control-label">Name</label>
                                         <div class="input">
-                                            @*@field.Html.TextBox(f => f.Name, new { @class = "field-name" })*@
                                             @using (var name = field.Foreach(f => f.Name))
                                             {
                                                 <div class="languageInputField">
                                                     @name.Html.TextBox(n => n.Language, new { style = "display:none" })
-                                                    @name.Html.Span(n => n.Language + ": ") @name.Html.TextBox(n => n.Value, new { @class = "field-name" })
+                                                    @name.Html.Span(n => n.Language + ": ") @name.Html.TextBox(n => n.Value, new { @class = "input-field" })
                                                 </div>
                                             }
-                                                    @*@field.Html.(f => f.Name, new { @class = "field-name"})*@
                                         </div>
                                 </li>
                                 <li>
@@ -95,7 +93,16 @@
                                         <span>Please define options, one per line below</span>
                                     </div>
                                     <div class="input">
-                                        @field.Html.TextArea(f => f.Options, new { @class = "field-options" })
+                                        @*@field.Html.TextArea(f => f.Options, new { @class = "field-options" })*@
+                                        @using (var option = field.Foreach(f => f.MultilingualOptionSet))
+                                        {
+                                            <div class="languageInputField">
+                                                @option.Html.TextBox(n => n.Language, new { style = "display:none" })
+                                                @option.Html.Span(n => n.Language + ": ") @option.Html.TextArea(n => n.Value, new { @class = "input-field" })
+                                            </div>
+                                        }
+
+
                                     </div>
                                 </li>
                                 <li>

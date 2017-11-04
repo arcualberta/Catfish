@@ -37,23 +37,34 @@ namespace Catfish.Core.Helpers
 
             if (forceAllLanguages)
             {
-                var langSpec = ConfigurationManager.AppSettings["Languages"];
-                if (langSpec != null)
+                string[] languages = ConfigHelper.Languages;
+                foreach (var lang in languages)
                 {
-                    string[] languages = langSpec.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(s => s.Trim())
-                        .Where(s => s.Length > 0)
-                        .ToArray();
-
-                    foreach (var lang in languages)
-                    {
-                        if (!ret.Where(t => t.Language == lang).Any())
-                            ret.Add(new TextValue(lang, ""));
-                    }
+                    if (!ret.Where(t => t.Language == lang).Any())
+                        ret.Add(new TextValue(lang, ""));
                 }
             }
 
             return ret;
         }
+
+        public static bool GetAttribute(XElement element, string attName, bool defaultValue)
+        {
+            XAttribute att = element.Attribute(attName);
+            return att == null || string.IsNullOrEmpty(att.Value) ? defaultValue : bool.Parse(att.Value);
+        }
+
+        public static string GetAttribute(XElement element, string attName, string defaultValue)
+        {
+            XAttribute att = element.Attribute(attName);
+            return att == null || string.IsNullOrEmpty(att.Value) ? defaultValue : att.Value;
+        }
+
+        public static int GetAttribute(XElement element, string attName, int defaultValue)
+        {
+            XAttribute att = element.Attribute(attName);
+            return att == null || string.IsNullOrEmpty(att.Value) ? defaultValue : int.Parse(att.Value);
+        }
+
     }
 }

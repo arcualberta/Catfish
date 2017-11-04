@@ -164,12 +164,16 @@ form.inline{
     margin: 5px 0;
 }
 
-    .languageInputField input.field-name {
+    .languageInputField input.input-field, .languageInputField textarea.input-field {
         border: solid #ccc 1px;
         margin: 5px 0;
         padding: 4px;
-        width: 80%;
     }
     .languageInputField span {
         margin-right: 0px !important;
     }
+
+    .languageInputField input.input-field {
+        width: 80%;
+    }
+

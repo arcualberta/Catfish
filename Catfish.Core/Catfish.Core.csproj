@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Helpers\XmlHelper.cs" />
     <Compile Include="Migrations\201708111923158_RebuildingMigrations.cs" />
     <Compile Include="Migrations\201708111923158_RebuildingMigrations.Designer.cs">

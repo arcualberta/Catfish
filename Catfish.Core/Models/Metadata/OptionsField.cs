@@ -5,25 +5,39 @@ using Catfish.Core.Models.Attributes;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel.DataAnnotations.Schema;
+using Catfish.Core.Helpers;
 
 namespace Catfish.Core.Models.Metadata
 {
     [NotMapped]
     public class Option
     {
-        public string Value { get; set; }
+        public List<TextValue> Value { get; set; }
         public bool Selected { get; set; }
 
-        public Option (string value = "", bool selected = false)
+        public Option (XElement optElement)
         {
-            Value = value;
-            Selected = selected;
+            Selected = XmlHelper.GetAttribute(optElement, "selected", false);
+            Value = XmlHelper.GetTextValues(optElement, true).ToList();
         }
 
         public Option()
         {
-            Value = "";
+            Value = new List<TextValue>();
             Selected = false;
+        }
+
+        public XElement ToXml()
+        {
+            XElement optionElement = new XElement("option");
+            optionElement.SetAttributeValue("selected", Selected);
+            foreach (TextValue txt in Value)
+            {
+                XElement textEelemnt = new XElement("text", new XAttribute(XNamespace.Xml + "lang", txt.Language));
+                textEelemnt.Value = string.IsNullOrEmpty(txt.Value) ? "" : txt.Value;
+                optionElement.Add(textEelemnt);
+            }
+            return optionElement;
         }
     }
 
@@ -37,87 +51,83 @@ namespace Catfish.Core.Models.Metadata
         {
             get
             {
-                return GetOptions("en");
+                var wrapper = Data.Element("options");
+                if (wrapper == null)
+                    return new List<Option>();
+
+                return wrapper.Elements("option").Select(op => new Option(op)).ToList();
             }
             set
             {
-                SetOptions(value, "en");
+                var wrapper = Data.Element("options");
+                if (wrapper == null)
+                    Data.Add(wrapper = new XElement("options"));
+
+                foreach (var op in value)
+                    wrapper.Add(op.ToXml());
             }
         }
 
-        public List<Option> GetOptions(string lang = "")
-        {
-            List<Option> options = new List<Option>();
-            IEnumerable<XElement> optionElements = GetChildElements("./options/option", Data);
-            string val_path = "./text[@xml:lang='" + Lang(lang) + "']";
-            foreach (XElement opt in optionElements)
-            {
-                string value = GetChildElements(val_path, opt).Select(txt => txt.Value).FirstOrDefault();
-                bool selected = GetAttribute("selected", false, opt);
-                Option option = new Option(value, selected);
-                options.Add(option);
-            }
+        ////////public virtual void SetOptions(List<Option> options, string selection = null)
+        ////////{
+        ////////    throw new NotImplementedException();
+        ////////    /*
+        ////////    XElement optionsParent = GetOptionParent();
+        ////////    ClearOptionSelections();
+        ////////    List<XElement> optionList = GetOptionElements();
 
-            return options;
-        }
+        ////////    //Iterating through all input "options", updating selections and 
+        ////////    //inserting any new options
+        ////////    string val_path = "./text[@xml:lang='" + Lang(lang) + "']";
+        ////////    foreach (var opt in options)
+        ////////    {
+        ////////        bool found = false;
+        ////////        foreach(XElement opEle in optionList)
+        ////////        {
+        ////////            List<string> vals = GetChildElements(val_path, opEle).Select(txt => txt.Value).ToList();
+        ////////            if (vals.Contains(opt.Value))
+        ////////            {
+        ////////                opEle.SetAttributeValue("selected", opt.Selected);
+        ////////                found = true;
+        ////////                break;
+        ////////            }
+        ////////        }
 
-        public virtual void SetOptions(List<Option> options, string lang, string selection = null)
-        {
-            XElement optionsParent = GetOptionParent();
-            ClearOptionSelections();
-            List<XElement> optionList = GetOptionElements();
+        ////////        if(!found)
+        ////////        {
+        ////////            XElement opEle = CreateOption(opt.Value, opt.Selected, lang);
+        ////////            optionsParent.Add(opEle);
+        ////////        }
+        ////////    }
+        ////////    */
+        ////////}
 
-            //Iterating through all input "options", updating selections and 
-            //inserting any new options
-            string val_path = "./text[@xml:lang='" + Lang(lang) + "']";
-            foreach (var opt in options)
-            {
-                bool found = false;
-                foreach(XElement opEle in optionList)
-                {
-                    List<string> vals = GetChildElements(val_path, opEle).Select(txt => txt.Value).ToList();
-                    if (vals.Contains(opt.Value))
-                    {
-                        opEle.SetAttributeValue("selected", opt.Selected);
-                        found = true;
-                        break;
-                    }
-                }
+        ////////protected XElement GetOptionParent()
+        ////////{
+        ////////    string xpath = "./options";
+        ////////    XElement optionsParent = this.GetChildElements(xpath, Data).FirstOrDefault();
+        ////////    if (optionsParent == null)
+        ////////    {
+        ////////        optionsParent = new XElement("options");
+        ////////        Data.Add(optionsParent);
+        ////////    }
 
-                if(!found)
-                {
-                    XElement opEle = CreateOption(opt.Value, opt.Selected, lang);
-                    optionsParent.Add(opEle);
-                }
-            }
-        }
+        ////////    return optionsParent;
+        ////////}
 
-        protected XElement GetOptionParent()
-        {
-            string xpath = "./options";
-            XElement optionsParent = this.GetChildElements(xpath, Data).FirstOrDefault();
-            if (optionsParent == null)
-            {
-                optionsParent = new XElement("options");
-                Data.Add(optionsParent);
-            }
+        ////////protected void ClearOptionSelections()
+        ////////{
+        ////////    List<XElement> optionList = GetOptionElements();
+        ////////    foreach (var opt in optionList)
+        ////////        opt.SetAttributeValue("selected", false);
+        ////////}
 
-            return optionsParent;
-        }
-
-        protected void ClearOptionSelections()
-        {
-            List<XElement> optionList = GetOptionElements();
-            foreach (var opt in optionList)
-                opt.SetAttributeValue("selected", false);
-        }
-
-        protected List<XElement> GetOptionElements()
-        {
-            string xpath = "./options/option";
-            List<XElement> optionList = this.GetChildElements(xpath, Data).ToList();
-            return optionList;
-        }
+        ////////protected List<XElement> GetOptionElements()
+        ////////{
+        ////////    string xpath = "./options/option";
+        ////////    List<XElement> optionList = this.GetChildElements(xpath, Data).ToList();
+        ////////    return optionList;
+        ////////}
 
         ////public void SetOption(string value, bool isSelected, XElement optionParent, string lang)
         ////{
@@ -155,9 +165,8 @@ namespace Catfish.Core.Models.Metadata
 
         public override void UpdateValues(XmlModel src)
         {
-            string lang = "";
             OptionsField optionsField = src as OptionsField;
-            this.SetOptions(optionsField.GetOptions(), Lang(lang), optionsField.Value);
+            this.Options = optionsField.Options;
         }        
     }
 
