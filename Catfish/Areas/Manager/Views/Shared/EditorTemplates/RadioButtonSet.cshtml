@@ -22,7 +22,6 @@
 
         @Html.RadioButton("Value", label, Model.Options[i].Selected, new { @class = "auto-width" })
         <span>@label</span>
-        @Html.HiddenFor(m => m.Options[i].Value)
     }
 </div>
 

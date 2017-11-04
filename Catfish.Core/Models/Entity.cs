@@ -48,7 +48,7 @@ namespace Catfish.Core.Models
                 string fieldName = mapping.FieldName;
                 MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
                 MetadataField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
-                return field.Value;
+                return field != null ? field.Value : "ERROR: INCORRECT NAME MAPPING FOUND FOR THIS ENTITY TYPE";
             }
 
             return GetChildText("name", Data, Lang(lang));
@@ -74,7 +74,7 @@ namespace Catfish.Core.Models
                 string fieldName = mapping.FieldName;
                 MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
                 MetadataField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
-                return field.Value;
+                return field != null ? field.Value : "ERROR: INCORRECT DESCRIPTION MAPPING FOUND FOR THIS ENTITY TYPE";
             }
 
             return GetChildText("description", Data, Lang(lang));

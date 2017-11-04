@@ -48,6 +48,12 @@ namespace Catfish.Core.Helpers
             return ret;
         }
 
+        public static string GetLanguage(XElement element)
+        {
+            XAttribute att = element.Attribute(XNamespace.Xml + "lang");
+            return att == null ? null : att.Value;
+        }
+
         public static bool GetAttribute(XElement element, string attName, bool defaultValue)
         {
             XAttribute att = element.Attribute(attName);
