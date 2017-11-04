@@ -87,7 +87,7 @@ namespace Catfish.Core.Models.Metadata
             {
                 XElement valueWrapper = Data.Element("value");
                 if (valueWrapper == null)
-                    return new List<TextValue>();
+                    Data.Add(valueWrapper = new XElement("value"));
 
                 return XmlHelper.GetTextValues(valueWrapper, true);
             }
