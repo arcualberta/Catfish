@@ -85,7 +85,11 @@ namespace Catfish.Core.Models.Metadata
         {
             get
             {
-                return XmlHelper.GetTextValues(Data, true);
+                XElement valueWrapper = Data.Element("value");
+                if (valueWrapper == null)
+                    return new List<TextValue>();
+
+                return XmlHelper.GetTextValues(valueWrapper, true);
             }
 
             set
@@ -123,6 +127,31 @@ namespace Catfish.Core.Models.Metadata
             {
                 SetDescription(value);
             }
+        }
+
+        public override void UpdateValues(XmlModel src)
+        {
+            XElement srcValueWrapper = src.Data.Element("value");
+            if (srcValueWrapper == null)
+                return;
+
+            IEnumerable<XElement> srcText = srcValueWrapper.Elements("text");
+            if (srcText.Count() == 0)
+                return;
+
+            XElement dstValeWrapper = Data.Element("value");
+            if (dstValeWrapper == null)
+                Data.Add(dstValeWrapper = new XElement("value"));
+            else
+            {
+                //deleting all existing text elements from the destination
+                foreach (var txt in dstValeWrapper.Elements("text").ToList())
+                    txt.Remove();
+            }
+
+            //inserting clones of text elements in the src value wrapper
+            foreach (var txt in srcValueWrapper.Elements("text"))
+                dstValeWrapper.Add(new XElement(txt));
         }
 
 

@@ -26,5 +26,13 @@ namespace Catfish.Core.Helpers
                     return new string[1] { "en" };
             }
         }
+
+        public static string DefaultLanguage
+        {
+            get
+            {
+                return Languages.Length == 0 ? "en" : Languages[0];
+            }
+        }
     }
 }
