@@ -3,7 +3,7 @@
   <dataSource name="d1" type="JdbcDataSource" driver="com.microsoft.sqlserver.jdbc.SQLServerDriver" url="jdbc:sqlserver://localhost:1433;instance=SQLEXPRESS;databaseName=XmlDocumentTest;" user="gwrit" password="gwrit#db" />
   <dataSource name="d2" type="FieldReaderDataSource" />
   <document name="entries">
-    <entity processor="SqlEntityProcessor" dataSource="d1" name="MainForm" pk="Id" query="select * from [dbo].[XmlModels]" deltaImportQuery="SELECT * FROM [dbo].[XmlModels] WHERE Id = ${dih.delta.Id}" deltaQuery="SELECT Id FROM MainForms WHERE LastModified &gt;= '${dih.last_index_time}'">
+    <entity processor="SqlEntityProcessor" dataSource="d1" name="MainForm" pk="Id" query="select * from [dbo].[XmlModels]" deltaImportQuery="SELECT * FROM [dbo].[XmlModels] WHERE Id = ${dih.delta.Id}" deltaQuery="SELECT Id FROM [dbo].[XmlModels] WHERE [Content].value(N'(/*/@created)[1]', 'datetime') &gt;= '${dih.last_index_time}' AND ([Content].value(N'(/*/@updated)[1]', 'datetime') IS NULL OR [Content].value(N'(/*/@updated)[1]', 'datetime')  &gt;= '${dih.last_index_time}')">
       <field column="Id" name="Id" />
 	  <field column="Content" name="Content" />
       <entity processor="XPathEntityProcessor" transformer="RegexTransformer,DateFormatTransformer" name="XmlContent" dataSource="d2" dataField="MainForm.Content" forEach="/*">
