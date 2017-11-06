@@ -31,17 +31,17 @@ namespace Catfish.Core.Helpers
             {
                 XAttribute att = ele.Attribute(XNamespace.Xml + "lang");
                 string lang = att == null ? "" : att.Value;
-                TextValue txt = new TextValue(lang, ele.Value);
+                TextValue txt = new TextValue(lang, ConfigHelper.GetLanguageLabel(lang), ele.Value);
                 ret.Add(txt);
             }
 
             if (forceAllLanguages)
             {
-                string[] languages = ConfigHelper.Languages;
+                List<Language> languages = ConfigHelper.Languages;
                 foreach (var lang in languages)
                 {
-                    if (!ret.Where(t => t.Language == lang).Any())
-                        ret.Add(new TextValue(lang, ""));
+                    if (!ret.Where(t => t.LanguageCode == lang.Code).Any())
+                        ret.Add(new TextValue(lang.Code, lang.Label, ""));
                 }
             }
 

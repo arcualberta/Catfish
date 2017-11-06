@@ -30,7 +30,7 @@ namespace Catfish.Core.Models.Metadata
                 if(srcValue != null)
                 {
                     IEnumerable<TextValue> dstValues = XmlHelper.GetTextValues(opt, false);
-                    selected = dstValues.Where(d => d.Language == srcValue.Language && d.Value == srcValue.Value).Any();
+                    selected = dstValues.Where(d => d.LanguageCode == srcValue.LanguageCode && d.Value == srcValue.Value).Any();
                 }
                 opt.SetAttributeValue("selected", selected);
             }

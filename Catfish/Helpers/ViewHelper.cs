@@ -9,10 +9,12 @@ namespace Catfish.Helpers
 {
     public static class ViewHelper
     {
-        public static string GetActiveLanguage(HttpSessionStateBase session)
+        public static Language GetActiveLanguage(HttpSessionStateBase session)
         {
-            var lang = session["ActiveLanguage"] as string;
-            return string.IsNullOrEmpty(lang) ? ConfigHelper.DefaultLanguage : lang;
+            if (session["ActiveLanguage"] as Language == null)
+                session["ActiveLanguage"] = ConfigHelper.Languages[0];
+
+            return session["ActiveLanguage"] as Language;
         }
     }
 }

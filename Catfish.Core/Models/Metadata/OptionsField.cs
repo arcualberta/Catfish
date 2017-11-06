@@ -37,7 +37,7 @@ namespace Catfish.Core.Models.Metadata
             optionElement.SetAttributeValue("guid", Guid);
             foreach (TextValue txt in Value)
             {
-                XElement textEelemnt = new XElement("text", new XAttribute(XNamespace.Xml + "lang", txt.Language));
+                XElement textEelemnt = new XElement("text", new XAttribute(XNamespace.Xml + "lang", txt.LanguageCode));
                 textEelemnt.Value = string.IsNullOrEmpty(txt.Value) ? "" : txt.Value;
                 optionElement.Add(textEelemnt);
             }

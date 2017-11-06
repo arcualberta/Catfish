@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Catfish.Core.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -11,7 +12,8 @@ namespace Catfish.Core.Models
     public class TextValue
     {
         [DisplayFormat(ConvertEmptyStringToNull = false)]
-        public string Language { get; set; }
+        public string LanguageCode { get; set; }
+        public string LanguageLabel { get; set; }
 
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string Value { get; set; }
@@ -20,16 +22,17 @@ namespace Catfish.Core.Models
         {
         }
 
-        public TextValue(string lang, string val)
+        public TextValue(string langCode, string langLabel, string val)
         {
-            Language = lang;
+            LanguageCode = langCode;
+            LanguageLabel = langLabel;
             Value = val;
         }
 
         public TextValue(XElement txtElement)
         {
             XAttribute att = txtElement.Attribute(XNamespace.Xml + "lang");
-            Language = att == null ? "" : att.Value;
+            LanguageCode = att == null ? "" : att.Value;
             Value = txtElement.Value;
         }
     }

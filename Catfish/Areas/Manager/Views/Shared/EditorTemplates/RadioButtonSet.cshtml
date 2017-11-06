@@ -14,7 +14,7 @@
     @for (int i = 0; i < Model.Options.Count; ++i)
     {
         var lang = ViewHelper.GetActiveLanguage(Session);
-        string label = Model.Options[i].Value.Where(v => v.Language == lang).Select(v => v.Value).FirstOrDefault();
+        string label = Model.Options[i].Value.Where(v => v.LanguageCode == lang.Code).Select(v => v.Value).FirstOrDefault();
         if (string.IsNullOrEmpty(label) && Model.Options[i].Value.Count > 0)
         {
             label = Model.Options[i].Value[0].Value;

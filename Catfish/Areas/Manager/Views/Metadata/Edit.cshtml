@@ -75,8 +75,8 @@
                                             @using (var name = field.Foreach(f => f.Name))
                                             {
                                                 <div class="languageInputField">
-                                                    @name.Html.TextBox(n => n.Language, new { style = "display:none" })
-                                                    @name.Html.Span(n => n.Language + ": ") @name.Html.TextBox(n => n.Value, new { @class = "input-field" })
+                                                    @name.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
+                                                    @name.Html.Span(n => n.LanguageLabel + ": ") @name.Html.TextBox(n => n.Value, new { @class = "input-field" })
                                                 </div>
                                             }
                                         </div>
@@ -97,8 +97,8 @@
                                         @using (var option = field.Foreach(f => f.MultilingualOptionSet))
                                         {
                                             <div class="languageInputField">
-                                                @option.Html.TextBox(n => n.Language, new { style = "display:none" })
-                                                @option.Html.Span(n => n.Language + ": ") @option.Html.TextArea(n => n.Value, new { @class = "input-field" })
+                                                @option.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
+                                                @option.Html.Span(n => n.LanguageLabel + ": ") @option.Html.TextArea(n => n.Value, new { @class = "input-field" })
                                             </div>
                                         }
 

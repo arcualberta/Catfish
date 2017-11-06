@@ -118,7 +118,7 @@ namespace Catfish.Core.Models
 
             //inserting text elements representing languages and values specified by the input argument
             foreach (TextValue v in val)
-                wrapper.Add(CreateTextElement(v.Value, v.Language));
+                wrapper.Add(CreateTextElement(v.Value, v.LanguageCode));
         }
 
 
@@ -195,10 +195,10 @@ namespace Catfish.Core.Models
 
         public virtual void SetTextValues(IEnumerable<TextValue> values)
         {
-            string[] languages = values.Select(v => v.Language).Distinct().ToArray();
+            string[] languages = values.Select(v => v.LanguageCode).Distinct().ToArray();
             foreach(string lang in languages)
             {
-                IEnumerable<string> vals = values.Where(v => v.Language == lang).Select(v => v.Value);
+                IEnumerable<string> vals = values.Where(v => v.LanguageCode == lang).Select(v => v.Value);
                 SetChildText("value", vals, Data, Lang(lang));
             }
         }

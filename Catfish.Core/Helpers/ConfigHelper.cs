@@ -9,30 +9,51 @@ namespace Catfish.Core.Helpers
 {
     public static class ConfigHelper
     {
-        public static string[] Languages
+        public static List<string> GetSettingArray(string key, char seperator)
+        {
+            var val = ConfigurationManager.AppSettings[key];
+            if (val != null)
+            {
+                List<string> arr = val.Split(new char[] { seperator }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim())
+                    .Where(s => s.Length > 0)
+                    .ToList();
+                return arr;
+            }
+            else
+                return new List<string>();
+        }
+
+        private static List<Language> mLanguages;
+        public static List<Language> Languages
         {
             get
             {
-                var langSpec = ConfigurationManager.AppSettings["Languages"];
-                if (langSpec != null)
+                if (mLanguages == null)
                 {
-                    string[] languages = langSpec.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(s => s.Trim())
-                        .Where(s => s.Length > 0)
-                        .ToArray();
-                    return languages;
+                    var codes = GetSettingArray("LanguageCodes", '|');
+                    var langages = GetSettingArray("Languages", '|');
+
+                    if (codes.Count != langages.Count)
+                        throw new Exception("Number of language codes and languages specified in the configuration file does not match.");
+
+                    if (codes.Count == 0)
+                        mLanguages = new List<Language>() { new Language("en", "English") };
+                    else
+                    {
+                        mLanguages = new List<Language>();
+                        for (int i = 0; i < codes.Count; ++i)
+                            mLanguages.Add(new Language(codes[i], langages[i]));
+                    }
                 }
-                else
-                    return new string[1] { "en" };
+                return mLanguages;
             }
         }
 
-        public static string DefaultLanguage
+        public static string GetLanguageLabel(string languageCode)
         {
-            get
-            {
-                return Languages.Length == 0 ? "en" : Languages[0];
-            }
+            Language lang = Languages.Where(x => x.Code == languageCode).FirstOrDefault();
+            return lang == null ? languageCode : lang.Label;
         }
     }
 }

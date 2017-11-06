@@ -40,21 +40,20 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 MultilingualOptionSet = new List<TextValue>();
 
                 //making sure we have an option-list editor for each language defined in the configuration settings.
-                string[] languages = ConfigHelper.Languages;
-                foreach(string lang in languages)
-                    MultilingualOptionSet.Add(new TextValue(lang, ""));
-
+                List<Language> languages = ConfigHelper.Languages;
+                foreach(Language lang in languages)
+                    MultilingualOptionSet.Add(new TextValue(lang.Code, lang.Label, ""));
 
                 List<Option> options = (src as OptionsField).Options;
                 foreach (Option op in options)
                 {
                     foreach (TextValue txt in op.Value)
                     {
-                        TextValue editorData = MultilingualOptionSet.Where(x => x.Language == txt.Language).FirstOrDefault();
+                        TextValue editorData = MultilingualOptionSet.Where(x => x.LanguageCode == txt.LanguageCode).FirstOrDefault();
 
                         //Accommodating odd situations where data has a language that is not specified in the configuration
                         if (editorData == null)
-                            MultilingualOptionSet.Add(editorData = new TextValue(txt.Language, ""));
+                            MultilingualOptionSet.Add(editorData = new TextValue(txt.LanguageCode, txt.LanguageLabel, ""));
 
                         if (string.IsNullOrEmpty(editorData.Value))
                             editorData.Value = txt.Value;
@@ -63,7 +62,6 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                     }
                 }
             }
-
         }
 
         public MetadataField InstantiateDataModel()
@@ -98,7 +96,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                         if (optList.Count <= i)
                             optList.Add(new Option());
 
-                        optList[i].Value.Add(new TextValue(optionValueSet.Language, optionTextValues[i]));
+                        optList[i].Value.Add(new TextValue(optionValueSet.LanguageCode, optionValueSet.LanguageLabel, optionTextValues[i]));
                     }
                 }
 
