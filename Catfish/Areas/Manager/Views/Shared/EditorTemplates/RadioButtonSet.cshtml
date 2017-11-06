@@ -1,5 +1,5 @@
 ﻿@model Catfish.Core.Models.Metadata.RadioButtonSet
-@using Catfish.Core.Models.Metadata
+@using Catfish.Helpers;
 
 @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
 {
@@ -13,9 +13,15 @@
 <div class="form-field-value">
     @for (int i = 0; i < Model.Options.Count; ++i)
     {
-        @Html.RadioButton("Value", Model.Options[i].Value, Model.Options[i].Selected, new { @class = "auto-width" })
-        <span>@Model.Options[i].Value</span>
-        @Html.HiddenFor(m => m.Options[i].Value)
+        var lang = ViewHelper.GetActiveLanguage(Session);
+        string label = Model.Options[i].Value.Where(v => v.LanguageCode == lang.Code).Select(v => v.Value).FirstOrDefault();
+        if (string.IsNullOrEmpty(label) && Model.Options[i].Value.Count > 0)
+        {
+            label = Model.Options[i].Value[0].Value;
+        }
+
+        @Html.RadioButton("Value", label, Model.Options[i].Selected, new { @class = "auto-width" })
+        <span>@label</span>
     }
 </div>
 

@@ -11,6 +11,7 @@
     @Html.Label(string.IsNullOrEmpty(Model.Name) ? "" : Model.Name)
 </div>
 <div class="form-field-value">
-    @Html.EditorFor(m => m.Value)
+    @{ bool showLanguageLabel = Model.Values.Count() > 1; }
+    @Html.EditorFor(m => m.Values, new { ShowLanguageLabel = showLanguageLabel })
 </div>
 

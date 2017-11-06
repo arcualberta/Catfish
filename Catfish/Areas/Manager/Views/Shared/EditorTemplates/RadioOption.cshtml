@@ -6,7 +6,7 @@
        {"class", "model-type"}
     })
 
-@{ 
+@{
     var lang = ViewHelper.GetActiveLanguage(Session);
     string label = Model.Value.Where(v => v.LanguageCode == lang.Code).Select(v => v.Value).FirstOrDefault();
     if (string.IsNullOrEmpty(label) && Model.Value.Count > 0)
@@ -15,4 +15,3 @@
     }
 }
 @Html.CheckBoxFor(m => m.Selected) <span>@label</span>
-@Html.HiddenFor(m => m.Guid)

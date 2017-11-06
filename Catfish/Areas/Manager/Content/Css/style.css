@@ -160,3 +160,20 @@ form.inline{
     border-color:#eee !important;
 }
 
+.languageInputField{
+    margin: 5px 0;
+}
+
+    .languageInputField input.input-field, .languageInputField textarea.input-field {
+        border: solid #ccc 1px;
+        margin: 5px 0;
+        padding: 4px;
+    }
+    .languageInputField span {
+        margin-right: 0px !important;
+    }
+
+    .languageInputField input.input-field {
+        width: 80%;
+    }
+

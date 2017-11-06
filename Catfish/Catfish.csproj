@@ -167,7 +167,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Manager\Views\Metadata\Edit.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataField.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataField_REMOVE.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\OptionsField.cshtml" />
     <Content Include="Areas\Manager\Views\Metadata\EditTest.cshtml" />
     <Content Include="package.json" />
@@ -213,6 +213,9 @@
     <Content Include="Areas\Manager\Views\Items\Associations.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\ParentCollectionList.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\Carousel.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\TextValue.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\RadioOption.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\MultilingualText.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
@@ -239,6 +242,7 @@
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
+    <Compile Include="Helpers\ViewHelper.cs" />
     <Compile Include="Models\Regions\Carousel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityContentViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\FileViewModel.cs" />
@@ -254,6 +258,7 @@
     </Compile>
     <Compile Include="Areas\Manager\Models\ViewModels\EntityViewModel.cs" />
     <Compile Include="Models\Regions\RegionBase.cs" />
+    <Compile Include="Models\Regions\MultilingualText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -278,6 +283,7 @@
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+    <None Include="Web.example.config" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
