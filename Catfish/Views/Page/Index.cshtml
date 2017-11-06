@@ -1,6 +1,7 @@
 ﻿@model Piranha.Models.PageModel
 @using Catfish.Models.Regions;
 @using Piranha.Extend.Regions;
+@using Catfish.Helpers;
 
 @{
     ViewBag.Title = Model.Page.Title ;
@@ -31,8 +32,12 @@
 <div class="content">
     <div class="main">
         <h1>@Model.Page.Title</h1>
-        Region Content:
-        @Model.Regions.Content
+        @{ 
+            var activeLang = ViewHelper.GetActiveLanguage(Session);
+            MultilingualText content = Model.Regions.Content as MultilingualText;
+            var activeContent = content.Content.Where(c => c.LanguageCode == activeLang.Code).FirstOrDefault();
+            @activeContent
+        }
     </div>
     <div class="sidebar">
         @Html.Partial("Sidebar")
