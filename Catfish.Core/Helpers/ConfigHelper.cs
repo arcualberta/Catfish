@@ -32,10 +32,10 @@ namespace Catfish.Core.Helpers
                 if (mLanguages == null)
                 {
                     var codes = GetSettingArray("LanguageCodes", '|');
-                    var langages = GetSettingArray("Languages", '|');
+                    var langages = GetSettingArray("LanguageLabels", '|');
 
                     if (codes.Count != langages.Count)
-                        throw new Exception("Number of language codes and languages specified in the configuration file does not match.");
+                        throw new Exception("Number of language codes and language labels specified in the configuration file does not match.");
 
                     if (codes.Count == 0)
                         mLanguages = new List<Language>() { new Language("en", "English") };
