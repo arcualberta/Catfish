@@ -9,7 +9,7 @@ using System.Web;
 
 namespace Catfish.Models.Regions
 {
-    public class RegionBase : Piranha.Extend.Extension
+    public class CatfishRegion : Piranha.Extend.Extension
     {
         [Display(Name = "CSS Id")]
         public string CssId { get; set; }

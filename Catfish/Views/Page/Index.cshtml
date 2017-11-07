@@ -32,12 +32,11 @@
 <div class="content">
     <div class="main">
         <h1>@Model.Page.Title</h1>
-        @{ 
-            var activeLang = ViewHelper.GetActiveLanguage(Session);
+        @{
             MultilingualText content = Model.Regions.Content as MultilingualText;
-            var activeContent = content.Content.Where(c => c.LanguageCode == activeLang.Code).FirstOrDefault();
-            @activeContent.Value
+            @Html.DisplayFor(m => content)
         }
+
     </div>
     <div class="sidebar">
         @Html.Partial("Sidebar")

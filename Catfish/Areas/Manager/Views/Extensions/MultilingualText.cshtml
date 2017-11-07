@@ -26,4 +26,7 @@
             @Html.HiddenFor(m => Model.Content[i].LanguageCode)
         </li>
     }
+
+    @Html.Partial("_CatfishRegion", Model)
+
 </ul>
