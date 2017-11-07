@@ -25,6 +25,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -256,6 +257,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Areas\Manager\Models\ViewModels\EntityViewModel.cs" />
+    <Compile Include="Models\Regions\RegionBase.cs" />
     <Compile Include="Models\Regions\MultilingualText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

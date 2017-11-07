@@ -36,6 +36,20 @@ namespace Catfish.Core.Models
             }
         }
 
+        [NotMapped]
+        public DateTime Updated
+        {
+            get
+            {
+                string att = GetAttribute("updated");
+                return string.IsNullOrEmpty(att) ? new DateTime() : DateTime.Parse(att);
+            }
+            set
+            {
+                SetAttribute("updated", value.ToString());
+            }
+        }
+
         [Column(TypeName = "xml")]
         public string Content
         {
