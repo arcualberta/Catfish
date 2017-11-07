@@ -31,7 +31,17 @@
 
 <div class="content">
     <div class="main">
-        <h1>@Model.Page.Title</h1>
+        <h1>
+            @try
+            {
+                MultilingualText field = Model.Regions.PageTitle;
+                @Html.DisplayFor(m => field, new { unformatted = true })
+            }
+            catch (Exception)
+            {
+                @Model.Page.Title
+            }
+        </h1>
         @{
             MultilingualText content = Model.Regions.Content as MultilingualText;
             @Html.DisplayFor(m => content)

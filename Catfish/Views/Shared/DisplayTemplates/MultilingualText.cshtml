@@ -5,15 +5,22 @@
 @{
     var activeLang = ViewHelper.GetActiveLanguage(Session);
     var activeContent = Model.Content.Where(c => c.LanguageCode == activeLang.Code).FirstOrDefault();
+
+    if (ViewData["unformatted"] != null && (bool)ViewData["unformatted"])
+    {
+        @Html.Raw(activeContent.Value)
+    }
+    else
+    {
+        <style>
+            @Model.CssStyles
+        </style>
+
+        <div id="@Model.CssId" class="@Model.CssClasses">
+            @Html.Raw(activeContent.Value)
+        </div>
+    }
 }
-
-<style>
-    @Model.CssStyles
-</style>
-
-<div id="@Model.CssId" class="@Model.CssClasses">
-    @Html.Raw(activeContent.Value)
-</div>
 
 
 

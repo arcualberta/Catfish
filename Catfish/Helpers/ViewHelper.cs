@@ -16,5 +16,11 @@ namespace Catfish.Helpers
 
             return session["ActiveLanguage"] as Language;
         }
+
+        public static void SetActiveLanguage(Language lang, HttpSessionStateBase session)
+        {
+            session["ActiveLanguage"] = lang;
+        }
+
     }
 }

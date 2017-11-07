@@ -1,33 +1,82 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-    <head>
+
+@using Catfish.Models.Regions;
+
+@{
+    Piranha.Models.PageModel global;
+
+    if (HttpContext.Current.Items["Piranha_CurrentPage"] != null)
+    {
+        var current = (Piranha.Models.Page)HttpContext.Current.Items["Piranha_CurrentPage"];
+        global = Piranha.Models.PageModel.GetBySite(current.SiteTreeId);
+    }
+    else
+    {
+        global = Piranha.Models.PageModel.GetBySite(Piranha.Config.SiteTreeId);
+    }
+}
+
+
+<head>
+    @try
+    {
+        MultilingualText field = global.Regions.SiteTitle;
+        <title>@Html.DisplayFor(m => field, new { unformatted = true })</title>
+    }
+    catch (Exception)
+    {
         <title>@ViewBag.Title</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    }
 
-        @UI.Head()
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-        <link type="text/css" rel="stylesheet" href="~/content/css/style.css" />
-       
-        @RenderSection("head", required: false)
+    @UI.Head()
 
-    </head>
-    <body>       
-        <script>
+    <link type="text/css" rel="stylesheet" href="~/content/css/style.css" />
+    <link type="text/css" rel="stylesheet" href="~/content/css/Site.css" />
+
+    @RenderSection("head", required: false)
+
+</head>
+<body>
+    <script>
                     //require(["./Built/app"]);
-        </script>
-        <header role="banner">
-            <div class="wrapper">
-                <a class="site-title" href="~/">@Site.SiteTitle</a>
-                <p class="site-desc">@Site.SiteDescription</p>
-                <navigation role="main-navigation">
-                    @UI.Menu(StopLevel: 1)
-                </navigation>
-            </div>
-        </header>
+    </script>
+    <header role="banner">
         <div class="wrapper">
-            @RenderBody()
+            <a class="site-title" href="~/">
+                @try
+                {
+                    MultilingualText field = global.Regions.SiteTitle;
+                    @Html.DisplayFor(m => field, new { unformatted = true })
+                }
+                catch (Exception)
+                {
+                    @Site.SiteTitle
+                }
+            </a>
+            @Html.Partial("_LanguageSwitcher")
+            <p class="site-desc">
+                @try
+                {
+                    MultilingualText field = global.Regions.SiteDesc;
+                    @Html.DisplayFor(m => field, new { unformatted = true })
+                }
+                catch (Exception)
+                {
+                    @Site.SiteDescription
+                }
+            </p>
+            <navigation role="main-navigation">
+                @UI.Menu(StopLevel: 1)
+            </navigation>
         </div>
-    </body>
-    @RenderSection("script", required: false)
+    </header>
+    <div class="wrapper">
+        @RenderBody()
+    </div>
+</body>
+@RenderSection("script", required: false)
 </html>

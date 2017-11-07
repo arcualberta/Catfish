@@ -160,7 +160,7 @@
     <Content Include="Content\Css\bootstrap.min.css" />
     <Content Include="Content\Css\catfish.css" />
     <Content Include="Content\Css\style.css" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\Css\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="robots.txt" />
@@ -242,6 +242,7 @@
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
+    <Compile Include="Controllers\LanguageController.cs" />
     <Compile Include="Helpers\ViewHelper.cs" />
     <Compile Include="Models\Regions\Carousel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityContentViewModel.cs" />
@@ -281,6 +282,7 @@
     <Content Include="Scripts\jquery-2.1.1.min.map" />
     <Content Include="Views\Shared\DisplayTemplates\Carousel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\MultilingualText.cshtml" />
+    <Content Include="Views\Shared\_LanguageSwitcher.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -293,6 +295,7 @@
     <Folder Include="Areas\Manager\Views\Catfish\" />
     <Folder Include="Areas\Manager\Views\EntityAssociationList\" />
     <Folder Include="Areas\Manager\Views\Entity\" />
+    <Folder Include="Views\Language\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj">
