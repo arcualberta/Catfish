@@ -170,7 +170,6 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataField_REMOVE.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\OptionsField.cshtml" />
     <Content Include="Areas\Manager\Views\Metadata\EditTest.cshtml" />
-    <Content Include="package.json" />
     <Content Include="Areas\Manager\Views\EntityTypes\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\EntityTypes\Index.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\IndexToolbar.cshtml" />
