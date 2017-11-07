@@ -15,13 +15,15 @@
     }
 }
 <ul class="form">
-    @foreach(var entry in Model.Content)
+    @*@foreach (var entry in Model.Content)*@
+    @for(int i=0; i< Model.Content.Count; ++i)
     {
+
         <li>
-            <label class="lang-label">@entry.LanguageLabel</label>
-            <div class="input">@Html.TextAreaFor(m => entry.Value, new { placeholder = "Enter the content in the above langage" })</div>
-            @Html.HiddenFor(m => entry.LanguageLabel)
-            @Html.HiddenFor(m => entry.LanguageCode)
+            <label class="lang-label">@Model.Content[i].LanguageLabel</label>
+            <div class="input">@Html.TextAreaFor(m => Model.Content[i].Value, new { placeholder = "Enter the content in the above langage" })</div>
+            @Html.HiddenFor(m => Model.Content[i].LanguageLabel)
+            @Html.HiddenFor(m => Model.Content[i].LanguageCode)
         </li>
     }
 </ul>

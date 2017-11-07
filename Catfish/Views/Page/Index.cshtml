@@ -36,7 +36,7 @@
             var activeLang = ViewHelper.GetActiveLanguage(Session);
             MultilingualText content = Model.Regions.Content as MultilingualText;
             var activeContent = content.Content.Where(c => c.LanguageCode == activeLang.Code).FirstOrDefault();
-            @activeContent
+            @activeContent.Value
         }
     </div>
     <div class="sidebar">
