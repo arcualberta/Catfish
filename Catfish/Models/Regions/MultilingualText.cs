@@ -21,5 +21,10 @@ namespace Catfish.Models.Regions
         {
             Content = new List<TextValue>();
         }
+
+        public string GetContent(string langCode)
+        {
+            return Content.Where(c => c.LanguageCode == langCode).Select(c => c.Value).FirstOrDefault();
+        }
     }
 }

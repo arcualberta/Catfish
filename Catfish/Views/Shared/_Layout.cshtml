@@ -36,6 +36,8 @@
 
     <link type="text/css" rel="stylesheet" href="~/content/css/style.css" />
     <link type="text/css" rel="stylesheet" href="~/content/css/Site.css" />
+    <link href="~/Content/bs-bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
+
 
     @RenderSection("head", required: false)
 
@@ -69,8 +71,24 @@
                     @Site.SiteDescription
                 }
             </p>
-            <navigation role="main-navigation">
+            <navigation role="main-navigation bs">
                 @UI.Menu(StopLevel: 1)
+                @*@{ 
+                    //Delegating menu rendering to multilingual menu renderer
+                    Hooks.Menu.RenderItemLink += (ui, str, page) {
+                        // Check if this is the startpage of the site.
+                        if (page.ParentId == Guid.Empty && page.Seqno == 1)
+                        {
+                            // Render the page title without the link
+                        }
+                        else
+                        {
+                            // Render the page title and a link
+                        }
+                    };
+                }*@
+
+
             </navigation>
         </div>
     </header>

@@ -40,8 +40,12 @@ namespace Catfish
                 str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/Custom.css\" />");
             };
 
+            //Adding manager menu items
+            AddManagerMenus();
+        }
 
-            //Adding menu items
+        private void AddManagerMenus()
+        {
             var menubar = Manager.Menu.Where(m => m.InternalId == "Content").FirstOrDefault();
             var idx = 0;
 
@@ -52,7 +56,6 @@ namespace Catfish
                 Controller = "items",
                 Permission = "ADMIN_CONTENT"
             });
-
 
             menubar.Items.Insert(idx++, new Manager.MenuItem()
             {
@@ -67,11 +70,11 @@ namespace Catfish
 
             menubar.Items.Insert(idx++, new Manager.MenuItem()
             {
-                  Name = "Metadata Sets",
-                  Action = "index",
-                  Controller = "metadata",
-                  Permission = "ADMIN_CONTENT"
-                  //,SelectedActions = "productlist,productedit"
+                Name = "Metadata Sets",
+                Action = "index",
+                Controller = "metadata",
+                Permission = "ADMIN_CONTENT"
+                //,SelectedActions = "productlist,productedit"
             });
 
             menubar.Items.Insert(idx++, new Manager.MenuItem()
@@ -82,7 +85,6 @@ namespace Catfish
                 Permission = "ADMIN_CONTENT"
                 //,SelectedActions = "productlist,productedit"
             });
-
         }
     }
 }
