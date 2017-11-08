@@ -2,8 +2,10 @@
 <html lang="en">
 
 @using Catfish.Models.Regions;
-
 @{
+    Catfish.Core.Helpers.Language lang = Catfish.Helpers.ViewHelper.GetActiveLanguage(Session);
+    System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(lang.Code);
+
     Piranha.Models.PageModel global;
 
     if (HttpContext.Current.Items["Piranha_CurrentPage"] != null)
@@ -71,24 +73,8 @@
                     @Site.SiteDescription
                 }
             </p>
-            <navigation role="main-navigation bs">
+            <navigation role="main-navigation">
                 @UI.Menu(StopLevel: 1)
-                @*@{ 
-                    //Delegating menu rendering to multilingual menu renderer
-                    Hooks.Menu.RenderItemLink += (ui, str, page) {
-                        // Check if this is the startpage of the site.
-                        if (page.ParentId == Guid.Empty && page.Seqno == 1)
-                        {
-                            // Render the page title without the link
-                        }
-                        else
-                        {
-                            // Render the page title and a link
-                        }
-                    };
-                }*@
-
-
             </navigation>
         </div>
     </header>

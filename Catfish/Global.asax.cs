@@ -11,6 +11,7 @@ using Piranha.WebPages;
 using Catfish.Core.Models.Metadata;
 using Catfish.Areas.Manager.ModelBinders;
 using Catfish.Core.Models;
+using Catfish.Helpers;
 
 namespace Catfish
 {
@@ -42,6 +43,9 @@ namespace Catfish
 
             //Adding manager menu items
             AddManagerMenus();
+
+            //Multilingual menu
+            Hooks.Menu.RenderItemLink = ViewHelper.MultilingualMenuRenderer;
         }
 
         private void AddManagerMenus()

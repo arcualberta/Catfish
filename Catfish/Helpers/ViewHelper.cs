@@ -7,6 +7,8 @@ using System.Web.Routing;
 using System.Data.Entity;
 using System.Threading;
 using System.Globalization;
+using Catfish.Models.Regions;
+using System.Web.Script.Serialization;
 
 namespace Catfish.Helpers
 {
@@ -27,17 +29,29 @@ namespace Catfish.Helpers
 
         public static void MultilingualMenuRenderer(Piranha.Web.UIHelper ui, System.Text.StringBuilder str, Piranha.Models.Sitemap page)
         {
-            var db = new Piranha.DataContext();
+            string menuItemText = null;
+            try
+            {
+                CultureInfo culture = Thread.CurrentThread.CurrentCulture;
 
-            var pageTitleRegion = db.Regions
-                .Include(r => r.RegionTemplate)
-                .Where(r => r.PageId == page.Id && r.RegionTemplate.InternalId == "PageTitle")
-                .FirstOrDefault();
+                var db = new Piranha.DataContext();
+                var pageTitleRegion = db.Regions
+                    .Include(r => r.RegionTemplate)
+                    .Where(r => r.PageId == page.Id && r.RegionTemplate.InternalId == "PageTitle")
+                    .FirstOrDefault();
 
-            //MultilingualText pageTitle = new JavaScriptSerializer().Deserialize<MultilingualText>(pageTitleRegion.InternalBody);
-            //menuItemText = pageTitle.GetContent(ViewHelper.GetActiveLanguage(Session))
-            //str.Append(string.IsNullOrEmpty(pageTitle.) ? page.Title : page.NavigationTitle);
+                MultilingualText pageTitle = new JavaScriptSerializer().Deserialize<MultilingualText>(pageTitleRegion.InternalBody);
+                menuItemText = pageTitle.GetContent(culture.TwoLetterISOLanguageName);
+            }
+            catch (Exception)
+            {
+            }
 
+            if (string.IsNullOrEmpty(menuItemText))
+                menuItemText = string.IsNullOrEmpty(page.NavigationTitle) ? page.Title : page.NavigationTitle;
+
+            var url = ui.AbsoluteUrl("/home/" + page.Permalink);
+            str.Append("<a href='" + url + "'>" + menuItemText + "</a>");
 
             //var regions = pageModel.Regions;
             //MultilingualText pageTitle = null;
