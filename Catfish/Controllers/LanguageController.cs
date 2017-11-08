@@ -13,7 +13,7 @@ namespace Catfish.Controllers
         // GET: Language
         public ActionResult Switch(string lang)
         {
-            ViewHelper.SetActiveLanguage(ConfigHelper.Languages.Where(x => x.Code == lang).FirstOrDefault(), Session);
+            ViewHelper.SetActiveLanguage(ConfigHelper.Languages.Where(x => x.TwoLetterISOLanguageName == lang).FirstOrDefault(), Session);
             return Redirect(Request.UrlReferrer.ToString());
         }
     }

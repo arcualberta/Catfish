@@ -14,15 +14,15 @@ namespace Catfish.Helpers
 {
     public static class ViewHelper
     {
-        public static Language GetActiveLanguage(HttpSessionStateBase session)
+        public static CultureInfo GetActiveLanguage(HttpSessionStateBase session)
         {
-            if (session["ActiveLanguage"] as Language == null)
+            if (session["ActiveLanguage"] as CultureInfo == null)
                 session["ActiveLanguage"] = ConfigHelper.Languages[0];
 
-            return session["ActiveLanguage"] as Language;
+            return session["ActiveLanguage"] as CultureInfo;
         }
 
-        public static void SetActiveLanguage(Language lang, HttpSessionStateBase session)
+        public static void SetActiveLanguage(CultureInfo lang, HttpSessionStateBase session)
         {
             session["ActiveLanguage"] = lang;
         }

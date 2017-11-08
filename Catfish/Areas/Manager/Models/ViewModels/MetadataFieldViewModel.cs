@@ -40,9 +40,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 MultilingualOptionSet = new List<TextValue>();
 
                 //making sure we have an option-list editor for each language defined in the configuration settings.
-                List<Language> languages = ConfigHelper.Languages;
-                foreach(Language lang in languages)
-                    MultilingualOptionSet.Add(new TextValue(lang.Code, lang.Label, ""));
+                foreach(var lang in ConfigHelper.Languages)
+                    MultilingualOptionSet.Add(new TextValue(lang.TwoLetterISOLanguageName, lang.NativeName, ""));
 
                 List<Option> options = (src as OptionsField).Options;
                 foreach (Option op in options)

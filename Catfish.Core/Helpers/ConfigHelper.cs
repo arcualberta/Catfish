@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,26 +25,22 @@ namespace Catfish.Core.Helpers
                 return new List<string>();
         }
 
-        private static List<Language> mLanguages;
-        public static List<Language> Languages
+        private static List<CultureInfo> mLanguages;
+        public static List<CultureInfo> Languages
         {
             get
             {
                 if (mLanguages == null)
                 {
                     var codes = GetSettingArray("LanguageCodes", '|');
-                    var langages = GetSettingArray("LanguageLabels", '|');
-
-                    if (codes.Count != langages.Count)
-                        throw new Exception("Number of language codes and language labels specified in the configuration file does not match.");
 
                     if (codes.Count == 0)
-                        mLanguages = new List<Language>() { new Language("en", "English") };
+                        mLanguages = new List<CultureInfo>() { new CultureInfo("en") };
                     else
                     {
-                        mLanguages = new List<Language>();
+                        mLanguages = new List<CultureInfo>();
                         for (int i = 0; i < codes.Count; ++i)
-                            mLanguages.Add(new Language(codes[i], langages[i]));
+                            mLanguages.Add(new CultureInfo(codes[i]));
                     }
                 }
                 return mLanguages;
@@ -52,8 +49,8 @@ namespace Catfish.Core.Helpers
 
         public static string GetLanguageLabel(string languageCode)
         {
-            Language lang = Languages.Where(x => x.Code == languageCode).FirstOrDefault();
-            return lang == null ? languageCode : lang.Label;
+            string label = Languages.Where(c => c.TwoLetterISOLanguageName == languageCode).Select(c => c.NativeName).FirstOrDefault();
+            return string.IsNullOrEmpty(label) ? languageCode : label;
         }
     }
 }

@@ -9,7 +9,7 @@
             @for(var i=0; i<languages.Count; ++i)
             {
                 <span class="lang-btn">
-                    @Html.ActionLink(@languages[i].Label, "switch", "language", new { @lang = languages[i].Code }, new { }) 
+                    @Html.ActionLink(@languages[i].NativeName, "switch", "language", new { @lang = languages[i].TwoLetterISOLanguageName }, new { }) 
                 </span>
                 if (i < languages.Count - 1)
                 {

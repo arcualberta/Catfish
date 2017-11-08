@@ -3,8 +3,7 @@
 
 @using Catfish.Models.Regions;
 @{
-    Catfish.Core.Helpers.Language lang = Catfish.Helpers.ViewHelper.GetActiveLanguage(Session);
-    System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(lang.Code);
+    System.Threading.Thread.CurrentThread.CurrentCulture = Catfish.Helpers.ViewHelper.GetActiveLanguage(Session);
 
     Piranha.Models.PageModel global;
 
