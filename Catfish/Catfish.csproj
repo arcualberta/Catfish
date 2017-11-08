@@ -242,8 +242,10 @@
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
+    <Compile Include="Controllers\EntityController.cs" />
     <Compile Include="Controllers\LanguageController.cs" />
     <Compile Include="Helpers\ViewHelper.cs" />
+    <Compile Include="Models\Pages\EntityTree.cs" />
     <Compile Include="Models\Regions\Carousel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityContentViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\FileViewModel.cs" />
@@ -283,6 +285,7 @@
     <Content Include="Views\Shared\DisplayTemplates\Carousel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\MultilingualText.cshtml" />
     <Content Include="Views\Shared\_LanguageSwitcher.cshtml" />
+    <Content Include="Views\Entity\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
