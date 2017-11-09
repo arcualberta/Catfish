@@ -54,14 +54,38 @@ namespace Catfish.Core.Models
         public string Content
         {
             get { return mContent; }
-            set { mContent = value; this.Data = XElement.Parse(this.Content); }
+            set {
+                mContent = value;
+                
+                this.Data = XElement.Parse(this.Content);
+            }
         }
 
         [NotMapped]
         private string mContent;
 
         [NotMapped]
-        public virtual XElement Data { get; set; }
+        private XElement mData;
+
+        [NotMapped]
+        public virtual XElement Data
+        {
+            get
+            {
+                return mData;
+            }
+
+            set
+            {
+                if (mData != null)
+                {
+                    mData.Changing -= OnUpdated; // To avoid event memory leaks
+                }
+
+                mData = value;
+                mData.Changing += OnUpdated;
+            }
+        }
 
         [Obsolete]
         [NotMapped]
@@ -135,6 +159,16 @@ namespace Catfish.Core.Models
                 wrapper.Add(CreateTextElement(v.Value, v.LanguageCode));
         }
 
+        protected void OnUpdated(object sender, XObjectChangeEventArgs e)
+        {
+            if (sender is XAttribute && ((XAttribute)sender).Name == "updated")
+            {
+                return;
+            }
+
+            Updated = DateTime.Now; 
+        }
+
 
 
 
@@ -174,6 +208,7 @@ namespace Catfish.Core.Models
         {
             XElement textElemnt = new XElement("text", new XAttribute(XNamespace.Xml + "lang", lang));
             textElemnt.Value = value;
+
             return textElemnt;
         }
 
@@ -230,6 +265,7 @@ namespace Catfish.Core.Models
         public virtual void SetValues(IEnumerable<string> values, string lang = null)
         {
             SetChildText("value", values, Data, Lang(lang));
+
         }
 
         public List<XmlModel> GetChildModels(string xpath, XElement ele)
