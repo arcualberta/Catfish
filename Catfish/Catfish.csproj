@@ -216,6 +216,7 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\RadioOption.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\MultilingualText.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\_CatfishRegion.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\Form.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
@@ -261,6 +262,7 @@
     </Compile>
     <Compile Include="Areas\Manager\Models\ViewModels\EntityViewModel.cs" />
     <Compile Include="Models\Regions\CatfishRegion.cs" />
+    <Compile Include="Models\Regions\Form.cs" />
     <Compile Include="Models\Regions\MultilingualText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -286,6 +288,7 @@
     <Content Include="Views\Shared\DisplayTemplates\MultilingualText.cshtml" />
     <Content Include="Views\Shared\_LanguageSwitcher.cshtml" />
     <Content Include="Views\Entity\Index.cshtml" />
+    <Content Include="Views\Page\Form.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

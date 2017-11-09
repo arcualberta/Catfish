@@ -1,0 +1,22 @@
+﻿@model Catfish.Models.Regions.Form
+
+<ul class="form">
+    <li>
+        @Html.LabelFor(m => m.Title)
+        <div class="input">@Html.EditorFor(m => m.Title, new { placeholder = "Form title" })</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.Description)
+        <div class="input">@Html.EditorFor(m => m.Title, new { placeholder = "Form title" })</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.EntityTypeId)
+        <div class="input">@Html.TextBoxFor(m => m.EntityTypeId)</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.CollectionId)
+        <div class="input">@Html.TextBoxFor(m => m.CollectionId)</div>
+    </li>
+
+    @Html.Partial("_CatfishRegion", Model)
+</ul>
