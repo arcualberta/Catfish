@@ -13,13 +13,18 @@ namespace Catfish.Models.Regions
     [ExportMetadata("Name", "Multilingual Text")]
     [ExportMetadata("Type", ExtensionType.Region)]
     [Serializable]
-    public class MultilingualText: Extension
+    public class MultilingualText: CatfishRegion
     {
         public List<TextValue> Content { get; set; }
 
         public MultilingualText()
         {
             Content = new List<TextValue>();
+        }
+
+        public string GetContent(string langCode)
+        {
+            return Content.Where(c => c.LanguageCode == langCode).Select(c => c.Value).FirstOrDefault();
         }
     }
 }

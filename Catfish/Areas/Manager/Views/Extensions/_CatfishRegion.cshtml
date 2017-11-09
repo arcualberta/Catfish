@@ -1,0 +1,14 @@
+﻿@model Catfish.Models.Regions.CatfishRegion
+
+<li>
+    @Html.LabelFor(m => m.CssId)
+    <div class="input">@Html.TextBoxFor(m => m.CssId)</div>
+</li>
+<li>
+    @Html.LabelFor(m => m.CssClasses)
+    <div class="input">@Html.TextBoxFor(m => m.CssClasses)</div>
+</li>
+<li>
+    @Html.LabelFor(m => m.CssStyles)
+    <div class="input">@Html.EditorFor(m => m.CssStyles)</div>
+</li>

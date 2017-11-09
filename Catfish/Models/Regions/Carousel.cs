@@ -13,7 +13,7 @@ namespace Catfish.Models.Regions
     [ExportMetadata("Name", "Carousel")]
     [ExportMetadata("Type", ExtensionType.Region)]
     [Serializable]
-    public class Carousel : RegionBase
+    public class Carousel : CatfishRegion
     {
         [Display(Name = "Image URLs")]
         public string ImageUrls { get; set; }

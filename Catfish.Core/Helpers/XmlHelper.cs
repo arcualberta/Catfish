@@ -37,11 +37,10 @@ namespace Catfish.Core.Helpers
 
             if (forceAllLanguages)
             {
-                List<Language> languages = ConfigHelper.Languages;
-                foreach (var lang in languages)
+                foreach (var lang in ConfigHelper.Languages)
                 {
-                    if (!ret.Where(t => t.LanguageCode == lang.Code).Any())
-                        ret.Add(new TextValue(lang.Code, lang.Label, ""));
+                    if (!ret.Where(t => t.LanguageCode == lang.TwoLetterISOLanguageName).Any())
+                        ret.Add(new TextValue(lang.TwoLetterISOLanguageName, lang.NativeName, ""));
                 }
             }
 

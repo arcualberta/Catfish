@@ -160,7 +160,7 @@
     <Content Include="Content\Css\bootstrap.min.css" />
     <Content Include="Content\Css\catfish.css" />
     <Content Include="Content\Css\style.css" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\Css\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="robots.txt" />
@@ -170,7 +170,6 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataField_REMOVE.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\OptionsField.cshtml" />
     <Content Include="Areas\Manager\Views\Metadata\EditTest.cshtml" />
-    <Content Include="package.json" />
     <Content Include="Areas\Manager\Views\EntityTypes\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\EntityTypes\Index.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\IndexToolbar.cshtml" />
@@ -216,6 +215,7 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\TextValue.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\RadioOption.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\MultilingualText.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\_CatfishRegion.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
@@ -242,7 +242,10 @@
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
+    <Compile Include="Controllers\EntityController.cs" />
+    <Compile Include="Controllers\LanguageController.cs" />
     <Compile Include="Helpers\ViewHelper.cs" />
+    <Compile Include="Models\Pages\EntityTree.cs" />
     <Compile Include="Models\Regions\Carousel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityContentViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\FileViewModel.cs" />
@@ -257,7 +260,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Areas\Manager\Models\ViewModels\EntityViewModel.cs" />
-    <Compile Include="Models\Regions\RegionBase.cs" />
+    <Compile Include="Models\Regions\CatfishRegion.cs" />
     <Compile Include="Models\Regions\MultilingualText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -280,6 +283,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Scripts\jquery-2.1.1.min.map" />
     <Content Include="Views\Shared\DisplayTemplates\Carousel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\MultilingualText.cshtml" />
+    <Content Include="Views\Shared\_LanguageSwitcher.cshtml" />
+    <Content Include="Views\Entity\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -292,6 +298,8 @@
     <Folder Include="Areas\Manager\Views\Catfish\" />
     <Folder Include="Areas\Manager\Views\EntityAssociationList\" />
     <Folder Include="Areas\Manager\Views\Entity\" />
+    <Folder Include="Views\Catfish\" />
+    <Folder Include="Views\Language\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj">
