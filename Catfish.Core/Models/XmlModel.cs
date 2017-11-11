@@ -161,9 +161,14 @@ namespace Catfish.Core.Models
             DefaultLanguage = defaultLang;
         }
 
-        public virtual string GetName(string lang = null)
+        public virtual string GetName(string lang = null, bool tryReturnNoneEmpty = false)
         {
-            return GetChildText("name", Data, Lang(lang));
+            string name = GetChildText("name", Data, Lang(lang));
+            if(tryReturnNoneEmpty && string.IsNullOrEmpty(name))
+            {
+                name = GetNames(false).Where(tv => !string.IsNullOrEmpty(tv.Value)).Select(tv => tv.Value).FirstOrDefault();
+            }
+            return name;
         }
         public virtual void SetName(string val, string lang = null)
         {

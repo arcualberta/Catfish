@@ -1,0 +1,46 @@
+﻿@model Catfish.Models.Regions.Form
+@using Catfish.Core.Models;
+
+@{
+    var culture = Catfish.Helpers.ViewHelper.GetActiveLanguage(Session);
+
+    var cssId = Model.CssId != null ? Model.CssId : "DefaultFormId";
+    var cssClasses = Model.CssClasses;
+}
+
+<style type="text/css" scoped>
+    @Model.CssStyles
+</style>
+
+<div class="bs">
+    <div id="@cssId" class="@cssClasses">
+        @if (!string.IsNullOrEmpty(Model.Title))
+        {
+            <div class="title">@Model.Title</div>
+        }
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <div class="desc">@Html.Raw(Model.Description)</div>
+        }
+
+   </div>
+
+    @{
+        Item item = ViewData["Item"] as Item;
+        List<string> pages = Model.Pages.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+        using (Html.BeginForm("Edit", "Form", FormMethod.Post))
+        {
+            for (int i = 0; i < item.MetadataSets.Count; ++i)
+            {
+                if (pages.Contains(item.MetadataSets[i].Name))
+                {
+                    for (int f = 0; f < item.MetadataSets[i].Fields.Count; ++f)
+                    {
+                        @Html.EditorFor(m => item.MetadataSets[i].Fields[f], new { ActiveLanguage = culture.TwoLetterISOLanguageName })
+                    }
+                }
+            }
+        }
+    }
+</div>

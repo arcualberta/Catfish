@@ -81,7 +81,7 @@ namespace Catfish.Core.Models.Metadata
         }
 
         [NotMapped]
-        public IEnumerable<TextValue> Values
+        public List<TextValue> Values
         {
             get
             {
@@ -89,7 +89,7 @@ namespace Catfish.Core.Models.Metadata
                 if (valueWrapper == null)
                     Data.Add(valueWrapper = new XElement("value"));
 
-                return XmlHelper.GetTextValues(valueWrapper, true);
+                return XmlHelper.GetTextValues(valueWrapper, true).ToList();
             }
 
             set

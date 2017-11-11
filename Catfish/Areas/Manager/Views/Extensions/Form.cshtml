@@ -7,7 +7,11 @@
     </li>
     <li>
         @Html.LabelFor(m => m.Description)
-        <div class="input">@Html.EditorFor(m => m.Title, new { placeholder = "Form title" })</div>
+        <div class="input">@Html.EditorFor(m => m.Description, new { placeholder = "Form description" })</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.Pages)
+        <div class="input">@Html.TextAreaFor(m => m.Pages, new { placeholder = "Enter the list of metadata set pages available for public, one page per line." })</div>
     </li>
     <li>
         @Html.LabelFor(m => m.EntityTypeId)

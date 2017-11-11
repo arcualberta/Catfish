@@ -14,10 +14,10 @@ namespace Catfish.Controllers
 	/// </summary>
     public class PageController : SinglePageController
     {
-		/// <summary>
-		/// Gets a standard page.
-		/// </summary>
-		/// <returns>The view result</returns>
+        /// <summary>
+        /// Gets a standard page.
+        /// </summary>
+        /// <returns>The view result</returns>
         public ActionResult Index() {
 			var model = GetModel() ;
 

@@ -39,7 +39,7 @@ namespace Catfish.Core.Models
             }
         }
 
-        public override string GetName(string lang = null)
+        public string GetName(string lang = null)
         {
             var mapping = EntityType.GetNameMapping();
             if(mapping != null)

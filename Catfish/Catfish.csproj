@@ -244,6 +244,7 @@
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
     <Compile Include="Controllers\EntityController.cs" />
+    <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\LanguageController.cs" />
     <Compile Include="Helpers\ViewHelper.cs" />
     <Compile Include="Models\Pages\EntityTree.cs" />
@@ -288,7 +289,13 @@
     <Content Include="Views\Shared\DisplayTemplates\MultilingualText.cshtml" />
     <Content Include="Views\Shared\_LanguageSwitcher.cshtml" />
     <Content Include="Views\Entity\Index.cshtml" />
-    <Content Include="Views\Page\Form.cshtml" />
+    <Content Include="Views\Form\Index.cshtml" />
+    <Content Include="Views\Form\EditorTemplates\Form.cshtml" />
+    <Content Include="Views\Form\EditorTemplates\TextField.cshtml" />
+    <Content Include="Views\Form\EditorTemplates\TextArea.cshtml" />
+    <Content Include="Views\Form\EditorTemplates\RadioButtonSet.cshtml" />
+    <Content Include="Views\Form\EditorTemplates\CheckBoxSet.cshtml" />
+    <Content Include="Views\Form\EditorTemplates\CheckOption.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -303,6 +310,7 @@
     <Folder Include="Areas\Manager\Views\Entity\" />
     <Folder Include="Views\Catfish\" />
     <Folder Include="Views\Language\" />
+    <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj">

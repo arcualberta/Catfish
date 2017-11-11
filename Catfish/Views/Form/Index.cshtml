@@ -39,7 +39,13 @@
         @{
             MultilingualText content = Model.Regions.Content as MultilingualText;
             @Html.DisplayFor(m => content)
+
+            Form forRegion = Model.Regions.Form as Form;
+            @Html.EditorFor(m => forRegion, new { Item = ViewBag.Form })
+
         }
+
+
 
     </div>
 </div>
