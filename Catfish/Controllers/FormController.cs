@@ -16,6 +16,7 @@ namespace Catfish.Controllers
         public ActionResult Index()
         {
             var model = GetModel();
+            ViewBag.PageModel = model;
 
             Form form = model.Regions.Form as Form;
             int entityTypeId = form.EntityTypeId;
@@ -23,20 +24,31 @@ namespace Catfish.Controllers
             CatfishDbContext db = new CatfishDbContext();
             ItemService srv = new ItemService(db);
             Item item = srv.CreateEntity<Item>(entityTypeId);
-            ViewBag.Form = item;
 
-            return View(model.GetView(), model);
+            return View(model.GetView(), item);
         }
 
         [HttpPost]
         public ActionResult Edit(Item item)
         {
-            ViewBag.Form = item;
+            CatfishDbContext db = new CatfishDbContext();
+            var model = GetModel();
+
             if (ModelState.IsValid)
             {
+                ItemService srv = new ItemService(db);
+                db.SaveChanges();
 
+                string confirmLink = "confirmation";
+                return Redirect(confirmLink);
             }
 
+            ViewBag.PageModel = model;
+            return View(model.GetView(), item);
+        }
+
+        public ActionResult Confirmation()
+        {
             var model = GetModel();
             return View(model.GetView(), model);
         }

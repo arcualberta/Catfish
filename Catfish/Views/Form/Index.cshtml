@@ -1,16 +1,18 @@
-﻿@model Piranha.Models.PageModel
+﻿@model Catfish.Core.Models.Item
+@using Piranha.Models
 @using Catfish.Models.Regions;
 @using Piranha.Extend.Regions;
 @using Catfish.Helpers;
 
 @{
-    ViewBag.Title = Model.Page.Title;
+    PageModel pageModel = ViewBag.PageModel as PageModel;
+    ViewBag.Title = pageModel.Page.Title;
 }
 
 @{
     try
     {
-        TextRegion styles = Model.Regions.Styles as TextRegion;
+        TextRegion styles = pageModel.Regions.Styles as TextRegion;
         if (!string.IsNullOrEmpty(styles.Body))
         {
             <style type="text/css" scoped>
@@ -28,21 +30,20 @@
         <h1>
             @try
             {
-                MultilingualText field = Model.Regions.PageTitle;
+                MultilingualText field = pageModel.Regions.PageTitle;
                 @Html.DisplayFor(m => field, new { unformatted = true })
             }
             catch (Exception)
             {
-                @Model.Page.Title
+                @pageModel.Page.Title
             }
         </h1>
         @{
-            MultilingualText content = Model.Regions.Content as MultilingualText;
+            MultilingualText content = pageModel.Regions.Content as MultilingualText;
             @Html.DisplayFor(m => content)
 
-            Form forRegion = Model.Regions.Form as Form;
-            @Html.EditorFor(m => forRegion, new { Item = ViewBag.Form })
-
+            Form forRegion = pageModel.Regions.Form as Form;
+            @Html.EditorFor(m => m, "Form", new { FormRegion = forRegion })
         }
 
 

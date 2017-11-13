@@ -12,20 +12,20 @@ namespace Catfish
 		public static void RegisterRoutes(RouteCollection routes) {
 			routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            routes.MapRoute(
-                name: "LanguageSwitch",
-                url: "{controller}/{action}/{lang}",
-                defaults: new { controller = "Language", action = "Switch" },
-                namespaces: new[] { "Catfish.Controllers" }
-            ).DataTokens["UseNamespaceFallback"] = false;
+            ////routes.MapRoute(
+            ////    name: "LanguageSwitch",
+            ////    url: "{controller}/{action}/{lang}",
+            ////    defaults: new { controller = "Language", action = "Switch" },
+            ////    namespaces: new[] { "Catfish.Controllers" }
+            ////).DataTokens["UseNamespaceFallback"] = false;
 
 
-            routes.MapRoute(
-                name: "Details",
-                url: "{controller}/{id}",
-                defaults: new { controller = "Entity", action = "Details"},
-                namespaces: new[] { "Catfish.Controllers" }
-            ).DataTokens["UseNamespaceFallback"] = false;
+            ////routes.MapRoute(
+            ////    name: "Details",
+            ////    url: "{controller}/{id}",
+            ////    defaults: new { controller = "Entity", action = "Details" },
+            ////    namespaces: new[] { "Catfish.Controllers" }
+            ////).DataTokens["UseNamespaceFallback"] = false;
 
             routes.MapRoute(
 				name: "Default",

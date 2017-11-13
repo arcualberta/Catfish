@@ -227,7 +227,9 @@
     <Content Include="Scripts\knockout.mapping-latest.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\perpetuum.knockout.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -246,6 +248,7 @@
     <Compile Include="Controllers\EntityController.cs" />
     <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\LanguageController.cs" />
+    <Compile Include="Controllers\SubmissionController.cs" />
     <Compile Include="Helpers\ViewHelper.cs" />
     <Compile Include="Models\Pages\EntityTree.cs" />
     <Compile Include="Models\Regions\Carousel.cs" />
@@ -296,6 +299,7 @@
     <Content Include="Views\Form\EditorTemplates\RadioButtonSet.cshtml" />
     <Content Include="Views\Form\EditorTemplates\CheckBoxSet.cshtml" />
     <Content Include="Views\Form\EditorTemplates\CheckOption.cshtml" />
+    <Content Include="Views\Form\Confirmation.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -311,6 +315,7 @@
     <Folder Include="Views\Catfish\" />
     <Folder Include="Views\Language\" />
     <Folder Include="Views\Shared\EditorTemplates\" />
+    <Folder Include="Views\Submission\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj">

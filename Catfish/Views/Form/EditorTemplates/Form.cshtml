@@ -1,48 +1,48 @@
-﻿@model Catfish.Models.Regions.Form
+﻿@model Catfish.Core.Models.Item
 @using Catfish.Core.Models;
+@using Catfish.Models.Regions;
 
 @{
     var culture = Catfish.Helpers.ViewHelper.GetActiveLanguage(Session);
 
-    var cssId = Model.CssId != null ? Model.CssId : "DefaultFormId";
-    var cssClasses = Model.CssClasses;
+    Form formRegion = ViewBag.FormRegion as Form;
+
+    var cssId = formRegion.CssId != null ? formRegion.CssId : "DefaultFormId";
+    var cssClasses = formRegion.CssClasses;
 }
 
 <style type="text/css" scoped>
-    @Model.CssStyles
+    @formRegion.CssStyles
 </style>
 
 <div class="bs">
     <div id="@cssId" class="@cssClasses">
-        @if (!string.IsNullOrEmpty(Model.Title))
+        @if (!string.IsNullOrEmpty(formRegion.Title))
         {
-            <div class="title">@Model.Title</div>
+            <div class="title">@formRegion.Title</div>
         }
-        @if (!string.IsNullOrEmpty(Model.Description))
+        @if (!string.IsNullOrEmpty(formRegion.Description))
         {
-            <div class="desc">@Html.Raw(Model.Description)</div>
+            <div class="desc">@Html.Raw(formRegion.Description)</div>
         }
 
    </div>
 
     @{
-        Item item = ViewData["Item"] as Item;
-        List<string> pages = Model.Pages.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        List<string> pages = formRegion.Pages.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-        using (Html.BeginForm("Edit", "Form", FormMethod.Post))
-        {
-            for (int i = 0; i < item.MetadataSets.Count; ++i)
+        <form method="post" action="@UI.Permalink()/Edit">
+            @for (int i = 0; i < Model.MetadataSets.Count; ++i)
             {
-                if (pages.Contains(item.MetadataSets[i].Name))
+                if (pages.Contains(Model.MetadataSets[i].Name))
                 {
-                    for (int f = 0; f < item.MetadataSets[i].Fields.Count; ++f)
+                    for (int f = 0; f < Model.MetadataSets[i].Fields.Count; ++f)
                     {
-                        @Html.EditorFor(m => item.MetadataSets[i].Fields[f], new { ActiveLanguage = culture.TwoLetterISOLanguageName })
+                        @Html.EditorFor(m => Model.MetadataSets[i].Fields[f], new { ActiveLanguage = culture.TwoLetterISOLanguageName })
                     }
                 }
             }
-
             <input type="submit" value="Submit"/>
-        }
+        </form>
     }
 </div>
