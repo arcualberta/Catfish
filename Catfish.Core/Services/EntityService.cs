@@ -33,7 +33,6 @@ namespace Catfish.Core.Services
             entity.EntityTypeId = et.Id;
             entity.MetadataSets = et.MetadataSets.ToList();
             entity.SetAttribute("entity-type", et.Name);
-            entity.Serialize();
             return entity;
         }
 

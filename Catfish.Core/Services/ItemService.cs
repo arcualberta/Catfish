@@ -68,7 +68,6 @@ namespace Catfish.Core.Services
                 newFiles.Add(file);
             }
 
-            parent.Serialize();
             Db.Entry(parent).State = EntityState.Modified;
             return newFiles;
         }
@@ -92,8 +91,6 @@ namespace Catfish.Core.Services
 
             item.RemoveFile(guidName);
 
-            //Serializing the XML model into the Content field.
-            item.Serialize();
             Db.Entry(item).State = EntityState.Modified;
 
             ////List<DataFile> files = item.Files;
@@ -127,9 +124,6 @@ namespace Catfish.Core.Services
                 dbModel.Deserialize();
                 dbModel.UpdateValues(changedItem);
             }
-
-            //Serializing the XML model into the Content field.
-            dbModel.Serialize();
 
             if (changedItem.Id > 0) //update Item
                 Db.Entry(dbModel).State = EntityState.Modified;
@@ -193,9 +187,6 @@ namespace Catfish.Core.Services
         ////        dbModel = changedItem;
         ////    }
 
-
-        ////    //Serializing the XML model into the Content field.
-        ////    dbModel.Serialize();
 
         ////    if (changedItem.Id > 0) //update Item
         ////        Db.Entry(dbModel).State = EntityState.Modified;

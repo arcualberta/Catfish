@@ -62,7 +62,6 @@ namespace Catfish.Core.Services
                 Db.MetadataSets.Add(metadataSet);
             }
             ////ms.Definition = metadataDefinition;
-            metadataSet.Serialize();
             return metadataSet;
         }
     }

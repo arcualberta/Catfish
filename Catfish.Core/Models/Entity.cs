@@ -103,8 +103,6 @@ namespace Catfish.Core.Models
                 var src_ms = src_item.MetadataSets.Where(x => x.Ref == ms.Ref).FirstOrDefault();
                 ms.UpdateValues(src_ms);
             }
-
-            //this.Serialize();
         }
 
         public string Name

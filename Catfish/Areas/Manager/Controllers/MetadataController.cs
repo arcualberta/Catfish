@@ -121,7 +121,6 @@ namespace Catfish.Areas.Manager.Controllers
                     Db.MetadataSets.Add(model);
                 }
 
-                model.Serialize();
                 Db.SaveChanges();
                 vm.Status = KoBaseViewModel.eStatus.Success;
 
