@@ -21,7 +21,7 @@ namespace Catfish.Core.Models.Metadata
                 Data.Add(dstWrapper = new XElement("options"));
 
             var srcValueElement = src.Data.Element("value");
-            TextValue srcValue = XmlHelper.GetTextValues(srcValueElement, false).FirstOrDefault();
+            TextValue srcValue = srcValueElement == null ? null : XmlHelper.GetTextValues(srcValueElement, false).FirstOrDefault();
 
             //Iterating through all options in the destinatopn
             foreach (XElement opt in dstWrapper.Elements("option"))

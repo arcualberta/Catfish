@@ -29,14 +29,19 @@ namespace Catfish.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(Item item)
+        public ActionResult Edit(Item submission)
         {
             CatfishDbContext db = new CatfishDbContext();
             var model = GetModel();
 
             if (ModelState.IsValid)
             {
-                ItemService srv = new ItemService(db);
+                FormService srv = new FormService(db);
+                Form form = model.Region<Form>("Form");
+
+                Item savedItem = null;
+                savedItem = srv.SaveFormSubmission(form.CollectionId, submission);
+
                 db.SaveChanges();
 
                 string confirmLink = "confirmation";
@@ -44,7 +49,7 @@ namespace Catfish.Controllers
             }
 
             ViewBag.PageModel = model;
-            return View(model.GetView(), item);
+            return View(model.GetView(), submission);
         }
 
         public ActionResult Confirmation()

@@ -29,20 +29,24 @@
    </div>
 
     @{
+        @Html.HiddenFor(m => m.EntityTypeId);
+        @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+        {
+            {"class", "model-type"}
+        })
+
         List<string> pages = formRegion.Pages.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-        <form method="post" action="@UI.Permalink()/Edit">
-            @for (int i = 0; i < Model.MetadataSets.Count; ++i)
+        for (int i = 0; i < Model.MetadataSets.Count; ++i)
+        {
+            if (pages.Contains(Model.MetadataSets[i].Name))
             {
-                if (pages.Contains(Model.MetadataSets[i].Name))
+                @Html.HiddenFor(m => Model.MetadataSets[i].Ref)
+                for (int f = 0; f < Model.MetadataSets[i].Fields.Count; ++f)
                 {
-                    for (int f = 0; f < Model.MetadataSets[i].Fields.Count; ++f)
-                    {
                         @Html.EditorFor(m => Model.MetadataSets[i].Fields[f], new { ActiveLanguage = culture.TwoLetterISOLanguageName })
                     }
                 }
             }
-            <input type="submit" value="Submit"/>
-        </form>
-    }
+        }
 </div>

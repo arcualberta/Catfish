@@ -30,8 +30,8 @@
         <h1>
             @try
             {
-                MultilingualText field = pageModel.Regions.PageTitle;
-                @Html.DisplayFor(m => field, new { raw = true })
+                MultilingualText title = pageModel.Region<MultilingualText>("PageTitle");
+                @Html.DisplayFor(m => title, new { raw = true })
             }
             catch (Exception)
             {
@@ -39,14 +39,15 @@
             }
         </h1>
         @{
-            MultilingualText content = pageModel.Regions.Content as MultilingualText;
-            @Html.DisplayFor(m => content)
+            MultilingualText content = pageModel.Region<MultilingualText>("Content");
+            @Html.DisplayFor(m => content, new { raw = true })
 
-            Form forRegion = pageModel.Regions.Form as Form;
-            @Html.EditorFor(m => m, "Form", new { FormRegion = forRegion })
+            Form forRegion = pageModel.Region<Form>("Form");
+            <form method="post" action="@UI.Permalink()/Edit">
+                @Html.EditorFor(m => m, "Form", new { FormRegion = forRegion })
+                <input type="submit" value="Submit" />
+            </form>
+
         }
-
-
-
-    </div>
+</div>
 </div>

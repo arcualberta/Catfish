@@ -10,7 +10,7 @@
 @{
     try
     {
-        TextRegion styles = Model.Regions.Styles as TextRegion;
+        TextRegion styles = Model.Region<TextRegion>("Styles");
         if (!string.IsNullOrEmpty(styles.Body))
         {
             <style type="text/css" scoped>
@@ -22,7 +22,7 @@
 
     try
     {
-        Carousel carousel = Model.Regions.Carousel as Carousel;
+        Carousel carousel = Model.Region<Carousel>("Carousel");
         @Html.DisplayFor(m => carousel)
     }
     catch (Exception) { }
@@ -34,7 +34,7 @@
         <h1>
             @try
             {
-                MultilingualText field = Model.Regions.PageTitle;
+                MultilingualText field = Model.Region<MultilingualText>("PageTitle");
                 @Html.DisplayFor(m => field, new { raw = true })
             }
             catch (Exception)
@@ -43,7 +43,7 @@
             }
         </h1>
         @{
-            MultilingualText content = Model.Regions.Content as MultilingualText;
+            MultilingualText content = Model.Region<MultilingualText>("Content");
             @Html.DisplayFor(m => content)
         }
 
