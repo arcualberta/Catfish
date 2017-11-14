@@ -37,6 +37,21 @@ namespace Catfish.Core.Models
         ////    }
         ////}
 
+        public override int SaveChanges()
+        {
+            if (this.ChangeTracker.HasChanges())
+            {
+                foreach(var entry in this.ChangeTracker.Entries<XmlModel>())
+                {
+                    if (entry.State != EntityState.Unchanged && entry.State != EntityState.Deleted)
+                    {
+                        entry.Entity.Serialize();
+                    }
+                }
+            }
+
+            return base.SaveChanges();
+        }
 
         protected override void OnModelCreating(DbModelBuilder builder)
         {

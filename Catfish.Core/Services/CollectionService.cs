@@ -27,7 +27,7 @@ namespace Catfish.Core.Services
             }
 
             //Serializing the XML model into the Content field.
-            dbModel.Serialize();
+            //dbModel.Serialize();
 
             if (changedCollection.Id > 0) //update Item
                 Db.Entry(dbModel).State = EntityState.Modified;
