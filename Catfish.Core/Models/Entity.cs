@@ -104,7 +104,7 @@ namespace Catfish.Core.Models
                 ms.UpdateValues(src_ms);
             }
 
-            this.Serialize();
+            //this.Serialize();
         }
 
         public string Name
