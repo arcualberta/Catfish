@@ -31,7 +31,7 @@
             @try
             {
                 MultilingualText field = pageModel.Regions.PageTitle;
-                @Html.DisplayFor(m => field, new { unformatted = true })
+                @Html.DisplayFor(m => field, new { raw = true })
             }
             catch (Exception)
             {

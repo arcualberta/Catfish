@@ -50,7 +50,7 @@ namespace Catfish.Controllers
         public ActionResult Confirmation()
         {
             var model = GetModel();
-            return View(model.GetView(), model);
+            return View(model);
         }
     }
 }
