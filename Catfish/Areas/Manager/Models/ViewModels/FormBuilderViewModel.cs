@@ -8,7 +8,7 @@ using Catfish.Core.Models;
 
 namespace Catfish.Areas.Manager.Models.ViewModels
 {
-    public class MetadataSetViewModel : KoBaseViewModel
+    public class FormBuilderViewModel : KoBaseViewModel
     {
         public string TypeLabel { get; set; }
         public string Name { get; set; }
@@ -19,13 +19,13 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public List<MetadataFieldType> FieldTypes { get { return GetFieldTypes(); } }
         public List<MetadataFieldType> SelectedFieldTypes { get; set; }
 
-        public MetadataSetViewModel()
+        public FormBuilderViewModel()
         {
             Fields = new List<MetadataFieldViewModel>();
             SelectedFieldTypes = new List<MetadataFieldType>();
         }
 
-        public MetadataSetViewModel(MetadataSet src)
+        public FormBuilderViewModel(MetadataSet src)
         {
             Id = src.Id;
             TypeLabelAttribute att = Attribute.GetCustomAttribute(src.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;

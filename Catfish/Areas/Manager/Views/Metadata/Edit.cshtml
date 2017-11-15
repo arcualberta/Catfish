@@ -1,4 +1,4 @@
-﻿@model Catfish.Areas.Manager.Models.ViewModels.MetadataSetViewModel
+﻿@model Catfish.Areas.Manager.Models.ViewModels.FormBuilderViewModel
 @using PerpetuumSoft.Knockout
 @using Catfish.Areas.Manager.Models.ViewModels
 
@@ -14,10 +14,6 @@
 @section Toolbar {
     @Html.Partial("Partial/koEditToolbar")
 }
-
-@*@{ var viewModel = new MetadataSetViewModel(Model); }
-@Html.EditorFor(m => viewModel, "MetadataSetViewModel")*@
-
 
 @{
     var context = "ctx_" + Guid.NewGuid().ToString("N");

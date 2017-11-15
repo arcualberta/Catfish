@@ -40,7 +40,7 @@ namespace Catfish.Areas.Manager.Controllers
             else
                 model = new MetadataSet();
 
-            var viewModel = new MetadataSetViewModel(model);
+            var viewModel = new FormBuilderViewModel(model);
             return View(viewModel);
         }
 
@@ -62,7 +62,7 @@ namespace Catfish.Areas.Manager.Controllers
 
 
         [HttpPost]
-        public JsonResult AddField(MetadataSetViewModel vm)
+        public JsonResult AddField(FormBuilderViewModel vm)
         {
             foreach (MetadataFieldType t in vm.SelectedFieldTypes)
             {
@@ -78,14 +78,14 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
-        public JsonResult RemoveField(MetadataSetViewModel vm, int idx)
+        public JsonResult RemoveField(FormBuilderViewModel vm, int idx)
         {
             vm.Fields.RemoveAt(idx);
             return Json(vm);
         }
 
         [HttpPost]
-        public JsonResult Move(MetadataSetViewModel vm, int idx, int step)
+        public JsonResult Move(FormBuilderViewModel vm, int idx, int step)
         {
             int newIdx = KoBaseViewModel.GetBoundedArrayIndex(idx + step, vm.Fields.Count);
             if(idx != newIdx)
@@ -98,7 +98,7 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
-        public JsonResult Save(MetadataSetViewModel vm)
+        public JsonResult Save(FormBuilderViewModel vm)
         {
             if (ModelState.IsValid)
             {
