@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -16,8 +17,12 @@ namespace Catfish.Models.Regions
     {
         public string Title { get; set; }
         public string Description { get; set; }
+
+        [Display(Name = "Entity Type Id")]
         public int EntityTypeId { get; set; }
         public string Pages { get; set; }
+
+        [Display(Name = "Collection Id")]
         public int CollectionId { get; set; }
     }
 }
