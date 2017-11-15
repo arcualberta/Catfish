@@ -9,7 +9,7 @@ using System.Web;
 
 namespace Catfish.Areas.Manager.Models.ViewModels
 {
-    public class MetadataFieldViewModel : KoBaseViewModel
+    public class FormFieldViewModel : KoBaseViewModel
     {
         public string TypeLabel { get; set; }
         public string FieldType { get; set; }
@@ -20,9 +20,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public List<TextValue> MultilingualOptionSet { get; set; }
         public string Ref { get; set; }
 
-        public MetadataFieldViewModel() { }
+        public FormFieldViewModel() { }
 
-        public MetadataFieldViewModel(FormField src)
+        public FormFieldViewModel(FormField src)
         {
             Name = src.MultilingualName.ToList();
 
@@ -80,7 +80,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 //to make sure that the overridden setter method is invoked to save data in XML
                 List<Option> optList = new List<Option>();
 
-                //In the this MetadataFieldViewModel, each TextValue element in the "MultilingualOptionSet" array
+                //In the this FormFieldViewModel, each TextValue element in the "MultilingualOptionSet" array
                 //contains a text string of which each line represents an "option" in the data model.
                 foreach (TextValue optionValueSet in MultilingualOptionSet)
                 {

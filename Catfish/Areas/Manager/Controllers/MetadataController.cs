@@ -71,7 +71,7 @@ namespace Catfish.Areas.Manager.Controllers
                     throw new InvalidOperationException("Bad Type");
 
                 FormField field = Activator.CreateInstance(type) as FormField;
-                vm.Fields.Add(new MetadataFieldViewModel(field));
+                vm.Fields.Add(new FormFieldViewModel(field));
             }
             vm.SelectedFieldTypes.Clear();
             return Json(vm);

@@ -14,14 +14,14 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string Name { get; set; }
         public string Description { get; set; }
         public string Ref { get; set; }
-        public List<MetadataFieldViewModel> Fields { get; set; }
+        public List<FormFieldViewModel> Fields { get; set; }
 
         public List<MetadataFieldType> FieldTypes { get { return GetFieldTypes(); } }
         public List<MetadataFieldType> SelectedFieldTypes { get; set; }
 
         public FormBuilderViewModel()
         {
-            Fields = new List<MetadataFieldViewModel>();
+            Fields = new List<FormFieldViewModel>();
             SelectedFieldTypes = new List<MetadataFieldType>();
         }
 
@@ -36,9 +36,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Ref = src.Ref;
 
 
-            Fields = new List<MetadataFieldViewModel>();
+            Fields = new List<FormFieldViewModel>();
             foreach (var field in src.Fields)
-                Fields.Add(new MetadataFieldViewModel(field));
+                Fields.Add(new FormFieldViewModel(field));
         }
 
         public override void UpdateDataModel(object dataModel, CatfishDbContext db)
@@ -54,7 +54,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             //list of dst and inserting fields into it would not work because such operation will
             //not utilize the overridden get and set methods.
             List<FormField> fields = new List<FormField>();
-            foreach (MetadataFieldViewModel field in this.Fields)
+            foreach (FormFieldViewModel field in this.Fields)
                 fields.Add(field.InstantiateDataModel());
 
             dst.Fields = fields;
