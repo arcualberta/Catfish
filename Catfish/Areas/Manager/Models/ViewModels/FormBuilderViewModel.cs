@@ -25,7 +25,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             SelectedFieldTypes = new List<MetadataFieldType>();
         }
 
-        public FormBuilderViewModel(MetadataSet src)
+        public FormBuilderViewModel(Form src)
         {
             Id = src.Id;
             TypeLabelAttribute att = Attribute.GetCustomAttribute(src.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
@@ -43,7 +43,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public override void UpdateDataModel(object dataModel, CatfishDbContext db)
         {
-            MetadataSet dst = dataModel as MetadataSet;
+            Form dst = dataModel as Form;
             dst.Name = Name;
             dst.Description = Description;
             dst.Ref = Ref;
