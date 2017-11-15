@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models
 {
-    public class DataFile: Entity
+    public class DataFile: DataObject
     {
         [NotMapped]
         public string ContentType { get { return GetAttribute("content-type"); } set { SetAttribute("content-type", value); } }

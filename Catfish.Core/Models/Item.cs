@@ -15,7 +15,7 @@ namespace Catfish.Core.Models
             : base()
         {
             ParentRelations = new List<Aggregation>();
-            Data.Add(new XElement("files"));
+            Data.Add(new XElement("data"));
         }
 
         public override string GetTagName() { return "item"; }
@@ -25,30 +25,41 @@ namespace Catfish.Core.Models
         {
             get
             {
-                return GetChildModels("files/file", Data).Select(c => c as DataFile).ToList();
+                return GetChildModels("data/file", Data).Select(c => c as DataFile).ToList();
             }
 
             set
             {
-                //Removing all children inside the files element
-                RemoveAllElements("files/file", Data);
+                //Removing all children inside the data element
+                RemoveAllElements("data/file", Data);
 
                 if (value != null)
                 {
+                    var data = GetDataElement();
                     foreach (DataFile df in value)
-                        InsertChildElement("./files", df.Data);
+                        data.Add(df.Data);
                 }
             }
         }
 
+        protected XElement GetDataElement(bool createIfNotExist = true)
+        {
+            XElement data = Data.Element("data");
+
+            if (data == null && createIfNotExist)
+                Data.Add(data = new XElement("data"));
+
+            return data;
+        }
+
         public void AddFile(DataFile df)
         {
-            InsertChildElement("./files", df.Data);
+            GetDataElement().Add(df.Data);
         }
 
         public void RemoveFile(string fileGuidName)
         {
-            var xpath = "./files/file[@guid-name='" + fileGuidName + "']";
+            var xpath = "./data/file[@guid-name='" + fileGuidName + "']";
             XElement file = GetChildElements(xpath, Data).FirstOrDefault();
             if (file == null)
                 throw new Exception("File does not exist.");

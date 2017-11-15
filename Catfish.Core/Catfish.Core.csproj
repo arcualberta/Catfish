@@ -85,6 +85,7 @@
     <Compile Include="Models\Attributes\TypeLabelAttribute.cs" />
     <Compile Include="Models\CatfishDbContext.cs" />
     <Compile Include="Models\Collection.cs" />
+    <Compile Include="Models\DataObject.cs" />
     <Compile Include="Models\Entity.cs" />
     <Compile Include="Models\EntityType.cs" />
     <Compile Include="Models\DataFile.cs" />
