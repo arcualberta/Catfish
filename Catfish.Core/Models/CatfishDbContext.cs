@@ -101,6 +101,8 @@ namespace Catfish.Core.Models
         public DbSet<EntityTypeAttributeMapping> EntityTypeAttributeMappings { get; set; }
 
         public DbSet<MetadataSet> MetadataSets { get; set; }
+
+        public DbSet<Form> Forms { get; set; }
  
         ////public DbSet<SimpleField> MetadataFields { get; set; }
 

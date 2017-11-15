@@ -21,15 +21,15 @@ namespace Catfish.Areas.Manager.Controllers
             return View(MetadataService.GetMetadataSets());
         }
 
-        [HttpGet]
-        public ActionResult Details(int id)
-        {
-            MetadataSet model = MetadataService.GetMetadataSet(id);
-            if (model == null)
-                return HttpNotFound();
+        ////[HttpGet]
+        ////public ActionResult Details(int id)
+        ////{
+        ////    MetadataSet model = MetadataService.GetMetadataSet(id);
+        ////    if (model == null)
+        ////        return HttpNotFound();
 
-            return View(new MetadataDefinition(model, model.Id));
-        }
+        ////    return View(new MetadataDefinition(model, model.Id));
+        ////}
 
         [HttpGet]
         public ActionResult Edit(int? id)
