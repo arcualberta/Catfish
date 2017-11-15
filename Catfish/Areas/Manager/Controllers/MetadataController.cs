@@ -64,7 +64,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpPost]
         public JsonResult AddField(FormBuilderViewModel vm)
         {
-            foreach (MetadataFieldType t in vm.SelectedFieldTypes)
+            foreach (FormFieldType t in vm.SelectedFieldTypes)
             {
                 Type type = Type.GetType(t.FieldType, true);
                 if (!typeof(FormField).IsAssignableFrom(type))

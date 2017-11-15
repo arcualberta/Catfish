@@ -16,13 +16,13 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string Ref { get; set; }
         public List<FormFieldViewModel> Fields { get; set; }
 
-        public List<MetadataFieldType> FieldTypes { get { return GetFieldTypes(); } }
-        public List<MetadataFieldType> SelectedFieldTypes { get; set; }
+        public List<FormFieldType> FieldTypes { get { return GetFieldTypes(); } }
+        public List<FormFieldType> SelectedFieldTypes { get; set; }
 
         public FormBuilderViewModel()
         {
             Fields = new List<FormFieldViewModel>();
-            SelectedFieldTypes = new List<MetadataFieldType>();
+            SelectedFieldTypes = new List<FormFieldType>();
         }
 
         public FormBuilderViewModel(Form src)
@@ -60,13 +60,13 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             dst.Fields = fields;
         }
 
-        private List<MetadataFieldType> mFieldTypes;
-        public List<MetadataFieldType> GetFieldTypes()
+        private List<FormFieldType> mFieldTypes;
+        public List<FormFieldType> GetFieldTypes()
         {
             if (mFieldTypes == null)
             {
-                mFieldTypes = new List<MetadataFieldType>();
-                mFieldTypes.Add(new MetadataFieldType());
+                mFieldTypes = new List<FormFieldType>();
+                mFieldTypes.Add(new FormFieldType());
 
                 var fieldTypes = typeof(FormField).Assembly.GetTypes()
                     .Where(t => t.IsSubclassOf(typeof(FormField))
@@ -81,7 +81,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                     //to have a TypeLabel attribute to be defined (and labeled)
                     if (att != null)
                     {
-                        mFieldTypes.Add(new MetadataFieldType()
+                        mFieldTypes.Add(new FormFieldType()
                         {
                             FieldType = t.AssemblyQualifiedName,
                             Label = att.Name
@@ -94,11 +94,11 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         }
     }
 
-    public class MetadataFieldType
+    public class FormFieldType
     {
         public string FieldType { get; set; }
         public string Label { get; set; }
-        public MetadataFieldType()
+        public FormFieldType()
         {
             Label = "";
             FieldType = "";
