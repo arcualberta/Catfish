@@ -53,7 +53,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             //as follows and assign that list to the field list of dst. Simply emptying the field
             //list of dst and inserting fields into it would not work because such operation will
             //not utilize the overridden get and set methods.
-            List<MetadataField> fields = new List<MetadataField>();
+            List<FormField> fields = new List<FormField>();
             foreach (MetadataFieldViewModel field in this.Fields)
                 fields.Add(field.InstantiateDataModel());
 
@@ -68,8 +68,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 mFieldTypes = new List<MetadataFieldType>();
                 mFieldTypes.Add(new MetadataFieldType());
 
-                var fieldTypes = typeof(MetadataField).Assembly.GetTypes()
-                    .Where(t => t.IsSubclassOf(typeof(MetadataField))
+                var fieldTypes = typeof(FormField).Assembly.GetTypes()
+                    .Where(t => t.IsSubclassOf(typeof(FormField))
                         && !t.CustomAttributes.Where(a => a.AttributeType.IsAssignableFrom(typeof(IgnoreAttribute))).Any())
                     .ToList();
 

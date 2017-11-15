@@ -16,11 +16,11 @@ namespace Catfish.Core.Models.Metadata
         public override string GetTagName() { return "metadata-set"; }
 
         [NotMapped]
-        public List<MetadataField> Fields
+        public List<FormField> Fields
         {
             get
             {
-                return GetChildModels("fields/field", Data).Select(c => c as MetadataField).ToList();
+                return GetChildModels("fields/field", Data).Select(c => c as FormField).ToList();
             }
 
             set
@@ -28,7 +28,7 @@ namespace Catfish.Core.Models.Metadata
                 //Removing all children inside the metadata set element
                 RemoveAllElements("fields/field", Data);
 
-                foreach (MetadataField ms in value)
+                foreach (FormField ms in value)
                     InsertChildElement("./fields", ms.Data);
             }
         }
@@ -66,11 +66,6 @@ namespace Catfish.Core.Models.Metadata
             }
         }
 
-        ////public void Serialize()
-        ////{
-        ////    Content = Data.ToString();
-        ////}
-
         [NotMapped]
         [TypeLabel("String")]
         public string Name { get { return GetName(); } set { SetName(value); } }
@@ -95,7 +90,7 @@ namespace Catfish.Core.Models.Metadata
 
             var src_item = src as MetadataSet;
 
-            foreach (MetadataField field in this.Fields)
+            foreach (FormField field in this.Fields)
             { // checkhere type of 
                 var src_field = src_item.Fields.Where(x => x.Ref == field.Ref).FirstOrDefault();
                 field.UpdateValues(src_field);
@@ -108,7 +103,7 @@ namespace Catfish.Core.Models.Metadata
         }
         public void SetFieldValue(string fieldName, IEnumerable<string> fieldValues, string language)
         {
-            MetadataField field = Fields.Where(f => f.Name == fieldName).FirstOrDefault();
+            FormField field = Fields.Where(f => f.Name == fieldName).FirstOrDefault();
             field.SetValues(fieldValues, language);
         }
 

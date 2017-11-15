@@ -66,10 +66,10 @@ namespace Catfish.Areas.Manager.Controllers
             foreach (MetadataFieldType t in vm.SelectedFieldTypes)
             {
                 Type type = Type.GetType(t.FieldType, true);
-                if (!typeof(MetadataField).IsAssignableFrom(type))
+                if (!typeof(FormField).IsAssignableFrom(type))
                     throw new InvalidOperationException("Bad Type");
 
-                MetadataField field = Activator.CreateInstance(type) as MetadataField;
+                FormField field = Activator.CreateInstance(type) as FormField;
                 vm.Fields.Add(new MetadataFieldViewModel(field));
             }
             vm.SelectedFieldTypes.Clear();

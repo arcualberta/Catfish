@@ -36,8 +36,8 @@ namespace Catfish.Core.Services
         /// <returns></returns>
         public List<Type> GetMetadataFieldTypes()
         {
-            var fieldTypes = typeof(MetadataField).Assembly.GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(MetadataField)) 
+            var fieldTypes = typeof(FormField).Assembly.GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(FormField)) 
                     && !t.CustomAttributes.Where(a => a.AttributeType.IsAssignableFrom(typeof(IgnoreAttribute))).Any())
                 .ToList();
 

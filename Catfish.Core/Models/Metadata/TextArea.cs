@@ -3,7 +3,7 @@
 namespace Catfish.Core.Models.Metadata
 {
     [TypeLabel("Paragraph")]
-    public class TextArea : MetadataField
+    public class TextArea : FormField
     {
     }
 }

@@ -13,7 +13,7 @@ namespace Catfish.Areas.Manager.Helpers
 {
     public static class HtmlHelperExtensions
     {
-        public static MvcHtmlString EditorForList<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, ICollection<TValue>>> propertyExpression) where TModel : class where TValue : MetadataField
+        public static MvcHtmlString EditorForList<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, ICollection<TValue>>> propertyExpression) where TModel : class where TValue : FormField
         {
             // Based on the tutorial from http://www.mattlunn.me.uk/blog/2014/08/how-to-dynamically-via-ajax-add-new-items-to-a-bound-list-model-in-asp-mvc-net/
             var items = propertyExpression.Compile()(html.ViewData.Model);

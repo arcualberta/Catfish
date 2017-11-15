@@ -22,7 +22,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public MetadataFieldViewModel() { }
 
-        public MetadataFieldViewModel(MetadataField src)
+        public MetadataFieldViewModel(FormField src)
         {
             Name = src.MultilingualName.ToList();
 
@@ -63,13 +63,13 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
         }
 
-        public MetadataField InstantiateDataModel()
+        public FormField InstantiateDataModel()
         {
             Type type = Type.GetType(FieldType, true);
-            if (!typeof(MetadataField).IsAssignableFrom(type))
+            if (!typeof(FormField).IsAssignableFrom(type))
                 throw new InvalidOperationException("Bad Type");
 
-            MetadataField field = Activator.CreateInstance(type) as MetadataField;
+            FormField field = Activator.CreateInstance(type) as FormField;
             field.MultilingualName = Name;
             field.Description = Description;
             field.IsRequired = IsRequired;

@@ -16,11 +16,11 @@ namespace Catfish.Core.Models.Metadata
         [XmlIgnore]
         public int Id { get; set; }
 
-        public virtual List<MetadataField> Fields { get; set; }
+        public virtual List<FormField> Fields { get; set; }
 
         public MetadataDefinition()
         {
-            Fields = new List<MetadataField>();
+            Fields = new List<FormField>();
         }
 
         private XmlModel Data;
@@ -51,7 +51,7 @@ namespace Catfish.Core.Models.Metadata
         ////////    var fields = ele.Element("Fields").Elements();
         ////////    foreach(var xml in fields)
         ////////    {
-        ////////        MetadataField field = XmlModel.Parse(xml) as MetadataField;
+        ////////        FormField field = XmlModel.Parse(xml) as FormField;
         ////////        this.Fields.Add(field);
         ////////    }
         ////////}

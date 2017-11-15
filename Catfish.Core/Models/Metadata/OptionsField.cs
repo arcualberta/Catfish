@@ -46,7 +46,7 @@ namespace Catfish.Core.Models.Metadata
     }
 
     [Ignore]
-    public class OptionsField: MetadataField
+    public class OptionsField: FormField
     {
         //[DataType(DataType.MultilineText)]
         [TypeLabel("List of options, one option per line")]

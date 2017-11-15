@@ -13,7 +13,7 @@ using Catfish.Core.Helpers;
 
 namespace Catfish.Core.Models.Metadata
 {
-    public class MetadataField : XmlModel
+    public class FormField : XmlModel
     {
         [NotMapped]
         public string Name
