@@ -89,6 +89,7 @@
     <Compile Include="Models\Entity.cs" />
     <Compile Include="Models\EntityType.cs" />
     <Compile Include="Models\DataFile.cs" />
+    <Compile Include="Models\FormSubmission.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Metadata\CheckBoxSet.cs" />
     <Compile Include="Models\Metadata\DateField.cs" />
