@@ -162,3 +162,4 @@ Catfish/App_Data
 /Catfish/node_modules/
 /Catfish/Built
 /.vs/config/applicationhost.config
+/Catfish.Tests/app.config
