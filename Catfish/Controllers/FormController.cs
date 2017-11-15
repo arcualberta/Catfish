@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models;
+﻿using Catfish.Areas.Manager.Models.ViewModels;
+using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Catfish.Models.Regions;
 using Piranha.Mvc;
@@ -57,5 +58,27 @@ namespace Catfish.Controllers
             var model = GetModel();
             return View(model);
         }
+
+        [HttpPost]
+        public JsonResult Upload()
+        {
+            try
+            {
+                CatfishDbContext db = new CatfishDbContext();
+                FormService srv = new FormService(db);
+
+                List<DataFile> files = srv.UploadTempFiles(Request);
+                db.SaveChanges();
+
+                var ret = files.Select(f => new FileViewModel(f, 0, ControllerContext.RequestContext));
+                return Json(ret);
+            }
+            catch (Exception)
+            {
+                //return 500 or something appropriate to show that an error occured.
+                return Json(string.Empty);
+            }
+        }
+
     }
 }

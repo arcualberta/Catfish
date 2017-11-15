@@ -202,13 +202,13 @@ namespace Catfish.Areas.Manager.Controllers
             try
             {
                 ItemService srv = new ItemService(db);
-                List<DataFile> files = srv.UploadFile(id, HttpContext, Request);
+                List<DataFile> files = srv.UploadFiles(id, Request);
                 db.SaveChanges();
 
                 var ret = files.Select(f => new FileViewModel(f, id, ControllerContext.RequestContext));
                 return Json(ret);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //return 500 or something appropriate to show that an error occured.
                 return Json(string.Empty);

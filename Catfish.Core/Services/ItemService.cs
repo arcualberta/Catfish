@@ -35,19 +35,15 @@ namespace Catfish.Core.Services
             return filename;
         }
 
-        public List<DataFile> UploadFile(int itemId, HttpContextBase context, HttpRequestBase request)
+        protected List<DataFile> UploadFiles(HttpRequestBase request, string dstPath)
         {
-            string folder = Path.Combine(UploadRoot, "Temp");
-            if (!Directory.Exists(folder))
+            dstPath = Path.Combine(UploadRoot, dstPath);
+            if (!Directory.Exists(dstPath))
             {
-                Directory.CreateDirectory(folder);
-                if (!Directory.Exists(folder))
-                    throw new Exception("Unable to create the upload folder " + folder);
+                Directory.CreateDirectory(dstPath);
+                if (!Directory.Exists(dstPath))
+                    throw new Exception("Unable to create the upload folder " + dstPath);
             }
-
-            Item parent = Db.Items.Where(i => i.Id == itemId).FirstOrDefault();
-            if (parent == null)
-                throw new Exception("Parent item not found");
 
             List<DataFile> newFiles = new List<DataFile>();
             for (int i = 0; i < request.Files.Count; i++)
@@ -56,17 +52,32 @@ namespace Catfish.Core.Services
 
                 file.FileName = request.Files[i].FileName;
                 file.GuidName = CreateGuidName(file.FileName);
-                file.Path = "Temp";
+                file.Path = dstPath;
                 file.ContentType = request.Files[i].ContentType;
                 file.Thumbnail = GetThumbnail(file.ContentType);
                 file.ThumbnailType = DataFile.eThumbnailTypes.Shared;
-                
-                request.Files[i].SaveAs(Path.Combine(UploadRoot, file.Path, file.GuidName));
 
-                parent.AddFile(file);
+                request.Files[i].SaveAs(Path.Combine(UploadRoot, file.Path, file.GuidName));
 
                 newFiles.Add(file);
             }
+
+            return newFiles;
+        }
+
+        public List<DataFile> UploadFiles(int itemId, HttpRequestBase request)
+        {
+            Item parent = Db.Items.Where(i => i.Id == itemId).FirstOrDefault();
+            if (parent == null)
+                throw new Exception("Parent item not found");
+
+            if (string.IsNullOrEmpty(parent.Guid))
+                parent.Guid = Guid.NewGuid().ToString("N");
+
+            string dstPath = Path.Combine("data", parent.Guid);
+            List<DataFile> newFiles = UploadFiles(request, dstPath); 
+            foreach(DataFile file in newFiles)
+                parent.AddFile(file);
 
             Db.Entry(parent).State = EntityState.Modified;
             return newFiles;
@@ -92,15 +103,6 @@ namespace Catfish.Core.Services
             item.RemoveFile(guidName);
 
             Db.Entry(item).State = EntityState.Modified;
-
-            ////List<DataFile> files = item.Files;
-            ////DataFile file = files.Where(f => f.Guid == fileGuid).FirstOrDefault();
-            ////if (file == null)
-            ////    throw new Exception("Specified file not found");
-
-            ////files.Remove(file);
-            ////item.Files = files;
-            ////item.Deserialize();
         }
 
         public Item UpdateStoredItem(Item changedItem)

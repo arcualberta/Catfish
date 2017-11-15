@@ -117,7 +117,7 @@ namespace Catfish.Core.Models
             Created = DateTime.Now;
             Data.SetAttributeValue("model-type", this.GetType().AssemblyQualifiedName);
             Data.SetAttributeValue("IsRequired", false);
-
+            Guid = System.Guid.NewGuid().ToString("N");
         }
 
         public XElement GetWrapper(string tagName, bool createIfNotExist, bool enforceGuid)

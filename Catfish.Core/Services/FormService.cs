@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Catfish.Core.Services
 {
-    public class FormService:EntityService
+    public class FormService: ItemService
     {
         public FormService(CatfishDbContext db):base(db)
         {
@@ -27,6 +28,13 @@ namespace Catfish.Core.Services
                 updatedItem.ParentMembers.Add(collection);
 
             return updatedItem;
+        }
+
+        public List<DataFile> UploadTempFiles(HttpRequestBase request)
+        {
+            List<DataFile> files = UploadFiles(request, "temp-files");
+            Db.XmlModels.AddRange(files);
+            return files;
         }
     }
 }

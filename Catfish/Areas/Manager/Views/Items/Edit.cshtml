@@ -8,104 +8,25 @@
     <script type="text/javascript" src="~/Scripts/knockout-3.1.0.js"></script>
     <script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
     <script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
+    <script type="text/javascript" src="~/Scripts/fileupload.js"></script>
     <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
 
     <script type="text/javascript">
-        function updateFileListView(data) {
-            data = JSON.parse(data);
-            for (var i = 0; i < data.length; ++i) {
-                var d = data[i];
-                var eleId = d.Guid.substr(0, d.Guid.length - 4);
-                var ele = '<div class="fileThumbnail" id="' + eleId + '" > <img src="' + d.Thumbnail + '" alt="' + d.FileName + '" />' +
-                    '<button class="glyphicon glyphicon-remove" onclick="deleteFile(\'' + d.Guid + '\');"></button>' +
-                    '<div class="label"><a href="' + d.Url + '">' + d.FileName + '</a></div>' +
-                    '</div>';
+        var uploadApiUrl = "@Url.Action("upload", "items", new { id = Model.Id })";
+        var deleteApiUrl = "@Url.Action("deleteFile", "items", new { id = Model.Id })";
+        var itemId = @Model.Id;
+        var uploadFieldCssId = "#uploadField";
+        var uploadButtonCssId = "#uploadButton";
+        var progressBarCssId = "#progressBar";
+        var messageBoxCssId = "#uploadErrorMessage";
+        var thumbnailPanelCssId = "#thumbnailPanel";
 
-                        @*<div class="fileThumbnail">
-                            <img src="@vm.Thumbnail" alt="@vm.FileName" />
-                            <button class="glyphicon glyphicon-remove" onclick="return delete(id, '@vm.Guid');"></button>
-                            <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
-                        </div>*@
-
-                $('#thumbnailPanel').append(ele);
-            }
+        function upload() {
+            uploadFile(itemId, uploadApiUrl, deleteApiUrl, uploadFieldCssId, uploadButtonCssId, progressBarCssId, messageBoxCssId, thumbnailPanelCssId);
         }
 
-        function uploadFile() {
-            var myFrm = new FormData();     //create a new form
-            myFrm.append("itemId", @Model.Id);
-
-            var uploadField = $("#uploadField")[0];     //grab the FileUpload object
-
-            for (var i = 0; i < uploadField.files.length; i++) {
-                myFrm.append("inputFile" + i, uploadField.files[i]);
-            }
-
-            $("#progressBar").show();
-            $("#uploadButton").attr('disabled', 'disabled');
-            $("#uploadField").attr('disabled', 'disabled');
-
-            var oReg = new XMLHttpRequest();
-
-            var stateChange = function (data) {
-                if (oReg.readyState === 4) {  //after successfull execute the function then it will execute what ever inside this if {}
-                    if (oReg.status === 200) {
-                        //Updating the value of the hidden field which carries the ID of this FileUpload object in the page
-                        updateFileListView(data);
-                        $("#uploadErrorMessage").text("");
-                    }
-                    else {
-                        //Error
-                        $("#uploadErrorMessage").text("File upload failed: " + oReg.statusText);
-                    }
-                    $("#uploadField").val("");
-                    $("#progressBar").hide();
-                    $("#uploadButton").prop('disabled', false);
-                    $("#uploadField").prop('disabled', false);
-                }
-            };
-
-            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-                oReg.onload = function (event) { stateChange(event.target.response); };
-            } else {
-                oReg.onreadystatechange = function (data) { stateChange(data.srcElement.responseText); };
-            }
-            var uploadUrl = "@Url.Action("upload", "items", new { id = Model.Id })";
-            oReg.open('POST', uploadUrl);
-            oReg.send(myFrm);
-
-        }// END function uploadFile()
-
-        function deleteFile(guidName) {
-            if (confirm("Delete file?") == false)
-                return;
-
-            var myFrm = new FormData();     //create a new form
-            myFrm.append("guidName", guidName);
-
-            var oReg = new XMLHttpRequest();
-            var stateChange = function (data) {
-                if (oReg.readyState === 4) {  //after successfull execute the function then it will execute what ever inside this if {}
-                    if (oReg.status === 200) {
-                        var guid = JSON.parse(data)[0];
-                        var eleId = guid.substr(0, guid.length - 4)
-                        $("#" + eleId).remove();
-                    }
-                    else {
-                        //Error
-                        $("#uploadErrorMessage").text("File deletion failed: " + oReg.statusText);
-                    }
-                }
-            };
-
-            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-                oReg.onload = function (event) { stateChange(event.target.response); };
-            } else {
-                oReg.onreadystatechange = function (data) { stateChange(data.srcElement.responseText); };
-            }
-            var uploadUrl = "@Url.Action("deleteFile", "items", new { id = Model.Id })";
-            oReg.open('POST', uploadUrl);
-            oReg.send(myFrm);
+        function del(guidName){
+            deleteFile(guidName, deleteApiUrl, messageBoxCssId);
         }
 
         $(function () {
@@ -177,7 +98,7 @@ else
                         var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
                         <div class="fileThumbnail" id="@eleId">
                             <img src="@vm.Thumbnail" alt="@vm.FileName" /> 
-                            <button class="glyphicon glyphicon-remove" onclick="deleteFile('@vm.Guid');"></button>
+                            <button class="glyphicon glyphicon-remove" onclick="del('@vm.Guid');"></button>
                             <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
                         </div>
                     }                                                                       
@@ -186,7 +107,7 @@ else
                     @if (Model.Id > 0)
                     {
                     <input type='file' id='uploadField' name="files" multiple="multiple" />
-                    <input type="button" value="Upload" id="uploadButton" onclick="uploadFile(); return false;" />
+                    <input type="button" value="Upload" id="uploadButton" onclick="upload(); return false;" />
                     <div id="progressBar"><progress></progress></div>
                     <div id="uploadErrorMessage"></div>
                     }
