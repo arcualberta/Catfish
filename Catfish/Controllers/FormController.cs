@@ -1,5 +1,6 @@
 ﻿using Catfish.Areas.Manager.Models.ViewModels;
 using Catfish.Core.Models;
+using Catfish.Core.Models.Data;
 using Catfish.Core.Services;
 using Catfish.Models.Regions;
 using Piranha.Mvc;

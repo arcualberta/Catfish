@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Data;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -77,7 +78,7 @@ namespace Catfish.Core.Services
             string dstPath = Path.Combine("data", parent.Guid);
             List<DataFile> newFiles = UploadFiles(request, dstPath); 
             foreach(DataFile file in newFiles)
-                parent.AddObject(file);
+                parent.AddData(file);
 
             Db.Entry(parent).State = EntityState.Modified;
             return newFiles;
@@ -123,7 +124,6 @@ namespace Catfish.Core.Services
             else
             {
                 dbModel = CreateEntity<Item>(changedItem.EntityTypeId.Value);
-                dbModel.Deserialize();
                 dbModel.UpdateValues(changedItem);
             }
 

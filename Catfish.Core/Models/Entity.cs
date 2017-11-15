@@ -11,7 +11,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Catfish.Core.Models
 {
-    public class Entity : XmlModel
+    public abstract class Entity : XmlModel
     {
         public int? EntityTypeId { get; set; }
         public virtual EntityType EntityType { get; set; }
@@ -22,12 +22,19 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        public IEnumerable<MetadataSet> MetadataSets
+        public List<MetadataSet> MetadataSets
         {
             get
             {
                 return GetChildModels("metadata/metadata-set", Data).Select(c => c as MetadataSet).ToList();
             }
+
+            set
+            {
+                RemoveAllMetadataSets();
+                InitMetadataSet(value);
+            }
+
         }
 
         public void RemoveAllMetadataSets()

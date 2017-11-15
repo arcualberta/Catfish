@@ -22,7 +22,6 @@ namespace Catfish.Core.Services
             else
             {
                 dbModel = CreateEntity<Collection>(changedCollection.EntityTypeId.Value);
-                dbModel.Deserialize();
                 dbModel.UpdateValues(changedCollection);
             }
 

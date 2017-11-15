@@ -29,66 +29,6 @@ namespace Catfish.Tests
         }
 
         [TestMethod]
-        public void XPathTest()
-        {
-            string path = GetSampleDataFilePathName("MetadataSet.xml");
-            Assert.IsTrue(File.Exists(path));
-
-            XElement root = XElement.Load(path);
-            Assert.IsNotNull(root);
-
-            XmlModel model = new XmlModel(root);
-
-            var name = model.GetName();
-            Assert.AreEqual("Dublin Core", name);
-
-            var desc = model.GetDescription("fr");
-            Assert.AreEqual("Il sagit du jeu de métadonnées Dublin Core.", desc);
-
-            var vals = model.GetValues();
-
-            var x = 0;
-        }
-
-        [TestMethod]
-        public void EditTest()
-        {
-            string path = GetSampleDataFilePathName("MetadataSet.xml");
-            Assert.IsTrue(File.Exists(path));
-
-            XElement root = XElement.Load(path);
-            Assert.IsNotNull(root);
-
-            XmlModel model = new XmlModel(root);
-
-            var name = "Test Name 123";
-            model.SetName(name);
-            var name2 = model.GetName();
-            Assert.AreEqual(name, name2);
-
-            model.SetValues(new List<string>() { "a", "b", "c" }); //Default lang "en"
-
-            List<string> evals1 = new List<string>() { "value 1", "value 2", "value 3" };
-            model.SetValues(evals1); ////Default lang "en". This should replace the first set of values "a", "b" and "c"
-
-            List<string> fvals1 = new List<string>() { "valeur 1", "valeur 2", "valeur 3" };
-            model.SetValues(fvals1, "fr");//This should not replace evals1 because this is not the default lang "en"
-
-            IEnumerable<string> evals2 = model.GetValues("en");
-            foreach (var v in evals2)
-                Assert.IsTrue(evals1.Contains(v));
-            foreach (var v in evals1)
-                Assert.IsTrue(evals2.Contains(v));
-
-            IEnumerable<string> fvals2 = model.GetValues("fr");
-            foreach (var v in fvals2)
-                Assert.IsTrue(fvals1.Contains(v));
-            foreach (var v in fvals1)
-                Assert.IsTrue(fvals2.Contains(v));
-
-        }
-
-        [TestMethod]
         public void MetadataFieldsTest()
         {
             string path = GetSampleDataFilePathName("MetadataSet.xml");

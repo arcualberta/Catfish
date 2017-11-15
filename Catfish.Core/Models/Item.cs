@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Forms;
+﻿using Catfish.Core.Models.Data;
+using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -43,7 +44,7 @@ namespace Catfish.Core.Models
             return GetImmediateChild("data");
         }
 
-        public void AddObject(DataObject obj)
+        public void AddData(DataObject obj)
         {
             GetDataObjectRoot().Add(obj.Data);
         }

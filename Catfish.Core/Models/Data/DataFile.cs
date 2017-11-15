@@ -6,10 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Catfish.Core.Models
+namespace Catfish.Core.Models.Data
 {
     public class DataFile: DataObject
     {
+        public enum eThumbnailTypes { NonShared = 0, Shared }
+
+        public override string GetTagName() { return "file"; }
+
         [NotMapped]
         public string ContentType { get { return GetAttribute("content-type"); } set { SetAttribute("content-type", value); } }
 
@@ -44,10 +48,6 @@ namespace Catfish.Core.Models
                 SetAttribute("thumbnail-type", value.ToString());
             }
         }
-
-        public enum eThumbnailTypes { NonShared = 0, Shared }
-
-        public override string GetTagName() { return "file"; }
 
     }
 }

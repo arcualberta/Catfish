@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Data;
 using System.Web.Mvc;
 using System.Web.Routing;
 

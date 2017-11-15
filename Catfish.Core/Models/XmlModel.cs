@@ -16,8 +16,10 @@ using System.Xml.XPath;
 
 namespace Catfish.Core.Models
 {
-    public class XmlModel
+    public abstract class XmlModel
     {
+        public abstract string GetTagName();
+
         public int Id { get; set; }
 
         public string Guid { get; set; }
@@ -179,26 +181,6 @@ namespace Catfish.Core.Models
             return data;
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        public virtual string GetTagName() { return "catfish-model"; }
-
         public XmlModel(XElement ele, string defaultLang = "en")
         {
             Data = ele;
@@ -280,7 +262,6 @@ namespace Catfish.Core.Models
         public virtual void SetValues(IEnumerable<string> values, string lang = null)
         {
             SetChildText("value", values, Data, Lang(lang));
-
         }
 
         public List<XmlModel> GetChildModels(string xpath, XElement ele)
@@ -299,7 +280,7 @@ namespace Catfish.Core.Models
 
         protected string Lang(string lang)
         {
-            return string.IsNullOrEmpty(lang) ? DefaultLanguage : lang;
+            return string.IsNullOrEmpty(lang) ? ConfigHelper.Languages[0].TwoLetterISOLanguageName : lang;
         }
 
         protected string GetChildText(string childTagName, XElement ele, string lang)

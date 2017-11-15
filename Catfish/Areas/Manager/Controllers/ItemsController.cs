@@ -14,6 +14,7 @@ using System.Web.Configuration;
 using Catfish.Core.Services;
 using Catfish.Core.Models.Forms;
 using Catfish.Areas.Manager.Models.ViewModels;
+using Catfish.Core.Models.Data;
 
 namespace Catfish.Areas.Manager.Controllers
 {

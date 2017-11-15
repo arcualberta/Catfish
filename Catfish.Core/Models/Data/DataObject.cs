@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Catfish.Core.Models
+namespace Catfish.Core.Models.Data
 {
-    public class FormSubmission: DataObject
+    public abstract  class DataObject : Entity
     {
     }
 }
