@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Attributes;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 
 namespace Catfish.Core.Services
 {

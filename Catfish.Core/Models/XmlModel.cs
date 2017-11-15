@@ -169,6 +169,16 @@ namespace Catfish.Core.Models
             Updated = DateTime.Now; 
         }
 
+        protected XElement GetImmediateChild(string tagName, bool createIfNotExist = true)
+        {
+            XElement data = Data.Element(tagName);
+
+            if (data == null && createIfNotExist)
+                Data.Add(data = new XElement(tagName));
+
+            return data;
+        }
+
 
 
 

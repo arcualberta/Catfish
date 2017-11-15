@@ -1,5 +1,5 @@
 ﻿using System;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.IO;

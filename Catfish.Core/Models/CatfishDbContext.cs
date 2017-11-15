@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 
 namespace Catfish.Core.Models
 {

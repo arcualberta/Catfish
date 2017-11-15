@@ -11,7 +11,7 @@ using System.Xml.Linq;
 using System.ComponentModel.DataAnnotations.Schema;
 using Catfish.Core.Helpers;
 
-namespace Catfish.Core.Models.Metadata
+namespace Catfish.Core.Models.Forms
 {
     public class FormField : XmlModel
     {

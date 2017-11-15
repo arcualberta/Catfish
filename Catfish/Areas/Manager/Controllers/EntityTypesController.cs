@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Catfish.Core.Models;
 using Catfish.Core.Services;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 using Catfish.Areas.Manager.Models.ViewModels;
 
 namespace Catfish.Areas.Manager.Controllers

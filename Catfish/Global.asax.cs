@@ -8,7 +8,7 @@ using System.Web.Security;
 using System.Web.SessionState;
 using System.Web.Http;
 using Piranha.WebPages;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 using Catfish.Areas.Manager.ModelBinders;
 using Catfish.Core.Models;
 using Catfish.Helpers;

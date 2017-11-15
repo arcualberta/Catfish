@@ -1,4 +1,4 @@
-﻿using Catfish.Core.Models.Metadata;
+﻿using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -40,12 +40,7 @@ namespace Catfish.Core.Models
 
         protected XElement GetDataObjectRoot(bool createIfNotExist = true)
         {
-            XElement data = Data.Element("data");
-
-            if (data == null && createIfNotExist)
-                Data.Add(data = new XElement("data"));
-
-            return data;
+            return GetImmediateChild("data");
         }
 
         public void AddObject(DataObject obj)

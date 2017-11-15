@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Catfish.Core.Models.Metadata
+namespace Catfish.Core.Models.Forms
 {
     public class SingleSelectOptionsField: OptionsField
     {

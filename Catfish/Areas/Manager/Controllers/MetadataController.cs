@@ -7,7 +7,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using Catfish.Areas.Manager.Models.ViewModels;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models;
+using Catfish.Core.Models.Forms;
 using Piranha.Areas.Manager.Controllers;
 using System.Data.Entity;
 

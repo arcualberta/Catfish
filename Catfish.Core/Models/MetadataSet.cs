@@ -7,64 +7,14 @@ using System.IO;
 using System.Xml.Serialization;
 using System.Xml.Linq;
 using System.Linq;
+using Catfish.Core.Models.Forms;
 
-namespace Catfish.Core.Models.Metadata
+namespace Catfish.Core.Models
 {
     [TypeLabel("Metadata Set")]
-    public class MetadataSet : XmlModel
+    public class MetadataSet : Form
     {
         public override string GetTagName() { return "metadata-set"; }
-
-        [NotMapped]
-        public List<FormField> Fields
-        {
-            get
-            {
-                return GetChildModels("fields/field", Data).Select(c => c as FormField).ToList();
-            }
-
-            set
-            {
-                //Removing all children inside the metadata set element
-                RemoveAllElements("fields/field", Data);
-
-                foreach (FormField ms in value)
-                    InsertChildElement("./fields", ms.Data);
-            }
-        }
-
-
-
-        private MetadataDefinition mDefinition;
-
-        [ScriptIgnore(ApplyToOverrides = true)]
-        [NotMapped]
-        public MetadataDefinition Definition
-        {
-            get
-            {
-                if(mDefinition == null)
-                {
-                    if (string.IsNullOrEmpty(Content))
-                    {
-                        mDefinition = new MetadataDefinition();
-                        Serialize();
-                    }
-                    else
-                    {
-                        Deserialize();
-                    }
-                }
-
-                return mDefinition;
-            }
-
-            set
-            {
-                mDefinition = value;
-                mDefinition.Id = this.Id;
-            }
-        }
 
         [NotMapped]
         [TypeLabel("String")]

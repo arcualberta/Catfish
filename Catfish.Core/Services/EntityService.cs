@@ -1,5 +1,5 @@
 ﻿using Catfish.Core.Models;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +31,7 @@ namespace Catfish.Core.Services
             T entity = new T();
             entity.EntityType = et;
             entity.EntityTypeId = et.Id;
-            entity.MetadataSets = et.MetadataSets.ToList();
+            entity.InitMetadataSet(et.MetadataSets.ToList());
             entity.SetAttribute("entity-type", et.Name);
             return entity;
         }

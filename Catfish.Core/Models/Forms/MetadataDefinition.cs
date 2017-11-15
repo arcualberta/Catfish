@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.Xml.Linq;
 
-namespace Catfish.Core.Models.Metadata
+namespace Catfish.Core.Models.Forms
 {
+    [Obsolete]
     [TypeLabel("Metadata Definition")]
     public class MetadataDefinition
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 using System.Web.Script.Serialization;
 using Catfish.Core.Models.Attributes;
 using System.Xml.Linq;
@@ -18,26 +18,32 @@ namespace Catfish.Core.Models
 
         public Entity()
         {
-            Data.Add(new XElement("metadata-sets"));
+            Data.Add(new XElement("metadata"));
         }
 
         [NotMapped]
-        public List<MetadataSet> MetadataSets
+        public IEnumerable<MetadataSet> MetadataSets
         {
             get
             {
-                return GetChildModels("metadata-sets/metadata-set", Data).Select(c => c as MetadataSet).ToList();
-            }
-
-            set
-            {
-                //Removing all children inside the metadata set element
-                RemoveAllElements("metadata-sets/metadata-set", Data);
-
-                foreach (MetadataSet ms in value)
-                    InsertChildElement("./metadata-sets", ms.Data);
+                return GetChildModels("metadata/metadata-set", Data).Select(c => c as MetadataSet).ToList();
             }
         }
+
+        public void RemoveAllMetadataSets()
+        {
+            //Removing all children inside the metadata set element
+            RemoveAllElements("metadata/metadata-set", Data);
+        }
+
+        public void InitMetadataSet(List<MetadataSet> src)
+        {
+            XElement metadata = GetImmediateChild("metadata");
+            foreach (MetadataSet ms in src)
+                metadata.Add(ms.Data);
+        }
+
+
 
         public string GetName(string lang = null)
         {

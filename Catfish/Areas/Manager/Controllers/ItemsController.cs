@@ -12,7 +12,7 @@ using System.IO;
 using System.Xml.Linq;
 using System.Web.Configuration;
 using Catfish.Core.Services;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 using Catfish.Areas.Manager.Models.ViewModels;
 
 namespace Catfish.Areas.Manager.Controllers

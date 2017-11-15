@@ -7,7 +7,7 @@ using System.Linq;
 using System.ComponentModel.DataAnnotations.Schema;
 using Catfish.Core.Helpers;
 
-namespace Catfish.Core.Models.Metadata
+namespace Catfish.Core.Models.Forms
 {
     [NotMapped]
     public class Option
