@@ -21,28 +21,24 @@ namespace Catfish.Core.Models
         public override string GetTagName() { return "item"; }
 
         [NotMapped]
-        public virtual List<DataFile> Files
+        public virtual IEnumerable<DataObject> DataObjects
         {
             get
             {
-                return GetChildModels("data/file", Data).Select(c => c as DataFile).ToList();
-            }
-
-            set
-            {
-                //Removing all children inside the data element
-                RemoveAllElements("data/file", Data);
-
-                if (value != null)
-                {
-                    var data = GetDataElement();
-                    foreach (DataFile df in value)
-                        data.Add(df.Data);
-                }
+                return GetChildModels("data/*", Data).Select(c => c as DataObject);
             }
         }
 
-        protected XElement GetDataElement(bool createIfNotExist = true)
+        [NotMapped]
+        public virtual IEnumerable<DataFile> Files
+        {
+            get
+            {
+                return GetChildModels("data/file", Data).Select(c => c as DataFile);
+            }
+        }
+
+        protected XElement GetDataObjectRoot(bool createIfNotExist = true)
         {
             XElement data = Data.Element("data");
 
@@ -52,10 +48,11 @@ namespace Catfish.Core.Models
             return data;
         }
 
-        public void AddFile(DataFile df)
+        public void AddObject(DataObject obj)
         {
-            GetDataElement().Add(df.Data);
+            GetDataObjectRoot().Add(obj.Data);
         }
+
 
         public void RemoveFile(string fileGuidName)
         {

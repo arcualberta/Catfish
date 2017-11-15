@@ -77,7 +77,7 @@ namespace Catfish.Core.Services
             string dstPath = Path.Combine("data", parent.Guid);
             List<DataFile> newFiles = UploadFiles(request, dstPath); 
             foreach(DataFile file in newFiles)
-                parent.AddFile(file);
+                parent.AddObject(file);
 
             Db.Entry(parent).State = EntityState.Modified;
             return newFiles;
