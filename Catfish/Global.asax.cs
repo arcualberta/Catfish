@@ -76,7 +76,7 @@ namespace Catfish
             {
                 Name = "Forms",
                 Action = "index",
-                Controller = "Forms",
+                Controller = "SubmissionTemplates",
                 Permission = "ADMIN_CONTENT"
             });
 

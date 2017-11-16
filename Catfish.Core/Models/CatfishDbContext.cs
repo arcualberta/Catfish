@@ -103,7 +103,7 @@ namespace Catfish.Core.Models
 
         public DbSet<MetadataSet> MetadataSets { get; set; }
 
-        public DbSet<Submission> Submissions { get; set; }
+        public DbSet<SubmissionTemplate> FormTemplates { get; set; }
  
         ////public DbSet<SimpleField> MetadataFields { get; set; }
 

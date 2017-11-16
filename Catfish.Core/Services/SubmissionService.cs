@@ -17,15 +17,15 @@ namespace Catfish.Core.Services
 
         }
 
-        public IQueryable<Submission> GetSubmissionTemplates()
+        public IQueryable<SubmissionTemplate> GetSubmissionTemplates()
         {
-            return Db.Submissions;
+            return Db.FormTemplates;
         }
 
-        public Submission GetSubmissionTemplate(int id)
+        public SubmissionTemplate GetSubmissionTemplate(int id)
         {
-            Submission submission = Db.Submissions.Where(m => m.Id == id).FirstOrDefault();
-            return submission;
+            SubmissionTemplate template = Db.FormTemplates.Where(m => m.Id == id).FirstOrDefault();
+            return template;
         }
 
         //public IQueryable<T> GetForms<T>() where T: Form

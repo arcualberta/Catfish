@@ -86,7 +86,7 @@
     <Compile Include="Models\CatfishDbContext.cs" />
     <Compile Include="Models\Collection.cs" />
     <Compile Include="Models\Data\DataObject.cs" />
-    <Compile Include="Models\Data\Submission.cs" />
+    <Compile Include="Models\Data\FormData.cs" />
     <Compile Include="Models\Entity.cs" />
     <Compile Include="Models\EntityType.cs" />
     <Compile Include="Models\Data\DataFile.cs" />
@@ -104,6 +104,7 @@
     <Compile Include="Models\Forms\SingleSelectOptionsField.cs" />
     <Compile Include="Models\Forms\TextArea.cs" />
     <Compile Include="Models\Forms\TextField.cs" />
+    <Compile Include="Models\SubmissionTemplate.cs" />
     <Compile Include="Models\TextValue.cs" />
     <Compile Include="Models\XmlModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
