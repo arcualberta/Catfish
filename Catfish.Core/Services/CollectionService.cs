@@ -14,7 +14,7 @@ namespace Catfish.Core.Services
             if (changedCollection.Id > 0)
             {
                 dbModel = Db.XmlModels.Find(changedCollection.Id) as Collection;
-                dbModel.Deserialize();
+                //dbModel.Deserialize();
 
                 //updating the "value" text elements
                 dbModel.UpdateValues(changedCollection);

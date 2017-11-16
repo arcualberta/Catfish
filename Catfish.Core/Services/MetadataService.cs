@@ -16,16 +16,16 @@ namespace Catfish.Core.Services
         public IEnumerable<MetadataSet> GetMetadataSets()
         {
             List<MetadataSet> ms = Db.MetadataSets.ToList();
-            foreach (var m in ms)
-                m.Deserialize();
+            //foreach (var m in ms)
+            //    m.Deserialize();
             return ms;
         }
 
         public MetadataSet GetMetadataSet(int id)
         {
             MetadataSet metadata = Db.MetadataSets.Where(m => m.Id == id).FirstOrDefault();
-            if (metadata != null)
-                metadata.Deserialize();
+            //if (metadata != null)
+            //    metadata.Deserialize();
             return metadata;
         }
 

@@ -113,7 +113,7 @@ namespace Catfish.Core.Services
             if (changedItem.Id > 0)
             {
                 dbModel = Db.XmlModels.Find(changedItem.Id) as Item;
-                dbModel.Deserialize();
+                //dbModel.Deserialize();
 
                 //updating the "value" text elements
                 dbModel.UpdateValues(changedItem);

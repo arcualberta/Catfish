@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Data;
+using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,17 @@ namespace Catfish.Core.Services
 
         }
 
+        public T GetForm<T>(int id) where T : Form
+        {
+            T form = Db.Forms.Where(m => m is T && m.Id == id).Select(m => m as T).FirstOrDefault();
+            return form;
+        }
+
+        public IQueryable<T> GetForms<T>() where T: Form
+        {
+            IQueryable<T> ms = Db.Forms.Where(m => m is T).Select(m => m as T);
+            return ms;
+        }
         public Item SaveFormSubmission(int collectionId, Item item)
         {
             Collection collection = collectionId > 0 ? Db.Collections.Where(c => c.Id == collectionId).FirstOrDefault() : null;

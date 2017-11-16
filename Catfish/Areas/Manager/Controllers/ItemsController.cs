@@ -120,7 +120,7 @@ namespace Catfish.Areas.Manager.Controllers
             if (id.HasValue && id.Value > 0)
             {
                 model = db.XmlModels.Find(id) as Item;
-                model.Deserialize();
+                //model.Deserialize();
 
                 ////if(model.Files.Any()) //MR Sept 5 2017---chek if model has any file associated before pulling it
                 ////    ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);

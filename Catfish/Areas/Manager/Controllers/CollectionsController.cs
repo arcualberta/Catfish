@@ -76,7 +76,7 @@ namespace Catfish.Areas.Manager.Controllers
             if (id.HasValue && id.Value > 0)
             {
                 model = db.XmlModels.Find(id) as Collection;
-                model.Deserialize();
+                //model.Deserialize();
             }
             else
             {

@@ -18,7 +18,7 @@ namespace Catfish.Areas.Manager.Controllers
     {
         public ActionResult Index()
         {
-            return View(MetadataService.GetMetadataSets());
+            return View(FormService.GetForms<MetadataSet>());
         }
 
         ////[HttpGet]

@@ -90,7 +90,7 @@ namespace Catfish.Areas.Manager.Controllers
                 vm.NameMapping.MetadataSetId = vm.SelectedNameMappingMetadataSet.Id;
 
                 MetadataSet ms = Db.MetadataSets.Where(m => m.Id == vm.NameMapping.MetadataSetId).FirstOrDefault();
-                ms.Deserialize();
+                //ms.Deserialize();
                 vm.NameMapping.Field = "Not specified";
                 vm.SelectedNameMappingField = "";
                 vm.SelectedNameMappingFieldSrc = ms.Fields.Select(f => f.Name).ToList();
@@ -105,7 +105,7 @@ namespace Catfish.Areas.Manager.Controllers
                 vm.DescriptionMapping.MetadataSetId = vm.SelectedDescriptionMappingMetadataSet.Id;
 
                 MetadataSet ms = Db.MetadataSets.Where(m => m.Id == vm.DescriptionMapping.MetadataSetId).FirstOrDefault();
-                ms.Deserialize();
+                //ms.Deserialize();
                 vm.DescriptionMapping.Field = "Not specified";
                 vm.SelectedDescriptionMappingField = "";
                 vm.SelectedDescriptionMappingFieldSrc = ms.Fields.Select(f => f.Name).ToList();

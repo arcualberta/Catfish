@@ -74,6 +74,8 @@ namespace Catfish.Core.Models
         {
             get
             {
+                if (mData == null && !string.IsNullOrEmpty(Content))
+                    mData = XElement.Parse(Content);
                 return mData;
             }
 
@@ -446,10 +448,10 @@ namespace Catfish.Core.Models
             return Parse(root, defaultLang);
         }
 
-        public void Deserialize()
-        {
-            this.Data = XElement.Parse(this.Content);
-        }
+        //public void Deserialize()
+        //{
+        //    this.Data = XElement.Parse(this.Content);
+        //}
 
         public void Serialize()
         {
