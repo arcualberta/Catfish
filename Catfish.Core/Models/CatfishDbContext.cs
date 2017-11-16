@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using Catfish.Core.Models.Forms;
+using Catfish.Core.Models.Data;
 
 namespace Catfish.Core.Models
 {
@@ -102,7 +103,7 @@ namespace Catfish.Core.Models
 
         public DbSet<MetadataSet> MetadataSets { get; set; }
 
-        public DbSet<Form> Forms { get; set; }
+        public DbSet<Submission> Submissions { get; set; }
  
         ////public DbSet<SimpleField> MetadataFields { get; set; }
 

@@ -10,24 +10,29 @@ using System.Web;
 
 namespace Catfish.Core.Services
 {
-    public class FormService: ItemService
+    public class SubmissionService: ItemService
     {
-        public FormService(CatfishDbContext db):base(db)
+        public SubmissionService(CatfishDbContext db):base(db)
         {
 
         }
 
-        public T GetForm<T>(int id) where T : Form
+        public IQueryable<Submission> GetSubmissionTemplates()
         {
-            T form = Db.Forms.Where(m => m is T && m.Id == id).Select(m => m as T).FirstOrDefault();
-            return form;
+            return Db.Submissions;
         }
 
-        public IQueryable<T> GetForms<T>() where T: Form
+        public Submission GetSubmissionTemplate(int id)
         {
-            IQueryable<T> ms = Db.Forms.Where(m => m is T).Select(m => m as T);
-            return ms;
+            Submission submission = Db.Submissions.Where(m => m.Id == id).FirstOrDefault();
+            return submission;
         }
+
+        //public IQueryable<T> GetForms<T>() where T: Form
+        //{
+        //    IQueryable<T> ms = Db.Forms.Where(m => m is T).Select(m => m as T);
+        //    return ms;
+        //}
         public Item SaveFormSubmission(int collectionId, Item item)
         {
             Collection collection = collectionId > 0 ? Db.Collections.Where(c => c.Id == collectionId).FirstOrDefault() : null;

@@ -10,7 +10,7 @@ namespace Catfish.Core.Models
     [TypeLabel("Entity Type")]
     public class EntityType
     {
-        public enum eTarget { None = 0, Collections, Items, Files, DataObjects };
+        public enum eTarget { None = 0, Collections, Items, Files, Forms };
 
         public int Id { get; set; }
 

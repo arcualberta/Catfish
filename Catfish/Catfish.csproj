@@ -217,6 +217,9 @@
     <Content Include="Areas\Manager\Views\Extensions\MultilingualText.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\_CatfishRegion.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\Form.cshtml" />
+    <Content Include="Areas\Manager\Views\Forms\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\Forms\Edit.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\Partial\FormBuilder.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
     <Content Include="Scripts\fileupload.js" />
@@ -240,6 +243,7 @@
     <Compile Include="Areas\Manager\Controllers\CatfishController.cs" />
     <Compile Include="Areas\Manager\Controllers\CollectionsController.cs" />
     <Compile Include="Areas\Manager\Controllers\EntityTypesController.cs" />
+    <Compile Include="Areas\Manager\Controllers\FormsController.cs" />
     <Compile Include="Areas\Manager\Controllers\ItemsController.cs" />
     <Compile Include="Areas\Manager\Controllers\MetadataController.cs" />
     <Compile Include="Areas\Manager\Helpers\HtmlHelperExtensions.cs" />

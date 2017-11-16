@@ -15,8 +15,8 @@ namespace Catfish.Areas.Manager.Controllers
         private CatfishDbContext mDb;
         public CatfishDbContext Db { get { if (mDb == null) mDb = new CatfishDbContext(); return mDb; } }
 
-        private FormService mFormService;
-        public FormService FormService { get { if (mFormService == null) mFormService = new FormService(Db); return mFormService; } }
+        private SubmissionService mFormService;
+        public SubmissionService FormService { get { if (mFormService == null) mFormService = new SubmissionService(Db); return mFormService; } }
 
         private MetadataService mMetadataService;
         public MetadataService MetadataService { get { if (mMetadataService == null) mMetadataService = new MetadataService(Db); return mMetadataService; } }

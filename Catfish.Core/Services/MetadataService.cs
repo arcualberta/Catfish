@@ -13,12 +13,9 @@ namespace Catfish.Core.Services
     {
         public MetadataService(CatfishDbContext db) : base(db) { }
 
-        public IEnumerable<MetadataSet> GetMetadataSets()
+        public IQueryable<MetadataSet> GetMetadataSets()
         {
-            List<MetadataSet> ms = Db.MetadataSets.ToList();
-            //foreach (var m in ms)
-            //    m.Deserialize();
-            return ms;
+            return Db.MetadataSets;
         }
 
         public MetadataSet GetMetadataSet(int id)

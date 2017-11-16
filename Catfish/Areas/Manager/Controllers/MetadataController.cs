@@ -18,7 +18,7 @@ namespace Catfish.Areas.Manager.Controllers
     {
         public ActionResult Index()
         {
-            return View(FormService.GetForms<MetadataSet>());
+            return View(MetadataService.GetMetadataSets());
         }
 
         ////[HttpGet]
@@ -61,41 +61,41 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
 
-        [HttpPost]
-        public JsonResult AddField(FormBuilderViewModel vm)
-        {
-            foreach (FormFieldType t in vm.SelectedFieldTypes)
-            {
-                Type type = Type.GetType(t.FieldType, true);
-                if (!typeof(FormField).IsAssignableFrom(type))
-                    throw new InvalidOperationException("Bad Type");
+        ////[HttpPost]
+        ////public JsonResult AddField(FormBuilderViewModel vm)
+        ////{
+        ////    foreach (FormFieldType t in vm.SelectedFieldTypes)
+        ////    {
+        ////        Type type = Type.GetType(t.FieldType, true);
+        ////        if (!typeof(FormField).IsAssignableFrom(type))
+        ////            throw new InvalidOperationException("Bad Type");
 
-                FormField field = Activator.CreateInstance(type) as FormField;
-                vm.Fields.Add(new FormFieldViewModel(field));
-            }
-            vm.SelectedFieldTypes.Clear();
-            return Json(vm);
-        }
+        ////        FormField field = Activator.CreateInstance(type) as FormField;
+        ////        vm.Fields.Add(new FormFieldViewModel(field));
+        ////    }
+        ////    vm.SelectedFieldTypes.Clear();
+        ////    return Json(vm);
+        ////}
 
-        [HttpPost]
-        public JsonResult RemoveField(FormBuilderViewModel vm, int idx)
-        {
-            vm.Fields.RemoveAt(idx);
-            return Json(vm);
-        }
+        ////[HttpPost]
+        ////public JsonResult RemoveField(FormBuilderViewModel vm, int idx)
+        ////{
+        ////    vm.Fields.RemoveAt(idx);
+        ////    return Json(vm);
+        ////}
 
-        [HttpPost]
-        public JsonResult Move(FormBuilderViewModel vm, int idx, int step)
-        {
-            int newIdx = KoBaseViewModel.GetBoundedArrayIndex(idx + step, vm.Fields.Count);
-            if(idx != newIdx)
-            {
-                var field = vm.Fields.ElementAt(idx);
-                vm.Fields.RemoveAt(idx);
-                vm.Fields.Insert(newIdx, field);
-            }
-            return Json(vm);
-        }
+        ////[HttpPost]
+        ////public JsonResult Move(FormBuilderViewModel vm, int idx, int step)
+        ////{
+        ////    int newIdx = KoBaseViewModel.GetBoundedArrayIndex(idx + step, vm.Fields.Count);
+        ////    if(idx != newIdx)
+        ////    {
+        ////        var field = vm.Fields.ElementAt(idx);
+        ////        vm.Fields.RemoveAt(idx);
+        ////        vm.Fields.Insert(newIdx, field);
+        ////    }
+        ////    return Json(vm);
+        ////}
 
         [HttpPost]
         public JsonResult Save(FormBuilderViewModel vm)

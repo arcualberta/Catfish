@@ -50,6 +50,9 @@ namespace Catfish
 
         private void AddManagerMenus()
         {
+            ///
+            /// Content Menus
+            ///
             var menubar = Manager.Menu.Where(m => m.InternalId == "Content").FirstOrDefault();
             var idx = 0;
 
@@ -69,6 +72,17 @@ namespace Catfish
                 Permission = "ADMIN_CONTENT"
             });
 
+            menubar.Items.Insert(idx++, new Manager.MenuItem()
+            {
+                Name = "Forms",
+                Action = "index",
+                Controller = "Forms",
+                Permission = "ADMIN_CONTENT"
+            });
+
+            ///
+            /// Settings Menus
+            ///
             menubar = Manager.Menu.Where(m => m.InternalId == "Settings").FirstOrDefault();
             idx = 0;
 

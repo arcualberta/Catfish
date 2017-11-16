@@ -38,7 +38,7 @@ namespace Catfish.Controllers
 
             if (ModelState.IsValid)
             {
-                FormService srv = new FormService(db);
+                SubmissionService srv = new SubmissionService(db);
                 Form form = model.Region<Form>("Form");
 
                 Item savedItem = null;
@@ -66,7 +66,7 @@ namespace Catfish.Controllers
             try
             {
                 CatfishDbContext db = new CatfishDbContext();
-                FormService srv = new FormService(db);
+                SubmissionService srv = new SubmissionService(db);
 
                 List<DataFile> files = srv.UploadTempFiles(Request);
                 db.SaveChanges();

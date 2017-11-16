@@ -2,29 +2,15 @@
 @using PerpetuumSoft.Knockout
 @using Catfish.Areas.Manager.Models.ViewModels
 
-@{  ViewBag.Title = ViewBag.Id > 0 ? "Edit Metadata Set Definition" : "Create Metadata Set Definition"; }
-
-@section HEAD
-{
-    <script type="text/javascript" src="~/Scripts/knockout-3.1.0.js"></script>
-    <script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
-    <script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
-}
-
-@section Toolbar {
-    @Html.Partial("Partial/koEditToolbar")
-}
-
-@Html.Partial("Partial/FormBuilder", Model, new ViewDataDictionary(){ { "controller", "metadata" }, { "action", "save" }})
-
-@*
 @{
     var context = "ctx_" + Guid.NewGuid().ToString("N");
     var ko = Html.CreateKnockoutContext(context);
+    string saveController = ViewData["controller"] as string;
+    string saveAction = ViewData["action"] as string;
 }
 
 <div id="@context">
-    @using (ko.Html.Form("Save", "Metadata", null, new { id = context + "Form" }))
+    @using (ko.Html.Form(saveAction, saveController, null, new { id = context + "Form" }))
     {
         <div class="grid_12">
             <div class="box">
@@ -33,7 +19,7 @@
                     <div class="bs right">
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
-                        @ko.Html.Button("Save", "Save", "Metadata", new { }, new { @class = "save" } )
+                        @ko.Html.Button("Save", saveAction, saveController, new { }, new { @class = "save" })
                     </div>
                 </div>
                 <div class="inner">
@@ -41,7 +27,7 @@
                     <ul class="form form-custom">
                         <li>
                             <label class="control-label col-md-2">Name</label>
-                            <div class="input">@ko.Html.TextBox(m => m.Name, new { @id = "Name"})</div>
+                            <div class="input">@ko.Html.TextBox(m => m.Name, new { @id = "Name" })</div>
                         </li>
                         <li>
                             <label class="control-label col-md-2">Description</label>
@@ -59,25 +45,25 @@
                             @field.Html.Span(f => f.TypeLabel)
                             <div class="bs right">
                                 <span @field.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
-                                @ko.Html.Button("", "Move", "Metadata", new { idx = @field.GetIndex(), step = -1 }, new { @class = "glyphicon glyphicon glyphicon-arrow-up" })
-                                @ko.Html.Button("", "Move", "Metadata", new { idx = @field.GetIndex(), step = 1 }, new { @class = "glyphicon glyphicon glyphicon-arrow-down" })
-                                @ko.Html.Button("", "RemoveField", "Metadata", new { idx = @field.GetIndex() }, new { @class = "glyphicon glyphicon-remove" })
+                                @ko.Html.Button("", "Move", "Forms", new { idx = @field.GetIndex(), step = -1 }, new { @class = "glyphicon glyphicon glyphicon-arrow-up" })
+                                @ko.Html.Button("", "Move", "Forms", new { idx = @field.GetIndex(), step = 1 }, new { @class = "glyphicon glyphicon glyphicon-arrow-down" })
+                                @ko.Html.Button("", "RemoveField", "Forms", new { idx = @field.GetIndex() }, new { @class = "glyphicon glyphicon-remove" })
                             </div>
-                        </div> 
+                        </div>
                         @field.Html.TextBox(f => f.Ref, new { style = "display:none" })
                         <div class="inner">
                             <ul class="form">
                                 <li>
-                                        <label class="control-label">Name</label>
-                                        <div class="input">
-                                            @using (var name = field.Foreach(f => f.Name))
-                                            {
-                                                <div class="languageInputField">
-                                                    @name.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
-                                                    @name.Html.Span(n => n.LanguageLabel + ": ") @name.Html.TextBox(n => n.Value, new { @class = "input-field" })
-                                                </div>
-                                            }
-                                        </div>
+                                    <label class="control-label">Name</label>
+                                    <div class="input">
+                                        @using (var name = field.Foreach(f => f.Name))
+                                        {
+                                            <div class="languageInputField">
+                                                @name.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
+                                                @name.Html.Span(n => n.LanguageLabel + ": ") @name.Html.TextBox(n => n.Value, new { @class = "input-field" })
+                                            </div>
+                                        }
+                                    </div>
                                 </li>
                                 <li>
                                     <label class="control-label col-md-2">Description</label>
@@ -91,6 +77,7 @@
                                         <span>Please define options, one per line below</span>
                                     </div>
                                     <div class="input">
+                                        @*@field.Html.TextArea(f => f.Options, new { @class = "field-options" })*@
                                         @using (var option = field.Foreach(f => f.MultilingualOptionSet))
                                         {
                                             <div class="languageInputField">
@@ -116,11 +103,10 @@
             <div id="fields-container">
                 <div class="right">
                     @ko.Html.DropDownList(m => m.FieldTypes, new { id = "field-type-selector" }, ft => ft.Label).SelectedOptions(m => m.SelectedFieldTypes)
-                    @ko.Html.Button("Add Field", "AddField", "Metadata", new { }, new { id = "add-field" }).Enable(m => m.SelectedFieldTypes.Count > 0 && m.SelectedFieldTypes[0].Label != "")
+                    @ko.Html.Button("Add Field", "AddField", "Forms", new { }, new { id = "add-field" }).Enable(m => m.SelectedFieldTypes.Count > 0 && m.SelectedFieldTypes[0].Label != "")
                 </div>
             </div>
         </div>
     }
 </div>
 @ko.Apply(Model, context)
-*@
