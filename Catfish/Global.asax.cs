@@ -74,7 +74,7 @@ namespace Catfish
 
             menubar.Items.Insert(idx++, new Manager.MenuItem()
             {
-                Name = "Forms",
+                Name = "Submission Templates",
                 Action = "index",
                 Controller = "SubmissionTemplates",
                 Permission = "ADMIN_CONTENT"

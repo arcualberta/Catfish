@@ -1,4 +1,4 @@
-﻿@model Catfish.Areas.Manager.Models.ViewModels.FormBuilderViewModel
+﻿@model Catfish.Core.Models.MetadataSet
 @using PerpetuumSoft.Knockout
 @using Catfish.Areas.Manager.Models.ViewModels
 
@@ -15,7 +15,11 @@
     @Html.Partial("Partial/koEditToolbar")
 }
 
-@Html.Partial("Partial/FormBuilder", Model, new ViewDataDictionary(){ { "controller", "metadata" }, { "action", "save" }})
+@{
+    FormBuilderViewModel vm = new FormBuilderViewModel(Model);
+}
+
+@Html.Partial("Partial/FormBuilder", vm, new ViewDataDictionary(){ { "controller", "metadata" }, { "action", "save" }})
 
 @*
 @{
