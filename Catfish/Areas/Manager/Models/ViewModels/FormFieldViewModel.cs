@@ -22,6 +22,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public FormFieldViewModel() { }
 
+        public int Rank { get; set; }
+        public int Page { get; set; }
+        public bool IsPageBreak { get; set; }
         public FormFieldViewModel(FormField src)
         {
             Name = src.MultilingualName.ToList();
@@ -30,6 +33,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             IsRequired = src.IsRequired;
             FieldType = src.GetType().AssemblyQualifiedName;
             Ref = src.Ref;
+            Rank = src.Rank;
+            Page = src.Page;
+            IsPageBreak = src.IsPageBreak();
 
             TypeLabelAttribute att = Attribute.GetCustomAttribute(src.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
             TypeLabel = att == null ? src.GetType().ToString() : att.Name;
@@ -74,6 +80,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.Description = Description;
             field.IsRequired = IsRequired;
             field.Ref = Ref;
+            field.Rank = Rank;
+            field.Page = Page;
+
             if (typeof(OptionsField).IsAssignableFrom(type))
             {
                 //Creating option list separately and assigning it to the Options propery of the Options field

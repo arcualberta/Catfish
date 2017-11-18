@@ -51,52 +51,74 @@
                             </div>
                         </div>
                         @field.Html.TextBox(f => f.Ref, new { style = "display:none" })
-                        <div class="inner">
-                            <ul class="form">
-                                <li>
-                                    <label class="control-label">Name</label>
-                                    <div class="input">
-                                        @using (var name = field.Foreach(f => f.Name))
-                                        {
-                                            <div class="languageInputField">
-                                                @name.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
-                                                @name.Html.Span(n => n.LanguageLabel + ": ") @name.Html.TextBox(n => n.Value, new { @class = "input-field" })
-                                            </div>
-                                        }
-                                    </div>
-                                </li>
-                                <li>
-                                    <label class="control-label col-md-2">Description</label>
-                                    <div class="input">
-                                        @field.Html.TextArea(f => f.Description, new { @class = "field-description" })
-                                    </div>
-                                </li>
-                                <li @field.Bind.Visible(m => m.IsOptionField)>
-                                    <label class="control-label col-md-2">Options</label>
-                                    <div class="input field-desc">
-                                        <span>Please define options, one per line below</span>
-                                    </div>
-                                    <div class="input">
-                                        @*@field.Html.TextArea(f => f.Options, new { @class = "field-options" })*@
-                                        @using (var option = field.Foreach(f => f.MultilingualOptionSet))
-                                        {
-                                            <div class="languageInputField">
-                                                @option.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
-                                                @option.Html.Span(n => n.LanguageLabel + ": ") @option.Html.TextArea(n => n.Value, new { @class = "input-field" })
-                                            </div>
-                                        }
+                        @using (field.If(f => f.IsPageBreak == true))
+                        {
+                            <div class="inner">
+                                <ul class="form">
+                                    <li>
+                                        <label class="control-label">Title</label>
+                                        <div class="input">
+                                            @using (var name = field.Foreach(f => f.Name))
+                                            {
+                                                <div class="languageInputField">
+                                                    @name.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
+                                                    @name.Html.Span(n => n.LanguageLabel + ": ") @name.Html.TextBox(n => n.Value, new { @class = "input-field" })
+                                                </div>
+                                            }
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                        @using (field.If(f => f.IsPageBreak == false))
+                        {
+                            <div class="inner">
+                                <ul class="form">
+                                    <li>
+                                        <label class="control-label">Name</label>
+                                        <div class="input">
+                                            @using (var name = field.Foreach(f => f.Name))
+                                            {
+                                                <div class="languageInputField">
+                                                    @name.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
+                                                    @name.Html.Span(n => n.LanguageLabel + ": ") @name.Html.TextBox(n => n.Value, new { @class = "input-field" })
+                                                </div>
+                                            }
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <label class="control-label col-md-2">Description</label>
+                                        <div class="input">
+                                            @field.Html.TextArea(f => f.Description, new { @class = "field-description" })
+                                        </div>
+                                    </li>
+                                    <li @field.Bind.Visible(m => m.IsOptionField)>
+                                        <label class="control-label col-md-2">Options</label>
+                                        <div class="input field-desc">
+                                            <span>Please define options, one per line below</span>
+                                        </div>
+                                        <div class="input">
+                                            @*@field.Html.TextArea(f => f.Options, new { @class = "field-options" })*@
+                                            @using (var option = field.Foreach(f => f.MultilingualOptionSet))
+                                            {
+                                                <div class="languageInputField">
+                                                    @option.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
+                                                    @option.Html.Span(n => n.LanguageLabel + ": ") @option.Html.TextArea(n => n.Value, new { @class = "input-field" })
+                                                </div>
+                                            }
 
 
-                                    </div>
-                                </li>
-                                <li>
-                                    <label class="control-label col-md-2">Required</label>
-                                    <div class="input">
-                                        @field.Html.CheckBox(f => f.IsRequired, new { @class = "field-is-required" })
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <label class="control-label col-md-2">Required</label>
+                                        <div class="input">
+                                            @field.Html.CheckBox(f => f.IsRequired, new { @class = "field-is-required" })
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
                     </div>
                 }
             </div>

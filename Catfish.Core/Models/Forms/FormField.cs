@@ -15,6 +15,8 @@ namespace Catfish.Core.Models.Forms
 {
     public class FormField : XmlModel
     {
+        public override string GetTagName() { return "field"; }
+
         [NotMapped]
         public string Name
         {
@@ -42,7 +44,6 @@ namespace Catfish.Core.Models.Forms
             }
         }
 
-        public override string GetTagName() { return "field"; }
 
         [NotMapped]
         [Display(Name="Is Required")]
@@ -129,6 +130,20 @@ namespace Catfish.Core.Models.Forms
             }
         }
 
+        [NotMapped]
+        public int Rank
+        {
+            get { return GetAttribute("rank", 0); }
+            set { SetAttribute("rank", value); }
+        }
+
+        [NotMapped]
+        public int Page
+        {
+            get { return GetAttribute("page", 0); }
+            set { SetAttribute("page", value); }
+        }
+
         public override void UpdateValues(XmlModel src)
         {
             XElement srcValueWrapper = src.Data.Element("value");
@@ -154,31 +169,10 @@ namespace Catfish.Core.Models.Forms
                 dstValeWrapper.Add(new XElement(txt));
         }
 
-
-
-        ////[XmlIgnore]
-        ////[HiddenInput(DisplayValue = false)]
-        ////public int MetadataSetId { get; set; }
-
-        ////////public override XElement ToXml()
-        ////////{
-        ////////    XElement ele = base.ToXml();
-
-        ////////    if (IsRequired)
-        ////////        ele.SetAttributeValue("IsRequired", IsRequired);
-
-        ////////    if (!string.IsNullOrWhiteSpace(Help))
-        ////////        ele.Add(new XElement("Help") { Value = Help });
-
-        ////////    return ele;
-        ////////}
-
-        ////////public override void Initialize(XElement ele)
-        ////////{
-        ////////    base.Initialize(ele);
-        ////////    this.IsRequired = bool.Parse(GetAtt(ele, "IsRequired", "false"));
-        ////////    this.Help = GetChildText(ele, "Help");
-        ////////}
+        public bool IsPageBreak()
+        {
+            return typeof(PageBreak).IsAssignableFrom(GetType());
+        }
 
     }
 }

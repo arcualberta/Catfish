@@ -29,7 +29,7 @@ namespace Catfish.Core.Models
         {
             get
             {
-                string att = GetAttribute("created");
+                string att = GetAttribute("created", null);
                 return string.IsNullOrEmpty(att) ? new DateTime() : DateTime.Parse(att);
             }
             set
@@ -43,7 +43,7 @@ namespace Catfish.Core.Models
         {
             get
             {
-                string att = GetAttribute("updated");
+                string att = GetAttribute("updated", null);
                 return string.IsNullOrEmpty(att) ? new DateTime() : DateTime.Parse(att);
             }
             set
@@ -410,12 +410,39 @@ namespace Catfish.Core.Models
             return att == null ? null : att.Value;
         }
 
+        public int GetAttribute(string name, int defaultValue=0, XElement data = null)
+        {
+            string val = GetAttribute(name, data);
+            return string.IsNullOrEmpty(val) ? defaultValue : int.Parse(val);
+        }
+
+        public bool GetAttribute(string name, bool defaultValue = false, XElement data = null)
+        {
+            string val = GetAttribute(name, data);
+            return string.IsNullOrEmpty(val) ? defaultValue : bool.Parse(val);
+        }
+
         public void SetAttribute(string attName, string attValue, XElement data = null)
         {
             if (data == null)
                 data = Data;
             data.SetAttributeValue(attName, attValue);
         }
+
+        public void SetAttribute(string attName, int attValue, XElement data = null)
+        {
+            if (data == null)
+                data = Data;
+            data.SetAttributeValue(attName, attValue);
+        }
+
+        public void SetAttribute(string attName, bool attValue, XElement data = null)
+        {
+            if (data == null)
+                data = Data;
+            data.SetAttributeValue(attName, attValue);
+        }
+
 
         protected XmlNamespaceManager NamespaceManager
         {

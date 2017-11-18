@@ -39,6 +39,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Fields = new List<FormFieldViewModel>();
             foreach (var field in src.Fields)
                 Fields.Add(new FormFieldViewModel(field));
+
+            Fields = Fields.OrderBy(f => f.Rank).ToList();
         }
 
         public override void UpdateDataModel(object dataModel, CatfishDbContext db)
@@ -91,6 +93,18 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
 
             return mFieldTypes;
+        }
+
+        //Regenerate field indicies and page numbers
+        public void UpdateFieldRanks()
+        {
+            int rank = 0;
+            int page = 0;
+            foreach(var field in Fields)
+            {
+                field.Rank = ++rank;
+                field.Page = field.IsPageBreak ? ++page : page;
+            }
         }
     }
 

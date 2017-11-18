@@ -31,6 +31,8 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpPost]
         public JsonResult AddField(FormBuilderViewModel vm)
         {
+            int rank = vm.Fields.Count;
+            int page = vm.Fields.Count > 0 ? vm.Fields[vm.Fields.Count - 1].Page : 1;
             foreach (FormFieldType t in vm.SelectedFieldTypes)
             {
                 Type type = Type.GetType(t.FieldType, true);
@@ -38,6 +40,10 @@ namespace Catfish.Areas.Manager.Controllers
                     throw new InvalidOperationException("Bad Type");
 
                 FormField field = Activator.CreateInstance(type) as FormField;
+                field.Rank = ++rank;
+                if (field.IsPageBreak())
+                    page = page + 1;
+                field.Page = page;
                 vm.Fields.Add(new FormFieldViewModel(field));
             }
             vm.SelectedFieldTypes.Clear();
@@ -48,6 +54,7 @@ namespace Catfish.Areas.Manager.Controllers
         public JsonResult RemoveField(FormBuilderViewModel vm, int idx)
         {
             vm.Fields.RemoveAt(idx);
+            vm.UpdateFieldRanks();
             return Json(vm);
         }
 
@@ -61,6 +68,7 @@ namespace Catfish.Areas.Manager.Controllers
                 vm.Fields.RemoveAt(idx);
                 vm.Fields.Insert(newIdx, field);
             }
+            vm.UpdateFieldRanks();
             return Json(vm);
         }
 
