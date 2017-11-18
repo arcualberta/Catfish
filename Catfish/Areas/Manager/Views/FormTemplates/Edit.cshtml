@@ -1,7 +1,7 @@
-﻿@model Catfish.Core.Models.SubmissionTemplate
+﻿@model Catfish.Core.Models.Form
 @using Catfish.Areas.Manager.Models.ViewModels;
 
-@{ ViewBag.Title = Model.Id > 0 ? "Edit Submission Template" : "Create Submission Template"; }
+@{ ViewBag.Title = Model.Id > 0 ? "Edit Form Template" : "Create Form Template"; }
 
 
 @section HEAD
@@ -44,5 +44,5 @@
     FormBuilderViewModel vm = new FormBuilderViewModel(Model) { ShowFieldDescriptions = true };
 }
 
-    @Html.Partial("Partial/FormBuilder", vm, new ViewDataDictionary() { { "controller", "submissiontemplates" }, { "action", "save" } })
+    @Html.Partial("Partial/FormBuilder", vm, new ViewDataDictionary() { { "controller", "formtemplates" }, { "action", "save" } })
 

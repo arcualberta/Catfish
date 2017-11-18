@@ -10,9 +10,9 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Forms
 {
-    public abstract class Form : XmlModel
+    public abstract class AbstractForm : XmlModel
     {
-        public Form()
+        public AbstractForm()
         {
             Data.Add(new XElement("fields"));
         }
@@ -48,7 +48,7 @@ namespace Catfish.Core.Models.Forms
         {
             base.UpdateValues(src);
 
-            var src_item = src as Form;
+            var src_item = src as AbstractForm;
 
             foreach (FormField field in this.Fields)
             { // checkhere type of 

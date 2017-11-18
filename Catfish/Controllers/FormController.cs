@@ -20,7 +20,7 @@ namespace Catfish.Controllers
             var model = GetModel();
             ViewBag.PageModel = model;
 
-            Form form = model.Regions.Form as Form;
+            Models.Regions.Form form = model.Regions.Form as Models.Regions.Form;
             int entityTypeId = form.EntityTypeId;
 
             CatfishDbContext db = new CatfishDbContext();
@@ -39,7 +39,7 @@ namespace Catfish.Controllers
             if (ModelState.IsValid)
             {
                 SubmissionService srv = new SubmissionService(db);
-                Form form = model.Region<Form>("Form");
+                Models.Regions.Form form = model.Region<Models.Regions.Form>("Form");
 
                 Item savedItem = null;
                 savedItem = srv.SaveFormSubmission(form.CollectionId, submission);

@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 namespace Catfish.Core.Models
 {
     [TypeLabel("Form Template")]
-    public class SubmissionTemplate : Form
+    public class Form : AbstractForm
     {
-        public override string GetTagName() { return "submission-template"; }
+        public override string GetTagName() { return "form"; }
 
     }
 }

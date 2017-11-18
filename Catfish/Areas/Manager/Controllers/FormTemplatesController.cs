@@ -8,9 +8,9 @@ using System.Web.Mvc;
 
 namespace Catfish.Areas.Manager.Controllers
 {
-    public class SubmissionTemplatesController : FormBuilderController
+    public class FormTemplatesController : FormBuilderController
     {
-        public override Form CreateDataModel() { return new SubmissionTemplate(); }
+        public override AbstractForm CreateDataModel() { return new Form(); }
 
         // GET: Manager/SubmissionTemplate
         public ActionResult Index()

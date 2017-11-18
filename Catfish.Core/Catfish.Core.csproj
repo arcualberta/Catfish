@@ -90,7 +90,7 @@
     <Compile Include="Models\Entity.cs" />
     <Compile Include="Models\EntityType.cs" />
     <Compile Include="Models\Data\DataFile.cs" />
-    <Compile Include="Models\Forms\Form.cs" />
+    <Compile Include="Models\Forms\AbstractForm.cs" />
     <Compile Include="Models\Forms\PageBreak.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Forms\CheckBoxSet.cs" />
@@ -105,7 +105,7 @@
     <Compile Include="Models\Forms\SingleSelectOptionsField.cs" />
     <Compile Include="Models\Forms\TextArea.cs" />
     <Compile Include="Models\Forms\TextField.cs" />
-    <Compile Include="Models\SubmissionTemplate.cs" />
+    <Compile Include="Models\Form.cs" />
     <Compile Include="Models\TextValue.cs" />
     <Compile Include="Models\XmlModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

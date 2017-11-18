@@ -27,7 +27,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             SelectedFieldTypes = new List<FormFieldType>();
         }
 
-        public FormBuilderViewModel(Form src)
+        public FormBuilderViewModel(AbstractForm src)
         {
             Id = src.Id;
             TypeLabelAttribute att = Attribute.GetCustomAttribute(src.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
@@ -47,7 +47,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public override void UpdateDataModel(object dataModel, CatfishDbContext db)
         {
-            Form dst = dataModel as Form;
+            AbstractForm dst = dataModel as AbstractForm;
             dst.Name = Name;
             dst.Description = Description;
             dst.Ref = Ref;

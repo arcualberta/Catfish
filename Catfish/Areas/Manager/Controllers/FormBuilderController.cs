@@ -12,16 +12,16 @@ namespace Catfish.Areas.Manager.Controllers
 {
     public abstract class FormBuilderController : CatfishController
     {
-        public abstract Form CreateDataModel();
+        public abstract AbstractForm CreateDataModel();
 
 
         [HttpGet]
         public ActionResult Edit(int? id)
         {
-            Form model;
+            AbstractForm model;
 
             if (id.HasValue && id.Value > 0)
-                model = Db.XmlModels.Find(id) as Form;
+                model = Db.XmlModels.Find(id) as AbstractForm;
             else
                 model = CreateDataModel();
 
@@ -77,11 +77,11 @@ namespace Catfish.Areas.Manager.Controllers
         {
             if (ModelState.IsValid)
             {
-                Form model;
+                AbstractForm model;
 
                 if (vm.Id > 0)
                 {
-                    model = Db.XmlModels.Where(x => x.Id == vm.Id && x is Form).FirstOrDefault() as Form;
+                    model = Db.XmlModels.Where(x => x.Id == vm.Id && x is AbstractForm).FirstOrDefault() as AbstractForm;
                     if (model == null)
                         return Json(vm.Error("Specified form not found"));
                     else
