@@ -130,6 +130,20 @@ namespace Catfish.Core.Models.Forms
             }
         }
 
+        public IEnumerable<TextValue> MultilingualDescription
+        {
+            get
+            {
+                return GetDescription(true);
+            }
+
+            set
+            {
+                SetDescription(value);
+            }
+        }
+
+
         [NotMapped]
         public int Rank
         {

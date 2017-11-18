@@ -14,7 +14,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string TypeLabel { get; set; }
         public string FieldType { get; set; }
         public List<TextValue> Name { get; set; }
-        public string Description { get; set; }
+        //public string Description { get; set; }
+        public List<TextValue> Description { get; set; }
         public bool IsRequired { get; set; }
         public bool IsOptionField { get; set; }
         public List<TextValue> MultilingualOptionSet { get; set; }
@@ -29,7 +30,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         {
             Name = src.MultilingualName.ToList();
 
-            Description = src.Description;
+            Description = src.MultilingualDescription.ToList();
             IsRequired = src.IsRequired;
             FieldType = src.GetType().AssemblyQualifiedName;
             Ref = src.Ref;
@@ -77,7 +78,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
             FormField field = Activator.CreateInstance(type) as FormField;
             field.MultilingualName = Name;
-            field.Description = Description;
+            field.MultilingualDescription = Description;
             field.IsRequired = IsRequired;
             field.Ref = Ref;
             field.Rank = Rank;

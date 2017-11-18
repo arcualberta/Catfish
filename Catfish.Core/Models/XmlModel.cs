@@ -163,6 +163,32 @@ namespace Catfish.Core.Models
                 wrapper.Add(CreateTextElement(v.Value, v.LanguageCode));
         }
 
+        public virtual IEnumerable<TextValue> GetDescription(bool forceAllLanguages)
+        {
+            XElement wrapper = GetWrapper("description", true, false);
+            return XmlHelper.GetTextValues(wrapper, forceAllLanguages);
+        }
+
+        protected virtual void SetDescription(IEnumerable<TextValue> val)
+        {
+            XElement wrapper = Data.Element("description");
+            if (wrapper != null)
+            {
+                //removing all text elements in the wrapper
+                foreach (XElement text in wrapper.Elements().Where(e => e.Name == "text").ToList())
+                    text.Remove();
+            }
+            else
+            {
+                wrapper = CreateElement("description", false);
+                Data.Add(wrapper);
+            }
+
+            //inserting text elements representing languages and values specified by the input argument
+            foreach (TextValue v in val)
+                wrapper.Add(CreateTextElement(v.Value, v.LanguageCode));
+        }
+
         protected void OnUpdated(object sender, XObjectChangeEventArgs e)
         {
             if (sender is XAttribute && ((XAttribute)sender).Name == "updated")

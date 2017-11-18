@@ -19,6 +19,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public List<FormFieldType> FieldTypes { get { return GetFieldTypes(); } }
         public List<FormFieldType> SelectedFieldTypes { get; set; }
 
+        public bool ShowFieldDescriptions { get; set; }
+
         public FormBuilderViewModel()
         {
             Fields = new List<FormFieldViewModel>();

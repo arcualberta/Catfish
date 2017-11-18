@@ -41,8 +41,8 @@
 }
 
 @{
-    FormBuilderViewModel vm = new FormBuilderViewModel(Model);
+    FormBuilderViewModel vm = new FormBuilderViewModel(Model) { ShowFieldDescriptions = true };
 }
 
-@Html.Partial("Partial/FormBuilder", vm, new ViewDataDictionary() { { "controller", "submissiontemplates" }, { "action", "save" } })
+    @Html.Partial("Partial/FormBuilder", vm, new ViewDataDictionary() { { "controller", "submissiontemplates" }, { "action", "save" } })
 
