@@ -1,0 +1,14 @@
+﻿@model Catfish.Core.Models.Form
+@using Catfish.Core.Models;
+@using Catfish.Models.Regions;
+
+@{
+    var culture = Catfish.Helpers.ViewHelper.GetActiveLanguage(Session);
+}
+    
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+{
+    {"class", "model-type"}
+})
+
+@Html.EditorFor(m => m.Fields)

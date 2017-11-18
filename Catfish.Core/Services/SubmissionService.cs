@@ -22,10 +22,15 @@ namespace Catfish.Core.Services
             return Db.FormTemplates;
         }
 
-        public Form GetSubmissionTemplate(int id)
+        public Form CreateSubmissionForm(int formTemplateId)
         {
-            Form template = Db.FormTemplates.Where(m => m.Id == id).FirstOrDefault();
-            return template;
+            //Obtaining the template
+            Form template = Db.FormTemplates.Where(m => m.Id == formTemplateId).FirstOrDefault();
+
+            //Creating a clone of the template and returning it. We don't want to return the template
+            //itself to avoid saving user data into the template.
+            Form submission = new Form() { Data = template.Data };
+            return submission;
         }
 
         //public IQueryable<T> GetForms<T>() where T: Form

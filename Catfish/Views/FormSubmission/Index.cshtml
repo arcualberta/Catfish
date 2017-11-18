@@ -1,4 +1,4 @@
-﻿@model Catfish.Core.Models.Item
+﻿@model Catfish.Core.Models.Form
 @using Piranha.Models
 @using Catfish.Models.Regions;
 @using Piranha.Extend.Regions;
@@ -7,9 +7,7 @@
 @{
     PageModel pageModel = ViewBag.PageModel as PageModel;
     ViewBag.Title = pageModel.Page.Title;
-}
 
-@{
     try
     {
         TextRegion styles = pageModel.Regions.Styles as TextRegion;
@@ -21,7 +19,6 @@
         }
     }
     catch (Exception) { }
-
 }
 
 @section Head{
@@ -42,16 +39,21 @@
                 @pageModel.Page.Title
             }
         </h1>
+
         @{
             MultilingualText content = pageModel.Region<MultilingualText>("Content");
             @Html.DisplayFor(m => content, new { raw = true })
 
-            Form forRegion = pageModel.Region<Form>("Form");
-            <form method="post" action="@UI.Permalink()/Edit">
-                @Html.EditorFor(m => m, "Form", new { FormRegion = forRegion })
-                <input type="submit" value="Submit" />
-            </form>
-
+            FormContainer formContainer = pageModel.Region<FormContainer>("FormContainer");
+            <div id="@formContainer.CssId" class="bs @formContainer.CssClasses">
+                <style type="text/css" scoped>
+                    @Html.Raw(formContainer.CssStyles)
+                </style>
+                <form method="post" action="@UI.Permalink()/Edit">
+                    @Html.EditorFor(m => Model)
+                    <input type="submit" value="Submit" />
+                </form>
+            </div>
         }
-</div>
+    </div>
 </div>

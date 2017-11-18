@@ -219,7 +219,7 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\RadioOption.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\MultilingualText.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\_CatfishRegion.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\Form.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\FormContainer.cshtml" />
     <Content Include="Areas\Manager\Views\FormTemplates\Index.cshtml" />
     <Content Include="Areas\Manager\Views\FormTemplates\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\FormBuilder.cshtml" />
@@ -255,7 +255,7 @@
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
     <Compile Include="Controllers\EntityController.cs" />
-    <Compile Include="Controllers\FormController.cs" />
+    <Compile Include="Controllers\FormSubmissionController.cs" />
     <Compile Include="Controllers\LanguageController.cs" />
     <Compile Include="Controllers\SubmissionController.cs" />
     <Compile Include="Helpers\ViewHelper.cs" />
@@ -275,7 +275,7 @@
     </Compile>
     <Compile Include="Areas\Manager\Models\ViewModels\EntityViewModel.cs" />
     <Compile Include="Models\Regions\CatfishRegion.cs" />
-    <Compile Include="Models\Regions\Form.cs" />
+    <Compile Include="Models\Regions\FormContainer.cs" />
     <Compile Include="Models\Regions\MultilingualText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -301,14 +301,14 @@
     <Content Include="Views\Shared\DisplayTemplates\MultilingualText.cshtml" />
     <Content Include="Views\Shared\_LanguageSwitcher.cshtml" />
     <Content Include="Views\Entity\Index.cshtml" />
-    <Content Include="Views\Form\Index.cshtml" />
-    <Content Include="Views\Form\EditorTemplates\Form.cshtml" />
-    <Content Include="Views\Form\EditorTemplates\TextField.cshtml" />
-    <Content Include="Views\Form\EditorTemplates\TextArea.cshtml" />
-    <Content Include="Views\Form\EditorTemplates\RadioButtonSet.cshtml" />
-    <Content Include="Views\Form\EditorTemplates\CheckBoxSet.cshtml" />
-    <Content Include="Views\Form\EditorTemplates\CheckOption.cshtml" />
-    <Content Include="Views\Form\Confirmation.cshtml" />
+    <Content Include="Views\FormSubmission\Index.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\Form.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\TextField.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\TextArea.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\RadioButtonSet.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\CheckBoxSet.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\CheckOption.cshtml" />
+    <Content Include="Views\FormSubmission\Confirmation.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -324,7 +324,6 @@
     <Folder Include="Views\Catfish\" />
     <Folder Include="Views\Language\" />
     <Folder Include="Views\Shared\EditorTemplates\" />
-    <Folder Include="Views\Submission\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj">

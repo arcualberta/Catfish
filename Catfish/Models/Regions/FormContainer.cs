@@ -1,4 +1,5 @@
-﻿using Piranha.Extend;
+﻿using Catfish.Core.Models;
+using Piranha.Extend;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -9,18 +10,19 @@ using System.Web;
 namespace Catfish.Models.Regions
 {
     [Export(typeof(IExtension))]
-    [ExportMetadata("InternalId", "FormExtension")]
-    [ExportMetadata("Name", "Form")]
+    [ExportMetadata("InternalId", "FormContainerExtension")]
+    [ExportMetadata("Name", "Form Container")]
     [ExportMetadata("Type", ExtensionType.Region)]
     [Serializable]
-    public class Form: CatfishRegion
+    public class FormContainer: CatfishRegion
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
+        [Display(Name = "Form Id")]
+        public int FormId { get; set; }
+
+        public Form Form { get; set; }
 
         [Display(Name = "Entity Type Id")]
         public int EntityTypeId { get; set; }
-        public string Pages { get; set; }
 
         [Display(Name = "Collection Id")]
         public int CollectionId { get; set; }

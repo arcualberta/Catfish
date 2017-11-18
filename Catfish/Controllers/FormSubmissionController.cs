@@ -12,7 +12,7 @@ using System.Web.Mvc;
 
 namespace Catfish.Controllers
 {
-    public class FormController : SinglePageController
+    public class FormSubmissionController : SinglePageController
     {
         // GET: Forms
         public ActionResult Index()
@@ -20,18 +20,16 @@ namespace Catfish.Controllers
             var model = GetModel();
             ViewBag.PageModel = model;
 
-            Models.Regions.Form form = model.Regions.Form as Models.Regions.Form;
-            int entityTypeId = form.EntityTypeId;
+            FormContainer formContainer = model.Region<FormContainer>("FormContainer");
 
-            CatfishDbContext db = new CatfishDbContext();
-            ItemService srv = new ItemService(db);
-            Item item = srv.CreateEntity<Item>(entityTypeId);
+            SubmissionService srv = new SubmissionService(new CatfishDbContext());
+            Form form = srv.CreateSubmissionForm(formContainer.FormId);
 
-            return View(model.GetView(), item);
+            return View(model.GetView(), form);
         }
 
         [HttpPost]
-        public ActionResult Edit(Item submission)
+        public ActionResult Edit(Form form)
         {
             CatfishDbContext db = new CatfishDbContext();
             var model = GetModel();
@@ -39,10 +37,12 @@ namespace Catfish.Controllers
             if (ModelState.IsValid)
             {
                 SubmissionService srv = new SubmissionService(db);
-                Models.Regions.Form form = model.Region<Models.Regions.Form>("Form");
+
+                //retreaving the form container
+                FormContainer formContainer = model.Region<FormContainer>("FormContainer");
 
                 Item savedItem = null;
-                savedItem = srv.SaveFormSubmission(form.CollectionId, submission);
+               // savedItem = srv.SaveFormSubmission(form.CollectionId, submission);
 
                 db.SaveChanges();
 
@@ -51,7 +51,7 @@ namespace Catfish.Controllers
             }
 
             ViewBag.PageModel = model;
-            return View(model.GetView(), submission);
+            return View(model.GetView(), form);
         }
 
         public ActionResult Confirmation()

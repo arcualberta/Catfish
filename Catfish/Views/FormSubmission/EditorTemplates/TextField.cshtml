@@ -7,7 +7,8 @@
 @Html.HiddenFor(m => m.Ref)
 
 @{ 
-    string lang = ViewBag.ActiveLanguage as string;
+    var culture = Catfish.Helpers.ViewHelper.GetActiveLanguage(Session);
+    string lang = culture.TwoLetterISOLanguageName;
     string name = Model.GetName(lang, true);
 }
 
