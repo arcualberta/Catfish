@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Models.Data
 {
-    public class FormData : DataObject
+    public class FormSubmission : DataObject
     {
         public override string GetTagName() { return "form-data"; }
     }

@@ -86,7 +86,7 @@
     <Compile Include="Models\CatfishDbContext.cs" />
     <Compile Include="Models\Collection.cs" />
     <Compile Include="Models\Data\DataObject.cs" />
-    <Compile Include="Models\Data\FormData.cs" />
+    <Compile Include="Models\Data\FormSubmission.cs" />
     <Compile Include="Models\Entity.cs" />
     <Compile Include="Models\EntityType.cs" />
     <Compile Include="Models\Data\DataFile.cs" />
