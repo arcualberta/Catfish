@@ -29,7 +29,6 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public FormFieldViewModel(FormField src)
         {
             Name = src.MultilingualName.ToList();
-
             Description = src.MultilingualDescription.ToList();
             IsRequired = src.IsRequired;
             FieldType = src.GetType().AssemblyQualifiedName;

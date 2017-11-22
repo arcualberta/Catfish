@@ -67,7 +67,8 @@
                                         {
                                             <div class="languageInputField">
                                                 @name.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
-                                                @name.Html.Span(n => n.LanguageLabel + ": ") @name.Html.TextBox(n => n.Value, new { @class = "input-field" })
+                                                @name.Html.Span(n => n.LanguageLabel)
+                                                @name.Html.TextBox(n => n.Value, new { @class = "input-field" })
                                             </div>
                                         }
                                     </div>

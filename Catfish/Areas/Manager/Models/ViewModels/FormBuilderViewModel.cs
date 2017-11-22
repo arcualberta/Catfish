@@ -37,7 +37,6 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Description = src.Description;
             Ref = src.Ref;
 
-
             Fields = new List<FormFieldViewModel>();
             foreach (var field in src.Fields)
                 Fields.Add(new FormFieldViewModel(field));
