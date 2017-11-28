@@ -67,7 +67,7 @@
                                         {
                                             <div class="languageInputField">
                                                 @name.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
-                                                @name.Html.Span(n => n.LanguageLabel)
+                                                @name.Html.Span(n => n.LanguageLabel, new { @class = "lang-label" })
                                                 @name.Html.TextBox(n => n.Value, new { @class = "input-field" })
                                             </div>
                                         }
@@ -82,7 +82,7 @@
                                             {
                                                 <div class="languageInputField">
                                                     @name.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
-                                                    @name.Html.Span(n => n.LanguageLabel + ": ") @name.Html.TextArea(n => n.Value, new { @class = "input-field" })
+                                                    @name.Html.Span(n => n.LanguageLabel + ": ", new { @class = "lang-label" }) @name.Html.TextArea(n => n.Value, new { @class = "input-field" })
                                                 </div>
                                             }
                                         </div>
@@ -100,7 +100,7 @@
                                             {
                                                 <div class="languageInputField">
                                                     @option.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
-                                                    @option.Html.Span(n => n.LanguageLabel + ": ") @option.Html.TextArea(n => n.Value, new { @class = "input-field" })
+                                                    @option.Html.Span(n => n.LanguageLabel + ": ", new { @class = "lang-label" }) @option.Html.TextArea(n => n.Value, new { @class = "input-field" })
                                                 </div>
                                             }
                                         </div>

@@ -40,6 +40,15 @@
         </script>
     }
     @RenderSection("Head", false)
+
+    @if (Catfish.Core.Helpers.ConfigHelper.Languages.Count < 2)
+    {
+        <style>
+            .lang-label{
+                display:none !important;
+            }
+        </style>
+    }
 </head>
 <body>
     <div class="top">
