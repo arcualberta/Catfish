@@ -66,6 +66,14 @@ namespace Catfish.Core.Services
 
             storedFormSubmission.UpdateFormData(form);
 
+            if(collectionId > 0)
+            {
+                Collection collection = Db.Collections.Where(c => c.Id == collectionId).FirstOrDefault();
+                if (collection == null)
+                    throw new Exception("Specified collection not found");
+
+                collection.AppendChild(submissionItem);
+            }
             return submissionItem;
         }
 
