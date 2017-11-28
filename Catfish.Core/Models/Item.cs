@@ -35,7 +35,7 @@ namespace Catfish.Core.Models
         {
             get
             {
-                return GetChildModels("data/file", Data).Select(c => c as DataFile);
+                return GetChildModels("data/" + DataFile.TagName, Data).Select(c => c as DataFile);
             }
         }
 
@@ -49,10 +49,16 @@ namespace Catfish.Core.Models
             GetDataObjectRoot().Add(obj.Data);
         }
 
+        public FormSubmission GetFormSubmission(string formSubmissionRef)
+        {
+            var xpath = "./data/" + FormSubmission.TagName + "[@ref='" + formSubmissionRef + "']";
+            return GetChildModels(xpath, Data).FirstOrDefault() as FormSubmission;
+        }
+
 
         public void RemoveFile(string fileGuidName)
         {
-            var xpath = "./data/file[@guid-name='" + fileGuidName + "']";
+            var xpath = "./data/" + DataFile.TagName + "[@guid-name='" + fileGuidName + "']";
             XElement file = GetChildElements(xpath, Data).FirstOrDefault();
             if (file == null)
                 throw new Exception("File does not exist.");

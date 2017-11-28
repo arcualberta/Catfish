@@ -10,9 +10,10 @@ namespace Catfish.Core.Models.Data
 {
     public class DataFile: DataObject
     {
+        public static string TagName { get { return "file"; } }
         public enum eThumbnailTypes { NonShared = 0, Shared }
 
-        public override string GetTagName() { return "file"; }
+        public override string GetTagName() { return TagName; }
 
         [NotMapped]
         public string ContentType { get { return GetAttribute("content-type", null); } set { SetAttribute("content-type", value); } }

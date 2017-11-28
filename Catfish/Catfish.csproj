@@ -254,6 +254,7 @@
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
+    <Compile Include="Controllers\CatfishSinglePageController.cs" />
     <Compile Include="Controllers\EntityController.cs" />
     <Compile Include="Controllers\FormSubmissionController.cs" />
     <Compile Include="Controllers\LanguageController.cs" />
@@ -277,6 +278,7 @@
     <Compile Include="Models\Regions\CatfishRegion.cs" />
     <Compile Include="Models\Regions\FormContainer.cs" />
     <Compile Include="Models\Regions\MultilingualText.cs" />
+    <Compile Include="Models\ViewModels\FormViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -309,6 +311,7 @@
     <Content Include="Views\FormSubmission\EditorTemplates\CheckBoxSet.cshtml" />
     <Content Include="Views\FormSubmission\EditorTemplates\CheckOption.cshtml" />
     <Content Include="Views\FormSubmission\Confirmation.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\FormViewModel.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -321,6 +324,7 @@
     <Folder Include="Areas\Manager\Views\Catfish\" />
     <Folder Include="Areas\Manager\Views\EntityAssociationList\" />
     <Folder Include="Areas\Manager\Views\Entity\" />
+    <Folder Include="Views\CatfishSinglePage\" />
     <Folder Include="Views\Catfish\" />
     <Folder Include="Views\Language\" />
     <Folder Include="Views\Shared\EditorTemplates\" />

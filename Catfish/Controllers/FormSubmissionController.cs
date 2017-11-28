@@ -3,6 +3,7 @@ using Catfish.Core.Models;
 using Catfish.Core.Models.Data;
 using Catfish.Core.Services;
 using Catfish.Models.Regions;
+using Catfish.Models.ViewModels;
 using Piranha.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ using System.Web.Mvc;
 
 namespace Catfish.Controllers
 {
-    public class FormSubmissionController : SinglePageController
+    public class FormSubmissionController : CatfishSinglePageController
     {
         // GET: Forms
         public ActionResult Index()
@@ -22,36 +23,40 @@ namespace Catfish.Controllers
 
             FormContainer formContainer = model.Region<FormContainer>("FormContainer");
 
-            SubmissionService srv = new SubmissionService(new CatfishDbContext());
-            Form form = srv.CreateSubmissionForm(formContainer.FormId);
+            Form form = SubmissionService.CreateSubmissionForm(formContainer.FormId);
+            FormViewModel vm = new FormViewModel()
+            {
+                Form = form,
+                ItemId = 0
+            };
 
-            return View(model.GetView(), form);
+            return View(model.GetView(), vm);
         }
 
         [HttpPost]
-        public ActionResult Edit(Form form)
+        public ActionResult Edit(FormViewModel vm)
         {
-            CatfishDbContext db = new CatfishDbContext();
             var model = GetModel();
 
             if (ModelState.IsValid)
             {
-                SubmissionService srv = new SubmissionService(db);
-
-                //retreaving the form container
                 FormContainer formContainer = model.Region<FormContainer>("FormContainer");
+                Item submission = SubmissionService.SaveSubmission(
+                    vm.Form,
+                    vm.FormSubmissionRef,
+                    vm.ItemId,
+                    formContainer.EntityTypeId,
+                    formContainer.FormId,
+                    formContainer.CollectionId);
 
-                Item savedItem = null;
-               // savedItem = srv.SaveFormSubmission(form.CollectionId, submission);
-
-                db.SaveChanges();
+                Db.SaveChanges();
 
                 string confirmLink = "confirmation";
                 return Redirect(confirmLink);
             }
 
             ViewBag.PageModel = model;
-            return View(model.GetView(), form);
+            return View(model.GetView(), vm);
         }
 
         public ActionResult Confirmation()

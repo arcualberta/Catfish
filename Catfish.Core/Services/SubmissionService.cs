@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Xml.Linq;
 
 namespace Catfish.Core.Services
 {
@@ -31,6 +32,41 @@ namespace Catfish.Core.Services
             //itself to avoid saving user data into the template.
             Form submission = new Form() { Data = template.Data };
             return submission;
+        }
+
+        public Item SaveSubmission(Form form, string formSubmissionRef, int itemId, int entityTypeId, int formTemplateId, int collectionId)
+        {
+            Item submissionItem;
+            if (itemId == 0)
+            {
+                submissionItem = CreateEntity<Item>(entityTypeId);
+                Db.Items.Add(submissionItem);
+            }
+            else
+            {
+                submissionItem = Db.Items.Where(m => m.Id == itemId).FirstOrDefault();
+                if (submissionItem == null)
+                    throw new Exception("Specified item not found");
+
+                Db.Entry(submissionItem).State = System.Data.Entity.EntityState.Modified;
+            }
+
+            FormSubmission storedFormSubmission = submissionItem.GetFormSubmission(formSubmissionRef);
+            if(storedFormSubmission == null)
+            {
+                //if no stored form is available, we need to clone the template
+                Form template = Db.FormTemplates.Where(m => m.Id == formTemplateId).FirstOrDefault();
+                if (template == null)
+                    throw new Exception("Form template does not exist.");
+
+                storedFormSubmission = new FormSubmission();
+                storedFormSubmission.ReplaceFormData(new XElement(template.Data));
+                submissionItem.AddData(storedFormSubmission);
+            }
+
+            storedFormSubmission.UpdateFormData(form);
+
+            return submissionItem;
         }
 
         //public IQueryable<T> GetForms<T>() where T: Form

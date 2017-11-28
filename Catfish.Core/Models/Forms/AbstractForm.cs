@@ -53,7 +53,8 @@ namespace Catfish.Core.Models.Forms
             foreach (FormField field in this.Fields)
             { // checkhere type of 
                 var src_field = src_item.Fields.Where(x => x.Ref == field.Ref).FirstOrDefault();
-                field.UpdateValues(src_field);
+                if (src_field != null)
+                    field.UpdateValues(src_field);
             }
         }
 
