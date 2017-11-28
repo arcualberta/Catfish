@@ -39,6 +39,16 @@ namespace Catfish.Core.Models
             }
         }
 
+        [NotMapped]
+        public virtual IEnumerable<FormSubmission> FormSubmissions
+        {
+            get
+            {
+                return GetChildModels("data/" + FormSubmission.TagName, Data).Select(c => c as FormSubmission);
+            }
+        }
+
+
         protected XElement GetDataObjectRoot(bool createIfNotExist = true)
         {
             return GetImmediateChild("data");

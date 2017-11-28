@@ -104,7 +104,9 @@ namespace Catfish.Core.Models
         public DbSet<MetadataSet> MetadataSets { get; set; }
 
         public DbSet<Form> FormTemplates { get; set; }
- 
+
+        public System.Data.Entity.DbSet<Catfish.Core.Models.Forms.TextField> TextFields { get; set; }
+
         ////public DbSet<SimpleField> MetadataFields { get; set; }
 
         ////public DbSet<FieldValue> FieldValues { get; set; }

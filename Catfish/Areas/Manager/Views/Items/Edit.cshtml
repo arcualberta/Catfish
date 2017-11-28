@@ -116,5 +116,22 @@ else
 
         </div>
     </div>
+
+    if (Model.FormSubmissions.Count() > 0)
+    {
+        <div class="grid_12 bs">
+            <div class="box">
+                <div class="title">
+                    Form Data
+                </div>
+
+                @*@using (Html.BeginForm("Edit", "Items", FormMethod.Post))
+                {
+                    @Html.Partial("Partial/EditEntity")
+                }*@
+            </div>
+        </div>
+
+    }
 }
 

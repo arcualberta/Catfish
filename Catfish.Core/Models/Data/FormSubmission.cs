@@ -12,6 +12,16 @@ namespace Catfish.Core.Models.Data
         public static string TagName { get { return "form-submission"; } }
         public override string GetTagName() { return TagName; }
 
+        public Form FormData
+        {
+            get
+            {
+                var xpath = "./data/" + Form.TagName;
+                Form form = GetChildModels(xpath, Data).FirstOrDefault() as Form;
+                return form;
+            }
+        }
+
         public void ReplaceFormData(XElement formData)
         {
             if (Data.Element("data") == null)
