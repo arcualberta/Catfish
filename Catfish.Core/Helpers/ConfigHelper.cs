@@ -32,18 +32,28 @@ namespace Catfish.Core.Helpers
             {
                 if (mLanguages == null)
                 {
-                    var codes = GetSettingArray("LanguageCodes", '|');
-
-                    if (codes.Count == 0)
-                        mLanguages = new List<CultureInfo>() { new CultureInfo("en") };
-                    else
-                    {
-                        mLanguages = new List<CultureInfo>();
-                        for (int i = 0; i < codes.Count; ++i)
-                            mLanguages.Add(new CultureInfo(codes[i]));
-                    }
+                    var codes = LanguagesCodes;
+                    mLanguages = new List<CultureInfo>();
+                    for (int i = 0; i < codes.Count; ++i)
+                        mLanguages.Add(new CultureInfo(codes[i]));
                 }
                 return mLanguages;
+            }
+        }
+
+        private static List<string> mLanguagesCodes;
+        public static List<string> LanguagesCodes
+        {
+            get
+            {
+                if (mLanguagesCodes == null)
+                {
+                    mLanguagesCodes = GetSettingArray("LanguageCodes", '|');
+
+                    if (mLanguagesCodes.Count == 0)
+                        mLanguagesCodes = new List<string>() { "en" };
+                }
+                return mLanguagesCodes;
             }
         }
 

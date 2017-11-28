@@ -25,14 +25,18 @@ namespace Catfish.Core.Helpers
         public static IEnumerable<TextValue> GetTextValues(XElement element, bool forceAllLanguages = false)
         {
             List<TextValue> ret = new List<TextValue>();
+            List<string> languageCodes = ConfigHelper.LanguagesCodes;
 
             var children = element.Elements("text");
             foreach (XElement ele in children)
             {
                 XAttribute att = ele.Attribute(XNamespace.Xml + "lang");
                 string lang = att == null ? "" : att.Value;
-                TextValue txt = new TextValue(lang, ConfigHelper.GetLanguageLabel(lang), ele.Value);
-                ret.Add(txt);
+                if (languageCodes.Contains(lang))
+                {
+                    TextValue txt = new TextValue(lang, ConfigHelper.GetLanguageLabel(lang), ele.Value);
+                    ret.Add(txt);
+                }
             }
 
             if (forceAllLanguages)
