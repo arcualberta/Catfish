@@ -1,10 +1,10 @@
 ﻿@model Catfish.Core.Models.Data.FormSubmission
-@using Catfish.Core.Models;
+@using Catfish.Core.Helpers;
 
 <div class="inner">
     <div class="box">
         @{ 
-            string formTitle = string.Join(" | ", Model.FormData.GetNames(false).Where(n => !string.IsNullOrEmpty(n.Value)).Select(n => n.Value));
+            string formTitle = MultilingualHelper.Join(Model.FormData.GetNames(false));
             if (string.IsNullOrEmpty(formTitle))
             {
                 formTitle = "Form Data";

@@ -277,7 +277,7 @@ namespace Catfish.Core.Models
             }
         }
 
-        public IEnumerable<string> GetValues(string lang = null)
+        public IEnumerable<string> GetValuesxx(string lang = null)
         {
             if (Data != null)
             {
@@ -286,6 +286,13 @@ namespace Catfish.Core.Models
             }
             return Enumerable.Empty<string>();
         }
+
+        public virtual IEnumerable<TextValue> GetValues(bool excludeBlanks = true)
+        {
+            XElement wrapper = GetWrapper("value", true, false);
+            return XmlHelper.GetTextValues(wrapper, false, excludeBlanks);
+        }
+
 
         public virtual void SetValues(IEnumerable<string> values, string lang = null)
         {
@@ -308,7 +315,13 @@ namespace Catfish.Core.Models
 
         protected string Lang(string lang)
         {
-            return string.IsNullOrEmpty(lang) ? ConfigHelper.Languages[0].TwoLetterISOLanguageName : lang;
+            if (!string.IsNullOrEmpty(lang))
+                return lang;
+
+            if (System.Threading.Thread.CurrentThread.CurrentCulture != null && string.IsNullOrEmpty(System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName))
+                return System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+
+            return ConfigHelper.Languages[0].TwoLetterISOLanguageName;
         }
 
         protected string GetChildText(string childTagName, XElement ele, string lang)

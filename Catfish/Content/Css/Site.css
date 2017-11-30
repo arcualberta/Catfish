@@ -19,5 +19,18 @@
         font-size: smaller;
     }
 
+    .form .form-field div.checkbox {
+        font-size: smaller;
+    }
 .form .form-field .button{
 }
+
+
+.form-view .form-field div.value {
+    margin-left: 20px !important;
+}
+
+    .form-view .form-field div.value div.checkbox, .form-view .form-field div.value div.radio {
+        margin-top: 0px !important;
+        margin-left: 20px !important;
+    }

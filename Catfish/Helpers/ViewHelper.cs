@@ -9,6 +9,7 @@ using System.Threading;
 using System.Globalization;
 using Catfish.Models.Regions;
 using System.Web.Script.Serialization;
+using Catfish.Core.Models;
 
 namespace Catfish.Helpers
 {
@@ -57,6 +58,5 @@ namespace Catfish.Helpers
             //MultilingualText pageTitle = null;
 
         }
-
     }
 }

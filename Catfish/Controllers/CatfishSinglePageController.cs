@@ -17,6 +17,9 @@ namespace Catfish.Controllers
         private SubmissionService mSubmissionService;
         public SubmissionService SubmissionService { get { if (mSubmissionService == null) mSubmissionService = new SubmissionService(Db); return mSubmissionService; } }
 
-
+        public CatfishSinglePageController()
+        {
+            //System.Threading.Thread.CurrentThread.CurrentCulture = Catfish.Helpers.ViewHelper.GetActiveLanguage(System.Web.HttpContext.Current.Session);
+        }
     }
 }

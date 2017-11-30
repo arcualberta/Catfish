@@ -7,7 +7,7 @@ using Catfish.Core.Models.Attributes;
 using System.Xml.Linq;
 using System.Linq;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using Catfish.Core.Helpers;
 
 namespace Catfish.Core.Models
 {
@@ -61,7 +61,11 @@ namespace Catfish.Core.Models
                 string fieldName = mapping.FieldName;
                 MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
                 FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
-                return field != null ? field.Value : "ERROR: INCORRECT NAME MAPPING FOUND FOR THIS ENTITY TYPE";
+
+                if(field == null)
+                    return "ERROR: INCORRECT NAME MAPPING FOUND FOR THIS ENTITY TYPE";
+
+                return MultilingualHelper.Join(field.GetValues(), " / ", false);
             }
 
             return GetChildText("name", Data, Lang(lang));
@@ -87,7 +91,11 @@ namespace Catfish.Core.Models
                 string fieldName = mapping.FieldName;
                 MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
                 FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
-                return field != null ? field.Value : "ERROR: INCORRECT DESCRIPTION MAPPING FOUND FOR THIS ENTITY TYPE";
+
+                if (field == null)
+                    return "ERROR: INCORRECT DESCRIPTION MAPPING FOUND FOR THIS ENTITY TYPE";
+
+                return MultilingualHelper.Join(field.GetValues(), " / ", false);
             }
 
             return GetChildText("description", Data, Lang(lang));

@@ -95,23 +95,8 @@ namespace Catfish.Core.Models.Forms
 
             set
             {
-                SetTextValues(value);
-            }
-        }
-
-        [NotMapped]
-        public string Value
-        {
-            get
-            {
-                IEnumerable<string> values = GetValues();
-                return values.Any() ? values.First() : "";
-            }
-
-            set
-            {
-                List<string> values = new List<string>(){ value };
-                SetValues(values);
+                if (value != null)
+                    SetTextValues(value);
             }
         }
 
