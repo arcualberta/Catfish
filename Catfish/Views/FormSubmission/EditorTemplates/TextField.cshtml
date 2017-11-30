@@ -4,26 +4,21 @@
 {
     {"class", "model-type"}
 })
-@Html.HiddenFor(m => m.Ref)
 
 @{ 
-    var culture = Catfish.Helpers.ViewHelper.GetActiveLanguage(Session);
-    string lang = culture.TwoLetterISOLanguageName;
-    string name = Model.GetName(lang, true);
+    string lang = Catfish.Helpers.ViewHelper.GetActiveLanguage(Session).TwoLetterISOLanguageName;
 }
 
-<div class="form-field-name">
-    @Html.Label(string.IsNullOrEmpty(name) ? "" : name)
-</div>
-<div class="form-field-value">
-    @for (int i = 0; i < Model.Values.Count(); ++i)
+@Html.HiddenFor(m => m.Ref)
+@for (int i = 0; i < Model.Values.Count(); ++i)
+{
+    if (Model.Values[i].LanguageCode == lang)
     {
-        if (Model.Values[i].LanguageCode == lang)
-        {
-            @Html.HiddenFor(m => m.Values[i].LanguageCode)
-            @Html.EditorFor(m => m.Values[i].Value)
-        }
+        @Html.HiddenFor(m => m.Values[i].LanguageCode)
+        @Html.EditorFor(m => m.Values[i].Value)
     }
-</div>
+}
+
+
 
 

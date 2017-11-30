@@ -45,13 +45,13 @@
             @Html.DisplayFor(m => content, new { raw = true })
 
             FormContainer formContainer = pageModel.Region<FormContainer>("FormContainer");
-            <div id="@formContainer.CssId" class="bs @formContainer.CssClasses">
+            <div id="@formContainer.CssId" class="bs @formContainer.CssClasses form">
                 <style type="text/css" scoped>
                     @Html.Raw(formContainer.CssStyles)
                 </style>
                 <form method="post" action="@UI.Permalink()/Edit">
                     @Html.EditorFor(m => Model)
-                    <input type="submit" value="Submit" />
+                    <input class="button" type="submit" value="Submit" />
                 </form>
             </div>
         }

@@ -1,5 +1,6 @@
 ﻿@model Catfish.Core.Models.Item
 @using Catfish.Areas.Manager.Models.ViewModels;
+@using Catfish.Core.Models.Data;
 
 @{  ViewBag.Title = Model.Id > 0 ? "Edit Item" : "Create Item"; }
 
@@ -122,13 +123,9 @@ else
         <div class="grid_12 bs">
             <div class="box">
                 <div class="title">
-                    Form Data
+                    Form Submissions
                 </div>
-
-                @*@using (Html.BeginForm("Edit", "Items", FormMethod.Post))
-                {
-                    @Html.Partial("Partial/EditEntity")
-                }*@
+                @Html.DisplayFor(m => m.FormSubmissions)
             </div>
         </div>
 

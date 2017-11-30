@@ -7,7 +7,7 @@
     })
 
 @{
-    string lang = ViewBag.ActiveLanguage as string;
+    string lang = Catfish.Helpers.ViewHelper.GetActiveLanguage(Session).TwoLetterISOLanguageName;
 
     string label = Model.Value.Where(v => v.LanguageCode == lang).Select(v => v.Value).FirstOrDefault();
     if (string.IsNullOrEmpty(label) && Model.Value.Count > 0)
@@ -15,5 +15,5 @@
         label = Model.Value[0].Value;
     }
 }
-@Html.CheckBoxFor(m => m.Selected) <span>@label</span>
+@Html.CheckBoxFor(m => m.Selected) <span class="option-label">@label</span>
 @Html.HiddenFor(m => m.Guid)
