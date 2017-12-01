@@ -70,11 +70,8 @@ namespace Catfish.Controllers
         {
             try
             {
-                CatfishDbContext db = new CatfishDbContext();
-                SubmissionService srv = new SubmissionService(db);
-
-                List<DataFile> files = srv.UploadTempFiles(Request);
-                db.SaveChanges();
+                List<DataFile> files = SubmissionService.UploadTempFiles(Request);
+                Db.SaveChanges();
 
                 var ret = files.Select(f => new FileViewModel(f, 0, ControllerContext.RequestContext));
                 return Json(ret);
