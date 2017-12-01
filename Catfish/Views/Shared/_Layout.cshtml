@@ -5,7 +5,7 @@
 @using Catfish.Helpers;
 
 @{
-    System.Threading.Thread.CurrentThread.CurrentCulture = Catfish.Helpers.ViewHelper.GetActiveLanguage(Session);
+    System.Threading.Thread.CurrentThread.CurrentCulture = Catfish.Helpers.ViewHelper.GetActiveLanguage();
 
     Piranha.Models.PageModel global;
 
@@ -27,7 +27,7 @@
     @try
     {
         MultilingualText field = global.Regions.SiteTitle;
-        var activeLang = ViewHelper.GetActiveLanguage(Session);
+        var activeLang = ViewHelper.GetActiveLanguage();
         title = field.GetContent(activeLang.TwoLetterISOLanguageName);
         if (string.IsNullOrEmpty(title))
         {

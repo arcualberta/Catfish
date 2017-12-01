@@ -7,7 +7,7 @@
 })
 
 @{
-    string lang = Catfish.Helpers.ViewHelper.GetActiveLanguage(Session).TwoLetterISOLanguageName;
+    string lang = Catfish.Helpers.ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName;
 }
 
 @Html.HiddenFor(m => m.Ref)

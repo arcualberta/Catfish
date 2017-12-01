@@ -3,7 +3,7 @@
 @using Catfish.Helpers;
 
 @{
-    var activeLang = ViewHelper.GetActiveLanguage(Session);
+    var activeLang = ViewHelper.GetActiveLanguage();
     var activeContent = Model.Content.Where(c => c.LanguageCode == activeLang.TwoLetterISOLanguageName).FirstOrDefault();
 
     if (ViewData["raw"] != null && (bool)ViewData["raw"])

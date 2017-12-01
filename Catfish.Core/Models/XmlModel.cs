@@ -318,7 +318,7 @@ namespace Catfish.Core.Models
             if (!string.IsNullOrEmpty(lang))
                 return lang;
 
-            if (System.Threading.Thread.CurrentThread.CurrentCulture != null && string.IsNullOrEmpty(System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName))
+            if (System.Threading.Thread.CurrentThread.CurrentCulture != null && !string.IsNullOrEmpty(System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName))
                 return System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
 
             return ConfigHelper.Languages[0].TwoLetterISOLanguageName;

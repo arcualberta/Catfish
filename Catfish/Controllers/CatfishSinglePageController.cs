@@ -19,7 +19,7 @@ namespace Catfish.Controllers
 
         public CatfishSinglePageController()
         {
-            //System.Threading.Thread.CurrentThread.CurrentCulture = Catfish.Helpers.ViewHelper.GetActiveLanguage(System.Web.HttpContext.Current.Session);
+            System.Threading.Thread.CurrentThread.CurrentCulture = Catfish.Helpers.ViewHelper.GetActiveLanguage();
         }
     }
 }
