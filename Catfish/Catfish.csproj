@@ -264,7 +264,6 @@
     <Compile Include="Controllers\EntityController.cs" />
     <Compile Include="Controllers\FormSubmissionController.cs" />
     <Compile Include="Controllers\LanguageController.cs" />
-    <Compile Include="Controllers\SubmissionController.cs" />
     <Compile Include="Helpers\ViewHelper.cs" />
     <Compile Include="Models\Pages\EntityTree.cs" />
     <Compile Include="Models\Regions\Carousel.cs" />
