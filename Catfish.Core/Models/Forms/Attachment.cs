@@ -11,7 +11,7 @@ using System.Xml.Linq;
 namespace Catfish.Core.Models.Forms
 {
     [TypeLabel("Attachment Field")]
-    public class Attachment: FormField
+    public class Attachment : FormField
     {
         [NotMapped]
         public string FileGuids
@@ -34,6 +34,19 @@ namespace Catfish.Core.Models.Forms
         public Attachment()
         {
             FileGuids = "";
+        }
+
+        public override void UpdateValues(XmlModel src)
+        {
+            XElement srcValueWrapper = src.Data.Element("value");
+            if (srcValueWrapper == null)
+                return;
+
+            XElement dstValueWrapper = Data.Element("value");
+            if (dstValueWrapper == null)
+                Data.Add(dstValueWrapper = new XElement("valuse"));
+
+            dstValueWrapper.Value = srcValueWrapper.Value;
         }
     }
 }
