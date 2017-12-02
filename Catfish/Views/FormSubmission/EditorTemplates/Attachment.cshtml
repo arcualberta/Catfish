@@ -39,7 +39,12 @@
 
     function @{@guidUpdateFunction}(data) {
         var ids = $("#@fileGuidElementId").val();
-        ids = ids + "|" + JSON.parse(data)[0].Guid;
+        if (ids != "") {
+            ids = ids + "|" + JSON.parse(data)[0].Guid;
+        }
+        else {
+            ids = JSON.parse(data)[0].Guid;
+        }
         $("#@fileGuidElementId").val(ids);
     }
 
