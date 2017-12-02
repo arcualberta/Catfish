@@ -12,7 +12,7 @@
     }
 }
 
-function uploadFile(itemId, uploadApiUrl, deleteApiUrl, uploadFieldCssId, uploadButtonCssId, progressBarCssId, messageBoxCssId, thumbnailPanelCssId) {
+function uploadFile(itemId, uploadApiUrl, deleteApiUrl, uploadFieldCssId, uploadButtonCssId, progressBarCssId, messageBoxCssId, thumbnailPanelCssId, customFunction) {
     var myFrm = new FormData();     //create a new form
     myFrm.append("itemId", itemId);
 
@@ -34,6 +34,8 @@ function uploadFile(itemId, uploadApiUrl, deleteApiUrl, uploadFieldCssId, upload
                 //Updating the value of the hidden field which carries the ID of this FileUpload object in the page
                 updateFileListView(data, deleteApiUrl, thumbnailPanelCssId, messageBoxCssId);
                 $(messageBoxCssId).text("");
+                if (customFunction != null)
+                    customFunction(data);
             }
             else {
                 //Error

@@ -28,11 +28,19 @@
 
     string uploadFunction = "upload_" + guid;
     string delFunction = "del_" + guid;
+    string guidUpdateFunction = "guidUpdate_" + guid;
+    string fileGuidElementId = Html.IdFor(m => m.FileGuids).ToString();
 }
 
 <script>
     function @{@uploadFunction}() {
-        uploadFile(0, uploadApiUrl, deleteApiUrl, "@uploadFieldCssId", "@uploadButtonCssId", "@progressBarCssId", "@messageBoxCssId", "@thumbnailPanelCssId");
+        uploadFile(0, uploadApiUrl, deleteApiUrl, "@uploadFieldCssId", "@uploadButtonCssId", "@progressBarCssId", "@messageBoxCssId", "@thumbnailPanelCssId", @guidUpdateFunction);
+    }
+
+    function @{@guidUpdateFunction}(data) {
+        var ids = $("#@fileGuidElementId").val();
+        ids = ids + "|" + JSON.parse(data)[0].Guid;
+        $("#@fileGuidElementId").val(ids);
     }
 
     function @{@delFunction} (guidName) {
@@ -48,10 +56,12 @@
 
 <div class="inner file-upload" style="clear:both">
     <div id="@thumbnailPanelId">
-        @Html.EditorFor(m => m.FileGuids)
+        @Html.HiddenFor(m => m.FileGuids)
+
         @{ 
             List<DataFile> files = ViewBag.Files == null ? new List<DataFile>() : ViewBag.Files as List<DataFile>;
-            foreach (var fileGuid in Model.FileGuids)
+            string[] fileGuids = Model.FileGuids.Split(new char[] { '|' });
+            foreach (var fileGuid in fileGuids)
             {
                 var file = files.Where(f => f.Guid == fileGuid).FirstOrDefault();
                 if (file != null)

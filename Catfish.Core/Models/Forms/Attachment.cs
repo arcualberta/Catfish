@@ -14,17 +14,12 @@ namespace Catfish.Core.Models.Forms
     public class Attachment: FormField
     {
         [NotMapped]
-        public List<string> FileGuids
+        public string FileGuids
         {
             get
             {
                 XElement val = Data.Element("value");
-                if (val == null)
-                    return new List<string>();
-
-                return val.Value.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(s => s.Trim())
-                    .ToList();
+                return val == null ? "" : val.Value;
             }
             set
             {
@@ -32,13 +27,13 @@ namespace Catfish.Core.Models.Forms
                 if (val == null)
                     Data.Add(val = new XElement("value"));
 
-                val.Value = string.Join("|", value);
+                val.Value = value;
             }
         }
 
         public Attachment()
         {
-            FileGuids = new List<string>();
+            FileGuids = "";
         }
     }
 }
