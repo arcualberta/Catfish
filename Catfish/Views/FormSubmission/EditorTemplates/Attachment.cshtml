@@ -1,5 +1,6 @@
 ﻿@model Catfish.Core.Models.Forms.Attachment
 @using Catfish.Areas.Manager.Models.ViewModels;
+@using Catfish.Core.Models.Data;
 
 @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
 {
@@ -47,15 +48,23 @@
 
 <div class="inner file-upload" style="clear:both">
     <div id="@thumbnailPanelId">
-        @foreach (var file in Model.Files)
-        {
-            FileViewModel vm = new FileViewModel(file, Model.Id, Request.RequestContext, "attachment");
-            var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
-            <div class="fileThumbnail" id="@eleId">
-                <img src="@vm.Thumbnail" alt="@vm.FileName" />
-                <button class="glyphicon glyphicon-remove" onclick="del('@vm.Guid');"></button>
-                <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
-            </div>
+        @Html.EditorFor(m => m.FileGuids)
+        @{ 
+            List<DataFile> files = ViewBag.Files == null ? new List<DataFile>() : ViewBag.Files as List<DataFile>;
+            foreach (var fileGuid in Model.FileGuids)
+            {
+                var file = files.Where(f => f.Guid == fileGuid).FirstOrDefault();
+                if (file != null)
+                {
+                    FileViewModel vm = new FileViewModel(file, file.Id, Request.RequestContext, "attachment");
+                    var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
+                    <div class="fileThumbnail" id="@eleId">
+                        <img src="@vm.Thumbnail" alt="@vm.FileName" />
+                        <button class="glyphicon glyphicon-remove" onclick="del('@vm.Guid');"></button>
+                        <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
+                    </div>
+                }
+            }
         }
     </div>
 

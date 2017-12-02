@@ -64,8 +64,8 @@ namespace Catfish.Controllers
         {
             //This is an unprotected method so it only returns if the GUID name of the file is in the session.
             // i.e. the file was uploaded during the current session
-            if (!FileHelper.CheckGuidCache(Session, name))
-                return HttpNotFound("File not found");
+            ////////if (!FileHelper.CheckGuidCache(Session, name))
+            ////////    return HttpNotFound("File not found");
 
             ItemService srv = new ItemService(Db);
             DataFile file = srv.GetFile(id, name);
