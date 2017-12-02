@@ -66,6 +66,27 @@ namespace Catfish.Core.Services
 
             storedFormSubmission.UpdateFormData(form);
 
+            //If any attachments have been submitted through the form and they have not yet been included in the 
+            //submission item, then include them and remove them from the main XMLModel table
+            var attachmentFields = form.Fields.Where(f => f is Attachment).Select(f => f as Attachment);
+            foreach(var att in attachmentFields)
+            {
+                string[] fileGuids = att.FileGuids.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach(var guid in fileGuids)
+                {
+                    DataObject file = Db.XmlModels.Where(m => m.Guid == guid)
+                        .Select(m => m as DataObject)
+                        .FirstOrDefault();
+                    if(file != null)
+                    {
+                        submissionItem.AddData(file);
+                        //since the data object has now been inserted into the submission item, it is no longer needed 
+                        //to stay as a stanalone object in the XmlModel table.
+                        Db.XmlModels.Remove(file);
+                    }
+                }
+            }
+
             if(collectionId > 0)
             {
                 Collection collection = Db.Collections.Where(c => c.Id == collectionId).FirstOrDefault();
