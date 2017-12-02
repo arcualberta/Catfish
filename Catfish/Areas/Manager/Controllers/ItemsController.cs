@@ -15,6 +15,8 @@ using Catfish.Core.Services;
 using Catfish.Core.Models.Forms;
 using Catfish.Areas.Manager.Models.ViewModels;
 using Catfish.Core.Models.Data;
+using Catfish.Areas.Manager.Helpers;
+using Catfish.Helpers;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -22,16 +24,8 @@ namespace Catfish.Areas.Manager.Controllers
     {
         private CatfishDbContext db = new CatfishDbContext();
 
-        public string ThumbnailRoot
-        {
-            get
-            {
-                return Request.RequestContext.HttpContext.Server.MapPath("~/Content/Thumbnails");
-            }
-        }
-
-            // GET: Manager/Items
-            public ActionResult Index()
+        // GET: Manager/Items
+        public ActionResult Index()
         {
             var entities = db.XmlModels.Where(m => m is Item).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
             //var entities = db.XmlModels.Where(m => m is Item).Select(e => e as Item);
@@ -206,7 +200,7 @@ namespace Catfish.Areas.Manager.Controllers
                 List<DataFile> files = srv.UploadFiles(id, Request);
                 db.SaveChanges();
 
-                var ret = files.Select(f => new FileViewModel(f, id, ControllerContext.RequestContext));
+                var ret = files.Select(f => new FileViewModel(f, id, ControllerContext.RequestContext, "items"));
                 return Json(ret);
             }
             catch (Exception ex)
@@ -252,7 +246,7 @@ namespace Catfish.Areas.Manager.Controllers
                 return HttpNotFound("File not found");
 
             string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared
-                ? Path.Combine(ThumbnailRoot, file.Thumbnail)
+                ? Path.Combine(FileHelper.GetThumbnailRoot(Request), file.Thumbnail)
                 : Path.Combine(srv.UploadRoot, file.Path, file.Thumbnail);
 
             return new FilePathResult(path_name, file.ContentType);

@@ -84,12 +84,12 @@ namespace Catfish.Core.Services
             return newFiles;
         }
 
-        public DataFile GetFile(int id, string name)
+        public DataFile GetFile(int id, string name, bool checkInItems = true)
         {
             XmlModel model = Db.XmlModels.Find(id);
             if (model is DataFile)
                 return model as DataFile;
-            else if (model is Item)
+            else if (checkInItems && model is Item)
                 return (model as Item).Files.Where(f => f.GuidName == name).FirstOrDefault();
             else
                 return null;

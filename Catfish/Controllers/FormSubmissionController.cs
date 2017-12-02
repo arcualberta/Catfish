@@ -64,24 +64,5 @@ namespace Catfish.Controllers
             var model = GetModel();
             return View(model);
         }
-
-        [HttpPost]
-        public JsonResult Upload()
-        {
-            try
-            {
-                List<DataFile> files = SubmissionService.UploadTempFiles(Request);
-                Db.SaveChanges();
-
-                var ret = files.Select(f => new FileViewModel(f, 0, ControllerContext.RequestContext));
-                return Json(ret);
-            }
-            catch (Exception)
-            {
-                //return 500 or something appropriate to show that an error occured.
-                return Json(string.Empty);
-            }
-        }
-
     }
 }

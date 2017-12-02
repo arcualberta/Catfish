@@ -24,5 +24,15 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Thumbnail = u.Action("Thumbnail", "Items", new { id = itemId.HasValue ? itemId.Value : src.Id, name = src.GuidName });
             Url = u.Action("File", "Items", new { id = itemId.HasValue ? itemId.Value : src.Id, guidName = src.GuidName });
         }
+
+        public FileViewModel(DataFile src, int? id, RequestContext ctx, string controller)
+        {
+            UrlHelper u = new UrlHelper(ctx);
+            Id = src.Id;
+            FileName = src.FileName;
+            Guid = src.GuidName;
+            Thumbnail = u.Action("Thumbnail", controller, new { id = id.HasValue ? id.Value : src.Id, name = src.GuidName });
+            Url = u.Action("File", controller, new { id = id.HasValue ? id.Value : src.Id, guidName = src.GuidName });
+        }
     }
 }
