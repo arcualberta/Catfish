@@ -63,7 +63,7 @@
 
 
 <div class="inner file-upload" style="clear:both">
-    <div id="@thumbnailPanelId">
+    <div id="@thumbnailPanelId" class="thumbnailPanel">
         @Html.HiddenFor(m => m.FileGuids)
 
         @{ 
@@ -85,15 +85,18 @@
             }
         }
     </div>
+    <div class="inner" style="clear:both">
+        <div id="@messageBoxId" class="alert alert-danger messageBoxId"></div>
 
-    <input type='file' id='@uploadFieldId' name="files" multiple="multiple" />
-    <input type="button" value="Upload" id="@uploadButtonId" onclick="@{@uploadFunction}(); return false;" />
-    <div id="@progressBarId"><progress></progress></div>
-    <div id="@messageBoxId"></div>
+        <input type='file' id='@uploadFieldId' class="uploadField" name="files" multiple="multiple" />
+        <input type="button" value="Upload" id="@uploadButtonId" class="uploadButton" onclick="@{@uploadFunction}(); return false;" />
+        <div id="@progressBarId"><progress></progress></div>
+    </div>
 </div>
 
 <script>
     $(function () {
         $("@progressBarCssId").hide();
+        $("@messageBoxCssId").hide();
     });
 </script>

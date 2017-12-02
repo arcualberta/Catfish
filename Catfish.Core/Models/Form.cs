@@ -20,5 +20,13 @@ namespace Catfish.Core.Models
         {
             Ref = System.Guid.NewGuid().ToString("N");
         }
+
+        public bool CheckFileReference(string fileGuidName)
+        {
+            foreach(var attachmentField in Fields.Where(f => f is Attachment).Select(f => f as Attachment))
+                if (attachmentField.FileGuids.Contains(fileGuidName))
+                    return true;
+            return false;
+        }
     }
 }

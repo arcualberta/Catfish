@@ -34,3 +34,48 @@
         margin-top: 0px !important;
         margin-left: 20px !important;
     }
+
+
+.thumbnailPanel {
+    margin: 10px;
+    float: left;
+}
+
+    .thumbnailPanel .fileThumbnail {
+        height: 40px;
+        margin: 15px 15px 15px 0;
+        font-size: smaller;
+        float: left;
+    }
+
+        .thumbnailPanel .fileThumbnail img {
+            height: 40px;
+        }
+
+        .thumbnailPanel .fileThumbnail button {
+            top: -15px;
+            width: 16px;
+            padding-left: 0px;
+        }
+
+        .thumbnailPanel .fileThumbnail .label {
+            padding-top: 30px;
+            float: right;
+            margin-left: -20px;
+            color: #444;
+            background-color:transparent;
+        }
+
+.attachment.thumbnailPanel .fileThumbnail .label {
+    margin-left: 0px;
+}
+
+.uploadField, .uploadButton {
+    margin-top: 10px !important;
+    padding: 0 10px;
+    color:black !important;
+}
+
+.uploadButton{
+    margin-left:10px !important;
+}

@@ -95,15 +95,26 @@ namespace Catfish.Core.Services
                 return null;
         }
 
-        public void DeleteFile(int itemId, string guidName)
+        public bool DeleteFile(int itemId, string guidName)
         {
             Item item = Db.Items.Where(i => i.Id == itemId).FirstOrDefault();
             if (item == null)
                 throw new Exception("Item not found");
 
-            item.RemoveFile(guidName);
+            //check if the file is referreed by any form in this item
+            bool referenced = false;
+            foreach(var form in item.FormSubmissions)
+            {
+                if (referenced = form.FormData.CheckFileReference(guidName))
+                    break;
+            }
 
+            if (referenced)
+                return false;
+
+            item.RemoveFile(guidName);
             Db.Entry(item).State = EntityState.Modified;
+            return true;
         }
 
         public Item UpdateStoredItem(Item changedItem)

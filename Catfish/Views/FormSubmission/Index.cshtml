@@ -54,9 +54,11 @@
                 <style type="text/css" scoped>
                     @Html.Raw(formContainer.CssStyles)
                 </style>
-                <form method="post" action="@UI.Permalink()/Edit">
+                <form method="post" action="@UI.Permalink()/Edit" >
                     @Html.EditorFor(m => Model)
-                    <input class="button" type="submit" value="Submit" />
+                    <br />
+                    <br />
+                    <input class="btn btn-primary" type="submit" value="Submit" />
                 </form>
             </div>
         }

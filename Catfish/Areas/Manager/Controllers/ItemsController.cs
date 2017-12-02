@@ -216,13 +216,20 @@ namespace Catfish.Areas.Manager.Controllers
             try
             {
                 ItemService srv = new ItemService(db);
-                srv.DeleteFile(id, guidName);
+                if (!srv.DeleteFile(id, guidName))
+                {
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    Response.StatusDescription = "BadRequest: file cannot be deleted as it is referred by one or more form submissions.";
+                    return Json(string.Empty);
+                }
+
                 db.SaveChanges();
                 return Json(new List<string>() { guidName });
             }
             catch (Exception)
             {
-                //return 500 or something appropriate to show that an error occured.
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    Response.StatusDescription = "BadRequest: an unknown error occurred.";
                 return Json(string.Empty);
             }
         }

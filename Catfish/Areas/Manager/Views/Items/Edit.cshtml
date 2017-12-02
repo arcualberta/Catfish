@@ -32,6 +32,7 @@
 
         $(function () {
             $("#progressBar").hide();
+            $("#uploadErrorMessage").hide();
         });
     </script>
 }
@@ -100,17 +101,17 @@ else
                         <div class="fileThumbnail" id="@eleId">
                             <img src="@vm.Thumbnail" alt="@vm.FileName" /> 
                             <button class="glyphicon glyphicon-remove" onclick="del('@vm.Guid');"></button>
-                            <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
+                            <div class="label"><a href="@vm.Url" target="_blank">@vm.FileName</a></div>
                         </div>
                     }                                                                       
                 </div>
                 <div class="inner" style="clear:both">
                     @if (Model.Id > 0)
                     {
-                    <input type='file' id='uploadField' name="files" multiple="multiple" />
-                    <input type="button" value="Upload" id="uploadButton" onclick="upload(); return false;" />
-                    <div id="progressBar"><progress></progress></div>
-                    <div id="uploadErrorMessage"></div>
+                        <div id="uploadErrorMessage" class="alert alert-danger"></div>
+                        <input type='file' id='uploadField' class="uploadField" name="files" multiple="multiple" />
+                        <input type="button" value="Upload" id="uploadButton" class="uploadButton" onclick="upload(); return false;" />
+                        <div id="progressBar"><progress></progress></div>
                     }
                 </div>
             </div>

@@ -14,9 +14,15 @@ namespace Catfish.Helpers
             return request.RequestContext.HttpContext.Server.MapPath("~/Content/Thumbnails");
         }
 
+        public static string GetBaseURL(HttpRequestBase request)
+        {
+            System.Web.Mvc.UrlHelper url = new System.Web.Mvc.UrlHelper(request.RequestContext);
+            return string.Format("{0}://{1}{2}", request.Url.Scheme, request.Url.Authority, url.Content("~"));
+        }
+
         public static string GetBrokenLinkThumbnail(HttpRequestBase request)
         {
-            return Path.Combine(GetThumbnailRoot(request), "broken.png");
+            return GetBaseURL(request) + "/Content/Thumbnails/404.png";
         }
 
         public static List<string> GetGuidCache(HttpSessionStateBase session)

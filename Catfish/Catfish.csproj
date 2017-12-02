@@ -164,6 +164,9 @@
     <Content Include="Content\Css\catfish.css" />
     <Content Include="Content\Css\style.css" />
     <Content Include="Content\Css\Site.css" />
+    <Content Include="Content\Thumbnails\404.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Thumbnails\css.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

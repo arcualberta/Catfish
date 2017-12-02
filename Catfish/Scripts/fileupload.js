@@ -5,7 +5,7 @@
         var eleId = d.Guid.substr(0, d.Guid.length - 4);
         var ele = '<div class="fileThumbnail" id="' + eleId + '" > <img src="' + d.Thumbnail + '" alt="' + d.FileName + '" />' +
             '<button class="glyphicon glyphicon-remove" onclick="deleteFile(\'' + d.Guid + '\',\'' + deleteApiUrl + '\',\'' + messageBoxCssId + '\');"></button>' +
-            '<div class="label"><a href="' + d.Url + '">' + d.FileName + '</a></div>' +
+            '<div class="label"><a href="' + d.Url + '" target="_blank">' + d.FileName + '</a></div>' +
             '</div>';
 
         $(thumbnailPanelCssId).append(ele);
@@ -36,10 +36,12 @@ function uploadFile(itemId, uploadApiUrl, deleteApiUrl, uploadFieldCssId, upload
                 $(messageBoxCssId).text("");
                 if (customFunction != null)
                     customFunction(data);
+                $(messageBoxCssId).hide()
             }
             else {
                 //Error
                 $(messageBoxCssId).text("File upload failed: " + oReg.statusText);
+                $(messageBoxCssId).show()
             }
             $(uploadFieldCssId).val("");
             $(progressBarCssId).hide();
@@ -72,10 +74,12 @@ function deleteFile(guidName, deleteApiUrl, messageBoxCssId) {
                 var guid = JSON.parse(data)[0];
                 var eleId = guid.substr(0, guid.length - 4)
                 $("#" + eleId).remove();
+                $(messageBoxCssId).hide()
             }
             else {
                 //Error
                 $(messageBoxCssId).text("File deletion failed: " + oReg.statusText);
+                $(messageBoxCssId).show()
             }
         }
     };
