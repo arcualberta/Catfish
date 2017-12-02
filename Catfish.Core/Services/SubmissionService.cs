@@ -71,7 +71,7 @@ namespace Catfish.Core.Services
             var attachmentFields = form.Fields.Where(f => f is Attachment).Select(f => f as Attachment);
             foreach(var att in attachmentFields)
             {
-                string[] fileGuids = att.FileGuids.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] fileGuids = att.FileGuids.Split(new char[] { Attachment.FileGuidSeparator }, StringSplitOptions.RemoveEmptyEntries);
                 foreach(var guid in fileGuids)
                 {
                     DataObject file = Db.XmlModels.Where(m => m.Guid == guid)

@@ -13,6 +13,8 @@ namespace Catfish.Core.Models.Forms
     [TypeLabel("Attachment Field")]
     public class Attachment : FormField
     {
+        public static char FileGuidSeparator = '|';
+
         [NotMapped]
         public string FileGuids
         {
@@ -44,7 +46,7 @@ namespace Catfish.Core.Models.Forms
 
             XElement dstValueWrapper = Data.Element("value");
             if (dstValueWrapper == null)
-                Data.Add(dstValueWrapper = new XElement("valuse"));
+                Data.Add(dstValueWrapper = new XElement("value"));
 
             dstValueWrapper.Value = srcValueWrapper.Value;
         }

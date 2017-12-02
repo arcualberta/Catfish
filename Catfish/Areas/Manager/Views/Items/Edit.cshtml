@@ -92,7 +92,7 @@ else
                     }
                 }
 
-                <div id="thumbnailPanel">
+                <div id="thumbnailPanel" class="thumbnailPanel">
                     @foreach (var file in Model.Files)
                     {
                         FileViewModel vm = new FileViewModel(file, Model.Id, Request.RequestContext);
@@ -126,7 +126,7 @@ else
                     Form Submissions
                 </div>
                 <div class="form-view">
-                    @Html.DisplayFor(m => m.FormSubmissions)
+                    @Html.DisplayFor(m => m.FormSubmissions, new { Item = Model })
                 </div>
             </div>
         </div>

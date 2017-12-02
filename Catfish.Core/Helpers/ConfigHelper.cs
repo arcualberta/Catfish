@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Catfish.Core.Models.Forms;
 
 namespace Catfish.Core.Helpers
 {
@@ -48,7 +49,7 @@ namespace Catfish.Core.Helpers
             {
                 if (mLanguagesCodes == null)
                 {
-                    mLanguagesCodes = GetSettingArray("LanguageCodes", '|');
+                    mLanguagesCodes = GetSettingArray("LanguageCodes", Attachment.FileGuidSeparator);
 
                     if (mLanguagesCodes.Count == 0)
                         mLanguagesCodes = new List<string>() { "en" };

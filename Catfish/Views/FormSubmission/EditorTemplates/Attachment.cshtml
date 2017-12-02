@@ -1,4 +1,6 @@
 ﻿@model Catfish.Core.Models.Forms.Attachment
+    
+@using Catfish.Core.Models.Forms;
 @using Catfish.Areas.Manager.Models.ViewModels;
 @using Catfish.Core.Models.Data;
 
@@ -39,12 +41,13 @@
 
     function @{@guidUpdateFunction}(data) {
         var ids = $("#@fileGuidElementId").val();
-        if (ids != "") {
-            ids = ids + "|" + JSON.parse(data)[0].Guid;
+        data = JSON.parse(data);
+        for (var i = 0; i < data.length; ++i)
+        {
+            var separator = (i==0 && ids == "") ? "" : "@Attachment.FileGuidSeparator";
+            ids = ids + separator + data[i].Guid;
         }
-        else {
-            ids = JSON.parse(data)[0].Guid;
-        }
+
         $("#@fileGuidElementId").val(ids);
     }
 
@@ -65,7 +68,7 @@
 
         @{ 
             List<DataFile> files = ViewBag.Files == null ? new List<DataFile>() : ViewBag.Files as List<DataFile>;
-            string[] fileGuids = Model.FileGuids.Split(new char[] { '|' });
+            string[] fileGuids = Model.FileGuids.Split(new char[] { Attachment.FileGuidSeparator });
             foreach (var fileGuid in fileGuids)
             {
                 var file = files.Where(f => f.Guid == fileGuid).FirstOrDefault();

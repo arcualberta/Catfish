@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Models.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -11,6 +12,11 @@ namespace Catfish.Helpers
         public static string GetThumbnailRoot(HttpRequestBase request)
         {
             return request.RequestContext.HttpContext.Server.MapPath("~/Content/Thumbnails");
+        }
+
+        public static string GetBrokenLinkThumbnail(HttpRequestBase request)
+        {
+            return Path.Combine(GetThumbnailRoot(request), "broken.png");
         }
 
         public static List<string> GetGuidCache(HttpSessionStateBase session)
