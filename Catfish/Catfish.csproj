@@ -317,6 +317,7 @@
     <Content Include="Views\FormSubmission\EditorTemplates\CheckOption.cshtml" />
     <Content Include="Views\FormSubmission\Confirmation.cshtml" />
     <Content Include="Views\FormSubmission\EditorTemplates\FormViewModel.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\Attachment.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

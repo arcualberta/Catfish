@@ -23,6 +23,11 @@
 
 @section Head{
     <script type="text/javascript" src="~/Scripts/fileupload.js"></script>
+
+    <script type="text/javascript">
+            var uploadApiUrl = "@Url.Action("upload", "formsubmission", new { })";
+            var deleteApiUrl = "@Url.Action("deleteFile", "formsubmission", new { })";
+    </script>
 }
 
 
