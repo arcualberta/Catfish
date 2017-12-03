@@ -82,7 +82,7 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
-        public List<TextValue> Values
+        public IReadOnlyList<TextValue> Values
         {
             get
             {

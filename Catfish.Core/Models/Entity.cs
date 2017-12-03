@@ -22,7 +22,7 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        public List<MetadataSet> MetadataSets
+        public IReadOnlyList<MetadataSet> MetadataSets
         {
             get
             {
@@ -43,7 +43,7 @@ namespace Catfish.Core.Models
             RemoveAllElements("metadata/metadata-set", Data);
         }
 
-        public void InitMetadataSet(List<MetadataSet> src)
+        public void InitMetadataSet(IReadOnlyList<MetadataSet> src)
         {
             XElement metadata = GetImmediateChild("metadata");
             foreach (MetadataSet ms in src)
