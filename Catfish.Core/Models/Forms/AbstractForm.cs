@@ -18,7 +18,7 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
-        public List<FormField> Fields
+        public IReadOnlyList<FormField> Fields
         {
             get
             {

@@ -40,7 +40,7 @@ namespace Catfish.Tests
             MetadataSet model = XmlModel.Parse(root) as MetadataSet;
             Assert.IsNotNull(model);
 
-            List<FormField> fields = model.Fields;
+            IReadOnlyList<FormField> fields = model.Fields;
             Assert.AreEqual(3, fields.Count);
 
             var field = fields.Where(f => f is TextField).FirstOrDefault();
