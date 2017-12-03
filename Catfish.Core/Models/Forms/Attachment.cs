@@ -29,7 +29,7 @@ namespace Catfish.Core.Models.Forms
                 if (val == null)
                     Data.Add(val = new XElement("value"));
 
-                val.Value = value;
+                val.Value = value == null ? "" : value;
             }
         }
 

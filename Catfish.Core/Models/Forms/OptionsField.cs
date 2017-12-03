@@ -51,7 +51,7 @@ namespace Catfish.Core.Models.Forms
         //[DataType(DataType.MultilineText)]
         [TypeLabel("List of options, one option per line")]
         [NotMapped]
-        public List<Option> Options
+        public IReadOnlyList<Option> Options
         {
             get
             {

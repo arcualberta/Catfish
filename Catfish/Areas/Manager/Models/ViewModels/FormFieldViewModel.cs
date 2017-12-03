@@ -49,7 +49,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 foreach(var lang in ConfigHelper.Languages)
                     MultilingualOptionSet.Add(new TextValue(lang.TwoLetterISOLanguageName, lang.NativeName, ""));
 
-                List<Option> options = (src as OptionsField).Options;
+                IReadOnlyList<Option> options = (src as OptionsField).Options;
                 foreach (Option op in options)
                 {
                     foreach (TextValue txt in op.Value)
