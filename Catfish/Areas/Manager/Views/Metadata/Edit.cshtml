@@ -1,78 +1,21 @@
-﻿@model Catfish.Core.Models.Metadata.MetadataDefinition
+﻿@model Catfish.Core.Models.MetadataSet
+@using Catfish.Areas.Manager.Models.ViewModels
 
-@using Catfish.Core.Models.Metadata;
-@using Catfish.Areas.Manager.Helpers;
-@using Catfish.Core.Models.Attributes
+@{  ViewBag.Title = ViewBag.Id > 0 ? "Edit Metadata Set Definition" : "Create Metadata Set Definition"; }
 
-<script src="/node_modules/requirejs/require.js"></script>
-<script type="text/javascript" src="/built/require-config.js"></script>
-@{ 
-    var viewData = new ViewDataDictionary(Html.ViewData)
-    {
-        TemplateInfo = new System.Web.Mvc.TemplateInfo
-        {
-            HtmlFieldPrefix = "Fields[CATFISH_GUID]"
-        }
-    };
-
-    string simpleTemplate = Html.Partial("EditorTemplates/MetadataField", new MetadataField(), viewData).ToHtmlString();
-    string optionsTemplate = Html.Partial("EditorTemplates/OptionsField", new OptionsField(), viewData).ToHtmlString();
-
-
-    <script>
-        var fieldTypes = {
-                templates: {
-                    "@Html.Raw(typeof(MetadataField).FullName)": @Html.Raw(Json.Encode(simpleTemplate)),
-                    "@Html.Raw(typeof(OptionsField).FullName)" : @Html.Raw(Json.Encode(optionsTemplate))
-                },
-                fields: @Html.Raw(ViewBag.FieldTypes)
-            }
-
-        var metadataSetId = "@Html.Raw(ViewBag.Id)"
-</script>
+@section HEAD
+{
+    <script type="text/javascript" src="~/Scripts/knockout-3.1.0.js"></script>
+    <script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
+    <script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
 }
-@{  ViewBag.Title = ViewBag.Id > 0 ? "Edit Metadata Definition" : "Create Metadata Definition"; }
 
 @section Toolbar {
-    @Html.Partial("Partial/EditToolbar")
+    @Html.Partial("Partial/koEditToolbar")
 }
-@{ Html.BeginForm(); }
-@Html.HiddenFor(m => m.Id)
-@Html.AntiForgeryToken()
-@Html.ValidationSummary(true);
-<input type="hidden" id="deletedFields" name="deletedFields" value=""/>
 
-<div class="grid_12">
-    <div class="box">
-        @{
-            TypeLabelAttribute att = Attribute.GetCustomAttribute(Model.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
-            string title = att == null ? Model.GetType().ToString() : att.Name;
-        }
-        <div class="title"><h2>@title</h2></div>
-        <div class="inner">
-            <ul class="form">
-                <li>
-                    @Html.LabelFor(m => m.Name)
-                    <div class="input">@Html.EditorFor(m => m.Name)</div>
-                </li>
-                <li>
-                    @Html.LabelFor(m => m.Description)
-                    <div class="input">@Html.EditorFor(m => m.Description)</div>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div id="fields-container">
-        @Html.EditorForList(m => m.Fields)
-    </div>
-    
-</div>
-@{ Html.EndForm(); }
+@{
+    FormBuilderViewModel vm = new FormBuilderViewModel(Model) { ShowFieldDescriptions = false };
+ }
 
-<div class="grid_12 contentright">
-    <button id="add-field">Add field</button>
-</div>
-
-<script>
-    require(["/Built/Forms/MetadataSetForm.js"]);
-</script>
+@Html.Partial("Partial/FormBuilder", vm, new ViewDataDictionary(){ { "controller", "metadata" }, { "action", "save" }})

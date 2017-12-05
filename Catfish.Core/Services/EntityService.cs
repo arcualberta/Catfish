@@ -1,5 +1,5 @@
 ﻿using Catfish.Core.Models;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +17,23 @@ namespace Catfish.Core.Services
             return Db.EntityTypes;
         }
 
-        public EntityType GetEntityType(int id)
+        public IQueryable<EntityType> GetEntityTypes(EntityType.eTarget target)
         {
-            return Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
+            return Db.EntityTypes.Where(et => et.TargetType == target);
+        }
+
+        public T CreateEntity<T>(int entityTypeId) where T : Entity, new()
+        {
+            EntityType et = Db.EntityTypes.Where(t => t.Id == entityTypeId).FirstOrDefault();
+            if (et == null)
+                throw new Exception("EntityType with ID " + entityTypeId + " not found");
+
+            T entity = new T();
+            entity.EntityType = et;
+            entity.EntityTypeId = et.Id;
+            entity.InitMetadataSet(et.MetadataSets.ToList());
+            entity.SetAttribute("entity-type", et.Name);
+            return entity;
         }
 
         public void CreateEntityType(EntityType entityType)

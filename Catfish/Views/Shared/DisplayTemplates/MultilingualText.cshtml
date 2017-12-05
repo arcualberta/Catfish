@@ -1,0 +1,28 @@
+﻿@model Catfish.Models.Regions.MultilingualText
+@using Catfish.Models.Regions;
+@using Catfish.Helpers;
+
+@{
+    var activeLang = ViewHelper.GetActiveLanguage();
+    var activeContent = Model.Content.Where(c => c.LanguageCode == activeLang.TwoLetterISOLanguageName).FirstOrDefault();
+
+    if (ViewData["raw"] != null && (bool)ViewData["raw"])
+    {
+        @Html.Raw(activeContent.Value)
+    }
+    else
+    {
+        <style>
+            @Model.CssStyles
+        </style>
+
+        <div id="@Model.CssId" class="@Model.CssClasses">
+            @Html.Raw(activeContent.Value)
+        </div>
+    }
+}
+
+
+
+
+

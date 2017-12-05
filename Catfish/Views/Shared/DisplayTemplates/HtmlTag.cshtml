@@ -1,0 +1,10 @@
+﻿@model Catfish.Models.Regions.Html.HtmlTag
+
+@if(Model.IsOpen)
+{
+    @Html.Raw(string.Format("<{0} id=\"{1}\" class=\"{2}\">", Model.TagName, Model.CssId, Model.CssClasses))
+}
+else
+{
+    @Html.Raw(string.Format("</{0}>", Model.TagName))
+}

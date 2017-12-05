@@ -1,0 +1,38 @@
+﻿@model Catfish.Core.Models.Forms.Attachment
+@using Catfish.Core.Helpers;
+@using Catfish.Core.Models;
+@using Catfish.Core.Models.Forms;
+@using Catfish.Areas.Manager.Models.ViewModels;
+@using Catfish.Helpers;
+
+@{ Item item = ViewBag.Item as Item; }
+
+<div class="form-field">
+    <label class="name">@Html.Raw(MultilingualHelper.Join(Model.GetNames(false))): </label>
+    <div class="value">
+        <div class="attachment thumbnailPanel">
+            @{
+                string[] fileGuids = Model.FileGuids.Split(new char[] { Attachment.FileGuidSeparator }, StringSplitOptions.RemoveEmptyEntries);
+            }
+            @foreach (var fileGuid in fileGuids)
+            {
+                <div class="fileThumbnail">
+                    @{
+                        var file = item.Files.Where(f => f.GuidName == fileGuid).FirstOrDefault();
+                        if (file != null)
+                        {
+                            FileViewModel vm = new FileViewModel(file, item.Id, Request.RequestContext, "items");
+                            <img src="@vm.Thumbnail" alt="@vm.FileName" />
+                            <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
+                        }
+                        else
+                        {
+                            <img src="@FileHelper.GetBrokenLinkThumbnail(Request)" />
+                            <div class="label f404">FILE NOT FOUND: @fileGuid</div>
+                        }
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

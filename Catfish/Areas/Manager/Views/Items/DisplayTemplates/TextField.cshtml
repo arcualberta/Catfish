@@ -1,0 +1,7 @@
+﻿@model Catfish.Core.Models.Forms.TextField
+@using Catfish.Core.Helpers;
+
+<div class="form-field">
+    <label class="name">@Html.Raw(MultilingualHelper.Join(Model.GetNames(false))): </label>
+    <span class="value">@Html.Raw(MultilingualHelper.Join(Model.GetValues()))</span>
+</div>

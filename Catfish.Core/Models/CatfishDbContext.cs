@@ -3,7 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
+using Catfish.Core.Models.Data;
 
 namespace Catfish.Core.Models
 {
@@ -37,6 +38,21 @@ namespace Catfish.Core.Models
         ////    }
         ////}
 
+        public override int SaveChanges()
+        {
+            if (this.ChangeTracker.HasChanges())
+            {
+                foreach(var entry in this.ChangeTracker.Entries<XmlModel>())
+                {
+                    if (entry.State != EntityState.Unchanged && entry.State != EntityState.Deleted)
+                    {
+                        entry.Entity.Serialize();
+                    }
+                }
+            }
+
+            return base.SaveChanges();
+        }
 
         protected override void OnModelCreating(DbModelBuilder builder)
         {
@@ -73,7 +89,9 @@ namespace Catfish.Core.Models
                 });
         }
 
-        public DbSet<Entity> Entities { get; set; }
+        public DbSet<XmlModel> XmlModels { get; set; }
+
+ //      public DbSet<Entity> Entities { get; set; }
 
         public DbSet<Collection> Collections { get; set; }
 
@@ -81,7 +99,13 @@ namespace Catfish.Core.Models
 
         public DbSet<EntityType> EntityTypes { get; set; }
 
+        public DbSet<EntityTypeAttributeMapping> EntityTypeAttributeMappings { get; set; }
+
         public DbSet<MetadataSet> MetadataSets { get; set; }
+
+        public DbSet<Form> FormTemplates { get; set; }
+
+        public System.Data.Entity.DbSet<Catfish.Core.Models.Forms.TextField> TextFields { get; set; }
 
         ////public DbSet<SimpleField> MetadataFields { get; set; }
 

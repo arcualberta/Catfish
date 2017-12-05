@@ -25,6 +25,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,6 +49,9 @@
     <Reference Include="AutoMapper, Version=5.2.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.5.2.0\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="DelegateDecompiler, Version=0.9.1.0, Culture=neutral, PublicKeyToken=93b26a10a04705bd, processorArchitecture=MSIL">
+      <HintPath>..\packages\DelegateDecompiler.0.9.1.0\lib\net40-Client\DelegateDecompiler.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -61,8 +65,14 @@
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.3\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Mono.Reflection, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Reflection.1.0.0.0\lib\Mono.Reflection.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PerpetuumSoft.Knockout, Version=0.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\kMVC.0.6.0\lib\net40\PerpetuumSoft.Knockout.dll</HintPath>
     </Reference>
     <Reference Include="Piranha, Version=2.2.6231.40074, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\PiranhaCMS.Core.2.2.6.1\lib\net45\Piranha.dll</HintPath>
@@ -138,22 +148,94 @@
     <Content Include="App_Data\Uploads\index.html" />
     <Content Include="Areas\Manager\Content\Css\Editor.css" />
     <Content Include="Areas\Manager\Content\Css\style.css" />
+    <Content Include="Areas\Manager\Content\Img\logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Areas\Manager\Views\Extensions\index.html" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bs-bootstrap\css\bootstrap.css" />
+    <Content Include="Content\bs-bootstrap\css\bootstrap.min.css" />
+    <Content Include="Content\bs-bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\bs-bootstrap\js\bootstrap.js" />
+    <Content Include="Content\bs-bootstrap\js\bootstrap.min.js" />
+    <Content Include="Content\bs-bootstrap\js\npm.js" />
     <Content Include="Content\Css\bootstrap.min.css" />
+    <Content Include="Content\Css\catfish.css" />
     <Content Include="Content\Css\style.css" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\Css\Site.css" />
+    <Content Include="Content\Thumbnails\404.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\css.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\doc.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\docx.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\eps.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\gif.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\html.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\ind.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\jpg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\mov.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\mp3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\other.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\pdf.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\php.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\png.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\ppt.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\rtf.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\tiff.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\xls.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\xml.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Thumbnails\zip.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="robots.txt" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Manager\Views\Metadata\Edit.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataField.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataField_REMOVE.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\OptionsField.cshtml" />
     <Content Include="Areas\Manager\Views\Metadata\EditTest.cshtml" />
-    <Content Include="package.json" />
     <Content Include="Areas\Manager\Views\EntityTypes\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\EntityTypes\Index.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\IndexToolbar.cshtml" />
@@ -163,38 +245,115 @@
     <Content Include="Areas\Manager\Views\Shared\Partial\DetailsToolbar.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\MetadataField.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\OptionsField.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataSet.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\EntityViewModel.cshtml" />
     <Content Include="Areas\Manager\Views\Items\Index.cshtml" />
     <Content Include="Areas\Manager\Views\Items\Edit.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\EditItem.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataInput.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\TextField.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\TextArea.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\CheckBoxSet.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DateField.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\RadioButtonSet.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DataFile.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\UploadTest.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\Entity.cshtml" />
+    <Content Include="Areas\Manager\Views\Collections\Edit.cshtml" />
+    <Content Include="Areas\Manager\Views\Collections\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\EntityAssociationViewModel.cshtml" />
+    <Content Include="Content\bs-bootstrap\css\bootstrap.css.map" />
+    <Content Include="Content\bs-bootstrap\css\bootstrap.min.css.map" />
+    <Content Include="Content\bs-bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bs-bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\bs-bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\bs-bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Areas\Manager\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\CheckOption.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\Partial\koEditToolbar.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\Partial\SelectEntityType.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\Partial\EditEntity.cshtml" />
+    <Content Include="Areas\Manager\Views\Collections\Associations.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\Partial\EntityContent.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\Associations.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\Partial\ParentCollectionList.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\Carousel.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\TextValue.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\RadioOption.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\MultilingualText.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\_CatfishRegion.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\FormContainer.cshtml" />
+    <Content Include="Areas\Manager\Views\FormTemplates\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\FormTemplates\Edit.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\Partial\FormBuilder.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\DisplayTemplates\FormSubmission.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\DisplayTemplates\TextField.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\DisplayTemplates\Form.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\DisplayTemplates\TextArea.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\DisplayTemplates\CheckBoxSet.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\DisplayTemplates\RadioButtonSet.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\DisplayTemplates\Attachment.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\HtmlTag.cshtml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="Scripts\jquery-1.10.2.js" />
-    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
+    <Content Include="Scripts\fileupload.js" />
+    <Content Include="Scripts\jquery-2.1.1.js" />
+    <Content Include="Scripts\jquery-2.1.1.min.js" />
+    <Content Include="Scripts\knockout-3.1.0.debug.js" />
+    <Content Include="Scripts\knockout-3.1.0.js" />
+    <Content Include="Scripts\knockout.mapping-latest.debug.js" />
+    <Content Include="Scripts\knockout.mapping-latest.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
-    <Content Include="Templates\Input\Line.html" />
-    <Content Include="Templates\Input\MultilineText.html" />
-    <Content Include="Templates\Input\Hidden.html" />
-    <Content Include="Templates\Input\StringArray.html" />
-    <Content Include="Templates\MetadataSetComponent.html" />
-    <Content Include="Web.config" />
+    <Content Include="Scripts\perpetuum.knockout.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\RouteConfig.PiranhaCMS.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Manager\Controllers\Api\EntityAssociationController.cs" />
     <Compile Include="Areas\Manager\Controllers\CatfishController.cs" />
+    <Compile Include="Areas\Manager\Controllers\CollectionsController.cs" />
     <Compile Include="Areas\Manager\Controllers\EntityTypesController.cs" />
+    <Compile Include="Areas\Manager\Controllers\FormBuilderController.cs" />
     <Compile Include="Areas\Manager\Controllers\ItemsController.cs" />
     <Compile Include="Areas\Manager\Controllers\MetadataController.cs" />
+    <Compile Include="Areas\Manager\Controllers\FormTemplatesController.cs" />
+    <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Areas\Manager\Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
-    <Compile Include="Areas\Manager\Models\FieldDefinitionViewModel.cs" />
-    <Compile Include="Areas\Manager\Models\FieldPropertyViewModel.cs" />
+    <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
+    <Compile Include="Controllers\AttachmentController.cs" />
+    <Compile Include="Controllers\CatfishSinglePageController.cs" />
+    <Compile Include="Controllers\EntityController.cs" />
+    <Compile Include="Controllers\FormSubmissionController.cs" />
+    <Compile Include="Controllers\LanguageController.cs" />
+    <Compile Include="Helpers\ViewHelper.cs" />
+    <Compile Include="Models\Pages\EntityTree.cs" />
+    <Compile Include="Models\Regions\Carousel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\EntityContentViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\FileViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\SelectEntityTypeViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\EntityTypeViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\KoBaseViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\FormBuilderViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\FormFieldViewModel.cs" />
     <Compile Include="Controllers\PageController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Areas\Manager\Models\ViewModels\EntityViewModel.cs" />
+    <Compile Include="Models\Regions\CatfishRegion.cs" />
+    <Compile Include="Models\Regions\FormContainer.cs" />
+    <Compile Include="Models\Regions\Html\Css.cs" />
+    <Compile Include="Models\Regions\Html\Javascript.cs" />
+    <Compile Include="Models\Regions\Html\HtmlTag.cs" />
+    <Compile Include="Models\Regions\MultilingualText.cs" />
+    <Compile Include="Models\ViewModels\FormViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -214,35 +373,48 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
-    <Content Include="tsconfig.json" />
+    <Content Include="Scripts\jquery-2.1.1.min.map" />
+    <Content Include="Views\Shared\DisplayTemplates\Carousel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\MultilingualText.cshtml" />
+    <Content Include="Views\Shared\_LanguageSwitcher.cshtml" />
+    <Content Include="Views\Entity\Index.cshtml" />
+    <Content Include="Views\FormSubmission\Index.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\Form.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\TextField.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\TextArea.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\RadioButtonSet.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\CheckBoxSet.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\CheckOption.cshtml" />
+    <Content Include="Views\FormSubmission\Confirmation.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\FormViewModel.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\Attachment.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\DataFile.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\HtmlTag.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Css.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\HtmlRegion.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+    <None Include="Web.example.config" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Manager\Views\Catfish\" />
+    <Folder Include="Areas\Manager\Views\EntityAssociationList\" />
     <Folder Include="Areas\Manager\Views\Entity\" />
-    <Folder Include="Models\" />
+    <Folder Include="Views\Attachment\" />
+    <Folder Include="Views\CatfishSinglePage\" />
+    <Folder Include="Views\Catfish\" />
+    <Folder Include="Views\Language\" />
+    <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj">
       <Project>{5d2c027e-76f8-4cf0-8c58-cfd5219e3d18}</Project>
       <Name>Catfish.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="Source\Fields\FormFields.ts" />
-    <TypeScriptCompile Include="Source\Fields\MetadataSetFields.ts" />
-    <TypeScriptCompile Include="Source\Fields\EntityTypeFields.ts" />
-    <TypeScriptCompile Include="Source\Forms\EntityTypeForm.ts" />
-    <TypeScriptCompile Include="Source\Forms\ItemForm.ts" />
-    <TypeScriptCompile Include="Source\Forms\MetadataSetForm.ts" />
-    <TypeScriptCompile Include="Source\ImportModules.ts" />
-    <TypeScriptCompile Include="Source\require-config.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

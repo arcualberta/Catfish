@@ -1,24 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using Catfish.Core.Models;
 using Catfish.Core.Services;
-using Catfish.Core.Models.Metadata;
-using System.Web.Script.Serialization;
-using System.Web.Helpers;
-using Newtonsoft.Json;
+using Catfish.Core.Models.Forms;
+using Catfish.Areas.Manager.Models.ViewModels;
 
 namespace Catfish.Areas.Manager.Controllers
 {
     public class EntityTypesController : CatfishController
     {
-        //private CatfishDbContext db = new CatfishDbContext();
-
         // GET: Manager/EntityTypes
         public ActionResult Index()
         {
@@ -30,31 +22,163 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Edit(int? id)
         {
             EntityType model = null;
-            if (id.HasValue)
+            if (id.HasValue && id.Value > 0)
             {
-                model = EntityService.GetEntityType(id.Value);
-                /*if (model.MetadataSets.Count > 1)
-                    model.MetadataSets.Remove(model.MetadataSets.Last());*/
+                model = Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
             }
             else
             {
                 model = new EntityType();
-
-                //////TODO:Remove the following testing code
-                ////List<MetadataSet> metadata = MetadataService.GetMetadataSets().ToList();
-                ////int i = 0;
-                ////foreach (var s in metadata)
-                ////{
-                ////    model.MetadataSets.Add(s);
-                ////    if (++i >= 3)
-                ////        break;
-                ////}
             }
 
-            var metadataSets = MetadataService.GetMetadataSets().ToList();
-            ViewBag.MetadataSets = new JavaScriptSerializer().Serialize(metadataSets); //Json(MetadataService.GetMetadataSets().ToList());
-            return View(model);
+            EntityTypeViewModel vm = new EntityTypeViewModel();
+            vm.UpdateViewModel(model, Db);
+            return View(vm);
         }
+
+        [HttpPost]
+        public ActionResult Delete(int? id)
+        {
+            EntityType model = null;
+            if (id.HasValue && id.Value > 0)
+            {
+                model = Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
+                if (model != null)
+                {
+                    Db.Entry(model).State = EntityState.Deleted;
+                    Db.SaveChanges();
+                }
+            }
+            return RedirectToAction("index");
+        }
+
+        [HttpPost]
+        public JsonResult AddMetadataSet(EntityTypeViewModel vm)
+        {
+            vm.AssociatedMetadataSets.Add(vm.SelectedMetadataSets);
+            vm.MetadataSetMappingSrc.Add(vm.SelectedMetadataSets);
+            vm.SelectedMetadataSets = new MetadataSetListItem();
+            return Json(vm);
+        }
+
+        [HttpPost]
+        public JsonResult Move(EntityTypeViewModel vm, int idx, int step)
+        {
+            int newIdx = KoBaseViewModel.GetBoundedArrayIndex(idx + step, vm.AssociatedMetadataSets.Count);
+            if (idx != newIdx)
+            {
+                var ms = vm.AssociatedMetadataSets.ElementAt(idx);
+                vm.AssociatedMetadataSets.RemoveAt(idx);
+                vm.AssociatedMetadataSets.Insert(newIdx, ms);
+            }
+            return Json(vm);
+        }
+
+        [HttpPost]
+        public JsonResult RemoveMetadataSet(EntityTypeViewModel vm, int idx)
+        {
+            vm.AssociatedMetadataSets.RemoveAt(idx);
+            return Json(vm);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateMappingMetadataSet(EntityTypeViewModel vm, EntityTypeViewModel.eMappingType type)
+        {
+            if(type == EntityTypeViewModel.eMappingType.NameMapping)
+            {
+                vm.NameMapping.MetadataSet = vm.SelectedNameMappingMetadataSet.Name;
+                vm.NameMapping.MetadataSetId = vm.SelectedNameMappingMetadataSet.Id;
+
+                MetadataSet ms = Db.MetadataSets.Where(m => m.Id == vm.NameMapping.MetadataSetId).FirstOrDefault();
+                //ms.Deserialize();
+                vm.NameMapping.Field = "Not specified";
+                vm.SelectedNameMappingField = "";
+                vm.SelectedNameMappingFieldSrc = ms.Fields.Select(f => f.Name).ToList();
+                vm.SelectedNameMappingFieldSrc.Sort();
+                vm.SelectedNameMappingFieldSrc.Insert(0, "");
+
+                vm.SelectedNameMappingMetadataSet = new MetadataSetListItem(0, "");
+            }
+            else if(type == EntityTypeViewModel.eMappingType.DescriptionMapping)
+            {
+                vm.DescriptionMapping.MetadataSet = vm.SelectedDescriptionMappingMetadataSet.Name;
+                vm.DescriptionMapping.MetadataSetId = vm.SelectedDescriptionMappingMetadataSet.Id;
+
+                MetadataSet ms = Db.MetadataSets.Where(m => m.Id == vm.DescriptionMapping.MetadataSetId).FirstOrDefault();
+                //ms.Deserialize();
+                vm.DescriptionMapping.Field = "Not specified";
+                vm.SelectedDescriptionMappingField = "";
+                vm.SelectedDescriptionMappingFieldSrc = ms.Fields.Select(f => f.Name).ToList();
+                vm.SelectedDescriptionMappingFieldSrc.Sort();
+                vm.SelectedDescriptionMappingFieldSrc.Insert(0, "");
+
+                vm.SelectedDescriptionMappingMetadataSet = new MetadataSetListItem(0, "");
+            }
+            return Json(vm);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateMappingField(EntityTypeViewModel vm, EntityTypeViewModel.eMappingType type)
+        {
+            if (type == EntityTypeViewModel.eMappingType.NameMapping)
+            {
+                vm.NameMapping.Field = vm.SelectedNameMappingField;
+                vm.SelectedNameMappingField = "";
+            }
+            else if (type == EntityTypeViewModel.eMappingType.DescriptionMapping)
+            {
+                vm.DescriptionMapping.Field = vm.SelectedDescriptionMappingField;
+                vm.SelectedDescriptionMappingField = "";
+            }
+            return Json(vm);
+        }
+        [HttpPost]
+        public JsonResult Save(EntityTypeViewModel vm)
+        {
+            if (ModelState.IsValid)
+            {
+                EntityType model;
+                if (vm.Id > 0)
+                {
+                    model = Db.EntityTypes.Where(x => x.Id == vm.Id).FirstOrDefault();
+                    if (model == null)
+                        return Json(vm.Error("Specified entity type not found"));
+                    else
+                    {
+                        vm.UpdateDataModel(model, Db);
+                        Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
+                    }
+                }
+                else
+                {
+                    model = new EntityType();
+                    vm.UpdateDataModel(model, Db);
+                    Db.EntityTypes.Add(model);
+                }
+
+                Db.SaveChanges();
+                vm.Status = KoBaseViewModel.eStatus.Success;
+
+                if (vm.Id == 0)
+                {
+                    //This is a newly created object, so we ask knockout MVC to redirect it to the edit page
+                    //so that the ID is added to the URL.
+                    vm.redirect = true;
+                    vm.url = Url.Action("Edit", "EntityTypes", new { id = model.Id });
+                }
+            }
+            else
+                return Json(vm.Error("Model validation failed"));
+
+            return Json(vm);
+        }
+
+
+
+
+
+
+
 
         // POST: Manager/EntityTypes/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -80,31 +204,6 @@ namespace Catfish.Areas.Manager.Controllers
             return View(entityType);
         }
 
-        ////// GET: Manager/EntityTypes/Delete/5
-        ////public ActionResult Delete(int? id)
-        ////{
-        ////    if (id == null)
-        ////    {
-        ////        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        ////    }
-        ////    EntityType entityType = db.EntityTypes.Find(id);
-        ////    if (entityType == null)
-        ////    {
-        ////        return HttpNotFound();
-        ////    }
-        ////    return View(entityType);
-        ////}
-
-        ////// POST: Manager/EntityTypes/Delete/5
-        ////[HttpPost, ActionName("Delete")]
-        ////[ValidateAntiForgeryToken]
-        ////public ActionResult DeleteConfirmed(int id)
-        ////{
-        ////    EntityType entityType = db.EntityTypes.Find(id);
-        ////    db.EntityTypes.Remove(entityType);
-        ////    db.SaveChanges();
-        ////    return RedirectToAction("Index");
-        ////}
 
         protected override void Dispose(bool disposing)
         {
@@ -115,40 +214,5 @@ namespace Catfish.Areas.Manager.Controllers
             base.Dispose(disposing);
         }
 
-        //private string GetSerializedMetadataSets()
-        //{
-        //    //var metadataSets = this.MetadataService.
-        //    var metadataSets = MetadataService.GetMetadataSets().ToList();
-        //    //var metadataSetViewModels = metadataSets.Select(ft => new MetadataSetDefinitionViewModel(ft));
-        //    //return new JavaScriptSerializer().Serialize(metadataSets);
-        //    //var test = Json(metadataSets).Data;
-        //    //var test = Json(metadataSets);
-        //    //test.RecursionLimit = 0;
-        //    //return test.ToString();
-
-        //    //var test = new JavaScriptSerializer();
-        //    //test.RecursionLimit = 2;
-        //    ////st.
-        //    ////test.
-
-        //    //return test.Serialize(metadataSets);
-
-        //    //var test = Json(metadataSets);
-        //    //test.Data(metadataSets
-        //    //return test.
-
-        //    //string result = JsonConvert.SerializeObject(metadataSets);
-
-        //    //return result;
-        //    //return metadataSets;
-
-        //    string test = JsonConvert.SerializeObject(metadataSets, Formatting.Indented,
-        //        new JsonSerializerSettings {
-        //            PreserveReferencesHandling = PreserveReferencesHandling.Objects
-        //        });
-
-        //    return test;
-
-        //}
     }
 }

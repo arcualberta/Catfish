@@ -1,24 +1,57 @@
-﻿<div class="grid_12">
-    <table class="list">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var m in Model)
-            {
+﻿
+@{
+    bool showType = ViewData["showType"] != null ? (bool)ViewData["showType"] : false;
+    bool showDeleteButton = ViewData["showDeleteButton"] != null ? (bool)ViewData["showDeleteButton"] : false;
+    string controller = ViewData["controller"] as string;
+}
+@{ var nameclass = showType ? "col-md-7" : "col-md-8"; }
+<div class=" bs">
+    <div class="container">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@m.Name</td>
-                    <td>@m.Description</td>
-                    <td>
-                        <a href="@Url.Action("details", new { @id = m.Id })">Details</a> | 
-                        <a href="@Url.Action("edit", new { @id = m.Id })">Edit</a>
-                    </td>
+                    <th class="col-md-1">Id</th>
+                    <th class="@nameclass">Name</th>
+                    @if (showType)
+                    {
+                        <th class="col-md-1">Type</th>
+                    }
+                    <th class="col-md-3">Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody class="">
+                @foreach (var m in Model)
+                {
+                    <tr>
+                        <td>@m.Id</td>
+                        <td>@m.Name</td>
+                        @if (showType)
+                        {
+                            string type = (m as Catfish.Core.Models.Entity).EntityType.Name;
+                            <td class="">@type</td>
+                        }
+                        <td class="action-panel">
+                            <form action="@Url.Action("edit", controller, new { @id = m.Id })" method="get" class="inline">
+                                <button type="submit" value="Submit" class="glyphicon glyphicon-edit"></button>
+                            </form>
+                            @if (typeof(Catfish.Core.Models.Collection).IsAssignableFrom(m.GetType()) ||
+                                 typeof(Catfish.Core.Models.Item).IsAssignableFrom(m.GetType()))
+                            {
+                                <form action="@Url.Action("associations", controller, new { @id = m.Id })" method="get" class="inline">
+                                    <button type="submit" value="Submit" class="glyphicon glyphicon-link"></button>
+                                </form>
+                            }
+                            @if (showDeleteButton)
+                            {
+                                <form action="@Url.Action("delete", controller, new { @id = m.Id })" method="post" class="inline">
+                                    @{ var isDisabled = m.HasAssociations ? "disabled='disabled'" : ""; }
+                                    <button type="submit" value="Submit" class="glyphicon glyphicon-remove" onclick="return confirm('Confirm deletion');" @isDisabled></button>
+                                </form>
+                                        }
+                        </td>
+                    </tr>
+                                        }
+            </tbody>
+        </table>
+    </div>
 </div>

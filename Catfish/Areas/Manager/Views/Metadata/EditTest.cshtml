@@ -1,4 +1,4 @@
-﻿@model Catfish.Core.Models.Metadata.MetadataSet
+﻿@model Catfish.Core.Models.MetadataSet
 @{  ViewBag.Title = "Edit Metadata Set"; }
 @section Toolbar {
     @Html.Partial("Partial/Tabs")
@@ -25,13 +25,15 @@
         </div>
     </div>
 }
+
+
 @{ Html.BeginForm(); }
 @Html.HiddenFor(m => m.Id)
 <div class="grid_12">
     <div class="box">
         <div class="title"><h2>Metadata Set</h2></div>
         <div class="inner">
-            <ul class="form">
+            <ul class="form form-custom">
                 <li>
                     @Html.LabelFor(m => m.Name)
                     <div class="input">@Html.EditorFor(m => m.Name)</div>

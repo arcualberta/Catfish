@@ -1,0 +1,18 @@
+﻿@model Catfish.Core.Models.DataFile
+
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+{
+    {"class", "model-type"}
+})
+@Html.HiddenFor(m => m.Id)
+@Html.HiddenFor(m => m.GuidName)
+
+<img src="@Model.Thumbnail" width="40" height="30" alt="@Model.FileName" /> @Model.FileName
+
+
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+    {
+       {"class", "model-type"}
+    })
+
+@Html.HiddenFor(m => m.FileName)

@@ -1,0 +1,16 @@
+﻿@model Catfish.Core.Models.Forms.DateField
+
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+{
+    {"class", "model-type"}
+})
+@Html.HiddenFor(m => m.Ref)
+@Html.HiddenFor(m => m.Id)
+
+<div class="form-field-header">
+    @Html.Label(Model.Name)
+</div>
+<div class="form-field-content">
+    @Html.TextBoxFor(m => m.Value, new { @type = "date" })
+</div>
+

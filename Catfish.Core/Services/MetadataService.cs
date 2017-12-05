@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Attributes;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 
 namespace Catfish.Core.Services
 {
@@ -20,7 +20,10 @@ namespace Catfish.Core.Services
 
         public MetadataSet GetMetadataSet(int id)
         {
-            return Db.MetadataSets.Where(m => m.Id == id).FirstOrDefault();
+            MetadataSet metadata = Db.MetadataSets.Where(m => m.Id == id).FirstOrDefault();
+            //if (metadata != null)
+            //    metadata.Deserialize();
+            return metadata;
         }
 
         /// <summary>
@@ -30,8 +33,8 @@ namespace Catfish.Core.Services
         /// <returns></returns>
         public List<Type> GetMetadataFieldTypes()
         {
-            var fieldTypes = typeof(MetadataField).Assembly.GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(MetadataField)) 
+            var fieldTypes = typeof(FormField).Assembly.GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(FormField)) 
                     && !t.CustomAttributes.Where(a => a.AttributeType.IsAssignableFrom(typeof(IgnoreAttribute))).Any())
                 .ToList();
 
@@ -39,27 +42,24 @@ namespace Catfish.Core.Services
             return fieldTypes;
         }
 
-        public MetadataSet UpdateMetadataSet(MetadataDefinition metadataDefinition)
+        public MetadataSet UpdateMetadataSet(MetadataSet metadataSet)
         {
-            MetadataSet ms;
-            if (metadataDefinition.Id > 0)
+            ////MetadataSet ms;
+            if (metadataSet.Id > 0)
             {
-                ms = Db.MetadataSets.Where(m => m.Id == metadataDefinition.Id).FirstOrDefault();
-                if (ms == null)
-                    return null;
+                ////ms = Db.MetadataSets.Where(m => m.Id == metadataDefinition.Id).FirstOrDefault();
+                ////if (ms == null)
+                ////    return null;
 
-                Db.Entry(ms).State = System.Data.Entity.EntityState.Modified;
+                Db.Entry(metadataSet).State = System.Data.Entity.EntityState.Modified;
             }
             else
             {
-                ms = new MetadataSet();
-                Db.MetadataSets.Add(ms);
+                ////ms = new MetadataSet();
+                Db.MetadataSets.Add(metadataSet);
             }
-            ms.Definition = metadataDefinition;
-            ms.Serialize();
-            return ms;
+            ////ms.Definition = metadataDefinition;
+            return metadataSet;
         }
-
-
     }
 }

@@ -1,121 +1,137 @@
 ﻿@model Catfish.Core.Models.Item
+@using Catfish.Areas.Manager.Models.ViewModels;
+@using Catfish.Core.Models.Data;
 
-@{
-    ViewBag.Title = "Edit";
-}
+@{  ViewBag.Title = Model.Id > 0 ? "Edit Item" : "Create Item"; }
 
-@section HEAD 
+@section HEAD
 {
-    <script src="/node_modules/requirejs/require.js"></script>
-    <script type="text/javascript" src="/built/require-config.js"></script>
+    <script type="text/javascript" src="~/Scripts/knockout-3.1.0.js"></script>
+    <script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
+    <script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
+    <script type="text/javascript" src="~/Scripts/fileupload.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
 
-    <script>
-        var metadata = {
-            'entityTypes': @Html.Raw(ViewBag.EntityTypes),
-            'metadataSets': @Html.Raw(ViewBag.MetadataSets)
+    <script type="text/javascript">
+        var uploadApiUrl = "@Url.Action("upload", "items", new { id = Model.Id })";
+        var deleteApiUrl = "@Url.Action("deleteFile", "items", new { id = Model.Id })";
+        var itemId = @Model.Id;
+        var uploadFieldCssId = "#uploadField";
+        var uploadButtonCssId = "#uploadButton";
+        var progressBarCssId = "#progressBar";
+        var messageBoxCssId = "#uploadErrorMessage";
+        var thumbnailPanelCssId = "#thumbnailPanel";
+
+        function upload() {
+            uploadFile(itemId, uploadApiUrl, deleteApiUrl, uploadFieldCssId, uploadButtonCssId, progressBarCssId, messageBoxCssId, thumbnailPanelCssId);
         }
+
+        function del(guidName){
+            deleteFile(guidName, deleteApiUrl, messageBoxCssId);
+        }
+
+        $(function () {
+            $("#progressBar").hide();
+            $("#uploadErrorMessage").hide();
+        });
     </script>
+}
 
+@section Toolbar {
+    @if (ViewBag.SelectEntityViewModel != null)
+    {
+        @Html.Partial("Partial/koEditToolbar")
+    }
+    else
+    {
 
-
-    <script>
-            require(["/Built/Forms/ItemForm.js"])
-    </script>
-
-    <link href="/node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet"  type="text/css" />
+        @Html.Partial("Partial/EditToolbar", Model, new ViewDataDictionary() { { "entityTypeId", Model.EntityTypeId } })
+    }
 }
 
 
-<select data-bind="options: entityTypes, 
-               optionsText: function(type) {
-                return type.Name
-                },
-               value: selectedEntityType">
-</select>
+@if (ViewBag.SelectEntityViewModel != null)
+{
+    <div class="grid_12 bs">
+        <div class="box">
 
+            @Html.Partial("Partial/SelectEntityType", ViewBag.SelectEntityViewModel as SelectEntityTypeViewModel, new ViewDataDictionary() { { "controller", "items" } })
+        </div>
+    </div>
 
-<ul id="metadataset-tabs" data-bind="foreach: selectedEntityType().MetadataSets" class="nav nav-tabs" role="tablist">
-    <li role="presentation">
-        <a class="tab" role="tab" data-toggle="tab" data-bind="{
-           attr: {
-            href: '#',
-            'aria-controls': Id
-           },
-           text: Name}">
-        </a>
-    </li>
-</ul>
+}
+else
+{
+    <div class="grid_12 bs">
+        <div class="box">
+            <div class="title">
+                Metadata
+            </div>
 
-<hr />
+            @using (Html.BeginForm("Edit", "Items", FormMethod.Post))
+            {
+                @Html.Partial("Partial/EditEntity")
+            }
+        </div>
+    </div>
 
-<ul data-bind="foreach: selectedEntityType().MetadataSets">
-    <li data-bind="text: Name">
-    </li>
-    <li>
-        <ul data-bind="foreach: Fields">
-            <li>
-                <div data-bind="template: {name: Type}"></div>
-            </li>
-        </ul>
-    </li>
-</ul>
+    <div class="grid_12 bs">
+        <div class="box">
+            <div class="title">
+                Files
+            </div>
+            <div class="inner">
+                @if (Model.Id == 0)
+                {
+                    <div class="alert alert-info">Please save this item first in order to enable file uploading.</div>
+                }
+                else
+                {
+                    if (Model.Files.Count() == 0)
+                    {
+                        <p>No files exist</p>
+                    }
+                }
 
+                <div id="thumbnailPanel" class="thumbnailPanel">
+                    @foreach (var file in Model.Files)
+                    {
+                        FileViewModel vm = new FileViewModel(file, Model.Id, Request.RequestContext);
+                        var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
+                        <div class="fileThumbnail" id="@eleId">
+                            <img src="@vm.Thumbnail" alt="@vm.FileName" /> 
+                            <button class="glyphicon glyphicon-remove" onclick="del('@vm.Guid');"></button>
+                            <div class="label"><a href="@vm.Url" target="_blank">@vm.FileName</a></div>
+                        </div>
+                    }                                                                       
+                </div>
+                <div class="inner" style="clear:both">
+                    @if (Model.Id > 0)
+                    {
+                        <div id="uploadErrorMessage" class="alert alert-danger"></div>
+                        <input type='file' id='uploadField' class="uploadField" name="files" multiple="multiple" />
+                        <input type="button" value="Upload" id="uploadButton" class="uploadButton" onclick="upload(); return false;" />
+                        <div id="progressBar"><progress></progress></div>
+                    }
+                </div>
+            </div>
 
+        </div>
+    </div>
 
+    if (Model.FormSubmissions.Count() > 0)
+    {
+        <div class="grid_12 bs">
+            <div class="box">
+                <div class="title">
+                    Form Submissions
+                </div>
+                <div class="form-view">
+                    @Html.DisplayFor(m => m.FormSubmissions, new { Item = Model })
+                </div>
+            </div>
+        </div>
 
-<!--
-Catfish.Core.Models.Metadata.TextField
-Catfish.Core.Models.Metadata.CheckBoxSet
-Catfish.Core.Models.Metadata.Datefield
-Catfish.Core.Models.Metadata.DropDownMenu
-Catfish.Core.Models.Metadata.RadioButtonSet
-Catfish.Core.Models.Metadata.TextArea
--->
-
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.TextField">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <input data-bind="value: Value" />
-</script>
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.CheckBoxSet">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <ul data-bind="foreach: OptionsArray">
-        <li>
-            <input type="checkbox" data-bind="attr: {name: $parent.Id,  value: $data}, value: $parent.Value" />
-            <span data-bind="text: $data"></span>
-        </li>
-    </ul>    
-</script>
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.DateField">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <input data-bind="value: Value" />
-</script>
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.DropDownMenu">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <select data-bind="options: OptionsArray, value: Value"> </select>
-</script>
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.RadioButtonSet">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <ul data-bind="foreach: OptionsArray">
-        <li>
-            <input type="radio" data-bind="attr: {name: $parent.Id,  value: $data}, value: $parent.Value"/>
-            <span data-bind="text: $data"></span>
-        </li>
-    </ul>    
-</script>
-
-<script type="text/html" id="Catfish.Core.Models.Metadata.TextArea">
-    <span data-bind="text: Name"></span>
-    <span data-bind="text: Description"></span>
-    <textarea data-bind="value: Value"></textarea>
-</script>
+    }
+}
 

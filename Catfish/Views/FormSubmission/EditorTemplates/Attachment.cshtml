@@ -1,0 +1,102 @@
+﻿@model Catfish.Core.Models.Forms.Attachment
+    
+@using Catfish.Core.Models.Forms;
+@using Catfish.Areas.Manager.Models.ViewModels;
+@using Catfish.Core.Models.Data;
+
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+{
+    {"class", "model-type"}
+})
+@Html.HiddenFor(m => m.Ref)
+
+@{
+    string guid = Guid.NewGuid().ToString("N");
+
+    string uploadFieldId = "uploadField_" + guid;
+    string uploadFieldCssId = "#" + uploadFieldId;
+
+    string uploadButtonId = "uploadButton_" + guid;
+    string uploadButtonCssId = "#" + uploadButtonId;
+
+    string progressBarId = "progressBar_" + guid;
+    string progressBarCssId = "#" + progressBarId;
+
+    string messageBoxId = "uploadErrorMessage_" + guid;
+    string messageBoxCssId = "#" + messageBoxId;
+
+    string thumbnailPanelId = "thumbnailPanel_" + guid;
+    string thumbnailPanelCssId = "#" + thumbnailPanelId;
+
+    string uploadFunction = "upload_" + guid;
+    string delFunction = "del_" + guid;
+    string guidUpdateFunction = "guidUpdate_" + guid;
+    string fileGuidElementId = Html.IdFor(m => m.FileGuids).ToString();
+}
+
+<script>
+    function @{@uploadFunction}() {
+        uploadFile(0, uploadApiUrl, deleteApiUrl, "@uploadFieldCssId", "@uploadButtonCssId", "@progressBarCssId", "@messageBoxCssId", "@thumbnailPanelCssId", @guidUpdateFunction);
+    }
+
+    function @{@guidUpdateFunction}(data) {
+        var ids = $("#@fileGuidElementId").val();
+        data = JSON.parse(data);
+        for (var i = 0; i < data.length; ++i)
+        {
+            var separator = (i==0 && ids == "") ? "" : "@Attachment.FileGuidSeparator";
+            ids = ids + separator + data[i].Guid;
+        }
+
+        $("#@fileGuidElementId").val(ids);
+    }
+
+    function @{@delFunction} (guidName) {
+        deleteFile(guidName, deleteApiUrl, "@messageBoxCssId");
+    }
+
+    $(function () {
+        $("@progressBarCssId").hide();
+    });
+
+</script>
+
+
+<div class="inner file-upload" style="clear:both">
+    <div id="@thumbnailPanelId" class="thumbnailPanel">
+        @Html.HiddenFor(m => m.FileGuids)
+
+        @{ 
+            List<DataFile> files = ViewBag.Files == null ? new List<DataFile>() : ViewBag.Files as List<DataFile>;
+            string[] fileGuids = Model.FileGuids.Split(new char[] { Attachment.FileGuidSeparator });
+            foreach (var fileGuid in fileGuids)
+            {
+                var file = files.Where(f => f.Guid == fileGuid).FirstOrDefault();
+                if (file != null)
+                {
+                    FileViewModel vm = new FileViewModel(file, file.Id, Request.RequestContext, "attachment");
+                    var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
+                    <div class="fileThumbnail" id="@eleId">
+                        <img src="@vm.Thumbnail" alt="@vm.FileName" />
+                        <button class="glyphicon glyphicon-remove" onclick="del('@vm.Guid');"></button>
+                        <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
+                    </div>
+                }
+            }
+        }
+    </div>
+    <div class="inner" style="clear:both">
+        <div id="@messageBoxId" class="alert alert-danger messageBoxId"></div>
+
+        <input type='file' id='@uploadFieldId' class="uploadField" name="files" multiple="multiple" />
+        <input type="button" value="Upload" id="@uploadButtonId" class="uploadButton" onclick="@{@uploadFunction}(); return false;" />
+        <div id="@progressBarId"><progress></progress></div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("@progressBarCssId").hide();
+        $("@messageBoxCssId").hide();
+    });
+</script>

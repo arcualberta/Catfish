@@ -1,19 +1,31 @@
 ﻿@Html.Partial("Partial/Tabs")
+
+@{
+    int? typeId = ViewData["entityTypeId"] as int?;
+    string url = "";
+ }
+
 <div class="toolbar">
     <div class="inner">
         <ul>
-            <li>
+            <li id="save-btn">
                 <a class="save submit">
                     @Piranha.Resources.Global.ToolbarSave
                 </a>
             </li>
             <li>
-                <a href="@Url.Action("index")" class="back">
+                @{
+                   url = typeId.HasValue && Model.Id == 0 ? Url.Action("edit") : Url.Action("index");
+                }
+                <a href="@url" class="back">
                     @Piranha.Resources.Global.ToolbarBack
                 </a>
             </li>
             <li>
-                <a href="@Url.Action("edit", new { id = Model.Id })" class="refresh">
+               @{
+                   url = typeId.HasValue ? Url.Action("edit", new { id = Model.Id, entityTypeId = typeId.Value }) : Url.Action("edit", new { id = Model.Id });
+               }
+                <a href="@url" class="refresh">
                     @Piranha.Resources.Global.ToolbarReload
                 </a>
             </li>

@@ -8,20 +8,57 @@ using System.Web;
 using System.Web.Mvc;
 using Catfish.Core.Models;
 using System.Web.Script.Serialization;
+using System.IO;
+using System.Xml.Linq;
+using System.Web.Configuration;
+using Catfish.Core.Services;
+using Catfish.Core.Models.Forms;
+using Catfish.Areas.Manager.Models.ViewModels;
+using Catfish.Core.Models.Data;
+using Catfish.Areas.Manager.Helpers;
+using Catfish.Helpers;
 
 namespace Catfish.Areas.Manager.Controllers
 {
-    public class ItemsController : Controller
+    public class ItemsController : CatfishController
     {
         private CatfishDbContext db = new CatfishDbContext();
 
         // GET: Manager/Items
         public ActionResult Index()
         {
+            var entities = db.XmlModels.Where(m => m is Item).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
+            //var entities = db.XmlModels.Where(m => m is Item).Select(e => e as Item);
+            ////foreach (var e in entities)
+            ////    e.Deserialize();
+            if (entities != null)
+            {
+                //foreach(var e in entities)
+                //{
+                //    e.Data = XElement.Parse(e.Content);
+                //}
+                return View(entities);
+            }
 
-            var entities = db.Entities.Include(e => e.EntityType);
-            return View(entities);
+            return View();
         }
+
+        [HttpPost]
+        public ActionResult Delete(int? id)
+        {
+            Item model = null;
+            if (id.HasValue && id.Value > 0)
+            {
+                model = Db.Items.Where(et => et.Id == id).FirstOrDefault();
+                if (model != null)
+                {
+                    Db.Entry(model).State = EntityState.Deleted;
+                    Db.SaveChanges();
+                }
+            }
+            return RedirectToAction("index");
+        }
+
 
         // GET: Manager/Items/Details/5
         public ActionResult Details(int? id)
@@ -30,7 +67,7 @@ namespace Catfish.Areas.Manager.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Entity entity = db.Entities.Find(id);
+            Entity entity = db.XmlModels.Find(id) as Entity;
             if (entity == null)
             {
                 return HttpNotFound();
@@ -65,19 +102,41 @@ namespace Catfish.Areas.Manager.Controllers
         }
         */
         // GET: Manager/Items/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? id, int? entityTypeId)
         {
             Item model;
-            if (id.HasValue)
-                model = db.Entities.Find(id) as Item;
-            else
-                model = new Item();
+            ItemService srv = new ItemService(db);
 
-            // Rendering these as json objects in view result in circular references 
-            var metadataSets = db.MetadataSets.ToList();
-            var entityTypes = db.EntityTypes.ToList();
-            ViewBag.EntityTypes = new JavaScriptSerializer().Serialize(entityTypes);//Json(db.EntityTypes.ToList());
-            ViewBag.MetadataSets = new JavaScriptSerializer().Serialize(metadataSets);//Json(db.MetadataSets.ToList());
+            //////ViewBag.FileList = "[]";
+            //////ViewBag.UploadAction = Url.Action("Upload", "Items");
+            //////ViewBag.OtherPngUrl = Url.Content("~/content/thumbnails/other.png");
+
+            if (id.HasValue && id.Value > 0)
+            {
+                model = db.XmlModels.Find(id) as Item;
+                //model.Deserialize();
+
+                ////if(model.Files.Any()) //MR Sept 5 2017---chek if model has any file associated before pulling it
+                ////    ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
+
+            }
+            else
+            {
+                if(entityTypeId.HasValue)
+                {
+                    model = srv.CreateEntity<Item>(entityTypeId.Value);
+                }
+                else
+                {
+                    List<EntityType> entityTypes = srv.GetEntityTypes(EntityType.eTarget.Items).ToList();
+                    ViewBag.SelectEntityViewModel = new SelectEntityTypeViewModel()
+                    {
+                        EntityTypes = entityTypes
+                    };
+
+                    model = new Item();
+                }
+            }
 
             return View(model);
         }
@@ -91,38 +150,113 @@ namespace Catfish.Areas.Manager.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(model).State = EntityState.Modified;
+                ItemService srv = new ItemService(db);
+                Item dbModel = srv.UpdateStoredItem(model);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+
+                if (model.Id == 0)
+                    return RedirectToAction("Edit", new { id = dbModel.Id });
+                else
+                    return View(dbModel);
             }
-            ViewBag.EntityTypeId = new SelectList(db.EntityTypes, "Id", "Name", model.EntityTypeId);
             return View(model);
         }
 
-        // GET: Manager/Items/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Associations(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Entity entity = db.Entities.Find(id);
-            if (entity == null)
-            {
-                return HttpNotFound();
-            }
-            return View(entity);
+            Item model = Db.Items.Where(et => et.Id == id).FirstOrDefault();
+            if (model == null)
+                throw new Exception("Item not found");
+
+            EntityContentViewModel childItems = new EntityContentViewModel();
+            childItems.Id = model.Id;
+            childItems.LoadNextChildrenSet(model.ChildItems);
+            childItems.LoadNextMasterSet(db.Items);
+            ViewBag.ChildItems = childItems;
+
+
+            EntityContentViewModel relatedItems = new EntityContentViewModel();
+            relatedItems.Id = model.Id;
+            relatedItems.LoadNextChildrenSet(model.ChildRelations);
+            relatedItems.LoadNextMasterSet(db.Items);
+            ViewBag.RelatedItems = relatedItems;
+
+            return View(model);
         }
 
-        // POST: Manager/Items/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+
+        [HttpGet]
+        public ActionResult UploadTest()
         {
-            Entity entity = db.Entities.Find(id);
-            db.Entities.Remove(entity);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult Upload(int id)
+        {
+            try
+            {
+                ItemService srv = new ItemService(db);
+                List<DataFile> files = srv.UploadFiles(id, Request);
+                db.SaveChanges();
+
+                var ret = files.Select(f => new FileViewModel(f, id, ControllerContext.RequestContext, "items"));
+                return Json(ret);
+            }
+            catch (Exception ex)
+            {
+                //return 500 or something appropriate to show that an error occured.
+                return Json(string.Empty);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteFile(int id, string guidName)
+        {
+            try
+            {
+                ItemService srv = new ItemService(db);
+                if (!srv.DeleteFile(id, guidName))
+                {
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    Response.StatusDescription = "BadRequest: file cannot be deleted as it is referred by one or more form submissions.";
+                    return Json(string.Empty);
+                }
+
+                db.SaveChanges();
+                return Json(new List<string>() { guidName });
+            }
+            catch (Exception)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    Response.StatusDescription = "BadRequest: an unknown error occurred.";
+                return Json(string.Empty);
+            }
+        }
+
+        public ActionResult File(int id, string guidName)
+        {
+            ItemService srv = new ItemService(db);
+            DataFile file = srv.GetFile(id, guidName);
+            if (file == null)
+                return HttpNotFound("File not found");
+
+            string path_name = Path.Combine(srv.UploadRoot, file.Path, file.GuidName);
+            return new FilePathResult(path_name, file.ContentType);
+        }
+
+        public ActionResult Thumbnail(int id, string name)
+        {
+            ItemService srv = new ItemService(db);
+            DataFile file = srv.GetFile(id, name);
+            if (file == null)
+                return HttpNotFound("File not found");
+
+            string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared
+                ? Path.Combine(FileHelper.GetThumbnailRoot(Request), file.Thumbnail)
+                : Path.Combine(srv.UploadRoot, file.Path, file.Thumbnail);
+
+            return new FilePathResult(path_name, file.ContentType);
         }
 
         protected override void Dispose(bool disposing)
