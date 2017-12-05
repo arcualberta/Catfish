@@ -261,7 +261,6 @@
     <Content Include="Areas\Manager\Views\Collections\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\Collections\Index.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\EntityAssociationViewModel.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\View.cshtml" />
     <Content Include="Content\bs-bootstrap\css\bootstrap.css.map" />
     <Content Include="Content\bs-bootstrap\css\bootstrap.min.css.map" />
     <Content Include="Content\bs-bootstrap\fonts\glyphicons-halflings-regular.eot" />
@@ -293,6 +292,8 @@
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\CheckBoxSet.cshtml" />
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\RadioButtonSet.cshtml" />
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\Attachment.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\HtmlTag.cshtml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
     <Content Include="Scripts\fileupload.js" />
@@ -348,6 +349,11 @@
     <Compile Include="Areas\Manager\Models\ViewModels\EntityViewModel.cs" />
     <Compile Include="Models\Regions\CatfishRegion.cs" />
     <Compile Include="Models\Regions\FormContainer.cs" />
+    <Compile Include="Models\Regions\Html\CloseTag.cs" />
+    <Compile Include="Models\Regions\Html\Css.cs" />
+    <Compile Include="Models\Regions\Html\Javascript.cs" />
+    <Compile Include="Models\Regions\Html\OpenTag.cs" />
+    <Compile Include="Models\Regions\Html\HtmlTag.cs" />
     <Compile Include="Models\Regions\MultilingualText.cs" />
     <Compile Include="Models\ViewModels\FormViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -385,6 +391,8 @@
     <Content Include="Views\FormSubmission\EditorTemplates\FormViewModel.cshtml" />
     <Content Include="Views\FormSubmission\EditorTemplates\Attachment.cshtml" />
     <Content Include="Views\FormSubmission\EditorTemplates\DataFile.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\HtmlTag.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Css.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

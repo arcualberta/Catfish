@@ -42,9 +42,14 @@
                 @Model.Page.Title
             }
         </h1>
-        @{
+        @try
+        {
             MultilingualText content = Model.Region<MultilingualText>("Content");
             @Html.DisplayFor(m => content)
+        }
+        catch (Exception)
+        {
+            @Model.Page.Title
         }
 
     </div>
