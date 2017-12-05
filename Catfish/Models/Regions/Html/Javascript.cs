@@ -12,7 +12,7 @@ namespace Catfish.Models.Regions.Html
     [ExportMetadata("Name", "Javascript Section")]
     [ExportMetadata("Type", ExtensionType.Region)]
     [Serializable]
-    public class Javascript
+    public class Javascript: CatfishRegion
     {
         public string Content { get; set; }
     }

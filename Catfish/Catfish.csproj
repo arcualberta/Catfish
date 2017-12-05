@@ -349,10 +349,8 @@
     <Compile Include="Areas\Manager\Models\ViewModels\EntityViewModel.cs" />
     <Compile Include="Models\Regions\CatfishRegion.cs" />
     <Compile Include="Models\Regions\FormContainer.cs" />
-    <Compile Include="Models\Regions\Html\CloseTag.cs" />
     <Compile Include="Models\Regions\Html\Css.cs" />
     <Compile Include="Models\Regions\Html\Javascript.cs" />
-    <Compile Include="Models\Regions\Html\OpenTag.cs" />
     <Compile Include="Models\Regions\Html\HtmlTag.cs" />
     <Compile Include="Models\Regions\MultilingualText.cs" />
     <Compile Include="Models\ViewModels\FormViewModel.cs" />

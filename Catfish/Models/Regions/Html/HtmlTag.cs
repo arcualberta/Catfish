@@ -18,7 +18,12 @@ namespace Catfish.Models.Regions.Html
         [Display(Name = "Tag Name")]
         public string TagName { get; set; }
 
-        [Display(Name = "Is Open")]
+        [Display(Name = "Type")]
         public bool IsOpen { get; set; }
+
+        public HtmlTag()
+        {
+            IsOpen = true;
+        }
     }
 }

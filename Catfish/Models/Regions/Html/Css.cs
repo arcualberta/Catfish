@@ -12,7 +12,7 @@ namespace Catfish.Models.Regions.Html
     [ExportMetadata("Name", "Css Section")]
     [ExportMetadata("Type", ExtensionType.Region)]
     [Serializable]
-    public class Css
+    public class Css : CatfishRegion
     {
         public string Content { get; set; }
     }
