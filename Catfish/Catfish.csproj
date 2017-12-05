@@ -391,6 +391,7 @@
     <Content Include="Views\FormSubmission\EditorTemplates\DataFile.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\HtmlTag.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Css.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\HtmlRegion.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
