@@ -30,15 +30,17 @@ namespace Catfish.Tests
 
             public static List<T>InstantiateList<T>(string data) where T : LexigraphiBase
             {
-                List<T> list = new List<T>();
                 int n = data.IndexOf('[');
                 data = data.Substring(n + 1);
                 n = data.IndexOf(']');
                 data = data.Substring(0, n);
 
+                data = data.Replace('\n', ' ');
 
+                string[] strList = data.Split(new string[] { "}," }, StringSplitOptions.RemoveEmptyEntries);
 
-                return list;
+                return strList.Select(s => Instantiate<T>(s + "}")).ToList();
+
             }
         }
         public class LexigraphiModel: LexigraphiBase
@@ -106,19 +108,19 @@ namespace Catfish.Tests
 
 
             var data = File.ReadAllText(@"C:\Users\Kamal\Documents\Projects\Catfish\Lexigraphica_Source_Data\comments.json");
-            List<Comment> comments = LexigraphiBase.InstantiateList<Comment>(data);
+            List<Comment> comments = LexigraphiBase.InstantiateList<Comment>(data).Where(x => x != null).ToList();
 
             data = File.ReadAllText(@"C:\Users\Kamal\Documents\Projects\Catfish\Lexigraphica_Source_Data\photos.json");
-            List<Photo> photos = LexigraphiBase.InstantiateList<Photo>(data);
+            List<Photo> photos = LexigraphiBase.InstantiateList<Photo>(data).Where(x => x != null).ToList();
 
             data = File.ReadAllText(@"C:\Users\Kamal\Documents\Projects\Catfish\Lexigraphica_Source_Data\photos_words.json");
-            List<PhotoWord> photo_words = LexigraphiBase.InstantiateList<PhotoWord>(data);
+            List<PhotoWord> photo_words = LexigraphiBase.InstantiateList<PhotoWord>(data).Where(x => x != null).ToList();
 
             data = File.ReadAllText(@"C:\Users\Kamal\Documents\Projects\Catfish\Lexigraphica_Source_Data\phrases.json");
-            List<Phrase> phrases = LexigraphiBase.InstantiateList<Phrase>(data);
+            List<Phrase> phrases = LexigraphiBase.InstantiateList<Phrase>(data).Where(x => x != null).ToList();
 
             data = File.ReadAllText(@"C:\Users\Kamal\Documents\Projects\Catfish\Lexigraphica_Source_Data\users.json");
-            List<User> users = LexigraphiBase.InstantiateList<User>(data);
+            List<User> users = LexigraphiBase.InstantiateList<User>(data).Where(x => x != null).ToList();
 
             data = File.ReadAllText(@"C:\Users\Kamal\Documents\Projects\Catfish\Lexigraphica_Source_Data\words.json");
             List<Word> words = LexigraphiBase.InstantiateList<Word>(data);
