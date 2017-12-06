@@ -530,5 +530,36 @@ namespace Catfish.Core.Models
             ////this.SetValues(src.GetValues());
         }
 
+
+        #region Audit Trail
+        public XElement GetAuditRoot()
+        {
+            XElement audit = Data.Element("audit");
+            if (audit == null)
+                Data.Add(audit = new XElement("audit"));
+            return audit;
+        }
+        public IEnumerable<AuditEntry> GetAuditTrail()
+        {
+
+            return GetAuditRoot().Elements("entry").Select(e => new AuditEntry() { Data = e });
+        }
+
+        public void AddAuditEntry(AuditEntry.eAction action, string user)
+        {
+            AuditEntry entry = new AuditEntry() { Action = action, User = user };
+            GetAuditRoot().Add(entry.Data);
+        }
+
+        public string GetCreator()
+        {
+            string xpath = "audit/entry[@action='" + AuditEntry.eAction.Create.ToString() + "']";
+            XElement ele = GetChildElements(xpath, Data).FirstOrDefault();
+            return ele == null ? null : ele.Attribute("user").Value;
+        }
+
+        #endregion
+
+
     }
 }
