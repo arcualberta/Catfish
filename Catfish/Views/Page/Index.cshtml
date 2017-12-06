@@ -4,56 +4,11 @@
 @using Catfish.Helpers;
 
 @{
-    ViewBag.Title = Model.Page.Title ;
+    ViewBag.Title = Model.Page.Title;
+
+     foreach (KeyValuePair<string, object> region in Model.Regions)
+     {
+         @Html.DisplayFor(m => region.Value)
+     }
 }
-
-@{
-    try
-    {
-        TextRegion styles = Model.Region<TextRegion>("Styles");
-        if (!string.IsNullOrEmpty(styles.Body))
-        {
-            <style type="text/css" scoped>
-                @Html.Raw(styles.Body)
-            </style>
-        }
-    }
-    catch (Exception) { }
-
-    try
-    {
-        Carousel carousel = Model.Region<Carousel>("Carousel");
-        @Html.DisplayFor(m => carousel)
-    }
-    catch (Exception) { }
-}
-
-
-<div class="content">
-    <div class="main">
-        <h1>
-            @try
-            {
-                MultilingualText field = Model.Region<MultilingualText>("PageTitle");
-                @Html.DisplayFor(m => field, new { raw = true })
-            }
-            catch (Exception)
-            {
-                @Model.Page.Title
-            }
-        </h1>
-        @try
-        {
-            MultilingualText content = Model.Region<MultilingualText>("Content");
-            @Html.DisplayFor(m => content)
-        }
-        catch (Exception)
-        {
-            @Model.Page.Title
-        }
-
-    </div>
-    <div class="sidebar">
-        @Html.Partial("Sidebar")
-    </div>
-</div>
+   
