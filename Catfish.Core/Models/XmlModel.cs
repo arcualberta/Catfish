@@ -196,7 +196,7 @@ namespace Catfish.Core.Models
                 return;
             }
 
-            Updated = DateTime.Now; 
+            Updated = DateTime.Now;
         }
 
         protected XElement GetImmediateChild(string tagName, bool createIfNotExist = true)
@@ -545,10 +545,11 @@ namespace Catfish.Core.Models
             return GetAuditRoot().Elements("entry").Select(e => new AuditEntry() { Data = e });
         }
 
-        public void AddAuditEntry(AuditEntry.eAction action, string user)
+        public AuditEntry AddAuditEntry(AuditEntry.eAction action, string user)
         {
             AuditEntry entry = new AuditEntry() { Action = action, User = user };
             GetAuditRoot().Add(entry.Data);
+            return entry;
         }
 
         public string GetCreator()
