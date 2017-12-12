@@ -392,6 +392,7 @@
     <Content Include="Views\Shared\DisplayTemplates\HtmlTag.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Css.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\HtmlRegion.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Javascript.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
