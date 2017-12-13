@@ -387,7 +387,7 @@
     <Content Include="Views\FormSubmission\EditorTemplates\CheckOption.cshtml" />
     <Content Include="Views\FormSubmission\Confirmation.cshtml" />
     <Content Include="Views\FormSubmission\EditorTemplates\FormViewModel.cshtml" />
-    <Content Include="Views\FormSubmission\EditorTemplates\Attachment.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Attachment.cshtml" />
     <Content Include="Views\FormSubmission\EditorTemplates\DataFile.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\HtmlTag.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Css.cshtml" />
@@ -403,7 +403,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Language\" />
-    <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj">
