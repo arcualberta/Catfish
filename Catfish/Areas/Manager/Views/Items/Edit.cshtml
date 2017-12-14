@@ -15,7 +15,8 @@
     <script type="text/javascript">
         var uploadApiUrl = "@Url.Action("upload", "items", new { id = Model.Id })";
         var deleteApiUrl = "@Url.Action("deleteFile", "items", new { id = Model.Id })";
-        var itemId = @Model.Id;
+
+        @*var itemId = @Model.Id;
         var uploadFieldCssId = "#uploadField";
         var uploadButtonCssId = "#uploadButton";
         var progressBarCssId = "#progressBar";
@@ -33,7 +34,7 @@
         $(function () {
             $("#progressBar").hide();
             $("#uploadErrorMessage").hide();
-        });
+        });*@
     </script>
 }
 
@@ -75,7 +76,7 @@ else
         </div>
     </div>
 
-    <div class="grid_12 bs">
+    @*<div class="grid_12 bs">
         <div class="box">
             <div class="title">
                 Files
@@ -117,7 +118,7 @@ else
             </div>
 
         </div>
-    </div>
+    </div>*@
 
     if (Model.FormSubmissions.Count() > 0)
     {
@@ -131,7 +132,17 @@ else
                 </div>
             </div>
         </div>
-
     }
+
+    <div class="grid_12 bs">
+        <div class="box">
+            <div class="title">
+                Files
+            </div>
+            <div class="form-view">
+                @Html.EditorFor(m => m.AttachmentField, new { Files = Model.Files.ToList(), ParentId = Model.Id, Controller = "items" })
+            </div>
+        </div>
+    </div>
 }
 

@@ -69,21 +69,24 @@
         @{ 
             List<DataFile> files = ViewBag.Files == null ? new List<DataFile>() : ViewBag.Files as List<DataFile>;
             string[] fileGuids = Model.FileGuids.Split(new char[] { Attachment.FileGuidSeparator });
+            int parentId = ViewBag.ParentId != null ? (int)ViewBag.ParentId : 0;
+            string controller = string.IsNullOrEmpty(ViewBag.Controller) ? "attachment" : ViewBag.Controller as string;
+
             foreach (var fileGuid in fileGuids)
             {
-                var file = files.Where(f => f.Guid == fileGuid).FirstOrDefault();
+                var file = files.Where(f => f.GuidName == fileGuid).FirstOrDefault();
                 if (file != null)
                 {
-                    FileViewModel vm = new FileViewModel(file, file.Id, Request.RequestContext, "attachment");
+                    FileViewModel vm = new FileViewModel(file, parentId, Request.RequestContext, controller);
                     var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
                     <div class="fileThumbnail" id="@eleId">
                         <img src="@vm.Thumbnail" alt="@vm.FileName" />
-                        <button class="glyphicon glyphicon-remove" onclick="del('@vm.Guid');"></button>
+                        <button class="glyphicon glyphicon-remove" onclick="@{@delFunction}('@vm.Guid');"></button>
                         <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
                     </div>
+                    }
                 }
             }
-        }
     </div>
     <div class="inner" style="clear:both">
         <div id="@messageBoxId" class="alert alert-danger messageBoxId"></div>

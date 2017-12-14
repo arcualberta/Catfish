@@ -30,6 +30,28 @@ namespace Catfish.Core.Models
             }
         }
 
+        /// <summary>
+        /// This field is only used for passing file attachments between controller action and Items/Edit view through model binding
+        /// </summary>
+        [NotMapped]
+        public Attachment AttachmentField
+        {
+            get
+            {
+                if(mAttachmentField == null)
+                {
+                    mAttachmentField = new Attachment();
+                    mAttachmentField.FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), Files.Select(f => f.GuidName));
+                }
+                return mAttachmentField;
+            }
+            set
+            {
+                mAttachmentField = value;
+            }
+        }
+        private Attachment mAttachmentField;
+
         [NotMapped]
         public virtual IEnumerable<DataFile> Files
         {

@@ -72,7 +72,6 @@
     <Compile Include="ManagerIntegrationTests.cs" />
     <Compile Include="RandomDataIngest.cs" />
     <Compile Include="TestData.cs" />
-    <Compile Include="LexigraphicaDataImport.cs" />
     <Compile Include="XmlModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
