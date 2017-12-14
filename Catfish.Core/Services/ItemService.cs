@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Data;
+using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -66,6 +67,13 @@ namespace Catfish.Core.Services
             return newFiles;
         }
 
+        public List<DataFile> UploadTempFiles(HttpRequestBase request)
+        {
+            List<DataFile> files = UploadFiles(request, "temp-files");
+            Db.XmlModels.AddRange(files);
+            return files;
+        }
+
         public List<DataFile> UploadFiles(int itemId, HttpRequestBase request)
         {
             Item parent = Db.Items.Where(i => i.Id == itemId).FirstOrDefault();
@@ -117,6 +125,11 @@ namespace Catfish.Core.Services
             return true;
         }
 
+        public void DeleteFile(DataFile file)
+        {
+
+        }
+
         public Item UpdateStoredItem(Item changedItem)
         {
             Item dbModel = new Item();
@@ -137,6 +150,58 @@ namespace Catfish.Core.Services
                 dbModel = CreateEntity<Item>(changedItem.EntityTypeId.Value);
                 dbModel.UpdateValues(changedItem);
             }
+
+            //Processing any file attachments that have been submitted
+            //========================================================
+            List<string> keepFileGuids = changedItem.AttachmentField.FileGuids.Split(new char[] { Attachment.FileGuidSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+            //Removing attachments that are in the dbModel but not in attachments to be kept
+            foreach(DataFile file in dbModel.Files.ToList())
+            {
+                if (keepFileGuids.IndexOf(file.GuidName) < 0)
+                    DeleteFile(file);
+            }
+
+            //Adding new files
+            foreach(string fileGuid in keepFileGuids)
+            {
+                if(dbModel.Files.Where(f => f.GuidName == fileGuid).Any() == false)
+                {
+                    DataFile file = Db.XmlModels.Where(m => m.Guid == fileGuid)
+                        .Select(m => m as DataFile)
+                        .FirstOrDefault();
+
+                    if (file != null)
+                    {
+                        dbModel.AddData(file);
+                        //since the data object has now been inserted into the submission item, it is no longer needed 
+                        //to stay as a stanalone object in the XmlModel table.
+                        Db.XmlModels.Remove(file);
+
+                        //moving the physical files from the temporary upload folder to a folder identified by the GUID of the
+                        //item inside the uploaded data folder
+                        string dstDir = Path.Combine(DataRoot, dbModel.Guid);
+                        if (!Directory.Exists(dstDir))
+                            Directory.CreateDirectory(dstDir);
+
+                        string srcFile = Path.Combine(file.Path, file.GuidName);
+                        string dstFile = Path.Combine(dstDir, file.GuidName);
+                        File.Move(srcFile, dstFile);
+
+                        //moving the thumbnail, if it's not a shared one
+                        if(file.ThumbnailType == DataFile.eThumbnailTypes.NonShared)
+                        {
+                            string srcThumbnail = Path.Combine(file.Path, file.Thumbnail);
+                            string dstThumbnail = Path.Combine(dstDir, file.Thumbnail);
+                            File.Move(srcThumbnail, dstThumbnail);
+                        }
+
+                        //updating the file path
+                        file.Path = dstDir;
+                    }
+                }
+            }
+            //End: processing file attachments
 
             if (changedItem.Id > 0) //update Item
                 Db.Entry(dbModel).State = EntityState.Modified;

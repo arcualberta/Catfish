@@ -117,12 +117,5 @@ namespace Catfish.Core.Services
 
             return updatedItem;
         }
-
-        public List<DataFile> UploadTempFiles(HttpRequestBase request)
-        {
-            List<DataFile> files = UploadFiles(request, "temp-files");
-            Db.XmlModels.AddRange(files);
-            return files;
-        }
     }
 }

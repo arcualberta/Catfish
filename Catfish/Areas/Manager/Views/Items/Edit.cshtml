@@ -63,18 +63,43 @@
 }
 else
 {
-    <div class="grid_12 bs">
-        <div class="box">
-            <div class="title">
-                Metadata
-            </div>
-
-            @using (Html.BeginForm("Edit", "Items", FormMethod.Post))
-            {
+    using (Html.BeginForm("Edit", "Items", FormMethod.Post))
+    {
+        <div class="grid_12 bs">
+            <div class="box">
+                <div class="title">
+                    Metadata
+                </div>
                 @Html.Partial("Partial/EditEntity")
-            }
+            </div>
         </div>
-    </div>
+
+        if (Model.FormSubmissions.Count() > 0)
+        {
+            <div class="grid_12 bs">
+                <div class="box">
+                    <div class="title">
+                        Form Submissions
+                    </div>
+                    <div class="form-view">
+                        @Html.DisplayFor(m => m.FormSubmissions, new { Item = Model })
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="grid_12 bs">
+            <div class="box">
+                <div class="title">
+                    Files
+                </div>
+                <div class="form-view">
+                    @Html.EditorFor(m => m.AttachmentField, new { Files = Model.Files.ToList(), ParentId = Model.Id, Controller = "items" })
+                </div>
+            </div>
+        </div>
+
+    }
 
     @*<div class="grid_12 bs">
         <div class="box">
@@ -120,29 +145,5 @@ else
         </div>
     </div>*@
 
-    if (Model.FormSubmissions.Count() > 0)
-    {
-        <div class="grid_12 bs">
-            <div class="box">
-                <div class="title">
-                    Form Submissions
-                </div>
-                <div class="form-view">
-                    @Html.DisplayFor(m => m.FormSubmissions, new { Item = Model })
-                </div>
-            </div>
-        </div>
-    }
-
-    <div class="grid_12 bs">
-        <div class="box">
-            <div class="title">
-                Files
-            </div>
-            <div class="form-view">
-                @Html.EditorFor(m => m.AttachmentField, new { Files = Model.Files.ToList(), ParentId = Model.Id, Controller = "items" })
-            </div>
-        </div>
-    </div>
 }
 

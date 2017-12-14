@@ -138,6 +138,7 @@ namespace Catfish.Areas.Manager.Controllers
                 }
             }
 
+            model.AttachmentField = new Attachment() { FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), model.Files.Select(f => f.GuidName)) };
             return View(model);
         }
 
@@ -192,18 +193,36 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
-        public JsonResult Upload(int id)
+        public JsonResult Upload()
         {
+            ////try
+            ////{
+            ////    List<DataFile> files = ItemService.UploadFiles(id, Request);
+            ////    db.SaveChanges();
+
+            ////    var ret = files.Select(f => new FileViewModel(f, id, ControllerContext.RequestContext, "items"));
+            ////    return Json(ret);
+            ////}
+            ////catch (Exception ex)
+            ////{
+            ////    //return 500 or something appropriate to show that an error occured.
+            ////    return Json(string.Empty);
+            ////}
+
             try
             {
-                ItemService srv = new ItemService(db);
-                List<DataFile> files = srv.UploadFiles(id, Request);
-                db.SaveChanges();
+                List<DataFile> files = ItemService.UploadTempFiles(Request);
+                Db.SaveChanges();
 
-                var ret = files.Select(f => new FileViewModel(f, id, ControllerContext.RequestContext, "items"));
+                //Saving ids  of uploaded files in the session because these files and thumbnails
+                //needs to be accessible by the user who is uploading them without restriction of any security rules.
+                //This is because these files are stored in the temporary area without associating to any items.
+                FileHelper.CacheGuids(Session, files);
+
+                var ret = files.Select(f => new FileViewModel(f, f.Id, ControllerContext.RequestContext, "items"));
                 return Json(ret);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //return 500 or something appropriate to show that an error occured.
                 return Json(string.Empty);

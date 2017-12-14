@@ -38,7 +38,7 @@ namespace Catfish.Core.Models
         {
             get
             {
-                if(mAttachmentField == null)
+                if (mAttachmentField == null)
                 {
                     mAttachmentField = new Attachment();
                     mAttachmentField.FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), Files.Select(f => f.GuidName));
