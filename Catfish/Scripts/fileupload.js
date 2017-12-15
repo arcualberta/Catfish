@@ -4,7 +4,7 @@
         var d = data[i];
         var eleId = d.Guid.substr(0, d.Guid.length - 4);
         var ele = '<div class="fileThumbnail" id="' + eleId + '" > <img src="' + d.Thumbnail + '" alt="' + d.FileName + '" />' +
-            '<button class="glyphicon glyphicon-remove" onclick="deleteFile(\'' + d.Guid + '\',\'' + deleteApiUrl + '\',\'' + messageBoxCssId + '\');"></button>' +
+            '<button class="glyphicon glyphicon-remove" onclick="deleteFile(\'' + d.Guid + '\',\'' + deleteApiUrl + '\',\'' + messageBoxCssId + '\'); return false;"></button>' +
             '<div class="label"><a href="' + d.Url + '" target="_blank">' + d.FileName + '</a></div>' +
             '</div>';
 
