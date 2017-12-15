@@ -12,15 +12,11 @@
 
 @{
     string guid = Guid.NewGuid().ToString("N");
-
-    string uploadFieldId = "uploadField_" + guid;
-    string uploadFieldCssId = "#" + uploadFieldId;
+    string uploadApiUrl = ViewBag.UploadApiUrl as string;
+    string deleteApiUrl = ViewBag.DeleteApiUrl as string;
 
     string uploadButtonId = "uploadButton_" + guid;
     string uploadButtonCssId = "#" + uploadButtonId;
-
-    string progressBarId = "progressBar_" + guid;
-    string progressBarCssId = "#" + progressBarId;
 
     string messageBoxId = "uploadErrorMessage_" + guid;
     string messageBoxCssId = "#" + messageBoxId;
@@ -35,35 +31,13 @@
 }
 
 <script>
-    function @{@uploadFunction}() {
-        uploadFile(0, uploadApiUrl, deleteApiUrl, "@uploadFieldCssId", "@uploadButtonCssId", "@progressBarCssId", "@messageBoxCssId", "@thumbnailPanelCssId", @guidUpdateFunction);
-    }
-
-    function @{@guidUpdateFunction}(data) {
-        var ids = $("#@fileGuidElementId").val();
-        data = JSON.parse(data);
-        for (var i = 0; i < data.length; ++i)
-        {
-            var separator = (i==0 && ids == "") ? "" : "@Attachment.FileGuidSeparator";
-            ids = ids + separator + data[i].Guid;
-        }
-
-        $("#@fileGuidElementId").val(ids);
-    }
-
-    function @{@delFunction} (guidName) {
-        deleteFile(guidName, deleteApiUrl, "@messageBoxCssId");
-    }
-
-    $(function () {
-        $("@progressBarCssId").hide();
-    });
 
 </script>
 
 
-<div class="inner file-upload" style="clear:both">
+<div id="@guid" class="inner file-upload" style="clear:both">
     <div id="@thumbnailPanelId" class="thumbnailPanel">
+        @{ string fileGuidListFieldId = Html.IdFor(m => m.FileGuids).ToString(); }
         @Html.HiddenFor(m => m.FileGuids)
 
         @{ 
@@ -81,7 +55,7 @@
                     var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
                     <div class="fileThumbnail" id="@eleId">
                         <img src="@vm.Thumbnail" alt="@vm.FileName" />
-                        <button class="glyphicon glyphicon-remove" onclick="@{@delFunction}('@vm.Guid'); return false;"></button>
+                        <button class="glyphicon glyphicon-remove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@messageBoxCssId'); return false;"></button>
                         <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
                     </div>
                     }
@@ -89,17 +63,19 @@
             }
     </div>
     <div class="inner" style="clear:both">
-        <div id="@messageBoxId" class="alert alert-danger messageBoxId"></div>
+        <div id="@messageBoxId" class="alert alert-danger messageBox"></div>
 
-        <input type='file' id='@uploadFieldId' class="uploadField" name="files" multiple="multiple" />
-        <input type="button" value="Upload" id="@uploadButtonId" class="uploadButton" onclick="@{@uploadFunction}(); return false;" />
-        <div id="@progressBarId"><progress></progress></div>
+        <input type='file' class="uploadField" name="files" multiple="multiple" />
+        @*<input type="button" value="Upload" id="@uploadButtonId" class="uploadButton" onclick="@{@uploadFunction}(); return false;" />*@
+        <input type="button" value="Upload" id="@uploadButtonId" class="uploadButton" 
+               onclick="uploadFile2('@guid', '@uploadApiUrl', '@deleteApiUrl', '@fileGuidListFieldId'); return false;" />
+        <div class="progressBar"><progress></progress></div>
     </div>
 </div>
 
 <script>
     $(function () {
-        $("@progressBarCssId").hide();
+        $("#@guid .progressBar").hide();
         $("@messageBoxCssId").hide();
     });
 </script>

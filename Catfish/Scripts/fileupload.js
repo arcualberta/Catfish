@@ -1,8 +1,14 @@
-﻿function updateFileListView(data, deleteApiUrl, thumbnailPanelCssId, messageBoxCssId) {
+﻿function getThumbnailDivId(fileGuidName) {
+    return fileGuidName.substr(0, fileGuidName.length - 4);
+}
+
+
+function updateFileListView(data, deleteApiUrl, thumbnailPanelCssId, messageBoxCssId) {
     data = JSON.parse(data, thumbnailPanelCssId);
     for (var i = 0; i < data.length; ++i) {
         var d = data[i];
-        var eleId = d.Guid.substr(0, d.Guid.length - 4);
+        var eleId = getThumbnailDivId(d.Guid);
+        //var eleId = d.Guid.substr(0, d.Guid.length - 4);
         var ele = '<div class="fileThumbnail" id="' + eleId + '" > <img src="' + d.Thumbnail + '" alt="' + d.FileName + '" />' +
             '<button class="glyphicon glyphicon-remove" onclick="deleteFile(\'' + d.Guid + '\',\'' + deleteApiUrl + '\',\'' + messageBoxCssId + '\'); return false;"></button>' +
             '<div class="label"><a href="' + d.Url + '" target="_blank">' + d.FileName + '</a></div>' +
