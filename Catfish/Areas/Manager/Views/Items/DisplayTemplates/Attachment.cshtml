@@ -16,7 +16,8 @@
             }
             @foreach (var fileGuid in fileGuids)
             {
-                <div class="fileThumbnail">
+                var eleId = @fileGuid.Substring(0, @fileGuid.Length - 4);
+                <div class="fileThumbnail @eleId">
                     @{
                         var file = item.Files.Where(f => f.GuidName == fileGuid).FirstOrDefault();
                         if (file != null)

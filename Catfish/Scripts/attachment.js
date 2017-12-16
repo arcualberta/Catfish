@@ -6,7 +6,7 @@ function deleteLinkedFile(fileGuidName, fileGuidListFieldId, visibleFileName, co
     if (confirm("Delete the file " + visibleFileName + "?") == false)
         return;
     var eleId = getThumbnailDivId(fileGuidName);
-    $("#" + eleId).remove();
+    $(".thumbnailPanel ." + eleId).remove(); //removing all thumbnail occuraces of the file
 
     var guids = $("#" + fileGuidListFieldId).val().split("|");
     guids.splice($.inArray(fileGuidName, guids), 1);

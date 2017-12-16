@@ -1,5 +1,7 @@
 ﻿@model Catfish.Core.Models.Form
     
+@using Catfish.Core.Models.Forms;
+
 @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
 {
     {"class", "model-type"}
@@ -29,7 +31,22 @@
             }
 
             <div class="input">
-                @Html.EditorFor(m => Model.Fields[i])
+                @if (typeof(Attachment).IsAssignableFrom(Model.Fields[i].GetType()))
+                {
+                    @Html.EditorFor(m => Model.Fields[i],
+                   new
+                   {
+                       UploadApiUrl = @Url.Action("upload", "attachment"),
+                       DeleteApiUrl = @Url.Action("deleteFile", "attachment", new { id = Model.Fields[i].Id }),
+                       ParentId = Model.Id,
+                       Controller = "items"
+                   })
+
+                }
+                else
+                {
+                    @Html.EditorFor(m => Model.Fields[i])
+                }
             </div>
         </div>
     }

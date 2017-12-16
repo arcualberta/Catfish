@@ -35,7 +35,7 @@
                 {
                     FileViewModel vm = new FileViewModel(file, parentId, Request.RequestContext, controller);
                     var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
-                    <div class="fileThumbnail" id="@eleId">
+                    <div class="fileThumbnail @eleId">
                         <img src="@vm.Thumbnail" alt="@vm.FileName" />
                         <button class="glyphicon glyphicon-remove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@containerId'); return false;"></button>
                         <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
