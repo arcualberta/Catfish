@@ -2,16 +2,18 @@
     return fileGuidName.substr(0, fileGuidName.length - 4);
 }
 
-function deleteLinkedFile(fileGuidName, fileGuidListFieldId, visibleFileName, messageBoxId) {
+function deleteLinkedFile(fileGuidName, fileGuidListFieldId, visibleFileName, containerId) {
     if (confirm("Delete the file " + visibleFileName + "?") == false)
         return;
     var eleId = getThumbnailDivId(fileGuidName);
     $("#" + eleId).remove();
 
-    var guids = $("#" + fileGuidListFieldId).val().split("@Attachment.FileGuidSeparator");
+    var guids = $("#" + fileGuidListFieldId).val().split("|");
     guids.splice($.inArray(fileGuidName, guids), 1);
     guids = guids.join("@Attachment.FileGuidSeparator");
     $("#" + fileGuidListFieldId).val(guids);
+    $("#" + containerId + " .messageBox").text("");
+    $("#" + containerId + " .messageBox").hide()
 }
 
 function deleteUnlinkedFile(fileGuidName, deleteApiUrl, containerId) {
@@ -48,10 +50,10 @@ function deleteUnlinkedFile(fileGuidName, deleteApiUrl, containerId) {
     oReg.send(myFrm);
 }
 
-function updateFileListView(data, deleteApiUrl, containerId) {
+function updateFileListView(data, deleteApiUrl, containerId, fileGuidListFieldId) {
     data = JSON.parse(data);
     var thumbnailPanel = $("#" + containerId + " .thumbnailPanel")[0];
-
+    var fileGuidList = $("#" + fileGuidListFieldId).val();
     for (var i = 0; i < data.length; ++i) {
         var d = data[i];
         var eleId = getThumbnailDivId(d.Guid);
@@ -60,8 +62,15 @@ function updateFileListView(data, deleteApiUrl, containerId) {
             '<div class="label"><a href="' + d.Url + '" target="_blank">' + d.FileName + '</a></div>' +
             '</div>';
 
+        if (fileGuidList.length > 0)
+            fileGuidList = fileGuidList + "|" + d.Guid;
+        else
+            fileGuidList = d.Guid;
+
         $(thumbnailPanel).append(ele);
     }
+
+    $("#" + fileGuidListFieldId).val(fileGuidList);
 }
 
 function uploadFile2(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFieldId) {
@@ -83,7 +92,7 @@ function uploadFile2(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFieldI
         if (oReg.readyState === 4) {  //after successfull execute the function then it will execute what ever inside this if {}
             if (oReg.status === 200) {
                 //Updating the value of the hidden field which carries the ID of this FileUpload object in the page
-                updateFileListView(data, deleteApiUrl, containerId);
+                updateFileListView(data, deleteApiUrl, containerId, fileGuidListFieldId);
                 $("#" + containerId + " .messageBox").text("");
                 $("#" + containerId + " .messageBox").hide()
             }

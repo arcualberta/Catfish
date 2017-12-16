@@ -11,32 +11,14 @@
 @Html.HiddenFor(m => m.Ref)
 
 @{
-    string guid = Guid.NewGuid().ToString("N");
+    string containerId = Guid.NewGuid().ToString("N");
     string uploadApiUrl = ViewBag.UploadApiUrl as string;
     string deleteApiUrl = ViewBag.DeleteApiUrl as string;
-
-    string uploadButtonId = "uploadButton_" + guid;
-    string uploadButtonCssId = "#" + uploadButtonId;
-
-    string messageBoxId = "uploadErrorMessage_" + guid;
-    string messageBoxCssId = "#" + messageBoxId;
-
-    string thumbnailPanelId = "thumbnailPanel_" + guid;
-    string thumbnailPanelCssId = "#" + thumbnailPanelId;
-
-    string uploadFunction = "upload_" + guid;
-    string delFunction = "del_" + guid;
-    string guidUpdateFunction = "guidUpdate_" + guid;
-    string fileGuidElementId = Html.IdFor(m => m.FileGuids).ToString();
 }
 
-<script>
 
-</script>
-
-
-<div id="@guid" class="inner file-upload" style="clear:both">
-    <div id="@thumbnailPanelId" class="thumbnailPanel">
+<div id="@containerId" class="inner file-upload" style="clear:both">
+    <div class="thumbnailPanel">
         @{ string fileGuidListFieldId = Html.IdFor(m => m.FileGuids).ToString(); }
         @Html.HiddenFor(m => m.FileGuids)
 
@@ -55,7 +37,7 @@
                     var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
                     <div class="fileThumbnail" id="@eleId">
                         <img src="@vm.Thumbnail" alt="@vm.FileName" />
-                        <button class="glyphicon glyphicon-remove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@messageBoxCssId'); return false;"></button>
+                        <button class="glyphicon glyphicon-remove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@containerId'); return false;"></button>
                         <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
                     </div>
                     }
@@ -63,19 +45,18 @@
             }
     </div>
     <div class="inner" style="clear:both">
-        <div id="@messageBoxId" class="alert alert-danger messageBox"></div>
+        <div class="alert alert-danger messageBox"></div>
 
         <input type='file' class="uploadField" name="files" multiple="multiple" />
-        @*<input type="button" value="Upload" id="@uploadButtonId" class="uploadButton" onclick="@{@uploadFunction}(); return false;" />*@
-        <input type="button" value="Upload" id="@uploadButtonId" class="uploadButton" 
-               onclick="uploadFile2('@guid', '@uploadApiUrl', '@deleteApiUrl', '@fileGuidListFieldId'); return false;" />
+        <input type="button" value="Upload" class="uploadButton" 
+               onclick="uploadFile2('@containerId', '@uploadApiUrl', '@deleteApiUrl', '@fileGuidListFieldId'); return false;" />
         <div class="progressBar"><progress></progress></div>
     </div>
 </div>
 
 <script>
     $(function () {
-        $("#@guid .progressBar").hide();
-        $("@messageBoxCssId").hide();
+        $("#@containerId .progressBar").hide();
+        $("#@containerId .messageBox").hide();
     });
 </script>
