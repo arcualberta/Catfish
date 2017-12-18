@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models;
+﻿using Catfish.Core.Helpers;
+using Catfish.Core.Models;
 using Catfish.Core.Models.Data;
 using Catfish.Core.Models.Forms;
 using System;
@@ -16,10 +17,6 @@ namespace Catfish.Core.Services
     public class ItemService: EntityService
     {
         public ItemService(CatfishDbContext db) : base(db) { }
-
-        public string UploadRoot { get { return ConfigurationManager.AppSettings["UploadRoot"]; } }
-
-        public string DataRoot { get { return Path.Combine(UploadRoot, "Data"); } }
 
         public string GetURL(string pathName)
         {
@@ -39,7 +36,7 @@ namespace Catfish.Core.Services
 
         protected List<DataFile> UploadFiles(HttpRequestBase request, string dstPath)
         {
-            dstPath = Path.Combine(UploadRoot, dstPath);
+            dstPath = Path.Combine(ConfigHelper.UploadRoot, dstPath);
             if (!Directory.Exists(dstPath))
             {
                 Directory.CreateDirectory(dstPath);
@@ -59,7 +56,7 @@ namespace Catfish.Core.Services
                 file.Thumbnail = GetThumbnail(file.ContentType);
                 file.ThumbnailType = DataFile.eThumbnailTypes.Shared;
 
-                request.Files[i].SaveAs(Path.Combine(UploadRoot, file.Path, file.GuidName));
+                request.Files[i].SaveAs(Path.Combine(file.Path, file.GuidName));
 
                 newFiles.Add(file);
             }
@@ -103,31 +100,81 @@ namespace Catfish.Core.Services
                 return null;
         }
 
-        public bool DeleteFile(int itemId, string guidName)
+        public bool DeleteStandaloneFile(string guidName)
         {
-            Item item = Db.Items.Where(i => i.Id == itemId).FirstOrDefault();
-            if (item == null)
-                throw new Exception("Item not found");
-
-            //check if the file is referreed by any form in this item
-            bool referenced = false;
-            foreach(var form in item.FormSubmissions)
-            {
-                if (referenced = form.FormData.CheckFileReference(guidName))
-                    break;
-            }
-
-            if (referenced)
+            DataFile file = Db.XmlModels.Where(x => x.Guid == guidName).FirstOrDefault() as DataFile;
+            if (file == null)
                 return false;
 
-            item.RemoveFile(guidName);
-            Db.Entry(item).State = EntityState.Modified;
+            //Deleting the file from the file system
+            file.DeleteFilesFromFileSystem();
+
+            //Deleting the file object from the database
+            Db.XmlModels.Remove(file);
+
             return true;
         }
 
-        public void DeleteFile(DataFile file)
+        protected void UpdateFiles(Item srcItem, Item dstItem)
         {
+            UpdateFiles(srcItem.AttachmentField, dstItem);
+        }
+        protected void UpdateFiles(Attachment srcAttachmentField, Item dstItem)
+        {
+            List<string> keepFileGuids = srcAttachmentField.FileGuids.Split(new char[] { Attachment.FileGuidSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
+            //Removing attachments that are in the dbModel but not in attachments to be kept
+            foreach (DataFile file in dstItem.Files.ToList())
+            {
+                if (keepFileGuids.IndexOf(file.GuidName) < 0)
+                {
+                    //Deleting the file node from the XML Model
+                    dstItem.RemoveFile(file.GuidName);
+
+                    //Deleting the file from the file system
+                    file.DeleteFilesFromFileSystem();
+                }
+            }
+
+            //Adding new files
+            foreach (string fileGuid in keepFileGuids)
+            {
+                if (dstItem.Files.Where(f => f.GuidName == fileGuid).Any() == false)
+                {
+                    DataFile file = Db.XmlModels.Where(m => m.Guid == fileGuid)
+                        .Select(m => m as DataFile)
+                        .FirstOrDefault();
+
+                    if (file != null)
+                    {
+                        dstItem.AddData(file);
+                        //since the data object has now been inserted into the submission item, it is no longer needed 
+                        //to stay as a stanalone object in the XmlModel table.
+                        Db.XmlModels.Remove(file);
+
+                        //moving the physical files from the temporary upload folder to a folder identified by the GUID of the
+                        //item inside the uploaded data folder
+                        string dstDir = Path.Combine(ConfigHelper.DataRoot, dstItem.Guid);
+                        if (!Directory.Exists(dstDir))
+                            Directory.CreateDirectory(dstDir);
+
+                        string srcFile = Path.Combine(file.Path, file.GuidName);
+                        string dstFile = Path.Combine(dstDir, file.GuidName);
+                        File.Move(srcFile, dstFile);
+
+                        //moving the thumbnail, if it's not a shared one
+                        if (file.ThumbnailType == DataFile.eThumbnailTypes.NonShared)
+                        {
+                            string srcThumbnail = Path.Combine(file.Path, file.Thumbnail);
+                            string dstThumbnail = Path.Combine(dstDir, file.Thumbnail);
+                            File.Move(srcThumbnail, dstThumbnail);
+                        }
+
+                        //updating the file path
+                        file.Path = dstDir;
+                    }
+                }
+            }
         }
 
         public Item UpdateStoredItem(Item changedItem)
@@ -137,21 +184,19 @@ namespace Catfish.Core.Services
             if (changedItem.Id > 0)
             {
                 dbModel = Db.XmlModels.Find(changedItem.Id) as Item;
-                //dbModel.Deserialize();
-
-                //updating the "value" text elements
-                dbModel.UpdateValues(changedItem);
-
-                //NOTE: Do not change files here. They are added and deleted through AJAX API calls, not when the item is saved.
-
             }
             else
             {
                 dbModel = CreateEntity<Item>(changedItem.EntityTypeId.Value);
-                dbModel.UpdateValues(changedItem);
             }
 
+            //updating the "value" text elements
+            dbModel.UpdateValues(changedItem);
+
             //Processing any file attachments that have been submitted
+            UpdateFiles(changedItem, dbModel);
+
+/*
             //========================================================
             List<string> keepFileGuids = changedItem.AttachmentField.FileGuids.Split(new char[] { Attachment.FileGuidSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
@@ -159,7 +204,17 @@ namespace Catfish.Core.Services
             foreach(DataFile file in dbModel.Files.ToList())
             {
                 if (keepFileGuids.IndexOf(file.GuidName) < 0)
-                    DeleteFile(file);
+                {
+                    //Deleting the file node from the XML Model
+                    dbModel.RemoveFile(file.GuidName);
+
+                    //d=Deleting the file from the file system
+                    File.Delete(file.AbsoluteFilePathName);
+
+                    //If the thumbnail is not a shared one, deleting it as well from the file system
+                    if (file.ThumbnailType != DataFile.eThumbnailTypes.Shared)
+                        File.Delete(Path.Combine(ConfigHelper.UploadRoot, file.Thumbnail));
+                }
             }
 
             //Adding new files
@@ -180,7 +235,7 @@ namespace Catfish.Core.Services
 
                         //moving the physical files from the temporary upload folder to a folder identified by the GUID of the
                         //item inside the uploaded data folder
-                        string dstDir = Path.Combine(DataRoot, dbModel.Guid);
+                        string dstDir = Path.Combine(ConfigHelper.DataRoot, dbModel.Guid);
                         if (!Directory.Exists(dstDir))
                             Directory.CreateDirectory(dstDir);
 
@@ -201,6 +256,7 @@ namespace Catfish.Core.Services
                     }
                 }
             }
+*/
             //End: processing file attachments
 
             if (changedItem.Id > 0) //update Item

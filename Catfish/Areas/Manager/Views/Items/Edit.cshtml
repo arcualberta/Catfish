@@ -97,8 +97,8 @@ else
                 <div class="form-view">
                     @Html.EditorFor(m => m.AttachmentField,
                    new {
-                       UploadApiUrl = @Url.Action("upload", "items", new { id = Model.Id }),
-                       DeleteApiUrl = @Url.Action("deleteFile", "items", new { id = Model.Id }),
+                       UploadApiUrl = @Url.Action("upload", "items"),
+                       DeleteApiUrl = @Url.Action("deleteCashedFile", "items"),
                        Files = Model.Files.ToList(),
                        ParentId = Model.Id,
                        Controller = "items"

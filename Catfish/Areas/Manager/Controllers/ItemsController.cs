@@ -231,15 +231,23 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
-        public JsonResult DeleteFile(int id, string guidName)
+        public JsonResult DeleteCashedFile(string guidName)
         {
             try
             {
-                ItemService srv = new ItemService(db);
-                if (!srv.DeleteFile(id, guidName))
+                //Makes sure that the requested file is in the cache
+                if(!FileHelper.CheckGuidCache(Session, guidName))
                 {
-                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    Response.StatusDescription = "BadRequest: file cannot be deleted as it is referred by one or more form submissions.";
+                    Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    Response.StatusDescription = "BadRequest: the file cannot be deleted -  NOT IN CACHE.";
+                    return Json(string.Empty);
+                }
+
+                ItemService srv = new ItemService(db);
+                if (!srv.DeleteStandaloneFile(guidName))
+                {
+                    Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    Response.StatusDescription = "The file not found";
                     return Json(string.Empty);
                 }
 
@@ -249,7 +257,7 @@ namespace Catfish.Areas.Manager.Controllers
             catch (Exception)
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    Response.StatusDescription = "BadRequest: an unknown error occurred.";
+                Response.StatusDescription = "BadRequest: an unknown error occurred.";
                 return Json(string.Empty);
             }
         }

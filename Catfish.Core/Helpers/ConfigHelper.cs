@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catfish.Core.Models.Forms;
+using System.IO;
 
 namespace Catfish.Core.Helpers
 {
@@ -63,5 +64,9 @@ namespace Catfish.Core.Helpers
             string label = Languages.Where(c => c.TwoLetterISOLanguageName == languageCode).Select(c => c.NativeName).FirstOrDefault();
             return string.IsNullOrEmpty(label) ? languageCode : label;
         }
+
+        public static string UploadRoot { get { return ConfigurationManager.AppSettings["UploadRoot"]; } }
+
+        public static string DataRoot { get { return Path.Combine(UploadRoot, "Data"); } }
     }
 }

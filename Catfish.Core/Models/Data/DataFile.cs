@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Catfish.Core.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +30,25 @@ namespace Catfish.Core.Models.Data
         public string Thumbnail { get { return GetAttribute("thumbnail", null); } set { SetAttribute("thumbnail", value); } }
 
         [NotMapped]
-        public string Path { get { return GetAttribute("path", null); } set { SetAttribute("path", value); } }
+        public string Path
+        {
+            get
+            {
+                string relativePath = GetAttribute("path", null);
+                return System.IO.Path.Combine(ConfigHelper.UploadRoot, relativePath);
+            }
+            set
+            {
+                string path = (value != null && value.StartsWith(ConfigHelper.UploadRoot)) ?
+                    value.Substring(ConfigHelper.UploadRoot.Length + 1) :
+                    value;
+
+                SetAttribute("path", path);
+            }
+        }
+
+        [NotMapped]
+        public string AbsoluteFilePathName { get { return System.IO.Path.Combine(Path, GuidName); } }
 
         [NotMapped]
         public eThumbnailTypes ThumbnailType
@@ -48,6 +68,16 @@ namespace Catfish.Core.Models.Data
             {
                 SetAttribute("thumbnail-type", value.ToString());
             }
+        }
+
+        public void DeleteFilesFromFileSystem()
+        {
+            //Deleting the file from the file system
+            File.Delete(AbsoluteFilePathName);
+
+            //If the thumbnail is not a shared one, deleting it as well from the file system
+            if (ThumbnailType != DataFile.eThumbnailTypes.Shared)
+                File.Delete(System.IO.Path.Combine(ConfigHelper.UploadRoot, Thumbnail));
         }
 
     }

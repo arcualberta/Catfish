@@ -37,7 +37,7 @@
                    new
                    {
                        UploadApiUrl = @Url.Action("upload", "attachment"),
-                       DeleteApiUrl = @Url.Action("deleteFile", "attachment", new { id = Model.Fields[i].Id }),
+                       DeleteApiUrl = @Url.Action("deleteCashedFile", "attachment"),
                        ParentId = Model.Id,
                        Controller = "items"
                    })
