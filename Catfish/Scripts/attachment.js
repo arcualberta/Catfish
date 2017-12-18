@@ -10,7 +10,7 @@ function deleteLinkedFile(fileGuidName, fileGuidListFieldId, visibleFileName, co
 
     var guids = $("#" + fileGuidListFieldId).val().split("|");
     guids.splice($.inArray(fileGuidName, guids), 1);
-    guids = guids.join("@Attachment.FileGuidSeparator");
+    guids = guids.join("|");
     $("#" + fileGuidListFieldId).val(guids);
     $("#" + containerId + " .messageBox").text("");
     $("#" + containerId + " .messageBox").hide()

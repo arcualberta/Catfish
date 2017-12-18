@@ -1,4 +1,5 @@
 ﻿using Catfish.Areas.Manager.Models.ViewModels;
+using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Data;
 using Catfish.Core.Services;
@@ -56,7 +57,7 @@ namespace Catfish.Controllers
             if (file == null)
                 return HttpNotFound("File not found");
 
-            string path_name = Path.Combine(srv.UploadRoot, file.Path, file.GuidName);
+            string path_name = Path.Combine(ConfigHelper.UploadRoot, file.Path, file.GuidName);
             return new FilePathResult(path_name, file.ContentType);
         }
 
@@ -74,7 +75,7 @@ namespace Catfish.Controllers
 
             string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared
                 ? Path.Combine(FileHelper.GetThumbnailRoot(Request), file.Thumbnail)
-                : Path.Combine(srv.UploadRoot, file.Path, file.Thumbnail);
+                : Path.Combine(ConfigHelper.UploadRoot, file.Path, file.Thumbnail);
 
             return new FilePathResult(path_name, file.ContentType);
         }
