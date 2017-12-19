@@ -16,7 +16,7 @@ function deleteLinkedFile(fileGuidName, fileGuidListFieldId, visibleFileName, co
     $("#" + containerId + " .messageBox").hide()
 }
 
-function deleteUnlinkedFile(fileGuidName, deleteApiUrl, containerId) {
+function deleteUnlinkedFile(fileGuidName, deleteApiUrl, containerId, fileGuidListFieldId) {
     if (confirm("Delete file?") == false)
         return;
 
@@ -28,6 +28,12 @@ function deleteUnlinkedFile(fileGuidName, deleteApiUrl, containerId) {
         if (oReg.readyState === 4) {  //after successfull execute the function then it will execute what ever inside this if {}
             if (oReg.status === 200) {
                 var guid = JSON.parse(data)[0];
+
+                //removing the guid from the fileGuidList hidden field
+                var fileGuidList = $("#" + fileGuidListFieldId).val();
+                fileGuidList = fileGuidList.replace(guid, "").replace("||", "|").replace(/^\s*\|\s*/, '').replace(/\s*\|\s*$/, '');
+                $("#" + fileGuidListFieldId).val(fileGuidList);
+
                 var eleId = getThumbnailDivId(guid);
                 $("#" + eleId).remove();
                 $("#" + containerId + " .messageBox").hide()
@@ -58,7 +64,7 @@ function updateFileListView(data, deleteApiUrl, containerId, fileGuidListFieldId
         var d = data[i];
         var eleId = getThumbnailDivId(d.Guid);
         var ele = '<div class="fileThumbnail" id="' + eleId + '" > <img src="' + d.Thumbnail + '" alt="' + d.FileName + '" />' +
-            '<button class="glyphicon glyphicon-remove" onclick="deleteUnlinkedFile(\'' + d.Guid + '\',\'' + deleteApiUrl + '\',\'' + containerId + '\'); return false;"></button>' +
+            '<button class="glyphicon glyphicon-remove" onclick="deleteUnlinkedFile(\'' + d.Guid + '\',\'' + deleteApiUrl + '\',\'' + containerId + '\',\'' + fileGuidListFieldId + '\'); return false;"></button>' +
             '<div class="label"><a href="' + d.Url + '" target="_blank">' + d.FileName + '</a></div>' +
             '</div>';
 
