@@ -1,6 +1,6 @@
 ﻿@model Catfish.Core.Models.Item
 @using Catfish.Areas.Manager.Models.ViewModels;
-@using Catfish.Core.Models.Data;
+@using Catfish.Core.Models.Forms;
 
 @{  ViewBag.Title = Model.Id > 0 ? "Edit Item" : "Create Item"; }
 
@@ -95,11 +95,18 @@ else
                     Files
                 </div>
                 <div class="form-view">
+                    @{ 
+                        List<string> crossLinkedFileGuidSets = Model.FormSubmissions
+                            .SelectMany(form => form.FormData.Fields.Where(field => field is Attachment))
+                            .Select(field => (field as Attachment).FileGuids).ToList();
+                        var crossLinkedFileGuids = crossLinkedFileGuidSets.SelectMany(set => set.Split(new char[] { Attachment.FileGuidSeparator }, StringSplitOptions.RemoveEmptyEntries)).ToList();
+                    }  
                     @Html.EditorFor(m => m.AttachmentField,
                    new {
                        UploadApiUrl = @Url.Action("upload", "items"),
                        DeleteApiUrl = @Url.Action("deleteCashedFile", "items"),
                        Files = Model.Files.ToList(),
+                       CrossLinkedFileGuids = crossLinkedFileGuids,
                        ParentId = Model.Id,
                        Controller = "items"
                    })

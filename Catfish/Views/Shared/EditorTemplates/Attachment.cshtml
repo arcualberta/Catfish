@@ -14,6 +14,9 @@
     string containerId = Guid.NewGuid().ToString("N");
     string uploadApiUrl = ViewBag.UploadApiUrl as string;
     string deleteApiUrl = ViewBag.DeleteApiUrl as string;
+    List<string> crossLinkedFileGuids = ViewBag.CrossLinkedFileGuids != null ? 
+        ViewBag.CrossLinkedFileGuids as List<string>
+        : new List<string>();
 }
 
 
@@ -33,11 +36,16 @@
                 var file = files.Where(f => f.GuidName == fileGuid).FirstOrDefault();
                 if (file != null)
                 {
-                    FileViewModel vm = new FileViewModel(file, parentId, Request.RequestContext, controller);
+                    FileViewModel vm= new FileViewModel(file, parentId, Request.RequestContext, controller);
+                    bool undeletable = crossLinkedFileGuids.Contains(file.GuidName);
+                    string secondaryClass = undeletable ? "undeletable" : "";
                     var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
-                    <div class="fileThumbnail @eleId">
+                    <div class="fileThumbnail @eleId @secondaryClass">
                         <img src="@vm.Thumbnail" alt="@vm.FileName" />
-                        <button class="glyphicon glyphicon-remove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@containerId'); return false;"></button>
+                        @if (!undeletable)
+                        {
+                            <button class="glyphicon glyphicon-remove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@containerId'); return false;"></button>
+                        }
                         <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
                     </div>
                     }
