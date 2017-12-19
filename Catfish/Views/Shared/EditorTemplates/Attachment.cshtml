@@ -41,7 +41,7 @@
                     string secondaryClass = undeletable ? "undeletable" : "";
                     var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
                     <div class="fileThumbnail @eleId @secondaryClass">
-                        <img src="@vm.Thumbnail" alt="@vm.FileName" />
+                        <div class="img" style="background-image:url(@vm.Thumbnail)" ></div>
                         @if (!undeletable)
                         {
                             <button class="glyphicon glyphicon-remove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@containerId'); return false;"></button>

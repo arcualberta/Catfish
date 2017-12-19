@@ -11,6 +11,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Catfish.Core.Services
 {
@@ -27,11 +29,18 @@ namespace Catfish.Core.Services
 
         protected string CreateGuidName(string baseName)
         {
-            string filename = Guid.NewGuid().ToString().Replace("-", "_");
+            string filename = Guid.NewGuid().ToString().Replace("-", "");
             var idx = baseName.LastIndexOf(".");
             if (idx > 0)
                 filename = filename + "." + baseName.Substring(idx + 1);
             return filename;
+        }
+
+        protected string CreateThumbnailName(string guidName)
+        {
+            int idx = guidName.LastIndexOf('.');
+            string thumbnailFileName = (idx < 0 ? guidName : guidName.Substring(0, idx)) + "_t.png";
+            return thumbnailFileName;
         }
 
         protected List<DataFile> UploadFiles(HttpRequestBase request, string dstPath)
@@ -53,10 +62,32 @@ namespace Catfish.Core.Services
                 file.GuidName = CreateGuidName(file.FileName);
                 file.Path = dstPath;
                 file.ContentType = request.Files[i].ContentType;
-                file.Thumbnail = GetThumbnail(file.ContentType);
-                file.ThumbnailType = DataFile.eThumbnailTypes.Shared;
-
                 request.Files[i].SaveAs(Path.Combine(file.Path, file.GuidName));
+
+                if (file.ContentType.StartsWith("image/"))
+                {
+                    using (Image image = new Bitmap(file.AbsoluteFilePathName))
+                    {
+                        Size thumbSize = image.Width < image.Height
+                            ? new Size() { Height = ConfigHelper.ThumbnailSize, Width = (image.Width * ConfigHelper.ThumbnailSize) / image.Height }
+                            : new Size() { Width = ConfigHelper.ThumbnailSize, Height = (image.Height * ConfigHelper.ThumbnailSize) / image.Width };
+
+                        Image thumbnail = image.GetThumbnailImage(thumbSize.Width, thumbSize.Height, null, IntPtr.Zero);
+                        file.Thumbnail = CreateThumbnailName(file.GuidName);
+                        using (FileStream thumStream = new FileStream(Path.Combine(file.Path, file.Thumbnail), FileMode.CreateNew))
+                        {
+                            thumbnail.Save(thumStream, ImageFormat.Png);
+                        }
+                    }
+                        
+                    file.ThumbnailType = DataFile.eThumbnailTypes.NonShared;
+                }
+                else
+                {
+                    file.Thumbnail = GetThumbnail(file.ContentType);
+                    file.ThumbnailType = DataFile.eThumbnailTypes.Shared;
+                }
+
 
                 newFiles.Add(file);
             }

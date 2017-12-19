@@ -68,5 +68,7 @@ namespace Catfish.Core.Helpers
         public static string UploadRoot { get { return ConfigurationManager.AppSettings["UploadRoot"]; } }
 
         public static string DataRoot { get { return Path.Combine(UploadRoot, "Data"); } }
+
+        public static int ThumbnailSize { get { return 150; } }
     }
 }

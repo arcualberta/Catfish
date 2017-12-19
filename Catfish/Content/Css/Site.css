@@ -42,32 +42,53 @@
 }
 
     .thumbnailPanel .fileThumbnail {
-        height: 40px;
         margin: 15px 15px 15px 0;
         font-size: smaller;
         float: left;
+        text-align:center;
+        position:relative;
+        border:solid 1px #eee;
     }
 
         .thumbnailPanel .fileThumbnail img {
             height: 40px;
         }
 
+        .thumbnailPanel .fileThumbnail .img {
+            height: 100px;
+            /*width: 40px;*/
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            position: center;
+        }
+
         .thumbnailPanel .fileThumbnail button {
-            top: -15px;
-            width: 16px;
-            padding-left: 0px;
+            top: 0px;
+            right: 0px;
+            width: 15px;
+            height:15px;
+            padding-left: 0;
+            position:absolute;
         }
 
         .thumbnailPanel .fileThumbnail .label {
-            padding-top: 30px;
-            float: right;
-            margin-left: -20px;
+            display: block;
             color: #444;
-            background-color:transparent;
+            background-color: transparent;
+            padding:2px 0;
         }
 
+            .thumbnailPanel .fileThumbnail .label a {
+                display: inline-block;
+                width: 90px;
+                height: 15px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
 .attachment.thumbnailPanel .fileThumbnail .label, .undeletable.fileThumbnail .label {
-    margin-left: 0px;
+    /*margin-left: 0px;*/
 }
 
 .uploadField, .uploadButton {

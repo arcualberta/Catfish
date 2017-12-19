@@ -63,10 +63,15 @@ function updateFileListView(data, deleteApiUrl, containerId, fileGuidListFieldId
     for (var i = 0; i < data.length; ++i) {
         var d = data[i];
         var eleId = getThumbnailDivId(d.Guid);
-        var ele = '<div class="fileThumbnail" id="' + eleId + '" > <img src="' + d.Thumbnail + '" alt="' + d.FileName + '" />' +
+        var ele = '<div class="fileThumbnail" id="' + eleId + '" > <div class="img" style="background-image:url(' + d.Thumbnail + ')" ></div>' +
             '<button class="glyphicon glyphicon-remove" onclick="deleteUnlinkedFile(\'' + d.Guid + '\',\'' + deleteApiUrl + '\',\'' + containerId + '\',\'' + fileGuidListFieldId + '\'); return false;"></button>' +
             '<div class="label"><a href="' + d.Url + '" target="_blank">' + d.FileName + '</a></div>' +
             '</div>';
+
+        //var ele = '<div class="fileThumbnail" id="' + eleId + '" > <img src="' + d.Thumbnail + '" alt="' + d.FileName + '" />' +
+        //    '<button class="glyphicon glyphicon-remove" onclick="deleteUnlinkedFile(\'' + d.Guid + '\',\'' + deleteApiUrl + '\',\'' + containerId + '\',\'' + fileGuidListFieldId + '\'); return false;"></button>' +
+        //    '<div class="label"><a href="' + d.Url + '" target="_blank">' + d.FileName + '</a></div>' +
+        //    '</div>';
 
         if (fileGuidList.length > 0)
             fileGuidList = fileGuidList + "|" + d.Guid;
