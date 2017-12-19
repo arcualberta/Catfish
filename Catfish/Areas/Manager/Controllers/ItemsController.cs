@@ -196,20 +196,6 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpPost]
         public JsonResult Upload()
         {
-            ////try
-            ////{
-            ////    List<DataFile> files = ItemService.UploadFiles(id, Request);
-            ////    db.SaveChanges();
-
-            ////    var ret = files.Select(f => new FileViewModel(f, id, ControllerContext.RequestContext, "items"));
-            ////    return Json(ret);
-            ////}
-            ////catch (Exception ex)
-            ////{
-            ////    //return 500 or something appropriate to show that an error occured.
-            ////    return Json(string.Empty);
-            ////}
-
             try
             {
                 List<DataFile> files = ItemService.UploadTempFiles(Request);
@@ -269,7 +255,7 @@ namespace Catfish.Areas.Manager.Controllers
             if (file == null)
                 return HttpNotFound("File not found");
 
-            string path_name = Path.Combine(ConfigHelper.UploadRoot, file.Path, file.GuidName);
+            string path_name = Path.Combine(file.Path, file.GuidName);
             return new FilePathResult(path_name, file.ContentType);
         }
 
@@ -282,7 +268,7 @@ namespace Catfish.Areas.Manager.Controllers
 
             string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared
                 ? Path.Combine(FileHelper.GetThumbnailRoot(Request), file.Thumbnail)
-                : Path.Combine(ConfigHelper.UploadRoot, file.Path, file.Thumbnail);
+                : Path.Combine(file.Path, file.Thumbnail);
 
             return new FilePathResult(path_name, file.ContentType);
         }
