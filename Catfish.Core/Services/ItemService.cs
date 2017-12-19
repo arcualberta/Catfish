@@ -43,6 +43,13 @@ namespace Catfish.Core.Services
             return thumbnailFileName;
         }
 
+        public List<DataFile> UploadTempFiles(HttpRequestBase request)
+        {
+            List<DataFile> files = UploadFiles(request, "temp-files");
+            Db.XmlModels.AddRange(files);
+            return files;
+        }
+
         protected List<DataFile> UploadFiles(HttpRequestBase request, string dstPath)
         {
             dstPath = Path.Combine(ConfigHelper.UploadRoot, dstPath);
@@ -54,70 +61,61 @@ namespace Catfish.Core.Services
             }
 
             List<DataFile> newFiles = new List<DataFile>();
-            for (int i = 0; i < request.Files.Count; i++)
+            for(int i=0; i<request.Files.Count; ++i)
+                newFiles.Add(InjestFile(request.Files[i].InputStream, request.Files[i].FileName, request.Files[i].ContentType, dstPath));
+
+            return newFiles;
+        }
+
+        protected DataFile InjestFile(Stream srcStream, string inputFileName, string contentType, string dstPath)
+        {
+            dstPath = Path.Combine(ConfigHelper.UploadRoot, dstPath);
+            if (!Directory.Exists(dstPath))
             {
-                DataFile file = new DataFile();
-
-                file.FileName = request.Files[i].FileName;
-                file.GuidName = CreateGuidName(file.FileName);
-                file.Path = dstPath;
-                file.ContentType = request.Files[i].ContentType;
-                request.Files[i].SaveAs(Path.Combine(file.Path, file.GuidName));
-
-                if (file.ContentType.StartsWith("image/"))
-                {
-                    using (Image image = new Bitmap(file.AbsoluteFilePathName))
-                    {
-                        Size thumbSize = image.Width < image.Height
-                            ? new Size() { Height = ConfigHelper.ThumbnailSize, Width = (image.Width * ConfigHelper.ThumbnailSize) / image.Height }
-                            : new Size() { Width = ConfigHelper.ThumbnailSize, Height = (image.Height * ConfigHelper.ThumbnailSize) / image.Width };
-
-                        Image thumbnail = image.GetThumbnailImage(thumbSize.Width, thumbSize.Height, null, IntPtr.Zero);
-                        file.Thumbnail = CreateThumbnailName(file.GuidName);
-                        using (FileStream thumStream = new FileStream(Path.Combine(file.Path, file.Thumbnail), FileMode.CreateNew))
-                        {
-                            thumbnail.Save(thumStream, ImageFormat.Png);
-                        }
-                    }
-                        
-                    file.ThumbnailType = DataFile.eThumbnailTypes.NonShared;
-                }
-                else
-                {
-                    file.Thumbnail = GetThumbnail(file.ContentType);
-                    file.ThumbnailType = DataFile.eThumbnailTypes.Shared;
-                }
-
-
-                newFiles.Add(file);
+                Directory.CreateDirectory(dstPath);
+                if (!Directory.Exists(dstPath))
+                    throw new Exception("Unable to create the upload folder " + dstPath);
             }
 
-            return newFiles;
-        }
+            DataFile file = new DataFile()
+            {
+                FileName = inputFileName,
+                GuidName = CreateGuidName(inputFileName),
+                Path = dstPath,
+                ContentType = contentType
+            };
 
-        public List<DataFile> UploadTempFiles(HttpRequestBase request)
-        {
-            List<DataFile> files = UploadFiles(request, "temp-files");
-            Db.XmlModels.AddRange(files);
-            return files;
-        }
+            using (FileStream dstFileStream = File.Create(Path.Combine(file.Path, file.GuidName)))
+            {
+                srcStream.Seek(0, SeekOrigin.Begin);
+                srcStream.CopyTo(dstFileStream);
+            }
 
-        public List<DataFile> UploadFiles(int itemId, HttpRequestBase request)
-        {
-            Item parent = Db.Items.Where(i => i.Id == itemId).FirstOrDefault();
-            if (parent == null)
-                throw new Exception("Parent item not found");
+            if (file.ContentType.StartsWith("image/"))
+            {
+                file.Thumbnail = CreateThumbnailName(file.GuidName);
+                file.ThumbnailType = DataFile.eThumbnailTypes.NonShared;
 
-            if (string.IsNullOrEmpty(parent.Guid))
-                parent.Guid = Guid.NewGuid().ToString("N");
+                using (Image image = new Bitmap(file.AbsoluteFilePathName))
+                {
+                    Size thumbSize = image.Width < image.Height
+                        ? new Size() { Height = ConfigHelper.ThumbnailSize, Width = (image.Width * ConfigHelper.ThumbnailSize) / image.Height }
+                        : new Size() { Width = ConfigHelper.ThumbnailSize, Height = (image.Height * ConfigHelper.ThumbnailSize) / image.Width };
 
-            string dstPath = Path.Combine("data", parent.Guid);
-            List<DataFile> newFiles = UploadFiles(request, dstPath); 
-            foreach(DataFile file in newFiles)
-                parent.AddData(file);
+                    Image thumbnail = image.GetThumbnailImage(thumbSize.Width, thumbSize.Height, null, IntPtr.Zero);
+                    using (FileStream thumbStream = File.Create(Path.Combine(file.Path, file.Thumbnail)))
+                    {
+                        thumbnail.Save(thumbStream, ImageFormat.Png);
+                    }
+                }
+            }
+            else
+            {
+                file.Thumbnail = GetThumbnail(file.ContentType);
+                file.ThumbnailType = DataFile.eThumbnailTypes.Shared;
+            }
 
-            Db.Entry(parent).State = EntityState.Modified;
-            return newFiles;
+            return file;
         }
 
         public DataFile GetFile(int id, string name, bool checkInItems = true)
