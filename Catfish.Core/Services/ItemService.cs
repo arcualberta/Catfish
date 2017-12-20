@@ -39,7 +39,8 @@ namespace Catfish.Core.Services
         protected string CreateThumbnailName(string guidName)
         {
             int idx = guidName.LastIndexOf('.');
-            string thumbnailFileName = (idx < 0 ? guidName : guidName.Substring(0, idx)) + "_t.png";
+            string ext = guidName.EndsWith(".jpg") ? "jpg" : "png";
+            string thumbnailFileName = (idx < 0 ? guidName : guidName.Substring(0, idx)) + "_t." + ext;
             return thumbnailFileName;
         }
 
@@ -95,7 +96,6 @@ namespace Catfish.Core.Services
             {
                 file.Thumbnail = CreateThumbnailName(file.GuidName);
                 file.ThumbnailType = DataFile.eThumbnailTypes.NonShared;
-
                 using (Image image = new Bitmap(file.AbsoluteFilePathName))
                 {
                     Size thumbSize = image.Width < image.Height
@@ -103,10 +103,7 @@ namespace Catfish.Core.Services
                         : new Size() { Width = ConfigHelper.ThumbnailSize, Height = (image.Height * ConfigHelper.ThumbnailSize) / image.Width };
 
                     Image thumbnail = image.GetThumbnailImage(thumbSize.Width, thumbSize.Height, null, IntPtr.Zero);
-                    using (FileStream thumbStream = File.Create(Path.Combine(file.Path, file.Thumbnail)))
-                    {
-                        thumbnail.Save(thumbStream, ImageFormat.Png);
-                    }
+                    thumbnail.Save(Path.Combine(file.Path, file.Thumbnail));
                 }
             }
             else
