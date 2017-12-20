@@ -6,7 +6,7 @@
     var activeLang = ViewHelper.GetActiveLanguage();
     var activeContent = Model.Content.Where(c => c.LanguageCode == activeLang.TwoLetterISOLanguageName).FirstOrDefault();
 
-    if (ViewData["raw"] != null && (bool)ViewData["raw"])
+    if (activeContent != null && ViewData["raw"] != null && (bool)ViewData["raw"])
     {
         @Html.Raw(activeContent.Value)
     }
@@ -17,7 +17,10 @@
         </style>
 
         <div id="@Model.CssId" class="@Model.CssClasses">
-            @Html.Raw(activeContent.Value)
+            @if (activeContent != null)
+            {
+                @Html.Raw(activeContent.Value)
+            }
         </div>
     }
 }
