@@ -46,7 +46,7 @@ namespace Catfish.Areas.Manager.Controllers
                 if (model != null)
                 {
                     Db.Entry(model).State = EntityState.Deleted;
-                    Db.SaveChanges();
+                    Db.SaveChanges(User.Identity);
                 }
             }
             return RedirectToAction("index");
@@ -156,7 +156,7 @@ namespace Catfish.Areas.Manager.Controllers
                     Db.EntityTypes.Add(model);
                 }
 
-                Db.SaveChanges();
+                Db.SaveChanges(User.Identity);
                 vm.Status = KoBaseViewModel.eStatus.Success;
 
                 if (vm.Id == 0)
@@ -198,7 +198,7 @@ namespace Catfish.Areas.Manager.Controllers
                 {
                     EntityService.CreateEntityType(entityType);
                 }
-                Db.SaveChanges();
+                Db.SaveChanges(User.Identity);
                 return RedirectToAction("Index");
             }
             return View(entityType);

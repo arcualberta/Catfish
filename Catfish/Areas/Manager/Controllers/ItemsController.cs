@@ -54,7 +54,7 @@ namespace Catfish.Areas.Manager.Controllers
                 if (model != null)
                 {
                     Db.Entry(model).State = EntityState.Deleted;
-                    Db.SaveChanges();
+                    Db.SaveChanges(User.Identity);
                 }
             }
             return RedirectToAction("index");
@@ -76,32 +76,6 @@ namespace Catfish.Areas.Manager.Controllers
             return View(entity);
         }
 
-        /*
-        // GET: Manager/Items/Create
-        public ActionResult Create()
-        {
-            ViewBag.EntityTypeId = new SelectLi st(db.EntityTypes, "Id", "Name");
-            return View();
-        }
-
-        // POST: Manager/Items/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Created,Updated,EntityTypeId")] Entity entity)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entities.Add(entity);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.EntityTypeId = new SelectList(db.EntityTypes, "Id", "Name", entity.EntityTypeId);
-            return View(entity);
-        }
-        */
         // GET: Manager/Items/Edit/5
         public ActionResult Edit(int? id, int? entityTypeId)
         {
@@ -154,7 +128,7 @@ namespace Catfish.Areas.Manager.Controllers
             {
                 ItemService srv = new ItemService(db);
                 Item dbModel = srv.UpdateStoredItem(model);
-                db.SaveChanges();
+                db.SaveChanges(User.Identity);
 
                 if (model.Id == 0)
                     return RedirectToAction("Edit", new { id = dbModel.Id });
@@ -199,7 +173,7 @@ namespace Catfish.Areas.Manager.Controllers
             try
             {
                 List<DataFile> files = ItemService.UploadTempFiles(Request);
-                Db.SaveChanges();
+                Db.SaveChanges(User.Identity);
 
                 //Saving ids  of uploaded files in the session because these files and thumbnails
                 //needs to be accessible by the user who is uploading them without restriction of any security rules.
@@ -237,7 +211,7 @@ namespace Catfish.Areas.Manager.Controllers
                     return Json(string.Empty);
                 }
 
-                db.SaveChanges();
+                db.SaveChanges(User.Identity);
                 return Json(new List<string>() { guid });
             }
             catch (Exception)

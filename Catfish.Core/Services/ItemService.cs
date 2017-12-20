@@ -153,10 +153,7 @@ namespace Catfish.Core.Services
                 if (keepFileGuids.IndexOf(file.Guid) < 0)
                 {
                     //Deleting the file node from the XML Model
-                    dstItem.RemoveFile(file.Guid);
-
-                    //Deleting the file from the file system
-                    file.DeleteFilesFromFileSystem();
+                    dstItem.RemoveFile(file);
                 }
             }
 

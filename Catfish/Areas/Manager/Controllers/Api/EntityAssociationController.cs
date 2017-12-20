@@ -55,7 +55,7 @@ namespace Catfish.Areas.Manager.Controllers
                 }
 
                 Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
-                Db.SaveChanges();
+                Db.SaveChanges(User.Identity);
                 vm.Status = KoBaseViewModel.eStatus.Success;
                 return Json(vm);
             }
@@ -98,7 +98,7 @@ namespace Catfish.Areas.Manager.Controllers
                 }
 
                 Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
-                Db.SaveChanges();
+                Db.SaveChanges(User.Identity);
                 vm.Status = KoBaseViewModel.eStatus.Success;
                 return Json(vm);
             }

@@ -55,7 +55,9 @@ namespace Catfish.Controllers
                     formContainer.FormId,
                     formContainer.CollectionId);
 
-                Db.SaveChanges();
+                AuditEntry.eAction action = submission.Id == 0 ? AuditEntry.eAction.Create : AuditEntry.eAction.Update;
+                string actor = User.Identity.IsAuthenticated ? User.Identity.Name : "Annonymous";
+                Db.SaveChanges(User.Identity);
 
                 string confirmLink = "confirmation";
                 return Redirect(confirmLink);

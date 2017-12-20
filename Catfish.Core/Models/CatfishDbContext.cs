@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using Catfish.Core.Models.Forms;
 using Catfish.Core.Models.Data;
+using System.Security.Principal;
 
 namespace Catfish.Core.Models
 {
@@ -16,29 +17,14 @@ namespace Catfish.Core.Models
 
         }
 
-        ////private static CatfishDbContext mDb;
-        ////public static CatfishDbContext Instance
-        ////{
-        ////    get
-        ////    {
-        ////        if (mDb == null)
-        ////            mDb = new CatfishDbContext();
-        ////        return mDb;
-        ////    }
-        ////}
-
-        ////private static Piranha.DataContext mPiranhaDb;
-        ////public static Piranha.DataContext PiranhaInstance
-        ////{
-        ////    get
-        ////    {
-        ////        if (mPiranhaDb == null)
-        ////            mPiranhaDb = new Piranha.DataContext();
-        ////        return mPiranhaDb;
-        ////    }
-        ////}
-
-        public override int SaveChanges()
+        public int SaveChanges(IIdentity actor)
+        {
+            if (actor.IsAuthenticated)
+                return SaveChanges(actor.Name);
+            else
+                return SaveChanges("Annonymous");
+        }
+        public int SaveChanges(string actor)
         {
             if (this.ChangeTracker.HasChanges())
             {
@@ -46,6 +32,8 @@ namespace Catfish.Core.Models
                 {
                     if (entry.State != EntityState.Unchanged && entry.State != EntityState.Deleted)
                     {
+                        AuditEntry.eAction action = entry.Entity.Id == 0 ? AuditEntry.eAction.Create : AuditEntry.eAction.Update;
+                        entry.Entity.SerializeAuditLog(action, actor);
                         entry.Entity.Serialize();
                     }
                 }

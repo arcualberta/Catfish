@@ -29,7 +29,7 @@ namespace Catfish.Controllers
             try
             {
                 List<DataFile> files = SubmissionService.UploadTempFiles(Request);
-                Db.SaveChanges();
+                Db.SaveChanges(User.Identity);
 
                 //Saving ids  of uploaded files in the session because these files and thumbnails
                 //needs to be accessible by the user who is uploading them without restriction of any security rules.
@@ -102,7 +102,7 @@ namespace Catfish.Controllers
                     return Json(string.Empty);
                 }
 
-                Db.SaveChanges();
+                Db.SaveChanges(User.Identity);
                 return Json(new List<string>() { guid });
             }
             catch (Exception)

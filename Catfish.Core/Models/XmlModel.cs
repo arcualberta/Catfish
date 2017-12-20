@@ -114,6 +114,8 @@ namespace Catfish.Core.Models
             }
         }
 
+
+
         public XmlModel()
         {
             DefaultLanguage = "en";
@@ -122,6 +124,7 @@ namespace Catfish.Core.Models
             Data.SetAttributeValue("model-type", this.GetType().AssemblyQualifiedName);
             Data.SetAttributeValue("IsRequired", false);
             MappedGuid = Guid; //Creates and uses the guid.
+            mChangeLog = new List<AuditChangeLog>();
         }
 
         public XElement GetWrapper(string tagName, bool createIfNotExist, bool enforceGuid)
@@ -209,11 +212,11 @@ namespace Catfish.Core.Models
             return data;
         }
 
-        public XmlModel(XElement ele, string defaultLang = "en")
-        {
-            Data = ele;
-            DefaultLanguage = defaultLang;
-        }
+        ////public XmlModel(XElement ele, string defaultLang = "en")
+        ////{
+        ////    Data = ele;
+        ////    DefaultLanguage = defaultLang;
+        ////}
 
         public virtual string GetName(string lang = null, bool tryReturnNoneEmpty = false)
         {
@@ -533,24 +536,31 @@ namespace Catfish.Core.Models
 
 
         #region Audit Trail
-        public XElement GetAuditRoot()
+
+        private List<AuditChangeLog> mChangeLog;
+        public void LogChange(string target, string description)
+        {
+            mChangeLog.Add(new AuditChangeLog(target, description));
+        }
+
+        protected XElement GetAuditRoot()
         {
             XElement audit = Data.Element("audit");
             if (audit == null)
                 Data.Add(audit = new XElement("audit"));
             return audit;
         }
-        public IEnumerable<AuditEntry> GetAuditTrail()
-        {
 
-            return GetAuditRoot().Elements("entry").Select(e => new AuditEntry() { Data = e });
-        }
-
-        public AuditEntry AddAuditEntry(AuditEntry.eAction action, string user, string target)
+        public AuditEntry SerializeAuditLog(AuditEntry.eAction action, string actor)
         {
-            AuditEntry entry = new AuditEntry() { Action = action, User = user, Target = target };
+            AuditEntry entry = new AuditEntry(action, actor, mChangeLog);
             GetAuditRoot().Add(entry.Data);
             return entry;
+        }
+
+        public IEnumerable<AuditEntry> GetAuditTrail()
+        {
+            return GetAuditRoot().Elements("entry").Select(e => new AuditEntry() { Data = e });
         }
 
         public string GetCreator()

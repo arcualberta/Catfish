@@ -97,7 +97,7 @@ namespace Catfish.Areas.Manager.Controllers
                     Db.XmlModels.Add(model);
                 }
 
-                Db.SaveChanges();
+                Db.SaveChanges(User.Identity);
                 vm.Status = KoBaseViewModel.eStatus.Success;
 
                 if (vm.Id == 0)

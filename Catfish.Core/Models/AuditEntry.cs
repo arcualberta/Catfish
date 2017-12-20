@@ -9,7 +9,7 @@ namespace Catfish.Core.Models
 {
     public class AuditEntry:XmlModel
     {
-        public enum eAction { Unknown = 0, Create, Update, Delete };
+        public enum eAction { Other = 0, Create, Update, Delete, Grant, Revoke };
 
         public override string GetTagName() { return "entry"; }
 
@@ -20,7 +20,7 @@ namespace Catfish.Core.Models
             {
                 var att = Data.Attribute("action");
                 if (att == null || string.IsNullOrEmpty(att.Value))
-                    return eAction.Unknown;
+                    return eAction.Other;
 
                 return (eAction)Enum.Parse(typeof(eAction), att.Value);
             }
@@ -32,34 +32,40 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        public string User
+        public string Actor
         {
             get
             {
-                var att = Data.Attribute("user");
+                var att = Data.Attribute("actor");
                 return att == null ? "" : att.Value;
             }
 
             set
             {
-                Data.SetAttributeValue("user", value);
+                Data.SetAttributeValue("actor", value);
             }
         }
 
-        [NotMapped]
-        public string Target
+        public AuditEntry()
         {
-            get
-            {
-                var att = Data.Attribute("target");
-                return att == null ? "" : att.Value;
-            }
 
-            set
-            {
-                Data.SetAttributeValue("target", value);
-            }
         }
 
+        public AuditEntry(eAction action, string actor, List<AuditChangeLog> changes)
+        {
+            Action = action;
+            Actor = actor;
+        }
+
+        public void AppendLog(List<AuditChangeLog> changes)
+        {
+            foreach (var change in changes)
+                Data.Add(change.ToXml());
+        }
+
+        public IReadOnlyList<AuditChangeLog> GetChangeLog()
+        {
+            return Data.Elements("log").Select(e => new AuditChangeLog(e)).ToList();
+        }
     }
 }

@@ -79,6 +79,9 @@ namespace Catfish.Core.Models
         public void AddData(DataObject obj)
         {
             GetDataObjectRoot().Add(obj.Data);
+
+            if (this.Id > 0)//Onlye adding logs for new data objects when updating existing items
+                LogChange(obj.Guid, "Added data object");
         }
 
         public FormSubmission GetFormSubmission(string formSubmissionRef)
@@ -87,13 +90,17 @@ namespace Catfish.Core.Models
             return GetChildModels(xpath, Data).FirstOrDefault() as FormSubmission;
         }
 
-        public void RemoveFile(string guid)
+        public void RemoveFile(DataFile file)
         {
-            var xpath = "./data/" + DataFile.TagName + "[@guid='" + guid + "']";
-            XElement file = GetChildElements(xpath, Data).FirstOrDefault();
-            if (file == null)
+            var xpath = "./data/" + DataFile.TagName + "[@guid='" + file.Guid + "']";
+            XElement fileElement = GetChildElements(xpath, Data).FirstOrDefault();
+            if (fileElement == null)
                 throw new Exception("File does not exist.");
-            file.Remove();
+            fileElement.Remove();
+
+            file.DeleteFilesFromFileSystem();
+
+            LogChange(file.Guid, "Deleted " + file.FileName);
         }
 
     }
