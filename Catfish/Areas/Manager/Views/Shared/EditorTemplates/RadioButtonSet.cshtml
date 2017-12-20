@@ -5,7 +5,7 @@
 {
     {"class", "model-type"}
 })
-@Html.HiddenFor(m => m.Ref)
+@Html.HiddenFor(m => m.Guid)
 
 <div class="form-field-name">
     @Html.Label(string.IsNullOrEmpty(Model.Name) ? "" : Model.Name)

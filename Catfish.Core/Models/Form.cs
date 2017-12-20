@@ -18,7 +18,7 @@ namespace Catfish.Core.Models
 
         public Form()
         {
-            Ref = System.Guid.NewGuid().ToString("N");
+            Guid = System.Guid.NewGuid().ToString("N");
         }
 
         public bool CheckFileReference(string fileGuidName)

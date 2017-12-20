@@ -19,7 +19,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public bool IsRequired { get; set; }
         public bool IsOptionField { get; set; }
         public List<TextValue> MultilingualOptionSet { get; set; }
-        public string Ref { get; set; }
+        public string Guid { get; set; }
 
         public FormFieldViewModel() { }
 
@@ -32,7 +32,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Description = src.MultilingualDescription.ToList();
             IsRequired = src.IsRequired;
             FieldType = src.GetType().AssemblyQualifiedName;
-            Ref = src.Ref;
+            Guid = src.Guid;
             Rank = src.Rank;
             Page = src.Page;
             IsPageBreak = src.IsPageBreak();
@@ -79,7 +79,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.MultilingualName = Name;
             field.MultilingualDescription = Description;
             field.IsRequired = IsRequired;
-            field.Ref = Ref;
+            field.Guid = Guid;
             field.Rank = Rank;
             field.Page = Page;
 

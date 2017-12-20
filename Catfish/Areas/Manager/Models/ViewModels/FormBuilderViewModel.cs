@@ -13,7 +13,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string TypeLabel { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Ref { get; set; }
+        public string Guid { get; set; }
         public List<FormFieldViewModel> Fields { get; set; }
 
         public List<FormFieldType> FieldTypes { get { return GetFieldTypes(); } }
@@ -35,7 +35,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
             Name = src.Name;
             Description = src.Description;
-            Ref = src.Ref;
+            Guid = src.Guid;
 
             Fields = new List<FormFieldViewModel>();
             foreach (var field in src.Fields)
@@ -49,7 +49,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             AbstractForm dst = dataModel as AbstractForm;
             dst.Name = Name;
             dst.Description = Description;
-            dst.Ref = Ref;
+            dst.Guid = Guid;
 
             //Updating fields. 
             //Note that it is necessary to create a new list of metadata fields

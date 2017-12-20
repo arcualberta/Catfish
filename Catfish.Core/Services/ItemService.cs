@@ -128,7 +128,7 @@ namespace Catfish.Core.Services
 
         public bool DeleteStandaloneFile(string guidName)
         {
-            DataFile file = Db.XmlModels.Where(x => x.Guid == guidName).FirstOrDefault() as DataFile;
+            DataFile file = Db.XmlModels.Where(x => x.MappedGuid == guidName).FirstOrDefault() as DataFile;
             if (file == null)
                 return false;
 
@@ -167,7 +167,7 @@ namespace Catfish.Core.Services
             {
                 if (dstItem.Files.Where(f => f.GuidName == fileGuid).Any() == false)
                 {
-                    DataFile file = Db.XmlModels.Where(m => m.Guid == fileGuid)
+                    DataFile file = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
                         .Select(m => m as DataFile)
                         .FirstOrDefault();
 
@@ -180,7 +180,7 @@ namespace Catfish.Core.Services
 
                         //moving the physical files from the temporary upload folder to a folder identified by the GUID of the
                         //item inside the uploaded data folder
-                        string dstDir = Path.Combine(ConfigHelper.DataRoot, dstItem.Guid);
+                        string dstDir = Path.Combine(ConfigHelper.DataRoot, dstItem.MappedGuid);
                         if (!Directory.Exists(dstDir))
                             Directory.CreateDirectory(dstDir);
 

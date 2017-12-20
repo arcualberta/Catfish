@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <div class="inner">
-                    @ko.Html.TextBox(f => f.Ref, new { style = "display:none" })
+                    @ko.Html.TextBox(f => f.Guid, new { style = "display:none" })
                     <ul class="form form-custom">
                         <li>
                             <label class="control-label col-md-2">Name</label>
@@ -50,7 +50,7 @@
                                 @ko.Html.Button("", "RemoveField", controller, new { idx = @field.GetIndex() }, new { @class = "glyphicon glyphicon-remove" })
                             </div>
                         </div>
-                        @field.Html.TextBox(f => f.Ref, new { style = "display:none" })
+                        @field.Html.TextBox(f => f.Guid, new { style = "display:none" })
                         <div class="inner">
                             <ul class="form">
                                 <li>

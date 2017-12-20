@@ -22,7 +22,7 @@ namespace Catfish.Core.Models
 
         public int Id { get; set; }
 
-        public string Guid { get; set; }
+        public string MappedGuid { get; set; }
 
         [NotMapped]
         public DateTime Created
@@ -96,27 +96,22 @@ namespace Catfish.Core.Models
         public string DefaultLanguage { get; set; }
 
         [NotMapped]
-        public string Ref
+        public string Guid
         {
             get
             {
-                var att = Data.Attribute("ref");
+                var att = Data.Attribute("guid");
                 if(att == null || string.IsNullOrEmpty(att.Value))
                 {
-                    Data.SetAttributeValue("ref", System.Guid.NewGuid().ToString("N"));
-                    att = Data.Attribute("ref");
+                    Data.SetAttributeValue("guid", System.Guid.NewGuid().ToString("N"));
+                    att = Data.Attribute("guid");
                 }
                 return att.Value;
             }
             set
             {
-                Data.SetAttributeValue("ref", value);
+                Data.SetAttributeValue("guid", value);
             }
-        }
-
-        public XmlModel(string defaultLang = "en")
-        {
-            DefaultLanguage = defaultLang;
         }
 
         public XmlModel()
@@ -126,7 +121,7 @@ namespace Catfish.Core.Models
             Created = DateTime.Now;
             Data.SetAttributeValue("model-type", this.GetType().AssemblyQualifiedName);
             Data.SetAttributeValue("IsRequired", false);
-            Guid = Ref;//Creates and uses the reference guid.
+            MappedGuid = Guid; //Creates and uses the guid.
         }
 
         public XElement GetWrapper(string tagName, bool createIfNotExist, bool enforceGuid)

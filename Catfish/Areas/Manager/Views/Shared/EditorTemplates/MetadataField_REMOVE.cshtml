@@ -13,7 +13,7 @@
        {"class", "model-type"}
     })
 
-    @Html.HiddenFor(m => m.Ref)
+    @Html.HiddenFor(m => m.Guid)
 
     @{
         TypeLabelAttribute att = Attribute.GetCustomAttribute(Model.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;

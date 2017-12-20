@@ -5,7 +5,7 @@
 {
     {"class", "model-type"}
 })
-@Html.HiddenFor(m => m.Ref)
+@Html.HiddenFor(m => m.Guid)
 
 @{
     string lang = Catfish.Helpers.ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName;

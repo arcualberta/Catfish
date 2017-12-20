@@ -121,7 +121,7 @@ namespace Catfish.Core.Models
 
             foreach (MetadataSet ms in this.MetadataSets)
             {
-                var src_ms = src_item.MetadataSets.Where(x => x.Ref == ms.Ref).FirstOrDefault();
+                var src_ms = src_item.MetadataSets.Where(x => x.Guid == ms.Guid).FirstOrDefault();
                 ms.UpdateValues(src_ms);
             }
         }
