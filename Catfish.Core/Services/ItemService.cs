@@ -67,7 +67,7 @@ namespace Catfish.Core.Services
             return newFiles;
         }
 
-        protected DataFile InjestFile(Stream srcStream, string inputFileName, string contentType, string dstPath)
+        public DataFile InjestFile(Stream srcStream, string inputFileName, string contentType, string dstPath)
         {
             dstPath = Path.Combine(ConfigHelper.UploadRoot, dstPath);
             if (!Directory.Exists(dstPath))
