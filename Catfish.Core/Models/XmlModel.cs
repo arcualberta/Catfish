@@ -101,7 +101,12 @@ namespace Catfish.Core.Models
             get
             {
                 var att = Data.Attribute("ref");
-                return att != null ? att.Value : System.Guid.NewGuid().ToString("N");
+                if(att == null || string.IsNullOrEmpty(att.Value))
+                {
+                    Data.SetAttributeValue("ref", System.Guid.NewGuid().ToString("N"));
+                    att = Data.Attribute("ref");
+                }
+                return att.Value;
             }
             set
             {
@@ -121,7 +126,7 @@ namespace Catfish.Core.Models
             Created = DateTime.Now;
             Data.SetAttributeValue("model-type", this.GetType().AssemblyQualifiedName);
             Data.SetAttributeValue("IsRequired", false);
-            Guid = System.Guid.NewGuid().ToString("N");
+            Guid = Ref;//Creates and uses the reference guid.
         }
 
         public XElement GetWrapper(string tagName, bool createIfNotExist, bool enforceGuid)
