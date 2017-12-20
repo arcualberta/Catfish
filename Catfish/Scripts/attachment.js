@@ -16,12 +16,12 @@ function deleteLinkedFile(fileGuidName, fileGuidListFieldId, visibleFileName, co
     $("#" + containerId + " .messageBox").hide()
 }
 
-function deleteUnlinkedFile(fileGuidName, deleteApiUrl, containerId, fileGuidListFieldId) {
+function deleteUnlinkedFile(fileGuid, deleteApiUrl, containerId, fileGuidListFieldId) {
     if (confirm("Delete file?") == false)
         return;
 
     var myFrm = new FormData();     //create a new form
-    myFrm.append("guidName", fileGuidName);
+    myFrm.append("guid", fileGuid);
 
     var oReg = new XMLHttpRequest();
     var stateChange = function (data) {

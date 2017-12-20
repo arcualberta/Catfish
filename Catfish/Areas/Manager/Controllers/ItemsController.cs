@@ -139,7 +139,7 @@ namespace Catfish.Areas.Manager.Controllers
                 }
             }
 
-            model.AttachmentField = new Attachment() { FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), model.Files.Select(f => f.GuidName)) };
+            model.AttachmentField = new Attachment() { FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), model.Files.Select(f => f.Guid)) };
             return View(model);
         }
 
@@ -217,12 +217,12 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
-        public JsonResult DeleteCashedFile(string guidName)
+        public JsonResult DeleteCashedFile(string guid)
         {
             try
             {
                 //Makes sure that the requested file is in the cache
-                if(!FileHelper.CheckGuidCache(Session, guidName))
+                if(!FileHelper.CheckGuidCache(Session, guid))
                 {
                     Response.StatusCode = (int)HttpStatusCode.NotFound;
                     Response.StatusDescription = "BadRequest: the file cannot be deleted -  NOT IN CACHE.";
@@ -230,7 +230,7 @@ namespace Catfish.Areas.Manager.Controllers
                 }
 
                 ItemService srv = new ItemService(db);
-                if (!srv.DeleteStandaloneFile(guidName))
+                if (!srv.DeleteStandaloneFile(guid))
                 {
                     Response.StatusCode = (int)HttpStatusCode.NotFound;
                     Response.StatusDescription = "The file not found";
@@ -238,7 +238,7 @@ namespace Catfish.Areas.Manager.Controllers
                 }
 
                 db.SaveChanges();
-                return Json(new List<string>() { guidName });
+                return Json(new List<string>() { guid });
             }
             catch (Exception)
             {
@@ -248,14 +248,14 @@ namespace Catfish.Areas.Manager.Controllers
             }
         }
 
-        public ActionResult File(int id, string guidName)
+        public ActionResult File(int id, string guid)
         {
             ItemService srv = new ItemService(db);
-            DataFile file = srv.GetFile(id, guidName);
+            DataFile file = srv.GetFile(id, guid);
             if (file == null)
                 return HttpNotFound("File not found");
 
-            string path_name = Path.Combine(file.Path, file.GuidName);
+            string path_name = Path.Combine(file.Path, file.LocalFileName);
             return new FilePathResult(path_name, file.ContentType);
         }
 

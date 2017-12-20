@@ -24,7 +24,23 @@ namespace Catfish.Core.Models.Data
         public string FileName { get { return GetAttribute("file-name", null); } set { SetAttribute("file-name", value); } }
 
         [NotMapped]
-        public string GuidName { get { return GetAttribute("guid-name", null); } set { SetAttribute("guid-name", value); MappedGuid = value; } }
+        public string Extension
+        {
+            get
+            {
+                string filename = FileName;
+                int idx = filename.LastIndexOf('.');
+                if (idx < 0)
+                    return null;
+                else
+                    return filename.Substring(idx + 1);
+
+            }
+        }
+
+        [NotMapped]
+        public string LocalFileName { get { return Guid + "." + Extension; } }
+
 
         [NotMapped]
         public string Thumbnail { get { return GetAttribute("thumbnail", null); } set { SetAttribute("thumbnail", value); } }
@@ -48,7 +64,7 @@ namespace Catfish.Core.Models.Data
         }
 
         [NotMapped]
-        public string AbsoluteFilePathName { get { return System.IO.Path.Combine(Path, GuidName); } }
+        public string AbsoluteFilePathName { get { return System.IO.Path.Combine(Path, LocalFileName); } }
 
         [NotMapped]
         public eThumbnailTypes ThumbnailType

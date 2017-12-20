@@ -443,9 +443,7 @@ namespace Catfish.Core.Models
 
         public string GetAttribute(string attName, XElement data = null)
         {
-            if (data == null)
-                data = Data;
-            XAttribute att = data.Attribute(attName);
+            XAttribute att = data == null ? Data.Attribute(attName) : data.Attribute(attName);
             return att == null ? null : att.Value;
         }
 
@@ -464,22 +462,25 @@ namespace Catfish.Core.Models
         public void SetAttribute(string attName, string attValue, XElement data = null)
         {
             if (data == null)
-                data = Data;
-            data.SetAttributeValue(attName, attValue);
+                Data.SetAttributeValue(attName, attValue);
+            else
+                data.SetAttributeValue(attName, attValue);
         }
 
         public void SetAttribute(string attName, int attValue, XElement data = null)
         {
             if (data == null)
-                data = Data;
-            data.SetAttributeValue(attName, attValue);
+                Data.SetAttributeValue(attName, attValue);
+            else
+                data.SetAttributeValue(attName, attValue);
         }
 
         public void SetAttribute(string attName, bool attValue, XElement data = null)
         {
             if (data == null)
-                data = Data;
-            data.SetAttributeValue(attName, attValue);
+                Data.SetAttributeValue(attName, attValue);
+            else
+                data.SetAttributeValue(attName, attValue);
         }
 
 

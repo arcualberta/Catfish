@@ -19,7 +19,7 @@
                 var eleId = @fileGuid.Substring(0, @fileGuid.Length - 4);
                 <div class="fileThumbnail @eleId">
                     @{
-                        var file = item.Files.Where(f => f.GuidName == fileGuid).FirstOrDefault();
+                        var file = item.Files.Where(f => f.Guid == fileGuid).FirstOrDefault();
                         if (file != null)
                         {
                             FileViewModel vm = new FileViewModel(file, item.Id, Request.RequestContext, "items");

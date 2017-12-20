@@ -33,11 +33,11 @@
 
             foreach (var fileGuid in fileGuids)
             {
-                var file = files.Where(f => f.GuidName == fileGuid).FirstOrDefault();
+                var file = files.Where(f => f.Guid == fileGuid).FirstOrDefault();
                 if (file != null)
                 {
                     FileViewModel vm= new FileViewModel(file, parentId, Request.RequestContext, controller);
-                    bool undeletable = crossLinkedFileGuids.Contains(file.GuidName);
+                    bool undeletable = crossLinkedFileGuids.Contains(file.Guid);
                     string secondaryClass = undeletable ? "undeletable" : "";
                     var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
                     <div class="fileThumbnail @eleId @secondaryClass">

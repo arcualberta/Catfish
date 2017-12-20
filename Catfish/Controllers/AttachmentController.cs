@@ -46,19 +46,19 @@ namespace Catfish.Controllers
             }
         }
 
-        public ActionResult File(int id, string guidName)
+        public ActionResult File(int id, string guid)
         {
             //This is an unprotected method so it only returns if the ids  of the file is in the session.
             // i.e. the file was uploaded during the current session
-            if (!FileHelper.CheckGuidCache(Session, guidName))
+            if (!FileHelper.CheckGuidCache(Session, guid))
                 return HttpNotFound("File not found");
 
             ItemService srv = new ItemService(Db);
-            DataFile file = srv.GetFile(id, guidName);
+            DataFile file = srv.GetFile(id, guid);
             if (file == null)
                 return HttpNotFound("File not found");
 
-            string path_name = Path.Combine(file.Path, file.GuidName);
+            string path_name = Path.Combine(file.Path, file.LocalFileName);
             return new FilePathResult(path_name, file.ContentType);
         }
 
@@ -82,12 +82,12 @@ namespace Catfish.Controllers
         }
 
         [HttpPost]
-        public JsonResult DeleteCashedFile(string guidName)
+        public JsonResult DeleteCashedFile(string guid)
         {
             try
             {
                 //Makes sure that the requested file is in the cache
-                if (!FileHelper.CheckGuidCache(Session, guidName))
+                if (!FileHelper.CheckGuidCache(Session, guid))
                 {
                     Response.StatusCode = (int)HttpStatusCode.NotFound;
                     Response.StatusDescription = "BadRequest: the file cannot be deleted -  NOT IN CACHE.";
@@ -95,7 +95,7 @@ namespace Catfish.Controllers
                 }
 
                 ItemService srv = new ItemService(Db);
-                if (!srv.DeleteStandaloneFile(guidName))
+                if (!srv.DeleteStandaloneFile(guid))
                 {
                     Response.StatusCode = (int)HttpStatusCode.NotFound;
                     Response.StatusDescription = "The file not found";
@@ -103,7 +103,7 @@ namespace Catfish.Controllers
                 }
 
                 Db.SaveChanges();
-                return Json(new List<string>() { guidName });
+                return Json(new List<string>() { guid });
             }
             catch (Exception)
             {

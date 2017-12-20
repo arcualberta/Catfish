@@ -36,12 +36,12 @@ namespace Catfish.Helpers
         public static void CacheGuids(HttpSessionStateBase session, List<DataFile> files)
         {
             foreach (var f in files)
-                GetGuidCache(session).Add(f.GuidName);
+                GetGuidCache(session).Add(f.Guid);
         }
 
-        public static bool CheckGuidCache(HttpSessionStateBase session, string guidName)
+        public static bool CheckGuidCache(HttpSessionStateBase session, string guid)
         {
-            return GetGuidCache(session).Contains(guidName);
+            return GetGuidCache(session).Contains(guid);
         }
     }
 }

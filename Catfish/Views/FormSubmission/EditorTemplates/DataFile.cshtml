@@ -7,7 +7,7 @@
 })
 @Html.HiddenFor(m => m.Id)
 @Html.HiddenFor(m => m.Guid)
-@Html.HiddenFor(m => m.GuidName)
+@Html.HiddenFor(m => m.Guid)
 
 @{
     FileViewModel vm = new FileViewModel(Model, Model.Id, Request.RequestContext, "attachment");

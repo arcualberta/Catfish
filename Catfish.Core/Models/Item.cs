@@ -41,7 +41,7 @@ namespace Catfish.Core.Models
                 if (mAttachmentField == null)
                 {
                     mAttachmentField = new Attachment();
-                    mAttachmentField.FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), Files.Select(f => f.GuidName));
+                    mAttachmentField.FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), Files.Select(f => f.Guid));
                 }
                 return mAttachmentField;
             }
@@ -87,10 +87,9 @@ namespace Catfish.Core.Models
             return GetChildModels(xpath, Data).FirstOrDefault() as FormSubmission;
         }
 
-
-        public void RemoveFile(string fileGuidName)
+        public void RemoveFile(string guid)
         {
-            var xpath = "./data/" + DataFile.TagName + "[@guid-name='" + fileGuidName + "']";
+            var xpath = "./data/" + DataFile.TagName + "[@guid='" + guid + "']";
             XElement file = GetChildElements(xpath, Data).FirstOrDefault();
             if (file == null)
                 throw new Exception("File does not exist.");

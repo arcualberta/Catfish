@@ -66,12 +66,12 @@ function uploadFile(itemId, uploadApiUrl, deleteApiUrl, uploadFieldCssId, upload
 
 }// END function uploadFile()
 
-function deleteFile(guidName, deleteApiUrl, messageBoxCssId) {
+function deleteFile(guid, deleteApiUrl, messageBoxCssId) {
     if (confirm("Delete file?") == false)
         return;
 
     var myFrm = new FormData();     //create a new form
-    myFrm.append("guidName", guidName);
+    myFrm.append("guid", guid);
 
     var oReg = new XMLHttpRequest();
     var stateChange = function (data) {

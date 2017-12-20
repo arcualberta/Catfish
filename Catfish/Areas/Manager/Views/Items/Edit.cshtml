@@ -16,26 +16,6 @@
     <script type="text/javascript">
         var uploadApiUrl = "@Url.Action("upload", "items", new { id = Model.Id })";
         var deleteApiUrl = "@Url.Action("deleteFile", "items", new { id = Model.Id })";
-
-        @*var itemId = @Model.Id;
-        var uploadFieldCssId = "#uploadField";
-        var uploadButtonCssId = "#uploadButton";
-        var progressBarCssId = "#progressBar";
-        var messageBoxCssId = "#uploadErrorMessage";
-        var thumbnailPanelCssId = "#thumbnailPanel";
-
-        function upload() {
-            uploadFile(itemId, uploadApiUrl, deleteApiUrl, uploadFieldCssId, uploadButtonCssId, progressBarCssId, messageBoxCssId, thumbnailPanelCssId);
-        }
-
-        function del(guidName){
-            deleteFile(guidName, deleteApiUrl, messageBoxCssId);
-        }
-
-        $(function () {
-            $("#progressBar").hide();
-            $("#uploadErrorMessage").hide();
-        });*@
     </script>
 }
 
