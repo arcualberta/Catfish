@@ -46,5 +46,20 @@ namespace Catfish.Core.Models
             }
         }
 
+        [NotMapped]
+        public string Target
+        {
+            get
+            {
+                var att = Data.Attribute("target");
+                return att == null ? "" : att.Value;
+            }
+
+            set
+            {
+                Data.SetAttributeValue("target", value);
+            }
+        }
+
     }
 }

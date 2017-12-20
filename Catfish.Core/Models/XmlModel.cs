@@ -545,9 +545,9 @@ namespace Catfish.Core.Models
             return GetAuditRoot().Elements("entry").Select(e => new AuditEntry() { Data = e });
         }
 
-        public AuditEntry AddAuditEntry(AuditEntry.eAction action, string user)
+        public AuditEntry AddAuditEntry(AuditEntry.eAction action, string user, string target)
         {
-            AuditEntry entry = new AuditEntry() { Action = action, User = user };
+            AuditEntry entry = new AuditEntry() { Action = action, User = user, Target = target };
             GetAuditRoot().Add(entry.Data);
             return entry;
         }
