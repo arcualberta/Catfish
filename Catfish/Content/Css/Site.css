@@ -100,3 +100,20 @@
 .uploadButton{
     margin-left:10px !important;
 }
+
+/* style for page pagination link*/
+.linkBtn {
+    text-decoration: none;
+}
+
+.linkDiv {
+    background-color: #faf9f9;
+    min-height: 30px;
+    padding-top: 9px;
+}
+
+.pageCount {
+    padding-left: 400px;
+    padding-right: 400px;
+    font-weight: bold;
+}
