@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Catfish.Core.Services
 {
@@ -33,6 +34,15 @@ namespace Catfish.Core.Services
             entity.EntityTypeId = et.Id;
             entity.InitMetadataSet(et.MetadataSets.ToList());
             entity.SetAttribute("entity-type", et.Name);
+
+            //removing audit trail entry that was created when creating the metadata set originally
+            foreach(MetadataSet ms in entity.MetadataSets)
+            {
+                XElement audit = ms.Data.Element("audit");
+                if (audit != null)
+                    audit.Remove();
+            }
+
             return entity;
         }
 

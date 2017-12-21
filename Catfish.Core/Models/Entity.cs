@@ -29,11 +29,11 @@ namespace Catfish.Core.Models
                 return GetChildModels("metadata/metadata-set", Data).Select(c => c as MetadataSet).ToList();
             }
 
-            set
-            {
-                RemoveAllMetadataSets();
-                InitMetadataSet(value);
-            }
+            ////set
+            ////{
+            ////    RemoveAllMetadataSets();
+            ////    InitMetadataSet(value);
+            ////}
 
         }
 
