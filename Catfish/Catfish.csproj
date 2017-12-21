@@ -294,6 +294,7 @@
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\RadioButtonSet.cshtml" />
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\Attachment.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\HtmlTag.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\BulletinBoard.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
@@ -322,6 +323,7 @@
     <Compile Include="Areas\Manager\Controllers\ItemsController.cs" />
     <Compile Include="Areas\Manager\Controllers\MetadataController.cs" />
     <Compile Include="Areas\Manager\Controllers\FormTemplatesController.cs" />
+    <Compile Include="Controllers\Api\StatsController.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Areas\Manager\Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
@@ -334,6 +336,7 @@
     <Compile Include="Controllers\LanguageController.cs" />
     <Compile Include="Helpers\ViewHelper.cs" />
     <Compile Include="Models\Pages\EntityTree.cs" />
+    <Compile Include="Models\Regions\BulletinBoard.cs" />
     <Compile Include="Models\Regions\Carousel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityContentViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\FileViewModel.cs" />
@@ -394,6 +397,7 @@
     <Content Include="Views\Shared\DisplayTemplates\Css.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\HtmlRegion.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Javascript.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\BulletinBoard.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -404,6 +408,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Language\" />
+    <Folder Include="Views\Stats\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj">
