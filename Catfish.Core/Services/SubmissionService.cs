@@ -31,6 +31,13 @@ namespace Catfish.Core.Services
             //Creating a clone of the template and returning it. We don't want to return the template
             //itself to avoid saving user data into the template.
             Form submission = new Form() { Data = template.Data };
+
+            //Removing the audit trail from the created form since the current trail contains info
+            //from the form template creation.
+            XElement audit = submission.Data.Element("audit");
+            if (audit != null)
+                audit.Remove();
+
             return submission;
         }
 
