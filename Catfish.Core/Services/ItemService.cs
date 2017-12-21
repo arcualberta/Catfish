@@ -38,9 +38,22 @@ namespace Catfish.Core.Services
 
         protected string CreateThumbnailName(string guid, string srcExtension)
         {
-            string ext = srcExtension == "jpg" ? "jpg" : "png";
+            string ext = "";
+            ImageFormat format = GetThumbnailFormat(srcExtension);
+            if (format == ImageFormat.Jpeg)
+                ext = "jpg";
+            else if (format == ImageFormat.Png)
+                ext = "png";
+            else
+                throw new Exception("Unknown thumbnail format");
+
             string thumbnailFileName = guid + "_t." + ext;
             return thumbnailFileName;
+        }
+
+        protected ImageFormat GetThumbnailFormat(string srcExtension)
+        {
+            return srcExtension == "jpg" ? ImageFormat.Jpeg : ImageFormat.Png;
         }
 
         public List<DataFile> UploadTempFiles(HttpRequestBase request)
@@ -101,7 +114,8 @@ namespace Catfish.Core.Services
                         : new Size() { Width = ConfigHelper.ThumbnailSize, Height = (image.Height * ConfigHelper.ThumbnailSize) / image.Width };
 
                     Image thumbnail = image.GetThumbnailImage(thumbSize.Width, thumbSize.Height, null, IntPtr.Zero);
-                    thumbnail.Save(Path.Combine(file.Path, file.Thumbnail));
+                    ImageFormat format = GetThumbnailFormat(file.Extension);
+                    thumbnail.Save(Path.Combine(file.Path, file.Thumbnail), format);
                 }
             }
             else
