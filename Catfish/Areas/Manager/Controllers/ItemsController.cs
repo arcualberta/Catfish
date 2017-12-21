@@ -26,9 +26,19 @@ namespace Catfish.Areas.Manager.Controllers
         private CatfishDbContext db = new CatfishDbContext();
 
         // GET: Manager/Items
-        public ActionResult Index()
+        public ActionResult Index(int offset=0, int limit=int.MaxValue)
         {
-            var entities = db.XmlModels.Where(m => m is Item).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
+            if(limit == int.MaxValue)
+            {
+                limit = Convert.ToInt16(WebConfigurationManager.AppSettings["PageSize"].ToString());
+            }
+            var entities = db.XmlModels.Where(m => m is Item).OrderBy(e => e.Id).Skip(offset).Take(limit).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
+            var count = db.XmlModels.Where(m => m is Item).Count();
+
+            ViewBag.TotalItems = count;
+            ViewBag.Limit = limit;
+            ViewBag.Offset = offset;
+           
             //var entities = db.XmlModels.Where(m => m is Item).Select(e => e as Item);
             ////foreach (var e in entities)
             ////    e.Deserialize();
