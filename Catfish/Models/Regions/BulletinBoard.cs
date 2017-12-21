@@ -1,10 +1,14 @@
-﻿using Piranha.Extend;
+﻿using Catfish.Areas.Manager.Models.ViewModels;
+using Catfish.Core.Models;
+using Catfish.Core.Models.Data;
+using Piranha.Extend;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Routing;
 
 namespace Catfish.Models.Regions
 {
@@ -29,5 +33,21 @@ namespace Catfish.Models.Regions
       
         [Display(Name = "Refresh Interval")]
         public int RefreshInterval { get; set; }
+    }
+
+    public class BulletinBoardItem
+    {
+        public int Id { get; set; }
+        public string Thumbnail { get; set; }
+        public string Image { get; set; }
+
+        public BulletinBoardItem(Item dataModel, RequestContext ctx)
+        {
+            DataFile file = dataModel.Files.FirstOrDefault();
+            FileViewModel vm = new FileViewModel(file, dataModel.Id, ctx);
+            Id = dataModel.Id;
+            Thumbnail = vm.Thumbnail;
+            Image = vm.Url;
+        }
     }
 }

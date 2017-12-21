@@ -323,6 +323,7 @@
     <Compile Include="Areas\Manager\Controllers\ItemsController.cs" />
     <Compile Include="Areas\Manager\Controllers\MetadataController.cs" />
     <Compile Include="Areas\Manager\Controllers\FormTemplatesController.cs" />
+    <Compile Include="Controllers\Api\EntitiesController.cs" />
     <Compile Include="Controllers\Api\StatsController.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Areas\Manager\Helpers\HtmlHelperExtensions.cs" />
@@ -407,6 +408,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Views\Entities\" />
     <Folder Include="Views\Language\" />
     <Folder Include="Views\Stats\" />
   </ItemGroup>

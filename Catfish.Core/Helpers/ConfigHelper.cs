@@ -70,5 +70,7 @@ namespace Catfish.Core.Helpers
         public static string DataRoot { get { return Path.Combine(UploadRoot, "Data"); } }
 
         public static int ThumbnailSize { get { return 150; } }
+
+        public static int PageSize { get { return (ConfigurationManager.AppSettings["PageSize"] != null) ? int.Parse(ConfigurationManager.AppSettings["PageSize"]) : 25; } }
     }
 }
