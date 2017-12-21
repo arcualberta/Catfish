@@ -551,14 +551,25 @@ namespace Catfish.Core.Models
             return audit;
         }
 
-        public AuditEntry SerializeAuditLog(AuditEntry.eAction action, string actor, DateTime? timestamp = null)
+        /// <summary>
+        /// Creates an audit entry and adds the change log into it.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="actor"></param>
+        /// <param name="timestamp"></param>
+        /// <returns></returns>
+        public AuditEntry FlushChangeLog(AuditEntry.eAction action, string actor, DateTime? timestamp = null)
         {
             AuditEntry entry = new AuditEntry(action, actor, timestamp.HasValue ? timestamp.Value : DateTime.Now, mChangeLog);
-            GetAuditRoot().Add(entry.Data);
+            AddAuditEntry(entry);
             mChangeLog.Clear();
             return entry;
         }
 
+        public void AddAuditEntry(AuditEntry entry)
+        {
+            GetAuditRoot().Add(entry.Data);
+        }
         public IEnumerable<AuditEntry> GetAuditTrail()
         {
             return GetAuditRoot().Elements("entry").Select(e => new AuditEntry(e));
