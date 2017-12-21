@@ -40,7 +40,6 @@ namespace Catfish.Core.Services
             if (itemId == 0)
             {
                 submissionItem = CreateEntity<Item>(entityTypeId);
-                submissionItem.LogChange(submissionItem.Guid, "Created.");
                 Db.Items.Add(submissionItem);
             }
             else
@@ -83,20 +82,5 @@ namespace Catfish.Core.Services
             }
             return submissionItem;
         }
-
-        ////public Item SaveFormSubmission(int collectionId, Item item)
-        ////{
-        ////    Collection collection = collectionId > 0 ? Db.Collections.Where(c => c.Id == collectionId).FirstOrDefault() : null;
-        ////    if (collectionId > 0 && collection == null)
-        ////        throw new Exception("The target collection for form submissions does not exist.");
-
-        ////    ItemService srv = new ItemService(Db);
-        ////    Item updatedItem = srv.UpdateStoredItem(item);
-
-        ////    if (collection != null)
-        ////        updatedItem.ParentMembers.Add(collection);
-
-        ////    return updatedItem;
-        ////}
     }
 }

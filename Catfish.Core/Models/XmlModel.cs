@@ -551,16 +551,17 @@ namespace Catfish.Core.Models
             return audit;
         }
 
-        public AuditEntry SerializeAuditLog(AuditEntry.eAction action, string actor)
+        public AuditEntry SerializeAuditLog(AuditEntry.eAction action, string actor, DateTime? timestamp = null)
         {
-            AuditEntry entry = new AuditEntry(action, actor, mChangeLog);
+            AuditEntry entry = new AuditEntry(action, actor, timestamp.HasValue ? timestamp.Value : DateTime.Now, mChangeLog);
             GetAuditRoot().Add(entry.Data);
+            mChangeLog.Clear();
             return entry;
         }
 
         public IEnumerable<AuditEntry> GetAuditTrail()
         {
-            return GetAuditRoot().Elements("entry").Select(e => new AuditEntry() { Data = e });
+            return GetAuditRoot().Elements("entry").Select(e => new AuditEntry(e));
         }
 
         public string GetCreator()

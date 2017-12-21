@@ -11,15 +11,18 @@ namespace Catfish.Core.Models
     [NotMapped]
     public class AuditChangeLog
     {
-
         public string Target { get; set; }
+
         public string Description { get; set; }
 
-        public AuditChangeLog(string target, string description)
+       public AuditChangeLog(string target, string description)
         {
             Target = target;
             Description = description;
         }
+/*
+         public static string TagName { get { return "log"; } }
+
 
         public AuditChangeLog(XElement ele)
         {
@@ -29,10 +32,11 @@ namespace Catfish.Core.Models
 
         public XElement ToXml()
         {
-            XElement element = new XElement("log");
+            XElement element = new XElement(TagName);
             element.SetAttributeValue("target", Target);
             element.Value = Description;
             return element;
         }
+        */
     }
 }
