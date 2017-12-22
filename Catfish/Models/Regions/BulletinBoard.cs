@@ -26,8 +26,8 @@ namespace Catfish.Models.Regions
         [Display(Name = "Entity Type Id")]
         public int EntityTypeId { get; set; }
 
-        [Display(Name ="Item Count")]
-        public int ItemCount { get; set; }
+        [Display(Name ="Row Count")]
+        public int RowCount { get; set; }
 
         [Display(Name = "Select Randomly")]
         public bool SelectRandomly { get; set; }
@@ -68,7 +68,7 @@ namespace Catfish.Models.Regions
                         {
                             Metadata.Add(new MetadataFieldValue()
                             {
-                                FiledName = field.GetName(),
+                                FieldName = field.GetName(),
                                 FieldValues = vals
                             });
                         }
@@ -80,7 +80,7 @@ namespace Catfish.Models.Regions
 
     public class MetadataFieldValue
     {
-        public string FiledName { get; set; }
+        public string FieldName { get; set; }
         public List<TextValue> FieldValues { get; set; }
     }
 }

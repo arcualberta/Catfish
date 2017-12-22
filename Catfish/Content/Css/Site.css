@@ -136,17 +136,14 @@
         border: solid 3px blue;
     }
 
-.bulletinboard .slip{
-    position:relative;
-    width: 100%;
-    height: 200px;
-    border:solid 2px red;
-    z-index:1000;
-}
+    .bulletinboard .zoom {
+        margin: 0;
+        padding: 10px;
+        position: relative;
+    }
 
-    .bulletinboard .slip .image {
-        height: 200px;
-        border: solid 2px red;
+    .bulletinboard .zoom .image {
+        height: 220px;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;

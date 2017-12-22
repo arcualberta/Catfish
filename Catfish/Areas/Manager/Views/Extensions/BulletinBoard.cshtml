@@ -10,9 +10,9 @@
         <div class="input">@Html.TextBoxFor(m => m.EntityTypeId, new { @type = "number" })</div>
     </li>
     <li>
-        @Html.LabelFor(m => m.ItemCount)
-        @{if (Model.ItemCount == 0) { Model.ItemCount = 25; }}
-        <div class="input">@Html.TextBoxFor(m => m.ItemCount, new { @type = "number" })</div>
+        @Html.LabelFor(m => m.RowCount)
+        @{if (Model.RowCount == 0) { Model.RowCount = 4; }}
+        <div class="input">@Html.TextBoxFor(m => m.RowCount, new { @type = "number" })</div>
     </li>
     <li>
         @Html.LabelFor(m => m.RefreshInterval)

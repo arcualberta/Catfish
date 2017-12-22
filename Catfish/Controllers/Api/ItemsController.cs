@@ -42,6 +42,8 @@ namespace Catfish.Controllers.Api
 
                 if (limit.HasValue & limit.Value > 0)
                     items = items.Take(limit.Value);
+                else
+                    items = items.Take(25);
 
                 List<BulletinBoardItem> ret = items.Select(it => new BulletinBoardItem(it, Request.RequestContext, fields)).ToList();
                 return Json(ret, JsonRequestBehavior.AllowGet);
@@ -51,7 +53,6 @@ namespace Catfish.Controllers.Api
                 Response.StatusCode = 500;
                 Response.StatusDescription = "An error occurred.";
                 return Json(new List<BulletinBoardItem>(), JsonRequestBehavior.AllowGet);
-
             }
 
         }
