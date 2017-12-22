@@ -1,4 +1,134 @@
 ﻿@model Catfish.Models.Regions.BulletinBoard
 
+@{ 
+    string apiUrl = "/apix/items";
+ }
 
+<script>
 
+    function getRequiredItemCount(containerId)
+    {
+        var containerWidth = $("#" + containerId).width();
+        var numRows = 3;
+        var itemWidth = 100;
+        var count = Math.floor(containerWidth / itemWidth) * numRows;
+        return count;
+    }
+
+    function renderImages(data, positionRandomly, containerId, replaceExisting) {
+        var current = $("#" + containerId + " div");
+        for (var i = 0; i < data.length; ++i) {
+            if (i < current.length && replaceExisting) {
+                current[i].remove();
+            }
+
+            var tile = $.parseHTML('<div style="background-image:url(\'' + data[i].Thumbnail + '\')"></div>');
+            $(tile).attr("class", "item col-xs-1");
+            $(tile).attr("id", data[i].Id);
+            $(tile).data("image", data[i].Image)
+            $(tile).attr("onclick", "showDetails(this, '" + containerId + "');");
+
+            $("#" + containerId).append(tile);
+
+            //$("#" + containerId).append(
+            //    '<div class="item col-xs-1" \
+            //        id="' + data[i].Id + '"\
+            //        style="background-image:url(\'' + data[i].Thumbnail + '\')" \
+            //        onclick="showDetails(this);" \
+            //    >\
+            //        \<img style="display:none" src="' + data[i].Thumbnail + '" /> \
+            //    </div > '
+            //);
+        }
+    }
+
+    function loadImages(offset, count, collectionId, entityTypeId, selectRandomly, positionRandomly, containerId, replaceExisting)
+    {
+        if (count < 0)
+            count = getRequiredItemCount(containerId);
+
+        var myFrm = new FormData();     //create a new form
+        myFrm.append("offset", offset);
+        myFrm.append("limit", count);
+        myFrm.append("collectionId", collectionId);
+        myFrm.append("entityTypeId", entityTypeId);
+        myFrm.append("randomize", selectRandomly);
+
+        var oReg = new XMLHttpRequest();
+        var stateChange = function (data) {
+            if (oReg.readyState === 4) {  //after successfull execute the function then it will execute what ever inside this if {}
+                if (oReg.status === 200) {
+                    var data = JSON.parse(data);
+                    renderImages(data, positionRandomly, containerId, replaceExisting);
+                }
+                else {
+                    //Error
+                }
+            }
+        };
+
+        if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+            oReg.onload = function (event) { stateChange(event.target.response); };
+        } else {
+            oReg.onreadystatechange = function (data) { stateChange(data.srcElement.responseText); };
+        }
+
+        oReg.open('POST', "@apiUrl");
+        oReg.send(myFrm);
+    }
+
+    function redraw(offset, collectionId, entityTypeId, selectRandomly, positionRandomly, containerId)
+    {
+        var requiredCount = getRequiredItemCount(containerId);
+        var currentItems = $("#" + containerId + " div");
+        var diff = requiredCount - currentItems.length;
+
+        if (diff > 0) {
+            loadImages(offset + currentItems.length, diff, collectionId, entityTypeId, selectRandomly, positionRandomly, containerId, false);
+        }
+
+        //showing upto requiredCount of images int the crrent set and hiding enything in excess
+        for (i = 0; i < Math.min(requiredCount, currentItems.length); ++i)
+            $(currentItems[i]).show();
+        for (i = requiredCount; i < currentItems.length; ++i)
+            $(currentItems[i]).hide();
+    }
+
+    function showDetails(item, containerId) {
+        $("#" + containerId + " .slip").remove();
+
+        var imageUrl = $(item).data("image");
+        var slipTop = $(item).position().top + $(item).outerHeight(true);
+        var slip = $.parseHTML('<div class="slip"></div>');
+        $(slip).css("top", slipTop + "px");
+        $("#" + containerId).append(slip);
+
+        var image = $.parseHTML('<div class="image col-sm-6" style="background-image:url(\'' + data[i].Image + '\')"></div>');
+        $(slip).append(image);
+    }
+
+</script>
+
+<style scoped>
+    @Html.Raw(Model.CssStyles)
+</style>
+
+@{
+    string divId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString("N") : Model.CssId;
+}
+
+<div class="container">
+    <div id="@divId" class="row bulletinboard @Model.CssClasses">
+    </div>
+    <div id="@{@divId}zoom" class="zoom"></div>
+</div>
+<script>
+    $(function () {
+        loadImages(0, -1, 0, 0, true, true, "@divId", true);
+        var intervalID = setInterval(function () { loadImages(0, -1, 0, 0, true, true, "@divId", true); }, (@Model.RefreshInterval * 1000));
+    })
+
+    $(window).resize(function () {
+        redraw(0, 0, 0, true, true, "@divId");
+    });
+</script>

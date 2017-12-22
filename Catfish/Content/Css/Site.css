@@ -116,4 +116,38 @@
     padding-left: 400px;
     padding-right: 400px;
     font-weight: bold;
+    margin-bottom:100px;
 }
+
+.bulletinboard {
+    position:relative;
+}
+
+.bulletinboard .item{
+    width:100px;
+    height:100px;
+    background-size:cover;
+    background-repeat:no-repeat;
+    background-position:center;
+    border: solid 1px #808080;
+}
+
+    .bulletinboard .item:hover {
+        border: solid 3px blue;
+    }
+
+.bulletinboard .slip{
+    position:relative;
+    width: 100%;
+    height: 200px;
+    border:solid 2px red;
+    z-index:1000;
+}
+
+    .bulletinboard .slip .image {
+        height: 200px;
+        border: solid 2px red;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
