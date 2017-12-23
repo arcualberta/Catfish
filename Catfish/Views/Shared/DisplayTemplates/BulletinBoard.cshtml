@@ -143,10 +143,10 @@
 </style>
 
 <div id="@divId" class="container bulletinboard @Model.CssClasses">
-    <div class="row panel col-sm-8">
+    <div class="row panel col-sm-9">
 
     </div>
-    <div class="zoom col-sm-4">
+    <div class="zoom col-sm-3">
         <div class="image"></div>
         <div class="info"></div>
     </div>
@@ -157,17 +157,15 @@
 
     var randomFocus = true;
     var activeItem = null;
-
     $(function () {
-        loadImages(0, -1, 0, 0, @Model.SelectRandomly, @Model.PositionRandomly, "@divId", true);
-
+        loadImages(0, -1, 0, 0, true, true, "@divId", true);
         var intervalID_1 = setInterval(function () {
-            loadImages(0, -1, 0, 0, @Model.SelectRandomly, @Model.PositionRandomly, "@divId", true);
+            loadImages(0, -1, 0, 0, true, true, "@divId", true);
         }, (@Model.RefreshInterval * 1000));
 
         var intervalID_2 = setInterval(function () {
             zoomRandom("@divId");
-        }, (4000));
+        }, (5000));
 
     })
 
