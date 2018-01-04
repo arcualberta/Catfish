@@ -1,5 +1,6 @@
 ﻿@model Catfish.Core.Models.Item
 @using Catfish.Areas.Manager.Models.ViewModels;
+@using Catfish.Core.Models.Forms;
 
 @{  ViewBag.Title = Model.Id > 0 ? "Edit Item" : "Create Item"; }
 
@@ -8,109 +9,13 @@
     <script type="text/javascript" src="~/Scripts/knockout-3.1.0.js"></script>
     <script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
     <script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
+    @*<script type="text/javascript" src="~/Scripts/fileupload.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/attachment.js"></script>
     <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
 
     <script type="text/javascript">
-        function updateFileListView(data) {
-            data = JSON.parse(data);
-            for (var i = 0; i < data.length; ++i) {
-                var d = data[i];
-                var eleId = d.Guid.substr(0, d.Guid.length - 4);
-                var ele = '<div class="fileThumbnail" id="' + eleId + '" > <img src="' + d.Thumbnail + '" alt="' + d.FileName + '" />' +
-                    '<button class="glyphicon glyphicon-remove" onclick="deleteFile(\'' + d.Guid + '\');"></button>' +
-                    '<div class="label"><a href="' + d.Url + '">' + d.FileName + '</a></div>' +
-                    '</div>';
-
-                        @*<div class="fileThumbnail">
-                            <img src="@vm.Thumbnail" alt="@vm.FileName" />
-                            <button class="glyphicon glyphicon-remove" onclick="return delete(id, '@vm.Guid');"></button>
-                            <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
-                        </div>*@
-
-                $('#thumbnailPanel').append(ele);
-            }
-        }
-
-        function uploadFile() {
-            var myFrm = new FormData();     //create a new form
-            myFrm.append("itemId", @Model.Id);
-
-            var uploadField = $("#uploadField")[0];     //grab the FileUpload object
-
-            for (var i = 0; i < uploadField.files.length; i++) {
-                myFrm.append("inputFile" + i, uploadField.files[i]);
-            }
-
-            $("#progressBar").show();
-            $("#uploadButton").attr('disabled', 'disabled');
-            $("#uploadField").attr('disabled', 'disabled');
-
-            var oReg = new XMLHttpRequest();
-
-            var stateChange = function (data) {
-                if (oReg.readyState === 4) {  //after successfull execute the function then it will execute what ever inside this if {}
-                    if (oReg.status === 200) {
-                        //Updating the value of the hidden field which carries the ID of this FileUpload object in the page
-                        updateFileListView(data);
-                        $("#uploadErrorMessage").text("");
-                    }
-                    else {
-                        //Error
-                        $("#uploadErrorMessage").text("File upload failed: " + oReg.statusText);
-                    }
-                    $("#uploadField").val("");
-                    $("#progressBar").hide();
-                    $("#uploadButton").prop('disabled', false);
-                    $("#uploadField").prop('disabled', false);
-                }
-            };
-
-            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-                oReg.onload = function (event) { stateChange(event.target.response); };
-            } else {
-                oReg.onreadystatechange = function (data) { stateChange(data.srcElement.responseText); };
-            }
-            var uploadUrl = "@Url.Action("upload", "items", new { id = Model.Id })";
-            oReg.open('POST', uploadUrl);
-            oReg.send(myFrm);
-
-        }// END function uploadFile()
-
-        function deleteFile(guidName) {
-            if (confirm("Delete file?") == false)
-                return;
-
-            var myFrm = new FormData();     //create a new form
-            myFrm.append("guidName", guidName);
-
-            var oReg = new XMLHttpRequest();
-            var stateChange = function (data) {
-                if (oReg.readyState === 4) {  //after successfull execute the function then it will execute what ever inside this if {}
-                    if (oReg.status === 200) {
-                        var guid = JSON.parse(data)[0];
-                        var eleId = guid.substr(0, guid.length - 4)
-                        $("#" + eleId).remove();
-                    }
-                    else {
-                        //Error
-                        $("#uploadErrorMessage").text("File deletion failed: " + oReg.statusText);
-                    }
-                }
-            };
-
-            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-                oReg.onload = function (event) { stateChange(event.target.response); };
-            } else {
-                oReg.onreadystatechange = function (data) { stateChange(data.srcElement.responseText); };
-            }
-            var uploadUrl = "@Url.Action("deleteFile", "items", new { id = Model.Id })";
-            oReg.open('POST', uploadUrl);
-            oReg.send(myFrm);
-        }
-
-        $(function () {
-            $("#progressBar").hide();
-        });
+        var uploadApiUrl = "@Url.Action("upload", "items", new { id = Model.Id })";
+        var deleteApiUrl = "@Url.Action("deleteFile", "items", new { id = Model.Id })";
     </script>
 }
 
@@ -139,20 +44,59 @@
 }
 else
 {
-    <div class="grid_12 bs">
-        <div class="box">
-            <div class="title">
-                Metadata
-            </div>
-
-            @using (Html.BeginForm("Edit", "Items", FormMethod.Post))
-            {
+    using (Html.BeginForm("Edit", "Items", FormMethod.Post))
+    {
+        <div class="grid_12 bs">
+            <div class="box">
+                <div class="title">
+                    Metadata
+                </div>
                 @Html.Partial("Partial/EditEntity")
-            }
+            </div>
         </div>
-    </div>
 
-    <div class="grid_12 bs">
+        if (Model.FormSubmissions.Count() > 0)
+        {
+            <div class="grid_12 bs">
+                <div class="box">
+                    <div class="title">
+                        Form Submissions
+                    </div>
+                    <div class="form-view">
+                        @Html.DisplayFor(m => m.FormSubmissions, new { Item = Model })
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="grid_12 bs">
+            <div class="box">
+                <div class="title">
+                    Files
+                </div>
+                <div class="form-view">
+                    @{ 
+                        List<string> crossLinkedFileGuidSets = Model.FormSubmissions
+                            .SelectMany(form => form.FormData.Fields.Where(field => field is Attachment))
+                            .Select(field => (field as Attachment).FileGuids).ToList();
+                        var crossLinkedFileGuids = crossLinkedFileGuidSets.SelectMany(set => set.Split(new char[] { Attachment.FileGuidSeparator }, StringSplitOptions.RemoveEmptyEntries)).ToList();
+                    }  
+                    @Html.EditorFor(m => m.AttachmentField,
+                   new {
+                       UploadApiUrl = @Url.Action("upload", "items"),
+                       DeleteApiUrl = @Url.Action("deleteCashedFile", "items"),
+                       Files = Model.Files.ToList(),
+                       CrossLinkedFileGuids = crossLinkedFileGuids,
+                       ParentId = Model.Id,
+                       Controller = "items"
+                   })
+                </div>
+            </div>
+        </div>
+
+    }
+
+    @*<div class="grid_12 bs">
         <div class="box">
             <div class="title">
                 Files
@@ -164,36 +108,37 @@ else
                 }
                 else
                 {
-                    if (Model.Files.Count == 0)
+                    if (Model.Files.Count() == 0)
                     {
                         <p>No files exist</p>
                     }
                 }
 
-                <div id="thumbnailPanel">
+                <div id="thumbnailPanel" class="thumbnailPanel">
                     @foreach (var file in Model.Files)
                     {
                         FileViewModel vm = new FileViewModel(file, Model.Id, Request.RequestContext);
                         var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
                         <div class="fileThumbnail" id="@eleId">
                             <img src="@vm.Thumbnail" alt="@vm.FileName" /> 
-                            <button class="glyphicon glyphicon-remove" onclick="deleteFile('@vm.Guid');"></button>
-                            <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
+                            <button class="glyphicon glyphicon-remove" onclick="del('@vm.Guid');"></button>
+                            <div class="label"><a href="@vm.Url" target="_blank">@vm.FileName</a></div>
                         </div>
                     }                                                                       
                 </div>
                 <div class="inner" style="clear:both">
                     @if (Model.Id > 0)
                     {
-                    <input type='file' id='uploadField' name="files" multiple="multiple" />
-                    <input type="button" value="Upload" id="uploadButton" onclick="uploadFile(); return false;" />
-                    <div id="progressBar"><progress></progress></div>
-                    <div id="uploadErrorMessage"></div>
+                        <div id="uploadErrorMessage" class="alert alert-danger"></div>
+                        <input type='file' id='uploadField' class="uploadField" name="files" multiple="multiple" />
+                        <input type="button" value="Upload" id="uploadButton" class="uploadButton" onclick="upload(); return false;" />
+                        <div id="progressBar"><progress></progress></div>
                     }
                 </div>
             </div>
 
         </div>
-    </div>
+    </div>*@
+
 }
 

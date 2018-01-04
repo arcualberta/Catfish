@@ -1,0 +1,18 @@
+﻿@model Catfish.Models.Regions.FormContainer
+
+<ul class="form">
+    <li>
+        @Html.LabelFor(m => m.FormId)
+        <div class="input">@Html.TextBoxFor(m => m.FormId)</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.EntityTypeId)
+        <div class="input">@Html.TextBoxFor(m => m.EntityTypeId)</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.CollectionId)
+        <div class="input">@Html.TextBoxFor(m => m.CollectionId)</div>
+    </li>
+
+    @Html.Partial("_CatfishRegion", Model)
+</ul>

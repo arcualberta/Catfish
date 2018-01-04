@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 using Catfish.Core.Models.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
@@ -10,7 +10,7 @@ namespace Catfish.Core.Models
     [TypeLabel("Entity Type")]
     public class EntityType
     {
-        public enum eTarget { None = 0, Collections, Items, Files };
+        public enum eTarget { None = 0, Collections, Items, Files, Forms };
 
         public int Id { get; set; }
 

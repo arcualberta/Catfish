@@ -1,10 +1,11 @@
 ﻿using Catfish.Core.Models;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Catfish.Core.Services
 {
@@ -31,9 +32,17 @@ namespace Catfish.Core.Services
             T entity = new T();
             entity.EntityType = et;
             entity.EntityTypeId = et.Id;
-            entity.MetadataSets = et.MetadataSets.ToList();
+            entity.InitMetadataSet(et.MetadataSets.ToList());
             entity.SetAttribute("entity-type", et.Name);
-            entity.Serialize();
+
+            //removing audit trail entry that was created when creating the metadata set originally
+            foreach(MetadataSet ms in entity.MetadataSets)
+            {
+                XElement audit = ms.Data.Element("audit");
+                if (audit != null)
+                    audit.Remove();
+            }
+
             return entity;
         }
 

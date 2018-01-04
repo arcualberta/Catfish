@@ -1,0 +1,53 @@
+﻿@model Catfish.Core.Models.Form
+    
+@using Catfish.Core.Models.Forms;
+
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+{
+    {"class", "model-type"}
+})
+
+@{
+    var culture = Catfish.Helpers.ViewHelper.GetActiveLanguage();
+    string lang = culture.TwoLetterISOLanguageName;
+
+    for (int i = 0; i < Model.Fields.Count; ++i)
+    {
+        string name = Model.Fields[i].GetName(lang, true);
+        string description = Model.Fields[i].GetDescription(lang);
+
+        <div class="form-field">
+            @if (!string.IsNullOrEmpty(name))
+            {
+            <div class="name">
+                @Html.Label(name)
+            </div>
+            }
+            @if (!string.IsNullOrEmpty(description))
+            {
+            <div class="desc">
+                @Html.Raw(description)
+            </div>
+            }
+
+            <div class="input">
+                @if (typeof(Attachment).IsAssignableFrom(Model.Fields[i].GetType()))
+                {
+                    @Html.EditorFor(m => Model.Fields[i],
+                   new
+                   {
+                       UploadApiUrl = @Url.Action("upload", "attachment"),
+                       DeleteApiUrl = @Url.Action("deleteCashedFile", "attachment"),
+                       ParentId = Model.Id,
+                       Controller = "items"
+                   })
+
+                }
+                else
+                {
+                    @Html.EditorFor(m => Model.Fields[i])
+                }
+            </div>
+        </div>
+    }
+}

@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Metadata;
+﻿using Catfish.Core.Models.Data;
+using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,44 +16,91 @@ namespace Catfish.Core.Models
             : base()
         {
             ParentRelations = new List<Aggregation>();
-            Data.Add(new XElement("files"));
+            Data.Add(new XElement("data"));
         }
 
         public override string GetTagName() { return "item"; }
 
         [NotMapped]
-        public virtual List<DataFile> Files
+        public virtual IEnumerable<DataObject> DataObjects
         {
             get
             {
-                return GetChildModels("files/file", Data).Select(c => c as DataFile).ToList();
+                return GetChildModels("data/*", Data).Select(c => c as DataObject);
             }
+        }
 
+        /// <summary>
+        /// This field is only used for passing file attachments between controller action and Items/Edit view through model binding
+        /// </summary>
+        [NotMapped]
+        public Attachment AttachmentField
+        {
+            get
+            {
+                if (mAttachmentField == null)
+                {
+                    mAttachmentField = new Attachment();
+                    mAttachmentField.FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), Files.Select(f => f.Guid));
+                }
+                return mAttachmentField;
+            }
             set
             {
-                //Removing all children inside the files element
-                RemoveAllElements("files/file", Data);
+                mAttachmentField = value;
+            }
+        }
+        private Attachment mAttachmentField;
 
-                if (value != null)
-                {
-                    foreach (DataFile df in value)
-                        InsertChildElement("./files", df.Data);
-                }
+        [NotMapped]
+        public virtual IEnumerable<DataFile> Files
+        {
+            get
+            {
+                return GetChildModels("data/" + DataFile.TagName, Data).Select(c => c as DataFile);
             }
         }
 
-        public void AddFile(DataFile df)
+        [NotMapped]
+        public virtual IEnumerable<FormSubmission> FormSubmissions
         {
-            InsertChildElement("./files", df.Data);
+            get
+            {
+                return GetChildModels("data/" + FormSubmission.TagName, Data).Select(c => c as FormSubmission);
+            }
         }
 
-        public void RemoveFile(string fileGuidName)
+
+        protected XElement GetDataObjectRoot(bool createIfNotExist = true)
         {
-            var xpath = "./files/file[@guid-name='" + fileGuidName + "']";
-            XElement file = GetChildElements(xpath, Data).FirstOrDefault();
-            if (file == null)
+            return GetImmediateChild("data");
+        }
+
+        public void AddData(DataObject obj)
+        {
+            GetDataObjectRoot().Add(obj.Data);
+
+            if (this.Id > 0)//Onlye adding logs for new data objects when updating existing items
+                LogChange(obj.Guid, "Added data object");
+        }
+
+        public FormSubmission GetFormSubmission(string formSubmissionRef)
+        {
+            var xpath = "./data/" + FormSubmission.TagName + "[@ref='" + formSubmissionRef + "']";
+            return GetChildModels(xpath, Data).FirstOrDefault() as FormSubmission;
+        }
+
+        public void RemoveFile(DataFile file)
+        {
+            var xpath = "./data/" + DataFile.TagName + "[@guid='" + file.Guid + "']";
+            XElement fileElement = GetChildElements(xpath, Data).FirstOrDefault();
+            if (fileElement == null)
                 throw new Exception("File does not exist.");
-            file.Remove();
+            fileElement.Remove();
+
+            file.DeleteFilesFromFileSystem();
+
+            LogChange(file.Guid, "Deleted " + file.FileName);
         }
 
     }

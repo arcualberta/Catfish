@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Catfish.Controllers
+namespace Catfish.Controllers.Api
 {
     public class EntityController : Controller
     {

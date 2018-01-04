@@ -27,7 +27,6 @@ namespace Catfish.Tests
                 Collection c = srv.CreateEntity<Collection>(cType.Id);
                 string name = TestData.LoremIpsum(5, 10);
                 c.SetName("Collection: " + name);
-                c.Serialize();
                 db.Collections.Add(c);
             }
             db.SaveChanges();
@@ -50,7 +49,6 @@ namespace Catfish.Tests
                 Item c = srv.CreateEntity<Item>(cType.Id);
                 string name = TestData.LoremIpsum(5, 10);
                 c.SetName("Item: " + name);
-                c.Serialize();
                 db.Items.Add(c);
             }
             db.SaveChanges();

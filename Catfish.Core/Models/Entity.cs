@@ -1,45 +1,58 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 using System.Web.Script.Serialization;
 using Catfish.Core.Models.Attributes;
 using System.Xml.Linq;
 using System.Linq;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using Catfish.Core.Helpers;
 
 namespace Catfish.Core.Models
 {
-    public class Entity : XmlModel
+    public abstract class Entity : XmlModel
     {
         public int? EntityTypeId { get; set; }
         public virtual EntityType EntityType { get; set; }
 
         public Entity()
         {
-            Data.Add(new XElement("metadata-sets"));
+            Data.Add(new XElement("metadata"));
         }
 
         [NotMapped]
-        public List<MetadataSet> MetadataSets
+        public IReadOnlyList<MetadataSet> MetadataSets
         {
             get
             {
-                return GetChildModels("metadata-sets/metadata-set", Data).Select(c => c as MetadataSet).ToList();
+                return GetChildModels("metadata/metadata-set", Data).Select(c => c as MetadataSet).ToList();
             }
 
-            set
-            {
-                //Removing all children inside the metadata set element
-                RemoveAllElements("metadata-sets/metadata-set", Data);
+            ////set
+            ////{
+            ////    RemoveAllMetadataSets();
+            ////    InitMetadataSet(value);
+            ////}
 
-                foreach (MetadataSet ms in value)
-                    InsertChildElement("./metadata-sets", ms.Data);
-            }
         }
 
-        public override string GetName(string lang = null)
+        public void RemoveAllMetadataSets()
+        {
+            //Removing all children inside the metadata set element
+            RemoveAllElements("metadata/metadata-set", Data);
+        }
+
+        public void InitMetadataSet(IReadOnlyList<MetadataSet> src)
+        {
+            XElement metadata = GetImmediateChild("metadata");
+            foreach (MetadataSet ms in src)
+                metadata.Add(ms.Data);
+        }
+
+
+
+        public string GetName(string lang = null)
         {
             var mapping = EntityType.GetNameMapping();
             if(mapping != null)
@@ -47,8 +60,12 @@ namespace Catfish.Core.Models
                 string msName = mapping.MetadataSet.Name;
                 string fieldName = mapping.FieldName;
                 MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
-                MetadataField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
-                return field != null ? field.Value : "ERROR: INCORRECT NAME MAPPING FOUND FOR THIS ENTITY TYPE";
+                FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
+
+                if(field == null)
+                    return "ERROR: INCORRECT NAME MAPPING FOUND FOR THIS ENTITY TYPE";
+
+                return MultilingualHelper.Join(field.GetValues(), " / ", false);
             }
 
             return GetChildText("name", Data, Lang(lang));
@@ -73,8 +90,12 @@ namespace Catfish.Core.Models
                 string msName = mapping.MetadataSet.Name;
                 string fieldName = mapping.FieldName;
                 MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
-                MetadataField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
-                return field != null ? field.Value : "ERROR: INCORRECT DESCRIPTION MAPPING FOUND FOR THIS ENTITY TYPE";
+                FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
+
+                if (field == null)
+                    return "ERROR: INCORRECT DESCRIPTION MAPPING FOUND FOR THIS ENTITY TYPE";
+
+                return MultilingualHelper.Join(field.GetValues(), " / ", false);
             }
 
             return GetChildText("description", Data, Lang(lang));
@@ -100,11 +121,9 @@ namespace Catfish.Core.Models
 
             foreach (MetadataSet ms in this.MetadataSets)
             {
-                var src_ms = src_item.MetadataSets.Where(x => x.Ref == ms.Ref).FirstOrDefault();
+                var src_ms = src_item.MetadataSets.Where(x => x.Guid == ms.Guid).FirstOrDefault();
                 ms.UpdateValues(src_ms);
             }
-
-            //this.Serialize();
         }
 
         public string Name

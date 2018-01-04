@@ -9,21 +9,24 @@ using System.Threading;
 using System.Globalization;
 using Catfish.Models.Regions;
 using System.Web.Script.Serialization;
+using Catfish.Core.Models;
 
 namespace Catfish.Helpers
 {
     public static class ViewHelper
     {
-        public static CultureInfo GetActiveLanguage(HttpSessionStateBase session)
+        public static CultureInfo GetActiveLanguage()
         {
+            var session = System.Web.HttpContext.Current.Session;
             if (session["ActiveLanguage"] as CultureInfo == null)
                 session["ActiveLanguage"] = ConfigHelper.Languages[0];
 
             return session["ActiveLanguage"] as CultureInfo;
         }
 
-        public static void SetActiveLanguage(CultureInfo lang, HttpSessionStateBase session)
+        public static void SetActiveLanguage(CultureInfo lang)
         {
+            var session = System.Web.HttpContext.Current.Session;
             session["ActiveLanguage"] = lang;
         }
 
@@ -57,6 +60,5 @@ namespace Catfish.Helpers
             //MultilingualText pageTitle = null;
 
         }
-
     }
 }

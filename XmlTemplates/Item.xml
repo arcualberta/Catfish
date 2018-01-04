@@ -1,5 +1,5 @@
 <item entity-type="Video" model-type="Catfish.Core.Models.Item, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-	<metadata-sets>
+	<metadata>
 		<metadata-set model-type="Catfish.Core.Models.Metadata.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Version="1.0.2" ref="1">
 			<name>
 				<text xml:lang="en">Dublin Core</text>
@@ -152,15 +152,15 @@
 				
 			</fields>
 		</metadata-set>		
-	</metadata-sets>
-	<files>
+	</metadata>
+	<data>
 		<file model-type="Catfish.Core.Models.DataFile, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" file-name="example_1.jpg" url="uploads/1/files/example_1.jpg" thumbnail="uploads/1/thumbnails/sddff.jpg" guid-name="b907244f-f6fd-4ce7-bc0d-18f759d4b510">
-			<metadata-sets>
-			</metadata-sets>
+			<metadata>
+			</metadata>
 		</file>
 		<file model-type="Catfish.Core.Models.DataFile, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" file-name="example_2.jpg" url="uploads/1/files/example_2.jpg" thumbnail="uploads/1/thumbnails/sddff.jpg" guid-name="b9a0d51e-ebb2-4e72-a258-287031324934">
-			<metadata-sets>
-			</metadata-sets>
+			<metadata>
+			</metadata>
 		</file>
-	</files>
+	</data>
 </item>

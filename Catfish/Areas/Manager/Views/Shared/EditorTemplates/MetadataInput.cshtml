@@ -1,10 +1,10 @@
-﻿@model Catfish.Core.Models.Metadata.MetadataSet
+﻿@model Catfish.Core.Models.MetadataSet
 
 @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
 {
     {"class", "model-type"}
 })
-@Html.HiddenFor(m => m.Ref)
+@Html.HiddenFor(m => m.Guid)
 
 @for (int idx = 0; idx < Model.Fields.Count; ++idx)
 {

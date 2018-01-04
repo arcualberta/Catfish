@@ -5,6 +5,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Catfish.Core.Models.Forms;
+using System.IO;
 
 namespace Catfish.Core.Helpers
 {
@@ -32,18 +34,28 @@ namespace Catfish.Core.Helpers
             {
                 if (mLanguages == null)
                 {
-                    var codes = GetSettingArray("LanguageCodes", '|');
-
-                    if (codes.Count == 0)
-                        mLanguages = new List<CultureInfo>() { new CultureInfo("en") };
-                    else
-                    {
-                        mLanguages = new List<CultureInfo>();
-                        for (int i = 0; i < codes.Count; ++i)
-                            mLanguages.Add(new CultureInfo(codes[i]));
-                    }
+                    var codes = LanguagesCodes;
+                    mLanguages = new List<CultureInfo>();
+                    for (int i = 0; i < codes.Count; ++i)
+                        mLanguages.Add(new CultureInfo(codes[i]));
                 }
                 return mLanguages;
+            }
+        }
+
+        private static List<string> mLanguagesCodes;
+        public static List<string> LanguagesCodes
+        {
+            get
+            {
+                if (mLanguagesCodes == null)
+                {
+                    mLanguagesCodes = GetSettingArray("LanguageCodes", Attachment.FileGuidSeparator);
+
+                    if (mLanguagesCodes.Count == 0)
+                        mLanguagesCodes = new List<string>() { "en" };
+                }
+                return mLanguagesCodes;
             }
         }
 
@@ -52,5 +64,13 @@ namespace Catfish.Core.Helpers
             string label = Languages.Where(c => c.TwoLetterISOLanguageName == languageCode).Select(c => c.NativeName).FirstOrDefault();
             return string.IsNullOrEmpty(label) ? languageCode : label;
         }
+
+        public static string UploadRoot { get { return ConfigurationManager.AppSettings["UploadRoot"]; } }
+
+        public static string DataRoot { get { return Path.Combine(UploadRoot, "Data"); } }
+
+        public static int ThumbnailSize { get { return 150; } }
+
+        public static int PageSize { get { return (ConfigurationManager.AppSettings["PageSize"] != null) ? int.Parse(ConfigurationManager.AppSettings["PageSize"]) : 25; } }
     }
 }

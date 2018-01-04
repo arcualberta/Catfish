@@ -1,0 +1,15 @@
+﻿@model Catfish.Core.Models.Forms.CheckBoxSet
+@using Catfish.Core.Helpers;
+
+<div class="form-field">
+    <label class="name">@Html.Raw(MultilingualHelper.Join(Model.GetNames(false))): </label>
+    <div class="value">
+        @foreach (var opt in Model.Options)
+        {
+            string isChecked = opt.Selected ? "checked='checked'" : "";
+            <div class="checkbox">
+                <input type="checkbox" @Html.Raw(isChecked) disabled="disabled" class="checkbox" /> @MultilingualHelper.Join(opt.Value)
+            </div>
+        }
+    </div>
+</div>

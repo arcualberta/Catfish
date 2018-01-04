@@ -16,18 +16,20 @@ using System.Xml.XPath;
 
 namespace Catfish.Core.Models
 {
-    public class XmlModel
+    public abstract class XmlModel
     {
+        public abstract string GetTagName();
+
         public int Id { get; set; }
 
-        public string Guid { get; set; }
+        public string MappedGuid { get; set; }
 
         [NotMapped]
         public DateTime Created
         {
             get
             {
-                string att = GetAttribute("created");
+                string att = GetAttribute("created", null);
                 return string.IsNullOrEmpty(att) ? new DateTime() : DateTime.Parse(att);
             }
             set
@@ -41,7 +43,7 @@ namespace Catfish.Core.Models
         {
             get
             {
-                string att = GetAttribute("updated");
+                string att = GetAttribute("updated", null);
                 return string.IsNullOrEmpty(att) ? new DateTime() : DateTime.Parse(att);
             }
             set
@@ -72,6 +74,8 @@ namespace Catfish.Core.Models
         {
             get
             {
+                if (mData == null && !string.IsNullOrEmpty(Content))
+                    mData = XElement.Parse(Content);
                 return mData;
             }
 
@@ -92,23 +96,25 @@ namespace Catfish.Core.Models
         public string DefaultLanguage { get; set; }
 
         [NotMapped]
-        public string Ref
+        public string Guid
         {
             get
             {
-                var att = Data.Attribute("ref");
-                return att != null ? att.Value : System.Guid.NewGuid().ToString("N");
+                var att = Data.Attribute("guid");
+                if(att == null || string.IsNullOrEmpty(att.Value))
+                {
+                    Data.SetAttributeValue("guid", System.Guid.NewGuid().ToString("N"));
+                    att = Data.Attribute("guid");
+                }
+                return att.Value;
             }
             set
             {
-                Data.SetAttributeValue("ref", value);
+                Data.SetAttributeValue("guid", value);
             }
         }
 
-        public XmlModel(string defaultLang = "en")
-        {
-            DefaultLanguage = defaultLang;
-        }
+
 
         public XmlModel()
         {
@@ -117,7 +123,8 @@ namespace Catfish.Core.Models
             Created = DateTime.Now;
             Data.SetAttributeValue("model-type", this.GetType().AssemblyQualifiedName);
             Data.SetAttributeValue("IsRequired", false);
-
+            MappedGuid = Guid; //Creates and uses the guid.
+            mChangeLog = new List<AuditChangeLog>();
         }
 
         public XElement GetWrapper(string tagName, bool createIfNotExist, bool enforceGuid)
@@ -159,6 +166,32 @@ namespace Catfish.Core.Models
                 wrapper.Add(CreateTextElement(v.Value, v.LanguageCode));
         }
 
+        public virtual IEnumerable<TextValue> GetDescription(bool forceAllLanguages)
+        {
+            XElement wrapper = GetWrapper("description", true, false);
+            return XmlHelper.GetTextValues(wrapper, forceAllLanguages);
+        }
+
+        protected virtual void SetDescription(IEnumerable<TextValue> val)
+        {
+            XElement wrapper = Data.Element("description");
+            if (wrapper != null)
+            {
+                //removing all text elements in the wrapper
+                foreach (XElement text in wrapper.Elements().Where(e => e.Name == "text").ToList())
+                    text.Remove();
+            }
+            else
+            {
+                wrapper = CreateElement("description", false);
+                Data.Add(wrapper);
+            }
+
+            //inserting text elements representing languages and values specified by the input argument
+            foreach (TextValue v in val)
+                wrapper.Add(CreateTextElement(v.Value, v.LanguageCode));
+        }
+
         protected void OnUpdated(object sender, XObjectChangeEventArgs e)
         {
             if (sender is XAttribute && ((XAttribute)sender).Name == "updated")
@@ -166,38 +199,33 @@ namespace Catfish.Core.Models
                 return;
             }
 
-            Updated = DateTime.Now; 
+            Updated = DateTime.Now;
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        public virtual string GetTagName() { return "catfish-model"; }
-
-        public XmlModel(XElement ele, string defaultLang = "en")
+        protected XElement GetImmediateChild(string tagName, bool createIfNotExist = true)
         {
-            Data = ele;
-            DefaultLanguage = defaultLang;
+            XElement data = Data.Element(tagName);
+
+            if (data == null && createIfNotExist)
+                Data.Add(data = new XElement(tagName));
+
+            return data;
         }
 
-        public virtual string GetName(string lang = null)
+        ////public XmlModel(XElement ele, string defaultLang = "en")
+        ////{
+        ////    Data = ele;
+        ////    DefaultLanguage = defaultLang;
+        ////}
+
+        public virtual string GetName(string lang = null, bool tryReturnNoneEmpty = false)
         {
-            return GetChildText("name", Data, Lang(lang));
+            string name = GetChildText("name", Data, Lang(lang));
+            if(tryReturnNoneEmpty && string.IsNullOrEmpty(name))
+            {
+                name = GetNames(false).Where(tv => !string.IsNullOrEmpty(tv.Value)).Select(tv => tv.Value).FirstOrDefault();
+            }
+            return name;
         }
         public virtual void SetName(string val, string lang = null)
         {
@@ -252,7 +280,7 @@ namespace Catfish.Core.Models
             }
         }
 
-        public IEnumerable<string> GetValues(string lang = null)
+        public IEnumerable<string> GetValuesxx(string lang = null)
         {
             if (Data != null)
             {
@@ -262,10 +290,16 @@ namespace Catfish.Core.Models
             return Enumerable.Empty<string>();
         }
 
+        public virtual IEnumerable<TextValue> GetValues(bool excludeBlanks = true)
+        {
+            XElement wrapper = GetWrapper("value", true, false);
+            return XmlHelper.GetTextValues(wrapper, false, excludeBlanks);
+        }
+
+
         public virtual void SetValues(IEnumerable<string> values, string lang = null)
         {
             SetChildText("value", values, Data, Lang(lang));
-
         }
 
         public List<XmlModel> GetChildModels(string xpath, XElement ele)
@@ -284,7 +318,13 @@ namespace Catfish.Core.Models
 
         protected string Lang(string lang)
         {
-            return string.IsNullOrEmpty(lang) ? DefaultLanguage : lang;
+            if (!string.IsNullOrEmpty(lang))
+                return lang;
+
+            if (System.Threading.Thread.CurrentThread.CurrentCulture != null && !string.IsNullOrEmpty(System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName))
+                return System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+
+            return ConfigHelper.Languages[0].TwoLetterISOLanguageName;
         }
 
         protected string GetChildText(string childTagName, XElement ele, string lang)
@@ -358,7 +398,7 @@ namespace Catfish.Core.Models
             foreach (string val in values)
             {
                 XElement textEelemnt = new XElement("text", new XAttribute(XNamespace.Xml + "lang", lang));
-                textEelemnt.Value = val;
+                textEelemnt.Value = val == null ? "" : val;
                 parent.Add(textEelemnt);
             }
         }
@@ -406,18 +446,46 @@ namespace Catfish.Core.Models
 
         public string GetAttribute(string attName, XElement data = null)
         {
-            if (data == null)
-                data = Data;
-            XAttribute att = data.Attribute(attName);
+            XAttribute att = data == null ? Data.Attribute(attName) : data.Attribute(attName);
             return att == null ? null : att.Value;
+        }
+
+        public int GetAttribute(string name, int defaultValue=0, XElement data = null)
+        {
+            string val = GetAttribute(name, data);
+            return string.IsNullOrEmpty(val) ? defaultValue : int.Parse(val);
+        }
+
+        public bool GetAttribute(string name, bool defaultValue = false, XElement data = null)
+        {
+            string val = GetAttribute(name, data);
+            return string.IsNullOrEmpty(val) ? defaultValue : bool.Parse(val);
         }
 
         public void SetAttribute(string attName, string attValue, XElement data = null)
         {
             if (data == null)
-                data = Data;
-            data.SetAttributeValue(attName, attValue);
+                Data.SetAttributeValue(attName, attValue);
+            else
+                data.SetAttributeValue(attName, attValue);
         }
+
+        public void SetAttribute(string attName, int attValue, XElement data = null)
+        {
+            if (data == null)
+                Data.SetAttributeValue(attName, attValue);
+            else
+                data.SetAttributeValue(attName, attValue);
+        }
+
+        public void SetAttribute(string attName, bool attValue, XElement data = null)
+        {
+            if (data == null)
+                Data.SetAttributeValue(attName, attValue);
+            else
+                data.SetAttributeValue(attName, attValue);
+        }
+
 
         protected XmlNamespaceManager NamespaceManager
         {
@@ -450,10 +518,10 @@ namespace Catfish.Core.Models
             return Parse(root, defaultLang);
         }
 
-        public void Deserialize()
-        {
-            this.Data = XElement.Parse(this.Content);
-        }
+        //public void Deserialize()
+        //{
+        //    this.Data = XElement.Parse(this.Content);
+        //}
 
         public void Serialize()
         {
@@ -465,6 +533,57 @@ namespace Catfish.Core.Models
             SetTextValues(XmlHelper.GetTextValues(src.Data));
             ////this.SetValues(src.GetValues());
         }
+
+
+        #region Audit Trail
+
+        private List<AuditChangeLog> mChangeLog;
+        public void LogChange(string target, string description)
+        {
+            mChangeLog.Add(new AuditChangeLog(target, description));
+        }
+
+        protected XElement GetAuditRoot()
+        {
+            XElement audit = Data.Element("audit");
+            if (audit == null)
+                Data.Add(audit = new XElement("audit"));
+            return audit;
+        }
+
+        /// <summary>
+        /// Creates an audit entry and adds the change log into it.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="actor"></param>
+        /// <param name="timestamp"></param>
+        /// <returns></returns>
+        public AuditEntry FlushChangeLog(AuditEntry.eAction action, string actor, DateTime? timestamp = null)
+        {
+            AuditEntry entry = new AuditEntry(action, actor, timestamp.HasValue ? timestamp.Value : DateTime.Now, mChangeLog);
+            AddAuditEntry(entry);
+            mChangeLog.Clear();
+            return entry;
+        }
+
+        public void AddAuditEntry(AuditEntry entry)
+        {
+            GetAuditRoot().Add(entry.Data);
+        }
+        public IEnumerable<AuditEntry> GetAuditTrail()
+        {
+            return GetAuditRoot().Elements("entry").Select(e => new AuditEntry(e));
+        }
+
+        public string GetCreator()
+        {
+            string xpath = "audit/entry[@action='" + AuditEntry.eAction.Create.ToString() + "']";
+            XElement ele = GetChildElements(xpath, Data).FirstOrDefault();
+            return ele == null ? null : ele.Attribute("user").Value;
+        }
+
+        #endregion
+
 
     }
 }

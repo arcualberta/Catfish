@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Catfish.Core.Models
 {
-    public class Aggregation : Entity
+    public abstract class Aggregation : Entity
     {
         public virtual ICollection<Aggregation> ParentMembers { get; set; }
         public virtual ICollection<Aggregation> ChildMembers { get; set; }

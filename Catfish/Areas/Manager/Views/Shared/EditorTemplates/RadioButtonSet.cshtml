@@ -1,11 +1,11 @@
-﻿@model Catfish.Core.Models.Metadata.RadioButtonSet
+﻿@model Catfish.Core.Models.Forms.RadioButtonSet
 @using Catfish.Helpers;
 
 @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
 {
     {"class", "model-type"}
 })
-@Html.HiddenFor(m => m.Ref)
+@Html.HiddenFor(m => m.Guid)
 
 <div class="form-field-name">
     @Html.Label(string.IsNullOrEmpty(Model.Name) ? "" : Model.Name)
@@ -13,7 +13,7 @@
 <div class="form-field-value">
     @for (int i = 0; i < Model.Options.Count; ++i)
     {
-        var lang = ViewHelper.GetActiveLanguage(Session);
+        var lang = ViewHelper.GetActiveLanguage();
         string label = Model.Options[i].Value.Where(v => v.LanguageCode == lang.TwoLetterISOLanguageName).Select(v => v.Value).FirstOrDefault();
         if (string.IsNullOrEmpty(label) && Model.Options[i].Value.Count > 0)
         {

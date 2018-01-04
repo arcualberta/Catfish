@@ -14,7 +14,7 @@ namespace Catfish.Core.Services
             if (changedCollection.Id > 0)
             {
                 dbModel = Db.XmlModels.Find(changedCollection.Id) as Collection;
-                dbModel.Deserialize();
+                //dbModel.Deserialize();
 
                 //updating the "value" text elements
                 dbModel.UpdateValues(changedCollection);
@@ -22,12 +22,8 @@ namespace Catfish.Core.Services
             else
             {
                 dbModel = CreateEntity<Collection>(changedCollection.EntityTypeId.Value);
-                dbModel.Deserialize();
                 dbModel.UpdateValues(changedCollection);
             }
-
-            //Serializing the XML model into the Content field.
-            //dbModel.Serialize();
 
             if (changedCollection.Id > 0) //update Item
                 Db.Entry(dbModel).State = EntityState.Modified;

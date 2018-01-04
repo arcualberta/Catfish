@@ -14,6 +14,7 @@
     {
         <link href="~/areas/manager/content/css/style.css" rel="stylesheet" type="text/css" />
     }
+    <link type="text/css" rel="stylesheet" href="~/content/css/Site.css" />
 
     <link href="~/Content/bs-bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
 
@@ -40,13 +41,22 @@
         </script>
     }
     @RenderSection("Head", false)
+
+    @if (Catfish.Core.Helpers.ConfigHelper.Languages.Count < 2)
+    {
+        <style>
+            .lang-label{
+                display:none !important;
+            }
+        </style>
+    }
 </head>
 <body>
     <div class="top">
         <div class="container_12">
             <div class="grid_12 header">
                 <a class="home" href="@Url.Action("index", "page")">
-                    <img src="~/res.ashx/areas/manager/content/img/logo.png" alt="Piranha CMS" />
+@*                    <img src="~/areas/manager/content/img/logo.png" alt="Catfish Repository" height="50"/>*@
                 </a>
                 <div class="site-title">
                     <span>@Piranha.WebPages.WebPiranha.CurrentSite.MetaTitle</span>

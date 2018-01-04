@@ -12,8 +12,12 @@ using System.IO;
 using System.Xml.Linq;
 using System.Web.Configuration;
 using Catfish.Core.Services;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 using Catfish.Areas.Manager.Models.ViewModels;
+using Catfish.Core.Models.Data;
+using Catfish.Areas.Manager.Helpers;
+using Catfish.Helpers;
+using Catfish.Core.Helpers;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -21,29 +25,21 @@ namespace Catfish.Areas.Manager.Controllers
     {
         private CatfishDbContext db = new CatfishDbContext();
 
-        public string ThumbnailRoot
+        // GET: Manager/Items
+        public ActionResult Index(int offset=0, int limit=int.MaxValue)
         {
-            get
-            {
-                return Request.RequestContext.HttpContext.Server.MapPath("~/Content/Thumbnails");
-            }
-        }
+            if(limit == int.MaxValue)
+                limit = ConfigHelper.PageSize;
 
-            // GET: Manager/Items
-            public ActionResult Index()
-        {
-            var entities = db.XmlModels.Where(m => m is Item).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
-            //var entities = db.XmlModels.Where(m => m is Item).Select(e => e as Item);
-            ////foreach (var e in entities)
-            ////    e.Deserialize();
+            var entities = db.XmlModels.Where(m => m is Item).OrderBy(e => e.Id).Skip(offset).Take(limit).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
+            var total = db.XmlModels.Where(m => m is Item).Count();
+
+            ViewBag.TotalItems = total;
+            ViewBag.Limit = limit;
+            ViewBag.Offset = offset;
+           
             if (entities != null)
-            {
-                //foreach(var e in entities)
-                //{
-                //    e.Data = XElement.Parse(e.Content);
-                //}
                 return View(entities);
-            }
 
             return View();
         }
@@ -58,7 +54,7 @@ namespace Catfish.Areas.Manager.Controllers
                 if (model != null)
                 {
                     Db.Entry(model).State = EntityState.Deleted;
-                    Db.SaveChanges();
+                    Db.SaveChanges(User.Identity);
                 }
             }
             return RedirectToAction("index");
@@ -80,32 +76,6 @@ namespace Catfish.Areas.Manager.Controllers
             return View(entity);
         }
 
-        /*
-        // GET: Manager/Items/Create
-        public ActionResult Create()
-        {
-            ViewBag.EntityTypeId = new SelectLi st(db.EntityTypes, "Id", "Name");
-            return View();
-        }
-
-        // POST: Manager/Items/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Created,Updated,EntityTypeId")] Entity entity)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entities.Add(entity);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.EntityTypeId = new SelectList(db.EntityTypes, "Id", "Name", entity.EntityTypeId);
-            return View(entity);
-        }
-        */
         // GET: Manager/Items/Edit/5
         public ActionResult Edit(int? id, int? entityTypeId)
         {
@@ -119,7 +89,7 @@ namespace Catfish.Areas.Manager.Controllers
             if (id.HasValue && id.Value > 0)
             {
                 model = db.XmlModels.Find(id) as Item;
-                model.Deserialize();
+                //model.Deserialize();
 
                 ////if(model.Files.Any()) //MR Sept 5 2017---chek if model has any file associated before pulling it
                 ////    ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
@@ -143,6 +113,7 @@ namespace Catfish.Areas.Manager.Controllers
                 }
             }
 
+            model.AttachmentField = new Attachment() { FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), model.Files.Select(f => f.Guid)) };
             return View(model);
         }
 
@@ -157,7 +128,7 @@ namespace Catfish.Areas.Manager.Controllers
             {
                 ItemService srv = new ItemService(db);
                 Item dbModel = srv.UpdateStoredItem(model);
-                db.SaveChanges();
+                db.SaveChanges(User.Identity);
 
                 if (model.Id == 0)
                     return RedirectToAction("Edit", new { id = dbModel.Id });
@@ -197,49 +168,68 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
-        public JsonResult Upload(int id)
+        public JsonResult Upload()
         {
             try
             {
-                ItemService srv = new ItemService(db);
-                List<DataFile> files = srv.UploadFile(id, HttpContext, Request);
-                db.SaveChanges();
+                List<DataFile> files = ItemService.UploadTempFiles(Request);
+                Db.SaveChanges(User.Identity);
 
-                var ret = files.Select(f => new FileViewModel(f, id, ControllerContext.RequestContext));
+                //Saving ids  of uploaded files in the session because these files and thumbnails
+                //needs to be accessible by the user who is uploading them without restriction of any security rules.
+                //This is because these files are stored in the temporary area without associating to any items.
+                FileHelper.CacheGuids(Session, files);
+
+                var ret = files.Select(f => new FileViewModel(f, f.Id, ControllerContext.RequestContext, "items"));
                 return Json(ret);
             }
             catch (Exception)
             {
-                //return 500 or something appropriate to show that an error occured.
+                Response.StatusCode = 500;
                 return Json(string.Empty);
             }
         }
 
         [HttpPost]
-        public JsonResult DeleteFile(int id, string guidName)
+        public JsonResult DeleteCashedFile(string guid)
         {
             try
             {
+                //Makes sure that the requested file is in the cache
+                if(!FileHelper.CheckGuidCache(Session, guid))
+                {
+                    Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    Response.StatusDescription = "BadRequest: the file cannot be deleted -  NOT IN CACHE.";
+                    return Json(string.Empty);
+                }
+
                 ItemService srv = new ItemService(db);
-                srv.DeleteFile(id, guidName);
-                db.SaveChanges();
-                return Json(new List<string>() { guidName });
+                if (!srv.DeleteStandaloneFile(guid))
+                {
+                    Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    Response.StatusDescription = "The file not found";
+                    return Json(string.Empty);
+                }
+
+                db.SaveChanges(User.Identity);
+                return Json(new List<string>() { guid });
             }
             catch (Exception)
             {
-                //return 500 or something appropriate to show that an error occured.
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                Response.StatusDescription = "BadRequest: an unknown error occurred.";
                 return Json(string.Empty);
             }
         }
 
-        public ActionResult File(int id, string guidName)
+        public ActionResult File(int id, string guid)
         {
             ItemService srv = new ItemService(db);
-            DataFile file = srv.GetFile(id, guidName);
+            DataFile file = srv.GetFile(id, guid);
             if (file == null)
                 return HttpNotFound("File not found");
 
-            string path_name = Path.Combine(srv.UploadRoot, file.Path, file.GuidName);
+            string path_name = Path.Combine(file.Path, file.LocalFileName);
             return new FilePathResult(path_name, file.ContentType);
         }
 
@@ -251,8 +241,8 @@ namespace Catfish.Areas.Manager.Controllers
                 return HttpNotFound("File not found");
 
             string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared
-                ? Path.Combine(ThumbnailRoot, file.Thumbnail)
-                : Path.Combine(srv.UploadRoot, file.Path, file.Thumbnail);
+                ? Path.Combine(FileHelper.GetThumbnailRoot(Request), file.Thumbnail)
+                : Path.Combine(file.Path, file.Thumbnail);
 
             return new FilePathResult(path_name, file.ContentType);
         }

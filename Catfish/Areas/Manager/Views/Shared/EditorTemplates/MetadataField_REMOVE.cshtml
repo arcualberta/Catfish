@@ -1,4 +1,4 @@
-﻿@model Catfish.Core.Models.Metadata.MetadataField
+﻿@model Catfish.Core.Models.Forms.FormField
 @using Catfish.Core.Models.Attributes
 
 <div class="box field-entry">
@@ -13,7 +13,7 @@
        {"class", "model-type"}
     })
 
-    @Html.HiddenFor(m => m.Ref)
+    @Html.HiddenFor(m => m.Guid)
 
     @{
         TypeLabelAttribute att = Attribute.GetCustomAttribute(Model.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;

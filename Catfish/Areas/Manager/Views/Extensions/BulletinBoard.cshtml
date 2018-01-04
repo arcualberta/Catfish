@@ -1,0 +1,32 @@
+﻿@model Catfish.Models.Regions.BulletinBoard
+
+<ul class="form">
+    <li>
+        @Html.LabelFor(m => m.CollectionId)
+        <div class="input">@Html.TextBoxFor(m => m.CollectionId, new { @type = "number" })</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.EntityTypeId)
+        <div class="input">@Html.TextBoxFor(m => m.EntityTypeId, new { @type = "number" })</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.RowCount)
+        @{if (Model.RowCount == 0) { Model.RowCount = 4; }}
+        <div class="input">@Html.TextBoxFor(m => m.RowCount, new { @type = "number" })</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.RefreshInterval)
+        @{if (Model.RefreshInterval == 0) { Model.RefreshInterval = 10; }}
+        <div class="input">@Html.TextBoxFor(m => m.RefreshInterval, new { @type = "number" })</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.SelectRandomly)
+        <div class="input">@Html.CheckBoxFor(m => m.SelectRandomly)</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.PositionRandomly)
+        <div class="input">@Html.CheckBoxFor(m => m.PositionRandomly)</div>
+    </li>
+
+    @Html.Partial("_CatfishRegion", Model)
+</ul>

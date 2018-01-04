@@ -1,0 +1,19 @@
+﻿@model Catfish.Core.Models.Forms.Option
+@using Catfish.Helpers;
+
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+    {
+       {"class", "model-type"}
+    })
+
+@{
+    string lang = Catfish.Helpers.ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName;
+
+    string label = Model.Value.Where(v => v.LanguageCode == lang).Select(v => v.Value).FirstOrDefault();
+    if (string.IsNullOrEmpty(label) && Model.Value.Count > 0)
+    {
+        label = Model.Value[0].Value;
+    }
+}
+@Html.CheckBoxFor(m => m.Selected) <span class="option-label">@label</span>
+@Html.HiddenFor(m => m.Guid)

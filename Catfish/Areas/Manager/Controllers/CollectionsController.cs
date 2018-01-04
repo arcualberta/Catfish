@@ -30,7 +30,7 @@ namespace Catfish.Areas.Manager.Controllers
                 if (model != null)
                 {
                     Db.Entry(model).State = EntityState.Deleted;
-                    Db.SaveChanges();
+                    Db.SaveChanges(User.Identity);
                 }
             }
             return RedirectToAction("index");
@@ -76,7 +76,7 @@ namespace Catfish.Areas.Manager.Controllers
             if (id.HasValue && id.Value > 0)
             {
                 model = db.XmlModels.Find(id) as Collection;
-                model.Deserialize();
+                //model.Deserialize();
             }
             else
             {
@@ -108,7 +108,7 @@ namespace Catfish.Areas.Manager.Controllers
                 CollectionService srv = new CollectionService(db);
 
                 Collection dbModel = srv.UpdateStoredCollection(model);
-                db.SaveChanges();
+                db.SaveChanges(User.Identity);
 
                 if (model.Id == 0)
                     return RedirectToAction("Edit", new { id = dbModel.Id });

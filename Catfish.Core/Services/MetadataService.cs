@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Attributes;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 
 namespace Catfish.Core.Services
 {
@@ -13,19 +13,16 @@ namespace Catfish.Core.Services
     {
         public MetadataService(CatfishDbContext db) : base(db) { }
 
-        public IEnumerable<MetadataSet> GetMetadataSets()
+        public IQueryable<MetadataSet> GetMetadataSets()
         {
-            List<MetadataSet> ms = Db.MetadataSets.ToList();
-            foreach (var m in ms)
-                m.Deserialize();
-            return ms;
+            return Db.MetadataSets;
         }
 
         public MetadataSet GetMetadataSet(int id)
         {
             MetadataSet metadata = Db.MetadataSets.Where(m => m.Id == id).FirstOrDefault();
-            if (metadata != null)
-                metadata.Deserialize();
+            //if (metadata != null)
+            //    metadata.Deserialize();
             return metadata;
         }
 
@@ -36,8 +33,8 @@ namespace Catfish.Core.Services
         /// <returns></returns>
         public List<Type> GetMetadataFieldTypes()
         {
-            var fieldTypes = typeof(MetadataField).Assembly.GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(MetadataField)) 
+            var fieldTypes = typeof(FormField).Assembly.GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(FormField)) 
                     && !t.CustomAttributes.Where(a => a.AttributeType.IsAssignableFrom(typeof(IgnoreAttribute))).Any())
                 .ToList();
 
@@ -62,7 +59,6 @@ namespace Catfish.Core.Services
                 Db.MetadataSets.Add(metadataSet);
             }
             ////ms.Definition = metadataDefinition;
-            metadataSet.Serialize();
             return metadataSet;
         }
     }

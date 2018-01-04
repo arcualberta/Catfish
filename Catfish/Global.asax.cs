@@ -8,7 +8,7 @@ using System.Web.Security;
 using System.Web.SessionState;
 using System.Web.Http;
 using Piranha.WebPages;
-using Catfish.Core.Models.Metadata;
+using Catfish.Core.Models.Forms;
 using Catfish.Areas.Manager.ModelBinders;
 using Catfish.Core.Models;
 using Catfish.Helpers;
@@ -28,7 +28,7 @@ namespace Catfish
             ModelMetadataProviders.Current = new Catfish.Areas.Manager.Helpers.ModelMetadataProvider();
 
             //Custom model binders 
-            System.Web.Mvc.ModelBinders.Binders.Add(typeof(MetadataField), new XmlModelBinder());
+            System.Web.Mvc.ModelBinders.Binders.Add(typeof(FormField), new XmlModelBinder());
             System.Web.Mvc.ModelBinders.Binders.Add(typeof(OptionsField), new XmlModelBinder());
 
             //Additional CSS and Javascripts
@@ -50,6 +50,9 @@ namespace Catfish
 
         private void AddManagerMenus()
         {
+            ///
+            /// Content Menus
+            ///
             var menubar = Manager.Menu.Where(m => m.InternalId == "Content").FirstOrDefault();
             var idx = 0;
 
@@ -69,6 +72,17 @@ namespace Catfish
                 Permission = "ADMIN_CONTENT"
             });
 
+            menubar.Items.Insert(idx++, new Manager.MenuItem()
+            {
+                Name = "Forms",
+                Action = "index",
+                Controller = "FormTemplates",
+                Permission = "ADMIN_CONTENT"
+            });
+
+            ///
+            /// Settings Menus
+            ///
             menubar = Manager.Menu.Where(m => m.InternalId == "Settings").FirstOrDefault();
             idx = 0;
 

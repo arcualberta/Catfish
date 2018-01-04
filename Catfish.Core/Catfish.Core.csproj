@@ -44,6 +44,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -60,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\ConfigHelper.cs" />
+    <Compile Include="Helpers\MultilingualHelper.cs" />
     <Compile Include="Helpers\XmlHelper.cs" />
     <Compile Include="Migrations\201708111923158_RebuildingMigrations.cs" />
     <Compile Include="Migrations\201708111923158_RebuildingMigrations.Designer.cs">
@@ -77,35 +79,48 @@
     <Compile Include="Migrations\201710182254211_AddedTargetTypeToEntityType.Designer.cs">
       <DependentUpon>201710182254211_AddedTargetTypeToEntityType.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201712200902581_RenamedGuidColumnToMappedGuid.cs" />
+    <Compile Include="Migrations\201712200902581_RenamedGuidColumnToMappedGuid.Designer.cs">
+      <DependentUpon>201712200902581_RenamedGuidColumnToMappedGuid.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Aggregation.cs" />
     <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
     <Compile Include="Models\Attributes\InputTypeAttribute.cs" />
     <Compile Include="Models\Attributes\RankAttribute.cs" />
     <Compile Include="Models\Attributes\TypeLabelAttribute.cs" />
+    <Compile Include="Models\AuditChangeLog.cs" />
+    <Compile Include="Models\AuditEntry.cs" />
     <Compile Include="Models\CatfishDbContext.cs" />
     <Compile Include="Models\Collection.cs" />
+    <Compile Include="Models\Data\DataObject.cs" />
+    <Compile Include="Models\Data\FormSubmission.cs" />
     <Compile Include="Models\Entity.cs" />
     <Compile Include="Models\EntityType.cs" />
-    <Compile Include="Models\DataFile.cs" />
+    <Compile Include="Models\Data\DataFile.cs" />
+    <Compile Include="Models\Forms\AbstractForm.cs" />
+    <Compile Include="Models\Forms\Attachment.cs" />
+    <Compile Include="Models\Forms\PageBreak.cs" />
     <Compile Include="Models\Item.cs" />
-    <Compile Include="Models\Metadata\CheckBoxSet.cs" />
-    <Compile Include="Models\Metadata\DateField.cs" />
-    <Compile Include="Models\Metadata\DropDownMenu.cs" />
-    <Compile Include="Models\Metadata\MetadataDefinition.cs" />
+    <Compile Include="Models\Forms\CheckBoxSet.cs" />
+    <Compile Include="Models\Forms\DateField.cs" />
+    <Compile Include="Models\Forms\DropDownMenu.cs" />
+    <Compile Include="Models\Forms\MetadataDefinition.cs" />
     <Compile Include="Models\EntityTypeAttributeMapping.cs" />
-    <Compile Include="Models\Metadata\MetadataSet.cs" />
-    <Compile Include="Models\Metadata\MetadataField.cs" />
-    <Compile Include="Models\Metadata\OptionsField.cs" />
-    <Compile Include="Models\Metadata\RadioButtonSet.cs" />
-    <Compile Include="Models\Metadata\SingleSelectOptionsField.cs" />
-    <Compile Include="Models\Metadata\TextArea.cs" />
-    <Compile Include="Models\Metadata\TextField.cs" />
+    <Compile Include="Models\MetadataSet.cs" />
+    <Compile Include="Models\Forms\FormField.cs" />
+    <Compile Include="Models\Forms\OptionsField.cs" />
+    <Compile Include="Models\Forms\RadioButtonSet.cs" />
+    <Compile Include="Models\Forms\SingleSelectOptionsField.cs" />
+    <Compile Include="Models\Forms\TextArea.cs" />
+    <Compile Include="Models\Forms\TextField.cs" />
+    <Compile Include="Models\Form.cs" />
     <Compile Include="Models\TextValue.cs" />
     <Compile Include="Models\XmlModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CollectionService.cs" />
     <Compile Include="Services\EntityService.cs" />
+    <Compile Include="Services\SubmissionService.cs" />
     <Compile Include="Services\ItemService.cs" />
     <Compile Include="Services\MetadataService.cs" />
     <Compile Include="Services\ServiceBase.cs" />
@@ -126,6 +141,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710182254211_AddedTargetTypeToEntityType.resx">
       <DependentUpon>201710182254211_AddedTargetTypeToEntityType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712200902581_RenamedGuidColumnToMappedGuid.resx">
+      <DependentUpon>201712200902581_RenamedGuidColumnToMappedGuid.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -2,8 +2,10 @@
 <html lang="en">
 
 @using Catfish.Models.Regions;
+@using Catfish.Helpers;
+
 @{
-    System.Threading.Thread.CurrentThread.CurrentCulture = Catfish.Helpers.ViewHelper.GetActiveLanguage(Session);
+    System.Threading.Thread.CurrentThread.CurrentCulture = Catfish.Helpers.ViewHelper.GetActiveLanguage();
 
     Piranha.Models.PageModel global;
 
@@ -20,15 +22,24 @@
 
 
 <head>
+    @{ string title;}
+
     @try
     {
         MultilingualText field = global.Regions.SiteTitle;
-        <title>@Html.DisplayFor(m => field, new { unformatted = true })</title>
+        var activeLang = ViewHelper.GetActiveLanguage();
+        title = field.GetContent(activeLang.TwoLetterISOLanguageName);
+        if (string.IsNullOrEmpty(title))
+        {
+            title = Site.SiteTitle;
+        }
     }
     catch (Exception)
     {
-        <title>@ViewBag.Title</title>
+        title = Site.SiteTitle;
     }
+
+    <title>@Html.Raw(title)</title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -49,23 +60,13 @@
     </script>
     <header role="banner">
         <div class="wrapper">
-            <a class="site-title" href="~/">
-                @try
-                {
-                    MultilingualText field = global.Regions.SiteTitle;
-                    @Html.DisplayFor(m => field, new { unformatted = true })
-                }
-                catch (Exception)
-                {
-                    @Site.SiteTitle
-                }
-            </a>
+            <a class="site-title" href="~/">@Html.Raw(title)</a>
             @Html.Partial("_LanguageSwitcher")
             <p class="site-desc">
                 @try
                 {
                     MultilingualText field = global.Regions.SiteDesc;
-                    @Html.DisplayFor(m => field, new { unformatted = true })
+                    @Html.DisplayFor(m => field, new { raw = true })
                 }
                 catch (Exception)
                 {
