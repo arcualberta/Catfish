@@ -15,7 +15,6 @@ namespace Catfish.Core.Helpers
         {
             if (SolrService.IsInitialized)
             {
-                
                 //var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
             }
             else
