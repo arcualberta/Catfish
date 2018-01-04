@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Catfish.Core</RootNamespace>
     <AssemblyName>Catfish.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -62,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Helpers\MultilingualHelper.cs" />
+    <Compile Include="Helpers\XmlLinqExtensions.cs" />
     <Compile Include="Helpers\XmlHelper.cs" />
     <Compile Include="Migrations\201708111923158_RebuildingMigrations.cs" />
     <Compile Include="Migrations\201708111923158_RebuildingMigrations.Designer.cs">
@@ -118,6 +120,7 @@
     <Compile Include="Models\TextValue.cs" />
     <Compile Include="Models\XmlModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\SolrService.cs" />
     <Compile Include="Services\CollectionService.cs" />
     <Compile Include="Services\EntityService.cs" />
     <Compile Include="Services\SubmissionService.cs" />
