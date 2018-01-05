@@ -1,5 +1,7 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Services;
+using CommonServiceLocator;
+using SolrNet;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -13,16 +15,10 @@ namespace Catfish.Core.Helpers
     {
         public static IQueryable<TSource> FromSolr<TSource>(this DbSet<TSource> set, string q) where TSource : XmlModel
         {
-            if (SolrService.IsInitialized)
-            {
-                //var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
-            }
-            else
-            {
-                throw new InvalidOperationException("SolrService has not been initialized correctly. Please make sure that you have defined the app parameter SolrServer in your web.config.");
-            }
+            var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
+            var results = solr.Query(q).Select(s => s.Id);
 
-            return null;
+            return set.Where(p => results.Contains(p.Id));
         }
     }
 }

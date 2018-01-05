@@ -1,4 +1,6 @@
 ﻿using Catfish.Core.Models;
+using SolrNet;
+using SolrNet.Impl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,7 @@ namespace Catfish.Core.Services
 
         protected CatfishDbContext Db { get; set; }
 
-
+        private static SolrConnection mSolr { get; set; }
 
         public static void Init()
         {
@@ -22,8 +24,15 @@ namespace Catfish.Core.Services
             string server = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
             if (!string.IsNullOrEmpty(server))
             {
+                mSolr = new SolrConnection(server);
+                Startup.Init<SolrIndex>(mSolr);
+
 
                 //TODO: Should we update the database here or have it in an external cron job
+            }
+            else
+            {
+                throw new InvalidOperationException("The app parameter SolrServer has not been defined.");
             }
         }
 
