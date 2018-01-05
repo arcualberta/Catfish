@@ -9,36 +9,32 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Services
 {
-    class SolrService
+    public class SolrService
     {
         public static bool IsInitialized { get; private set; }
 
-        protected CatfishDbContext Db { get; set; }
-
         private static SolrConnection mSolr { get; set; }
 
-        public static void Init()
+        public static void Init(string server)
         {
             IsInitialized = false;
-
-            string server = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
             if (!string.IsNullOrEmpty(server))
             {
                 mSolr = new SolrConnection(server);
                 Startup.Init<SolrIndex>(mSolr);
 
-
                 //TODO: Should we update the database here or have it in an external cron job
+
+                IsInitialized = true;
             }
             else
             {
-                throw new InvalidOperationException("The app parameter SolrServer has not been defined.");
+                throw new InvalidOperationException("The app parameter Solr Server string has not been defined.");
             }
         }
 
-        public SolrService(CatfishDbContext db)
+        public SolrService()
         {
-            Db = db;
         }
     }
 

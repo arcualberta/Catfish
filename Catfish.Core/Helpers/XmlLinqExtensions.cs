@@ -15,10 +15,15 @@ namespace Catfish.Core.Helpers
     {
         public static IQueryable<TSource> FromSolr<TSource>(this DbSet<TSource> set, string q) where TSource : XmlModel
         {
-            var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
-            var results = solr.Query(q).Select(s => s.Id);
+            if (SolrService.IsInitialized)
+            {
+                var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
+                var results = solr.Query(q).Select(s => s.Id);
 
-            return set.Where(p => results.Contains(p.Id));
+                return set.Where(p => results.Contains(p.Id));
+            }
+
+            throw new InvalidOperationException("The SolrService has not been initialized.");
         }
     }
 }
