@@ -22,18 +22,18 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        public IReadOnlyList<MetadataSet> MetadataSets
+        public List<MetadataSet> MetadataSets
         {
             get
             {
                 return GetChildModels("metadata/metadata-set", Data).Select(c => c as MetadataSet).ToList();
             }
 
-            ////set
-            ////{
-            ////    RemoveAllMetadataSets();
-            ////    InitMetadataSet(value);
-            ////}
+            set
+            {
+                RemoveAllMetadataSets();
+                InitMetadataSet(value);
+            }
 
         }
 

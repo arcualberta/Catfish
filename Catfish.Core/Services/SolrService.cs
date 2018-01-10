@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using SolrNet;
+using SolrNet.Attributes;
 using SolrNet.Impl;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,10 @@ namespace Catfish.Core.Services
 
     public class SolrIndex
     {
-        public int Id { get; set; }
+        [SolrUniqueKey("id")]
+        public string SolrId { get; set; }
 
+        [SolrField("id_s")]
+        public int Id { get; set; }
     }
 }

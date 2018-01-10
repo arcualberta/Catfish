@@ -1,17 +1,46 @@
 <?xml version="1.0" encoding="Windows-1252"?>
-<dataConfig name="xml-document-test-schema" version="1.6">
-  <dataSource name="d1" type="JdbcDataSource" driver="com.microsoft.sqlserver.jdbc.SQLServerDriver" url="jdbc:sqlserver://localhost:1433;instance=SQLEXPRESS;databaseName=XmlDocumentTest;" user="gwrit" password="gwrit#db" />
+<dataConfig name="xml-document-schema" version="1.6">
+	<script>
+		<![CDATA[ 
+			// code found here :https://stackoverflow.com/questions/7081318/solr-dataimporthandler-can-i-get-a-dynamic-field-name-from-xml-attribute-with-x
+			function extractLanguageField(row) {
+				var language = row.get("langCode");
+				var name = row.get("name");
+				var value = row.get("value");
+				
+				for(var i = 0; i < language.length; ++i){
+					row.put("name_txt_" + language[i], name[i]);
+					row.put("value_txt_" + language[i], value[i]);
+				}
+				
+				row.remove("langCode");
+				row.remove("name");
+				row.remove("value");
+
+				return row;
+			}
+		]]>
+	</script>
+
+  <dataSource name="d1" type="JdbcDataSource" driver="com.microsoft.sqlserver.jdbc.SQLServerDriver" url="jdbc:sqlserver://localhost:1433;instance=SQLEXPRESS;databaseName=CatfishTest2;" user="catfish" password="password" />
   <dataSource name="d2" type="FieldReaderDataSource" />
-  <document name="entries">
-    <entity processor="SqlEntityProcessor" dataSource="d1" name="MainForm" pk="Id" query="select * from [dbo].[XmlModels]" deltaImportQuery="SELECT * FROM [dbo].[XmlModels] WHERE Id = ${dih.delta.Id}" deltaQuery="SELECT Id FROM [dbo].[XmlModels] WHERE [Content].value(N'(/*/@created)[1]', 'datetime') &gt;= '${dih.last_index_time}' OR [Content].value(N'(/*/@updated)[1]', 'datetime') &gt;= '${dih.last_index_time}'">
-      <field column="Id" name="Id" />
-	  <!--<field column="Content" name="Content" />-->
-	  <field column="ModelType" name="Discriminator" />
-      <entity processor="XPathEntityProcessor" transformer="RegexTransformer,DateFormatTransformer" name="XmlContent" dataSource="d2" dataField="MainForm.Content" forEach="/*">
-        <field column="Created" xpath="/*/@created" />
-		<field column="EntityType" xpath="/./@entity-type"/>
-		<field column="TODO*" xpath="/*/value/text"/>
-      </entity>
+  
+  <document name="FieldDoc">
+	<entity processor="SqlEntityProcessor" dataSource="d1" name="dbData" pk="Id" query="select * from [dbo].[XmlModels] WHERE EntityTypeId IS NOT NULL" deltaImportQuery="SELECT * FROM [dbo].[XmlModels] WHERE Id = ${dih.delta.Id}" deltaQuery="SELECT Id FROM [dbo].[XmlModels] WHERE EntityTypeId IS NOT NULL AND ([Content].value(N'(/./@created)[1]', 'datetime') &gt;= '${dih.last_index_time}' OR [Content].value(N'(/./@updated)[1]', 'datetime') &gt;= '${dih.last_index_time}')" rootEntity="false">
+	
+		<field column="Id" name="id_s"/>
+		<field column="Discriminator" name="modeltype_s"/>
+
+		<entity processor="XPathEntityProcessor" transformer="TemplateTransformer,script:extractLanguageField" name="fields" dataSource="d2" dataField="dbData.Content" forEach="/fields/field" xsl="PCDTransform.xslt" >
+			<field column="guid_s" xpath="/fields/field/@guid"/>
+			<field column="metadataset_guid_s" xpath="/fields/field/@metadatasetguid"/>
+			<field column="id" template="${dbData.Id}-${fields.metadataset_guid_s}-${fields.guid_s}"/>
+			
+			<!-- These fields will be transformed to each language code -->
+			<field column="langCode" xpath="/fields/field/entry/@lang" multiValued="true"/>
+			<field column="name" xpath="/fields/field/entry/name" multiValued="true"/>
+			<field column="value" xpath="/fields/field/entry/value" multiValued="true"/>
+		</entity>
     </entity>
   </document>
 </dataConfig>

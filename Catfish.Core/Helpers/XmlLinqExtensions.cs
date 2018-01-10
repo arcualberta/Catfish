@@ -18,7 +18,7 @@ namespace Catfish.Core.Helpers
             if (SolrService.IsInitialized)
             {
                 var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
-                var results = solr.Query(q).Select(s => s.Id);
+                var results = solr.Query(q).Select(s => s.Id).Distinct();
 
                 return set.Where(p => results.Contains(p.Id));
             }

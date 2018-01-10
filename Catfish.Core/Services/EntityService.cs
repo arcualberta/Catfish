@@ -2,10 +2,12 @@
 using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Catfish.Core.Helpers;
 
 namespace Catfish.Core.Services
 {
@@ -80,5 +82,81 @@ namespace Catfish.Core.Services
             Db.Entry(dbEntity).State = System.Data.Entity.EntityState.Modified;
         }
 
+        protected IQueryable<Entity> GetEntitiesTextSearch<T>(string searchString, string[] languageCodes = null, string[] fields = null, string[] modelTypes = null) where T : Entity
+        {
+            return GetEntitiesTextSearch<Entity>(null /* TODO: Get DB Entitied */, searchString, languageCodes, fields, modelTypes);
+        }
+
+        private string SolrEscape(string input)
+        {
+            return input.Replace("\"", "\\\"");
+        }
+
+        private string GenerateSolrQuery(string searchString, string[] languageCodes, string[] fields, string[] modelTypes)
+        {
+            StringBuilder query = new StringBuilder("(");
+
+            // Add the value string
+            query.AppendFormat("value_txt_{0}:\"{1}\"", languageCodes[0], searchString);
+
+            for (int i = 1; i < languageCodes.Length; ++i)
+            {
+                query.AppendFormat(" OR value_txt_{0}:\"{1}\"", languageCodes[1], searchString);
+            }
+
+            query.Append(")");
+
+            // Add model types to the query
+            if (modelTypes != null && modelTypes.Length > 0)
+            {
+                query.Append(" AND (");
+
+                query.AppendFormat("modeltype_s:\"{0}\"", SolrEscape(modelTypes[0]));
+
+                for (int i = 1; i < modelTypes.Length; ++i)
+                {
+                    query.AppendFormat("OR modeltype_s:\"{0}\"", SolrEscape(modelTypes[i]));
+                }
+
+                query.Append(")");
+            }
+
+            // Limit it to the specific fields
+            if (fields != null && fields.Length > 0)
+            {
+                query.Append(" AND (");
+
+                for (int j = 0; j < languageCodes.Length; ++j)
+                {
+                    if (j > 0)
+                    {
+                        query.Append(" OR ");
+                    }
+
+                    query.AppendFormat("name_txt_{0}:\"{1}\"", languageCodes[j], SolrEscape(modelTypes[0]));
+
+                    for (int i = 1; i < modelTypes.Length; ++i)
+                    {
+                        query.AppendFormat("name_txt_{0}:\"{1}\"", languageCodes[j], SolrEscape(modelTypes[i]));
+                    }
+                }
+
+                query.Append(")");
+            }
+
+            return query.ToString();
+        }
+
+        protected IQueryable<T> GetEntitiesTextSearch<T>(DbSet<T> Entities, string searchString, string[] languageCodes = null, string[] fields = null, string[] modelTypes = null) where T : Entity
+        {
+            if(languageCodes == null || languageCodes.Length == 0)
+            {
+                languageCodes = new string[] { "en" };
+            }
+
+            string query = GenerateSolrQuery(searchString, languageCodes, fields, modelTypes);
+
+            return Entities.FromSolr(query);
+        }
     }
 }
