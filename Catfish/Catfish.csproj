@@ -295,6 +295,8 @@
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\Attachment.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\HtmlTag.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\BulletinBoard.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\SimpleSearch.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\SearchResults.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
@@ -358,6 +360,8 @@
     <Compile Include="Models\Regions\Html\Javascript.cs" />
     <Compile Include="Models\Regions\Html\HtmlTag.cs" />
     <Compile Include="Models\Regions\MultilingualText.cs" />
+    <Compile Include="Models\Regions\SearchResults.cs" />
+    <Compile Include="Models\Regions\SimpleSearch.cs" />
     <Compile Include="Models\ViewModels\FormViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -399,6 +403,8 @@
     <Content Include="Views\Shared\DisplayTemplates\HtmlRegion.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Javascript.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\BulletinBoard.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SimpleSearch.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SearchResults.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

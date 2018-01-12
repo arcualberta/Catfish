@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 
 using Piranha.Mvc;
+using Piranha.Models;
 
 namespace Catfish.Controllers
 {

@@ -34,6 +34,11 @@ namespace Catfish.Core.Services
             }
         }
 
+        public static string EscapeQueryString(string searchString)
+        {
+            return new SolrQuery(searchString).Query;
+        }
+
         public SolrService()
         {
         }

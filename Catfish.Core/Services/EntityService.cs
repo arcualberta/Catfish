@@ -82,9 +82,9 @@ namespace Catfish.Core.Services
             Db.Entry(dbEntity).State = System.Data.Entity.EntityState.Modified;
         }
 
-        protected IQueryable<Entity> GetEntitiesTextSearch<T>(string searchString, string[] languageCodes = null, string[] fields = null, string[] modelTypes = null) where T : Entity
+        public IQueryable<Entity> GetEntitiesTextSearch(string searchString, string[] languageCodes = null, string[] fields = null, string[] modelTypes = null)
         {
-            return GetEntitiesTextSearch<Entity>(null /* TODO: Get DB Entitied */, searchString, languageCodes, fields, modelTypes);
+            return GetEntitiesTextSearch<Entity>(Db.Entities, searchString, languageCodes, fields, modelTypes);
         }
 
         private string SolrEscape(string input)
@@ -97,7 +97,7 @@ namespace Catfish.Core.Services
             StringBuilder query = new StringBuilder("(");
 
             // Add the value string
-            query.AppendFormat("value_txt_{0}:\"{1}\"", languageCodes[0], searchString);
+            query.AppendFormat("value_txt_{0}:{1}", languageCodes[0], searchString);
 
             for (int i = 1; i < languageCodes.Length; ++i)
             {

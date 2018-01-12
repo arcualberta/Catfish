@@ -12,6 +12,7 @@ using Catfish.Core.Models.Forms;
 using Catfish.Areas.Manager.ModelBinders;
 using Catfish.Core.Models;
 using Catfish.Helpers;
+using Catfish.Core.Services;
 
 namespace Catfish
 {
@@ -46,6 +47,13 @@ namespace Catfish
 
             //Multilingual menu
             Hooks.Menu.RenderItemLink = ViewHelper.MultilingualMenuRenderer;
+
+            // Check for a SolrConnection
+            string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
+            if (!string.IsNullOrEmpty(solrString))
+            {
+                SolrService.Init(solrString);
+            }
         }
 
         private void AddManagerMenus()

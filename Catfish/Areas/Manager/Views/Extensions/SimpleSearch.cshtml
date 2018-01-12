@@ -1,0 +1,15 @@
+﻿@model Catfish.Models.Regions.SimpleSearch
+
+<ul class="form">
+    <li>
+        @Html.LabelFor(m => m.ResultPage)
+        <div class="input">@Html.DropDownListFor(m => m.ResultPage, Model.Pages)</div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.SearchAllLanguage)
+        <div class="input">@Html.CheckBoxFor(m => m.SearchAllLanguage)</div>
+    </li>
+
+    @Html.Partial("_CatfishRegion", Model)
+</ul>
+
