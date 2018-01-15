@@ -16,7 +16,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string TypeLabel { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string TargetType { get; set; }
+        //public string TargetType { get; set; }
+        public List<string> TargetType { get; set; } //MR: jan 15 change to list<> so it could be apply to more than 1 entity (ie: collection, item, etc)
         public List<MetadataSetListItem> AvailableMetadataSets { get; set; }
         public MetadataSetListItem SelectedMetadataSets { get; set; }
         public List<MetadataSetListItem> AssociatedMetadataSets { get; set; }

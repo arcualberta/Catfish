@@ -18,7 +18,8 @@ namespace Catfish.Core.Models
 
         public string Description { get; set; }
 
-        public eTarget TargetType { get; set; }
+        //public eTarget TargetType { get; set; }
+        public List<eTarget> TargetType { get; set; } // MR: jan 15 2018, change to list to accomodate the possibility of of 1 entityType could be applied to more than one entity
 
         [JsonIgnore] //Ignore this in JSON serialization to avoid stuck in a continuous loop
         public virtual ICollection<MetadataSet> MetadataSets { get; set; }
@@ -33,6 +34,7 @@ namespace Catfish.Core.Models
         {
             MetadataSets = new List<MetadataSet>();
             AttributeMappings = new List<EntityTypeAttributeMapping>();
+            TargetType = new List<eTarget>();
         }
 
         public EntityTypeAttributeMapping GetNameMapping()

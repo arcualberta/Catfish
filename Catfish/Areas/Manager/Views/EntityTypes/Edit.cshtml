@@ -47,10 +47,14 @@
                         <li>
                             <label class="control-label col-md-2">Applicability</label>
                             <div class="input">
-                                @ko.Html.RadioButton(m => m.TargetType, new { value = EntityType.eTarget.Collections.ToString() }) Collections
+                                @*@ko.Html.RadioButton(m => m.TargetType, new { value = EntityType.eTarget.Collections.ToString() }) Collections
                                 @ko.Html.RadioButton(m => m.TargetType, new { value = EntityType.eTarget.Items.ToString() }) Items
                                 @ko.Html.RadioButton(m => m.TargetType, new { value = EntityType.eTarget.Files.ToString() }) Files
-                                @ko.Html.RadioButton(m => m.TargetType, new { value = EntityType.eTarget.Forms.ToString() }) Forms
+                                @ko.Html.RadioButton(m => m.TargetType, new { value = EntityType.eTarget.Forms.ToString() }) Forms*@
+                                @ko.Html.CheckBox(m=>m.TargetType, new { value = EntityType.eTarget.Collections.ToString()}) Collections
+                                @ko.Html.CheckBox(m => m.TargetType, new { value = EntityType.eTarget.Items.ToString() }) Items
+                                @ko.Html.CheckBox(m => m.TargetType, new { value = EntityType.eTarget.Files.ToString() }) Files
+                                @ko.Html.CheckBox(m => m.TargetType, new { value = EntityType.eTarget.Forms.ToString() }) Forms
                             </div>
                         </li>
 
