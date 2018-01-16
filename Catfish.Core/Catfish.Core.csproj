@@ -97,6 +97,10 @@
     <Compile Include="Migrations\201712200902581_RenamedGuidColumnToMappedGuid.Designer.cs">
       <DependentUpon>201712200902581_RenamedGuidColumnToMappedGuid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801161646105_ChangeETargetToStringForTargetTypesOfEntityType.cs" />
+    <Compile Include="Migrations\201801161646105_ChangeETargetToStringForTargetTypesOfEntityType.Designer.cs">
+      <DependentUpon>201801161646105_ChangeETargetToStringForTargetTypesOfEntityType.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Aggregation.cs" />
     <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
@@ -159,6 +163,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201712200902581_RenamedGuidColumnToMappedGuid.resx">
       <DependentUpon>201712200902581_RenamedGuidColumnToMappedGuid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801161646105_ChangeETargetToStringForTargetTypesOfEntityType.resx">
+      <DependentUpon>201801161646105_ChangeETargetToStringForTargetTypesOfEntityType.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

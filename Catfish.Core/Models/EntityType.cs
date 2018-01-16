@@ -17,9 +17,31 @@ namespace Catfish.Core.Models
         public string Name { get; set; }
 
         public string Description { get; set; }
+        [NotMapped]
+        public IList<eTarget> TargetTypesList {
+            get
+            {
+                if (!string.IsNullOrEmpty(TargetTypes))
+                {
+                    return TargetTypes.Split(',')
+                        .Select(s => (eTarget)System.Enum.Parse(typeof(eTarget), s))
+                        .ToList();
+                }
+
+                return new List<eTarget>();
+            }
+
+            set
+            {
+                if (value != null)
+                {
+                    TargetTypes = string.Join(",", value.ToArray());
+                }
+            }
+        }
 
         //public eTarget TargetType { get; set; }
-        public List<eTarget> TargetType { get; set; } // MR: jan 15 2018, change to list to accomodate the possibility of of 1 entityType could be applied to more than one entity
+        public string TargetTypes {get; set; } // MR: jan 15 2018, change to string, this will hold a comma separated value of TargetType
 
         [JsonIgnore] //Ignore this in JSON serialization to avoid stuck in a continuous loop
         public virtual ICollection<MetadataSet> MetadataSets { get; set; }
@@ -34,7 +56,7 @@ namespace Catfish.Core.Models
         {
             MetadataSets = new List<MetadataSet>();
             AttributeMappings = new List<EntityTypeAttributeMapping>();
-            TargetType = new List<eTarget>();
+            TargetTypesList = new List<eTarget>();
         }
 
         public EntityTypeAttributeMapping GetNameMapping()
@@ -46,6 +68,32 @@ namespace Catfish.Core.Models
         {
             return AttributeMappings.Where(mapping => mapping.Name == "Description Mapping").FirstOrDefault();
         }
+        /*[NotMapped]
+        public string SetTargetTypes
+        {
+            set
+            {
+                if (TargetTypesList.Count > 0)
+                {
+                    TargetTypes = string.Join(",", TargetTypesList.ToArray());
+                }
+            }
+        }*/
 
+        /*[NotMapped]
+        public IList<eTarget> GetTargetTypes
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(TargetTypes))
+                {
+                    foreach (string tt in TargetTypes.Split(','))
+                    {
+                        TargetTypesList.Add((eTarget)System.Enum.Parse(typeof(eTarget), tt));
+                    }
+                }
+                return TargetTypesList;
+            }
+        }*/
     }
 }

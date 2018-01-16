@@ -22,7 +22,9 @@ namespace Catfish.Core.Services
 
         public IQueryable<EntityType> GetEntityTypes(EntityType.eTarget target)
         {
-            return Db.EntityTypes.Where(et => et.TargetType == target);
+            // return Db.EntityTypes.Where(et => et.TargetType == target);
+             return Db.EntityTypes.Where(et => et.TargetTypes.Contains(target.ToString())); //Mr Jan 15 2018
+         
         }
 
         public T CreateEntity<T>(int entityTypeId) where T : Entity, new()

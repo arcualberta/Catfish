@@ -17,7 +17,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string Name { get; set; }
         public string Description { get; set; }
         //public string TargetType { get; set; }
-        public List<string> TargetType { get; set; } //MR: jan 15 change to list<> so it could be apply to more than 1 entity (ie: collection, item, etc)
+        public IList<bool> TargetType { get; set; } //MR: jan 15 change to list<> so it could be apply to more than 1 entity (ie: collection, item, etc)
         public List<MetadataSetListItem> AvailableMetadataSets { get; set; }
         public MetadataSetListItem SelectedMetadataSets { get; set; }
         public List<MetadataSetListItem> AssociatedMetadataSets { get; set; }
@@ -42,6 +42,12 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             DescriptionMapping = new MetadataFieldMapping();
             SelectedNameMappingFieldSrc = new List<string>();
             SelectedDescriptionMappingFieldSrc = new List<string>();
+            TargetType = new List<bool>();
+
+            foreach(var key in System.Enum.GetValues(typeof(EntityType.eTarget)))
+            {
+                TargetType.Add(false);
+            }
         }
  
         public void UpdateViewModel(object dataModel, CatfishDbContext db)
@@ -51,7 +57,12 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Id = model.Id;
             Name = model.Name;
             Description = model.Description;
-            TargetType = model.TargetType.ToString();
+           // TargetType = model.TargetType.ToString();
+           
+           foreach(var tt in model.TargetTypesList)  //MR jan 15 2018
+            {
+                TargetType[(int)tt] = true;
+            }
 
             TypeLabelAttribute att = Attribute.GetCustomAttribute(model.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
             TypeLabel = att == null ? model.GetType().ToString() : att.Name;
@@ -103,7 +114,18 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
             model.Name = Name;
             model.Description = Description;
-            model.TargetType = (eTarget) Enum.Parse(typeof(eTarget), TargetType);
+            //model.TargetType = (eTarget) Enum.Parse(typeof(eTarget), TargetType);
+            //Mr jan 15 2018
+
+            var TargetTypesList = new List<EntityType.eTarget>();
+            for(int i = 0; i < TargetType.Count; ++i)
+            {
+                if (TargetType[i])
+                {
+                    TargetTypesList.Add((EntityType.eTarget)i);
+                }
+            }
+            model.TargetTypesList = TargetTypesList;
 
             List<int> dataModelMetadataSetIds = model.MetadataSets.Select(m => m.Id).ToList();
             List<int> viewModelMetadataSetIds = AssociatedMetadataSets.Select(m => m.Id).ToList();
@@ -154,6 +176,21 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 descMapping.FieldName = DescriptionMapping.Field;
             }
         }
+
+        /*public string GetTargetType(string targetType)
+        {
+            string tType = string.Empty;
+
+            foreach(string t in TargetType)
+            {
+                if(t.Equals(targetType))
+                {
+                    tType = t;
+                    break;
+                }
+            }
+            return tType;
+        }*/
     }
 
     public class MetadataSetListItem

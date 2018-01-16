@@ -190,7 +190,8 @@ namespace Catfish.Areas.Manager.Controllers
             var test = Request.Params;
             if (ModelState.IsValid)
             {
-                if(entityType.Id > 0)
+                entityType.TargetTypes = entityType.TargetTypesList.Count > 0 ? string.Join(",", entityType.TargetTypesList.ToArray()) : string.Empty;
+                if (entityType.Id > 0)
                 {
                     EntityService.UpdateEntityType(entityType);
                 }

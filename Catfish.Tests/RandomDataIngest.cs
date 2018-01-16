@@ -16,7 +16,7 @@ namespace Catfish.Tests
             int COUNT = 20;
 
             CatfishDbContext db = new CatfishDbContext();
-            List<EntityType> collectionTypes = db.EntityTypes.Where(t => t.TargetType == EntityType.eTarget.Collections).ToList();
+            List<EntityType> collectionTypes = db.EntityTypes.Where(t => t.TargetTypes.Contains(EntityType.eTarget.Collections.ToString())).ToList();//db.EntityTypes.Where(t => t.TargetType == EntityType.eTarget.Collections).ToList();
             if (collectionTypes.Count == 0)
                 throw new Exception("No entity types have been defined for collections.");
             var rand = new Random();
@@ -38,7 +38,7 @@ namespace Catfish.Tests
             int COUNT = 50;
 
             CatfishDbContext db = new CatfishDbContext();
-            List<EntityType> itemTypes = db.EntityTypes.Where(t => t.TargetType == EntityType.eTarget.Items).ToList();
+            List<EntityType> itemTypes = db.EntityTypes.Where(t => t.TargetTypes.Contains(EntityType.eTarget.Items.ToString())).ToList(); //db.EntityTypes.Where(t => t.TargetType == EntityType.eTarget.Items).ToList();
             if (itemTypes.Count == 0)
                 throw new Exception("No entity types have been defined for collections.");
             var rand = new Random();
