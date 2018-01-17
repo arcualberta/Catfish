@@ -5,12 +5,11 @@
 <div>
     @if (Model.Results != null)
     {
-        foreach (var result in Model.Results)
+        int pageStart = (Model.Page - 1) * Model.TotalPerPage;
+        for (int i = 0; i < Model.Results.Count(); ++i)
         {
-            <div>
-                <h3>@result.Name</h3>
-                <p>@result.Description</p>
-            </div>
+            int index = i + 1 + pageStart;
+            @Html.DisplayFor(m => m.Results.ElementAt(i), Model.SearchResultTemplate, new { Index = index })
         }
     }
 </div>

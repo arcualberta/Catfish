@@ -5,6 +5,7 @@ using Piranha.Extend;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
@@ -20,6 +21,9 @@ namespace Catfish.Models.Regions
     {
         public const string PAGE_PARAM = "p";
         public const string PERPAGE_PARAM = "pp";
+
+        [Display(Name = "Result Template")]
+        public string SearchResultTemplate { get; set; }
 
         [NotMapped]
         public IEnumerable<Entity> Results { get; set; }
@@ -49,6 +53,10 @@ namespace Catfish.Models.Regions
         public override object GetContent(object model)
         {
             HttpContext context = HttpContext.Current;
+            if (string.IsNullOrEmpty(SearchResultTemplate))
+            {
+                SearchResultTemplate = "SearchResult";
+            }
 
             if (context != null)
             {
