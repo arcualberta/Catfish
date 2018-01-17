@@ -50,8 +50,6 @@ namespace Catfish.Core.Models
                 metadata.Add(ms.Data);
         }
 
-
-
         public string GetName(string lang = null)
         {
             var mapping = EntityType.GetNameMapping();
@@ -126,13 +124,6 @@ namespace Catfish.Core.Models
             }
         }
 
-        public string Name
-        {
-            get
-            {
-                return GetName();
-            }
-        }
         public string Description
         {
             get

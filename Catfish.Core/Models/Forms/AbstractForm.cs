@@ -35,9 +35,9 @@ namespace Catfish.Core.Models.Forms
             }
         }
 
-        [NotMapped]
-        [TypeLabel("String")]
-        public string Name { get { return GetName(); } set { SetName(value); } }
+        //[NotMapped]
+        //[TypeLabel("String")]
+        //public string Name { get { return GetName(); } set { SetName(value); } }
 
         [NotMapped]
         [DataType(DataType.MultilineText)]
