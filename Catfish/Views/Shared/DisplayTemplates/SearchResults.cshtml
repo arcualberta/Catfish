@@ -1,15 +1,65 @@
 ﻿@model Catfish.Models.Regions.SearchResults
 
-<h2>Search Results</h2>
+@{ 
+    int pageStart = (Model.Page - 1) * Model.TotalPerPage;
+    int pageEnd = pageStart + Model.TotalPerPage;
 
+    if(pageEnd > Model.TotalPerPage)
+    {
+        pageEnd = Model.TotalPerPage;
+    }
+}
+
+@helper DisplayPagination(int pageStart, int pageEnd) {
+int pagesShown = 10;
+int pageListStart = pageStart - (pagesShown >> 1);
+if(pageListStart < 1)
+{
+    pageListStart = 1;
+}
+int pageListEnd = pageListStart + pagesShown - 1;
+if(pageListEnd > Model.TotalPages)
+{
+        pageListEnd = Model.TotalPages;
+}
+
+    <div class="row">
+        <div class="col-xs-6 col-md-4 text-left">
+            @for(int i = pageListStart; i < Model.Page; ++i)
+            {
+                <a href="#">@i</a>
+            }
+
+            <span>@Model.Page</span>
+
+            @for (int i = Model.Page + 1; i < pageListEnd; ++i)
+            {
+                <a href="#">@i</a>
+            }
+        </div>
+        <div class="hidden-xs col-md-4 text-center">
+            @(string.Format("{0} - {1} of {2}",
+                pageStart + 1,
+                pageEnd,
+                Model.Total))
+        </div>
+        <div class="col-xs-6 col-md-4 text-right">
+
+        </div>
+    </div>
+}
+
+<h2>Search Results: "@(Request.QueryString[Catfish.Models.Regions.SimpleSearch.QUERY_PARAM])"</h2>
+
+@DisplayPagination(pageStart, pageEnd)
 <div>
     @if (Model.Results != null)
     {
-        int pageStart = (Model.Page - 1) * Model.TotalPerPage;
         for (int i = 0; i < Model.Results.Count(); ++i)
         {
             int index = i + 1 + pageStart;
-            @Html.DisplayFor(m => m.Results.ElementAt(i), Model.SearchResultTemplate, new { Index = index })
+            @Html.DisplayFor(m => m.Results[i], Model.SearchResultTemplate, new { Index = index })
         }
     }
 </div>
+@DisplayPagination(pageStart, pageEnd)

@@ -26,13 +26,19 @@ namespace Catfish.Models.Regions
         public string SearchResultTemplate { get; set; }
 
         [NotMapped]
-        public IEnumerable<Entity> Results { get; set; }
+        public Entity[] Results { get; set; }
+
+        [NotMapped]
+        public int Total { get; set; }
 
         [NotMapped]
         public int Page { get; set; }
 
         [NotMapped]
         public int TotalPerPage { get; set; }
+
+        [NotMapped]
+        public int TotalPages { get; set; }
 
         public int ParseInt(string input, int defaultVal, int min, int max = int.MaxValue)
         {
@@ -70,7 +76,21 @@ namespace Catfish.Models.Regions
                     CatfishDbContext db = new CatfishDbContext();
                     EntityService es = new EntityService(db);
 
-                    Results = es.GetEntitiesTextSearch(query, new string[] { ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName });
+                    var results = es.GetEntitiesTextSearch(query, new string[] { ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName });
+                    Total = results.Count();
+                    TotalPages = (int)Math.Ceiling((float)Total / (float)TotalPerPage);
+                    
+                    if(Page < 1)
+                    {
+                        Page = 1;
+                    }else if(Page > TotalPages)
+                    {
+                        Page = TotalPages;
+                    }
+
+                    int startValue = (Page - 1) * TotalPerPage;
+
+                    Results = results.OrderBy(m => m.Id).Skip(startValue).Take(TotalPerPage).ToArray();
                 }
             }
 
