@@ -1,18 +1,21 @@
 ﻿@model Catfish.Models.Regions.SearchResults
+@using Catfish.Models.Regions
 
 @{ 
     int pageStart = (Model.Page - 1) * Model.TotalPerPage;
     int pageEnd = pageStart + Model.TotalPerPage;
 
-    if(pageEnd > Model.TotalPerPage)
+    if(pageEnd > Model.Total)
     {
-        pageEnd = Model.TotalPerPage;
+        pageEnd = Model.Total;
     }
 }
 
 @helper DisplayPagination(int pageStart, int pageEnd) {
+var uriBuilder = new UriBuilder(Request.Url.AbsoluteUri);
+var query = HttpUtility.ParseQueryString(uriBuilder.Query);
 int pagesShown = 10;
-int pageListStart = pageStart - (pagesShown >> 1);
+int pageListStart = Model.Page - (pagesShown >> 1);
 if(pageListStart < 1)
 {
     pageListStart = 1;
@@ -20,21 +23,38 @@ if(pageListStart < 1)
 int pageListEnd = pageListStart + pagesShown - 1;
 if(pageListEnd > Model.TotalPages)
 {
-        pageListEnd = Model.TotalPages;
+    pageListEnd = Model.TotalPages;
 }
 
     <div class="row">
         <div class="col-xs-6 col-md-4 text-left">
+            @if(Model.Page > 1)
+            {
+                query[SearchResults.PAGE_PARAM] = (Model.Page - 1).ToString();
+                uriBuilder.Query = query.ToString();
+                <a href="@uriBuilder.ToString()">&lt;</a>
+            }
             @for(int i = pageListStart; i < Model.Page; ++i)
             {
-                <a href="#">@i</a>
+                query[SearchResults.PAGE_PARAM] = i.ToString();
+                uriBuilder.Query = query.ToString();
+                <a href="@uriBuilder.ToString()">@i</a>
             }
 
             <span>@Model.Page</span>
 
-            @for (int i = Model.Page + 1; i < pageListEnd; ++i)
+            @for (int i = Model.Page + 1; i <= pageListEnd; ++i)
             {
-                <a href="#">@i</a>
+                query[SearchResults.PAGE_PARAM] = i.ToString();
+                uriBuilder.Query = query.ToString();
+                <a href="@uriBuilder.ToString()">@i</a>
+            }
+
+            @if (Model.Page < pageListEnd)
+            {
+                query[SearchResults.PAGE_PARAM] = (Model.Page + 1).ToString();
+                uriBuilder.Query = query.ToString();
+                <a href="@uriBuilder.ToString()">&gt;</a>
             }
         </div>
         <div class="hidden-xs col-md-4 text-center">
@@ -49,7 +69,7 @@ if(pageListEnd > Model.TotalPages)
     </div>
 }
 
-<h2>Search Results: "@(Request.QueryString[Catfish.Models.Regions.SimpleSearch.QUERY_PARAM])"</h2>
+<h2>Search Results: "@(Request.QueryString[SimpleSearch.QUERY_PARAM])"</h2>
 
 @DisplayPagination(pageStart, pageEnd)
 <div>

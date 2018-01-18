@@ -85,7 +85,7 @@ namespace Catfish.Models.Regions
                         Page = 1;
                     }else if(Page > TotalPages)
                     {
-                        Page = TotalPages;
+                        Page = TotalPages + 1;
                     }
 
                     int startValue = (Page - 1) * TotalPerPage;
