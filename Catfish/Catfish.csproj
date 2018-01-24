@@ -364,6 +364,16 @@
     <Compile Include="Models\Regions\SimpleSearch.cs" />
     <Compile Include="Models\ViewModels\FormViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Views\Shared\DisplayTemplates\SearchResults.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SearchResults.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Views\Shared\DisplayTemplates\SimpleSearch.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SimpleSearch.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -427,6 +437,17 @@
       <Project>{5d2c027e-76f8-4cf0-8c58-cfd5219e3d18}</Project>
       <Name>Catfish.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Views\Shared\DisplayTemplates\SearchResults.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SearchResults.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Views\Shared\DisplayTemplates\SimpleSearch.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SimpleSearch.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Views\Shared\SimpleSearch.fr.resx" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

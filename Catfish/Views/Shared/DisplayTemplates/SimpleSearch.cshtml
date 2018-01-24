@@ -23,7 +23,7 @@
         @using(Html.BeginForm(null, null, FormMethod.Get, new { @action = pageUrl, @class = "search row" }))
         {
             <input type="text" name="@Catfish.Models.Regions.SimpleSearch.QUERY_PARAM" value="@query" />
-            <button type="submit" class="btn btn-info">
+            <button type="submit" class="btn btn-info" title="@Catfish.Resources.Views.Shared.DisplayTemplates.SimpleSearch.Search">
                 <span class="glyphicon glyphicon-search"></span>
             </button>
         }
