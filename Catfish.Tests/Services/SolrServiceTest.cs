@@ -1,23 +1,29 @@
-﻿using System;
+﻿using Catfish.Core.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Catfish.Core.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Catfish.Tests
+namespace Catfish.Tests.Services
 {
     [TestClass]
-    public class SolrTest
+    public class SolrServiceTest
     {
         [TestMethod]
         public void TestFailedServiceInitialization()
         {
-            try {
+            try
+            {
                 SolrService.Init(null);
                 Assert.Fail("Initialization passed with no connection string.");
-            } catch(InvalidOperationException e)
+            }
+            catch (InvalidOperationException e)
             {
                 // Failed to initialize. This passes the test.
             }
-            
+
         }
 
         [TestMethod]
