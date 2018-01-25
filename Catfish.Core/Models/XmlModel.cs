@@ -218,6 +218,10 @@ namespace Catfish.Core.Models
         ////    DefaultLanguage = defaultLang;
         ////}
 
+        [NotMapped]
+        [TypeLabel("String")]
+        public string Name { get { return GetName(); } set { SetName(value); } }
+
         public virtual string GetName(string lang = null, bool tryReturnNoneEmpty = false)
         {
             string name = GetChildText("name", Data, Lang(lang));

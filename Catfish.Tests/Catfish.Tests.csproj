@@ -74,8 +74,8 @@
     <Compile Include="EntityTypeTest.cs" />
     <Compile Include="ManagerIntegrationTests.cs" />
     <Compile Include="RandomDataIngest.cs" />
+    <Compile Include="Services\SolrServiceTest.cs" />
     <Compile Include="TestData.cs" />
-    <Compile Include="SolrTest.cs" />
     <Compile Include="XmlModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

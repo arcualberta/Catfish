@@ -1,0 +1,11 @@
+﻿@model Catfish.Core.Models.Entity
+@{
+    string languageCode = Catfish.Helpers.ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName;
+}
+
+<div class="panel panel-default searchResult">
+    <div class="panel-heading">@ViewData["Index"]<text>.&nbsp;</text>@Model.GetName(languageCode)</div>
+    <div class="panel-body">@Model.GetDescription(languageCode)</div>
+    @* TODO: Link to Entity Page *@
+</div>
+
