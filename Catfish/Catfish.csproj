@@ -332,6 +332,7 @@
     <Compile Include="Areas\Manager\Controllers\ItemsController.cs" />
     <Compile Include="Areas\Manager\Controllers\MetadataController.cs" />
     <Compile Include="Areas\Manager\Controllers\FormTemplatesController.cs" />
+    <Compile Include="Areas\Manager\ModelBinders\DateModelBinder.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityGroupViewModel.cs" />
     <Compile Include="Controllers\Api\ItemsController.cs" />
     <Compile Include="Controllers\Api\StatsController.cs" />
