@@ -111,6 +111,19 @@ namespace Catfish
                 Permission = "ADMIN_CONTENT"
                 //,SelectedActions = "productlist,productedit"
             });
+
+            //Mr Jan 23 2018 adding tab to manager/system area
+            var systemMenu = Manager.Menu.Where(m => m.InternalId == "System").FirstOrDefault();
+            idx = 0;
+
+            systemMenu.Items.Insert(idx++, new Manager.MenuItem {
+
+                Name = "Entity Group",
+                Action = "index",
+                Controller = "entitygroups",
+                Permission = "ADMIN_CONTENT"
+            });
+             
         }
     }
 }
