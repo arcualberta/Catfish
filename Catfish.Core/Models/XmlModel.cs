@@ -220,7 +220,7 @@ namespace Catfish.Core.Models
 
         [NotMapped]
         [TypeLabel("String")]
-        public string Name { get { return GetName(); } set { SetName(value); } }
+        public virtual string Name { get { return GetName(); } set { SetName(value); } }
 
         public virtual string GetName(string lang = null, bool tryReturnNoneEmpty = false)
         {

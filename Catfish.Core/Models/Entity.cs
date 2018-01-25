@@ -124,6 +124,14 @@ namespace Catfish.Core.Models
             }
         }
 
+        public override string Name
+        {
+            get
+            {
+                return GetName();
+            }
+        }
+
         public string Description
         {
             get
