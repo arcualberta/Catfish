@@ -37,7 +37,9 @@ namespace Catfish
             {
                 // Do something
                 str.Append("<script src=\"/Scripts/jquery-2.1.1.min.js\" type=\"text/javascript\" ></script>");
+                str.Append("<script src=\"/Scripts/jquery-ui.min.js\" type=\"text/javascript\" ></script>");
                 str.Append("<script src=\"/Scripts/bootstrap.min.js\" type=\"text/javascript\" ></script>");
+                str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/jquery-ui.min.css\" />");
                 str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/bootstrap.min.css\" />");
                 str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/Custom.css\" />");
             };

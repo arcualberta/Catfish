@@ -162,6 +162,8 @@
     <Content Include="Content\bs-bootstrap\js\npm.js" />
     <Content Include="Content\Css\bootstrap.min.css" />
     <Content Include="Content\Css\catfish.css" />
+    <Content Include="Content\jquery-ui.css" />
+    <Content Include="Content\jquery-ui.min.css" />
     <Content Include="Content\Css\style.css" />
     <Content Include="Content\Css\Site.css" />
     <Content Include="Content\Thumbnails\404.png">
@@ -303,6 +305,8 @@
     <Content Include="Scripts\fileupload.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
+    <Content Include="Scripts\jquery-ui.js" />
+    <Content Include="Scripts\jquery-ui.min.js" />
     <Content Include="Scripts\knockout-3.1.0.debug.js" />
     <Content Include="Scripts\knockout-3.1.0.js" />
     <Content Include="Scripts\knockout.mapping-latest.debug.js" />
