@@ -61,6 +61,24 @@ namespace Catfish.Resources.Views.Shared.DisplayTemplates {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No results matched your search..
+        /// </summary>
+        public static string NoResults {
+            get {
+                return ResourceManager.GetString("NoResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} results per page.
+        /// </summary>
+        public static string ResultsPerPage {
+            get {
+                return ResourceManager.GetString("ResultsPerPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} - {1} of {2}.
         /// </summary>
         public static string SearchCountFormat {

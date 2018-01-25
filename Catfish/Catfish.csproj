@@ -447,7 +447,7 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>SimpleSearch.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Views\Shared\SimpleSearch.fr.resx" />
+    <EmbeddedResource Include="Resources\Views\Shared\DisplayTemplates\SimpleSearch.fr.resx" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

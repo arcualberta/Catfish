@@ -12,6 +12,16 @@ namespace Catfish.Tests.Services
     public class SolrServiceTest
     {
         [TestMethod]
+        public void TestEscapeQueryString(string searchString)
+        {
+            string inputString = "\"query:Test*\"*";
+            string testString = "\\\"query\\:Test*\\\"*";
+            string result = SolrService.EscapeQueryString(inputString);
+
+            Assert.AreEqual(testString, result);
+        }
+
+        [TestMethod]
         public void TestFailedServiceInitialization()
         {
             try

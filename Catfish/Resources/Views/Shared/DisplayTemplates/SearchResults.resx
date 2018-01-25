@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="NoResults" xml:space="preserve">
+    <value>No results matched your search.</value>
+  </data>
+  <data name="ResultsPerPage" xml:space="preserve">
+    <value>{0} results per page</value>
+  </data>
   <data name="SearchCountFormat" xml:space="preserve">
     <value>{0} - {1} of {2}</value>
     <comment>How search results should appear on the page.</comment>

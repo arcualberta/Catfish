@@ -101,7 +101,7 @@ namespace Catfish.Core.Services
 
             for (int i = 1; i < languageCodes.Length; ++i)
             {
-                query.AppendFormat(" OR value_txt_{0}:\"{1}\"", languageCodes[1], searchString);
+                query.AppendFormat(" OR value_txt_{0}:{1}", languageCodes[1], searchString);
             }
 
             query.Append(")");

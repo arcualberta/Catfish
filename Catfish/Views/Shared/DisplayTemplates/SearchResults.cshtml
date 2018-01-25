@@ -12,10 +12,12 @@
 }
 
 @helper DisplayPagination(int pageStart, int pageEnd) {
+int[] resultsPerPage = { 10, 20, 50, 100 };
 var uriBuilder = new UriBuilder(Request.Url.AbsoluteUri);
 var query = HttpUtility.ParseQueryString(uriBuilder.Query);
 int pagesShown = 10;
 int pageListStart = Model.Page - (pagesShown >> 1);
+
 if(pageListStart < 1)
 {
     pageListStart = 1;
@@ -63,27 +65,36 @@ if(pageListEnd > Model.TotalPages)
                 pageEnd,
                 Model.Total))
         </div>
-        <div class="hidden-xs col-md-4 text-right">
-
+        <div class="hidden-xs hidden-sm col-md-4 text-right">
+            <select onchange="window.location = this.value">
+                @for (var i = 0; i < resultsPerPage.Length; ++i)
+                {
+                    query[SearchResults.PAGE_PARAM] = "1";
+                    query[SearchResults.PERPAGE_PARAM] = resultsPerPage[i].ToString();
+                    uriBuilder.Query = query.ToString();
+                    <option value="@uriBuilder.ToString()" @(Model.TotalPerPage == resultsPerPage[i] ? "selected" : "")>@string.Format(Catfish.Resources.Views.Shared.DisplayTemplates.SearchResults.ResultsPerPage, resultsPerPage[i])</option>
+                }
+            </select>
         </div>
     </div>
 }
 
 <h2>@string.Format(Catfish.Resources.Views.Shared.DisplayTemplates.SearchResults.SearchResultsFormat, Request.QueryString[SimpleSearch.QUERY_PARAM])</h2>
 
+@if (Model.Results != null && Model.Results.Length > 0)
+{
 @DisplayPagination(pageStart, pageEnd)
-<div>
-    @if (Model.Results != null && Model.Results.Length > 0)
-    {
-        for (int i = 0; i < Model.Results.Count(); ++i)
+    <div>
+    
+        @for (int i = 0; i < Model.Results.Count(); ++i)
         {
             int index = i + 1 + pageStart;
             @Html.DisplayFor(m => m.Results[i], Model.SearchResultTemplate, new { Index = index })
         }
-    }
-    else
-    {
-
-    }
-</div>
-@DisplayPagination(pageStart, pageEnd)
+    </div>
+    @DisplayPagination(pageStart, pageEnd)
+}
+else
+{
+    <h3>@Catfish.Resources.Views.Shared.DisplayTemplates.SearchResults.NoResults</h3>
+}
