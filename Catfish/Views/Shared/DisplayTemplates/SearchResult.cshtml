@@ -4,11 +4,13 @@
 }
 
 <div class="panel panel-default searchResult">
-    <div class="panel-heading">@Html.ActionLink(
+    @*<div class="panel-heading">@Html.ActionLink(
                               string.Format(Catfish.Resources.Views.Shared.DisplayTemplates.SearchResult.ResultTitleFormat,
                               ViewData["Index"], Model.GetName(languageCode)),
                               "Index", "Entity", new { id = Model.Id }, new { })
-    </div>
+    </div>*@
+    <div class="panel-heading">@string.Format(Catfish.Resources.Views.Shared.DisplayTemplates.SearchResult.ResultTitleFormat,
+                              ViewData["Index"], Model.GetName(languageCode))</div>
     <div class="panel-body">@Model.GetDescription(languageCode)</div>
     @* TODO: Link to Entity Page *@
 </div>
