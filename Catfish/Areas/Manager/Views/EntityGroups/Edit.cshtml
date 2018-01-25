@@ -1,0 +1,66 @@
+﻿@model Catfish.Areas.Manager.Models.ViewModels.EntityGroupViewModel
+@using PerpetuumSoft.Knockout
+@{
+    var usrs = ViewBag.SugestedNames;
+    ViewBag.Title = String.IsNullOrEmpty(Model.EntityGroupName) ? "Create Entity Group" : "Edit Entity Group";
+    var context = "ctx_" + Guid.NewGuid().ToString("N");
+    var ko = Html.CreateKnockoutContext(context);
+}
+
+@section HEAD
+{
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> <!--This might have to replace!!! : Mr Jan 25 2018-->
+    <script type="text/javascript" src="~/Scripts/knockout-3.1.0.js"></script>
+    <script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
+    <script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>   
+}
+
+
+
+<div id="@context">
+
+    @using (ko.Html.Form("Edit", "EntityGroups", null, new { id = context + "Form" }))
+    {
+      <ul >
+        <li class="form form-custom">
+            <label class="control-label col-md-2">Entity Group</label>
+            <div class="input">@ko.Html.TextBox(m => m.EntityGroupName)</div>
+        </li>
+
+        <li class="form form-custom" >
+            <label class="control-label col-md-2">Login Name: </label>
+            <div >
+                <div class="input"> @ko.Html.TextBox(m => m.userName, new { @id = "usrName" }).ValueUpdate(KnockoutValueUpdateKind.AfterKeyDown)</div>
+                <div style = "float:right;">
+                    @ko.Html.Button("Add User", "AddUser", "EntityGroups", null, new { @class = "btn", @id = "addUser" }).Enable(m => m.userName.Length > 0)
+                </div>
+            </div>
+        </li>
+        <li @ko.Bind.Visible(m => m.SelectedUsers.Count > 0) class=" form form-custom">
+            <label class="control-label col-md-2">Selected Users</label>
+            <div class="input">@ko.Html.ListBox(m => m.SelectedUsers, new { width = 100, size = 10 }, m => m.Login).SelectedOptions(m => m.UsersToRemove)</div>
+        </li>
+        <li class="form form-custom" @ko.Bind.Visible(m => m.SelectedUsers.Count > 0)>
+            @ko.Html.Button("Remove", "RemoveSelected", "EntityGroups").Enable(m => m.UsersToRemove.Count > 0)
+        </li>
+        <li class="form form-custom">
+            @ko.Html.Button("Save", "Edit", "EntityGroups", null, new { @class = "btn btn-info", @style = "float:right" })
+        </li>
+     </ul>
+
+    }
+</div>
+
+@ko.Apply(Model, context)
+
+<script>
+
+    $(function(){
+       var allAvailableUsers =@Html.Raw(Json.Encode(ViewBag.SugestedNames));
+
+       $("#usrName").autocomplete({
+          source: allAvailableUsers
+         });
+    });
+
+</script>
