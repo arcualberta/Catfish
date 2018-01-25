@@ -37,7 +37,7 @@ namespace Catfish.Areas.Manager.Controllers
             ViewBag.TotalItems = total;
             ViewBag.Limit = limit;
             ViewBag.Offset = offset;
-           
+                       
             if (entities != null)
                 return View(entities);
 
@@ -81,11 +81,7 @@ namespace Catfish.Areas.Manager.Controllers
         {
             Item model;
             ItemService srv = new ItemService(db);
-
-            //////ViewBag.FileList = "[]";
-            //////ViewBag.UploadAction = Url.Action("Upload", "Items");
-            //////ViewBag.OtherPngUrl = Url.Content("~/content/thumbnails/other.png");
-
+          
             if (id.HasValue && id.Value > 0)
             {
                 model = db.XmlModels.Find(id) as Item;
