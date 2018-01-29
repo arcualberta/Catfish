@@ -1,7 +1,9 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Catfish.Helpers;
+using Piranha;
 using Piranha.Extend;
+using Piranha.Models.Manager.PageModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -9,6 +11,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Catfish.Models.Regions
 {
@@ -21,9 +24,13 @@ namespace Catfish.Models.Regions
     {
         public const string PAGE_PARAM = "p";
         public const string PERPAGE_PARAM = "pp";
+        public const string ENTITY_PARAM = "entity";
 
         [Display(Name = "Result Template")]
         public string SearchResultTemplate { get; set; }
+
+        [Display(Name = "{0} Result Page")]
+        public IDictionary<string, string> EntityTypePages { get; set; }
 
         [NotMapped]
         public Entity[] Results { get; set; }
@@ -39,6 +46,32 @@ namespace Catfish.Models.Regions
 
         [NotMapped]
         public int TotalPages { get; set; }
+
+        [NotMapped]
+        public List<Piranha.Models.Sitemap> Pages { get; set; }
+
+        public SearchResults() : base()
+        {
+            // Creates a list of urls that will be used on the search results to show the items.
+            EntityTypePages = new Dictionary<string, string>();
+            foreach(var e in Enum.GetValues(typeof(EntityType.eTarget)))
+            {
+                if (EntityType.eTarget.None != (EntityType.eTarget)e)
+                {
+                    EntityTypePages.Add(Enum.GetName(typeof(EntityType.eTarget), e), "");
+                }
+            }
+            
+        }
+
+        public override void InitManager(object model)
+        {
+            var internalId = Config.SiteTree;
+            var listModel = ListModel.Get(internalId);
+            Pages = listModel.Pages;
+
+            base.InitManager(model);
+        }
 
         public int ParseInt(string input, int defaultVal, int min, int max = int.MaxValue)
         {

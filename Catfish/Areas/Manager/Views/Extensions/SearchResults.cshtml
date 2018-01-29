@@ -3,8 +3,18 @@
 <ul class="form">
     <li>
         @Html.LabelFor(m => m.SearchResultTemplate)
-        @Html.EditorFor(m => m.SearchResultTemplate)
+        <div class="input">@Html.EditorFor(m => m.SearchResultTemplate)</div>
     </li>
+
+    
+    @foreach(string e in Model.EntityTypePages.Keys)
+    {
+        string labelFormat = "{0} Result Page"; @*Html.DisplayTextFor(m => m.EntityTypePages).ToString();*@
+        <li>
+            @Html.LabelFor(m => m.EntityTypePages[e], string.Format(labelFormat, e))
+            <div class="input">@Html.DropDownListFor(m => m.EntityTypePages[e], new SelectList(Model.Pages, "Id", "Title", Model.EntityTypePages[e]), string.Empty)</div>
+        </li>
+    }
 
     @Html.Partial("_CatfishRegion", Model)
 </ul>
