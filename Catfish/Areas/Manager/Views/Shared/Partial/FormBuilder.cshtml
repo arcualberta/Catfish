@@ -115,6 +115,25 @@
                                         </div>
                                     </li>
                                 }
+                                    <li>
+                                        <label class="control-label col-md-2">Attached files</label>
+                                        <div class="form-view">
+                                
+                                            
+                                            @if (field.Model != null)
+                                            {
+                                            @Html.EditorFor(m => field.Model.Attachment,
+                                                     new
+                                                     {
+                                                         UploadApiUrl = @Url.Action("upload", "items"),
+                                                         DeleteApiUrl = @Url.Action("deleteCashedFile", "items"),
+                                                         Files = field.Model.Files,
+                                                         ParentId = Model.Id,
+                                                         Controller = "items"
+                                                     })
+                                            }
+                                        </div>
+                                    </li>
                             </ul>
                         </div>
                     </div>

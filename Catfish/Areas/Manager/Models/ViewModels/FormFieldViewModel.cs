@@ -1,11 +1,13 @@
 ﻿using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Attributes;
+using Catfish.Core.Models.Data;
 using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Serialization;
 
 namespace Catfish.Areas.Manager.Models.ViewModels
 {
@@ -22,10 +24,15 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string Guid { get; set; }
 
         public FormFieldViewModel() { }
+        // Attachment creates multiple recursions on view leaving the page unresponsive
+        //[ScriptIgnore]
+        public Attachment Attachment { get; set; }
+        public List<DataFile> Files { get; set; }
 
         public int Rank { get; set; }
         public int Page { get; set; }
         public bool IsPageBreak { get; set; }
+
         public FormFieldViewModel(FormField src)
         {
             Name = src.MultilingualName.ToList();
@@ -36,6 +43,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Rank = src.Rank;
             Page = src.Page;
             IsPageBreak = src.IsPageBreak();
+            Attachment = src.AttachmentField;
+            Files = src.Files.ToList();
 
             TypeLabelAttribute att = Attribute.GetCustomAttribute(src.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
             TypeLabel = att == null ? src.GetType().ToString() : att.Name;
@@ -68,7 +77,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 }
             }
         }
-
+        //XXX turns to database model
         public FormField InstantiateDataModel()
         {
             Type type = Type.GetType(FieldType, true);

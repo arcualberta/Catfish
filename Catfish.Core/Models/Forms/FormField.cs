@@ -10,27 +10,67 @@ using System.Xml.Serialization;
 using System.Xml.Linq;
 using System.ComponentModel.DataAnnotations.Schema;
 using Catfish.Core.Helpers;
+using Catfish.Core.Models.Data;
+using System.Web.Script.Serialization;
 
 namespace Catfish.Core.Models.Forms
 {
+    
     public class FormField : XmlModel
     {
         public override string GetTagName() { return "field"; }
 
+        //XXX Add fileguids as in the attachment model
+        public static char FileGuidSeparator = '|';
+
+        [ScriptIgnore]
         [NotMapped]
-        public string Name
+        public Attachment AttachmentField
         {
             get
             {
-                return GetName();
+                if (mAttachmentField == null)
+                {
+                    mAttachmentField = new Attachment();
+                    mAttachmentField.FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), Files.Select(f => f.Guid));
+                }
+                return mAttachmentField;
             }
             set
             {
-                SetName(value);
+                mAttachmentField = value;
+            }
+        }
+        private Attachment mAttachmentField;
+
+        [ScriptIgnore]
+        [NotMapped]
+        public virtual IEnumerable<DataFile> Files
+        {
+            get
+            {
+                return GetChildModels("data/" + DataFile.TagName, Data).Select(c => c as DataFile);
             }
         }
 
+        //XXX End
+
+
+        //[NotMapped]
+        //public string Name
+        //{
+        //    get
+        //    {
+        //        return GetName();
+        //    }
+        //    set
+        //    {
+        //        SetName(value);
+        //    }
+        //}
+
         //[Display(Name = "Name")]
+        [ScriptIgnore]
         public IEnumerable<TextValue> MultilingualName
         {
             get
@@ -44,7 +84,7 @@ namespace Catfish.Core.Models.Forms
             }
         }
 
-
+        [ScriptIgnore]
         [NotMapped]
         [Display(Name="Is Required")]
         public bool IsRequired
@@ -66,6 +106,7 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
+        [ScriptIgnore]
         [Display(Name="Tooltip Help")]
         [DataType(DataType.MultilineText)]
         public string Help
@@ -82,6 +123,7 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
+        [ScriptIgnore]
         public IReadOnlyList<TextValue> Values
         {
             get
@@ -102,6 +144,7 @@ namespace Catfish.Core.Models.Forms
 
         [DataType(DataType.MultilineText)]
         [NotMapped]
+        [ScriptIgnore]
         public string Description
         {
             get
@@ -115,6 +158,7 @@ namespace Catfish.Core.Models.Forms
             }
         }
 
+        [ScriptIgnore]
         public IEnumerable<TextValue> MultilingualDescription
         {
             get
@@ -130,6 +174,7 @@ namespace Catfish.Core.Models.Forms
 
 
         [NotMapped]
+        [ScriptIgnore]
         public int Rank
         {
             get { return GetAttribute("rank", 0); }
@@ -137,6 +182,7 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
+        [ScriptIgnore]
         public int Page
         {
             get { return GetAttribute("page", 0); }
