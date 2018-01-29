@@ -89,7 +89,7 @@ if(pageListEnd > Model.TotalPages)
         @for (int i = 0; i < Model.Results.Count(); ++i)
         {
             int index = i + 1 + pageStart;
-            @Html.DisplayFor(m => m.Results[i], Model.SearchResultTemplate, new { Index = index, PageDictionary = Model.EntityTypePages })
+            @Html.DisplayFor(m => m.Results[i], Model.SearchResultTemplate, new { Index = index})
         }
     </div>
     @DisplayPagination(pageStart, pageEnd)

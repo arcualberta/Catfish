@@ -29,9 +29,6 @@ namespace Catfish.Models.Regions
         [Display(Name = "Result Template")]
         public string SearchResultTemplate { get; set; }
 
-        [Display(Name = "{0} Result Page")]
-        public IDictionary<string, string> EntityTypePages { get; set; }
-
         [NotMapped]
         public Entity[] Results { get; set; }
 
@@ -46,32 +43,7 @@ namespace Catfish.Models.Regions
 
         [NotMapped]
         public int TotalPages { get; set; }
-
-        [NotMapped]
-        public List<Piranha.Models.Sitemap> Pages { get; set; }
-
-        public SearchResults() : base()
-        {
-            // Creates a list of urls that will be used on the search results to show the items.
-            EntityTypePages = new Dictionary<string, string>();
-            foreach(var e in Enum.GetValues(typeof(EntityType.eTarget)))
-            {
-                if (EntityType.eTarget.None != (EntityType.eTarget)e)
-                {
-                    EntityTypePages.Add(Enum.GetName(typeof(EntityType.eTarget), e), "");
-                }
-            }
-            
-        }
-
-        public override void InitManager(object model)
-        {
-            var internalId = Config.SiteTree;
-            var listModel = ListModel.Get(internalId);
-            Pages = listModel.Pages;
-
-            base.InitManager(model);
-        }
+        
 
         public int ParseInt(string input, int defaultVal, int min, int max = int.MaxValue)
         {

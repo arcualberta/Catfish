@@ -2,7 +2,8 @@
 @{
     string languageCode = Catfish.Helpers.ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName;
     IDictionary<string, string> pageDictionary = (Dictionary<string, string>)ViewData["PageDictionary"];
-    string pageUrl = pageDictionary[Model.GetType().Name];
+    string pageUrl = null;
+    /*string pageUrl = pageDictionary[Model.GetType().Name];*/
 
     if(!string.IsNullOrEmpty(pageUrl))
     {
@@ -37,6 +38,5 @@
 
     </div>
     <div class="panel-body">@Model.GetDescription(languageCode)</div>
-    @* TODO: Link to Entity Page *@
 </div>
 
