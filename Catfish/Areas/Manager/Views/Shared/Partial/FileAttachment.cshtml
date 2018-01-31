@@ -1,0 +1,113 @@
+﻿
+@using Catfish.Areas.Manager.Models.ViewModels
+@using PerpetuumSoft.Knockout
+@using Catfish.Core.Models.Data
+@model KnockoutContext<FormFieldViewModel>
+
+@*<div>
+        @Model.Html.Span(m => m.Id)
+    </div>*@
+
+@{
+    string containerId = Guid.NewGuid().ToString("N");
+    string uploadApiUrl = ViewBag.UploadApiUrl as string;
+    string deleteApiUrl = ViewBag.DeleteApiUrl as string;
+    List<string> crossLinkedFileGuids = ViewBag.CrossLinkedFileGuids != null ?
+        ViewBag.CrossLinkedFileGuids as List<string>
+        : new List<string>();
+}
+
+xxx
+<div id="@containerId" class="inner file-upload" style="clear:both">
+    <div class="thumbnailPanel">
+        @*@{ string fileGuidListFieldId = Html.IdFor(m => m.Model.FieldFileGuids).ToString(); }*@
+        @*@Html.HiddenFor(m => m.Model.FieldFileGuids)*@
+        @*@Model.Html.Hidden(Model.Model.FieldFileGuids)*@
+
+        @{
+            string controller = "attachment";
+
+            foreach (DataFile file in Model.Model.Files)
+            {
+
+                FileViewModel fileViewModel = new FileViewModel(file,
+                    0, // XXX Change this parameter to parent id (?)
+                    Request.RequestContext,
+                    controller);
+
+                string elementId = file.Guid;
+
+                <div class="fileThumbnail" id="@elementId">
+                    <div class="img" style="background-image:url(@fileViewModel.Thumbnail)"></div>
+                    <div class="label"><a href="@fileViewModel.Url">@fileViewModel.FileName</a></div>
+                </div>
+
+                @*FileViewModel vm = new FileViewModel(file, parentId, Request.RequestContext, controller);
+                        bool undeletable = crossLinkedFileGuids.Contains(file.Guid);
+                        string secondaryClass = undeletable ? "undeletable" : "";
+                        var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
+                        <div class="fileThumbnail @eleId @secondaryClass">
+                            <div class="img" style="background-image:url(@vm.Thumbnail)"></div>
+                            @if (!undeletable)
+                        {
+                            <button class="glyphicon glyphicon-remove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@containerId'); return false;"></button>
+                    }
+                            <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
+                        </div>*@
+            }
+        }
+    </div>
+    <div class="inner" style="clear:both">
+        <div class="alert alert-danger messageBox"></div>
+
+        <input type='file' class="uploadField" name="files" multiple="multiple" />
+        @*<input type="button" value="Upload" class="uploadButton"
+               onclick="uploadFile2('@containerId', '@uploadApiUrl', '@deleteApiUrl', '@fileGuidListFieldId'); return false;" />*@
+        <div class="progressBar"><progress></progress></div>
+    </div>
+    xxx
+
+
+    @*<div id="@containerId" class="inner file-upload" style="clear:both">
+            <div class="thumbnailPanel">
+                @{ string fileGuidListFieldId = Html.IdFor(m => m.FileGuids).ToString(); }
+                @Html.HiddenFor(m => m.FileGuids)
+
+                @{
+                    List<DataFile> files = ViewBag.Files == null ? new List<DataFile>() : ViewBag.Files as List<DataFile>;
+                    string[] fileGuids = Model.FileGuids.Split(new char[] { Attachment.FileGuidSeparator });
+                    int parentId = ViewBag.ParentId != null ? (int)ViewBag.ParentId : 0;
+                    string controller = string.IsNullOrEmpty(ViewBag.Controller) ? "attachment" : ViewBag.Controller as string;
+
+                    foreach (var fileGuid in fileGuids)
+                    {
+                        var file = files.Where(f => f.Guid == fileGuid).FirstOrDefault();
+                        if (file != null)
+                        {
+                            FileViewModel vm = new FileViewModel(file, parentId, Request.RequestContext, controller);
+                            bool undeletable = crossLinkedFileGuids.Contains(file.Guid);
+                            string secondaryClass = undeletable ? "undeletable" : "";
+                            var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
+                            <div class="fileThumbnail @eleId @secondaryClass">
+                                <div class="img" style="background-image:url(@vm.Thumbnail)"></div>
+                                @if (!undeletable)
+                                {
+                                    <button class="glyphicon glyphicon-remove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@containerId'); return false;"></button>
+                                }
+                                <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
+                            </div>
+                        }
+                    }
+                }
+            </div>
+            <div class="inner" style="clear:both">
+                <div class="alert alert-danger messageBox"></div>
+
+                <input type='file' class="uploadField" name="files" multiple="multiple" />
+                <input type="button" value="Upload" class="uploadButton"
+                       onclick="uploadFile2('@containerId', '@uploadApiUrl', '@deleteApiUrl', '@fileGuidListFieldId'); return false;" />
+                <div class="progressBar"><progress></progress></div>
+            </div>
+        </div>
+
+    *@

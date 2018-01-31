@@ -72,6 +72,7 @@ namespace Catfish.Core.Models
 
         
         [NotMapped]
+        [ScriptIgnore]
         public virtual XElement Data
         {
             get

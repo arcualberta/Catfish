@@ -118,9 +118,16 @@
                                     <li>
                                         <label class="control-label col-md-2">Attached files</label>
                                         <div class="form-view">
-                                
+                                            @* XXX Change controller to file upload *@
+                                            @Html.Partial("Partial/FileAttachment", field,
+                                           new ViewDataDictionary{
+                                               { "UploadApiUrl", @Url.Action("upload", "items")},
+                                               { "DeleteApiUrl",  @Url.Action("deleteCashedFile", "items")},
+                                               { "ParentId", Model.Id },
+                                               { "Controller", "items" }
+                                           })
                                             
-                                            @if (field.Model != null)
+                                            @*@if (field.Model != null)
                                             {
                                             @Html.EditorFor(m => field.Model.Attachment,
                                                      new
@@ -131,7 +138,7 @@
                                                          ParentId = Model.Id,
                                                          Controller = "items"
                                                      })
-                                            }
+                                            }*@
                                         </div>
                                     </li>
                             </ul>

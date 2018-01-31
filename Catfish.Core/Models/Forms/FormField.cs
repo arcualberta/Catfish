@@ -15,7 +15,7 @@ using System.Web.Script.Serialization;
 
 namespace Catfish.Core.Models.Forms
 {
-    
+
     public class FormField : XmlModel
     {
         public override string GetTagName() { return "field"; }
@@ -23,25 +23,50 @@ namespace Catfish.Core.Models.Forms
         //XXX Add fileguids as in the attachment model
         public static char FileGuidSeparator = '|';
 
-        [ScriptIgnore]
         [NotMapped]
-        public Attachment AttachmentField
+        public string[] FieldFileGuidsArray {
+            get {
+                return this.FieldFileGuids.Split(new char[] { Attachment.FileGuidSeparator });
+            }
+        }
+
+        [NotMapped]
+        public string FieldFileGuids
         {
             get
             {
-                if (mAttachmentField == null)
-                {
-                    mAttachmentField = new Attachment();
-                    mAttachmentField.FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), Files.Select(f => f.Guid));
-                }
-                return mAttachmentField;
+                XElement val = Data.Element("value");
+                return val == null ? "" : val.Value;
             }
             set
             {
-                mAttachmentField = value;
+                XElement val = Data.Element("value");
+                if (val == null)
+                    Data.Add(val = new XElement("value"));
+
+                val.Value = value == null ? "" : value;
             }
         }
-        private Attachment mAttachmentField;
+
+        //[ScriptIgnore]
+        //[NotMapped]
+        //public Attachment AttachmentField
+        //{
+        //    get
+        //    {
+        //        if (mAttachmentField == null)
+        //        {
+        //            mAttachmentField = new Attachment();
+        //            mAttachmentField.FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), Files.Select(f => f.Guid));
+        //        }
+        //        return mAttachmentField;
+        //    }
+        //    set
+        //    {
+        //        mAttachmentField = value;
+        //    }
+        //}
+        //private Attachment mAttachmentField;
 
         [ScriptIgnore]
         [NotMapped]
