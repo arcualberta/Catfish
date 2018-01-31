@@ -20,23 +20,26 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         
         public List<string> SelectedUsers { get; set; }
        
-        public List<string> AllUsers { get; set; }
-       
+       // public List<string> AllUsers { get; set; }
+        public Dictionary<string, string> AllUsers2 { get; set; }
+
         public List<string> UsersToRemove { get; set; }
+
+        public string ErrorMessage { get; set; }
 
         public EntityGroupViewModel()
         {
             SelectedUsers = new List<string>();
-            AllUsers = new List<string>();// List<Piranha.Entities.User>();
-            UsersToRemove = new List<string>();// List<Piranha.Entities.User>();            
+            UsersToRemove = new List<string>(); 
+            AllUsers2 = new Dictionary<string, string>();
         }
 
         public void AddUser()
         {
             if(!string.IsNullOrEmpty(userName) && !SelectedUsers.Contains(userName))//SelectedUsers.Where(u=>u.Login == userName).Count() <= 0)
             {
-                if(AllUsers.Contains(userName)) //make sure if the name is legit -- un our system
-                     SelectedUsers.Add(userName);
+                if(AllUsers2.ContainsValue(userName))
+                    SelectedUsers.Add(userName);
                 userName = "";
             }
         }
@@ -48,8 +51,35 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             SelectedUsers.RemoveAll(u => UsersToRemove.Contains(u));//(u => UsersToRemove.Any(y=>y.Id == u.Id));
             UsersToRemove.Clear();
         }
-       
-        
-       
+
+        public EntityGroup UpdateModel(EntityGroup entityGroup)
+        {
+            if (entityGroup == null)
+            {
+                entityGroup = new EntityGroup();
+                entityGroup.Id = Guid.NewGuid();
+            }
+
+            entityGroup.Name = EntityGroupName;
+            if (entityGroup.EntityGroupUsers.Count > 0)
+                entityGroup.EntityGroupUsers.Clear();
+
+            foreach (string usrLogin in SelectedUsers)
+            {
+                var _usr = AllUsers2.FirstOrDefault(u => u.Value == usrLogin);
+                if(_usr.Key != null)
+                {
+                    EntityGroupUser egUser = new EntityGroupUser()
+                    {
+                        EntityGroupId = entityGroup.Id,
+                        UserId = Guid.Parse(_usr.Key)
+                    };
+                    entityGroup.EntityGroupUsers.Add(egUser);
+                }
+            }
+
+            return entityGroup;
+        }
+
     }
 }

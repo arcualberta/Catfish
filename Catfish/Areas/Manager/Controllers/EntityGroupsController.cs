@@ -26,13 +26,14 @@ namespace Catfish.Areas.Manager.Controllers
         {
             EntityGroup entityGroup = EntityGroupService.GetEntityGroup(id);
             EntityGroupViewModel entityGroupVM = PopulateEntityGroupViewModel(entityGroup);
-            ViewBag.SugestedNames = entityGroupVM.AllUsers.ToArray();
+
+            ViewBag.SugestedNames = entityGroupVM.AllUsers2.Values.ToArray();
             return View(entityGroupVM);
         }
 
         // POST: Manager/EntityGroups/Edit/5
         [HttpPost]
-        public ActionResult Edit(EntityGroupViewModel entGrpVM)
+        public JsonResult Edit(EntityGroupViewModel entGrpVM)
         {
             try
             {
@@ -44,29 +45,35 @@ namespace Catfish.Areas.Manager.Controllers
                     if(entGrp != null)
                         oldUsers = entGrp.EntityGroupUsers.ToList();
 
-                    entGrp = UpdateModel(entGrp, entGrpVM);//entGrpVM.UpdateModel(entGrp);
+                    entGrp = entGrpVM.UpdateModel(entGrp); 
                     entGrp = EntityGroupService.EditEntityGroup(entGrp, oldUsers);
                   
                     Db.SaveChanges();
-                   
+                    entGrpVM.ErrorMessage = string.Empty;
                 }
-
+                else
+                {
+                    if(string.IsNullOrEmpty(entGrpVM.EntityGroupName))
+                    {
+                        //ModelState.AddModelError("EntityGroupName", "Entity Group Name is required.");
+                        entGrpVM.ErrorMessage = "*";
+                    }
+                }
             }
             catch(Exception ex)
             {
                 throw ex;
             }
-           // return RedirectToAction("Edit", new { id = entGrpVM.Id });
-            return View(entGrpVM);
+            return Json(entGrpVM);
         }
 
         public EntityGroupViewModel PopulateEntityGroupViewModel(EntityGroup entityGrp)
         {
             EntityGroupViewModel entityGrpVM = new EntityGroupViewModel();
-            List<Piranha.Entities.User> AllUsers;
+           
             using (var db = new DataContext())
             {
-                AllUsers = db.Users.ToList(); //(from u in db.Users select u.Login).ToList();
+                entityGrpVM.AllUsers2 = db.Users.Select(u => new { u.Id, u.Login }).ToDictionary(u => u.Id.ToString(), u => u.Login);
             }
             entityGrpVM.Id = entityGrp.Id.ToString();
             entityGrpVM.EntityGroupName = entityGrp.Name;
@@ -74,16 +81,16 @@ namespace Catfish.Areas.Manager.Controllers
             {
                 foreach (EntityGroupUser egu in entityGrp.EntityGroupUsers)
                 {
-                    Piranha.Entities.User user = AllUsers.Where(u => u.Id == egu.UserId).FirstOrDefault();
-                    
-                    entityGrpVM.SelectedUsers.Add(user.Login); 
-                }
-                    
-            }
-            entityGrpVM.AllUsers = AllUsers.Select(u=>u.Login).ToList();
-
-            return entityGrpVM;
-            
+                   
+                    var _usr = entityGrpVM.AllUsers2.FirstOrDefault(u => u.Key == egu.UserId.ToString());
+                    if(_usr.Key != null)
+                    {
+                        var usrNameTemp = _usr.Value;
+                        entityGrpVM.SelectedUsers.Add(_usr.Value);
+                    }       
+                }          
+            }        
+            return entityGrpVM;            
         }
 
         public string[] GetSuggestedNames(List<Piranha.Entities.User> users)
@@ -93,34 +100,7 @@ namespace Catfish.Areas.Manager.Controllers
             return loginNames;
         }
 
-        public EntityGroup UpdateModel(EntityGroup entityGroup,EntityGroupViewModel entityGrpVM)
-        {
-            if (entityGroup == null)
-            {
-                entityGroup = new EntityGroup();
-                entityGroup.Id = Guid.NewGuid();
-            }
-
-            entityGroup.Name = entityGrpVM.EntityGroupName;
-            if (entityGroup.EntityGroupUsers.Count > 0)
-                entityGroup.EntityGroupUsers.Clear();
-
-            foreach (string usr in entityGrpVM.SelectedUsers)
-            {
-                using (var db = new DataContext())
-                {
-                    Piranha.Entities.User user = db.Users.Where(u => u.Login == usr).FirstOrDefault();
-                    EntityGroupUser egUser = new EntityGroupUser()
-                    {
-                        EntityGroupId = entityGroup.Id,
-                        UserId = user.Id
-                    };
-                    entityGroup.EntityGroupUsers.Add(egUser);
-                }
-            }
-
-            return entityGroup;
-        }
+       
         //// GET: Manager/EntityGroups/Delete/5
         //public ActionResult Delete(int id)
         //{

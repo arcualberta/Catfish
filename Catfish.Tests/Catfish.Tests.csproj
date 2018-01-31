@@ -71,6 +71,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityGroupTest.cs" />
     <Compile Include="EntityTypeTest.cs" />
     <Compile Include="ManagerIntegrationTests.cs" />
     <Compile Include="RandomDataIngest.cs" />
