@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Services;
+using Catfish.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,16 @@ namespace Catfish.Tests.Services
     [TestClass]
     public class SolrServiceTest
     {
+        private DatabaseHelper mDh { get; set; }
+
+        [ClassInitialize]
+        public void InitializeTesting()
+        {
+            mDh = new DatabaseHelper(true);
+        }
+
         [TestMethod]
-        public void TestEscapeQueryString(string searchString)
+        public void TestEscapeQueryString()
         {
             string inputString = "\"query:Test*\"*";
             string testString = "\\\"query\\:Test*\\\"*";
