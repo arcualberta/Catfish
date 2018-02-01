@@ -26,8 +26,8 @@ namespace Catfish.Tests
                 db.Database.Connection.Open();
             }
             EntityGroupViewModel egVM = new EntityGroupViewModel();
-          
-            EntityGroup entGrp = new EntityGroup();
+
+            EntityGroup entGrp = null;
             EntityGroupService srv = new EntityGroupService(db);
 
             //data from sysuser table
