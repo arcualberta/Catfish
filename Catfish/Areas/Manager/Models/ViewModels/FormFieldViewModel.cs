@@ -27,7 +27,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         // Attachment creates multiple recursions on view leaving the page unresponsive
         //[ScriptIgnore]
         //public Attachment Attachment { get; set; }
-        public List<DataFile> Files { get; set; }
+        public List<FileViewModel> Files { get; set; }
         public string[] FieldFileGuids { get; }
 
         public int Rank { get; set; }
@@ -45,8 +45,11 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Page = src.Page;
             IsPageBreak = src.IsPageBreak();
             //Attachment = src.AttachmentField;
-            Files = src.Files.ToList();
+            Files = src.Files.Select( m => new FileViewModel(m, src.Id)).ToList();
             FieldFileGuids = src.FieldFileGuidsArray;
+
+
+
 
             TypeLabelAttribute att = Attribute.GetCustomAttribute(src.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
             TypeLabel = att == null ? src.GetType().ToString() : att.Name;

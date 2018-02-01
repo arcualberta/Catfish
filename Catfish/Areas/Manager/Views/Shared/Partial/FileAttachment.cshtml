@@ -4,9 +4,6 @@
 @using Catfish.Core.Models.Data
 @model KnockoutContext<FormFieldViewModel>
 
-@*<div>
-        @Model.Html.Span(m => m.Id)
-    </div>*@
 
 @{
     string containerId = Guid.NewGuid().ToString("N");
@@ -23,49 +20,35 @@ xxx
         @*@{ string fileGuidListFieldId = Html.IdFor(m => m.Model.FieldFileGuids).ToString(); }*@
         @*@Html.HiddenFor(m => m.Model.FieldFileGuids)*@
         @*@Model.Html.Hidden(Model.Model.FieldFileGuids)*@
-
-        @{
-            string controller = "attachment";
-
-            foreach (DataFile file in Model.Model.Files)
-            {
-
-                FileViewModel fileViewModel = new FileViewModel(file,
-                    0, // XXX Change this parameter to parent id (?)
-                    Request.RequestContext,
-                    controller);
-
-                string elementId = file.Guid;
-
-                <div class="fileThumbnail" id="@elementId">
-                    <div class="img" style="background-image:url(@fileViewModel.Thumbnail)"></div>
-                    <div class="label"><a href="@fileViewModel.Url">@fileViewModel.FileName</a></div>
-                </div>
-
-                @*FileViewModel vm = new FileViewModel(file, parentId, Request.RequestContext, controller);
-                        bool undeletable = crossLinkedFileGuids.Contains(file.Guid);
-                        string secondaryClass = undeletable ? "undeletable" : "";
-                        var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
-                        <div class="fileThumbnail @eleId @secondaryClass">
-                            <div class="img" style="background-image:url(@vm.Thumbnail)"></div>
-                            @if (!undeletable)
-                        {
-                            <button class="glyphicon glyphicon-remove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@containerId'); return false;"></button>
-                    }
-                            <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
-                        </div>*@
-            }
+        @*@Model.Html.Hidden*@
+        @Html.HiddenFor(m => m.Model.FieldFileGuids)
+        @*@Model.Model.FieldFileGuids*@
+        @using (KnockoutForeachContext<FileViewModel> fileViewModel = Model.Foreach(f => f.Files))
+        {
+            <div class="fileThumbnail" @fileViewModel.Bind.Attr("id", m => m.Guid)>
+                <div class="img" @fileViewModel.Bind.Style("\"background-image\"", m => "url(" + m.Thumbnail + ")")></div>
+                <div class="label"><a @fileViewModel.Bind.Attr("href", f => f.Url)>@fileViewModel.Html.Span(s => s.FileName)</a></div>
+            </div>
         }
     </div>
     <div class="inner" style="clear:both">
         <div class="alert alert-danger messageBox"></div>
 
         <input type='file' class="uploadField" name="files" multiple="multiple" />
-        @*<input type="button" value="Upload" class="uploadButton"
-               onclick="uploadFile2('@containerId', '@uploadApiUrl', '@deleteApiUrl', '@fileGuidListFieldId'); return false;" />*@
-        <div class="progressBar"><progress></progress></div>
+        <input type="button" value="Upload" class="uploadButton"
+               onclick="uploadFile2('@containerId', '@uploadApiUrl', '@deleteApiUrl', 'Model_FieldFileGuids'); return false;" />
+        @*<div class="progressBar"><progress></progress></div>*@
     </div>
+</div>
     xxx
+    
+
+<script>
+    $(function () {
+        $("#@containerId .progressBar").hide();
+        $("#@containerId .messageBox").hide();
+    });
+</script>
 
 
     @*<div id="@containerId" class="inner file-upload" style="clear:both">

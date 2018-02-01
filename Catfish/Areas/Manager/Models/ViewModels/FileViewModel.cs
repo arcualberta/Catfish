@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Data;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -15,24 +16,42 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public FileViewModel() { }
 
-        public FileViewModel(DataFile src, int? itemId, RequestContext ctx)
-        {
-            UrlHelper u = new UrlHelper(ctx);
-            Id = src.Id;
-            FileName = src.FileName;
-            Guid = src.Guid;
-            Thumbnail = u.Action("Thumbnail", "Items", new { id = itemId.HasValue ? itemId.Value : src.Id, name = src.Guid });
-            Url = u.Action("File", "Items", new { id = itemId.HasValue ? itemId.Value : src.Id, guid = src.Guid });
-        }
+
 
         public FileViewModel(DataFile src, int? id, RequestContext ctx, string controller)
         {
-            UrlHelper u = new UrlHelper(ctx);
+            InitializeInstance(src, id, ctx, controller);
+        }
+
+        public FileViewModel(DataFile src, int? id)
+        {
+            InitializeInstance(src, id, HttpContext.Current.Request.RequestContext, "Items");
+        }
+
+        public FileViewModel(DataFile src, int? itemId, RequestContext ctx)
+        {
+            InitializeInstance(src, itemId, ctx, "Items");
+        }
+
+        private void InitializeInstance(DataFile src, int? id, RequestContext ctx, string controller)
+        {
+            UrlHelper urlHelper = new UrlHelper(ctx);
+
+            int idValue = id.HasValue ? id.Value : src.Id;
+
             Id = src.Id;
             FileName = src.FileName;
             Guid = src.Guid;
-            Thumbnail = u.Action("Thumbnail", controller, new { id = id.HasValue ? id.Value : src.Id, name = src.Guid });
-            Url = u.Action("File", controller, new { id = id.HasValue ? id.Value : src.Id, guid = src.Guid });
+            
+            Thumbnail = urlHelper.Action("Thumbnail", controller, new {
+                id = idValue,
+                name = src.Guid
+            });
+
+            Url = urlHelper.Action("File", controller, new {
+                id = idValue,
+                guid = src.Guid
+            });
         }
     }
 }
