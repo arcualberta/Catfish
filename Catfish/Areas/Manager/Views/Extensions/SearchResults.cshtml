@@ -3,7 +3,7 @@
 <ul class="form">
     <li>
         @Html.LabelFor(m => m.SearchResultTemplate)
-        @Html.EditorFor(m => m.SearchResultTemplate)
+        <div class="input">@Html.EditorFor(m => m.SearchResultTemplate)</div>
     </li>
 
     @Html.Partial("_CatfishRegion", Model)

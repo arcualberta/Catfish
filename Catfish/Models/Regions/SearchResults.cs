@@ -1,7 +1,9 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Catfish.Helpers;
+using Piranha;
 using Piranha.Extend;
+using Piranha.Models.Manager.PageModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -9,6 +11,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Catfish.Models.Regions
 {
@@ -21,6 +24,7 @@ namespace Catfish.Models.Regions
     {
         public const string PAGE_PARAM = "p";
         public const string PERPAGE_PARAM = "pp";
+        public const string ENTITY_PARAM = "entity";
 
         [Display(Name = "Result Template")]
         public string SearchResultTemplate { get; set; }
@@ -39,6 +43,7 @@ namespace Catfish.Models.Regions
 
         [NotMapped]
         public int TotalPages { get; set; }
+        
 
         public int ParseInt(string input, int defaultVal, int min, int max = int.MaxValue)
         {
