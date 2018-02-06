@@ -14,10 +14,11 @@ namespace Catfish.Tests.Services
     {
         private DatabaseHelper mDh { get; set; }
 
-        [ClassInitialize]
+        [TestInitialize]
         public void InitializeTesting()
         {
-            //mDh = new DatabaseHelper(true);
+            mDh = new DatabaseHelper(true);
+            (new ServerHelper()).Start();
         }
 
         [TestMethod]

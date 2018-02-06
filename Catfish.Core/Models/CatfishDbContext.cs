@@ -17,6 +17,11 @@ namespace Catfish.Core.Models
 
         }
 
+        public CatfishDbContext(System.Data.Common.DbConnection connection) : base(connection, true)
+        {
+
+        }
+
         public int SaveChanges(IIdentity actor)
         {
             if (actor.IsAuthenticated)

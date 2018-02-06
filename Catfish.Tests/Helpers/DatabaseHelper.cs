@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Forms;
 using Catfish.Core.Services;
+using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
@@ -20,6 +21,8 @@ namespace Catfish.Tests.Helpers
             {
                 if (mDb == null)
                 {
+                    //System.Data.Sql
+                    var connection = new SqliteConnection("DataSource=:memory:");
                     mDb = new CatfishDbContext();
                 }
 
@@ -91,11 +94,6 @@ namespace Catfish.Tests.Helpers
             }
         }
 
-        private void SetupPiranha()
-        {
-
-        }
-
         private void CreateMetadata()
         {
             MetadataSet metadata = new MetadataSet();
@@ -115,6 +113,7 @@ namespace Catfish.Tests.Helpers
             fields.Add(field);
 
             metadata.Fields = fields;
+            metadata.Serialize();
 
             Ms.UpdateMetadataSet(metadata);
 
@@ -159,7 +158,7 @@ namespace Catfish.Tests.Helpers
                     FieldName = "Description"
                 });
 
-                Es.UpdateEntityType(et);
+                Db.EntityTypes.Add(et);
             }
 
             Db.SaveChanges();
@@ -175,6 +174,8 @@ namespace Catfish.Tests.Helpers
                 Collection c = Cs.CreateEntity<Collection>(ets[index]);
                 c.SetName("Collection " + (i + 1));
                 c.SetDescription("Description for Collection " + (i + 1));
+
+                c.Serialize();
                 Cs.UpdateStoredCollection(c);
             }
 
@@ -191,6 +192,8 @@ namespace Catfish.Tests.Helpers
                 Item e = Is.CreateEntity<Item>(ets[index]);
                 e.SetName("Item " + (i + 1));
                 e.SetDescription("Description for Item " + (i + 1));
+
+                e.Serialize();
                 Is.UpdateStoredItem(e);
             }
 
@@ -209,8 +212,14 @@ namespace Catfish.Tests.Helpers
         {
             Db.Database.Initialize(true);
 
+            // This is done because several Proxy objects are created on initialization and must be removed.
+            Db.MetadataSets.RemoveRange(Db.MetadataSets.ToArray());
+            Db.EntityTypes.RemoveRange(Db.EntityTypes.ToArray());
+            Db.Entities.RemoveRange(Db.Entities.ToArray());
+            Db.SaveChanges();
 
-            SetupPiranha();
+            var test = Db.MetadataSets.ToArray();
+            //SetupPiranha();
             SetupData();
         }
     }

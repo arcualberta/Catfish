@@ -57,9 +57,12 @@ namespace Catfish.Core.Models
         {
             get { return mContent; }
             set {
-                mContent = value;
-                
-                this.Data = XElement.Parse(this.Content);
+                if (value != null)
+                {
+                    mContent = value;
+
+                    this.Data = XElement.Parse(this.Content);
+                }
             }
         }
 
