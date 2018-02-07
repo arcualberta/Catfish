@@ -20,18 +20,22 @@ function deleteUnlinkedFile(fileGuid, deleteApiUrl, containerId, fileGuidListFie
     if (confirm("Delete file?") == false)
         return;
 
-    var myFrm = new FormData();     //create a new form
+    var myFrm = new FormData();   
     myFrm.append("guid", fileGuid);
 
     var oReg = new XMLHttpRequest();
     var stateChange = function (data) {
-        if (oReg.readyState === 4) {  //after successfull execute the function then it will execute what ever inside this if {}
+        if (oReg.readyState === 4) {
+            //after successfull execute the function then it will execute what ever inside this if {}
             if (oReg.status === 200) {
                 var guid = JSON.parse(data)[0];
 
                 //removing the guid from the fileGuidList hidden field
                 var fileGuidList = $("#" + fileGuidListFieldId).val();
-                fileGuidList = fileGuidList.replace(guid, "").replace("||", "|").replace(/^\s*\|\s*/, '').replace(/\s*\|\s*$/, '');
+                fileGuidList = fileGuidList.replace(guid, "")
+                    .replace("||", "|")
+                    .replace(/^\s*\|\s*/, '')
+                    .replace(/\s*\|\s*$/, '');
                 $("#" + fileGuidListFieldId).val(fileGuidList);
 
                 var eleId = getThumbnailDivId(guid);
@@ -63,15 +67,15 @@ function updateFileListView(data, deleteApiUrl, containerId, fileGuidListFieldId
     for (var i = 0; i < data.length; ++i) {
         var d = data[i];
         var eleId = getThumbnailDivId(d.Guid);
-        var ele = '<div class="fileThumbnail" id="' + eleId + '" > <div class="img" style="background-image:url(' + d.Thumbnail + ')" ></div>' +
-            '<button class="glyphicon glyphicon-remove" onclick="deleteUnlinkedFile(\'' + d.Guid + '\',\'' + deleteApiUrl + '\',\'' + containerId + '\',\'' + fileGuidListFieldId + '\'); return false;"></button>' +
-            '<div class="label"><a href="' + d.Url + '" target="_blank">' + d.FileName + '</a></div>' +
-            '</div>';
-
-        //var ele = '<div class="fileThumbnail" id="' + eleId + '" > <img src="' + d.Thumbnail + '" alt="' + d.FileName + '" />' +
-        //    '<button class="glyphicon glyphicon-remove" onclick="deleteUnlinkedFile(\'' + d.Guid + '\',\'' + deleteApiUrl + '\',\'' + containerId + '\',\'' + fileGuidListFieldId + '\'); return false;"></button>' +
-        //    '<div class="label"><a href="' + d.Url + '" target="_blank">' + d.FileName + '</a></div>' +
-        //    '</div>';
+        var ele = '<div class="fileThumbnail" id="' + eleId
+            + '" > <div class="img" style="background-image:url('
+            + d.Thumbnail + ')" ></div>'
+            + '<button class="glyphicon glyphicon-remove" onclick="deleteUnlinkedFile(\''
+            + d.Guid + '\',\'' + deleteApiUrl + '\',\'' + containerId
+            + '\',\'' + fileGuidListFieldId
+            + '\'); return false;"></button>'
+            + '<div class="label"><a href="' + d.Url + '" target="_blank">'
+            + d.FileName + '</a></div></div>';        
 
         if (fileGuidList.length > 0)
             fileGuidList = fileGuidList + "|" + d.Guid;
@@ -84,46 +88,76 @@ function updateFileListView(data, deleteApiUrl, containerId, fileGuidListFieldId
     $("#" + fileGuidListFieldId).val(fileGuidList);
 }
 
-function uploadFile(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFieldId) {
-    var myFrm = new FormData();     //create a new form
+var showInProgress = function(containerId) {
+    $("#" + containerId + " .progressBar").show();
+    $("#" + containerId + " .uploadButton").attr('disabled', 'disabled');
+    $("#" + containerId + " .uploadField").attr('disabled', 'disabled');
+}
 
-    var uploadField = $("#" + containerId + " .uploadField")[0];     //grab the FileUpload object
+var hideInProgress = function(containerId) {
+    $("#" + containerId + " .progressBar").hide();
+    $("#" + containerId + " .uploadField").prop('disabled', false);
+    $("#" + containerId + " .uploadButton").prop('disabled', false);
+}
+
+
+var stateChange = function (data, deleteApiUrl, containerId, fileGuidListFieldId, oReg) {
+    //after successfull execute the function then it will execute what ever inside this if {}
+    if (oReg.readyState === 4) {  
+
+        var messageBoxSelector = "#" + containerId + " .messageBox"
+
+        if (oReg.status === 200) {
+            // Updating the value of the hidden field which carries the ID of this 
+            // FileUpload object in the page
+            updateFileListView(data, deleteApiUrl, containerId, fileGuidListFieldId);
+            $(messageBoxSelector).text("").hide();
+        }
+        else {
+            // Error
+            var errorMessage = "File upload failed: " + oReg.statusText;
+            $(messageBoxSelector).text(errorMessage).show();
+        }
+
+        $("#" + containerId + " .uploadField").val("");
+
+        hideInProgress(containerId);
+    }
+};
+
+
+function uploadFile(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFieldId) {
+
+    var myFrm = new FormData();     
+    var uploadField = $("#" + containerId + " .uploadField")[0];
 
     for (var i = 0; i < uploadField.files.length; i++) {
         myFrm.append("inputFile" + i, uploadField.files[i]);
     }
 
-    $("#" + containerId + " .progressBar").show();
-    $("#" + containerId + " .uploadButton").attr('disabled', 'disabled');
-    $("#" + containerId + " .uploadField").attr('disabled', 'disabled');
+    showInProgress(containerId);
 
     var oReg = new XMLHttpRequest();
 
-    var stateChange = function (data) {
-        if (oReg.readyState === 4) {  //after successfull execute the function then it will execute what ever inside this if {}
-            if (oReg.status === 200) {
-                //Updating the value of the hidden field which carries the ID of this FileUpload object in the page
-                updateFileListView(data, deleteApiUrl, containerId, fileGuidListFieldId);
-                $("#" + containerId + " .messageBox").text("");
-                $("#" + containerId + " .messageBox").hide()
-            }
-            else {
-                //Error
-                $("#" + containerId + " .messageBox").text("File upload failed: " + oReg.statusText);
-                $("#" + containerId + " .messageBox").show()
-            }
-            $("#" + containerId + " .progressBar").hide();
-            $("#" + containerId + " .uploadField").val("");
-            $("#" + containerId + " .uploadField").prop('disabled', false);
-            $("#" + containerId + " .uploadButton").prop('disabled', false);
-        }
-    };
-
     if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-        oReg.onload = function (event) { stateChange(event.target.response); };
+        oReg.onload = function (event) {
+            stateChange(event.target.response,
+                deleteApiUrl,
+                containerId,
+                fileGuidListFieldId,
+                oReg);
+        };
     } else {
-        oReg.onreadystatechange = function (data) { stateChange(data.srcElement.responseText); };
+        oReg.onreadystatechange = function (data) {
+            stateChange(data.srcElement.responseText,
+                deleteApiUrl,
+                containerId,
+                fileGuidListFieldId,
+                oReg);
+        };
     }
+    
+
     oReg.open('POST', uploadApiUrl);
     oReg.send(myFrm);
 
