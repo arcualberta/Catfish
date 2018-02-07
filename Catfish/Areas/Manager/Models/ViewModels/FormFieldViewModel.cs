@@ -28,7 +28,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         //[ScriptIgnore]
         //public Attachment Attachment { get; set; }
         public List<FileViewModel> Files { get; set; }
-        public string[] FieldFileGuids { get; }
+        public string[] FieldFileGuids { get; set; }
 
         public int Rank { get; set; }
         public int Page { get; set; }
@@ -44,7 +44,6 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Rank = src.Rank;
             Page = src.Page;
             IsPageBreak = src.IsPageBreak();
-            //Attachment = src.AttachmentField;
             Files = src.Files.Select( m => new FileViewModel(m, src.Id)).ToList();
             FieldFileGuids = src.FieldFileGuidsArray;
 
@@ -96,7 +95,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.Guid = Guid;
             field.Rank = Rank;
             field.Page = Page;
-
+            field.FieldFileGuids = String.Join("|", FieldFileGuids);
             if (typeof(OptionsField).IsAssignableFrom(type))
             {
                 //Creating option list separately and assigning it to the Options propery of the Options field

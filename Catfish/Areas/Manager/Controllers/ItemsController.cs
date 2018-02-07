@@ -156,13 +156,7 @@ namespace Catfish.Areas.Manager.Controllers
             return View(model);
         }
 
-
-        [HttpGet]
-        public ActionResult UploadTest()
-        {
-            return View();
-        }
-
+        //XXX This method should be moved to a file controller
         [HttpPost]
         public JsonResult Upload()
         {

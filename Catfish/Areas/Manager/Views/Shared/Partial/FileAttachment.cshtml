@@ -21,22 +21,24 @@ xxx
         @*@Html.HiddenFor(m => m.Model.FieldFileGuids)*@
         @*@Model.Html.Hidden(Model.Model.FieldFileGuids)*@
         @*@Model.Html.Hidden*@
-        @Html.HiddenFor(m => m.Model.FieldFileGuids)
+        @*@Html.HiddenFor(m => m.Model.FieldFileGuids)*@
+        @*<input type="hidden" id="Model_FieldFileGuids" @Model.Bind.Value(m => m.FieldFileGuids) />*@
+        @Model.Html.TextBox( m=> m.FieldFileGuids, new { id = "Model_FieldFileGuids" })
         @*@Model.Model.FieldFileGuids*@
         @using (KnockoutForeachContext<FileViewModel> fileViewModel = Model.Foreach(f => f.Files))
-        {
-            <div class="fileThumbnail" @fileViewModel.Bind.Attr("id", m => m.Guid)>
-                <div class="img" @fileViewModel.Bind.Style("\"background-image\"", m => "url(" + m.Thumbnail + ")")></div>
-                <div class="label"><a @fileViewModel.Bind.Attr("href", f => f.Url)>@fileViewModel.Html.Span(s => s.FileName)</a></div>
-            </div>
-        }
+    {
+        <div class="fileThumbnail" @fileViewModel.Bind.Attr("id", m => m.Guid)>
+            <div class="img" @fileViewModel.Bind.Style("\"background-image\"", m => "url(" + m.Thumbnail + ")")></div>
+            <div class="label"><a @fileViewModel.Bind.Attr("href", f => f.Url)>@fileViewModel.Html.Span(s => s.FileName)</a></div>
+        </div>
+}
     </div>
     <div class="inner" style="clear:both">
         <div class="alert alert-danger messageBox"></div>
 
         <input type='file' class="uploadField" name="files" multiple="multiple" />
         <input type="button" value="Upload" class="uploadButton"
-               onclick="uploadFile2('@containerId', '@uploadApiUrl', '@deleteApiUrl', 'Model_FieldFileGuids'); return false;" />
+               onclick="uploadFile('@containerId', '@uploadApiUrl', '@deleteApiUrl', 'Model_FieldFileGuids'); return false;" />
         @*<div class="progressBar"><progress></progress></div>*@
     </div>
 </div>
@@ -49,48 +51,3 @@ xxx
         $("#@containerId .messageBox").hide();
     });
 </script>
-
-
-    @*<div id="@containerId" class="inner file-upload" style="clear:both">
-            <div class="thumbnailPanel">
-                @{ string fileGuidListFieldId = Html.IdFor(m => m.FileGuids).ToString(); }
-                @Html.HiddenFor(m => m.FileGuids)
-
-                @{
-                    List<DataFile> files = ViewBag.Files == null ? new List<DataFile>() : ViewBag.Files as List<DataFile>;
-                    string[] fileGuids = Model.FileGuids.Split(new char[] { Attachment.FileGuidSeparator });
-                    int parentId = ViewBag.ParentId != null ? (int)ViewBag.ParentId : 0;
-                    string controller = string.IsNullOrEmpty(ViewBag.Controller) ? "attachment" : ViewBag.Controller as string;
-
-                    foreach (var fileGuid in fileGuids)
-                    {
-                        var file = files.Where(f => f.Guid == fileGuid).FirstOrDefault();
-                        if (file != null)
-                        {
-                            FileViewModel vm = new FileViewModel(file, parentId, Request.RequestContext, controller);
-                            bool undeletable = crossLinkedFileGuids.Contains(file.Guid);
-                            string secondaryClass = undeletable ? "undeletable" : "";
-                            var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
-                            <div class="fileThumbnail @eleId @secondaryClass">
-                                <div class="img" style="background-image:url(@vm.Thumbnail)"></div>
-                                @if (!undeletable)
-                                {
-                                    <button class="glyphicon glyphicon-remove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@containerId'); return false;"></button>
-                                }
-                                <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
-                            </div>
-                        }
-                    }
-                }
-            </div>
-            <div class="inner" style="clear:both">
-                <div class="alert alert-danger messageBox"></div>
-
-                <input type='file' class="uploadField" name="files" multiple="multiple" />
-                <input type="button" value="Upload" class="uploadButton"
-                       onclick="uploadFile2('@containerId', '@uploadApiUrl', '@deleteApiUrl', '@fileGuidListFieldId'); return false;" />
-                <div class="progressBar"><progress></progress></div>
-            </div>
-        </div>
-
-    *@

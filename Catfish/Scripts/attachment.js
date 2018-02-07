@@ -84,7 +84,7 @@ function updateFileListView(data, deleteApiUrl, containerId, fileGuidListFieldId
     $("#" + fileGuidListFieldId).val(fileGuidList);
 }
 
-function uploadFile2(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFieldId) {
+function uploadFile(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFieldId) {
     var myFrm = new FormData();     //create a new form
 
     var uploadField = $("#" + containerId + " .uploadField")[0];     //grab the FileUpload object
@@ -128,3 +128,7 @@ function uploadFile2(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFieldI
     oReg.send(myFrm);
 
 }// END function uploadFile()
+
+uploadFileKo = function () {
+
+}
