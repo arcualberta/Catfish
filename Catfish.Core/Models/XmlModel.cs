@@ -52,7 +52,7 @@ namespace Catfish.Core.Models
             }
         }
 
-        [Column(TypeName = "xml")]
+        //[Column(TypeName = "xml")]
         public string Content
         {
             get { return mContent; }

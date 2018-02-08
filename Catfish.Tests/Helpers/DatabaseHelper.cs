@@ -1,29 +1,28 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Forms;
 using Catfish.Core.Services;
-using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.Migrations;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Catfish.Core.Models.EntityType;
+using System.Data.Entity.Core.Common;
+using System.Data.SQLite.EF6;
+using System.Data.SQLite;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Catfish.Tests.Helpers
 {
     class DatabaseHelper
     {
-        private CatfishDbContext mDb { get; set; }
-        public CatfishDbContext Db
+        private CatfishTestDbContext mDb { get; set; }
+        public CatfishTestDbContext Db
         {
             get
             {
                 if (mDb == null)
                 {
-                    //System.Data.Sql
-                    var connection = new SqliteConnection("DataSource=:memory:");
-                    mDb = new CatfishDbContext();
+                    mDb = new CatfishTestDbContext();
                 }
 
                 return mDb;
@@ -213,14 +212,34 @@ namespace Catfish.Tests.Helpers
             Db.Database.Initialize(true);
 
             // This is done because several Proxy objects are created on initialization and must be removed.
-            Db.MetadataSets.RemoveRange(Db.MetadataSets.ToArray());
+            /*Db.MetadataSets.RemoveRange(Db.MetadataSets.ToArray());
             Db.EntityTypes.RemoveRange(Db.EntityTypes.ToArray());
             Db.Entities.RemoveRange(Db.Entities.ToArray());
-            Db.SaveChanges();
+            Db.SaveChanges();*/
 
             var test = Db.MetadataSets.ToArray();
             //SetupPiranha();
             SetupData();
+            test = Db.MetadataSets.ToArray();
+        }
+    }
+
+    public class SqliteConfiguration : DbConfiguration
+    {
+        public SqliteConfiguration()
+        {
+            SetProviderFactory("System.Data.SQLite", SQLiteFactory.Instance);
+            SetProviderFactory("System.Data.SQLite.EF6", SQLiteProviderFactory.Instance);
+            SetProviderServices("System.Data.SQLite", (DbProviderServices)SQLiteProviderFactory.Instance.GetService(typeof(DbProviderServices)));
+        }
+    }
+
+    public class CatfishTestDbContext : CatfishDbContext
+    {
+        protected override void OnModelCreating(DbModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Entity<XmlModel>().Property(xm => xm.Content).HasColumnType("");
         }
     }
 }
