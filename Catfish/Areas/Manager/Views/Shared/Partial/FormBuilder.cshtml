@@ -60,7 +60,7 @@
                                     }
                                     @using (field.If(f => f.IsPageBreak == false))
                                     {
-                                        <label class="control-label">Name</label> 
+                                        <label class="control-label">Name</label>
                                     }
                                     <div class="input">
                                         @using (var name = field.Foreach(f => f.Name))
@@ -115,19 +115,19 @@
                                         </div>
                                     </li>
                                 }
-                                    <li>
-                                        <label class="control-label col-md-2">Attached files</label>
-                                        <div class="form-view">
-                                            @* XXX Change controller to file upload *@
-                                            @Html.Partial("Partial/FileAttachment", field,
-                                           new ViewDataDictionary{
-                                               { "UploadApiUrl", @Url.Action("upload", "items")},
-                                               { "DeleteApiUrl",  @Url.Action("deleteCashedFile", "items")},
-                                               { "ParentId", Model.Id },
-                                               { "Controller", "items" }
-                                           })
-                                            
-                                            @*@if (field.Model != null)
+                                <li>
+                                    <label class="control-label col-md-2">Attached files</label>
+                                    <div class="form-view">
+                                        @* XXX Change controller to file upload *@
+                                        @Html.Partial("Partial/FileAttachment", field,
+                                            new ViewDataDictionary{
+                                                                   { "UploadApiUrl", @Url.Action("upload", "items")},
+                                                                   { "DeleteApiUrl",  @Url.Action("deleteCashedFile", "items")},
+                                                                   { "ParentId", Model.Id },
+                                                                   { "Controller", "items" }
+                                            })
+
+                                        @*@if (field.Model != null)
                                             {
                                             @Html.EditorFor(m => field.Model.Attachment,
                                                      new
@@ -139,8 +139,8 @@
                                                          Controller = "items"
                                                      })
                                             }*@
-                                        </div>
-                                    </li>
+                                    </div>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -155,4 +155,13 @@
         </div>
     }
 </div>
+
+@ko.Initialize(Model)
+<script type="text/javascript">
+  @(context).uploadFileKoWrapper = function (data, containerId, uploadApiUrl, deleteApiUrl, fieldFileGuids) {
+      uploadFileKo(containerId, uploadApiUrl, deleteApiUrl, fieldFileGuids, data)
+  };
+</script>
+
+
 @ko.Apply(Model, context)

@@ -163,6 +163,98 @@ function uploadFile(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFieldId
 
 }// END function uploadFile()
 
-uploadFileKo = function () {
+function uploadFileKo(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFieldId, koModel) {
+    var myFrm = new FormData();
+    var uploadField = $("#" + containerId + " .uploadField")[0];
 
+    for (var i = 0; i < uploadField.files.length; i++) {
+        myFrm.append("inputFile" + i, uploadField.files[i]);
+    }
+
+    showInProgress(containerId);
+
+    var oReg = new XMLHttpRequest();
+
+    if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+        oReg.onload = function (event) {
+            stateChangeKo(event.target.response,
+                deleteApiUrl,
+                containerId,
+                fileGuidListFieldId,
+                oReg,
+                koModel);
+        };
+    } else {
+        oReg.onreadystatechange = function (data) {
+            stateChangeKo(data.srcElement.responseText,
+                deleteApiUrl,
+                containerId,
+                fileGuidListFieldId,
+                oReg,
+                koModel);
+        };
+    }
+
+
+    oReg.open('POST', uploadApiUrl);
+    oReg.send(myFrm);
+
+}// END function uploadFile
+
+var stateChangeKo = function (data, deleteApiUrl, containerId, fileGuidListFieldId, oReg, koModel) {
+    //after successfull execute the function then it will execute what ever inside this if {}
+    if (oReg.readyState === 4) {
+
+        var messageBoxSelector = "#" + containerId + " .messageBox"
+
+        if (oReg.status === 200) {
+            // Updating the value of the hidden field which carries the ID of this 
+            // FileUpload object in the page
+            updateFileListViewKo(data, deleteApiUrl, containerId, fileGuidListFieldId, koModel);
+            $(messageBoxSelector).text("").hide();
+        }
+        else {
+            // Error
+            var errorMessage = "File upload failed: " + oReg.statusText;
+            $(messageBoxSelector).text(errorMessage).show();
+        }
+
+        $("#" + containerId + " .uploadField").val("");
+
+        hideInProgress(containerId);
+    }
+};
+
+function updateFileListViewKo(data, deleteApiUrl, containerId, fileGuidListFieldId, koModel) {
+    data = JSON.parse(data);
+    var thumbnailPanel = $("#" + containerId + " .thumbnailPanel")[0];
+    console.log(koModel)
+
+    //var fileGuidList = $("#" + fileGuidListFieldId).val();
+    var fileGuidList = koModel.FieldFileGuids();
+
+    for (var i = 0; i < data.length; ++i) {
+        var d = data[i];
+        var eleId = getThumbnailDivId(d.Guid);
+        var ele = '<div class="fileThumbnail" id="' + eleId
+            + '" > <div class="img" style="background-image:url('
+            + d.Thumbnail + ')" ></div>'
+            + '<button class="glyphicon glyphicon-remove" onclick="deleteUnlinkedFile(\''
+            + d.Guid + '\',\'' + deleteApiUrl + '\',\'' + containerId
+            + '\',\'' + fileGuidListFieldId
+            + '\'); return false;"></button>'
+            + '<div class="label"><a href="' + d.Url + '" target="_blank">'
+            + d.FileName + '</a></div></div>';
+
+        if (fileGuidList.length > 0)
+            fileGuidList = fileGuidList + "|" + d.Guid;
+        else
+            fileGuidList = d.Guid;
+
+        $(thumbnailPanel).append(ele);
+    }
+
+    console.log(koModel.FieldFileGuids());
+    //$("#" + fileGuidListFieldId).val(fileGuidList);
+    koModel.FieldFileGuids(fileGuidList)
 }

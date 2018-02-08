@@ -17,13 +17,7 @@
 xxx
 <div id="@containerId" class="inner file-upload" style="clear:both">
     <div class="thumbnailPanel">
-        @*@{ string fileGuidListFieldId = Html.IdFor(m => m.Model.FieldFileGuids).ToString(); }*@
-        @*@Html.HiddenFor(m => m.Model.FieldFileGuids)*@
-        @*@Model.Html.Hidden(Model.Model.FieldFileGuids)*@
-        @*@Model.Html.Hidden*@
-        @*@Html.HiddenFor(m => m.Model.FieldFileGuids)*@
-        @*<input type="hidden" id="Model_FieldFileGuids" @Model.Bind.Value(m => m.FieldFileGuids) />*@
-        @Model.Html.TextBox( m=> m.FieldFileGuids, new { id = "Model_FieldFileGuids" })
+        <input type="hidden" id="Model_FieldFileGuids" @Model.Bind.Value(m => m.FieldFileGuids) />        
         @*@Model.Model.FieldFileGuids*@
         @using (KnockoutForeachContext<FileViewModel> fileViewModel = Model.Foreach(f => f.Files))
     {
@@ -37,9 +31,8 @@ xxx
         <div class="alert alert-danger messageBox"></div>
 
         <input type='file' class="uploadField" name="files" multiple="multiple" />
-        <input type="button" value="Upload" class="uploadButton"
-               onclick="uploadFile('@containerId', '@uploadApiUrl', '@deleteApiUrl', 'Model_FieldFileGuids'); return false;" />
-        @*<div class="progressBar"><progress></progress></div>*@
+        <input data-bind="click: function(data){$root.uploadFileKoWrapper(data, '@containerId', '@uploadApiUrl', '@deleteApiUrl', 'Model_FieldFileGuids')}" type="button" value="Upload" class="uploadButton" />
+        <div class="progressBar" hidden><progress></progress></div>
     </div>
 </div>
     xxx
