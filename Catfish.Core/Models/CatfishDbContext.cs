@@ -90,6 +90,9 @@ namespace Catfish.Core.Models
                     //t.MapRightKey("EntityTypesId");
                     t.ToTable("EntityTypeHasMetadataSets");
                 });
+
+            //define composite primary key for EntityGroupUser -- Jan 24 2018
+            builder.Entity<EntityGroupUser>().HasKey(t => new { t.EntityGroupId, t.UserId });
         }
 
         public DbSet<XmlModel> XmlModels { get; set; }
@@ -113,5 +116,8 @@ namespace Catfish.Core.Models
         ////public DbSet<SimpleField> MetadataFields { get; set; }
 
         ////public DbSet<FieldValue> FieldValues { get; set; }
+
+        public DbSet<EntityGroup> EntityGroups { get; set; }
+        public DbSet<EntityGroupUser> EntityGroupUsers { get; set; }
     }
 }

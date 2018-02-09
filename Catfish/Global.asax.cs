@@ -13,6 +13,7 @@ using Catfish.Areas.Manager.ModelBinders;
 using Catfish.Core.Models;
 using Catfish.Helpers;
 using Catfish.Core.Services;
+using Catfish.Core.ModelBinders;
 
 namespace Catfish
 {
@@ -21,6 +22,7 @@ namespace Catfish
         void Application_Start(object sender, EventArgs e)
         {
             // Code that runs on application startup
+           
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -31,6 +33,7 @@ namespace Catfish
             //Custom model binders 
             System.Web.Mvc.ModelBinders.Binders.Add(typeof(FormField), new XmlModelBinder());
             System.Web.Mvc.ModelBinders.Binders.Add(typeof(OptionsField), new XmlModelBinder());
+            // ModelBinders.Binders.Add(typeof(DateTime), new DateModelBinder());
 
             //Additional CSS and Javascripts
             Hooks.Head.Render += (ui, str, page, post) =>
@@ -113,6 +116,19 @@ namespace Catfish
                 Permission = "ADMIN_CONTENT"
                 //,SelectedActions = "productlist,productedit"
             });
+
+            //Mr Jan 23 2018 adding tab to manager/system area
+            var systemMenu = Manager.Menu.Where(m => m.InternalId == "System").FirstOrDefault();
+            idx = 0;
+
+            systemMenu.Items.Insert(idx++, new Manager.MenuItem {
+
+                Name = "Entity Group",
+                Action = "index",
+                Controller = "entitygroups",
+                Permission = "ADMIN_CONTENT"
+            });
+             
         }
     }
 }
