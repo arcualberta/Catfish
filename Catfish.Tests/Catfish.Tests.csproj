@@ -85,6 +85,8 @@
     <Compile Include="Services\SolrServiceTest.cs" />
     <Compile Include="TestData.cs" />
     <Compile Include="Views\EntityGroupViewTest.cs" />
+    <Compile Include="Views\EntityTypeViewTest.cs" />
+    <Compile Include="Views\MetadataViewTest.cs" />
     <Compile Include="XmlModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
