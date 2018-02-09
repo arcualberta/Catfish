@@ -18,7 +18,7 @@ namespace Catfish.Tests.Services
         public void InitializeTesting()
         {
             mDh = new DatabaseHelper(true);
-            (new ServerHelper()).Start();
+            //(new ServerHelper()).Start();
         }
 
         [TestMethod]

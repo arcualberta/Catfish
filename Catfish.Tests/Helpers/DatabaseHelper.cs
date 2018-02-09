@@ -10,6 +10,12 @@ using System.Data.Entity.Core.Common;
 using System.Data.SQLite.EF6;
 using System.Data.SQLite;
 using System.ComponentModel.DataAnnotations.Schema;
+using Catfish.Tests.Migrations;
+using System.Data.Entity.Migrations;
+using System.Configuration;
+using System.Data.Common;
+using System.Data.Entity.Migrations.Model;
+using System.Data.Entity.Migrations.Sql;
 
 namespace Catfish.Tests.Helpers
 {
@@ -22,7 +28,9 @@ namespace Catfish.Tests.Helpers
             {
                 if (mDb == null)
                 {
-                    mDb = new CatfishTestDbContext();
+                    DbConnection connection = GetConnection(GetConnectionStringByName("piranha"));
+                    connection.Open();
+                    mDb = new CatfishTestDbContext(connection);
                 }
 
                 return mDb;
@@ -91,6 +99,41 @@ namespace Catfish.Tests.Helpers
             {
                 ReInitializeDatabase();
             }
+        }
+
+        private ConnectionStringSettings GetConnectionStringByName(string name)
+        {
+            ConnectionStringSettingsCollection settings = ConfigurationManager.ConnectionStrings;
+
+            if(settings != null)
+            {
+                foreach(ConnectionStringSettings s in settings)
+                {
+                    if(s.Name == name)
+                    {
+                        return s;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private DbConnection GetConnection(ConnectionStringSettings settings)
+        {
+            DbConnection connection = null;
+
+            try
+            {
+                DbProviderFactory factory = DbProviderFactories.GetFactory(settings.ProviderName);
+                connection = factory.CreateConnection();
+                connection.ConnectionString = settings.ConnectionString;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+
+            return connection;
         }
 
         private void CreateMetadata()
@@ -165,7 +208,7 @@ namespace Catfish.Tests.Helpers
 
         private void CreateCollections()
         {
-            List<int> ets = Es.GetEntityTypes().Where(et => et.TargetTypesList.Contains(eTarget.Collections)).Select(et => et.Id).ToList();
+            List<int> ets = Es.GetEntityTypes().ToList().Where(et => et.TargetTypesList.Contains(eTarget.Collections)).Select(et => et.Id).ToList();
 
             for (int i = 0; i < 10; ++i)
             {
@@ -183,7 +226,7 @@ namespace Catfish.Tests.Helpers
 
         private void CreateItems()
         {
-            List<int> ets = Es.GetEntityTypes().Where(et => et.TargetTypesList.Contains(eTarget.Items)).Select(et => et.Id).ToList();
+            List<int> ets = Es.GetEntityTypes().ToArray().Where(et => et.TargetTypesList.Contains(eTarget.Items)).Select(et => et.Id).ToList();
 
             for (int i = 0; i < 10; ++i)
             {
@@ -207,20 +250,37 @@ namespace Catfish.Tests.Helpers
             CreateItems();
         }
 
+        public void Initialize()
+        {
+            Catfish.Tests.Migrations.Configuration config = new Catfish.Tests.Migrations.Configuration();
+            var migrator = new DbMigrator(config);
+            
+            foreach(string migName in migrator.GetPendingMigrations())
+            {
+                Type migration = config.MigrationsAssembly.GetType(string.Format("{0}.{1}", config.MigrationsNamespace, migName.Substring(16)));
+                DbMigration m = (DbMigration)Activator.CreateInstance(migration);
+                m.Up();
+
+                var prop = m.GetType().GetProperty("Operations", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if(prop != null)
+                {
+                    IEnumerable<MigrationOperation> operations = prop.GetValue(m) as IEnumerable<MigrationOperation>;
+                    var generator = config.GetSqlGenerator("System.Data.SQLite");
+                    var statements = generator.Generate(operations, "2008");
+                    foreach (MigrationStatement item in statements)
+                        Db.Database.ExecuteSqlCommand(item.Sql);
+                }
+                
+            }
+        }
+
         public void ReInitializeDatabase()
         {
-            Db.Database.Initialize(true);
+            Initialize();
 
-            // This is done because several Proxy objects are created on initialization and must be removed.
-            /*Db.MetadataSets.RemoveRange(Db.MetadataSets.ToArray());
-            Db.EntityTypes.RemoveRange(Db.EntityTypes.ToArray());
-            Db.Entities.RemoveRange(Db.Entities.ToArray());
-            Db.SaveChanges();*/
-
-            var test = Db.MetadataSets.ToArray();
             //SetupPiranha();
             SetupData();
-            test = Db.MetadataSets.ToArray();
+            var test = Db.MetadataSets.ToArray();
         }
     }
 
@@ -233,12 +293,21 @@ namespace Catfish.Tests.Helpers
             SetProviderServices("System.Data.SQLite", (DbProviderServices)SQLiteProviderFactory.Instance.GetService(typeof(DbProviderServices)));
         }
     }
-
+    
     public class CatfishTestDbContext : CatfishDbContext
     {
-        protected override void OnModelCreating(DbModelBuilder builder)
+        public CatfishTestDbContext() : base(){
+
+        }
+
+        public CatfishTestDbContext(DbConnection connection) : base(connection, true)
         {
-            base.OnModelCreating(builder);
+        }
+
+        protected override void SetColumnTypes(DbModelBuilder builder)
+        {
+            builder.HasDefaultSchema("");
+
             builder.Entity<XmlModel>().Property(xm => xm.Content).HasColumnType("");
         }
     }
