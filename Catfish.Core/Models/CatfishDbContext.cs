@@ -17,6 +17,11 @@ namespace Catfish.Core.Models
 
         }
 
+        public CatfishDbContext(System.Data.Common.DbConnection connection, bool contextOwnsConnection) : base(connection, contextOwnsConnection)
+        {
+
+        }
+
         public int SaveChanges(IIdentity actor)
         {
             if (actor.IsAuthenticated)
@@ -42,8 +47,18 @@ namespace Catfish.Core.Models
             return base.SaveChanges();
         }
 
+        /**
+         * Used to define column types that may not be available in all Databases.
+         **/
+        protected virtual void SetColumnTypes(DbModelBuilder builder)
+        {
+            builder.Entity<XmlModel>().Property(xm => xm.Content).HasColumnType("xml");
+        }
+
         protected override void OnModelCreating(DbModelBuilder builder)
         {
+            SetColumnTypes(builder);
+
             builder.Entity<Aggregation>()
                 .HasMany<Aggregation>(p => p.ChildMembers)
                 .WithMany(c => c.ParentMembers)

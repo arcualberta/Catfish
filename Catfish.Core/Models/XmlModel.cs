@@ -51,15 +51,17 @@ namespace Catfish.Core.Models
                 SetAttribute("updated", value.ToString());
             }
         }
-
-        [Column(TypeName = "xml")]
+        
         public string Content
         {
             get { return mContent; }
             set {
-                mContent = value;
-                
-                this.Data = XElement.Parse(this.Content);
+                if (value != null)
+                {
+                    mContent = value;
+
+                    this.Data = XElement.Parse(this.Content);
+                }
             }
         }
 
