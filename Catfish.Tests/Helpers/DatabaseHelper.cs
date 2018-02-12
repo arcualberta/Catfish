@@ -93,11 +93,13 @@ namespace Catfish.Tests.Helpers
             }
         }
 
-        public DatabaseHelper(bool reinitializeDb = false)
+        public DatabaseHelper(bool setupData = false)
         {
-            if (reinitializeDb)
+            Initialize();
+
+            if (setupData)
             {
-                ReInitializeDatabase();
+                SetupData();
             }
         }
 
@@ -274,10 +276,8 @@ namespace Catfish.Tests.Helpers
             }
         }
 
-        public void ReInitializeDatabase()
+        public void SetupDbData()
         {
-            Initialize();
-
             //SetupPiranha();
             SetupData();
             var test = Db.MetadataSets.ToArray();
