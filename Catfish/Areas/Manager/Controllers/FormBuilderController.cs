@@ -94,6 +94,7 @@ namespace Catfish.Areas.Manager.Controllers
                 {
                     model = CreateDataModel();
                     vm.UpdateDataModel(model, Db);
+                    //XXX if the content is not saved do model.Serialize();
                     Db.XmlModels.Add(model);
                 }
 

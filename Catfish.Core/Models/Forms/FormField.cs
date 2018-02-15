@@ -48,6 +48,24 @@ namespace Catfish.Core.Models.Forms
             }
         }
 
+        [NotMapped]
+        public string DataFiles
+        {
+            get
+            {
+                XElement val = Data.Element("files");
+                return val == null ? "" : val.Value;
+            }
+            set
+            {
+                XElement val = Data.Element("files");
+                if (val == null)
+                    Data.Add(val = new XElement("files"));
+
+                val.Value = value == null ? "" : value;
+            }
+        }
+
         //[ScriptIgnore]
         //[NotMapped]
         //public Attachment AttachmentField

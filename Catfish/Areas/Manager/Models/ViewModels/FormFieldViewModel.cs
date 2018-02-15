@@ -29,10 +29,13 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         //public Attachment Attachment { get; set; }
         public List<FileViewModel> Files { get; set; }
         public string[] FieldFileGuids { get; set; }
+        public string DataFiles { get; set; }
 
         public int Rank { get; set; }
         public int Page { get; set; }
         public bool IsPageBreak { get; set; }
+
+        private CatfishDbContext Db = new CatfishDbContext();
 
         public FormFieldViewModel(FormField src)
         {
@@ -46,7 +49,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             IsPageBreak = src.IsPageBreak();
             Files = src.Files.Select( m => new FileViewModel(m, src.Id)).ToList();
             FieldFileGuids = src.FieldFileGuidsArray;
-
+            DataFiles = src.DataFiles;
 
 
 
@@ -95,7 +98,22 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.Guid = Guid;
             field.Rank = Rank;
             field.Page = Page;
+            //XXX setter puts the <value element and sets value
+            // this is where you search for the field on the database based on the fieldfileguids
             field.FieldFileGuids = String.Join("|", FieldFileGuids);
+
+            foreach (string fileGuid in field.FieldFileGuidsArray)
+            {
+                DataFile file = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
+                    .Select(m => m as DataFile)
+                    .FirstOrDefault();
+
+                if (file != null)
+                {
+                    field.DataFiles += file.Data;
+                }
+            }
+
             if (typeof(OptionsField).IsAssignableFrom(type))
             {
                 //Creating option list separately and assigning it to the Options propery of the Options field
