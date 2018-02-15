@@ -93,6 +93,19 @@ namespace Catfish.Tests.Helpers
             }
         }
 
+        private IngestionService mIgs { get; set; }
+        public IngestionService Igs
+        {
+            get
+            {
+                if(mIgs == null){
+                    mIgs = new IngestionService(Db);
+                }
+
+                return mIgs;
+            }
+        }
+
         public DatabaseHelper(bool setupData = false)
         {
             Initialize();
@@ -218,8 +231,7 @@ namespace Catfish.Tests.Helpers
                 Collection c = Cs.CreateEntity<Collection>(ets[index]);
                 c.SetName("Collection " + (i + 1));
                 c.SetDescription("Description for Collection " + (i + 1));
-
-                c.Serialize();
+                
                 Cs.UpdateStoredCollection(c);
             }
 
@@ -236,8 +248,7 @@ namespace Catfish.Tests.Helpers
                 Item e = Is.CreateEntity<Item>(ets[index]);
                 e.SetName("Item " + (i + 1));
                 e.SetDescription("Description for Item " + (i + 1));
-
-                e.Serialize();
+                
                 Is.UpdateStoredItem(e);
             }
 

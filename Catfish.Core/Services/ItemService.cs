@@ -234,6 +234,7 @@ namespace Catfish.Core.Services
             if (changedItem.Id > 0) //update Item
                 Db.Entry(dbModel).State = EntityState.Modified;
             else
+                dbModel.Serialize();
                 Db.XmlModels.Add(dbModel);
 
             return dbModel;
