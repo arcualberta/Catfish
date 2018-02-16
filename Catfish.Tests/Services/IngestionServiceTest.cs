@@ -24,7 +24,18 @@ namespace Catfish.Tests.Services
                 Dh.Igs.Import(stream);
             }
 
-            // Check collection Info
+            // Check metadata set
+            Assert.AreEqual(Dh.Db.MetadataSets.Count(), 1);
+            Assert.IsFalse(Dh.Db.MetadataSets.ToList().Where(m => m.Guid == "964246e0dae940b7ae211dc60d992e35").Any());
+
+            // Check entity types
+            Assert.AreEqual(Dh.Db.EntityTypes.Count(), 1);
+            Assert.IsFalse(Dh.Db.EntityTypes.Where(e => e.Id == 3).Any());
+
+            //Check Aggrigations
+            Assert.AreEqual(Dh.Db.Collections.Count(), 1);
+            Assert.AreEqual(Dh.Db.Items.Count(), 2);
+
 
         }
 

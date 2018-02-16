@@ -42,7 +42,7 @@
   </metadata-sets>
 
   <entity-types>
-    <entity-type id="1">
+    <entity-type id="3">
 			<name>Generic Object</name>
 			<description>An Albums meta data</description>
 			<target-type>Collections,Items</target-type>

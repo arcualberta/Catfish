@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Catfish.Core.Models.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ namespace Catfish.Core.Models.Ingestion
 
         public List<EntityType> EntityTypes { get; set; }
 
-        public List<Aggregation> Aggregations { get; set; }
+        public List<XmlModel> Aggregations { get; set; }
 
         public List<Relationship> Relationships { get; set; }
 
@@ -24,7 +25,7 @@ namespace Catfish.Core.Models.Ingestion
             Overwrite = false;
             MetadataSets = new List<MetadataSet>();
             EntityTypes = new List<EntityType>();
-            Aggregations = new List<Aggregation>();
+            Aggregations = new List<XmlModel>();
             Relationships = new List<Relationship>();
         }
 
@@ -98,6 +99,19 @@ namespace Catfish.Core.Models.Ingestion
 
         private Ingestion DeserializeMetadatasets(XElement element)
         {
+            foreach(XElement setElement in element.Elements())
+            {
+                string name = setElement.Name.LocalName;
+
+                if(name == "metadata-set")
+                {
+                    MetadataSet set = new MetadataSet();
+                    set.Content = element.ToString();
+
+                    MetadataSets.Add(set);
+                }
+            }
+
             return this;
         }
 
@@ -156,6 +170,75 @@ namespace Catfish.Core.Models.Ingestion
 
         private Ingestion DeserializeEntityTypes(XElement element)
         {
+            foreach(XElement entityElement in element.Elements())
+            {
+                EntityType entityType = new EntityType();
+                entityType.Id = entityElement.Attribute("id") == null ? 0 : int.Parse(entityElement.Attribute("id").Value);
+                
+                foreach(XElement child in element.Elements())
+                {
+                    string name = child.Name.LocalName;
+
+                    if(name == "name")
+                    {
+                        entityType.Name = child.Value;
+                    }else if(name == "description")
+                    {
+                        entityType.Description = child.Value;
+                    }else if(name == "target-type")
+                    {
+                        entityType.TargetTypes = child.Value;
+                    }else if(name == "metadata-sets")
+                    {
+                        foreach(XElement metadata in child.Elements())
+                        {
+                            if (metadata.Name.LocalName == "metadata-set")
+                            {
+                                MetadataSet set = MetadataSets.Where(m => m.Guid == metadata.Attribute("ref").Value).FirstOrDefault();
+                                if (set == null)
+                                {
+                                    set = new MetadataSet();
+                                    set.Guid = metadata.Attribute("ref").Value;
+                                    set.Id = -1;
+                                }
+
+                                entityType.MetadataSets.Add(set);
+
+                                foreach (XElement attrElement in metadata.Elements())
+                                {
+                                    if(attrElement.Name.LocalName == "attribute-mapping")
+                                    {
+                                        EntityTypeAttributeMapping mapping = new EntityTypeAttributeMapping();
+                                        mapping.MetadataSet = set;
+
+                                        foreach(XElement attrChild in attrElement.Elements())
+                                        {
+                                            string attrName = attrChild.Name.LocalName;
+                                            if(attrName == "name")
+                                            {
+                                                mapping.Name = attrChild.Value;
+                                            }
+                                            else if(attrName == "field-name")
+                                            {
+                                                mapping.FieldName = attrChild.Value;
+                                            }
+                                            else if(attrName == "label")
+                                            {
+                                                //When we implement the new mappings in a later sprint, we will need this field.
+                                            }
+                                        }
+
+                                        entityType.AttributeMappings.Add(mapping);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                EntityTypes.Add(entityType);
+            }
+
             return this;
         }
 
@@ -177,6 +260,36 @@ namespace Catfish.Core.Models.Ingestion
 
         private Ingestion DeserializeAggregations(XElement element)
         {
+            foreach(XElement child in element.Elements())
+            {
+                string name = child.Name.LocalName;
+                XmlModel model = null;
+
+                switch (name)
+                {
+                    case "colleciton":
+                        model = new Collection();
+                        break;
+
+                    case "item":
+                        model = new Item();
+                        break;
+
+                    case "form":
+                        model = new Form();
+                        break;
+
+                    case "file":
+                        model = new DataFile();
+                        break;
+                }
+
+                if(model != null)
+                {
+                    model.Content = element.ToString();
+                    Aggregations.Add(model);
+                }
+            }
             return this;
         }
 
@@ -194,6 +307,13 @@ namespace Catfish.Core.Models.Ingestion
 
         private Ingestion DeserializeRelationships(XElement element)
         {
+            foreach (XElement child in element.Elements())
+            {
+                if(child.Name.LocalName == "relationship")
+                {
+                    Relationships.Add(new Relationship().Deserialize(child));
+                }
+            }
             return this;
         }
     }
