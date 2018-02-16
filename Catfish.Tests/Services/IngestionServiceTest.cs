@@ -22,6 +22,7 @@ namespace Catfish.Tests.Services
             using(FileStream stream = File.Open("./Resources/IngestionDatabase1.xml", FileMode.Open))
             {
                 Dh.Igs.Import(stream);
+                Dh.Db.SaveChanges();
             }
 
             // Check metadata set
@@ -31,12 +32,18 @@ namespace Catfish.Tests.Services
             // Check entity types
             Assert.AreEqual(Dh.Db.EntityTypes.Count(), 1);
             Assert.IsFalse(Dh.Db.EntityTypes.Where(e => e.Id == 3).Any());
-
+            
             //Check Aggrigations
             Assert.AreEqual(Dh.Db.Collections.Count(), 1);
             Assert.AreEqual(Dh.Db.Items.Count(), 2);
 
+            Assert.IsFalse(Dh.Db.Collections.ToList().Where(c => c.Guid == "abdb71f7e05243a39ff6658799d9eed6").Any());
+            Assert.IsFalse(Dh.Db.Items.ToList().Where(c => c.Guid == "34bd149fe442478f878b3e0b39a68144").Any());
+            Assert.IsFalse(Dh.Db.Items.ToList().Where(c => c.Guid == "844475ec5dc24de58110852a19988880").Any());
 
+            // Check Relationships
+            Assert.AreEqual(Dh.Db.Collections.SelectMany(c => c.ChildItems).Count(), 2);
+            Assert.AreEqual(Dh.Db.Items.SelectMany(i => i.ChildRelations).Count(), 1);
         }
 
         [TestMethod]
@@ -46,9 +53,46 @@ namespace Catfish.Tests.Services
             using (FileStream stream = File.Open("./Resources/IngestionDatabase2.xml", FileMode.Open))
             {
                 Dh.Igs.Import(stream);
+                Dh.Db.SaveChanges();
             }
+            
+            // Check metadata set
+            Assert.AreEqual(Dh.Db.MetadataSets.Count(), 1);
+            Assert.IsTrue(Dh.Db.MetadataSets.ToList().Where(m => m.Guid == "964246e0dae940b7ae211dc60d992e35").Any());
 
-            // Check collection Info
+            // Check entity types
+            Assert.AreEqual(Dh.Db.EntityTypes.Count(), 1);
+            Assert.IsTrue(Dh.Db.EntityTypes.Where(e => e.Id == 1).Any());
+
+            // Check attribute mappings
+            Assert.IsTrue(Dh.Db.EntityTypeAttributeMappings.Where(a =>
+                a.Name == "Name Mapping" &&
+                a.FieldName == "Name"
+            ).Select(a => a.MetadataSet).ToList().Where(m =>
+                m.Guid == "964246e0dae940b7ae211dc60d992e35"
+            ).Any());
+
+            Assert.IsTrue(Dh.Db.EntityTypeAttributeMappings.Where(a =>
+                a.Name == "Description Mapping" &&
+                a.FieldName == "Description"
+            ).Select(a => a.MetadataSet).ToList().Where(m =>
+                m.Guid == "964246e0dae940b7ae211dc60d992e35"
+            ).Any());
+
+            //Check Aggrigations
+            Assert.AreEqual(Dh.Db.Collections.Count(), 1);
+            Assert.AreEqual(Dh.Db.Items.Count(), 2);
+
+            Assert.IsTrue(Dh.Db.Collections.ToList().Where(c => c.Guid == "abdb71f7e05243a39ff6658799d9eed6").Any());
+            Assert.IsTrue(Dh.Db.Items.ToList().Where(c => c.Guid == "34bd149fe442478f878b3e0b39a68144").Any());
+            Assert.IsTrue(Dh.Db.Items.ToList().Where(c => c.Guid == "844475ec5dc24de58110852a19988880").Any());
+
+            // Check Relationships
+            Assert.AreEqual(Dh.Db.Collections.SelectMany(c => c.ChildItems).Count(), 2);
+            Assert.IsTrue(Dh.Db.Collections.SelectMany(c => c.ChildItems).ToList().Where(i => i.Guid == "34bd149fe442478f878b3e0b39a68144").Any());
+            Assert.IsTrue(Dh.Db.Collections.SelectMany(c => c.ChildItems).ToList().Where(i => i.Guid == "844475ec5dc24de58110852a19988880").Any());
+            Assert.AreEqual(Dh.Db.Items.SelectMany(i => i.ChildRelations).Count(), 1);
+            Assert.IsTrue(Dh.Db.Items.SelectMany(i => i.ChildRelations).ToList().Where(i => i.Guid == "34bd149fe442478f878b3e0b39a68144").Any());
         }
 
         [TestMethod]
@@ -61,12 +105,13 @@ namespace Catfish.Tests.Services
                 using (FileStream stream = File.Open("./Resources/IngestionDatabase3.xml", FileMode.Open))
                 {
                     Dh.Igs.Import(stream);
+                    Dh.Db.SaveChanges();
                 }
 
                 Assert.Fail();
-            }catch(Exception ex)
+            }catch(FormatException ex)
             {
-
+                // We should reach htis state because of our bad data.
             }
         }
 
@@ -231,11 +276,11 @@ namespace Catfish.Tests.Services
             string result = "";
             DatabaseHelper Dh = new DatabaseHelper(true);
 
+            // Build the Ingestion
             Collection collection = Dh.Db.Collections.First();
             IEnumerable<Item> items = Dh.Db.Items.Take(2);
             IEnumerable<EntityType> entitytypes = Dh.Db.EntityTypes.Where(e => e.Id == collection.EntityType.Id || items.Select(i => i.EntityTypeId).Contains(e.Id)).Distinct();
             IEnumerable<MetadataSet> metadatasets = Dh.Db.MetadataSets.Where(m => entitytypes.SelectMany(e => e.MetadataSets.Select(mm => mm.Id)).Contains(m.Id)).Distinct();
-
 
             Ingestion ingestion = new Ingestion();
             ingestion.MetadataSets.AddRange(metadatasets);
@@ -265,6 +310,7 @@ namespace Catfish.Tests.Services
                 ChildRef = itemArray[1].Guid
             });
 
+            // Export the injestion
             using(MemoryStream stream = new MemoryStream())
             {
                 Dh.Igs.Export(stream, ingestion);
@@ -278,6 +324,7 @@ namespace Catfish.Tests.Services
 
             XElement testResult = XElement.Parse(result);
 
+            // Test result
             AsserXmlEqualIngestion(testResult, ingestion);
         }
 
@@ -285,8 +332,9 @@ namespace Catfish.Tests.Services
         public void ExportAllTest()
         {
             string result;
-
             DatabaseHelper Dh = new DatabaseHelper(true);
+
+            // Extract all database content
             using (MemoryStream stream = new MemoryStream())
             {
                 Dh.Igs.Export(stream);
@@ -300,6 +348,7 @@ namespace Catfish.Tests.Services
 
             XElement testResult = XElement.Parse(result);
 
+            // Check the result values.
             Assert.AreEqual(testResult.Name.LocalName, "ingestion");
 
             foreach(XElement element in testResult.Elements())
