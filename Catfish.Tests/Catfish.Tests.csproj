@@ -161,7 +161,10 @@
     <Compile Include="Services\SolrServiceTest.cs" />
     <Compile Include="TestData.cs" />
     <Compile Include="Views\EntityGroupViewTest.cs" />
+    <Compile Include="Views\CollectionViewTest.cs" />
+    <Compile Include="Views\ItemViewTest.cs" />
     <Compile Include="Views\EntityTypeViewTest.cs" />
+    <Compile Include="Views\FormViewTest.cs" />
     <Compile Include="Views\MetadataViewTest.cs" />
     <Compile Include="XmlModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

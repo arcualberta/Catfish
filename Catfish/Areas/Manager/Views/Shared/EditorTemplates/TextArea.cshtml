@@ -7,7 +7,7 @@
 @Html.HiddenFor(m => m.Guid)
 
 <div class="name">
-    @Html.Label(string.IsNullOrEmpty(Model.Name) ? "" : Model.Name)
+    @Html.Label(string.IsNullOrEmpty(Model.Name) ? "" : Model.Name, new { @name = "label" })
 </div>
 <div>
     @{ bool showLanguageLabel = Model.Values.Count() > 1; }
