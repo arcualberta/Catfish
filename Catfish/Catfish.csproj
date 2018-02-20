@@ -430,6 +430,7 @@
     <Content Include="Views\Shared\DisplayTemplates\SimpleSearch.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SearchResults.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SearchResult.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FormContainer.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

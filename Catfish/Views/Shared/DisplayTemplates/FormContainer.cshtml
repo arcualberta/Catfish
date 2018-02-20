@@ -1,0 +1,31 @@
+﻿@model Catfish.Models.Regions.FormContainer
+
+@using Piranha.Mvc;
+@using Piranha.Models;
+
+@{ 
+    string cssId = Model.CssId == null ? "" : Model.CssId;
+    string cssClasses = Model.CssClasses == null ? "" : Model.CssClasses;
+    string cssStyles = Model.CssStyles == null ? "" : Model.CssStyles;
+
+    // Change the controller to work with the FormSubmission controller and views.
+    var oldController = ViewContext.Controller.ControllerContext.RouteData.Values["controller"];
+    ViewContext.Controller.ControllerContext.RouteData.Values["controller"] = "FormSubmission";
+}
+
+<div id="@cssId" class="bs @cssClasses form">
+    <style type="text/css" scoped>
+                    @Html.Raw(cssStyles)
+    </style>
+    <form method="post" action="@UI.Permalink()/Edit">
+        @Html.EditorFor(m => m.FormViewModel)
+        <br />
+        <br />
+        <input class="btn btn-primary" type="submit" value="Submit" />
+    </form>
+</div>
+
+@{ 
+    // Sets the controller back to the original.
+    ViewContext.Controller.ControllerContext.RouteData.Values["controller"] = oldController;
+}

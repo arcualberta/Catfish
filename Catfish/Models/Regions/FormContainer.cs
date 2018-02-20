@@ -1,4 +1,6 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Services;
+using Catfish.Models.ViewModels;
 using Piranha.Extend;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Piranha;
 
 namespace Catfish.Models.Regions
 {
@@ -20,9 +23,7 @@ namespace Catfish.Models.Regions
     {
         [Display(Name = "Form")]
         public int FormId { get; set; }
-
-        public Form Form { get; set; }
-
+        
         [Display(Name = "Entity Type")]
         public int EntityTypeId { get; set; }
 
@@ -37,9 +38,9 @@ namespace Catfish.Models.Regions
 
         [NotMapped]
         public SelectList Collections { get; set; }
-      
-        //[NotMapped]
-        //public 
+
+        [NotMapped]
+        public FormViewModel FormViewModel { get; set; }
 
         public override void InitManager(object model)
         {
@@ -55,6 +56,24 @@ namespace Catfish.Models.Regions
             // use these past fetches to show list on vies using SelectList ?
 
             base.InitManager(model);            
+        }
+
+        public override object GetContent(object model)
+        {
+            if (FormId > 0)
+            {
+                SubmissionService subSrv = new SubmissionService(new CatfishDbContext());
+
+                Form form = subSrv.CreateSubmissionForm(FormId);
+
+                FormViewModel = new FormViewModel()
+                {
+                    Form = form,
+                    ItemId = 0
+                };
+            }
+            
+            return base.GetContent(model);
         }
     }
 }
