@@ -4,13 +4,21 @@
         var lastName = "";
         var inArray = false;
 
+        // Parses the name string to find the appropriate element path.
         for (var i = 0; i < name.length; ++i) {
             var char = name[i];
 
             if (inArray) {
                 if (char == "]") {
-                    currentObject[parseInt(lastName)] = {};
-                    currentObject = currentObject[parseInt(lastName)];
+                    var loc = parseInt(lastName);
+
+                    if (currentObject[loc]) {
+                        currentObject = currentObject[loc];
+                    } else {
+                        currentObject[loc] = {};
+                        currentObject = currentObject[loc];
+                    }
+
                     lastName = "";
                     ++i;
                     inArray = false;
@@ -41,6 +49,7 @@
             }
         }
 
+        // Sotres the value
         if (lastName.length > 0) {
             currentObject[lastName] = value;
         } else {
@@ -82,7 +91,11 @@
         return jsonObject;
     }
 
-    function submitFormContainer(baseName, formContainerElement, formContainerJson) {
+    function fillValidationErrors(baseName, formContainerElement, errors) {
+
+    }
+
+    function submitFormContainer(baseName, formContainerElement, formContainerJson, submitUrl, successFunction) {
         var data = {
             "vm" : generateFormContainerJson(baseName, formContainerElement),
             "formContainer" : formContainerJson
@@ -90,10 +103,12 @@
 
         $.ajax({
             method: "POST",
-            url: "http://localhost:49696/apix/forms/submit",
+            url: submitUrl,
             data: data,
             success: function (result) {
-                console.log(result);
+                if (successFunction) {
+                    successFunction(formContainerElement, result);
+                }
             },
             error: function (error) {
                 console.log(error);

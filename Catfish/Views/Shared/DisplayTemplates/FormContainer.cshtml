@@ -23,12 +23,21 @@
         <br />
         <input class="btn btn-primary" type="submit" value="Submit" />
     </form>
+    <div class="form-success" style="display: none">
+        <p>@Catfish.Resources.Views.Shared.DisplayTemplates.FormContainer.SubmitSuccess</p>
+    </div>
 </div>
 
 <script type="text/javascript">
-    $("#@cssId").submit(function (ev) {
+    $("#@cssId > form").submit(function (ev) {
         ev.preventDefault();
-        submitFormContainer("@Html.NameFor(m => m.FormViewModel)", this, @Html.Raw(Json.Encode(Model)));
+
+        //TODO: Add confirmation
+
+        submitFormContainer("@Html.NameFor(m => m.FormViewModel)", this, @Html.Raw(Json.Encode(Model)), "http://localhost:49696/apix/forms/submit", function (caller, result) {
+            $("#@cssId > form").hide();
+            $("#@cssId > .form-success").show();
+        });
     })
 </script>
 
