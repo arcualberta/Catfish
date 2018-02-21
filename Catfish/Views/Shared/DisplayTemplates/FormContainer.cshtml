@@ -4,9 +4,9 @@
 @using Piranha.Models;
 
 @{ 
-    string cssId = Model.CssId == null ? "" : Model.CssId;
-    string cssClasses = Model.CssClasses == null ? "" : Model.CssClasses;
-    string cssStyles = Model.CssStyles == null ? "" : Model.CssStyles;
+    string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-','K') : Model.CssId;
+    string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
+    string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
 
     // Change the controller to work with the FormSubmission controller and views.
     var oldController = ViewContext.Controller.ControllerContext.RouteData.Values["controller"];
@@ -24,6 +24,13 @@
         <input class="btn btn-primary" type="submit" value="Submit" />
     </form>
 </div>
+
+<script type="text/javascript">
+    $("#@cssId").submit(function (ev) {
+        ev.preventDefault();
+        submitFormContainer("@Html.NameFor(m => m.FormViewModel)", this, @Html.Raw(Json.Encode(Model)));
+    })
+</script>
 
 @{ 
     // Sets the controller back to the original.

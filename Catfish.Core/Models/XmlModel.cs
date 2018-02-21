@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
@@ -71,6 +72,7 @@ namespace Catfish.Core.Models
         [NotMapped]
         private XElement mData;
 
+        [ScriptIgnore]
         [NotMapped]
         public virtual XElement Data
         {

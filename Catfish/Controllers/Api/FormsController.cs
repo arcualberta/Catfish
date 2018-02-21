@@ -1,0 +1,46 @@
+﻿using Catfish.Core.Models;
+using Catfish.Core.Services;
+using Catfish.Models.Regions;
+using Catfish.Models.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace Catfish.Controllers.Api
+{
+    public class FormsController : Controller
+    {
+        private CatfishDbContext mDb;
+        public CatfishDbContext Db { get { if (mDb == null) mDb = new CatfishDbContext(); return mDb; } }
+
+        [HttpPost]
+        public JsonResult Submit(FormViewModel vm, FormContainer formContainer)
+        {
+            if (ModelState.IsValid)
+            {
+                SubmissionService subSrv = new SubmissionService(Db);
+                Item submission = subSrv.SaveSubmission(
+                    vm.Form,
+                    vm.FormSubmissionRef,
+                    vm.ItemId,
+                    formContainer.EntityTypeId,
+                    formContainer.FormId,
+                    formContainer.CollectionId);
+
+                // Set's the audit log value when saving.
+                // TODO: this should be more automated.
+                AuditEntry.eAction action = submission.Id == 0 ? AuditEntry.eAction.Create : AuditEntry.eAction.Update;
+                string actor = User.Identity.IsAuthenticated ? User.Identity.Name : "Annonymous";
+                Db.SaveChanges(User.Identity);
+            }
+            else
+            {
+                vm.Errors = new Dictionary<string, string>();
+            }
+
+            return Json(vm);
+        }
+    }
+}

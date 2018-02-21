@@ -11,6 +11,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Piranha;
+using System.Web.Script.Serialization;
 
 namespace Catfish.Models.Regions
 {
@@ -30,16 +31,16 @@ namespace Catfish.Models.Regions
         [Display(Name = "Collection")]
         public int CollectionId { get; set; }
 
-        [NotMapped]
+        [ScriptIgnore]
         public SelectList Forms { get; set; }
 
-        [NotMapped]
+        [ScriptIgnore]
         public SelectList EntityTypes { get; set; }
 
-        [NotMapped]
+        [ScriptIgnore]
         public SelectList Collections { get; set; }
 
-        [NotMapped]
+        [ScriptIgnore]
         public FormViewModel FormViewModel { get; set; }
 
         public override void InitManager(object model)

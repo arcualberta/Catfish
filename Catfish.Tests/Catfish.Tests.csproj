@@ -159,6 +159,7 @@
     <Compile Include="Services\IngestionServiceTest.cs" />
     <Compile Include="Services\MetadataServiceTest.cs" />
     <Compile Include="Services\SolrServiceTest.cs" />
+    <Compile Include="Services\SubmissionServiceTest.cs" />
     <Compile Include="TestData.cs" />
     <Compile Include="Views\EntityGroupViewTest.cs" />
     <Compile Include="Views\CollectionViewTest.cs" />
