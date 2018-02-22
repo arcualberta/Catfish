@@ -91,8 +91,21 @@
         return jsonObject;
     }
 
-    function fillValidationErrors(baseName, formContainerElement, errors) {
+    function fillValidationErrors(baseName, serverName, formContainerElement, errors) {
+        $(formContainerElement).find(".form-error").hide();
 
+        for (var key in errors) {
+            if (errors.hasOwnProperty(key)) {
+                var message = "<span>" + errors[key][0] + "<span>";
+
+                for (var i = 1; i < errors.length; ++i) {
+                    message += "<br/><span>" + errors[i] + "</span>";
+                }
+
+                var name = baseName + "." + key.substring(serverName.length);
+                $(formContainerElement).find(".form-error[name='" + name + "']").html(message).show();
+            }
+        }
     }
 
     function submitFormContainer(baseName, formContainerElement, formContainerJson, submitUrl, successFunction) {
@@ -106,8 +119,12 @@
             url: submitUrl,
             data: data,
             success: function (result) {
-                if (successFunction) {
-                    successFunction(formContainerElement, result);
+                if (result.Errors) {
+                    fillValidationErrors(baseName, "vm.", formContainerElement, result.Errors);
+                } else {
+                    if (successFunction) {
+                        successFunction(formContainerElement, result);
+                    }
                 }
             },
             error: function (error) {

@@ -20,6 +20,6 @@ namespace Catfish.Models.ViewModels
 
         public string FormSubmissionRef { get; set; }
 
-        public IDictionary<string, string> Errors { get; set; }
+        public IDictionary<string, string[]> Errors { get; set; }
     }
 }

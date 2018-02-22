@@ -37,7 +37,13 @@ namespace Catfish.Controllers.Api
             }
             else
             {
-                vm.Errors = new Dictionary<string, string>();
+                vm.Errors = new Dictionary<string, string[]>();
+
+                IEnumerable<KeyValuePair<string, System.Web.Mvc.ModelState>> errors = ModelState.Where(m => m.Value.Errors.Count > 0);
+                foreach(var error in errors)
+                {
+                    vm.Errors.Add(error.Key, error.Value.Errors.Select(e => e.ErrorMessage).ToArray());
+                }
             }
 
             return Json(vm);
