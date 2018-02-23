@@ -67,11 +67,11 @@ namespace Catfish.Core.Models.Ingestion
                 string name = element.Name.LocalName;
                 if (name == "parent")
                 {
-                    ParentRef = element.Attribute("ref").ToString();
+                    ParentRef = element.Attribute("ref").Value;
                 }
                 else if (name == "child")
                 {
-                    ChildRef = element.Attribute("ref").ToString();
+                    ChildRef = element.Attribute("ref").Value;
                 }
             }
 

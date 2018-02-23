@@ -265,25 +265,32 @@ namespace Catfish.Tests.Helpers
 
         public void Initialize()
         {
-            Catfish.Tests.Migrations.Configuration config = new Catfish.Tests.Migrations.Configuration();
-            var migrator = new DbMigrator(config);
-            
-            foreach(string migName in migrator.GetPendingMigrations())
+            try
             {
-                Type migration = config.MigrationsAssembly.GetType(string.Format("{0}.{1}", config.MigrationsNamespace, migName.Substring(16)));
-                DbMigration m = (DbMigration)Activator.CreateInstance(migration);
-                m.Up();
+                Catfish.Tests.Migrations.Configuration config = new Catfish.Tests.Migrations.Configuration();
+                var migrator = new DbMigrator(config);
 
-                var prop = m.GetType().GetProperty("Operations", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if(prop != null)
+                foreach (string migName in migrator.GetPendingMigrations())
                 {
-                    IEnumerable<MigrationOperation> operations = prop.GetValue(m) as IEnumerable<MigrationOperation>;
-                    var generator = config.GetSqlGenerator("System.Data.SQLite");
-                    var statements = generator.Generate(operations, "2008");
-                    foreach (MigrationStatement item in statements)
-                        Db.Database.ExecuteSqlCommand(item.Sql);
+                    Type migration = config.MigrationsAssembly.GetType(string.Format("{0}.{1}", config.MigrationsNamespace, migName.Substring(16)));
+                    DbMigration m = (DbMigration)Activator.CreateInstance(migration);
+                    m.Up();
+
+                    var prop = m.GetType().GetProperty("Operations", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    if (prop != null)
+                    {
+                        IEnumerable<MigrationOperation> operations = prop.GetValue(m) as IEnumerable<MigrationOperation>;
+                        var generator = config.GetSqlGenerator("System.Data.SQLite");
+                        var statements = generator.Generate(operations, "2008");
+                        foreach (MigrationStatement item in statements)
+                            Db.Database.ExecuteSqlCommand(item.Sql);
+                    }
+
                 }
-                
+            }
+            catch(Exception ex)
+            {
+                throw ex;
             }
         }
 
