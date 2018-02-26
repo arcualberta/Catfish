@@ -315,7 +315,7 @@ namespace Catfish.Core.Services
             ingestion.EntityTypes.AddRange(entitytypes);
             ingestion.Aggregations.AddRange(collections);
             ingestion.Aggregations.AddRange(items);
-            //ingestion.Aggregations.AddRange(forms);
+            //ingestion.Aggregations.AddRange(forms);   //MR Feb 23 2018: Form is not an Aggregation object: ignore form now -- have to revisit this later
 
 
             Item[] itemArray = items.ToArray();

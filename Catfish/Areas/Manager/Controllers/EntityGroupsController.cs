@@ -55,7 +55,6 @@ namespace Catfish.Areas.Manager.Controllers
                 {
                     if(string.IsNullOrEmpty(entGrpVM.EntityGroupName))
                     {
-                        //ModelState.AddModelError("EntityGroupName", "Entity Group Name is required.");
                         entGrpVM.ErrorMessage = "*";
                     }
                 }
@@ -101,54 +100,18 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
        
-        //// GET: Manager/EntityGroups/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: Manager/EntityGroups/Delete/5
-        //[HttpPost]
-        //public ActionResult Delete(int id, FormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add delete logic here
-
-        //        return RedirectToAction("Index");
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
 
         #region knockout MVC methods
         [HttpPost]
         public JsonResult AddUser(EntityGroupViewModel vm)
-        {
-            //vm.SelectedUsers.Add(vm.AllUsers.ElementAt(idx));
+        {            
             vm.AddUser();
             return Json(vm);
         }
 
-        //[HttpPost]
-        //public JsonResult Move(EntityTypeViewModel vm, int idx, int step)
-        //{
-        //    int newIdx = KoBaseViewModel.GetBoundedArrayIndex(idx + step, vm.AssociatedMetadataSets.Count);
-        //    if (idx != newIdx)
-        //    {
-        //        var ms = vm.AssociatedMetadataSets.ElementAt(idx);
-        //        vm.AssociatedMetadataSets.RemoveAt(idx);
-        //        vm.AssociatedMetadataSets.Insert(newIdx, ms);
-        //    }
-        //    return Json(vm);
-        //}
-
         [HttpPost]
         public JsonResult RemoveSelected(EntityGroupViewModel vm)
         {
-            //vm.SelectedUsers.RemoveAt(idx);
             vm.RemoveSelected();
             return Json(vm);
         }
