@@ -14,6 +14,7 @@ using Catfish.Core.Models;
 using Catfish.Helpers;
 using Catfish.Core.Services;
 using Catfish.Core.ModelBinders;
+using Catfish.Core.Validators;
 
 namespace Catfish
 {
@@ -52,6 +53,9 @@ namespace Catfish
 
             //Multilingual menu
             Hooks.Menu.RenderItemLink = ViewHelper.MultilingualMenuRenderer;
+
+            // Setup Validation Attributes
+            FormFieldValidationAttribute.CurrentLanguageCodes = () => new string[] { ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName };
 
             // Check for a SolrConnection
             string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];

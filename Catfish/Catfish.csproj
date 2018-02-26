@@ -305,6 +305,7 @@
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
     <Content Include="Scripts\fileupload.js" />
+    <Content Include="Scripts\form.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-ui.js" />
@@ -334,6 +335,7 @@
     <Compile Include="Areas\Manager\Controllers\FormTemplatesController.cs" />
     <Compile Include="Areas\Manager\ModelBinders\DateModelBinder.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityGroupViewModel.cs" />
+    <Compile Include="Controllers\Api\FormsController.cs" />
     <Compile Include="Controllers\Api\ItemsController.cs" />
     <Compile Include="Controllers\Api\StatsController.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
@@ -373,6 +375,11 @@
     <Compile Include="Models\Regions\SimpleSearch.cs" />
     <Compile Include="Models\ViewModels\FormViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Views\Shared\DisplayTemplates\FormContainer.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FormContainer.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Views\Shared\DisplayTemplates\SearchResult.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -430,6 +437,7 @@
     <Content Include="Views\Shared\DisplayTemplates\SimpleSearch.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SearchResults.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SearchResult.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FormContainer.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -455,6 +463,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\Views\Shared\DisplayTemplates\FormContainer.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>FormContainer.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Views\Shared\DisplayTemplates\SearchResult.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>SearchResult.Designer.cs</LastGenOutput>
