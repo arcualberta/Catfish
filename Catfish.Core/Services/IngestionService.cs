@@ -308,14 +308,14 @@ namespace Catfish.Core.Services
             IEnumerable<Item> items = Db.Items;
             IEnumerable<EntityType> entitytypes = Db.EntityTypes;
             IEnumerable<MetadataSet> metadatasets = Db.MetadataSets;
-            IEnumerable<Form> forms = Db.FormTemplates;
+            //IEnumerable<Form> forms = Db.FormTemplates;
 
             Ingestion ingestion = new Ingestion();
             ingestion.MetadataSets.AddRange(metadatasets);
             ingestion.EntityTypes.AddRange(entitytypes);
             ingestion.Aggregations.AddRange(collections);
             ingestion.Aggregations.AddRange(items);
-            ingestion.Aggregations.AddRange(forms);
+            //ingestion.Aggregations.AddRange(forms);
 
 
             Item[] itemArray = items.ToArray();
@@ -325,7 +325,7 @@ namespace Catfish.Core.Services
             {
                 foreach(Item itm in items.ToList())
                 {
-                    if(itm.ParentMembers.Any(p=>p.MappedGuid == col.Guid))
+                    if(col.ChildMembers.Any(p=>p.MappedGuid == itm.Guid))
                     {
                         ingestion.Relationships.Add(new Relationship
                         {
