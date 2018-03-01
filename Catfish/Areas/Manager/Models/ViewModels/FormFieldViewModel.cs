@@ -27,9 +27,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         // Attachment creates multiple recursions on view leaving the page unresponsive
         //[ScriptIgnore]
         //public Attachment Attachment { get; set; }
-        public List<FileViewModel> Files { get; set; }
+        //public List<FileViewModel> Files { get; set; }
         public string[] FieldFileGuids { get; set; }
-        public string DataFiles { get; set; }
+        public List<DataFile> Files { get; set; }
 
         public int Rank { get; set; }
         public int Page { get; set; }
@@ -47,9 +47,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Rank = src.Rank;
             Page = src.Page;
             IsPageBreak = src.IsPageBreak();
-            Files = src.Files.Select( m => new FileViewModel(m, src.Id)).ToList();
+            //Files = src.Files.Select( m => new FileViewModel(m, src.Id)).ToList();
             FieldFileGuids = src.FieldFileGuidsArray;
-            DataFiles = src.DataFiles;
+            Files = src.Files;
 
 
 
@@ -102,6 +102,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             // this is where you search for the field on the database based on the fieldfileguids
             field.FieldFileGuids = String.Join("|", FieldFileGuids);
 
+            List<DataFile> filesList = new List<DataFile>();
             foreach (string fileGuid in field.FieldFileGuidsArray)
             {
                 DataFile file = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
@@ -110,9 +111,14 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
                 if (file != null)
                 {
-                    field.DataFiles += file.Data;
+                    //field.DataFiles += file.Data;
+                    filesList.Add(file);
+                    Db.XmlModels.Remove(file);                    
                 }
             }
+            Db.SaveChanges();
+
+            field.Files = filesList;
 
             if (typeof(OptionsField).IsAssignableFrom(type))
             {

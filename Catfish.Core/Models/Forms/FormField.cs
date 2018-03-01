@@ -49,20 +49,30 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
-        public string DataFiles
+        public List<DataFile> Files
         {
             get
             {
-                XElement val = Data.Element("files");
-                return val == null ? "" : val.Value;
+                return GetChildModels("files/" + DataFile.TagName, Data).Select(c => c as DataFile).ToList();
             }
+
             set
             {
-                XElement val = Data.Element("files");
-                if (val == null)
-                    Data.Add(val = new XElement("files"));
+                XElement filesElement = Data.Element("files");
+                if (filesElement == null)
+                {
+                    filesElement = new XElement("files");
+                    Data.Add(filesElement);
+                }
+                foreach (DataFile dataFile in value)
+                {
+                    filesElement.Add(dataFile.Data);
+                }
+                //XElement val = Data.Element("files");
+                //if (val == null)
+                //    Data.Add(val = new XElement("files"));
 
-                val.Value = value == null ? "" : value;
+                //val.Value = value == null ? "" : value;
             }
         }
 
@@ -86,15 +96,15 @@ namespace Catfish.Core.Models.Forms
         //}
         //private Attachment mAttachmentField;
 
-        [ScriptIgnore]
-        [NotMapped]
-        public virtual IEnumerable<DataFile> Files
-        {
-            get
-            {
-                return GetChildModels("data/" + DataFile.TagName, Data).Select(c => c as DataFile);
-            }
-        }
+        //[ScriptIgnore]
+        //[NotMapped]
+        //public virtual IEnumerable<DataFile> Files
+        //{
+        //    get
+        //    {
+        //        return GetChildModels("data/" + DataFile.TagName, Data).Select(c => c as DataFile);
+        //    }
+        //}
 
         //XXX End
 

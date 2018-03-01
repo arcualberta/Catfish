@@ -52,20 +52,23 @@ namespace Catfish.Core.Models
 
         public string GetName(string lang = null)
         {
-            var mapping = EntityType.GetNameMapping();
-            if(mapping != null)
+            if (EntityType != null)
             {
-                string msName = mapping.MetadataSet.Name;
-                string fieldName = mapping.FieldName;
-                MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
-                FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
+                var mapping = EntityType.GetNameMapping();
+                if (mapping != null)
+                {
+                    string msName = mapping.MetadataSet.Name;
+                    string fieldName = mapping.FieldName;
+                    MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
+                    FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
 
-                if(field == null)
-                    return "ERROR: INCORRECT NAME MAPPING FOUND FOR THIS ENTITY TYPE";
+                    if (field == null)
+                        return "ERROR: INCORRECT NAME MAPPING FOUND FOR THIS ENTITY TYPE";
 
-                return MultilingualHelper.Join(field.GetValues(), " / ", false);
+                    return MultilingualHelper.Join(field.GetValues(), " / ", false);
+                }
             }
-
+            
             return GetChildText("name", Data, Lang(lang));
         }
         public override void SetName(string val, string lang = null)
@@ -82,20 +85,23 @@ namespace Catfish.Core.Models
         }
         public override string GetDescription(string lang = null)
         {
-            var mapping = EntityType.GetDescriptionMapping();
-            if (mapping != null)
+            if (EntityType != null)
             {
-                string msName = mapping.MetadataSet.Name;
-                string fieldName = mapping.FieldName;
-                MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
-                FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
+                var mapping = EntityType.GetDescriptionMapping();
+                if (mapping != null)
+                {
+                    string msName = mapping.MetadataSet.Name;
+                    string fieldName = mapping.FieldName;
+                    MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
+                    FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
 
-                if (field == null)
-                    return "ERROR: INCORRECT DESCRIPTION MAPPING FOUND FOR THIS ENTITY TYPE";
+                    if (field == null)
+                        return "ERROR: INCORRECT DESCRIPTION MAPPING FOUND FOR THIS ENTITY TYPE";
 
-                return MultilingualHelper.Join(field.GetValues(), " / ", false);
+                    return MultilingualHelper.Join(field.GetValues(), " / ", false);
+                }
             }
-
+            
             return GetChildText("description", Data, Lang(lang));
         }
         public override void SetDescription(string val, string lang = null)
