@@ -5,6 +5,7 @@ using Catfish.Core.Models.Data;
 using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Script.Serialization;
@@ -30,6 +31,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         //public List<FileViewModel> Files { get; set; }
         public string[] FieldFileGuids { get; set; }
         public List<DataFile> Files { get; set; }
+        public List<string> FileThings { get; set; }
 
         public int Rank { get; set; }
         public int Page { get; set; }
@@ -50,6 +52,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             //Files = src.Files.Select( m => new FileViewModel(m, src.Id)).ToList();
             FieldFileGuids = src.FieldFileGuidsArray;
             Files = src.Files;
+            FileThings = new List<string>() { "test", "test2" };
 
 
 
@@ -100,25 +103,11 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.Page = Page;
             //XXX setter puts the <value element and sets value
             // this is where you search for the field on the database based on the fieldfileguids
+
+            //XXX Quizas quita esto y toma los archivos de la lista de file elements
             field.FieldFileGuids = String.Join("|", FieldFileGuids);
-
-            List<DataFile> filesList = new List<DataFile>();
-            foreach (string fileGuid in field.FieldFileGuidsArray)
-            {
-                DataFile file = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
-                    .Select(m => m as DataFile)
-                    .FirstOrDefault();
-
-                if (file != null)
-                {
-                    //field.DataFiles += file.Data;
-                    filesList.Add(file);
-                    Db.XmlModels.Remove(file);                    
-                }
-            }
-            Db.SaveChanges();
-
-            field.Files = filesList;
+            
+            UpdateFileList(field);
 
             if (typeof(OptionsField).IsAssignableFrom(type))
             {
@@ -164,6 +153,72 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         ////}
 
         public override void UpdateDataModel(object dataModel, CatfishDbContext db) { }
+
+        private void UpdateFileList(FormField field)
+        {
+            // Remove old files (should we remove all files ?)
+
+            List<string> test = field.FieldFileGuidsArray.ToList();
+
+            foreach (DataFile file in field.Files.ToList())
+            {
+                if (test.IndexOf(file.Guid) < 0)
+                {
+                    //Deleting the file node from the XML Model
+                    //XXX Missing remove file
+                    //dstItem.RemoveFile(file);
+                }
+            }
+
+            // Add new files
+
+            List<DataFile> filesList = new List<DataFile>();
+            foreach (string fileGuid in field.FieldFileGuidsArray)
+            {
+                DataFile file = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
+                    .Select(m => m as DataFile)
+                    .FirstOrDefault();
+
+                if (file != null)
+                {
+                    MoveFileToField(file, field);
+                    filesList.Add(file);
+                    Db.XmlModels.Remove(file);
+
+                    // Move file from temp folder                    
+                }
+            }
+
+            field.Files = filesList;
+            Db.SaveChanges();            
+        }
+
+        //XXX Duplicating code from ItemService.cs UpdateFiles method
+
+        private void MoveFileToField(DataFile file, FormField field)
+        {
+      
+            //moving the physical files from the temporary upload folder to a folder identified by the GUID of the
+            //item inside the uploaded data folder
+            string dstDir = Path.Combine(ConfigHelper.DataRoot, field.MappedGuid);
+            if (!Directory.Exists(dstDir))
+                Directory.CreateDirectory(dstDir);
+
+            string srcFile = Path.Combine(file.Path, file.LocalFileName);
+            string dstFile = Path.Combine(dstDir, file.LocalFileName);
+            File.Move(srcFile, dstFile);
+
+            //moving the thumbnail, if it's not a shared one
+            if (file.ThumbnailType == DataFile.eThumbnailTypes.NonShared)
+            {
+                string srcThumbnail = Path.Combine(file.Path, file.Thumbnail);
+                string dstThumbnail = Path.Combine(dstDir, file.Thumbnail);
+                File.Move(srcThumbnail, dstThumbnail);
+            }
+
+            //updating the file path
+            file.Path = dstDir;
+        }
 
     }
 }

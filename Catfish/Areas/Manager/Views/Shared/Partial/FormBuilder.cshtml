@@ -1,6 +1,7 @@
 ﻿@model Catfish.Areas.Manager.Models.ViewModels.FormBuilderViewModel
 @using PerpetuumSoft.Knockout
 @using Catfish.Areas.Manager.Models.ViewModels
+@using Catfish.Core.Models.Data
 
 @{
     var context = "ctx_" + Guid.NewGuid().ToString("N");
@@ -65,6 +66,8 @@
                                     <div class="input">
                                         @using (var name = field.Foreach(f => f.Name))
                                         {
+                                            @name.Html.Span(f => "Kamal");
+                                            <div> test</div>
                                             <div class="languageInputField">
                                                 @name.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
                                                 @name.Html.Span(n => n.LanguageLabel, new { @class = "lang-label" })
@@ -118,27 +121,34 @@
                                 <li>
                                     <label class="control-label col-md-2">Attached files</label>
                                     <div class="form-view">
+                                        @field.Html.Span(f => f.Files.Count)
+                                        @*@using (KnockoutForeachContext<DataFile> fileViewModel = field.Model.Files.ForEach(f => f))*@
+                                        @*                                        @using (var file = field.Foreach(f => f.FileThings))*@
+                                        @*@using (var file = field.Foreach(f => f.Files))
+                                        {
+                                            @file.Html.Span(f => "Kamal");
+                                        }*@
                                         @* XXX Change controller to file upload *@
                                         @Html.Partial("Partial/FileAttachment", field,
-                                            new ViewDataDictionary{
-                                                                   { "UploadApiUrl", @Url.Action("upload", "items")},
-                                                                   { "DeleteApiUrl",  @Url.Action("deleteCashedFile", "items")},
-                                                                   { "ParentId", Model.Id },
-                                                                   { "Controller", "items" }
-                                            })
+        new ViewDataDictionary{
+                               { "UploadApiUrl", @Url.Action("upload", "items")},
+                               { "DeleteApiUrl",  @Url.Action("deleteCashedFile", "items")},
+                               { "ParentId", Model.Id },
+                               { "Controller", "items" }
+        })
 
                                         @*@if (field.Model != null)
-                                            {
-                                            @Html.EditorFor(m => field.Model.Attachment,
-                                                     new
-                                                     {
-                                                         UploadApiUrl = @Url.Action("upload", "items"),
-                                                         DeleteApiUrl = @Url.Action("deleteCashedFile", "items"),
-                                                         Files = field.Model.Files,
-                                                         ParentId = Model.Id,
-                                                         Controller = "items"
-                                                     })
-                                            }*@
+        {
+        @Html.EditorFor(m => field.Model.Attachment,
+                 new
+                 {
+                     UploadApiUrl = @Url.Action("upload", "items"),
+                     DeleteApiUrl = @Url.Action("deleteCashedFile", "items"),
+                     Files = field.Model.Files,
+                     ParentId = Model.Id,
+                     Controller = "items"
+                 })
+        }*@
                                     </div>
                                 </li>
                             </ul>
