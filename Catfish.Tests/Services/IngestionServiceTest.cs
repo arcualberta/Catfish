@@ -19,7 +19,7 @@ namespace Catfish.Tests.Services
         public void ImportCorrectNewTest()
         {
             DatabaseHelper Dh = new DatabaseHelper(false);
-            using(FileStream stream = File.Open("./Resources/IngestionDatabase1.xml", FileMode.Open))
+            using( FileStream stream = File.Open("./Resources/IngestionDatabase1.xml", FileMode.Open))
             {
                 Dh.Igs.Import(stream);
                 Dh.Db.SaveChanges();
@@ -42,8 +42,9 @@ namespace Catfish.Tests.Services
             Assert.IsFalse(Dh.Db.Items.ToList().Where(c => c.Guid == "844475ec5dc24de58110852a19988880").Any());
 
             // Check Relationships
-            Assert.AreEqual(Dh.Db.Collections.SelectMany(c => c.ChildItems).Count(), 2);
             Assert.AreEqual(Dh.Db.Items.SelectMany(i => i.ChildRelations).Count(), 1);
+            Assert.AreEqual(Dh.Db.Collections.SelectMany(c => c.ChildMembers).Count(), 2);
+            
         }
 
         [TestMethod]
@@ -88,9 +89,9 @@ namespace Catfish.Tests.Services
             Assert.IsTrue(Dh.Db.Items.ToList().Where(c => c.Guid == "844475ec5dc24de58110852a19988880").Any());
 
             // Check Relationships
-            Assert.AreEqual(Dh.Db.Collections.SelectMany(c => c.ChildItems).Count(), 2);
-            Assert.IsTrue(Dh.Db.Collections.SelectMany(c => c.ChildItems).ToList().Where(i => i.Guid == "34bd149fe442478f878b3e0b39a68144").Any());
-            Assert.IsTrue(Dh.Db.Collections.SelectMany(c => c.ChildItems).ToList().Where(i => i.Guid == "844475ec5dc24de58110852a19988880").Any());
+            Assert.AreEqual(Dh.Db.Collections.SelectMany(c => c.ChildMembers).Count(), 2);
+            Assert.IsTrue(Dh.Db.Collections.SelectMany(c => c.ChildMembers).ToList().Where(i => i.Guid == "34bd149fe442478f878b3e0b39a68144").Any());
+            Assert.IsTrue(Dh.Db.Collections.SelectMany(c => c.ChildMembers).ToList().Where(i => i.Guid == "844475ec5dc24de58110852a19988880").Any());
             Assert.AreEqual(Dh.Db.Items.SelectMany(i => i.ChildRelations).Count(), 1);
             Assert.IsTrue(Dh.Db.Items.SelectMany(i => i.ChildRelations).ToList().Where(i => i.Guid == "34bd149fe442478f878b3e0b39a68144").Any());
         }
@@ -111,6 +112,7 @@ namespace Catfish.Tests.Services
                 Assert.Fail();
             }catch(FormatException ex)
             {
+                Assert.AreEqual("Invalid XML relationship element.", ex.Message);
                 // We should reach htis state because of our bad data.
             }
         }
@@ -363,19 +365,48 @@ namespace Catfish.Tests.Services
                 {
                     Assert.AreEqual(element.Elements().Count(), Dh.Db.EntityTypes.Count());
                 }
-                else if(name == "aggrigations")
+                else if(name == "aggregations")
                 {
                     Assert.AreEqual(element.Elements().Count(), Dh.Db.Items.Count() + Dh.Db.Collections.Count() + Dh.Db.FormTemplates.Count());
                 }
                 else if(name == "relationships")
                 {
                     //TODO
+                    Assert.AreEqual(element.Elements().Count(), countRelationship(Dh));
                 }
                 else
                 {
                     Assert.Fail("Unkown element \"{0}\" found.", name);
                 }
             }
+
+            
         }
+        private int countRelationship(DatabaseHelper Dh)
+        {
+            int total = 0;
+
+            foreach (var col in Dh.Db.Collections)
+            {
+                foreach(var rel in col.ChildMembers)
+                {
+                    total++;
+                }
+            }
+            foreach (var item in Dh.Db.Items)
+            {
+                foreach (var rel in item.ChildMembers)
+                {
+                    total++;
+                }
+                foreach (var rel in item.ChildRelations)
+                {
+                    total++;
+                }
+            }
+
+            return total;
+        }
+
     }
 }

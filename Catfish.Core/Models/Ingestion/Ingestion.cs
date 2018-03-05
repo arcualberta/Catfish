@@ -102,12 +102,13 @@ namespace Catfish.Core.Models.Ingestion
             foreach(XElement setElement in element.Elements())
             {
                 string name = setElement.Name.LocalName;
-
-                if(name == "metadata-set")
+                string strGuid = setElement.Attribute("guid").Value;
+                if (name == "metadata-set")
                 {
                     MetadataSet set = new MetadataSet();
                     set.Content = element.ToString();
-
+                    set.Guid = strGuid;
+                    set.MappedGuid = strGuid;
                     MetadataSets.Add(set);
                 }
             }
@@ -175,7 +176,7 @@ namespace Catfish.Core.Models.Ingestion
                 EntityType entityType = new EntityType();
                 entityType.Id = entityElement.Attribute("id") == null ? 0 : int.Parse(entityElement.Attribute("id").Value);
                 
-                foreach(XElement child in element.Elements())
+                foreach(XElement child in entityElement.Elements())
                 {
                     string name = child.Name.LocalName;
 
@@ -194,13 +195,13 @@ namespace Catfish.Core.Models.Ingestion
                         {
                             if (metadata.Name.LocalName == "metadata-set")
                             {
-                                MetadataSet set = MetadataSets.Where(m => m.Guid == metadata.Attribute("ref").Value).FirstOrDefault();
-                                if (set == null)
-                                {
-                                    set = new MetadataSet();
+                                //MetadataSet set = MetadataSets.Where(m => m.Guid == metadata.Attribute("ref").Value).FirstOrDefault();
+                                //if (set == null)
+                                //{
+                                    MetadataSet set = new MetadataSet();
                                     set.Guid = metadata.Attribute("ref").Value;
                                     set.Id = -1;
-                                }
+                                //}
 
                                 entityType.MetadataSets.Add(set);
 
@@ -264,10 +265,10 @@ namespace Catfish.Core.Models.Ingestion
             {
                 string name = child.Name.LocalName;
                 XmlModel model = null;
-
+                string strGuid = child.Attribute("guid").Value;
                 switch (name)
                 {
-                    case "colleciton":
+                    case "collection":
                         model = new Collection();
                         break;
 
@@ -286,7 +287,9 @@ namespace Catfish.Core.Models.Ingestion
 
                 if(model != null)
                 {
-                    model.Content = element.ToString();
+                    model.Guid = strGuid;
+                    model.MappedGuid = strGuid;
+                    model.Content = child.ToString();
                     Aggregations.Add(model);
                 }
             }
