@@ -335,6 +335,7 @@
     <Compile Include="Areas\Manager\Controllers\FormTemplatesController.cs" />
     <Compile Include="Areas\Manager\ModelBinders\DateModelBinder.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityGroupViewModel.cs" />
+    <Compile Include="Areas\Manager\Services\UserService.cs" />
     <Compile Include="Controllers\Api\FormsController.cs" />
     <Compile Include="Controllers\Api\ItemsController.cs" />
     <Compile Include="Controllers\Api\StatsController.cs" />

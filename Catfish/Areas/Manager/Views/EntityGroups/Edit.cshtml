@@ -41,7 +41,7 @@
             <label class="control-label col-md-2">Login Name: </label>
             <div class="inner">
                 <div  class="input" style="width:500px !important">
-                 @ko.Html.TextBox(m => m.userName, new { @id = "usrName", @style= "width:413px !important;" }).ValueUpdate(KnockoutValueUpdateKind.AfterKeyDown)
+                 @ko.Html.TextBox(m => m.userName, new { @id = "usrName",@placeholder="login name", @style= "width:413px !important;" }).ValueUpdate(KnockoutValueUpdateKind.AfterKeyDown)
                  @ko.Html.Button("Add User", "AddUser", "EntityGroups", null, new { @class = "btn", @id = "addUser" })@*.Enable(m => m.userName.Length > 0)*@
                 </div>
             </div>

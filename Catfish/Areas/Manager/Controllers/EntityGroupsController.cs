@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Catfish.Core.Services;
 using Catfish.Areas.Manager.Models.ViewModels;
 using Piranha;
+using Catfish.Areas.Manager.Services;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -69,11 +70,9 @@ namespace Catfish.Areas.Manager.Controllers
         public EntityGroupViewModel PopulateEntityGroupViewModel(EntityGroup entityGrp)
         {
             EntityGroupViewModel entityGrpVM = new EntityGroupViewModel();
-           
-            using (var db = new DataContext())
-            {
-                entityGrpVM.AllUsers2 = db.Users.Select(u => new { u.Id, u.Login }).ToDictionary(u => u.Id.ToString(), u => u.Login);
-            }
+            UserService userService = new UserService();
+          
+            entityGrpVM.AllUsers2 = userService.GetUserIdAndLoginName();
             entityGrpVM.Id = entityGrp.Id.ToString();
             entityGrpVM.EntityGroupName = entityGrp.Name;
             if(entityGrp.EntityGroupUsers.Count > 0)
@@ -91,15 +90,6 @@ namespace Catfish.Areas.Manager.Controllers
             }        
             return entityGrpVM;            
         }
-
-        public string[] GetSuggestedNames(List<Piranha.Entities.User> users)
-        {
-            string[] loginNames = users.Select(u => u.Login).ToArray();
-
-            return loginNames;
-        }
-
-       
 
         #region knockout MVC methods
         [HttpPost]
