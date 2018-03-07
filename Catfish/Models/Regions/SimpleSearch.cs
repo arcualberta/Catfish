@@ -1,4 +1,5 @@
-﻿using Piranha;
+﻿using Catfish.Areas.Manager.Services;
+using Piranha;
 using Piranha.Entities;
 using Piranha.Extend;
 using Piranha.Models.Manager.PageModels;
@@ -48,7 +49,8 @@ namespace Catfish.Models.Regions
         {
             if (ResultPage != null)
             {
-                var page = Piranha.Models.Page.GetSingle(new Guid(ResultPage));
+                PageService pageService = new PageService();
+                var page = pageService.GetAPage(ResultPage); //Piranha.Models.Page.GetSingle(new Guid(ResultPage));
                 PageLink = page.Permalink;
             }
                 

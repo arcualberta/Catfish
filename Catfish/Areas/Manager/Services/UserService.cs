@@ -22,5 +22,65 @@ namespace Catfish.Areas.Manager.Services
 
             return users;
         }
+
+        /// <summary>
+        /// Get User by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Piranha.Entities.User GetUserById(string id)
+        {
+            Piranha.Entities.User user = new Piranha.Entities.User();
+            using (var db = new DataContext())
+            {
+                user = db.Users.Where(u => u.Id.ToString() == id).FirstOrDefault();
+            }
+
+            return user;
+        }
+
+        /// <summary>
+        /// Get user by Login Name
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
+        public Piranha.Entities.User GetUserByLogin(string login)
+        {
+            Piranha.Entities.User user = new Piranha.Entities.User();
+            try
+            {
+                using (var db = new DataContext())
+                {
+                    user = db.Users.Where(u => u.Login == login).FirstOrDefault();
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+
+            return user;
+        }
+
+        public Piranha.Entities.User GetUserByEmail(string email)
+        {
+            Piranha.Entities.User user = new Piranha.Entities.User();
+            using (var db = new DataContext())
+            {
+                user = db.Users.Where(u => u.Email == email).FirstOrDefault();
+            }
+
+            return user;
+        }
+
+        public IEnumerable<Piranha.Entities.User> GetAllUsers()
+        {
+            IEnumerable<Piranha.Entities.User> users;
+            using (var db = new DataContext())
+            {
+                users = db.Users.AsEnumerable();
+            }
+            return users;
+        }
     }
 }
