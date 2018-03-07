@@ -216,11 +216,7 @@ namespace Catfish.Core.Models
             return data;
         }
 
-        ////public XmlModel(XElement ele, string defaultLang = "en")
-        ////{
-        ////    Data = ele;
-        ////    DefaultLanguage = defaultLang;
-        ////}
+        
 
         [NotMapped]
         [TypeLabel("String")]
@@ -526,10 +522,7 @@ namespace Catfish.Core.Models
             return Parse(root, defaultLang);
         }
 
-        //public void Deserialize()
-        //{
-        //    this.Data = XElement.Parse(this.Content);
-        //}
+        
 
         public void Serialize()
         {
@@ -539,7 +532,7 @@ namespace Catfish.Core.Models
         public virtual void UpdateValues(XmlModel src)
         {
             SetTextValues(XmlHelper.GetTextValues(src.Data));
-            ////this.SetValues(src.GetValues());
+           
         }
 
 

@@ -68,32 +68,6 @@ namespace Catfish.Core.Models
         {
             return AttributeMappings.Where(mapping => mapping.Name == "Description Mapping").FirstOrDefault();
         }
-        /*[NotMapped]
-        public string SetTargetTypes
-        {
-            set
-            {
-                if (TargetTypesList.Count > 0)
-                {
-                    TargetTypes = string.Join(",", TargetTypesList.ToArray());
-                }
-            }
-        }*/
-
-        /*[NotMapped]
-        public IList<eTarget> GetTargetTypes
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(TargetTypes))
-                {
-                    foreach (string tt in TargetTypes.Split(','))
-                    {
-                        TargetTypesList.Add((eTarget)System.Enum.Parse(typeof(eTarget), tt));
-                    }
-                }
-                return TargetTypesList;
-            }
-        }*/
+       
     }
 }
