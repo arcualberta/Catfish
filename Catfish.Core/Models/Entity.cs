@@ -62,7 +62,8 @@ namespace Catfish.Core.Models
 
                 if (field == null)
                 {
-                    throw new Exception("ERROR: INCORRECT NAME MAPPING FOUND FOR THIS ENTITY TYPE");
+                    return "ERROR: INCORRECT NAME MAPPING FOUND FOR THIS ENTITY TYPE";
+                   // throw new Exception("ERROR: INCORRECT NAME MAPPING FOUND FOR THIS ENTITY TYPE");
                 }
 
                 return MultilingualHelper.Join(field.GetValues(), " / ", false);
@@ -94,7 +95,8 @@ namespace Catfish.Core.Models
 
                 if (field == null)
                 {
-                    throw new Exception("ERROR: INCORRECT DESCRIPTION MAPPING FOUND FOR THIS ENTITY TYPE");
+                    return "ERROR: INCORRECT DESCRIPTION MAPPING FOUND FOR THIS ENTITY TYPE";
+                   // throw new Exception("ERROR: INCORRECT DESCRIPTION MAPPING FOUND FOR THIS ENTITY TYPE");
                 }
 
                 return MultilingualHelper.Join(field.GetValues(), " / ", false);
