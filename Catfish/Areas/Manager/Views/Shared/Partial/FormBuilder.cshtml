@@ -9,6 +9,48 @@
     string controller = ViewData["controller"] as string;
     string saveAction = ViewData["action"] as string;
 }
+@ko.Initialize(Model)
+
+@section scripts {
+    <script>
+        $(function () {
+
+            $(".progressBar").hide();
+            $(".messageBox").hide();
+        });
+    </script>
+}
+@helper RenderFileAttachments(KnockoutContext<FormFieldViewModel> field)
+{
+
+string containerId = "newid";
+string uploadApiUrl = "uplaod";
+string deleteApiUrl = "delete";
+
+        <div>omar</div>
+        <div id="@containerId" class="inner file-upload" style="clear:both">
+            <div class="thumbnailPanel">
+                <input type="hidden" id="Model_FieldFileGuids" @field.Bind.Value(m => m.FieldFileGuids) />
+                @using (KnockoutForeachContext<DataFile> fileViewModel = field.Foreach(f => f.Files))
+                {
+                    @*@fileViewModel.Html.Span(m => m.Thumbnail);*@
+                    <div class="fileThumbnail" @fileViewModel.Bind.Attr("id", m => m.Guid)>
+                        <div class="img" @fileViewModel.Bind.Style("\"background-image\"", m => "url(" + m.Thumbnail + ")")></div>
+                        <div class="label"><a @fileViewModel.Bind.Attr("href", f => f.Path)>@fileViewModel.Html.Span(s => s.FileName)</a></div>
+                    </div>
+                }
+            </div>
+            <div class="inner" style="clear:both">
+                <div class="alert alert-danger messageBox"></div>
+
+                <input type='file' class="uploadField" name="files" multiple="multiple" />
+                <input data-bind="click: function(data){$root.uploadFileKoWrapper(data, '@containerId', '@uploadApiUrl', '@deleteApiUrl', 'Model_FieldFileGuids')}" type="button" value="Upload" class="uploadButton" />
+                <div class="progressBar" hidden><progress></progress></div>
+            </div>
+        </div>
+        <div>isidro</div>
+    
+}
 
 <div id="@context">
     @using (ko.Html.Form(saveAction, controller, null, new { id = context + "Form" }))
@@ -121,34 +163,39 @@
                                 <li>
                                     <label class="control-label col-md-2">Attached files</label>
                                     <div class="form-view">
-                                        @field.Html.Span(f => f.Files.Count)
+                                        @*@field.Html.Span(f => f.Files.Count)*@
+                                        @RenderFileAttachments(field)
+                                        @*@using (KnockoutForeachContext<DataFile> fileViewModel = field.Foreach(f => f.Files))
+                                            {
+                                                @fileViewModel.Html.Span(omar => omar.FileName);
+                                            }*@
                                         @*@using (KnockoutForeachContext<DataFile> fileViewModel = field.Model.Files.ForEach(f => f))*@
                                         @*                                        @using (var file = field.Foreach(f => f.FileThings))*@
                                         @*@using (var file = field.Foreach(f => f.Files))
-                                        {
-                                            @file.Html.Span(f => "Kamal");
-                                        }*@
+                                            {
+                                                @file.Html.Span(f => "Kamal");
+                                            }*@
                                         @* XXX Change controller to file upload *@
-                                        @Html.Partial("Partial/FileAttachment", field,
-        new ViewDataDictionary{
-                               { "UploadApiUrl", @Url.Action("upload", "items")},
-                               { "DeleteApiUrl",  @Url.Action("deleteCashedFile", "items")},
-                               { "ParentId", Model.Id },
-                               { "Controller", "items" }
-        })
+                                        @*@Html.Partial("Partial/FileAttachment", field,
+                                            //new ViewDataDictionary{
+                                            //                                                                   { "UploadApiUrl", @Url.Action("upload", "items")},
+                                            //                                                                   { "DeleteApiUrl",  @Url.Action("deleteCashedFile", "items")},
+                                            //                                                                   { "ParentId", Model.Id },
+                                            //                                                                   { "Controller", "items" }
+                                            //})*@
 
                                         @*@if (field.Model != null)
-        {
-        @Html.EditorFor(m => field.Model.Attachment,
-                 new
-                 {
-                     UploadApiUrl = @Url.Action("upload", "items"),
-                     DeleteApiUrl = @Url.Action("deleteCashedFile", "items"),
-                     Files = field.Model.Files,
-                     ParentId = Model.Id,
-                     Controller = "items"
-                 })
-        }*@
+                                            {
+                                            @Html.EditorFor(m => field.Model.Attachment,
+                                                     new
+                                                     {
+                                                         UploadApiUrl = @Url.Action("upload", "items"),
+                                                         DeleteApiUrl = @Url.Action("deleteCashedFile", "items"),
+                                                         Files = field.Model.Files,
+                                                         ParentId = Model.Id,
+                                                         Controller = "items"
+                                                     })
+                                            }*@
                                     </div>
                                 </li>
                             </ul>
@@ -166,7 +213,7 @@
     }
 </div>
 
-@ko.Initialize(Model)
+
 <script type="text/javascript">
   @(context).uploadFileKoWrapper = function (data, containerId, uploadApiUrl, deleteApiUrl, fieldFileGuids) {
       uploadFileKo(containerId, uploadApiUrl, deleteApiUrl, fieldFileGuids, data)
