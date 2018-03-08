@@ -86,7 +86,7 @@ namespace Catfish.Areas.Manager.Controllers
                 }
                 else
                 {
-                    List<EntityType> entityTypes = srv.GetEntityTypes(EntityType.eTarget.Collections).ToList();
+                    List<EntityType> entityTypes = EntityTypeService.GetEntityTypes(EntityType.eTarget.Collections).ToList();//srv.GetEntityTypes(EntityType.eTarget.Collections).ToList();
                     ViewBag.SelectEntityViewModel = new SelectEntityTypeViewModel()
                     {
                         EntityTypes = entityTypes

@@ -15,17 +15,17 @@ namespace Catfish.Core.Services
     {
         public EntityService(CatfishDbContext db) : base(db) { }
 
-        public IQueryable<EntityType> GetEntityTypes()
-        {
-            return Db.EntityTypes;
-        }
+        //public IQueryable<EntityType> GetEntityTypes()
+        //{
+        //    return Db.EntityTypes;
+        //}
 
-        public IQueryable<EntityType> GetEntityTypes(EntityType.eTarget target)
-        {
-            // return Db.EntityTypes.Where(et => et.TargetType == target);
-             return Db.EntityTypes.Where(et => et.TargetTypes.Contains(target.ToString())); //Mr Jan 15 2018
+        //public IQueryable<EntityType> GetEntityTypes(EntityType.eTarget target)
+        //{
+        //    // return Db.EntityTypes.Where(et => et.TargetType == target);
+        //     return Db.EntityTypes.Where(et => et.TargetTypes.Contains(target.ToString())); //Mr Jan 15 2018
          
-        }
+        //}
 
         public T CreateEntity<T>(int entityTypeId) where T : Entity, new()
         {

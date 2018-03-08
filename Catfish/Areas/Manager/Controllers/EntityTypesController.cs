@@ -14,7 +14,7 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/EntityTypes
         public ActionResult Index()
         {
-            return View(EntityService.GetEntityTypes());
+            return View(EntityTypeService.GetEntityTypes());
         }
 
 
@@ -24,7 +24,7 @@ namespace Catfish.Areas.Manager.Controllers
             EntityType model = null;
             if (id.HasValue && id.Value > 0)
             {
-                model = Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
+                model = EntityTypeService.GetEntityTypeById(id.Value); //Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
             }
             else
             {
@@ -42,10 +42,10 @@ namespace Catfish.Areas.Manager.Controllers
             EntityType model = null;
             if (id.HasValue && id.Value > 0)
             {
-                model = Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
+                model = EntityTypeService.GetEntityTypeById(id.Value); //Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
                 if (model != null)
                 {
-                    Db.Entry(model).State = EntityState.Deleted;
+                    EntityTypeService.DeleteEntityType(model);//Db.Entry(model).State = EntityState.Deleted;
                     Db.SaveChanges(User.Identity);
                 }
             }
@@ -89,7 +89,7 @@ namespace Catfish.Areas.Manager.Controllers
                 vm.NameMapping.MetadataSet = vm.SelectedNameMappingMetadataSet.Name;
                 vm.NameMapping.MetadataSetId = vm.SelectedNameMappingMetadataSet.Id;
 
-                MetadataSet ms = Db.MetadataSets.Where(m => m.Id == vm.NameMapping.MetadataSetId).FirstOrDefault();
+                MetadataSet ms = MetadataService.GetMetadataSet(vm.NameMapping.MetadataSetId);//Db.MetadataSets.Where(m => m.Id == vm.NameMapping.MetadataSetId).FirstOrDefault();
                 //ms.Deserialize();
                 vm.NameMapping.Field = "Not specified";
                 vm.SelectedNameMappingField = "";
@@ -104,7 +104,7 @@ namespace Catfish.Areas.Manager.Controllers
                 vm.DescriptionMapping.MetadataSet = vm.SelectedDescriptionMappingMetadataSet.Name;
                 vm.DescriptionMapping.MetadataSetId = vm.SelectedDescriptionMappingMetadataSet.Id;
 
-                MetadataSet ms = Db.MetadataSets.Where(m => m.Id == vm.DescriptionMapping.MetadataSetId).FirstOrDefault();
+                MetadataSet ms = MetadataService.GetMetadataSet(vm.DescriptionMapping.MetadataSetId);// Db.MetadataSets.Where(m => m.Id == vm.DescriptionMapping.MetadataSetId).FirstOrDefault();
                 //ms.Deserialize();
                 vm.DescriptionMapping.Field = "Not specified";
                 vm.SelectedDescriptionMappingField = "";
@@ -140,7 +140,7 @@ namespace Catfish.Areas.Manager.Controllers
                 EntityType model;
                 if (vm.Id > 0)
                 {
-                    model = Db.EntityTypes.Where(x => x.Id == vm.Id).FirstOrDefault();
+                    model = EntityTypeService.GetEntityTypeById(vm.Id);//Db.EntityTypes.Where(x => x.Id == vm.Id).FirstOrDefault();
                     if (model == null)
                         return Json(vm.Error("Specified entity type not found"));
                     else
