@@ -16,6 +16,9 @@ using System.Configuration;
 using System.Data.Common;
 using System.Data.Entity.Migrations.Model;
 using System.Data.Entity.Migrations.Sql;
+using System.IO;
+using System.Reflection;
+using System.Data;
 
 namespace Catfish.Tests.Helpers
 {
@@ -28,12 +31,27 @@ namespace Catfish.Tests.Helpers
             {
                 if (mDb == null)
                 {
-                    DbConnection connection = GetConnection(GetConnectionStringByName("piranha"));
+                    DbConnection connection = GetConnection(GetConnectionStringByName("catfish"));
                     connection.Open();
                     mDb = new CatfishTestDbContext(connection);
                 }
 
                 return mDb;
+            }
+        }
+
+        private Piranha.DataContext mPDb { get; set; }
+        public Piranha.DataContext PDb
+        {
+            get
+            {
+                if(mPDb == null)
+                {
+                    mPDb = new Piranha.DataContext();
+                    mPDb.Database.Connection.Open();
+                }
+
+                return mPDb;
             }
         }
 
@@ -267,6 +285,8 @@ namespace Catfish.Tests.Helpers
         {
             try
             {
+                SetupPiranha();
+
                 Catfish.Tests.Migrations.Configuration config = new Catfish.Tests.Migrations.Configuration();
                 var migrator = new DbMigrator(config);
 
@@ -292,6 +312,71 @@ namespace Catfish.Tests.Helpers
             {
                 throw ex;
             }
+        }
+
+        public void SetupPiranha()
+        {
+            // Copied and modified from Piranha.Areas.Manager.Controllers.InstallController
+            // Read embedded create script
+            Assembly piranhaAssembly = Assembly.GetAssembly(typeof(Piranha.Areas.Manager.Controllers.InstallController));
+
+            Stream str = piranhaAssembly.GetManifestResourceStream(Piranha.Data.Database.ScriptRoot + ".Create.sql");
+            String sql = new StreamReader(str).ReadToEnd();
+            str.Close();
+
+            // Read embedded data script
+            str = piranhaAssembly.GetManifestResourceStream(Piranha.Data.Database.ScriptRoot + ".Data.sql");
+            String data = new StreamReader(str).ReadToEnd();
+            str.Close();
+
+            // Split statements and execute
+            string[] stmts = sql.Split(new char[] { ';' });
+            using (var tx = PDb.Database.BeginTransaction())
+            {
+                // Create database from script
+                foreach (string stmt in stmts)
+                {
+                    if (!String.IsNullOrEmpty(stmt.Trim()))
+                        Piranha.Models.SysUser.Execute(stmt, tx.UnderlyingTransaction);
+                }
+                tx.Commit();
+            }
+
+            // Split statements and execute
+            stmts = data.Split(new char[] { ';' });
+            using (var tx = PDb.Database.BeginTransaction())
+            {
+                // Create user
+                Piranha.Models.SysUser usr = new Piranha.Models.SysUser()
+                {
+                    Login = ConfigurationManager.AppSettings["AdminLogin"],
+                    Email = ConfigurationManager.AppSettings["AdminEmail"],
+                    GroupId = new Guid("7c536b66-d292-4369-8f37-948b32229b83"),
+                    CreatedBy = new Guid("ca19d4e7-92f0-42f6-926a-68413bbdafbc"),
+                    UpdatedBy = new Guid("ca19d4e7-92f0-42f6-926a-68413bbdafbc"),
+                    Created = DateTime.Now,
+                    Updated = DateTime.Now
+                };
+                usr.Save(tx.UnderlyingTransaction);
+
+                // Create user password
+                Piranha.Models.SysUserPassword pwd = new Piranha.Models.SysUserPassword()
+                {
+                    Id = usr.Id,
+                    Password = ConfigurationManager.AppSettings["AdminPassword"],
+                    IsNew = false
+                };
+                pwd.Save(tx.UnderlyingTransaction);
+
+                // Create default data
+                foreach (string stmt in stmts)
+                {
+                    if (!String.IsNullOrEmpty(stmt.Trim()))
+                        Piranha.Models.SysUser.Execute(stmt, tx.UnderlyingTransaction);
+                }
+                tx.Commit();
+            }
+            
         }
 
         public void SetupDbData()
