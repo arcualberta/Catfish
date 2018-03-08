@@ -106,7 +106,7 @@ namespace Catfish.Core.Models.Ingestion
                 if (name == "metadata-set")
                 {
                     MetadataSet set = new MetadataSet();
-                    set.Content = element.ToString();
+                    set.Content = setElement.ToString();
                     set.Guid = strGuid;
                     set.MappedGuid = strGuid;
                     MetadataSets.Add(set);
