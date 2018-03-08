@@ -40,7 +40,7 @@ namespace Catfish.Tests.Helpers
             }
         }
 
-        private Piranha.DataContext mPDb { get; set; }
+        private static Piranha.DataContext mPDb { get; set; }
         public Piranha.DataContext PDb
         {
             get
@@ -48,7 +48,7 @@ namespace Catfish.Tests.Helpers
                 if(mPDb == null)
                 {
                     mPDb = new Piranha.DataContext();
-                    mPDb.Database.Connection.Open();
+                    SetupPiranha(mPDb);
                 }
 
                 return mPDb;
@@ -285,7 +285,6 @@ namespace Catfish.Tests.Helpers
         {
             try
             {
-                SetupPiranha();
 
                 Catfish.Tests.Migrations.Configuration config = new Catfish.Tests.Migrations.Configuration();
                 var migrator = new DbMigrator(config);
@@ -314,8 +313,14 @@ namespace Catfish.Tests.Helpers
             }
         }
 
-        public void SetupPiranha()
+        public void SetupPiranha(Piranha.DataContext PDb)
         {
+            if (PDb.Database.Exists())
+            {
+                PDb.Database.Delete();
+                PDb.Database.Initialize(true);
+            }
+
             // Copied and modified from Piranha.Areas.Manager.Controllers.InstallController
             // Read embedded create script
             Assembly piranhaAssembly = Assembly.GetAssembly(typeof(Piranha.Areas.Manager.Controllers.InstallController));
