@@ -10,12 +10,13 @@ using System.Xml.Serialization;
 using System.Xml.Linq;
 using System.ComponentModel.DataAnnotations.Schema;
 using Catfish.Core.Helpers;
+using Catfish.Core.Validators;
 using Catfish.Core.Models.Data;
 using System.Web.Script.Serialization;
 
 namespace Catfish.Core.Models.Forms
 {
-
+    [FormFieldRequired]
     public class FormField : XmlModel
     {
         public override string GetTagName() { return "field"; }

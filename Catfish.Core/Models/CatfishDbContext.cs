@@ -17,6 +17,11 @@ namespace Catfish.Core.Models
 
         }
 
+        public CatfishDbContext(System.Data.Common.DbConnection connection, bool contextOwnsConnection) : base(connection, contextOwnsConnection)
+        {
+
+        }
+
         public int SaveChanges(IIdentity actor)
         {
             if (actor.IsAuthenticated)
@@ -42,8 +47,18 @@ namespace Catfish.Core.Models
             return base.SaveChanges();
         }
 
+        /**
+         * Used to define column types that may not be available in all Databases.
+         **/
+        protected virtual void SetColumnTypes(DbModelBuilder builder)
+        {
+            builder.Entity<XmlModel>().Property(xm => xm.Content).HasColumnType("xml");
+        }
+
         protected override void OnModelCreating(DbModelBuilder builder)
         {
+            SetColumnTypes(builder);
+
             builder.Entity<Aggregation>()
                 .HasMany<Aggregation>(p => p.ChildMembers)
                 .WithMany(c => c.ParentMembers)
@@ -71,10 +86,11 @@ namespace Catfish.Core.Models
                 {
                     t.MapLeftKey("EntityTypesId");
                     t.MapRightKey("MetadataSetId");
-                    //t.MapLeftKey("MetadataSetId");
-                    //t.MapRightKey("EntityTypesId");
                     t.ToTable("EntityTypeHasMetadataSets");
                 });
+
+            //define composite primary key for EntityGroupUser -- Jan 24 2018
+            builder.Entity<EntityGroupUser>().HasKey(t => new { t.EntityGroupId, t.UserId });
         }
 
         public DbSet<XmlModel> XmlModels { get; set; }
@@ -95,8 +111,7 @@ namespace Catfish.Core.Models
 
         public System.Data.Entity.DbSet<Catfish.Core.Models.Forms.TextField> TextFields { get; set; }
 
-        ////public DbSet<SimpleField> MetadataFields { get; set; }
-
-        ////public DbSet<FieldValue> FieldValues { get; set; }
+        public DbSet<EntityGroup> EntityGroups { get; set; }
+        public DbSet<EntityGroupUser> EntityGroupUsers { get; set; }
     }
 }

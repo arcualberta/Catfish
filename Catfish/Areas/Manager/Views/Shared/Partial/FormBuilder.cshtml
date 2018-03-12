@@ -108,12 +108,11 @@ string deleteApiUrl = "delete";
                                     <div class="input">
                                         @using (var name = field.Foreach(f => f.Name))
                                         {
-                                            @name.Html.Span(f => "Kamal");
-                                            <div> test</div>
+                                            
                                             <div class="languageInputField">
                                                 @name.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
                                                 @name.Html.Span(n => n.LanguageLabel, new { @class = "lang-label" })
-                                                @name.Html.TextBox(n => n.Value, new { @class = "input-field" })
+                                                @name.Html.TextBox(n => n.Value, new { @class = "input-field" }).Attr("name", m =>"Name_" +  m.LanguageCode)
                                             </div>
                                         }
                                     </div>
@@ -127,7 +126,7 @@ string deleteApiUrl = "delete";
                                             {
                                                 <div class="languageInputField">
                                                     @name.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
-                                                    @name.Html.Span(n => n.LanguageLabel + ": ", new { @class = "lang-label" }) @name.Html.TextArea(n => n.Value, new { @class = "input-field" })
+                                                    @name.Html.Span(n => n.LanguageLabel + ": ", new { @class = "lang-label" }) @name.Html.TextArea(n => n.Value, new { @class = "input-field" }).Attr("name", m => "Description_" + m.LanguageCode)
                                                 </div>
                                             }
                                         </div>
@@ -145,7 +144,7 @@ string deleteApiUrl = "delete";
                                             {
                                                 <div class="languageInputField">
                                                     @option.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
-                                                    @option.Html.Span(n => n.LanguageLabel + ": ", new { @class = "lang-label" }) @option.Html.TextArea(n => n.Value, new { @class = "input-field" })
+                                                    @option.Html.Span(n => n.LanguageLabel + ": ", new { @class = "lang-label" }) @option.Html.TextArea(n => n.Value, new { @class = "input-field" }).Attr("name", m => "Option_" + m.LanguageCode)
                                                 </div>
                                             }
                                         </div>

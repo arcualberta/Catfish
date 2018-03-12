@@ -97,6 +97,14 @@
     <Compile Include="Migrations\201712200902581_RenamedGuidColumnToMappedGuid.Designer.cs">
       <DependentUpon>201712200902581_RenamedGuidColumnToMappedGuid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801161646105_ChangeETargetToStringForTargetTypesOfEntityType.cs" />
+    <Compile Include="Migrations\201801161646105_ChangeETargetToStringForTargetTypesOfEntityType.Designer.cs">
+      <DependentUpon>201801161646105_ChangeETargetToStringForTargetTypesOfEntityType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801241812416_CreateEntityGroupAndEntityGroupUser.cs" />
+    <Compile Include="Migrations\201801241812416_CreateEntityGroupAndEntityGroupUser.Designer.cs">
+      <DependentUpon>201801241812416_CreateEntityGroupAndEntityGroupUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Aggregation.cs" />
     <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
@@ -110,11 +118,14 @@
     <Compile Include="Models\Data\DataObject.cs" />
     <Compile Include="Models\Data\FormSubmission.cs" />
     <Compile Include="Models\Entity.cs" />
+    <Compile Include="Models\EntityGroup.cs" />
     <Compile Include="Models\EntityType.cs" />
     <Compile Include="Models\Data\DataFile.cs" />
     <Compile Include="Models\Forms\AbstractForm.cs" />
     <Compile Include="Models\Forms\Attachment.cs" />
     <Compile Include="Models\Forms\PageBreak.cs" />
+    <Compile Include="Models\Ingestion\Ingestion.cs" />
+    <Compile Include="Models\Ingestion\Relationship.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Forms\CheckBoxSet.cs" />
     <Compile Include="Models\Forms\DateField.cs" />
@@ -132,6 +143,14 @@
     <Compile Include="Models\TextValue.cs" />
     <Compile Include="Models\XmlModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Validators.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Validators.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Services\EntityGroupService.cs" />
+    <Compile Include="Services\EntityTypeService.cs" />
+    <Compile Include="Services\IngestionService.cs" />
     <Compile Include="Services\SolrService.cs" />
     <Compile Include="Services\CollectionService.cs" />
     <Compile Include="Services\EntityService.cs" />
@@ -139,6 +158,8 @@
     <Compile Include="Services\ItemService.cs" />
     <Compile Include="Services\MetadataService.cs" />
     <Compile Include="Services\ServiceBase.cs" />
+    <Compile Include="Validators\FormFieldRequiredAttribute.cs" />
+    <Compile Include="Validators\FormFieldValidationAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -160,6 +181,17 @@
     <EmbeddedResource Include="Migrations\201712200902581_RenamedGuidColumnToMappedGuid.resx">
       <DependentUpon>201712200902581_RenamedGuidColumnToMappedGuid.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801161646105_ChangeETargetToStringForTargetTypesOfEntityType.resx">
+      <DependentUpon>201801161646105_ChangeETargetToStringForTargetTypesOfEntityType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801241812416_CreateEntityGroupAndEntityGroupUser.resx">
+      <DependentUpon>201801241812416_CreateEntityGroupAndEntityGroupUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Validators.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Validators.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

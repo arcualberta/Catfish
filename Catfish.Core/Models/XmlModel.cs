@@ -52,15 +52,17 @@ namespace Catfish.Core.Models
                 SetAttribute("updated", value.ToString());
             }
         }
-
-        [Column(TypeName = "xml")]
+        
         public string Content
         {
             get { return mContent; }
             set {
-                mContent = value;
-                
-                this.Data = XElement.Parse(this.Content);
+                if (value != null)
+                {
+                    mContent = value;
+
+                    this.Data = XElement.Parse(this.Content);
+                }
             }
         }
 
@@ -70,7 +72,7 @@ namespace Catfish.Core.Models
         [NotMapped]
         private XElement mData;
 
-        
+        [ScriptIgnore]
         [NotMapped]
         [ScriptIgnore]
         public virtual XElement Data
@@ -215,15 +217,11 @@ namespace Catfish.Core.Models
             return data;
         }
 
-        ////public XmlModel(XElement ele, string defaultLang = "en")
-        ////{
-        ////    Data = ele;
-        ////    DefaultLanguage = defaultLang;
-        ////}
+        
 
         [NotMapped]
         [TypeLabel("String")]
-        public string Name { get { return GetName(); } set { SetName(value); } }
+        public virtual string Name { get { return GetName(); } set { SetName(value); } }
 
         public virtual string GetName(string lang = null, bool tryReturnNoneEmpty = false)
         {
@@ -525,10 +523,7 @@ namespace Catfish.Core.Models
             return Parse(root, defaultLang);
         }
 
-        //public void Deserialize()
-        //{
-        //    this.Data = XElement.Parse(this.Content);
-        //}
+        
 
         public void Serialize()
         {
@@ -538,7 +533,7 @@ namespace Catfish.Core.Models
         public virtual void UpdateValues(XmlModel src)
         {
             SetTextValues(XmlHelper.GetTextValues(src.Data));
-            ////this.SetValues(src.GetValues());
+           
         }
 
 

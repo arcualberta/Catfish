@@ -27,6 +27,15 @@ namespace Catfish.Areas.Manager.Controllers
         private ItemService mItemService;
         public ItemService ItemService { get { if (mItemService == null) mItemService = new ItemService(Db); return mItemService; } }
 
+        private EntityGroupService mEntityGroupService;
+
+        public EntityGroupService EntityGroupService { get { if (mEntityGroupService == null) mEntityGroupService = new EntityGroupService(Db); return mEntityGroupService; } }
+
+        private EntityTypeService mEntityTypeService;
+
+        public EntityTypeService EntityTypeService { get { if (mEntityTypeService == null) mEntityTypeService = new EntityTypeService(Db); return mEntityTypeService; } }
+
+
         [HttpPost]
         public JsonResult SelectEntity(SelectEntityTypeViewModel vm)
         {
