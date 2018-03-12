@@ -18,6 +18,7 @@ namespace Catfish.Tests.Views.Regions
         const string FORM = "TESTFORM";
         const string FORM_PAGE = "TESTFORMPAGE";
         const string FORM_NAVIGATION = "formcontainertest";
+        const string FORM_CSS_ID = "mytestformonpage";
 
         private IWebDriver Driver;
         private string ManagerUrl;
@@ -28,7 +29,7 @@ namespace Catfish.Tests.Views.Regions
         {
             this.Driver = new TWebDriver();
             this.ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
-            this.FormUrl = ConfigurationManager.AppSettings["ServerUrl"] + "testform";
+            this.FormUrl = ConfigurationManager.AppSettings["ServerUrl"] + "home/" + FORM_NAVIGATION;
 
             Login();
             VerifyPageTypeExists();
@@ -50,38 +51,38 @@ namespace Catfish.Tests.Views.Regions
             this.Driver.FindElement(By.TagName("button")).Click();
         }
 
-        private IReadOnlyList<IWebElement> GetFieldEntries(string fieldEntryTitle)
-        {
-            IReadOnlyList<IWebElement> entries = null;
-
-            WebDriverWait webDriver = new WebDriverWait(Driver, TimeSpan.FromSeconds(15));
-            webDriver.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.ClassName("field-entry")));
-
-            var allElementTypes = Driver.FindElements(By.ClassName("field-entry"));
-            foreach (IWebElement e in allElementTypes)
-            {
-                if (e.FindElement(By.ClassName("title")).Text.Equals(fieldEntryTitle))
-                {
-                    entries = e.FindElements(By.ClassName("input-field"));
-                    break;
-                }
-            }
-            return entries;
-        }
-
         private void AddFormField(string fieldType, bool isRequired)
         {
+            IReadOnlyList<IWebElement> inputs;
+
             SelectElement select = new SelectElement(this.Driver.FindElement(By.Id("field-type-selector")));
             select.SelectByText(fieldType);
             select.WrappedElement.SendKeys(Keys.Tab);
             this.Driver.FindElement(By.Id("add-field")).Click();
+            this.Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
 
-            IReadOnlyList<IWebElement> inputs = GetFieldEntries("Short text");
-            if (inputs.Count > 0)
+            IWebElement fieldPanel = this.Driver.FindElements(By.CssSelector("div.box.field-entry")).Last();
+
+            // Set the name
+            inputs = fieldPanel.FindElements(By.CssSelector(".languageInputField input.input-field[name^='Name']"));
+
+            for(int i = 0; i < inputs.Count; ++i)
             {
-                inputs[0].SendKeys(MetadataTestValues.FieldName + " text Eng");
-                inputs[1].SendKeys(MetadataTestValues.FieldName + " text Fr");
-                inputs[2].SendKeys(MetadataTestValues.FieldName + " text Sp");
+                inputs[i].SendKeys(MetadataTestValues.FieldName);
+            }
+
+            // Set the description
+            inputs = fieldPanel.FindElements(By.CssSelector(".languageInputField textarea.input-field[name^='Description']"));
+
+            for (int i = 0; i < inputs.Count; ++i)
+            {
+                inputs[i].SendKeys(MetadataTestValues.FieldDescription);
+            }
+
+            // Set required option
+            if (isRequired)
+            {
+                fieldPanel.FindElement(By.CssSelector(".field-is-required")).Click();
             }
         }
 
@@ -105,6 +106,7 @@ namespace Catfish.Tests.Views.Regions
                 this.Driver.FindElement(By.Id("Description")).SendKeys(Keys.Tab);
 
                 AddFormField("Short text", true);
+                AddFormField("Paragraph", false);
 
                 WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(15));
                 wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.ClassName("save")));
@@ -142,7 +144,7 @@ namespace Catfish.Tests.Views.Regions
             try
             {
                 this.Driver.Navigate().GoToUrl(ManagerUrl + "/page");
-                var element = this.Driver.FindElement(By.LinkText(FORM_PAGE));
+                var element = this.Driver.FindElement(By.LinkText(FORM_NAVIGATION));
             }
             catch (NoSuchElementException ex)
             {
@@ -178,14 +180,33 @@ namespace Catfish.Tests.Views.Regions
                 SelectElement select = new SelectElement(region.FindElement(By.Id(string.Format("Regions_{0}__Body_FormId", i))));
                 select.SelectByText(FORM);
 
+                region.FindElement(By.Id(string.Format("Regions_{0}__Body_CssId", i))).SendKeys(FORM_CSS_ID);
+
                 // At the moment assume we have the default eneity type and collection.
+
+                IWebElement btnSave = this.Driver.FindElement(By.ClassName("publish"));
+                IJavaScriptExecutor jex = (IJavaScriptExecutor)Driver;
+
+                jex.ExecuteScript("arguments[0].focus(); ", btnSave);
+                btnSave.Click();
             }
         }
 
         [Test]
         public void TestBasicForm()
         {
+            this.Driver.Navigate().GoToUrl(FormUrl);
+            IWebElement region = this.Driver.FindElement(By.Id(FORM_CSS_ID));
+            IReadOnlyList<IWebElement> elements = region.FindElements(By.CssSelector("div.input"));
 
+            elements[0].FindElement(By.CssSelector("input[id$='__Value']")).SendKeys("Field 1");
+            elements[1].FindElement(By.CssSelector("textarea[id$='__Value']")).SendKeys("Field 2");
+
+            IWebElement btnSave = region.FindElement(By.ClassName("input[type='submit']"));
+            IJavaScriptExecutor jex = (IJavaScriptExecutor)Driver;
+
+            jex.ExecuteScript("arguments[0].focus(); ", btnSave);
+            btnSave.Click();
         }
     }
 }
