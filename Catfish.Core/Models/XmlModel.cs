@@ -71,8 +71,7 @@ namespace Catfish.Core.Models
 
         [NotMapped]
         private XElement mData;
-
-        [ScriptIgnore]
+        
         [NotMapped]
         [ScriptIgnore]
         public virtual XElement Data
