@@ -31,7 +31,38 @@
                 @Html.Raw(description)
             </div>
             }
+            <!--   Melania   -->
+            <h1>Files</h1>
+           @foreach (var f in Model.Fields[i].Files)
+           {
+               string source = Url.Action("File","Items", new  {id=Model.Id, guid=f.Guid });
+           @:<div>
+                  <span>@f.FileName -</span>
+               if (f.ContentType.Contains("image"))
+               {
+                    <img src="@source" width="50" height="50" />
+               }
+               else if (f.ContentType.Contains("video"))
+               {
+                   string type = f.ContentType.Contains("mp4") == true ? "video/mp4" : f.ContentType.Contains("avi") == true ? "video/avi" : "video/ogg";
+                    <video width="320" height="240" controls>
+                        <source src="@source" type="@type">
+                        Your browser does not support the video tag.
+                    </video>
+               }
+               else
+               {
+                   //audio
+                   string type = f.ContentType.Contains("mp3") == true ? "audio/mpeg" : "audio/ogg";
+                <audio controls>
+                    <source src="@source" type="@type">
+                    Your browser does not support the audio element.
+                </audio>
+               }
 
+             @:</div>
+           }
+            <!--   End Melania   -->
             <div class="input">
                 @if (typeof(Attachment).IsAssignableFrom(Model.Fields[i].GetType()))
                 {
