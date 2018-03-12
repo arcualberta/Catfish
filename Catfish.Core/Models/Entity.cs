@@ -62,8 +62,9 @@ namespace Catfish.Core.Models
                     MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
                     FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
 
-                    if (field == null)
-                        return "ERROR: INCORRECT NAME MAPPING FOUND FOR THIS ENTITY TYPE";
+                if(field == null){
+                   // throw new Exception("ERROR: INCORRECT NAME MAPPING FOUND FOR THIS ENTITY TYPE");
+                }
 
                     return MultilingualHelper.Join(field.GetValues(), " / ", false);
                 }
@@ -95,8 +96,9 @@ namespace Catfish.Core.Models
                     MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
                     FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
 
-                    if (field == null)
-                        return "ERROR: INCORRECT DESCRIPTION MAPPING FOUND FOR THIS ENTITY TYPE";
+                if (field == null){
+                   // throw new Exception("ERROR: INCORRECT DESCRIPTION MAPPING FOUND FOR THIS ENTITY TYPE");
+                }
 
                     return MultilingualHelper.Join(field.GetValues(), " / ", false);
                 }
@@ -127,6 +129,14 @@ namespace Catfish.Core.Models
             {
                 var src_ms = src_item.MetadataSets.Where(x => x.Guid == ms.Guid).FirstOrDefault();
                 ms.UpdateValues(src_ms);
+            }
+        }
+
+        public override string Name
+        {
+            get
+            {
+                return GetName();
             }
         }
 

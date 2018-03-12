@@ -10,6 +10,14 @@
     <script type="text/javascript" src="~/Scripts/knockout-3.1.0.js"></script>
     <script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
     <script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
+    <style>
+        .chkBox-label {
+            background: #ececec;
+            width: 100px;
+            height: 25px;
+            padding-top: 5px;
+        }
+    </style>
 }
 
 @section Toolbar {
@@ -31,26 +39,45 @@
                     <div class="bs right">
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
-                        @ko.Html.Button("Save", "Save", "EntityTypes")
+                        @ko.Html.Button("Save", "Save", "EntityTypes",null,new {@id="btnSave" })
                     </div>
                 </div>
                 <div class="inner">
                     <ul class="form form-custom">
                         <li>
                             <label class="control-label col-md-2">Name</label>
-                            <div class="input">@ko.Html.TextBox(m => m.Name)</div>
+                            <div class="input">@ko.Html.TextBox(m => m.Name, new { @id="Name"})</div>
                         </li>
                         <li>
                             <label class="control-label col-md-2">Description</label>
-                            <div class="input">@ko.Html.TextArea(m => m.Description)</div>
+                            <div class="input">@ko.Html.TextArea(m => m.Description, new {@id="Description" })</div>
                         </li>
                         <li>
-                            <label class="control-label col-md-2">Applicability</label>
-                            <div class="input">
-                                @ko.Html.RadioButton(m => m.TargetType, new { value = EntityType.eTarget.Collections.ToString() }) Collections
-                                @ko.Html.RadioButton(m => m.TargetType, new { value = EntityType.eTarget.Items.ToString() }) Items
-                                @ko.Html.RadioButton(m => m.TargetType, new { value = EntityType.eTarget.Files.ToString() }) Files
-                                @ko.Html.RadioButton(m => m.TargetType, new { value = EntityType.eTarget.Forms.ToString() }) Forms
+                            <label class="control-label col-md-2 chkBox-label" style="margin-top:0px;" >Applicability</label>
+                            <div style="background:#fff;">
+                              
+                                    <span class="checkbox checkbox-inline"  style="margin:20px">
+                                        @ko.Html.CheckBox(m => m.TargetType[1], new {@id="chk_" + EntityType.eTarget.Collections })
+                                        @System.Enum.GetName(typeof(EntityType.eTarget), (EntityType.eTarget)1)
+                                    </span>
+
+                                    <span class="checkbox checkbox-inline">
+                                        @ko.Html.CheckBox(m => m.TargetType[2], new { @id = "chk_" + EntityType.eTarget.Items })
+                                        @System.Enum.GetName(typeof(EntityType.eTarget), (EntityType.eTarget)2)
+                                    </span>
+
+                                    <span class="checkbox checkbox-inline">
+                                        @ko.Html.CheckBox(m => m.TargetType[3], new { @id = "chk_" + EntityType.eTarget.Files })
+                                        @System.Enum.GetName(typeof(EntityType.eTarget), (EntityType.eTarget)3)
+                                    </span>
+                                    <span class="checkbox checkbox-inline">
+                                        @ko.Html.CheckBox(m => m.TargetType[4], new { @id = "chk_" + EntityType.eTarget.Forms })
+                                        @System.Enum.GetName(typeof(EntityType.eTarget), (EntityType.eTarget)4)
+                                    </span>
+
+
+
+
                             </div>
                         </li>
 
@@ -63,8 +90,8 @@
                     <div class="title">
                         Metadata Sets
                         <div class="right">
-                            @ko.Html.DropDownList(m => m.AvailableMetadataSets, new { }, m => m.Name).Value(m => m.SelectedMetadataSets)
-                            @ko.Html.Button("Add Metadata Set", "AddMetadataSet", "EntityTypes", new { }, new { }).Enable(m => m.SelectedMetadataSets != null && m.SelectedMetadataSets.Name != null)
+                            @ko.Html.DropDownList(m => m.AvailableMetadataSets, new {@id="dd_MetadataSets" }, m => m.Name).Value(m => m.SelectedMetadataSets)
+                            @ko.Html.Button("Add Metadata Set", "AddMetadataSet", "EntityTypes", new { }, new { @id = "btnAddMetadataSet" }).Enable(m => m.SelectedMetadataSets != null && m.SelectedMetadataSets.Name != null)
                         </div>
                     </div>
                     @using (var ms = ko.Foreach(m => m.AssociatedMetadataSets))
@@ -99,8 +126,8 @@
                                         <li>
                                             <label class="control-label col-md-2">Metadata Set</label>
                                             <div class="right">
-                                                @ko.Html.DropDownList(m => m.MetadataSetMappingSrc, new { }, m => m.Name).Value(m => m.SelectedNameMappingMetadataSet)
-                                                @ko.Html.Button("Update", "UpdateMappingMetadataSet", "EntityTypes", new { type = EntityTypeViewModel.eMappingType.NameMapping }, new { }).Enable(m => m.SelectedNameMappingMetadataSet != null && m.SelectedNameMappingMetadataSet.Name != null && m.SelectedNameMappingMetadataSet.Name != "")
+                                                @ko.Html.DropDownList(m => m.MetadataSetMappingSrc, new {@id="dd_NameMappingMetadataSet" }, m => m.Name).Value(m => m.SelectedNameMappingMetadataSet)
+                                                @ko.Html.Button("Update", "UpdateMappingMetadataSet", "EntityTypes", new { type = EntityTypeViewModel.eMappingType.NameMapping }, new {@id="btnUpdateNameMetadataMapping" }).Enable(m => m.SelectedNameMappingMetadataSet != null && m.SelectedNameMappingMetadataSet.Name != null && m.SelectedNameMappingMetadataSet.Name != "")
                                             </div>
                                             <div class="input">
                                                 @using (var mapping = ko.With(m => m.NameMapping))
@@ -112,8 +139,8 @@
                                         <li>
                                             <label class="control-label col-md-2">Field</label>
                                             <div class="right">
-                                                @ko.Html.DropDownList(m => m.SelectedNameMappingFieldSrc, new { }, m => m).Value(m => m.SelectedNameMappingField)
-                                                @ko.Html.Button("Update", "UpdateMappingField", "EntityTypes", new { type = EntityTypeViewModel.eMappingType.NameMapping }, new { }).Enable(m => m.SelectedNameMappingField != null && m.SelectedNameMappingField != "")
+                                                @ko.Html.DropDownList(m => m.SelectedNameMappingFieldSrc, new { @id="dd_NameMetadataMappingFields"}, m => m).Value(m => m.SelectedNameMappingField)
+                                                @ko.Html.Button("Update", "UpdateMappingField", "EntityTypes", new { type = EntityTypeViewModel.eMappingType.NameMapping }, new { @id="btnUpdateNameMetadataFieldMapping"}).Enable(m => m.SelectedNameMappingField != null && m.SelectedNameMappingField != "")
                                             </div>
                                             <div class="input">
                                                 @using (var mapping = ko.With(m => m.NameMapping))
@@ -138,8 +165,8 @@
                                         <li>
                                             <label class="control-label col-md-2">Metadata Set</label>
                                             <div class="right">
-                                                @ko.Html.DropDownList(m => m.MetadataSetMappingSrc, new { }, m => m.Name).Value(m => m.SelectedDescriptionMappingMetadataSet)
-                                                @ko.Html.Button("Update", "UpdateMappingMetadataSet", "EntityTypes", new { type = EntityTypeViewModel.eMappingType.DescriptionMapping }, new { }).Enable(m => m.SelectedDescriptionMappingMetadataSet != null && m.SelectedDescriptionMappingMetadataSet.Name != null && m.SelectedDescriptionMappingMetadataSet.Name != "")
+                                                @ko.Html.DropDownList(m => m.MetadataSetMappingSrc, new {@id="dd_descMetadataSetMapping" }, m => m.Name).Value(m => m.SelectedDescriptionMappingMetadataSet)
+                                                @ko.Html.Button("Update", "UpdateMappingMetadataSet", "EntityTypes", new { type = EntityTypeViewModel.eMappingType.DescriptionMapping }, new {@id="btnDescMetadataSetMapping" }).Enable(m => m.SelectedDescriptionMappingMetadataSet != null && m.SelectedDescriptionMappingMetadataSet.Name != null && m.SelectedDescriptionMappingMetadataSet.Name != "")
                                             </div>
                                             <div class="input">
                                                 @using (var mapping = ko.With(m => m.DescriptionMapping))
@@ -151,8 +178,8 @@
                                         <li>
                                             <label class="control-label col-md-2">Field</label>
                                             <div class="right">
-                                                @ko.Html.DropDownList(m => m.SelectedDescriptionMappingFieldSrc, new { }, m => m).Value(m => m.SelectedDescriptionMappingField)
-                                                @ko.Html.Button("Update", "UpdateMappingField", "EntityTypes", new { type = EntityTypeViewModel.eMappingType.DescriptionMapping }, new { }).Enable(m => m.SelectedDescriptionMappingField != null && m.SelectedDescriptionMappingField != "")
+                                                @ko.Html.DropDownList(m => m.SelectedDescriptionMappingFieldSrc, new {@id="dd_DescMetadataFieldMapping" }, m => m).Value(m => m.SelectedDescriptionMappingField)
+                                                @ko.Html.Button("Update", "UpdateMappingField", "EntityTypes", new { type = EntityTypeViewModel.eMappingType.DescriptionMapping }, new {@id="btn_DescMetadataFieldMapping" }).Enable(m => m.SelectedDescriptionMappingField != null && m.SelectedDescriptionMappingField != "")
                                             </div>
                                             <div class="input">
                                                 @using (var mapping = ko.With(m => m.DescriptionMapping))
@@ -168,88 +195,7 @@
                     </div>
                 </div>
             </div>
-     @*<div id="fields-container">
-                <div class="box">
-                    <div class="title">
-                        Field Mappings
-                    </div>
-                    <div class="inner">
-                        <div id="fields-container">
-                            <div class="box">
-                                <div class="title">
-                                    Name Mapping
-                                    <div class="right">
-                                        @ko.Html.DropDownList(m => m.AssociatedMetadataSets, new { }, m => m.Name).Value(m => m.SelectedNameMappingMetadataSet)
-                                        @ko.Html.Button("Update", "UpdateMapping", "EntityTypes", new { }, new { }).Enable(m => m.SelectedNameMappingMetadataSet != null && m.SelectedNameMappingMetadataSet.Name != "")
-                                    </div>
-                                </div>
-                                <div class="bs">
-                                    <div class="inner">
-                                        <ul class="form form-custom">
-                                            <li>
-                                                <label class="control-label col-md-2">Metadata Set</label>
-                                                <div class="input">
-                                                    @using (var mapping = ko.With(m => m.NameMapping))
-                                                    {
-                                                        @ko.Html.Span(m => mapping.Model.MetadataSet)
-                                                    }
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <label class="control-label col-md-2">Field</label>
-                                                <div class="input">
-                                                    @using (var mapping = ko.With(m => m.NameMapping))
-                                                    {
-                                                        @ko.Html.Span(m => mapping.Model.Field)
-                                                    }
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="fields-container">
-                            <div class="box">
-                                <div class="title">
-                                    Description Mapping
-                                    <div class="right">
-                                        @ko.Html.DropDownList(m => m.AssociatedMetadataSets, new { }, m => m.Name).Value(m => m.SelectedDescriptionMappingMetadataSet)
-                                        @ko.Html.Button("Update", "UpdateMapping", "EntityTypes", new { }, new { }).Enable(m => m.SelectedDescriptionMappingMetadataSet != null && m.SelectedDescriptionMappingMetadataSet.Name != "")
-                                    </div>
-                                </div>
-                                <div class="bs">
-                                    <div class="inner">
-                                        <ul class="form form-custom">
-                                            <li>
-                                                <label class="control-label col-md-2">Metadata Set</label>
-                                                <div class="input">
-                                                    @using (var mapping = ko.With(m => m.NameMapping))
-                                                    {
-                                                        @ko.Html.Span(m => mapping.Model.MetadataSet)
-                                                    }
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <label class="control-label col-md-2">Field</label>
-                                                <div class="input">
-                                                    @using (var mapping = ko.With(m => m.NameMapping))
-                                                    {
-                                                        @ko.Html.Span(m => mapping.Model.Field)
-                                                    }
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>*@
-
-
+    
         </div>
     }
 </div>

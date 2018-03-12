@@ -13,6 +13,8 @@ using Catfish.Areas.Manager.ModelBinders;
 using Catfish.Core.Models;
 using Catfish.Helpers;
 using Catfish.Core.Services;
+using Catfish.Core.ModelBinders;
+using Catfish.Core.Validators;
 
 namespace Catfish
 {
@@ -21,6 +23,7 @@ namespace Catfish
         void Application_Start(object sender, EventArgs e)
         {
             // Code that runs on application startup
+           
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -31,13 +34,16 @@ namespace Catfish
             //Custom model binders 
             System.Web.Mvc.ModelBinders.Binders.Add(typeof(FormField), new XmlModelBinder());
             System.Web.Mvc.ModelBinders.Binders.Add(typeof(OptionsField), new XmlModelBinder());
+            // ModelBinders.Binders.Add(typeof(DateTime), new DateModelBinder());
 
             //Additional CSS and Javascripts
             Hooks.Head.Render += (ui, str, page, post) =>
             {
                 // Do something
                 str.Append("<script src=\"/Scripts/jquery-2.1.1.min.js\" type=\"text/javascript\" ></script>");
+                str.Append("<script src=\"/Scripts/jquery-ui.min.js\" type=\"text/javascript\" ></script>");
                 str.Append("<script src=\"/Scripts/bootstrap.min.js\" type=\"text/javascript\" ></script>");
+                str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/jquery-ui.min.css\" />");
                 str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/bootstrap.min.css\" />");
                 str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/Custom.css\" />");
             };
@@ -47,6 +53,9 @@ namespace Catfish
 
             //Multilingual menu
             Hooks.Menu.RenderItemLink = ViewHelper.MultilingualMenuRenderer;
+
+            // Setup Validation Attributes
+            FormFieldValidationAttribute.CurrentLanguageCodes = () => new string[] { ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName };
 
             // Check for a SolrConnection
             string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
@@ -111,6 +120,19 @@ namespace Catfish
                 Permission = "ADMIN_CONTENT"
                 //,SelectedActions = "productlist,productedit"
             });
+
+            //Mr Jan 23 2018 adding tab to manager/system area
+            var systemMenu = Manager.Menu.Where(m => m.InternalId == "System").FirstOrDefault();
+            idx = 0;
+
+            systemMenu.Items.Insert(idx++, new Manager.MenuItem {
+
+                Name = "Entity Group",
+                Action = "index",
+                Controller = "entitygroups",
+                Permission = "ADMIN_CONTENT"
+            });
+             
         }
     }
 }

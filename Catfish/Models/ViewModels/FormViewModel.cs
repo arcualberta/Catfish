@@ -19,5 +19,7 @@ namespace Catfish.Models.ViewModels
         public int ItemId { get; set; }
 
         public string FormSubmissionRef { get; set; }
+
+        public IDictionary<string, string[]> Errors { get; set; }
     }
 }

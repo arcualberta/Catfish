@@ -1,13 +1,17 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Catfish.Helpers;
+using Piranha;
 using Piranha.Extend;
+using Piranha.Models.Manager.PageModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Catfish.Models.Regions
 {
@@ -20,15 +24,26 @@ namespace Catfish.Models.Regions
     {
         public const string PAGE_PARAM = "p";
         public const string PERPAGE_PARAM = "pp";
+        public const string ENTITY_PARAM = "entity";
+
+        [Display(Name = "Result Template")]
+        public string SearchResultTemplate { get; set; }
 
         [NotMapped]
-        public IEnumerable<Entity> Results { get; set; }
+        public Entity[] Results { get; set; }
+
+        [NotMapped]
+        public int Total { get; set; }
 
         [NotMapped]
         public int Page { get; set; }
 
         [NotMapped]
         public int TotalPerPage { get; set; }
+
+        [NotMapped]
+        public int TotalPages { get; set; }
+        
 
         public int ParseInt(string input, int defaultVal, int min, int max = int.MaxValue)
         {
@@ -49,6 +64,10 @@ namespace Catfish.Models.Regions
         public override object GetContent(object model)
         {
             HttpContext context = HttpContext.Current;
+            if (string.IsNullOrEmpty(SearchResultTemplate))
+            {
+                SearchResultTemplate = "SearchResult";
+            }
 
             if (context != null)
             {
@@ -62,7 +81,21 @@ namespace Catfish.Models.Regions
                     CatfishDbContext db = new CatfishDbContext();
                     EntityService es = new EntityService(db);
 
-                    Results = es.GetEntitiesTextSearch(query, new string[] { ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName });
+                    var results = es.GetEntitiesTextSearch(query, new string[] { ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName });
+                    Total = results.Count();
+                    TotalPages = (int)Math.Ceiling((float)Total / (float)TotalPerPage);
+                    
+                    if(Page < 1)
+                    {
+                        Page = 1;
+                    }else if(Page > TotalPages)
+                    {
+                        Page = TotalPages + 1;
+                    }
+
+                    int startValue = (Page - 1) * TotalPerPage;
+
+                    Results = results.OrderBy(m => m.Id).Skip(startValue).Take(TotalPerPage).ToArray();
                 }
             }
 

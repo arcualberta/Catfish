@@ -15,15 +15,17 @@ namespace Catfish.Core.Services
     {
         public EntityService(CatfishDbContext db) : base(db) { }
 
-        public IQueryable<EntityType> GetEntityTypes()
-        {
-            return Db.EntityTypes;
-        }
+        //public IQueryable<EntityType> GetEntityTypes()
+        //{
+        //    return Db.EntityTypes;
+        //}
 
-        public IQueryable<EntityType> GetEntityTypes(EntityType.eTarget target)
-        {
-            return Db.EntityTypes.Where(et => et.TargetType == target);
-        }
+        //public IQueryable<EntityType> GetEntityTypes(EntityType.eTarget target)
+        //{
+        //    // return Db.EntityTypes.Where(et => et.TargetType == target);
+        //     return Db.EntityTypes.Where(et => et.TargetTypes.Contains(target.ToString())); //Mr Jan 15 2018
+         
+        //}
 
         public T CreateEntity<T>(int entityTypeId) where T : Entity, new()
         {
@@ -59,28 +61,7 @@ namespace Catfish.Core.Services
                 Db.MetadataSets.Attach(m);
             }
         }
-        public void UpdateEntityType(EntityType entityType)
-        {
-            CustomComparer<MetadataSet> compare = new CustomComparer<MetadataSet>((x, y) => x.Id == y.Id);
-            EntityType dbEntity = Db.EntityTypes.Where(e => e.Id == entityType.Id).FirstOrDefault();
-            dbEntity.Name = entityType.Name;
-            dbEntity.Description = entityType.Description;
-
-            var deletedMetaData = dbEntity.MetadataSets.Except(entityType.MetadataSets, compare).ToList();
-            deletedMetaData.ForEach(md => dbEntity.MetadataSets.Remove(md));
-
-            var addedMetaData = entityType.MetadataSets.Except(dbEntity.MetadataSets, compare).ToList();
-            foreach(MetadataSet md in addedMetaData)
-            {
-                if (md.Id < 1)
-                    continue;
-
-                var mdDb = Db.MetadataSets.Attach(md);
-                dbEntity.MetadataSets.Add(mdDb);
-            }
-
-            Db.Entry(dbEntity).State = System.Data.Entity.EntityState.Modified;
-        }
+       
 
         public IQueryable<Entity> GetEntitiesTextSearch(string searchString, string[] languageCodes = null, string[] fields = null, string[] modelTypes = null)
         {
@@ -101,7 +82,7 @@ namespace Catfish.Core.Services
 
             for (int i = 1; i < languageCodes.Length; ++i)
             {
-                query.AppendFormat(" OR value_txt_{0}:\"{1}\"", languageCodes[1], searchString);
+                query.AppendFormat(" OR value_txt_{0}:{1}", languageCodes[1], searchString);
             }
 
             query.Append(")");

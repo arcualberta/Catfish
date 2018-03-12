@@ -32,29 +32,5 @@ namespace Catfish.Core.Models.Forms
             Data = data;
         }
 
-        ////////public override XElement ToXml()
-        ////////{
-        ////////    XElement ele = base.ToXml();
-
-        ////////    XElement fieldEnvelope = new XElement("Fields");
-
-        ////////    foreach (var field in Fields)
-        ////////        fieldEnvelope.Add(field.ToXml());
-
-        ////////    ele.Add(fieldEnvelope);
-
-        ////////    return ele;
-        ////////}
-        ////////public override void Initialize(XElement ele)
-        ////////{
-        ////////    base.Initialize(ele);
-
-        ////////    var fields = ele.Element("Fields").Elements();
-        ////////    foreach(var xml in fields)
-        ////////    {
-        ////////        FormField field = XmlModel.Parse(xml) as FormField;
-        ////////        this.Fields.Add(field);
-        ////////    }
-        ////////}
     }
 }

@@ -4,15 +4,20 @@ namespace Catfish.Core.Migrations
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
+    
+    internal sealed class Configuration : Configuration<Catfish.Core.Models.CatfishDbContext>
+    {
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Catfish.Core.Models.CatfishDbContext>
+    }
+
+    internal abstract class Configuration<TSource> : DbMigrationsConfiguration<TSource> where TSource : Catfish.Core.Models.CatfishDbContext
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(Catfish.Core.Models.CatfishDbContext context)
+        protected override void Seed(TSource context)
         {
             //  This method will be called after migrating to the latest version.
 

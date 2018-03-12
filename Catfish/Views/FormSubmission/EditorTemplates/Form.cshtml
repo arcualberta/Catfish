@@ -16,6 +16,8 @@
         string name = Model.Fields[i].GetName(lang, true);
         string description = Model.Fields[i].GetDescription(lang);
 
+        @Html.HiddenFor(m => m.Fields[i].IsRequired)
+
         <div class="form-field">
             @if (!string.IsNullOrEmpty(name))
             {
@@ -46,6 +48,7 @@
                 else
                 {
                     @Html.EditorFor(m => Model.Fields[i])
+                    <div class="error form-error" name="@Html.NameFor(m => Model.Fields[i])" style="display:none;"></div>
                 }
             </div>
         </div>
