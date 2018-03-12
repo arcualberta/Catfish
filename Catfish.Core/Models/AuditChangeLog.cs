@@ -20,23 +20,6 @@ namespace Catfish.Core.Models
             Target = target;
             Description = description;
         }
-/*
-         public static string TagName { get { return "log"; } }
 
-
-        public AuditChangeLog(XElement ele)
-        {
-            Target = ele.Attribute("tartget").Value;
-            Description = ele.Value;
-        }
-
-        public XElement ToXml()
-        {
-            XElement element = new XElement(TagName);
-            element.SetAttributeValue("target", Target);
-            element.Value = Description;
-            return element;
-        }
-        */
     }
 }

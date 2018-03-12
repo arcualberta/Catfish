@@ -14,7 +14,7 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/EntityTypes
         public ActionResult Index()
         {
-            return View(EntityService.GetEntityTypes());
+            return View(EntityTypeService.GetEntityTypes());
         }
 
 
@@ -24,7 +24,7 @@ namespace Catfish.Areas.Manager.Controllers
             EntityType model = null;
             if (id.HasValue && id.Value > 0)
             {
-                model = Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
+                model = EntityTypeService.GetEntityTypeById(id.Value); //Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
             }
             else
             {
@@ -42,10 +42,10 @@ namespace Catfish.Areas.Manager.Controllers
             EntityType model = null;
             if (id.HasValue && id.Value > 0)
             {
-                model = Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
+                model = EntityTypeService.GetEntityTypeById(id.Value); //Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
                 if (model != null)
                 {
-                    Db.Entry(model).State = EntityState.Deleted;
+                    EntityTypeService.DeleteEntityType(model);//Db.Entry(model).State = EntityState.Deleted;
                     Db.SaveChanges(User.Identity);
                 }
             }
@@ -89,7 +89,7 @@ namespace Catfish.Areas.Manager.Controllers
                 vm.NameMapping.MetadataSet = vm.SelectedNameMappingMetadataSet.Name;
                 vm.NameMapping.MetadataSetId = vm.SelectedNameMappingMetadataSet.Id;
 
-                MetadataSet ms = Db.MetadataSets.Where(m => m.Id == vm.NameMapping.MetadataSetId).FirstOrDefault();
+                MetadataSet ms = MetadataService.GetMetadataSet(vm.NameMapping.MetadataSetId);//Db.MetadataSets.Where(m => m.Id == vm.NameMapping.MetadataSetId).FirstOrDefault();
                 //ms.Deserialize();
                 vm.NameMapping.Field = "Not specified";
                 vm.SelectedNameMappingField = "";
@@ -104,7 +104,7 @@ namespace Catfish.Areas.Manager.Controllers
                 vm.DescriptionMapping.MetadataSet = vm.SelectedDescriptionMappingMetadataSet.Name;
                 vm.DescriptionMapping.MetadataSetId = vm.SelectedDescriptionMappingMetadataSet.Id;
 
-                MetadataSet ms = Db.MetadataSets.Where(m => m.Id == vm.DescriptionMapping.MetadataSetId).FirstOrDefault();
+                MetadataSet ms = MetadataService.GetMetadataSet(vm.DescriptionMapping.MetadataSetId);// Db.MetadataSets.Where(m => m.Id == vm.DescriptionMapping.MetadataSetId).FirstOrDefault();
                 //ms.Deserialize();
                 vm.DescriptionMapping.Field = "Not specified";
                 vm.SelectedDescriptionMappingField = "";
@@ -140,20 +140,22 @@ namespace Catfish.Areas.Manager.Controllers
                 EntityType model;
                 if (vm.Id > 0)
                 {
-                    model = Db.EntityTypes.Where(x => x.Id == vm.Id).FirstOrDefault();
+                    model = EntityTypeService.GetEntityTypeById(vm.Id);//Db.EntityTypes.Where(x => x.Id == vm.Id).FirstOrDefault();
                     if (model == null)
                         return Json(vm.Error("Specified entity type not found"));
                     else
                     {
                         vm.UpdateDataModel(model, Db);
-                        Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
+                        //Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
+                        EntityTypeService.UpdateEntityType(model);
                     }
                 }
                 else
                 {
                     model = new EntityType();
                     vm.UpdateDataModel(model, Db);
-                    Db.EntityTypes.Add(model);
+                    // Db.EntityTypes.Add(model);
+                    EntityTypeService.UpdateEntityType(model);
                 }
 
                 Db.SaveChanges(User.Identity);
@@ -183,27 +185,27 @@ namespace Catfish.Areas.Manager.Controllers
         // POST: Manager/EntityTypes/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(EntityType entityType)
-        {
-            var test = Request.Params;
-            if (ModelState.IsValid)
-            {
-                entityType.TargetTypes = entityType.TargetTypesList.Count > 0 ? string.Join(",", entityType.TargetTypesList.ToArray()) : string.Empty;
-                if (entityType.Id > 0)
-                {
-                    EntityService.UpdateEntityType(entityType);
-                }
-                else
-                {
-                    EntityService.CreateEntityType(entityType);
-                }
-                Db.SaveChanges(User.Identity);
-                return RedirectToAction("Index");
-            }
-            return View(entityType);
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Edit(EntityType entityType)
+        //{
+        //    var test = Request.Params;
+        //    if (ModelState.IsValid)
+        //    {
+        //        entityType.TargetTypes = entityType.TargetTypesList.Count > 0 ? string.Join(",", entityType.TargetTypesList.ToArray()) : string.Empty;
+        //        if (entityType.Id > 0)
+        //        {
+        //            EntityService.UpdateEntityType(entityType);
+        //        }
+        //        else
+        //        {
+        //            EntityService.CreateEntityType(entityType);
+        //        }
+        //        Db.SaveChanges(User.Identity);
+        //        return RedirectToAction("Index");
+        //    }
+        //    return View(entityType);
+        //}
 
 
         protected override void Dispose(bool disposing)

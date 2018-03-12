@@ -86,8 +86,6 @@ namespace Catfish.Core.Models
                 {
                     t.MapLeftKey("EntityTypesId");
                     t.MapRightKey("MetadataSetId");
-                    //t.MapLeftKey("MetadataSetId");
-                    //t.MapRightKey("EntityTypesId");
                     t.ToTable("EntityTypeHasMetadataSets");
                 });
 
@@ -112,10 +110,6 @@ namespace Catfish.Core.Models
         public DbSet<Form> FormTemplates { get; set; }
 
         public System.Data.Entity.DbSet<Catfish.Core.Models.Forms.TextField> TextFields { get; set; }
-
-        ////public DbSet<SimpleField> MetadataFields { get; set; }
-
-        ////public DbSet<FieldValue> FieldValues { get; set; }
 
         public DbSet<EntityGroup> EntityGroups { get; set; }
         public DbSet<EntityGroupUser> EntityGroupUsers { get; set; }
