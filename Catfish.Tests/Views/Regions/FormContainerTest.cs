@@ -202,11 +202,27 @@ namespace Catfish.Tests.Views.Regions
             elements[0].FindElement(By.CssSelector("input[id$='__Value']")).SendKeys("Field 1");
             elements[1].FindElement(By.CssSelector("textarea[id$='__Value']")).SendKeys("Field 2");
 
-            IWebElement btnSave = region.FindElement(By.ClassName("input[type='submit']"));
+            IWebElement btnSave = region.FindElement(By.CssSelector("input[type='submit']"));
             IJavaScriptExecutor jex = (IJavaScriptExecutor)Driver;
 
             jex.ExecuteScript("arguments[0].focus(); ", btnSave);
             btnSave.Click();
+        }
+
+        [Test]
+        public void TestBasicFormRequired()
+        {
+            this.Driver.Navigate().GoToUrl(FormUrl);
+            IWebElement region = this.Driver.FindElement(By.Id(FORM_CSS_ID));
+            IReadOnlyList<IWebElement> elements = region.FindElements(By.CssSelector("div.input"));
+
+            IWebElement btnSave = region.FindElement(By.CssSelector("input[type='submit']"));
+            IJavaScriptExecutor jex = (IJavaScriptExecutor)Driver;
+
+            jex.ExecuteScript("arguments[0].focus(); ", btnSave);
+            btnSave.Click();
+
+            Assert.IsNotEmpty(elements[0].FindElement(By.CssSelector(".error.form-error")).Text);
         }
     }
 }
