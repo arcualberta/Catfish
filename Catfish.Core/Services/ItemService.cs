@@ -134,6 +134,8 @@ namespace Catfish.Core.Services
                 return model as DataFile;
             else if (checkInItems && model is Item)
                 return (model as Item).Files.Where(f => f.Guid == guid).FirstOrDefault();
+            else if (model is Form)
+                return (model as Form).Fields.SelectMany(p => p.Files).Where(f => f.Guid == guid).FirstOrDefault(); //Files.Where(f => f.Guid == guid).FirstOrDefault();
             else
                 return null;
         }
