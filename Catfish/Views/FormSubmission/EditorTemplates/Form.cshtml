@@ -32,12 +32,10 @@
             </div>
             }
             <!--   Melania   -->
-            <h1>Files</h1>
            @foreach (var f in Model.Fields[i].Files)
            {
                string source = Url.Action("File","Items", new  {id=Model.Id, guid=f.Guid });
            @:<div>
-                  <span>@f.FileName -</span>
                if (f.ContentType.Contains("image"))
                {
                     <img src="@source" width="50" height="50" />
