@@ -51,6 +51,8 @@ namespace Catfish.Core.Models.Data
             get
             {
                 string relativePath = GetAttribute("path", null);
+                if (relativePath == null)
+                    return null;
                 return System.IO.Path.Combine(ConfigHelper.UploadRoot, relativePath);
             }
             set
