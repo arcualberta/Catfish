@@ -166,3 +166,4 @@ Catfish/App_Data
 /.vs/Catfish/v15/Server/sqlite3/
 
 /Catfish.DataHandler/App.config
+/.vs/Catfish.sqlite
