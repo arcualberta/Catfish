@@ -1,11 +1,22 @@
 ﻿using Catfish.Core.Models;
 using System.Data.Entity;
+using System.Linq;
 
 namespace Catfish.Core.Services
 {
     public class CollectionService: EntityService
     {
         public CollectionService(CatfishDbContext db) : base(db) { }
+
+        public Collection GetCollection(int id)
+        {
+            return Db.Collections.Find(id);
+        }
+
+        public Collection GetCollectionByGuid(string guid)
+        {
+            return Db.Collections.Where(c => c.MappedGuid == guid).FirstOrDefault();
+        }
 
         public Collection CreateCollection(int entityTypeId)
         {
@@ -18,8 +29,7 @@ namespace Catfish.Core.Services
 
             if (changedCollection.Id > 0)
             {
-                dbModel = Db.XmlModels.Find(changedCollection.Id) as Collection;
-                //dbModel.Deserialize();
+                dbModel = GetCollection(changedCollection.Id);
 
                 //updating the "value" text elements
                 dbModel.UpdateValues(changedCollection);
@@ -30,11 +40,13 @@ namespace Catfish.Core.Services
                 dbModel.UpdateValues(changedCollection);
             }
 
+            dbModel.Serialize();
             if (changedCollection.Id > 0) //update Item
                 Db.Entry(dbModel).State = EntityState.Modified;
             else
-                dbModel.Serialize();
+            {
                 Db.XmlModels.Add(dbModel);
+            }
 
             return dbModel;
         }
