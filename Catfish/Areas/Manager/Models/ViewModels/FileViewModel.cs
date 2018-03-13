@@ -13,7 +13,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string Guid { get; set; }
         public string Thumbnail { get; set; }
         public string Url { get; set; }
-
+        public string Path { get; set; }
         public FileViewModel() { }
 
 
@@ -33,6 +33,12 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             InitializeInstance(src, itemId, ctx, "Items");
         }
 
+        public string ThumbnailUrl {
+            get {
+                return "url('" + Thumbnail + "')";
+            }
+        }
+
         private void InitializeInstance(DataFile src, int? id, RequestContext ctx, string controller)
         {
             UrlHelper urlHelper = new UrlHelper(ctx);
@@ -42,7 +48,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Id = src.Id;
             FileName = src.FileName;
             Guid = src.Guid;
-            
+            Path = src.Path;
+
             Thumbnail = urlHelper.Action("Thumbnail", controller, new {
                 id = idValue,
                 name = src.Guid

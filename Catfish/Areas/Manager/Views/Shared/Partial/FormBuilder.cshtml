@@ -14,7 +14,6 @@
 @section scripts {
     <script>
         $(function () {
-
             $(".progressBar").hide();
             $(".messageBox").hide();
         });
@@ -29,12 +28,15 @@
     <div id="@containerId" class="inner file-upload" style="clear:both">
         <div class="thumbnailPanel">
             <input type="hidden" id="Model_FieldFileGuids" @field.Bind.Value(m => m.FieldFileGuids) />
-            @using (KnockoutForeachContext<DataFile> fileViewModel = field.Foreach(f => f.Files))
+            @using (KnockoutForeachContext<FileViewModel> fileViewModel = field.Foreach(f => f.Files))
             {
-                <div class="fileThumbnail" @fileViewModel.Bind.Attr("id", m => m.Guid)>                    
-                    <div class="img" data-bind="style : {backgroundImage : 'url(' + $data.Thumbnail + ')' }"></div>
-                    <div class="label"><a @fileViewModel.Bind.Attr("href", f => f.Path)>@fileViewModel.Html.Span(s => s.FileName)</a></div>
-                </div>
+            <div class="fileThumbnail" @fileViewModel.Bind.Attr("id", m => m.Guid)>
+                @fileViewModel.Html.Span(m => m.ThumbnailUrl)
+                @fileViewModel.Html.Span(m => m.Thumbnail)
+                <div class="img" data-bind="style : {backgroundImage : 'url(' + $data.Thumbnail + ')' }"></div>
+                <div class="img" @fileViewModel.Bind.Style("backgroundImage", (m => m.ThumbnailUrl))></div>
+                <div class="label"><a @fileViewModel.Bind.Attr("href", f => f.Path)>@fileViewModel.Html.Span(s => s.FileName)</a></div>
+            </div>
             }
         </div>
         <div class="inner" style="clear:both">
