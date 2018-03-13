@@ -23,33 +23,28 @@
 @helper RenderFileAttachments(KnockoutContext<FormFieldViewModel> field)
 {
 
-string containerId = Guid.NewGuid().ToString("N");
-string uploadApiUrl = Url.Action("upload", "items");
-string deleteApiUrl = Url.Action("deleteCashedFile", "items");
-
-        <div>omar</div>
-        <div id="@containerId" class="inner file-upload" style="clear:both">
-            <div class="thumbnailPanel">
-                <input type="hidden" id="Model_FieldFileGuids" @field.Bind.Value(m => m.FieldFileGuids) />
-                @using (KnockoutForeachContext<DataFile> fileViewModel = field.Foreach(f => f.Files))
-                {
-                    @*@fileViewModel.Html.Span(m => m.Thumbnail);*@
-                    <div class="fileThumbnail" @fileViewModel.Bind.Attr("id", m => m.Guid)>
-                        <div class="img" @fileViewModel.Bind.Style("\"background-image\"", m => "url(" + m.Thumbnail + ")")></div>
-                        <div class="label"><a @fileViewModel.Bind.Attr("href", f => f.Path)>@fileViewModel.Html.Span(s => s.FileName)</a></div>
-                    </div>
-                }
-            </div>
-            <div class="inner" style="clear:both">
-                <div class="alert alert-danger messageBox"></div>
-
-                <input type='file' class="uploadField" name="files" multiple="multiple" />
-                <input data-bind="click: function(data){$root.uploadFileKoWrapper(data, '@containerId', '@uploadApiUrl', '@deleteApiUrl', 'Model_FieldFileGuids')}" type="button" value="Upload" class="uploadButton" />
-                <div class="progressBar" hidden><progress></progress></div>
-            </div>
+    string containerId = Guid.NewGuid().ToString("N");
+    string uploadApiUrl = Url.Action("upload", "items");
+    string deleteApiUrl = Url.Action("deleteCashedFile", "items");
+    <div id="@containerId" class="inner file-upload" style="clear:both">
+        <div class="thumbnailPanel">
+            <input type="hidden" id="Model_FieldFileGuids" @field.Bind.Value(m => m.FieldFileGuids) />
+            @using (KnockoutForeachContext<DataFile> fileViewModel = field.Foreach(f => f.Files))
+            {
+                <div class="fileThumbnail" @fileViewModel.Bind.Attr("id", m => m.Guid)>                    
+                    <div class="img" data-bind="style : {backgroundImage : 'url(' + $data.Thumbnail + ')' }"></div>
+                    <div class="label"><a @fileViewModel.Bind.Attr("href", f => f.Path)>@fileViewModel.Html.Span(s => s.FileName)</a></div>
+                </div>
+            }
         </div>
-        <div>isidro</div>
-    
+        <div class="inner" style="clear:both">
+            <div class="alert alert-danger messageBox"></div>
+
+            <input type='file' class="uploadField" name="files" multiple="multiple" />
+            <input data-bind="click: function(data){$root.uploadFileKoWrapper(data, '@containerId', '@uploadApiUrl', '@deleteApiUrl', 'Model_FieldFileGuids')}" type="button" value="Upload" class="uploadButton" />
+            <div class="progressBar" hidden><progress></progress></div>
+        </div>
+    </div>    
 }
 
 <div id="@context">

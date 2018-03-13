@@ -228,9 +228,15 @@ var stateChangeKo = function (data, deleteApiUrl, containerId, fileGuidListField
 function updateFileListViewKo(data, deleteApiUrl, containerId, fileGuidListFieldId, koModel) {
     data = JSON.parse(data);
     var thumbnailPanel = $("#" + containerId + " .thumbnailPanel")[0];
-    console.log(koModel)
+
+    data.forEach(function (file) {
+        koModel.Files.push(file);
+    })
+
+    //koModel.Files.push(data[0])
 
     //var fileGuidList = $("#" + fileGuidListFieldId).val();
+    /*
     var fileGuidList = koModel.FieldFileGuids();
 
     for (var i = 0; i < data.length; ++i) {
@@ -257,4 +263,5 @@ function updateFileListViewKo(data, deleteApiUrl, containerId, fileGuidListField
     console.log(koModel.FieldFileGuids());
     //$("#" + fileGuidListFieldId).val(fileGuidList);
     koModel.FieldFileGuids(fileGuidList)
+    */
 }
