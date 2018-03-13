@@ -167,3 +167,5 @@ Catfish/App_Data
 
 /Catfish.DataHandler/App.config
 /.vs/Catfish.sqlite
+/Catfish/Catfish/App_Data/Uploads/Data/
+/Catfish/Catfish/App_Data/Uploads/temp-files/
