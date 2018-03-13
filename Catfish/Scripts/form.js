@@ -108,7 +108,7 @@
         }
     }
 
-    function submitFormContainer(baseName, formContainerElement, formContainerJson, submitUrl, successFunction) {
+    function submitFormContainer(baseName, formContainerElement, formContainerJson, submitUrl, successFunction, errorFunction) {
         var data = {
             "vm" : generateFormContainerJson(baseName, formContainerElement),
             "formContainer" : formContainerJson
@@ -121,6 +121,9 @@
             success: function (result) {
                 if (result.Errors) {
                     fillValidationErrors(baseName, "vm.", formContainerElement, result.Errors);
+                    if (errorFunction) {
+                        errorFunction(result.Errors);
+                    }
                 } else {
                     if (successFunction) {
                         successFunction(formContainerElement, result);
@@ -128,7 +131,11 @@
                 }
             },
             error: function (error) {
-                console.log(error);
+                if (errorFunction) {
+                    errorFunction(error);
+                } else {
+                    console.error(error);
+                }
             }
         })
     }

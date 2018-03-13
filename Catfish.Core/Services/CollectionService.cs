@@ -7,6 +7,11 @@ namespace Catfish.Core.Services
     {
         public CollectionService(CatfishDbContext db) : base(db) { }
 
+        public Collection CreateCollection(int entityTypeId)
+        {
+            return CreateEntity<Collection>(entityTypeId);
+        }
+
         public Collection UpdateStoredCollection(Collection changedCollection)
         {
             Collection dbModel = new Collection();

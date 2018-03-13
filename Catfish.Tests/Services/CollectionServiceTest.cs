@@ -13,9 +13,42 @@ namespace Catfish.Tests.Services
     [TestClass]
     public class CollectionServiceTest
     {
-        private void CreateCollection(string name, string description, IEnumerable<MetadataSet> sets)
+        private Collection CreateCollection(CollectionService cs, int entityTypeId, string name, string description, bool store = false)
         {
+            Collection c = cs.CreateCollection(entityTypeId);
 
+
+            if (store)
+            {
+                cs.UpdateStoredCollection(c);
+            }
+
+            return c;
+        }
+
+        [TestMethod]
+        public void TestCreateCollection()
+        {
+            DatabaseHelper Dh = new DatabaseHelper(true);
+            CollectionService Cs = new CollectionService(Dh.Db);
+            int entityTypeId = Dh.Db.EntityTypes.Where(e => e.TargetTypes.Contains("Collection")).Select(e => e.Id).FirstOrDefault();
+            string name = "Test 1";
+            string description = "Description";
+
+            Collection c = CreateCollection(Cs, entityTypeId, name, description);
+        }
+
+        [TestMethod]
+        public void TestUdpateCollection()
+        {
+            DatabaseHelper Dh = new DatabaseHelper(true);
+            CollectionService Cs = new CollectionService(Dh.Db);
+            int entityTypeId = Dh.Db.EntityTypes.Where(e => e.TargetTypes.Contains("Collection")).Select(e => e.Id).FirstOrDefault();
+            string name = "Test 2";
+            string description = "Description";
+
+            Collection c = CreateCollection(Cs, entityTypeId, name, description, true);
+            Dh.Db.SaveChanges();
         }
 
         [TestMethod]
