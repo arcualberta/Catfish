@@ -212,10 +212,10 @@ namespace Catfish.Areas.Manager.Controllers
             }
         }
 
-        public ActionResult File(int id, string guid)
+        public ActionResult File(int id, string name)
         {
             ItemService srv = new ItemService(db);
-            DataFile file = srv.GetFile(id, guid);
+            DataFile file = srv.GetFile(id, name);
             if (file == null)
                 return HttpNotFound("File not found");
 

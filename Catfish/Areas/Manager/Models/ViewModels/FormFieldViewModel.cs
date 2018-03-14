@@ -30,16 +30,14 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         //public Attachment Attachment { get; set; }
         //public List<FileViewModel> Files { get; set; }
         public string[] FieldFileGuids { get; set; }
-        public List<DataFile> Files { get; set; }
-        public List<string> FileThings { get; set; }
-
+        public List<FileViewModel> Files { get; set; }
         public int Rank { get; set; }
         public int Page { get; set; }
         public bool IsPageBreak { get; set; }
 
         private CatfishDbContext Db = new CatfishDbContext();
 
-        public FormFieldViewModel(FormField src)
+        public FormFieldViewModel(FormField src, int abstractFormId)
         {
             Name = src.MultilingualName.ToList();
             Description = src.MultilingualDescription.ToList();
@@ -49,12 +47,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Rank = src.Rank;
             Page = src.Page;
             IsPageBreak = src.IsPageBreak();
-            //Files = src.Files.Select( m => new FileViewModel(m, src.Id)).ToList();
+            Files = src.Files.Select( m => new FileViewModel(m, abstractFormId)).ToList();
             FieldFileGuids = src.FieldFileGuidsArray;
-            Files = src.Files;
-            FileThings = new List<string>() { "test", "test2" };
-
-
+            //Files = src.Files;
 
             TypeLabelAttribute att = Attribute.GetCustomAttribute(src.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
             TypeLabel = att == null ? src.GetType().ToString() : att.Name;
@@ -101,12 +96,14 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.Guid = Guid;
             field.Rank = Rank;
             field.Page = Page;
+            Files.Select(m => m.Guid);
             //XXX setter puts the <value element and sets value
             // this is where you search for the field on the database based on the fieldfileguids
 
             //XXX Quizas quita esto y toma los archivos de la lista de file elements
-            field.FieldFileGuids = String.Join("|", FieldFileGuids);
-            
+            //field.FieldFileGuids = String.Join("|", FieldFileGuids);
+            field.FieldFileGuids = String.Join("|", Files.Select(m => m.Guid));
+
             UpdateFileList(field);
 
             if (typeof(OptionsField).IsAssignableFrom(type))
@@ -171,7 +168,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
 
             // Add new files
-
+            //XXX Aqui es para recibir FieldFileGuids
             List<DataFile> filesList = new List<DataFile>();
             foreach (string fileGuid in field.FieldFileGuidsArray)
             {
@@ -181,6 +178,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
                 if (file != null)
                 {
+                    //file.Path = Uploadrootdir + 
                     MoveFileToField(file, field);
                     filesList.Add(file);
                     Db.XmlModels.Remove(file);
