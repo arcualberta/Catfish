@@ -37,7 +37,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         private CatfishDbContext Db = new CatfishDbContext();
 
-        public FormFieldViewModel(FormField src)
+        public FormFieldViewModel(FormField src, int abstractFormId)
         {
             Name = src.MultilingualName.ToList();
             Description = src.MultilingualDescription.ToList();
@@ -47,7 +47,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Rank = src.Rank;
             Page = src.Page;
             IsPageBreak = src.IsPageBreak();
-            Files = src.Files.Select( m => new FileViewModel(m, src.Id)).ToList();
+            Files = src.Files.Select( m => new FileViewModel(m, abstractFormId)).ToList();
             FieldFileGuids = src.FieldFileGuidsArray;
             //Files = src.Files;
 
@@ -178,6 +178,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
                 if (file != null)
                 {
+                    //file.Path = Uploadrootdir + 
                     MoveFileToField(file, field);
                     filesList.Add(file);
                     Db.XmlModels.Remove(file);
