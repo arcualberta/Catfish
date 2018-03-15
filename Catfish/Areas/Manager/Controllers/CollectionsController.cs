@@ -16,23 +16,18 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Collections
         public ActionResult Index()
         {
-            var entities = db.XmlModels.Where(m => m is Collection).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
+            var entities = CollectionService.GetCollections().Select(e => e as Entity);
             return View(entities);
         }
 
         [HttpPost]
         public ActionResult Delete(int? id)
         {
-            Collection model = null;
-            if (id.HasValue && id.Value > 0)
+            if (id.HasValue)
             {
-                model = Db.Collections.Where(et => et.Id == id).FirstOrDefault();
-                if (model != null)
-                {
-                    Db.Entry(model).State = EntityState.Deleted;
-                    Db.SaveChanges(User.Identity);
-                }
+                CollectionService.DeleteCollection(id.Value, User.Identity);
             }
+            
             return RedirectToAction("index");
         }
 

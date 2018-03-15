@@ -119,6 +119,12 @@ namespace Catfish.Core.Models
 
         public override void UpdateValues(XmlModel src)
         {
+            if(src == this)
+            {
+                // Updating will delete the child content. Since it's the same, we will return without any changes.
+                return;
+            }
+
             base.UpdateValues(src);
 
             var src_item = src as Entity;
