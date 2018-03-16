@@ -340,6 +340,7 @@
     <Compile Include="Controllers\Api\FormsController.cs" />
     <Compile Include="Controllers\Api\ItemsController.cs" />
     <Compile Include="Controllers\Api\StatsController.cs" />
+    <Compile Include="Controllers\CatfishController.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Areas\Manager\Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />

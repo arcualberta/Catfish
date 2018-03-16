@@ -13,7 +13,6 @@ using System.Collections.Generic;
 
 namespace Catfish.Tests.Views
 {
-
     static class CollectionTestValues
     {
         public static Random Rnd = new Random();
@@ -445,19 +444,6 @@ namespace Catfish.Tests.Views
             
             return collectionId;
         }
-
-        private Collection GetCollectionById(int id)
-        {
-            CatfishDbContext db = new CatfishDbContext();
-            if (db.Database.Connection.State == ConnectionState.Closed)
-            {
-                db.Database.Connection.Open();
-            }
-            Collection col = db.Collections.Where(i => i.Id==id).FirstOrDefault();
-
-            return col;
-        }
-
 
         private string FindTestValue(string expectedValue)
         {

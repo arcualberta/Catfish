@@ -12,11 +12,8 @@ using System.Web.Mvc;
 
 namespace Catfish.Controllers.Api
 {
-    public class ItemsController : Controller
-    {
-        private CatfishDbContext mDb;
-        public CatfishDbContext Db { get { if (mDb == null) mDb = new CatfishDbContext(); return mDb; } }
-       
+    public class ItemsController : CatfishController
+    {     
         // GET: Items
         public JsonResult Index(int? offset, int? limit, bool? randomize, int? entityTypeId, string fields, int?collectionId)
         {
@@ -25,7 +22,7 @@ namespace Catfish.Controllers.Api
                 IEnumerable<Item> items;
                 if (collectionId.HasValue && collectionId.Value > 0)
                 {
-                    Collection collection = Db.Collections.Where(c => c.Id == collectionId).FirstOrDefault();
+                    Collection collection = CollectionService.GetCollection(collectionId.Value);
                     items = collection.ChildItems.Select(it => it as Item);
                 }
                 else
