@@ -87,7 +87,7 @@ namespace Catfish.Tests.Views
             IWebElement btnEdit = FindElementOnThePage(collectionId, "glyphicon-edit");
             ClickButton(btnEdit);
 
-            editFormFields();
+            EditFormFields();
             clickSave();
 
             this.Driver.Navigate().GoToUrl(indexUrl);
@@ -306,7 +306,7 @@ namespace Catfish.Tests.Views
                 {
                     //grab text field or text area
                     IWebElement textEl;
-                    bool bfound = isElementFound(inputs[i],"input");
+                    bool bfound = IsElementFound(inputs[i],"input");
                     if (bfound)
                     {
                         textEl = inputs[i].FindElement(By.TagName("input"));
@@ -335,7 +335,7 @@ namespace Catfish.Tests.Views
             }
         }
 
-        private bool isElementFound(IWebElement el, string tagName)
+        private bool IsElementFound(IWebElement el, string tagName)
         {
             bool found = false;
             try
@@ -350,7 +350,7 @@ namespace Catfish.Tests.Views
 
             return found;
         }
-        private void editFormFields()
+        private void EditFormFields()
         {
             IReadOnlyList<IWebElement> fields = this.Driver.FindElements(By.ClassName("form-field"));
             int count = 0;
@@ -369,7 +369,7 @@ namespace Catfish.Tests.Views
                 for (int i = 0; i < inputs.Count; i++)
                 {
                     IWebElement textEl;
-                    bool bfound = isElementFound(inputs[i], "input");
+                    bool bfound = IsElementFound(inputs[i], "input");
                     if (bfound)
                     {
                         textEl = inputs[i].FindElement(By.TagName("input"));

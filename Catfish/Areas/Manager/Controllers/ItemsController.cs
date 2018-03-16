@@ -23,16 +23,15 @@ namespace Catfish.Areas.Manager.Controllers
 {
     public class ItemsController : CatfishController
     {
-        private CatfishDbContext db = new CatfishDbContext();
-
         // GET: Manager/Items
         public ActionResult Index(int offset=0, int limit=int.MaxValue)
         {
             if(limit == int.MaxValue)
                 limit = ConfigHelper.PageSize;
 
-            var entities = db.XmlModels.Where(m => m is Item).OrderBy(e => e.Id).Skip(offset).Take(limit).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
-            var total = db.XmlModels.Where(m => m is Item).Count();
+            var itemQuery = ItemService.GetItems();
+            var entities = itemQuery.OrderBy(e => e.Id).Skip(offset).Take(limit).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
+            var total = itemQuery.Count();
 
             ViewBag.TotalItems = total;
             ViewBag.Limit = limit;
@@ -68,12 +67,13 @@ namespace Catfish.Areas.Manager.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Entity entity = db.XmlModels.Find(id) as Entity;
-            if (entity == null)
+
+            Item item = ItemService.GetItem(id.Value);
+            if (item == null)
             {
                 return HttpNotFound();
             }
-            return View(entity);
+            return View(item);
         }
 
         // GET: Manager/Items/Edit/5
@@ -83,11 +83,7 @@ namespace Catfish.Areas.Manager.Controllers
           
             if (id.HasValue && id.Value > 0)
             {
-                model = db.XmlModels.Find(id) as Item;
-                //model.Deserialize();
-
-                ////if(model.Files.Any()) //MR Sept 5 2017---chek if model has any file associated before pulling it
-                ////    ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
+                model = ItemService.GetItem(id.Value);
 
             }
             else
@@ -122,7 +118,7 @@ namespace Catfish.Areas.Manager.Controllers
             if (ModelState.IsValid)
             {
                 Item dbModel = ItemService.UpdateStoredItem(model);
-                db.SaveChanges(User.Identity);
+                Db.SaveChanges(User.Identity);
 
                 if (model.Id == 0)
                     return RedirectToAction("Edit", new { id = dbModel.Id });
@@ -141,14 +137,14 @@ namespace Catfish.Areas.Manager.Controllers
             EntityContentViewModel childItems = new EntityContentViewModel();
             childItems.Id = model.Id;
             childItems.LoadNextChildrenSet(model.ChildItems);
-            childItems.LoadNextMasterSet(db.Items);
+            childItems.LoadNextMasterSet(ItemService.GetItems());
             ViewBag.ChildItems = childItems;
 
 
             EntityContentViewModel relatedItems = new EntityContentViewModel();
             relatedItems.Id = model.Id;
             relatedItems.LoadNextChildrenSet(model.ChildRelations);
-            relatedItems.LoadNextMasterSet(db.Items);
+            relatedItems.LoadNextMasterSet(ItemService.GetItems());
             ViewBag.RelatedItems = relatedItems;
 
             return View(model);
@@ -204,7 +200,7 @@ namespace Catfish.Areas.Manager.Controllers
                     return Json(string.Empty);
                 }
 
-                db.SaveChanges(User.Identity);
+                Db.SaveChanges(User.Identity);
                 return Json(new List<string>() { guid });
             }
             catch (Exception)
@@ -236,15 +232,6 @@ namespace Catfish.Areas.Manager.Controllers
                 : Path.Combine(file.Path, file.Thumbnail);
 
             return new FilePathResult(path_name, file.ContentType);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

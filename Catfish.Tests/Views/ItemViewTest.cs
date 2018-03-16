@@ -12,8 +12,7 @@ using System.Threading;
 using System.Collections.Generic;
 
 namespace Catfish.Tests.Views
-{
-
+{ 
     static class ItemTestValues
     {
         public static Random Rnd = new Random();
@@ -58,12 +57,14 @@ namespace Catfish.Tests.Views
             this.Driver.Navigate().GoToUrl(indexUrl);
             ClickOnAddBtn();
             SelectEntityType();
-            filledFormFields();
+            FilledFormFields();
             clickSave();
 
-            var item = GetNewlyAddedItem();
+            var itemId = GetNewlyAddedItem();
 
-           Assert.AreEqual(ItemTestValues.Name, item.Name);
+            this.Driver.Navigate().GoToUrl(indexUrl + "/edit/" + itemId);
+            IWebElement element = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value"));
+            Assert.AreEqual(ItemTestValues.Name, element.GetAttribute("value"));
         }
 
         [Test]
@@ -72,15 +73,17 @@ namespace Catfish.Tests.Views
             this.Driver.Navigate().GoToUrl(indexUrl);
             ClickOnAddBtn();
             SelectEntityType();
-            filledFormFields();
+            FilledFormFields();
             clickSave();
 
-            var item = GetNewlyAddedItem();
+            var itemId = GetNewlyAddedItem();
 
-            Assert.AreEqual(ItemTestValues.Name, item.Name);
+            this.Driver.Navigate().GoToUrl(indexUrl + "/edit/" + itemId);
+            IWebElement element = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value"));
+            Assert.AreEqual(ItemTestValues.Name, element.GetAttribute("value"));
 
             //edit
-            IWebElement btnEdit = FindElementOnThePage(item.Id.ToString(), "glyphicon-edit");
+            IWebElement btnEdit = FindElementOnThePage(itemId, "glyphicon-edit");
             clickButton(btnEdit);
 
             editFormFields();
@@ -97,19 +100,21 @@ namespace Catfish.Tests.Views
             this.Driver.Navigate().GoToUrl(indexUrl);
             ClickOnAddBtn();
             SelectEntityType();
-            filledFormFields();
+            FilledFormFields();
             clickSave();
 
-            var item = GetNewlyAddedItem();
+            var itemId = GetNewlyAddedItem();
 
-            Assert.AreEqual(ItemTestValues.Name, item.Name);
+            this.Driver.Navigate().GoToUrl(indexUrl + "/edit/" + itemId);
+            IWebElement element = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value"));
+            Assert.AreEqual(ItemTestValues.Name, element.GetAttribute("value"));
 
             //Delete
-            IWebElement btnDelete = FindElementOnThePage(item.Id.ToString(), "glyphicon-remove");
+            IWebElement btnDelete = FindElementOnThePage(itemId, "glyphicon-remove");
             clickButtonDelete(btnDelete);
 
             //the item should be gone
-            Item delItem = GetItemById(item.Id);
+            Item delItem = GetItemById(int.Parse(itemId));
 
             Assert.AreEqual(null, delItem);
         }
@@ -119,15 +124,17 @@ namespace Catfish.Tests.Views
             this.Driver.Navigate().GoToUrl(indexUrl);
             ClickOnAddBtn();
             SelectEntityType();
-            filledFormFields();
+            FilledFormFields();
             clickSave();
 
-            var item = GetNewlyAddedItem();
+            var itemId = GetNewlyAddedItem();
 
-            Assert.AreEqual(ItemTestValues.Name, item.Name);
+            this.Driver.Navigate().GoToUrl(indexUrl + "/edit/" + itemId);
+            IWebElement element = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value"));
+            Assert.AreEqual(ItemTestValues.Name, element.GetAttribute("value"));
 
             //link -- add/remove child item
-            IWebElement btnLink = FindElementOnThePage(item.Id.ToString(), "glyphicon-link");
+            IWebElement btnLink = FindElementOnThePage(itemId, "glyphicon-link");
             clickButton(btnLink);
 
             AddChildItem();
@@ -243,13 +250,16 @@ namespace Catfish.Tests.Views
             }
         }
 
-        private void filledFormFields()
+        private void FilledFormFields()
         {
+            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(5));
+            wait.Until(drv => drv.FindElement(By.ClassName("form-field-name")));
+
             IReadOnlyList<IWebElement> fields = this.Driver.FindElements(By.ClassName("form-field"));
             int count = 0;
             foreach(var f in fields)
             {
-                IWebElement name = f.FindElement(By.ClassName("name"));
+                IWebElement name = f.FindElement(By.Name("label")); //text field
                 string txt = name.Text;
 
                 if(count == 0)
@@ -259,14 +269,25 @@ namespace Catfish.Tests.Views
                 }
                 IReadOnlyList<IWebElement> inputs = f.FindElements(By.ClassName("languageInputField"));
                 //each field has 3 input fields each for each language -- eng, fr and sp
-               for(int i =0; i < inputs.Count; i++)
+                for (int i = 0; i < inputs.Count; i++)
                 {
-                    IWebElement textEl = inputs[i].FindElement(By.TagName("textarea"));
-                    if(i==0)  //eng
+                    //grab text field or text area
+                    IWebElement textEl;
+                    bool bfound = IsElementFound(inputs[i], "input");
+                    if (bfound)
+                    {
+                        textEl = inputs[i].FindElement(By.TagName("input"));
+                    }
+                    else
+                    {
+                        textEl = inputs[i].FindElement(By.TagName("textarea"));
+                    }
+
+                    if (i == 0)  //eng
                     {
                         textEl.SendKeys(txt);
                     }
-                    else if(i==1)//fr
+                    else if (i == 1)//fr
                     {
                         textEl.SendKeys(txt + " Fr");
                     }
@@ -275,10 +296,25 @@ namespace Catfish.Tests.Views
                         textEl.SendKeys(txt + " Sp");
                     }
                     textEl.SendKeys(Keys.Tab);
-   
+
                 }
                
             }
+        }
+        private bool IsElementFound(IWebElement el, string tagName)
+        {
+            bool found = false;
+            try
+            {
+                IWebElement elFound = el.FindElement(By.TagName(tagName));
+                found = true;
+            }
+            catch (NoSuchElementException ex)
+            {
+                found = false;
+            }
+
+            return found;
         }
 
         private void editFormFields()
@@ -361,16 +397,11 @@ namespace Catfish.Tests.Views
             alert.Accept();
         }
 
-        private Item GetNewlyAddedItem()
+        private string GetNewlyAddedItem()
         {
-            CatfishDbContext db = new CatfishDbContext();
-            if (db.Database.Connection.State == ConnectionState.Closed)
-            {
-                db.Database.Connection.Open();
-            }
-            var item = db.Items.OrderByDescending(i => i.Id).First();
+            var itemId = Driver.FindElement(By.CssSelector("form input[name='Id']")).GetAttribute("value");
 
-            return item;
+            return itemId;
         }
 
         private Item GetItemById(int id)
