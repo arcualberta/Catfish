@@ -67,11 +67,11 @@ namespace Catfish.Tests.Views
             Assert.AreEqual(ItemTestValues.Name, element.GetAttribute("value"));
         }
 
-        private IWebElement GetEditButton(string itemId)
+        private IWebElement GetListButton(string itemId, string @class)
         {
             IWebElement btnEdit = null;
 
-            while ((btnEdit = FindElementOnThePage(itemId, "glyphicon-edit")) == null)
+            while ((btnEdit = FindElementOnThePage(itemId, @class)) == null)
             {
                 IWebElement element = Driver.FindElements(By.CssSelector("div.linkDiv > a.btn-success")).Where(a => a.Text.StartsWith("Next")).FirstOrDefault();
                 IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;
@@ -100,14 +100,14 @@ namespace Catfish.Tests.Views
 
             //edit
             this.Driver.Navigate().GoToUrl(indexUrl);
-            IWebElement btnEdit = GetEditButton(itemId);
+            IWebElement btnEdit = GetListButton(itemId, "glyphicon-edit");
             ClickButton(btnEdit);
 
             EditFormFields();
             ClickSave();
 
             this.Driver.Navigate().GoToUrl(indexUrl);
-            btnEdit = GetEditButton(itemId);
+            btnEdit = GetListButton(itemId, "glyphicon-edit");
 
             Assert.AreEqual(ItemTestValues.EditedName, FindTestValue(ItemTestValues.EditedName));
 
@@ -129,17 +129,7 @@ namespace Catfish.Tests.Views
 
             //Delete
             this.Driver.Navigate().GoToUrl(indexUrl);
-            IWebElement btnDelete = null;
-
-            while ((btnDelete = FindElementOnThePage(itemId, "glyphicon-remove")) == null)
-            {
-                element = Driver.FindElements(By.CssSelector("div.linkDiv > a.btn-success")).Where(a => a.Text.StartsWith("Next")).FirstOrDefault();
-                IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;
-
-                ex.ExecuteScript("window.scrollTo(0, document.body.scrollHeight)");
-                element.Click();
-            }
-
+            IWebElement btnDelete = GetListButton(itemId, "glyphicon-remove");
             ClickButtonDelete(btnDelete);
 
             //the item should be gone
@@ -165,7 +155,8 @@ namespace Catfish.Tests.Views
             Assert.AreEqual(ItemTestValues.Name, element.GetAttribute("value"));
 
             //link -- add/remove child item
-            IWebElement btnLink = FindElementOnThePage(itemId, "glyphicon-link");
+            this.Driver.Navigate().GoToUrl(indexUrl);
+            IWebElement btnLink = GetListButton(itemId, "glyphicon-link");
             ClickButton(btnLink);
 
             AddChildItem();
