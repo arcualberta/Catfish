@@ -58,7 +58,7 @@ namespace Catfish.Tests.Views
             ClickOnAddBtn();
             SelectEntityType();
             FilledFormFields();
-            clickSave();
+            ClickSave();
 
             var itemId = GetNewlyAddedItem();
 
@@ -74,7 +74,7 @@ namespace Catfish.Tests.Views
             ClickOnAddBtn();
             SelectEntityType();
             FilledFormFields();
-            clickSave();
+            ClickSave();
 
             var itemId = GetNewlyAddedItem();
 
@@ -87,7 +87,7 @@ namespace Catfish.Tests.Views
             clickButton(btnEdit);
 
             editFormFields();
-            clickSave();
+            ClickSave();
 
             this.Driver.Navigate().GoToUrl(indexUrl);
          
@@ -101,7 +101,7 @@ namespace Catfish.Tests.Views
             ClickOnAddBtn();
             SelectEntityType();
             FilledFormFields();
-            clickSave();
+            ClickSave();
 
             var itemId = GetNewlyAddedItem();
 
@@ -110,13 +110,26 @@ namespace Catfish.Tests.Views
             Assert.AreEqual(ItemTestValues.Name, element.GetAttribute("value"));
 
             //Delete
-            IWebElement btnDelete = FindElementOnThePage(itemId, "glyphicon-remove");
-            clickButtonDelete(btnDelete);
+            this.Driver.Navigate().GoToUrl(indexUrl);
+            IWebElement btnDelete = null;
+
+            while ((btnDelete = FindElementOnThePage(itemId, "glyphicon-remove")) == null)
+            {
+                element = Driver.FindElements(By.CssSelector("div.linkDiv > a.btn-success")).Where(a => a.Text.StartsWith("Next")).FirstOrDefault();
+                IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;
+
+                ex.ExecuteScript("window.scrollTo(0, document.body.scrollHeight)");
+                element.Click();
+            }
+
+            ClickButtonDelete(btnDelete);
 
             //the item should be gone
-            Item delItem = GetItemById(int.Parse(itemId));
+            this.Driver.Navigate().GoToUrl(indexUrl + "/edit/" + itemId);
 
-            Assert.AreEqual(null, delItem);
+            // Check 404
+            Assert.IsTrue(this.Driver.PageSource.Contains("404"));
+            Assert.IsTrue(this.Driver.PageSource.Contains("Item was not found"));
         }
         [Test]
         public void CanLinkItem()
@@ -125,7 +138,7 @@ namespace Catfish.Tests.Views
             ClickOnAddBtn();
             SelectEntityType();
             FilledFormFields();
-            clickSave();
+            ClickSave();
 
             var itemId = GetNewlyAddedItem();
 
@@ -357,7 +370,7 @@ namespace Catfish.Tests.Views
 
             }
         }
-        private void clickSave()
+        private void ClickSave()
         {
             //this.Driver.FindElement(By.ClassName("save")).Click(); ==> this option sometimes throw error, element not found!!!
             WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(15));
@@ -382,7 +395,7 @@ namespace Catfish.Tests.Views
             btn.Click();
         }
 
-        private void clickButtonDelete(IWebElement btn)
+        private void ClickButtonDelete(IWebElement btn)
         {
             
             IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;
@@ -404,18 +417,6 @@ namespace Catfish.Tests.Views
             return itemId;
         }
 
-        private Item GetItemById(int id)
-        {
-            CatfishDbContext db = new CatfishDbContext();
-            if (db.Database.Connection.State == ConnectionState.Closed)
-            {
-                db.Database.Connection.Open();
-            }
-            Item item = db.Items.Where(i => i.Id==id).FirstOrDefault();
-
-            return item;
-        }
-
 
         private string FindTestValue(string expectedValue)
         {
@@ -435,7 +436,6 @@ namespace Catfish.Tests.Views
 
         private IWebElement FindElementOnThePage(string searchText, string className)
         {
-            this.Driver.Navigate().GoToUrl(indexUrl);
             IWebElement el=null;
             IReadOnlyList<IWebElement> rows = this.Driver.FindElements(By.TagName("tr"));
             foreach(IWebElement r in rows)

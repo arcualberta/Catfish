@@ -113,7 +113,7 @@ namespace Catfish.Tests.Views
             //Delete
             this.Driver.Navigate().GoToUrl(indexUrl);
             IWebElement btnDelete = FindElementOnThePage(collectionId, "glyphicon-remove");
-            clickButtonDelete(btnDelete);
+            ClickButtonDelete(btnDelete);
 
             Thread.Sleep(500);
 
@@ -423,7 +423,7 @@ namespace Catfish.Tests.Views
             btn.Click();
         }
 
-        private void clickButtonDelete(IWebElement btn)
+        private void ClickButtonDelete(IWebElement btn)
         {
             
             IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;

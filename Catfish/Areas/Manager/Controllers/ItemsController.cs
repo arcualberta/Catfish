@@ -84,7 +84,8 @@ namespace Catfish.Areas.Manager.Controllers
             if (id.HasValue && id.Value > 0)
             {
                 model = ItemService.GetItem(id.Value);
-
+                if (model == null)
+                    return HttpNotFound("Item was not found");
             }
             else
             {
