@@ -131,13 +131,23 @@ namespace Catfish.Tests.Services
 
             Assert.AreEqual(DatabaseHelper.TOTAL_COLLECTIONS, collections.Count());
 
-            Cs.DeleteCollection(id, identity);
+            Cs.DeleteCollection(id);
+            Dh.Db.SaveChanges(identity);
 
             Assert.AreNotEqual(DatabaseHelper.TOTAL_COLLECTIONS, collections.Count());
             Assert.AreEqual(DatabaseHelper.TOTAL_COLLECTIONS - 1, collections.Count());
 
-            Cs.DeleteCollection(id, identity);
+            try
+            {
+                Cs.DeleteCollection(id);
+                Dh.Db.SaveChanges(identity);
+                Assert.Fail("An Exception should have been thrown on a bad delete.");
+            }
+            catch(ArgumentException ex)
+            {
 
+            }
+            
             Assert.AreNotEqual(DatabaseHelper.TOTAL_COLLECTIONS, collections.Count());
             Assert.AreEqual(DatabaseHelper.TOTAL_COLLECTIONS - 1, collections.Count());
         }
