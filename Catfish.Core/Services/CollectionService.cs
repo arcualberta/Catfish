@@ -40,7 +40,7 @@ namespace Catfish.Core.Services
         /// <summary>
         /// Get all collections accessable by the current user.
         /// </summary>
-        /// <returns>The resulting lis of collections.</returns>
+        /// <returns>The resulting list of collections.</returns>
         public IQueryable<Collection> GetCollections()
         {
             return Db.Collections;
@@ -50,7 +50,7 @@ namespace Catfish.Core.Services
         /// Removes a collection from the database.
         /// </summary>
         /// <param name="id">The id of the collection to be removed.</param>
-        public void DeleteCollection(int id, IIdentity userIdentity)
+        public void DeleteCollection(int id)
         {
             Collection model = null;
             if (id > 0)
@@ -59,7 +59,6 @@ namespace Catfish.Core.Services
                 if (model != null)
                 {
                     Db.Entry(model).State = EntityState.Deleted;
-                    Db.SaveChanges(userIdentity);
                 }
                 else
                 {
@@ -94,22 +93,21 @@ namespace Catfish.Core.Services
             if (changedCollection.Id > 0)
             {
                 dbModel = GetCollection(changedCollection.Id);
-
-                //updating the "value" text elements
-                dbModel.UpdateValues(changedCollection);
             }
             else
             {
                 dbModel = CreateEntity<Collection>(changedCollection.EntityTypeId.Value);
-                dbModel.UpdateValues(changedCollection);
             }
 
+            //updating the "value" text elements
+            dbModel.UpdateValues(changedCollection);
             dbModel.Serialize();
+
             if (changedCollection.Id > 0) //update Item
                 Db.Entry(dbModel).State = EntityState.Modified;
             else
             {
-                Db.XmlModels.Add(dbModel);
+                dbModel = Db.Collections.Add(dbModel);
             }
 
             return dbModel;

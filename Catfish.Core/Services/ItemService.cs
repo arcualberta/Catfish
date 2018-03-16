@@ -20,6 +20,15 @@ namespace Catfish.Core.Services
     {
         public ItemService(CatfishDbContext db) : base(db) { }
 
+        /// <summary>
+        /// Get all items accessable by the current user.
+        /// </summary>
+        /// <returns>The resulting list of items.</returns>
+        public IQueryable<Item> GetItems()
+        {
+            return Db.Items;
+        }
+
         public string GetURL(string pathName)
         {
             var uri = new System.Uri(pathName);
