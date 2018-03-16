@@ -16,6 +16,12 @@ namespace Catfish.Core.Models
         public static string TagName { get { return "file-description"; } }     
         public override string GetTagName() { return TagName; }
 
+        FileDescription()
+        {
+            DataFile = new DataFile();
+            Label = "";
+        }
+
         FileDescription (DataFile dataFile, string label = "")
         {            
             DataFile = dataFile;
