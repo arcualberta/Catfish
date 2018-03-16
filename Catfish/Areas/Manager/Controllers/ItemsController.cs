@@ -80,7 +80,6 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Edit(int? id, int? entityTypeId)
         {
             Item model;
-            ItemService srv = new ItemService(db);
           
             if (id.HasValue && id.Value > 0)
             {
@@ -95,7 +94,7 @@ namespace Catfish.Areas.Manager.Controllers
             {
                 if(entityTypeId.HasValue)
                 {
-                    model = srv.CreateEntity<Item>(entityTypeId.Value);
+                    model = ItemService.CreateItem(entityTypeId.Value);
                 }
                 else
                 {
@@ -122,8 +121,7 @@ namespace Catfish.Areas.Manager.Controllers
         {
             if (ModelState.IsValid)
             {
-                ItemService srv = new ItemService(db);
-                Item dbModel = srv.UpdateStoredItem(model);
+                Item dbModel = ItemService.UpdateStoredItem(model);
                 db.SaveChanges(User.Identity);
 
                 if (model.Id == 0)
@@ -136,7 +134,7 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult Associations(int id)
         {
-            Item model = Db.Items.Where(et => et.Id == id).FirstOrDefault();
+            Item model = ItemService.GetItem(id);
             if (model == null)
                 throw new Exception("Item not found");
 
@@ -168,7 +166,7 @@ namespace Catfish.Areas.Manager.Controllers
         {
             try
             {
-                List<DataFile> files = ItemService.UploadTempFiles(Request);
+                List<DataFile> files = DataService.UploadTempFiles(Request);
                 Db.SaveChanges(User.Identity);
 
                 //Saving ids  of uploaded files in the session because these files and thumbnails
@@ -198,9 +196,8 @@ namespace Catfish.Areas.Manager.Controllers
                     Response.StatusDescription = "BadRequest: the file cannot be deleted -  NOT IN CACHE.";
                     return Json(string.Empty);
                 }
-
-                ItemService srv = new ItemService(db);
-                if (!srv.DeleteStandaloneFile(guid))
+                
+                if (!DataService.DeleteStandaloneFile(guid))
                 {
                     Response.StatusCode = (int)HttpStatusCode.NotFound;
                     Response.StatusDescription = "The file not found";
@@ -220,8 +217,7 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult File(int id, string guid)
         {
-            ItemService srv = new ItemService(db);
-            DataFile file = srv.GetFile(id, guid);
+            DataFile file = DataService.GetFile(id, guid);
             if (file == null)
                 return HttpNotFound("File not found");
 
@@ -231,8 +227,7 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult Thumbnail(int id, string name)
         {
-            ItemService srv = new ItemService(db);
-            DataFile file = srv.GetFile(id, name);
+            DataFile file = DataService.GetFile(id, name);
             if (file == null)
                 return HttpNotFound("File not found");
 

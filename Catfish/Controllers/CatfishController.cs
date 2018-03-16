@@ -15,5 +15,14 @@ namespace Catfish.Controllers
 
         private CollectionService mCollectionService;
         public CollectionService CollectionService { get { if (mCollectionService == null) mCollectionService = new CollectionService(Db); return mCollectionService; } }
+
+        private SubmissionService mSubmissionService;
+        public SubmissionService SubmissionService { get { if (mSubmissionService == null) mSubmissionService = new SubmissionService(Db); return mSubmissionService; } }
+
+        private ItemService mItemService;
+        public ItemService ItemService { get { if (mItemService == null) mItemService = new ItemService(Db); return mItemService; } }
+
+        private DataService mDataService;
+        public DataService DataService { get { if (mDataService == null) mDataService = new DataService(Db); return mDataService; } }
     }
 }

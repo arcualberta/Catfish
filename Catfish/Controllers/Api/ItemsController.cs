@@ -27,7 +27,7 @@ namespace Catfish.Controllers.Api
                 }
                 else
                 {
-                    items = Db.Items;
+                    items = ItemService.GetItems();
                 }
                 if (entityTypeId.HasValue && entityTypeId.Value > 0)
                     items = items.Where(it => it.EntityTypeId == entityTypeId.Value);
@@ -56,8 +56,7 @@ namespace Catfish.Controllers.Api
 
         public ActionResult Thumbnail(int id, string name)
         {
-            ItemService srv = new ItemService(Db);
-            DataFile file = srv.GetFile(id, name);
+            DataFile file = DataService.GetFile(id, name);
             if (file == null)
                 return HttpNotFound("File not found");
 
@@ -70,8 +69,7 @@ namespace Catfish.Controllers.Api
 
         public ActionResult File(int id, string guid)
         {
-            ItemService srv = new ItemService(Db);
-            DataFile file = srv.GetFile(id, guid);
+            DataFile file = DataService.GetFile(id, guid);
             if (file == null)
                 return HttpNotFound("File not found");
 

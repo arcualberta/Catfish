@@ -14,21 +14,15 @@ using System.Web.Mvc;
 
 namespace Catfish.Controllers
 {
-    public class AttachmentController : Controller
+    public class AttachmentController : CatfishController
     {
-        private CatfishDbContext mDb;
-        public CatfishDbContext Db { get { if (mDb == null) mDb = new CatfishDbContext(); return mDb; } }
-
-        private SubmissionService mSubmissionService;
-        public SubmissionService SubmissionService { get { if (mSubmissionService == null) mSubmissionService = new SubmissionService(Db); return mSubmissionService; } }
-
         // GET: Attachment
         [HttpPost]
         public JsonResult Upload()
         {
             try
             {
-                List<DataFile> files = SubmissionService.UploadTempFiles(Request);
+                List<DataFile> files = DataService.UploadTempFiles(Request);
                 Db.SaveChanges(User.Identity);
 
                 //Saving ids  of uploaded files in the session because these files and thumbnails
@@ -52,9 +46,8 @@ namespace Catfish.Controllers
             // i.e. the file was uploaded during the current session
             if (!FileHelper.CheckGuidCache(Session, guid))
                 return HttpNotFound("File not found");
-
-            ItemService srv = new ItemService(Db);
-            DataFile file = srv.GetFile(id, guid);
+            
+            DataFile file = DataService.GetFile(id, guid);
             if (file == null)
                 return HttpNotFound("File not found");
 
@@ -68,9 +61,8 @@ namespace Catfish.Controllers
             // i.e. the file was uploaded during the current session
             if (!FileHelper.CheckGuidCache(Session, name))
                 return HttpNotFound("File not found");
-
-            ItemService srv = new ItemService(Db);
-            DataFile file = srv.GetFile(id, name);
+            
+            DataFile file = DataService.GetFile(id, name);
             if (file == null)
                 return HttpNotFound("File not found");
 
@@ -94,8 +86,7 @@ namespace Catfish.Controllers
                     return Json(string.Empty);
                 }
 
-                ItemService srv = new ItemService(Db);
-                if (!srv.DeleteStandaloneFile(guid))
+                if (!DataService.DeleteStandaloneFile(guid))
                 {
                     Response.StatusCode = (int)HttpStatusCode.NotFound;
                     Response.StatusDescription = "The file not found";
