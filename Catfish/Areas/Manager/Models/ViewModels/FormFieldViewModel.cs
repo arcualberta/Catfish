@@ -37,33 +37,33 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         private CatfishDbContext Db = new CatfishDbContext();
 
-        public FormFieldViewModel(FormField src, int abstractFormId)
+        public FormFieldViewModel(FormField formField, int abstractFormId)
         {
-            Name = src.MultilingualName.ToList();
-            Description = src.MultilingualDescription.ToList();
-            IsRequired = src.IsRequired;
-            FieldType = src.GetType().AssemblyQualifiedName;
-            Guid = src.Guid;
-            Rank = src.Rank;
-            Page = src.Page;
-            IsPageBreak = src.IsPageBreak();
-            Files = src.Files.Select( m => new FileViewModel(m, abstractFormId)).ToList();
-            FieldFileGuids = src.FieldFileGuidsArray;
+            Name = formField.MultilingualName.ToList();
+            Description = formField.MultilingualDescription.ToList();
+            IsRequired = formField.IsRequired;
+            FieldType = formField.GetType().AssemblyQualifiedName;
+            Guid = formField.Guid;
+            Rank = formField.Rank;
+            Page = formField.Page;
+            IsPageBreak = formField.IsPageBreak();
+            Files = formField.Files.Select(m => new FileViewModel(m, abstractFormId)).ToList();
+            FieldFileGuids = formField.FieldFileGuidsArray;
             //Files = src.Files;
 
-            TypeLabelAttribute att = Attribute.GetCustomAttribute(src.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
-            TypeLabel = att == null ? src.GetType().ToString() : att.Name;
+            TypeLabelAttribute att = Attribute.GetCustomAttribute(formField.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
+            TypeLabel = att == null ? formField.GetType().ToString() : att.Name;
 
-            IsOptionField = typeof(OptionsField).IsAssignableFrom(src.GetType());
+            IsOptionField = typeof(OptionsField).IsAssignableFrom(formField.GetType());
             if (IsOptionField)
             {
                 MultilingualOptionSet = new List<TextValue>();
 
                 //making sure we have an option-list editor for each language defined in the configuration settings.
-                foreach(var lang in ConfigHelper.Languages)
+                foreach (var lang in ConfigHelper.Languages)
                     MultilingualOptionSet.Add(new TextValue(lang.TwoLetterISOLanguageName, lang.NativeName, ""));
 
-                IReadOnlyList<Option> options = (src as OptionsField).Options;
+                IReadOnlyList<Option> options = (formField as OptionsField).Options;
                 foreach (Option op in options)
                 {
                     foreach (TextValue txt in op.Value)
@@ -188,14 +188,14 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
 
             field.Files = filesList;
-            Db.SaveChanges();            
+            Db.SaveChanges();
         }
 
         //XXX Duplicating code from ItemService.cs UpdateFiles method
 
         private void MoveFileToField(DataFile file, FormField field)
         {
-      
+
             //moving the physical files from the temporary upload folder to a folder identified by the GUID of the
             //item inside the uploaded data folder
             string dstDir = Path.Combine(ConfigHelper.DataRoot, field.MappedGuid);

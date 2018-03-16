@@ -121,6 +121,7 @@
     <Compile Include="Models\EntityGroup.cs" />
     <Compile Include="Models\EntityType.cs" />
     <Compile Include="Models\Data\DataFile.cs" />
+    <Compile Include="Models\FileDescription.cs" />
     <Compile Include="Models\Forms\AbstractForm.cs" />
     <Compile Include="Models\Forms\Attachment.cs" />
     <Compile Include="Models\Forms\PageBreak.cs" />

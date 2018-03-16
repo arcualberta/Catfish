@@ -50,11 +50,11 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
-        public List<DataFile> Files
+        public List<FileDescription> FileDescriptions
         {
             get
             {
-                return GetChildModels("files/" + DataFile.TagName, Data).Select(c => c as DataFile).ToList();
+                return GetChildModels("files/" + FileDescription.TagName, Data).Select(c => c as FileDescription).ToList();
             }
 
             set
@@ -65,9 +65,9 @@ namespace Catfish.Core.Models.Forms
                     filesElement = new XElement("files");
                     Data.Add(filesElement);
                 }
-                foreach (DataFile dataFile in value)
+                foreach (FileDescription fileDescription in value)
                 {
-                    filesElement.Add(dataFile.Data);
+                    filesElement.Add(fileDescription.Data);
                 }
                 //XElement val = Data.Element("files");
                 //if (val == null)
