@@ -50,15 +50,23 @@ namespace Catfish.Core.Models
                 metadata.Add(ms.Data);
         }
 
+        protected FormField GetMetadataSetField(string metadatasetGuid, string fieldName) 
+        {
+            MetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == metadatasetGuid).FirstOrDefault();
+            FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
+
+            return field;
+        }
+
         public string GetName(string lang = null)
         {
             var mapping = EntityType.GetNameMapping();
             if(mapping != null)
             {
-                string msName = mapping.MetadataSet.Name;
+                string msGuid = mapping.MetadataSet.Guid;
                 string fieldName = mapping.FieldName;
-                MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
-                FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
+
+                FormField field = GetMetadataSetField(msGuid, fieldName);
 
                 if (field == null)
                 {
@@ -80,7 +88,7 @@ namespace Catfish.Core.Models
             if (string.IsNullOrEmpty(mapping.FieldName))
                 throw new Exception("Field is not specified in the Name Mapping of this entity type");
 
-            MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == mapping.MetadataSet.Name).FirstOrDefault();
+            MetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == mapping.MetadataSet.Guid).FirstOrDefault();
             metadataSet.SetFieldValue(mapping.FieldName, val, lang);
         }
         public override string GetDescription(string lang = null)
@@ -88,10 +96,9 @@ namespace Catfish.Core.Models
             var mapping = EntityType.GetDescriptionMapping();
             if (mapping != null)
             {
-                string msName = mapping.MetadataSet.Name;
+                string msGuid = mapping.MetadataSet.Guid;
                 string fieldName = mapping.FieldName;
-                MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
-                FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
+                FormField field = GetMetadataSetField(msGuid, fieldName);
 
                 if (field == null)
                 {
@@ -113,7 +120,7 @@ namespace Catfish.Core.Models
             if (string.IsNullOrEmpty(mapping.FieldName))
                 throw new Exception("Field is not specified in the Description Mapping of this entity type");
 
-            MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == mapping.MetadataSet.Name).FirstOrDefault();
+            MetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == mapping.MetadataSet.Guid).FirstOrDefault();
             metadataSet.SetFieldValue(mapping.FieldName, val, lang);
         }
 
