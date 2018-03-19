@@ -28,6 +28,11 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             InitializeInstance(src, id, HttpContext.Current.Request.RequestContext, "Items");
         }
 
+        public FileViewModel(FileDescription fileDescription, int? id)
+        {
+            InitializeInstance(fileDescription, id);
+        }
+
         public FileViewModel(DataFile src, int? itemId, RequestContext ctx)
         {
             InitializeInstance(src, itemId, ctx, "Items");
@@ -37,6 +42,11 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             get {
                 return "url('" + Thumbnail + "')";
             }
+        }
+
+        private void InitializeInstance(FileDescription fileDescription, int? id)
+        {
+            InitializeInstance(fileDescription.DataFile, id, HttpContext.Current.Request.RequestContext, "Items"); ;
         }
 
         private void InitializeInstance(DataFile src, int? id, RequestContext ctx, string controller)
