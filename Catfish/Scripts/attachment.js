@@ -165,8 +165,10 @@ function uploadFile(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFieldId
 
 function uploadFileKo(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFieldId, koModel) {
     var myFrm = new FormData();
+    containerId = koModel.Guid()
     var uploadField = $("#" + containerId + " .uploadField")[0];
-
+    
+    console.log(uploadField)
     for (var i = 0; i < uploadField.files.length; i++) {
         myFrm.append("inputFile" + i, uploadField.files[i]);
     }
@@ -203,6 +205,7 @@ function uploadFileKo(containerId, uploadApiUrl, deleteApiUrl, fileGuidListField
 
 var stateChangeKo = function (data, deleteApiUrl, containerId, fileGuidListFieldId, oReg, koModel) {
     //after successfull execute the function then it will execute what ever inside this if {}
+    console.log("changing state");
     if (oReg.readyState === 4) {
 
         var messageBoxSelector = "#" + containerId + " .messageBox"
@@ -210,6 +213,8 @@ var stateChangeKo = function (data, deleteApiUrl, containerId, fileGuidListField
         if (oReg.status === 200) {
             // Updating the value of the hidden field which carries the ID of this 
             // FileUpload object in the page
+            console.log("updating");
+            console.log(data);
             updateFileListViewKo(data, deleteApiUrl, containerId, fileGuidListFieldId, koModel);
             $(messageBoxSelector).text("").hide();
         }
@@ -227,9 +232,10 @@ var stateChangeKo = function (data, deleteApiUrl, containerId, fileGuidListField
 
 function updateFileListViewKo(data, deleteApiUrl, containerId, fileGuidListFieldId, koModel) {
     data = JSON.parse(data);
-    var thumbnailPanel = $("#" + containerId + " .thumbnailPanel")[0];
+    //var thumbnailPanel = $("#" + containerId + " .thumbnailPanel")[0];
 
     data.forEach(function (file) {
+        console.log(file);
         koModel.Files.push(file);
     })
 
