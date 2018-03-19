@@ -15,30 +15,31 @@ namespace Catfish.Controllers.Api
     public class ItemsController : CatfishController
     {     
         // GET: Items
-        public JsonResult Index(int? offset, int? limit, bool? randomize, int? entityTypeId, string fields, int?collectionId)
+        public JsonResult Index(string fields, int offset = 0, int limit = 25, bool randomize = false, int entityTypeId = 0, int collectionId = 0)
         {
             try
             {
                 IEnumerable<Item> items;
-                if (collectionId.HasValue && collectionId.Value > 0)
+                if (collectionId > 0)
                 {
-                    Collection collection = CollectionService.GetCollection(collectionId.Value);
+                    Collection collection = CollectionService.GetCollection(collectionId);
                     items = collection.ChildItems.Select(it => it as Item);
                 }
                 else
                 {
                     items = ItemService.GetItems();
                 }
-                if (entityTypeId.HasValue && entityTypeId.Value > 0)
-                    items = items.Where(it => it.EntityTypeId == entityTypeId.Value);
 
-                items = randomize.HasValue && randomize.Value ? items.OrderBy(item => Guid.NewGuid()) : items.OrderBy(item => item.Id);
+                if (entityTypeId > 0)
+                    items = items.Where(it => it.EntityTypeId == entityTypeId);
 
-                if (offset.HasValue)
-                    items = items.Skip(offset.Value);
+                items = randomize ? items.OrderBy(item => Guid.NewGuid()) : items.OrderBy(item => item.Id);
 
-                if (limit.HasValue & limit.Value > 0)
-                    items = items.Take(limit.Value);
+                if (offset > 0)
+                    items = items.Skip(offset);
+
+                if (limit > 0)
+                    items = items.Take(limit);
                 else
                     items = items.Take(25);
 
