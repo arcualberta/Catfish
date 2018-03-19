@@ -159,93 +159,68 @@ namespace Catfish.Tests.Views
             IWebElement btnLink = GetListButton(itemId, "glyphicon-link");
             ClickButton(btnLink);
 
-            AddChildItem();
+            AddChildItem(1);
             var groups = this.Driver.FindElements(By.ClassName("box"));
             SelectElement typeSelector = new SelectElement(groups[1].FindElement(By.Name("childrenList")));
             Assert.AreEqual(2, typeSelector.Options.Count);
 
             //remove childItems
-            RemoveChildItem();
+            RemoveChildItem(1);
             Assert.AreEqual(0, typeSelector.Options.Count);
 
             //add/remove related item
-            AddRelatedItem();
+            AddChildItem(2);
             typeSelector = new SelectElement(groups[2].FindElement(By.Name("childrenList")));
             Assert.AreEqual(2, typeSelector.Options.Count);
 
-            RemoveRelatedItem();
+            RemoveChildItem(2);
             Assert.AreEqual(0, typeSelector.Options.Count);
         }
 
-        private void AddChildItem()
+        private void AddChildItem(int groupId)// 1- Child Item, 2 - Related Item
         {
             var groups = this.Driver.FindElements(By.ClassName("box"));
-            SelectElement typeSelector = new SelectElement(groups[1].FindElement(By.Name("masterList")));
-            IWebElement addButton = groups[1].FindElement(By.ClassName("glyphicon-arrow-left"));
-            IWebElement saveButton = groups[1].FindElement(By.ClassName("save"));
+            SelectElement typeSelector = new SelectElement(groups[groupId].FindElement(By.Name("masterList")));
+            IWebElement addButton = groups[groupId].FindElement(By.ClassName("glyphicon-arrow-left"));
+            IWebElement saveButton = groups[groupId].FindElement(By.ClassName("save"));
             int optionsCount = typeSelector.Options.Count;
-            // Ignore first empty option. Add all fields and enter data 
-            for (int i = 0; i < optionsCount; i++)
+
+            List<string> options = new List<string>();
+            for (int i = 0; i < optionsCount && i < 2; ++i)
             {
-                IWebElement option = typeSelector.Options[i];
-                typeSelector.SelectByText(option.Text);
+                options.Add(typeSelector.Options[i].Text);
+            }
+
+            // Ignore first empty option. Add all fields and enter data 
+            foreach (string option in options)
+            {
+                typeSelector = new SelectElement(groups[groupId].FindElement(By.Name("masterList")));
+                typeSelector.SelectByText(option);
                 ClickButton(addButton);
-                if (i == 1)
-                    break; //add 2 items only
             }
 
             ClickButton(saveButton);
         }
 
-        private void RemoveChildItem()
+        private void RemoveChildItem(int groupId)// 1- Child Item, 2 - Related Item
         {
             var groups = this.Driver.FindElements(By.ClassName("box"));
-            SelectElement typeSelector = new SelectElement(groups[1].FindElement(By.Name("childrenList")));
-            IWebElement removeButton = groups[1].FindElement(By.ClassName("glyphicon-arrow-right"));
-            IWebElement saveButton = groups[1].FindElement(By.ClassName("save"));
+            SelectElement typeSelector = new SelectElement(groups[groupId].FindElement(By.Name("childrenList")));
+            IWebElement removeButton = groups[groupId].FindElement(By.ClassName("glyphicon-arrow-right"));
+            IWebElement saveButton = groups[groupId].FindElement(By.ClassName("save"));
             int optionsCount = typeSelector.Options.Count;
-            // Ignore first empty option. Add all fields and enter data 
-            for (int i = 0; i < optionsCount; i++)
+
+            List<string> options = new List<string>();
+            for (int i = 0; i < 2 && i < optionsCount; ++i)
             {
-                IWebElement option = typeSelector.Options[0];
-                typeSelector.SelectByText(option.Text);
-                ClickButton(removeButton);
+                options.Add(typeSelector.Options[i].Text);
             }
 
-            ClickButton(saveButton);
-        }
-        private void AddRelatedItem()
-        {
-            var groups = this.Driver.FindElements(By.ClassName("box"));
-            SelectElement typeSelector = new SelectElement(groups[2].FindElement(By.Name("masterList")));
-            IWebElement addButton = groups[2].FindElement(By.ClassName("glyphicon-arrow-left"));
-            IWebElement saveButton = groups[2].FindElement(By.ClassName("save"));
-            int optionsCount = typeSelector.Options.Count;
             // Ignore first empty option. Add all fields and enter data 
-            for (int i = 0; i < optionsCount; i++)
+            foreach (string option in options)
             {
-                IWebElement option = typeSelector.Options[i];
-                typeSelector.SelectByText(option.Text);
-                ClickButton(addButton);
-                if (i == 1)
-                    break; //add 2 items only
-            }
-
-            ClickButton(saveButton);
-        }
-
-        private void RemoveRelatedItem()
-        {
-            var groups = this.Driver.FindElements(By.ClassName("box"));
-            SelectElement typeSelector = new SelectElement(groups[2].FindElement(By.Name("childrenList")));
-            IWebElement removeButton = groups[2].FindElement(By.ClassName("glyphicon-arrow-right"));
-            IWebElement saveButton = groups[2].FindElement(By.ClassName("save"));
-            int optionsCount = typeSelector.Options.Count;
-            // Ignore first empty option. Add all fields and enter data 
-            for (int i = 0; i < optionsCount; i++)
-            {
-                IWebElement option = typeSelector.Options[0];
-                typeSelector.SelectByText(option.Text);
+                typeSelector = new SelectElement(groups[groupId].FindElement(By.Name("childrenList")));
+                typeSelector.SelectByText(option);
                 ClickButton(removeButton);
             }
 
