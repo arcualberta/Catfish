@@ -13,7 +13,6 @@ using System.Collections.Generic;
 
 namespace Catfish.Tests.Views
 {
-
     static class CollectionTestValues
     {
         public static Random Rnd = new Random();
@@ -59,7 +58,7 @@ namespace Catfish.Tests.Views
             ClickOnAddBtn();
             SelectEntityType();
             FillFormFields();
-            clickSave();
+            ClickSave();
 
             var collectionId = GetNewlyAddedCollection();
 
@@ -75,7 +74,7 @@ namespace Catfish.Tests.Views
             ClickOnAddBtn();
             SelectEntityType();
             FillFormFields();
-            clickSave();
+            ClickSave();
 
             var collectionId = GetNewlyAddedCollection();
 
@@ -88,8 +87,8 @@ namespace Catfish.Tests.Views
             IWebElement btnEdit = FindElementOnThePage(collectionId, "glyphicon-edit");
             ClickButton(btnEdit);
 
-            editFormFields();
-            clickSave();
+            EditFormFields();
+            ClickSave();
 
             this.Driver.Navigate().GoToUrl(indexUrl);
          
@@ -103,7 +102,7 @@ namespace Catfish.Tests.Views
             ClickOnAddBtn();
             SelectEntityType();
             FillFormFields();
-            clickSave();
+            ClickSave();
 
             var collectionId = GetNewlyAddedCollection();
 
@@ -114,7 +113,7 @@ namespace Catfish.Tests.Views
             //Delete
             this.Driver.Navigate().GoToUrl(indexUrl);
             IWebElement btnDelete = FindElementOnThePage(collectionId, "glyphicon-remove");
-            clickButtonDelete(btnDelete);
+            ClickButtonDelete(btnDelete);
 
             Thread.Sleep(500);
 
@@ -133,7 +132,7 @@ namespace Catfish.Tests.Views
             ClickOnAddBtn();
             SelectEntityType();
             FillFormFields();
-            clickSave();
+            ClickSave();
 
             var collectionId = GetNewlyAddedCollection();
 
@@ -307,7 +306,7 @@ namespace Catfish.Tests.Views
                 {
                     //grab text field or text area
                     IWebElement textEl;
-                    bool bfound = isElementFound(inputs[i],"input");
+                    bool bfound = IsElementFound(inputs[i],"input");
                     if (bfound)
                     {
                         textEl = inputs[i].FindElement(By.TagName("input"));
@@ -336,7 +335,7 @@ namespace Catfish.Tests.Views
             }
         }
 
-        private bool isElementFound(IWebElement el, string tagName)
+        private bool IsElementFound(IWebElement el, string tagName)
         {
             bool found = false;
             try
@@ -351,7 +350,7 @@ namespace Catfish.Tests.Views
 
             return found;
         }
-        private void editFormFields()
+        private void EditFormFields()
         {
             IReadOnlyList<IWebElement> fields = this.Driver.FindElements(By.ClassName("form-field"));
             int count = 0;
@@ -370,7 +369,7 @@ namespace Catfish.Tests.Views
                 for (int i = 0; i < inputs.Count; i++)
                 {
                     IWebElement textEl;
-                    bool bfound = isElementFound(inputs[i], "input");
+                    bool bfound = IsElementFound(inputs[i], "input");
                     if (bfound)
                     {
                         textEl = inputs[i].FindElement(By.TagName("input"));
@@ -400,7 +399,7 @@ namespace Catfish.Tests.Views
 
             }
         }
-        private void clickSave()
+        private void ClickSave()
         {
             //this.Driver.FindElement(By.ClassName("save")).Click(); ==> this option sometimes throw error, element not found!!!
             WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(15));
@@ -424,7 +423,7 @@ namespace Catfish.Tests.Views
             btn.Click();
         }
 
-        private void clickButtonDelete(IWebElement btn)
+        private void ClickButtonDelete(IWebElement btn)
         {
             
             IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;
@@ -445,19 +444,6 @@ namespace Catfish.Tests.Views
             
             return collectionId;
         }
-
-        private Collection GetCollectionById(int id)
-        {
-            CatfishDbContext db = new CatfishDbContext();
-            if (db.Database.Connection.State == ConnectionState.Closed)
-            {
-                db.Database.Connection.Open();
-            }
-            Collection col = db.Collections.Where(i => i.Id==id).FirstOrDefault();
-
-            return col;
-        }
-
 
         private string FindTestValue(string expectedValue)
         {

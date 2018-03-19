@@ -10,6 +10,7 @@ namespace Catfish.Tests
     [TestClass]
     public class RandomDataIngest
     {
+        [Ignore] // Done to prevent the test from running each time we do a full test.
         [TestMethod]
         public void CreateCollections()
         {

@@ -38,6 +38,9 @@ namespace Catfish.Areas.Manager.Controllers
 
         public EntityTypeService EntityTypeService { get { if (mEntityTypeService == null) mEntityTypeService = new EntityTypeService(Db); return mEntityTypeService; } }
 
+        private DataService mDataService;
+        public DataService DataService { get { if (mDataService == null) mDataService = new DataService(Db); return mDataService; } }
+
 
         [HttpPost]
         public JsonResult SelectEntity(SelectEntityTypeViewModel vm)
