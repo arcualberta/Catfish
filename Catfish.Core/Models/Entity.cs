@@ -140,7 +140,7 @@ namespace Catfish.Core.Models
             }
         }
 
-        public string Description
+        public override string Description
         {
             get
             {

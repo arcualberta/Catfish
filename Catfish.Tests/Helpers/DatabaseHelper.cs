@@ -83,6 +83,20 @@ namespace Catfish.Tests.Helpers
             }
         }
 
+        private EntityTypeService mEts { get; set; }
+        public EntityTypeService Ets
+        {
+            get
+            {
+                if (mEts == null)
+                {
+                    mEts = new EntityTypeService(Db);
+                }
+
+                return mEts;
+            }
+        }
+
         private CollectionService mCs { get; set; }
         public CollectionService Cs
         {
@@ -241,7 +255,7 @@ namespace Catfish.Tests.Helpers
 
         private void CreateCollections()
         {
-            List<int> ets = Es.GetEntityTypes().ToList().Where(et => et.TargetTypesList.Contains(eTarget.Collections)).Select(et => et.Id).ToList();
+            List<int> ets = Ets.GetEntityTypes().ToList().Where(et => et.TargetTypesList.Contains(eTarget.Collections)).Select(et => et.Id).ToList();
 
             for (int i = 0; i < 10; ++i)
             {
@@ -258,7 +272,7 @@ namespace Catfish.Tests.Helpers
 
         private void CreateItems()
         {
-            List<int> ets = Es.GetEntityTypes().ToArray().Where(et => et.TargetTypesList.Contains(eTarget.Items)).Select(et => et.Id).ToList();
+            List<int> ets = Ets.GetEntityTypes().ToArray().Where(et => et.TargetTypesList.Contains(eTarget.Items)).Select(et => et.Id).ToList();
 
             for (int i = 0; i < 10; ++i)
             {
