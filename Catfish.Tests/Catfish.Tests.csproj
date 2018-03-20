@@ -163,6 +163,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="RandomDataIngest.cs" />
+    <Compile Include="Services\CollectionServiceTest.cs" />
     <Compile Include="Services\IngestionServiceTest.cs" />
     <Compile Include="Services\MetadataServiceTest.cs" />
     <Compile Include="Services\SolrServiceTest.cs" />
