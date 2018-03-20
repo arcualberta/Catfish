@@ -151,6 +151,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\ItemsControllerTest.cs" />
     <Compile Include="EntityGroupTest.cs" />
     <Compile Include="EntityTypeTest.cs" />
     <Compile Include="Helpers\DatabaseHelper.cs" />
