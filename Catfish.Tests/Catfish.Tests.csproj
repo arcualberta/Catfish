@@ -165,6 +165,7 @@
     <Compile Include="RandomDataIngest.cs" />
     <Compile Include="Services\CollectionServiceTest.cs" />
     <Compile Include="Services\IngestionServiceTest.cs" />
+    <Compile Include="Services\ItemServiceTest.cs" />
     <Compile Include="Services\MetadataServiceTest.cs" />
     <Compile Include="Services\SolrServiceTest.cs" />
     <Compile Include="Services\SubmissionServiceTest.cs" />

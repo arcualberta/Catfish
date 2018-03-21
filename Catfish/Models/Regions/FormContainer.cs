@@ -47,12 +47,14 @@ namespace Catfish.Models.Regions
         {
             // get db context
             CatfishDbContext db = new CatfishDbContext();
+            CollectionService collectionSrv = new CollectionService(db);
+
             // fetch all forms
             Forms = new SelectList(db.FormTemplates, "Id", "Name");
             // fetch all entities
             EntityTypes = new SelectList(db.EntityTypes, "Id", "Name");
             // fetch all collections
-            Collections = new SelectList(db.Collections, "Id", "Name");
+            Collections = new SelectList(collectionSrv.GetCollections(), "Id", "Name");
 
             // use these past fetches to show list on vies using SelectList ?
 

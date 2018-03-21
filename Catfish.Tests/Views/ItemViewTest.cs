@@ -12,8 +12,7 @@ using System.Threading;
 using System.Collections.Generic;
 
 namespace Catfish.Tests.Views
-{
-
+{ 
     static class ItemTestValues
     {
         public static Random Rnd = new Random();
@@ -58,12 +57,30 @@ namespace Catfish.Tests.Views
             this.Driver.Navigate().GoToUrl(indexUrl);
             ClickOnAddBtn();
             SelectEntityType();
-            filledFormFields();
-            clickSave();
+            FilledFormFields();
+            ClickSave();
 
-            var item = GetNewlyAddedItem();
+            var itemId = GetNewlyAddedItem();
 
-           Assert.AreEqual(ItemTestValues.Name, item.Name);
+            this.Driver.Navigate().GoToUrl(indexUrl + "/edit/" + itemId);
+            IWebElement element = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value"));
+            Assert.AreEqual(ItemTestValues.Name, element.GetAttribute("value"));
+        }
+
+        private IWebElement GetListButton(string itemId, string @class)
+        {
+            IWebElement btnEdit = null;
+
+            while ((btnEdit = FindElementOnThePage(itemId, @class)) == null)
+            {
+                IWebElement element = Driver.FindElements(By.CssSelector("div.linkDiv > a.btn-success")).Where(a => a.Text.StartsWith("Next")).FirstOrDefault();
+                IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;
+
+                ex.ExecuteScript("window.scrollTo(0, document.body.scrollHeight)");
+                element.Click();
+            }
+
+            return btnEdit;
         }
 
         [Test]
@@ -72,22 +89,26 @@ namespace Catfish.Tests.Views
             this.Driver.Navigate().GoToUrl(indexUrl);
             ClickOnAddBtn();
             SelectEntityType();
-            filledFormFields();
-            clickSave();
+            FilledFormFields();
+            ClickSave();
 
-            var item = GetNewlyAddedItem();
+            var itemId = GetNewlyAddedItem();
 
-            Assert.AreEqual(ItemTestValues.Name, item.Name);
+            this.Driver.Navigate().GoToUrl(indexUrl + "/edit/" + itemId);
+            IWebElement element = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value"));
+            Assert.AreEqual(ItemTestValues.Name, element.GetAttribute("value"));
 
             //edit
-            IWebElement btnEdit = FindElementOnThePage(item.Id.ToString(), "glyphicon-edit");
-            clickButton(btnEdit);
+            this.Driver.Navigate().GoToUrl(indexUrl);
+            IWebElement btnEdit = GetListButton(itemId, "glyphicon-edit");
+            ClickButton(btnEdit);
 
-            editFormFields();
-            clickSave();
+            EditFormFields();
+            ClickSave();
 
             this.Driver.Navigate().GoToUrl(indexUrl);
-         
+            btnEdit = GetListButton(itemId, "glyphicon-edit");
+
             Assert.AreEqual(ItemTestValues.EditedName, FindTestValue(ItemTestValues.EditedName));
 
         }
@@ -97,21 +118,26 @@ namespace Catfish.Tests.Views
             this.Driver.Navigate().GoToUrl(indexUrl);
             ClickOnAddBtn();
             SelectEntityType();
-            filledFormFields();
-            clickSave();
+            FilledFormFields();
+            ClickSave();
 
-            var item = GetNewlyAddedItem();
+            var itemId = GetNewlyAddedItem();
 
-            Assert.AreEqual(ItemTestValues.Name, item.Name);
+            this.Driver.Navigate().GoToUrl(indexUrl + "/edit/" + itemId);
+            IWebElement element = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value"));
+            Assert.AreEqual(ItemTestValues.Name, element.GetAttribute("value"));
 
             //Delete
-            IWebElement btnDelete = FindElementOnThePage(item.Id.ToString(), "glyphicon-remove");
-            clickButtonDelete(btnDelete);
+            this.Driver.Navigate().GoToUrl(indexUrl);
+            IWebElement btnDelete = GetListButton(itemId, "glyphicon-remove");
+            ClickButtonDelete(btnDelete);
 
             //the item should be gone
-            Item delItem = GetItemById(item.Id);
+            this.Driver.Navigate().GoToUrl(indexUrl + "/edit/" + itemId);
 
-            Assert.AreEqual(null, delItem);
+            // Check 404
+            Assert.IsTrue(this.Driver.PageSource.Contains("404"));
+            Assert.IsTrue(this.Driver.PageSource.Contains("Item was not found"));
         }
         [Test]
         public void CanLinkItem()
@@ -119,108 +145,86 @@ namespace Catfish.Tests.Views
             this.Driver.Navigate().GoToUrl(indexUrl);
             ClickOnAddBtn();
             SelectEntityType();
-            filledFormFields();
-            clickSave();
+            FilledFormFields();
+            ClickSave();
 
-            var item = GetNewlyAddedItem();
+            var itemId = GetNewlyAddedItem();
 
-            Assert.AreEqual(ItemTestValues.Name, item.Name);
+            this.Driver.Navigate().GoToUrl(indexUrl + "/edit/" + itemId);
+            IWebElement element = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value"));
+            Assert.AreEqual(ItemTestValues.Name, element.GetAttribute("value"));
 
             //link -- add/remove child item
-            IWebElement btnLink = FindElementOnThePage(item.Id.ToString(), "glyphicon-link");
-            clickButton(btnLink);
+            this.Driver.Navigate().GoToUrl(indexUrl);
+            IWebElement btnLink = GetListButton(itemId, "glyphicon-link");
+            ClickButton(btnLink);
 
-            AddChildItem();
+            AddChildItem(1);
             var groups = this.Driver.FindElements(By.ClassName("box"));
             SelectElement typeSelector = new SelectElement(groups[1].FindElement(By.Name("childrenList")));
             Assert.AreEqual(2, typeSelector.Options.Count);
 
             //remove childItems
-            RemoveChildItem();
+            RemoveChildItem(1);
             Assert.AreEqual(0, typeSelector.Options.Count);
 
             //add/remove related item
-            AddRelatedItem();
+            AddChildItem(2);
             typeSelector = new SelectElement(groups[2].FindElement(By.Name("childrenList")));
             Assert.AreEqual(2, typeSelector.Options.Count);
 
-            RemoveRelatedItem();
+            RemoveChildItem(2);
             Assert.AreEqual(0, typeSelector.Options.Count);
         }
 
-        private void AddChildItem()
+        private void AddChildItem(int groupId)// 1- Child Item, 2 - Related Item
         {
             var groups = this.Driver.FindElements(By.ClassName("box"));
-            SelectElement typeSelector = new SelectElement(groups[1].FindElement(By.Name("masterList")));
-            IWebElement addButton = groups[1].FindElement(By.ClassName("glyphicon-arrow-left"));
-            IWebElement saveButton = groups[1].FindElement(By.ClassName("save"));
+            SelectElement typeSelector = new SelectElement(groups[groupId].FindElement(By.Name("masterList")));
+            IWebElement addButton = groups[groupId].FindElement(By.ClassName("glyphicon-arrow-left"));
+            IWebElement saveButton = groups[groupId].FindElement(By.ClassName("save"));
             int optionsCount = typeSelector.Options.Count;
-            // Ignore first empty option. Add all fields and enter data 
-            for (int i = 0; i < optionsCount; i++)
+
+            List<string> options = new List<string>();
+            for (int i = 0; i < optionsCount && i < 2; ++i)
             {
-                IWebElement option = typeSelector.Options[i];
-                typeSelector.SelectByText(option.Text);
-                clickButton(addButton);
-                if (i == 1)
-                    break; //add 2 items only
+                options.Add(typeSelector.Options[i].Text);
             }
 
-            clickButton(saveButton);
+            // Ignore first empty option. Add all fields and enter data 
+            foreach (string option in options)
+            {
+                typeSelector = new SelectElement(groups[groupId].FindElement(By.Name("masterList")));
+                typeSelector.SelectByText(option);
+                ClickButton(addButton);
+            }
+
+            ClickButton(saveButton);
         }
 
-        private void RemoveChildItem()
+        private void RemoveChildItem(int groupId)// 1- Child Item, 2 - Related Item
         {
             var groups = this.Driver.FindElements(By.ClassName("box"));
-            SelectElement typeSelector = new SelectElement(groups[1].FindElement(By.Name("childrenList")));
-            IWebElement removeButton = groups[1].FindElement(By.ClassName("glyphicon-arrow-right"));
-            IWebElement saveButton = groups[1].FindElement(By.ClassName("save"));
+            SelectElement typeSelector = new SelectElement(groups[groupId].FindElement(By.Name("childrenList")));
+            IWebElement removeButton = groups[groupId].FindElement(By.ClassName("glyphicon-arrow-right"));
+            IWebElement saveButton = groups[groupId].FindElement(By.ClassName("save"));
             int optionsCount = typeSelector.Options.Count;
-            // Ignore first empty option. Add all fields and enter data 
-            for (int i = 0; i < optionsCount; i++)
+
+            List<string> options = new List<string>();
+            for (int i = 0; i < 2 && i < optionsCount; ++i)
             {
-                IWebElement option = typeSelector.Options[0];
-                typeSelector.SelectByText(option.Text);
-                clickButton(removeButton);
+                options.Add(typeSelector.Options[i].Text);
             }
 
-            clickButton(saveButton);
-        }
-        private void AddRelatedItem()
-        {
-            var groups = this.Driver.FindElements(By.ClassName("box"));
-            SelectElement typeSelector = new SelectElement(groups[2].FindElement(By.Name("masterList")));
-            IWebElement addButton = groups[2].FindElement(By.ClassName("glyphicon-arrow-left"));
-            IWebElement saveButton = groups[2].FindElement(By.ClassName("save"));
-            int optionsCount = typeSelector.Options.Count;
             // Ignore first empty option. Add all fields and enter data 
-            for (int i = 0; i < optionsCount; i++)
+            foreach (string option in options)
             {
-                IWebElement option = typeSelector.Options[i];
-                typeSelector.SelectByText(option.Text);
-                clickButton(addButton);
-                if (i == 1)
-                    break; //add 2 items only
+                typeSelector = new SelectElement(groups[groupId].FindElement(By.Name("childrenList")));
+                typeSelector.SelectByText(option);
+                ClickButton(removeButton);
             }
 
-            clickButton(saveButton);
-        }
-
-        private void RemoveRelatedItem()
-        {
-            var groups = this.Driver.FindElements(By.ClassName("box"));
-            SelectElement typeSelector = new SelectElement(groups[2].FindElement(By.Name("childrenList")));
-            IWebElement removeButton = groups[2].FindElement(By.ClassName("glyphicon-arrow-right"));
-            IWebElement saveButton = groups[2].FindElement(By.ClassName("save"));
-            int optionsCount = typeSelector.Options.Count;
-            // Ignore first empty option. Add all fields and enter data 
-            for (int i = 0; i < optionsCount; i++)
-            {
-                IWebElement option = typeSelector.Options[0];
-                typeSelector.SelectByText(option.Text);
-                clickButton(removeButton);
-            }
-
-            clickButton(saveButton);
+            ClickButton(saveButton);
         }
 
         private void ClickOnAddBtn()
@@ -243,13 +247,16 @@ namespace Catfish.Tests.Views
             }
         }
 
-        private void filledFormFields()
+        private void FilledFormFields()
         {
+            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(5));
+            wait.Until(drv => drv.FindElement(By.ClassName("form-field-name")));
+
             IReadOnlyList<IWebElement> fields = this.Driver.FindElements(By.ClassName("form-field"));
             int count = 0;
             foreach(var f in fields)
             {
-                IWebElement name = f.FindElement(By.ClassName("name"));
+                IWebElement name = f.FindElement(By.Name("label")); //text field
                 string txt = name.Text;
 
                 if(count == 0)
@@ -259,14 +266,25 @@ namespace Catfish.Tests.Views
                 }
                 IReadOnlyList<IWebElement> inputs = f.FindElements(By.ClassName("languageInputField"));
                 //each field has 3 input fields each for each language -- eng, fr and sp
-               for(int i =0; i < inputs.Count; i++)
+                for (int i = 0; i < inputs.Count; i++)
                 {
-                    IWebElement textEl = inputs[i].FindElement(By.TagName("textarea"));
-                    if(i==0)  //eng
+                    //grab text field or text area
+                    IWebElement textEl;
+                    bool bfound = IsElementFound(inputs[i], "input");
+                    if (bfound)
+                    {
+                        textEl = inputs[i].FindElement(By.TagName("input"));
+                    }
+                    else
+                    {
+                        textEl = inputs[i].FindElement(By.TagName("textarea"));
+                    }
+
+                    if (i == 0)  //eng
                     {
                         textEl.SendKeys(txt);
                     }
-                    else if(i==1)//fr
+                    else if (i == 1)//fr
                     {
                         textEl.SendKeys(txt + " Fr");
                     }
@@ -275,19 +293,34 @@ namespace Catfish.Tests.Views
                         textEl.SendKeys(txt + " Sp");
                     }
                     textEl.SendKeys(Keys.Tab);
-   
+
                 }
                
             }
         }
+        private bool IsElementFound(IWebElement el, string tagName)
+        {
+            bool found = false;
+            try
+            {
+                IWebElement elFound = el.FindElement(By.TagName(tagName));
+                found = true;
+            }
+            catch (NoSuchElementException ex)
+            {
+                found = false;
+            }
 
-        private void editFormFields()
+            return found;
+        }
+
+        private void EditFormFields()
         {
             IReadOnlyList<IWebElement> fields = this.Driver.FindElements(By.ClassName("form-field"));
             int count = 0;
             foreach (var f in fields)
             {
-                IWebElement name = f.FindElement(By.ClassName("name"));
+                IWebElement name = f.FindElement(By.Name("label"));
                 string txt = name.Text;
 
                 if (count == 0)
@@ -299,7 +332,16 @@ namespace Catfish.Tests.Views
                 //each field has 3 input fields each for each language -- eng, fr and sp
                 for (int i = 0; i < inputs.Count; i++)
                 {
-                    IWebElement textEl = inputs[i].FindElement(By.TagName("textarea"));
+                    IWebElement textEl;
+                    bool bfound = IsElementFound(inputs[i], "input");
+                    if (bfound)
+                    {
+                        textEl = inputs[i].FindElement(By.TagName("input"));
+                    }
+                    else
+                    {
+                        textEl = inputs[i].FindElement(By.TagName("textarea"));
+                    }
                     if (i == 0)  //eng
                     {
                         textEl.Clear();
@@ -321,7 +363,7 @@ namespace Catfish.Tests.Views
 
             }
         }
-        private void clickSave()
+        private void ClickSave()
         {
             //this.Driver.FindElement(By.ClassName("save")).Click(); ==> this option sometimes throw error, element not found!!!
             WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(15));
@@ -336,7 +378,7 @@ namespace Catfish.Tests.Views
 
         }
 
-        private void clickButton(IWebElement btn)
+        private void ClickButton(IWebElement btn)
         {
             
             IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;
@@ -346,7 +388,7 @@ namespace Catfish.Tests.Views
             btn.Click();
         }
 
-        private void clickButtonDelete(IWebElement btn)
+        private void ClickButtonDelete(IWebElement btn)
         {
             
             IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;
@@ -361,28 +403,11 @@ namespace Catfish.Tests.Views
             alert.Accept();
         }
 
-        private Item GetNewlyAddedItem()
+        private string GetNewlyAddedItem()
         {
-            CatfishDbContext db = new CatfishDbContext();
-            if (db.Database.Connection.State == ConnectionState.Closed)
-            {
-                db.Database.Connection.Open();
-            }
-            var item = db.Items.OrderByDescending(i => i.Id).First();
+            var itemId = Driver.FindElement(By.CssSelector("form input[name='Id']")).GetAttribute("value");
 
-            return item;
-        }
-
-        private Item GetItemById(int id)
-        {
-            CatfishDbContext db = new CatfishDbContext();
-            if (db.Database.Connection.State == ConnectionState.Closed)
-            {
-                db.Database.Connection.Open();
-            }
-            Item item = db.Items.Where(i => i.Id==id).FirstOrDefault();
-
-            return item;
+            return itemId;
         }
 
 
@@ -404,7 +429,6 @@ namespace Catfish.Tests.Views
 
         private IWebElement FindElementOnThePage(string searchText, string className)
         {
-            this.Driver.Navigate().GoToUrl(indexUrl);
             IWebElement el=null;
             IReadOnlyList<IWebElement> rows = this.Driver.FindElements(By.TagName("tr"));
             foreach(IWebElement r in rows)
