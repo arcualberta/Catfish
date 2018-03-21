@@ -20,7 +20,7 @@ function deleteUnlinkedFile(fileGuid, deleteApiUrl, containerId, fileGuidListFie
     if (confirm("Delete file?") == false)
         return;
 
-    var myFrm = new FormData();   
+    var myFrm = new FormData();
     myFrm.append("guid", fileGuid);
 
     var oReg = new XMLHttpRequest();
@@ -75,7 +75,7 @@ function updateFileListView(data, deleteApiUrl, containerId, fileGuidListFieldId
             + '\',\'' + fileGuidListFieldId
             + '\'); return false;"></button>'
             + '<div class="label"><a href="' + d.Url + '" target="_blank">'
-            + d.FileName + '</a></div></div>';        
+            + d.FileName + '</a></div></div>';
 
         if (fileGuidList.length > 0)
             fileGuidList = fileGuidList + "|" + d.Guid;
@@ -88,13 +88,13 @@ function updateFileListView(data, deleteApiUrl, containerId, fileGuidListFieldId
     $("#" + fileGuidListFieldId).val(fileGuidList);
 }
 
-var showInProgress = function(containerId) {
+var showInProgress = function (containerId) {
     $("#" + containerId + " .progressBar").show();
     $("#" + containerId + " .uploadButton").attr('disabled', 'disabled');
     $("#" + containerId + " .uploadField").attr('disabled', 'disabled');
 }
 
-var hideInProgress = function(containerId) {
+var hideInProgress = function (containerId) {
     $("#" + containerId + " .progressBar").hide();
     $("#" + containerId + " .uploadField").prop('disabled', false);
     $("#" + containerId + " .uploadButton").prop('disabled', false);
@@ -103,7 +103,7 @@ var hideInProgress = function(containerId) {
 
 var stateChange = function (data, deleteApiUrl, containerId, fileGuidListFieldId, oReg) {
     //after successfull execute the function then it will execute what ever inside this if {}
-    if (oReg.readyState === 4) {  
+    if (oReg.readyState === 4) {
 
         var messageBoxSelector = "#" + containerId + " .messageBox"
 
@@ -128,7 +128,7 @@ var stateChange = function (data, deleteApiUrl, containerId, fileGuidListFieldId
 
 function uploadFile(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFieldId) {
 
-    var myFrm = new FormData();     
+    var myFrm = new FormData();
     var uploadField = $("#" + containerId + " .uploadField")[0];
 
     for (var i = 0; i < uploadField.files.length; i++) {
@@ -156,7 +156,7 @@ function uploadFile(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFieldId
                 oReg);
         };
     }
-    
+
 
     oReg.open('POST', uploadApiUrl);
     oReg.send(myFrm);
