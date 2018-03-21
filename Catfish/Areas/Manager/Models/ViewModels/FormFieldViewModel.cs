@@ -37,33 +37,33 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         private CatfishDbContext Db = new CatfishDbContext();
 
-        public FormFieldViewModel(FormField src, int abstractFormId)
+        public FormFieldViewModel(FormField formField, int abstractFormId)
         {
-            Name = src.MultilingualName.ToList();
-            Description = src.MultilingualDescription.ToList();
-            IsRequired = src.IsRequired;
-            FieldType = src.GetType().AssemblyQualifiedName;
-            Guid = src.Guid;
-            Rank = src.Rank;
-            Page = src.Page;
-            IsPageBreak = src.IsPageBreak();
-            Files = src.Files.Select( m => new FileViewModel(m, abstractFormId)).ToList();
-            FieldFileGuids = src.FieldFileGuidsArray;
+            Name = formField.MultilingualName.ToList();
+            Description = formField.MultilingualDescription.ToList();
+            IsRequired = formField.IsRequired;
+            FieldType = formField.GetType().AssemblyQualifiedName;
+            Guid = formField.Guid;
+            Rank = formField.Rank;
+            Page = formField.Page;
+            IsPageBreak = formField.IsPageBreak();
+            Files = formField.FileDescriptions.Select(m => new FileViewModel(m, abstractFormId)).ToList();
+            FieldFileGuids = formField.FieldFileGuidsArray;
             //Files = src.Files;
 
-            TypeLabelAttribute att = Attribute.GetCustomAttribute(src.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
-            TypeLabel = att == null ? src.GetType().ToString() : att.Name;
+            TypeLabelAttribute att = Attribute.GetCustomAttribute(formField.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
+            TypeLabel = att == null ? formField.GetType().ToString() : att.Name;
 
-            IsOptionField = typeof(OptionsField).IsAssignableFrom(src.GetType());
+            IsOptionField = typeof(OptionsField).IsAssignableFrom(formField.GetType());
             if (IsOptionField)
             {
                 MultilingualOptionSet = new List<TextValue>();
 
                 //making sure we have an option-list editor for each language defined in the configuration settings.
-                foreach(var lang in ConfigHelper.Languages)
+                foreach (var lang in ConfigHelper.Languages)
                     MultilingualOptionSet.Add(new TextValue(lang.TwoLetterISOLanguageName, lang.NativeName, ""));
 
-                IReadOnlyList<Option> options = (src as OptionsField).Options;
+                IReadOnlyList<Option> options = (formField as OptionsField).Options;
                 foreach (Option op in options)
                 {
                     foreach (TextValue txt in op.Value)
@@ -157,9 +157,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
             List<string> test = field.FieldFileGuidsArray.ToList();
 
-            foreach (DataFile file in field.Files.ToList())
+            foreach (FileDescription fileDescription in field.FileDescriptions.ToList())
             {
-                if (test.IndexOf(file.Guid) < 0)
+                if (test.IndexOf(fileDescription.DataFile.Guid) < 0)
                 {
                     //Deleting the file node from the XML Model
                     //XXX Missing remove file
@@ -169,53 +169,55 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
             // Add new files
             //XXX Aqui es para recibir FieldFileGuids
-            List<DataFile> filesList = new List<DataFile>();
+            List<FileDescription> fileDescriptions = new List<FileDescription>();
             foreach (string fileGuid in field.FieldFileGuidsArray)
             {
-                DataFile file = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
-                    .Select(m => m as DataFile)
+                FileDescription fileDescription = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
+                    .Select(m => m as FileDescription)
                     .FirstOrDefault();
 
-                if (file != null)
+                if (fileDescription != null)
                 {
                     //file.Path = Uploadrootdir + 
-                    MoveFileToField(file, field);
-                    filesList.Add(file);
-                    Db.XmlModels.Remove(file);
+                    MoveFileToField(fileDescription, field);
+                    fileDescriptions.Add(fileDescription);
+                    Db.XmlModels.Remove(fileDescription);
 
                     // Move file from temp folder                    
                 }
             }
 
-            field.Files = filesList;
-            Db.SaveChanges();            
+            field.FileDescriptions = fileDescriptions;
+            Db.SaveChanges();
         }
 
         //XXX Duplicating code from ItemService.cs UpdateFiles method
 
-        private void MoveFileToField(DataFile file, FormField field)
+        private void MoveFileToField(FileDescription fileDescription, FormField field)
         {
-      
+
+            DataFile dataFile = fileDescription.DataFile;
+
             //moving the physical files from the temporary upload folder to a folder identified by the GUID of the
             //item inside the uploaded data folder
             string dstDir = Path.Combine(ConfigHelper.DataRoot, field.MappedGuid);
             if (!Directory.Exists(dstDir))
                 Directory.CreateDirectory(dstDir);
 
-            string srcFile = Path.Combine(file.Path, file.LocalFileName);
-            string dstFile = Path.Combine(dstDir, file.LocalFileName);
+            string srcFile = Path.Combine(dataFile.Path, dataFile.LocalFileName);
+            string dstFile = Path.Combine(dstDir, dataFile.LocalFileName);
             File.Move(srcFile, dstFile);
 
             //moving the thumbnail, if it's not a shared one
-            if (file.ThumbnailType == DataFile.eThumbnailTypes.NonShared)
+            if (dataFile.ThumbnailType == DataFile.eThumbnailTypes.NonShared)
             {
-                string srcThumbnail = Path.Combine(file.Path, file.Thumbnail);
-                string dstThumbnail = Path.Combine(dstDir, file.Thumbnail);
+                string srcThumbnail = Path.Combine(dataFile.Path, dataFile.Thumbnail);
+                string dstThumbnail = Path.Combine(dstDir, dataFile.Thumbnail);
                 File.Move(srcThumbnail, dstThumbnail);
             }
 
             //updating the file path
-            file.Path = dstDir;
+            dataFile.Path = dstDir;
         }
 
     }
