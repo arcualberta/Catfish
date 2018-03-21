@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -99,6 +100,55 @@ namespace Catfish.Tests.Services
             int id = c.Id;
             Assert.AreEqual(name, c2.Name);
             Assert.AreEqual(description, c2.Description);
+
+            Collection c3 = Cs.GetCollection(c.Guid);
+            Assert.AreEqual(id, c.Id);
+            Assert.AreEqual(c2.Content, c3.Content);
+        }
+
+        [TestMethod]
+        public void GetCollections()
+        {
+            DatabaseHelper Dh = new DatabaseHelper(true);
+            CollectionService Cs = new CollectionService(Dh.Db);
+
+            IQueryable<Collection> collections = Cs.GetCollections();
+
+            Assert.AreEqual(DatabaseHelper.TOTAL_COLLECTIONS, collections.Count());
+        }
+
+        [TestMethod]
+        public void DeleteCollection()
+        {
+            DatabaseHelper Dh = new DatabaseHelper(true);
+            CollectionService Cs = new CollectionService(Dh.Db);
+            Piranha.Entities.User admin = Dh.PDb.Users.First();
+            IIdentity identity = new GenericIdentity(admin.Login, Dh.PDb.Groups.Find(admin.GroupId).Name);
+
+            Collection test = Cs.GetCollections().FirstOrDefault();
+            int id = test.Id;
+            IQueryable<Collection> collections = Cs.GetCollections();
+
+            Assert.AreEqual(DatabaseHelper.TOTAL_COLLECTIONS, collections.Count());
+
+            Cs.DeleteCollection(id, identity);
+
+            Assert.AreNotEqual(DatabaseHelper.TOTAL_COLLECTIONS, collections.Count());
+            Assert.AreEqual(DatabaseHelper.TOTAL_COLLECTIONS - 1, collections.Count());
+
+            try
+            {
+                Cs.DeleteCollection(id, identity);
+                Assert.Fail("An Exception should have been thrown on a bad delete.");
+            }
+            catch(ArgumentException ex)
+            {
+
+            }
+            
+
+            Assert.AreNotEqual(DatabaseHelper.TOTAL_COLLECTIONS, collections.Count());
+            Assert.AreEqual(DatabaseHelper.TOTAL_COLLECTIONS - 1, collections.Count());
         }
     }
 }

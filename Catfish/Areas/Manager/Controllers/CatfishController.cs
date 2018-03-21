@@ -27,6 +27,9 @@ namespace Catfish.Areas.Manager.Controllers
         private ItemService mItemService;
         public ItemService ItemService { get { if (mItemService == null) mItemService = new ItemService(Db); return mItemService; } }
 
+        private CollectionService mCollectionService;
+        public CollectionService CollectionService { get { if (mCollectionService == null) mCollectionService = new CollectionService(Db); return mCollectionService; } }
+
         private EntityGroupService mEntityGroupService;
 
         public EntityGroupService EntityGroupService { get { if (mEntityGroupService == null) mEntityGroupService = new EntityGroupService(Db); return mEntityGroupService; } }
