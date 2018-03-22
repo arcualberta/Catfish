@@ -14,9 +14,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string Thumbnail { get; set; }
         public string Url { get; set; }
         public string Path { get; set; }
+
         public FileViewModel() { }
-
-
 
         public FileViewModel(DataFile src, int? id, RequestContext ctx, string controller)
         {
@@ -42,6 +41,18 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             get {
                 return "url('" + Thumbnail + "')";
             }
+        }
+
+        public DataFile ToDataFile()
+        {
+            DataFile dataFile = new DataFile();
+            dataFile.Id = Id;
+            dataFile.FileName = FileName;
+            dataFile.Guid = Guid;
+            dataFile.Thumbnail = Thumbnail;
+            dataFile.Path = "";            
+            dataFile.ContentType = "";
+            return dataFile;
         }
 
         private void InitializeInstance(FileDescription fileDescription, int? id)

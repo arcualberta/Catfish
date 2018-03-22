@@ -167,7 +167,7 @@ function uploadFileKo(containerId, uploadApiUrl, deleteApiUrl, fileGuidListField
     var myFrm = new FormData();
     containerId = koModel.Guid()
     var uploadField = $("#" + containerId + " .uploadField")[0];
-    
+
     console.log(uploadField)
     for (var i = 0; i < uploadField.files.length; i++) {
         myFrm.append("inputFile" + i, uploadField.files[i]);
