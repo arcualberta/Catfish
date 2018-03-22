@@ -39,15 +39,15 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public FormFieldViewModel(FormField formField, int abstractFormId)
         {
-            Name = src.MultilingualName.ToList();
-            Description = src.MultilingualDescription.ToList();
-            IsRequired = src.IsRequired;
-            FieldType = src.GetType().AssemblyQualifiedName;
-            Guid = src.Guid;
-            Rank = src.Rank;
-            Page = src.Page;
-            IsPageBreak = src.IsPageBreak();
-            Files = src.Files.Select( m => new FileViewModel(m, abstractFormId)).ToList();
+            Name = formField.MultilingualName.ToList();
+            Description = formField.MultilingualDescription.ToList();
+            IsRequired = formField.IsRequired;
+            FieldType = formField.GetType().AssemblyQualifiedName;
+            Guid = formField.Guid;
+            Rank = formField.Rank;
+            Page = formField.Page;
+            IsPageBreak = formField.IsPageBreak();
+            Files = formField.Files.Select( m => new FileViewModel(m, abstractFormId)).ToList();
             //FieldFileGuids = src.FieldFileGuidsArray;
             //Files = src.Files;
 
@@ -184,7 +184,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                     .Select(m => m as DataFile)
                     .FirstOrDefault();
 
-                if (fileDescription != null)
+                if (file != null)
                 {
                     //file.Path = Uploadrootdir + 
                     MoveFileToField(file, field);
@@ -204,10 +204,10 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         //XXX Duplicating code from ItemService.cs UpdateFiles method
 
-        private void MoveFileToField(FileDescription fileDescription, FormField field)
+        private void MoveFileToField(DataFile dataFile, FormField field)
         {
 
-            DataFile dataFile = fileDescription.DataFile;
+            //DataFile dataFile = fileDescription.DataFile;
 
             //moving the physical files from the temporary upload folder to a folder identified by the GUID of the
             //item inside the uploaded data folder
