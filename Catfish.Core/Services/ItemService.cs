@@ -4,161 +4,92 @@ using Catfish.Core.Models.Data;
 using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace Catfish.Core.Services
 {
+    /// <summary>
+    /// A Service used to perform actions on Item Entitites.
+    /// </summary>
     public class ItemService: EntityService
     {
+        /// <summary>
+        /// Create an instance of the ItemService.
+        /// </summary>
+        /// <param name="db">The database context containing the needed Items.</param>
         public ItemService(CatfishDbContext db) : base(db) { }
 
-        public string GetURL(string pathName)
+        /// <summary>
+        /// Get all items accessable by the current user.
+        /// </summary>
+        /// <returns>The resulting list of items.</returns>
+        public IQueryable<Item> GetItems()
         {
-            var uri = new System.Uri(pathName);
-            var converted = uri.AbsoluteUri;
-            return converted;
+            return Db.Items;
         }
 
-        protected string CreateGuidName(string baseName)
+        /// <summary>
+        /// Get a item from the database.
+        /// </summary>
+        /// <param name="id">The id of the Item to obtain.</param>
+        /// <returns>The requested Item from the database. A null value is returned if no item is found.</returns>
+        public Item GetItem(int id)
         {
-            string filename = Guid.NewGuid().ToString().Replace("-", "");
-            var idx = baseName.LastIndexOf(".");
-            if (idx > 0)
-                filename = filename + "." + baseName.Substring(idx + 1);
-            return filename;
+            return Db.Items.Where(i => i.Id == id).FirstOrDefault();
         }
 
-        protected string CreateThumbnailName(string guid, string srcExtension)
+        /// <summary>
+        /// Get a item from the database.
+        /// </summary>
+        /// <param name="guid">The mapped guid of the Item to obtain.</param>
+        /// <returns>The requested item from the database. A null value is returned if no item is found.</returns>
+        public Item GetItem(string guid)
         {
-            string ext = "";
-            ImageFormat format = GetThumbnailFormat(srcExtension);
-            if (format == ImageFormat.Jpeg)
-                ext = "jpg";
-            else if (format == ImageFormat.Png)
-                ext = "png";
-            else
-                throw new Exception("Unknown thumbnail format");
-
-            string thumbnailFileName = guid + "_t." + ext;
-            return thumbnailFileName;
+            return Db.Items.Where(c => c.MappedGuid == guid).FirstOrDefault();
         }
 
-        protected ImageFormat GetThumbnailFormat(string srcExtension)
+        /// <summary>
+        /// Removes an item from the database.
+        /// </summary>
+        /// <param name="id">The id of the item to be removed.</param>
+        public void DeleteItem(int id)
         {
-            return srcExtension == "jpg" ? ImageFormat.Jpeg : ImageFormat.Png;
-        }
-
-        public List<DataFile> UploadTempFiles(HttpRequestBase request)
-        {
-            List<DataFile> files = UploadFiles(request, "temp-files");
-            Db.XmlModels.AddRange(files);
-            return files;
-        }
-
-        protected List<DataFile> UploadFiles(HttpRequestBase request, string dstPath)
-        {
-            dstPath = Path.Combine(ConfigHelper.UploadRoot, dstPath);
-            if (!Directory.Exists(dstPath))
+            Item model = null;
+            if (id > 0)
             {
-                Directory.CreateDirectory(dstPath);
-                if (!Directory.Exists(dstPath))
-                    throw new Exception("Unable to create the upload folder " + dstPath);
-            }
-
-            List<DataFile> newFiles = new List<DataFile>();
-            for(int i=0; i<request.Files.Count; ++i)
-                newFiles.Add(InjestFile(request.Files[i].InputStream, request.Files[i].FileName, request.Files[i].ContentType, dstPath));
-
-            return newFiles;
-        }
-
-        public DataFile InjestFile(Stream srcStream, string inputFileName, string contentType, string dstPath)
-        {
-            dstPath = Path.Combine(ConfigHelper.UploadRoot, dstPath);
-            if (!Directory.Exists(dstPath))
-            {
-                Directory.CreateDirectory(dstPath);
-                if (!Directory.Exists(dstPath))
-                    throw new Exception("Unable to create the upload folder " + dstPath);
-            }
-
-            DataFile file = new DataFile()
-            {
-                FileName = inputFileName,
-                Path = dstPath,
-                ContentType = contentType
-            };
-
-            using (FileStream dstFileStream = File.Create(Path.Combine(file.Path, file.LocalFileName)))
-            {
-                srcStream.Seek(0, SeekOrigin.Begin);
-                srcStream.CopyTo(dstFileStream);
-            }
-
-            if (file.ContentType.StartsWith("image/"))
-            {
-                file.Thumbnail = CreateThumbnailName(file.Guid, file.Extension);
-                file.ThumbnailType = DataFile.eThumbnailTypes.NonShared;
-                using (Image image = new Bitmap(file.AbsoluteFilePathName))
+                model = GetItem(id);
+                if (model != null)
                 {
-                    Size thumbSize = image.Width < image.Height
-                        ? new Size() { Height = ConfigHelper.ThumbnailSize, Width = (image.Width * ConfigHelper.ThumbnailSize) / image.Height }
-                        : new Size() { Width = ConfigHelper.ThumbnailSize, Height = (image.Height * ConfigHelper.ThumbnailSize) / image.Width };
-
-                    Image thumbnail = image.GetThumbnailImage(thumbSize.Width, thumbSize.Height, null, IntPtr.Zero);
-                    ImageFormat format = GetThumbnailFormat(file.Extension);
-                    thumbnail.Save(Path.Combine(file.Path, file.Thumbnail), format);
+                    Db.Entry(model).State = EntityState.Deleted;
+                }
+                else
+                {
+                    throw new ArgumentException(string.Format("Item {0} not found.", id));
                 }
             }
             else
             {
-                file.Thumbnail = GetThumbnail(file.ContentType);
-                file.ThumbnailType = DataFile.eThumbnailTypes.Shared;
+                throw new ArgumentException(string.Format("Invalid item id {0}.", id));
             }
-
-            return file;
         }
 
-        public DataFile GetFile(int id, string guid, bool checkInItems = true)
+        /// <summary>
+        /// Creates a new item based on the given entity type.
+        /// </summary>
+        /// <param name="entityTypeId">The Id of the entity type to connect to the item.</param>
+        /// <returns>The newly created item.</returns>
+        public Item CreateItem(int entityTypeId)
         {
-            XmlModel model = Db.XmlModels.Find(id);
-            if (model is DataFile && model.Guid == guid)
-                return model as DataFile;
-            else if (checkInItems && model is Item)
-                return (model as Item).Files.Where(f => f.Guid == guid).FirstOrDefault();
-            else if (model is AbstractForm)
-                return (model as AbstractForm).Fields.SelectMany(p => p.Files).Where(f => f.Guid == guid).FirstOrDefault(); //Files.Where(f => f.Guid == guid).FirstOrDefault();
-            else
-                return null;
-        }
-
-        public bool DeleteStandaloneFile(string guid)
-        {
-            DataFile file = Db.XmlModels.Where(x => x.MappedGuid == guid).FirstOrDefault() as DataFile;
-            if (file == null)
-                return false;
-
-            //Deleting the file from the file system
-            file.DeleteFilesFromFileSystem();
-
-            //Deleting the file object from the database
-            Db.XmlModels.Remove(file);
-
-            return true;
+            return CreateEntity<Item>(entityTypeId);
         }
 
         protected void UpdateFiles(Item srcItem, Item dstItem)
         {
             UpdateFiles(srcItem.AttachmentField, dstItem);
         }
+
         protected void UpdateFiles(Attachment srcAttachmentField, Item dstItem)
         {
             List<string> keepFileGuids = srcAttachmentField.FileGuids.Split(new char[] { Attachment.FileGuidSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -214,6 +145,11 @@ namespace Catfish.Core.Services
             }
         }
 
+        /// <summary>
+        /// Updates a Item in the database with the the values provided. A new Item is created if one does not already exist.
+        /// </summary>
+        /// <param name="changedItem">The item content to be modified.</param>
+        /// <returns>The modified database item.</returns>
         public Item UpdateStoredItem(Item changedItem)
         {
             Item dbModel = new Item();
@@ -244,41 +180,6 @@ namespace Catfish.Core.Services
             }
 
             return dbModel;
-        }
-
-        public string GetThumbnail(string contentType)
-        {
-            if (contentType == "application/pdf")
-                return "pdf.png";
-
-            if (contentType == "application/msword")
-                return "doc.png";
-
-            if (contentType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-                return "docx.png";
-
-            if (contentType == "application/vnd.ms-excel")
-                return "xls.png";
-
-            if (contentType == "application/x-zip-compressed")
-                return "zip.png";
-
-            if (contentType == "image/jpeg")
-                return "jpg.png";
-
-            if (contentType == "image/png")
-                return "png.png";
-
-            if (contentType == "image/tiff")
-                return "tiff.png";
-
-            if (contentType == "text/html")
-                return "html.png";
-
-            if (contentType == "text/xml")
-                return "xml.png";
-
-            return "other.png";
         }
     }
 }

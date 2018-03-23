@@ -24,30 +24,30 @@ namespace Catfish.Core.Models.Forms
         //XXX Add fileguids as in the attachment model
         public static char FileGuidSeparator = '|';
 
-        [NotMapped]
-        public string[] FieldFileGuidsArray {
-            get {
-                return this.FieldFileGuids.Split(new char[] { Attachment.FileGuidSeparator });
-            }
-        }
+        //[NotMapped]
+        //public string[] FieldFileGuidsArray {
+        //    get {
+        //        return this.FieldFileGuids.Split(new char[] { Attachment.FileGuidSeparator });
+        //    }
+        //}
 
-        [NotMapped]
-        public string FieldFileGuids
-        {
-            get
-            {
-                XElement val = Data.Element("value");
-                return val == null ? "" : val.Value;
-            }
-            set
-            {
-                XElement val = Data.Element("value");
-                if (val == null)
-                    Data.Add(val = new XElement("value"));
+        //[NotMapped]
+        //public string FieldFileGuids
+        //{
+        //    get
+        //    {
+        //        XElement val = Data.Element("value");
+        //        return val == null ? "" : val.Value;
+        //    }
+        //    set
+        //    {
+        //        XElement val = Data.Element("value");
+        //        if (val == null)
+        //            Data.Add(val = new XElement("value"));
 
-                val.Value = value == null ? "" : value;
-            }
-        }
+        //        val.Value = value == null ? "" : value;
+        //    }
+        //}
 
         [NotMapped]
         public List<DataFile> Files

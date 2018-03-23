@@ -71,7 +71,7 @@ namespace Catfish.Tests
             c.SetDescription("Collection test description");
             c.Serialize();
 
-            db.Collections.Add(c);
+            c = srv.UpdateStoredCollection(c);
 
             db.SaveChanges();
             return c;

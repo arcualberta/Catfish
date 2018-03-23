@@ -299,7 +299,6 @@
     <Content Include="Areas\Manager\Views\Extensions\BulletinBoard.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\SimpleSearch.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\SearchResults.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\Partial\FileAttachment.cshtml" />
     <Content Include="Areas\Manager\Views\EntityGroups\Index.cshtml" />
     <Content Include="Areas\Manager\Views\EntityGroups\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
@@ -341,6 +340,7 @@
     <Compile Include="Controllers\Api\FormsController.cs" />
     <Compile Include="Controllers\Api\ItemsController.cs" />
     <Compile Include="Controllers\Api\StatsController.cs" />
+    <Compile Include="Controllers\CatfishController.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Areas\Manager\Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
