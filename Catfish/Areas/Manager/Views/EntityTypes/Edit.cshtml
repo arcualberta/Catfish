@@ -128,8 +128,10 @@
                                         }
                                         
                                         <div style="float: right">
-
-                                            @ko.Html.Button("", "RemoveAttributeMapping", "EntityTypes", new { idx = @map.GetIndex() }, new { @class = "glyphicon glyphicon-remove" })   
+                                            @using (map.If(m => m.Deletable))
+                                            {
+                                                @ko.Html.Button("", "RemoveAttributeMapping", "EntityTypes", new { idx = @map.GetIndex() }, new { @class = "glyphicon glyphicon-remove" })
+                                            }
                                         </div>
                                     </div>
                                     <div class="bs">
@@ -137,9 +139,7 @@
                                             <ul class="form form-custom">
                                                 <li>
                                                     <label class="control-label col-md-2">Metadata Set</label>
-                                                    <div class="input">
-                                                  
-                                                      
+                                                    <div class="input">   
                                                         @ko.Html.DropDownList(m => m.AssociatedMetadataSets, null, "Name", "Id").Value(m => map.Model.MetadataSetFieldId)
                                                     </div>
                                                 </li>
@@ -149,7 +149,12 @@
                                                         @*map.Html.DropDownList(m=>ko.Model.MetadataSetFields[m.MetadataSetFieldId.ToString()], null, m => m).Value(m=>m.Field)*@
                                                         <select data-bind="options : $parent.MetadataSetFields[$data.MetadataSetFieldId()],optionsText : function(item) { return item; },value : $data.Field"></select>
                                                     </div>
-                                                
+                                                </li>
+                                                <li>
+                                                    <label class="control-label col-md-2">Label</label>
+                                                    <div class="input">
+                                                       @map.Html.TextBox(m=>m.Label).OptionsText("label", true)
+                                                    </div>
                                                 </li>
                                             </ul>
                                         </div>

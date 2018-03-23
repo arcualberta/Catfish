@@ -94,34 +94,28 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                     {
                         MetadataSetFields.Add(map.MetadataSetId.ToString(), addList);
                     }
-
+                    
+                    if(map.Name.Equals("Name Mapping") || map.Name.Equals("Description Mapping"))
+                    {
+                        map.Deletable = false;
+                    }
 
                     AttributeMappings.Add(new AttributeMapping
                     {
                         Name = map.Name,
                         Field = map.FieldName,
-                        MetadataSetFieldId = map.MetadataSetId
+                        MetadataSetFieldId = map.MetadataSetId,
+                        Label = map.Label,
+                       Deletable = map.Deletable
                     });
                 }
             }
             else
             {
                 AttributeMappings.Clear();
-                //add default Name Mapping and DescriptionMapping
-                //EntityTypeAttributeMapping entityTypeAttributeMapping = new EntityTypeAttributeMapping();
-                //entityTypeAttributeMapping.Name = "Name Mapping";
-               // entityTypeAttributeMapping.FieldName = "Not Defined";
-                AttributeMappings.Add(new AttributeMapping { Name = "Name Mapping" });
-
-                //  AttributeMappings.Add(new AttributeMapping {EntityTypeAttributeMapping = entityTypeAttributeMapping, Name = entityTypeAttributeMapping.Name});
-
-               // EntityTypeAttributeMapping entityTypeAttributeMapping2 = new EntityTypeAttributeMapping();
-               // entityTypeAttributeMapping2.Name = "Description Mapping";
-               // entityTypeAttributeMapping2.FieldName = "Not Defined";
-                AttributeMappings.Add(new AttributeMapping { Name = "Description Mapping"});
-
-               // AttributeMappings.Add(new AttributeMapping { EntityTypeAttributeMapping = entityTypeAttributeMapping2, Name = entityTypeAttributeMapping2.Name });
-
+                
+                AttributeMappings.Add(new AttributeMapping { Name = "Name Mapping", Deletable=false });     
+                AttributeMappings.Add(new AttributeMapping { Name = "Description Mapping", Deletable=false});
             }
             
         }
@@ -175,7 +169,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                                                     {
                                                         Name = map.Name,
                                                         FieldName = map.Field,
-                                                        MetadataSetId = map.MetadataSetFieldId
+                                                        MetadataSetId = map.MetadataSetFieldId,
+                                                        Label = map.Label,
+                                                        Deletable = map.Deletable
                                                     }                       
                                             );
             }
@@ -189,53 +185,30 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public int Id { get; set; }
         public string Name { get; set; }
 
-      //  public List<string> Fields { get; set; }
-
+      
         public MetadataSetListItem()
         {
             Id = 0;
             Name = "";
-           // Fields = new List<string>();
+          
         }
         public MetadataSetListItem(int id, string name)
         {
             Id = id;
             Name = name;
         }
-        //public MetadataSetListItem(int id, string name, List<string> fields)
-        //{
-        //    Id = id;
-        //    Name = name;
-        //    Fields = fields;
-        //}
+       
     }
 
-    //public class MetadataFieldMapping
-    //{
-    //    public int MetadataSetId { get; set; }
-
-    //    public string MetadataSet { get; set; }
-
-    //    public string Field { get; set; }
-
-    //    public MetadataFieldMapping()
-    //    {
-    //        MetadataSet = "Not specified";
-    //        Field = "Not specified";
-    //    }
-    //}
-
+  
     //mr
     public class AttributeMapping
     {
-        //public EntityTypeAttributeMapping EntityTypeAttributeMapping { get; set; }
-        //public List<MetadataSetListItem> MetadataFields { get; set; }
-
         public int MetadataSetFieldId { get; set; }
         public string Name { get; set; }
         public string Field { get; set; }
 
-       // public List<string> Fields { get; set; }
+        public string Label { get; set; }
 
         public bool Deletable { get; set; }
 
