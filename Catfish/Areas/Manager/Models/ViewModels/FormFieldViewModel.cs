@@ -198,10 +198,13 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                     dataFile.Thumbnail = file.Thumbnail;
                     dataFile.ContentType = file.ContentType;
                     //dataFile.ThumbnailType = DataFile.eThumbnailTypes.NonShared;
-                    Db.XmlModels.Remove(file);
-
+                    Db.XmlModels.Remove(file);                    
                     // Move file from temp folder                    
-                }             
+                }
+                //else
+                //{
+                //    dataFile.Thumbnail = "/test";
+                //}        
             }
 
             //field.Files = filesList;
