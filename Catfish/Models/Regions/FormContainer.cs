@@ -48,11 +48,13 @@ namespace Catfish.Models.Regions
             // get db context
             CatfishDbContext db = new CatfishDbContext();
             CollectionService collectionSrv = new CollectionService(db);
+            EntityTypeService entityTypeSrv = new EntityTypeService(db);
+            SubmissionService formService = new SubmissionService(db);
 
             // fetch all forms
-            Forms = new SelectList(db.FormTemplates, "Id", "Name");
+            Forms = new SelectList(formService.GetForms(), "Id", "Name");
             // fetch all entities
-            EntityTypes = new SelectList(db.EntityTypes, "Id", "Name");
+            EntityTypes = new SelectList(entityTypeSrv.GetEntityTypes(), "Id", "Name");
             // fetch all collections
             Collections = new SelectList(collectionSrv.GetCollections(), "Id", "Name");
 

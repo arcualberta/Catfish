@@ -11,11 +11,23 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Services
 {
+    /// <summary>
+    /// A Service used to perform actions on Form Entitites.
+    /// </summary>
     public class SubmissionService: ItemService
     {
         public SubmissionService(CatfishDbContext db):base(db)
         {
 
+        }
+
+        /// <summary>
+        /// Get all forms accessable by the current user.
+        /// </summary>
+        /// <returns>The resulting list of forms.</returns>
+        public IQueryable<Form> GetForms()
+        {
+            return Db.FormTemplates;
         }
 
         public IQueryable<Form> GetSubmissionTemplates()

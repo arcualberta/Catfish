@@ -42,6 +42,10 @@ namespace Catfish.Core.Models.Forms
         public string Description { get { return GetDescription(); } set { SetDescription(value); } }
 
 
+        /// <summary>
+        /// Updates the content of a form with the content of another abstract form.
+        /// </summary>
+        /// <param name="src">An abstract form to obtain the information from.</param>
         public override void UpdateValues(XmlModel src)
         {
             base.UpdateValues(src);
@@ -55,11 +59,11 @@ namespace Catfish.Core.Models.Forms
                     field.UpdateValues(src_field);
             }
         }
-
         public void SetFieldValue(string fieldName, string fieldValue, string language)
         {
             SetFieldValue(fieldName, new List<string> { fieldValue }, language);
         }
+
         public void SetFieldValue(string fieldName, IEnumerable<string> fieldValues, string language)
         {
             FormField field = Fields.Where(f => f.Name == fieldName).FirstOrDefault();
