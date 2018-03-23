@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Data;
+using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -120,6 +121,13 @@ namespace Catfish.Core.Services
                 return model as DataFile;
             else if (checkInItems && model is Item)
                 return (model as Item).Files.Where(f => f.Guid == guid).FirstOrDefault();
+            // XXX Problemas de archivo ?
+            else if (typeof(AbstractForm).IsAssignableFrom(model.GetType()))
+            {
+                //return (model as AbstractForm).Fields.First().Files.FirstOrDefault();
+                //return (model as AbstractForm).Fields.Select(m => m.Files)
+                return (model as AbstractForm).Fields.SelectMany(m => m.Files).Where(m => m.Guid == guid).FirstOrDefault();
+            }
             else
                 return null;
         }

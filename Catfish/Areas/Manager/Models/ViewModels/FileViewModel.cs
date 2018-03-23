@@ -43,15 +43,26 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
         }
 
+        public DataFile.eThumbnailTypes ThumbnailType
+        {
+            get
+            {
+                return DataFile.eThumbnailTypes.NonShared;
+            }
+        }
+
+            
+
         public DataFile ToDataFile()
         {
             DataFile dataFile = new DataFile();
             dataFile.Id = Id;
             dataFile.FileName = FileName;
             dataFile.Guid = Guid;
+            dataFile.Path = "Data\\" + Guid;
+            dataFile.ContentType = "image/jpeg";
             dataFile.Thumbnail = Thumbnail;
-            dataFile.Path = "";            
-            dataFile.ContentType = "";
+            dataFile.ThumbnailType = DataFile.eThumbnailTypes.NonShared;
             return dataFile;
         }
 

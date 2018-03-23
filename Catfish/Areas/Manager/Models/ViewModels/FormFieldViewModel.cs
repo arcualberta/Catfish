@@ -97,7 +97,11 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.Rank = Rank;
             field.Page = Page;
             //var test = Files;
-            field.Files = Files.Select(m => m.ToDataFile()).ToList();
+
+            field.Files = Files != null ? Files.Select(m => m.ToDataFile()).ToList() :
+                new List<DataFile>();
+            
+            
 
 
 
@@ -191,7 +195,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                     //filesList.Add(file);
                     //field.Files.Add(file);
                     dataFile.Path = file.Path;
+                    dataFile.Thumbnail = file.Thumbnail;
                     dataFile.ContentType = file.ContentType;
+                    //dataFile.ThumbnailType = DataFile.eThumbnailTypes.NonShared;
                     Db.XmlModels.Remove(file);
 
                     // Move file from temp folder                    
