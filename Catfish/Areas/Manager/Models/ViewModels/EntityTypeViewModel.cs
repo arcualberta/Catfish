@@ -5,13 +5,14 @@ using Catfish.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using static Catfish.Core.Models.EntityType;
 
 namespace Catfish.Areas.Manager.Models.ViewModels
 {
     public class EntityTypeViewModel : KoBaseViewModel
     {
-        public enum eMappingType { NameMapping = 1, DescriptionMapping }
+       // public enum eMappingType { NameMapping = 1, DescriptionMapping }
 
         public string TypeLabel { get; set; }
         public string Name { get; set; }
@@ -21,35 +22,32 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public List<MetadataSetListItem> AvailableMetadataSets { get; set; }
         public MetadataSetListItem SelectedMetadataSets { get; set; }
         public List<MetadataSetListItem> AssociatedMetadataSets { get; set; }
-        public List<MetadataSetListItem> MetadataSetMappingSrc { get; set; }
 
-        public MetadataFieldMapping NameMapping { get; set; }
-        public MetadataSetListItem SelectedNameMappingMetadataSet { get; set; }
-        public string SelectedNameMappingField { get; set; }
-        public List<string> SelectedNameMappingFieldSrc { get; set; }
+        public Dictionary<string, List<string>> MetadataSetFields { get; set; }
+      
 
-        public MetadataFieldMapping DescriptionMapping { get; set; }
-        public MetadataSetListItem SelectedDescriptionMappingMetadataSet { get; set; }
-        public string SelectedDescriptionMappingField { get; set; }
-        public List<string> SelectedDescriptionMappingFieldSrc { get; set; }
+        public List<AttributeMapping> AttributeMappings { get; set; }
+       // public List<string> AvailableMappingFields { get; set; }
 
         public EntityTypeViewModel()
         {
             AvailableMetadataSets = new List<MetadataSetListItem>();
             AssociatedMetadataSets = new List<MetadataSetListItem>();
+            AssociatedMetadataSets.Add(new MetadataSetListItem(0, ""));
+
             SelectedMetadataSets = null;
-            NameMapping = new MetadataFieldMapping();
-            DescriptionMapping = new MetadataFieldMapping();
-            SelectedNameMappingFieldSrc = new List<string>();
-            SelectedDescriptionMappingFieldSrc = new List<string>();
+            MetadataSetFields = new Dictionary<string, List<string>>();
+
             TargetType = new List<bool>();
 
-            foreach(var key in System.Enum.GetValues(typeof(EntityType.eTarget)))
+            foreach (var key in System.Enum.GetValues(typeof(EntityType.eTarget)))
             {
                 TargetType.Add(false);
             }
+
+            AttributeMappings = new List<AttributeMapping>(); //MR
         }
- 
+
         public void UpdateViewModel(object dataModel, CatfishDbContext db)
         {
             EntityType model = dataModel as EntityType;
@@ -57,9 +55,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Id = model.Id;
             Name = model.Name;
             Description = model.Description;
-           // TargetType = model.TargetType.ToString();
-           
-           foreach(var tt in model.TargetTypesList)  //MR jan 15 2018
+            // TargetType = model.TargetType.ToString();
+
+            foreach (var tt in model.TargetTypesList)  //MR jan 15 2018
             {
                 TargetType[(int)tt] = true;
             }
@@ -81,31 +79,51 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             foreach (var ms in model.MetadataSets)
                 AssociatedMetadataSets.Add(new MetadataSetListItem(ms.Id, ms.Name));
 
-            MetadataSetMappingSrc = new List<MetadataSetListItem>() { new MetadataSetListItem() };
-            MetadataSetMappingSrc.AddRange(AssociatedMetadataSets);
 
-            //updating name and description mappings
-            var nameMapping = model.GetNameMapping();
-            if (nameMapping != null)
-            {
-                NameMapping = new MetadataFieldMapping()
-                {
-                    MetadataSetId = nameMapping.MetadataSetId,
-                    Field = nameMapping.FieldName,
-                    MetadataSet = nameMapping.MetadataSet.Name
-                };
-            }
+            //melania
 
-            var descMapping = model.GetDescriptionMapping();
-            if (descMapping != null)
+            if (model.AttributeMappings.Count > 0)
             {
-                DescriptionMapping = new MetadataFieldMapping()
+
+                foreach (EntityTypeAttributeMapping map in model.AttributeMappings)
                 {
-                    MetadataSetId = descMapping.MetadataSetId,
-                    Field = descMapping.FieldName,
-                    MetadataSet = descMapping.MetadataSet.Name
-                };
+                    List<string> addList = new List<string>();
+                    addList.Add("");
+                    addList = addList.Concat((map.MetadataSet.Fields.Select(f => f.Name).ToList())).ToList();
+                    if (!MetadataSetFields.ContainsKey(map.MetadataSetId.ToString()))
+                    {
+                        MetadataSetFields.Add(map.MetadataSetId.ToString(), addList);
+                    }
+
+
+                    AttributeMappings.Add(new AttributeMapping
+                    {
+                        Name = map.Name,
+                        Field = map.FieldName,
+                        MetadataSetFieldId = map.MetadataSetId
+                    });
+                }
             }
+            else
+            {
+                AttributeMappings.Clear();
+                //add default Name Mapping and DescriptionMapping
+                //EntityTypeAttributeMapping entityTypeAttributeMapping = new EntityTypeAttributeMapping();
+                //entityTypeAttributeMapping.Name = "Name Mapping";
+               // entityTypeAttributeMapping.FieldName = "Not Defined";
+                AttributeMappings.Add(new AttributeMapping { Name = "Name Mapping" });
+
+                //  AttributeMappings.Add(new AttributeMapping {EntityTypeAttributeMapping = entityTypeAttributeMapping, Name = entityTypeAttributeMapping.Name});
+
+               // EntityTypeAttributeMapping entityTypeAttributeMapping2 = new EntityTypeAttributeMapping();
+               // entityTypeAttributeMapping2.Name = "Description Mapping";
+               // entityTypeAttributeMapping2.FieldName = "Not Defined";
+                AttributeMappings.Add(new AttributeMapping { Name = "Description Mapping"});
+
+               // AttributeMappings.Add(new AttributeMapping { EntityTypeAttributeMapping = entityTypeAttributeMapping2, Name = entityTypeAttributeMapping2.Name });
+
+            }
+            
         }
 
         public override void UpdateDataModel(object dataModel, CatfishDbContext db)
@@ -114,11 +132,11 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
             model.Name = Name;
             model.Description = Description;
-            //model.TargetType = (eTarget) Enum.Parse(typeof(eTarget), TargetType);
+           
             //Mr jan 15 2018
 
             var TargetTypesList = new List<EntityType.eTarget>();
-            for(int i = 0; i < TargetType.Count; ++i)
+            for (int i = 0; i < TargetType.Count; ++i)
             {
                 if (TargetType[i])
                 {
@@ -138,59 +156,32 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
 
             //Adding metadata sets that are in the view model but not in the data model to the data model.
-            foreach(int id in viewModelMetadataSetIds)
+            foreach (int id in viewModelMetadataSetIds)
             {
-                if(!dataModelMetadataSetIds.Contains(id))
+                if (!dataModelMetadataSetIds.Contains(id))
                 {
                     MetadataSet ms = db.MetadataSets.Where(s => s.Id == id).FirstOrDefault();
-                    model.MetadataSets.Add(ms);
+                    if(ms != null)
+                        model.MetadataSets.Add(ms);
                 }
             }
 
-            //updating name and description mappings
-            if (NameMapping.MetadataSetId != 0)
+            //mr March 20 2018
+            model.AttributeMappings.Clear();
+            MetadataService mService = new MetadataService(db);
+            foreach(var map in AttributeMappings)
             {
-                var nameMapping = model.GetNameMapping();
-                if (nameMapping != null)
-                    db.Entry(nameMapping).State = System.Data.Entity.EntityState.Modified;
-                else
-                {
-                    nameMapping = new EntityTypeAttributeMapping() { Name = "Name Mapping" };
-                    model.AttributeMappings.Add(nameMapping);
-                }
-                nameMapping.MetadataSetId = NameMapping.MetadataSetId;
-                nameMapping.FieldName = NameMapping.Field;
-            }
-
-            if (DescriptionMapping.MetadataSetId != 0)
-            {
-                var descMapping = model.GetDescriptionMapping();
-                if (descMapping != null)
-                    db.Entry(descMapping).State = System.Data.Entity.EntityState.Modified;
-                else
-                {
-                    descMapping = new EntityTypeAttributeMapping() { Name = "Description Mapping" };
-                    model.AttributeMappings.Add(descMapping);
-                }
-                descMapping.MetadataSetId = DescriptionMapping.MetadataSetId;
-                descMapping.FieldName = DescriptionMapping.Field;
+                model.AttributeMappings.Add( new EntityTypeAttributeMapping
+                                                    {
+                                                        Name = map.Name,
+                                                        FieldName = map.Field,
+                                                        MetadataSetId = map.MetadataSetFieldId
+                                                    }                       
+                                            );
             }
         }
 
-        /*public string GetTargetType(string targetType)
-        {
-            string tType = string.Empty;
-
-            foreach(string t in TargetType)
-            {
-                if(t.Equals(targetType))
-                {
-                    tType = t;
-                    break;
-                }
-            }
-            return tType;
-        }*/
+       
     }
 
     public class MetadataSetListItem
@@ -198,32 +189,60 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public int Id { get; set; }
         public string Name { get; set; }
 
+      //  public List<string> Fields { get; set; }
+
         public MetadataSetListItem()
         {
             Id = 0;
             Name = "";
+           // Fields = new List<string>();
         }
-
         public MetadataSetListItem(int id, string name)
         {
             Id = id;
             Name = name;
         }
+        //public MetadataSetListItem(int id, string name, List<string> fields)
+        //{
+        //    Id = id;
+        //    Name = name;
+        //    Fields = fields;
+        //}
     }
 
-    public class MetadataFieldMapping
+    //public class MetadataFieldMapping
+    //{
+    //    public int MetadataSetId { get; set; }
+
+    //    public string MetadataSet { get; set; }
+
+    //    public string Field { get; set; }
+
+    //    public MetadataFieldMapping()
+    //    {
+    //        MetadataSet = "Not specified";
+    //        Field = "Not specified";
+    //    }
+    //}
+
+    //mr
+    public class AttributeMapping
     {
-        public int MetadataSetId { get; set; }
+        //public EntityTypeAttributeMapping EntityTypeAttributeMapping { get; set; }
+        //public List<MetadataSetListItem> MetadataFields { get; set; }
 
-        public string MetadataSet{ get; set; }
-
+        public int MetadataSetFieldId { get; set; }
+        public string Name { get; set; }
         public string Field { get; set; }
 
-        public MetadataFieldMapping()
-        {
-            MetadataSet = "Not specified";
-            Field = "Not specified";
-        }
+       // public List<string> Fields { get; set; }
+
+        public bool Deletable { get; set; }
+
+        public AttributeMapping(){
+            Deletable = false;
+         }
+      
     }
 
 }
