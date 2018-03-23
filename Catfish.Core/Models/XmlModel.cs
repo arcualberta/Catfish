@@ -253,6 +253,9 @@ namespace Catfish.Core.Models
             return element;
         }
 
+        [NotMapped]
+        [TypeLabel("String")]
+        public virtual string Description { get { return GetDescription(); } set { SetDescription(value); } }
 
         public virtual string GetDescription(string lang = null)
         {

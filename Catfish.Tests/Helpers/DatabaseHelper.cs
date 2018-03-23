@@ -19,11 +19,18 @@ using System.Data.Entity.Migrations.Sql;
 using System.IO;
 using System.Reflection;
 using System.Data;
+using Piranha.IO;
+using System.Web;
+using System.Web.Hosting;
 
 namespace Catfish.Tests.Helpers
 {
     class DatabaseHelper
     {
+        public const int TOTAL_ENTITYTYPES = 5;
+        public const int TOTAL_COLLECTIONS = 7;
+        public const int TOTAL_ITEMS = 11;
+
         private CatfishTestDbContext mDb { get; set; }
         public CatfishTestDbContext Db
         {
@@ -80,6 +87,20 @@ namespace Catfish.Tests.Helpers
                 }
 
                 return mEs;
+            }
+        }
+
+        private EntityTypeService mEts { get; set; }
+        public EntityTypeService Ets
+        {
+            get
+            {
+                if (mEts == null)
+                {
+                    mEts = new EntityTypeService(Db);
+                }
+
+                return mEts;
             }
         }
 
@@ -199,7 +220,7 @@ namespace Catfish.Tests.Helpers
         {
             MetadataSet metadata = Ms.GetMetadataSets().FirstOrDefault();
 
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i < TOTAL_ENTITYTYPES; ++i)
             {
                 EntityType et = new EntityType();
                 et.Name = "Entity" + (i + 1);
@@ -241,9 +262,9 @@ namespace Catfish.Tests.Helpers
 
         private void CreateCollections()
         {
-            List<int> ets = Es.GetEntityTypes().ToList().Where(et => et.TargetTypesList.Contains(eTarget.Collections)).Select(et => et.Id).ToList();
+            List<int> ets = Ets.GetEntityTypes().ToList().Where(et => et.TargetTypesList.Contains(eTarget.Collections)).Select(et => et.Id).ToList();
 
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i < TOTAL_COLLECTIONS; ++i)
             {
                 int index = i % ets.Count;
                 Collection c = Cs.CreateEntity<Collection>(ets[index]);
@@ -258,9 +279,9 @@ namespace Catfish.Tests.Helpers
 
         private void CreateItems()
         {
-            List<int> ets = Es.GetEntityTypes().ToArray().Where(et => et.TargetTypesList.Contains(eTarget.Items)).Select(et => et.Id).ToList();
+            List<int> ets = Ets.GetEntityTypes().ToArray().Where(et => et.TargetTypesList.Contains(eTarget.Items)).Select(et => et.Id).ToList();
 
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i < TOTAL_ITEMS; ++i)
             {
                 int index = i % ets.Count;
                 Item e = Is.CreateEntity<Item>(ets[index]);
@@ -317,8 +338,15 @@ namespace Catfish.Tests.Helpers
         {
             if (PDb.Database.Exists())
             {
-                PDb.Database.Delete();
-                PDb.Database.Initialize(true);
+                string db = PDb.Database.Connection.DataSource;
+                File.Delete("./piranha.db");
+            }
+
+            if(HttpContext.Current == null)
+            {
+                SimpleWorkerRequest request = new SimpleWorkerRequest("", "", "", null, new StringWriter());
+                HttpContext context = new HttpContext(request);
+                HttpContext.Current = context;
             }
 
             // Copied and modified from Piranha.Areas.Manager.Controllers.InstallController
@@ -377,7 +405,14 @@ namespace Catfish.Tests.Helpers
                 foreach (string stmt in stmts)
                 {
                     if (!String.IsNullOrEmpty(stmt.Trim()))
-                        Piranha.Models.SysUser.Execute(stmt, tx.UnderlyingTransaction);
+                    {
+                        string statement = stmt.Replace("GETDATE()", "date('now')")
+                            .Replace("SUBSTRING", "substr")
+                            .Replace("NEWID()", string.Format("'{0}'", Guid.NewGuid().ToString()));
+
+                        Piranha.Models.SysUser.Execute(statement, tx.UnderlyingTransaction);
+                    }
+                        
                 }
                 tx.Commit();
             }
@@ -417,6 +452,90 @@ namespace Catfish.Tests.Helpers
             builder.HasDefaultSchema("");
 
             builder.Entity<XmlModel>().Property(xm => xm.Content).HasColumnType("");
+        }
+    }
+    
+    public class CatfishMediaCacheProvider : Piranha.IO.IMediaCacheProvider
+    {
+        public void Delete(Guid id, MediaType type = MediaType.Media)
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] Get(Guid id, int width, int? height, MediaType type = MediaType.Media)
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] GetDraft(Guid id, int width, int? height, MediaType type = MediaType.Media)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long GetTotalSize(Guid id, MediaType type = MediaType.Media)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Put(Guid id, byte[] data, int width, int? height, MediaType type = MediaType.Media)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PutDraft(Guid id, byte[] data, int width, int? height, MediaType type = MediaType.Media)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class CatfishLogProvider : Piranha.Log.ILogProvider
+    {
+        public void Error(string origin, string message, Exception details = null)
+        {
+            Console.Error.WriteLine(string.Format("{0}: {1}", origin, message));
+        }
+    }
+
+    public class CatfishMediaProvider : Piranha.IO.IMediaProvider
+    {
+        public void Delete(Guid id, MediaType type = MediaType.Media)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteDraft(Guid id, MediaType type = MediaType.Media)
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] Get(Guid id, MediaType type = MediaType.Media)
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] GetDraft(Guid id, MediaType type = MediaType.Media)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Publish(Guid id, MediaType type = MediaType.Media)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Put(Guid id, byte[] data, MediaType type = MediaType.Media)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PutDraft(Guid id, byte[] data, MediaType type = MediaType.Media)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Unpublish(Guid id, MediaType type = MediaType.Media)
+        {
+            throw new NotImplementedException();
         }
     }
 }

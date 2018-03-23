@@ -47,8 +47,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Rank = formField.Rank;
             Page = formField.Page;
             IsPageBreak = formField.IsPageBreak();
-            Files = formField.FileDescriptions.Select(m => new FileViewModel(m, abstractFormId)).ToList();
-            FieldFileGuids = formField.FieldFileGuidsArray;
+            Files = formField.Files.Select( m => new FileViewModel(m, abstractFormId)).ToList();
+            //FieldFileGuids = src.FieldFileGuidsArray;
             //Files = src.Files;
 
             TypeLabelAttribute att = Attribute.GetCustomAttribute(formField.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
@@ -96,13 +96,22 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.Guid = Guid;
             field.Rank = Rank;
             field.Page = Page;
-            Files.Select(m => m.Guid);
+            //var test = Files;
+
+            field.Files = Files != null ? Files.Select(m => m.ToDataFile()).ToList() :
+                new List<DataFile>();
+            
+            
+
+
+
+            //Files.Select(m => m.Guid);
             //XXX setter puts the <value element and sets value
             // this is where you search for the field on the database based on the fieldfileguids
 
             //XXX Quizas quita esto y toma los archivos de la lista de file elements
             //field.FieldFileGuids = String.Join("|", FieldFileGuids);
-            field.FieldFileGuids = String.Join("|", Files.Select(m => m.Guid));
+            //field.FieldFileGuids = String.Join("|", Files.Select(m => m.Guid));
 
             UpdateFileList(field);
 
@@ -155,48 +164,59 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         {
             // Remove old files (should we remove all files ?)
 
-            List<string> test = field.FieldFileGuidsArray.ToList();
+            //List<string> test = field.FieldFileGuidsArray.ToList();
 
-            foreach (FileDescription fileDescription in field.FileDescriptions.ToList())
-            {
-                if (test.IndexOf(fileDescription.DataFile.Guid) < 0)
-                {
-                    //Deleting the file node from the XML Model
-                    //XXX Missing remove file
-                    //dstItem.RemoveFile(file);
-                }
-            }
+            //foreach (DataFile file in field.Files.ToList())
+            //{
+            //    if (test.IndexOf(file.Guid) < 0)
+            //    {
+            //        //Deleting the file node from the XML Model
+            //        //XXX Missing remove file
+            //        //dstItem.RemoveFile(file);
+            //    }
+            //}
 
             // Add new files
             //XXX Aqui es para recibir FieldFileGuids
-            List<FileDescription> fileDescriptions = new List<FileDescription>();
-            foreach (string fileGuid in field.FieldFileGuidsArray)
+            //var test = field.Files;
+            List<DataFile> filesList = new List<DataFile>();
+            //foreach (string fileGuid in field.FieldFileGuidsArray)
+            foreach (DataFile dataFile in field.Files)
             {
-                FileDescription fileDescription = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
-                    .Select(m => m as FileDescription)
+                string fileGuid = dataFile.Guid;
+                DataFile file = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
+                    .Select(m => m as DataFile)
                     .FirstOrDefault();
 
-                if (fileDescription != null)
+                if (file != null)
                 {
                     //file.Path = Uploadrootdir + 
-                    MoveFileToField(fileDescription, field);
-                    fileDescriptions.Add(fileDescription);
-                    Db.XmlModels.Remove(fileDescription);
-
+                    MoveFileToField(file, field);
+                    //filesList.Add(file);
+                    //field.Files.Add(file);
+                    dataFile.Path = file.Path;
+                    dataFile.Thumbnail = file.Thumbnail;
+                    dataFile.ContentType = file.ContentType;
+                    //dataFile.ThumbnailType = DataFile.eThumbnailTypes.NonShared;
+                    Db.XmlModels.Remove(file);                    
                     // Move file from temp folder                    
                 }
+                //else
+                //{
+                //    dataFile.Thumbnail = "/test";
+                //}        
             }
 
-            field.FileDescriptions = fileDescriptions;
-            Db.SaveChanges();
+            //field.Files = filesList;
+            Db.SaveChanges();            
         }
 
         //XXX Duplicating code from ItemService.cs UpdateFiles method
 
-        private void MoveFileToField(FileDescription fileDescription, FormField field)
+        private void MoveFileToField(DataFile dataFile, FormField field)
         {
 
-            DataFile dataFile = fileDescription.DataFile;
+            //DataFile dataFile = fileDescription.DataFile;
 
             //moving the physical files from the temporary upload folder to a folder identified by the GUID of the
             //item inside the uploaded data folder

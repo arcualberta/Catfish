@@ -50,77 +50,88 @@ namespace Catfish.Core.Models
                 metadata.Add(ms.Data);
         }
 
-        public string GetName(string lang = null)
+        protected FormField GetMetadataSetField(string metadatasetGuid, string fieldName) 
         {
-            if (EntityType != null)
+            MetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == metadatasetGuid).FirstOrDefault();
+            FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
+
+            return field;
+        }
+
+        public string GetAttributeMappingValue(string name, string lang = null)
+        {
+            var mapping = EntityType.AttributeMappings.Where(m => m.Name == name).FirstOrDefault();
+            if (mapping != null)
             {
-                var mapping = EntityType.GetNameMapping();
-                if (mapping != null)
+                string msGuid = mapping.MetadataSet.Guid;
+                string fieldName = mapping.FieldName;
+
+                FormField field = GetMetadataSetField(msGuid, fieldName);
+
+                if (field == null)
                 {
-                    string msName = mapping.MetadataSet.Name;
-                    string fieldName = mapping.FieldName;
-                    MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
-                    FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
-
-                if(field == null){
-                   // throw new Exception("ERROR: INCORRECT NAME MAPPING FOUND FOR THIS ENTITY TYPE");
+                    return string.Format("ERROR: INCORRECT {0} MAPPING FOUND FOR THIS ENTITY TYPE", mapping);
                 }
 
-                    return MultilingualHelper.Join(field.GetValues(), " / ", false);
-                }
+                return MultilingualHelper.Join(field.GetValues(), " / ", false);
             }
             
+            return null;
+        }
+
+        protected void SetAttributeMappingValue(string name, string val, string lang = null)
+        {
+            EntityTypeAttributeMapping mapping = EntityType.AttributeMappings.Where(m => m.Name == name).FirstOrDefault();
+            if (mapping == null)
+                throw new Exception(string.Format("{0} mapping metadata set is not specified for this entity type", name));
+
+            if (string.IsNullOrEmpty(mapping.FieldName))
+                throw new Exception(string.Format("Field is not specified in the {0} Mapping of this entity type", name));
+
+            MetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == mapping.MetadataSet.Guid).FirstOrDefault();
+            metadataSet.SetFieldValue(mapping.FieldName, val, lang);
+        }
+
+        public string GetName(string lang = null)
+        {
+            string result = GetAttributeMappingValue("Name Mapping", lang);
+
+            if(result != null)
+            {
+                return result;
+            }
+
             return GetChildText("name", Data, Lang(lang));
         }
         public override void SetName(string val, string lang = null)
         {
-            EntityTypeAttributeMapping mapping = EntityType.GetNameMapping();
-            if (mapping == null)
-                throw new Exception("Name mapping metadata set is not specified for this entity type");
-
-            if (string.IsNullOrEmpty(mapping.FieldName))
-                throw new Exception("Field is not specified in the Name Mapping of this entity type");
-
-            MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == mapping.MetadataSet.Name).FirstOrDefault();
-            metadataSet.SetFieldValue(mapping.FieldName, val, lang);
+            SetAttributeMappingValue("Name Mapping", val, lang);
         }
+
         public override string GetDescription(string lang = null)
         {
-            if (EntityType != null)
+            string result = GetAttributeMappingValue("Description Mapping", lang);
+
+            if (result != null)
             {
-                var mapping = EntityType.GetDescriptionMapping();
-                if (mapping != null)
-                {
-                    string msName = mapping.MetadataSet.Name;
-                    string fieldName = mapping.FieldName;
-                    MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == msName).FirstOrDefault();
-                    FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
-
-                if (field == null){
-                   // throw new Exception("ERROR: INCORRECT DESCRIPTION MAPPING FOUND FOR THIS ENTITY TYPE");
-                }
-
-                    return MultilingualHelper.Join(field.GetValues(), " / ", false);
-                }
+                return result;
             }
             
             return GetChildText("description", Data, Lang(lang));
         }
         public override void SetDescription(string val, string lang = null)
         {
-            EntityTypeAttributeMapping mapping = EntityType.GetDescriptionMapping();
-            if (mapping == null)
-                throw new Exception("Description mapping metadata set is not specified for this entity type");
-
-            if (string.IsNullOrEmpty(mapping.FieldName))
-                throw new Exception("Field is not specified in the Description Mapping of this entity type");
-
-            MetadataSet metadataSet = MetadataSets.Where(ms => ms.Name == mapping.MetadataSet.Name).FirstOrDefault();
-            metadataSet.SetFieldValue(mapping.FieldName, val, lang);
+            SetAttributeMappingValue("Description Mapping", val, lang);
         }
 
         public override void UpdateValues(XmlModel src)
         {
+            if(src == this)
+            {
+                // Updating will delete the child content. Since it's the same, we will return without any changes.
+                return;
+            }
+
             base.UpdateValues(src);
 
             var src_item = src as Entity;
@@ -140,7 +151,7 @@ namespace Catfish.Core.Models
             }
         }
 
-        public string Description
+        public override string Description
         {
             get
             {

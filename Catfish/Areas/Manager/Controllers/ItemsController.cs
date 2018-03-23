@@ -23,16 +23,16 @@ namespace Catfish.Areas.Manager.Controllers
 {
     public class ItemsController : CatfishController
     {
-        private CatfishDbContext db = new CatfishDbContext();
-
+ 
         // GET: Manager/Items
         public ActionResult Index(int offset=0, int limit=int.MaxValue)
         {
             if(limit == int.MaxValue)
                 limit = ConfigHelper.PageSize;
 
-            var entities = db.XmlModels.Where(m => m is Item).OrderBy(e => e.Id).Skip(offset).Take(limit).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
-            var total = db.XmlModels.Where(m => m is Item).Count();
+            var itemQuery = ItemService.GetItems();
+            var entities = itemQuery.OrderBy(e => e.Id).Skip(offset).Take(limit).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
+            var total = itemQuery.Count();
 
             ViewBag.TotalItems = total;
             ViewBag.Limit = limit;
@@ -68,34 +68,31 @@ namespace Catfish.Areas.Manager.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Entity entity = db.XmlModels.Find(id) as Entity;
-            if (entity == null)
+
+            Item item = ItemService.GetItem(id.Value);
+            if (item == null)
             {
                 return HttpNotFound();
             }
-            return View(entity);
+            return View(item);
         }
 
         // GET: Manager/Items/Edit/5
         public ActionResult Edit(int? id, int? entityTypeId)
         {
             Item model;
-            ItemService srv = new ItemService(db);
           
             if (id.HasValue && id.Value > 0)
             {
-                model = db.XmlModels.Find(id) as Item;
-                //model.Deserialize();
-
-                ////if(model.Files.Any()) //MR Sept 5 2017---chek if model has any file associated before pulling it
-                ////    ViewBag.FileList = new JavaScriptSerializer().Serialize(Json(this.GetFileArray(model.Files, model.Id)).Data);
-
+                model = ItemService.GetItem(id.Value);
+                if (model == null)
+                    return HttpNotFound("Item was not found");
             }
             else
             {
                 if(entityTypeId.HasValue)
                 {
-                    model = srv.CreateEntity<Item>(entityTypeId.Value);
+                    model = ItemService.CreateItem(entityTypeId.Value);
                 }
                 else
                 {
@@ -122,9 +119,8 @@ namespace Catfish.Areas.Manager.Controllers
         {
             if (ModelState.IsValid)
             {
-                ItemService srv = new ItemService(db);
-                Item dbModel = srv.UpdateStoredItem(model);
-                db.SaveChanges(User.Identity);
+                Item dbModel = ItemService.UpdateStoredItem(model);
+                Db.SaveChanges(User.Identity);
 
                 if (model.Id == 0)
                     return RedirectToAction("Edit", new { id = dbModel.Id });
@@ -136,21 +132,21 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult Associations(int id)
         {
-            Item model = Db.Items.Where(et => et.Id == id).FirstOrDefault();
+            Item model = ItemService.GetItem(id);
             if (model == null)
                 throw new Exception("Item not found");
 
             EntityContentViewModel childItems = new EntityContentViewModel();
             childItems.Id = model.Id;
             childItems.LoadNextChildrenSet(model.ChildItems);
-            childItems.LoadNextMasterSet(db.Items);
+            childItems.LoadNextMasterSet(ItemService.GetItems());
             ViewBag.ChildItems = childItems;
 
 
             EntityContentViewModel relatedItems = new EntityContentViewModel();
             relatedItems.Id = model.Id;
             relatedItems.LoadNextChildrenSet(model.ChildRelations);
-            relatedItems.LoadNextMasterSet(db.Items);
+            relatedItems.LoadNextMasterSet(ItemService.GetItems());
             ViewBag.RelatedItems = relatedItems;
 
             return View(model);
@@ -162,7 +158,7 @@ namespace Catfish.Areas.Manager.Controllers
         {
             try
             {
-                List<DataFile> files = ItemService.UploadTempFiles(Request);
+                List<DataFile> files = DataService.UploadTempFiles(Request);
                 Db.SaveChanges(User.Identity);
 
                 //Saving ids  of uploaded files in the session because these files and thumbnails
@@ -192,16 +188,15 @@ namespace Catfish.Areas.Manager.Controllers
                     Response.StatusDescription = "BadRequest: the file cannot be deleted -  NOT IN CACHE.";
                     return Json(string.Empty);
                 }
-
-                ItemService srv = new ItemService(db);
-                if (!srv.DeleteStandaloneFile(guid))
+                
+                if (!DataService.DeleteStandaloneFile(guid))
                 {
                     Response.StatusCode = (int)HttpStatusCode.NotFound;
                     Response.StatusDescription = "The file not found";
                     return Json(string.Empty);
                 }
 
-                db.SaveChanges(User.Identity);
+                Db.SaveChanges(User.Identity);
                 return Json(new List<string>() { guid });
             }
             catch (Exception)
@@ -212,10 +207,9 @@ namespace Catfish.Areas.Manager.Controllers
             }
         }
 
-        public ActionResult File(int id, string name)
+        public ActionResult File(int id, string guid)
         {
-            ItemService srv = new ItemService(db);
-            DataFile file = srv.GetFile(id, name);
+            DataFile file = DataService.GetFile(id, guid);
             if (file == null)
                 return HttpNotFound("File not found");
 
@@ -225,25 +219,15 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult Thumbnail(int id, string name)
         {
-            ItemService srv = new ItemService(db);
-            DataFile file = srv.GetFile(id, name);
+            DataFile file = DataService.GetFile(id, name);
             if (file == null)
                 return HttpNotFound("File not found");
-
-            string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared
+            var test = file.ThumbnailType;
+            string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared 
                 ? Path.Combine(FileHelper.GetThumbnailRoot(Request), file.Thumbnail)
                 : Path.Combine(file.Path, file.Thumbnail);
 
             return new FilePathResult(path_name, file.ContentType);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

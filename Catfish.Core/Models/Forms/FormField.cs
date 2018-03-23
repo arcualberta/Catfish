@@ -24,37 +24,37 @@ namespace Catfish.Core.Models.Forms
         //XXX Add fileguids as in the attachment model
         public static char FileGuidSeparator = '|';
 
-        [NotMapped]
-        public string[] FieldFileGuidsArray {
-            get {
-                return this.FieldFileGuids.Split(new char[] { Attachment.FileGuidSeparator });
-            }
-        }
+        //[NotMapped]
+        //public string[] FieldFileGuidsArray {
+        //    get {
+        //        return this.FieldFileGuids.Split(new char[] { Attachment.FileGuidSeparator });
+        //    }
+        //}
+
+        //[NotMapped]
+        //public string FieldFileGuids
+        //{
+        //    get
+        //    {
+        //        XElement val = Data.Element("value");
+        //        return val == null ? "" : val.Value;
+        //    }
+        //    set
+        //    {
+        //        XElement val = Data.Element("value");
+        //        if (val == null)
+        //            Data.Add(val = new XElement("value"));
+
+        //        val.Value = value == null ? "" : value;
+        //    }
+        //}
 
         [NotMapped]
-        public string FieldFileGuids
+        public List<DataFile> Files
         {
             get
             {
-                XElement val = Data.Element("value");
-                return val == null ? "" : val.Value;
-            }
-            set
-            {
-                XElement val = Data.Element("value");
-                if (val == null)
-                    Data.Add(val = new XElement("value"));
-
-                val.Value = value == null ? "" : value;
-            }
-        }
-
-        [NotMapped]
-        public List<FileDescription> FileDescriptions
-        {
-            get
-            {
-                return GetChildModels("files/" + FileDescription.TagName, Data).Select(c => c as FileDescription).ToList();
+                return GetChildModels("files/" + DataFile.TagName, Data).Select(c => c as DataFile).ToList();
             }
 
             set
@@ -65,9 +65,9 @@ namespace Catfish.Core.Models.Forms
                     filesElement = new XElement("files");
                     Data.Add(filesElement);
                 }
-                foreach (FileDescription fileDescription in value)
+                foreach (DataFile dataFile in value)
                 {
-                    filesElement.Add(fileDescription.Data);
+                    filesElement.Add(dataFile.Data);
                 }
                 //XElement val = Data.Element("files");
                 //if (val == null)

@@ -12,11 +12,11 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string FileName { get; set; }
         public string Guid { get; set; }
         public string Thumbnail { get; set; }
+        public string ThumbnailUrl { get; set; }
         public string Url { get; set; }
         public string Path { get; set; }
+
         public FileViewModel() { }
-
-
 
         public FileViewModel(DataFile src, int? id, RequestContext ctx, string controller)
         {
@@ -38,10 +38,35 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             InitializeInstance(src, itemId, ctx, "Items");
         }
 
-        public string ThumbnailUrl {
-            get {
-                return "url('" + Thumbnail + "')";
+        //public string ThumbnailUrl {
+        //    get {
+        //        return "url('" + Thumbnail + "')";
+        //    }
+        //}
+
+        public DataFile.eThumbnailTypes ThumbnailType
+        {
+            get
+            {
+                return DataFile.eThumbnailTypes.NonShared;
             }
+        }
+
+            
+
+        public DataFile ToDataFile()
+        {
+            DataFile dataFile = new DataFile();
+            dataFile.Id = Id;
+            dataFile.FileName = FileName;
+            dataFile.Guid = Guid;
+            //dataFile.Path = "Data\\" + Guid;
+            dataFile.Path = Path;
+            dataFile.ContentType = "image/jpeg";
+            //dataFile.Thumbnail = Guid + "_t.jpg";
+            dataFile.Thumbnail = Thumbnail;
+            dataFile.ThumbnailType = DataFile.eThumbnailTypes.NonShared;
+            return dataFile;
         }
 
         private void InitializeInstance(FileDescription fileDescription, int? id)
@@ -59,11 +84,16 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             FileName = src.FileName;
             Guid = src.Guid;
             Path = src.Path;
-
-            Thumbnail = urlHelper.Action("Thumbnail", controller, new {
+            Thumbnail = src.Thumbnail;
+            ThumbnailUrl = "url('" + urlHelper.Action("Thumbnail", controller, new
+            {
                 id = idValue,
                 name = src.Guid
-            });
+            }) + "')";
+            //Thumbnail = urlHelper.Action("Thumbnail", controller, new {
+            //    id = idValue,
+            //    name = src.Guid
+            //});
 
             Url = urlHelper.Action("File", controller, new {
                 id = idValue,

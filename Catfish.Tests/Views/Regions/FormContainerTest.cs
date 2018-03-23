@@ -192,6 +192,19 @@ namespace Catfish.Tests.Views.Regions
             }
         }
 
+        public void SubmitForm(IWebElement region, bool tryNo = false)
+        {
+            region.FindElement(By.CssSelector("input[name='submit']")).Click();
+
+            if (tryNo)
+            {
+                region.FindElement(By.CssSelector("input[name='no']")).Click();
+                region.FindElement(By.CssSelector("input[name='submit']")).Click();
+            }
+
+            region.FindElement(By.CssSelector("input[name='yes']")).Click();
+        }
+
         [Test]
         public void TestBasicForm()
         {
@@ -202,11 +215,7 @@ namespace Catfish.Tests.Views.Regions
             elements[0].FindElement(By.CssSelector("input[id$='__Value']")).SendKeys("Field 1");
             elements[1].FindElement(By.CssSelector("textarea[id$='__Value']")).SendKeys("Field 2");
 
-            IWebElement btnSave = region.FindElement(By.CssSelector("input[type='submit']"));
-            IJavaScriptExecutor jex = (IJavaScriptExecutor)Driver;
-
-            jex.ExecuteScript("arguments[0].focus(); ", btnSave);
-            btnSave.Click();
+            SubmitForm(region, true);
         }
 
         [Test]
@@ -216,13 +225,14 @@ namespace Catfish.Tests.Views.Regions
             IWebElement region = this.Driver.FindElement(By.Id(FORM_CSS_ID));
             IReadOnlyList<IWebElement> elements = region.FindElements(By.CssSelector("div.input"));
 
-            IWebElement btnSave = region.FindElement(By.CssSelector("input[type='submit']"));
-            IJavaScriptExecutor jex = (IJavaScriptExecutor)Driver;
-
-            jex.ExecuteScript("arguments[0].focus(); ", btnSave);
-            btnSave.Click();
+            SubmitForm(region);
 
             Assert.IsNotEmpty(elements[0].FindElement(By.CssSelector(".error.form-error")).Text);
+
+            elements[0].FindElement(By.CssSelector("input[id$='__Value']")).SendKeys("Field 1");
+            elements[1].FindElement(By.CssSelector("textarea[id$='__Value']")).SendKeys("Field 2");
+
+            SubmitForm(region);
         }
     }
 }
