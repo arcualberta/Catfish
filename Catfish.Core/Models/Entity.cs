@@ -53,6 +53,12 @@ namespace Catfish.Core.Models
         protected FormField GetMetadataSetField(string metadatasetGuid, string fieldName) 
         {
             MetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == metadatasetGuid).FirstOrDefault();
+
+            if(metadataSet == null)
+            {
+                return null;
+            }
+
             FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
 
             return field;
