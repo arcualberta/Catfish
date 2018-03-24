@@ -155,39 +155,7 @@
                                 <li>
                                     <label class="control-label col-md-2">Attached files</label>
                                     <div class="form-view">
-                                        @*@field.Html.Span(f => f.Files.Count)*@
                                         @RenderFileAttachments(field)
-                                        @*@using (KnockoutForeachContext<DataFile> fileViewModel = field.Foreach(f => f.Files))
-                                            {
-                                                @fileViewModel.Html.Span(omar => omar.FileName);
-                                            }*@
-                                        @*@using (KnockoutForeachContext<DataFile> fileViewModel = field.Model.Files.ForEach(f => f))*@
-                                        @*                                        @using (var file = field.Foreach(f => f.FileThings))*@
-                                        @*@using (var file = field.Foreach(f => f.Files))
-                                            {
-                                                @file.Html.Span(f => "Kamal");
-                                            }*@
-                                        @* XXX Change controller to file upload *@
-                                        @*@Html.Partial("Partial/FileAttachment", field,
-                                            //new ViewDataDictionary{
-                                            //                                                                   { "UploadApiUrl", @Url.Action("upload", "items")},
-                                            //                                                                   { "DeleteApiUrl",  @Url.Action("deleteCashedFile", "items")},
-                                            //                                                                   { "ParentId", Model.Id },
-                                            //                                                                   { "Controller", "items" }
-                                            //})*@
-
-                                        @*@if (field.Model != null)
-                                            {
-                                            @Html.EditorFor(m => field.Model.Attachment,
-                                                     new
-                                                     {
-                                                         UploadApiUrl = @Url.Action("upload", "items"),
-                                                         DeleteApiUrl = @Url.Action("deleteCashedFile", "items"),
-                                                         Files = field.Model.Files,
-                                                         ParentId = Model.Id,
-                                                         Controller = "items"
-                                                     })
-                                            }*@
                                     </div>
                                 </li>
                             </ul>
