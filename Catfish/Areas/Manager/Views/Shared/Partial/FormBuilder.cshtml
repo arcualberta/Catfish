@@ -27,15 +27,11 @@
 
         <div @field.Bind.Attr("id", m => m.Guid) class="inner file-upload" style="clear:both">
             <div class="thumbnailPanel">
-                <input type="hidden" id="Model_FieldFileGuids" @field.Bind.Value(m => m.FieldFileGuids) />
                 @using (KnockoutForeachContext<FileViewModel> fileViewModel = field.Foreach(f => f.Files))
                 {
                 <div class="fileThumbnail" @fileViewModel.Bind.Attr("id", m => m.Guid)>
                     <div class="img" @fileViewModel.Bind.Style("backgroundImage", (m => m.ThumbnailUrl))></div>
                     <div class="label"><a @fileViewModel.Bind.Attr("href", f => f.Path)>@fileViewModel.Html.Span(s => s.FileName)</a></div>
-                    <div @fileViewModel.Bind.Text(m => m.Path)></div>
-                    <div @fileViewModel.Bind.Text(m => m.Thumbnail)></div>
-                    <div @fileViewModel.Bind.Text(m => m.ThumbnailUrl)></div>
                 </div>
                 }
             </div>
