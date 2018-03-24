@@ -299,7 +299,6 @@
     <Content Include="Areas\Manager\Views\Extensions\BulletinBoard.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\SimpleSearch.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\SearchResults.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\Partial\FileAttachment.cshtml" />
     <Content Include="Areas\Manager\Views\EntityGroups\Index.cshtml" />
     <Content Include="Areas\Manager\Views\EntityGroups\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />

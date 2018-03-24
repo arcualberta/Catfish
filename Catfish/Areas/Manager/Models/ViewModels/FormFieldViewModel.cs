@@ -96,23 +96,11 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.Guid = Guid;
             field.Rank = Rank;
             field.Page = Page;
-            //var test = Files;
 
             field.Files = Files != null ? Files.Select(m => m.ToDataFile()).ToList() :
                 new List<DataFile>();
             
-            
-
-
-
-            //Files.Select(m => m.Guid);
-            //XXX setter puts the <value element and sets value
-            // this is where you search for the field on the database based on the fieldfileguids
-
-            //XXX Quizas quita esto y toma los archivos de la lista de file elements
-            //field.FieldFileGuids = String.Join("|", FieldFileGuids);
-            //field.FieldFileGuids = String.Join("|", Files.Select(m => m.Guid));
-
+           
             UpdateFileList(field);
 
             if (typeof(OptionsField).IsAssignableFrom(type))
@@ -162,25 +150,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         private void UpdateFileList(FormField field)
         {
-            // Remove old files (should we remove all files ?)
 
-            //List<string> test = field.FieldFileGuidsArray.ToList();
-
-            //foreach (DataFile file in field.Files.ToList())
-            //{
-            //    if (test.IndexOf(file.Guid) < 0)
-            //    {
-            //        //Deleting the file node from the XML Model
-            //        //XXX Missing remove file
-            //        //dstItem.RemoveFile(file);
-            //    }
-            //}
-
-            // Add new files
-            //XXX Aqui es para recibir FieldFileGuids
-            //var test = field.Files;
             List<DataFile> filesList = new List<DataFile>();
-            //foreach (string fileGuid in field.FieldFileGuidsArray)
             foreach (DataFile dataFile in field.Files)
             {
                 string fileGuid = dataFile.Guid;
@@ -189,25 +160,15 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                     .FirstOrDefault();
 
                 if (file != null)
-                {
-                    //file.Path = Uploadrootdir + 
+                {                     
                     MoveFileToField(file, field);
-                    //filesList.Add(file);
-                    //field.Files.Add(file);
                     dataFile.Path = file.Path;
                     dataFile.Thumbnail = file.Thumbnail;
-                    dataFile.ContentType = file.ContentType;
-                    //dataFile.ThumbnailType = DataFile.eThumbnailTypes.NonShared;
-                    Db.XmlModels.Remove(file);                    
-                    // Move file from temp folder                    
-                }
-                //else
-                //{
-                //    dataFile.Thumbnail = "/test";
-                //}        
+                    dataFile.ThumbnailType = file.ThumbnailType;
+                    dataFile.ContentType = file.ContentType;                 
+                    Db.XmlModels.Remove(file);                             
+                }  
             }
-
-            //field.Files = filesList;
             Db.SaveChanges();            
         }
 

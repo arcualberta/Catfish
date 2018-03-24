@@ -27,15 +27,11 @@
 
         <div @field.Bind.Attr("id", m => m.Guid) class="inner file-upload" style="clear:both">
             <div class="thumbnailPanel">
-                <input type="hidden" id="Model_FieldFileGuids" @field.Bind.Value(m => m.FieldFileGuids) />
                 @using (KnockoutForeachContext<FileViewModel> fileViewModel = field.Foreach(f => f.Files))
                 {
                 <div class="fileThumbnail" @fileViewModel.Bind.Attr("id", m => m.Guid)>
                     <div class="img" @fileViewModel.Bind.Style("backgroundImage", (m => m.ThumbnailUrl))></div>
                     <div class="label"><a @fileViewModel.Bind.Attr("href", f => f.Path)>@fileViewModel.Html.Span(s => s.FileName)</a></div>
-                    <div @fileViewModel.Bind.Text(m => m.Path)></div>
-                    <div @fileViewModel.Bind.Text(m => m.Thumbnail)></div>
-                    <div @fileViewModel.Bind.Text(m => m.ThumbnailUrl)></div>
                 </div>
                 }
             </div>
@@ -159,39 +155,7 @@
                                 <li>
                                     <label class="control-label col-md-2">Attached files</label>
                                     <div class="form-view">
-                                        @*@field.Html.Span(f => f.Files.Count)*@
                                         @RenderFileAttachments(field)
-                                        @*@using (KnockoutForeachContext<DataFile> fileViewModel = field.Foreach(f => f.Files))
-                                            {
-                                                @fileViewModel.Html.Span(omar => omar.FileName);
-                                            }*@
-                                        @*@using (KnockoutForeachContext<DataFile> fileViewModel = field.Model.Files.ForEach(f => f))*@
-                                        @*                                        @using (var file = field.Foreach(f => f.FileThings))*@
-                                        @*@using (var file = field.Foreach(f => f.Files))
-                                            {
-                                                @file.Html.Span(f => "Kamal");
-                                            }*@
-                                        @* XXX Change controller to file upload *@
-                                        @*@Html.Partial("Partial/FileAttachment", field,
-                                            //new ViewDataDictionary{
-                                            //                                                                   { "UploadApiUrl", @Url.Action("upload", "items")},
-                                            //                                                                   { "DeleteApiUrl",  @Url.Action("deleteCashedFile", "items")},
-                                            //                                                                   { "ParentId", Model.Id },
-                                            //                                                                   { "Controller", "items" }
-                                            //})*@
-
-                                        @*@if (field.Model != null)
-                                            {
-                                            @Html.EditorFor(m => field.Model.Attachment,
-                                                     new
-                                                     {
-                                                         UploadApiUrl = @Url.Action("upload", "items"),
-                                                         DeleteApiUrl = @Url.Action("deleteCashedFile", "items"),
-                                                         Files = field.Model.Files,
-                                                         ParentId = Model.Id,
-                                                         Controller = "items"
-                                                     })
-                                            }*@
                                     </div>
                                 </li>
                             </ul>
