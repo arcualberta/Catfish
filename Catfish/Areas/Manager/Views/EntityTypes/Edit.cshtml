@@ -108,19 +108,19 @@
                 </div>
 
               
-                <div id="fields-container">
+                <div id="fieldmappings-container">
                     <div class="box">
                         <div class="title">
                             Field Mappings
                         </div>
                         @using (var map = ko.Foreach(m => m.AttributeMappings))
                         {
-                            <div class="inner bs">
+                            <div class="inner bs fieldElement">
                                 <div class="box">
                                     <div class="title">
                                         @using (map.If(m => m.Deletable))
                                         {
-                                            @map.Html.TextBox(m => m.Name)
+                                            @map.Html.TextBox(m => m.Name).Attr("placeholder", m=>m.Name)
                                         }
                                         @using (map.If(m => !m.Deletable))
                                         {
@@ -140,20 +140,21 @@
                                                 <li>
                                                     <label class="control-label col-md-2">Metadata Set</label>
                                                     <div class="input">   
-                                                        @ko.Html.DropDownList(m => m.AssociatedMetadataSets, null, "Name", "Id").Value(m => map.Model.MetadataSetFieldId)
+                                                        @ko.Html.DropDownList(m => m.AssociatedMetadataSets, new {@class="mapMetadata" }, "Name", "Id").Value(m => map.Model.MetadataSetFieldId)
                                                     </div>
                                                 </li>
                                                 <li>
                                                     <label class="control-label col-md-2">Field</label>
                                                     <div class="input">
                                                         @*map.Html.DropDownList(m=>ko.Model.MetadataSetFields[m.MetadataSetFieldId.ToString()], null, m => m).Value(m=>m.Field)*@
-                                                        <select data-bind="options : $parent.MetadataSetFields[$data.MetadataSetFieldId()],optionsText : function(item) { return item; },value : $data.Field"></select>
+                                                        <select class="mapField" data-bind="options : $parent.MetadataSetFields[$data.MetadataSetFieldId()],optionsText : function(item) { return item; },value : $data.Field"></select>
                                                     </div>
                                                 </li>
                                                 <li>
                                                     <label class="control-label col-md-2">Label</label>
                                                     <div class="input">
-                                                       @map.Html.TextBox(m=>m.Label).OptionsText("label", true)
+                                                       @map.Html.TextBox(m=>m.Label,new {@class="mapLabel" }).Attr("placeholder",m=>"Label text...")
+                                                       
                                                     </div>
                                                 </li>
                                             </ul>
@@ -163,7 +164,7 @@
                             </div>
                         }
                         <div class="bs right slip-button-panel" style="border: none; padding-right:20px;padding-bottom:20px;">
-                            @ko.Html.Button("", "AddAttributeMapping", "EntityTypes", null, new { @class="glyphicon glyphicon-plus"})
+                            @ko.Html.Button("", "AddAttributeMapping", "EntityTypes", new {@id="btnAddAttributeMapping" }, new { @class="glyphicon glyphicon-plus"})
                         </div>
                        </div> @*box*@
                     </div>@*container*@
