@@ -17,6 +17,14 @@
             height: 25px;
             padding-top: 5px;
         }
+
+        .mapLabel {
+            height: 25px;
+            position: relative;
+            border: 2px solid #cdcdcd;
+            border-color: rgba(0,0,0,.14);
+            background-color: AliceBlue;
+        }
     </style>
 }
 
@@ -153,15 +161,21 @@
                                                 <li>
                                                     <label class="control-label col-md-2">Label</label>
                                                     <div class="input">
-                                                       @map.Html.TextBox(m=>m.Label,new {@class="mapLabel" }).Attr("placeholder",m=>"Label text...")
-                                                       
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                                       @map.Html.TextBox(m=>m.Label,new {@class="mapLabel", @style = "height: 25px;position: relative;border: 2px solid #cdcdcd;border - color: rgba(0, 0, 0, .14);background - color: AliceBlue; " }).Attr("placeholder",m=>"Label text...")
+
+                                                                                                       </div>
+                                                   
+                                                                                                   </li>
+                                                   
+                                                                                               </ul>
+                                                   
+                                                                                           </div>
+                                                   
+                                                                                       </div>
+                                                   
+                                                                                   </div>
+                                                   
+                                                                               </div>
                         }
                         <div class="bs right slip-button-panel" style="border: none; padding-right:20px;padding-bottom:20px;">
                             @ko.Html.Button("", "AddAttributeMapping", "EntityTypes", new {@id="btnAddAttributeMapping" }, new { @class="glyphicon glyphicon-plus"})
