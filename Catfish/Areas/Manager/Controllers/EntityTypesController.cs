@@ -200,7 +200,20 @@ namespace Catfish.Areas.Manager.Controllers
                 }
             }
             else
+            {
+                if(string.IsNullOrEmpty(vm.Name))
+                {
+                    vm.ErrorMessage = "*";
+                }
+                foreach(var att in vm.AttributeMappings)
+                {
+                    if(string.IsNullOrEmpty(att.Name) || string.IsNullOrEmpty(att.Field))
+                    {
+                        att.ErrorMessage = "*";
+                    }
+                }
                 return Json(vm.Error("Model validation failed"));
+            }
 
             return Json(vm);
         }

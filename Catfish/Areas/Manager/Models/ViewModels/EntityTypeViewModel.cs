@@ -4,6 +4,7 @@ using Catfish.Core.Models.Forms;
 using Catfish.Core.Services;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using static Catfish.Core.Models.EntityType;
@@ -15,6 +16,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
        // public enum eMappingType { NameMapping = 1, DescriptionMapping }
 
         public string TypeLabel { get; set; }
+        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
         //public string TargetType { get; set; }
@@ -27,8 +29,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
       
 
         public List<AttributeMapping> AttributeMappings { get; set; }
-       // public List<string> AvailableMappingFields { get; set; }
-
+      
+        public string ErrorMessage { get; set; }
         public EntityTypeViewModel()
         {
             AvailableMetadataSets = new List<MetadataSetListItem>();
@@ -46,6 +48,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
 
             AttributeMappings = new List<AttributeMapping>(); //MR
+            Name = "";
+            ErrorMessage = "*";
         }
 
         public void UpdateViewModel(object dataModel, CatfishDbContext db)
@@ -204,16 +208,23 @@ namespace Catfish.Areas.Manager.Models.ViewModels
     //mr
     public class AttributeMapping
     {
+        [Required]
         public int MetadataSetFieldId { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string Field { get; set; }
 
         public string Label { get; set; }
 
         public bool Deletable { get; set; }
 
+        public string ErrorMessage { get; set; }
         public AttributeMapping(){
             Deletable = false;
+            Name = "";
+            Field = "";
+            ErrorMessage = "*";
          }
       
     }
