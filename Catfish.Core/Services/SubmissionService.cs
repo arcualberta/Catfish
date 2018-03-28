@@ -11,18 +11,63 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Services
 {
+    /// <summary>
+    /// A Service used to perform actions on AbstractForm Entities
+    /// </summary>
     public class SubmissionService: ItemService
     {
+        /// <summary>
+        /// Create an instance of the SubmissionService.
+        /// </summary>
+        /// <param name="db">The database context containing the needed AbstractForms.</param>
         public SubmissionService(CatfishDbContext db):base(db)
         {
 
         }
 
+        /// <summary>
+        /// Get all templates for forms.
+        /// </summary>
+        /// <returns>All form templates.</returns>
         public IQueryable<Form> GetSubmissionTemplates()
         {
             return Db.FormTemplates;
         }
 
+        /// <summary>
+        /// Obtians a form from the database.
+        /// </summary>
+        /// <typeparam name="T">The type of AbstractForm to obtain.</typeparam>
+        /// <param name="id">The id of the form.</param>
+        /// <returns></returns>
+        public T GetForm<T>(int id) where T : AbstractForm
+        {
+            return Db.XmlModels.Where(x => x.Id == id && x is T).FirstOrDefault() as T;
+        }
+
+        /// <summary>
+        /// Saves a form into the database.
+        /// </summary>
+        /// <typeparam name="T">The type of AbstractForm to obtain.</typeparam>
+        /// <param name="form">The form to be saved</param>
+        public void SaveForm<T>(T form) where T : AbstractForm
+        {
+            form.Serialize();
+            if(form.Id > 0)
+            {
+                Db.Entry(form).State = System.Data.Entity.EntityState.Modified;
+            }
+            else
+            {
+                Db.XmlModels.Add(form);
+            }
+        }
+
+        /// <summary>
+        /// Create a form submission based on a specified form template.
+        /// </summary>
+        /// <param name="formTemplateId">The template to create the submission on.</param>
+        /// <returns>The newly created submission.</returns>
         public Form CreateSubmissionForm(int formTemplateId)
         {
             //Obtaining the template
