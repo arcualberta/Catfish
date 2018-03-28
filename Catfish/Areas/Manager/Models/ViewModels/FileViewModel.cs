@@ -16,6 +16,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string Url { get; set; }
         public string Path { get; set; }
         public string ContentType { get; set; }
+        public string Label { get; set; }
         public DataFile.eThumbnailTypes ThumbnailType { get; set; }
 
 
@@ -54,8 +55,17 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             return dataFile;
         }
 
+        public FileDescription ToFileDescription()
+        {
+            FileDescription fileDescription = new FileDescription();
+            fileDescription.DataFile = ToDataFile();
+            fileDescription.Label = Label;
+            return fileDescription;
+        }
+
         private void InitializeInstance(FileDescription fileDescription, int? id)
         {
+            Label = fileDescription.Label;
             InitializeInstance(fileDescription.DataFile, id, HttpContext.Current.Request.RequestContext, "Items"); ;
         }
 
