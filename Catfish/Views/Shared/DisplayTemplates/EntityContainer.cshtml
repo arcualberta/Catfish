@@ -1,0 +1,41 @@
+﻿@model Catfish.Models.Regions.EntityContainer
+@using Catfish.Core.Models;
+
+@{ 
+    string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
+    string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
+    string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+
+    // Change the controller to work with the FormSubmission controller and views.
+    var oldController = ViewContext.Controller.ControllerContext.RouteData.Values["controller"];
+    ViewContext.Controller.ControllerContext.RouteData.Values["controller"] = "FormSubmission";
+}
+
+<h2>Entity Container</h2>
+
+<div id="@cssId" class="bs @cssClasses container container-fluid">
+    <style type="text/css" scoped>
+                    @Html.Raw(cssStyles)
+    </style>
+    @*header*@
+    <div class="row ">
+        @foreach(var f in Model.Fields)
+        {
+            string header = Model.Entity.GetAttributeMappingLabel(f);
+            if (!string.IsNullOrEmpty(header))
+            {
+                <div class="col-md-4 panel panel-heading">@header </div>
+            }
+
+        }
+    </div>
+   @*content*@
+    <div class="row">
+        @foreach (var f in Model.Fields)
+        {
+            string content = Model.Entity.GetAttributeMappingValue(f);
+            
+            <div class="col-md-4">@content</div>
+        }
+    </div>
+</div>
