@@ -6,6 +6,7 @@ using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Catfish.Core.Models.Forms;
 using Catfish.Areas.Manager.Models.ViewModels;
+using System.Collections.Generic;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -24,7 +25,7 @@ namespace Catfish.Areas.Manager.Controllers
             EntityType model = null;
             if (id.HasValue && id.Value > 0)
             {
-                model = EntityTypeService.GetEntityTypeById(id.Value); //Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
+                model = EntityTypeService.GetEntityTypeById(id.Value); 
             }
             else
             {
@@ -56,7 +57,20 @@ namespace Catfish.Areas.Manager.Controllers
         public JsonResult AddMetadataSet(EntityTypeViewModel vm)
         {
             vm.AssociatedMetadataSets.Add(vm.SelectedMetadataSets);
-            vm.MetadataSetMappingSrc.Add(vm.SelectedMetadataSets);
+          //  vm.MetadataSetMappingSrc.Add(vm.SelectedMetadataSets);
+
+            MetadataSet metadataSet = MetadataService.GetMetadataSet(vm.SelectedMetadataSets.Id);
+            //update attribute mapping
+            if (metadataSet != null)
+            {
+                if (!vm.MetadataSetFields.ContainsKey(metadataSet.Id.ToString()))
+                {
+                    List<string> addList = new List<string>();
+                    addList.Add("");
+                    addList = addList.Concat((metadataSet.Fields.Select(f => f.Name).ToList())).ToList();
+                    vm.MetadataSetFields.Add(metadataSet.Id.ToString(), addList);
+                }
+            }
             vm.SelectedMetadataSets = new MetadataSetListItem();
             return Json(vm);
         }
@@ -81,57 +95,73 @@ namespace Catfish.Areas.Manager.Controllers
             return Json(vm);
         }
 
-        [HttpPost]
-        public JsonResult UpdateMappingMetadataSet(EntityTypeViewModel vm, EntityTypeViewModel.eMappingType type)
+        public JsonResult AddAttributeMapping(EntityTypeViewModel vm)
         {
-            if(type == EntityTypeViewModel.eMappingType.NameMapping)
-            {
-                vm.NameMapping.MetadataSet = vm.SelectedNameMappingMetadataSet.Name;
-                vm.NameMapping.MetadataSetId = vm.SelectedNameMappingMetadataSet.Id;
-
-                MetadataSet ms = MetadataService.GetMetadataSet(vm.NameMapping.MetadataSetId);//Db.MetadataSets.Where(m => m.Id == vm.NameMapping.MetadataSetId).FirstOrDefault();
-                //ms.Deserialize();
-                vm.NameMapping.Field = "Not specified";
-                vm.SelectedNameMappingField = "";
-                vm.SelectedNameMappingFieldSrc = ms.Fields.Select(f => f.Name).ToList();
-                vm.SelectedNameMappingFieldSrc.Sort();
-                vm.SelectedNameMappingFieldSrc.Insert(0, "");
-
-                vm.SelectedNameMappingMetadataSet = new MetadataSetListItem(0, "");
-            }
-            else if(type == EntityTypeViewModel.eMappingType.DescriptionMapping)
-            {
-                vm.DescriptionMapping.MetadataSet = vm.SelectedDescriptionMappingMetadataSet.Name;
-                vm.DescriptionMapping.MetadataSetId = vm.SelectedDescriptionMappingMetadataSet.Id;
-
-                MetadataSet ms = MetadataService.GetMetadataSet(vm.DescriptionMapping.MetadataSetId);// Db.MetadataSets.Where(m => m.Id == vm.DescriptionMapping.MetadataSetId).FirstOrDefault();
-                //ms.Deserialize();
-                vm.DescriptionMapping.Field = "Not specified";
-                vm.SelectedDescriptionMappingField = "";
-                vm.SelectedDescriptionMappingFieldSrc = ms.Fields.Select(f => f.Name).ToList();
-                vm.SelectedDescriptionMappingFieldSrc.Sort();
-                vm.SelectedDescriptionMappingFieldSrc.Insert(0, "");
-
-                vm.SelectedDescriptionMappingMetadataSet = new MetadataSetListItem(0, "");
-            }
+            
+            vm.AttributeMappings.Add(new AttributeMapping {Name = "Custom Mapping", Field = "Field Name", Deletable = true
+               
+            });
             return Json(vm);
         }
 
-        [HttpPost]
-        public JsonResult UpdateMappingField(EntityTypeViewModel vm, EntityTypeViewModel.eMappingType type)
+        public JsonResult RemoveAttributeMapping(EntityTypeViewModel vm, int idx)
         {
-            if (type == EntityTypeViewModel.eMappingType.NameMapping)
-            {
-                vm.NameMapping.Field = vm.SelectedNameMappingField;
-                vm.SelectedNameMappingField = "";
-            }
-            else if (type == EntityTypeViewModel.eMappingType.DescriptionMapping)
-            {
-                vm.DescriptionMapping.Field = vm.SelectedDescriptionMappingField;
-                vm.SelectedDescriptionMappingField = "";
-            }
+            vm.AttributeMappings.RemoveAt(idx);
+
             return Json(vm);
         }
+
+        //[HttpPost]
+        //public JsonResult UpdateMappingMetadataSet(EntityTypeViewModel vm, EntityTypeViewModel.eMappingType type)
+        //{
+        //    if(type == EntityTypeViewModel.eMappingType.NameMapping)
+        //    {
+        //        vm.NameMapping.MetadataSet = vm.SelectedNameMappingMetadataSet.Name;
+        //        vm.NameMapping.MetadataSetId = vm.SelectedNameMappingMetadataSet.Id;
+
+        //        MetadataSet ms = MetadataService.GetMetadataSet(vm.NameMapping.MetadataSetId);//Db.MetadataSets.Where(m => m.Id == vm.NameMapping.MetadataSetId).FirstOrDefault();
+        //        //ms.Deserialize();
+        //        vm.NameMapping.Field = "Not specified";
+        //        vm.SelectedNameMappingField = "";
+        //        vm.SelectedNameMappingFieldSrc = ms.Fields.Select(f => f.Name).ToList();
+        //        vm.SelectedNameMappingFieldSrc.Sort();
+        //        vm.SelectedNameMappingFieldSrc.Insert(0, "");
+
+        //        vm.SelectedNameMappingMetadataSet = new MetadataSetListItem(0, "", new System.Collections.Generic.List<string>());
+        //    }
+        //    else if(type == EntityTypeViewModel.eMappingType.DescriptionMapping)
+        //    {
+        //        vm.DescriptionMapping.MetadataSet = vm.SelectedDescriptionMappingMetadataSet.Name;
+        //        vm.DescriptionMapping.MetadataSetId = vm.SelectedDescriptionMappingMetadataSet.Id;
+
+        //        MetadataSet ms = MetadataService.GetMetadataSet(vm.DescriptionMapping.MetadataSetId);// Db.MetadataSets.Where(m => m.Id == vm.DescriptionMapping.MetadataSetId).FirstOrDefault();
+        //        //ms.Deserialize();
+        //        vm.DescriptionMapping.Field = "Not specified";
+        //        vm.SelectedDescriptionMappingField = "";
+        //        vm.SelectedDescriptionMappingFieldSrc = ms.Fields.Select(f => f.Name).ToList();
+        //        vm.SelectedDescriptionMappingFieldSrc.Sort();
+        //        vm.SelectedDescriptionMappingFieldSrc.Insert(0, "");
+
+        //        vm.SelectedDescriptionMappingMetadataSet = new MetadataSetListItem(0, "", new System.Collections.Generic.List<string>());
+        //    }
+        //    return Json(vm);
+        //}
+
+        //[HttpPost]
+        //public JsonResult UpdateMappingField(EntityTypeViewModel vm, EntityTypeViewModel.eMappingType type)
+        //{
+        //    if (type == EntityTypeViewModel.eMappingType.NameMapping)
+        //    {
+        //        vm.NameMapping.Field = vm.SelectedNameMappingField;
+        //        vm.SelectedNameMappingField = "";
+        //    }
+        //    else if (type == EntityTypeViewModel.eMappingType.DescriptionMapping)
+        //    {
+        //        vm.DescriptionMapping.Field = vm.SelectedDescriptionMappingField;
+        //        vm.SelectedDescriptionMappingField = "";
+        //    }
+        //    return Json(vm);
+        //}
         [HttpPost]
         public JsonResult Save(EntityTypeViewModel vm)
         {
@@ -170,14 +200,26 @@ namespace Catfish.Areas.Manager.Controllers
                 }
             }
             else
+            {
+                if(string.IsNullOrEmpty(vm.Name))
+                {
+                    vm.ErrorMessage = "*";
+                }
+                foreach(var att in vm.AttributeMappings)
+                {
+                    if(string.IsNullOrEmpty(att.Name) || string.IsNullOrEmpty(att.Field))
+                    {
+                        att.ErrorMessage = "*";
+                    }
+                }
                 return Json(vm.Error("Model validation failed"));
+            }
 
             return Json(vm);
         }
 
 
-
-
+       
 
 
 

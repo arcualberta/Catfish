@@ -75,12 +75,20 @@ namespace Catfish.Areas.Manager.Services
 
         public IEnumerable<Piranha.Entities.User> GetAllUsers()
         {
-            IEnumerable<Piranha.Entities.User> users;
-            using (var db = new DataContext())
+           // IEnumerable<Piranha.Entities.User> users = null;
+            try
             {
-                users = db.Users.AsEnumerable();
+                using (var db = new DataContext())
+                {
+                    return db.Users.ToList();
+                   // return users;
+                }
             }
-            return users;
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+           // return users;
         }
     }
 }
