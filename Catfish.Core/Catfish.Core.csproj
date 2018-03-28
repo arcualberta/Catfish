@@ -105,6 +105,10 @@
     <Compile Include="Migrations\201801241812416_CreateEntityGroupAndEntityGroupUser.Designer.cs">
       <DependentUpon>201801241812416_CreateEntityGroupAndEntityGroupUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803231638089_AddingLabelPropertyToEntityTypeAttributeMapping.cs" />
+    <Compile Include="Migrations\201803231638089_AddingLabelPropertyToEntityTypeAttributeMapping.Designer.cs">
+      <DependentUpon>201803231638089_AddingLabelPropertyToEntityTypeAttributeMapping.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Aggregation.cs" />
     <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
@@ -187,6 +191,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801241812416_CreateEntityGroupAndEntityGroupUser.resx">
       <DependentUpon>201801241812416_CreateEntityGroupAndEntityGroupUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803231638089_AddingLabelPropertyToEntityTypeAttributeMapping.resx">
+      <DependentUpon>201803231638089_AddingLabelPropertyToEntityTypeAttributeMapping.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Validators.resx">
       <Generator>ResXFileCodeGenerator</Generator>

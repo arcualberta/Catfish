@@ -57,36 +57,14 @@
         }
     }
 
-    function fillChildElements(baseName, jsonObject, currentElement) {
-        if (currentElement == null) {
-            return;
-        }
-
-        var nodeName = currentElement.nodeName.toLowerCase();
-
-        if (nodeName == "input") {
-            var name = currentElement.name.startsWith(baseName) ? currentElement.name.substring(baseName.length + 1) : currentElement.name;
-
-            storeElement(name, jsonObject, $(currentElement).val());
-        } else if (nodeName == "select") {
-            var name = currentElement.name.startsWith(baseName) ? currentElement.name.substring(baseName.length + 1) : currentElement.name;
-
-            storeElement(name, jsonObject, $(currentElement).val());
-        } else if (nodeName == "textarea") {
-            var name = currentElement.name.startsWith(baseName) ? currentElement.name.substring(baseName.length + 1) : currentElement.name;
-
-            storeElement(name, jsonObject, $(currentElement).text());
-        } else {
-            for (var i = 0; i < currentElement.children.length; ++i) {
-                fillChildElements(baseName, jsonObject, currentElement.children[i]);
-            }
-        }
-    }
-
     function generateFormContainerJson(baseName, formContainerElement) {
         var jsonObject = {};
 
-        fillChildElements(baseName, jsonObject, formContainerElement);
+        $(formContainerElement).serializeArray().forEach(function (item) {
+            var name = item.name.startsWith(baseName) ? item.name.substring(baseName.length + 1) : item.name;
+
+            storeElement(name, jsonObject, item.value);
+        });
 
         return jsonObject;
     }
@@ -110,8 +88,8 @@
 
     function submitFormContainer(baseName, formContainerElement, formContainerJson, submitUrl, successFunction, errorFunction) {
         var data = {
-            "vm" : generateFormContainerJson(baseName, formContainerElement),
-            "formContainer" : formContainerJson
+            "vm": generateFormContainerJson(baseName, formContainerElement),
+            "formContainer": formContainerJson
         }
 
         $.ajax({
