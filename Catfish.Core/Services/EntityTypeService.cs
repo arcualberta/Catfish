@@ -14,7 +14,9 @@ namespace Catfish.Core.Services
 
         public EntityType GetEntityTypeById(int id)
         {
-            return Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
+            return Db.EntityTypes.Include(et=>et.AttributeMappings)
+                                 .Include(et=>et.MetadataSets)
+                                 .Where(et => et.Id == id).FirstOrDefault();
         }
         public EntityType GetEntityTypeByName(string name)
         {
@@ -65,6 +67,11 @@ namespace Catfish.Core.Services
             {
                 throw ex;
             }
+        }
+
+        public IQueryable<EntityTypeAttributeMapping> GetEntityTypeAttributeMappings()
+        {
+           return Db.EntityTypeAttributeMappings;
         }
     }
 }

@@ -85,6 +85,28 @@ namespace Catfish.Core.Models
             return null;
         }
 
+        public string GetAttributeMappingLabel(string name, string lang = null)
+        {
+            var mapping = EntityType.AttributeMappings.Where(m => m.Name == name).FirstOrDefault();
+            if (mapping != null)
+            {
+                string msGuid = mapping.MetadataSet.Guid;
+                string fieldName = string.IsNullOrEmpty(mapping.Label)? mapping.FieldName : mapping.Label;
+
+                //FormField field = GetMetadataSetField(msGuid, fieldName);
+
+                //if (field == null)
+                //{
+                //    return string.Format("ERROR: INCORRECT {0} MAPPING FOUND FOR THIS ENTITY TYPE", mapping);
+                //}
+
+                //return MultilingualHelper.Join(field.GetValues(), " / ", false);
+                return fieldName;
+            }
+
+            return null;
+        }
+
         protected void SetAttributeMappingValue(string name, string val, string lang = null)
         {
             EntityTypeAttributeMapping mapping = EntityType.AttributeMappings.Where(m => m.Name == name).FirstOrDefault();
