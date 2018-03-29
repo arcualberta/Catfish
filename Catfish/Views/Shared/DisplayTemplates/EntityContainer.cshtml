@@ -5,10 +5,6 @@
     string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
-
-    // Change the controller to work with the FormSubmission controller and views.
-    var oldController = ViewContext.Controller.ControllerContext.RouteData.Values["controller"];
-    ViewContext.Controller.ControllerContext.RouteData.Values["controller"] = "FormSubmission";
 }
 
 <h2>Entity Container</h2>
