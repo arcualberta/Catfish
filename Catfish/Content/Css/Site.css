@@ -43,7 +43,7 @@
 
     .thumbnailPanel .fileThumbnail {
         margin: 15px 15px 15px 0;
-        font-size: smaller;
+        /*font-size: smaller;*/
         float: left;
         text-align:center;
         position:relative;

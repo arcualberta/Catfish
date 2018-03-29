@@ -82,6 +82,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 }
             }
         }
+
         //XXX turns to database model
         public FormField InstantiateDataModel()
         {
@@ -97,10 +98,10 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.Rank = Rank;
             field.Page = Page;
 
-            field.Files = Files != null ? Files.Select(m => m.ToDataFile()).ToList() :
-                new List<DataFile>();
-            
-           
+            field.Files = Files != null ? Files.Select(m => m.ToFileDescription()).ToList() :
+                 new List<FileDescription>();
+
+
             UpdateFileList(field);
 
             if (typeof(OptionsField).IsAssignableFrom(type))
@@ -152,9 +153,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         {
 
             List<DataFile> filesList = new List<DataFile>();
-            foreach (DataFile dataFile in field.Files)
+            foreach (FileDescription fileDescription in field.Files)
             {
-                string fileGuid = dataFile.Guid;
+                string fileGuid = fileDescription.Guid;
                 DataFile file = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
                     .Select(m => m as DataFile)
                     .FirstOrDefault();
@@ -162,10 +163,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 if (file != null)
                 {                     
                     MoveFileToField(file, field);
-                    dataFile.Path = file.Path;
-                    dataFile.Thumbnail = file.Thumbnail;
-                    dataFile.ThumbnailType = file.ThumbnailType;
-                    dataFile.ContentType = file.ContentType;                 
+                    fileDescription.DataFile = file;
                     Db.XmlModels.Remove(file);                             
                 }  
             }
