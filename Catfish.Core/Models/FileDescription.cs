@@ -62,44 +62,6 @@ namespace Catfish.Core.Models
             Data.Add(dataFile.Data);
         }
 
-        //[NotMapped]
-        //public DataFile DataFile
-        //{
-        //    get
-        //    {
-        //        dataFile = dataFile ?? new DataFile();
-        //        return dataFile;
-        //    }
-        //    //get
-        //    //{
-        //    //    return GetChildModels("data/" + DataFile.TagName, Data).Select(c => c as DataFile);
-        //    //}
-
-
-        //    set
-        //    {
-        //        dataFile = value;
-        //    }
-        //}
-
-        //[NotMapped]
-        //public Attachment AttachmentField
-        //{
-        //    get
-        //    {
-        //        if (mAttachmentField == null)
-        //        {
-        //            mAttachmentField = new Attachment();
-        //            mAttachmentField.FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), Files.Select(f => f.Guid));
-        //        }
-        //        return mAttachmentField;
-        //    }
-        //    set
-        //    {
-        //        mAttachmentField = value;
-        //    }
-        //}
-
         public FileDescription()
         {
             DataFile = new DataFile();

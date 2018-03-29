@@ -163,11 +163,6 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 if (file != null)
                 {                     
                     MoveFileToField(file, field);
-
-                    //fileDescription.DataFile.Path = file.Path;
-                    //fileDescription.DataFile.Thumbnail = file.Thumbnail;
-                    //fileDescription.DataFile.ThumbnailType = file.ThumbnailType;
-                    //fileDescription.DataFile.ContentType = file.ContentType;
                     fileDescription.DataFile = file;
                     Db.XmlModels.Remove(file);                             
                 }  

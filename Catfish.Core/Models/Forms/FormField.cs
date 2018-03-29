@@ -20,43 +20,14 @@ namespace Catfish.Core.Models.Forms
     public class FormField : XmlModel
     {
         public override string GetTagName() { return "field"; }
-
-        //XXX Add fileguids as in the attachment model
         public static char FileGuidSeparator = '|';
-
-        //[NotMapped]
-        //public string[] FieldFileGuidsArray {
-        //    get {
-        //        return this.FieldFileGuids.Split(new char[] { Attachment.FileGuidSeparator });
-        //    }
-        //}
-
-        //[NotMapped]
-        //public string FieldFileGuids
-        //{
-        //    get
-        //    {
-        //        XElement val = Data.Element("value");
-        //        return val == null ? "" : val.Value;
-        //    }
-        //    set
-        //    {
-        //        XElement val = Data.Element("value");
-        //        if (val == null)
-        //            Data.Add(val = new XElement("value"));
-
-        //        val.Value = value == null ? "" : value;
-        //    }
-        //}
 
         [NotMapped]
         public List<FileDescription> Files
         {
             get
             {
-                //return GetChildModels("files/" + DataFile.TagName, Data).Select(c => c as DataFile).ToList();
                 return GetChildModels("files/" + FileDescription.TagName, Data).Select(c => c as FileDescription).ToList();
-
             }
 
             set
@@ -71,59 +42,10 @@ namespace Catfish.Core.Models.Forms
                 {
                     filesElement.Add(fileDescription.Data);
                 }
-                //XElement val = Data.Element("files");
-                //if (val == null)
-                //    Data.Add(val = new XElement("files"));
 
-                //val.Value = value == null ? "" : value;
             }
         }
 
-        //[ScriptIgnore]
-        //[NotMapped]
-        //public Attachment AttachmentField
-        //{
-        //    get
-        //    {
-        //        if (mAttachmentField == null)
-        //        {
-        //            mAttachmentField = new Attachment();
-        //            mAttachmentField.FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), Files.Select(f => f.Guid));
-        //        }
-        //        return mAttachmentField;
-        //    }
-        //    set
-        //    {
-        //        mAttachmentField = value;
-        //    }
-        //}
-        //private Attachment mAttachmentField;
-
-        //[ScriptIgnore]
-        //[NotMapped]
-        //public virtual IEnumerable<DataFile> Files
-        //{
-        //    get
-        //    {
-        //        return GetChildModels("data/" + DataFile.TagName, Data).Select(c => c as DataFile);
-        //    }
-        //}
-
-        //XXX End
-
-
-        //[NotMapped]
-        //public string Name
-        //{
-        //    get
-        //    {
-        //        return GetName();
-        //    }
-        //    set
-        //    {
-        //        SetName(value);
-        //    }
-        //}
 
         //[Display(Name = "Name")]
         [ScriptIgnore]
