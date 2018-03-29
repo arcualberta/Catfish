@@ -127,7 +127,9 @@ namespace Catfish.Core.Services
                 //return (model as AbstractForm).Fields.First().Files.FirstOrDefault();
                 //return (model as AbstractForm).Fields.Select(m => m.Files)
                 //return (model as AbstractForm).Fields.SelectMany(m => m.Files).Where(m => m.Guid == guid).FirstOrDefault();
-                return (model as AbstractForm).Fields.SelectMany(m => m.Files).Where(m => m.Guid == guid).FirstOrDefault().DataFile;
+                //return (model as AbstractForm).Fields.SelectMany(m => m.Files).Where(m => m.Guid == guid).FirstOrDefault().DataFile;
+                return (model as AbstractForm).Fields.SelectMany(m => m.Files).Where(m => m.DataFile.Guid == guid).FirstOrDefault().DataFile;
+
 
             }
             else
