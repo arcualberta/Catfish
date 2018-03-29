@@ -58,6 +58,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
             Id = model.Id;
             Name = model.Name;
+            if(!string.IsNullOrEmpty(Name))
+            { ErrorMessage = ""; }
             Description = model.Description;
             // TargetType = model.TargetType.ToString();
 
