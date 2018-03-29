@@ -32,7 +32,7 @@
                 <div class="fileThumbnail" @fileViewModel.Bind.Attr("id", m => m.Guid)>
                     <div class="img" @fileViewModel.Bind.Style("backgroundImage", (m => m.ThumbnailUrl))></div>
                     <div class="label"><a @fileViewModel.Bind.Attr("href", f => f.Path)>@fileViewModel.Html.Span(s => s.FileName)</a></div>
-                    <div class="label">@fileViewModel.Html.TextBox(m => m.Label)</div>
+                    <div>@fileViewModel.Html.TextBox(m => m.Label).Attr("placeholder", m => "Label")</div>
                 </div>
                 }
             </div>
