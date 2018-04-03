@@ -53,6 +53,12 @@ namespace Catfish.Core.Models
         protected FormField GetMetadataSetField(string metadatasetGuid, string fieldName) 
         {
             MetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == metadatasetGuid).FirstOrDefault();
+
+            if(metadataSet == null)
+            {
+                return null;
+            }
+
             FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
 
             return field;
@@ -76,6 +82,28 @@ namespace Catfish.Core.Models
                 return MultilingualHelper.Join(field.GetValues(), " / ", false);
             }
             
+            return null;
+        }
+
+        public string GetAttributeMappingLabel(string name, string lang = null)
+        {
+            var mapping = EntityType.AttributeMappings.Where(m => m.Name == name).FirstOrDefault();
+            if (mapping != null)
+            {
+                string msGuid = mapping.MetadataSet.Guid;
+                string fieldName = string.IsNullOrEmpty(mapping.Label)? mapping.FieldName : mapping.Label;
+
+                //FormField field = GetMetadataSetField(msGuid, fieldName);
+
+                //if (field == null)
+                //{
+                //    return string.Format("ERROR: INCORRECT {0} MAPPING FOUND FOR THIS ENTITY TYPE", mapping);
+                //}
+
+                //return MultilingualHelper.Join(field.GetValues(), " / ", false);
+                return fieldName;
+            }
+
             return null;
         }
 
