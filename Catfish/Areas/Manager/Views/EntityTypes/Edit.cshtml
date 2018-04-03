@@ -70,7 +70,7 @@
                         <div class="bs right">
                             <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
                             <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
-                            @ko.Html.Button("Save", "Save", "EntityTypes", null, new { @id = "btnSave" }).Enable(m=>m.ErrorMessage == "" || m.AvailableMetadataSets.Count <= 0)
+                            @ko.Html.Button("Save", "Save", "EntityTypes", null, new { @id = "btnSave" }).Enable(m=>m.ErrorMessage != "*" && m.AssociatedMetadataSets.Count > 1)
                         </div>
                     </div>
                     <div class="inner">
@@ -78,7 +78,7 @@
                             <li>
                                 <label class="control-label col-md-2">Name</label>
                                 <div class="input">@ko.Html.TextBox(m => m.Name, new { @id = "Name",@class="width99" })
-                                    @ko.Html.Span(m => m.ErrorMessage, new { @class = "error" }).Visible(m => m.ErrorMessage.Length > 0)
+                                    @ko.Html.Span(m => m.ErrorMessage, new { @class = "error" }).Visible(m => m.ErrorMessage != "")
                                 </div>
                             </li>
                             <li>
