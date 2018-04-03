@@ -41,7 +41,8 @@ namespace Catfish.Models.Regions
         public MembershipContainer()
         {
             CssClasses = "col-lg-12";
-            CssStyles = "height:400px;";  
+            CssStyles = "height:400px;";
+            Memberships = new List<Aggregation>();
         }
 
         public override void InitManager(object model)
