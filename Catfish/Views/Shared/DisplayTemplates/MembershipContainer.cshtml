@@ -15,7 +15,7 @@
     </style>
    
            <table class="table table-responsive table-striped">
-               <tr><th>Title</th><th></th></tr>
+               <tr><th>Title</th><th>Description</th></tr>
                @{
 
                    foreach (var entity in Model.Memberships)
@@ -23,9 +23,12 @@
                        string link = Model.PageLink + "?entity=" + entity.Id;
                       <tr>
                           <td><a href="@link">@entity.Name</a></td>
-                          <td>@entity.Description</td>              
-                      </tr>  
+                          <td>@entity.Description</td>
+                          
+                       </tr> 
+                      
                    }
                }
-           </table> 
+           </table>
+   
 </div>
