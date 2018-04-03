@@ -132,6 +132,8 @@ namespace Catfish.Core.Services
 
                 collection.AppendChild(submissionItem);
             }
+
+            submissionItem.Serialize();
             return submissionItem;
         }
     }

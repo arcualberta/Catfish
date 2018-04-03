@@ -31,11 +31,6 @@ namespace Catfish.Controllers
                 ItemId = 0
             };
 
-            //////////inserting some test files to the form
-            ////////vm.Files = Db.XmlModels.Where(xml => xml is DataFile && xml.Id > 1520).Take(2).Select(xml => xml as DataFile).ToList();
-            ////////var field = form.Fields.Where(f => f is Catfish.Core.Models.Forms.Attachment).Select(f => f as Catfish.Core.Models.Forms.Attachment).FirstOrDefault();
-            ////////field.FileGuids = string.Join("|", vm.Files.Select(f => f.Guid).ToList());
-
             return View(model.GetView(), vm);
         }
 
