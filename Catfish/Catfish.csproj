@@ -302,6 +302,7 @@
     <Content Include="Areas\Manager\Views\EntityGroups\Index.cshtml" />
     <Content Include="Areas\Manager\Views\EntityGroups\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\EntityContainer.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\MembershipContainer.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
@@ -355,6 +356,7 @@
     <Compile Include="Helpers\ViewHelper.cs" />
     <Compile Include="Models\Pages\EntityTree.cs" />
     <Compile Include="Models\Regions\BulletinBoard.cs" />
+    <Compile Include="Models\Regions\MembershipContainer.cs" />
     <Compile Include="Models\Regions\EntityContainer.cs" />
     <Compile Include="Models\Regions\Carousel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityContentViewModel.cs" />
@@ -449,6 +451,7 @@
     <Content Include="Views\Shared\DisplayTemplates\SearchResult.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormContainer.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\EntityContainer.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\MembershipContainer.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
