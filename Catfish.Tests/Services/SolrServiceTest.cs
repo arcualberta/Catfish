@@ -42,10 +42,12 @@ namespace Catfish.Tests.Services
             catch (InvalidOperationException e)
             {
                 // Failed to initialize. This passes the test.
+                Assert.IsTrue(true);
             }
 
         }
 
+        [Ignore]
         [TestMethod]
         public void TestSuccessServiceInitialization()
         {

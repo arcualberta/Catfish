@@ -20,6 +20,7 @@ namespace Catfish.Tests
             return Path.Combine(dir, fileName);
         }
 
+        [Ignore]
         [TestMethod]
         public void TestMethod1()
         {

@@ -10,12 +10,14 @@ namespace Catfish.Tests.Services
     [TestClass]
     public class SubmissionServiceTest
     {
+        [Ignore]
         [TestMethod]
         public void CreateSubmissionFormTest()
         {
 
         }
 
+        [Ignore]
         [TestMethod]
         public void SaveSubmissionTest()
         {
