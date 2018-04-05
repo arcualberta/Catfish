@@ -118,6 +118,7 @@
     <Compile Include="Models\AuditChangeLog.cs" />
     <Compile Include="Models\AuditEntry.cs" />
     <Compile Include="Models\CatfishDbContext.cs" />
+    <Compile Include="Models\FileOptions.cs" />
     <Compile Include="Models\Collection.cs" />
     <Compile Include="Models\Data\DataObject.cs" />
     <Compile Include="Models\Data\FormSubmission.cs" />

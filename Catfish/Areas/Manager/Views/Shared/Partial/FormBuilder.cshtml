@@ -33,6 +33,11 @@
                     <div class="img" @fileViewModel.Bind.Style("backgroundImage", (m => m.ThumbnailUrl))></div>
                     <div class="label"><a @fileViewModel.Bind.Attr("href", f => f.Url)>@fileViewModel.Html.Span(s => s.FileName)</a></div>
                     <div>@fileViewModel.Html.TextBox(m => m.Label).Attr("placeholder", m => "Label")</div>
+                    <!-- MimeType 2 = audio -->
+                    @using (fileViewModel.If(m => m.TopMimeType == 2))
+                    {
+                    <div><span>Play once</span>@fileViewModel.Html.CheckBox(m => m.PlayOnce)</div>
+                    }                    
                 </div>
                 }
             </div>

@@ -11,7 +11,6 @@ namespace Catfish.Core.Models
 {
     public class FileDescription : XmlModel
     {
-
         public static string TagName { get { return "file-description"; } }     
         public override string GetTagName() { return TagName; }
 
@@ -31,6 +30,27 @@ namespace Catfish.Core.Models
             set
             {
                 Data.SetElementValue("label", value);
+            }
+        }
+
+        [NotMapped]
+        public virtual FileOptions FileOptions
+        {
+            get
+            {
+                List<FileOptions> fileOptions = GetChildModels(FileOptions.TagName, Data).Select(c => c as FileOptions).ToList();
+                if (fileOptions.Count > 0)
+                {
+                    return fileOptions[0];
+                }
+
+                return null;
+            }
+            set
+            {
+                //XXX change to remove all children                
+                RemoveAllElements("file-option", Data);
+                InitializeFileOptions(value);
             }
         }
 
@@ -62,16 +82,23 @@ namespace Catfish.Core.Models
             Data.Add(dataFile.Data);
         }
 
+        private void InitializeFileOptions(FileOptions fileOptions)
+        {
+            Data.Add(fileOptions.Data);
+        }
+
         public FileDescription()
         {
             DataFile = new DataFile();
             Label = "";
+            FileOptions = new FileOptions();
         }
 
-        FileDescription (DataFile dataFile, string label = "")
-        {            
-            DataFile = dataFile;
-            Label = label;
-        }
+        //public FileDescription (DataFile dataFile, string label = "")
+        //{            
+        //    DataFile = dataFile;
+        //    Label = label;
+        //    FileOptions = new FileOptions();
+        //}
     }
 }
