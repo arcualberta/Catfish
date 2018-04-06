@@ -1,6 +1,7 @@
 ﻿@model Catfish.Core.Models.Form
     
 @using Catfish.Core.Models.Forms;
+@using Catfish.Core.Models.Data;
 
 @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
 {
@@ -34,15 +35,15 @@
             <!--   Melania   -->
            @foreach (var f in Model.Fields[i].Files)
            {
-               string source = Url.Action("File","Items", new  {id=Model.Id, guid=f.Guid });
+               string source = Url.Action("File","Items", new  {id=Model.Id, guid=f.DataFile.Guid });
            @:<div>
-               if (f.ContentType.Contains("image"))
+               if (f.DataFile.TopMimeType == DataFile.MimeType.Image)
                {
                     <img src="@source" width="50" height="50" />
                }
-               else if (f.ContentType.Contains("video"))
+               else if (f.DataFile.TopMimeType == DataFile.MimeType.Video)
                {
-                   string type = f.ContentType.Contains("mp4") == true ? "video/mp4" : f.ContentType.Contains("avi") == true ? "video/avi" : "video/ogg";
+                   string type = f.DataFile.ContentType.Contains("mp4") == true ? "video/mp4" : f.DataFile.ContentType.Contains("avi") == true ? "video/avi" : "video/ogg";
                     <video width="320" height="240" controls>
                         <source src="@source" type="@type">
                         Your browser does not support the video tag.
@@ -51,7 +52,7 @@
                else
                {
                    //audio
-                   string type = f.ContentType.Contains("mp3") == true ? "audio/mpeg" : "audio/ogg";
+                   string type = f.DataFile.ContentType.Contains("mp3") == true ? "audio/mpeg" : "audio/ogg";
                 <audio controls>
                     <source src="@source" type="@type">
                     Your browser does not support the audio element.
