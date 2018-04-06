@@ -1,5 +1,11 @@
 ﻿@model Catfish.Models.Regions.FormContainer
-
+<style>
+    .table-header {
+        background-color: lightgrey;
+        width: 50%;
+        padding: 10px;
+    }
+</style>
 <ul class="form">
     <li>
         @Html.LabelFor(m => m.FormId)
@@ -15,4 +21,96 @@
         <div class="input">@Html.DropDownListFor(m => m.CollectionId, Model.Collections)</div>
     </li>
     @Html.Partial("_CatfishRegion", Model)
+
+    <li>
+        Field Mappings
+        <table class="input table table-striped table-responsive bs" style="width:84.5% !important;">
+            <tr><th class="table-header">Attributes</th><th class="table-header">Fields</th></tr>
+            @{ int i = 0;
+                foreach(var fm in Model.Fields_Mapping)
+                {
+                    string rowId = "row_" + i;
+                    <tr id="@rowId">
+                        @*using struct FieldMapping*@
+                        @*<input type="hidden" name="@(Html.NameFor(m => m.FieldMappings)).Index" value="@(i)" />
+                        @Html.HiddenFor(m => m.FieldMappings[i].AttributeName)
+                        @Html.HiddenFor(m => m.FieldMappings[i].FieldName)*@
+                           @*<td>@fm.AttributeName</td><td>@fm.FieldName</td>*@
+
+                        @*using string*@
+                        <input type="hidden" name="@(Html.NameFor(m => m.Fields_Mapping)).Index" value="@(i)" />
+                        @Html.HiddenFor(m => m.Fields_Mapping[i])
+                       
+                        <td>@Model.GetFieldMapping(fm,"attribute")</td>
+                        <td>@Model.GetFieldMapping(fm, "field")</td>
+                        
+                    </tr>
+                    i++;
+                }
+            }
+            <tr><td>&nbsp;</td></tr>
+            <tr id="addMapping" style="padding-top:20px;">
+                <input type="hidden" class="hdregion" value="@Html.IdFor(m=>m)" />
+                <td>@Html.DropDownList("SelectedAttribute", Model.AttributesFields, new { @style = "padding-right:8px" })</td>
+                <td>@Html.DropDownList("SelectedField", Model.FormFields)</td>
+
+                <td>
+                    <span class="glyphicon glyphicon-plus-sign" style=" padding:5px;" onclick="AddMapping2()"></span>
+                </td>
+            </tr>
+        </table>
+        
+        
+    </li>
 </ul>
+<script>
+     function AddMapping()
+    {
+
+      var uniqueId = Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
+      var regionName = $(".hdregion").val(); // Region_0
+
+     var selectedAttribute = $("#" + regionName +"_SelectedAttribute option:selected").text();
+      var selectedField = $("#" + regionName + "_SelectedField option:selected").text();
+
+      var regionInd = regionName.split("_")[1];//0,1,etc
+
+      var t = `<tr><input type="hidden"  name="Regions[`+regionInd +`].Body.FieldMappings.Index" value="` + uniqueId + `">
+               <input name="Regions[`+regionInd+`].Body.FieldMappings[` + uniqueId +  `].AttributeName" type="hidden" value="` + selectedAttribute + `">
+     <input name="Regions[`+regionInd+`].Body.FieldMappings[` + uniqueId +  `].FieldName" type="hidden" value="` + selectedField + `">
+                    <td>` + selectedAttribute + `</td>
+                     <td>` + selectedField + `</td>
+
+                </tr>`;
+
+      $("#addMapping").before(t)
+    }
+
+      function AddMapping2()
+    {
+      var uniqueId = Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
+      var regionName = $(".hdregion").val(); // Region_0
+
+       var selectedAttribute = $("#" + regionName +"_SelectedAttribute option:selected").text();
+       var selectedField = $("#" + regionName + "_SelectedField option:selected").text();
+
+       var fieldMappingValue = selectedAttribute + "|" + selectedField;
+
+
+
+     var regionInd = regionName.split("_")[1];//0,1,etc
+
+      var t = `<tr><input type="hidden"  name="Regions[`+regionInd +`].Body.Fields_Mapping.Index" value="` + uniqueId + `">
+               <input name="Regions[`+regionInd+`].Body.Fields_Mapping[` + uniqueId +  `]" type="hidden" value="` + fieldMappingValue + `">
+
+                    <td>` + selectedAttribute + `</td>
+                     <td>` + selectedField + `</td>
+
+                </tr>`;
+
+      $("#addMapping").before(t)
+    }
+
+</script>
+
+
