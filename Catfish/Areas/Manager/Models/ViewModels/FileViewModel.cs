@@ -18,9 +18,16 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string ContentType { get; set; }
         public string Label { get; set; }
         public bool PlayOnce { get; set; }
-        public int TopMimeType { get; set; }
+        public DataFile.MimeType TopMimeType { get; set; }
         public DataFile.eThumbnailTypes ThumbnailType { get; set; }
 
+        public bool ShowPlayerControls
+        {
+            get
+            {
+                return TopMimeType == DataFile.MimeType.Audio;
+            }
+        }
 
         public FileViewModel() { }
 
@@ -64,7 +71,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             fileDescription.Label = Label;
             fileDescription.FileOptions.PlayOnce = PlayOnce;
             return fileDescription;
-        }
+        }      
 
         private void InitializeInstance(FileDescription fileDescription, int? id)
         {
@@ -85,7 +92,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Path = src.Path;
             Thumbnail = src.Thumbnail;
             ContentType = src.ContentType;
-            TopMimeType = (int)src.TopMimeType;
+            TopMimeType = src.TopMimeType;
             ThumbnailType = src.ThumbnailType;
             ThumbnailUrl = "url('" + urlHelper.Action("Thumbnail", controller, new
             {
