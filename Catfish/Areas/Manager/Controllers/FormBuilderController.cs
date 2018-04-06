@@ -21,7 +21,7 @@ namespace Catfish.Areas.Manager.Controllers
             AbstractForm model;
 
             if (id.HasValue && id.Value > 0)
-                model = Db.XmlModels.Find(id) as AbstractForm;
+                model = FormService.GetForm<AbstractForm>(id.Value);
             else
                 model = CreateDataModel();
 
@@ -81,22 +81,17 @@ namespace Catfish.Areas.Manager.Controllers
 
                 if (vm.Id > 0)
                 {
-                    model = Db.XmlModels.Where(x => x.Id == vm.Id && x is AbstractForm).FirstOrDefault() as AbstractForm;
+                    model = FormService.GetForm<AbstractForm>(vm.Id);
                     if (model == null)
                         return Json(vm.Error("Specified form not found"));
-                    else
-                    {
-                        vm.UpdateDataModel(model, Db);
-                        Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
-                    }
                 }
                 else
                 {
                     model = CreateDataModel();
-                    vm.UpdateDataModel(model, Db);
-                    Db.XmlModels.Add(model);
                 }
 
+                vm.UpdateDataModel(model, Db);
+                FormService.SaveForm(model);
                 Db.SaveChanges(User.Identity);
                 vm.Status = KoBaseViewModel.eStatus.Success;
 
