@@ -10,7 +10,36 @@
 
 
     <script>
+
+
+
         document.addEventListener("DOMContentLoaded", function (event) {
+
+
+            var secondsToTime = function (time) {
+                var timeString = ""
+
+                var hours = Math.floor(time / 3600)
+                var minutes = Math.floor((time % 3600) / 60)
+                // js returns floats on % operation
+                var seconds = Math.floor(time % 60)
+
+                if (hours > 0) {
+                    timeString = String(hours) + ":"
+                }
+
+                timeString += ("00" + minutes).slice(-2) + ":";
+                timeString += ("00" + seconds).slice(-2);
+
+                return timeString;
+
+            };
+
+            var getAudioDurationString = function (audio) {
+                return secondsToTime(audio.currentTime)
+                    + " / " + secondsToTime(audio.duration)
+            }
+
             var audioPlayersOnce = document.getElementsByClassName('audio-play-once');
 
             for (var i = 0; i < audioPlayersOnce.length; ++i) {
@@ -19,23 +48,28 @@
                 var audioPlayerControls = audioPlayersOnce[i].getElementsByClassName('audio-player-controls')[0];
                 var audioPlayerPlayButton = audioPlayerControls.getElementsByClassName('audio-play')[0];
                 var audioPlayerRange = audioPlayerControls.getElementsByClassName('audio-player-range')[0];
+                var audioPlayerTime = audioPlayerControls.getElementsByClassName('audio-player-time')[0];
 
                 audioPlayerRange.value = 0;
-
                 audioPlayerPlayButton.onclick = function (target) {
                     audioPlayerPlayButton.parentElement.setAttribute("disabled", true);
                     audioPlayer.play();               
+                }
+               
+
+                audioPlayer.onloadedmetadata = function (target) {
+                    audioPlayerTime.innerHTML = getAudioDurationString(audioPlayer);
                 }
 
                 audioPlayer.ontimeupdate = function (target) {
                     var range = 100.0 * audioPlayer.currentTime / audioPlayer.duration;
                     audioPlayerRange.value = range;
+                    audioPlayerTime.innerHTML = getAudioDurationString(audioPlayer);
                 }
 
-                audioPlayer.onended = function (event) {                   
-                    console.log(event)
-                    event.target.src = "";
-                }
+                //audioPlayer.onended = function (event) {                   
+                //    event.target.src = "";
+                //}
             }
         });
         
@@ -107,6 +141,7 @@
                         <span class="glyphicon glyphicon-play audio-play"></span>
                     </button>
                     <input id="audio-range-@f.Guid" type="range" class="audio-player-range" disabled />
+                    <span class="audio-player-time"></span>
                 </div>
             </div>
 
