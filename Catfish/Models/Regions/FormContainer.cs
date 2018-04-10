@@ -27,38 +27,94 @@ namespace Catfish.Models.Regions
 
         [Display(Name = "Entity Type")]
         public int EntityTypeId { get; set; }
-
-
-
-       // public int SelectedFieldId { get; set; }
-       // public int SelectedAttributeMappingId { get; set; }
-
-       // public List<FieldMapping> FieldMappings { get; set; }
-        public List<string> Fields_Mapping { get; set; }
+        
+       // public List<string> Fields_Mapping { get; set; }
+       public List<FieldMapping> FieldMappings { get; set; }
 
         [Display(Name = "Collection")]
         public int CollectionId { get; set; }
 
+        private SelectList mForms;
         [ScriptIgnore]
-        public SelectList Forms { get; set; }
+        public SelectList Forms
+        {
+            get
+            {
+                if (mForms == null)
+                {
+                    mForms = new SelectList(submissionService.GetSubmissionTemplates(), "Id", "Name");
+                }
+                return mForms;
+            }
+        }
 
+        private SelectList mEntityTypes;
         [ScriptIgnore]
-        public SelectList EntityTypes { get; set; }
+        public SelectList EntityTypes
+        {
+            get
+            {
+                if(mEntityTypes == null)
+                {
+                    mEntityTypes = new SelectList(entityTypeService.GetEntityTypes(), "Id", "Name");
+                }
 
+                return mEntityTypes;
+            }
+        }
+
+        private SelectList mCollections;
         [ScriptIgnore]
-        public SelectList Collections { get; set; }
+        public SelectList Collections
+        {
+            get
+            {
+                if(mCollections == null)
+                {
+                    mCollections = new SelectList(collectionService.GetCollections(), "Id", "Name");
+                }
+
+                return mCollections;
+            }
+        }
 
         [ScriptIgnore]
         public FormViewModel FormViewModel { get; set; }
+
+        private SelectList mFormFields;
         [ScriptIgnore]
-        public SelectList FormFields { get; set; }
+        public SelectList FormFields
+        {
+            get
+            {
+                if(mFormFields == null)
+                {
+                    mFormFields = new SelectList(Array.Empty<string>());
+                }
+
+                return mFormFields;
+            }
+        }
+
+        private SelectList mAttributeFields;
         [ScriptIgnore]
-        public SelectList AttributesFields { get; set; }
+        public SelectList AttributesFields
+        {
+            get
+            {
+                if(mAttributeFields == null)
+                {
+                    mAttributeFields = new SelectList(Array.Empty<string>());
+                }
+
+                return mAttributeFields;
+            }
+        }
 
         public FormContainer()
         {
-           // FieldMappings = new List<FieldMapping>();
-            Fields_Mapping = new List<string>();
+            FieldMappings = new List<FieldMapping>();
+           // Fields_Mapping = new List<string>();
         }
 
         public string GetFieldMapping(string field, string denominator)
@@ -74,8 +130,10 @@ namespace Catfish.Models.Regions
                 return fields[1];
             }
         }
+
         public override void OnManagerSave(object model)
         {
+           // Console.WriteLine("TEST WRITE LINE");
             base.OnManagerSave(model);
         }
 
@@ -85,20 +143,20 @@ namespace Catfish.Models.Regions
             CatfishDbContext db = new CatfishDbContext();
             CollectionService collectionSrv = new CollectionService(db);
             EntityTypeService entityTypeService = new EntityTypeService(db);
-
-            // fetch all forms
-            Forms = new SelectList(db.FormTemplates, "Id", "Name");
-
-            // fetch all entities
-            EntityTypes = new SelectList(db.EntityTypes, "Id", "Name");
-            // fetch all collections
-            Collections = new SelectList(collectionSrv.GetCollections(), "Name", "Name");
+            SubmissionService submissionSrv = new SubmissionService(db);
+            
 
             // use these past fetches to show list on vies using SelectList ?
             Form form = db.FormTemplates.Where(f => f.Id == FormId).FirstOrDefault();
-            FormFields = new SelectList(form.Fields, "Name", "Name");
+            if (form != null)
+            {
+                mFormFields = new SelectList(form.Fields, "Name", "Name");
+            }
 
-            AttributesFields = new SelectList(entityTypeService.GetEntityTypeById(EntityTypeId).AttributeMappings, "Name", "Name");
+            if (EntityTypeId > 0)
+            {
+                mAttributeFields = new SelectList(entityTypeService.GetEntityTypeById(EntityTypeId).AttributeMappings, "Name", "Name");
+            }
 
             //FieldMappings.Add(new FieldMapping() { attributeName = "atrributeMaping", fieldName = "fieldName" });
             //Fields_Mapping.Add("Attribute Mapping | Field Mapping");
