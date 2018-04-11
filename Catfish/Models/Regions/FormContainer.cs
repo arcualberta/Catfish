@@ -108,7 +108,7 @@ namespace Catfish.Models.Regions
                 }
 
                 return mAttributeFields;
-            }
+            }   
         }
 
         public FormContainer()
@@ -117,20 +117,7 @@ namespace Catfish.Models.Regions
            // Fields_Mapping = new List<string>();
         }
 
-        public string GetFieldMapping(string field, string denominator)
-        {
-            string[] fields = field.Split('|');
-            if (denominator.Equals("attribute"))
-            {
-                return fields[0];
-            }
-            else
-            {
-                //return the field
-                return fields[1];
-            }
-        }
-
+        
         public override void OnManagerSave(object model)
         {
            // Console.WriteLine("TEST WRITE LINE");
@@ -157,9 +144,7 @@ namespace Catfish.Models.Regions
             {
                 mAttributeFields = new SelectList(entityTypeService.GetEntityTypeById(EntityTypeId).AttributeMappings, "Name", "Name");
             }
-
-            //FieldMappings.Add(new FieldMapping() { attributeName = "atrributeMaping", fieldName = "fieldName" });
-            //Fields_Mapping.Add("Attribute Mapping | Field Mapping");
+            
             base.InitManager(model);
         }
 
