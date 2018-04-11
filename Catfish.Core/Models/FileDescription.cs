@@ -48,7 +48,6 @@ namespace Catfish.Core.Models
             }
             set
             {
-                //XXX change to remove all children                
                 RemoveAllElements("file-option", Data);
                 InitializeFileOptions(value);
             }
@@ -93,12 +92,5 @@ namespace Catfish.Core.Models
             Label = "";
             FileOptions = new FileOptions();
         }
-
-        //public FileDescription (DataFile dataFile, string label = "")
-        //{            
-        //    DataFile = dataFile;
-        //    Label = label;
-        //    FileOptions = new FileOptions();
-        //}
     }
 }
