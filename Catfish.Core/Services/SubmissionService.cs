@@ -86,12 +86,13 @@ namespace Catfish.Core.Services
             return submission;
         }
 
-        public Item SaveSubmission(Form form, string formSubmissionRef, int itemId, int entityTypeId, int formTemplateId, int collectionId)
+        public Item SaveSubmission(Form form, string formSubmissionRef, int itemId, int entityTypeId, int formTemplateId, int collectionId, IDictionary<string,string> metadataAttributeMapping=null)
         {
             Item submissionItem;
             if (itemId == 0)
             {
                 submissionItem = CreateEntity<Item>(entityTypeId);
+               // submissionItem.m
                 Db.Items.Add(submissionItem);
             }
             else
@@ -132,6 +133,33 @@ namespace Catfish.Core.Services
 
                 collection.AppendChild(submissionItem);
             }
+
+            //MR April 10 2018
+            //update metadata field's value based on the attribute mapping
+            //for example if "Name mapping" mapped to the Form's Title field, grab the value of the form title and set it to Metadata Set "Name Mapping Attribute"
+            EntityTypeService entityTypeService = new EntityTypeService(Db);
+            EntityType entityType = entityTypeService.GetEntityTypeById(entityTypeId);
+            foreach (KeyValuePair<string, string> map in metadataAttributeMapping)
+            {
+                //key: attributeMapping, value Form's Field's Name
+                string attMapping = map.Key;
+                string FieldName = map.Value;
+                FormField formField = storedFormSubmission.FormData.Fields.Where(f => f.Name == FieldName).FirstOrDefault();
+                var FieldValues = formField.GetValues();
+
+                EntityTypeAttributeMapping am = entityType.AttributeMappings.Where(a => a.Name == attMapping).FirstOrDefault();
+                MetadataSet ms = null;
+                if(am != null)
+                      ms = entityType.MetadataSets.Where(m => m.Id == am.MetadataSetId).FirstOrDefault();
+
+                FormField field;
+                if(ms != null)
+                    field = ms.Fields.Where(f => f.Name == am.FieldName).FirstOrDefault();
+                
+                foreach (var fVal in FieldValues)
+                    ms.SetFieldValue(am.FieldName, fVal.Value, fVal.LanguageCode);
+            }
+            //end of MR
 
             submissionItem.Serialize();
             return submissionItem;
