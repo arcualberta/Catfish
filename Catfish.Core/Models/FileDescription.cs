@@ -38,13 +38,7 @@ namespace Catfish.Core.Models
         {
             get
             {
-                List<FileOptions> fileOptions = GetChildModels(FileOptions.TagName, Data).Select(c => c as FileOptions).ToList();
-                if (fileOptions.Count > 0)
-                {
-                    return fileOptions[0];
-                }
-
-                return null;
+                return GetChildModels(FileOptions.TagName, Data).FirstOrDefault() as FileOptions;
             }
             set
             {
@@ -58,15 +52,7 @@ namespace Catfish.Core.Models
         {
             get
             {
-                // We are expecting a single DataFile but we are using
-                // GetChildModels method because this is what is available.
-                List<DataFile> dataFiles = GetChildModels(DataFile.TagName, Data).Select(c => c as DataFile).ToList();
-                if (dataFiles.Count > 0)
-                {
-                    return dataFiles[0];
-                }
-
-                return null;
+                return GetChildModels(DataFile.TagName, Data).FirstOrDefault() as DataFile;
             }
 
             set
