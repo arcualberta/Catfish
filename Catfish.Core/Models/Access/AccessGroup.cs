@@ -26,7 +26,7 @@ namespace Catfish.Core.Models.Access
         {
             get
             {
-                AccessDefinition accessDefinition = GetChildModels(AccessDefinition.TagName, Data).FirstOrDefault() as AccessDefinition;
+                AccessDefinition accessDefinition = GetChildModels(AccessDefinition.TagName).FirstOrDefault() as AccessDefinition;
 
                 if (accessDefinition == null)
                 {

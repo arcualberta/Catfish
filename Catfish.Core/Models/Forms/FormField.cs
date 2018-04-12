@@ -27,7 +27,7 @@ namespace Catfish.Core.Models.Forms
         {
             get
             {
-                return GetChildModels("files/" + FileDescription.TagName, Data).Select(c => c as FileDescription).ToList();
+                return GetChildModels("files/" + FileDescription.TagName).Select(c => c as FileDescription).ToList();
             }
 
             set

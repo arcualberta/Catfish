@@ -309,6 +309,11 @@ namespace Catfish.Core.Models
             SetChildText("value", values, Data, Lang(lang));
         }
 
+        public List<XmlModel> GetChildModels(string xpath)
+        {
+            return GetChildModels(xpath, Data);
+        }
+
         public List<XmlModel> GetChildModels(string xpath, XElement ele)
         {
             List<XmlModel> result = new List<XmlModel>();

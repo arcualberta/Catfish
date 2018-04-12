@@ -38,7 +38,7 @@ namespace Catfish.Core.Models
         {
             get
             {
-                return GetChildModels(FileOptions.TagName, Data).FirstOrDefault() as FileOptions;
+                return GetChildModels(FileOptions.TagName).FirstOrDefault() as FileOptions;
             }
             set
             {
@@ -52,7 +52,7 @@ namespace Catfish.Core.Models
         {
             get
             {
-                return GetChildModels(DataFile.TagName, Data).FirstOrDefault() as DataFile;
+                return GetChildModels(DataFile.TagName).FirstOrDefault() as DataFile;
             }
 
             set
