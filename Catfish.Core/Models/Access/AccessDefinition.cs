@@ -47,7 +47,6 @@ namespace Catfish.Core.Models.Access
                     && Int32.TryParse(accessModesElement.Value, out modes))
                 {                    
                     return (AccessMode)modes;                   
-                    //return (int) Int32.Parse(labelElement.Value);
                 }
                 return AccessMode.None;
             }
