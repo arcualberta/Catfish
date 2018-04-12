@@ -57,24 +57,28 @@ namespace Catfish.Core.Models.Access
             }
         }
         
-        public List<AccessMode> AccessModesList()
+        public List<AccessMode> AccessModesList
         {
-            List<AccessMode> accessModes = new List<AccessMode>();
+            get
+            {
+                List<AccessMode> accessModes = new List<AccessMode>();
 
-            foreach (AccessMode accessMode in Enum.GetValues(typeof(AccessMode))) {
-                if (HasMode(accessMode))
+                foreach (AccessMode accessMode in Enum.GetValues(typeof(AccessMode)))
                 {
-                    accessModes.Add((AccessMode)accessMode);
+                    if (HasMode(accessMode))
+                    {
+                        accessModes.Add((AccessMode)accessMode);
+                    }
                 }
-            }
 
-            //XXX If we need to check agains AccessMode.None add here
-            //if (accessModes.Count == 0)
-            //{
-            //    accessModes.Add(AccessMode.None);
-            //}
+                //XXX If we need to check agains AccessMode.None add here
+                //if (accessModes.Count == 0)
+                //{
+                //    accessModes.Add(AccessMode.None);
+                //}
 
-            return accessModes;
+                return accessModes;
+            }            
         }
         
         public bool HasMode(AccessMode accessMode)
