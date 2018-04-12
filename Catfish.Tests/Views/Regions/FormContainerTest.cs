@@ -243,6 +243,9 @@ namespace Catfish.Tests.Views.Regions
             elements[1].FindElement(By.CssSelector("textarea[id$='__Value']")).SendKeys("Field 2");
 
             SubmitForm(region, true);
+
+            IWebElement newPage = this.Driver.FindElement(By.LinkText(FORM_NAVIGATION));
+            Assert.AreEqual(FORM_NAVIGATION, newPage.Text);
         }
 
         [Test]
@@ -260,6 +263,9 @@ namespace Catfish.Tests.Views.Regions
             elements[1].FindElement(By.CssSelector("textarea[id$='__Value']")).SendKeys("Field 2");
 
             SubmitForm(region);
+
+            IWebElement newPage = this.Driver.FindElement(By.LinkText(FORM_NAVIGATION));
+            Assert.AreEqual(FORM_NAVIGATION, newPage.Text);
         }
     }
 }
