@@ -10,30 +10,34 @@ namespace Catfish.Core.Models.Access
 {
     public class AccessGroup : XmlModel
     {
-        string TagName {
+        public static string TagName {
             get
             {
-                return GetTagName();
+                return "access-group";
+                
             }
         }
 
-        public override string GetTagName() { return "access-group"; }
+        public override string GetTagName() { return TagName; }
 
         //AccessDefinition AccessDefinition;
-        //List<string> AccessGuids;
+        //List<string> AccessGuids;        
 
         [NotMapped]
         public AccessDefinition AccessDefinition
         {
             get
             {
-                List<AccessDefinition> accessDefinition = GetChildModels(AccessDefinition.TagName, Data).Select(c => c as AccessDefinition).ToList();
-                if (accessDefinition.Count > 0)
+                List<AccessDefinition> accessDefinitions = GetChildModels(AccessDefinition.TagName, Data).Select(c => c as AccessDefinition).ToList();
+                if (accessDefinitions.Count > 0)
                 {
-                    return accessDefinition[0];
-                }
-
-                return null;
+                    return accessDefinitions[0];
+                } 
+                
+                AccessDefinition accionDefinition = new AccessDefinition();
+                Data.Add(accionDefinition.Data);
+                return accionDefinition;
+                
             }
             set
             {
@@ -44,7 +48,7 @@ namespace Catfish.Core.Models.Access
         }
 
         [NotMapped]
-        public List<string> AccessGuids
+        public List<Guid> AccessGuids
         {
             get
             {
@@ -53,11 +57,11 @@ namespace Catfish.Core.Models.Access
                     XElement accessGuidsElement = Data.Element("access-guids");
                  
                     List<XElement> accessGuidsElements = accessGuidsElement.Elements("access-guid").ToList();
-                    List<string> accessGuids = new List<string>();
+                    List<Guid> accessGuids = new List<Guid>();
 
                     foreach (XElement accessGuidElement in accessGuidsElements)
                     {
-                        accessGuids.Add(accessGuidsElement.Value);
+                        accessGuids.Add(new Guid(accessGuidElement.Value));
                     }
 
                     return accessGuids;
@@ -77,10 +81,10 @@ namespace Catfish.Core.Models.Access
                     accessGuids = new XElement("access-guids");
                     Data.Add(accessGuids);
                 }
-                foreach (string accessGuid in value)
+                foreach (Guid accessGuid in value)
                 {
                     XElement accessGuidElement = new XElement("access-guid");
-                    accessGuidElement.Value = accessGuid;
+                    accessGuidElement.Value = accessGuid.ToString();
                     accessGuids.Add(accessGuidElement);
                 }
             }

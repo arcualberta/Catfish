@@ -26,15 +26,17 @@ namespace Catfish.Core.Models.Access
             AccessModes = AccessMode.None;
         }
 
-        public string TagName
+        public static string TagName
         {
             get
             {
-                return GetTagName();
+                return "access-definition";
             }
         }
 
-        public override string GetTagName() { return "access-definition"; }
+        public override string GetTagName() {
+            return TagName;
+        }
 
         [NotMapped]
         public AccessMode AccessModes

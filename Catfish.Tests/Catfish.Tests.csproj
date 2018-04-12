@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessDefinitionTests.cs" />
+    <Compile Include="AccessGroupTests.cs" />
     <Compile Include="EntityGroupTest.cs" />
     <Compile Include="EntityTypeTest.cs" />
     <Compile Include="Helpers\DatabaseHelper.cs" />
