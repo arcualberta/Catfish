@@ -110,6 +110,8 @@
       <DependentUpon>201803231638089_AddingLabelPropertyToEntityTypeAttributeMapping.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Access\AccessDefinition.cs" />
+    <Compile Include="Models\Access\AccessGroup.cs" />
     <Compile Include="Models\Aggregation.cs" />
     <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
     <Compile Include="Models\Attributes\InputTypeAttribute.cs" />
