@@ -20,23 +20,21 @@ namespace Catfish.Core.Models.Access
 
         public override string GetTagName() { return TagName; }
 
-        //AccessDefinition AccessDefinition;
-        //List<string> AccessGuids;        
 
         [NotMapped]
         public AccessDefinition AccessDefinition
         {
             get
             {
-                List<AccessDefinition> accessDefinitions = GetChildModels(AccessDefinition.TagName, Data).Select(c => c as AccessDefinition).ToList();
-                if (accessDefinitions.Count > 0)
+                AccessDefinition accessDefinition = GetChildModels(AccessDefinition.TagName, Data).FirstOrDefault() as AccessDefinition;
+
+                if (accessDefinition == null)
                 {
-                    return accessDefinitions[0];
-                } 
+                    accessDefinition = new AccessDefinition();
+                    Data.Add(accessDefinition.Data);
+                }
                 
-                AccessDefinition accionDefinition = new AccessDefinition();
-                Data.Add(accionDefinition.Data);
-                return accionDefinition;
+                return accessDefinition;
                 
             }
             set
