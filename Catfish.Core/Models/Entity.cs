@@ -17,8 +17,8 @@ namespace Catfish.Core.Models
         public int? EntityTypeId { get; set; }
         public virtual EntityType EntityType { get; set; }
 
-        protected static string MetadataSetXPath = "access-groups/" + AccessGroup.TagName;
-        protected static string AccessGroupXPath = "metadata-sets/" + MetadataSet.TagName;
+        protected static string AccessGroupXPath = "access/" + AccessGroup.TagName;
+        protected static string MetadataSetXPath = "metadata/" + MetadataSet.TagName;
 
         public Entity()
         {
@@ -79,14 +79,14 @@ namespace Catfish.Core.Models
             foreach (AccessGroup model in models)
             {
                 access.Add(model.Data);
-            }                
+            }
         }
 
-        protected FormField GetMetadataSetField(string metadatasetGuid, string fieldName) 
+        protected FormField GetMetadataSetField(string metadatasetGuid, string fieldName)
         {
             MetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == metadatasetGuid).FirstOrDefault();
 
-            if(metadataSet == null)
+            if (metadataSet == null)
             {
                 return null;
             }
@@ -113,7 +113,7 @@ namespace Catfish.Core.Models
 
                 return MultilingualHelper.Join(field.GetValues(), " / ", false);
             }
-            
+
             return null;
         }
 
@@ -123,7 +123,7 @@ namespace Catfish.Core.Models
             if (mapping != null)
             {
                 string msGuid = mapping.MetadataSet.Guid;
-                string fieldName = string.IsNullOrEmpty(mapping.Label)? mapping.FieldName : mapping.Label;
+                string fieldName = string.IsNullOrEmpty(mapping.Label) ? mapping.FieldName : mapping.Label;
 
                 return fieldName;
             }
@@ -148,7 +148,7 @@ namespace Catfish.Core.Models
         {
             string result = GetAttributeMappingValue("Name Mapping", lang);
 
-            if(result != null)
+            if (result != null)
             {
                 return result;
             }
@@ -168,7 +168,7 @@ namespace Catfish.Core.Models
             {
                 return result;
             }
-            
+
             return GetChildText("description", Data, Lang(lang));
         }
         public override void SetDescription(string val, string lang = null)
@@ -178,7 +178,7 @@ namespace Catfish.Core.Models
 
         public override void UpdateValues(XmlModel src)
         {
-            if(src == this)
+            if (src == this)
             {
                 // Updating will delete the child content. Since it's the same, we will return without any changes.
                 return;
