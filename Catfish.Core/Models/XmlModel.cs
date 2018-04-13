@@ -436,6 +436,11 @@ namespace Catfish.Core.Models
                 e.Remove();
         }
 
+        protected void RemoveAllElements(string xpath)
+        {
+            RemoveAllElements(xpath, Data);
+        }
+
         public void InsertChildElement(string parentXPath, XElement child)
         {
             XElement parent = GetChildElements(parentXPath, Data).FirstOrDefault();

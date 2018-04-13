@@ -13,8 +13,7 @@ namespace Catfish.Core.Models.Access
         public static string TagName {
             get
             {
-                return "access-group";
-                
+                return "access-group";                
             }
         }
 

@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using System.Linq;
 using System.ComponentModel.DataAnnotations.Schema;
 using Catfish.Core.Helpers;
+using Catfish.Core.Models.Access;
 
 namespace Catfish.Core.Models
 {
@@ -16,9 +17,13 @@ namespace Catfish.Core.Models
         public int? EntityTypeId { get; set; }
         public virtual EntityType EntityType { get; set; }
 
+        protected static string MetadataSetXPath = "access-groups/" + AccessGroup.TagName;
+        protected static string AccessGroupXPath = "metadata-sets/" + MetadataSet.TagName;
+
         public Entity()
         {
             Data.Add(new XElement("metadata"));
+            Data.Add(new XElement("access"));
         }
 
         [NotMapped]
@@ -26,7 +31,8 @@ namespace Catfish.Core.Models
         {
             get
             {
-                return GetChildModels("metadata/metadata-set", Data).Select(c => c as MetadataSet).ToList();
+                return GetChildModels(MetadataSetXPath)
+                    .Select(c => c as MetadataSet).ToList();
             }
 
             set
@@ -37,10 +43,27 @@ namespace Catfish.Core.Models
 
         }
 
+        [NotMapped]
+        public List<AccessGroup> AccessGroups
+        {
+            get
+            {
+
+                return GetChildModels(AccessGroupXPath)
+                    .Select(c => c as AccessGroup).ToList();
+            }
+
+            set
+            {
+                RemoveAllElements(AccessGroupXPath);
+                InitModels("access", value);
+            }
+        }
+
         public void RemoveAllMetadataSets()
         {
             //Removing all children inside the metadata set element
-            RemoveAllElements("metadata/metadata-set", Data);
+            RemoveAllElements(MetadataSetXPath);
         }
 
         public void InitMetadataSet(IReadOnlyList<MetadataSet> src)
@@ -48,6 +71,15 @@ namespace Catfish.Core.Models
             XElement metadata = GetImmediateChild("metadata");
             foreach (MetadataSet ms in src)
                 metadata.Add(ms.Data);
+        }
+
+        private void InitModels(string element, IReadOnlyList<XmlModel> models)
+        {
+            XElement access = GetImmediateChild(element);
+            foreach (AccessGroup model in models)
+            {
+                access.Add(model.Data);
+            }                
         }
 
         protected FormField GetMetadataSetField(string metadatasetGuid, string fieldName) 
