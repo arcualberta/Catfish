@@ -183,8 +183,17 @@ namespace Catfish.Tests.Views.Regions
                 region.FindElement(By.Id(string.Format("Regions_{0}__Body_CssId", i))).SendKeys(FORM_CSS_ID);
 
                 // At the moment assume we have the default eneity type and collection.
+                //MR: Apr 12 2018 : select 1st entity Type
+                SelectElement selectEntityType = new SelectElement(region.FindElement(By.Id(string.Format("Regions_{0}__Body_EntityTypeId", i))));
+                selectEntityType.Options[1].Click();
 
-                IWebElement btnSave = this.Driver.FindElement(By.ClassName("publish"));
+                IWebElement btnAddMapping = this.Driver.FindElement(By.ClassName("glyphicon-plus-sign"));
+                ElementFocus(btnAddMapping);
+                btnAddMapping.Click();
+
+                ScrollTop();
+
+                 IWebElement btnSave = this.Driver.FindElement(By.ClassName("publish"));
                 IJavaScriptExecutor jex = (IJavaScriptExecutor)Driver;
 
                 jex.ExecuteScript("arguments[0].focus(); ", btnSave);
@@ -205,6 +214,24 @@ namespace Catfish.Tests.Views.Regions
             region.FindElement(By.CssSelector("input[name='yes']")).Click();
         }
 
+        private void ScrollTop()
+        {
+            IJavaScriptExecutor jex = (IJavaScriptExecutor)Driver;
+            jex.ExecuteScript("scroll(0, -250);");
+        }
+
+        private void ScrollBottom()
+        {
+            IJavaScriptExecutor jex = (IJavaScriptExecutor)Driver;
+            jex.ExecuteScript("window.scrollTo(0, document.body.scrollHeight)");
+        }
+
+        private void ElementFocus(IWebElement element)
+        {
+            IJavaScriptExecutor jex = (IJavaScriptExecutor)Driver;
+            jex.ExecuteScript("arguments[0].focus(); ", element);
+
+        }
         [Test]
         public void TestBasicForm()
         {
@@ -216,6 +243,9 @@ namespace Catfish.Tests.Views.Regions
             elements[1].FindElement(By.CssSelector("textarea[id$='__Value']")).SendKeys("Field 2");
 
             SubmitForm(region, true);
+
+            IWebElement newPage = this.Driver.FindElement(By.LinkText(FORM_NAVIGATION));
+            Assert.AreEqual(FORM_NAVIGATION, newPage.Text);
         }
 
         [Test]
@@ -233,6 +263,9 @@ namespace Catfish.Tests.Views.Regions
             elements[1].FindElement(By.CssSelector("textarea[id$='__Value']")).SendKeys("Field 2");
 
             SubmitForm(region);
+
+            IWebElement newPage = this.Driver.FindElement(By.LinkText(FORM_NAVIGATION));
+            Assert.AreEqual(FORM_NAVIGATION, newPage.Text);
         }
     }
 }

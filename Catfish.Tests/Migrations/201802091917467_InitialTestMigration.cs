@@ -42,7 +42,7 @@ namespace Catfish.Tests.Migrations
                         FieldName = c.String(),
                         EntityType_Id = c.Int(),
                         Label = c.String()
-                    })
+                })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("XmlModels", t => t.MetadataSetId, cascadeDelete: true)
                 .ForeignKey("EntityTypes", t => t.EntityType_Id)

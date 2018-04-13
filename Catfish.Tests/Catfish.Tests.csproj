@@ -179,6 +179,7 @@
     <Compile Include="Views\EntityTypeViewTest.cs" />
     <Compile Include="Views\FormViewTest.cs" />
     <Compile Include="Views\MetadataViewTest.cs" />
+    <Compile Include="Views\Regions\EntityContainerTest.cs" />
     <Compile Include="Views\Regions\FormContainerTest.cs" />
     <Compile Include="XmlModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

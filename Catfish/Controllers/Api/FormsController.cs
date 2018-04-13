@@ -21,13 +21,19 @@ namespace Catfish.Controllers.Api
             if (ModelState.IsValid)
             {
                 SubmissionService subSrv = new SubmissionService(Db);
+                //add AttributeMappings -- Apr 10 2018
+                IDictionary<string, string> attributeMappings = new Dictionary<string,string>();
+                foreach(var map in formContainer.FieldMappings)
+                {
+                    attributeMappings.Add(map.AttributeName, map.FieldName);
+                }
                 Item submission = subSrv.SaveSubmission(
                     vm.Form,
                     vm.FormSubmissionRef,
                     vm.ItemId,
                     formContainer.EntityTypeId,
                     formContainer.FormId,
-                    formContainer.CollectionId);
+                    formContainer.CollectionId, attributeMappings);
 
                 // Set's the audit log value when saving.
                 // TODO: this should be more automated.
@@ -48,5 +54,10 @@ namespace Catfish.Controllers.Api
 
             return Json(vm);
         }
+
+        
+      
     }
+
+    
 }

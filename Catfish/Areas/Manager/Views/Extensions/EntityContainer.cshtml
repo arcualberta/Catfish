@@ -49,11 +49,14 @@
     {
       var Field = $("#Regions_0__Body_selectedField").val();
       var uniqueId = Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
+     var rowCount = $('#AttributeMappingTable tr').length;
+    var rowId = "row_" + (rowCount - 1);
 
-      var t = `<tr><input type="hidden" name="Regions[0].Body.Fields.Index" value="` + uniqueId + `">
+
+      var t = `<tr id="` + rowId +`"><input type="hidden" name="Regions[0].Body.Fields.Index" value="` + uniqueId + `">
                <input name="Regions[0].Body.Fields[` + uniqueId +  `]" type="hidden" value="` + Field +`">
                     <td><span>` + Field + `</span></td>
-                    <td><span class="glyphicon glyphicon-minus-sign"></span><span class="glyphicon glyphicon-arrow-up"></span><span class="glyphicon glyphicon-arrow-down"></span></td>
+                    <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteRow('` + rowId +`')"></span><span class="glyphicon glyphicon-arrow-up"></span><span class="glyphicon glyphicon-arrow-down"></span></td>
                 </tr>`;
 
       $("#ddFields").before(t)
@@ -61,7 +64,6 @@
 
     function DeleteRow(index)
     {
-    alert(index);
        $("#" + index).remove();
     }
 </script>

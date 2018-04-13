@@ -125,14 +125,6 @@ namespace Catfish.Core.Models
                 string msGuid = mapping.MetadataSet.Guid;
                 string fieldName = string.IsNullOrEmpty(mapping.Label)? mapping.FieldName : mapping.Label;
 
-                //FormField field = GetMetadataSetField(msGuid, fieldName);
-
-                //if (field == null)
-                //{
-                //    return string.Format("ERROR: INCORRECT {0} MAPPING FOUND FOR THIS ENTITY TYPE", mapping);
-                //}
-
-                //return MultilingualHelper.Join(field.GetValues(), " / ", false);
                 return fieldName;
             }
 

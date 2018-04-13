@@ -88,8 +88,8 @@
 
     function submitFormContainer(baseName, formContainerElement, formContainerJson, submitUrl, successFunction, errorFunction) {
         var data = {
-            "vm" : generateFormContainerJson(baseName, formContainerElement),
-            "formContainer" : formContainerJson
+            "vm": generateFormContainerJson(baseName, formContainerElement),
+            "formContainer": formContainerJson
         }
 
         $.ajax({
