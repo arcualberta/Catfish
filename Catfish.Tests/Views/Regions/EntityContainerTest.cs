@@ -59,6 +59,71 @@ namespace Catfish.Tests.Views.Regions
             bool addAttributeMapping = VerifyAttributeMappingAdded();
             Assert.AreEqual(true, addAttributeMapping);
         }
+        [TestCase]
+        public void CanReorderMapping()
+        {
+            this.Driver.Navigate().GoToUrl(ManagerUrl + "/page");
+
+            IWebElement element = this.Driver.FindElement(By.LinkText(PAGE_TITLE));
+
+
+            Actions builder = new Actions(this.Driver);
+            builder.MoveToElement(element, 10, 5);
+
+            builder.Click();
+            builder.Build().Perform();
+
+            ScrollBottom();
+
+            var tbl = this.Driver.FindElement(By.Id("AttributeMappingTable"));
+            var rows = tbl.FindElements(By.TagName("tr"));
+            List<string> originalOrder = new List<string>();
+
+            foreach(var r in rows)
+            { originalOrder.Add(r.Text); }
+
+            //move the second to the first
+            IWebElement moveUp = rows[1].FindElement(By.ClassName("glyphicon-arrow-up"));
+            ElementFocus(moveUp);
+            moveUp.Click();
+
+            tbl = this.Driver.FindElement(By.Id("AttributeMappingTable"));
+            rows = tbl.FindElements(By.TagName("tr"));
+            Assert.AreEqual(originalOrder.ElementAt(1), rows[0].Text);
+
+        }
+        [TestCase]
+        public void CanDeleteMapping()
+        {
+            this.Driver.Navigate().GoToUrl(ManagerUrl + "/page");
+
+            IWebElement element = this.Driver.FindElement(By.LinkText(PAGE_TITLE));
+
+
+            Actions builder = new Actions(this.Driver);
+            builder.MoveToElement(element, 10, 5);
+
+            builder.Click();
+            builder.Build().Perform();
+
+            ScrollBottom();
+
+            var tbl = this.Driver.FindElement(By.Id("AttributeMappingTable"));
+            var rows = tbl.FindElements(By.TagName("tr"));
+
+            int initialNumOfFields = rows.Count - 1; //don't count the dropdownList -- 3
+
+            //delete the last mapping
+            IWebElement delBtn = rows[initialNumOfFields - 1].FindElement(By.ClassName("glyphicon-minus-sign"));
+            ElementFocus(delBtn);
+            delBtn.Click();
+
+            tbl = this.Driver.FindElement(By.Id("AttributeMappingTable"));
+            rows = tbl.FindElements(By.TagName("tr"));
+            int numOfFiledAfterDeletion = rows.Count - 1; // 2
+
+            Assert.AreEqual(initialNumOfFields - 1, numOfFiledAfterDeletion);
+        }
         private bool VerifyPageTypeExists()
         {
             try
