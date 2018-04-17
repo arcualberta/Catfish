@@ -44,7 +44,7 @@ namespace Catfish.Areas.Manager.Controllers
                 if (field.IsPageBreak())
                     page = page + 1;
                 field.Page = page;
-                vm.Fields.Add(new FormFieldViewModel(field));
+                vm.Fields.Add(new FormFieldViewModel(field, vm.Id));
             }
             vm.SelectedFieldTypes.Clear();
             return Json(vm);

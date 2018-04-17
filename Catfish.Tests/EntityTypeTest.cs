@@ -16,6 +16,8 @@ namespace Catfish.Tests
     public class EntityTypeTest
     {
         CatfishDbContext db = new CatfishDbContext();
+
+        [Ignore]
         [TestMethod]
         public void CreateEntityType()
         {

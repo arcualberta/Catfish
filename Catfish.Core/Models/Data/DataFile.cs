@@ -12,10 +12,33 @@ namespace Catfish.Core.Models.Data
 {
     public class DataFile: DataObject
     {
+        public enum MimeType { Text, Image, Audio, Video, Application };
+
         public static string TagName { get { return "file"; } }
         public enum eThumbnailTypes { NonShared = 0, Shared }
 
         public override string GetTagName() { return TagName; }
+
+        [NotMapped]
+        public MimeType TopMimeType
+        {
+            get
+            {                
+                string[] contentTypeParts = ContentType.Split('/');
+
+                if (contentTypeParts.Count() > 0)
+                {
+                    switch(contentTypeParts[0])
+                    {
+                        case "image" : return MimeType.Image;
+                        case "audio" : return MimeType.Audio;
+                        case "video": return MimeType.Video;
+                        case "application": return MimeType.Application;
+                    }
+                }
+                return MimeType.Text;                
+            }
+        }
 
         [NotMapped]
         public string ContentType { get { return GetAttribute("content-type", null); } set { SetAttribute("content-type", value); } }
@@ -51,6 +74,8 @@ namespace Catfish.Core.Models.Data
             get
             {
                 string relativePath = GetAttribute("path", null);
+                if (relativePath == null)
+                    return null;
                 return System.IO.Path.Combine(ConfigHelper.UploadRoot, relativePath);
             }
             set

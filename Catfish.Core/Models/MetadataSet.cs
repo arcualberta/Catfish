@@ -14,7 +14,15 @@ namespace Catfish.Core.Models
     [TypeLabel("Metadata Set")]
     public class MetadataSet : AbstractForm
     {
-        public override string GetTagName() { return "metadata-set"; }
+        public static string TagName
+        {
+            get
+            {
+                return "metadata-set";
+
+            }
+        }
+        public override string GetTagName() { return TagName; }
 
         [ScriptIgnore(ApplyToOverrides = true)]
         public virtual ICollection<EntityType> EntityTypes { get; set; }

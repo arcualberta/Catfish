@@ -1,11 +1,76 @@
 ﻿@model Catfish.Core.Models.Form
-    
+
 @using Catfish.Core.Models.Forms;
+@using Catfish.Core.Models.Data;
 
 @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
 {
-    {"class", "model-type"}
+{"class", "model-type"}
 })
+
+
+    <script>
+
+
+
+        document.addEventListener("DOMContentLoaded", function (event) {
+
+
+            var secondsToTime = function (time) {
+                var timeString = ""
+
+                var hours = Math.floor(time / 3600)
+                var minutes = Math.floor((time % 3600) / 60)
+                // js returns floats on % operation
+                var seconds = Math.floor(time % 60)
+
+                if (hours > 0) {
+                    timeString = String(hours) + ":"
+                }
+
+                timeString += ("00" + minutes).slice(-2) + ":";
+                timeString += ("00" + seconds).slice(-2);
+
+                return timeString;
+
+            };
+
+            var getAudioDurationString = function (audio) {
+                return secondsToTime(audio.currentTime)
+                    + " / " + secondsToTime(audio.duration)
+            }
+
+            var audioPlayersOnce = document.getElementsByClassName('audio-play-once');
+
+            for (var i = 0; i < audioPlayersOnce.length; ++i) {
+                var audioPlayer = audioPlayersOnce[i].getElementsByTagName('audio')[0];
+
+                var audioPlayerControls = audioPlayersOnce[i].getElementsByClassName('audio-player-controls')[0];
+                var audioPlayerPlayButton = audioPlayerControls.getElementsByClassName('audio-play')[0];
+                var audioPlayerRange = audioPlayerControls.getElementsByClassName('audio-player-range')[0];
+                var audioPlayerTime = audioPlayerControls.getElementsByClassName('audio-player-time')[0];
+
+                audioPlayerRange.value = 0;
+                audioPlayerPlayButton.onclick = function (target) {
+                    audioPlayerPlayButton.parentElement.setAttribute("disabled", true);
+                    audioPlayer.play();               
+                }
+               
+
+                audioPlayer.onloadedmetadata = function (target) {
+                    audioPlayerTime.innerHTML = getAudioDurationString(audioPlayer);
+                }
+
+                audioPlayer.ontimeupdate = function (target) {
+                    var range = 100.0 * audioPlayer.currentTime / audioPlayer.duration;
+                    audioPlayerRange.value = range;
+                    audioPlayerTime.innerHTML = getAudioDurationString(audioPlayer);
+                }
+            }
+        });
+        
+    </script>
+
 
 @{
     var culture = Catfish.Helpers.ViewHelper.GetActiveLanguage();
@@ -21,36 +86,97 @@
         <div class="form-field">
             @if (!string.IsNullOrEmpty(name))
             {
-            <div class="name">
-                @Html.Label(name)
-            </div>
+                <div class="name">
+                    @Html.Label(name)
+                </div>
             }
             @if (!string.IsNullOrEmpty(description))
             {
-            <div class="desc">
-                @Html.Raw(description)
-            </div>
+                <div class="desc">
+                    @Html.Raw(description)
+                </div>
             }
+            <!--   Melania   -->
+            <!-- XXX Move field rendering to helpers -->
+            @foreach (var f in Model.Fields[i].Files)
+            {
+                string source = Url.Action("File", "Items", new { id = Model.Id, guid = f.DataFile.Guid });
+                @:<div>
+    if (f.DataFile.TopMimeType == DataFile.MimeType.Image)
+    {
+        <img src="@source" width="50" height="50" />
+    }
+    else if (f.DataFile.TopMimeType == DataFile.MimeType.Video)
+    {
+        string type = f.DataFile.ContentType.Contains("mp4") == true ? "video/mp4" : f.DataFile.ContentType.Contains("avi") == true ? "video/avi" : "video/ogg";
+        <video width="320" height="240" controls>
+            <source src="@source" type="@type">
+            Your browser does not support the video tag.
+        </video>
+    }
+    else if (f.DataFile.TopMimeType == DataFile.MimeType.Audio)
+    {
+        //audio
+        <p>
+            @f.Label
+        </p>
+        
+        string type = f.DataFile.ContentType;
+        if (f.FileOptions.PlayOnce)
+        {
 
-            <div class="input">
-                @if (typeof(Attachment).IsAssignableFrom(Model.Fields[i].GetType()))
-                {
-                    @Html.EditorFor(m => Model.Fields[i],
-                   new
-                   {
-                       UploadApiUrl = @Url.Action("upload", "attachment"),
-                       DeleteApiUrl = @Url.Action("deleteCashedFile", "attachment"),
-                       ParentId = Model.Id,
-                       Controller = "items"
-                   })
+            <div class="bs audio-play-once">
 
-                }
-                else
-                {
-                    @Html.EditorFor(m => Model.Fields[i])
-                    <div class="error form-error" name="@Html.NameFor(m => Model.Fields[i])" style="display:none;"></div>
-                }
+                <audio id="audio-player-@f.Guid" class="" preload="metadata">
+                    <source src="@source" type="@type">
+                    Your browser does not support the audio element.
+                </audio>
+                <div id="audio-player-controls-@f.Guid" class="audio-player-controls">
+                    <button type="button" href="#" id="audio-play-@f.Guid" class="btn btn-default">
+                        <span class="glyphicon glyphicon-play audio-play"></span>
+                    </button>
+                    <input id="audio-range-@f.Guid" type="range" class="audio-player-range" disabled />
+                    <span class="audio-player-time"></span>
+                </div>
             </div>
-        </div>
+
+        }
+        else
+        {
+            <div>
+                <audio controls preload="metadata">
+                    <source src="@source" type="@type">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+
+        }
+
+
+    }
+
+    @:
+}
+<!--   End Melania   -->
+<div class="input">
+    @if (typeof(Attachment).IsAssignableFrom(Model.Fields[i].GetType()))
+    {
+        @Html.EditorFor(m => Model.Fields[i],
+                 new
+                 {
+                     UploadApiUrl = @Url.Action("upload", "attachment"),
+                     DeleteApiUrl = @Url.Action("deleteCashedFile", "attachment"),
+                     ParentId = Model.Id,
+                     Controller = "items"
+                 })
+
+    }
+    else
+    {
+        @Html.EditorFor(m => Model.Fields[i])
+        <div class="error form-error" name="@Html.NameFor(m => Model.Fields[i])" style="display:none;"></div>
+    }
+</div>
+</div>
     }
 }
