@@ -154,6 +154,7 @@
     <Compile Include="AccessDefinitionTests.cs" />
     <Compile Include="AccessGroupTests.cs" />
     <Compile Include="EntityGroupTest.cs" />
+    <Compile Include="EntityTests.cs" />
     <Compile Include="EntityTypeTest.cs" />
     <Compile Include="Helpers\DatabaseHelper.cs" />
     <Compile Include="Helpers\MigrationSqLiteGenerator.cs" />
@@ -163,6 +164,7 @@
       <DependentUpon>201802091917467_InitialTestMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Mocks\MockEntity.cs" />
     <Compile Include="RandomDataIngest.cs" />
     <Compile Include="Services\CollectionServiceTest.cs" />
     <Compile Include="Services\IngestionServiceTest.cs" />
