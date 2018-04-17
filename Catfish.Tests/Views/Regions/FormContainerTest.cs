@@ -107,6 +107,7 @@ namespace Catfish.Tests.Views.Regions
 
                 AddFormField("Short text", true);
                 AddFormField("Paragraph", false);
+                AddFormField("Client info", false);
 
                 WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(15));
                 wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.ClassName("save")));
@@ -236,6 +237,7 @@ namespace Catfish.Tests.Views.Regions
         public void TestBasicForm()
         {
             this.Driver.Navigate().GoToUrl(FormUrl);
+            ScrollBottom();
             IWebElement region = this.Driver.FindElement(By.Id(FORM_CSS_ID));
             IReadOnlyList<IWebElement> elements = region.FindElements(By.CssSelector("div.input"));
 
@@ -246,6 +248,11 @@ namespace Catfish.Tests.Views.Regions
 
             IWebElement newPage = this.Driver.FindElement(By.LinkText(FORM_NAVIGATION));
             Assert.AreEqual(FORM_NAVIGATION, newPage.Text);
+
+            //Test the clientInfo
+            newPage.Click();
+            IWebElement clientInfo = this.Driver.FindElement(By.Id("region_Value_FormViewModel_Form_Fields_2__Values_0__Value"));
+             Assert.True(clientInfo.GetAttribute("Value").Contains("Chrome"));
         }
 
         [Test]
@@ -266,6 +273,11 @@ namespace Catfish.Tests.Views.Regions
 
             IWebElement newPage = this.Driver.FindElement(By.LinkText(FORM_NAVIGATION));
             Assert.AreEqual(FORM_NAVIGATION, newPage.Text);
+
+            //Test the clientInfo
+            newPage.Click();
+            IWebElement clientInfo = this.Driver.FindElement(By.Id("region_Value_FormViewModel_Form_Fields_2__Values_0__Value"));
+            Assert.True(clientInfo.GetAttribute("Value").Contains("Chrome"));
         }
     }
 }
