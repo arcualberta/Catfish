@@ -15,17 +15,18 @@
     {
         string name = Model.Fields[i].GetName(lang, true);
         string description = Model.Fields[i].GetDescription(lang);
+        bool isHidden = Model.Fields[i].IsHidden();
 
         @Html.HiddenFor(m => m.Fields[i].IsRequired)
 
         <div class="form-field">
-            @if (!string.IsNullOrEmpty(name))
+            @if (!string.IsNullOrEmpty(name) &&  isHidden == false)
             {
             <div class="name">
                 @Html.Label(name)
             </div>
             }
-            @if (!string.IsNullOrEmpty(description))
+            @if (!string.IsNullOrEmpty(description) && isHidden == false)
             {
             <div class="desc">
                 @Html.Raw(description)

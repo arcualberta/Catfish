@@ -127,6 +127,7 @@
     <Compile Include="Models\Data\DataFile.cs" />
     <Compile Include="Models\Forms\AbstractForm.cs" />
     <Compile Include="Models\Forms\Attachment.cs" />
+    <Compile Include="Models\Forms\ClientInfo.cs" />
     <Compile Include="Models\Forms\PageBreak.cs" />
     <Compile Include="Models\Ingestion\Ingestion.cs" />
     <Compile Include="Models\Ingestion\Relationship.cs" />

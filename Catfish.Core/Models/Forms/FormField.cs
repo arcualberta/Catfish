@@ -175,5 +175,9 @@ namespace Catfish.Core.Models.Forms
             return typeof(PageBreak).IsAssignableFrom(GetType());
         }
 
+        public virtual bool IsHidden()
+        {
+            return false;
+        }
     }
 }

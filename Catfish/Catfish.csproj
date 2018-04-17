@@ -456,6 +456,7 @@
     <Content Include="Views\Shared\DisplayTemplates\EntityContainer.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\MembershipContainer.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\RelationshipContainer.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\ClientInfo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
