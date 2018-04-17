@@ -70,12 +70,13 @@ namespace Catfish.Core.Models
             }
         }
 
-
+        // XXX copy this for files
         protected XElement GetDataObjectRoot(bool createIfNotExist = true)
         {
             return GetImmediateChild("data");
         }
 
+        // XXX copy this for files
         public void AddData(DataObject obj)
         {
             GetDataObjectRoot().Add(obj.Data);

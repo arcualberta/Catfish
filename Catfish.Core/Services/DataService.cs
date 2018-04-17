@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Data;
+using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -116,12 +117,17 @@ namespace Catfish.Core.Services
         public DataFile GetFile(int id, string guid, bool checkInItems = true)
         {
             XmlModel model = Db.XmlModels.Find(id);
+
             if (model is DataFile && model.Guid == guid)
                 return model as DataFile;
-            else if (checkInItems && model is Item)
+
+            if (checkInItems && model is Item)
                 return (model as Item).Files.Where(f => f.Guid == guid).FirstOrDefault();
-            else
-                return null;
+
+            if (typeof(AbstractForm).IsAssignableFrom(model.GetType()))            
+                return (model as AbstractForm).Fields.SelectMany(m => m.Files).Where(m => m.DataFile.Guid == guid).FirstOrDefault().DataFile;
+
+            return null;
         }
 
         public bool DeleteStandaloneFile(string guid)

@@ -71,9 +71,9 @@ namespace Catfish.Core.Models
 
         [NotMapped]
         private XElement mData;
-
-        [ScriptIgnore]
+        
         [NotMapped]
+        [ScriptIgnore]
         public virtual XElement Data
         {
             get
@@ -309,6 +309,11 @@ namespace Catfish.Core.Models
             SetChildText("value", values, Data, Lang(lang));
         }
 
+        public List<XmlModel> GetChildModels(string xpath)
+        {
+            return GetChildModels(xpath, Data);
+        }
+
         public List<XmlModel> GetChildModels(string xpath, XElement ele)
         {
             List<XmlModel> result = new List<XmlModel>();
@@ -429,6 +434,11 @@ namespace Catfish.Core.Models
             var chidlren = GetChildElements(xpath, ele).ToList();
             foreach (var e in chidlren)
                 e.Remove();
+        }
+
+        protected void RemoveAllElements(string xpath)
+        {
+            RemoveAllElements(xpath, Data);
         }
 
         public void InsertChildElement(string parentXPath, XElement child)

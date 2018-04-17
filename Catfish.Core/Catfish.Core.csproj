@@ -110,6 +110,8 @@
       <DependentUpon>201803231638089_AddingLabelPropertyToEntityTypeAttributeMapping.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Access\AccessDefinition.cs" />
+    <Compile Include="Models\Access\AccessGroup.cs" />
     <Compile Include="Models\Aggregation.cs" />
     <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
     <Compile Include="Models\Attributes\InputTypeAttribute.cs" />
@@ -118,6 +120,7 @@
     <Compile Include="Models\AuditChangeLog.cs" />
     <Compile Include="Models\AuditEntry.cs" />
     <Compile Include="Models\CatfishDbContext.cs" />
+    <Compile Include="Models\FileOptions.cs" />
     <Compile Include="Models\Collection.cs" />
     <Compile Include="Models\Data\DataObject.cs" />
     <Compile Include="Models\Data\FormSubmission.cs" />
@@ -125,6 +128,7 @@
     <Compile Include="Models\EntityGroup.cs" />
     <Compile Include="Models\EntityType.cs" />
     <Compile Include="Models\Data\DataFile.cs" />
+    <Compile Include="Models\FileDescription.cs" />
     <Compile Include="Models\Forms\AbstractForm.cs" />
     <Compile Include="Models\Forms\Attachment.cs" />
     <Compile Include="Models\Forms\ClientInfo.cs" />

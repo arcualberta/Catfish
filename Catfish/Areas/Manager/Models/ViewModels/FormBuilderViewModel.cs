@@ -19,6 +19,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public List<FormFieldType> FieldTypes { get { return GetFieldTypes(); } }
         public List<FormFieldType> SelectedFieldTypes { get; set; }
 
+        //public string FormSubmissions { get; set; }
+
         public bool ShowFieldDescriptions { get; set; }
 
         public FormBuilderViewModel()
@@ -39,7 +41,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
             Fields = new List<FormFieldViewModel>();
             foreach (var field in src.Fields)
-                Fields.Add(new FormFieldViewModel(field));
+                Fields.Add(new FormFieldViewModel(field, src.Id));
 
             Fields = Fields.OrderBy(f => f.Rank).ToList();
         }
@@ -50,7 +52,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             dst.Name = Name;
             dst.Description = Description;
             dst.Guid = Guid;
-
+            
             //Updating fields. 
             //Note that it is necessary to create a new list of metadata fields
             //as follows and assign that list to the field list of dst. Simply emptying the field

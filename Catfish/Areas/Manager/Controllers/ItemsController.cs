@@ -23,6 +23,7 @@ namespace Catfish.Areas.Manager.Controllers
 {
     public class ItemsController : CatfishController
     {
+ 
         // GET: Manager/Items
         public ActionResult Index(int offset=0, int limit=int.MaxValue)
         {
@@ -151,13 +152,7 @@ namespace Catfish.Areas.Manager.Controllers
             return View(model);
         }
 
-
-        [HttpGet]
-        public ActionResult UploadTest()
-        {
-            return View();
-        }
-
+        //XXX This method should be moved to a file controller
         [HttpPost]
         public JsonResult Upload()
         {
@@ -227,8 +222,8 @@ namespace Catfish.Areas.Manager.Controllers
             DataFile file = DataService.GetFile(id, name);
             if (file == null)
                 return HttpNotFound("File not found");
-
-            string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared
+            var test = file.ThumbnailType;
+            string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared 
                 ? Path.Combine(FileHelper.GetThumbnailRoot(Request), file.Thumbnail)
                 : Path.Combine(file.Path, file.Thumbnail);
 

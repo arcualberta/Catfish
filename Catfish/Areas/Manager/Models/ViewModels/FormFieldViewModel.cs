@@ -1,11 +1,14 @@
 ﻿using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Attributes;
+using Catfish.Core.Models.Data;
 using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Serialization;
 
 namespace Catfish.Areas.Manager.Models.ViewModels
 {
@@ -22,34 +25,45 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string Guid { get; set; }
 
         public FormFieldViewModel() { }
-
+        // Attachment creates multiple recursions on view leaving the page unresponsive
+        //[ScriptIgnore]
+        //public Attachment Attachment { get; set; }
+        //public List<FileViewModel> Files { get; set; }
+        public string[] FieldFileGuids { get; set; }
+        public List<FileViewModel> Files { get; set; }
         public int Rank { get; set; }
         public int Page { get; set; }
         public bool IsPageBreak { get; set; }
-        public FormFieldViewModel(FormField src)
+
+        private CatfishDbContext Db = new CatfishDbContext();
+
+        public FormFieldViewModel(FormField formField, int abstractFormId)
         {
-            Name = src.MultilingualName.ToList();
-            Description = src.MultilingualDescription.ToList();
-            IsRequired = src.IsRequired;
-            FieldType = src.GetType().AssemblyQualifiedName;
-            Guid = src.Guid;
-            Rank = src.Rank;
-            Page = src.Page;
-            IsPageBreak = src.IsPageBreak();
+            Name = formField.MultilingualName.ToList();
+            Description = formField.MultilingualDescription.ToList();
+            IsRequired = formField.IsRequired;
+            FieldType = formField.GetType().AssemblyQualifiedName;
+            Guid = formField.Guid;
+            Rank = formField.Rank;
+            Page = formField.Page;
+            IsPageBreak = formField.IsPageBreak();
+            Files = formField.Files.Select( m => new FileViewModel(m, abstractFormId)).ToList();
+            //FieldFileGuids = src.FieldFileGuidsArray;
+            //Files = src.Files;
 
-            TypeLabelAttribute att = Attribute.GetCustomAttribute(src.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
-            TypeLabel = att == null ? src.GetType().ToString() : att.Name;
+            TypeLabelAttribute att = Attribute.GetCustomAttribute(formField.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
+            TypeLabel = att == null ? formField.GetType().ToString() : att.Name;
 
-            IsOptionField = typeof(OptionsField).IsAssignableFrom(src.GetType());
+            IsOptionField = typeof(OptionsField).IsAssignableFrom(formField.GetType());
             if (IsOptionField)
             {
                 MultilingualOptionSet = new List<TextValue>();
 
                 //making sure we have an option-list editor for each language defined in the configuration settings.
-                foreach(var lang in ConfigHelper.Languages)
+                foreach (var lang in ConfigHelper.Languages)
                     MultilingualOptionSet.Add(new TextValue(lang.TwoLetterISOLanguageName, lang.NativeName, ""));
 
-                IReadOnlyList<Option> options = (src as OptionsField).Options;
+                IReadOnlyList<Option> options = (formField as OptionsField).Options;
                 foreach (Option op in options)
                 {
                     foreach (TextValue txt in op.Value)
@@ -69,6 +83,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
         }
 
+        //XXX turns to database model
         public FormField InstantiateDataModel()
         {
             Type type = Type.GetType(FieldType, true);
@@ -82,6 +97,12 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.Guid = Guid;
             field.Rank = Rank;
             field.Page = Page;
+
+            field.Files = Files != null ? Files.Select(m => m.ToFileDescription()).ToList() :
+                 new List<FileDescription>();
+
+
+            UpdateFileList(field);
 
             if (typeof(OptionsField).IsAssignableFrom(type))
             {
@@ -127,6 +148,56 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         ////}
 
         public override void UpdateDataModel(object dataModel, CatfishDbContext db) { }
+
+        private void UpdateFileList(FormField field)
+        {
+
+            List<DataFile> filesList = new List<DataFile>();
+            foreach (FileDescription fileDescription in field.Files)
+            {
+                string fileGuid = fileDescription.Guid;
+                DataFile file = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
+                    .Select(m => m as DataFile)
+                    .FirstOrDefault();
+
+                if (file != null)
+                {                     
+                    MoveFileToField(file, field);
+                    fileDescription.DataFile = file;
+                    Db.XmlModels.Remove(file);                             
+                }  
+            }
+            Db.SaveChanges();            
+        }
+
+        //XXX Duplicating code from ItemService.cs UpdateFiles method
+
+        private void MoveFileToField(DataFile dataFile, FormField field)
+        {
+
+            //DataFile dataFile = fileDescription.DataFile;
+
+            //moving the physical files from the temporary upload folder to a folder identified by the GUID of the
+            //item inside the uploaded data folder
+            string dstDir = Path.Combine(ConfigHelper.DataRoot, field.MappedGuid);
+            if (!Directory.Exists(dstDir))
+                Directory.CreateDirectory(dstDir);
+
+            string srcFile = Path.Combine(dataFile.Path, dataFile.LocalFileName);
+            string dstFile = Path.Combine(dstDir, dataFile.LocalFileName);
+            File.Move(srcFile, dstFile);
+
+            //moving the thumbnail, if it's not a shared one
+            if (dataFile.ThumbnailType == DataFile.eThumbnailTypes.NonShared)
+            {
+                string srcThumbnail = Path.Combine(dataFile.Path, dataFile.Thumbnail);
+                string dstThumbnail = Path.Combine(dstDir, dataFile.Thumbnail);
+                File.Move(srcThumbnail, dstThumbnail);
+            }
+
+            //updating the file path
+            dataFile.Path = dstDir;
+        }
 
     }
 }

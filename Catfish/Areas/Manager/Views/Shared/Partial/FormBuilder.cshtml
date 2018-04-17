@@ -1,12 +1,54 @@
 ﻿@model Catfish.Areas.Manager.Models.ViewModels.FormBuilderViewModel
 @using PerpetuumSoft.Knockout
 @using Catfish.Areas.Manager.Models.ViewModels
+@using Catfish.Core.Models.Data
 
 @{
     var context = "ctx_" + Guid.NewGuid().ToString("N");
     var ko = Html.CreateKnockoutContext(context);
     string controller = ViewData["controller"] as string;
     string saveAction = ViewData["action"] as string;
+}
+@ko.Initialize(Model)
+
+@section scripts {
+    <script>
+        $(function () {
+            $(".progressBar").hide();
+            $(".messageBox").hide();
+        });
+    </script>
+}
+@helper RenderFileAttachments(KnockoutContext<FormFieldViewModel> field)
+    {
+        string containerId = Guid.NewGuid().ToString("N");
+        string uploadApiUrl = Url.Action("upload", "items");
+        string deleteApiUrl = Url.Action("deleteCashedFile", "items");
+
+        <div @field.Bind.Attr("id", m => m.Guid) class="inner file-upload" style="clear:both">
+            <div class="thumbnailPanel">
+                @using (KnockoutForeachContext<FileViewModel> fileViewModel = field.Foreach(f => f.Files))
+                {
+                <div class="fileThumbnail" @fileViewModel.Bind.Attr("id", m => m.Guid)>
+                    <div class="img" @fileViewModel.Bind.Style("backgroundImage", (m => m.ThumbnailUrl))></div>
+                    <div class="label"><a @fileViewModel.Bind.Attr("href", f => f.Url)>@fileViewModel.Html.Span(s => s.FileName)</a></div>
+                    <div>@fileViewModel.Html.TextBox(m => m.Label).Attr("placeholder", m => "Label")</div>
+                    
+                    @using (fileViewModel.If(m => m.ShowPlayerControls))
+                    {
+                    <div><span>Play once</span>@fileViewModel.Html.CheckBox(m => m.PlayOnce)</div>    
+                    }                                                          
+                </div>
+                }
+            </div>
+            <div class="inner" style="clear:both">
+                <div class="alert alert-danger messageBox"></div>
+
+                <input type='file' class="uploadField" name="files" multiple="multiple" />
+                <input data-bind="click: function(data){$root.uploadFileKoWrapper(data, '@containerId', '@uploadApiUrl', '@deleteApiUrl', 'Model_FieldFileGuids')}" type="button" value="Upload" class="uploadButton" />
+                <div class="progressBar" hidden><progress></progress></div>
+            </div>
+        </div>
 }
 
 <div id="@context">
@@ -60,16 +102,16 @@
                                     }
                                     @using (field.If(f => f.IsPageBreak == false))
                                     {
-                                        <label class="control-label">Name</label> 
+                                        <label class="control-label">Name</label>
                                     }
                                     <div class="input">
                                         @using (var name = field.Foreach(f => f.Name))
                                         {
-                                            
+
                                             <div class="languageInputField">
                                                 @name.Html.TextBox(n => n.LanguageCode, new { style = "display:none" })
                                                 @name.Html.Span(n => n.LanguageLabel, new { @class = "lang-label" })
-                                                @name.Html.TextBox(n => n.Value, new { @class = "input-field" }).Attr("name", m =>"Name_" +  m.LanguageCode)
+                                                @name.Html.TextBox(n => n.Value, new { @class = "input-field" }).Attr("name", m => "Name_" + m.LanguageCode)
                                             </div>
                                         }
                                     </div>
@@ -116,6 +158,12 @@
                                         </div>
                                     </li>
                                 }
+                                <li>
+                                    <label class="control-label col-md-2">Attached files</label>
+                                    <div class="form-view">
+                                        @RenderFileAttachments(field)
+                                    </div>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -130,4 +178,13 @@
         </div>
     }
 </div>
+
+
+<script type="text/javascript">
+  @(context).uploadFileKoWrapper = function (data, containerId, uploadApiUrl, deleteApiUrl, fieldFileGuids) {
+      uploadFileKo(containerId, uploadApiUrl, deleteApiUrl, fieldFileGuids, data)
+  };
+</script>
+
+
 @ko.Apply(Model, context)
