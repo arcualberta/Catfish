@@ -22,47 +22,26 @@ namespace Catfish.Tests
         [TestMethod]
         public void CanUseAccessGroups()
         {
-            AccessGroup accessGroup1 = new AccessGroup();
-            AccessGroup accessGroup2 = new AccessGroup();
-            List<AccessGroup> accessGroups = new List<AccessGroup>()
+            int count = 3;
+            List<AccessGroup> accessGroups = new List<AccessGroup>();
+
+            for (int i = 0; i < count; ++i)
             {
-                accessGroup1,
-                accessGroup2
-            };
+                accessGroups.Add(new AccessGroup());
+            }
+
             MockEntity.AccessGroups = accessGroups;
-            //Assert.AreEqual(accessGroups, MockEntity.AccessGroups);
+            Assert.AreEqual(accessGroups.Count, MockEntity.AccessGroups.Count);
+
+            for (int i = 0; i < count; ++i)
+            {
+                Assert.AreEqual(accessGroups[i].Data, MockEntity.AccessGroups[i].Data);
+            }
 
             accessGroups.Clear();
             MockEntity.AccessGroups = accessGroups;
             Assert.AreEqual(0, MockEntity.AccessGroups.Count);
             
         }
-
-        //[TestMethod]
-        //public void CanUseAccessDefinition()
-        //{
-        //    AccessMode readWriteAccessMode = AccessMode.Read | AccessMode.Write;
-        //    AccessGroup.AccessDefinition.AccessModes = readWriteAccessMode;
-        //    Assert.IsTrue(AccessGroup.AccessDefinition.HasMode(readWriteAccessMode));
-        //}
-
-        //[TestMethod]
-        //public void CanUseAccessGuids()
-        //{
-        //    int guidCount = 5;
-        //    List<Guid> guidList = new List<Guid>();
-
-        //    for (int i = 0; i < guidCount; ++i)
-        //    {
-        //        guidList.Add(Guid.NewGuid());
-        //    }
-
-        //    AccessGroup.AccessGuids = guidList;
-
-        //    for (int i = 0; i < guidCount; ++i)
-        //    {
-        //        Assert.AreEqual(guidList[i], AccessGroup.AccessGuids[i]);
-        //    }
-        //}
     }
 }
