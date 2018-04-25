@@ -27,12 +27,12 @@ namespace Catfish.Core.Services
          
         //}
 
-        public Entity GetAnEntity(int id)
+        public CFEntity GetAnEntity(int id)
         {
             return Db.Entities.Where(e => e.Id == id).FirstOrDefault();
         }
 
-        public T CreateEntity<T>(int entityTypeId) where T : Entity, new()
+        public T CreateEntity<T>(int entityTypeId) where T : CFEntity, new()
         {
             EntityType et = Db.EntityTypes.Where(t => t.Id == entityTypeId).FirstOrDefault();
             if (et == null)
@@ -68,9 +68,9 @@ namespace Catfish.Core.Services
         }
        
 
-        public IQueryable<Entity> GetEntitiesTextSearch(string searchString, string[] languageCodes = null, string[] fields = null, string[] modelTypes = null)
+        public IQueryable<CFEntity> GetEntitiesTextSearch(string searchString, string[] languageCodes = null, string[] fields = null, string[] modelTypes = null)
         {
-            return GetEntitiesTextSearch<Entity>(Db.Entities, searchString, languageCodes, fields, modelTypes);
+            return GetEntitiesTextSearch<CFEntity>(Db.Entities, searchString, languageCodes, fields, modelTypes);
         }
 
         private string SolrEscape(string input)
@@ -133,7 +133,7 @@ namespace Catfish.Core.Services
             return query.ToString();
         }
 
-        protected IQueryable<T> GetEntitiesTextSearch<T>(DbSet<T> Entities, string searchString, string[] languageCodes = null, string[] fields = null, string[] modelTypes = null) where T : Entity
+        protected IQueryable<T> GetEntitiesTextSearch<T>(DbSet<T> Entities, string searchString, string[] languageCodes = null, string[] fields = null, string[] modelTypes = null) where T : CFEntity
         {
             if(languageCodes == null || languageCodes.Length == 0)
             {

@@ -14,7 +14,7 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Collections
         public ActionResult Index()
         {
-            var entities = CollectionService.GetCollections().Select(e => e as Entity);
+            var entities = CollectionService.GetCollections().Select(e => e as CFEntity);
             return View(entities);
         }
 

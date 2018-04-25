@@ -12,7 +12,7 @@ using Catfish.Core.Models.Access;
 
 namespace Catfish.Core.Models
 {
-    public abstract class Entity : XmlModel
+    public abstract class CFEntity : XmlModel
     {
         public int? EntityTypeId { get; set; }
         public virtual EntityType EntityType { get; set; }
@@ -20,7 +20,7 @@ namespace Catfish.Core.Models
         protected static string AccessGroupXPath = "access/" + AccessGroup.TagName;
         protected static string MetadataSetXPath = "metadata/" + MetadataSet.TagName;
 
-        public Entity()
+        public CFEntity()
         {
             Data.Add(new XElement("metadata"));
             Data.Add(new XElement("access"));
@@ -186,7 +186,7 @@ namespace Catfish.Core.Models
 
             base.UpdateValues(src);
 
-            var src_item = src as Entity;
+            var src_item = src as CFEntity;
 
             foreach (MetadataSet ms in this.MetadataSets)
             {

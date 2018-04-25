@@ -26,7 +26,7 @@ namespace Catfish.Models.Regions
         public SelectList FieldsMapping { get; set; }
 
         [ScriptIgnore]
-        public Entity Entity { get; set; }
+        public CFEntity Entity { get; set; }
 
         public EntityContainer()
         {

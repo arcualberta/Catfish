@@ -128,7 +128,7 @@
     <Compile Include="Models\CFCollection.cs" />
     <Compile Include="Models\Data\DataObject.cs" />
     <Compile Include="Models\Data\FormSubmission.cs" />
-    <Compile Include="Models\Entity.cs" />
+    <Compile Include="Models\CFEntity.cs" />
     <Compile Include="Models\CFUserList.cs" />
     <Compile Include="Models\EntityType.cs" />
     <Compile Include="Models\Data\DataFile.cs" />
