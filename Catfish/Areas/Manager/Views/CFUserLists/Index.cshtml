@@ -1,0 +1,41 @@
+﻿@model IQueryable<Catfish.Core.Models.CFUserList>
+@using Catfish.Areas.Manager.Services;
+@using Catfish.Core.Models;
+@{
+    ViewBag.Title = "CFUser Groups";
+    UserService userService = new UserService();
+}
+@section Toolbar {
+    @Html.Partial("Partial/IndexToolbar")
+}
+<div class="bs">
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <td class="col-md-4">User List Name</td>
+                    <td class="col-md-5">Users</td>
+                    <td class="col-md-3">Actions</td>
+                </tr>
+            </thead>
+            @{
+                foreach (var m in Model)
+                {
+                    string users = string.Empty;
+                    foreach(CFUserListEntry u in m.CFUserListEntries)
+                    {
+                        Piranha.Entities.User user = userService.GetUserById(u.UserId.ToString());
+                        users += user.Login + " | ";
+                    }
+                    users = users.Substring(0, users.Length - 2);
+                    <tr><td>@m.Name</td><td>@users</td><td>Details | 
+                                <span data-toggle="tooltip" title="Edit"data-container="body" >
+                                      @Html.ActionLink(" ", "Edit", "CFUserLists", new { Id = m.Id.ToString() }, new { @class = "glyphicon glyphicon-edit" })
+                                </span>
+                                                         | Delete
+</td></tr>
+                }
+            }
+        </table>
+    </div>
+</div>

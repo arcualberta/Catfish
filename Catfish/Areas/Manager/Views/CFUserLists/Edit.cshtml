@@ -1,7 +1,7 @@
-﻿@model Catfish.Areas.Manager.Models.ViewModels.EntityGroupViewModel
+﻿@model Catfish.Areas.Manager.Models.ViewModels.CFUserListViewModel
 @using PerpetuumSoft.Knockout
 @{ 
-    ViewBag.Title = String.IsNullOrEmpty(Model.EntityGroupName) ? "Create Entity Group" : "Edit Entity Group";
+    ViewBag.Title = String.IsNullOrEmpty(Model.CFUserListName) ? "Create User List" : "Edit User List";
     var context = "ctx_" + Guid.NewGuid().ToString("N");
     var ko = Html.CreateKnockoutContext(context);
 }
@@ -19,18 +19,18 @@
 
 <div id="@context">
 
-    @using (ko.Html.Form("Edit", "EntityGroups", null, new { id = context + "Form" }))
+    @using (ko.Html.Form("Edit", "CFUserLists", null, new { id = context + "Form" }))
     {
         var pointer = string.IsNullOrEmpty(Model.ErrorMessage) ? "" : "pointer-events: none;";
         @Html.AntiForgeryToken()
         @ko.Html.Hidden(Model.Id)
       <ul >
         <li class="form form-custom">
-            <label class="control-label col-md-2">Entity Group</label>
+            <label class="control-label col-md-2">User List</label>
             <div class="inner">
                 <div class="input" style="width:500px !important" >
 
-                    @ko.Html.TextBox(m => m.EntityGroupName, new { @required = "required", @style = "width:413px !important;", @id="txtGrpName" })
+                    @ko.Html.TextBox(m => m.CFUserListName, new { @required = "required", @style = "width:413px !important;", @id="txtGrpName" })
                     @ko.Html.Span(m => m.ErrorMessage, new { @style = "float: right;color:red;" }).Visible(m => m.ErrorMessage.Length > 0)
 
                 </div>
@@ -42,7 +42,7 @@
             <div class="inner">
                 <div  class="input" style="width:500px !important">
                  @ko.Html.TextBox(m => m.userName, new { @id = "usrName",@placeholder="login name", @style= "width:413px !important;" }).ValueUpdate(KnockoutValueUpdateKind.AfterKeyDown)
-                 @ko.Html.Button("Add User", "AddUser", "EntityGroups", null, new { @class = "btn", @id = "addUser" })@*.Enable(m => m.userName.Length > 0)*@
+                 @ko.Html.Button("Add User", "AddUser", "CFUserLists", null, new { @class = "btn", @id = "addUser" })@*.Enable(m => m.userName.Length > 0)*@
                 </div>
             </div>
         </li>
@@ -52,14 +52,14 @@
                   <div class="input" style="width:500px !important">
                      @*@ko.Html.ListBox(m => m.SelectedUsers, new { width = 100, size = 10, @style = "width:413px !important;" }, m => m.Login).SelectedOptions(m => m.UsersToRemove)*@
                       @ko.Html.ListBox(m => m.SelectedUsers, new { width = 100, size = 10, @style = "width:413px !important;" }).SelectedOptions(m => m.UsersToRemove)
-                      @ko.Html.Button("Remove", "RemoveSelected", "EntityGroups", null, new { @class = "btn btn-info" }) @*.Enable(m => m.UsersToRemove.Count > 0)*@
+                      @ko.Html.Button("Remove", "RemoveSelected", "CFUserLists", null, new { @class = "btn btn-info" }) @*.Enable(m => m.UsersToRemove.Count > 0)*@
 
                   </div>
               </div>
           </li>
        
         <li class="form form-custom">
-            @ko.Html.Button("Save", "Edit", "EntityGroups", null, new { @class = "btn btn-info", @style = "float:right", @id="btnSave" })@*.Enable(m => m.EntityGroupName.Length > 0)*@
+            @ko.Html.Button("Save", "Edit", "CFUserLists", null, new { @class = "btn btn-info", @style = "float:right", @id="btnSave" })@*.Enable(m => m.EntityGroupName.Length > 0)*@
         </li>
      </ul>
 
@@ -78,7 +78,7 @@
          });
        $("#txtGrpName").focus();
 
-        @(context).EntityGroupName.subscribe(function(newValue){
+        @(context).CFUserListName.subscribe(function(newValue){
             if(newValue != null)
                 @(context).ErrorMessage(newValue.length > 0 ? "" : "*");
         });

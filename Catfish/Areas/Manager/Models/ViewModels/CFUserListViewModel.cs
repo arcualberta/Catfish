@@ -7,13 +7,13 @@ using System.Web;
 
 namespace Catfish.Areas.Manager.Models.ViewModels
 {
-    public class EntityGroupViewModel
+    public class CFUserListViewModel
     {
         public string Id { get; set; }
 
-        [Display(Name = "Entity Group Name")]
+        [Display(Name = "User List Name")]
         [Required(ErrorMessage = "This field is required.")]
-        public string EntityGroupName { get; set; }
+        public string CFUserListName { get; set; }
 
         public string userName { get; set; } /*user's loginName to be added -- used on edit view */
 
@@ -27,7 +27,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public string ErrorMessage { get; set; }
 
-        public EntityGroupViewModel()
+        public CFUserListViewModel()
         {
             SelectedUsers = new List<string>();
             UsersToRemove = new List<string>(); 
@@ -52,29 +52,29 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             UsersToRemove.Clear();
         }
 
-        public EntityGroup UpdateModel(EntityGroup entityGroup)
+        public CFUserList UpdateModel(CFUserList entityGroup)
         {
             if (entityGroup == null)
             {
-                entityGroup = new EntityGroup();
+                entityGroup = new CFUserList();
                 entityGroup.Id = Guid.NewGuid();
             }
 
-            entityGroup.Name = EntityGroupName;
-            if (entityGroup.EntityGroupUsers.Count > 0)
-                entityGroup.EntityGroupUsers.Clear();
+            entityGroup.Name = CFUserListName;
+            if (entityGroup.CFUserListEntries.Count > 0)
+                entityGroup.CFUserListEntries.Clear();
 
             foreach (string usrLogin in SelectedUsers)
             {
                 var _usr = AllUsers2.FirstOrDefault(u => u.Value == usrLogin);
                 if(_usr.Key != null)
                 {
-                    EntityGroupUser egUser = new EntityGroupUser()
+                    CFUserListEntry egUser = new CFUserListEntry()
                     {
-                        EntityGroupId = entityGroup.Id,
+                        CFUserListId = entityGroup.Id,
                         UserId = Guid.Parse(_usr.Key)
                     };
-                    entityGroup.EntityGroupUsers.Add(egUser);
+                    entityGroup.CFUserListEntries.Add(egUser);
                 }
             }
 

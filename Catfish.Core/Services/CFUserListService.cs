@@ -9,49 +9,49 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Services
 {
-    public class EntityGroupService :EntityService
+    public class CFUserListService :EntityService
     {
-        public EntityGroupService(CatfishDbContext db) : base(db) { }
+        public CFUserListService(CatfishDbContext db) : base(db) { }
 
         public IQueryable GetEntityGroups()
         {
-            return Db.EntityGroups.Include(eg=>eg.EntityGroupUsers);
+            return Db.CFUserLists.Include(eg=>eg.CFUserListEntries);
         }
 
-        public EntityGroup GetEntityGroup(string id)
+        public CFUserList GetEntityGroup(string id)
         {
-            EntityGroup entityGroup = new EntityGroup();
+            CFUserList entityGroup = new CFUserList();
 
             if(!string.IsNullOrEmpty(id))
             {
                 Guid gId = Guid.Parse(id);
-                entityGroup = Db.EntityGroups.Where(eg => eg.Id == gId).Include(eg=>eg.EntityGroupUsers)
+                entityGroup = Db.CFUserLists.Where(eg => eg.Id == gId).Include(eg=>eg.CFUserListEntries)
                                  .FirstOrDefault();
             }
 
             return entityGroup;
         }
-        public EntityGroup EditEntityGroup(EntityGroup entityGroup, List<EntityGroupUser> oldEntityGrpUsers = null)
+        public CFUserList EditEntityGroup(CFUserList entityGroup, List<CFUserListEntry> oldEntityGrpUsers = null)
         {
            
             try
             {
-                EntityGroup entGroup = GetEntityGroup(entityGroup.Id.ToString());//check if this entityGroup existing in the database
+                CFUserList entGroup = GetEntityGroup(entityGroup.Id.ToString());//check if this entityGroup existing in the database
                 if (entGroup != null)
                 {
                     
                    
                     //update EntityGroupUser -- this will be complecated                   
-                    List<EntityGroupUser> userToRemove = oldEntityGrpUsers.Where(x => !entityGroup.EntityGroupUsers.Any(y => y.UserId == x.UserId)).ToList();
-                    List<EntityGroupUser> userToAdd = entityGroup.EntityGroupUsers.Where(x => !oldEntityGrpUsers.Any(y => y.UserId == x.UserId)).ToList();
+                    List<CFUserListEntry> userToRemove = oldEntityGrpUsers.Where(x => !entityGroup.CFUserListEntries.Any(y => y.UserId == x.UserId)).ToList();
+                    List<CFUserListEntry> userToAdd = entityGroup.CFUserListEntries.Where(x => !oldEntityGrpUsers.Any(y => y.UserId == x.UserId)).ToList();
 
                     //1. remove user from entityGRoupUser who were no longer associated with this entityGroup
                     if(userToRemove.Count > 0)
-                        Db.EntityGroupUsers.RemoveRange(userToRemove);
+                        Db.CFUserListEntries.RemoveRange(userToRemove);
                     
                     //2. Add new User to be associated with this entityGroup
                     if(userToAdd.Count > 0)
-                        Db.EntityGroupUsers.AddRange(userToAdd);
+                        Db.CFUserListEntries.AddRange(userToAdd);
 
                     //update existing entityGroup
                     Db.Entry(entityGroup).State = System.Data.Entity.EntityState.Modified;
@@ -60,8 +60,8 @@ namespace Catfish.Core.Services
                 {
                     //add new entity group
 
-                    entityGroup = Db.EntityGroups.Add(entityGroup);
-                    Db.EntityGroupUsers.AddRange(entityGroup.EntityGroupUsers);
+                    entityGroup = Db.CFUserLists.Add(entityGroup);
+                    Db.CFUserListEntries.AddRange(entityGroup.CFUserListEntries);
                    
                 }
                

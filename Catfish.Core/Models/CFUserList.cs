@@ -6,23 +6,23 @@ using System.Web;
 
 namespace Catfish.Core.Models
 {
-    public class EntityGroup
+    public class CFUserList
     {
         [Key]
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public IList<EntityGroupUser> EntityGroupUsers { get; set; } //user ids
+        public IList<CFUserListEntry> CFUserListEntries { get; set; } //user ids
 
-        public EntityGroup()
+        public CFUserList()
         {
-            EntityGroupUsers = new List<EntityGroupUser>();
+            CFUserListEntries = new List<CFUserListEntry>();
         }
         
     }
-    public class EntityGroupUser
+    public class CFUserListEntry //EntityGroupUser
     {
         [Key]
-        public Guid EntityGroupId { get; set; }
+        public Guid CFUserListId { get; set; }
         [Key]
         public Guid UserId { get; set; }
         

@@ -11,7 +11,7 @@ using Catfish.Areas.Manager.Services;
 
 namespace Catfish.Areas.Manager.Controllers
 {
-    public class EntityGroupsController : CatfishController
+    public class CFUserListsController : CatfishController
     {
        
 
@@ -25,8 +25,8 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/EntityGroups/Edit/5
         public ActionResult Edit(string id)
         {
-            EntityGroup entityGroup = EntityGroupService.GetEntityGroup(id);
-            EntityGroupViewModel entityGroupVM = PopulateEntityGroupViewModel(entityGroup);
+            CFUserList entityGroup = EntityGroupService.GetEntityGroup(id);
+            CFUserListViewModel entityGroupVM = PopulateEntityGroupViewModel(entityGroup);
 
             ViewBag.SugestedNames = entityGroupVM.AllUsers2.Values.ToArray();
             return View(entityGroupVM);
@@ -34,17 +34,17 @@ namespace Catfish.Areas.Manager.Controllers
 
         // POST: Manager/EntityGroups/Edit/5
         [HttpPost]
-        public JsonResult Edit(EntityGroupViewModel entGrpVM)
+        public JsonResult Edit(CFUserListViewModel entGrpVM)
         {
             try
             {
                 if(ModelState.IsValid)
                 {
-                    EntityGroup entGrp = EntityGroupService.GetEntityGroup(entGrpVM.Id);
+                    CFUserList entGrp = EntityGroupService.GetEntityGroup(entGrpVM.Id);
 
-                    List<EntityGroupUser> oldUsers = new List<EntityGroupUser>();
+                    List<CFUserListEntry> oldUsers = new List<CFUserListEntry>();
                     if(entGrp != null)
-                        oldUsers = entGrp.EntityGroupUsers.ToList();
+                        oldUsers = entGrp.CFUserListEntries.ToList();
 
                     entGrp = entGrpVM.UpdateModel(entGrp); 
                     entGrp = EntityGroupService.EditEntityGroup(entGrp, oldUsers);
@@ -54,7 +54,7 @@ namespace Catfish.Areas.Manager.Controllers
                 }
                 else
                 {
-                    if(string.IsNullOrEmpty(entGrpVM.EntityGroupName))
+                    if(string.IsNullOrEmpty(entGrpVM.CFUserListName))
                     {
                         entGrpVM.ErrorMessage = "*";
                     }
@@ -67,17 +67,17 @@ namespace Catfish.Areas.Manager.Controllers
             return Json(entGrpVM);
         }
 
-        public EntityGroupViewModel PopulateEntityGroupViewModel(EntityGroup entityGrp)
+        public CFUserListViewModel PopulateEntityGroupViewModel(CFUserList entityGrp)
         {
-            EntityGroupViewModel entityGrpVM = new EntityGroupViewModel();
+            CFUserListViewModel entityGrpVM = new CFUserListViewModel();
             UserService userService = new UserService();
           
             entityGrpVM.AllUsers2 = userService.GetUserIdAndLoginName();
             entityGrpVM.Id = entityGrp.Id.ToString();
-            entityGrpVM.EntityGroupName = entityGrp.Name;
-            if(entityGrp.EntityGroupUsers.Count > 0)
+            entityGrpVM.CFUserListName = entityGrp.Name;
+            if(entityGrp.CFUserListEntries.Count > 0)
             {
-                foreach (EntityGroupUser egu in entityGrp.EntityGroupUsers)
+                foreach (CFUserListEntry egu in entityGrp.CFUserListEntries)
                 {
                    
                     var _usr = entityGrpVM.AllUsers2.FirstOrDefault(u => u.Key == egu.UserId.ToString());
@@ -93,14 +93,14 @@ namespace Catfish.Areas.Manager.Controllers
 
         #region knockout MVC methods
         [HttpPost]
-        public JsonResult AddUser(EntityGroupViewModel vm)
+        public JsonResult AddUser(CFUserListViewModel vm)
         {            
             vm.AddUser();
             return Json(vm);
         }
 
         [HttpPost]
-        public JsonResult RemoveSelected(EntityGroupViewModel vm)
+        public JsonResult RemoveSelected(CFUserListViewModel vm)
         {
             vm.RemoveSelected();
             return Json(vm);

@@ -109,6 +109,10 @@
     <Compile Include="Migrations\201803231638089_AddingLabelPropertyToEntityTypeAttributeMapping.Designer.cs">
       <DependentUpon>201803231638089_AddingLabelPropertyToEntityTypeAttributeMapping.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804251713131_RenameEntityGroupAndEntityGroupUserTable.cs" />
+    <Compile Include="Migrations\201804251713131_RenameEntityGroupAndEntityGroupUserTable.Designer.cs">
+      <DependentUpon>201804251713131_RenameEntityGroupAndEntityGroupUserTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Access\AccessDefinition.cs" />
     <Compile Include="Models\Access\AccessGroup.cs" />
@@ -125,7 +129,7 @@
     <Compile Include="Models\Data\DataObject.cs" />
     <Compile Include="Models\Data\FormSubmission.cs" />
     <Compile Include="Models\Entity.cs" />
-    <Compile Include="Models\EntityGroup.cs" />
+    <Compile Include="Models\CFUserList.cs" />
     <Compile Include="Models\EntityType.cs" />
     <Compile Include="Models\Data\DataFile.cs" />
     <Compile Include="Models\FileDescription.cs" />
@@ -158,7 +162,7 @@
       <DependentUpon>Validators.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\DataService.cs" />
-    <Compile Include="Services\EntityGroupService.cs" />
+    <Compile Include="Services\CFUserListService.cs" />
     <Compile Include="Services\EntityTypeService.cs" />
     <Compile Include="Services\IngestionService.cs" />
     <Compile Include="Services\SolrService.cs" />
@@ -199,6 +203,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803231638089_AddingLabelPropertyToEntityTypeAttributeMapping.resx">
       <DependentUpon>201803231638089_AddingLabelPropertyToEntityTypeAttributeMapping.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804251713131_RenameEntityGroupAndEntityGroupUserTable.resx">
+      <DependentUpon>201804251713131_RenameEntityGroupAndEntityGroupUserTable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Validators.resx">
       <Generator>ResXFileCodeGenerator</Generator>

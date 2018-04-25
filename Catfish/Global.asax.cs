@@ -127,9 +127,9 @@ namespace Catfish
 
             systemMenu.Items.Insert(idx++, new Manager.MenuItem {
 
-                Name = "Entity Group",
+                Name = "User List",
                 Action = "index",
-                Controller = "entitygroups",
+                Controller = "CFUserLists",
                 Permission = "ADMIN_CONTENT"
             });
              

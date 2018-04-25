@@ -90,7 +90,7 @@ namespace Catfish.Core.Models
                 });
 
             //define composite primary key for EntityGroupUser -- Jan 24 2018
-            builder.Entity<EntityGroupUser>().HasKey(t => new { t.EntityGroupId, t.UserId });
+            builder.Entity<CFUserListEntry>().HasKey(t => new { t.CFUserListId, t.UserId });
         }
 
         public DbSet<XmlModel> XmlModels { get; set; }
@@ -111,7 +111,7 @@ namespace Catfish.Core.Models
 
         public System.Data.Entity.DbSet<Catfish.Core.Models.Forms.TextField> TextFields { get; set; }
 
-        public DbSet<EntityGroup> EntityGroups { get; set; }
-        public DbSet<EntityGroupUser> EntityGroupUsers { get; set; }
+        public DbSet<CFUserList> CFUserLists { get; set; }
+        public DbSet<CFUserListEntry> CFUserListEntries { get; set; }
     }
 }
