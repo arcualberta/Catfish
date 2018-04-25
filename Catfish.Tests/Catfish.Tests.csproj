@@ -153,9 +153,7 @@
   <ItemGroup>
     <Compile Include="AccessDefinitionTests.cs" />
     <Compile Include="AccessGroupTests.cs" />
-    <Compile Include="EntityGroupTest.cs" />
     <Compile Include="EntityTests.cs" />
-    <Compile Include="EntityTypeTest.cs" />
     <Compile Include="Helpers\DatabaseHelper.cs" />
     <Compile Include="Helpers\MigrationSqLiteGenerator.cs" />
     <Compile Include="Helpers\ServerHelper.cs" />

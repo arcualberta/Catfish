@@ -8,14 +8,14 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models
 {
-    public class Item : Aggregation
+    public class Item : CFAggregation
     {
-        public virtual ICollection<Aggregation> ParentRelations { get; set; }
+        public virtual ICollection<CFAggregation> ParentRelations { get; set; }
 
         public Item()
             : base()
         {
-            ParentRelations = new List<Aggregation>();
+            ParentRelations = new List<CFAggregation>();
             Data.Add(new XElement("data"));
         }
 

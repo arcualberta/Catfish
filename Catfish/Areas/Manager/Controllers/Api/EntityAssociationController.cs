@@ -33,14 +33,14 @@ namespace Catfish.Areas.Manager.Controllers
                 if (vm.Id == 0)
                     throw new Exception("Parent model ID mnot specified");
 
-                Aggregation model = Db.XmlModels.Where(x => x.Id == vm.Id).FirstOrDefault() as Aggregation;
+                CFAggregation model = Db.XmlModels.Where(x => x.Id == vm.Id).FirstOrDefault() as CFAggregation;
                 if (model == null)
                     throw new Exception("Specified parent entity of type Aggregation not found");
 
                 //Associating children
                 foreach (var c in vm.ChildEntityList)
                 {
-                    Aggregation child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as Aggregation;
+                    CFAggregation child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFAggregation;
                     if (child == null)
                         throw new Exception("Id=" + c.Id + ": Specified child entity of type Aggregation not found");
 
@@ -50,7 +50,7 @@ namespace Catfish.Areas.Manager.Controllers
                 //Removing deleted children
                 foreach (var c in vm.RemovalPendingChildEntities)
                 {
-                    Aggregation child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as Aggregation;
+                    CFAggregation child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFAggregation;
                     model.ChildMembers.Remove(child);
                 }
 
@@ -76,7 +76,7 @@ namespace Catfish.Areas.Manager.Controllers
                 if (vm.Id == 0)
                     throw new Exception("Parent model ID mnot specified");
 
-                Aggregation model = Db.XmlModels.Where(x => x.Id == vm.Id).FirstOrDefault() as Aggregation;
+                CFAggregation model = Db.XmlModels.Where(x => x.Id == vm.Id).FirstOrDefault() as CFAggregation;
                 if (model == null)
                     throw new Exception("Specified parent entity of type Aggregation not found");
 

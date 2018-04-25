@@ -159,10 +159,10 @@ namespace Catfish.Core.Services
                 //saving the aggregation object
                 if (ingestion.Overwrite)
                 {
-                    Aggregation _aggregation = Db.XmlModels.Where(a => a.MappedGuid == newGuid).FirstOrDefault() as Aggregation;
+                    CFAggregation _aggregation = Db.XmlModels.Where(a => a.MappedGuid == newGuid).FirstOrDefault() as CFAggregation;
                     if(_aggregation != null)
                     {
-                        _aggregation =(Aggregation) agg;
+                        _aggregation =(CFAggregation) agg;
                         Db.Entry(_aggregation).State = System.Data.Entity.EntityState.Modified;
                     }
                     else
@@ -170,7 +170,7 @@ namespace Catfish.Core.Services
                         Type t = agg.GetType();
                         MethodInfo method = this.GetType().GetMethod("CreateAggregation");
                         MethodInfo genMethod = method.MakeGenericMethod(t);
-                        var _agg = (Aggregation)genMethod.Invoke(this, new object[] { agg });
+                        var _agg = (CFAggregation)genMethod.Invoke(this, new object[] { agg });
                         Db.Entities.Add(_agg);
                     }
                 }
@@ -179,7 +179,7 @@ namespace Catfish.Core.Services
                     Type t = agg.GetType();
                     MethodInfo method = this.GetType().GetMethod("CreateAggregation");
                     MethodInfo genMethod = method.MakeGenericMethod(t);
-                    var _agg = (Aggregation)genMethod.Invoke(this, new object[] { agg });
+                    var _agg = (CFAggregation)genMethod.Invoke(this, new object[] { agg });
                     Db.Entities.Add(_agg);
                 }
                 
@@ -219,8 +219,8 @@ namespace Catfish.Core.Services
         {
             try
             {
-                Aggregation parent = Db.XmlModels.Where(x => x.MappedGuid == parentGuid).FirstOrDefault() as Aggregation;
-                Aggregation child = Db.XmlModels.Where(x => x.MappedGuid == childGuid).FirstOrDefault() as Aggregation;
+                CFAggregation parent = Db.XmlModels.Where(x => x.MappedGuid == parentGuid).FirstOrDefault() as CFAggregation;
+                CFAggregation child = Db.XmlModels.Where(x => x.MappedGuid == childGuid).FirstOrDefault() as CFAggregation;
                 if(!overwrite)
                 { parent.ChildMembers.Add(child); }
                 else
@@ -228,7 +228,7 @@ namespace Catfish.Core.Services
                     //remove all child members first before adding new one
                     foreach(var c in parent.ChildMembers)
                     {
-                        Aggregation removeChild = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as Aggregation;
+                        CFAggregation removeChild = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFAggregation;
                         parent.ChildMembers.Remove(removeChild);
                     }
 
@@ -250,7 +250,7 @@ namespace Catfish.Core.Services
         {
             try
             {
-                Aggregation parent = Db.XmlModels.Where(x => x.MappedGuid == parentGuid).FirstOrDefault() as Aggregation;
+                CFAggregation parent = Db.XmlModels.Where(x => x.MappedGuid == parentGuid).FirstOrDefault() as CFAggregation;
                 Item child = Db.XmlModels.Where(x => x.MappedGuid == childGuid).FirstOrDefault() as Item;
                 if(!overwrite)
                    parent.ChildRelations.Add(child);
@@ -274,7 +274,7 @@ namespace Catfish.Core.Services
                 throw ex;
             }
         }
-        public T CreateAggregation<T>(XmlModel aggregation) where T : Aggregation, new()
+        public T CreateAggregation<T>(XmlModel aggregation) where T : CFAggregation, new()
         {  
             T agg = new T();
             string entityTypeName = aggregation.Data.Attribute("entity-type").Value;

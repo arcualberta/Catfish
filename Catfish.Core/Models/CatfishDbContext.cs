@@ -59,8 +59,8 @@ namespace Catfish.Core.Models
         {
             SetColumnTypes(builder);
 
-            builder.Entity<Aggregation>()
-                .HasMany<Aggregation>(p => p.ChildMembers)
+            builder.Entity<CFAggregation>()
+                .HasMany<CFAggregation>(p => p.ChildMembers)
                 .WithMany(c => c.ParentMembers)
                 .Map(t =>
                 {
@@ -69,7 +69,7 @@ namespace Catfish.Core.Models
                     t.ToTable("AggregationHasMembers");
                 });
 
-            builder.Entity<Aggregation>()
+            builder.Entity<CFAggregation>()
                 .HasMany<Item>(p => p.ChildRelations)
                 .WithMany(c => c.ParentRelations)
                 .Map(t =>
@@ -111,7 +111,7 @@ namespace Catfish.Core.Models
 
         public System.Data.Entity.DbSet<Catfish.Core.Models.Forms.TextField> TextFields { get; set; }
 
-        public DbSet<CFUserList> CFUserLists { get; set; }
-        public DbSet<CFUserListEntry> CFUserListEntries { get; set; }
+        public DbSet<CFUserList> UserLists { get; set; }
+        public DbSet<CFUserListEntry> UserListEntries { get; set; }
     }
 }

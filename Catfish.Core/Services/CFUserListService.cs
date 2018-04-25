@@ -15,7 +15,7 @@ namespace Catfish.Core.Services
 
         public IQueryable GetEntityGroups()
         {
-            return Db.CFUserLists.Include(eg=>eg.CFUserListEntries);
+            return Db.UserLists.Include(eg=>eg.CFUserListEntries);
         }
 
         public CFUserList GetEntityGroup(string id)
@@ -25,7 +25,7 @@ namespace Catfish.Core.Services
             if(!string.IsNullOrEmpty(id))
             {
                 Guid gId = Guid.Parse(id);
-                entityGroup = Db.CFUserLists.Where(eg => eg.Id == gId).Include(eg=>eg.CFUserListEntries)
+                entityGroup = Db.UserLists.Where(eg => eg.Id == gId).Include(eg=>eg.CFUserListEntries)
                                  .FirstOrDefault();
             }
 
@@ -47,11 +47,11 @@ namespace Catfish.Core.Services
 
                     //1. remove user from entityGRoupUser who were no longer associated with this entityGroup
                     if(userToRemove.Count > 0)
-                        Db.CFUserListEntries.RemoveRange(userToRemove);
+                        Db.UserListEntries.RemoveRange(userToRemove);
                     
                     //2. Add new User to be associated with this entityGroup
                     if(userToAdd.Count > 0)
-                        Db.CFUserListEntries.AddRange(userToAdd);
+                        Db.UserListEntries.AddRange(userToAdd);
 
                     //update existing entityGroup
                     Db.Entry(entityGroup).State = System.Data.Entity.EntityState.Modified;
@@ -60,8 +60,8 @@ namespace Catfish.Core.Services
                 {
                     //add new entity group
 
-                    entityGroup = Db.CFUserLists.Add(entityGroup);
-                    Db.CFUserListEntries.AddRange(entityGroup.CFUserListEntries);
+                    entityGroup = Db.UserLists.Add(entityGroup);
+                    Db.UserListEntries.AddRange(entityGroup.CFUserListEntries);
                    
                 }
                

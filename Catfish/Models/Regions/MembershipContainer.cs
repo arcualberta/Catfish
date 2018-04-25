@@ -35,14 +35,14 @@ namespace Catfish.Models.Regions
         [ScriptIgnore]
         public Entity Entity { get; set; }
         [ScriptIgnore]
-        public List<Aggregation> Memberships { get; set; }
+        public List<CFAggregation> Memberships { get; set; }
 
 
         public MembershipContainer()
         {
             CssClasses = "col-lg-12";
             CssStyles = "height:400px;";
-            Memberships = new List<Aggregation>();
+            Memberships = new List<CFAggregation>();
         }
 
         public override void InitManager(object model)
@@ -70,7 +70,7 @@ namespace Catfish.Models.Regions
                     EntityService es = new EntityService(db);
 
                     Entity = es.GetAnEntity(Convert.ToInt32(entityId));
-                    Memberships = (Entity as Aggregation).ChildMembers.ToList();
+                    Memberships = (Entity as CFAggregation).ChildMembers.ToList();
                     
                 }
             }

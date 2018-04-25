@@ -247,7 +247,7 @@ namespace Catfish.Core.Models.Ingestion
         {
             XElement result = new XElement("aggregations");
 
-            foreach(Aggregation aggregation in Aggregations)
+            foreach(CFAggregation aggregation in Aggregations)
             {
                 if (aggregation.Content != null)
                 {
