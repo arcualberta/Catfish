@@ -122,10 +122,10 @@
     <Compile Include="Models\Attributes\RankAttribute.cs" />
     <Compile Include="Models\Attributes\TypeLabelAttribute.cs" />
     <Compile Include="Models\CFAuditChangeLog.cs" />
-    <Compile Include="Models\AuditEntry.cs" />
+    <Compile Include="Models\CFAuditEntry.cs" />
     <Compile Include="Models\CatfishDbContext.cs" />
     <Compile Include="Models\FileOptions.cs" />
-    <Compile Include="Models\Collection.cs" />
+    <Compile Include="Models\CFCollection.cs" />
     <Compile Include="Models\Data\DataObject.cs" />
     <Compile Include="Models\Data\FormSubmission.cs" />
     <Compile Include="Models\Entity.cs" />

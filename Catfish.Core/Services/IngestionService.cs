@@ -304,7 +304,7 @@ namespace Catfish.Core.Services
 
         public Ingestion Export()
         {
-            IEnumerable<Collection> collections = Db.Collections;
+            IEnumerable<CFCollection> collections = Db.Collections;
             IEnumerable<Item> items = Db.Items;
             IEnumerable<EntityType> entitytypes = Db.EntityTypes;
             IEnumerable<MetadataSet> metadatasets = Db.MetadataSets;
@@ -321,7 +321,7 @@ namespace Catfish.Core.Services
             Item[] itemArray = items.ToArray();
 
             //find all item member in each collection
-            foreach(Collection col in collections.ToList())
+            foreach(CFCollection col in collections.ToList())
             {
                 foreach(Item itm in items.ToList())
                 {

@@ -34,7 +34,7 @@
                             <form action="@Url.Action("edit", controller, new { @id = m.Id })" method="get" class="inline">
                                 <button type="submit" value="Submit" class="glyphicon glyphicon-edit"></button>
                             </form>
-                            @if (typeof(Catfish.Core.Models.Collection).IsAssignableFrom(m.GetType()) ||
+                            @if (typeof(Catfish.Core.Models.CFCollection).IsAssignableFrom(m.GetType()) ||
                                  typeof(Catfish.Core.Models.Item).IsAssignableFrom(m.GetType()))
                             {
                                 <form action="@Url.Action("associations", controller, new { @id = m.Id })" method="get" class="inline">

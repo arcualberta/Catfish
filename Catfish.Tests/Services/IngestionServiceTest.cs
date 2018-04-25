@@ -279,7 +279,7 @@ namespace Catfish.Tests.Services
             DatabaseHelper Dh = new DatabaseHelper(true);
 
             // Build the Ingestion
-            Collection collection = Dh.Db.Collections.First();
+            CFCollection collection = Dh.Db.Collections.First();
             IEnumerable<Item> items = Dh.Db.Items.Take(2);
             IEnumerable<EntityType> entitytypes = Dh.Db.EntityTypes.Where(e => e.Id == collection.EntityType.Id || items.Select(i => i.EntityTypeId).Contains(e.Id)).Distinct();
             IEnumerable<MetadataSet> metadatasets = Dh.Db.MetadataSets.Where(m => entitytypes.SelectMany(e => e.MetadataSets.Select(mm => mm.Id)).Contains(m.Id)).Distinct();

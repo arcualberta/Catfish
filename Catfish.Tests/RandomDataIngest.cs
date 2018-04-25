@@ -25,7 +25,7 @@ namespace Catfish.Tests
             for(int i=0; i<COUNT; ++i)
             {
                 EntityType cType = collectionTypes[rand.Next(0, collectionTypes.Count)];
-                Collection c = srv.CreateEntity<Collection>(cType.Id);
+                CFCollection c = srv.CreateEntity<CFCollection>(cType.Id);
                 string name = TestData.LoremIpsum(5, 10);
                 c.SetName("Collection: " + name);
                 c.SetDescription(TestData.LoremIpsum(20, 100, 1, 10));

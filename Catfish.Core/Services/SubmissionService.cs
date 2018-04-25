@@ -128,7 +128,7 @@ namespace Catfish.Core.Services
 
             if(collectionId > 0)
             {
-                Collection collection = Db.Collections.Where(c => c.Id == collectionId).FirstOrDefault();
+                CFCollection collection = Db.Collections.Where(c => c.Id == collectionId).FirstOrDefault();
                 if (collection == null)
                     throw new Exception("Specified collection not found");
 

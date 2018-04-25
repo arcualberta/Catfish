@@ -34,7 +34,7 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Collections/children/5
         public ActionResult Associations(int id)
         {
-            Collection model = CollectionService.GetCollection(id);
+            CFCollection model = CollectionService.GetCollection(id);
             if (model == null)
                 return HttpNotFound("Collection was not found");
             
@@ -62,7 +62,7 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Collections/Edit/5
         public ActionResult Edit(int? id, int? entityTypeId)
         {
-            Collection model;
+            CFCollection model;
 
             if (id.HasValue && id.Value > 0)
             {
@@ -84,7 +84,7 @@ namespace Catfish.Areas.Manager.Controllers
                         EntityTypes = entityTypes
                     };
 
-                    model = new Collection();
+                    model = new CFCollection();
                 }
             }
 
@@ -93,11 +93,11 @@ namespace Catfish.Areas.Manager.Controllers
 
         // POST: Manager/Collections/Edit/5
         [HttpPost]
-        public ActionResult Edit(Collection model)
+        public ActionResult Edit(CFCollection model)
         {
             if (ModelState.IsValid)
             {
-                Collection dbModel = CollectionService.UpdateStoredCollection(model);
+                CFCollection dbModel = CollectionService.UpdateStoredCollection(model);
                 Db.SaveChanges(User.Identity);
 
                 if (model.Id == 0)

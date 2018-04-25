@@ -97,7 +97,7 @@ namespace Catfish.Core.Models
 
        public DbSet<Entity> Entities { get; set; }
 
-        public DbSet<Collection> Collections { get; set; }
+        public DbSet<CFCollection> Collections { get; set; }
 
         public DbSet<Item> Items { get; set; }
 

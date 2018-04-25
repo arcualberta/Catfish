@@ -22,7 +22,7 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="id">The id of the Collection to obtain.</param>
         /// <returns>The requested collection from the database. A null value is returned if no collection is found.</returns>
-        public Collection GetCollection(int id)
+        public CFCollection GetCollection(int id)
         {
             return Db.Collections.Where(c => c.Id == id).FirstOrDefault();
         }
@@ -32,7 +32,7 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="guid">The mapped guid of the Collection to obtain.</param>
         /// <returns>The requested collection from the database. A null value is returned if no collection is found.</returns>
-        public Collection GetCollection(string guid)
+        public CFCollection GetCollection(string guid)
         {
             return Db.Collections.Where(c => c.MappedGuid == guid).FirstOrDefault();
         }
@@ -41,7 +41,7 @@ namespace Catfish.Core.Services
         /// Get all collections accessable by the current user.
         /// </summary>
         /// <returns>The resulting list of collections.</returns>
-        public IQueryable<Collection> GetCollections()
+        public IQueryable<CFCollection> GetCollections()
         {
             return Db.Collections;
         }
@@ -52,7 +52,7 @@ namespace Catfish.Core.Services
         /// <param name="id">The id of the collection to be removed.</param>
         public void DeleteCollection(int id)
         {
-            Collection model = null;
+            CFCollection model = null;
             if (id > 0)
             {
                 model = Db.Collections.Where(et => et.Id == id).FirstOrDefault();
@@ -76,9 +76,9 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="entityTypeId">The Id of the entity type to connect to the collection.</param>
         /// <returns>The newly created collection.</returns>
-        public Collection CreateCollection(int entityTypeId)
+        public CFCollection CreateCollection(int entityTypeId)
         {
-            return CreateEntity<Collection>(entityTypeId);
+            return CreateEntity<CFCollection>(entityTypeId);
         }
 
         /// <summary>
@@ -86,9 +86,9 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="changedCollection">The collection content to be modified.</param>
         /// <returns>The modified database collection.</returns>
-        public Collection UpdateStoredCollection(Collection changedCollection)
+        public CFCollection UpdateStoredCollection(CFCollection changedCollection)
         {
-            Collection dbModel = new Collection();
+            CFCollection dbModel = new CFCollection();
 
             if (changedCollection.Id > 0)
             {
@@ -96,7 +96,7 @@ namespace Catfish.Core.Services
             }
             else
             {
-                dbModel = CreateEntity<Collection>(changedCollection.EntityTypeId.Value);
+                dbModel = CreateEntity<CFCollection>(changedCollection.EntityTypeId.Value);
             }
 
             //updating the "value" text elements
