@@ -14,9 +14,9 @@ namespace Catfish.Tests.Services
     [TestClass]
     public class CollectionServiceTest
     {
-        private Collection CreateCollection(CollectionService cs, int entityTypeId, string name, string description, bool store = false)
+        private CFCollection CreateCollection(CollectionService cs, int entityTypeId, string name, string description, bool store = false)
         {
-            Collection c = cs.CreateCollection(entityTypeId);
+            CFCollection c = cs.CreateCollection(entityTypeId);
             c.Name = name;
             c.Description = description;
 
@@ -38,7 +38,7 @@ namespace Catfish.Tests.Services
             string name = "Test 1";
             string description = "Description";
 
-            Collection c = CreateCollection(Cs, entityTypeId, name, description);
+            CFCollection c = CreateCollection(Cs, entityTypeId, name, description);
 
             Assert.AreEqual(name, c.Name);
             Assert.AreEqual(description, c.Description);
@@ -55,7 +55,7 @@ namespace Catfish.Tests.Services
             string name2 = "Test 3";
             string description2 = "New Description";
 
-            Collection c = CreateCollection(Cs, entityTypeId, name, description, true);
+            CFCollection c = CreateCollection(Cs, entityTypeId, name, description, true);
             Dh.Db.SaveChanges();
 
             c = Cs.GetCollection(c.Id);
@@ -74,7 +74,7 @@ namespace Catfish.Tests.Services
             Cs.UpdateStoredCollection(c);
             Dh.Db.SaveChanges();
 
-            Collection c2 = Cs.GetCollection(id);
+            CFCollection c2 = Cs.GetCollection(id);
 
             Assert.AreNotEqual(name, c2.Name);
             Assert.AreNotEqual(description, c2.Description);
@@ -92,16 +92,16 @@ namespace Catfish.Tests.Services
             string name = "Test 4";
             string description = "Descriptiony";
 
-            Collection c = CreateCollection(Cs, entityTypeId, name, description, true);
+            CFCollection c = CreateCollection(Cs, entityTypeId, name, description, true);
             Dh.Db.SaveChanges();
 
-            Collection c2 = Cs.GetCollection(c.Id);
+            CFCollection c2 = Cs.GetCollection(c.Id);
 
             int id = c.Id;
             Assert.AreEqual(name, c2.Name);
             Assert.AreEqual(description, c2.Description);
 
-            Collection c3 = Cs.GetCollection(c.Guid);
+            CFCollection c3 = Cs.GetCollection(c.Guid);
             Assert.AreEqual(id, c.Id);
             Assert.AreEqual(c2.Content, c3.Content);
         }
@@ -112,7 +112,7 @@ namespace Catfish.Tests.Services
             DatabaseHelper Dh = new DatabaseHelper(true);
             CollectionService Cs = new CollectionService(Dh.Db);
 
-            IQueryable<Collection> collections = Cs.GetCollections();
+            IQueryable<CFCollection> collections = Cs.GetCollections();
 
             Assert.AreEqual(DatabaseHelper.TOTAL_COLLECTIONS, collections.Count());
         }
@@ -125,9 +125,9 @@ namespace Catfish.Tests.Services
             Piranha.Entities.User admin = Dh.PDb.Users.First();
             IIdentity identity = new GenericIdentity(admin.Login, Dh.PDb.Groups.Find(admin.GroupId).Name);
 
-            Collection test = Cs.GetCollections().FirstOrDefault();
+            CFCollection test = Cs.GetCollections().FirstOrDefault();
             int id = test.Id;
-            IQueryable<Collection> collections = Cs.GetCollections();
+            IQueryable<CFCollection> collections = Cs.GetCollections();
 
             Assert.AreEqual(DatabaseHelper.TOTAL_COLLECTIONS, collections.Count());
 

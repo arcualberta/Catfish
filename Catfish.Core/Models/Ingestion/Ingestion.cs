@@ -269,7 +269,7 @@ namespace Catfish.Core.Models.Ingestion
                 switch (name)
                 {
                     case "collection":
-                        model = new Collection();
+                        model = new CFCollection();
                         break;
 
                     case "item":

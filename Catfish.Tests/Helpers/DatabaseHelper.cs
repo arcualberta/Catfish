@@ -267,7 +267,7 @@ namespace Catfish.Tests.Helpers
             for (int i = 0; i < TOTAL_COLLECTIONS; ++i)
             {
                 int index = i % ets.Count;
-                Collection c = Cs.CreateEntity<Collection>(ets[index]);
+                CFCollection c = Cs.CreateEntity<CFCollection>(ets[index]);
                 c.SetName("Collection " + (i + 1));
                 c.SetDescription("Description for Collection " + (i + 1));
                 

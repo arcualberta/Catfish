@@ -14,7 +14,7 @@ namespace Catfish.Controllers.Api
         {
             CatfishDbContext db = new CatfishDbContext();
             int items = db.XmlModels.Where(x => x is Item).Count();
-            int collections = db.XmlModels.Where(x => x is Collection).Count();
+            int collections = db.XmlModels.Where(x => x is CFCollection).Count();
             Object stats = new { Items = items, Collections = collections };
             return Json(stats, JsonRequestBehavior.AllowGet);
         }

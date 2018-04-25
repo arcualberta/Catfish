@@ -9,7 +9,7 @@ using System.Xml.Linq;
 namespace Catfish.Core.Models
 {
     [NotMapped]
-    public class AuditEntry
+    public class CFAuditEntry
     {
         public enum eAction { Other = 0, Create, Update, Delete, Grant, Revoke };
 
@@ -60,12 +60,12 @@ namespace Catfish.Core.Models
             }
         }
 
-        public AuditEntry(XElement data)
+        public CFAuditEntry(XElement data)
         {
             Data = data;
         }
 
-        public AuditEntry(eAction action, string actor, DateTime timestamp, List<CFAuditChangeLog> changes)
+        public CFAuditEntry(eAction action, string actor, DateTime timestamp, List<CFAuditChangeLog> changes)
         {
             Data = new XElement("entry");
             Action = action;

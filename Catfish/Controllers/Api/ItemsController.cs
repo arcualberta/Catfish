@@ -22,7 +22,7 @@ namespace Catfish.Controllers.Api
                 IEnumerable<Item> items;
                 if (collectionId > 0)
                 {
-                    Collection collection = CollectionService.GetCollection(collectionId);
+                    CFCollection collection = CollectionService.GetCollection(collectionId);
                     items = collection.ChildItems.Select(it => it as Item);
                 }
                 else
