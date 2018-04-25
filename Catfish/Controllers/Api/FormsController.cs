@@ -37,7 +37,7 @@ namespace Catfish.Controllers.Api
 
                 // Set's the audit log value when saving.
                 // TODO: this should be more automated.
-                AuditEntry.eAction action = submission.Id == 0 ? AuditEntry.eAction.Create : AuditEntry.eAction.Update;
+                CFAuditEntry.eAction action = submission.Id == 0 ? CFAuditEntry.eAction.Create : CFAuditEntry.eAction.Update;
                 string actor = User.Identity.IsAuthenticated ? User.Identity.Name : "Annonymous";
                 Db.SaveChanges(User.Identity);
             }

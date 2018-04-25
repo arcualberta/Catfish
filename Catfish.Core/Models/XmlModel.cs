@@ -572,26 +572,26 @@ namespace Catfish.Core.Models
         /// <param name="actor"></param>
         /// <param name="timestamp"></param>
         /// <returns></returns>
-        public AuditEntry FlushChangeLog(AuditEntry.eAction action, string actor, DateTime? timestamp = null)
+        public CFAuditEntry FlushChangeLog(CFAuditEntry.eAction action, string actor, DateTime? timestamp = null)
         {
-            AuditEntry entry = new AuditEntry(action, actor, timestamp.HasValue ? timestamp.Value : DateTime.Now, mChangeLog);
+            CFAuditEntry entry = new CFAuditEntry(action, actor, timestamp.HasValue ? timestamp.Value : DateTime.Now, mChangeLog);
             AddAuditEntry(entry);
             mChangeLog.Clear();
             return entry;
         }
 
-        public void AddAuditEntry(AuditEntry entry)
+        public void AddAuditEntry(CFAuditEntry entry)
         {
             GetAuditRoot().Add(entry.Data);
         }
-        public IEnumerable<AuditEntry> GetAuditTrail()
+        public IEnumerable<CFAuditEntry> GetAuditTrail()
         {
-            return GetAuditRoot().Elements("entry").Select(e => new AuditEntry(e));
+            return GetAuditRoot().Elements("entry").Select(e => new CFAuditEntry(e));
         }
 
         public string GetCreator()
         {
-            string xpath = "audit/entry[@action='" + AuditEntry.eAction.Create.ToString() + "']";
+            string xpath = "audit/entry[@action='" + CFAuditEntry.eAction.Create.ToString() + "']";
             XElement ele = GetChildElements(xpath, Data).FirstOrDefault();
             return ele == null ? null : ele.Attribute("user").Value;
         }

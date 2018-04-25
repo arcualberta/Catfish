@@ -37,7 +37,7 @@ namespace Catfish.Core.Models
                 {
                     if (entry.State != EntityState.Unchanged && entry.State != EntityState.Deleted)
                     {
-                        AuditEntry.eAction action = entry.Entity.Id == 0 ? AuditEntry.eAction.Create : AuditEntry.eAction.Update;
+                        CFAuditEntry.eAction action = entry.Entity.Id == 0 ? CFAuditEntry.eAction.Create : CFAuditEntry.eAction.Update;
                         entry.Entity.FlushChangeLog(action, actor);
                         entry.Entity.Serialize();
                     }
