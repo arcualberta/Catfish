@@ -65,7 +65,7 @@ namespace Catfish.Core.Models
             Data = data;
         }
 
-        public AuditEntry(eAction action, string actor, DateTime timestamp, List<AuditChangeLog> changes)
+        public AuditEntry(eAction action, string actor, DateTime timestamp, List<CFAuditChangeLog> changes)
         {
             Data = new XElement("entry");
             Action = action;
@@ -74,7 +74,7 @@ namespace Catfish.Core.Models
             AppendLog(changes);
         }
 
-        public void AppendLog(List<AuditChangeLog> changes)
+        public void AppendLog(List<CFAuditChangeLog> changes)
         {
             foreach (var change in changes)
             {
@@ -85,9 +85,9 @@ namespace Catfish.Core.Models
             }
         }
 
-        public IReadOnlyList<AuditChangeLog> GetChangeLog()
+        public IReadOnlyList<CFAuditChangeLog> GetChangeLog()
         {
-            return Data.Elements("log").Select(e => new AuditChangeLog(e.Attribute("target").Value, e.Value)).ToList();
+            return Data.Elements("log").Select(e => new CFAuditChangeLog(e.Attribute("target").Value, e.Value)).ToList();
         }
     }
 }

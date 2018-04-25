@@ -121,7 +121,7 @@
     <Compile Include="Models\Attributes\InputTypeAttribute.cs" />
     <Compile Include="Models\Attributes\RankAttribute.cs" />
     <Compile Include="Models\Attributes\TypeLabelAttribute.cs" />
-    <Compile Include="Models\AuditChangeLog.cs" />
+    <Compile Include="Models\CFAuditChangeLog.cs" />
     <Compile Include="Models\AuditEntry.cs" />
     <Compile Include="Models\CatfishDbContext.cs" />
     <Compile Include="Models\FileOptions.cs" />

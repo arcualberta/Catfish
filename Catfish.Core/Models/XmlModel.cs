@@ -128,7 +128,7 @@ namespace Catfish.Core.Models
             Data.SetAttributeValue("model-type", this.GetType().AssemblyQualifiedName);
             Data.SetAttributeValue("IsRequired", false);
             MappedGuid = Guid; //Creates and uses the guid.
-            mChangeLog = new List<AuditChangeLog>();
+            mChangeLog = new List<CFAuditChangeLog>();
         }
 
         public XElement GetWrapper(string tagName, bool createIfNotExist, bool enforceGuid)
@@ -551,10 +551,10 @@ namespace Catfish.Core.Models
 
         #region Audit Trail
 
-        private List<AuditChangeLog> mChangeLog;
+        private List<CFAuditChangeLog> mChangeLog;
         public void LogChange(string target, string description)
         {
-            mChangeLog.Add(new AuditChangeLog(target, description));
+            mChangeLog.Add(new CFAuditChangeLog(target, description));
         }
 
         protected XElement GetAuditRoot()
