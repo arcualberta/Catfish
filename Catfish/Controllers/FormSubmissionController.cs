@@ -23,7 +23,7 @@ namespace Catfish.Controllers
 
             FormContainer formContainer = model.Region<FormContainer>("FormContainer");
 
-            Form form = SubmissionService.CreateSubmissionForm(formContainer.FormId);
+            CFForm form = SubmissionService.CreateSubmissionForm(formContainer.FormId);
 
             FormViewModel vm = new FormViewModel()
             {

@@ -14,10 +14,10 @@ namespace Catfish.Tests.Services
     [TestClass]
     public class SubmissionServiceTest
     {
-        private Form CreateFormTemplate(SubmissionService subSrv, string name, string description, string questionPrefix)
+        private CFForm CreateFormTemplate(SubmissionService subSrv, string name, string description, string questionPrefix)
         {
             FormField field;
-            Form f = new Form();
+            CFForm f = new CFForm();
 
             f.Name = name;
             f.Description = description;
@@ -60,10 +60,10 @@ namespace Catfish.Tests.Services
             string testName = "Test 1";
             string testDescription = "This is a form for the first test.";
             string testPrefix = "Test 1 ";
-            Form form1 = CreateFormTemplate(SubSrv, testName, testDescription, testPrefix);
+            CFForm form1 = CreateFormTemplate(SubSrv, testName, testDescription, testPrefix);
             Dh.Db.SaveChanges();
 
-            Form form2 = SubSrv.GetForm<Form>(form1.Id);
+            CFForm form2 = SubSrv.GetForm<CFForm>(form1.Id);
 
             Assert.AreEqual(form2.Name, testName);
             Assert.AreEqual(form2.Description, testDescription);
@@ -88,10 +88,10 @@ namespace Catfish.Tests.Services
             string testName = "Test 2";
             string testDescription = "This is a form for the second test.";
             string testPrefix = "Test 2 ";
-            Form form1 = CreateFormTemplate(SubSrv, testName, testDescription, testPrefix);
+            CFForm form1 = CreateFormTemplate(SubSrv, testName, testDescription, testPrefix);
             Dh.Db.SaveChanges();
 
-            Form submission = SubSrv.CreateSubmissionForm(form1.Id);
+            CFForm submission = SubSrv.CreateSubmissionForm(form1.Id);
 
             Assert.AreEqual(submission.Name, testName);
             Assert.AreEqual(submission.Description, testDescription);

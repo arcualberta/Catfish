@@ -160,7 +160,7 @@
     <Compile Include="Models\Forms\SingleSelectOptionsField.cs" />
     <Compile Include="Models\Forms\TextArea.cs" />
     <Compile Include="Models\Forms\TextField.cs" />
-    <Compile Include="Models\Form.cs" />
+    <Compile Include="Models\CFForm.cs" />
     <Compile Include="Models\TextValue.cs" />
     <Compile Include="Models\XmlModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

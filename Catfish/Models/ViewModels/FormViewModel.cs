@@ -9,7 +9,7 @@ namespace Catfish.Models.ViewModels
 {
     public class FormViewModel
     {
-        public Form Form { get; set; }
+        public CFForm Form { get; set; }
 
         public List<DataFile> Files { get; set; }
 

@@ -12,12 +12,12 @@ namespace Catfish.Core.Models.Data
         public static string TagName { get { return "form-submission"; } }
         public override string GetTagName() { return TagName; }
 
-        public Form FormData
+        public CFForm FormData
         {
             get
             {
-                var xpath = "./data/" + Form.TagName;
-                Form form = GetChildModels(xpath, Data).FirstOrDefault() as Form;
+                var xpath = "./data/" + CFForm.TagName;
+                CFForm form = GetChildModels(xpath, Data).FirstOrDefault() as CFForm;
                 return form;
             }
         }
@@ -28,7 +28,7 @@ namespace Catfish.Core.Models.Data
                 Data.Add(new XElement("data"));
             else
             {
-                var xpath = "./data/" + Form.TagName;
+                var xpath = "./data/" + CFForm.TagName;
                 XElement ele = GetChildElements(xpath, Data).FirstOrDefault();
                 if (ele != null)
                     ele.Remove();
@@ -37,10 +37,10 @@ namespace Catfish.Core.Models.Data
             InsertChildElement("./data", formData);
         }
 
-        public void UpdateFormData(Form src)
+        public void UpdateFormData(CFForm src)
         {
-            var xpath = "./data/" + Form.TagName;
-            Form storedForm = GetChildModels(xpath, Data).FirstOrDefault() as Form;
+            var xpath = "./data/" + CFForm.TagName;
+            CFForm storedForm = GetChildModels(xpath, Data).FirstOrDefault() as CFForm;
             storedForm.UpdateValues(src);
         }
     }

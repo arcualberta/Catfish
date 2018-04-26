@@ -29,7 +29,7 @@ namespace Catfish.Core.Services
         /// Get all templates for forms.
         /// </summary>
         /// <returns>All form templates.</returns>
-        public IQueryable<Form> GetSubmissionTemplates()
+        public IQueryable<CFForm> GetSubmissionTemplates()
         {
             return Db.FormTemplates;
         }
@@ -68,14 +68,14 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="formTemplateId">The template to create the submission on.</param>
         /// <returns>The newly created submission.</returns>
-        public Form CreateSubmissionForm(int formTemplateId)
+        public CFForm CreateSubmissionForm(int formTemplateId)
         {
             //Obtaining the template
-            Form template = Db.FormTemplates.Where(m => m.Id == formTemplateId).FirstOrDefault();
+            CFForm template = Db.FormTemplates.Where(m => m.Id == formTemplateId).FirstOrDefault();
 
             //Creating a clone of the template and returning it. We don't want to return the template
             //itself to avoid saving user data into the template.
-            Form submission = new Form() { Data = template.Data };
+            CFForm submission = new CFForm() { Data = template.Data };
             submission.Id = template.Id;
 
             //Removing the audit trail from the created form since the current trail contains info
@@ -87,7 +87,7 @@ namespace Catfish.Core.Services
             return submission;
         }
 
-        public Item SaveSubmission(Form form, string formSubmissionRef, int itemId, int entityTypeId, int formTemplateId, int collectionId, IDictionary<string,string> metadataAttributeMapping=null)
+        public Item SaveSubmission(CFForm form, string formSubmissionRef, int itemId, int entityTypeId, int formTemplateId, int collectionId, IDictionary<string,string> metadataAttributeMapping=null)
         {
             Item submissionItem;
             if (itemId == 0)
@@ -109,7 +109,7 @@ namespace Catfish.Core.Services
             if(storedFormSubmission == null)
             {
                 //if no stored form is available, we need to clone the template
-                Form template = Db.FormTemplates.Where(m => m.Id == formTemplateId).FirstOrDefault();
+                CFForm template = Db.FormTemplates.Where(m => m.Id == formTemplateId).FirstOrDefault();
                 if (template == null)
                     throw new Exception("Form template does not exist.");
 

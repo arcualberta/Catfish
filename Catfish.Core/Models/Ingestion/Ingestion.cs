@@ -277,7 +277,7 @@ namespace Catfish.Core.Models.Ingestion
                         break;
 
                     case "form":
-                        model = new Form();
+                        model = new CFForm();
                         break;
 
                     case "file":
