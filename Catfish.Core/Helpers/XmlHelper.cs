@@ -22,9 +22,9 @@ namespace Catfish.Core.Helpers
             return ((IEnumerable)element.XPathEvaluate(xpath, NamespaceManager)).Cast<XElement>();
         }
 
-        public static IEnumerable<TextValue> GetTextValues(XElement element, bool forceAllLanguages = false, bool excludeBlanks = false)
+        public static IEnumerable<CFTextValue> GetTextValues(XElement element, bool forceAllLanguages = false, bool excludeBlanks = false)
         {
-            List<TextValue> ret = new List<TextValue>();
+            List<CFTextValue> ret = new List<CFTextValue>();
             List<string> languageCodes = ConfigHelper.LanguagesCodes;
 
             var children = element.Elements("text");
@@ -37,7 +37,7 @@ namespace Catfish.Core.Helpers
                 string lang = att == null ? "" : att.Value;
                 if (languageCodes.Contains(lang))
                 {
-                    TextValue txt = new TextValue(lang, ConfigHelper.GetLanguageLabel(lang), ele.Value);
+                    CFTextValue txt = new CFTextValue(lang, ConfigHelper.GetLanguageLabel(lang), ele.Value);
                     ret.Add(txt);
                 }
             }
@@ -47,7 +47,7 @@ namespace Catfish.Core.Helpers
                 foreach (var lang in ConfigHelper.Languages)
                 {
                     if (!ret.Where(t => t.LanguageCode == lang.TwoLetterISOLanguageName).Any())
-                        ret.Add(new TextValue(lang.TwoLetterISOLanguageName, lang.NativeName, ""));
+                        ret.Add(new CFTextValue(lang.TwoLetterISOLanguageName, lang.NativeName, ""));
                 }
             }
 

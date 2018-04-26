@@ -9,7 +9,7 @@ namespace Catfish.Core.Helpers
 {
     public class MultilingualHelper
     {
-        public static string Join(IEnumerable<TextValue> values, string separator = " / ", bool ignoreEmpty = true)
+        public static string Join(IEnumerable<CFTextValue> values, string separator = " / ", bool ignoreEmpty = true)
         {
             return string.Join(separator, values.Where(v => !string.IsNullOrEmpty(v.Value)).Select(v => v.Value));
         }

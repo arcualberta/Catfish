@@ -37,9 +37,9 @@ namespace Catfish.Tests.Services
                 Description = "This is a radio button field",
                 Options = new List<Option>
                 {
-                    new Option(){ Guid = Guid.NewGuid().ToString(), Value = new List<TextValue> (){ new TextValue("en", "One", "One") } },
-                    new Option(){ Guid = Guid.NewGuid().ToString(), Value = new List<TextValue> (){ new TextValue("en", "Two", "Two") } },
-                    new Option(){ Guid = Guid.NewGuid().ToString(), Value = new List<TextValue> (){ new TextValue("en", "Three", "Three") } },
+                    new Option(){ Guid = Guid.NewGuid().ToString(), Value = new List<CFTextValue> (){ new CFTextValue("en", "One", "One") } },
+                    new Option(){ Guid = Guid.NewGuid().ToString(), Value = new List<CFTextValue> (){ new CFTextValue("en", "Two", "Two") } },
+                    new Option(){ Guid = Guid.NewGuid().ToString(), Value = new List<CFTextValue> (){ new CFTextValue("en", "Three", "Three") } },
                 }
             };
             fields.Add(field);

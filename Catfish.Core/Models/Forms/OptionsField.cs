@@ -12,7 +12,7 @@ namespace Catfish.Core.Models.Forms
     [NotMapped]
     public class Option
     {
-        public List<TextValue> Value { get; set; }
+        public List<CFTextValue> Value { get; set; }
         public string Guid { get; set; }
         public bool Selected { get; set; }
 
@@ -25,7 +25,7 @@ namespace Catfish.Core.Models.Forms
 
         public Option()
         {
-            Value = new List<TextValue>();
+            Value = new List<CFTextValue>();
             Selected = false;
             Guid = System.Guid.NewGuid().ToString("N");
         }
@@ -35,7 +35,7 @@ namespace Catfish.Core.Models.Forms
             XElement optionElement = new XElement("option");
             optionElement.SetAttributeValue("selected", Selected);
             optionElement.SetAttributeValue("guid", Guid);
-            foreach (TextValue txt in Value)
+            foreach (CFTextValue txt in Value)
             {
                 XElement textEelemnt = new XElement("text", new XAttribute(XNamespace.Xml + "lang", txt.LanguageCode));
                 textEelemnt.Value = string.IsNullOrEmpty(txt.Value) ? "" : txt.Value;

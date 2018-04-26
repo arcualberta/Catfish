@@ -47,7 +47,7 @@ namespace Catfish.Core.Models.Forms
                 bool selected = false;
                 if(!string.IsNullOrEmpty(srcValue))
                 {
-                    IEnumerable<TextValue> dstValues = XmlHelper.GetTextValues(opt, false);
+                    IEnumerable<CFTextValue> dstValues = XmlHelper.GetTextValues(opt, false);
                     selected = dstValues.Where(d => d.LanguageCode == lang && d.Value == srcValue).Any();
                 }
                 opt.SetAttributeValue("selected", selected);
