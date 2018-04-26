@@ -152,12 +152,12 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         private void UpdateFileList(FormField field)
         {
 
-            List<DataFile> filesList = new List<DataFile>();
+            List<CFDataFile> filesList = new List<CFDataFile>();
             foreach (CFFileDescription fileDescription in field.Files)
             {
                 string fileGuid = fileDescription.Guid;
-                DataFile file = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
-                    .Select(m => m as DataFile)
+                CFDataFile file = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
+                    .Select(m => m as CFDataFile)
                     .FirstOrDefault();
 
                 if (file != null)
@@ -172,7 +172,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         //XXX Duplicating code from ItemService.cs UpdateFiles method
 
-        private void MoveFileToField(DataFile dataFile, FormField field)
+        private void MoveFileToField(CFDataFile dataFile, FormField field)
         {
 
             //DataFile dataFile = fileDescription.DataFile;
@@ -188,7 +188,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             File.Move(srcFile, dstFile);
 
             //moving the thumbnail, if it's not a shared one
-            if (dataFile.ThumbnailType == DataFile.eThumbnailTypes.NonShared)
+            if (dataFile.ThumbnailType == CFDataFile.eThumbnailTypes.NonShared)
             {
                 string srcThumbnail = Path.Combine(dataFile.Path, dataFile.Thumbnail);
                 string dstThumbnail = Path.Combine(dstDir, dataFile.Thumbnail);

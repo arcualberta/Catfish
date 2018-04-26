@@ -22,11 +22,11 @@ namespace Catfish.Core.Models
         public override string GetTagName() { return "item"; }
 
         [NotMapped]
-        public virtual IEnumerable<DataObject> DataObjects
+        public virtual IEnumerable<CFDataObject> DataObjects
         {
             get
             {
-                return GetChildModels("data/*", Data).Select(c => c as DataObject);
+                return GetChildModels("data/*", Data).Select(c => c as CFDataObject);
             }
         }
 
@@ -53,20 +53,20 @@ namespace Catfish.Core.Models
         private Attachment mAttachmentField;
 
         [NotMapped]
-        public virtual IEnumerable<DataFile> Files
+        public virtual IEnumerable<CFDataFile> Files
         {
             get
             {
-                return GetChildModels("data/" + DataFile.TagName, Data).Select(c => c as DataFile);
+                return GetChildModels("data/" + CFDataFile.TagName, Data).Select(c => c as CFDataFile);
             }
         }
 
         [NotMapped]
-        public virtual IEnumerable<FormSubmission> FormSubmissions
+        public virtual IEnumerable<CFFormSubmission> FormSubmissions
         {
             get
             {
-                return GetChildModels("data/" + FormSubmission.TagName, Data).Select(c => c as FormSubmission);
+                return GetChildModels("data/" + CFFormSubmission.TagName, Data).Select(c => c as CFFormSubmission);
             }
         }
 
@@ -77,7 +77,7 @@ namespace Catfish.Core.Models
         }
 
         // XXX copy this for files
-        public void AddData(DataObject obj)
+        public void AddData(CFDataObject obj)
         {
             GetDataObjectRoot().Add(obj.Data);
 
@@ -85,15 +85,15 @@ namespace Catfish.Core.Models
                 LogChange(obj.Guid, "Added data object");
         }
 
-        public FormSubmission GetFormSubmission(string formSubmissionRef)
+        public CFFormSubmission GetFormSubmission(string formSubmissionRef)
         {
-            var xpath = "./data/" + FormSubmission.TagName + "[@ref='" + formSubmissionRef + "']";
-            return GetChildModels(xpath, Data).FirstOrDefault() as FormSubmission;
+            var xpath = "./data/" + CFFormSubmission.TagName + "[@ref='" + formSubmissionRef + "']";
+            return GetChildModels(xpath, Data).FirstOrDefault() as CFFormSubmission;
         }
 
-        public void RemoveFile(DataFile file)
+        public void RemoveFile(CFDataFile file)
         {
-            var xpath = "./data/" + DataFile.TagName + "[@guid='" + file.Guid + "']";
+            var xpath = "./data/" + CFDataFile.TagName + "[@guid='" + file.Guid + "']";
             XElement fileElement = GetChildElements(xpath, Data).FirstOrDefault();
             if (fileElement == null)
                 throw new Exception("File does not exist.");

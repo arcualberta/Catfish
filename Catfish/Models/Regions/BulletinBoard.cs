@@ -49,7 +49,7 @@ namespace Catfish.Models.Regions
 
         public BulletinBoardItem(CFItem dataModel, RequestContext ctx, string fields)
         {
-            DataFile file = dataModel.Files.FirstOrDefault();
+            CFDataFile file = dataModel.Files.FirstOrDefault();
             FileViewModel vm = new FileViewModel(file, dataModel.Id, ctx);
             Id = dataModel.Id;
             Thumbnail = vm.Thumbnail;

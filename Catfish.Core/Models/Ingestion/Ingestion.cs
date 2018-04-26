@@ -281,7 +281,7 @@ namespace Catfish.Core.Models.Ingestion
                         break;
 
                     case "file":
-                        model = new DataFile();
+                        model = new CFDataFile();
                         break;
                 }
 

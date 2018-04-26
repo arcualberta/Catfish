@@ -105,7 +105,7 @@ namespace Catfish.Core.Services
                 Db.Entry(submissionItem).State = System.Data.Entity.EntityState.Modified;
             }
 
-            FormSubmission storedFormSubmission = submissionItem.GetFormSubmission(formSubmissionRef);
+            CFFormSubmission storedFormSubmission = submissionItem.GetFormSubmission(formSubmissionRef);
             if(storedFormSubmission == null)
             {
                 //if no stored form is available, we need to clone the template
@@ -113,7 +113,7 @@ namespace Catfish.Core.Services
                 if (template == null)
                     throw new Exception("Form template does not exist.");
 
-                storedFormSubmission = new FormSubmission();
+                storedFormSubmission = new CFFormSubmission();
                 storedFormSubmission.ReplaceFormData(new XElement(template.Data));
                 submissionItem.AddData(storedFormSubmission);
             }

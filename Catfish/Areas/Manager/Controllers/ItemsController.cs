@@ -158,7 +158,7 @@ namespace Catfish.Areas.Manager.Controllers
         {
             try
             {
-                List<DataFile> files = DataService.UploadTempFiles(Request);
+                List<CFDataFile> files = DataService.UploadTempFiles(Request);
                 Db.SaveChanges(User.Identity);
 
                 //Saving ids  of uploaded files in the session because these files and thumbnails
@@ -209,7 +209,7 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult File(int id, string guid)
         {
-            DataFile file = DataService.GetFile(id, guid);
+            CFDataFile file = DataService.GetFile(id, guid);
             if (file == null)
                 return HttpNotFound("File not found");
 
@@ -219,11 +219,11 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult Thumbnail(int id, string name)
         {
-            DataFile file = DataService.GetFile(id, name);
+            CFDataFile file = DataService.GetFile(id, name);
             if (file == null)
                 return HttpNotFound("File not found");
             var test = file.ThumbnailType;
-            string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared 
+            string path_name = file.ThumbnailType == CFDataFile.eThumbnailTypes.Shared 
                 ? Path.Combine(FileHelper.GetThumbnailRoot(Request), file.Thumbnail)
                 : Path.Combine(file.Path, file.Thumbnail);
 

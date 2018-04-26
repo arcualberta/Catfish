@@ -48,11 +48,11 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        public virtual DataFile DataFile
+        public virtual CFDataFile DataFile
         {
             get
             {
-                return GetChildModels(DataFile.TagName).FirstOrDefault() as DataFile;
+                return GetChildModels(CFDataFile.TagName).FirstOrDefault() as CFDataFile;
             }
 
             set
@@ -62,7 +62,7 @@ namespace Catfish.Core.Models
             }
         }
 
-        private void InitializeDataFile(DataFile dataFile)
+        private void InitializeDataFile(CFDataFile dataFile)
         {
             Data.Add(dataFile.Data);
         }
@@ -74,7 +74,7 @@ namespace Catfish.Core.Models
 
         public CFFileDescription()
         {
-            DataFile = new DataFile();
+            DataFile = new CFDataFile();
             Label = "";
             FileOptions = new CFFileOptions();
         }

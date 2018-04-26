@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Models.Data
 {
-    public abstract  class DataObject : CFEntity
+    public abstract  class CFDataObject : CFEntity
     {
     }
 }

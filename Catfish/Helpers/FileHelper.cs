@@ -33,7 +33,7 @@ namespace Catfish.Helpers
             return guidStore;
         }
 
-        public static void CacheGuids(HttpSessionStateBase session, List<DataFile> files)
+        public static void CacheGuids(HttpSessionStateBase session, List<CFDataFile> files)
         {
             foreach (var f in files)
                 GetGuidCache(session).Add(f.Guid);

@@ -138,12 +138,12 @@
     <Compile Include="Models\CatfishDbContext.cs" />
     <Compile Include="Models\CFFileOptions.cs" />
     <Compile Include="Models\CFCollection.cs" />
-    <Compile Include="Models\Data\DataObject.cs" />
-    <Compile Include="Models\Data\FormSubmission.cs" />
+    <Compile Include="Models\Data\CFDataObject.cs" />
+    <Compile Include="Models\Data\CFFormSubmission.cs" />
     <Compile Include="Models\CFEntity.cs" />
     <Compile Include="Models\CFUserList.cs" />
     <Compile Include="Models\CFEntityType.cs" />
-    <Compile Include="Models\Data\DataFile.cs" />
+    <Compile Include="Models\Data\CFDataFile.cs" />
     <Compile Include="Models\CFFileDescription.cs" />
     <Compile Include="Models\Forms\AbstractForm.cs" />
     <Compile Include="Models\Forms\Attachment.cs" />

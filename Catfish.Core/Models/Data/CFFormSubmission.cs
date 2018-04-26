@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Data
 {
-    public class FormSubmission : DataObject
+    public class CFFormSubmission : CFDataObject
     {
         public static string TagName { get { return "form-submission"; } }
         public override string GetTagName() { return TagName; }

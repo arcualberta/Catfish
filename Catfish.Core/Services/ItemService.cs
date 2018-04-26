@@ -95,7 +95,7 @@ namespace Catfish.Core.Services
             List<string> keepFileGuids = srcAttachmentField.FileGuids.Split(new char[] { Attachment.FileGuidSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
             //Removing attachments that are in the dbModel but not in attachments to be kept
-            foreach (DataFile file in dstItem.Files.ToList())
+            foreach (CFDataFile file in dstItem.Files.ToList())
             {
                 if (keepFileGuids.IndexOf(file.Guid) < 0)
                 {
@@ -109,8 +109,8 @@ namespace Catfish.Core.Services
             {
                 if (dstItem.Files.Where(f => f.Guid == fileGuid).Any() == false)
                 {
-                    DataFile file = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
-                        .Select(m => m as DataFile)
+                    CFDataFile file = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
+                        .Select(m => m as CFDataFile)
                         .FirstOrDefault();
 
                     if (file != null)
@@ -131,7 +131,7 @@ namespace Catfish.Core.Services
                         File.Move(srcFile, dstFile);
 
                         //moving the thumbnail, if it's not a shared one
-                        if (file.ThumbnailType == DataFile.eThumbnailTypes.NonShared)
+                        if (file.ThumbnailType == CFDataFile.eThumbnailTypes.NonShared)
                         {
                             string srcThumbnail = Path.Combine(file.Path, file.Thumbnail);
                             string dstThumbnail = Path.Combine(dstDir, file.Thumbnail);
