@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Catfish.Core.Models
 {
-    [TypeLabel("Entity Type")]
+    [CFTypeLabel("Entity Type")]
     public class CFEntityType
     {
         public enum eTarget { None = 0, Collections, Items, Files, Forms };

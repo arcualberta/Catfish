@@ -51,7 +51,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             //FieldFileGuids = src.FieldFileGuidsArray;
             //Files = src.Files;
 
-            TypeLabelAttribute att = Attribute.GetCustomAttribute(formField.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
+            CFTypeLabelAttribute att = Attribute.GetCustomAttribute(formField.GetType(), typeof(CFTypeLabelAttribute)) as CFTypeLabelAttribute;
             TypeLabel = att == null ? formField.GetType().ToString() : att.Name;
 
             IsOptionField = typeof(OptionsField).IsAssignableFrom(formField.GetType());

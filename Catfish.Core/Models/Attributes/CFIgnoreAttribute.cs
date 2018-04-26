@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Catfish.Core.Models.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
-    public class IgnoreAttribute : Attribute
+    public class CFIgnoreAttribute : Attribute
     {
     }
 }

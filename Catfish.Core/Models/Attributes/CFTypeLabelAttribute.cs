@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace Catfish.Core.Models.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
-    public class TypeLabelAttribute : Attribute
+    public class CFTypeLabelAttribute : Attribute
     {
         public string Name { get; set; }
 
-        public TypeLabelAttribute(string name)
+        public CFTypeLabelAttribute(string name)
         {
             Name = name;
         }

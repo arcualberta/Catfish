@@ -68,7 +68,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 TargetType[(int)tt] = true;
             }
 
-            TypeLabelAttribute att = Attribute.GetCustomAttribute(model.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
+            CFTypeLabelAttribute att = Attribute.GetCustomAttribute(model.GetType(), typeof(CFTypeLabelAttribute)) as CFTypeLabelAttribute;
             TypeLabel = att == null ? model.GetType().ToString() : att.Name;
 
             //populating the available metadata sets array

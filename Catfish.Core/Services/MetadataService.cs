@@ -35,7 +35,7 @@ namespace Catfish.Core.Services
         {
             var fieldTypes = typeof(FormField).Assembly.GetTypes()
                 .Where(t => t.IsSubclassOf(typeof(FormField)) 
-                    && !t.CustomAttributes.Where(a => a.AttributeType.IsAssignableFrom(typeof(IgnoreAttribute))).Any())
+                    && !t.CustomAttributes.Where(a => a.AttributeType.IsAssignableFrom(typeof(CFIgnoreAttribute))).Any())
                 .ToList();
 
 

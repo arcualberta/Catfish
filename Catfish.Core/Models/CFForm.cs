@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Models
 {
-    [TypeLabel("Form Template")]
+    [CFTypeLabel("Form Template")]
     public class CFForm : AbstractForm
     {
         public static string TagName { get { return "form"; } }

@@ -219,7 +219,7 @@ namespace Catfish.Core.Models
         
 
         [NotMapped]
-        [TypeLabel("String")]
+        [CFTypeLabel("String")]
         public virtual string Name { get { return GetName(); } set { SetName(value); } }
 
         public virtual string GetName(string lang = null, bool tryReturnNoneEmpty = false)
@@ -254,7 +254,7 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        [TypeLabel("String")]
+        [CFTypeLabel("String")]
         public virtual string Description { get { return GetDescription(); } set { SetDescription(value); } }
 
         public virtual string GetDescription(string lang = null)

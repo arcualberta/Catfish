@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Forms
 {
-    [TypeLabel("Attachment Field")]
+    [CFTypeLabel("Attachment Field")]
     public class Attachment : FormField
     {
         //public static char FileGuidSeparator = '|';

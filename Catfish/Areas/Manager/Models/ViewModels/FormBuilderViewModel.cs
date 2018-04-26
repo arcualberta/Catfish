@@ -32,7 +32,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public FormBuilderViewModel(AbstractForm src)
         {
             Id = src.Id;
-            TypeLabelAttribute att = Attribute.GetCustomAttribute(src.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
+            CFTypeLabelAttribute att = Attribute.GetCustomAttribute(src.GetType(), typeof(CFTypeLabelAttribute)) as CFTypeLabelAttribute;
             TypeLabel = att == null ? src.GetType().ToString() : att.Name;
 
             Name = src.Name;
@@ -75,12 +75,12 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
                 var fieldTypes = typeof(FormField).Assembly.GetTypes()
                     .Where(t => t.IsSubclassOf(typeof(FormField))
-                        && !t.CustomAttributes.Where(a => a.AttributeType.IsAssignableFrom(typeof(IgnoreAttribute))).Any())
+                        && !t.CustomAttributes.Where(a => a.AttributeType.IsAssignableFrom(typeof(CFIgnoreAttribute))).Any())
                     .ToList();
 
                 foreach (var t in fieldTypes)
                 {
-                    TypeLabelAttribute att = Attribute.GetCustomAttribute(t, typeof(TypeLabelAttribute)) as TypeLabelAttribute;
+                    CFTypeLabelAttribute att = Attribute.GetCustomAttribute(t, typeof(CFTypeLabelAttribute)) as CFTypeLabelAttribute;
 
                     //We expect Metadata Fields that are usable by the interface
                     //to have a TypeLabel attribute to be defined (and labeled)

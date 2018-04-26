@@ -4,7 +4,7 @@ using System.Web;
 
 namespace Catfish.Core.Models.Forms
 {
-    [TypeLabel("Client info")]
+    [CFTypeLabel("Client info")]
     public class ClientInfo : FormField
     {
         public string GetInfo(HttpContextBase context)

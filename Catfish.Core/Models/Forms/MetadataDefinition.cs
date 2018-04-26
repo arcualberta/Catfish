@@ -11,7 +11,7 @@ using System.Xml.Linq;
 namespace Catfish.Core.Models.Forms
 {
     [Obsolete]
-    [TypeLabel("Metadata Definition")]
+    [CFTypeLabel("Metadata Definition")]
     public class MetadataDefinition
     {
         [XmlIgnore]

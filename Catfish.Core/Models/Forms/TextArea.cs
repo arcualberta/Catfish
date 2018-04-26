@@ -2,7 +2,7 @@
 
 namespace Catfish.Core.Models.Forms
 {
-    [TypeLabel("Paragraph")]
+    [CFTypeLabel("Paragraph")]
     public class TextArea : FormField
     {
     }

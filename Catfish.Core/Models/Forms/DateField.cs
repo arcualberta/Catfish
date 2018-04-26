@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Forms
 {
-    [TypeLabel("Date")]
+    [CFTypeLabel("Date")]
     public class DateField : FormField
     {
         [NotMapped]
