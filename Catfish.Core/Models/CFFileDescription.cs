@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models
 {
-    public class FileDescription : XmlModel
+    public class CFFileDescription : XmlModel
     {
         public static string TagName { get { return "file-description"; } }     
         public override string GetTagName() { return TagName; }
@@ -72,7 +72,7 @@ namespace Catfish.Core.Models
             Data.Add(fileOptions.Data);
         }
 
-        public FileDescription()
+        public CFFileDescription()
         {
             DataFile = new DataFile();
             Label = "";

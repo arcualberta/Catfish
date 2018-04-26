@@ -23,11 +23,11 @@ namespace Catfish.Core.Models.Forms
         public static char FileGuidSeparator = '|';
 
         [NotMapped]
-        public List<FileDescription> Files
+        public List<CFFileDescription> Files
         {
             get
             {
-                return GetChildModels("files/" + FileDescription.TagName).Select(c => c as FileDescription).ToList();
+                return GetChildModels("files/" + CFFileDescription.TagName).Select(c => c as CFFileDescription).ToList();
             }
 
             set
@@ -38,7 +38,7 @@ namespace Catfish.Core.Models.Forms
                     filesElement = new XElement("files");
                     Data.Add(filesElement);
                 }
-                foreach (FileDescription fileDescription in value)
+                foreach (CFFileDescription fileDescription in value)
                 {
                     filesElement.Add(fileDescription.Data);
                 }

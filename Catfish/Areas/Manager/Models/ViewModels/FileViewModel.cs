@@ -41,7 +41,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             InitializeInstance(src, id, HttpContext.Current.Request.RequestContext, "Items");
         }
 
-        public FileViewModel(FileDescription fileDescription, int? id)
+        public FileViewModel(CFFileDescription fileDescription, int? id)
         {
             InitializeInstance(fileDescription, id);
         }
@@ -64,16 +64,16 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             return dataFile;
         }
 
-        public FileDescription ToFileDescription()
+        public CFFileDescription ToFileDescription()
         {
-            FileDescription fileDescription = new FileDescription();
+            CFFileDescription fileDescription = new CFFileDescription();
             fileDescription.DataFile = ToDataFile();
             fileDescription.Label = Label;
             fileDescription.FileOptions.PlayOnce = PlayOnce;
             return fileDescription;
         }      
 
-        private void InitializeInstance(FileDescription fileDescription, int? id)
+        private void InitializeInstance(CFFileDescription fileDescription, int? id)
         {
             Label = fileDescription.Label;
             PlayOnce = fileDescription.FileOptions.PlayOnce;

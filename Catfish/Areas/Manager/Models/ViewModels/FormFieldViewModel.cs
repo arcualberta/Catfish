@@ -99,7 +99,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.Page = Page;
 
             field.Files = Files != null ? Files.Select(m => m.ToFileDescription()).ToList() :
-                 new List<FileDescription>();
+                 new List<CFFileDescription>();
 
 
             UpdateFileList(field);
@@ -153,7 +153,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         {
 
             List<DataFile> filesList = new List<DataFile>();
-            foreach (FileDescription fileDescription in field.Files)
+            foreach (CFFileDescription fileDescription in field.Files)
             {
                 string fileGuid = fileDescription.Guid;
                 DataFile file = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)

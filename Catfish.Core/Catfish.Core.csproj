@@ -140,7 +140,7 @@
     <Compile Include="Models\CFUserList.cs" />
     <Compile Include="Models\CFEntityType.cs" />
     <Compile Include="Models\Data\DataFile.cs" />
-    <Compile Include="Models\FileDescription.cs" />
+    <Compile Include="Models\CFFileDescription.cs" />
     <Compile Include="Models\Forms\AbstractForm.cs" />
     <Compile Include="Models\Forms\Attachment.cs" />
     <Compile Include="Models\Forms\ClientInfo.cs" />
