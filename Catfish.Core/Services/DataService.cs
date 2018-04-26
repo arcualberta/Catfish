@@ -121,8 +121,8 @@ namespace Catfish.Core.Services
             if (model is DataFile && model.Guid == guid)
                 return model as DataFile;
 
-            if (checkInItems && model is Item)
-                return (model as Item).Files.Where(f => f.Guid == guid).FirstOrDefault();
+            if (checkInItems && model is CFItem)
+                return (model as CFItem).Files.Where(f => f.Guid == guid).FirstOrDefault();
 
             if (typeof(AbstractForm).IsAssignableFrom(model.GetType()))            
                 return (model as AbstractForm).Fields.SelectMany(m => m.Files).Where(m => m.DataFile.Guid == guid).FirstOrDefault().DataFile;

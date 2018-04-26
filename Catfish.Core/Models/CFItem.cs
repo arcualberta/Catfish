@@ -8,11 +8,11 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models
 {
-    public class Item : CFAggregation
+    public class CFItem : CFAggregation
     {
         public virtual ICollection<CFAggregation> ParentRelations { get; set; }
 
-        public Item()
+        public CFItem()
             : base()
         {
             ParentRelations = new List<CFAggregation>();

@@ -25,7 +25,7 @@ namespace Catfish.Core.Services
         /// Get all items accessable by the current user.
         /// </summary>
         /// <returns>The resulting list of items.</returns>
-        public IQueryable<Item> GetItems()
+        public IQueryable<CFItem> GetItems()
         {
             return Db.Items;
         }
@@ -35,7 +35,7 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="id">The id of the Item to obtain.</param>
         /// <returns>The requested Item from the database. A null value is returned if no item is found.</returns>
-        public Item GetItem(int id)
+        public CFItem GetItem(int id)
         {
             return Db.Items.Where(i => i.Id == id).FirstOrDefault();
         }
@@ -45,7 +45,7 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="guid">The mapped guid of the Item to obtain.</param>
         /// <returns>The requested item from the database. A null value is returned if no item is found.</returns>
-        public Item GetItem(string guid)
+        public CFItem GetItem(string guid)
         {
             return Db.Items.Where(c => c.MappedGuid == guid).FirstOrDefault();
         }
@@ -56,7 +56,7 @@ namespace Catfish.Core.Services
         /// <param name="id">The id of the item to be removed.</param>
         public void DeleteItem(int id)
         {
-            Item model = null;
+            CFItem model = null;
             if (id > 0)
             {
                 model = GetItem(id);
@@ -80,17 +80,17 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="entityTypeId">The Id of the entity type to connect to the item.</param>
         /// <returns>The newly created item.</returns>
-        public Item CreateItem(int entityTypeId)
+        public CFItem CreateItem(int entityTypeId)
         {
-            return CreateEntity<Item>(entityTypeId);
+            return CreateEntity<CFItem>(entityTypeId);
         }
 
-        protected void UpdateFiles(Item srcItem, Item dstItem)
+        protected void UpdateFiles(CFItem srcItem, CFItem dstItem)
         {
             UpdateFiles(srcItem.AttachmentField, dstItem);
         }
 
-        protected void UpdateFiles(Attachment srcAttachmentField, Item dstItem)
+        protected void UpdateFiles(Attachment srcAttachmentField, CFItem dstItem)
         {
             List<string> keepFileGuids = srcAttachmentField.FileGuids.Split(new char[] { Attachment.FileGuidSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
@@ -150,17 +150,17 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="changedItem">The item content to be modified.</param>
         /// <returns>The modified database item.</returns>
-        public Item UpdateStoredItem(Item changedItem)
+        public CFItem UpdateStoredItem(CFItem changedItem)
         {
-            Item dbModel = new Item();
+            CFItem dbModel = new CFItem();
 
             if (changedItem.Id > 0)
             {
-                dbModel = Db.XmlModels.Find(changedItem.Id) as Item;
+                dbModel = Db.XmlModels.Find(changedItem.Id) as CFItem;
             }
             else
             {
-                dbModel = CreateEntity<Item>(changedItem.EntityTypeId.Value);
+                dbModel = CreateEntity<CFItem>(changedItem.EntityTypeId.Value);
             }
 
             //updating the "value" text elements

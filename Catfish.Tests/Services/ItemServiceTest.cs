@@ -14,9 +14,9 @@ namespace Catfish.Tests.Services
     [TestClass]
     public class ItemServiceTest
     {
-        private Item CreateItem(ItemService itemSrv, int entityTypeId, string name, string description, bool store = false)
+        private CFItem CreateItem(ItemService itemSrv, int entityTypeId, string name, string description, bool store = false)
         {
-            Item i = itemSrv.CreateItem(entityTypeId);
+            CFItem i = itemSrv.CreateItem(entityTypeId);
             i.Name = name;
             i.Description = description;
 
@@ -38,7 +38,7 @@ namespace Catfish.Tests.Services
             string name = "Test 1";
             string description = "Description";
 
-            Item i = CreateItem(Is, entityTypeId, name, description);
+            CFItem i = CreateItem(Is, entityTypeId, name, description);
 
             Assert.AreEqual(name, i.Name);
             Assert.AreEqual(description, i.Description);
@@ -55,7 +55,7 @@ namespace Catfish.Tests.Services
             string name2 = "Test 3";
             string description2 = "New Description";
 
-            Item i = CreateItem(Is, entityTypeId, name, description, true);
+            CFItem i = CreateItem(Is, entityTypeId, name, description, true);
             Dh.Db.SaveChanges();
 
             i = Is.GetItem(i.Id);
@@ -74,7 +74,7 @@ namespace Catfish.Tests.Services
             Is.UpdateStoredItem(i);
             Dh.Db.SaveChanges();
 
-            Item i2 = Is.GetItem(id);
+            CFItem i2 = Is.GetItem(id);
 
             Assert.AreNotEqual(name, i2.Name);
             Assert.AreNotEqual(description, i2.Description);
@@ -92,16 +92,16 @@ namespace Catfish.Tests.Services
             string name = "Test 4";
             string description = "Descriptiony";
 
-            Item i = CreateItem(Is, entityTypeId, name, description, true);
+            CFItem i = CreateItem(Is, entityTypeId, name, description, true);
             Dh.Db.SaveChanges();
 
-            Item i2 = Is.GetItem(i.Id);
+            CFItem i2 = Is.GetItem(i.Id);
 
             int id = i.Id;
             Assert.AreEqual(name, i2.Name);
             Assert.AreEqual(description, i2.Description);
 
-            Item i3 = Is.GetItem(i.Guid);
+            CFItem i3 = Is.GetItem(i.Guid);
             Assert.AreEqual(id, i.Id);
             Assert.AreEqual(i2.Content, i3.Content);
         }
@@ -112,7 +112,7 @@ namespace Catfish.Tests.Services
             DatabaseHelper Dh = new DatabaseHelper(true);
             ItemService Is = new ItemService(Dh.Db);
 
-            IQueryable<Item> items = Is.GetItems();
+            IQueryable<CFItem> items = Is.GetItems();
 
             Assert.AreEqual(DatabaseHelper.TOTAL_ITEMS, items.Count());
         }
@@ -125,9 +125,9 @@ namespace Catfish.Tests.Services
             Piranha.Entities.User admin = Dh.PDb.Users.First();
             IIdentity identity = new GenericIdentity(admin.Login, Dh.PDb.Groups.Find(admin.GroupId).Name);
 
-            Item test = Is.GetItems().FirstOrDefault();
+            CFItem test = Is.GetItems().FirstOrDefault();
             int id = test.Id;
-            IQueryable<Item> items = Is.GetItems();
+            IQueryable<CFItem> items = Is.GetItems();
 
             Assert.AreEqual(DatabaseHelper.TOTAL_ITEMS, items.Count());
 

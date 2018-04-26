@@ -47,7 +47,7 @@ namespace Catfish.Models.Regions
 
         public List<MetadataFieldValue> Metadata { get; set; }
 
-        public BulletinBoardItem(Item dataModel, RequestContext ctx, string fields)
+        public BulletinBoardItem(CFItem dataModel, RequestContext ctx, string fields)
         {
             DataFile file = dataModel.Files.FirstOrDefault();
             FileViewModel vm = new FileViewModel(file, dataModel.Id, ctx);

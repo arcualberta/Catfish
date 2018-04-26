@@ -19,11 +19,11 @@ namespace Catfish.Controllers.Api
         {
             try
             {
-                IEnumerable<Item> items;
+                IEnumerable<CFItem> items;
                 if (collectionId > 0)
                 {
                     CFCollection collection = CollectionService.GetCollection(collectionId);
-                    items = collection.ChildItems.Select(it => it as Item);
+                    items = collection.ChildItems.Select(it => it as CFItem);
                 }
                 else
                 {

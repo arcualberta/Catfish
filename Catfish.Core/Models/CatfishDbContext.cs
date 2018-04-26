@@ -70,7 +70,7 @@ namespace Catfish.Core.Models
                 });
 
             builder.Entity<CFAggregation>()
-                .HasMany<Item>(p => p.ChildRelations)
+                .HasMany<CFItem>(p => p.ChildRelations)
                 .WithMany(c => c.ParentRelations)
                 .Map(t =>
                 {
@@ -99,7 +99,7 @@ namespace Catfish.Core.Models
 
         public DbSet<CFCollection> Collections { get; set; }
 
-        public DbSet<Item> Items { get; set; }
+        public DbSet<CFItem> Items { get; set; }
 
         public DbSet<CFEntityType> EntityTypes { get; set; }
 

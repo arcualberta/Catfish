@@ -87,12 +87,12 @@ namespace Catfish.Core.Services
             return submission;
         }
 
-        public Item SaveSubmission(CFForm form, string formSubmissionRef, int itemId, int entityTypeId, int formTemplateId, int collectionId, IDictionary<string,string> metadataAttributeMapping=null)
+        public CFItem SaveSubmission(CFForm form, string formSubmissionRef, int itemId, int entityTypeId, int formTemplateId, int collectionId, IDictionary<string,string> metadataAttributeMapping=null)
         {
-            Item submissionItem;
+            CFItem submissionItem;
             if (itemId == 0)
             {
-                submissionItem = CreateEntity<Item>(entityTypeId);
+                submissionItem = CreateEntity<CFItem>(entityTypeId);
                // submissionItem.m
                 Db.Items.Add(submissionItem);
             }

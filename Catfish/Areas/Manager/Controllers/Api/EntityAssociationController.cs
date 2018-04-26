@@ -83,7 +83,7 @@ namespace Catfish.Areas.Manager.Controllers
                 //Associating children
                 foreach (var c in vm.ChildEntityList)
                 {
-                    Item child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as Item;
+                    CFItem child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFItem;
                     if (child == null)
                         throw new Exception("Id=" + c.Id + ": Specified related item not found");
 
@@ -93,7 +93,7 @@ namespace Catfish.Areas.Manager.Controllers
                 //Removing deleted children
                 foreach (var c in vm.RemovalPendingChildEntities)
                 {
-                    Item child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as Item;
+                    CFItem child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFItem;
                     model.ChildRelations.Remove(child);
                 }
 

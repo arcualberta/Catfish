@@ -27,7 +27,7 @@ namespace Catfish.Controllers.Api
                 {
                     attributeMappings.Add(map.AttributeName, map.FieldName);
                 }
-                Item submission = subSrv.SaveSubmission(
+                CFItem submission = subSrv.SaveSubmission(
                     vm.Form,
                     vm.FormSubmissionRef,
                     vm.ItemId,

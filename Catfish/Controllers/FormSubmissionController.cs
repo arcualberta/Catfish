@@ -42,7 +42,7 @@ namespace Catfish.Controllers
             if (ModelState.IsValid)
             {
                 FormContainer formContainer = model.Region<FormContainer>("FormContainer");
-                Item submission = SubmissionService.SaveSubmission(
+                CFItem submission = SubmissionService.SaveSubmission(
                     vm.Form,
                     vm.FormSubmissionRef,
                     vm.ItemId,

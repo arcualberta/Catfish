@@ -284,7 +284,7 @@ namespace Catfish.Tests.Helpers
             for (int i = 0; i < TOTAL_ITEMS; ++i)
             {
                 int index = i % ets.Count;
-                Item e = Is.CreateEntity<Item>(ets[index]);
+                CFItem e = Is.CreateEntity<CFItem>(ets[index]);
                 e.SetName("Item " + (i + 1));
                 e.SetDescription("Description for Item " + (i + 1));
                 

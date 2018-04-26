@@ -116,10 +116,10 @@ namespace Catfish.Tests.Services
             }
 
             submission.Serialize();
-            Item itemCreated = SubSrv.SaveSubmission(submission, null, 0, Dh.Db.EntityTypes.FirstOrDefault().Id, form1.Id, Dh.Db.Collections.FirstOrDefault().Id);
+            CFItem itemCreated = SubSrv.SaveSubmission(submission, null, 0, Dh.Db.EntityTypes.FirstOrDefault().Id, form1.Id, Dh.Db.Collections.FirstOrDefault().Id);
             Dh.Db.SaveChanges();
 
-            Item item = ItemSrv.GetItem(itemCreated.Id);
+            CFItem item = ItemSrv.GetItem(itemCreated.Id);
 
             Assert.IsTrue(item.Id > 0);
             Assert.AreNotEqual(0, item.FormSubmissions.FirstOrDefault().FormData.Fields.Count);

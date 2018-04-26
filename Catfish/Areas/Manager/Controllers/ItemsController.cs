@@ -47,7 +47,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpPost]
         public ActionResult Delete(int? id)
         {
-            Item model = null;
+            CFItem model = null;
             if (id.HasValue && id.Value > 0)
             {
                 model = Db.Items.Where(et => et.Id == id).FirstOrDefault();
@@ -69,7 +69,7 @@ namespace Catfish.Areas.Manager.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Item item = ItemService.GetItem(id.Value);
+            CFItem item = ItemService.GetItem(id.Value);
             if (item == null)
             {
                 return HttpNotFound();
@@ -80,7 +80,7 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Items/Edit/5
         public ActionResult Edit(int? id, int? entityTypeId)
         {
-            Item model;
+            CFItem model;
           
             if (id.HasValue && id.Value > 0)
             {
@@ -102,7 +102,7 @@ namespace Catfish.Areas.Manager.Controllers
                         EntityTypes = entityTypes
                     };
 
-                    model = new Item();
+                    model = new CFItem();
                 }
             }
 
@@ -115,11 +115,11 @@ namespace Catfish.Areas.Manager.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Item model)
+        public ActionResult Edit(CFItem model)
         {
             if (ModelState.IsValid)
             {
-                Item dbModel = ItemService.UpdateStoredItem(model);
+                CFItem dbModel = ItemService.UpdateStoredItem(model);
                 Db.SaveChanges(User.Identity);
 
                 if (model.Id == 0)
@@ -132,7 +132,7 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult Associations(int id)
         {
-            Item model = ItemService.GetItem(id);
+            CFItem model = ItemService.GetItem(id);
             if (model == null)
                 throw new Exception("Item not found");
 

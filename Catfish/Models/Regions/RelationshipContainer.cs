@@ -35,14 +35,14 @@ namespace Catfish.Models.Regions
         [ScriptIgnore]
         public CFEntity Entity { get; set; }
         [ScriptIgnore]
-        public List<Item> RelatedMembers { get; set; }
+        public List<CFItem> RelatedMembers { get; set; }
 
 
         public RelationshipContainer()
         {
             CssClasses = "col-lg-12";
             CssStyles = "height:400px;";
-            RelatedMembers = new List<Item>();
+            RelatedMembers = new List<CFItem>();
         }
 
         public override void InitManager(object model)
@@ -70,7 +70,7 @@ namespace Catfish.Models.Regions
                     EntityService es = new EntityService(db);
 
                     Entity = es.GetAnEntity(Convert.ToInt32(entityId));
-                    RelatedMembers = (Entity as Item).ChildRelations.ToList();
+                    RelatedMembers = (Entity as CFItem).ChildRelations.ToList();
                     
                 }
             }

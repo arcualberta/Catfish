@@ -251,7 +251,7 @@ namespace Catfish.Core.Services
             try
             {
                 CFAggregation parent = Db.XmlModels.Where(x => x.MappedGuid == parentGuid).FirstOrDefault() as CFAggregation;
-                Item child = Db.XmlModels.Where(x => x.MappedGuid == childGuid).FirstOrDefault() as Item;
+                CFItem child = Db.XmlModels.Where(x => x.MappedGuid == childGuid).FirstOrDefault() as CFItem;
                 if(!overwrite)
                    parent.ChildRelations.Add(child);
                 else
@@ -259,7 +259,7 @@ namespace Catfish.Core.Services
                     //remove all child members first before adding new one
                     foreach (var c in parent.ChildRelations)
                     {
-                        Item removeRel = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as Item;
+                        CFItem removeRel = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFItem;
                         parent.ChildRelations.Remove(removeRel);
                     }
 
@@ -305,7 +305,7 @@ namespace Catfish.Core.Services
         public Ingestion Export()
         {
             IEnumerable<CFCollection> collections = Db.Collections;
-            IEnumerable<Item> items = Db.Items;
+            IEnumerable<CFItem> items = Db.Items;
             IEnumerable<CFEntityType> entitytypes = Db.EntityTypes;
             IEnumerable<MetadataSet> metadatasets = Db.MetadataSets;
             //IEnumerable<Form> forms = Db.FormTemplates;
@@ -318,12 +318,12 @@ namespace Catfish.Core.Services
             //ingestion.Aggregations.AddRange(forms);   //MR Feb 23 2018: Form is not an Aggregation object: ignore form now -- have to revisit this later
 
 
-            Item[] itemArray = items.ToArray();
+            CFItem[] itemArray = items.ToArray();
 
             //find all item member in each collection
             foreach(CFCollection col in collections.ToList())
             {
-                foreach(Item itm in items.ToList())
+                foreach(CFItem itm in items.ToList())
                 {
                     if(col.ChildMembers.Any(p=>p.MappedGuid == itm.Guid))
                     {
@@ -339,9 +339,9 @@ namespace Catfish.Core.Services
             }
 
             //find all item member in each item
-            foreach (Item parentItem in items.ToList())
+            foreach (CFItem parentItem in items.ToList())
             {
-                foreach (Item childItem in items.ToList())
+                foreach (CFItem childItem in items.ToList())
                 {
                     if (parentItem.ChildMembers.Any(member=>member.MappedGuid == childItem.Guid))
                     {

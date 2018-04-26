@@ -49,7 +49,7 @@ namespace Catfish.Tests
             for (int i = 0; i < COUNT; ++i)
             {
                 CFEntityType cType = itemTypes[rand.Next(0, itemTypes.Count)];
-                Item c = srv.CreateEntity<Item>(cType.Id);
+                CFItem c = srv.CreateEntity<CFItem>(cType.Id);
                 string name = TestData.LoremIpsum(5, 10);
                 c.SetDescription(TestData.LoremIpsum(20, 100, 1, 10));
                 c.SetName("Item: " + name);

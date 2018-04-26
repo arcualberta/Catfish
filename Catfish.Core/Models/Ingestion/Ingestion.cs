@@ -273,7 +273,7 @@ namespace Catfish.Core.Models.Ingestion
                         break;
 
                     case "item":
-                        model = new Item();
+                        model = new CFItem();
                         break;
 
                     case "form":

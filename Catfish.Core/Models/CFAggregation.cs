@@ -9,7 +9,7 @@ namespace Catfish.Core.Models
         public virtual ICollection<CFAggregation> ParentMembers { get; set; }
         public virtual ICollection<CFAggregation> ChildMembers { get; set; }
 
-        public virtual ICollection<Item> ChildRelations { get; set; }
+        public virtual ICollection<CFItem> ChildRelations { get; set; }
 
         [NotMapped]
         public bool HasAssociations { get { return ParentMembers.Count > 0 || ChildMembers.Count > 0 || ChildRelations.Count > 0; } }
@@ -19,7 +19,7 @@ namespace Catfish.Core.Models
         {
             ParentMembers = new List<CFAggregation>();
             ChildMembers = new List<CFAggregation>();
-            ChildRelations = new List<Item>();
+            ChildRelations = new List<CFItem>();
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Catfish.Core.Models
         {
             get
             {
-                return ChildMembers.Where(c => typeof(Item).IsAssignableFrom(c.GetType()));
+                return ChildMembers.Where(c => typeof(CFItem).IsAssignableFrom(c.GetType()));
             }
         }
 

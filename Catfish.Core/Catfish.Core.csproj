@@ -147,7 +147,7 @@
     <Compile Include="Models\Forms\PageBreak.cs" />
     <Compile Include="Models\Ingestion\Ingestion.cs" />
     <Compile Include="Models\Ingestion\Relationship.cs" />
-    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\CFItem.cs" />
     <Compile Include="Models\Forms\CheckBoxSet.cs" />
     <Compile Include="Models\Forms\DateField.cs" />
     <Compile Include="Models\Forms\DropDownMenu.cs" />

@@ -74,7 +74,7 @@ namespace Catfish.Tests
             string path = GetSampleDataFilePathName("Item.xml");
             Assert.IsTrue(File.Exists(path));
 
-            Item model = XmlModel.Load(path) as Item;
+            CFItem model = XmlModel.Load(path) as CFItem;
             Assert.IsNotNull(model);
 
             List<MetadataSet> metadatasets = model.MetadataSets.ToList();
