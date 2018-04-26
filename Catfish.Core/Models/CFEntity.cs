@@ -17,7 +17,7 @@ namespace Catfish.Core.Models
         public int? EntityTypeId { get; set; }
         public virtual CFEntityType EntityType { get; set; }
 
-        protected static string AccessGroupXPath = "access/" + AccessGroup.TagName;
+        protected static string AccessGroupXPath = "access/" + CFAccessGroup.TagName;
         protected static string MetadataSetXPath = "metadata/" + CFMetadataSet.TagName;
 
         public CFEntity()
@@ -44,13 +44,13 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        public List<AccessGroup> AccessGroups
+        public List<CFAccessGroup> AccessGroups
         {
             get
             {
 
                 return GetChildModels(AccessGroupXPath)
-                    .Select(c => c as AccessGroup).ToList();
+                    .Select(c => c as CFAccessGroup).ToList();
             }
 
             set
@@ -76,7 +76,7 @@ namespace Catfish.Core.Models
         private void InitModels(string element, IReadOnlyList<CFXmlModel> models)
         {
             XElement access = GetImmediateChild(element);
-            foreach (AccessGroup model in models)
+            foreach (CFAccessGroup model in models)
             {
                 access.Add(model.Data);
             }

@@ -7,12 +7,12 @@ namespace Catfish.Tests
     [TestClass]
     public class AccessDefinitionTests
     {
-        AccessDefinition AccessDefinition;
+        CFAccessDefinition AccessDefinition;
 
         [TestInitialize]
         public void Initialize()
         {
-            AccessDefinition = new AccessDefinition();
+            AccessDefinition = new CFAccessDefinition();
         }     
 
         [TestMethod]

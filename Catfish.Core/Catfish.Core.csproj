@@ -126,8 +126,8 @@
       <DependentUpon>201804261932173_RenameXMLModelToCFXMLModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Access\AccessDefinition.cs" />
-    <Compile Include="Models\Access\AccessGroup.cs" />
+    <Compile Include="Models\Access\CFAccessDefinition.cs" />
+    <Compile Include="Models\Access\CFAccessGroup.cs" />
     <Compile Include="Models\CFAggregation.cs" />
     <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
     <Compile Include="Models\Attributes\InputTypeAttribute.cs" />

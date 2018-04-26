@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Access
 {
-    public class AccessGroup : CFXmlModel
+    public class CFAccessGroup : CFXmlModel
     {
         public static string TagName {
             get
@@ -21,15 +21,15 @@ namespace Catfish.Core.Models.Access
 
 
         [NotMapped]
-        public AccessDefinition AccessDefinition
+        public CFAccessDefinition AccessDefinition
         {
             get
             {
-                AccessDefinition accessDefinition = GetChildModels(AccessDefinition.TagName).FirstOrDefault() as AccessDefinition;
+                CFAccessDefinition accessDefinition = GetChildModels(CFAccessDefinition.TagName).FirstOrDefault() as CFAccessDefinition;
 
                 if (accessDefinition == null)
                 {
-                    accessDefinition = new AccessDefinition();
+                    accessDefinition = new CFAccessDefinition();
                     Data.Add(accessDefinition.Data);
                 }
                 
@@ -87,7 +87,7 @@ namespace Catfish.Core.Models.Access
             }
         }
 
-        private void InitializeAccessDefinition(AccessDefinition accessDefinition)
+        private void InitializeAccessDefinition(CFAccessDefinition accessDefinition)
         {
             Data.Add(accessDefinition.Data);
         }

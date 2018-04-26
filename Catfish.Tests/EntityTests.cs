@@ -23,11 +23,11 @@ namespace Catfish.Tests
         public void CanUseAccessGroups()
         {
             int count = 3;
-            List<AccessGroup> accessGroups = new List<AccessGroup>();
+            List<CFAccessGroup> accessGroups = new List<CFAccessGroup>();
 
             for (int i = 0; i < count; ++i)
             {
-                accessGroups.Add(new AccessGroup());
+                accessGroups.Add(new CFAccessGroup());
             }
 
             MockEntity.AccessGroups = accessGroups;

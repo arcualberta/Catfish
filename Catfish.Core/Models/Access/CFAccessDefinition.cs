@@ -18,10 +18,10 @@ namespace Catfish.Core.Models.Access
         Discover = 16
     }
 
-    public class AccessDefinition : CFXmlModel
+    public class CFAccessDefinition : CFXmlModel
     {
 
-        public AccessDefinition()
+        public CFAccessDefinition()
         {
             AccessModes = AccessMode.None;
         }
