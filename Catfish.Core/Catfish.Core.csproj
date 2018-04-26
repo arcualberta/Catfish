@@ -121,6 +121,10 @@
     <Compile Include="Migrations\201804261706235_RenameEntityTypeAttributeMappingsToCFEntityTypeAttributeMappings.Designer.cs">
       <DependentUpon>201804261706235_RenameEntityTypeAttributeMappingsToCFEntityTypeAttributeMappings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804261932173_RenameXMLModelToCFXMLModel.cs" />
+    <Compile Include="Migrations\201804261932173_RenameXMLModelToCFXMLModel.Designer.cs">
+      <DependentUpon>201804261932173_RenameXMLModelToCFXMLModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Access\AccessDefinition.cs" />
     <Compile Include="Models\Access\AccessGroup.cs" />
@@ -162,7 +166,7 @@
     <Compile Include="Models\Forms\TextField.cs" />
     <Compile Include="Models\CFForm.cs" />
     <Compile Include="Models\CFTextValue.cs" />
-    <Compile Include="Models\XmlModel.cs" />
+    <Compile Include="Models\CFXmlModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Validators.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -220,6 +224,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804261706235_RenameEntityTypeAttributeMappingsToCFEntityTypeAttributeMappings.resx">
       <DependentUpon>201804261706235_RenameEntityTypeAttributeMappingsToCFEntityTypeAttributeMappings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804261932173_RenameXMLModelToCFXMLModel.resx">
+      <DependentUpon>201804261932173_RenameXMLModelToCFXMLModel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Validators.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Access
 {
-    public class AccessGroup : XmlModel
+    public class AccessGroup : CFXmlModel
     {
         public static string TagName {
             get

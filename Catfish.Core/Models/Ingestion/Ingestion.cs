@@ -16,7 +16,7 @@ namespace Catfish.Core.Models.Ingestion
 
         public List<CFEntityType> EntityTypes { get; set; }
 
-        public List<XmlModel> Aggregations { get; set; }
+        public List<CFXmlModel> Aggregations { get; set; }
 
         public List<Relationship> Relationships { get; set; }
 
@@ -25,7 +25,7 @@ namespace Catfish.Core.Models.Ingestion
             Overwrite = false;
             MetadataSets = new List<CFMetadataSet>();
             EntityTypes = new List<CFEntityType>();
-            Aggregations = new List<XmlModel>();
+            Aggregations = new List<CFXmlModel>();
             Relationships = new List<Relationship>();
         }
 
@@ -264,7 +264,7 @@ namespace Catfish.Core.Models.Ingestion
             foreach(XElement child in element.Elements())
             {
                 string name = child.Name.LocalName;
-                XmlModel model = null;
+                CFXmlModel model = null;
                 string strGuid = child.Attribute("guid").Value;
                 switch (name)
                 {

@@ -451,7 +451,7 @@ namespace Catfish.Tests.Helpers
         {
             builder.HasDefaultSchema("");
 
-            builder.Entity<XmlModel>().Property(xm => xm.Content).HasColumnType("");
+            builder.Entity<CFXmlModel>().Property(xm => xm.Content).HasColumnType("");
         }
     }
     

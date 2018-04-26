@@ -17,7 +17,7 @@ using System.Web.Script.Serialization;
 namespace Catfish.Core.Models.Forms
 {
     [FormFieldRequired]
-    public class FormField : XmlModel
+    public class FormField : CFXmlModel
     {
         public override string GetTagName() { return "field"; }
         public static char FileGuidSeparator = '|';
@@ -167,7 +167,7 @@ namespace Catfish.Core.Models.Forms
             set { SetAttribute("page", value); }
         }
 
-        public override void UpdateValues(XmlModel src)
+        public override void UpdateValues(CFXmlModel src)
         {
             XElement srcValueWrapper = src.Data.Element("value");
             if (srcValueWrapper == null)

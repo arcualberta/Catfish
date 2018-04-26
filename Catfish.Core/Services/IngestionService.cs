@@ -274,7 +274,7 @@ namespace Catfish.Core.Services
                 throw ex;
             }
         }
-        public T CreateAggregation<T>(XmlModel aggregation) where T : CFAggregation, new()
+        public T CreateAggregation<T>(CFXmlModel aggregation) where T : CFAggregation, new()
         {  
             T agg = new T();
             string entityTypeName = aggregation.Data.Attribute("entity-type").Value;

@@ -18,7 +18,7 @@ namespace Catfish.Core.Models.Access
         Discover = 16
     }
 
-    public class AccessDefinition : XmlModel
+    public class AccessDefinition : CFXmlModel
     {
 
         public AccessDefinition()

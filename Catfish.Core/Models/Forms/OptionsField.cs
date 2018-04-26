@@ -96,7 +96,7 @@ namespace Catfish.Core.Models.Forms
             return optionElement;
         }
 
-        public override void UpdateValues(XmlModel src)
+        public override void UpdateValues(CFXmlModel src)
         {
             OptionsField optionsField = src as OptionsField;
             this.Options = optionsField.Options;

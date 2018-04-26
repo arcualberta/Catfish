@@ -24,9 +24,9 @@ namespace Catfish.Core.Models.Forms
             Fields = new List<FormField>();
         }
 
-        private XmlModel Data;
+        private CFXmlModel Data;
 
-        public MetadataDefinition(XmlModel data, int id)
+        public MetadataDefinition(CFXmlModel data, int id)
         {
             Id = id;
             Data = data;

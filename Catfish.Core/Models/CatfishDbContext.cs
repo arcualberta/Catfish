@@ -33,7 +33,7 @@ namespace Catfish.Core.Models
         {
             if (this.ChangeTracker.HasChanges())
             {
-                foreach(var entry in this.ChangeTracker.Entries<XmlModel>())
+                foreach(var entry in this.ChangeTracker.Entries<CFXmlModel>())
                 {
                     if (entry.State != EntityState.Unchanged && entry.State != EntityState.Deleted)
                     {
@@ -52,7 +52,7 @@ namespace Catfish.Core.Models
          **/
         protected virtual void SetColumnTypes(DbModelBuilder builder)
         {
-            builder.Entity<XmlModel>().Property(xm => xm.Content).HasColumnType("xml");
+            builder.Entity<CFXmlModel>().Property(xm => xm.Content).HasColumnType("xml");
         }
 
         protected override void OnModelCreating(DbModelBuilder builder)
@@ -93,7 +93,7 @@ namespace Catfish.Core.Models
             builder.Entity<CFUserListEntry>().HasKey(t => new { t.CFUserListId, t.UserId });
         }
 
-        public DbSet<XmlModel> XmlModels { get; set; }
+        public DbSet<CFXmlModel> XmlModels { get; set; }
 
        public DbSet<CFEntity> Entities { get; set; }
 

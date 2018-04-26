@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models
 {
-    public class CFFileDescription : XmlModel
+    public class CFFileDescription : CFXmlModel
     {
         public static string TagName { get { return "file-description"; } }     
         public override string GetTagName() { return TagName; }

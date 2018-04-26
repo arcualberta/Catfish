@@ -17,7 +17,7 @@ using System.Xml.XPath;
 
 namespace Catfish.Core.Models
 {
-    public abstract class XmlModel
+    public abstract class CFXmlModel
     {
         public abstract string GetTagName();
 
@@ -120,7 +120,7 @@ namespace Catfish.Core.Models
 
 
 
-        public XmlModel()
+        public CFXmlModel()
         {
             DefaultLanguage = "en";
             Data = new XElement(GetTagName());
@@ -309,19 +309,19 @@ namespace Catfish.Core.Models
             SetChildText("value", values, Data, Lang(lang));
         }
 
-        public List<XmlModel> GetChildModels(string xpath)
+        public List<CFXmlModel> GetChildModels(string xpath)
         {
             return GetChildModels(xpath, Data);
         }
 
-        public List<XmlModel> GetChildModels(string xpath, XElement ele)
+        public List<CFXmlModel> GetChildModels(string xpath, XElement ele)
         {
-            List<XmlModel> result = new List<XmlModel>();
+            List<CFXmlModel> result = new List<CFXmlModel>();
 
             IEnumerable<XElement> children = GetChildElements(xpath, ele);
             foreach(XElement c in children)
             {
-                XmlModel model = XmlModel.Parse(c);
+                CFXmlModel model = CFXmlModel.Parse(c);
                 result.Add(model);
             }
 
@@ -519,17 +519,17 @@ namespace Catfish.Core.Models
         }
         private XmlNamespaceManager mXmlNamespaceManager;
 
-        public static XmlModel Parse(XElement ele, string defaultLang = "en")
+        public static CFXmlModel Parse(XElement ele, string defaultLang = "en")
         {
             string typeString = ele.Attribute("model-type").Value;
             var type = Type.GetType(typeString);
-            XmlModel model = Activator.CreateInstance(type) as XmlModel;
+            CFXmlModel model = Activator.CreateInstance(type) as CFXmlModel;
             model.Data = ele;
             model.DefaultLanguage = defaultLang;
             return model;
         }
 
-        public static XmlModel Load(string uri, string defaultLang = "en")
+        public static CFXmlModel Load(string uri, string defaultLang = "en")
         {
             XElement root = XElement.Load(uri);
             return Parse(root, defaultLang);
@@ -542,7 +542,7 @@ namespace Catfish.Core.Models
             this.Content = Data.ToString();
         }
 
-        public virtual void UpdateValues(XmlModel src)
+        public virtual void UpdateValues(CFXmlModel src)
         {
             SetTextValues(XmlHelper.GetTextValues(src.Data));
            

@@ -116,7 +116,7 @@ namespace Catfish.Core.Services
 
         public DataFile GetFile(int id, string guid, bool checkInItems = true)
         {
-            XmlModel model = Db.XmlModels.Find(id);
+            CFXmlModel model = Db.XmlModels.Find(id);
 
             if (model is DataFile && model.Guid == guid)
                 return model as DataFile;

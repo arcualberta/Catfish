@@ -12,7 +12,7 @@ using Catfish.Core.Models.Access;
 
 namespace Catfish.Core.Models
 {
-    public abstract class CFEntity : XmlModel
+    public abstract class CFEntity : CFXmlModel
     {
         public int? EntityTypeId { get; set; }
         public virtual CFEntityType EntityType { get; set; }
@@ -73,7 +73,7 @@ namespace Catfish.Core.Models
                 metadata.Add(ms.Data);
         }
 
-        private void InitModels(string element, IReadOnlyList<XmlModel> models)
+        private void InitModels(string element, IReadOnlyList<CFXmlModel> models)
         {
             XElement access = GetImmediateChild(element);
             foreach (AccessGroup model in models)
@@ -176,7 +176,7 @@ namespace Catfish.Core.Models
             SetAttributeMappingValue("Description Mapping", val, lang);
         }
 
-        public override void UpdateValues(XmlModel src)
+        public override void UpdateValues(CFXmlModel src)
         {
             if (src == this)
             {

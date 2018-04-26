@@ -38,7 +38,7 @@ namespace Catfish.Tests
             XElement root = XElement.Load(path);
             Assert.IsNotNull(root);
 
-            CFMetadataSet model = XmlModel.Parse(root) as CFMetadataSet;
+            CFMetadataSet model = CFXmlModel.Parse(root) as CFMetadataSet;
             Assert.IsNotNull(model);
 
             IReadOnlyList<FormField> fields = model.Fields;
@@ -74,7 +74,7 @@ namespace Catfish.Tests
             string path = GetSampleDataFilePathName("Item.xml");
             Assert.IsTrue(File.Exists(path));
 
-            CFItem model = XmlModel.Load(path) as CFItem;
+            CFItem model = CFXmlModel.Load(path) as CFItem;
             Assert.IsNotNull(model);
 
             List<CFMetadataSet> metadatasets = model.MetadataSets.ToList();
