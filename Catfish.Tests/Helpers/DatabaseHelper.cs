@@ -192,7 +192,7 @@ namespace Catfish.Tests.Helpers
 
         private void CreateMetadata()
         {
-            MetadataSet metadata = new MetadataSet();
+            CFMetadataSet metadata = new CFMetadataSet();
             metadata.SetName("Basic Metadata");
             metadata.SetDescription("Metadata Description");
 
@@ -218,7 +218,7 @@ namespace Catfish.Tests.Helpers
 
         private void CreateEntityTypes()
         {
-            MetadataSet metadata = Ms.GetMetadataSets().FirstOrDefault();
+            CFMetadataSet metadata = Ms.GetMetadataSets().FirstOrDefault();
 
             for (int i = 0; i < TOTAL_ENTITYTYPES; ++i)
             {

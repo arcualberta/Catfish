@@ -282,7 +282,7 @@ namespace Catfish.Tests.Services
             CFCollection collection = Dh.Db.Collections.First();
             IEnumerable<CFItem> items = Dh.Db.Items.Take(2);
             IEnumerable<CFEntityType> entitytypes = Dh.Db.EntityTypes.Where(e => e.Id == collection.EntityType.Id || items.Select(i => i.EntityTypeId).Contains(e.Id)).Distinct();
-            IEnumerable<MetadataSet> metadatasets = Dh.Db.MetadataSets.Where(m => entitytypes.SelectMany(e => e.MetadataSets.Select(mm => mm.Id)).Contains(m.Id)).Distinct();
+            IEnumerable<CFMetadataSet> metadatasets = Dh.Db.MetadataSets.Where(m => entitytypes.SelectMany(e => e.MetadataSets.Select(mm => mm.Id)).Contains(m.Id)).Distinct();
 
             Ingestion ingestion = new Ingestion();
             ingestion.MetadataSets.AddRange(metadatasets);

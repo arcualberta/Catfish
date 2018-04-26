@@ -160,7 +160,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             {
                 if (!dataModelMetadataSetIds.Contains(id))
                 {
-                    MetadataSet ms = db.MetadataSets.Where(s => s.Id == id).FirstOrDefault();
+                    CFMetadataSet ms = db.MetadataSets.Where(s => s.Id == id).FirstOrDefault();
                     if(ms != null)
                         model.MetadataSets.Add(ms);
                 }

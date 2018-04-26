@@ -13,14 +13,14 @@ namespace Catfish.Core.Services
     {
         public MetadataService(CatfishDbContext db) : base(db) { }
 
-        public IQueryable<MetadataSet> GetMetadataSets()
+        public IQueryable<CFMetadataSet> GetMetadataSets()
         {
             return Db.MetadataSets;
         }
 
-        public MetadataSet GetMetadataSet(int id)
+        public CFMetadataSet GetMetadataSet(int id)
         {
-            MetadataSet metadata = Db.MetadataSets.Where(m => m.Id == id).FirstOrDefault();
+            CFMetadataSet metadata = Db.MetadataSets.Where(m => m.Id == id).FirstOrDefault();
             //if (metadata != null)
             //    metadata.Deserialize();
             return metadata;
@@ -42,7 +42,7 @@ namespace Catfish.Core.Services
             return fieldTypes;
         }
 
-        public MetadataSet UpdateMetadataSet(MetadataSet metadataSet)
+        public CFMetadataSet UpdateMetadataSet(CFMetadataSet metadataSet)
         {
             ////MetadataSet ms;
             if (metadataSet.Id > 0)

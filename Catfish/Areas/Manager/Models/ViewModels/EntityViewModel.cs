@@ -23,7 +23,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Label = src.GetName();
         }
 
-        public EntityViewModel(MetadataSet src)
+        public EntityViewModel(CFMetadataSet src)
         {
             Id = src.Id;
             Label = src.GetName();

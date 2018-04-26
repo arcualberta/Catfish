@@ -13,7 +13,7 @@ namespace Catfish.Core.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public int MetadataSetId { get; set; }
-        public virtual MetadataSet MetadataSet { get; set; }
+        public virtual CFMetadataSet MetadataSet { get; set; }
         public string FieldName { get; set; }
 
         public string Label { get; set; }

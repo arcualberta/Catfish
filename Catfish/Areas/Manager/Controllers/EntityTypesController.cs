@@ -59,7 +59,7 @@ namespace Catfish.Areas.Manager.Controllers
             vm.AssociatedMetadataSets.Add(vm.SelectedMetadataSets);
           //  vm.MetadataSetMappingSrc.Add(vm.SelectedMetadataSets);
 
-            MetadataSet metadataSet = MetadataService.GetMetadataSet(vm.SelectedMetadataSets.Id);
+            CFMetadataSet metadataSet = MetadataService.GetMetadataSet(vm.SelectedMetadataSets.Id);
             //update attribute mapping
             if (metadataSet != null)
             {

@@ -57,7 +57,7 @@ namespace Catfish.Models.Regions
 
             List<string> requiredFields = fields != null ? fields.ToLower().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>();
             Metadata = new List<MetadataFieldValue>();
-            foreach (MetadataSet ms in dataModel.MetadataSets)
+            foreach (CFMetadataSet ms in dataModel.MetadataSets)
             {
                 foreach (FormField field in ms.Fields)
                 {

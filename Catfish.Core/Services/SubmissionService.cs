@@ -149,7 +149,7 @@ namespace Catfish.Core.Services
                 var FieldValues = formField.GetValues();
 
                 CFEntityTypeAttributeMapping am = entityType.AttributeMappings.Where(a => a.Name == attMapping).FirstOrDefault();
-                MetadataSet ms = null;
+                CFMetadataSet ms = null;
                 if(am != null)
                       ms = entityType.MetadataSets.Where(m => m.Id == am.MetadataSetId).FirstOrDefault();
 

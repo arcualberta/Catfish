@@ -38,7 +38,7 @@ namespace Catfish.Tests
             XElement root = XElement.Load(path);
             Assert.IsNotNull(root);
 
-            MetadataSet model = XmlModel.Parse(root) as MetadataSet;
+            CFMetadataSet model = XmlModel.Parse(root) as CFMetadataSet;
             Assert.IsNotNull(model);
 
             IReadOnlyList<FormField> fields = model.Fields;
@@ -77,7 +77,7 @@ namespace Catfish.Tests
             CFItem model = XmlModel.Load(path) as CFItem;
             Assert.IsNotNull(model);
 
-            List<MetadataSet> metadatasets = model.MetadataSets.ToList();
+            List<CFMetadataSet> metadatasets = model.MetadataSets.ToList();
             Assert.AreEqual(2, metadatasets.Count());
 
         }

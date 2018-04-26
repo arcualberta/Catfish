@@ -22,9 +22,9 @@ namespace Catfish.Tests.Services
             mDh = new DatabaseHelper(false);
         }
 
-        private MetadataSet CreateMetadata(string name, string description, IEnumerable<FormField> fields)
+        private CFMetadataSet CreateMetadata(string name, string description, IEnumerable<FormField> fields)
         {
-            MetadataSet metadata = new MetadataSet();
+            CFMetadataSet metadata = new CFMetadataSet();
             metadata.Name = name;
             metadata.Description = description;
 
@@ -85,11 +85,11 @@ namespace Catfish.Tests.Services
 
             IEnumerable<FormField> fields = CreateFormFields(fieldCount);
 
-            MetadataSet check = CreateMetadata(passName, passDescription, fields);
+            CFMetadataSet check = CreateMetadata(passName, passDescription, fields);
 
             mDh.Db.SaveChanges();
 
-            MetadataSet result = ms.GetMetadataSet(check.Id);
+            CFMetadataSet result = ms.GetMetadataSet(check.Id);
 
             Assert.IsNotNull(result);
             Assert.AreNotEqual(failName, result.Name);
@@ -118,11 +118,11 @@ namespace Catfish.Tests.Services
 
             mDh.Db.SaveChanges();
 
-            IEnumerable<MetadataSet> resultSets = mDh.Ms.GetMetadataSets().ToList().Where(m => m.Description.StartsWith(guid));
+            IEnumerable<CFMetadataSet> resultSets = mDh.Ms.GetMetadataSets().ToList().Where(m => m.Description.StartsWith(guid));
 
             Assert.AreEqual(setCount, resultSets.Count());
 
-            foreach (MetadataSet set in resultSets)
+            foreach (CFMetadataSet set in resultSets)
             {
                 Assert.AreEqual(fieldCount, set.Fields.Count);
                 Assert.IsTrue(set.Name.StartsWith(guid));
@@ -168,10 +168,10 @@ namespace Catfish.Tests.Services
             int fieldCount = 4;
             IEnumerable<FormField> fields = CreateFormFields(fieldCount);
 
-            MetadataSet check = CreateMetadata(originalName, originalDescription, new FormField[] { });
+            CFMetadataSet check = CreateMetadata(originalName, originalDescription, new FormField[] { });
             mDh.Db.SaveChanges();
 
-            MetadataSet result = ms.GetMetadataSet(check.Id);
+            CFMetadataSet result = ms.GetMetadataSet(check.Id);
 
             Assert.AreEqual(originalName, check.Name);
             Assert.AreEqual(originalDescription, check.Description);

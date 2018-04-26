@@ -12,7 +12,7 @@ namespace Catfish.Core.Models.Ingestion
     {
         public bool Overwrite { get; set; }
 
-        public List<MetadataSet> MetadataSets { get; set; }
+        public List<CFMetadataSet> MetadataSets { get; set; }
 
         public List<CFEntityType> EntityTypes { get; set; }
 
@@ -23,7 +23,7 @@ namespace Catfish.Core.Models.Ingestion
         public Ingestion()
         {
             Overwrite = false;
-            MetadataSets = new List<MetadataSet>();
+            MetadataSets = new List<CFMetadataSet>();
             EntityTypes = new List<CFEntityType>();
             Aggregations = new List<XmlModel>();
             Relationships = new List<Relationship>();
@@ -88,7 +88,7 @@ namespace Catfish.Core.Models.Ingestion
         {
             XElement result = new XElement("metadata-sets");
 
-            foreach(MetadataSet set in MetadataSets)
+            foreach(CFMetadataSet set in MetadataSets)
             {
                 XElement metadataset = XElement.Parse(set.Content);
                 result.Add(metadataset);
@@ -105,7 +105,7 @@ namespace Catfish.Core.Models.Ingestion
                 string strGuid = setElement.Attribute("guid").Value;
                 if (name == "metadata-set")
                 {
-                    MetadataSet set = new MetadataSet();
+                    CFMetadataSet set = new CFMetadataSet();
                     set.Content = setElement.ToString();
                     set.Guid = strGuid;
                     set.MappedGuid = strGuid;
@@ -138,7 +138,7 @@ namespace Catfish.Core.Models.Ingestion
                 entityType.Add(element);
 
                 element = new XElement("metadata-sets");
-                foreach(MetadataSet set in type.MetadataSets)
+                foreach(CFMetadataSet set in type.MetadataSets)
                 {
                     XElement metadataSet = new XElement("metadata-set");
                     metadataSet.SetAttributeValue("ref", set.Guid);
@@ -198,7 +198,7 @@ namespace Catfish.Core.Models.Ingestion
                                 //MetadataSet set = MetadataSets.Where(m => m.Guid == metadata.Attribute("ref").Value).FirstOrDefault();
                                 //if (set == null)
                                 //{
-                                    MetadataSet set = new MetadataSet();
+                                    CFMetadataSet set = new CFMetadataSet();
                                     set.Guid = metadata.Attribute("ref").Value;
                                     set.Id = -1;
                                 //}

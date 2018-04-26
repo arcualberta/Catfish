@@ -45,7 +45,7 @@ namespace Catfish.Core.Services
             entity.SetAttribute("entity-type", et.Name);
 
             //removing audit trail entry that was created when creating the metadata set originally
-            foreach(MetadataSet ms in entity.MetadataSets)
+            foreach(CFMetadataSet ms in entity.MetadataSets)
             {
                 XElement audit = ms.Data.Element("audit");
                 if (audit != null)

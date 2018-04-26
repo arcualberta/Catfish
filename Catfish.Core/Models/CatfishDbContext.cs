@@ -80,7 +80,7 @@ namespace Catfish.Core.Models
                 });
 
             builder.Entity<CFEntityType>()
-                .HasMany<MetadataSet>(et => et.MetadataSets)
+                .HasMany<CFMetadataSet>(et => et.MetadataSets)
                 .WithMany(ms => ms.EntityTypes)
                 .Map(t =>
                 {
@@ -105,7 +105,7 @@ namespace Catfish.Core.Models
 
         public DbSet<CFEntityTypeAttributeMapping> EntityTypeAttributeMappings { get; set; }
 
-        public DbSet<MetadataSet> MetadataSets { get; set; }
+        public DbSet<CFMetadataSet> MetadataSets { get; set; }
 
         public DbSet<CFForm> FormTemplates { get; set; }
 

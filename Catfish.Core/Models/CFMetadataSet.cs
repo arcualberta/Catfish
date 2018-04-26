@@ -12,7 +12,7 @@ using Catfish.Core.Models.Forms;
 namespace Catfish.Core.Models
 {
     [TypeLabel("Metadata Set")]
-    public class MetadataSet : AbstractForm
+    public class CFMetadataSet : AbstractForm
     {
         public static string TagName
         {

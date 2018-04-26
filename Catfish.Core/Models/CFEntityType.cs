@@ -44,7 +44,7 @@ namespace Catfish.Core.Models
         public string TargetTypes {get; set; } // MR: jan 15 2018, change to string, this will hold a comma separated value of TargetType
 
         [JsonIgnore] //Ignore this in JSON serialization to avoid stuck in a continuous loop
-        public virtual ICollection<MetadataSet> MetadataSets { get; set; }
+        public virtual ICollection<CFMetadataSet> MetadataSets { get; set; }
 
         [JsonIgnore] //Ignore this in JSON serialization to avoid stuck in a continuous loop
         public virtual ICollection<CFEntityTypeAttributeMapping> AttributeMappings { get; set; }
@@ -54,7 +54,7 @@ namespace Catfish.Core.Models
 
         public CFEntityType()
         {
-            MetadataSets = new List<MetadataSet>();
+            MetadataSets = new List<CFMetadataSet>();
             AttributeMappings = new List<CFEntityTypeAttributeMapping>();
             TargetTypesList = new List<eTarget>();
         }

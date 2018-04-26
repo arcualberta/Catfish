@@ -18,7 +18,7 @@ namespace Catfish.Core.Models
         public virtual CFEntityType EntityType { get; set; }
 
         protected static string AccessGroupXPath = "access/" + AccessGroup.TagName;
-        protected static string MetadataSetXPath = "metadata/" + MetadataSet.TagName;
+        protected static string MetadataSetXPath = "metadata/" + CFMetadataSet.TagName;
 
         public CFEntity()
         {
@@ -27,12 +27,12 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        public List<MetadataSet> MetadataSets
+        public List<CFMetadataSet> MetadataSets
         {
             get
             {
                 return GetChildModels(MetadataSetXPath)
-                    .Select(c => c as MetadataSet).ToList();
+                    .Select(c => c as CFMetadataSet).ToList();
             }
 
             set
@@ -66,10 +66,10 @@ namespace Catfish.Core.Models
             RemoveAllElements(MetadataSetXPath);
         }
 
-        public void InitMetadataSet(IReadOnlyList<MetadataSet> src)
+        public void InitMetadataSet(IReadOnlyList<CFMetadataSet> src)
         {
             XElement metadata = GetImmediateChild("metadata");
-            foreach (MetadataSet ms in src)
+            foreach (CFMetadataSet ms in src)
                 metadata.Add(ms.Data);
         }
 
@@ -84,7 +84,7 @@ namespace Catfish.Core.Models
 
         protected FormField GetMetadataSetField(string metadatasetGuid, string fieldName)
         {
-            MetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == metadatasetGuid).FirstOrDefault();
+            CFMetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == metadatasetGuid).FirstOrDefault();
 
             if (metadataSet == null)
             {
@@ -140,7 +140,7 @@ namespace Catfish.Core.Models
             if (string.IsNullOrEmpty(mapping.FieldName))
                 throw new Exception(string.Format("Field is not specified in the {0} Mapping of this entity type", name));
 
-            MetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == mapping.MetadataSet.Guid).FirstOrDefault();
+            CFMetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == mapping.MetadataSet.Guid).FirstOrDefault();
             metadataSet.SetFieldValue(mapping.FieldName, val, lang);
         }
 
@@ -188,7 +188,7 @@ namespace Catfish.Core.Models
 
             var src_item = src as CFEntity;
 
-            foreach (MetadataSet ms in this.MetadataSets)
+            foreach (CFMetadataSet ms in this.MetadataSets)
             {
                 var src_ms = src_item.MetadataSets.Where(x => x.Guid == ms.Guid).FirstOrDefault();
                 ms.UpdateValues(src_ms);

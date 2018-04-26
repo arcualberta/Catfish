@@ -36,7 +36,7 @@ namespace Catfish.Core.Services
             Dictionary<int, int> IdMap = new Dictionary<int, int>();
            
             
-            foreach (MetadataSet ms in ingestion.MetadataSets)
+            foreach (CFMetadataSet ms in ingestion.MetadataSets)
             {
                 string oldId = ms.Guid;
                 string newGuid = NewGuid();
@@ -61,7 +61,7 @@ namespace Catfish.Core.Services
                 {
                     //check if the metadataset with this guid is existed in the database
                     //if yes, replace the one in th edatabase with this one from the file
-                    MetadataSet metadataSet = Db.MetadataSets.Where(m => m.MappedGuid == ms.Guid).FirstOrDefault();
+                    CFMetadataSet metadataSet = Db.MetadataSets.Where(m => m.MappedGuid == ms.Guid).FirstOrDefault();
                     if(metadataSet != null)
                     {
                         metadataSet = ms;
@@ -87,8 +87,8 @@ namespace Catfish.Core.Services
 
                 //I think below is not necessary since the DeserialiseEntytyType mtehod already grabbing the right metadataset
 
-                List<MetadataSet> newSets = new List<MetadataSet>();
-                foreach (MetadataSet set in et.MetadataSets)
+                List<CFMetadataSet> newSets = new List<CFMetadataSet>();
+                foreach (CFMetadataSet set in et.MetadataSets)
                 {
                     string mGuid = set.Guid;
                     if (GuidMap.ContainsKey(mGuid))
@@ -96,7 +96,7 @@ namespace Catfish.Core.Services
                         mGuid = GuidMap[mGuid];
                     }
 
-                    MetadataSet dbSet = Db.MetadataSets.Where(s => s.MappedGuid == mGuid).FirstOrDefault();
+                    CFMetadataSet dbSet = Db.MetadataSets.Where(s => s.MappedGuid == mGuid).FirstOrDefault();
                     newSets.Add(dbSet);
                 }
                 et.MetadataSets.Clear();
@@ -307,7 +307,7 @@ namespace Catfish.Core.Services
             IEnumerable<CFCollection> collections = Db.Collections;
             IEnumerable<CFItem> items = Db.Items;
             IEnumerable<CFEntityType> entitytypes = Db.EntityTypes;
-            IEnumerable<MetadataSet> metadatasets = Db.MetadataSets;
+            IEnumerable<CFMetadataSet> metadatasets = Db.MetadataSets;
             //IEnumerable<Form> forms = Db.FormTemplates;
 
             Ingestion ingestion = new Ingestion();
