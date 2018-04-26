@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models
 {
-    public class FileOptions : XmlModel
+    public class CFFileOptions : XmlModel
     {
         public static string TagName { get { return "file-options"; } }
         public override string GetTagName() { return TagName; }

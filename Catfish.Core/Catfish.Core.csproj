@@ -132,7 +132,7 @@
     <Compile Include="Models\CFAuditChangeLog.cs" />
     <Compile Include="Models\CFAuditEntry.cs" />
     <Compile Include="Models\CatfishDbContext.cs" />
-    <Compile Include="Models\FileOptions.cs" />
+    <Compile Include="Models\CFFileOptions.cs" />
     <Compile Include="Models\CFCollection.cs" />
     <Compile Include="Models\Data\DataObject.cs" />
     <Compile Include="Models\Data\FormSubmission.cs" />
@@ -170,7 +170,7 @@
       <DependentUpon>Validators.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\DataService.cs" />
-    <Compile Include="Services\CFUserListService.cs" />
+    <Compile Include="Services\UserListService.cs" />
     <Compile Include="Services\EntityTypeService.cs" />
     <Compile Include="Services\IngestionService.cs" />
     <Compile Include="Services\SolrService.cs" />

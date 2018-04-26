@@ -42,7 +42,7 @@
             <div class="inner">
                 <div  class="input" style="width:500px !important">
                  @ko.Html.TextBox(m => m.userName, new { @id = "usrName",@placeholder="login name", @style= "width:413px !important;" }).ValueUpdate(KnockoutValueUpdateKind.AfterKeyDown)
-                 @ko.Html.Button("Add User", "AddUser", "CFUserLists", null, new { @class = "btn", @id = "addUser" })@*.Enable(m => m.userName.Length > 0)*@
+                 @ko.Html.Button("Add User", "AddUser", "UserLists", null, new { @class = "btn", @id = "addUser" })@*.Enable(m => m.userName.Length > 0)*@
                 </div>
             </div>
         </li>
@@ -52,14 +52,14 @@
                   <div class="input" style="width:500px !important">
                      @*@ko.Html.ListBox(m => m.SelectedUsers, new { width = 100, size = 10, @style = "width:413px !important;" }, m => m.Login).SelectedOptions(m => m.UsersToRemove)*@
                       @ko.Html.ListBox(m => m.SelectedUsers, new { width = 100, size = 10, @style = "width:413px !important;" }).SelectedOptions(m => m.UsersToRemove)
-                      @ko.Html.Button("Remove", "RemoveSelected", "CFUserLists", null, new { @class = "btn btn-info" }) @*.Enable(m => m.UsersToRemove.Count > 0)*@
+                      @ko.Html.Button("Remove", "RemoveSelected", "UserLists", null, new { @class = "btn btn-info" }) @*.Enable(m => m.UsersToRemove.Count > 0)*@
 
                   </div>
               </div>
           </li>
        
         <li class="form form-custom">
-            @ko.Html.Button("Save", "Edit", "CFUserLists", null, new { @class = "btn btn-info", @style = "float:right", @id="btnSave" })@*.Enable(m => m.EntityGroupName.Length > 0)*@
+            @ko.Html.Button("Save", "Edit", "UserLists", null, new { @class = "btn btn-info", @style = "float:right", @id="btnSave" })@*.Enable(m => m.EntityGroupName.Length > 0)*@
         </li>
      </ul>
 

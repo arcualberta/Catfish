@@ -11,7 +11,7 @@ using Catfish.Areas.Manager.Services;
 
 namespace Catfish.Areas.Manager.Controllers
 {
-    public class CFUserListsController : CatfishController
+    public class UserListsController : CatfishController
     {
        
 

@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Services
 {
-    public class CFUserListService :EntityService
+    public class UserListService :EntityService
     {
-        public CFUserListService(CatfishDbContext db) : base(db) { }
+        public UserListService(CatfishDbContext db) : base(db) { }
 
         public IQueryable GetEntityGroups()
         {

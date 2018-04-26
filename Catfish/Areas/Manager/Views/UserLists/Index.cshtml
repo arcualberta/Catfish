@@ -30,7 +30,7 @@
                     users = users.Substring(0, users.Length - 2);
                     <tr><td>@m.Name</td><td>@users</td><td>Details | 
                                 <span data-toggle="tooltip" title="Edit"data-container="body" >
-                                      @Html.ActionLink(" ", "Edit", "CFUserLists", new { Id = m.Id.ToString() }, new { @class = "glyphicon glyphicon-edit" })
+                                      @Html.ActionLink(" ", "Edit", "UserLists", new { Id = m.Id.ToString() }, new { @class = "glyphicon glyphicon-edit" })
                                 </span>
                                                          | Delete
 </td></tr>

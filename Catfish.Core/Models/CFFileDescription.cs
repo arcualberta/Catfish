@@ -34,11 +34,11 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        public virtual FileOptions FileOptions
+        public virtual CFFileOptions FileOptions
         {
             get
             {
-                return GetChildModels(FileOptions.TagName).FirstOrDefault() as FileOptions;
+                return GetChildModels(CFFileOptions.TagName).FirstOrDefault() as CFFileOptions;
             }
             set
             {
@@ -67,7 +67,7 @@ namespace Catfish.Core.Models
             Data.Add(dataFile.Data);
         }
 
-        private void InitializeFileOptions(FileOptions fileOptions)
+        private void InitializeFileOptions(CFFileOptions fileOptions)
         {
             Data.Add(fileOptions.Data);
         }
@@ -76,7 +76,7 @@ namespace Catfish.Core.Models
         {
             DataFile = new DataFile();
             Label = "";
-            FileOptions = new FileOptions();
+            FileOptions = new CFFileOptions();
         }
     }
 }

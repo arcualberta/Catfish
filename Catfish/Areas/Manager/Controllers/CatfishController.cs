@@ -30,9 +30,9 @@ namespace Catfish.Areas.Manager.Controllers
         private CollectionService mCollectionService;
         public CollectionService CollectionService { get { if (mCollectionService == null) mCollectionService = new CollectionService(Db); return mCollectionService; } }
 
-        private CFUserListService mEntityGroupService;
+        private UserListService mEntityGroupService;
 
-        public CFUserListService EntityGroupService { get { if (mEntityGroupService == null) mEntityGroupService = new CFUserListService(Db); return mEntityGroupService; } }
+        public UserListService EntityGroupService { get { if (mEntityGroupService == null) mEntityGroupService = new UserListService(Db); return mEntityGroupService; } }
 
         private EntityTypeService mEntityTypeService;
 
