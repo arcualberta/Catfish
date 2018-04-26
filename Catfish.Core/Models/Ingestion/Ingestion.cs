@@ -143,8 +143,8 @@ namespace Catfish.Core.Models.Ingestion
                     XElement metadataSet = new XElement("metadata-set");
                     metadataSet.SetAttributeValue("ref", set.Guid);
 
-                    IEnumerable<EntityTypeAttributeMapping> mappings = type.AttributeMappings.Where(m => m.MetadataSet.Guid == set.Guid);
-                    foreach(EntityTypeAttributeMapping map in mappings)
+                    IEnumerable<CFEntityTypeAttributeMapping> mappings = type.AttributeMappings.Where(m => m.MetadataSet.Guid == set.Guid);
+                    foreach(CFEntityTypeAttributeMapping map in mappings)
                     {
                         XElement attributeMapping = new XElement("attribute-mapping");
 
@@ -209,7 +209,7 @@ namespace Catfish.Core.Models.Ingestion
                                 {
                                     if(attrElement.Name.LocalName == "attribute-mapping")
                                     {
-                                        EntityTypeAttributeMapping mapping = new EntityTypeAttributeMapping();
+                                        CFEntityTypeAttributeMapping mapping = new CFEntityTypeAttributeMapping();
                                         mapping.MetadataSet = set;
 
                                         foreach(XElement attrChild in attrElement.Elements())

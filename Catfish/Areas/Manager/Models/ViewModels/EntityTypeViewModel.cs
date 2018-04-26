@@ -91,7 +91,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             if (model.AttributeMappings.Count > 0)
             {
 
-                foreach (EntityTypeAttributeMapping map in model.AttributeMappings)
+                foreach (CFEntityTypeAttributeMapping map in model.AttributeMappings)
                 {
                     List<string> addList = new List<string>();
                     addList.Add("");
@@ -171,7 +171,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             MetadataService mService = new MetadataService(db);
             foreach(var map in AttributeMappings)
             {
-                model.AttributeMappings.Add( new EntityTypeAttributeMapping
+                model.AttributeMappings.Add( new CFEntityTypeAttributeMapping
                                                     {
                                                         Name = map.Name,
                                                         FieldName = map.Field,

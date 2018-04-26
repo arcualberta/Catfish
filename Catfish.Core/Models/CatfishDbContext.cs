@@ -103,7 +103,7 @@ namespace Catfish.Core.Models
 
         public DbSet<CFEntityType> EntityTypes { get; set; }
 
-        public DbSet<EntityTypeAttributeMapping> EntityTypeAttributeMappings { get; set; }
+        public DbSet<CFEntityTypeAttributeMapping> EntityTypeAttributeMappings { get; set; }
 
         public DbSet<MetadataSet> MetadataSets { get; set; }
 

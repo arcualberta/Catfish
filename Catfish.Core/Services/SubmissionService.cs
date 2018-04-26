@@ -148,7 +148,7 @@ namespace Catfish.Core.Services
                 FormField formField = storedFormSubmission.FormData.Fields.Where(f => f.Name == FieldName).FirstOrDefault();
                 var FieldValues = formField.GetValues();
 
-                EntityTypeAttributeMapping am = entityType.AttributeMappings.Where(a => a.Name == attMapping).FirstOrDefault();
+                CFEntityTypeAttributeMapping am = entityType.AttributeMappings.Where(a => a.Name == attMapping).FirstOrDefault();
                 MetadataSet ms = null;
                 if(am != null)
                       ms = entityType.MetadataSets.Where(m => m.Id == am.MetadataSetId).FirstOrDefault();

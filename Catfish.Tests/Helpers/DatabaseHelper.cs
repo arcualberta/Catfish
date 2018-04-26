@@ -240,14 +240,14 @@ namespace Catfish.Tests.Helpers
 
                 et.TargetTypesList = targets;
 
-                et.AttributeMappings.Add(new EntityTypeAttributeMapping()
+                et.AttributeMappings.Add(new CFEntityTypeAttributeMapping()
                 {
                     Name = "Name Mapping",
                     MetadataSet = metadata,
                     FieldName = "Name"
                 });
 
-                et.AttributeMappings.Add(new EntityTypeAttributeMapping()
+                et.AttributeMappings.Add(new CFEntityTypeAttributeMapping()
                 {
                     Name = "Description Mapping",
                     MetadataSet = metadata,

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Models
 {
-    public class EntityTypeAttributeMapping
+    public class CFEntityTypeAttributeMapping
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -21,7 +21,7 @@ namespace Catfish.Core.Models
         [NotMapped]
         public bool Deletable { get; set; }
 
-        public EntityTypeAttributeMapping() {
+        public CFEntityTypeAttributeMapping() {
             Deletable = true;
         }
     }

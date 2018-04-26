@@ -117,6 +117,10 @@
     <Compile Include="Migrations\201804252207137_RenameEntityTypeToCFEntityType.Designer.cs">
       <DependentUpon>201804252207137_RenameEntityTypeToCFEntityType.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804261706235_RenameEntityTypeAttributeMappingsToCFEntityTypeAttributeMappings.cs" />
+    <Compile Include="Migrations\201804261706235_RenameEntityTypeAttributeMappingsToCFEntityTypeAttributeMappings.Designer.cs">
+      <DependentUpon>201804261706235_RenameEntityTypeAttributeMappingsToCFEntityTypeAttributeMappings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Access\AccessDefinition.cs" />
     <Compile Include="Models\Access\AccessGroup.cs" />
@@ -148,7 +152,7 @@
     <Compile Include="Models\Forms\DateField.cs" />
     <Compile Include="Models\Forms\DropDownMenu.cs" />
     <Compile Include="Models\Forms\MetadataDefinition.cs" />
-    <Compile Include="Models\EntityTypeAttributeMapping.cs" />
+    <Compile Include="Models\CFEntityTypeAttributeMapping.cs" />
     <Compile Include="Models\MetadataSet.cs" />
     <Compile Include="Models\Forms\FormField.cs" />
     <Compile Include="Models\Forms\OptionsField.cs" />
@@ -213,6 +217,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804252207137_RenameEntityTypeToCFEntityType.resx">
       <DependentUpon>201804252207137_RenameEntityTypeToCFEntityType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804261706235_RenameEntityTypeAttributeMappingsToCFEntityTypeAttributeMappings.resx">
+      <DependentUpon>201804261706235_RenameEntityTypeAttributeMappingsToCFEntityTypeAttributeMappings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Validators.resx">
       <Generator>ResXFileCodeGenerator</Generator>

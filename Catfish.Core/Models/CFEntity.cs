@@ -133,7 +133,7 @@ namespace Catfish.Core.Models
 
         protected void SetAttributeMappingValue(string name, string val, string lang = null)
         {
-            EntityTypeAttributeMapping mapping = EntityType.AttributeMappings.Where(m => m.Name == name).FirstOrDefault();
+            CFEntityTypeAttributeMapping mapping = EntityType.AttributeMappings.Where(m => m.Name == name).FirstOrDefault();
             if (mapping == null)
                 throw new Exception(string.Format("{0} mapping metadata set is not specified for this entity type", name));
 

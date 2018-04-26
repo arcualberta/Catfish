@@ -69,7 +69,7 @@ namespace Catfish.Core.Services
             }
         }
 
-        public IQueryable<EntityTypeAttributeMapping> GetEntityTypeAttributeMappings()
+        public IQueryable<CFEntityTypeAttributeMapping> GetEntityTypeAttributeMappings()
         {
            return Db.EntityTypeAttributeMappings;
         }

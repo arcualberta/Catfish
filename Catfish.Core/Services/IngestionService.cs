@@ -102,7 +102,7 @@ namespace Catfish.Core.Services
                 et.MetadataSets.Clear();
                 et.MetadataSets = newSets;
 
-                foreach (EntityTypeAttributeMapping mapping in et.AttributeMappings)
+                foreach (CFEntityTypeAttributeMapping mapping in et.AttributeMappings)
                 {
                     string mGuid = mapping.MetadataSet.Guid;
                     if (GuidMap.ContainsKey(mGuid))

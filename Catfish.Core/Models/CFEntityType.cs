@@ -47,7 +47,7 @@ namespace Catfish.Core.Models
         public virtual ICollection<MetadataSet> MetadataSets { get; set; }
 
         [JsonIgnore] //Ignore this in JSON serialization to avoid stuck in a continuous loop
-        public virtual ICollection<EntityTypeAttributeMapping> AttributeMappings { get; set; }
+        public virtual ICollection<CFEntityTypeAttributeMapping> AttributeMappings { get; set; }
 
         [NotMapped]
         public bool HasAssociations { get { return false; } }
@@ -55,16 +55,16 @@ namespace Catfish.Core.Models
         public CFEntityType()
         {
             MetadataSets = new List<MetadataSet>();
-            AttributeMappings = new List<EntityTypeAttributeMapping>();
+            AttributeMappings = new List<CFEntityTypeAttributeMapping>();
             TargetTypesList = new List<eTarget>();
         }
 
-        public EntityTypeAttributeMapping GetNameMapping()
+        public CFEntityTypeAttributeMapping GetNameMapping()
         {
             return AttributeMappings.Where(mapping => mapping.Name == "Name Mapping").FirstOrDefault();
         }
 
-        public EntityTypeAttributeMapping GetDescriptionMapping()
+        public CFEntityTypeAttributeMapping GetDescriptionMapping()
         {
             return AttributeMappings.Where(mapping => mapping.Name == "Description Mapping").FirstOrDefault();
         }
