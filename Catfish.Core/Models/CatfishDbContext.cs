@@ -79,7 +79,7 @@ namespace Catfish.Core.Models
                     t.ToTable("AggregationHasRelatedObjects");
                 });
 
-            builder.Entity<EntityType>()
+            builder.Entity<CFEntityType>()
                 .HasMany<MetadataSet>(et => et.MetadataSets)
                 .WithMany(ms => ms.EntityTypes)
                 .Map(t =>
@@ -101,7 +101,7 @@ namespace Catfish.Core.Models
 
         public DbSet<Item> Items { get; set; }
 
-        public DbSet<EntityType> EntityTypes { get; set; }
+        public DbSet<CFEntityType> EntityTypes { get; set; }
 
         public DbSet<EntityTypeAttributeMapping> EntityTypeAttributeMappings { get; set; }
 

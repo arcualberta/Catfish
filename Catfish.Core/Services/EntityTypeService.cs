@@ -12,29 +12,29 @@ namespace Catfish.Core.Services
     {
         public EntityTypeService(CatfishDbContext db) : base(db) { }
 
-        public EntityType GetEntityTypeById(int id)
+        public CFEntityType GetEntityTypeById(int id)
         {
             return Db.EntityTypes.Include(et=>et.AttributeMappings)
                                  .Include(et=>et.MetadataSets)
                                  .Where(et => et.Id == id).FirstOrDefault();
         }
-        public EntityType GetEntityTypeByName(string name)
+        public CFEntityType GetEntityTypeByName(string name)
         {
             return Db.EntityTypes.Where(et => et.Name == name).FirstOrDefault();
         }
 
-        public IQueryable<EntityType> GetEntityTypes()
+        public IQueryable<CFEntityType> GetEntityTypes()
         {
             return Db.EntityTypes;
         }
 
-        public IQueryable<EntityType> GetEntityTypes(EntityType.eTarget target)
+        public IQueryable<CFEntityType> GetEntityTypes(CFEntityType.eTarget target)
         {
             return Db.EntityTypes.Where(et => et.TargetTypes.Contains(target.ToString())); //Mr Jan 15 2018
 
         }
 
-        public bool DeleteEntityType(EntityType entityType)
+        public bool DeleteEntityType(CFEntityType entityType)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace Catfish.Core.Services
             }
         }
 
-        public bool UpdateEntityType(EntityType entityType)
+        public bool UpdateEntityType(CFEntityType entityType)
         {
             try
             {

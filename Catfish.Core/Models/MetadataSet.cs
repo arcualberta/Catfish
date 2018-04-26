@@ -25,7 +25,7 @@ namespace Catfish.Core.Models
         public override string GetTagName() { return TagName; }
 
         [ScriptIgnore(ApplyToOverrides = true)]
-        public virtual ICollection<EntityType> EntityTypes { get; set; }
+        public virtual ICollection<CFEntityType> EntityTypes { get; set; }
 
     }
 }

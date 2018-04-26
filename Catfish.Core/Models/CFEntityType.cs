@@ -8,7 +8,7 @@ using System.Linq;
 namespace Catfish.Core.Models
 {
     [TypeLabel("Entity Type")]
-    public class EntityType
+    public class CFEntityType
     {
         public enum eTarget { None = 0, Collections, Items, Files, Forms };
 
@@ -52,7 +52,7 @@ namespace Catfish.Core.Models
         [NotMapped]
         public bool HasAssociations { get { return false; } }
 
-        public EntityType()
+        public CFEntityType()
         {
             MetadataSets = new List<MetadataSet>();
             AttributeMappings = new List<EntityTypeAttributeMapping>();

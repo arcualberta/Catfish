@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using static Catfish.Core.Models.EntityType;
+using static Catfish.Core.Models.CFEntityType;
 using System.Data.Entity.Core.Common;
 using System.Data.SQLite.EF6;
 using System.Data.SQLite;
@@ -222,7 +222,7 @@ namespace Catfish.Tests.Helpers
 
             for (int i = 0; i < TOTAL_ENTITYTYPES; ++i)
             {
-                EntityType et = new EntityType();
+                CFEntityType et = new CFEntityType();
                 et.Name = "Entity" + (i + 1);
                 et.MetadataSets.Add(metadata);
 

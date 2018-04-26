@@ -15,7 +15,7 @@ namespace Catfish.Core.Models
     public abstract class CFEntity : XmlModel
     {
         public int? EntityTypeId { get; set; }
-        public virtual EntityType EntityType { get; set; }
+        public virtual CFEntityType EntityType { get; set; }
 
         protected static string AccessGroupXPath = "access/" + AccessGroup.TagName;
         protected static string MetadataSetXPath = "metadata/" + MetadataSet.TagName;

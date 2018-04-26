@@ -34,7 +34,7 @@ namespace Catfish.Core.Services
 
         public T CreateEntity<T>(int entityTypeId) where T : CFEntity, new()
         {
-            EntityType et = Db.EntityTypes.Where(t => t.Id == entityTypeId).FirstOrDefault();
+            CFEntityType et = Db.EntityTypes.Where(t => t.Id == entityTypeId).FirstOrDefault();
             if (et == null)
                 throw new Exception("EntityType with ID " + entityTypeId + " not found");
 
@@ -55,7 +55,7 @@ namespace Catfish.Core.Services
             return entity;
         }
 
-        public void CreateEntityType(EntityType entityType)
+        public void CreateEntityType(CFEntityType entityType)
         {
             Db.EntityTypes.Add(entityType);
             foreach (var m in entityType.MetadataSets)

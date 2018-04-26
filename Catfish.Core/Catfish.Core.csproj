@@ -113,6 +113,10 @@
     <Compile Include="Migrations\201804251713131_RenameEntityGroupAndEntityGroupUserTable.Designer.cs">
       <DependentUpon>201804251713131_RenameEntityGroupAndEntityGroupUserTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804252207137_RenameEntityTypeToCFEntityType.cs" />
+    <Compile Include="Migrations\201804252207137_RenameEntityTypeToCFEntityType.Designer.cs">
+      <DependentUpon>201804252207137_RenameEntityTypeToCFEntityType.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Access\AccessDefinition.cs" />
     <Compile Include="Models\Access\AccessGroup.cs" />
@@ -130,7 +134,7 @@
     <Compile Include="Models\Data\FormSubmission.cs" />
     <Compile Include="Models\CFEntity.cs" />
     <Compile Include="Models\CFUserList.cs" />
-    <Compile Include="Models\EntityType.cs" />
+    <Compile Include="Models\CFEntityType.cs" />
     <Compile Include="Models\Data\DataFile.cs" />
     <Compile Include="Models\FileDescription.cs" />
     <Compile Include="Models\Forms\AbstractForm.cs" />
@@ -206,6 +210,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804251713131_RenameEntityGroupAndEntityGroupUserTable.resx">
       <DependentUpon>201804251713131_RenameEntityGroupAndEntityGroupUserTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804252207137_RenameEntityTypeToCFEntityType.resx">
+      <DependentUpon>201804252207137_RenameEntityTypeToCFEntityType.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Validators.resx">
       <Generator>ResXFileCodeGenerator</Generator>

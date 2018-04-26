@@ -139,7 +139,7 @@ namespace Catfish.Core.Services
             //update metadata field's value based on the attribute mapping
             //for example if "Name mapping" mapped to the Form's Title field, grab the value of the form title and set it to Metadata Set "Name Mapping Attribute"
             EntityTypeService entityTypeService = new EntityTypeService(Db);
-            EntityType entityType = entityTypeService.GetEntityTypeById(entityTypeId);
+            CFEntityType entityType = entityTypeService.GetEntityTypeById(entityTypeId);
             foreach (KeyValuePair<string, string> map in metadataAttributeMapping)
             {
                 //key: attributeMapping, value Form's Field's Name

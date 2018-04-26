@@ -81,7 +81,7 @@ namespace Catfish.Core.Services
 
             Db.SaveChanges();
             //add entityType
-            foreach (EntityType et in ingestion.EntityTypes)
+            foreach (CFEntityType et in ingestion.EntityTypes)
             {
                 int oldId = et.Id;
 
@@ -112,10 +112,10 @@ namespace Catfish.Core.Services
                     mapping.MetadataSet = Db.MetadataSets.Where(m => m.MappedGuid == mGuid).FirstOrDefault();
                 }
 
-                EntityType newEt=null;
+                CFEntityType newEt=null;
                 if (ingestion.Overwrite)
                 {
-                    EntityType oldEt = Db.EntityTypes.Where(e => e.Name == et.Name).FirstOrDefault();
+                    CFEntityType oldEt = Db.EntityTypes.Where(e => e.Name == et.Name).FirstOrDefault();
                     if(oldEt != null)
                     {
                         //modified it --replace with current value
@@ -278,7 +278,7 @@ namespace Catfish.Core.Services
         {  
             T agg = new T();
             string entityTypeName = aggregation.Data.Attribute("entity-type").Value;
-            EntityType entType = Db.EntityTypes.Where(e => e.Name == entityTypeName).FirstOrDefault();
+            CFEntityType entType = Db.EntityTypes.Where(e => e.Name == entityTypeName).FirstOrDefault();
             agg = (T)aggregation;
             agg.EntityType = entType;
            
@@ -306,7 +306,7 @@ namespace Catfish.Core.Services
         {
             IEnumerable<CFCollection> collections = Db.Collections;
             IEnumerable<Item> items = Db.Items;
-            IEnumerable<EntityType> entitytypes = Db.EntityTypes;
+            IEnumerable<CFEntityType> entitytypes = Db.EntityTypes;
             IEnumerable<MetadataSet> metadatasets = Db.MetadataSets;
             //IEnumerable<Form> forms = Db.FormTemplates;
 

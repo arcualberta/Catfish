@@ -14,7 +14,7 @@ namespace Catfish.Core.Models.Ingestion
 
         public List<MetadataSet> MetadataSets { get; set; }
 
-        public List<EntityType> EntityTypes { get; set; }
+        public List<CFEntityType> EntityTypes { get; set; }
 
         public List<XmlModel> Aggregations { get; set; }
 
@@ -24,7 +24,7 @@ namespace Catfish.Core.Models.Ingestion
         {
             Overwrite = false;
             MetadataSets = new List<MetadataSet>();
-            EntityTypes = new List<EntityType>();
+            EntityTypes = new List<CFEntityType>();
             Aggregations = new List<XmlModel>();
             Relationships = new List<Relationship>();
         }
@@ -120,7 +120,7 @@ namespace Catfish.Core.Models.Ingestion
         {
             XElement result = new XElement("entity-types");
 
-            foreach(EntityType type in EntityTypes)
+            foreach(CFEntityType type in EntityTypes)
             {
                 XElement entityType = new XElement("entity-type");
                 entityType.SetAttributeValue("id", type.Id);
@@ -173,7 +173,7 @@ namespace Catfish.Core.Models.Ingestion
         {
             foreach(XElement entityElement in element.Elements())
             {
-                EntityType entityType = new EntityType();
+                CFEntityType entityType = new CFEntityType();
                 entityType.Id = entityElement.Attribute("id") == null ? 0 : int.Parse(entityElement.Attribute("id").Value);
                 
                 foreach(XElement child in entityElement.Elements())
