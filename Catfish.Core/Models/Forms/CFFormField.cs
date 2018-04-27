@@ -17,7 +17,8 @@ using System.Web.Script.Serialization;
 namespace Catfish.Core.Models.Forms
 {
     [FormFieldRequired]
-    public class FormField : CFXmlModel
+   
+    public class CFFormField : CFXmlModel
     {
         public override string GetTagName() { return "field"; }
         public static char FileGuidSeparator = '|';
@@ -49,7 +50,7 @@ namespace Catfish.Core.Models.Forms
 
         //[Display(Name = "Name")]
         [ScriptIgnore]
-        public IEnumerable<TextValue> MultilingualName
+        public IEnumerable<CFTextValue> MultilingualName
         {
             get
             {
@@ -102,7 +103,7 @@ namespace Catfish.Core.Models.Forms
 
         [NotMapped]
         [ScriptIgnore]
-        public IReadOnlyList<TextValue> Values
+        public IReadOnlyList<CFTextValue> Values
         {
             get
             {
@@ -137,7 +138,7 @@ namespace Catfish.Core.Models.Forms
         }
 
         [ScriptIgnore]
-        public IEnumerable<TextValue> MultilingualDescription
+        public IEnumerable<CFTextValue> MultilingualDescription
         {
             get
             {
@@ -194,7 +195,7 @@ namespace Catfish.Core.Models.Forms
 
         public bool IsPageBreak()
         {
-            return typeof(PageBreak).IsAssignableFrom(GetType());
+            return typeof(CFPageBreak).IsAssignableFrom(GetType());
         }
 
         public virtual bool IsHidden()

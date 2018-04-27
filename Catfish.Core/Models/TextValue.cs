@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models
 {
-    public class CFTextValue
+    public class TextValue
     {
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string LanguageCode { get; set; }
@@ -18,18 +18,18 @@ namespace Catfish.Core.Models
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string Value { get; set; }
 
-        public CFTextValue()
+        public TextValue()
         {
         }
 
-        public CFTextValue(string langCode, string langLabel, string val)
+        public TextValue(string langCode, string langLabel, string val)
         {
             LanguageCode = langCode;
             LanguageLabel = langLabel;
             Value = val;
         }
 
-        public CFTextValue(XElement txtElement)
+        public TextValue(XElement txtElement)
         {
             XAttribute att = txtElement.Attribute(XNamespace.Xml + "lang");
             LanguageCode = att == null ? "" : att.Value;

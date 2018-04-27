@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 namespace Catfish.Core.Models
 {
     [CFTypeLabel("Form Template")]
-    public class CFForm : AbstractForm
+    public class Form : AbstractForm
     {
         public static string TagName { get { return "form"; } }
         public override string GetTagName() { return TagName; }
 
-        public CFForm()
+        public Form()
         {
             Guid = System.Guid.NewGuid().ToString("N");
         }

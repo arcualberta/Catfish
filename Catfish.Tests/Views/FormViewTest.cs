@@ -526,7 +526,7 @@ namespace Catfish.Tests.Views
        
 
        
-        private CFForm GetNewlyAddedForm()
+        private Form GetNewlyAddedForm()
         {
             CatfishDbContext db = new CatfishDbContext();
             if (db.Database.Connection.State == ConnectionState.Closed)

@@ -6,10 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.ComponentModel.DataAnnotations;
 
 namespace Catfish.Core.Models.Forms
 {
-    public class SingleSelectOptionsField: OptionsField
+   
+    public class CFSingleSelectOptionsField: CFOptionsField
     {
         [NotMapped]
         public string Value
@@ -47,7 +49,7 @@ namespace Catfish.Core.Models.Forms
                 bool selected = false;
                 if(!string.IsNullOrEmpty(srcValue))
                 {
-                    IEnumerable<TextValue> dstValues = XmlHelper.GetTextValues(opt, false);
+                    IEnumerable<CFTextValue> dstValues = XmlHelper.GetTextValues(opt, false);
                     selected = dstValues.Where(d => d.LanguageCode == lang && d.Value == srcValue).Any();
                 }
                 opt.SetAttributeValue("selected", selected);

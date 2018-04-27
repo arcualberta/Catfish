@@ -63,7 +63,7 @@ namespace Catfish.Models.Regions
                 {
                     if (requiredFields.Contains(field.GetName().ToLower()))
                     {
-                        List<CFTextValue> vals = field.GetValues().Where(tv => !string.IsNullOrEmpty(tv.Value)).ToList();
+                        List<TextValue> vals = field.GetValues().Where(tv => !string.IsNullOrEmpty(tv.Value)).ToList();
                         if(vals.Count > 0)
                         {
                             Metadata.Add(new MetadataFieldValue()
@@ -81,6 +81,6 @@ namespace Catfish.Models.Regions
     public class MetadataFieldValue
     {
         public string FieldName { get; set; }
-        public List<CFTextValue> FieldValues { get; set; }
+        public List<TextValue> FieldValues { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model Catfish.Core.Models.CFForm
+﻿@model Catfish.Core.Models.Form
 
 @using Catfish.Core.Models.Forms;
 @using Catfish.Core.Models.Data;
@@ -103,11 +103,11 @@
             {
                 string source = Url.Action("File", "Items", new { id = Model.Id, guid = f.DataFile.Guid });
                 @:<div>
-    if (f.DataFile.TopMimeType == DataFile.MimeType.Image)
+    if (f.DataFile.TopMimeType == CFDataFile.MimeType.Image)
     {
         <img src="@source" width="50" height="50" />
     }
-    else if (f.DataFile.TopMimeType == DataFile.MimeType.Video)
+    else if (f.DataFile.TopMimeType == CFDataFile.MimeType.Video)
     {
         string type = f.DataFile.ContentType.Contains("mp4") == true ? "video/mp4" : f.DataFile.ContentType.Contains("avi") == true ? "video/avi" : "video/ogg";
         <video width="320" height="240" controls>
@@ -115,7 +115,7 @@
             Your browser does not support the video tag.
         </video>
     }
-    else if (f.DataFile.TopMimeType == DataFile.MimeType.Audio)
+    else if (f.DataFile.TopMimeType == CFDataFile.MimeType.Audio)
     {
         //audio
         <p>

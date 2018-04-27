@@ -10,9 +10,10 @@ using Catfish.Core.Helpers;
 namespace Catfish.Core.Models.Forms
 {
     [NotMapped]
+    
     public class Option
     {
-        public List<TextValue> Value { get; set; }
+        public List<CFTextValue> Value { get; set; }
         public string Guid { get; set; }
         public bool Selected { get; set; }
 
@@ -25,7 +26,7 @@ namespace Catfish.Core.Models.Forms
 
         public Option()
         {
-            Value = new List<TextValue>();
+            Value = new List<CFTextValue>();
             Selected = false;
             Guid = System.Guid.NewGuid().ToString("N");
         }
@@ -35,7 +36,7 @@ namespace Catfish.Core.Models.Forms
             XElement optionElement = new XElement("option");
             optionElement.SetAttributeValue("selected", Selected);
             optionElement.SetAttributeValue("guid", Guid);
-            foreach (TextValue txt in Value)
+            foreach (CFTextValue txt in Value)
             {
                 XElement textEelemnt = new XElement("text", new XAttribute(XNamespace.Xml + "lang", txt.LanguageCode));
                 textEelemnt.Value = string.IsNullOrEmpty(txt.Value) ? "" : txt.Value;
@@ -46,7 +47,8 @@ namespace Catfish.Core.Models.Forms
     }
 
     [CFIgnore]
-    public class OptionsField: FormField
+    
+    public class CFOptionsField: CFFormField
     {
         //[DataType(DataType.MultilineText)]
         [CFTypeLabel("List of options, one option per line")]
@@ -98,7 +100,7 @@ namespace Catfish.Core.Models.Forms
 
         public override void UpdateValues(CFXmlModel src)
         {
-            OptionsField optionsField = src as OptionsField;
+            CFOptionsField optionsField = src as CFOptionsField;
             this.Options = optionsField.Options;
         }        
     }

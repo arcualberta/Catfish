@@ -15,11 +15,11 @@ namespace Catfish.Models.Regions
     [Serializable]
     public class MultilingualText: CatfishRegion
     {
-        public List<CFTextValue> Content { get; set; }
+        public List<TextValue> Content { get; set; }
 
         public MultilingualText()
         {
-            Content = new List<CFTextValue>();
+            Content = new List<TextValue>();
         }
 
         public string GetContent(string langCode)

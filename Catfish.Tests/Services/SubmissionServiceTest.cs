@@ -14,10 +14,10 @@ namespace Catfish.Tests.Services
     [TestClass]
     public class SubmissionServiceTest
     {
-        private CFForm CreateFormTemplate(SubmissionService subSrv, string name, string description, string questionPrefix)
+        private Form CreateFormTemplate(SubmissionService subSrv, string name, string description, string questionPrefix)
         {
             FormField field;
-            CFForm f = new CFForm();
+            Form f = new Form();
 
             f.Name = name;
             f.Description = description;
@@ -37,9 +37,9 @@ namespace Catfish.Tests.Services
                 Description = "This is a radio button field",
                 Options = new List<Option>
                 {
-                    new Option(){ Guid = Guid.NewGuid().ToString(), Value = new List<CFTextValue> (){ new CFTextValue("en", "One", "One") } },
-                    new Option(){ Guid = Guid.NewGuid().ToString(), Value = new List<CFTextValue> (){ new CFTextValue("en", "Two", "Two") } },
-                    new Option(){ Guid = Guid.NewGuid().ToString(), Value = new List<CFTextValue> (){ new CFTextValue("en", "Three", "Three") } },
+                    new Option(){ Guid = Guid.NewGuid().ToString(), Value = new List<TextValue> (){ new TextValue("en", "One", "One") } },
+                    new Option(){ Guid = Guid.NewGuid().ToString(), Value = new List<TextValue> (){ new TextValue("en", "Two", "Two") } },
+                    new Option(){ Guid = Guid.NewGuid().ToString(), Value = new List<TextValue> (){ new TextValue("en", "Three", "Three") } },
                 }
             };
             fields.Add(field);
@@ -60,10 +60,10 @@ namespace Catfish.Tests.Services
             string testName = "Test 1";
             string testDescription = "This is a form for the first test.";
             string testPrefix = "Test 1 ";
-            CFForm form1 = CreateFormTemplate(SubSrv, testName, testDescription, testPrefix);
+            Form form1 = CreateFormTemplate(SubSrv, testName, testDescription, testPrefix);
             Dh.Db.SaveChanges();
 
-            CFForm form2 = SubSrv.GetForm<CFForm>(form1.Id);
+            Form form2 = SubSrv.GetForm<Form>(form1.Id);
 
             Assert.AreEqual(form2.Name, testName);
             Assert.AreEqual(form2.Description, testDescription);
@@ -88,10 +88,10 @@ namespace Catfish.Tests.Services
             string testName = "Test 2";
             string testDescription = "This is a form for the second test.";
             string testPrefix = "Test 2 ";
-            CFForm form1 = CreateFormTemplate(SubSrv, testName, testDescription, testPrefix);
+            Form form1 = CreateFormTemplate(SubSrv, testName, testDescription, testPrefix);
             Dh.Db.SaveChanges();
 
-            CFForm submission = SubSrv.CreateSubmissionForm(form1.Id);
+            Form submission = SubSrv.CreateSubmissionForm(form1.Id);
 
             Assert.AreEqual(submission.Name, testName);
             Assert.AreEqual(submission.Description, testDescription);

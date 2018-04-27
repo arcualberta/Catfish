@@ -144,13 +144,13 @@ namespace Catfish.Core.Models
             return wrapper;
         }
 
-        public virtual IEnumerable<CFTextValue> GetNames(bool forceAllLanguages)
+        public virtual IEnumerable<TextValue> GetNames(bool forceAllLanguages)
         {
             XElement wrapper = GetWrapper("name", true, false);
             return XmlHelper.GetTextValues(wrapper, forceAllLanguages);
         }
 
-        protected virtual void SetName(IEnumerable<CFTextValue> val)
+        protected virtual void SetName(IEnumerable<TextValue> val)
         {
             XElement wrapper = Data.Element("name");
             if (wrapper != null)
@@ -166,17 +166,17 @@ namespace Catfish.Core.Models
             }
 
             //inserting text elements representing languages and values specified by the input argument
-            foreach (CFTextValue v in val)
+            foreach (TextValue v in val)
                 wrapper.Add(CreateTextElement(v.Value, v.LanguageCode));
         }
 
-        public virtual IEnumerable<CFTextValue> GetDescription(bool forceAllLanguages)
+        public virtual IEnumerable<TextValue> GetDescription(bool forceAllLanguages)
         {
             XElement wrapper = GetWrapper("description", true, false);
             return XmlHelper.GetTextValues(wrapper, forceAllLanguages);
         }
 
-        protected virtual void SetDescription(IEnumerable<CFTextValue> val)
+        protected virtual void SetDescription(IEnumerable<TextValue> val)
         {
             XElement wrapper = Data.Element("description");
             if (wrapper != null)
@@ -192,7 +192,7 @@ namespace Catfish.Core.Models
             }
 
             //inserting text elements representing languages and values specified by the input argument
-            foreach (CFTextValue v in val)
+            foreach (TextValue v in val)
                 wrapper.Add(CreateTextElement(v.Value, v.LanguageCode));
         }
 
@@ -277,7 +277,7 @@ namespace Catfish.Core.Models
             SetChildText("help", val, Data, Lang(lang));
         }
 
-        public virtual void SetTextValues(IEnumerable<CFTextValue> values)
+        public virtual void SetTextValues(IEnumerable<TextValue> values)
         {
             string[] languages = values.Select(v => v.LanguageCode).Distinct().ToArray();
             foreach(string lang in languages)
@@ -297,7 +297,7 @@ namespace Catfish.Core.Models
             return Enumerable.Empty<string>();
         }
 
-        public virtual IEnumerable<CFTextValue> GetValues(bool excludeBlanks = true)
+        public virtual IEnumerable<TextValue> GetValues(bool excludeBlanks = true)
         {
             XElement wrapper = GetWrapper("value", true, false);
             return XmlHelper.GetTextValues(wrapper, false, excludeBlanks);

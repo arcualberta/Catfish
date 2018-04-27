@@ -24,7 +24,7 @@ namespace Catfish.Areas.Manager.Controllers
             {
                 EntityTypeService entityTypeService = new EntityTypeService(Db);
                 // use these past fetches to show list on vies using SelectList ?
-                CFForm form = Db.FormTemplates.Where(f => f.Id == formId).FirstOrDefault();
+                Form form = Db.FormTemplates.Where(f => f.Id == formId).FirstOrDefault();
                 SelectList FormFields = new SelectList(new string[0]);
                 if (form != null)
                 {

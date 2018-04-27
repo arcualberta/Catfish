@@ -10,7 +10,7 @@ namespace Catfish.Areas.Manager.Controllers
 {
     public class FormTemplatesController : FormBuilderController
     {
-        public override AbstractForm CreateDataModel() { return new CFForm(); }
+        public override AbstractForm CreateDataModel() { return new Form(); }
 
         // GET: Manager/SubmissionTemplate
         public ActionResult Index()

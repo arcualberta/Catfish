@@ -134,7 +134,7 @@ namespace Catfish.Models.Regions
             
 
             // use these past fetches to show list on vies using SelectList ?
-            CFForm form = db.FormTemplates.Where(f => f.Id == FormId).FirstOrDefault();
+            Form form = db.FormTemplates.Where(f => f.Id == FormId).FirstOrDefault();
             if (form != null)
             {
                 mFormFields = new SelectList(form.Fields, "Name", "Name");
@@ -154,7 +154,7 @@ namespace Catfish.Models.Regions
             {
                 SubmissionService subSrv = new SubmissionService(new CatfishDbContext());
 
-                CFForm form = subSrv.CreateSubmissionForm(FormId);
+                Form form = subSrv.CreateSubmissionForm(FormId);
 
                 FormViewModel = new FormViewModel()
                 {
