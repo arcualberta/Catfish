@@ -129,7 +129,7 @@ namespace Catfish
 
                 Name = "User List",
                 Action = "index",
-                Controller = "CFUserLists",
+                Controller = "UserLists",
                 Permission = "ADMIN_CONTENT"
             });
              

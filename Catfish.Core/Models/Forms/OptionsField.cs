@@ -45,11 +45,11 @@ namespace Catfish.Core.Models.Forms
         }
     }
 
-    [Ignore]
+    [CFIgnore]
     public class OptionsField: FormField
     {
         //[DataType(DataType.MultilineText)]
-        [TypeLabel("List of options, one option per line")]
+        [CFTypeLabel("List of options, one option per line")]
         [NotMapped]
         public IReadOnlyList<Option> Options
         {
@@ -96,7 +96,7 @@ namespace Catfish.Core.Models.Forms
             return optionElement;
         }
 
-        public override void UpdateValues(XmlModel src)
+        public override void UpdateValues(CFXmlModel src)
         {
             OptionsField optionsField = src as OptionsField;
             this.Options = optionsField.Options;

@@ -41,14 +41,14 @@ namespace Catfish.Core.Services
             return srcExtension == "jpg" ? ImageFormat.Jpeg : ImageFormat.Png;
         }
         
-        public List<DataFile> UploadTempFiles(HttpRequestBase request)
+        public List<CFDataFile> UploadTempFiles(HttpRequestBase request)
         {
-            List<DataFile> files = UploadFiles(request, "temp-files");
+            List<CFDataFile> files = UploadFiles(request, "temp-files");
             Db.XmlModels.AddRange(files);
             return files;
         }
 
-        protected List<DataFile> UploadFiles(HttpRequestBase request, string dstPath)
+        protected List<CFDataFile> UploadFiles(HttpRequestBase request, string dstPath)
         {
             dstPath = Path.Combine(ConfigHelper.UploadRoot, dstPath);
             if (!Directory.Exists(dstPath))
@@ -58,7 +58,7 @@ namespace Catfish.Core.Services
                     throw new Exception("Unable to create the upload folder " + dstPath);
             }
 
-            List<DataFile> newFiles = new List<DataFile>();
+            List<CFDataFile> newFiles = new List<CFDataFile>();
             for (int i = 0; i < request.Files.Count; ++i)
                 newFiles.Add(InjestFile(request.Files[i].InputStream, request.Files[i].FileName, request.Files[i].ContentType, dstPath));
 
@@ -67,7 +67,7 @@ namespace Catfish.Core.Services
 
 
 
-        public DataFile InjestFile(Stream srcStream, string inputFileName, string contentType, string dstPath)
+        public CFDataFile InjestFile(Stream srcStream, string inputFileName, string contentType, string dstPath)
         {
             dstPath = Path.Combine(ConfigHelper.UploadRoot, dstPath);
             if (!Directory.Exists(dstPath))
@@ -77,7 +77,7 @@ namespace Catfish.Core.Services
                     throw new Exception("Unable to create the upload folder " + dstPath);
             }
 
-            DataFile file = new DataFile()
+            CFDataFile file = new CFDataFile()
             {
                 FileName = inputFileName,
                 Path = dstPath,
@@ -93,7 +93,7 @@ namespace Catfish.Core.Services
             if (file.ContentType.StartsWith("image/"))
             {
                 file.Thumbnail = CreateThumbnailName(file.Guid, file.Extension);
-                file.ThumbnailType = DataFile.eThumbnailTypes.NonShared;
+                file.ThumbnailType = CFDataFile.eThumbnailTypes.NonShared;
                 using (Image image = new Bitmap(file.AbsoluteFilePathName))
                 {
                     Size thumbSize = image.Width < image.Height
@@ -108,21 +108,21 @@ namespace Catfish.Core.Services
             else
             {
                 file.Thumbnail = GetThumbnail(file.ContentType);
-                file.ThumbnailType = DataFile.eThumbnailTypes.Shared;
+                file.ThumbnailType = CFDataFile.eThumbnailTypes.Shared;
             }
 
             return file;
         }
 
-        public DataFile GetFile(int id, string guid, bool checkInItems = true)
+        public CFDataFile GetFile(int id, string guid, bool checkInItems = true)
         {
-            XmlModel model = Db.XmlModels.Find(id);
+            CFXmlModel model = Db.XmlModels.Find(id);
 
-            if (model is DataFile && model.Guid == guid)
-                return model as DataFile;
+            if (model is CFDataFile && model.Guid == guid)
+                return model as CFDataFile;
 
-            if (checkInItems && model is Item)
-                return (model as Item).Files.Where(f => f.Guid == guid).FirstOrDefault();
+            if (checkInItems && model is CFItem)
+                return (model as CFItem).Files.Where(f => f.Guid == guid).FirstOrDefault();
 
             if (typeof(AbstractForm).IsAssignableFrom(model.GetType()))            
                 return (model as AbstractForm).Fields.SelectMany(m => m.Files).Where(m => m.DataFile.Guid == guid).FirstOrDefault().DataFile;
@@ -132,7 +132,7 @@ namespace Catfish.Core.Services
 
         public bool DeleteStandaloneFile(string guid)
         {
-            DataFile file = Db.XmlModels.Where(x => x.MappedGuid == guid).FirstOrDefault() as DataFile;
+            CFDataFile file = Db.XmlModels.Where(x => x.MappedGuid == guid).FirstOrDefault() as CFDataFile;
             if (file == null)
                 return false;
 

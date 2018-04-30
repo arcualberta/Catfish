@@ -31,7 +31,7 @@ namespace Catfish.Areas.Manager.Controllers
                 limit = ConfigHelper.PageSize;
 
             var itemQuery = ItemService.GetItems();
-            var entities = itemQuery.OrderBy(e => e.Id).Skip(offset).Take(limit).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
+            var entities = itemQuery.OrderBy(e => e.Id).Skip(offset).Take(limit).Include(e => (e as CFEntity).EntityType).Select(e => e as CFEntity);
             var total = itemQuery.Count();
 
             ViewBag.TotalItems = total;
@@ -47,7 +47,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpPost]
         public ActionResult Delete(int? id)
         {
-            Item model = null;
+            CFItem model = null;
             if (id.HasValue && id.Value > 0)
             {
                 model = Db.Items.Where(et => et.Id == id).FirstOrDefault();
@@ -69,7 +69,7 @@ namespace Catfish.Areas.Manager.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Item item = ItemService.GetItem(id.Value);
+            CFItem item = ItemService.GetItem(id.Value);
             if (item == null)
             {
                 return HttpNotFound();
@@ -80,7 +80,7 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Items/Edit/5
         public ActionResult Edit(int? id, int? entityTypeId)
         {
-            Item model;
+            CFItem model;
           
             if (id.HasValue && id.Value > 0)
             {
@@ -96,13 +96,13 @@ namespace Catfish.Areas.Manager.Controllers
                 }
                 else
                 {
-                    List<EntityType> entityTypes = EntityTypeService.GetEntityTypes(EntityType.eTarget.Items).ToList(); //srv.GetEntityTypes(EntityType.eTarget.Items).ToList();
+                    List<CFEntityType> entityTypes = EntityTypeService.GetEntityTypes(CFEntityType.eTarget.Items).ToList(); //srv.GetEntityTypes(EntityType.eTarget.Items).ToList();
                     ViewBag.SelectEntityViewModel = new SelectEntityTypeViewModel()
                     {
                         EntityTypes = entityTypes
                     };
 
-                    model = new Item();
+                    model = new CFItem();
                 }
             }
 
@@ -115,11 +115,11 @@ namespace Catfish.Areas.Manager.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Item model)
+        public ActionResult Edit(CFItem model)
         {
             if (ModelState.IsValid)
             {
-                Item dbModel = ItemService.UpdateStoredItem(model);
+                CFItem dbModel = ItemService.UpdateStoredItem(model);
                 Db.SaveChanges(User.Identity);
 
                 if (model.Id == 0)
@@ -132,7 +132,7 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult Associations(int id)
         {
-            Item model = ItemService.GetItem(id);
+            CFItem model = ItemService.GetItem(id);
             if (model == null)
                 throw new Exception("Item not found");
 
@@ -158,7 +158,7 @@ namespace Catfish.Areas.Manager.Controllers
         {
             try
             {
-                List<DataFile> files = DataService.UploadTempFiles(Request);
+                List<CFDataFile> files = DataService.UploadTempFiles(Request);
                 Db.SaveChanges(User.Identity);
 
                 //Saving ids  of uploaded files in the session because these files and thumbnails
@@ -209,7 +209,7 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult File(int id, string guid)
         {
-            DataFile file = DataService.GetFile(id, guid);
+            CFDataFile file = DataService.GetFile(id, guid);
             if (file == null)
                 return HttpNotFound("File not found");
 
@@ -219,11 +219,11 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult Thumbnail(int id, string name)
         {
-            DataFile file = DataService.GetFile(id, name);
+            CFDataFile file = DataService.GetFile(id, name);
             if (file == null)
                 return HttpNotFound("File not found");
             var test = file.ThumbnailType;
-            string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared 
+            string path_name = file.ThumbnailType == CFDataFile.eThumbnailTypes.Shared 
                 ? Path.Combine(FileHelper.GetThumbnailRoot(Request), file.Thumbnail)
                 : Path.Combine(file.Path, file.Thumbnail);
 

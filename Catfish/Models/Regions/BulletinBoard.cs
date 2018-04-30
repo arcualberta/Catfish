@@ -47,9 +47,9 @@ namespace Catfish.Models.Regions
 
         public List<MetadataFieldValue> Metadata { get; set; }
 
-        public BulletinBoardItem(Item dataModel, RequestContext ctx, string fields)
+        public BulletinBoardItem(CFItem dataModel, RequestContext ctx, string fields)
         {
-            DataFile file = dataModel.Files.FirstOrDefault();
+            CFDataFile file = dataModel.Files.FirstOrDefault();
             FileViewModel vm = new FileViewModel(file, dataModel.Id, ctx);
             Id = dataModel.Id;
             Thumbnail = vm.Thumbnail;
@@ -57,7 +57,7 @@ namespace Catfish.Models.Regions
 
             List<string> requiredFields = fields != null ? fields.ToLower().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>();
             Metadata = new List<MetadataFieldValue>();
-            foreach (MetadataSet ms in dataModel.MetadataSets)
+            foreach (CFMetadataSet ms in dataModel.MetadataSets)
             {
                 foreach (FormField field in ms.Fields)
                 {

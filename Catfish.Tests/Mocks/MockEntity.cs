@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Tests.Mocks
 {
-    class MockEntity : Entity
+    class MockEntity : CFEntity
     {
         public static string TagName
         {

@@ -279,10 +279,10 @@ namespace Catfish.Tests.Services
             DatabaseHelper Dh = new DatabaseHelper(true);
 
             // Build the Ingestion
-            Collection collection = Dh.Db.Collections.First();
-            IEnumerable<Item> items = Dh.Db.Items.Take(2);
-            IEnumerable<EntityType> entitytypes = Dh.Db.EntityTypes.Where(e => e.Id == collection.EntityType.Id || items.Select(i => i.EntityTypeId).Contains(e.Id)).Distinct();
-            IEnumerable<MetadataSet> metadatasets = Dh.Db.MetadataSets.Where(m => entitytypes.SelectMany(e => e.MetadataSets.Select(mm => mm.Id)).Contains(m.Id)).Distinct();
+            CFCollection collection = Dh.Db.Collections.First();
+            IEnumerable<CFItem> items = Dh.Db.Items.Take(2);
+            IEnumerable<CFEntityType> entitytypes = Dh.Db.EntityTypes.Where(e => e.Id == collection.EntityType.Id || items.Select(i => i.EntityTypeId).Contains(e.Id)).Distinct();
+            IEnumerable<CFMetadataSet> metadatasets = Dh.Db.MetadataSets.Where(m => entitytypes.SelectMany(e => e.MetadataSets.Select(mm => mm.Id)).Contains(m.Id)).Distinct();
 
             Ingestion ingestion = new Ingestion();
             ingestion.MetadataSets.AddRange(metadatasets);
@@ -290,7 +290,7 @@ namespace Catfish.Tests.Services
             ingestion.Aggregations.Add(collection);
             ingestion.Aggregations.AddRange(items);
 
-            Item[] itemArray = items.ToArray();
+            CFItem[] itemArray = items.ToArray();
 
             ingestion.Relationships.Add(new Relationship()
             {

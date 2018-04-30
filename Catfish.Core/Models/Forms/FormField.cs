@@ -17,17 +17,17 @@ using System.Web.Script.Serialization;
 namespace Catfish.Core.Models.Forms
 {
     [FormFieldRequired]
-    public class FormField : XmlModel
+    public class FormField : CFXmlModel
     {
         public override string GetTagName() { return "field"; }
         public static char FileGuidSeparator = '|';
 
         [NotMapped]
-        public List<FileDescription> Files
+        public List<CFFileDescription> Files
         {
             get
             {
-                return GetChildModels("files/" + FileDescription.TagName).Select(c => c as FileDescription).ToList();
+                return GetChildModels("files/" + CFFileDescription.TagName).Select(c => c as CFFileDescription).ToList();
             }
 
             set
@@ -38,7 +38,7 @@ namespace Catfish.Core.Models.Forms
                     filesElement = new XElement("files");
                     Data.Add(filesElement);
                 }
-                foreach (FileDescription fileDescription in value)
+                foreach (CFFileDescription fileDescription in value)
                 {
                     filesElement.Add(fileDescription.Data);
                 }
@@ -167,7 +167,7 @@ namespace Catfish.Core.Models.Forms
             set { SetAttribute("page", value); }
         }
 
-        public override void UpdateValues(XmlModel src)
+        public override void UpdateValues(CFXmlModel src)
         {
             XElement srcValueWrapper = src.Data.Element("value");
             if (srcValueWrapper == null)

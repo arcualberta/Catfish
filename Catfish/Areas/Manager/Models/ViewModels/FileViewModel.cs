@@ -18,42 +18,42 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string ContentType { get; set; }
         public string Label { get; set; }
         public bool PlayOnce { get; set; }
-        public DataFile.MimeType TopMimeType { get; set; }
-        public DataFile.eThumbnailTypes ThumbnailType { get; set; }
+        public CFDataFile.MimeType TopMimeType { get; set; }
+        public CFDataFile.eThumbnailTypes ThumbnailType { get; set; }
 
         public bool ShowPlayerControls
         {
             get
             {
-                return TopMimeType == DataFile.MimeType.Audio;
+                return TopMimeType == CFDataFile.MimeType.Audio;
             }
         }
 
         public FileViewModel() { }
 
-        public FileViewModel(DataFile src, int? id, RequestContext ctx, string controller)
+        public FileViewModel(CFDataFile src, int? id, RequestContext ctx, string controller)
         {
             InitializeInstance(src, id, ctx, controller);
         }
 
-        public FileViewModel(DataFile src, int? id)
+        public FileViewModel(CFDataFile src, int? id)
         {
             InitializeInstance(src, id, HttpContext.Current.Request.RequestContext, "Items");
         }
 
-        public FileViewModel(FileDescription fileDescription, int? id)
+        public FileViewModel(CFFileDescription fileDescription, int? id)
         {
             InitializeInstance(fileDescription, id);
         }
 
-        public FileViewModel(DataFile src, int? itemId, RequestContext ctx)
+        public FileViewModel(CFDataFile src, int? itemId, RequestContext ctx)
         {
             InitializeInstance(src, itemId, ctx, "Items");
         }          
 
-        public DataFile ToDataFile()
+        public CFDataFile ToDataFile()
         {
-            DataFile dataFile = new DataFile();
+            CFDataFile dataFile = new CFDataFile();
             dataFile.Id = Id;
             dataFile.FileName = FileName;
             dataFile.Guid = Guid;            
@@ -64,23 +64,23 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             return dataFile;
         }
 
-        public FileDescription ToFileDescription()
+        public CFFileDescription ToFileDescription()
         {
-            FileDescription fileDescription = new FileDescription();
+            CFFileDescription fileDescription = new CFFileDescription();
             fileDescription.DataFile = ToDataFile();
             fileDescription.Label = Label;
             fileDescription.FileOptions.PlayOnce = PlayOnce;
             return fileDescription;
         }      
 
-        private void InitializeInstance(FileDescription fileDescription, int? id)
+        private void InitializeInstance(CFFileDescription fileDescription, int? id)
         {
             Label = fileDescription.Label;
             PlayOnce = fileDescription.FileOptions.PlayOnce;
             InitializeInstance(fileDescription.DataFile, id, HttpContext.Current.Request.RequestContext, "Items"); ;
         }
 
-        private void InitializeInstance(DataFile src, int? id, RequestContext ctx, string controller)
+        private void InitializeInstance(CFDataFile src, int? id, RequestContext ctx, string controller)
         {
             UrlHelper urlHelper = new UrlHelper(ctx);
 

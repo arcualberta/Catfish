@@ -17,13 +17,13 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         }
 
-        public EntityViewModel(Entity src)
+        public EntityViewModel(CFEntity src)
         {
             Id = src.Id;
             Label = src.GetName();
         }
 
-        public EntityViewModel(MetadataSet src)
+        public EntityViewModel(CFMetadataSet src)
         {
             Id = src.Id;
             Label = src.GetName();

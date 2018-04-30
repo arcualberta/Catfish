@@ -9,12 +9,12 @@ namespace Catfish.Tests
     public class AccessGroupTests
     {
 
-        AccessGroup AccessGroup;
+        CFAccessGroup AccessGroup;
 
         [TestInitialize]
         public void Initialize()
         {
-            AccessGroup = new AccessGroup();
+            AccessGroup = new CFAccessGroup();
         }
 
         [TestMethod]

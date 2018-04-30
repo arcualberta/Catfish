@@ -30,7 +30,7 @@ namespace Catfish.Models.Regions
         public string SearchResultTemplate { get; set; }
 
         [NotMapped]
-        public Entity[] Results { get; set; }
+        public CFEntity[] Results { get; set; }
 
         [NotMapped]
         public int Total { get; set; }

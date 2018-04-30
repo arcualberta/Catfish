@@ -42,7 +42,7 @@ namespace Catfish.Controllers
             if (ModelState.IsValid)
             {
                 FormContainer formContainer = model.Region<FormContainer>("FormContainer");
-                Item submission = SubmissionService.SaveSubmission(
+                CFItem submission = SubmissionService.SaveSubmission(
                     vm.Form,
                     vm.FormSubmissionRef,
                     vm.ItemId,
@@ -50,7 +50,7 @@ namespace Catfish.Controllers
                     formContainer.FormId,
                     formContainer.CollectionId);
 
-                AuditEntry.eAction action = submission.Id == 0 ? AuditEntry.eAction.Create : AuditEntry.eAction.Update;
+                CFAuditEntry.eAction action = submission.Id == 0 ? CFAuditEntry.eAction.Create : CFAuditEntry.eAction.Update;
                 string actor = User.Identity.IsAuthenticated ? User.Identity.Name : "Annonymous";
                 Db.SaveChanges(User.Identity);
 

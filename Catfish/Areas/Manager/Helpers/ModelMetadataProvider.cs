@@ -12,7 +12,7 @@ namespace Catfish.Areas.Manager.Helpers
         {
             var metadata = base.CreateMetadata(attributes, containerType, modelAccessor, modelType, propertyName);
 
-            TypeLabelAttribute attr = attributes.OfType<TypeLabelAttribute>().FirstOrDefault();
+            CFTypeLabelAttribute attr = attributes.OfType<CFTypeLabelAttribute>().FirstOrDefault();
             if (attr != null)
             {
                 metadata.AdditionalValues.Add("TypeLabel", attr.Name);

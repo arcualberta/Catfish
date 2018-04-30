@@ -299,8 +299,8 @@
     <Content Include="Areas\Manager\Views\Extensions\BulletinBoard.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\SimpleSearch.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\SearchResults.cshtml" />
-    <Content Include="Areas\Manager\Views\CFUserLists\Index.cshtml" />
-    <Content Include="Areas\Manager\Views\CFUserLists\Edit.cshtml" />
+    <Content Include="Areas\Manager\Views\UserLists\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\UserLists\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\EntityContainer.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\MembershipContainer.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\RelationshipContainer.cshtml" />
@@ -332,7 +332,7 @@
     <Compile Include="Areas\Manager\Controllers\FormContainerController.cs" />
     <Compile Include="Areas\Manager\Controllers\CatfishController.cs" />
     <Compile Include="Areas\Manager\Controllers\CollectionsController.cs" />
-    <Compile Include="Areas\Manager\Controllers\CFUserListsController.cs" />
+    <Compile Include="Areas\Manager\Controllers\UserListsController.cs" />
     <Compile Include="Areas\Manager\Controllers\EntityTypesController.cs" />
     <Compile Include="Areas\Manager\Controllers\FormBuilderController.cs" />
     <Compile Include="Areas\Manager\Controllers\ItemsController.cs" />

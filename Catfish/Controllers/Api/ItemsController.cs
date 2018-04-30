@@ -19,11 +19,11 @@ namespace Catfish.Controllers.Api
         {
             try
             {
-                IEnumerable<Item> items;
+                IEnumerable<CFItem> items;
                 if (collectionId > 0)
                 {
-                    Collection collection = CollectionService.GetCollection(collectionId);
-                    items = collection.ChildItems.Select(it => it as Item);
+                    CFCollection collection = CollectionService.GetCollection(collectionId);
+                    items = collection.ChildItems.Select(it => it as CFItem);
                 }
                 else
                 {
@@ -57,11 +57,11 @@ namespace Catfish.Controllers.Api
 
         public ActionResult Thumbnail(int id, string name)
         {
-            DataFile file = DataService.GetFile(id, name);
+            CFDataFile file = DataService.GetFile(id, name);
             if (file == null)
                 return HttpNotFound("File not found");
 
-            string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared
+            string path_name = file.ThumbnailType == CFDataFile.eThumbnailTypes.Shared
                 ? Path.Combine(FileHelper.GetThumbnailRoot(Request), file.Thumbnail)
                 : Path.Combine(file.Path, file.Thumbnail);
 
@@ -70,7 +70,7 @@ namespace Catfish.Controllers.Api
 
         public ActionResult File(int id, string guid)
         {
-            DataFile file = DataService.GetFile(id, guid);
+            CFDataFile file = DataService.GetFile(id, guid);
             if (file == null)
                 return HttpNotFound("File not found");
 

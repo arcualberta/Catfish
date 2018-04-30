@@ -2,7 +2,7 @@
 
 namespace Catfish.Core.Models.Forms
 {
-    [TypeLabel("Multiple choice")]
+    [CFTypeLabel("Multiple choice")]
     public class RadioButtonSet : SingleSelectOptionsField
     {
     }

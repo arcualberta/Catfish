@@ -16,7 +16,7 @@ namespace Catfish.Areas.Manager.Controllers
 {
     public class MetadataController : FormBuilderController
     {
-        public override AbstractForm CreateDataModel() { return new MetadataSet(); }
+        public override AbstractForm CreateDataModel() { return new CFMetadataSet(); }
 
         public ActionResult Index()
         {

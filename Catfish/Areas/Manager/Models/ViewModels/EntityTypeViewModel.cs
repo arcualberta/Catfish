@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
-using static Catfish.Core.Models.EntityType;
+using static Catfish.Core.Models.CFEntityType;
 
 namespace Catfish.Areas.Manager.Models.ViewModels
 {
@@ -42,7 +42,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
             TargetType = new List<bool>();
 
-            foreach (var key in System.Enum.GetValues(typeof(EntityType.eTarget)))
+            foreach (var key in System.Enum.GetValues(typeof(CFEntityType.eTarget)))
             {
                 TargetType.Add(false);
             }
@@ -54,7 +54,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public void UpdateViewModel(object dataModel, CatfishDbContext db)
         {
-            EntityType model = dataModel as EntityType;
+            CFEntityType model = dataModel as CFEntityType;
 
             Id = model.Id;
             Name = model.Name;
@@ -68,7 +68,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 TargetType[(int)tt] = true;
             }
 
-            TypeLabelAttribute att = Attribute.GetCustomAttribute(model.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
+            CFTypeLabelAttribute att = Attribute.GetCustomAttribute(model.GetType(), typeof(CFTypeLabelAttribute)) as CFTypeLabelAttribute;
             TypeLabel = att == null ? model.GetType().ToString() : att.Name;
 
             //populating the available metadata sets array
@@ -91,7 +91,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             if (model.AttributeMappings.Count > 0)
             {
 
-                foreach (EntityTypeAttributeMapping map in model.AttributeMappings)
+                foreach (CFEntityTypeAttributeMapping map in model.AttributeMappings)
                 {
                     List<string> addList = new List<string>();
                     addList.Add("");
@@ -128,19 +128,19 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public override void UpdateDataModel(object dataModel, CatfishDbContext db)
         {
-            EntityType model = dataModel as EntityType;
+            CFEntityType model = dataModel as CFEntityType;
 
             model.Name = Name;
             model.Description = Description;
            
             //Mr jan 15 2018
 
-            var TargetTypesList = new List<EntityType.eTarget>();
+            var TargetTypesList = new List<CFEntityType.eTarget>();
             for (int i = 0; i < TargetType.Count; ++i)
             {
                 if (TargetType[i])
                 {
-                    TargetTypesList.Add((EntityType.eTarget)i);
+                    TargetTypesList.Add((CFEntityType.eTarget)i);
                 }
             }
             model.TargetTypesList = TargetTypesList;
@@ -160,7 +160,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             {
                 if (!dataModelMetadataSetIds.Contains(id))
                 {
-                    MetadataSet ms = db.MetadataSets.Where(s => s.Id == id).FirstOrDefault();
+                    CFMetadataSet ms = db.MetadataSets.Where(s => s.Id == id).FirstOrDefault();
                     if(ms != null)
                         model.MetadataSets.Add(ms);
                 }
@@ -171,7 +171,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             MetadataService mService = new MetadataService(db);
             foreach(var map in AttributeMappings)
             {
-                model.AttributeMappings.Add( new EntityTypeAttributeMapping
+                model.AttributeMappings.Add( new CFEntityTypeAttributeMapping
                                                     {
                                                         Name = map.Name,
                                                         FieldName = map.Field,

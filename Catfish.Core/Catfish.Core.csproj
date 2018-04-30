@@ -113,39 +113,51 @@
     <Compile Include="Migrations\201804251713131_RenameEntityGroupAndEntityGroupUserTable.Designer.cs">
       <DependentUpon>201804251713131_RenameEntityGroupAndEntityGroupUserTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804252207137_RenameEntityTypeToCFEntityType.cs" />
+    <Compile Include="Migrations\201804252207137_RenameEntityTypeToCFEntityType.Designer.cs">
+      <DependentUpon>201804252207137_RenameEntityTypeToCFEntityType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804261706235_RenameEntityTypeAttributeMappingsToCFEntityTypeAttributeMappings.cs" />
+    <Compile Include="Migrations\201804261706235_RenameEntityTypeAttributeMappingsToCFEntityTypeAttributeMappings.Designer.cs">
+      <DependentUpon>201804261706235_RenameEntityTypeAttributeMappingsToCFEntityTypeAttributeMappings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804261932173_RenameXMLModelToCFXMLModel.cs" />
+    <Compile Include="Migrations\201804261932173_RenameXMLModelToCFXMLModel.Designer.cs">
+      <DependentUpon>201804261932173_RenameXMLModelToCFXMLModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Access\AccessDefinition.cs" />
-    <Compile Include="Models\Access\AccessGroup.cs" />
-    <Compile Include="Models\Aggregation.cs" />
-    <Compile Include="Models\Attributes\IgnoreAttribute.cs" />
-    <Compile Include="Models\Attributes\InputTypeAttribute.cs" />
-    <Compile Include="Models\Attributes\RankAttribute.cs" />
-    <Compile Include="Models\Attributes\TypeLabelAttribute.cs" />
-    <Compile Include="Models\AuditChangeLog.cs" />
-    <Compile Include="Models\AuditEntry.cs" />
+    <Compile Include="Models\Access\CFAccessDefinition.cs" />
+    <Compile Include="Models\Access\CFAccessGroup.cs" />
+    <Compile Include="Models\CFAggregation.cs" />
+    <Compile Include="Models\Attributes\CFIgnoreAttribute.cs" />
+    <Compile Include="Models\Attributes\CFInputTypeAttribute.cs" />
+    <Compile Include="Models\Attributes\CFRankAttribute.cs" />
+    <Compile Include="Models\Attributes\CFTypeLabelAttribute.cs" />
+    <Compile Include="Models\CFAuditChangeLog.cs" />
+    <Compile Include="Models\CFAuditEntry.cs" />
     <Compile Include="Models\CatfishDbContext.cs" />
-    <Compile Include="Models\FileOptions.cs" />
-    <Compile Include="Models\Collection.cs" />
-    <Compile Include="Models\Data\DataObject.cs" />
-    <Compile Include="Models\Data\FormSubmission.cs" />
-    <Compile Include="Models\Entity.cs" />
+    <Compile Include="Models\CFFileOptions.cs" />
+    <Compile Include="Models\CFCollection.cs" />
+    <Compile Include="Models\Data\CFDataObject.cs" />
+    <Compile Include="Models\Data\CFFormSubmission.cs" />
+    <Compile Include="Models\CFEntity.cs" />
     <Compile Include="Models\CFUserList.cs" />
-    <Compile Include="Models\EntityType.cs" />
-    <Compile Include="Models\Data\DataFile.cs" />
-    <Compile Include="Models\FileDescription.cs" />
+    <Compile Include="Models\CFEntityType.cs" />
+    <Compile Include="Models\Data\CFDataFile.cs" />
+    <Compile Include="Models\CFFileDescription.cs" />
     <Compile Include="Models\Forms\AbstractForm.cs" />
     <Compile Include="Models\Forms\Attachment.cs" />
     <Compile Include="Models\Forms\ClientInfo.cs" />
     <Compile Include="Models\Forms\PageBreak.cs" />
     <Compile Include="Models\Ingestion\Ingestion.cs" />
     <Compile Include="Models\Ingestion\Relationship.cs" />
-    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\CFItem.cs" />
     <Compile Include="Models\Forms\CheckBoxSet.cs" />
     <Compile Include="Models\Forms\DateField.cs" />
     <Compile Include="Models\Forms\DropDownMenu.cs" />
     <Compile Include="Models\Forms\MetadataDefinition.cs" />
-    <Compile Include="Models\EntityTypeAttributeMapping.cs" />
-    <Compile Include="Models\MetadataSet.cs" />
+    <Compile Include="Models\CFEntityTypeAttributeMapping.cs" />
+    <Compile Include="Models\CFMetadataSet.cs" />
     <Compile Include="Models\Forms\FormField.cs" />
     <Compile Include="Models\Forms\OptionsField.cs" />
     <Compile Include="Models\Forms\RadioButtonSet.cs" />
@@ -154,7 +166,7 @@
     <Compile Include="Models\Forms\TextField.cs" />
     <Compile Include="Models\Form.cs" />
     <Compile Include="Models\TextValue.cs" />
-    <Compile Include="Models\XmlModel.cs" />
+    <Compile Include="Models\CFXmlModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Validators.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -162,7 +174,7 @@
       <DependentUpon>Validators.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\DataService.cs" />
-    <Compile Include="Services\CFUserListService.cs" />
+    <Compile Include="Services\UserListService.cs" />
     <Compile Include="Services\EntityTypeService.cs" />
     <Compile Include="Services\IngestionService.cs" />
     <Compile Include="Services\SolrService.cs" />
@@ -206,6 +218,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804251713131_RenameEntityGroupAndEntityGroupUserTable.resx">
       <DependentUpon>201804251713131_RenameEntityGroupAndEntityGroupUserTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804252207137_RenameEntityTypeToCFEntityType.resx">
+      <DependentUpon>201804252207137_RenameEntityTypeToCFEntityType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804261706235_RenameEntityTypeAttributeMappingsToCFEntityTypeAttributeMappings.resx">
+      <DependentUpon>201804261706235_RenameEntityTypeAttributeMappingsToCFEntityTypeAttributeMappings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804261932173_RenameXMLModelToCFXMLModel.resx">
+      <DependentUpon>201804261932173_RenameXMLModelToCFXMLModel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Validators.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -543,7 +543,7 @@ namespace Catfish.Tests.Views
         }
 
        
-        private MetadataSet GetNewlyAddedMetadaSet()
+        private CFMetadataSet GetNewlyAddedMetadaSet()
         {
             CatfishDbContext db = new CatfishDbContext();
             if (db.Database.Connection.State == ConnectionState.Closed)
@@ -554,7 +554,7 @@ namespace Catfish.Tests.Views
 
             return metadata;
         }
-        private MetadataSet GetMetadaSetById(int id)
+        private CFMetadataSet GetMetadaSetById(int id)
         {
             CatfishDbContext db = new CatfishDbContext();
             if (db.Database.Connection.State == ConnectionState.Closed)

@@ -433,7 +433,7 @@ namespace Catfish.Tests.Views
 
         }
 
-        private EntityType GetNewlyAddedEntityType()
+        private CFEntityType GetNewlyAddedEntityType()
         {
             CatfishDbContext db = new CatfishDbContext();
             if (db.Database.Connection.State == ConnectionState.Closed)

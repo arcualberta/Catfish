@@ -87,12 +87,12 @@ namespace Catfish.Core.Services
             return submission;
         }
 
-        public Item SaveSubmission(Form form, string formSubmissionRef, int itemId, int entityTypeId, int formTemplateId, int collectionId, IDictionary<string,string> metadataAttributeMapping=null)
+        public CFItem SaveSubmission(Form form, string formSubmissionRef, int itemId, int entityTypeId, int formTemplateId, int collectionId, IDictionary<string,string> metadataAttributeMapping=null)
         {
-            Item submissionItem;
+            CFItem submissionItem;
             if (itemId == 0)
             {
-                submissionItem = CreateEntity<Item>(entityTypeId);
+                submissionItem = CreateEntity<CFItem>(entityTypeId);
                // submissionItem.m
                 Db.Items.Add(submissionItem);
             }
@@ -105,7 +105,7 @@ namespace Catfish.Core.Services
                 Db.Entry(submissionItem).State = System.Data.Entity.EntityState.Modified;
             }
 
-            FormSubmission storedFormSubmission = submissionItem.GetFormSubmission(formSubmissionRef);
+            CFFormSubmission storedFormSubmission = submissionItem.GetFormSubmission(formSubmissionRef);
             if(storedFormSubmission == null)
             {
                 //if no stored form is available, we need to clone the template
@@ -113,7 +113,7 @@ namespace Catfish.Core.Services
                 if (template == null)
                     throw new Exception("Form template does not exist.");
 
-                storedFormSubmission = new FormSubmission();
+                storedFormSubmission = new CFFormSubmission();
                 storedFormSubmission.ReplaceFormData(new XElement(template.Data));
                 submissionItem.AddData(storedFormSubmission);
             }
@@ -128,7 +128,7 @@ namespace Catfish.Core.Services
 
             if(collectionId > 0)
             {
-                Collection collection = Db.Collections.Where(c => c.Id == collectionId).FirstOrDefault();
+                CFCollection collection = Db.Collections.Where(c => c.Id == collectionId).FirstOrDefault();
                 if (collection == null)
                     throw new Exception("Specified collection not found");
 
@@ -139,7 +139,7 @@ namespace Catfish.Core.Services
             //update metadata field's value based on the attribute mapping
             //for example if "Name mapping" mapped to the Form's Title field, grab the value of the form title and set it to Metadata Set "Name Mapping Attribute"
             EntityTypeService entityTypeService = new EntityTypeService(Db);
-            EntityType entityType = entityTypeService.GetEntityTypeById(entityTypeId);
+            CFEntityType entityType = entityTypeService.GetEntityTypeById(entityTypeId);
             foreach (KeyValuePair<string, string> map in metadataAttributeMapping)
             {
                 //key: attributeMapping, value Form's Field's Name
@@ -148,8 +148,8 @@ namespace Catfish.Core.Services
                 FormField formField = storedFormSubmission.FormData.Fields.Where(f => f.Name == FieldName).FirstOrDefault();
                 var FieldValues = formField.GetValues();
 
-                EntityTypeAttributeMapping am = entityType.AttributeMappings.Where(a => a.Name == attMapping).FirstOrDefault();
-                MetadataSet ms = null;
+                CFEntityTypeAttributeMapping am = entityType.AttributeMappings.Where(a => a.Name == attMapping).FirstOrDefault();
+                CFMetadataSet ms = null;
                 if(am != null)
                       ms = entityType.MetadataSets.Where(m => m.Id == am.MetadataSetId).FirstOrDefault();
 
