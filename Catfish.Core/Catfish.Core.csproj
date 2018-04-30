@@ -174,6 +174,7 @@
       <DependentUpon>Validators.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\DataService.cs" />
+    <Compile Include="Services\SecurityServiceBase.cs" />
     <Compile Include="Services\UserListService.cs" />
     <Compile Include="Services\EntityTypeService.cs" />
     <Compile Include="Services\IngestionService.cs" />

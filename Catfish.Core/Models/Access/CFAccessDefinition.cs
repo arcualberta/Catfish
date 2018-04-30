@@ -15,7 +15,9 @@ namespace Catfish.Core.Models.Access
         Write    = 2,
         Append   = 4,
         Control  = 8,
-        Discover = 16
+        Discover = 16,
+
+        All = AccessMode.Read | AccessMode.Write | AccessMode.Append | AccessMode.Control | AccessMode.Discover
     }
 
     public class CFAccessDefinition : CFXmlModel

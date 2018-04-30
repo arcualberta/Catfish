@@ -10,8 +10,8 @@ namespace Catfish.Core.Services
 {
     abstract class SecurityServiceBase : ServiceBase
     {
-        private CFUserListService mUserListService;
-        private CFUserListService userListService { get { if (mUserListService == null) mUserListService = new CFUserListService(db); return mUserListService; } }
+        private UserListService mUserListService;
+        private UserListService userListService { get { if (mUserListService == null) mUserListService = new UserListService(Db); return mUserListService; } }
 
         protected abstract int GetDefaultPermissions();
         protected abstract bool IsAdmin(string userGuid);
@@ -21,7 +21,7 @@ namespace Catfish.Core.Services
 
         }
 
-        public AccessMode GetPermissions(string userGuid, Aggregation entity)
+        public AccessMode GetPermissions(string userGuid, CFAggregation entity)
         {
             if (IsAdmin(userGuid))
             {
@@ -30,7 +30,7 @@ namespace Catfish.Core.Services
 
             AccessMode modes = AccessMode.None;
             List<string> userGroups = new List<string>();//TODO: get the full list of users group guids
-            IList<Aggregation> visitedNodes = new List<Aggregation>();
+            IList<CFAggregation> visitedNodes = new List<CFAggregation>();
             IList<string> visitedGuids = new List<string>();
 
 
