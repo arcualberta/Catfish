@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Models.Forms
 {
-    [TypeLabel("Page Break")]
+    [CFTypeLabel("Page Break")]
     public class PageBreak: FormField
     {
     }

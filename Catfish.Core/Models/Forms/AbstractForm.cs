@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Forms
 {
-    public abstract class AbstractForm : XmlModel
+    public abstract class AbstractForm : CFXmlModel
     {
         public AbstractForm()
         {
@@ -42,11 +42,7 @@ namespace Catfish.Core.Models.Forms
         public string Description { get { return GetDescription(); } set { SetDescription(value); } }
 
 
-        /// <summary>
-        /// Updates the content of a form with the content of another abstract form.
-        /// </summary>
-        /// <param name="src">An abstract form to obtain the information from.</param>
-        public override void UpdateValues(XmlModel src)
+        public override void UpdateValues(CFXmlModel src)
         {
             base.UpdateValues(src);
 

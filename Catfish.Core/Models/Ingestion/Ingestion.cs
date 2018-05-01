@@ -12,20 +12,20 @@ namespace Catfish.Core.Models.Ingestion
     {
         public bool Overwrite { get; set; }
 
-        public List<MetadataSet> MetadataSets { get; set; }
+        public List<CFMetadataSet> MetadataSets { get; set; }
 
-        public List<EntityType> EntityTypes { get; set; }
+        public List<CFEntityType> EntityTypes { get; set; }
 
-        public List<XmlModel> Aggregations { get; set; }
+        public List<CFXmlModel> Aggregations { get; set; }
 
         public List<Relationship> Relationships { get; set; }
 
         public Ingestion()
         {
             Overwrite = false;
-            MetadataSets = new List<MetadataSet>();
-            EntityTypes = new List<EntityType>();
-            Aggregations = new List<XmlModel>();
+            MetadataSets = new List<CFMetadataSet>();
+            EntityTypes = new List<CFEntityType>();
+            Aggregations = new List<CFXmlModel>();
             Relationships = new List<Relationship>();
         }
 
@@ -88,7 +88,7 @@ namespace Catfish.Core.Models.Ingestion
         {
             XElement result = new XElement("metadata-sets");
 
-            foreach(MetadataSet set in MetadataSets)
+            foreach(CFMetadataSet set in MetadataSets)
             {
                 XElement metadataset = XElement.Parse(set.Content);
                 result.Add(metadataset);
@@ -105,7 +105,7 @@ namespace Catfish.Core.Models.Ingestion
                 string strGuid = setElement.Attribute("guid").Value;
                 if (name == "metadata-set")
                 {
-                    MetadataSet set = new MetadataSet();
+                    CFMetadataSet set = new CFMetadataSet();
                     set.Content = setElement.ToString();
                     set.Guid = strGuid;
                     set.MappedGuid = strGuid;
@@ -120,7 +120,7 @@ namespace Catfish.Core.Models.Ingestion
         {
             XElement result = new XElement("entity-types");
 
-            foreach(EntityType type in EntityTypes)
+            foreach(CFEntityType type in EntityTypes)
             {
                 XElement entityType = new XElement("entity-type");
                 entityType.SetAttributeValue("id", type.Id);
@@ -138,13 +138,13 @@ namespace Catfish.Core.Models.Ingestion
                 entityType.Add(element);
 
                 element = new XElement("metadata-sets");
-                foreach(MetadataSet set in type.MetadataSets)
+                foreach(CFMetadataSet set in type.MetadataSets)
                 {
                     XElement metadataSet = new XElement("metadata-set");
                     metadataSet.SetAttributeValue("ref", set.Guid);
 
-                    IEnumerable<EntityTypeAttributeMapping> mappings = type.AttributeMappings.Where(m => m.MetadataSet.Guid == set.Guid);
-                    foreach(EntityTypeAttributeMapping map in mappings)
+                    IEnumerable<CFEntityTypeAttributeMapping> mappings = type.AttributeMappings.Where(m => m.MetadataSet.Guid == set.Guid);
+                    foreach(CFEntityTypeAttributeMapping map in mappings)
                     {
                         XElement attributeMapping = new XElement("attribute-mapping");
 
@@ -173,7 +173,7 @@ namespace Catfish.Core.Models.Ingestion
         {
             foreach(XElement entityElement in element.Elements())
             {
-                EntityType entityType = new EntityType();
+                CFEntityType entityType = new CFEntityType();
                 entityType.Id = entityElement.Attribute("id") == null ? 0 : int.Parse(entityElement.Attribute("id").Value);
                 
                 foreach(XElement child in entityElement.Elements())
@@ -198,7 +198,7 @@ namespace Catfish.Core.Models.Ingestion
                                 //MetadataSet set = MetadataSets.Where(m => m.Guid == metadata.Attribute("ref").Value).FirstOrDefault();
                                 //if (set == null)
                                 //{
-                                    MetadataSet set = new MetadataSet();
+                                    CFMetadataSet set = new CFMetadataSet();
                                     set.Guid = metadata.Attribute("ref").Value;
                                     set.Id = -1;
                                 //}
@@ -209,7 +209,7 @@ namespace Catfish.Core.Models.Ingestion
                                 {
                                     if(attrElement.Name.LocalName == "attribute-mapping")
                                     {
-                                        EntityTypeAttributeMapping mapping = new EntityTypeAttributeMapping();
+                                        CFEntityTypeAttributeMapping mapping = new CFEntityTypeAttributeMapping();
                                         mapping.MetadataSet = set;
 
                                         foreach(XElement attrChild in attrElement.Elements())
@@ -247,7 +247,7 @@ namespace Catfish.Core.Models.Ingestion
         {
             XElement result = new XElement("aggregations");
 
-            foreach(Aggregation aggregation in Aggregations)
+            foreach(CFAggregation aggregation in Aggregations)
             {
                 if (aggregation.Content != null)
                 {
@@ -264,16 +264,16 @@ namespace Catfish.Core.Models.Ingestion
             foreach(XElement child in element.Elements())
             {
                 string name = child.Name.LocalName;
-                XmlModel model = null;
+                CFXmlModel model = null;
                 string strGuid = child.Attribute("guid").Value;
                 switch (name)
                 {
                     case "collection":
-                        model = new Collection();
+                        model = new CFCollection();
                         break;
 
                     case "item":
-                        model = new Item();
+                        model = new CFItem();
                         break;
 
                     case "form":
@@ -281,7 +281,7 @@ namespace Catfish.Core.Models.Ingestion
                         break;
 
                     case "file":
-                        model = new DataFile();
+                        model = new CFDataFile();
                         break;
                 }
 

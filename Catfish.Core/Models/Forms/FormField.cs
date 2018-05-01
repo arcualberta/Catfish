@@ -11,28 +11,44 @@ using System.Xml.Linq;
 using System.ComponentModel.DataAnnotations.Schema;
 using Catfish.Core.Helpers;
 using Catfish.Core.Validators;
+using Catfish.Core.Models.Data;
+using System.Web.Script.Serialization;
 
 namespace Catfish.Core.Models.Forms
 {
     [FormFieldRequired]
-    public class FormField : XmlModel
+    public class FormField : CFXmlModel
     {
         public override string GetTagName() { return "field"; }
+        public static char FileGuidSeparator = '|';
 
         [NotMapped]
-        public string Name
+        public List<CFFileDescription> Files
         {
             get
             {
-                return GetName();
+                return GetChildModels("files/" + CFFileDescription.TagName).Select(c => c as CFFileDescription).ToList();
             }
+
             set
             {
-                SetName(value);
+                XElement filesElement = Data.Element("files");
+                if (filesElement == null)
+                {
+                    filesElement = new XElement("files");
+                    Data.Add(filesElement);
+                }
+                foreach (CFFileDescription fileDescription in value)
+                {
+                    filesElement.Add(fileDescription.Data);
+                }
+
             }
         }
 
+
         //[Display(Name = "Name")]
+        [ScriptIgnore]
         public IEnumerable<TextValue> MultilingualName
         {
             get
@@ -46,7 +62,7 @@ namespace Catfish.Core.Models.Forms
             }
         }
 
-
+        [ScriptIgnore]
         [NotMapped]
         [Display(Name="Is Required")]
         public bool IsRequired
@@ -68,6 +84,7 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
+        [ScriptIgnore]
         [Display(Name="Tooltip Help")]
         [DataType(DataType.MultilineText)]
         public string Help
@@ -84,6 +101,7 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
+        [ScriptIgnore]
         public IReadOnlyList<TextValue> Values
         {
             get
@@ -104,6 +122,7 @@ namespace Catfish.Core.Models.Forms
 
         [DataType(DataType.MultilineText)]
         [NotMapped]
+        [ScriptIgnore]
         public string Description
         {
             get
@@ -117,6 +136,7 @@ namespace Catfish.Core.Models.Forms
             }
         }
 
+        [ScriptIgnore]
         public IEnumerable<TextValue> MultilingualDescription
         {
             get
@@ -132,6 +152,7 @@ namespace Catfish.Core.Models.Forms
 
 
         [NotMapped]
+        [ScriptIgnore]
         public int Rank
         {
             get { return GetAttribute("rank", 0); }
@@ -139,13 +160,14 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
+        [ScriptIgnore]
         public int Page
         {
             get { return GetAttribute("page", 0); }
             set { SetAttribute("page", value); }
         }
 
-        public override void UpdateValues(XmlModel src)
+        public override void UpdateValues(CFXmlModel src)
         {
             XElement srcValueWrapper = src.Data.Element("value");
             if (srcValueWrapper == null)
@@ -175,5 +197,9 @@ namespace Catfish.Core.Models.Forms
             return typeof(PageBreak).IsAssignableFrom(GetType());
         }
 
+        public virtual bool IsHidden()
+        {
+            return false;
+        }
     }
 }

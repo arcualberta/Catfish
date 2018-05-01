@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using static Catfish.Core.Models.EntityType;
+using static Catfish.Core.Models.CFEntityType;
 using System.Data.Entity.Core.Common;
 using System.Data.SQLite.EF6;
 using System.Data.SQLite;
@@ -192,7 +192,7 @@ namespace Catfish.Tests.Helpers
 
         private void CreateMetadata()
         {
-            MetadataSet metadata = new MetadataSet();
+            CFMetadataSet metadata = new CFMetadataSet();
             metadata.SetName("Basic Metadata");
             metadata.SetDescription("Metadata Description");
 
@@ -218,11 +218,11 @@ namespace Catfish.Tests.Helpers
 
         private void CreateEntityTypes()
         {
-            MetadataSet metadata = Ms.GetMetadataSets().FirstOrDefault();
+            CFMetadataSet metadata = Ms.GetMetadataSets().FirstOrDefault();
 
             for (int i = 0; i < TOTAL_ENTITYTYPES; ++i)
             {
-                EntityType et = new EntityType();
+                CFEntityType et = new CFEntityType();
                 et.Name = "Entity" + (i + 1);
                 et.MetadataSets.Add(metadata);
 
@@ -240,14 +240,14 @@ namespace Catfish.Tests.Helpers
 
                 et.TargetTypesList = targets;
 
-                et.AttributeMappings.Add(new EntityTypeAttributeMapping()
+                et.AttributeMappings.Add(new CFEntityTypeAttributeMapping()
                 {
                     Name = "Name Mapping",
                     MetadataSet = metadata,
                     FieldName = "Name"
                 });
 
-                et.AttributeMappings.Add(new EntityTypeAttributeMapping()
+                et.AttributeMappings.Add(new CFEntityTypeAttributeMapping()
                 {
                     Name = "Description Mapping",
                     MetadataSet = metadata,
@@ -267,7 +267,7 @@ namespace Catfish.Tests.Helpers
             for (int i = 0; i < TOTAL_COLLECTIONS; ++i)
             {
                 int index = i % ets.Count;
-                Collection c = Cs.CreateEntity<Collection>(ets[index]);
+                CFCollection c = Cs.CreateEntity<CFCollection>(ets[index]);
                 c.SetName("Collection " + (i + 1));
                 c.SetDescription("Description for Collection " + (i + 1));
                 
@@ -284,7 +284,7 @@ namespace Catfish.Tests.Helpers
             for (int i = 0; i < TOTAL_ITEMS; ++i)
             {
                 int index = i % ets.Count;
-                Item e = Is.CreateEntity<Item>(ets[index]);
+                CFItem e = Is.CreateEntity<CFItem>(ets[index]);
                 e.SetName("Item " + (i + 1));
                 e.SetDescription("Description for Item " + (i + 1));
                 
@@ -451,7 +451,7 @@ namespace Catfish.Tests.Helpers
         {
             builder.HasDefaultSchema("");
 
-            builder.Entity<XmlModel>().Property(xm => xm.Content).HasColumnType("");
+            builder.Entity<CFXmlModel>().Property(xm => xm.Content).HasColumnType("");
         }
     }
     

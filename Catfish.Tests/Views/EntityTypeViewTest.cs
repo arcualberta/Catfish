@@ -321,14 +321,18 @@ namespace Catfish.Tests.Views
         }
         private void FieldsMapping2()
         {
+            IWebElement mappingContainer = this.Driver.FindElement(By.Id("fieldmappings-container"));
+            //ElementFocus(mappingContainer);
+            var Elements = mappingContainer.FindElements(By.ClassName("fieldElement")); //i.e: Name mapping, Description mapping, etc
             
-            var Elements = (this.Driver.FindElement(By.Id("fieldmappings-container"))).FindElements(By.ClassName("fieldElement")); //i.e: Name mapping, Description mapping, etc
             int index = 0;
-            foreach (var elm in Elements)
+            foreach (IWebElement elm in Elements)
             {
-                
                 //MetadataSet mapping
-                SelectElement select = new SelectElement(elm.FindElement(By.ClassName("mapMetadata")));
+                IWebElement selectMDS = elm.FindElement(By.ClassName("mapMetadata"));
+                ElementFocus(selectMDS);
+               // SelectElement select = new SelectElement(elm.FindElement(By.ClassName("mapMetadata")));
+                SelectElement select = new SelectElement(selectMDS);
                 // select.SelectByText("Dubline Core");
                 int optionsCount = select.Options.Count;
                 for (int i = 1; i < optionsCount; i++)
@@ -429,7 +433,7 @@ namespace Catfish.Tests.Views
 
         }
 
-        private EntityType GetNewlyAddedEntityType()
+        private CFEntityType GetNewlyAddedEntityType()
         {
             CatfishDbContext db = new CatfishDbContext();
             if (db.Database.Connection.State == ConnectionState.Closed)
@@ -458,7 +462,24 @@ namespace Catfish.Tests.Views
             }
             return val;
         }
+        private void ScrollTop()
+        {
+            IJavaScriptExecutor jex = (IJavaScriptExecutor)Driver;
+            jex.ExecuteScript("scroll(0, -250);");
+        }
 
-       
+        private void ScrollBottom()
+        {
+            IJavaScriptExecutor jex = (IJavaScriptExecutor)Driver;
+            jex.ExecuteScript("window.scrollTo(0, document.body.scrollHeight)");
+        }
+
+        private void ElementFocus(IWebElement element)
+        {
+            IJavaScriptExecutor jex = (IJavaScriptExecutor)Driver;
+            jex.ExecuteScript("arguments[0].focus(); ", element);
+
+        }
+
     }
 }

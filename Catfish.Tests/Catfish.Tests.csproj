@@ -152,17 +152,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\ItemsControllerTest.cs" />
-    <Compile Include="EntityGroupTest.cs" />
-    <Compile Include="EntityTypeTest.cs" />
+    <Compile Include="AccessDefinitionTests.cs" />
+    <Compile Include="AccessGroupTests.cs" />
+    <Compile Include="EntityTests.cs" />
     <Compile Include="Helpers\DatabaseHelper.cs" />
     <Compile Include="Helpers\MigrationSqLiteGenerator.cs" />
     <Compile Include="Helpers\ServerHelper.cs" />
-    <Compile Include="ManagerIntegrationTests.cs" />
     <Compile Include="Migrations\201802091917467_InitialTestMigration.cs" />
     <Compile Include="Migrations\201802091917467_InitialTestMigration.Designer.cs">
       <DependentUpon>201802091917467_InitialTestMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Mocks\MockEntity.cs" />
     <Compile Include="RandomDataIngest.cs" />
     <Compile Include="Services\CollectionServiceTest.cs" />
     <Compile Include="Services\IngestionServiceTest.cs" />
@@ -179,6 +180,7 @@
     <Compile Include="Views\EntityTypeViewTest.cs" />
     <Compile Include="Views\FormViewTest.cs" />
     <Compile Include="Views\MetadataViewTest.cs" />
+    <Compile Include="Views\Regions\EntityContainerTest.cs" />
     <Compile Include="Views\Regions\FormContainerTest.cs" />
     <Compile Include="XmlModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

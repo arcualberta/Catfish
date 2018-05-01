@@ -13,7 +13,7 @@ namespace Catfish.Core.Helpers
 {
     public static class XmlLinqExtensions
     {
-        public static IQueryable<TSource> FromSolr<TSource>(this DbSet<TSource> set, string q) where TSource : XmlModel
+        public static IQueryable<TSource> FromSolr<TSource>(this DbSet<TSource> set, string q) where TSource : CFXmlModel
         {
             if (SolrService.IsInitialized)
             {

@@ -17,15 +17,15 @@ namespace Catfish.Tests
             int COUNT = 20;
 
             CatfishDbContext db = new CatfishDbContext();
-            List<EntityType> collectionTypes = db.EntityTypes.Where(t => t.TargetTypes.Contains(EntityType.eTarget.Collections.ToString())).ToList();//db.EntityTypes.Where(t => t.TargetType == EntityType.eTarget.Collections).ToList();
+            List<CFEntityType> collectionTypes = db.EntityTypes.Where(t => t.TargetTypes.Contains(CFEntityType.eTarget.Collections.ToString())).ToList();//db.EntityTypes.Where(t => t.TargetType == EntityType.eTarget.Collections).ToList();
             if (collectionTypes.Count == 0)
                 throw new Exception("No entity types have been defined for collections.");
             var rand = new Random();
             CollectionService srv = new CollectionService(db);
             for(int i=0; i<COUNT; ++i)
             {
-                EntityType cType = collectionTypes[rand.Next(0, collectionTypes.Count)];
-                Collection c = srv.CreateEntity<Collection>(cType.Id);
+                CFEntityType cType = collectionTypes[rand.Next(0, collectionTypes.Count)];
+                CFCollection c = srv.CreateEntity<CFCollection>(cType.Id);
                 string name = TestData.LoremIpsum(5, 10);
                 c.SetName("Collection: " + name);
                 c.SetDescription(TestData.LoremIpsum(20, 100, 1, 10));
@@ -41,15 +41,15 @@ namespace Catfish.Tests
             int COUNT = 50;
 
             CatfishDbContext db = new CatfishDbContext();
-            List<EntityType> itemTypes = db.EntityTypes.Where(t => t.TargetTypes.Contains(EntityType.eTarget.Items.ToString())).ToList(); //db.EntityTypes.Where(t => t.TargetType == EntityType.eTarget.Items).ToList();
+            List<CFEntityType> itemTypes = db.EntityTypes.Where(t => t.TargetTypes.Contains(CFEntityType.eTarget.Items.ToString())).ToList(); //db.EntityTypes.Where(t => t.TargetType == EntityType.eTarget.Items).ToList();
             if (itemTypes.Count == 0)
                 throw new Exception("No entity types have been defined for collections.");
             var rand = new Random();
             ItemService srv = new ItemService(db);
             for (int i = 0; i < COUNT; ++i)
             {
-                EntityType cType = itemTypes[rand.Next(0, itemTypes.Count)];
-                Item c = srv.CreateEntity<Item>(cType.Id);
+                CFEntityType cType = itemTypes[rand.Next(0, itemTypes.Count)];
+                CFItem c = srv.CreateEntity<CFItem>(cType.Id);
                 string name = TestData.LoremIpsum(5, 10);
                 c.SetDescription(TestData.LoremIpsum(20, 100, 1, 10));
                 c.SetName("Item: " + name);

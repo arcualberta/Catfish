@@ -2,7 +2,7 @@
 
 namespace Catfish.Core.Models.Forms
 {
-    [TypeLabel("Dropdown")]
+    [CFTypeLabel("Dropdown")]
     public class DropDownMenu : SingleSelectOptionsField
     {
     }

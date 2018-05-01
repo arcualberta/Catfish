@@ -33,11 +33,11 @@ namespace Catfish.Core.Models
         {
             if (this.ChangeTracker.HasChanges())
             {
-                foreach(var entry in this.ChangeTracker.Entries<XmlModel>())
+                foreach(var entry in this.ChangeTracker.Entries<CFXmlModel>())
                 {
                     if (entry.State != EntityState.Unchanged && entry.State != EntityState.Deleted)
                     {
-                        AuditEntry.eAction action = entry.Entity.Id == 0 ? AuditEntry.eAction.Create : AuditEntry.eAction.Update;
+                        CFAuditEntry.eAction action = entry.Entity.Id == 0 ? CFAuditEntry.eAction.Create : CFAuditEntry.eAction.Update;
                         entry.Entity.FlushChangeLog(action, actor);
                         entry.Entity.Serialize();
                     }
@@ -52,15 +52,15 @@ namespace Catfish.Core.Models
          **/
         protected virtual void SetColumnTypes(DbModelBuilder builder)
         {
-            builder.Entity<XmlModel>().Property(xm => xm.Content).HasColumnType("xml");
+            builder.Entity<CFXmlModel>().Property(xm => xm.Content).HasColumnType("xml");
         }
 
         protected override void OnModelCreating(DbModelBuilder builder)
         {
             SetColumnTypes(builder);
 
-            builder.Entity<Aggregation>()
-                .HasMany<Aggregation>(p => p.ChildMembers)
+            builder.Entity<CFAggregation>()
+                .HasMany<CFAggregation>(p => p.ChildMembers)
                 .WithMany(c => c.ParentMembers)
                 .Map(t =>
                 {
@@ -69,8 +69,8 @@ namespace Catfish.Core.Models
                     t.ToTable("AggregationHasMembers");
                 });
 
-            builder.Entity<Aggregation>()
-                .HasMany<Item>(p => p.ChildRelations)
+            builder.Entity<CFAggregation>()
+                .HasMany<CFItem>(p => p.ChildRelations)
                 .WithMany(c => c.ParentRelations)
                 .Map(t =>
                 {
@@ -79,8 +79,8 @@ namespace Catfish.Core.Models
                     t.ToTable("AggregationHasRelatedObjects");
                 });
 
-            builder.Entity<EntityType>()
-                .HasMany<MetadataSet>(et => et.MetadataSets)
+            builder.Entity<CFEntityType>()
+                .HasMany<CFMetadataSet>(et => et.MetadataSets)
                 .WithMany(ms => ms.EntityTypes)
                 .Map(t =>
                 {
@@ -90,28 +90,28 @@ namespace Catfish.Core.Models
                 });
 
             //define composite primary key for EntityGroupUser -- Jan 24 2018
-            builder.Entity<EntityGroupUser>().HasKey(t => new { t.EntityGroupId, t.UserId });
+            builder.Entity<CFUserListEntry>().HasKey(t => new { t.CFUserListId, t.UserId });
         }
 
-        public DbSet<XmlModel> XmlModels { get; set; }
+        public DbSet<CFXmlModel> XmlModels { get; set; }
 
-       public DbSet<Entity> Entities { get; set; }
+       public DbSet<CFEntity> Entities { get; set; }
 
-        public DbSet<Collection> Collections { get; set; }
+        public DbSet<CFCollection> Collections { get; set; }
 
-        public DbSet<Item> Items { get; set; }
+        public DbSet<CFItem> Items { get; set; }
 
-        public DbSet<EntityType> EntityTypes { get; set; }
+        public DbSet<CFEntityType> EntityTypes { get; set; }
 
-        public DbSet<EntityTypeAttributeMapping> EntityTypeAttributeMappings { get; set; }
+        public DbSet<CFEntityTypeAttributeMapping> EntityTypeAttributeMappings { get; set; }
 
-        public DbSet<MetadataSet> MetadataSets { get; set; }
+        public DbSet<CFMetadataSet> MetadataSets { get; set; }
 
         public DbSet<Form> FormTemplates { get; set; }
 
         public System.Data.Entity.DbSet<Catfish.Core.Models.Forms.TextField> TextFields { get; set; }
 
-        public DbSet<EntityGroup> EntityGroups { get; set; }
-        public DbSet<EntityGroupUser> EntityGroupUsers { get; set; }
+        public DbSet<CFUserList> UserLists { get; set; }
+        public DbSet<CFUserListEntry> UserListEntries { get; set; }
     }
 }

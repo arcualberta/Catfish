@@ -1,0 +1,13 @@
+﻿@model Catfish.Models.Regions.MembershipContainer
+
+<ul class="form">
+    
+    @Html.Partial("_CatfishRegion", Model)
+
+    <li>
+        @Html.LabelFor(m => m.PageId)
+        <div class="input">@Html.DropDownListFor(m => m.PageId, Model.Pages)</div>
+    
+    </li>
+</ul>
+

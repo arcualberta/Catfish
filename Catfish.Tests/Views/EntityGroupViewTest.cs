@@ -14,8 +14,8 @@ namespace Catfish.Tests.Views
 {
     static class TestValues
     { 
-        public static string EntityGroupName = "Entity Group Selenium";
-        public static string UserLogin = "melania";
+        public static string EntityGroupName = "Selenium User List";
+        public static string UserLogin = "admin";
     }
     [TestFixture(typeof(ChromeDriver))]
     public class EntityGroupViewTests<TWebDriver> where TWebDriver : IWebDriver, new()
@@ -48,15 +48,15 @@ namespace Catfish.Tests.Views
         public void CanCreateEntityGroup()
         {
             
-            this.Driver.Navigate().GoToUrl(ManagerUrl + "/entitygroups");
+            this.Driver.Navigate().GoToUrl(ManagerUrl + "/CFUserLists");
           
             this.Driver.FindElement(By.LinkText("Add new")).Click();
-            this.Driver.FindElement(By.Name("EntityGroupName")).SendKeys(TestValues.EntityGroupName);
+            this.Driver.FindElement(By.Name("CFUserListName")).SendKeys(TestValues.EntityGroupName);
             this.Driver.FindElement(By.Name("userName")).SendKeys(TestValues.UserLogin);
             this.Driver.FindElement(By.Id("addUser")).Click();
             this.Driver.FindElement(By.Id("btnSave")).Click();
            
-            this.Driver.Navigate().GoToUrl(ManagerUrl + "/entitygroups");
+            this.Driver.Navigate().GoToUrl(ManagerUrl + "/CFUserLists");
             Assert.AreEqual(this.FindEntityGroupName(), TestValues.EntityGroupName);
           
         }

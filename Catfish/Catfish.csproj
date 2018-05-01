@@ -299,8 +299,12 @@
     <Content Include="Areas\Manager\Views\Extensions\BulletinBoard.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\SimpleSearch.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\SearchResults.cshtml" />
-    <Content Include="Areas\Manager\Views\EntityGroups\Index.cshtml" />
-    <Content Include="Areas\Manager\Views\EntityGroups\Edit.cshtml" />
+    <Content Include="Areas\Manager\Views\UserLists\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\UserLists\Edit.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\EntityContainer.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\MembershipContainer.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\RelationshipContainer.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\DisplayTemplates\ClientInfo.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
@@ -325,16 +329,17 @@
     <Compile Include="App_Start\RouteConfig.PiranhaCMS.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Manager\Controllers\Api\EntityAssociationController.cs" />
+    <Compile Include="Areas\Manager\Controllers\FormContainerController.cs" />
     <Compile Include="Areas\Manager\Controllers\CatfishController.cs" />
     <Compile Include="Areas\Manager\Controllers\CollectionsController.cs" />
-    <Compile Include="Areas\Manager\Controllers\EntityGroupsController.cs" />
+    <Compile Include="Areas\Manager\Controllers\UserListsController.cs" />
     <Compile Include="Areas\Manager\Controllers\EntityTypesController.cs" />
     <Compile Include="Areas\Manager\Controllers\FormBuilderController.cs" />
     <Compile Include="Areas\Manager\Controllers\ItemsController.cs" />
     <Compile Include="Areas\Manager\Controllers\MetadataController.cs" />
     <Compile Include="Areas\Manager\Controllers\FormTemplatesController.cs" />
     <Compile Include="Areas\Manager\ModelBinders\DateModelBinder.cs" />
-    <Compile Include="Areas\Manager\Models\ViewModels\EntityGroupViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\CFUserListViewModel.cs" />
     <Compile Include="Areas\Manager\Services\PageService.cs" />
     <Compile Include="Areas\Manager\Services\UserService.cs" />
     <Compile Include="Controllers\Api\FormsController.cs" />
@@ -354,6 +359,9 @@
     <Compile Include="Helpers\ViewHelper.cs" />
     <Compile Include="Models\Pages\EntityTree.cs" />
     <Compile Include="Models\Regions\BulletinBoard.cs" />
+    <Compile Include="Models\Regions\RelationshipContainer.cs" />
+    <Compile Include="Models\Regions\MembershipContainer.cs" />
+    <Compile Include="Models\Regions\EntityContainer.cs" />
     <Compile Include="Models\Regions\Carousel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityContentViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\FileViewModel.cs" />
@@ -446,6 +454,10 @@
     <Content Include="Views\Shared\DisplayTemplates\SearchResults.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SearchResult.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FormContainer.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\EntityContainer.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\MembershipContainer.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\RelationshipContainer.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\ClientInfo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

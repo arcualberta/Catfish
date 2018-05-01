@@ -22,14 +22,14 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/EntityTypes/Edit/5
         public ActionResult Edit(int? id)
         {
-            EntityType model = null;
+            CFEntityType model = null;
             if (id.HasValue && id.Value > 0)
             {
                 model = EntityTypeService.GetEntityTypeById(id.Value); 
             }
             else
             {
-                model = new EntityType();
+                model = new CFEntityType();
             }
 
             EntityTypeViewModel vm = new EntityTypeViewModel();
@@ -40,7 +40,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpPost]
         public ActionResult Delete(int? id)
         {
-            EntityType model = null;
+            CFEntityType model = null;
             if (id.HasValue && id.Value > 0)
             {
                 model = EntityTypeService.GetEntityTypeById(id.Value); //Db.EntityTypes.Where(et => et.Id == id).FirstOrDefault();
@@ -59,7 +59,7 @@ namespace Catfish.Areas.Manager.Controllers
             vm.AssociatedMetadataSets.Add(vm.SelectedMetadataSets);
           //  vm.MetadataSetMappingSrc.Add(vm.SelectedMetadataSets);
 
-            MetadataSet metadataSet = MetadataService.GetMetadataSet(vm.SelectedMetadataSets.Id);
+            CFMetadataSet metadataSet = MetadataService.GetMetadataSet(vm.SelectedMetadataSets.Id);
             //update attribute mapping
             if (metadataSet != null)
             {
@@ -167,7 +167,7 @@ namespace Catfish.Areas.Manager.Controllers
         {
             if (ModelState.IsValid)
             {
-                EntityType model;
+                CFEntityType model;
                 if (vm.Id > 0)
                 {
                     model = EntityTypeService.GetEntityTypeById(vm.Id);//Db.EntityTypes.Where(x => x.Id == vm.Id).FirstOrDefault();
@@ -182,7 +182,7 @@ namespace Catfish.Areas.Manager.Controllers
                 }
                 else
                 {
-                    model = new EntityType();
+                    model = new CFEntityType();
                     vm.UpdateDataModel(model, Db);
                     // Db.EntityTypes.Add(model);
                     EntityTypeService.UpdateEntityType(model);

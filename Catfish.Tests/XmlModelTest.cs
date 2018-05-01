@@ -20,6 +20,7 @@ namespace Catfish.Tests
             return Path.Combine(dir, fileName);
         }
 
+        [Ignore]
         [TestMethod]
         public void TestMethod1()
         {
@@ -37,7 +38,7 @@ namespace Catfish.Tests
             XElement root = XElement.Load(path);
             Assert.IsNotNull(root);
 
-            MetadataSet model = XmlModel.Parse(root) as MetadataSet;
+            CFMetadataSet model = CFXmlModel.Parse(root) as CFMetadataSet;
             Assert.IsNotNull(model);
 
             IReadOnlyList<FormField> fields = model.Fields;
@@ -73,10 +74,10 @@ namespace Catfish.Tests
             string path = GetSampleDataFilePathName("Item.xml");
             Assert.IsTrue(File.Exists(path));
 
-            Item model = XmlModel.Load(path) as Item;
+            CFItem model = CFXmlModel.Load(path) as CFItem;
             Assert.IsNotNull(model);
 
-            List<MetadataSet> metadatasets = model.MetadataSets.ToList();
+            List<CFMetadataSet> metadatasets = model.MetadataSets.ToList();
             Assert.AreEqual(2, metadatasets.Count());
 
         }
