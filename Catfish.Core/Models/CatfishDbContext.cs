@@ -6,6 +6,7 @@ using System.Linq;
 using Catfish.Core.Models.Forms;
 using Catfish.Core.Models.Data;
 using System.Security.Principal;
+using Catfish.Core.Models.Access;
 
 namespace Catfish.Core.Models
 {
@@ -113,5 +114,7 @@ namespace Catfish.Core.Models
 
         public DbSet<CFUserList> UserLists { get; set; }
         public DbSet<CFUserListEntry> UserListEntries { get; set; }
+
+        public DbSet<CFAccessDefinition> AccessDefinitions { get; set; }
     }
 }

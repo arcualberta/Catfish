@@ -132,7 +132,17 @@ namespace Catfish
                 Controller = "UserLists",
                 Permission = "ADMIN_CONTENT"
             });
-             
+
+            systemMenu.Items.Insert(idx++, new Manager.MenuItem
+            {
+
+                Name = "Access Definitions",
+                Action = "index",
+                Controller = "AccessDefinitions",
+                Permission = "ADMIN_CONTENT"
+            });
+
+
         }
     }
 }

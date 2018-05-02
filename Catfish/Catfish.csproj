@@ -305,6 +305,8 @@
     <Content Include="Areas\Manager\Views\Extensions\MembershipContainer.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\RelationshipContainer.cshtml" />
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\ClientInfo.cshtml" />
+    <Content Include="Areas\Manager\Views\AccessDefinitions\Index.cshtml" />
+    <Content Include="Areas\Manager\Views\AccessDefinitions\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
@@ -328,6 +330,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\RouteConfig.PiranhaCMS.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Manager\Controllers\AccessDefinitionsController.cs" />
     <Compile Include="Areas\Manager\Controllers\Api\EntityAssociationController.cs" />
     <Compile Include="Areas\Manager\Controllers\FormContainerController.cs" />
     <Compile Include="Areas\Manager\Controllers\CatfishController.cs" />
@@ -339,6 +342,7 @@
     <Compile Include="Areas\Manager\Controllers\MetadataController.cs" />
     <Compile Include="Areas\Manager\Controllers\FormTemplatesController.cs" />
     <Compile Include="Areas\Manager\ModelBinders\DateModelBinder.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\AccessDefinitionsViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\CFUserListViewModel.cs" />
     <Compile Include="Areas\Manager\Services\PageService.cs" />
     <Compile Include="Areas\Manager\Services\UserService.cs" />
