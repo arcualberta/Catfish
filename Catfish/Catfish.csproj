@@ -341,7 +341,7 @@
     <Compile Include="Areas\Manager\ModelBinders\DateModelBinder.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\CFUserListViewModel.cs" />
     <Compile Include="Areas\Manager\Services\PageService.cs" />
-    <Compile Include="Areas\Manager\Services\UserService.cs" />
+    <Compile Include="Services\UserService.cs" />
     <Compile Include="Controllers\Api\FormsController.cs" />
     <Compile Include="Controllers\Api\ItemsController.cs" />
     <Compile Include="Controllers\Api\StatsController.cs" />

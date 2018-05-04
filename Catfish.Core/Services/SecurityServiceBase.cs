@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models;
+﻿using Catfish.Core.Helpers;
+using Catfish.Core.Models;
 using Catfish.Core.Models.Access;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace Catfish.Core.Services
         {
             int permissions;
 
-            if(int.TryParse(ConfigHelper.GlobalAccessModes, out permissions){
+            if(int.TryParse(ConfigHelper.GlobalAccessModes, out permissions)){
                 return (AccessMode)permissions;
             }
 
