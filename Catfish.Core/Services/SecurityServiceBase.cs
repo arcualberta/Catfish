@@ -8,17 +8,27 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Services
 {
-    abstract class SecurityServiceBase : ServiceBase
+    public abstract class SecurityServiceBase : ServiceBase
     {
         private UserListService mUserListService;
         private UserListService userListService { get { if (mUserListService == null) mUserListService = new UserListService(Db); return mUserListService; } }
-
-        protected abstract AccessMode GetDefaultPermissions();
+        
         protected abstract bool IsAdmin(string userGuid);
 
         public SecurityServiceBase(CatfishDbContext db) : base(db)
         {
 
+        }
+
+        protected AccessMode GetDefaultPermissions()
+        {
+            int permissions;
+
+            if(int.TryParse(ConfigHelper.GlobalAccessModes, out permissions){
+                return (AccessMode)permissions;
+            }
+
+            return AccessMode.None;
         }
 
         /// <summary>

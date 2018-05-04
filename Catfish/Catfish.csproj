@@ -411,6 +411,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SimpleSearch.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\SecurityService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
