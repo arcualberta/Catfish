@@ -7,13 +7,13 @@ namespace Catfish.Tests.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.0.0-20911")]
-    public sealed partial class InitialTestMigration : IMigrationMetadata
+    public sealed partial class InitialTestDb : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialTestMigration));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialTestDb));
         
         string IMigrationMetadata.Id
         {
-            get { return "201802091917467_InitialTestMigration"; }
+            get { return "201805082036486_InitialTestDb"; }
         }
         
         string IMigrationMetadata.Source

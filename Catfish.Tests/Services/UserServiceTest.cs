@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 using Catfish.Areas.Manager.Services;
 using System.Configuration;
+using Catfish.Services;
 
 namespace Catfish.Tests.Services
 {

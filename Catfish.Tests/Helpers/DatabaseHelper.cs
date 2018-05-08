@@ -425,6 +425,36 @@ namespace Catfish.Tests.Helpers
             SetupData();
             var test = Db.MetadataSets.ToArray();
         }
+
+        public CFCollection CreateCollection(CollectionService cs, int entityTypeId, string name, string description, bool store = false)
+        {
+            CFCollection c = cs.CreateCollection(entityTypeId);
+            c.Name = name;
+            c.Description = description;
+
+
+            if (store)
+            {
+                c = cs.UpdateStoredCollection(c);
+            }
+
+            return c;
+        }
+
+        public CFItem CreateItem(ItemService itemSrv, int entityTypeId, string name, string description, bool store = false)
+        {
+            CFItem i = itemSrv.CreateItem(entityTypeId);
+            i.Name = name;
+            i.Description = description;
+
+
+            if (store)
+            {
+                i = itemSrv.UpdateStoredItem(i);
+            }
+
+            return i;
+        }
     }
 
     public class SqliteConfiguration : DbConfiguration
