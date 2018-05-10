@@ -350,7 +350,7 @@
     <Compile Include="Areas\Manager\Models\ViewModels\EntityAccessDefinitionsViewModel.cs" />
     <Compile Include="Areas\Manager\Services\AccessGroupService.cs" />
     <Compile Include="Areas\Manager\Services\PageService.cs" />
-    <Compile Include="Areas\Manager\Services\UserService.cs" />
+    <Compile Include="Services\UserService.cs" />
     <Compile Include="Controllers\Api\FormsController.cs" />
     <Compile Include="Controllers\Api\ItemsController.cs" />
     <Compile Include="Controllers\Api\StatsController.cs" />
@@ -420,6 +420,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SimpleSearch.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\SecurityService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />

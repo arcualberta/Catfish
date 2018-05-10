@@ -55,11 +55,11 @@ namespace Catfish.Core.Models.Forms
                     field.UpdateValues(src_field);
             }
         }
-
         public void SetFieldValue(string fieldName, string fieldValue, string language)
         {
             SetFieldValue(fieldName, new List<string> { fieldValue }, language);
         }
+
         public void SetFieldValue(string fieldName, IEnumerable<string> fieldValues, string language)
         {
             FormField field = Fields.Where(f => f.Name == fieldName).FirstOrDefault();

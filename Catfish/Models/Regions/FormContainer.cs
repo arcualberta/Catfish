@@ -129,11 +129,9 @@ namespace Catfish.Models.Regions
             // get db context
             CatfishDbContext db = new CatfishDbContext();
             CollectionService collectionSrv = new CollectionService(db);
-            EntityTypeService entityTypeService = new EntityTypeService(db);
-            SubmissionService submissionSrv = new SubmissionService(db);
-            
+            EntityTypeService entityTypeSrv = new EntityTypeService(db);
+            SubmissionService formService = new SubmissionService(db);
 
-            // use these past fetches to show list on vies using SelectList ?
             Form form = db.FormTemplates.Where(f => f.Id == FormId).FirstOrDefault();
             if (form != null)
             {

@@ -365,7 +365,6 @@ namespace Catfish.Tests.Views
         }
         private void ClickSave()
         {
-            //this.Driver.FindElement(By.ClassName("save")).Click(); ==> this option sometimes throw error, element not found!!!
             WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(15));
            wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.ClassName("save")));
 

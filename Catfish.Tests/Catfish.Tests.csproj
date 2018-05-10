@@ -151,15 +151,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\ItemsControllerTest.cs" />
     <Compile Include="AccessDefinitionTests.cs" />
     <Compile Include="AccessGroupTests.cs" />
     <Compile Include="EntityTests.cs" />
     <Compile Include="Helpers\DatabaseHelper.cs" />
     <Compile Include="Helpers\MigrationSqLiteGenerator.cs" />
     <Compile Include="Helpers\ServerHelper.cs" />
-    <Compile Include="Migrations\201802091917467_InitialTestMigration.cs" />
-    <Compile Include="Migrations\201802091917467_InitialTestMigration.Designer.cs">
-      <DependentUpon>201802091917467_InitialTestMigration.cs</DependentUpon>
+    <Compile Include="Migrations\201805082036486_InitialTestDb.cs" />
+    <Compile Include="Migrations\201805082036486_InitialTestDb.Designer.cs">
+      <DependentUpon>201805082036486_InitialTestDb.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Mocks\MockEntity.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Services\IngestionServiceTest.cs" />
     <Compile Include="Services\ItemServiceTest.cs" />
     <Compile Include="Services\MetadataServiceTest.cs" />
+    <Compile Include="Services\SecurityServiceBaseTest.cs" />
     <Compile Include="Services\SolrServiceTest.cs" />
     <Compile Include="Services\SubmissionServiceTest.cs" />
     <Compile Include="Services\PageServiceTest.cs" />
@@ -197,11 +199,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201802091917467_InitialTestMigration.resx">
-      <DependentUpon>201802091917467_InitialTestMigration.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Resources\IngestionDatabase3.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -215,6 +212,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Helpers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201805082036486_InitialTestDb.resx">
+      <DependentUpon>201805082036486_InitialTestDb.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

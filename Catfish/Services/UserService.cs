@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Catfish.Areas.Manager.Services
+namespace Catfish.Services
 {
     public class UserService
     {

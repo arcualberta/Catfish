@@ -8,6 +8,7 @@ using Catfish.Core.Services;
 using Catfish.Areas.Manager.Models.ViewModels;
 using Piranha;
 using Catfish.Areas.Manager.Services;
+using Catfish.Services;
 
 namespace Catfish.Areas.Manager.Controllers
 {

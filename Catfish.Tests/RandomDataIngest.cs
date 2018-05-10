@@ -7,7 +7,7 @@ using Catfish.Core.Services;
 
 namespace Catfish.Tests
 {
-    [TestClass]
+    //[TestClass]
     public class RandomDataIngest
     {
         [Ignore] // Done to prevent the test from running each time we do a full test.
