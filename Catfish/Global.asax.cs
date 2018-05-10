@@ -133,7 +133,7 @@ namespace Catfish
                 Permission = "ADMIN_CONTENT"
             });
 
-            systemMenu.Items.Insert(idx++, new Manager.MenuItem
+            systemMenu.Items.Insert(systemMenu.Items.Count, new Manager.MenuItem
             {
 
                 Name = "Access Definitions",

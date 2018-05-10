@@ -59,7 +59,19 @@ namespace Catfish.Core.Models
                 InitModels("access", value);
             }
         }
-
+        [NotMapped]
+        public bool BlockInheritance
+        {
+            get { XElement access = GetImmediateChild("access");
+                  if(access != null)
+                    {
+                     return GetAttribute("blockInheritance", access) == "true";
+                    }
+                return false;
+             }
+            set { SetAttribute("blockInheritance", value,GetImmediateChild("access"));
+             }
+        }
         public void RemoveAllMetadataSets()
         {
             //Removing all children inside the metadata set element

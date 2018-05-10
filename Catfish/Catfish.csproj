@@ -307,6 +307,9 @@
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\ClientInfo.cshtml" />
     <Content Include="Areas\Manager\Views\AccessDefinitions\Index.cshtml" />
     <Content Include="Areas\Manager\Views\AccessDefinitions\Edit.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\AccessGroup.cshtml" />
+    <Content Include="Areas\Manager\Views\Collections\AccessGroup.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\Partial\EntityAccessGroup.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
@@ -344,6 +347,8 @@
     <Compile Include="Areas\Manager\ModelBinders\DateModelBinder.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\AccessDefinitionsViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\CFUserListViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\EntityAccessDefinitionsViewModel.cs" />
+    <Compile Include="Areas\Manager\Services\AccessGroupService.cs" />
     <Compile Include="Areas\Manager\Services\PageService.cs" />
     <Compile Include="Areas\Manager\Services\UserService.cs" />
     <Compile Include="Controllers\Api\FormsController.cs" />

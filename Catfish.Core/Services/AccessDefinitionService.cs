@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace Catfish.Core.Services
 {
@@ -32,6 +33,28 @@ namespace Catfish.Core.Services
         {
             return Db.AccessDefinitions;
         }
+
+        public IEnumerable<CFAccessDefinition> GetSelectListAccessDefinitions()
+        {
+
+            return Db.AccessDefinitions;//.Select(a=> new { Id = a.Id, Name = string.Format("{0} - {1}", a.Name, a.AccessModesList)}).ToList();
+        }
+
+        //public IEnumerable<SelectListItem> GetSelectListAccessDefinitions2()
+        //{
+           
+        //    List<SelectListItem> accesses = Db.AccessDefinitions
+        //            .OrderBy(n => n.Name)
+        //                .Select(n =>
+        //                new SelectListItem
+        //                {
+        //                    Value = n.Id.ToString(),
+        //                    Text = string.Format("{0} - {1}", n.Name, n.StringAccessModesList)
+        //                }).ToList();
+
+
+        //    return new SelectList(accesses, "Value", "Text");
+        //}
 
         public CFAccessDefinition GetAccessDefinitionById(int id)
         {
