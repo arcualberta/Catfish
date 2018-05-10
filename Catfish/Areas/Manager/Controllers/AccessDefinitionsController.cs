@@ -160,5 +160,6 @@ namespace Catfish.Areas.Manager.Controllers
             }
             return AccessModes;
         }
+
     }
 }

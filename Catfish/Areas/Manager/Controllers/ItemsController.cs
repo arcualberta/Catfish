@@ -18,6 +18,8 @@ using Catfish.Core.Models.Data;
 using Catfish.Areas.Manager.Helpers;
 using Catfish.Helpers;
 using Catfish.Core.Helpers;
+using Catfish.Areas.Manager.Services;
+using Catfish.Core.Models.Access;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -228,6 +230,36 @@ namespace Catfish.Areas.Manager.Controllers
                 : Path.Combine(file.Path, file.Thumbnail);
 
             return new FilePathResult(path_name, file.ContentType);
+        }
+
+        [HttpGet]
+        public ActionResult AccessGroup(int id)
+        {
+            var entity = ItemService.GetAnEntity(id);
+            EntityAccessDefinitionsViewModel entityAccessVM = new EntityAccessDefinitionsViewModel();
+            AccessGroupService accessGroupService = new AccessGroupService(Db);
+            entityAccessVM = accessGroupService.UpdateViewModel(entity);// UpdateViewModel(entity);
+            ViewBag.SugestedUsers = entityAccessVM.AvailableUsers2.ToArray();
+            return View(entityAccessVM);
+        }
+
+        
+
+     
+        public ActionResult AddUserAccessDefinition(EntityAccessDefinitionsViewModel entityAccessVM)
+        {
+
+            CFItem item = ItemService.GetItem(entityAccessVM.Id);
+           
+            AccessGroupService accessGroupService = new AccessGroupService(Db);
+            item = accessGroupService.UpdateEntityAccessGroups(item, entityAccessVM) as CFItem;
+            item = EntityService.UpdateEntity(item) as CFItem;
+           
+            item.Serialize();
+            Db.SaveChanges();
+
+
+            return RedirectToAction("AccessGroup", new { id = entityAccessVM.Id });
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Catfish.Areas.Manager.Models.ViewModels;
+using Catfish.Areas.Manager.Services;
 using Catfish.Core.Models;
 using Catfish.Core.Services;
 using System;
@@ -107,6 +108,36 @@ namespace Catfish.Areas.Manager.Controllers
 
             }
             return View(model);
+        }
+
+
+        [HttpGet]
+        public ActionResult AccessGroup(int id)
+        {
+            var entity = CollectionService.GetCollection(id); //ItemService.GetAnEntity(id);
+            EntityAccessDefinitionsViewModel entityAccessVM = new EntityAccessDefinitionsViewModel();
+            AccessGroupService accessGroupService = new AccessGroupService(Db);
+            entityAccessVM = accessGroupService.UpdateViewModel(entity);// UpdateViewModel(entity);
+            ViewBag.SugestedUsers = entityAccessVM.AvailableUsers2.ToArray();
+            return View(entityAccessVM);
+        }
+
+
+
+        public ActionResult AddUserAccessDefinition(EntityAccessDefinitionsViewModel entityAccessVM)
+        {
+
+            CFCollection collection = CollectionService.GetCollection(entityAccessVM.Id);//ItemService.GetItem(entityAccessVM.Id);
+
+            AccessGroupService accessGroupService = new AccessGroupService(Db);
+            collection = accessGroupService.UpdateEntityAccessGroups(collection, entityAccessVM) as CFCollection;
+            collection = EntityService.UpdateEntity(collection) as CFCollection;
+
+            collection.Serialize();
+            Db.SaveChanges();
+
+
+            return RedirectToAction("AccessGroup", new { id = entityAccessVM.Id });
         }
     }
 }
