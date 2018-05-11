@@ -13,9 +13,17 @@ namespace Catfish.Core.Services
     {
         public UserListService(CatfishDbContext db) : base(db) { }
 
-        public IQueryable GetEntityGroups()
+        public IQueryable<CFUserList> GetEntityGroups()
         {
             return Db.UserLists.Include(eg=>eg.CFUserListEntries);
+        }
+
+        public IEnumerable<CFUserList> GetEntityGroupForUser(string userId)
+        {
+            Guid check = Guid.Parse(userId);
+            var t = GetEntityGroups().ToList().Where(ul => ul.CFUserListEntries.Any(ue => ue.UserId == check));
+
+            return t;
         }
 
         public CFUserList GetEntityGroup(string id)

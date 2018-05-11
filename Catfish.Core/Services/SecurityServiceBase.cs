@@ -56,7 +56,7 @@ namespace Catfish.Core.Services
             }
 
             AccessMode modes = AccessMode.None;
-            List<string> userGroups = new List<string>();//TODO: get the full list of users group guids
+            List<string> userGroups = userListService.GetEntityGroupForUser(userGuid).Select(ul => ul.Id.ToString()).ToList();
             IList<CFAggregation> visitedNodes = new List<CFAggregation>();
             Queue<CFAggregation> entityQueue = new Queue<CFAggregation>();
 
