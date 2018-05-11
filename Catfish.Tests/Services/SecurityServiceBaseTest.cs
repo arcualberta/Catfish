@@ -439,7 +439,7 @@ namespace Catfish.Tests.Services
             };
 
             i1.AccessGroups = groups;
-            // TODO Deny Inheritance.
+            i1.BlockInheritance = true;
             i1.Serialize();
             Db.SaveChanges();
 
@@ -457,13 +457,274 @@ namespace Catfish.Tests.Services
         [TestMethod]
         public void TestDenyInheritanceFlagOnSingleParent()
         {
+            SecurityServiceBase srv = new TestSecurityService(Db);
 
+            string collectionName = "TestUserIsAdminCollection";
+            string collectionDesciption = "Test collection description";
+            string itemName = "TestUserIsAdminItem";
+            string itemDesciption = "Test item description";
+
+            AccessMode defaultAccess = GetDefaultPermissions();
+
+            CFAccessDefinition ad1 = new CFAccessDefinition()
+            {
+                Name = "Test 1",
+                AccessModes = AccessMode.Write
+            };
+
+            CFAccessDefinition ad2 = new CFAccessDefinition()
+            {
+                Name = "Test 2",
+                AccessModes = AccessMode.Control | AccessMode.Append
+            };
+
+            CFAccessDefinition ad3 = new CFAccessDefinition()
+            {
+                Name = "Test 3",
+                AccessModes = AccessMode.Discover
+            };
+
+            int entityType = mDh.Ets.GetEntityTypes(CFEntityType.eTarget.Items).FirstOrDefault().Id;
+            CFItem i1 = mDh.CreateItem(mDh.Is, entityType, itemName, itemDesciption, true);
+            entityType = mDh.Ets.GetEntityTypes(CFEntityType.eTarget.Collections).FirstOrDefault().Id;
+            CFCollection c1 = mDh.CreateCollection(mDh.Cs, entityType, collectionName, collectionDesciption, true);
+
+            List<CFAccessGroup> groups = new List<CFAccessGroup>()
+            {
+                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[0]) }, AccessDefinition = ad1 },
+                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[1]) }, AccessDefinition = ad2 },
+                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[2]) }, AccessDefinition = ad3 }
+            };
+
+            c1.AccessGroups = groups;
+            c1.BlockInheritance = true;
+            c1.Serialize();
+            i1.Serialize();
+
+            c1.ChildMembers.Add(i1);
+            Db.SaveChanges();
+
+            AccessMode modes1 = srv.GetPermissions(Users[0].Guid, i1);
+            AccessMode modes2 = srv.GetPermissions(Users[1].Guid, i1);
+            AccessMode modes3 = srv.GetPermissions(Users[2].Guid, i1);
+            AccessMode modes4 = srv.GetPermissions(Users[3].Guid, i1);
+
+            Assert.AreEqual(ad1.AccessModes | ad3.AccessModes, modes1);
+            Assert.AreEqual(ad1.AccessModes | ad2.AccessModes, modes2);
+            Assert.AreEqual(ad2.AccessModes, modes3);
+            Assert.AreEqual(ad2.AccessModes | ad3.AccessModes, modes4);
         }
 
         [TestMethod]
         public void TestDenyInheritanceFlagOnMultipleParents()
         {
+            SecurityServiceBase srv = new TestSecurityService(Db);
 
+            string collectionName = "TestUserIsAdminCollection";
+            string collectionDesciption = "Test collection description";
+            string itemName = "TestUserIsAdminItem";
+            string itemDesciption = "Test item description";
+
+            AccessMode defaultAccess = GetDefaultPermissions();
+
+            CFAccessDefinition ad1 = new CFAccessDefinition()
+            {
+                Name = "Test 1",
+                AccessModes = AccessMode.Write
+            };
+
+            CFAccessDefinition ad2 = new CFAccessDefinition()
+            {
+                Name = "Test 2",
+                AccessModes = AccessMode.Control | AccessMode.Append
+            };
+
+            CFAccessDefinition ad3 = new CFAccessDefinition()
+            {
+                Name = "Test 3",
+                AccessModes = AccessMode.Discover
+            };
+
+            CFAccessDefinition ad4 = new CFAccessDefinition()
+            {
+                Name = "Test 4",
+                AccessModes = AccessMode.Read | AccessMode.Write
+            };
+
+            int entityType = mDh.Ets.GetEntityTypes(CFEntityType.eTarget.Items).FirstOrDefault().Id;
+            CFItem i1 = mDh.CreateItem(mDh.Is, entityType, itemName, itemDesciption, true);
+            entityType = mDh.Ets.GetEntityTypes(CFEntityType.eTarget.Collections).FirstOrDefault().Id;
+            CFCollection c1 = mDh.CreateCollection(mDh.Cs, entityType, collectionName, collectionDesciption, true);
+            entityType = mDh.Ets.GetEntityTypes(CFEntityType.eTarget.Items).FirstOrDefault().Id;
+            CFItem i2 = mDh.CreateItem(mDh.Is, entityType, itemName, itemDesciption, true);
+            entityType = mDh.Ets.GetEntityTypes(CFEntityType.eTarget.Collections).FirstOrDefault().Id;
+            CFCollection c2 = mDh.CreateCollection(mDh.Cs, entityType, collectionName, collectionDesciption, true);
+
+            List<CFAccessGroup> groups = new List<CFAccessGroup>()
+            {
+                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[0]) }, AccessDefinition = ad1 },
+            };
+
+            c1.AccessGroups = groups;
+            c1.BlockInheritance = true;
+            c1.Serialize();
+
+            groups = new List<CFAccessGroup>()
+            {
+                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[1]) }, AccessDefinition = ad2 },
+                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[2]) }, AccessDefinition = ad3 }
+            };
+
+            i2.AccessGroups = groups;
+            i2.BlockInheritance = true;
+            i2.Serialize();
+
+            groups = new List<CFAccessGroup>()
+            {
+                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[1]) }, AccessDefinition = ad4 }
+            };
+
+            c2.AccessGroups = groups;
+            c2.Serialize();
+
+            i1.Serialize();
+
+            c1.ChildMembers.Add(i1);
+            i2.ChildMembers.Add(i1);
+            c2.ChildMembers.Add(c1);
+            Db.SaveChanges();
+
+            AccessMode modes1 = srv.GetPermissions(Users[0].Guid, i1);
+            AccessMode modes2 = srv.GetPermissions(Users[1].Guid, i1);
+            AccessMode modes3 = srv.GetPermissions(Users[2].Guid, i1);
+            AccessMode modes4 = srv.GetPermissions(Users[3].Guid, i1);
+
+            Assert.AreEqual(ad1.AccessModes | ad3.AccessModes, modes1);
+            Assert.AreEqual(ad1.AccessModes | ad2.AccessModes, modes2);
+            Assert.AreEqual(ad2.AccessModes, modes3);
+            Assert.AreEqual(ad2.AccessModes | ad3.AccessModes, modes4);
+
+            modes1 = srv.GetPermissions(Users[0].Guid, i2);
+            modes2 = srv.GetPermissions(Users[1].Guid, i2);
+            modes3 = srv.GetPermissions(Users[2].Guid, i2);
+            modes4 = srv.GetPermissions(Users[3].Guid, i2);
+
+            Assert.AreEqual(ad3.AccessModes, modes1);
+            Assert.AreEqual(ad2.AccessModes, modes2);
+            Assert.AreEqual(ad2.AccessModes, modes3);
+            Assert.AreEqual(ad2.AccessModes | ad3.AccessModes, modes4);
+
+            modes1 = srv.GetPermissions(Users[0].Guid, c1);
+            modes2 = srv.GetPermissions(Users[1].Guid, c1);
+            modes3 = srv.GetPermissions(Users[2].Guid, c1);
+            modes4 = srv.GetPermissions(Users[3].Guid, c1);
+
+            Assert.AreEqual(ad1.AccessModes, modes1);
+            Assert.AreEqual(ad1.AccessModes, modes2);
+            Assert.AreEqual(AccessMode.None, modes3);
+            Assert.AreEqual(AccessMode.None, modes4);
+
+            modes1 = srv.GetPermissions(Users[0].Guid, c2);
+            modes2 = srv.GetPermissions(Users[1].Guid, c2);
+            modes3 = srv.GetPermissions(Users[2].Guid, c2);
+            modes4 = srv.GetPermissions(Users[3].Guid, c2);
+
+            Assert.AreEqual(defaultAccess, modes1);
+            Assert.AreEqual(defaultAccess | ad4.AccessModes, modes2);
+            Assert.AreEqual(defaultAccess | ad4.AccessModes, modes3);
+            Assert.AreEqual(defaultAccess | ad4.AccessModes, modes4);
+        }
+
+        [TestMethod]
+        public void TestCircularParents()
+        {
+            SecurityServiceBase srv = new TestSecurityService(Db);
+
+            string collectionName = "TestUserIsAdminCollection";
+            string collectionDesciption = "Test collection description";
+            string itemName = "TestUserIsAdminItem";
+            string itemDesciption = "Test item description";
+
+            AccessMode defaultAccess = GetDefaultPermissions();
+
+            CFAccessDefinition ad1 = new CFAccessDefinition()
+            {
+                Name = "Test 1",
+                AccessModes = AccessMode.Write
+            };
+
+            CFAccessDefinition ad2 = new CFAccessDefinition()
+            {
+                Name = "Test 2",
+                AccessModes = AccessMode.Control | AccessMode.Append
+            };
+
+            CFAccessDefinition ad3 = new CFAccessDefinition()
+            {
+                Name = "Test 3",
+                AccessModes = AccessMode.Discover
+            };
+
+            int entityType = mDh.Ets.GetEntityTypes(CFEntityType.eTarget.Items).FirstOrDefault().Id;
+            CFItem i1 = mDh.CreateItem(mDh.Is, entityType, itemName, itemDesciption, true);
+            entityType = mDh.Ets.GetEntityTypes(CFEntityType.eTarget.Collections).FirstOrDefault().Id;
+            CFCollection c1 = mDh.CreateCollection(mDh.Cs, entityType, collectionName, collectionDesciption, true);
+            entityType = mDh.Ets.GetEntityTypes(CFEntityType.eTarget.Items).FirstOrDefault().Id;
+            CFItem i2 = mDh.CreateItem(mDh.Is, entityType, itemName, itemDesciption, true);
+
+            List<CFAccessGroup> groups = new List<CFAccessGroup>()
+            {
+                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[0]) }, AccessDefinition = ad1 },
+            };
+
+            c1.AccessGroups = groups;
+            c1.Serialize();
+
+            groups = new List<CFAccessGroup>()
+            {
+                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[1]) }, AccessDefinition = ad2 },
+                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[2]) }, AccessDefinition = ad3 }
+            };
+
+            i2.AccessGroups = groups;
+            i2.Serialize();
+
+            i1.Serialize();
+
+            c1.ChildMembers.Add(i1);
+            c1.ChildMembers.Add(i2); //NOTE: Here is our circular relationship
+            i2.ChildMembers.Add(i1);
+            Db.SaveChanges();
+
+            AccessMode modes1 = srv.GetPermissions(Users[0].Guid, i1);
+            AccessMode modes2 = srv.GetPermissions(Users[1].Guid, i1);
+            AccessMode modes3 = srv.GetPermissions(Users[2].Guid, i1);
+            AccessMode modes4 = srv.GetPermissions(Users[3].Guid, i1);
+
+            Assert.AreEqual(defaultAccess | ad1.AccessModes | ad3.AccessModes, modes1);
+            Assert.AreEqual(defaultAccess | ad1.AccessModes | ad2.AccessModes, modes2);
+            Assert.AreEqual(defaultAccess | ad2.AccessModes, modes3);
+            Assert.AreEqual(defaultAccess | ad2.AccessModes | ad3.AccessModes, modes4);
+
+            modes1 = srv.GetPermissions(Users[0].Guid, i2);
+            modes2 = srv.GetPermissions(Users[1].Guid, i2);
+            modes3 = srv.GetPermissions(Users[2].Guid, i2);
+            modes4 = srv.GetPermissions(Users[3].Guid, i2);
+
+            Assert.AreEqual(defaultAccess | ad1.AccessModes | ad3.AccessModes, modes1);
+            Assert.AreEqual(defaultAccess | ad1.AccessModes | ad2.AccessModes, modes2);
+            Assert.AreEqual(defaultAccess | ad2.AccessModes, modes3);
+            Assert.AreEqual(defaultAccess | ad2.AccessModes | ad3.AccessModes, modes4);
+
+            modes1 = srv.GetPermissions(Users[0].Guid, c1);
+            modes2 = srv.GetPermissions(Users[1].Guid, c1);
+            modes3 = srv.GetPermissions(Users[2].Guid, c1);
+            modes4 = srv.GetPermissions(Users[3].Guid, c1);
+
+            Assert.AreEqual(defaultAccess | ad1.AccessModes, modes1);
+            Assert.AreEqual(defaultAccess | ad1.AccessModes, modes2);
+            Assert.AreEqual(defaultAccess, modes3);
+            Assert.AreEqual(defaultAccess, modes4);
         }
     }
 

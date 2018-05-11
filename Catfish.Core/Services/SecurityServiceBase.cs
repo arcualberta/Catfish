@@ -84,7 +84,7 @@ namespace Catfish.Core.Services
                 }
 
                 // Move up the tree
-                if(true/*TODO: currentEntity.BlockInheritance*/ && modes < AccessMode.All)
+                if(!currentEntity.BlockInheritance && modes < AccessMode.All)
                 {
                     if(currentEntity.ParentMembers.Count > 0)
                     {

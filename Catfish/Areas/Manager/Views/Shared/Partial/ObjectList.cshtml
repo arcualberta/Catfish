@@ -47,10 +47,16 @@
                                     @{ var isDisabled = m.HasAssociations ? "disabled='disabled'" : ""; }
                                     <button type="submit" value="Submit" class="glyphicon glyphicon-remove" onclick="return confirm('Confirm deletion');" @isDisabled></button>
                                 </form>
-                                        }
+                             }
+                           @if (typeof(Catfish.Core.Models.CFCollection).IsAssignableFrom(m.GetType()) || typeof(Catfish.Core.Models.CFItem).IsAssignableFrom(m.GetType()))
+                           {
+                            <form action="@Url.Action("accessGroup", controller, new { @id = m.Id })" method="get" class="inline">
+                                <button type="submit" value="Submit" class="glyphicon glyphicon-eye-close"></button>
+                            </form>
+                           }
                         </td>
                     </tr>
-                                        }
+                  }
             </tbody>
         </table>
     </div>

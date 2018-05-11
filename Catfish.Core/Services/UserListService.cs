@@ -9,21 +9,31 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Services
 {
-    public class UserListService :EntityService
+    public class UserListService : EntityService
     {
         public UserListService(CatfishDbContext db) : base(db) { }
 
-        public IQueryable<CFUserList> GetEntityGroups()
+        public IEnumerable<CFUserList> GetAllUserLists()
         {
-            return Db.UserLists.Include(eg=>eg.CFUserListEntries);
+            return Db.UserLists.Include(eg => eg.CFUserListEntries);
         }
 
         public IEnumerable<CFUserList> GetEntityGroupForUser(string userId)
         {
             Guid check = Guid.Parse(userId);
-            var t = GetEntityGroups().ToList().Where(ul => ul.CFUserListEntries.Any(ue => ue.UserId == check));
+            var t = GetAllUserLists().ToList().Where(ul => ul.CFUserListEntries.Any(ue => ue.UserId == check));
 
             return t;
+        }
+
+        public Dictionary<string, string> GetDictionaryUserLists()
+        {
+            Dictionary<string, string> userLists = new Dictionary<string, string>();
+
+            userLists = Db.UserLists.Select(u => new { u.Id, u.Name }).ToDictionary(u => u.Id.ToString(), u => u.Name);
+           
+
+            return userLists;
         }
 
         public CFUserList GetEntityGroup(string id)

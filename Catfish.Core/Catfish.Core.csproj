@@ -173,6 +173,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Validators.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\AccessDefinitionService.cs" />
     <Compile Include="Services\DataService.cs" />
     <Compile Include="Services\SecurityServiceBase.cs" />
     <Compile Include="Services\UserListService.cs" />

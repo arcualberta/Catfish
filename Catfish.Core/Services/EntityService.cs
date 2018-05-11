@@ -66,7 +66,12 @@ namespace Catfish.Core.Services
                 Db.MetadataSets.Attach(m);
             }
         }
-       
+        public CFEntity UpdateEntity(CFEntity entity)
+        {
+            Db.Entry(entity).State = EntityState.Modified;
+
+            return entity;
+        }
 
         public IQueryable<CFEntity> GetEntitiesTextSearch(string searchString, string[] languageCodes = null, string[] fields = null, string[] modelTypes = null)
         {

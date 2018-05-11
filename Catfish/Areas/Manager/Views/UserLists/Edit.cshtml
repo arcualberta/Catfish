@@ -19,7 +19,7 @@
 
 <div id="@context">
 
-    @using (ko.Html.Form("Edit", "CFUserLists", null, new { id = context + "Form" }))
+    @using (ko.Html.Form("Edit", "UserLists", null, new { id = context + "Form" }))
     {
         var pointer = string.IsNullOrEmpty(Model.ErrorMessage) ? "" : "pointer-events: none;";
         @Html.AntiForgeryToken()

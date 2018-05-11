@@ -96,5 +96,30 @@ namespace Catfish.Core.Models.Access
         {
             return HasMode(accessMode);
         }
+
+        public string StringAccessModesList
+        {
+            get
+            {
+                //List<AccessMode> accessModes = new List<AccessMode>();
+                string strAccessModes = string.Empty;
+
+                foreach (AccessMode accessMode in Enum.GetValues(typeof(AccessMode)))
+                {
+                    if (HasMode(accessMode))
+                    {
+                        // accessModes.Add((AccessMode)accessMode);
+                        if (accessMode != AccessMode.None)
+                            strAccessModes += accessMode.ToString() + ",";
+                    }
+                }
+
+
+                if (!string.IsNullOrEmpty(strAccessModes))
+                    strAccessModes = strAccessModes.Substring(0, strAccessModes.Length - 1);
+
+                return string.Format("{0} - {1}", Name, strAccessModes);
+            }
+        }
     }
 }

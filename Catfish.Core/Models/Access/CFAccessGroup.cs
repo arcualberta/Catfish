@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Access
@@ -91,6 +92,12 @@ namespace Catfish.Core.Models.Access
         {
             Data.Add(accessDefinition.Data);
         }
+
+        public CFAccessGroup()
+        {
+            AccessGuids = new List<System.Guid>();
+        }
+        
 
     }
 }

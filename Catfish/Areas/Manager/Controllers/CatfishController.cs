@@ -41,6 +41,8 @@ namespace Catfish.Areas.Manager.Controllers
         private DataService mDataService;
         public DataService DataService { get { if (mDataService == null) mDataService = new DataService(Db); return mDataService; } }
 
+        private AccessDefinitionService mAccessDefinitionService;
+        public AccessDefinitionService AccessDefinitionService { get { if (mAccessDefinitionService == null) mAccessDefinitionService = new AccessDefinitionService(Db); return mAccessDefinitionService; } }
 
         [HttpPost]
         public JsonResult SelectEntity(SelectEntityTypeViewModel vm)
