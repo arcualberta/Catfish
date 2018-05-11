@@ -65,7 +65,7 @@ namespace Catfish.Core.Helpers
             return string.IsNullOrEmpty(label) ? languageCode : label;
         }
 
-        public static string GlobalAccessModes { get { return ConfigurationManager.AppSettings["globalAccessModes"]; } }
+        public static string GlobalAccessModes { get { return ConfigurationManager.AppSettings["GlobalAccessModes"]; } }
 
         public static string UploadRoot { get { return ConfigurationManager.AppSettings["UploadRoot"]; } }
 
