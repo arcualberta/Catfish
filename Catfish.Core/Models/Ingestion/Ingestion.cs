@@ -23,12 +23,12 @@ namespace Catfish.Core.Models.Ingestion
 
         public IList<Relationship> Relationships { get; set; }
 
-        public Ingestion()
+        public Ingestion(int pageSize = 10000)
         {
             Overwrite = false;
             MetadataSets = new List<CFMetadataSet>();
             EntityTypes = new List<CFEntityType>();
-            Aggregations = new BigList<CFXmlModel>();
+            Aggregations = new BigList<CFXmlModel>(pageSize);
             Relationships = new List<Relationship>();
         }
 

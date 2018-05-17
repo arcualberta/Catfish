@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Models
 {
+    [Serializable]
     public class CFEntityTypeAttributeMapping
     {
         public int Id { get; set; }

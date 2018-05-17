@@ -10,11 +10,12 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Helpers
 {
-    public class BigList<T> : IList<T> where T : class
+    public class BigList<T> : IList<T>, IEnumerator<T> where T : class
     {
         private int Total { get; set; }
         private int TotalPerPage { get; set; }
         private int CurrentPageIndex { get; set; }
+        private int CurrentIndex { get; set; }
         private BigListPage<T> CurrentPage { get; set; }
         private List<string> Pages { get; set; }
 
@@ -23,6 +24,10 @@ namespace Catfish.Core.Helpers
         public int Count => Total;
 
         public bool IsReadOnly => false;
+
+        public T Current => CurrentIndex >= 0 && CurrentIndex < Total ? GetAtIndex(CurrentIndex) : null;
+
+        object IEnumerator.Current => Current;
 
         public BigList(int totalPerPage = 1000){
             TotalPerPage = totalPerPage;
@@ -36,6 +41,7 @@ namespace Catfish.Core.Helpers
                 if (CurrentPage != null)
                 {
                     SerializeBigListPage(CurrentPage);
+                    ++CurrentPageIndex;
                 }
 
                 CurrentPage = new BigListPage<T>(TotalPerPage, "Catfish_" + Guid.NewGuid().ToString().Replace('-', '_'));
@@ -71,7 +77,8 @@ namespace Catfish.Core.Helpers
 
         public IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+            Reset();
+            return this;
         }
 
         public int IndexOf(T item)
@@ -96,12 +103,13 @@ namespace Catfish.Core.Helpers
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            Reset();
+            return this;
         }
 
         private T GetAtIndex(int index)
         {
-            int page = index % TotalPerPage;
+            int page = index / TotalPerPage;
 
             if(page < Pages.Count)
             {
@@ -127,9 +135,17 @@ namespace Catfish.Core.Helpers
         private void SerializeBigListPage(BigListPage<T> page)
         {
             string file = Path.Combine(Path.GetTempPath(), page.Name + ".cf");
-            
-            using(Stream stream = File.Open(file, FileMode.CreateNew))
+
+            if (File.Exists(file))
             {
+                File.Delete(file);
+            }
+
+            using (Stream stream = File.Open(file, FileMode.CreateNew))
+            {
+                FileInfo info = new FileInfo(file);
+                info.Attributes = FileAttributes.Temporary;
+
                 BinaryFormatter binaryFormatter = new BinaryFormatter();
                 binaryFormatter.Serialize(stream, page);
             }
@@ -148,6 +164,24 @@ namespace Catfish.Core.Helpers
 
             return output;
         }
+
+        public void Dispose()
+        {
+            //Ignore for now.
+            //throw new NotImplementedException();
+        }
+
+        public bool MoveNext()
+        {
+            ++CurrentIndex;
+
+            return CurrentIndex < Total;
+        }
+
+        public void Reset()
+        {
+            CurrentIndex = -1;
+        }
     }
 
     [Serializable]
@@ -155,7 +189,7 @@ namespace Catfish.Core.Helpers
     {
         public int PageSize { get; private set; }
         public string Name { get; private set; }
-
+  
         private List<T> mEntries { get; set; }
         public List<T> Entries {
             get

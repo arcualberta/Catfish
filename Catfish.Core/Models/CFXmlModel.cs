@@ -512,7 +512,7 @@ namespace Catfish.Core.Models
                 data.SetAttributeValue(attName, attValue);
         }
 
-
+        [IgnoreDataMember]
         protected XmlNamespaceManager NamespaceManager
         {
             get
