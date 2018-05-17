@@ -35,11 +35,14 @@ namespace Catfish.DataHandler
 
         private static void import(CatfishDbContext Db)
         {
+#if DEBUG
+            Console.Error.WriteLine("Starting ingestion import...");
+#endif
+
             Console.InputEncoding = Encoding.UTF8;
-            XElement file = XElement.Load(Console.OpenStandardInput());
-           
+
             IngestionService srv = new IngestionService(Db);
-            srv.Import(file);
+            srv.Import(Console.OpenStandardInput());
 
             Db.SaveChanges();
 

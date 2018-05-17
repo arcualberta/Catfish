@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace Catfish.Core.Services
@@ -31,6 +32,10 @@ namespace Catfish.Core.Services
         
         public void Import(Ingestion ingestion)
         {
+#if DEBUG
+            Console.Error.WriteLine("Starting ingestion of Ingestion object.");
+#endif
+
             //create new GUID and new EntityType-Id
             Dictionary<string, string> GuidMap = new Dictionary<string, string>();
             Dictionary<int, int> IdMap = new Dictionary<int, int>();
@@ -297,9 +302,14 @@ namespace Catfish.Core.Services
 
         public void Import(Stream ingestion)
         {
-            XElement result = XElement.Load(ingestion);
+#if DEBUG
+            Console.Error.WriteLine("Converting ingestion stream to Ingestion object.");
+#endif
             Ingestion ing = new Ingestion();
-            Import(ing.Deserialize(result));
+
+            ing.Deserialize(ingestion);
+            
+            Import(ing);
         }
 
         public Ingestion Export()
