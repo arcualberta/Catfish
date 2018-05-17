@@ -4,9 +4,11 @@ using Catfish.Core.Models.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 using System.Linq;
+using System;
 
 namespace Catfish.Core.Models
 {
+    [Serializable]
     [CFTypeLabel("Entity Type")]
     public class CFEntityType
     {

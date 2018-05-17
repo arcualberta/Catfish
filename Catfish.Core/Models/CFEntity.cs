@@ -9,12 +9,16 @@ using System.Linq;
 using System.ComponentModel.DataAnnotations.Schema;
 using Catfish.Core.Helpers;
 using Catfish.Core.Models.Access;
+using System.Runtime.Serialization;
 
 namespace Catfish.Core.Models
 {
+    [Serializable]
     public abstract class CFEntity : CFXmlModel
     {
         public int? EntityTypeId { get; set; }
+
+        [IgnoreDataMember]
         public virtual CFEntityType EntityType { get; set; }
 
         protected static string AccessGroupXPath = "access/" + CFAccessGroup.TagName;
@@ -27,6 +31,7 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
+        [IgnoreDataMember]
         public List<CFMetadataSet> MetadataSets
         {
             get
@@ -44,6 +49,7 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
+        [IgnoreDataMember]
         public List<CFAccessGroup> AccessGroups
         {
             get
@@ -60,6 +66,7 @@ namespace Catfish.Core.Models
             }
         }
         [NotMapped]
+        [IgnoreDataMember]
         public bool BlockInheritance
         {
             get { XElement access = GetImmediateChild("access");
@@ -207,6 +214,7 @@ namespace Catfish.Core.Models
             }
         }
 
+        [IgnoreDataMember]
         public override string Name
         {
             get
@@ -215,6 +223,7 @@ namespace Catfish.Core.Models
             }
         }
 
+        [IgnoreDataMember]
         public override string Description
         {
             get

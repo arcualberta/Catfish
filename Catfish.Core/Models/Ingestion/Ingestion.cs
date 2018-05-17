@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Data;
+﻿using Catfish.Core.Helpers;
+using Catfish.Core.Models.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,16 +19,16 @@ namespace Catfish.Core.Models.Ingestion
 
         public List<CFEntityType> EntityTypes { get; set; }
 
-        public List<CFXmlModel> Aggregations { get; set; }
+        public BigList<CFXmlModel> Aggregations { get; set; }
 
-        public List<Relationship> Relationships { get; set; }
+        public IList<Relationship> Relationships { get; set; }
 
         public Ingestion()
         {
             Overwrite = false;
             MetadataSets = new List<CFMetadataSet>();
             EntityTypes = new List<CFEntityType>();
-            Aggregations = new List<CFXmlModel>();
+            Aggregations = new BigList<CFXmlModel>();
             Relationships = new List<Relationship>();
         }
 
