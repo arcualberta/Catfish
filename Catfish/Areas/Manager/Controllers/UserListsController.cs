@@ -19,7 +19,7 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/EntityGroups
         public ActionResult Index()
         {
-            return View(EntityGroupService.GetEntityGroups());
+            return View(EntityGroupService.GetAllUserLists());
         }
 
         

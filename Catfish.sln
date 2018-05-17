@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catfish", "Catfish\Catfish.csproj", "{3EE219A0-08C9-4DCE-9CB8-7BF16007F6F6}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catfish.Core", "Catfish.Core\Catfish.Core.csproj", "{5D2C027E-76F8-4CF0-8C58-CFD5219E3D18}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catfish.DataHandler", "Catfish.DataHandler\Catfish.DataHandler.csproj", "{CD5AFB8A-9367-4CF8-8571-348AB7D17E8D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateFundingDataConversion", "StateFundingDataConversion\StateFundingDataConversion.csproj", "{16D74413-DB12-4FEF-9E08-7CC2EBF56DDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{CD5AFB8A-9367-4CF8-8571-348AB7D17E8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD5AFB8A-9367-4CF8-8571-348AB7D17E8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD5AFB8A-9367-4CF8-8571-348AB7D17E8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16D74413-DB12-4FEF-9E08-7CC2EBF56DDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16D74413-DB12-4FEF-9E08-7CC2EBF56DDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16D74413-DB12-4FEF-9E08-7CC2EBF56DDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16D74413-DB12-4FEF-9E08-7CC2EBF56DDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
