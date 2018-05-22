@@ -142,8 +142,9 @@ namespace Catfish.Core.Services
 
             //add aggregations
             GuidMap.Clear();
-            foreach (var agg in ingestion.Aggregations)
-            {
+            int completed = 0;
+            int failed = 0;
+            ingestion.Aggregations.ForEach((agg) => {
                 string oldId = agg.Guid;
                 string newGuid = NewGuid();
 
@@ -165,9 +166,9 @@ namespace Catfish.Core.Services
                 if (ingestion.Overwrite)
                 {
                     CFAggregation _aggregation = Db.XmlModels.Where(a => a.MappedGuid == newGuid).FirstOrDefault() as CFAggregation;
-                    if(_aggregation != null)
+                    if (_aggregation != null)
                     {
-                        _aggregation =(CFAggregation) agg;
+                        _aggregation = (CFAggregation)agg;
                         Db.Entry(_aggregation).State = System.Data.Entity.EntityState.Modified;
                     }
                     else
@@ -185,10 +186,33 @@ namespace Catfish.Core.Services
                     MethodInfo method = this.GetType().GetMethod("CreateAggregation");
                     MethodInfo genMethod = method.MakeGenericMethod(t);
                     var _agg = (CFAggregation)genMethod.Invoke(this, new object[] { agg });
-                    Db.Entities.Add(_agg);
+
+                    try
+                    {
+                        Db.Entities.Add(_agg);
+                    }catch(Exception ex)
+                    {
+#if DEBUG
+                        Console.Error.WriteLine("{0} Error reading aggrigation: {1}", ex.Message, _agg.Name);
+#endif
+                        return false;
+                    }
                 }
-                
-            }
+
+                return true;
+            }, (successCount, failCount) =>
+            {
+                completed += successCount;
+                failed += failCount;
+
+#if DEBUG
+                Console.Error.WriteLine("{0} Completed, {1} Failed", completed, failed);
+#endif
+
+                Db.SaveChanges();
+                return true;
+            });
+
             Db.SaveChanges();
             foreach (var rel in ingestion.Relationships)
             { 
@@ -300,7 +324,7 @@ namespace Catfish.Core.Services
             Import(input);
         }
 
-        public void Import(Stream ingestion)
+        public void Import(Stream ingestion, int threads = 1)
         {
 #if DEBUG
             Console.Error.WriteLine("Converting ingestion stream to Ingestion object.");

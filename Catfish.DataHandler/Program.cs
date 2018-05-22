@@ -42,7 +42,7 @@ namespace Catfish.DataHandler
             Console.InputEncoding = Encoding.UTF8;
 
             IngestionService srv = new IngestionService(Db);
-            srv.Import(Console.OpenStandardInput());
+            srv.Import(Console.OpenStandardInput(), 4);
 
             Db.SaveChanges();
 
