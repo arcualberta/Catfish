@@ -16,6 +16,8 @@ using Catfish.Core.Services;
 using Catfish.Core.ModelBinders;
 using Catfish.Core.Validators;
 
+using Catfish.Core.Helpers;
+
 namespace Catfish
 {
     public class Global : HttpApplication
@@ -53,6 +55,12 @@ namespace Catfish
 
             //Multilingual menu
             Hooks.Menu.RenderItemLink = ViewHelper.MultilingualMenuRenderer;
+            //register multiple languange for the site --May 17 2018
+            foreach (string lang in ConfigHelper.LanguagesCodes)
+            {
+                Piranha.WebPages.WebPiranha.RegisterCulture(lang, new System.Globalization.CultureInfo(lang));
+            }
+
 
             // Setup Validation Attributes
             FormFieldValidationAttribute.CurrentLanguageCodes = () => new string[] { ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName };
@@ -63,6 +71,7 @@ namespace Catfish
             {
                 SolrService.Init(solrString);
             }
+            
         }
 
         private void AddManagerMenus()
