@@ -17,11 +17,11 @@ namespace Catfish.Helpers
     {
         public static CultureInfo GetActiveLanguage()
         {
-            var session = System.Web.HttpContext.Current.Session;
-            if (session["ActiveLanguage"] as CultureInfo == null)
-                session["ActiveLanguage"] = ConfigHelper.Languages[0];
+            //var session = System.Web.HttpContext.Current.Session;
+            //if (session["ActiveLanguage"] as CultureInfo == null)
+            //    session["ActiveLanguage"] = ConfigHelper.Languages[0];
 
-            return session["ActiveLanguage"] as CultureInfo;
+            return Thread.CurrentThread.CurrentUICulture;
         }
 
         public static void SetActiveLanguage(CultureInfo lang)
