@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Configuration;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ using System.Xml.XPath;
 
 namespace Catfish.Core.Models
 {
+    [Serializable]
     public abstract class CFXmlModel
     {
         public abstract string GetTagName();
@@ -26,6 +28,7 @@ namespace Catfish.Core.Models
         public string MappedGuid { get; set; }
 
         [NotMapped]
+        [IgnoreDataMember]
         public DateTime Created
         {
             get
@@ -40,6 +43,7 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
+        [IgnoreDataMember]
         public DateTime Updated
         {
             get
@@ -70,10 +74,12 @@ namespace Catfish.Core.Models
         private string mContent;
 
         [NotMapped]
+        [NonSerialized]
         private XElement mData;
         
         [NotMapped]
         [ScriptIgnore]
+        [IgnoreDataMember]
         public virtual XElement Data
         {
             get
@@ -100,6 +106,7 @@ namespace Catfish.Core.Models
         public string DefaultLanguage { get; set; }
 
         [NotMapped]
+        [IgnoreDataMember]
         public string Guid
         {
             get
@@ -220,6 +227,7 @@ namespace Catfish.Core.Models
 
         [NotMapped]
         [CFTypeLabel("String")]
+        [IgnoreDataMember]
         public virtual string Name { get { return GetName(); } set { SetName(value); } }
 
         public virtual string GetName(string lang = null, bool tryReturnNoneEmpty = false)
@@ -255,6 +263,7 @@ namespace Catfish.Core.Models
 
         [NotMapped]
         [CFTypeLabel("String")]
+        [IgnoreDataMember]
         public virtual string Description { get { return GetDescription(); } set { SetDescription(value); } }
 
         public virtual string GetDescription(string lang = null)
@@ -503,7 +512,7 @@ namespace Catfish.Core.Models
                 data.SetAttributeValue(attName, attValue);
         }
 
-
+        [IgnoreDataMember]
         protected XmlNamespaceManager NamespaceManager
         {
             get
@@ -517,6 +526,8 @@ namespace Catfish.Core.Models
                 return mXmlNamespaceManager;
             }
         }
+
+        [NonSerialized]
         private XmlNamespaceManager mXmlNamespaceManager;
 
         public static CFXmlModel Parse(XElement ele, string defaultLang = "en")
@@ -551,6 +562,7 @@ namespace Catfish.Core.Models
 
         #region Audit Trail
 
+        [NonSerialized]
         private List<CFAuditChangeLog> mChangeLog;
         public void LogChange(string target, string description)
         {

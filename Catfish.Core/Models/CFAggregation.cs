@@ -1,17 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Catfish.Core.Models
 {
+    [Serializable]
     public abstract class CFAggregation : CFEntity
     {
+        [IgnoreDataMember]
         public virtual ICollection<CFAggregation> ParentMembers { get; set; }
+
+        [IgnoreDataMember]
         public virtual ICollection<CFAggregation> ChildMembers { get; set; }
 
+        [IgnoreDataMember]
         public virtual ICollection<CFItem> ChildRelations { get; set; }
 
         [NotMapped]
+        [IgnoreDataMember]
         public bool HasAssociations { get { return ParentMembers.Count > 0 || ChildMembers.Count > 0 || ChildRelations.Count > 0; } }
 
 
@@ -42,6 +50,7 @@ namespace Catfish.Core.Models
             this.ParentMembers.Add(parent);
         }
 
+        [IgnoreDataMember]
         public virtual IEnumerable<CFAggregation> ChildItems
         {
             get

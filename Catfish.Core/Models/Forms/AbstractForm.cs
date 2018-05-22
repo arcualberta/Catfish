@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Forms
 {
+    [Serializable]
     public abstract class AbstractForm : CFXmlModel
     {
         public AbstractForm()
@@ -18,6 +20,7 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
+        [IgnoreDataMember]
         public IReadOnlyList<FormField> Fields
         {
             get
@@ -39,6 +42,7 @@ namespace Catfish.Core.Models.Forms
 
         [NotMapped]
         [DataType(DataType.MultilineText)]
+        [IgnoreDataMember]
         public string Description { get { return GetDescription(); } set { SetDescription(value); } }
 
 

@@ -8,10 +8,13 @@ using System.Xml.Serialization;
 using System.Xml.Linq;
 using System.Linq;
 using Catfish.Core.Models.Forms;
+using System;
+using System.Runtime.Serialization;
 
 namespace Catfish.Core.Models
 {
     [CFTypeLabel("Metadata Set")]
+    [Serializable]
     public class CFMetadataSet : AbstractForm
     {
         public static string TagName
@@ -25,6 +28,7 @@ namespace Catfish.Core.Models
         public override string GetTagName() { return TagName; }
 
         [ScriptIgnore(ApplyToOverrides = true)]
+        [IgnoreDataMember]
         public virtual ICollection<CFEntityType> EntityTypes { get; set; }
 
     }

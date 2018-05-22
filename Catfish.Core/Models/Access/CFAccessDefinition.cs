@@ -12,12 +12,11 @@ namespace Catfish.Core.Models.Access
     {
         None     = 0,
         Read     = 1,
-        Write    = 2,
-        Append   = 4,
-        Control  = 8,
-        Discover = 16,
+        Write    = 2 | AccessMode.Read,
+        Append   = 4 | AccessMode.Read,
+        Control  = 8 | AccessMode.Read,
 
-        All = AccessMode.Read | AccessMode.Write | AccessMode.Append | AccessMode.Control | AccessMode.Discover
+        All = AccessMode.Read | AccessMode.Write | AccessMode.Append | AccessMode.Control 
     }
 
     public class CFAccessDefinition : CFXmlModel

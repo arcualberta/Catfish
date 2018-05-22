@@ -4,9 +4,12 @@ using Catfish.Core.Models.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 using System.Linq;
+using System;
+using System.Runtime.Serialization;
 
 namespace Catfish.Core.Models
 {
+    [Serializable]
     [CFTypeLabel("Entity Type")]
     public class CFEntityType
     {
@@ -44,9 +47,11 @@ namespace Catfish.Core.Models
         public string TargetTypes {get; set; } // MR: jan 15 2018, change to string, this will hold a comma separated value of TargetType
 
         [JsonIgnore] //Ignore this in JSON serialization to avoid stuck in a continuous loop
+        [IgnoreDataMember]
         public virtual ICollection<CFMetadataSet> MetadataSets { get; set; }
 
         [JsonIgnore] //Ignore this in JSON serialization to avoid stuck in a continuous loop
+        [IgnoreDataMember]
         public virtual ICollection<CFEntityTypeAttributeMapping> AttributeMappings { get; set; }
 
         [NotMapped]

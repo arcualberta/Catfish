@@ -282,7 +282,7 @@ namespace Catfish.Tests.Services
             CFAccessDefinition ad3 = new CFAccessDefinition()
             {
                 Name = "Test 3",
-                AccessModes = AccessMode.Discover
+                AccessModes = AccessMode.Read
             };
 
             int entityType = mDh.Ets.GetEntityTypes(CFEntityType.eTarget.Items).FirstOrDefault().Id;
@@ -342,7 +342,7 @@ namespace Catfish.Tests.Services
             CFAccessDefinition ad3 = new CFAccessDefinition()
             {
                 Name = "Test 3",
-                AccessModes = AccessMode.Discover
+                AccessModes = AccessMode.Read
             };
 
             int entityType = mDh.Ets.GetEntityTypes(CFEntityType.eTarget.Items).FirstOrDefault().Id;
@@ -481,7 +481,7 @@ namespace Catfish.Tests.Services
             CFAccessDefinition ad3 = new CFAccessDefinition()
             {
                 Name = "Test 3",
-                AccessModes = AccessMode.Discover
+                AccessModes = AccessMode.Read
             };
 
             int entityType = mDh.Ets.GetEntityTypes(CFEntityType.eTarget.Items).FirstOrDefault().Id;
@@ -542,7 +542,7 @@ namespace Catfish.Tests.Services
             CFAccessDefinition ad3 = new CFAccessDefinition()
             {
                 Name = "Test 3",
-                AccessModes = AccessMode.Discover
+                AccessModes = AccessMode.Read
             };
 
             CFAccessDefinition ad4 = new CFAccessDefinition()
@@ -662,7 +662,7 @@ namespace Catfish.Tests.Services
             CFAccessDefinition ad3 = new CFAccessDefinition()
             {
                 Name = "Test 3",
-                AccessModes = AccessMode.Discover
+                AccessModes = AccessMode.Read
             };
 
             int entityType = mDh.Ets.GetEntityTypes(CFEntityType.eTarget.Items).FirstOrDefault().Id;
