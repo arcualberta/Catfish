@@ -32,11 +32,12 @@
                 }
 
             }
+            modes = string.IsNullOrEmpty(modes) ? "None" : modes.Substring(0, modes.Length - 2);
             <tr>
                 <td>@m.Name</td>
               
 
-                <td>@modes.Substring(0, modes.Length - 2)</td>
+                <td>@modes</td>
                 
                 <td>@m.Updated.ToShortDateString()</td><td>@m.Created.ToShortDateString()</td>
                 <td class="bs">
