@@ -22,18 +22,22 @@ namespace Catfish.Services
         {
             Piranha.Entities.User user = UserService.GetUserById(userGuid);
 
-            if(user != null)
+            if (user != null)
             {
                 string defaultMode = ConfigurationManager.AppSettings["SecurityAdminRoleName"];
 
                 if (string.IsNullOrEmpty(defaultMode))
                 {
-                    defaultMode = "ADMIN_CONTENT";
+                    defaultMode = "ADMIN_ACCESS";
                 }
 
-                return user.Group.Permissions.Where(p => p.Name == defaultMode).Any();
+                var grp = UserService.GetUsersGroup(user.GroupId.Value);
+                if (grp == null)
+                {
+                    return false;
+                }
+                return grp.Permissions.Where(p => p.Name == defaultMode).Any();
             }
-
             return false;
         }
     }

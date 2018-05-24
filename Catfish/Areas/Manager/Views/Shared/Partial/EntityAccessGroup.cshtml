@@ -1,21 +1,25 @@
 ﻿@model Catfish.Areas.Manager.Models.ViewModels.EntityAccessDefinitionsViewModel
 @using Catfish.Core.Models.Access
-@{ 
+
+@{
     string subTitle = Model.EntityName + " Access Permissions";
     string controller = ViewData["Controller"].ToString();
     string action = ViewData["Action"].ToString();
+    //get all available AccessMode enum
+   
 
 }
 
 <style>
-    #BlockInheritance{
+    #BlockInheritance {
         margin-left: -300px;
     }
 </style>
 @using (Html.BeginForm(action, controller, FormMethod.Post))
-    {
-  
-    @Html.HiddenFor(m=>Model.Id)
+{
+
+    @Html.HiddenFor(m => Model.Id)
+
     <table class="list" style="margin-top:10px;">
         <thead>
             <tr><th>@subTitle</th></tr>
@@ -65,7 +69,7 @@
                                     <tr id="rowAddOption">
                                         <td>
                                             @Html.TextBoxFor(m => Model.User, new { @id = "usrName", @placeholder = "Userlogin or User List Name", @class = "form-control" })
-                                           
+
                                         </td>
                                         <td>
 
@@ -86,13 +90,54 @@
     </table>
 
 }
+
+@using (Html.BeginForm(FormMethod.Get))
+{
+    @Html.Hidden("controllerName", controller)
+    @Html.Hidden("entityId", Model.Id)
+    <table class="list" style="margin-top:10px;">
+        <thead>
+            <tr><th>Access Test</th><th></th></tr>
+        </thead>
+        <tbody class="list bs">
+            <tr>
+                <td style="width:20%;">
+                    @Html.TextBoxFor(m => Model.User, new { @id = "usrName2", @placeholder = "Userlogin or User List Name", @class = "form-control", @style="width:auto;margin-left:15px;" })
+                    
+                </td>
+                <td><button id="searchUserPermission" class="btn btn-primary" style="padding:0;" ><span class="glyphicon glyphicon-search">Search</span></button></td>
+            </tr>
+           
+            <tr>
+                <td>
+                    <ul>
+                   @foreach(var mode in ViewBag .AccessCodesList)
+                   {
+                       
+                       <li>
+                    
+                        <input type="checkbox" id="chk_@mode.Text" name="AccessModesOption" value="@mode.Text" />
+                     
+                        <label>@mode.Text</label>
+                    </li>
+                   }
+                        </ul>
+                </td>
+            </tr>
+            
+        </tbody>
+    </table>
+}
+
+
 <script>
     var selectedUser = "";
+    var selectedUser2="";
     $(function(){
        var allAvailableUsers =@(Html.Raw(Json.Encode(ViewBag.SugestedUsers))).map(function(x){ return { key: x["Key"], label: x["Value"] }; });
 
         $('#btnAddUserAccess').attr('disabled','disabled');
-
+         $('#searchUserPermission').attr('disabled','disabled');
        $("#usrName").autocomplete({
           source: allAvailableUsers,
           select: function(event, ui){
@@ -101,6 +146,47 @@
            }
          });
 
+          $("#usrName2").autocomplete({
+          source: allAvailableUsers,
+          select: function(event, ui){
+                 selectedUser2 = ui.item.key;
+                 $('#searchUserPermission').removeAttr('disabled');
+           }
+         });
+
+         $('#searchUserPermission').click(function(){
+
+                var controllerName = $("#controllerName").val();
+               
+                var entityId = $("#entityId").val();
+                 
+                var url ='@Url.Action("GetuserPermissions", "controllerName")';
+                 url = url.replace("controllerName", controllerName);
+                
+                $.ajax({
+                        url : url,
+                        type : 'GET',
+                        data : {
+                                'userGuid' : selectedUser2, 'entityId': entityId
+                        },
+                        dataType:'json',
+                        success : function(data) {
+
+                                   $.each(data, function(index) {
+                                      
+                                        if(data[index] !== "None" && data[index] !== "All")
+                                        {
+                                           $("#chk_" + data[index]).prop("checked", true);
+                                         }
+                                    });
+                            },
+                        error : function(request,error)
+                        {
+                            alert("Request: "+JSON.stringify(request));
+                        }
+                });//closing ajax
+            return false;
+         });//closing click method
     });
 
 
@@ -139,4 +225,4 @@
 
 
 
-</script>
+            </script>

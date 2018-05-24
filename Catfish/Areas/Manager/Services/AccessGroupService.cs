@@ -64,6 +64,7 @@ namespace Catfish.Areas.Manager.Services
                 }
             }
 
+            
             return entityAccessVM;
 
         }
@@ -88,6 +89,18 @@ namespace Catfish.Areas.Manager.Services
 
             return entity;
 
+        }
+
+        public List<SelectListItem> GetAccessCodesList()
+        {
+            List<SelectListItem> accessCodesList = new List<SelectListItem>();
+            foreach (AccessMode am in Enum.GetValues(typeof(AccessMode)))
+            {
+
+                accessCodesList.Add(new SelectListItem { Text = am.ToString(), Value = ((int)am).ToString() });
+
+            }
+            return accessCodesList;
         }
 
     }

@@ -20,6 +20,7 @@ using Catfish.Helpers;
 using Catfish.Core.Helpers;
 using Catfish.Areas.Manager.Services;
 using Catfish.Core.Models.Access;
+using Catfish.Services;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -240,6 +241,10 @@ namespace Catfish.Areas.Manager.Controllers
             AccessGroupService accessGroupService = new AccessGroupService(Db);
             entityAccessVM = accessGroupService.UpdateViewModel(entity);// UpdateViewModel(entity);
             ViewBag.SugestedUsers = entityAccessVM.AvailableUsers2.ToArray();
+            var accessList = accessGroupService.GetAccessCodesList();
+            accessList.Remove(accessList.First()); //remove "None"
+            accessList.Remove(accessList.Last()); //remove all
+            ViewBag.AccessCodesList = accessList;
             return View(entityAccessVM);
         }
 
@@ -260,6 +265,20 @@ namespace Catfish.Areas.Manager.Controllers
 
 
             return RedirectToAction("AccessGroup", new { id = entityAccessVM.Id });
+        }
+
+        public JsonResult GetuserPermissions(string userGuid, int entityId)
+        {
+            CFAggregation entity = EntityService.GetAnEntity(entityId) as CFAggregation;
+            SecurityService securityService = new SecurityService(Db);
+            AccessMode accessMode = securityService.GetAggregationPermissions(userGuid, entity);
+
+            CFAccessDefinition cFAccessDefinition = new CFAccessDefinition();
+            cFAccessDefinition.AccessModes = (AccessMode)accessMode;
+
+            
+
+            return Json(cFAccessDefinition.AccessModes.AsStringList(), JsonRequestBehavior.AllowGet);
         }
     }
 }
