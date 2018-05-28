@@ -48,7 +48,7 @@ namespace Catfish.Core.Services
             return AccessMode.None;
         }
 
-        protected AccessMode GetAggregationPermissions(string userGuid, CFAggregation entity)
+        public AccessMode GetAggregationPermissions(string userGuid, CFAggregation entity)
         {
             if (IsAdmin(userGuid))
             {

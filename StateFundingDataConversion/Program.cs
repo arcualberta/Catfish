@@ -18,11 +18,14 @@ namespace StateFundingDataConversion
         private static List<string> OptionGuids = new List<string>();
         private static string EntityTypeName = "Statefunding Entity Type";
         private static string[] headers;
+        private static int TotAggregations = 10000;
+        private static string inputFileName = "StateFundingData17Jan2018.csv";
+
         public static void Main(string[] args)
         {
             string currDir = Environment.CurrentDirectory;
             currDir = Path.GetFullPath(Path.Combine(currDir, @"..\..\"));
-            string dataDir =currDir + "Data\\StateFundingData17Jan2018.csv";
+            string dataDir = currDir + "Data\\" + inputFileName; ;
            
             try
             {
@@ -101,12 +104,13 @@ namespace StateFundingDataConversion
             XElement entityTypes = AddEntityTypes(msGuid);
 
             ingestion.Add(entityTypes);
+            doc.Save(currDir + "\\SFIngestion17Jan2018-MSEntityType.xml");
 
-            XElement aggregations = AddAggregations(msGuid, csv);
+            XElement aggregations = AddAggregations(msGuid, csv, currDir);
 
-            ingestion.Add(aggregations);
-            
-            doc.Save(currDir + "\\StateFundingIngestion17Jan2018.xml");
+           // ingestion.Add(aggregations);
+           
+           // doc.Save(currDir + "\\StateFundingIngestion17Jan2018.xml");
         }
 
         public static XElement AddMetadataSetFields(XDocument doc, XAttribute xmlLang, XElement frEmpty, XElement esEmpty)
@@ -270,26 +274,30 @@ namespace StateFundingDataConversion
             return entityTypes;
         }
 
-         public static XElement AddAggregations(string msGuid, CsvReader csv)
+         public static XElement AddAggregations(string msGuid, CsvReader csv, string currDir)
         {
+            XDocument doc = new XDocument(new XDeclaration("1.0", "utf-8", "yes"));
+           
+            XElement ingestion = new XElement("ingestion");
+            ingestion.Add(new XAttribute("overwrite", "false"));
+            doc.Add(ingestion);
+
             XAttribute xmlLang = new XAttribute(XNamespace.Xml + "lang", "en");
             XAttribute xmlLangFr = new XAttribute(XNamespace.Xml + "lang", "fr");
             XAttribute xmlLangEs = new XAttribute(XNamespace.Xml + "lang", "es");
             XElement aggregations = new XElement("aggregations");
 
-            //string[] headers = input[0].Split(',');
+            int countAggregation = 1;
+            int fileCount = 1;
             while (csv.Read())
             {
                 StateFunding sf = csv.GetRecord<StateFunding>();
 
 
-                //for (int j = 1; j < input.Length; j++) //num of rows -- items --skip the header
-                //{
+               
                 try
                 {
-                    //debug
-                    //if (!string.IsNullOrEmpty(input[j]))
-                    //{
+                   
                     XElement item = new XElement("item");
                     aggregations.Add(item);
                     string now = DateTime.Now.ToShortDateString();
@@ -317,6 +325,7 @@ namespace StateFundingDataConversion
                     int i = 1;
                     int headerIdx = 0;
                     int fieldGuidIdx = 0;
+                   
                     //foreach (string m in contents)
                     List<string> movements = new List<string>();
                     foreach (PropertyInfo prop in typeof(StateFunding).GetProperties())
@@ -432,6 +441,19 @@ namespace StateFundingDataConversion
                     throw ex;
                 }
 
+                if (countAggregation == TotAggregations) //save the file for every 10k items
+                {
+                    ingestion.Add(aggregations);
+                    doc.Save(currDir + "\\SFundingIngestion-Aggregation-" + fileCount+ ".xml");
+                    countAggregation = 1;
+                    aggregations.RemoveAll();
+                    ingestion.RemoveAll();
+                    fileCount++;
+                }
+                else
+                {
+                    countAggregation++;
+                }
             }
 
             return aggregations;
