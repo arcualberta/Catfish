@@ -2,6 +2,7 @@
 using Catfish.Core.Models.Ingestion;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -81,7 +82,15 @@ namespace Catfish.Core.Services
                 }
                 else
                 {
-                    Db.MetadataSets.Add(ms);
+                    try
+                    {
+                        Db.MetadataSets.Add(ms);
+                    }catch(ProviderIncompatibleException ex)
+                    {
+                        Console.Error.WriteLine("Current Connection String: " + Db.Database.Connection.ConnectionString);
+
+                        throw ex;
+                    }
                 }
             }
 
@@ -319,7 +328,7 @@ namespace Catfish.Core.Services
         public T CreateAggregation<T>(CFXmlModel aggregation) where T : CFAggregation, new()
         {
             //T agg = new T();
-            Regex entityTypeRegex = new Regex(@"(entity-type)=[""']?((?:.(?![""']?\s + (?:\S +)=|[> ""']))+.)[""']?");
+            Regex entityTypeRegex = new Regex(@"(entity-type)=[""']?((?:.(?![""']?\s + (?:\S +)=|[>""']))+.)[""']?");
 
             string entityTypeName = entityTypeRegex.Match(aggregation.Content).Groups[2].Value;
             int? entType = Db.EntityTypes.Where(e => e.Name == entityTypeName).Select(e => e.Id).FirstOrDefault();

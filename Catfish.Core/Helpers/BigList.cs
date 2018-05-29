@@ -188,7 +188,17 @@ namespace Catfish.Core.Helpers
         {
             foreach (string pageName in Pages)
             {
-                BigListPage<T> page = DeserializeBigListPage(pageName);
+                BigListPage<T> page = null;
+
+                if (CurrentPage != null && CurrentPage.Name == pageName)
+                {
+                    page = CurrentPage;
+                }
+                else
+                {
+                    DeserializeBigListPage(pageName);
+                }
+
                 int successCount = 0;
                 int failCount = 0;
 
