@@ -72,7 +72,7 @@ namespace StateFundingDataConversion
             XElement metadataSet = new XElement("metadata-set");
             metadataSet.Add(new XAttribute("updated", now));
             metadataSet.Add(new XAttribute("created", now));
-            metadataSet.Add(new XAttribute("model-type", "Catfish.Core.Models.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
+            metadataSet.Add(new XAttribute("model-type", "Catfish.Core.Models.CFMetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
             metadataSet.Add(new XAttribute("IsRequired", "false"));
             string msGuid = Guid.NewGuid().ToString();
             metadataSet.Add(new XAttribute("guid", msGuid));
@@ -129,12 +129,12 @@ namespace StateFundingDataConversion
                     field.Add(new XAttribute("created", DateTime.Now.ToShortDateString()));
                     if(i == 2 || i == 5)
                     {
-                        field.Add(new XAttribute("model-type", "Catfish.Core.Models.NumberField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
+                        field.Add(new XAttribute("model-type", "Catfish.Core.Models.Forms.NumberField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
 
                     }
                     else
                     {
-                        field.Add(new XAttribute("model-type", "Catfish.Core.Models.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
+                        field.Add(new XAttribute("model-type", "Catfish.Core.Models.Forms.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
 
                     }
                     field.Add(new XAttribute("IsRequired", "false"));
@@ -177,7 +177,7 @@ namespace StateFundingDataConversion
             XElement chkField = new XElement("field");
             chkField.Add(new XAttribute("updated", DateTime.Now));
             chkField.Add(new XAttribute("created", DateTime.Now));
-            chkField.Add(new XAttribute("model-type", "Catfish.Core.Models.CheckBoxSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
+            chkField.Add(new XAttribute("model-type", "Catfish.Core.Models.Forms.CheckBoxSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
             chkField.Add(new XAttribute("IsRequired", "false"));
             string chkGuid = Guid.NewGuid().ToString();
             FieldGuids.Add(chkGuid);
@@ -303,7 +303,7 @@ namespace StateFundingDataConversion
                     string now = DateTime.Now.ToShortDateString();
                     item.Add(new XAttribute("created", now));
                     item.Add(new XAttribute("updated", now));
-                    item.Add(new XAttribute("model-type", "Catfish.Core.Models.Item, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
+                    item.Add(new XAttribute("model-type", "Catfish.Core.Models.CFItem, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
                     item.Add(new XAttribute("IsRequired", "false"));
                     item.Add(new XAttribute("guid", Guid.NewGuid().ToString()));
                     item.Add(new XAttribute("entity-type", EntityTypeName));
@@ -314,7 +314,7 @@ namespace StateFundingDataConversion
                     metadata.Add(ms);
                     ms.Add(new XAttribute("created", now));
                     ms.Add(new XAttribute("updated", now));
-                    ms.Add(new XAttribute("model-type", "Catfish.Core.Models.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
+                    ms.Add(new XAttribute("model-type", "Catfish.Core.Models.CFMetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
                     ms.Add(new XAttribute("IsRequired", "false"));
                     ms.Add(new XAttribute("guid", msGuid));
                     XElement fields = new XElement("fields");
@@ -341,12 +341,12 @@ namespace StateFundingDataConversion
                             field.Add(new XAttribute("created", now));
                             if (i == 2 || i == 5) //Year and amount --set to Number Field
                             {
-                                field.Add(new XAttribute("model-type", "Catfish.Core.Models.NumberField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
+                                field.Add(new XAttribute("model-type", "Catfish.Core.Models.Forms.NumberField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
 
                             }
                             else
                             {
-                                field.Add(new XAttribute("model-type", "Catfish.Core.Models.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
+                                field.Add(new XAttribute("model-type", "Catfish.Core.Models.Forms.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
                             }
                             field.Add(new XAttribute("guid", FieldGuids.ElementAt(fieldGuidIdx)));
                             field.Add(new XAttribute("rank", i.ToString()));
@@ -383,7 +383,7 @@ namespace StateFundingDataConversion
                     XElement chkEl = new XElement("Field");
                     chkEl.Add(new XAttribute("created", now));
                     chkEl.Add(new XAttribute("updated", now));
-                    chkEl.Add(new XAttribute("model-type", "Catfish.Core.Models.Forms.CheckBoxSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
+                    chkEl.Add(new XAttribute("model-type", "Catfish.Core.Models.Forms.Forms.CheckBoxSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
                     chkEl.Add(new XAttribute("IsReguired", "false"));
                     chkEl.Add(new XAttribute("guid", FieldGuids.Last()));
                     chkEl.Add(new XAttribute("rank", i.ToString()));
@@ -452,10 +452,20 @@ namespace StateFundingDataConversion
                 }
                 else
                 {
+                   
                     countAggregation++;
                 }
             }
 
+            
+            //write the reminding of the file
+                ingestion.Add(aggregations);
+                doc.Save(currDir + "\\SFundingIngestion-Aggregation-" + fileCount + ".xml");
+                //countAggregation = 1;
+               // aggregations.RemoveAll();
+               // ingestion.RemoveAll();
+
+            
             return aggregations;
         }
     }
