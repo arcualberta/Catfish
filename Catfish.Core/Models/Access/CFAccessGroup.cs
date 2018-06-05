@@ -11,12 +11,11 @@ namespace Catfish.Core.Models.Access
 {
     public class CFAccessGroup : CFXmlModel
     {
-        public static string TagName {
-            get
-            {
-                return "access-group";                
-            }
-        }
+        
+        public  static string TagName { get; } = "access-group";
+
+        private static string IsInheritedAttribute { get; } = "is-inherited";
+        private static string AccessGuidElementName { get; } = "access-guid";
 
         public override string GetTagName() { return TagName; }
 
@@ -40,8 +39,41 @@ namespace Catfish.Core.Models.Access
             set
             {
 
-                RemoveAllElements("access-group", Data);                
+                RemoveAllElements(TagName, Data);                
                 InitializeAccessDefinition(value);
+            }
+        }
+
+        [NotMapped]
+        public bool IsInherited
+        {
+            get
+            {
+                try
+                {
+                    XAttribute isInherited = Data.Attribute(IsInheritedAttribute);
+                    if (isInherited != null)
+                    {
+                        return Convert.ToBoolean(isInherited.Value);
+                    }
+                    return true;
+                }
+                catch
+                {
+                    return true;
+                }
+            }
+
+            set
+            {
+                XAttribute isInherited = Data.Attribute(IsInheritedAttribute);
+                if (isInherited == null)
+                {
+                    isInherited = new XAttribute(IsInheritedAttribute, value.ToString());                    
+                    Data.Add(isInherited);
+                }
+
+                isInherited.Value = value.ToString();
             }
         }
 
@@ -53,7 +85,7 @@ namespace Catfish.Core.Models.Access
                 try
                 {
 
-                    XElement accessGuidElement = Data.Element("access-guid");
+                    XElement accessGuidElement = Data.Element(AccessGuidElementName);
                     return new Guid(accessGuidElement.Value);
                 }
                 catch
@@ -65,10 +97,10 @@ namespace Catfish.Core.Models.Access
 
             set
             {
-                XElement accessGuid = Data.Element("access-guid");
+                XElement accessGuid = Data.Element(AccessGuidElementName);
                 if (accessGuid == null)
                 {
-                    accessGuid = new XElement("access-guid");
+                    accessGuid = new XElement(AccessGuidElementName);
                     Data.Add(accessGuid);
                 }
 

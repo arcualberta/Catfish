@@ -35,5 +35,12 @@ namespace Catfish.Tests
             AccessGroup.AccessGuid = guid1;
             Assert.AreEqual(guid2, AccessGroup.AccessGuid);
         }
+
+        [TestMethod]
+        public void CanCheckIsInheritable()
+        {
+            AccessGroup.IsInherited = false;
+            Assert.IsFalse(AccessGroup.IsInherited);
+        }
     }
 }
