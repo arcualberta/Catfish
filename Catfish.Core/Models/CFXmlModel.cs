@@ -19,7 +19,7 @@ using System.Xml.XPath;
 namespace Catfish.Core.Models
 {
     [Serializable]
-    public abstract class CFXmlModel
+    public abstract class CFXmlModel : IDisposable
     {
         public abstract string GetTagName();
 
@@ -606,6 +606,14 @@ namespace Catfish.Core.Models
             string xpath = "audit/entry[@action='" + CFAuditEntry.eAction.Create.ToString() + "']";
             XElement ele = GetChildElements(xpath, Data).FirstOrDefault();
             return ele == null ? null : ele.Attribute("user").Value;
+        }
+
+        public void Dispose()
+        {
+            if(mData != null)
+            {
+                mData = null;
+            }
         }
 
         #endregion

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Catfish.Core.Helpers
@@ -182,6 +183,40 @@ namespace Catfish.Core.Helpers
         {
             CurrentIndex = -1;
         }
+
+        public void ForEach(Func<T, bool> foreachFunc, Func<int, int, bool> afterPageComplete)
+        {
+            foreach (string pageName in Pages)
+            {
+                BigListPage<T> page = null;
+
+                if (CurrentPage != null && CurrentPage.Name == pageName)
+                {
+                    page = CurrentPage;
+                }
+                else
+                {
+                    DeserializeBigListPage(pageName);
+                }
+
+                int successCount = 0;
+                int failCount = 0;
+
+                foreach (T entry in page.Entries)
+                {
+                    if (foreachFunc(entry))
+                    {
+                        ++successCount;
+                    }
+                    else
+                    {
+                        ++failCount;
+                    }
+                }
+
+                afterPageComplete(successCount, failCount);
+            }
+        }
     }
 
     [Serializable]
@@ -207,5 +242,7 @@ namespace Catfish.Core.Helpers
             PageSize = pageSize;
             Name = name;
         }
+
+        
     }
 }
