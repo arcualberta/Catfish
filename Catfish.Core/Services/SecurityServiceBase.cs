@@ -73,18 +73,16 @@ namespace Catfish.Core.Services
                 // Check if we have any new permissions
                 foreach(CFAccessGroup accessGroup in currentEntity.AccessGroups)
                 {
-                    foreach(Guid guid in accessGroup.AccessGuids)
+                    string guidString = accessGroup.AccessGuid.ToString();
+                    if (accessableGuids.Contains(guidString))
                     {
-                        string guidString = guid.ToString();
-                        if (accessableGuids.Contains(guidString)){
-                            accessableGuids.Remove(guidString);
-                            modes |= accessGroup.AccessDefinition.AccessModes;
-                        }
-                    }
+                        accessableGuids.Remove(guidString);
+                        modes |= accessGroup.AccessDefinition.AccessModes;
+                    }                    
                 }
 
                 // Move up the tree
-                if(!currentEntity.BlockInheritance && modes < AccessMode.All)
+                if (!currentEntity.BlockInheritance && modes < AccessMode.All)
                 {
                     if(currentEntity.ParentMembers.Count > 0)
                     {

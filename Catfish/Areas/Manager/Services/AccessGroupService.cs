@@ -45,7 +45,7 @@ namespace Catfish.Areas.Manager.Services
                 foreach (CFAccessGroup gr in entity.AccessGroups)
                 {
                     AccessGroup accGrp = new Models.ViewModels.AccessGroup();
-                    accGrp.userId = gr.AccessGuids.FirstOrDefault().ToString();
+                    accGrp.userId = gr.AccessGuid.ToString(); //FirstOrDefault().ToString();
                     var user = us.GetUserById(accGrp.userId);
                     string name = string.Empty;
                     if (user == null)
@@ -75,7 +75,8 @@ namespace Catfish.Areas.Manager.Services
             foreach (var ag in entityAccessVM.SelectedAccessGroups)
             {
                 CFAccessGroup group = new CFAccessGroup();
-                group.AccessGuids = new List<Guid>() { Guid.Parse(ag.userId) };
+                //group.AccessGuids = new List<Guid>() { Guid.Parse(ag.userId) };
+                group.AccessGuid = Guid.Parse(ag.userId);
                 group.AccessDefinition.AccessModes = (AccessMode)ag.AccessModesNum;
                 if(ag.AccessMode != null)
                     group.AccessDefinition.Name = ag.AccessMode.Substring(0, ag.AccessMode.LastIndexOf("-"));

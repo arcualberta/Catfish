@@ -46,45 +46,34 @@ namespace Catfish.Core.Models.Access
         }
 
         [NotMapped]
-        public List<Guid> AccessGuids
+        public Guid AccessGuid
         {
             get
             {
                 try
                 {
-                    XElement accessGuidsElement = Data.Element("access-guids");
-                 
-                    List<XElement> accessGuidsElements = accessGuidsElement.Elements("access-guid").ToList();
-                    List<Guid> accessGuids = new List<Guid>();
 
-                    foreach (XElement accessGuidElement in accessGuidsElements)
-                    {
-                        accessGuids.Add(new Guid(accessGuidElement.Value));
-                    }
-
-                    return accessGuids;
+                    XElement accessGuidElement = Data.Element("access-guid");
+                    return new Guid(accessGuidElement.Value);
                 }
                 catch
                 {
-                    return null;
+                    // Empty Guid by default
+                    return new Guid();
                 }
-
             }
 
             set
             {
-                XElement accessGuids = Data.Element("access-guids");
-                if (accessGuids == null)
+                XElement accessGuid = Data.Element("access-guid");
+                if (accessGuid == null)
                 {
-                    accessGuids = new XElement("access-guids");
-                    Data.Add(accessGuids);
+                    accessGuid = new XElement("access-guid");
+                    Data.Add(accessGuid);
                 }
-                foreach (Guid accessGuid in value)
-                {
-                    XElement accessGuidElement = new XElement("access-guid");
-                    accessGuidElement.Value = accessGuid.ToString();
-                    accessGuids.Add(accessGuidElement);
-                }
+
+                accessGuid.Value = value.ToString();
+                             
             }
         }
 
@@ -95,7 +84,7 @@ namespace Catfish.Core.Models.Access
 
         public CFAccessGroup()
         {
-            AccessGuids = new List<System.Guid>();
+            //AccessGuids = new List<System.Guid>();
         }
         
 

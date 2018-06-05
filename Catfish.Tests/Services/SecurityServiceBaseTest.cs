@@ -236,8 +236,8 @@ namespace Catfish.Tests.Services
 
             List<CFAccessGroup> groups = new List<CFAccessGroup>()
             {
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[0]) }, AccessDefinition = ad1 },
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Users[1].Guid) }, AccessDefinition = ad2 }
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[0]), AccessDefinition = ad1 },
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Users[1].Guid), AccessDefinition = ad2 }
             };
 
             i1.AccessGroups = groups;
@@ -292,9 +292,9 @@ namespace Catfish.Tests.Services
 
             List<CFAccessGroup> groups = new List<CFAccessGroup>()
             {
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[0]) }, AccessDefinition = ad1 },
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[1]) }, AccessDefinition = ad2 },
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[2]) }, AccessDefinition = ad3 }
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[0]), AccessDefinition = ad1 },
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[1]), AccessDefinition = ad2 },
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[2]), AccessDefinition = ad3 }
             };
 
             c1.AccessGroups = groups;
@@ -354,7 +354,7 @@ namespace Catfish.Tests.Services
 
             List<CFAccessGroup> groups = new List<CFAccessGroup>()
             {
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[0]) }, AccessDefinition = ad1 },
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[0]), AccessDefinition = ad1 },
             };
 
             c1.AccessGroups = groups;
@@ -362,8 +362,8 @@ namespace Catfish.Tests.Services
 
             groups = new List<CFAccessGroup>()
             {
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[1]) }, AccessDefinition = ad2 },
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[2]) }, AccessDefinition = ad3 }
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[1]), AccessDefinition = ad2 },
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[2]), AccessDefinition = ad3 }
             };
 
             i2.AccessGroups = groups;
@@ -434,8 +434,8 @@ namespace Catfish.Tests.Services
 
             List<CFAccessGroup> groups = new List<CFAccessGroup>()
             {
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[0]) }, AccessDefinition = ad1 },
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Users[1].Guid) }, AccessDefinition = ad2 }
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[0]), AccessDefinition = ad1 },
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Users[1].Guid), AccessDefinition = ad2 }
             };
 
             i1.AccessGroups = groups;
@@ -491,9 +491,9 @@ namespace Catfish.Tests.Services
 
             List<CFAccessGroup> groups = new List<CFAccessGroup>()
             {
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[0]) }, AccessDefinition = ad1 },
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[1]) }, AccessDefinition = ad2 },
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[2]) }, AccessDefinition = ad3 }
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[0]), AccessDefinition = ad1 },
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[1]), AccessDefinition = ad2 },
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[2]), AccessDefinition = ad3 }
             };
 
             c1.AccessGroups = groups;
@@ -562,7 +562,7 @@ namespace Catfish.Tests.Services
 
             List<CFAccessGroup> groups = new List<CFAccessGroup>()
             {
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[0]) }, AccessDefinition = ad1 },
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[0]), AccessDefinition = ad1 },
             };
 
             c1.AccessGroups = groups;
@@ -571,8 +571,8 @@ namespace Catfish.Tests.Services
 
             groups = new List<CFAccessGroup>()
             {
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[1]) }, AccessDefinition = ad2 },
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[2]) }, AccessDefinition = ad3 }
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[1]), AccessDefinition = ad2 },
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[2]), AccessDefinition = ad3 }
             };
 
             i2.AccessGroups = groups;
@@ -581,7 +581,7 @@ namespace Catfish.Tests.Services
 
             groups = new List<CFAccessGroup>()
             {
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[1]) }, AccessDefinition = ad4 }
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[1]), AccessDefinition = ad4 }
             };
 
             c2.AccessGroups = groups;
@@ -674,7 +674,7 @@ namespace Catfish.Tests.Services
 
             List<CFAccessGroup> groups = new List<CFAccessGroup>()
             {
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[0]) }, AccessDefinition = ad1 },
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[0]), AccessDefinition = ad1 },
             };
 
             c1.AccessGroups = groups;
@@ -682,8 +682,8 @@ namespace Catfish.Tests.Services
 
             groups = new List<CFAccessGroup>()
             {
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[1]) }, AccessDefinition = ad2 },
-                new CFAccessGroup(){ AccessGuids = new List<Guid>(){ Guid.Parse(Groups[2]) }, AccessDefinition = ad3 }
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[1]), AccessDefinition = ad2 },
+                new CFAccessGroup(){ AccessGuid = Guid.Parse(Groups[2]), AccessDefinition = ad3 }
             };
 
             i2.AccessGroups = groups;
