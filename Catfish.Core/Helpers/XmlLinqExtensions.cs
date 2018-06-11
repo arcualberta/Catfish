@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Access;
 using Catfish.Core.Services;
 using CommonServiceLocator;
 using SolrNet;
@@ -25,5 +26,28 @@ namespace Catfish.Core.Helpers
 
             throw new InvalidOperationException("The SolrService has not been initialized.");
         }
+
+        public static IQueryable<TSource> FindAccessible<TSource>(this DbSet<TSource> set, ICollection<Guid> Guids, AccessMode mode) where TSource : CFXmlModel
+        {
+            //select distinct id, content
+            string guidList = string.Join(",", Guids);
+            string sqlQuery = $@"
+            SELECT *
+            FROM
+            (SELECT
+                id,
+                CAST( [content] AS NVARCHAR(MAX) ) AS [content],
+                pref.value('access-mode[1]', 'int') AS Mode,
+                pref.value('access-guid[1]', 'char') AS Guid
+                FROM Elements CROSS APPLY
+                content.nodes('/element/access/access-group') AS content(pref)
+            ) AS Result
+            WHERE Mode & {(int)mode} = {(int)mode} AND Guid IN ({(string)guidList})
+            ";
+            IEnumerable<int> ids = set.SqlQuery(sqlQuery).Select(x => x.Id).Distinct();
+            return set.Where(x => ids.Contains(x.Id));            
+        }
     }
+
+   
 }

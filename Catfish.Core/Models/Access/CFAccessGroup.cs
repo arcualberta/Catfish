@@ -117,8 +117,6 @@ namespace Catfish.Core.Models.Access
         public CFAccessGroup()
         {
             //AccessGuids = new List<System.Guid>();
-        }
-        
-
+        }             
     }
 }
