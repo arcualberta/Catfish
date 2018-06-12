@@ -12,10 +12,10 @@ namespace Catfish.Core.Models
     {
 
         [IgnoreDataMember]
-        private List<CFAggregation> ManagedParentMembers { get; set; }
+        public List<CFAggregation> ManagedParentMembers { get; set; }
 
         [IgnoreDataMember]
-        private List<CFAggregation> ManagedChildMembers { get; set; }
+        public List<CFAggregation> ManagedChildMembers { get; set; }
 
 
         [IgnoreDataMember]
