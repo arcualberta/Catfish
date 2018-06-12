@@ -132,7 +132,7 @@ namespace Catfish.Core.Services
                 if (collection == null)
                     throw new Exception("Specified collection not found");
 
-                collection.AppendChild(submissionItem);
+                collection.AddChild(submissionItem);
             }
 
             //MR April 10 2018

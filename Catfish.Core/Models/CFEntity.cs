@@ -66,10 +66,8 @@ namespace Catfish.Core.Models
             return accessGroup;
         }
 
-        public void SetAccess(AccessMode accessMode, bool isInherited = false)
-        {
-
-            Guid guid = new Guid(this.Guid);
+        public void SetAccess(Guid guid, AccessMode accessMode, bool isInherited = false)
+        {            
             CFAccessGroup accessGroup = GetOrCreateAccess(guid);
             accessGroup.IsInherited = isInherited;
             accessGroup.AccessGuid = guid;
