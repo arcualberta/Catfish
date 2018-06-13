@@ -1,0 +1,69 @@
+﻿@model Catfish.Models.Regions.GraphPanel
+@using Catfish.Core.Models;
+
+<h1>D3 Graph</h1>
+
+<svg class="line-chart"> </svg>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="~/Scripts/D3/graph.js"></script>
+<script>
+    const XLabel = '@Model.XaxisLabel';
+    const YLabel ='@Model.YaxisLabel';
+
+  /*  const api = "https://api.coindesk.com/v1/bpi/historical/close.json?start=2017-12-31&end=2018-04-01"; */
+    const xapi = "@Html.Raw(Url.Action("GetGraphData", "Items", new
+             {
+                 xMetadataSet = Model.SelectedMetadataSetX,
+                 yMetadataSet = Model.SelectedMetadataSetY,
+                 xField = Model.XaxisField,
+                 yField = Model.YaxisField,
+                 catMetadataset = Model.SelectedMetadataSetCat,
+                 catField = Model.Category
+             }))";
+
+/* loading data */
+document.addEventListener("DOMContentLoaded", function (event) {
+    fetch(xapi).then(function (response) { return response.json(); })
+              .then(function (data) {
+                  var parsedData =parseDataSF(data);
+
+                 // drawChart@(Model.SelectedGraphType.ToString())(parsedData); //--SF real data --single line chart
+                 //  drawChartBar(parsedData); //-SF real data -- single Bar chart
+                  drawChartMulti@(Model.SelectedGraphType.ToString())(parsedData);
+              })
+               .catch(function (err) { console.log(err); })
+});
+</script>
+
+<style>
+    .bar {
+        fill: steelblue;
+    }
+    .line {
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 1.5px;
+    }
+    path {
+        stroke: steelblue;
+        stroke-width: 2;
+        fill: none;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: grey;
+        stroke-width: 1;
+        shape-rendering: crispEdges;
+    }
+
+    .legend {
+        font-size: 16px;
+        font-weight: bold;
+        text-anchor: middle;
+    }
+
+    
+</style>

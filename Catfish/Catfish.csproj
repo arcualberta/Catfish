@@ -310,9 +310,11 @@
     <Content Include="Areas\Manager\Views\Items\AccessGroup.cshtml" />
     <Content Include="Areas\Manager\Views\Collections\AccessGroup.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\EntityAccessGroup.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\GraphPanel.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
+    <Content Include="Scripts\D3\graph.js" />
     <Content Include="Scripts\fileupload.js" />
     <Content Include="Scripts\form.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
@@ -349,6 +351,7 @@
     <Compile Include="Areas\Manager\Models\ViewModels\EntityAccessDefinitionsViewModel.cs" />
     <Compile Include="Areas\Manager\Services\AccessGroupService.cs" />
     <Compile Include="Areas\Manager\Services\PageService.cs" />
+    <Compile Include="Models\Regions\GraphPanel.cs" />
     <Compile Include="Resources\Global.fr.Designer.cs">
       <DependentUpon>Global.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -472,6 +475,7 @@
     <Content Include="Views\Shared\DisplayTemplates\MembershipContainer.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\RelationshipContainer.cshtml" />
     <Content Include="Views\FormSubmission\EditorTemplates\ClientInfo.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\GraphPanel.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
