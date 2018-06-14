@@ -32,17 +32,11 @@ namespace Catfish.Core.Models.Access
 
             foreach (AccessMode accessMode in Enum.GetValues(typeof(AccessMode)))
             {
-                if (mode.HasMode(accessMode))
+                if (accessMode != AccessMode.None && mode.HasMode(accessMode))
                 {
                     accessModes.Add((AccessMode)accessMode);
                 }
-            }
-
-            //XXX If we need to check agains AccessMode.None add here
-            //if (accessModes.Count == 0)
-            //{
-            //    accessModes.Add(AccessMode.None);
-            //}
+            }            
 
             return accessModes;
         }
