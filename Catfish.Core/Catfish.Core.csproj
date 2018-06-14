@@ -127,9 +127,14 @@
     <Compile Include="Migrations\201804261932173_RenameXMLModelToCFXMLModel.Designer.cs">
       <DependentUpon>201804261932173_RenameXMLModelToCFXMLModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806132141475_Added_XML_Indexing.cs" />
+    <Compile Include="Migrations\201806132141475_Added_XML_Indexing.Designer.cs">
+      <DependentUpon>201806132141475_Added_XML_Indexing.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Access\CFAccessDefinition.cs" />
     <Compile Include="Models\Access\CFAccessGroup.cs" />
+    <Compile Include="Helpers\CreateXmlIndexOperation.cs" />
     <Compile Include="Models\CFAggregation.cs" />
     <Compile Include="Models\Attributes\CFIgnoreAttribute.cs" />
     <Compile Include="Models\Attributes\CFInputTypeAttribute.cs" />
@@ -232,6 +237,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804261932173_RenameXMLModelToCFXMLModel.resx">
       <DependentUpon>201804261932173_RenameXMLModelToCFXMLModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806132141475_Added_XML_Indexing.resx">
+      <DependentUpon>201806132141475_Added_XML_Indexing.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Validators.resx">
       <Generator>ResXFileCodeGenerator</Generator>
