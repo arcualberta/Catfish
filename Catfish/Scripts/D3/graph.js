@@ -1,27 +1,13 @@
 ﻿//javascript
 
-//api to fetch historical data of bitcoin Price index
-
-
 //Parse data into key-value pairs
-//@param{object} data object containing historical data of BPI
-//function parseData(data) {
-//    var arr = [];
-//    for (var i in data.bpi) {
-//        arr.push({
-//            date: new Date(i),
-//            value: +data.bpi[i]
-//        });
-//    }
-//    return arr;
-//}
 
 function parseDataSF(data) {
     var arr = [];
     for (var i in data) {
         arr.push({
             year: data[i].YValue , //YValue = Year
-            value: (Math.log(+data[i].XValue)), //XValue = Amount 
+            value: +data[i].XValue,//(Math.log(+data[i].XValue)), //XValue = Amount 
             category: data[i].Category
         });
     }
