@@ -55,7 +55,7 @@ namespace Catfish.Core.Models
         {
             builder.Entity<CFXmlModel>().Property(xm => xm.Content).HasColumnType("xml");
         }
-
+        
         protected override void OnModelCreating(DbModelBuilder builder)
         {
             SetColumnTypes(builder);
