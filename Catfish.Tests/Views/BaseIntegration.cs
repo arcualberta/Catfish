@@ -75,7 +75,7 @@ namespace Catfish.Tests.Views
         [TearDown]
         public void TearDown()
         {
-            this.Driver.Close();
+            //this.Driver.Close();
         }
 
         protected void LoginAsAdmin()
@@ -127,10 +127,6 @@ namespace Catfish.Tests.Views
             Action<IIntegrationParameters> fillValues 
             )
         {
-            //Driver.FindElement(By.LinkText(mainMenu)).Click();
-            //Driver.FindElement(By.LinkText(submenu)).Click();
-            //Driver.FindElement(By.LinkText(AddLabel)).Click();
-
             Navigate(new string[] { mainMenu, submenu, AddLabel});
 
             fillValues(parameters);

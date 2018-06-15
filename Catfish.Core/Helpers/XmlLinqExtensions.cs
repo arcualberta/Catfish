@@ -37,13 +37,15 @@ namespace Catfish.Core.Helpers
             (SELECT
                 id,
                 CAST( [content] AS NVARCHAR(MAX) ) AS [content],
-                pref.value('access-mode[1]', 'int') AS Mode,
+                pref.value('access-definition[1]/access-modes[1]', 'int') AS Mode,
                 pref.value('access-guid[1]', 'char') AS Guid
-                FROM Elements CROSS APPLY
-                content.nodes('/element/access/access-group') AS content(pref)
+                FROM CFXmlModels CROSS APPLY
+                content.nodes('//access/access-group') AS content(pref)
             ) AS Result
             WHERE Mode & {(int)mode} = {(int)mode} AND Guid IN ({(string)guidList})
             ";
+
+
             IEnumerable<int> ids = set.SqlQuery(sqlQuery).Select(x => x.Id).Distinct();
             return set.Where(x => ids.Contains(x.Id));            
         }

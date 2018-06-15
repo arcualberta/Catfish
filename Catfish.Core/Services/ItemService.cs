@@ -27,7 +27,8 @@ namespace Catfish.Core.Services
         /// <returns>The resulting list of items.</returns>
         public IQueryable<CFItem> GetItems()
         {
-            return Db.Items;
+            // Find user guids
+            return Db.Items.FindAccessible(new List<Guid>() { new Guid() }, Models.Access.AccessMode.Read);
         }
 
         /// <summary>

@@ -34,7 +34,10 @@ namespace Catfish.Areas.Manager.Controllers
                 limit = ConfigHelper.PageSize;
 
             var itemQuery = ItemService.GetItems();
-            var entities = itemQuery.OrderBy(e => e.Id).Skip(offset).Take(limit).Include(e => (e as CFEntity).EntityType).Select(e => e as CFEntity);
+            var entities = itemQuery.OrderBy(e => e.Id)
+                .Skip(offset).Take(limit)
+                .Include(e => (e as CFEntity).EntityType)
+                .Select(e => e as CFEntity);
             var total = itemQuery.Count();
 
             ViewBag.TotalItems = total;
