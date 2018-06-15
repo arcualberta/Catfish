@@ -30,24 +30,23 @@ namespace Catfish.Core.Helpers
         public static IQueryable<TSource> FindAccessible<TSource>(this DbSet<TSource> set, ICollection<Guid> Guids, AccessMode mode) where TSource : CFXmlModel
         {
             //select distinct id, content
-            string guidList = string.Join(",", Guids);
+            //string guidList = string.Join(",", Guids);
+            string guidList = string.Join(",", Array.ConvertAll(Guids.ToArray(), g => "'" + g + "'"));
             string sqlQuery = $@"
             SELECT *
             FROM
-            (SELECT
-                id,
-                CAST( [content] AS NVARCHAR(MAX) ) AS [content],
+            (SELECT 
+                CFXmlModels.*,
+                CAST( [content] AS NVARCHAR(MAX) ) AS [contentCast],
                 pref.value('access-definition[1]/access-modes[1]', 'int') AS Mode,
                 pref.value('access-guid[1]', 'char') AS Guid
                 FROM CFXmlModels CROSS APPLY
-                content.nodes('//access/access-group') AS content(pref)
+                content.nodes('//access/access-group') AS contentCast(pref)
             ) AS Result
             WHERE Mode & {(int)mode} = {(int)mode} AND Guid IN ({(string)guidList})
             ";
 
-
-            IEnumerable<int> ids = set.SqlQuery(sqlQuery).Select(x => x.Id).Distinct();
-            return set.Where(x => ids.Contains(x.Id));            
+            return set.SqlQuery(sqlQuery).AsQueryable().Distinct();
         }
     }
 
