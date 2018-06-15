@@ -34,8 +34,8 @@ namespace Catfish.Tests.Views
 
             AccessDefinitionParameters parameters = new AccessDefinitionParameters
             {
-                modes = modes,
-                accessModesLabel = GetAccessModesLabel(modes)
+                Modes = modes,
+                AccessModesLabel = GetAccessModesLabel(modes)
             };
 
             CreateAccessDefinition(parameters);
@@ -44,7 +44,7 @@ namespace Catfish.Tests.Views
             // Check for last table row which contains latest access definition
             IReadOnlyList<IWebElement> result = Driver.FindElements(By.CssSelector("tr:last-child td"));
             Assert.GreaterOrEqual(result.Count, 2);
-            Assert.AreEqual(parameters.accessModesLabel, result[0].Text);
+            Assert.AreEqual(parameters.AccessModesLabel, result[0].Text);
 
             // second td element has list of access modes
             List<string> retreivedModes = result[1].Text.Split(',').Select(x => x.Trim()).ToList();
@@ -71,7 +71,15 @@ namespace Catfish.Tests.Views
         [Test]
         public void TestMethods()
         {
-            CreateItem("item name now this is an itemr");
+            //CreateItem("item name now this is an itemr");
+            AccessMode modes = AccessMode.Write;
+            AccessDefinitionParameters accessDef = new AccessDefinitionParameters()
+            {
+                Modes = modes,
+                AccessModesLabel = GetAccessModesLabel(modes)
+            };
+            CreateAccessDefinition(accessDef);
+            
             Assert.IsTrue(true);
         }
     }

@@ -14,53 +14,81 @@ using Catfish.Core.Models.Access;
 
 namespace Catfish.Tests.Views
 {
-    //static class ItemTestValues
-    //{
-    //    public static Random Rnd = new Random();
-    //    public static string Name = "Item Name - Selenium" + Rnd.Next(1, 100);
-    //    public static string Description = "EntityType Description";
-    //    public static string EditedName = "Edited Item Name - Selenium" + Rnd.Next(1, 100);
-    //}
 
-    public interface IIntegrationParameters
-    {
-
-    }
+    public interface IIntegrationParameters { }
 
     public class AccessDefinitionParameters : IIntegrationParameters {
-        public AccessMode modes;
-        public string accessModesLabel;
+        public AccessMode Modes;
+        public string AccessModesLabel;
+    }
+
+    public class GroupParameters : IIntegrationParameters
+    {
+        public string GroupName;
+    }
+
+    public class UserParameters : IIntegrationParameters
+    {
+        public string UserName;
+        public string Password;
+    }
+
+    public class UserListParameters : IIntegrationParameters
+    {
+        public string ListName;
+        public string[] Users;
+    }
+
+    public class CollectionParameters : IIntegrationParameters
+    {
+        public string CollectionName;
+    }
+
+    public class ItemParameters : IIntegrationParameters
+    {
+        public string ItemName;
     }
 
     public class BaseIntegration<TWebDriver> where TWebDriver : IWebDriver, new()
     {
         protected IWebDriver Driver;
         protected string ManagerUrl;
-        protected string indexUrl = "";
-
-        // values
-
+        private const string AddLabel = "Add new";
+        private const string SaveLabel = "Save";
+        private const string SystemLabel = "SYSTEM";
+        private const string ContentLabel = "CONTENT";
+        private const string UsersLabel = "Users";
+        private const string GroupsLabel = "Groups";
+        private const string CollectionsLabel = "Collections";
+        private const string ItemsLabel = "Items";
+        private const string UserListLabel = "User List";
+        private const string AccessDefinitionLabel = "Access Definitions";
 
         [SetUp]
         public void SetUp()
         {
             this.Driver = new TWebDriver();
             this.ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
-            this.indexUrl = ManagerUrl + "/items";
-            this.Login();
+            this.LoginAsAdmin();
         }
 
         [TearDown]
         public void TearDown()
         {
-            //this.Driver.Close();
+            this.Driver.Close();
         }
 
-        protected void Login()
+        protected void LoginAsAdmin()
+        {
+            Login(ConfigurationManager.AppSettings["AdminLogin"],
+                ConfigurationManager.AppSettings["AdminPassword"]);
+        }
+
+        protected void Login(string user, string password)
         {
             this.Driver.Navigate().GoToUrl(ManagerUrl);
-            this.Driver.FindElement(By.Id("login")).SendKeys(ConfigurationManager.AppSettings["AdminLogin"]);
-            this.Driver.FindElement(By.Name("password")).SendKeys(ConfigurationManager.AppSettings["AdminPassword"]);
+            this.Driver.FindElement(By.Id("login")).SendKeys(user);
+            this.Driver.FindElement(By.Name("password")).SendKeys(password);
             this.Driver.FindElement(By.TagName("button")).Click();
         }
 
@@ -90,7 +118,33 @@ namespace Catfish.Tests.Views
             }
         }
 
-        // Methods to create items on webpage
+        // Methods to create things on webpage
+
+        private void NavigateToCreate(
+            string mainMenu, 
+            string submenu,
+            IIntegrationParameters parameters,
+            Action<IIntegrationParameters> fillValues 
+            )
+        {
+            //Driver.FindElement(By.LinkText(mainMenu)).Click();
+            //Driver.FindElement(By.LinkText(submenu)).Click();
+            //Driver.FindElement(By.LinkText(AddLabel)).Click();
+
+            Navigate(new string[] { mainMenu, submenu, AddLabel});
+
+            fillValues(parameters);
+
+            Driver.FindElement(By.LinkText(SaveLabel)).Click();
+        }
+
+        private void Navigate(IEnumerable<string> links)
+        {
+            foreach (string link in links)
+            {
+                Driver.FindElement(By.LinkText(link)).Click();
+            }
+        }
 
         private string GetAccessModeSiblingInputXPath(AccessMode accessMode)
         {
@@ -105,16 +159,10 @@ namespace Catfish.Tests.Views
             }
         }
         
-        protected void CreateAccessDefinition(IIntegrationParameters parameters, Action<IIntegrationParameters> fillValues)
+        protected void CreateAccessDefinition(IIntegrationParameters parameters, 
+            Action<IIntegrationParameters> fillValues)
         {
-            Driver.FindElement(By.LinkText("SYSTEM")).Click();
-            Driver.FindElement(By.LinkText("Access Definitions")).Click();
-            Driver.FindElement(By.LinkText("Add new")).Click();
-
-            fillValues(parameters);
-
-            Driver.FindElement(By.LinkText("Save")).Click();
-
+            NavigateToCreate(SystemLabel, AccessDefinitionLabel, parameters, fillValues);
         }
 
         protected void CreateAccessDefinition(IIntegrationParameters parameters)
@@ -124,41 +172,53 @@ namespace Catfish.Tests.Views
 
         protected void FillAccessDefinition(IIntegrationParameters parameters)
         {
-            AccessDefinitionParameters test = (AccessDefinitionParameters)parameters;
-            AccessMode modes = test.modes;
-            string accessModesLabel = test.accessModesLabel;
+            AccessDefinitionParameters accessDefinitionParameters = (AccessDefinitionParameters)parameters;
+            AccessMode modes = accessDefinitionParameters.Modes;
+            string accessModesLabel = accessDefinitionParameters.AccessModesLabel;
             List<AccessMode> modesList = modes.AsList();
             Driver.FindElement(By.Id("Name")).SendKeys(accessModesLabel);
             SelectAllAccessModes(modesList);
         }
 
-        // W
-        protected void CreateGroup(string groupName)
+        protected void CreateGroup(IIntegrationParameters parameters, 
+            Action<IIntegrationParameters> fillValues)
         {
-            Driver.FindElement(By.LinkText("SYSTEM")).Click();
-            Driver.FindElement(By.LinkText("Groups")).Click();
-            Driver.FindElement(By.LinkText("Add new")).Click();
+            NavigateToCreate(SystemLabel, GroupsLabel, parameters, fillValues);
+        }
 
-            // Fill in values
-            Driver.FindElement(By.Id("Group_Name")).SendKeys(groupName);
+        protected void CreateGroup(IIntegrationParameters parameters)
+        {
+            CreateGroup(parameters, FillGroup);
+        }
+
+        protected void FillGroup(IIntegrationParameters parameters)
+        {
+            GroupParameters groupParameters = (GroupParameters)parameters;
+            Driver.FindElement(By.Id("Group_Name")).SendKeys(groupParameters.GroupName);
             IWebElement groupElement = Driver.FindElement(By.Id("Group_ParentId"));
             SelectElement selectElement = new SelectElement(groupElement);
             // assuming there is already a first group
             selectElement.SelectByIndex(1);
-
-            Driver.FindElement(By.LinkText("Save")).Click();
         }
 
         // W
-        protected void CreateUser(string userName)
+        protected void CreateUser(IIntegrationParameters parameters, 
+            Action<IIntegrationParameters> fillValues)
         {
+            NavigateToCreate(SystemLabel, UsersLabel, parameters, fillValues);
+        }
 
-            string password = "password";
-            Driver.FindElement(By.LinkText("SYSTEM")).Click();
-            Driver.FindElement(By.LinkText("Users")).Click();
-            Driver.FindElement(By.LinkText("Add new")).Click();
+        protected void CreateUser(IIntegrationParameters parameters)
+        {
+            CreateUser(parameters, FillUser);
+        }
 
-            // Fill in values
+        protected void FillUser(IIntegrationParameters parameters)
+        {
+            UserParameters userParameters = (UserParameters)parameters;
+            string userName = userParameters.UserName;
+            string password = userParameters.Password;
+
             Driver.FindElement(By.Id("User_Login")).SendKeys(userName);
             Driver.FindElement(By.Id("User_Firstname")).SendKeys(userName + " User_Firstname");
             Driver.FindElement(By.Id("User_Surname")).SendKeys(userName + " User_Surname");
@@ -170,57 +230,75 @@ namespace Catfish.Tests.Views
             SelectElement selectElement = new SelectElement(groupElement);
             // assuming there is a first group
             selectElement.SelectByIndex(1);
-
-            Driver.FindElement(By.LinkText("Save")).Click();
         }
 
         // XXX System breaks when creating user lists 20180613
-        protected void CreateUserList(string listName, string[] users)
+        protected void CreateUserList(IIntegrationParameters parameters, 
+            Action<IIntegrationParameters> fillValues)
         {
-            Driver.FindElement(By.LinkText("SYSTEM")).Click();
-            Driver.FindElement(By.LinkText("User List")).Click();
-            Driver.FindElement(By.LinkText("Add new")).Click();
+            NavigateToCreate(SystemLabel, UserListLabel, parameters, fillValues);
+        }
+
+        protected void CreateUserList(IIntegrationParameters parameters)
+        {
+            CreateUserList(parameters, FillUserList);
+        }
+
+        protected void FillUserList(IIntegrationParameters parameters)
+        {
+
+            UserListParameters userListParameters = (UserListParameters)parameters;
+            string listName = userListParameters.ListName;
+            string[] users = userListParameters.Users;
 
             Driver.FindElement(By.Id("txtGrpName")).SendKeys(listName);
-
             foreach (string user in users)
             {
                 Driver.FindElement(By.Id("usrName")).SendKeys(user);
                 Driver.FindElement(By.Id("btnSave")).Click();
             }
-
-            Driver.FindElement(By.LinkText("Save")).Click();
         }
 
-        
-        protected void CreateAggregation(string name, string aggregationDescriminator)
+        protected void CreateItem(IIntegrationParameters parameters, 
+            Action<IIntegrationParameters> fillValues)
         {
-            Driver.FindElement(By.LinkText("CONTENT")).Click();
-            Driver.FindElement(By.LinkText(aggregationDescriminator)).Click();
-            Driver.FindElement(By.LinkText("Add new")).Click();
+            NavigateToCreate(ContentLabel, ItemsLabel, parameters, fillValues);
+        }
 
-            // Fill in values
-            // Select entity type
-            //XXX Assuming there is already an entity type
+        protected void CreateItem(IIntegrationParameters parameters)
+        {
+            CreateItem(parameters, FillItem);
+        }
 
+        protected void FillItem(IIntegrationParameters parameters)
+        {
+            ItemParameters itemParameters = (ItemParameters)parameters;
+            string name = itemParameters.ItemName;
             Driver.FindElement(By.Id("add-field")).Click();
+            WaitPageSourceChange(5, 500);
             Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value"))
                 .SendKeys(name);
-
-
-            Driver.FindElement(By.LinkText("Save")).Click();
         }
 
-        // F
-        protected void CreateItem(string itemName)
+        protected void CreateCollection(IIntegrationParameters parameters,
+            Action<IIntegrationParameters> fillValues)
         {
-            CreateAggregation(itemName, "Items");
+            NavigateToCreate(ContentLabel, CollectionsLabel, parameters, fillValues);
         }
 
-        protected void CreateCollection(string collectionName)
+        protected void CreateCollection(IIntegrationParameters parameters)
         {
-            CreateAggregation(collectionName, "Collections");
+            CreateCollection(parameters, FillCollection);
         }
-    }
-    
+
+        protected void FillCollection(IIntegrationParameters parameters)
+        {
+            CollectionParameters collectionParameters = (CollectionParameters)parameters;
+            string name = collectionParameters.CollectionName;
+            Driver.FindElement(By.Id("add-field")).Click();
+            WaitPageSourceChange(5, 500);
+            Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value"))
+                .SendKeys(name);
+        }
+    }    
 }
