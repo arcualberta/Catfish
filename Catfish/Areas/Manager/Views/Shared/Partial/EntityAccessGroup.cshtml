@@ -29,10 +29,7 @@
             <tr>
                 <td>
                     <table>
-                        <tr>
-                            <td>@Html.LabelFor(m => m.BlockInheritance)</td>
-                            <td class="input" style="text-align:left">@Html.CheckBoxFor(m => m.BlockInheritance)</td>
-                        </tr>
+
                         <tr>
                             <td><label>Access Definitions</label></td>
                             <td class="input">
@@ -91,43 +88,6 @@
 
 }
 
-@using (Html.BeginForm(FormMethod.Get))
-{
-    @Html.Hidden("controllerName", controller)
-    @Html.Hidden("entityId", Model.Id)
-    <table class="list" style="margin-top:10px;">
-        <thead>
-            <tr><th>Access Test</th><th></th></tr>
-        </thead>
-        <tbody class="list bs">
-            <tr>
-                <td style="width:20%;">
-                    @Html.TextBoxFor(m => Model.User, new { @id = "usrName2", @placeholder = "Userlogin or User List Name", @class = "form-control", @style="width:auto;margin-left:15px;" })
-                    
-                </td>
-                <td><button id="searchUserPermission" class="btn btn-primary" style="padding:0;" ><span class="glyphicon glyphicon-search">Search</span></button></td>
-            </tr>
-           
-            <tr>
-                <td>
-                    <ul>
-                   @foreach(var mode in ViewBag .AccessCodesList)
-                   {
-                       
-                       <li>
-                    
-                        <input type="checkbox" id="chk_@mode.Text" name="AccessModesOption" value="@mode.Text" />
-                     
-                        <label>@mode.Text</label>
-                    </li>
-                   }
-                        </ul>
-                </td>
-            </tr>
-            
-        </tbody>
-    </table>
-}
 
 
 <script>
