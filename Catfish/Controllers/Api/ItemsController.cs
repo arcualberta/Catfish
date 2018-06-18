@@ -14,8 +14,10 @@ namespace Catfish.Controllers.Api
 {
     public class ItemsController : CatfishController
     {   
-        public JsonResult GetGraphData(string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField,string min = null, string max = null)
+        public JsonResult GetGraphData(string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField,int xmin = 0, int xmax = 0)
         {
+             xmin = xmin == 0 ? DateTime.MinValue.Year : xmin;
+            xmax = xmax == 0 ? DateTime.Now.Year : xmax;
             string xQuerySelect = "SELECT a.Year as YValue, SUM(a.Amount) AS XValue, COUNT(*) as 'Count', a.Category" + 
                                    " FROM(" +
                                    " SELECT  Content.value('(/item/metadata/metadata-set[@guid=\"" + xMetadataSet + "\"]/fields/field[@guid=\"" + xField + "\"]/value/text)[1]', 'INT') AS Year ," +
@@ -24,8 +26,11 @@ namespace Catfish.Controllers.Api
                                     " FROM[dbo].[CFXmlModels]" +
                                     " WHERE Discriminator = 'CFItem' AND Content.exist('/item/metadata/metadata-set[@guid=\"" + xMetadataSet + "\"]') = 1" +
                                     " ) as a" +
+                                     " WHERE a.Year >= " + xmin + " AND a.Year <= " +  xmax  +
                                      " GROUP BY a.Year, a.Category" +
                                      " ORDER BY a.Year";
+
+            
             var result = Db.Database.SqlQuery<GraphQueryObject>(xQuerySelect, new object[] { xMetadataSet, xField, yMetadataSet, yField,catMetadataSet, catField, xMetadataSet });
 
             return Json(result, JsonRequestBehavior.AllowGet);

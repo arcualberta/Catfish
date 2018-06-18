@@ -19,7 +19,9 @@
                  xField = Model.XaxisField,
                  yField = Model.YaxisField,
                  catMetadataset = Model.SelectedMetadataSetCat,
-                 catField = Model.Category
+                 catField = Model.Category,
+                 xmin = Request.Params.AllKeys.Contains(Model.MinX_Parameter) ? int.Parse(Request.Params[Model.MinX_Parameter]) : int.MinValue,
+                xmax= Request.Params.AllKeys.Contains(Model.MaxX_Parameter) ? int.Parse(Request.Params[Model.MaxX_Parameter]) : int.MaxValue,
              }))";
 
 /* loading data */
@@ -31,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                  // drawChart@(Model.SelectedGraphType.ToString())(parsedData); //--SF real data --single line chart
                  //  drawChartBar(parsedData); //-SF real data -- single Bar chart
                   drawChartMulti@(Model.SelectedGraphType.ToString())(parsedData);
+    // drawChartMultiBar(parsedData);
               })
                .catch(function (err) { console.log(err); })
 });

@@ -18,7 +18,7 @@ namespace Catfish.Models.Regions
     {
         public int YValue { get; set; }
         public decimal XValue { get; set; }
-        public int Count { get; set; }
+        public int? Count  { get; set; }
         public string Category { get; set; }
     }
 
