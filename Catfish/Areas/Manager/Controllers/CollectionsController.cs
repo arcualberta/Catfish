@@ -50,13 +50,13 @@ namespace Catfish.Areas.Manager.Controllers
             EntityContentViewModel childItems = new EntityContentViewModel();
             childItems.Id = model.Id;
             childItems.LoadNextChildrenSet(model.ChildItems);
-            childItems.LoadNextMasterSet(ItemService.GetItems());
+            childItems.LoadNextMasterSet(ItemService.GetItems(User.Identity));
             ViewBag.ChildItems = childItems;
 
             EntityContentViewModel relatedItems = new EntityContentViewModel();
             relatedItems.Id = model.Id;
             relatedItems.LoadNextChildrenSet(model.ChildRelations);
-            relatedItems.LoadNextMasterSet(ItemService.GetItems());
+            relatedItems.LoadNextMasterSet(ItemService.GetItems(User.Identity));
             ViewBag.RelatedItems = relatedItems;
 
             return View(model);

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Security.Principal;
 
 namespace Catfish.Core.Services
 {
@@ -25,10 +26,20 @@ namespace Catfish.Core.Services
         /// Get all items accessable by the current user.
         /// </summary>
         /// <returns>The resulting list of items.</returns>
-        public IQueryable<CFItem> GetItems()
+        public IQueryable<CFItem> GetItems(IIdentity actor)
         {
-            // Find user guids
-            return Db.Items.FindAccessible(new List<Guid>() { Guid.NewGuid(), new Guid() }, Models.Access.AccessMode.Read);
+
+            List<Guid> guids = new List<Guid>();
+            Guid userGuid = new Guid(actor.Name);            
+
+            guids.Add(userGuid);
+            guids.AddRange(
+                Db.UserListEntries
+                .Where(x => x.UserId == userGuid)
+                .Select(x => x.CFUserListId)
+                );
+            
+            return Db.Items.FindAccessible(guids, Models.Access.AccessMode.Read);
         }
 
         /// <summary>

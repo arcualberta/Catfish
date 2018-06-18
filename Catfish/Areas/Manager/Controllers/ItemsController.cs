@@ -33,9 +33,22 @@ namespace Catfish.Areas.Manager.Controllers
             if(limit == int.MaxValue)
                 limit = ConfigHelper.PageSize;
 
-            var itemQuery = ItemService.GetItems();
+            // XXX What happens if user is admin ?
+            // XXX How to check for admin ?
+
+            //UserService.GetUserById(User.Identity.Name.ToString());
+
+            //SecurityService ss = new SecurityService(Db);
+
+            //if (ss.IsAdmin(User.Identity.Name))
+            //{
+            //    return ItemService.
+            //}
+
+            var itemQuery = ItemService.GetItems(User.Identity);
             var entities = itemQuery.OrderBy(e => e.Id)
-                .Skip(offset).Take(limit)
+                .Skip(offset)
+                .Take(limit)
                 .Include(e => (e as CFEntity).EntityType)
                 .Select(e => e as CFEntity);
             var total = itemQuery.Count();
@@ -145,14 +158,15 @@ namespace Catfish.Areas.Manager.Controllers
             EntityContentViewModel childItems = new EntityContentViewModel();
             childItems.Id = model.Id;
             childItems.LoadNextChildrenSet(model.ChildItems);
-            childItems.LoadNextMasterSet(ItemService.GetItems());
+            childItems.LoadNextMasterSet(ItemService.GetItems(User.Identity));
             ViewBag.ChildItems = childItems;
 
+           
 
             EntityContentViewModel relatedItems = new EntityContentViewModel();
             relatedItems.Id = model.Id;
             relatedItems.LoadNextChildrenSet(model.ChildRelations);
-            relatedItems.LoadNextMasterSet(ItemService.GetItems());
+            relatedItems.LoadNextMasterSet(ItemService.GetItems(User.Identity));
             ViewBag.RelatedItems = relatedItems;
 
             return View(model);

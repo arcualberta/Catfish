@@ -27,7 +27,8 @@ namespace Catfish.Controllers.Api
                 }
                 else
                 {
-                    items = ItemService.GetItems();
+                    
+                    items = ItemService.GetItems(User.Identity);
                 }
 
                 if (entityTypeId > 0)
