@@ -67,7 +67,7 @@ namespace Catfish.Areas.Manager.Controllers
         {
             if (string.IsNullOrEmpty(errorMessage))
             {
-                SuccessMessage(Resources.Views.Items.Edit.SaveSuccess);
+                SuccessMessage("TODO: SUCCESS MESSAGE"/*Resources.Views.Collections.Edit.SaveSuccess*/);
             }
             else
             {

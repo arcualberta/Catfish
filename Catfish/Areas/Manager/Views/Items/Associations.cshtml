@@ -53,13 +53,12 @@
         };
 
         var updateChildrenUrl = '@Url.Action("UpdateChildren", "EntityAssociation")';
-        var updateRelationshipUrl = '@Url.Action("UpdateChildren", "EntityAssociation")';
+        var updateRelationshipUrl = '@Url.Action("UpdateRelatedItems", "EntityAssociation")';
 
         executeOnServer(@childrenKoContext, updateChildrenUrl, function (result) {
             executeOnServer(@relationshipKoContext, updateRelationshipUrl, function (result) {
                 afterComplete("");
             })
         })
-        //afterComplete("");
     }
 </script>
