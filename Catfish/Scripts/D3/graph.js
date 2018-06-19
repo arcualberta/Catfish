@@ -6,14 +6,15 @@ function parseDataSF(data) {
     var arr = [];
     for (var i in data) {
         arr.push({
-            year: data[i].YValue , //YValue = Year
-            value: (+data[i].XValue),//(Math.log(+data[i].XValue)), //XValue = Amount 
+            year: data[i].YValue/XScale , //YValue = Year
+            value: +(data[i].XValue / YScale),//(Math.log(+data[i].XValue)), //XValue = Amount 
             category: data[i].Category
         });
     }
+   
     return arr;
 }
-
+/*
 function drawChartLine(data) {
     var svgWidth = 600, svgHeight = 400;
     var margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -38,7 +39,8 @@ function drawChartLine(data) {
 
     g.append("g").call(d3.axisLeft(y)).append("text").attr("fill", "#0000ff")
 	              .attr("transform", "rotate(-90)")
-				  .attr("y", -35)
+				  .attr("y", -75)
+                 // .attr("x", 5)
 				  .attr("dy", "0.17em")
 				  .attr("text-anchor", "end")
 				  .text(YLabel);
@@ -100,7 +102,7 @@ function drawChartBar(dataset)
 				  .attr("height", function (d) { return height - y(d.value); })
 				  .attr("width", x.bandwidth());
 }
-
+*/
 function selectSvg()
 {
     var margin = { top: 30, right: 20, bottom: 70, left: 70 },
@@ -122,14 +124,19 @@ function drawChartMultiLine(data) {
         width = 600 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
 
+   
+
     // Set the ranges
     var x = d3.scaleTime().range([0, width]);
     var y = d3.scaleLinear().range([height, 0]);
 
     // Adds the svg canvas
-    var svg = d3.select("svg").attr("width", 600).attr("height", 400);
+    var svg = d3.select("svg.line-chart").attr("width", 600).attr("height", 400);
 
     var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + " )");
+
+
+    var divLegend = d3.select("div.legend");
 
     var parseTime = d3.timeParse("%Y");
     // Get the data   
@@ -146,8 +153,12 @@ function drawChartMultiLine(data) {
         .y(function (d) {
             return y(d.value);
         });
-    // Scale the range of the data
 
+    //get min/max year
+    minX = d3.min(data, function (d) { return d.year; });
+    maxX = d3.max(data, function (d) { return d.year; });
+
+    // Scale the range of the data 
     x.domain(d3.extent(data, function (d) { return d.year; }));
     y.domain([0, d3.max(data, function (d) { return d.value; })]);
 
@@ -179,63 +190,74 @@ function drawChartMultiLine(data) {
      // paths[i] = path;
 
         // Add the Legend  
-        g.append("text")
-            .attr("x", (legendSpace / 2) + i * legendSpace)  // space legend
-            .attr("y", height + (margin.bottom / 2) + 5)
-            .attr("class", "legend")    // style the legend
-            .style("fill", function () { // Add the colours dynamically
+        divLegend.append("div")
+            //.attr("x", (legendSpace / 2) + i * legendSpace)  // space legend
+           // .attr("y", height + (margin.bottom / 2) + 5)
+            .attr("class", "legend-item")    // style the legend
+            .style("color", function () { // Add the colours dynamically
                 return d.color = color(d.key);
             })
             .text(d.key);
 
     });
 
-    //paths.forEach(function (p, i) {
-    //    d3.select(p).attr("stroke-dasharray", p.getTotalLegth[0]).attr("stroke-dashoffset", p.getTotalLength[0])
-    //    .transition().duration(5000).ease("linear").attr("stroke-dashoffset", 0);
-    //});
+  
  
     // Add the X Axis
     g.append("g")
         .attr("class", "axis")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x))
-         .append("text").attr("fill", "#0000ff").attr("y", -8).attr("x", width).attr("text-anchor", "end").text(XLabel);
+         .append("text").attr("fill", "#1f77b4").attr("y", 35).attr("x", width / 2).attr("text-anchor", "end").text(XLabel);
 
     // Add the Y Axis
     g.append("g")
         .attr("class", "axis")
         .call(d3.axisLeft(y))
-        .append("text").attr("fill", "#0000ff")
+        .append("text").attr("fill", "#1f77b4")
               .attr("transform", "rotate(-90)")
-              .attr("y", 10)
+              .attr("y", 0 - (margin.left/2))
+             
+              .attr("x", 0 - (height/2))
               .attr("dy", "0.17em")
-              .attr("text-anchor", "end")
+              .attr("text-anchor", "middle")
               .text(YLabel);
-
+    //adding title
+    g.append("text").attr("fill", "#1f77b4")
+        .attr("x", (width / 2))
+        .attr("y", 0 - (margin.top / 2))
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .style("text-decoration", "bold")
+        
+        .text(GraphTitle);
     
 }
 
 function drawChartMultiBar(data) {
     // Source: https://bl.ocks.org/mbostock/3886208
-    var parseTime = d3.timeParse("%Y");
-    data.forEach(function (d) {
-        d.year = parseTime(d.year);
-        d.value = +d.value;
+    //var parseTime = d3.timeParse("%Y");
+    //data.forEach(function (d) {
+    //    d.year = parseTime(d.year);
+    //    d.value = +d.value;
+    //});
+
+    //// Nest the entries by category
+    //var dataNest = d3.nest()
+    //    .key(function (d) { return d.category; })
+    //    .entries(data);
+
+    //var m =data.length, // number of series
+    //n = dataNest.length; //number of samples  -- category
+
+    var n = 10;// // number of samples
+    m = 5;// // number of series
+    var data = d3.range(m).map(function () {
+        return d3.range(n).map(Math.random);
     });
 
-    // Nest the entries by category
-    var dataNest = d3.nest()
-        .key(function (d) { return d.category; })
-        .entries(data);
+   
 
-    //var n = 10;// // number of samples
-    //m = 5;// // number of series
-    //var data = d3.range(m).map(function () {
-    //    return d3.range(n).map(Math.random);
-    //});
-    var n =data.length, // number of samples
-    m = dataNest.length; // number of series
     var margin = { top: 20, right: 30, bottom: 30, left: 40 },
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
@@ -260,10 +282,10 @@ function drawChartMultiBar(data) {
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     svg.append("g").selectAll("g")
-            .data(d3.stack().keys(d3.range(n))(dataNest))
+            .data(d3.stack().keys(d3.range(n))(data))
       .enter().append("g")
         .style("fill", function (d, i) {
-            return color(d);
+            return color(d.key);
         })
         .selectAll("rect")
       .data(function (d) {
@@ -271,25 +293,27 @@ function drawChartMultiBar(data) {
       })
         .enter().append("rect")
           .attr("x", function (d, i) {
-              //return x(i);
-              return x(d.data.key);
+              return x(i);
+             // return x(d.data.key);
           })
-         .attr("y", function (d, i) {
-             //return y(d);
-            return  function(v, j){ return v[j].value;}
-         })
-          .attr("height", function (d, i) {
-              // return y(d[0]) - y(d[1]);
-              return function (v, j) {
-                  y([v[j].value]) - y([v[j + 1].value]);
-              }
+         //.attr("y", function (d, i) {
+         //    return y(d);
+         //   //return  function(v, j){ return v[j].value;}
+         //})
+         // .attr("height", function (d, i) {
+         //      return y(d[0]) - y(d[1]);
+         //     //return function (v, j) {
+         //     //    y([v[j].value]) - y([v[j + 1].value]);
+         //     //}
+         // })
+
+            //example
+          .attr("y", function (d) {
+              return y(d[1]);
           })
-          //.attr("y", function (d) {
-          //    return y(d[1]);
-          //})
-          //.attr("height", function (d) {
-          //    return y(d[0]) - y(d[1]);
-          //})
+          .attr("height", function (d) {
+              return y(d[0]) - y(d[1]);
+          })
           .attr("width", x.bandwidth());
 
 }

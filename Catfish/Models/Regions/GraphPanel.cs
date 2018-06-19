@@ -29,7 +29,7 @@ namespace Catfish.Models.Regions
     [Serializable]
     public class GraphPanel : CatfishRegion
     {
-        
+
         public enum GraphType { Line = 0, Bar }
 
         [Display(Name = "X-Axis Label")]
@@ -38,7 +38,7 @@ namespace Catfish.Models.Regions
         public string XaxisField { get; set; } //the guid of metadataset Field
         public string MetadataSet { get; set; } //the guid of MetadataSet
         [Display(Name = "Min X Parameter")]
-        public string MinX_Parameter {get;set;}
+        public string MinX_Parameter { get; set; }
         [Display(Name = "Max X Parameter")]
         public string MaxX_Parameter { get; set; }
         [Display(Name = "Y-Axis Label")]
@@ -48,8 +48,16 @@ namespace Catfish.Models.Regions
         public string YaxisField { get; set; }
 
         public string Category { get; set; }
-        [Display(Name ="Graph Type")]
+        [Display(Name = "Graph Type")]
         public GraphType SelectedGraphType { get; set; }
+        [Display(Name = "Graph Title")]
+        public string GraphTitle { get; set; }
+
+        [Display(Name = "X-data Scale")]
+        public int XScale {get; set;}
+
+        [Display(Name = "Y-data Scale")]
+        public int YScale {get; set;}
 
         [ScriptIgnore]
         public List<SelectListItem> ListMetadataSets { get; set; }
@@ -75,6 +83,9 @@ namespace Catfish.Models.Regions
             {
                 GraphTypes.Add(new SelectListItem { Text = am.ToString(), Value = am.ToString() });
             }
+
+            XScale = 1;
+            YScale = 1;
         }
 
         public override void InitManager(object model)

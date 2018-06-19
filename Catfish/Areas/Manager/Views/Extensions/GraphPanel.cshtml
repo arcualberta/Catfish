@@ -10,6 +10,12 @@
     
     @Html.Partial("_CatfishRegion", Model)
     <li>
+        @Html.LabelFor(m => m.GraphTitle)
+        <div class="input">
+            @Html.EditorFor(m => m.GraphTitle)
+        </div>
+    </li>
+    <li>
        @Html.LabelFor(m=>m.XaxisLabel)
         <div class="input">
             @Html.EditorFor(m => m.XaxisLabel)
@@ -21,6 +27,12 @@
             @Html.DropDownListFor(m => m.SelectedMetadataSetX, new SelectList(Model.ListMetadataSets, "Value", "Text"), new {@style="width:auto;", @class="dropdown" })
             @Html.DropDownListFor(m => m.XaxisField, new SelectList(Model.MetadataFields, "Value", "Text"), new {@style="width:auto" })
        </div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.YaxisLabel)
+        <div class="input">
+            @Html.EditorFor(m => m.YaxisLabel)
+        </div>
     </li>
     <li>
         @Html.LabelFor(m => m.MinX_Parameter)
@@ -35,9 +47,15 @@
         </div>
     </li>
     <li>
-        @Html.LabelFor(m => m.YaxisLabel)
+        @Html.LabelFor(m => m.XScale)
         <div class="input">
-            @Html.EditorFor(m => m.YaxisLabel)
+            @Html.EditorFor(m => m.XScale)
+        </div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.YScale)
+        <div class="input">
+            @Html.EditorFor(m => m.YScale)
         </div>
     </li>
     <li>
