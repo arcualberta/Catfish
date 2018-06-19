@@ -354,6 +354,16 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Resources\Views\Items\Edit.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Edit.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Views\Shared\EntityAccessGroup.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EntityAccessGroup.resx</DependentUpon>
+    </Compile>
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Controllers\Api\FormsController.cs" />
     <Compile Include="Controllers\Api\ItemsController.cs" />
@@ -507,6 +517,10 @@
       <LastGenOutput>Global.Designer.cs</LastGenOutput>
       <CustomToolNamespace>Catfish.Resources</CustomToolNamespace>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Views\Items\Edit.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Edit.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Views\Shared\DisplayTemplates\FormContainer.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>FormContainer.Designer.cs</LastGenOutput>
@@ -524,6 +538,10 @@
       <LastGenOutput>SimpleSearch.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Views\Shared\DisplayTemplates\SimpleSearch.fr.resx" />
+    <EmbeddedResource Include="Resources\Views\Shared\EntityAccessGroup.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>EntityAccessGroup.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

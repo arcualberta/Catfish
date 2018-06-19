@@ -131,8 +131,8 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
 
-
-        public ActionResult AddUserAccessDefinition(EntityAccessDefinitionsViewModel entityAccessVM)
+        [HttpPost]
+        public ActionResult AccessGroup(int id, EntityAccessDefinitionsViewModel entityAccessVM)
         {
 
             CFCollection collection = CollectionService.GetCollection(entityAccessVM.Id);//ItemService.GetItem(entityAccessVM.Id);
@@ -144,8 +144,9 @@ namespace Catfish.Areas.Manager.Controllers
             collection.Serialize();
             Db.SaveChanges();
 
+            SuccessMessage(Catfish.Resources.Views.Shared.EntityAccessGroup.SaveSuccess);
 
-            return RedirectToAction("AccessGroup", new { id = entityAccessVM.Id });
+            return AccessGroup(entityAccessVM.Id);
         }
 
         public JsonResult GetuserPermissions(string userGuid, int entityId)
