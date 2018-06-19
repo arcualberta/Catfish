@@ -9,7 +9,7 @@
     <div class="inner">
         <ul>
             <li id="save-btn">
-                <a class="save submit">
+                <a id="toolbar_save_button" class="save submit">
                     @Piranha.Resources.Global.ToolbarSave
                 </a>
             </li>
@@ -17,7 +17,7 @@
                 @{
                    url = typeId.HasValue && Model.Id == 0 ? Url.Action("edit") : Url.Action("index");
                 }
-                <a href="@url" class="back">
+                <a id="toolbar_back_button" href="@url" class="back">
                     @Piranha.Resources.Global.ToolbarBack
                 </a>
             </li>
@@ -25,7 +25,7 @@
                @{
                    url = typeId.HasValue ? Url.Action("edit", new { id = Model.Id, entityTypeId = typeId.Value }) : Url.Action("edit", new { id = Model.Id });
                }
-                <a href="@url" class="refresh">
+                <a id="toolbar_refresh_button" href="@url" class="refresh">
                     @Piranha.Resources.Global.ToolbarReload
                 </a>
             </li>

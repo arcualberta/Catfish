@@ -33,7 +33,7 @@ namespace Catfish.Areas.Manager.Controllers
             return RedirectToAction("index");
         }
 
-
+        [HttpGet]
         // GET: Manager/Collections/children/5
         public ActionResult Associations(int id)
         {
@@ -60,6 +60,21 @@ namespace Catfish.Areas.Manager.Controllers
             ViewBag.RelatedItems = relatedItems;
 
             return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Associations(int id, string errorMessage)
+        {
+            if (string.IsNullOrEmpty(errorMessage))
+            {
+                SuccessMessage(Resources.Views.Items.Edit.SaveSuccess);
+            }
+            else
+            {
+                ErrorMessage(errorMessage);
+            }
+
+            return Associations(id);
         }
 
         // GET: Manager/Collections/Edit/5

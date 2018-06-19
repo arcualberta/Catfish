@@ -138,6 +138,7 @@ namespace Catfish.Areas.Manager.Controllers
             return View(model);
         }
 
+        [HttpGet]
         public ActionResult Associations(int id)
         {
             CFItem model = ItemService.GetItem(id);
@@ -158,6 +159,21 @@ namespace Catfish.Areas.Manager.Controllers
             ViewBag.RelatedItems = relatedItems;
 
             return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Associations(int id, string errorMessage)
+        {
+            if (string.IsNullOrEmpty(errorMessage))
+            {
+                SuccessMessage(Resources.Views.Items.Edit.SaveSuccess);
+            }
+            else
+            {
+                ErrorMessage(errorMessage);
+            }
+
+            return Associations(id);
         }
 
         //XXX This method should be moved to a file controller

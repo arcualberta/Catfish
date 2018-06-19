@@ -2,7 +2,12 @@
 @using Catfish.Areas.Manager.Models.ViewModels;
 @using Catfish.Core.Models;
 
-@{ ViewBag.Title = "Associations"; }
+@{ 
+    ViewBag.Title = "Associations";
+
+    string childrenKoContext = "ctx_" + Guid.NewGuid().ToString("N");
+    string relationshipKoContext = "ctx_" + Guid.NewGuid().ToString("N");
+}
 
 @section HEAD
 {
@@ -13,7 +18,9 @@
 }
 
 @section Toolbar {
-    @Html.Partial("Partial/koEditToolbar", Model, new ViewDataDictionary() { { "reloadAction", "associations" } })
+    @Html.Partial("Partial/koEditToolbar", Model,
+        new ViewDataDictionary() { { "reloadAction", "associations" },
+            { "saveButtonFunctionCall", "saveAssociations" } })
 }
 
 <div class="grid_12">
@@ -22,8 +29,37 @@
     @Html.Partial("Partial/ParentCollectionList", Model)
 
     @{ EntityContentViewModel childItems = ViewBag.ChildItems as EntityContentViewModel; }
-    @Html.Partial("Partial/EntityContent", childItems, new ViewDataDictionary() { { "title", "Child Items" }, { "saveAction", "UpdateChildren" } })
+    @Html.Partial("Partial/EntityContent", childItems, new ViewDataDictionary() { { "title", "Child Items" }, { "saveAction", "UpdateChildren" }, { "contextName", childrenKoContext } })
 
     @{ EntityContentViewModel relatedItems = ViewBag.RelatedItems as EntityContentViewModel; }
-    @Html.Partial("Partial/EntityContent", relatedItems, new ViewDataDictionary() { { "title", "Related Items" }, { "saveAction", "UpdateRelatedItems" } })
+    @Html.Partial("Partial/EntityContent", relatedItems, new ViewDataDictionary() { { "title", "Related Items" }, { "saveAction", "UpdateRelatedItems" }, { "contextName", relationshipKoContext } })
 </div>
+
+<script type="text/javascript">
+    function saveAssociations() {
+        var afterComplete = function (errorMessage) {
+            var form = document.createElement("form");
+            form.setAttribute("method", "POST");
+            form.setAttribute("action", "@Url.Action("Associations", "Items", new { id = Model.Id })");
+
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("name", "errorMessage");
+            hiddenField.setAttribute("value", errorMessage);
+            hiddenField.setAttribute("type", "hidden");
+            form.appendChild(hiddenField);
+
+            document.body.appendChild(form);
+            form.submit();
+        };
+
+        var updateChildrenUrl = '@Url.Action("UpdateChildren", "EntityAssociation")';
+        var updateRelationshipUrl = '@Url.Action("UpdateChildren", "EntityAssociation")';
+
+        executeOnServer(@childrenKoContext, updateChildrenUrl, function (result) {
+            executeOnServer(@relationshipKoContext, updateRelationshipUrl, function (result) {
+                afterComplete("");
+            })
+        })
+        //afterComplete("");
+    }
+</script>
