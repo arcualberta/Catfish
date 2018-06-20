@@ -2,10 +2,11 @@
 @using Catfish.Core.Models;
 
 
-<div>Start Year<input type="text" id="MinX_Parameter" name="MinX_Parameter" class="input filterInput" placeholder="1960"/> 
+@*<div>Start Year<input type="text" id="MinX_Parameter" name="MinX_Parameter" class="input filterInput" placeholder="1960"/> 
     End Year <input type="text" id="MaxX_Parameter" name="MaxX_Parameter" class="input filterInput" placeholder="2018" />
-     <button id="graphPanel_filterYear_button" class="btn btn-sm sm-search-btn" onclick="appendUrl(); return false;"><span class="glyphicon glyphicon-search"></span> </button>
-</div>
+     <button id="graphPanel_filterYear_button" class="btn btn-sm sm-search-btn" onclick="appendUrl(); return false;">
+    <span class="glyphicon glyphicon-search"></span> </button>
+</div>*@
 <svg class="line-chart"> </svg>
 <div class="legend"></div>
 <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -47,30 +48,30 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
                   minX =urlParams.has('@Model.MinX_Parameter') ? urlParams.get('@Model.MinX_Parameter') : minX.getFullYear();
                   maxX = urlParams.has('@Model.MaxX_Parameter') ? urlParams.get('@Model.MaxX_Parameter')  : maxX.getFullYear();
-                  $("#MinX_Parameter").val(minX);
-                  $("#MaxX_Parameter").val(maxX);
+                  $("#Min_Parameter").val(minX);
+                  $("#Max_Parameter").val(maxX);
               })
                .catch(function (err) { console.log(err); })
 });
 
-    function appendUrl()
-    {
-         minX = $("#MinX_Parameter").val();
-         maxX = $("#MaxX_Parameter").val();
+    $("#graphPanel_filterYear_button").click(function(){
+        minX = $("#Min_Parameter").val();
+         maxX = $("#Max_Parameter").val();
          var url = window.location.href;
          if (url.indexOf('?') > -1){
             url = url.substr(0,url.indexOf("?"));
         }
         url += "?minYear=" + minX +"&maxYear=" + maxX;
         window.location.href = url;
-    }
+    });
+   
 
 </script>
 
 <style>
     .sm-search-btn {
         height: 20px;
-        padding-bottom: 3px;
+        padding-top: 1px;
         vertical-align: top;
     }
     .legend {
