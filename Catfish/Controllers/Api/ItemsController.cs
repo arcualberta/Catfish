@@ -3,6 +3,7 @@ using Catfish.Core.Models.Data;
 using Catfish.Core.Services;
 using Catfish.Helpers;
 using Catfish.Models.Regions;
+using Catfish.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,6 +20,7 @@ namespace Catfish.Controllers.Api
         {
             try
             {
+                //SecurityService
                 IEnumerable<CFItem> items;
                 if (collectionId > 0)
                 {
@@ -28,7 +30,7 @@ namespace Catfish.Controllers.Api
                 else
                 {
                     
-                    items = ItemService.GetItems(User.Identity);
+                    items = ItemService.GetItems();
                 }
 
                 if (entityTypeId > 0)

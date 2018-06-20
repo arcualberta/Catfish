@@ -15,10 +15,10 @@ namespace Catfish.Services
         private UserService UserService { get { if (mUserService == null) mUserService = new UserService(); return mUserService; } }
 
         public SecurityService(CatfishDbContext db) : base(db)
-        {
+        {            
         }
 
-        protected override bool IsAdmin(string userGuid)
+        public override bool IsAdmin(string userGuid)
         {
             Piranha.Entities.User user = UserService.GetUserById(userGuid);
 
@@ -40,5 +40,13 @@ namespace Catfish.Services
             }
             return false;
         }
+        
+        public void CreateAccessContext()
+        {
+            CreateAccessContext(HttpContext.Current.User.Identity.Name);
+        }
+
+
+            
     }
 }

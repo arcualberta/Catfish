@@ -1,5 +1,7 @@
-﻿using Catfish.Core.Helpers;
+﻿using Catfish.Core.Contexts;
+using Catfish.Core.Helpers;
 using Catfish.Core.Models;
+using Catfish.Core.Models.Access;
 using Catfish.Core.Models.Data;
 using Catfish.Core.Models.Forms;
 using System;
@@ -16,30 +18,26 @@ namespace Catfish.Core.Services
     /// </summary>
     public class ItemService: EntityService
     {
+
         /// <summary>
         /// Create an instance of the ItemService.
         /// </summary>
         /// <param name="db">The database context containing the needed Items.</param>
-        public ItemService(CatfishDbContext db) : base(db) { }
+        /// 
+        public ItemService(CatfishDbContext db) : base(db){}
+        //public ItemService(CatfishDbContext db, Func<string, bool> isAdmin) : base(db) {}
+
+
+        private bool DefaultIsAdminFalse(string none) { return false; }
 
         /// <summary>
         /// Get all items accessable by the current user.
         /// </summary>
         /// <returns>The resulting list of items.</returns>
-        public IQueryable<CFItem> GetItems(IIdentity actor)
+        public IQueryable<CFItem> GetItems(AccessMode accessMode = AccessMode.Read)
         {
-
-            List<Guid> guids = new List<Guid>();
-            Guid userGuid = new Guid(actor.Name);            
-
-            guids.Add(userGuid);
-            guids.AddRange(
-                Db.UserListEntries
-                .Where(x => x.UserId == userGuid)
-                .Select(x => x.CFUserListId)
-                );
-            
-            return Db.Items.FindAccessible(guids, Models.Access.AccessMode.Read);
+            return Db.Items.FindAccessible(AccessContext.current.IsAdmin,
+                AccessContext.current.AllGuids, accessMode);
         }
 
         /// <summary>
@@ -47,9 +45,13 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="id">The id of the Item to obtain.</param>
         /// <returns>The requested Item from the database. A null value is returned if no item is found.</returns>
-        public CFItem GetItem(int id)
+        public CFItem GetItem(int id, AccessMode accessMode = AccessMode.Read)
         {
-            return Db.Items.Where(i => i.Id == id).FirstOrDefault();
+            //SecurityService
+            return Db.Items.FindAccessible(AccessContext.current.IsAdmin,
+                AccessContext.current.AllGuids,
+                accessMode)
+                .Where(i => i.Id == id).FirstOrDefault();
         }
 
         /// <summary>
@@ -57,35 +59,35 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="guid">The mapped guid of the Item to obtain.</param>
         /// <returns>The requested item from the database. A null value is returned if no item is found.</returns>
-        public CFItem GetItem(string guid)
-        {
-            return Db.Items.Where(c => c.MappedGuid == guid).FirstOrDefault();
-        }
+        //public CFItem GetItem(string guid)
+        //{
+        //    return Db.Items.Where(c => c.MappedGuid == guid).FirstOrDefault();
+        //}
 
         /// <summary>
         /// Removes an item from the database.
         /// </summary>
         /// <param name="id">The id of the item to be removed.</param>
-        public void DeleteItem(int id)
-        {
-            CFItem model = null;
-            if (id > 0)
-            {
-                model = GetItem(id);
-                if (model != null)
-                {
-                    Db.Entry(model).State = EntityState.Deleted;
-                }
-                else
-                {
-                    throw new ArgumentException(string.Format("Item {0} not found.", id));
-                }
-            }
-            else
-            {
-                throw new ArgumentException(string.Format("Invalid item id {0}.", id));
-            }
-        }
+        //public void DeleteItem(int id)
+        //{
+        //    CFItem model = null;
+        //    if (id > 0)
+        //    {
+        //        model = GetItem(id);
+        //        if (model != null)
+        //        {
+        //            Db.Entry(model).State = EntityState.Deleted;
+        //        }
+        //        else
+        //        {
+        //            throw new ArgumentException(string.Format("Item {0} not found.", id));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        throw new ArgumentException(string.Format("Invalid item id {0}.", id));
+        //    }
+        //}
 
         /// <summary>
         /// Creates a new item based on the given entity type.

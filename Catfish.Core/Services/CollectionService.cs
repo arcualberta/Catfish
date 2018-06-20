@@ -3,6 +3,9 @@ using Catfish.Core.Models;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Principal;
+using System.Collections.Generic;
+using Catfish.Core.Helpers;
+using Catfish.Core.Contexts;
 
 namespace Catfish.Core.Services
 {
@@ -16,6 +19,7 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="db">The database context containing the needed Collections.</param>
         public CollectionService(CatfishDbContext db) : base(db) { }
+        //public CollectionService(CatfishDbContext db, Func<string, bool> isAdmin) : base(db) { }
 
         /// <summary>
         /// Get a collection from the database.
@@ -32,10 +36,10 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="guid">The mapped guid of the Collection to obtain.</param>
         /// <returns>The requested collection from the database. A null value is returned if no collection is found.</returns>
-        public CFCollection GetCollection(string guid)
-        {
-            return Db.Collections.Where(c => c.MappedGuid == guid).FirstOrDefault();
-        }
+        //public CFCollection GetCollection(string guid)
+        //{
+        //    return Db.Collections.Where(c => c.MappedGuid == guid).FirstOrDefault();
+        //}
 
         /// <summary>
         /// Get all collections accessable by the current user.
@@ -43,7 +47,13 @@ namespace Catfish.Core.Services
         /// <returns>The resulting list of collections.</returns>
         public IQueryable<CFCollection> GetCollections()
         {
-            return Db.Collections;
+            //string guidString = actor.Name;
+            //List<Guid> guids = GetUserGuids(guidString);
+            //SecurityServiceBase.CreateSecurityAccessContext(actor.Name);
+            
+            return Db.Collections.FindAccessible(AccessContext.current.IsAdmin,
+                AccessContext.current.AllGuids, 
+                Models.Access.AccessMode.Read);
         }
 
         /// <summary>

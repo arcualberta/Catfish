@@ -27,10 +27,18 @@ namespace Catfish.Core.Helpers
             throw new InvalidOperationException("The SolrService has not been initialized.");
         }
 
-        public static IQueryable<TSource> FindAccessible<TSource>(this DbSet<TSource> set, ICollection<Guid> Guids, AccessMode mode) where TSource : CFXmlModel
+        public static IQueryable<TSource> FindAccessible<TSource>(
+            this DbSet<TSource> set, 
+            bool isAdmin,
+            ICollection<Guid> Guids, 
+            AccessMode mode) where TSource : CFXmlModel
         {
-            //select distinct id, content
-            //string guidList = string.Join(",", Guids);
+
+            if (isAdmin)
+            {
+                return set.AsQueryable();
+            }            
+
             string guidList = string.Join(",", Array.ConvertAll(Guids.ToArray(), g => "'" + g + "'"));
             string sqlQuery = $@"
             SELECT *
@@ -39,7 +47,7 @@ namespace Catfish.Core.Helpers
                 CFXmlModels.*,
                 CAST( [content] AS NVARCHAR(MAX) ) AS [contentCast],
                 pref.value('access-definition[1]/access-modes[1]', 'int') AS Mode,
-                pref.value('access-guid[1]', 'char') AS Guid
+                pref.value('access-guid[1]', 'char(36)') AS Guid
                 FROM CFXmlModels CROSS APPLY
                 content.nodes('//access/access-group') AS contentCast(pref)
             ) AS Result

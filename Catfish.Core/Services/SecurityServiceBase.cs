@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Helpers;
+﻿using Catfish.Core.Contexts;
+using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Access;
 using System;
@@ -14,7 +15,7 @@ namespace Catfish.Core.Services
         private UserListService mUserListService;
         private UserListService userListService { get { if (mUserListService == null) mUserListService = new UserListService(Db); return mUserListService; } }
         
-        protected abstract bool IsAdmin(string userGuid);
+        public abstract bool IsAdmin(string userGuid);
 
         public SecurityServiceBase(CatfishDbContext db) : base(db)
         {
@@ -102,6 +103,36 @@ namespace Catfish.Core.Services
             }
 
             return modes;
+        }
+
+        public List<Guid> GetUserGuids(Guid userGuid)
+        {
+            List<Guid> guids = new List<Guid>();
+
+            guids.Add(userGuid);
+            guids.AddRange(
+                Db.UserListEntries
+                .Where(x => x.UserId == userGuid)
+                .Select(x => x.CFUserListId)
+                );
+
+            return guids;
+        }
+
+        public List<Guid> GetUserGuids(string guidString)
+        {
+            Guid userGuid = new Guid(guidString);
+            return GetUserGuids(userGuid);            
+        }
+
+        protected void CreateAccessContext(string userGuidString)
+        {
+            CreateAccessContext(new Guid(userGuidString));
+        }
+
+        protected void CreateAccessContext(Guid userGuid)
+        {
+            AccessContext.current = new AccessContext(userGuid, IsAdmin(userGuid.ToString()));
         }
     }
 }

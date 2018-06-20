@@ -17,13 +17,16 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Collections
         public ActionResult Index()
         {
-            var entities = CollectionService.GetCollections().Select(e => e as CFEntity);
+            SecurityService.CreateAccessContext();
+            var entities = CollectionService.GetCollections()
+                .Select(e => e as CFEntity);
             return View(entities);
         }
 
         [HttpPost]
         public ActionResult Delete(int? id)
         {
+            SecurityService.CreateAccessContext();
             if (id.HasValue)
             {
                 CollectionService.DeleteCollection(id.Value);
@@ -37,6 +40,7 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Collections/children/5
         public ActionResult Associations(int id)
         {
+            SecurityService.CreateAccessContext();
             CFCollection model = CollectionService.GetCollection(id);
             if (model == null)
                 return HttpNotFound("Collection was not found");
@@ -50,13 +54,13 @@ namespace Catfish.Areas.Manager.Controllers
             EntityContentViewModel childItems = new EntityContentViewModel();
             childItems.Id = model.Id;
             childItems.LoadNextChildrenSet(model.ChildItems);
-            childItems.LoadNextMasterSet(ItemService.GetItems(User.Identity));
+            childItems.LoadNextMasterSet(ItemService.GetItems());
             ViewBag.ChildItems = childItems;
 
             EntityContentViewModel relatedItems = new EntityContentViewModel();
             relatedItems.Id = model.Id;
             relatedItems.LoadNextChildrenSet(model.ChildRelations);
-            relatedItems.LoadNextMasterSet(ItemService.GetItems(User.Identity));
+            relatedItems.LoadNextMasterSet(ItemService.GetItems());
             ViewBag.RelatedItems = relatedItems;
 
             return View(model);
@@ -65,6 +69,7 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Collections/Edit/5
         public ActionResult Edit(int? id, int? entityTypeId)
         {
+            SecurityService.CreateAccessContext();
             CFCollection model;
 
             if (id.HasValue && id.Value > 0)
@@ -134,7 +139,7 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult AddUserAccessDefinition(EntityAccessDefinitionsViewModel entityAccessVM)
         {
-
+            SecurityService.CreateAccessContext();
             CFCollection collection = CollectionService.GetCollection(entityAccessVM.Id);//ItemService.GetItem(entityAccessVM.Id);
 
             AccessGroupService accessGroupService = new AccessGroupService(Db);
@@ -151,8 +156,8 @@ namespace Catfish.Areas.Manager.Controllers
         public JsonResult GetuserPermissions(string userGuid, int entityId)
         {
             CFAggregation entity = EntityService.GetAnEntity(entityId) as CFAggregation;
-            SecurityService securityService = new SecurityService(Db);
-            AccessMode accessMode = securityService.GetAggregationPermissions(userGuid, entity);
+            //SecurityService securityService = new SecurityService(Db);
+            AccessMode accessMode = SecurityService.GetAggregationPermissions(userGuid, entity);
 
             CFAccessDefinition cFAccessDefinition = new CFAccessDefinition();
             cFAccessDefinition.AccessModes = (AccessMode)accessMode;

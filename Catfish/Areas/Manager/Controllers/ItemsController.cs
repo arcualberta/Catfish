@@ -30,7 +30,8 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Items
         public ActionResult Index(int offset=0, int limit=int.MaxValue)
         {
-            if(limit == int.MaxValue)
+            SecurityService.CreateAccessContext();
+            if (limit == int.MaxValue)
                 limit = ConfigHelper.PageSize;
 
             // XXX What happens if user is admin ?
@@ -45,7 +46,7 @@ namespace Catfish.Areas.Manager.Controllers
             //    return ItemService.
             //}
 
-            var itemQuery = ItemService.GetItems(User.Identity);
+            var itemQuery = ItemService.GetItems();
             var entities = itemQuery.OrderBy(e => e.Id)
                 .Skip(offset)
                 .Take(limit)
@@ -66,6 +67,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpPost]
         public ActionResult Delete(int? id)
         {
+            SecurityService.CreateAccessContext();
             CFItem model = null;
             if (id.HasValue && id.Value > 0)
             {
@@ -83,6 +85,7 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Items/Details/5
         public ActionResult Details(int? id)
         {
+            SecurityService.CreateAccessContext();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -99,11 +102,11 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Items/Edit/5
         public ActionResult Edit(int? id, int? entityTypeId)
         {
+            SecurityService.CreateAccessContext();
             CFItem model;
-          
             if (id.HasValue && id.Value > 0)
             {
-                model = ItemService.GetItem(id.Value);
+                model = ItemService.GetItem(id.Value, AccessMode.Write);
                 if (model == null)
                     return HttpNotFound("Item was not found");
             }
@@ -136,6 +139,7 @@ namespace Catfish.Areas.Manager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(CFItem model)
         {
+            SecurityService.CreateAccessContext();
             if (ModelState.IsValid)
             {
                 CFItem dbModel = ItemService.UpdateStoredItem(model);
@@ -151,6 +155,7 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult Associations(int id)
         {
+            SecurityService.CreateAccessContext();
             CFItem model = ItemService.GetItem(id);
             if (model == null)
                 throw new Exception("Item not found");
@@ -158,7 +163,7 @@ namespace Catfish.Areas.Manager.Controllers
             EntityContentViewModel childItems = new EntityContentViewModel();
             childItems.Id = model.Id;
             childItems.LoadNextChildrenSet(model.ChildItems);
-            childItems.LoadNextMasterSet(ItemService.GetItems(User.Identity));
+            childItems.LoadNextMasterSet(ItemService.GetItems());
             ViewBag.ChildItems = childItems;
 
            
@@ -166,7 +171,7 @@ namespace Catfish.Areas.Manager.Controllers
             EntityContentViewModel relatedItems = new EntityContentViewModel();
             relatedItems.Id = model.Id;
             relatedItems.LoadNextChildrenSet(model.ChildRelations);
-            relatedItems.LoadNextMasterSet(ItemService.GetItems(User.Identity));
+            relatedItems.LoadNextMasterSet(ItemService.GetItems());
             ViewBag.RelatedItems = relatedItems;
 
             return View(model);
@@ -270,8 +275,8 @@ namespace Catfish.Areas.Manager.Controllers
      
         public ActionResult AddUserAccessDefinition(EntityAccessDefinitionsViewModel entityAccessVM)
         {
-
-            CFItem item = ItemService.GetItem(entityAccessVM.Id);
+            SecurityService.CreateAccessContext();
+            CFItem item = ItemService.GetItem(entityAccessVM.Id, AccessMode.Control);
            
             AccessGroupService accessGroupService = new AccessGroupService(Db);
             item = accessGroupService.UpdateEntityAccessGroups(item, entityAccessVM) as CFItem;
@@ -287,8 +292,8 @@ namespace Catfish.Areas.Manager.Controllers
         public JsonResult GetuserPermissions(string userGuid, int entityId)
         {
             CFAggregation entity = EntityService.GetAnEntity(entityId) as CFAggregation;
-            SecurityService securityService = new SecurityService(Db);
-            AccessMode accessMode = securityService.GetAggregationPermissions(userGuid, entity);
+            //SecurityService securityService = new SecurityService(Db);
+            AccessMode accessMode = SecurityService.GetAggregationPermissions(userGuid, entity);
 
             CFAccessDefinition cFAccessDefinition = new CFAccessDefinition();
             cFAccessDefinition.AccessModes = (AccessMode)accessMode;
