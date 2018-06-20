@@ -67,7 +67,7 @@ namespace Catfish.Areas.Manager.Controllers
         {
             if (string.IsNullOrEmpty(errorMessage))
             {
-                SuccessMessage("TODO: SUCCESS MESSAGE"/*Resources.Views.Collections.Edit.SaveSuccess*/);
+                SuccessMessage(Resources.Views.Collections.Edit.SaveSuccess);
             }
             else
             {
@@ -118,12 +118,17 @@ namespace Catfish.Areas.Manager.Controllers
                 CFCollection dbModel = CollectionService.UpdateStoredCollection(model);
                 Db.SaveChanges(User.Identity);
 
+                SuccessMessage(Catfish.Resources.Views.Collections.Edit.SaveSuccess);
+
                 if (model.Id == 0)
                     return RedirectToAction("Edit", new { id = dbModel.Id });
                 else
                     return View(dbModel);
 
             }
+
+            ErrorMessage(Catfish.Resources.Views.Collections.Edit.SaveInvalid);
+
             return View(model);
         }
 
