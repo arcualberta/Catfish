@@ -204,6 +204,9 @@ namespace Catfish.Tests.Views
                 ClickButton(addButton);
             }
 
+            IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;
+            ex.ExecuteScript("window.scrollTo(0, 0); ");
+
             ClickButton(saveButton);
 
             WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(10));
@@ -233,6 +236,9 @@ namespace Catfish.Tests.Views
                 typeSelector.SelectByText(option);
                 ClickButton(removeButton);
             }
+
+            IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;
+            ex.ExecuteScript("window.scrollTo(0, 0); ");
 
             ClickButton(saveButton);
 
