@@ -161,19 +161,24 @@ namespace Catfish.Tests.Views
 
             AddChildItem(1);
             var groups = this.Driver.FindElements(By.ClassName("box"));
-            SelectElement typeSelector = new SelectElement(groups[1].FindElement(By.Name("childrenList")));
+            SelectElement typeSelector = new SelectElement(groups[2].FindElement(By.Name("childrenList")));
             Assert.AreEqual(2, typeSelector.Options.Count);
 
             //remove childItems
-            RemoveChildItem(1);
+            RemoveChildItem(2); // This switched from 1 to 2 becuase the success message has a class of "box"
+            groups = this.Driver.FindElements(By.ClassName("box"));
+            typeSelector = new SelectElement(groups[2].FindElement(By.Name("childrenList")));
             Assert.AreEqual(0, typeSelector.Options.Count);
 
             //add/remove related item
-            AddChildItem(2);
-            typeSelector = new SelectElement(groups[2].FindElement(By.Name("childrenList")));
+            AddChildItem(3);
+            groups = this.Driver.FindElements(By.ClassName("box"));
+            typeSelector = new SelectElement(groups[3].FindElement(By.Name("childrenList")));
             Assert.AreEqual(2, typeSelector.Options.Count);
 
-            RemoveChildItem(2);
+            RemoveChildItem(3);
+            groups = this.Driver.FindElements(By.ClassName("box"));
+            typeSelector = new SelectElement(groups[3].FindElement(By.Name("childrenList")));
             Assert.AreEqual(0, typeSelector.Options.Count);
         }
 
@@ -182,7 +187,7 @@ namespace Catfish.Tests.Views
             var groups = this.Driver.FindElements(By.ClassName("box"));
             SelectElement typeSelector = new SelectElement(groups[groupId].FindElement(By.Name("masterList")));
             IWebElement addButton = groups[groupId].FindElement(By.ClassName("glyphicon-arrow-left"));
-            IWebElement saveButton = groups[groupId].FindElement(By.ClassName("save"));
+            IWebElement saveButton = this.Driver.FindElement(By.Id("toolbar_save_button"));
             int optionsCount = typeSelector.Options.Count;
 
             List<string> options = new List<string>();
@@ -200,6 +205,11 @@ namespace Catfish.Tests.Views
             }
 
             ClickButton(saveButton);
+
+            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(10));
+            IWebElement element = wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("sys-message")));
+
+            wait.Until(ExpectedConditions.InvisibilityOfElementLocated(By.ClassName("sys-message")));
         }
 
         private void RemoveChildItem(int groupId)// 1- Child Item, 2 - Related Item
@@ -207,7 +217,7 @@ namespace Catfish.Tests.Views
             var groups = this.Driver.FindElements(By.ClassName("box"));
             SelectElement typeSelector = new SelectElement(groups[groupId].FindElement(By.Name("childrenList")));
             IWebElement removeButton = groups[groupId].FindElement(By.ClassName("glyphicon-arrow-right"));
-            IWebElement saveButton = groups[groupId].FindElement(By.ClassName("save"));
+            IWebElement saveButton = this.Driver.FindElement(By.Id("toolbar_save_button"));
             int optionsCount = typeSelector.Options.Count;
 
             List<string> options = new List<string>();
@@ -225,6 +235,11 @@ namespace Catfish.Tests.Views
             }
 
             ClickButton(saveButton);
+
+            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(10));
+            IWebElement element = wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("sys-message")));
+
+            wait.Until(ExpectedConditions.InvisibilityOfElementLocated(By.ClassName("sys-message")));
         }
 
         private void ClickOnAddBtn()
@@ -385,6 +400,7 @@ namespace Catfish.Tests.Views
             ex.ExecuteScript("arguments[0].focus(); ", btn);
             Thread.Sleep(500);
             btn.Click();
+            //ex.ExecuteScript("arguments[0].click();", btn);
         }
 
         private void ClickButtonDelete(IWebElement btn)
