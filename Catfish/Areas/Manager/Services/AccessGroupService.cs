@@ -99,6 +99,7 @@ namespace Catfish.Areas.Manager.Services
         public List<SelectListItem> GetAccessCodesList()
         {
             List<SelectListItem> accessCodesList = new List<SelectListItem>();
+            
             foreach (AccessMode am in Enum.GetValues(typeof(AccessMode)))
             {
 

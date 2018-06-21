@@ -15,9 +15,7 @@ namespace Catfish.Core.Models.Access
         // Use 1 to add read modes to rest of values
         Write    = 2 | 1,
         Append   = 4 | 1,
-        Control  = 8 | 1,
-
-        All = 1 | 2 | 4 | 8
+        Control  = 8 | 1
     }
 
     public static class AccessModeMethods

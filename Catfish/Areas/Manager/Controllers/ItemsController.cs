@@ -265,7 +265,6 @@ namespace Catfish.Areas.Manager.Controllers
             ViewBag.SugestedUsers = entityAccessVM.AvailableUsers2.ToArray();
             var accessList = accessGroupService.GetAccessCodesList();
             accessList.Remove(accessList.First()); //remove "None"
-            accessList.Remove(accessList.Last()); //remove all
             ViewBag.AccessCodesList = accessList;
             return View(entityAccessVM);
         }
@@ -287,20 +286,6 @@ namespace Catfish.Areas.Manager.Controllers
 
 
             return RedirectToAction("AccessGroup", new { id = entityAccessVM.Id });
-        }
-
-        public JsonResult GetuserPermissions(string userGuid, int entityId)
-        {
-            CFAggregation entity = EntityService.GetAnEntity(entityId) as CFAggregation;
-            //SecurityService securityService = new SecurityService(Db);
-            AccessMode accessMode = SecurityService.GetAggregationPermissions(userGuid, entity);
-
-            CFAccessDefinition cFAccessDefinition = new CFAccessDefinition();
-            cFAccessDefinition.AccessModes = (AccessMode)accessMode;
-
-            
-
-            return Json(cFAccessDefinition.AccessModes.AsStringList(), JsonRequestBehavior.AllowGet);
         }
     }
 }
