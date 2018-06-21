@@ -52,7 +52,7 @@
 }
 
 @section Toolbar {
-    @Html.Partial("Partial/koEditToolbar")
+    @Html.Partial("Partial/koEditToolbar", Model, new ViewDataDictionary() { { "saveButtonFunctionCall", "saveEntityType" } })
 }
 
 @{
@@ -61,7 +61,8 @@
 }
 
 <div id="@context">
-        @using (ko.Html.Form("Save", "EntityTypes", null, new { id = context + "Form" }))
+        @*@using (ko.Html.Form("Edit", "EntityTypes", null, new { id = context + "Form" }))*@
+        @using(Html.BeginForm("Edit", "EntityTypes", new { id = Model.Id }, FormMethod.Post))
         {
           <div class="grid_12">
                 <div class="box">
@@ -70,7 +71,7 @@
                         <div class="bs right">
                             <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
                             <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
-                            @ko.Html.Button("Save", "Save", "EntityTypes", null, new { @id = "btnSave" }).Enable(m=>m.ErrorMessage != "*" && m.AssociatedMetadataSets.Count > 1)
+                            @*@ko.Html.Button("Save", "Save", "EntityTypes", null, new { @id = "btnSave" }).Enable(m=>m.ErrorMessage != "*" && m.AssociatedMetadataSets.Count > 1)*@
                         </div>
                     </div>
                     <div class="inner">
@@ -241,5 +242,22 @@
                 @(context).ErrorMessage(newValue.length > 0 ? "" : "*");
         });
     });
+
+    function saveEntityType() {
+        var pageForm = $("#@(context) > form");
+
+        var form = document.createElement("form");
+        form.setAttribute("method", "POST");
+        form.setAttribute("action", pageForm.attr("action"));
+
+        var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("name", "vm");
+        hiddenField.setAttribute("value", JSON.stringify(@(context)));
+        hiddenField.setAttribute("type", "hidden");
+        form.appendChild(hiddenField);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
 
 </script>

@@ -163,7 +163,7 @@ namespace Catfish.Areas.Manager.Controllers
         //    return Json(vm);
         //}
         [HttpPost]
-        public JsonResult Save(EntityTypeViewModel vm)
+        public ActionResult Edit(EntityTypeViewModel vm)
         {
             if (ModelState.IsValid)
             {
@@ -172,7 +172,10 @@ namespace Catfish.Areas.Manager.Controllers
                 {
                     model = EntityTypeService.GetEntityTypeById(vm.Id);//Db.EntityTypes.Where(x => x.Id == vm.Id).FirstOrDefault();
                     if (model == null)
-                        return Json(vm.Error("Specified entity type not found"));
+                    {
+                        ErrorMessage(Catfish.Resources.Views.EntityTypes.Edit.NotFound);
+                        return View(vm);
+                    }
                     else
                     {
                         vm.UpdateDataModel(model, Db);
@@ -212,10 +215,13 @@ namespace Catfish.Areas.Manager.Controllers
                         att.ErrorMessage = "*";
                     }
                 }
-                return Json(vm.Error("Model validation failed"));
+
+                ErrorMessage(Catfish.Resources.Views.EntityTypes.Edit.SaveInvalid);
+                return View(vm);
             }
 
-            return Json(vm);
+            SuccessMessage(Catfish.Resources.Views.EntityTypes.Edit.SaveSuccess);
+            return View(vm);
         }
 
 
