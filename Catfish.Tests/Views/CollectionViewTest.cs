@@ -145,30 +145,36 @@ namespace Catfish.Tests.Views
             IWebElement btnLink = FindElementOnThePage(collectionId, "glyphicon-link");
             ClickButton(btnLink);
 
-            AddChildCollection();
             var groups = this.Driver.FindElements(By.ClassName("box"));
-            SelectElement typeSelector = new SelectElement(groups[1].FindElement(By.Name("childrenList")));
+            AddChildCollection(groups[1]);
+            groups = this.Driver.FindElements(By.ClassName("box")); // We get the groups again since the page has reloaded and increased the group number.
+            SelectElement typeSelector = new SelectElement(groups[2].FindElement(By.Name("childrenList")));
             Assert.AreEqual(2, typeSelector.Options.Count);
 
             //remove childItems
-            RemoveChildCollection();
+            RemoveChildCollection(groups[2]);
+            groups = this.Driver.FindElements(By.ClassName("box")); // We get the groups again since the page has reloaded
+            typeSelector = new SelectElement(groups[2].FindElement(By.Name("childrenList")));
             Assert.AreEqual(0, typeSelector.Options.Count);
 
             //add/remove related item
-            AddChildItem();
-            typeSelector = new SelectElement(groups[2].FindElement(By.Name("childrenList")));
+            AddChildItem(groups[3]);
+            groups = this.Driver.FindElements(By.ClassName("box")); // We get the groups again since the page has reloaded
+            typeSelector = new SelectElement(groups[3].FindElement(By.Name("childrenList")));
+            typeSelector = new SelectElement(groups[3].FindElement(By.Name("childrenList")));
             Assert.AreEqual(2, typeSelector.Options.Count);
 
-            RemoveChildItem();
+            RemoveChildItem(groups[3]);
+            groups = this.Driver.FindElements(By.ClassName("box")); // We get the groups again since the page has reloaded
+            typeSelector = new SelectElement(groups[3].FindElement(By.Name("childrenList")));
             Assert.AreEqual(0, typeSelector.Options.Count);
         }
 
-        private void AddChildCollection()
+        private void AddChildCollection(IWebElement group)
         {
-            var groups = this.Driver.FindElements(By.ClassName("box"));
-            SelectElement typeSelector = new SelectElement(groups[1].FindElement(By.Name("masterList")));
-            IWebElement addButton = groups[1].FindElement(By.ClassName("glyphicon-arrow-left"));
-            IWebElement saveButton = groups[1].FindElement(By.ClassName("save"));
+            SelectElement typeSelector = new SelectElement(group.FindElement(By.Name("masterList")));
+            IWebElement addButton = group.FindElement(By.ClassName("glyphicon-arrow-left"));
+            IWebElement saveButton = this.Driver.FindElement(By.Id("toolbar_save_button"));
             int optionsCount = typeSelector.Options.Count;
 
             List<string> options = new List<string>();
@@ -180,20 +186,27 @@ namespace Catfish.Tests.Views
             // Ignore first empty option. Add all fields and enter data 
             foreach(string option in options)
             {
-                typeSelector = new SelectElement(groups[1].FindElement(By.Name("masterList")));
+                typeSelector = new SelectElement(group.FindElement(By.Name("masterList")));
                 typeSelector.SelectByText(option);
                 ClickButton(addButton);
             }
 
+            IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;
+            ex.ExecuteScript("window.scrollTo(0, 0); ");
+
             ClickButton(saveButton);
+
+            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(10));
+            IWebElement element = wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("sys-message")));
+
+            wait.Until(ExpectedConditions.InvisibilityOfElementLocated(By.ClassName("sys-message")));
         }
 
-        private void RemoveChildCollection()
+        private void RemoveChildCollection(IWebElement group)
         {
-            var groups = this.Driver.FindElements(By.ClassName("box"));
-            SelectElement typeSelector = new SelectElement(groups[1].FindElement(By.Name("childrenList")));
-            IWebElement removeButton = groups[1].FindElement(By.ClassName("glyphicon-arrow-right"));
-            IWebElement saveButton = groups[1].FindElement(By.ClassName("save"));
+            SelectElement typeSelector = new SelectElement(group.FindElement(By.Name("childrenList")));
+            IWebElement removeButton = group.FindElement(By.ClassName("glyphicon-arrow-right"));
+            IWebElement saveButton = this.Driver.FindElement(By.Id("toolbar_save_button"));
             int optionsCount = typeSelector.Options.Count;
 
             List<string> options = new List<string>();
@@ -205,19 +218,26 @@ namespace Catfish.Tests.Views
             // Ignore first empty option. Add all fields and enter data 
             foreach(string option in options)
             {
-                typeSelector = new SelectElement(groups[1].FindElement(By.Name("childrenList")));
+                typeSelector = new SelectElement(group.FindElement(By.Name("childrenList")));
                 typeSelector.SelectByText(option);
                 ClickButton(removeButton);
-            }            
+            }
+
+            IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;
+            ex.ExecuteScript("window.scrollTo(0, 0); ");
 
             ClickButton(saveButton);
+
+            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(10));
+            IWebElement element = wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("sys-message")));
+
+            wait.Until(ExpectedConditions.InvisibilityOfElementLocated(By.ClassName("sys-message")));
         }
-        private void AddChildItem()
+        private void AddChildItem(IWebElement group)
         {
-            var groups = this.Driver.FindElements(By.ClassName("box"));
-            SelectElement typeSelector = new SelectElement(groups[2].FindElement(By.Name("masterList")));
-            IWebElement addButton = groups[2].FindElement(By.ClassName("glyphicon-arrow-left"));
-            IWebElement saveButton = groups[2].FindElement(By.ClassName("save"));
+            SelectElement typeSelector = new SelectElement(group.FindElement(By.Name("masterList")));
+            IWebElement addButton = group.FindElement(By.ClassName("glyphicon-arrow-left"));
+            IWebElement saveButton = this.Driver.FindElement(By.Id("toolbar_save_button"));
             int optionsCount = typeSelector.Options.Count;
 
             List<string> options = new List<string>();
@@ -229,20 +249,27 @@ namespace Catfish.Tests.Views
             // Ignore first empty option. Add all fields and enter data 
             foreach (string option in options)
             {
-                typeSelector = new SelectElement(groups[2].FindElement(By.Name("masterList")));
+                typeSelector = new SelectElement(group.FindElement(By.Name("masterList")));
                 typeSelector.SelectByText(option);
                 ClickButton(addButton);
             }
 
+            IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;
+            ex.ExecuteScript("window.scrollTo(0, 0); ");
+            
             ClickButton(saveButton);
+
+            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(10));
+            IWebElement element = wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("sys-message")));
+
+            wait.Until(ExpectedConditions.InvisibilityOfElementLocated(By.ClassName("sys-message")));
         }
 
-        private void RemoveChildItem()
+        private void RemoveChildItem(IWebElement group)
         {
-            var groups = this.Driver.FindElements(By.ClassName("box"));
-            SelectElement typeSelector = new SelectElement(groups[2].FindElement(By.Name("childrenList")));
-            IWebElement removeButton = groups[2].FindElement(By.ClassName("glyphicon-arrow-right"));
-            IWebElement saveButton = groups[2].FindElement(By.ClassName("save"));
+            SelectElement typeSelector = new SelectElement(group.FindElement(By.Name("childrenList")));
+            IWebElement removeButton = group.FindElement(By.ClassName("glyphicon-arrow-right"));
+            IWebElement saveButton = this.Driver.FindElement(By.Id("toolbar_save_button"));
             int optionsCount = typeSelector.Options.Count;
 
             List<string> options = new List<string>();
@@ -254,12 +281,20 @@ namespace Catfish.Tests.Views
             // Ignore first empty option. Add all fields and enter data 
             foreach (string option in options)
             {
-                typeSelector = new SelectElement(groups[2].FindElement(By.Name("childrenList")));
+                typeSelector = new SelectElement(group.FindElement(By.Name("childrenList")));
                 typeSelector.SelectByText(option);
                 ClickButton(removeButton);
             }
 
+            IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;
+            ex.ExecuteScript("window.scrollTo(0, 0); ");
+
             ClickButton(saveButton);
+
+            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(10));
+            IWebElement element = wait.Until(ExpectedConditions.ElementIsVisible(By.ClassName("sys-message")));
+
+            wait.Until(ExpectedConditions.InvisibilityOfElementLocated(By.ClassName("sys-message")));
         }
 
         private void ClickOnAddBtn()
