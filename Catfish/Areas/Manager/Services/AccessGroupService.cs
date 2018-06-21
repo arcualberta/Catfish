@@ -32,8 +32,12 @@ namespace Catfish.Areas.Manager.Services
             allUserLists.ToList().ForEach(x => entityAccessVM.AvailableUsers2.Add(x.Key, x.Value));
 
             AccessDefinitionService accessDefinitionService = new AccessDefinitionService(Db);
-            SelectList accessDefs = new SelectList(accessDefinitionService.GetSelectListAccessDefinitions().GroupBy(a => a.Name).Select(a => a.FirstOrDefault()), "AccessModes", "StringAccessModesList");
-
+            SelectList accessDefs = new SelectList(accessDefinitionService.GetSelectListAccessDefinitions()
+                .GroupBy(a => a.Name)
+                .Select(a => a.FirstOrDefault())
+                .Select(i => new SelectListItem() {
+                    Value = ((int)i.AccessModes).ToString(),
+                    Text = i.StringAccessModesList }), "Value", "Text");
             entityAccessVM.AvailableAccessDefinitions = accessDefs;
 
             entityAccessVM.AvailableAccessDefinitions2 = accessDefs.ToList();
