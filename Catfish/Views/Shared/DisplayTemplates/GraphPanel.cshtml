@@ -1,17 +1,28 @@
 ﻿@model Catfish.Models.Regions.GraphPanel
 @using Catfish.Core.Models;
 
+@{
+    string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
+    string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
+    string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+}
+<div id="@cssId" class="bs @cssClasses container container-fluid">
+    <style type="text/css" scoped>
+                    @Html.Raw(cssStyles)
+    </style>
+    @*<div>Start Year<input type="text" id="MinX_Parameter" name="MinX_Parameter" class="input filterInput" placeholder="1960"/>
+            End Year <input type="text" id="MaxX_Parameter" name="MaxX_Parameter" class="input filterInput" placeholder="2018" />
+             <button id="graphPanel_filterYear_button" class="btn btn-sm sm-search-btn" onclick="appendUrl(); return false;">
+            <span class="glyphicon glyphicon-search"></span> </button>
+        </div>*@
+    <svg class="line-chart"> </svg>
+    <div class="legend"></div>
 
-@*<div>Start Year<input type="text" id="MinX_Parameter" name="MinX_Parameter" class="input filterInput" placeholder="1960"/> 
-    End Year <input type="text" id="MaxX_Parameter" name="MaxX_Parameter" class="input filterInput" placeholder="2018" />
-     <button id="graphPanel_filterYear_button" class="btn btn-sm sm-search-btn" onclick="appendUrl(); return false;">
-    <span class="glyphicon glyphicon-search"></span> </button>
-</div>*@
-<svg class="line-chart"> </svg>
-<div class="legend"></div>
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="~/Scripts/D3/graph.js"></script>
-<script>
+    </div>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="~/Scripts/D3/graph.js"></script>
+
+    <script>
     const XLabel = '@Model.XaxisLabel';
     const YLabel ='@Model.YaxisLabel';
     const GraphTitle = '@Model.GraphTitle';
@@ -64,58 +75,63 @@ document.addEventListener("DOMContentLoaded", function (event) {
         url += "?minYear=" + minX +"&maxYear=" + maxX;
         window.location.href = url;
     });
-   
 
-</script>
 
-<style>
-    .sm-search-btn {
-        height: 20px;
-        padding-top: 1px;
-        vertical-align: top;
-    }
-    .legend {
-        font-size: 14px !important;
-        width: 100px;
-        border: 1px solid grey;
-        float: right;
-        margin-right: 37%;
-        margin-top: 10%;
-        padding:5px;
-    }
-    .filterInput {
-        width:50px;
-        margin: 0  10px;
-    }
-    .line-chart{ margin-top: 20px;}
-    
-    .bar {
-        fill: steelblue;
-    }
-    .line {
-        fill: none;
-        stroke: steelblue;
-        stroke-width: 1.5px;
-    }
-    path {
-        stroke: steelblue;
-        stroke-width: 2;
-        fill: none;
-    }
+    </script>
 
-    .axis path,
-    .axis line {
-        fill: none;
-        stroke: grey;
-        stroke-width: 1;
-        shape-rendering: crispEdges;
-    }
+    <style>
+        .sm-search-btn {
+            height: 20px;
+            padding-top: 1px;
+            vertical-align: top;
+        }
 
-    .legend {
-        font-size: 16px;
-        font-weight: bold;
-        text-anchor: middle;
-    }
+        .legend {
+            font-size: 14px !important;
+            width: 100px;
+            border: 1px solid grey;
+            float: right;
+            margin-right: 37%;
+            margin-top: 10%;
+            padding: 5px;
+        }
 
-    
-</style>
+        .filterInput {
+            width: 50px;
+            margin: 0 10px;
+        }
+
+        .line-chart {
+            margin-top: 20px;
+        }
+
+        .bar {
+            fill: steelblue;
+        }
+
+        .line {
+            fill: none;
+            stroke: steelblue;
+            stroke-width: 1.5px;
+        }
+
+        path {
+            stroke: steelblue;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: grey;
+            stroke-width: 1;
+            shape-rendering: crispEdges;
+        }
+
+        .legend {
+            font-size: 16px;
+            font-weight: bold;
+            text-anchor: middle;
+        }
+    </style>
