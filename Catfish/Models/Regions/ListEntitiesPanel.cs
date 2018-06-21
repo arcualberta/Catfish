@@ -53,8 +53,10 @@ namespace Catfish.Models.Regions
         public List<Result> Results { get; set; }   //for holding quesry results to display
 
         [ScriptIgnore]
-        public int CurrentPage { get; set; }   //for holding quesry results to display
+        public int CurrentPage { get; set; }  
 
+        [ScriptIgnore]
+        public int ItemCount { get; set; }   //total items returned
         public ListEntitiesPanel()
         {
             ListMetadataSets = new List<SelectListItem>();
@@ -128,9 +130,9 @@ namespace Catfish.Models.Regions
                 ItemService itemService = new ItemService(db);
 
 
-                Items = itemService.GetPagedItems(page, ItemPerPage, SelectedMetadataSet, selectedFilterField, min, max).ToList();
+                Items = itemService.GetPagedItems(page, ItemPerPage + 1, SelectedMetadataSet, selectedFilterField, min, max).ToList();
 
-                
+                ItemCount = Items.Count;
             }
 
             return base.GetContent(model);

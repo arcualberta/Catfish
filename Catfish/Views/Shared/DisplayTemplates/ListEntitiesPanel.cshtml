@@ -11,9 +11,9 @@
            @Html.Raw(cssStyles)
     </style>
    <div class="row" style="text-align:center;margin-top:20px;">
-       <button class="btn-link" id="listEntitiesPanel_prev_button"><span style="align-content:center"><span class="glyphicon glyphicon-backward"></span>Prev</span></button>
+       <button class="btn-link" name="listEntitiesPanel_prev_button" onclick="GoToPage('Prev'); return false;"><span style="align-content:center"><span class="glyphicon glyphicon-backward"></span>Prev</span></button>
        <input id="listEntitiesPanel_page_number" placeholder="1" value="@Model.CurrentPage" style="width:15px; height:15px;" />
-       <button class="btn-link" id="listEntitiesPanel_next_button"><span style="align-content:center">Next<span class="glyphicon glyphicon-forward"></span></span></button>
+       <button class="btn-link" name="listEntitiesPanel_next_button" onclick="GoToPage('Next'); return false;"><span style="align-content:center">Next<span class="glyphicon glyphicon-forward"></span></span></button>
     </div>
     <div class="row ">
         <table class="table table-responsive table-striped">
@@ -43,39 +43,65 @@
         </table>
     </div>
     <div class="row" style="text-align:center;">
-        <button class="btn-link" id="listEntitiesPanel_prev_button"><span style="align-content:center"><span class="glyphicon glyphicon-backward"></span>Prev</span></button>
+        <button class="btn-link" name="listEntitiesPanel_prev_button"  onclick="GoToPage('Prev'); return false;" ><span style="align-content:center"><span class="glyphicon glyphicon-backward"></span>Prev</span></button>
         <input id="listEntitiesPanel_page_number" placeholder="1" value="@Model.CurrentPage" style="width:15px; height:15px;" />
-        <button class="btn-link" id="listEntitiesPanel_next_button"><span style="align-content:center">Next<span class="glyphicon glyphicon-forward"></span></span></button>
+        <button class="btn-link" name="listEntitiesPanel_next_button" onclick="GoToPage('Next'); return false;"><span style="align-content:center">Next<span class="glyphicon glyphicon-forward"></span></span></button>
     </div>
 </div>
 
 <script>
-   
+
    $(document).ready(function() {
        var curPage =@Model.CurrentPage;
        if(curPage == 1)
         {
-           $("#listEntitiesPanel_prev_button").hide();
+           $("[name='listEntitiesPanel_prev_button']").hide();
+        }
+
+       if(@Model.ItemCount < @Model.ItemPerPage)
+        {
+             $("[name='listEntitiesPanel_next_button']").hide();
         }
    });
 
-    $("#listEntitiesPanel_prev_button").click(function(){
-
-       var minX = null;
-       var  maxX =null;
+    function GoToPage(whichPage){
         var currPage =@Model.CurrentPage;
-        alert("base: " + window.location.pathname);
-        alert("search: " + window.location.search);
-     //   var url_string = "http://www.example.com/t.html?a=1&b=3&c=m2-m3-m4-m5"; //window.location.href window.location.pathname
-//var url = new URL(url_string);
-//var c = url.searchParams.get("c");
+        if(whichPage === "Prev")
+        {
+             currPage = currPage - 1;
+        }
+        else if(whichPage === "Next"){
+             currPage = currPage + 1;
+        }
 
-         var url_str = window.location.href;
+        var url_str = window.location.href;
+        var base_url = url_str.substr(0,url_str.indexOf("?"));
+
          if (url_str.indexOf('?') > -1){
-            var base_url = url_str.substr(0,url_str.indexOf("?"));
-           // var params =   url_str.substr(url_str.indexOf("?"), );
+            var url_param = window.location.search;
+            if( url_param.indexOf('page') >= 0){
+                 if(url_param.indexOf('&') >= 0) //check if another parameters existed
+                 {
+                     var params = url_param.split('&');
+                     for(var i=0; i < params.length; i++)
+                     {
+                          if(params[i].indexOf('page') >= 0)
+                           {
+                               params[i] = params[i].substr(0, params[i].indexOf('=')) + "=" + currPage;
+                               break;
+                           }
+                      }
+                      url_param = params.join('&');
+                 }
+                 else{
+                      //only page parameter
+                      url_param = url_param.substr(0, url_param.indexOf("=")) + "=" + currPage;
+                }
+                 base_url += url_param;
+            }
          }
-       // url += "?minYear=" + minX +"&maxYear=" + maxX;
-        //window.location.href = url;
-    });
+        window.location.href = base_url;
+    }
+
+   
 </script>
