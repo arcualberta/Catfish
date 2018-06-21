@@ -380,7 +380,7 @@ namespace StateFundingDataConversion
                     }
 
                     //get the movement checkboxes
-                    XElement chkEl = new XElement("Field");
+                    XElement chkEl = new XElement("field");
                     chkEl.Add(new XAttribute("created", now));
                     chkEl.Add(new XAttribute("updated", now));
                     chkEl.Add(new XAttribute("model-type", "Catfish.Core.Models.Forms.Forms.CheckBoxSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));

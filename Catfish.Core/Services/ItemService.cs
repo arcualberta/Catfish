@@ -181,5 +181,17 @@ namespace Catfish.Core.Services
 
             return dbModel;
         }
+
+        public IEnumerable<CFItem> GetPagedItems(int page, int itemsPerPage, string facetMetadataGuid = null, string facetFieldGuid = null, int facetMin = 0, int facetMax = 0)
+        {
+            Db.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
+            string query = string.Format(@"SELECT *
+                FROM CFXmlModels
+                WHERE Discriminator = 'CFItem'
+                    AND Content.value('(/item/metadata/metadata-set[@guid=""{0}""]/fields/field[@guid=""{1}""]/value/text/text())[1]', 'INT') >= {2}
+                    AND Content.value('(/item/metadata/metadata-set[@guid=""{0}""]/fields/field[@guid=""{1}""]/value/text/text())[1]', 'INT') <= {3}
+            ", facetMetadataGuid, facetFieldGuid, facetMin, facetMax, page * itemsPerPage, itemsPerPage);
+            return Db.Items.SqlQuery(query).Skip(page * itemsPerPage).Take(itemsPerPage);
+        }
     }
 }
