@@ -33,7 +33,7 @@ namespace Catfish.Areas.Manager.Controllers
             return RedirectToAction("index");
         }
 
-
+        [HttpGet]
         // GET: Manager/Collections/children/5
         public ActionResult Associations(int id)
         {
@@ -60,6 +60,21 @@ namespace Catfish.Areas.Manager.Controllers
             ViewBag.RelatedItems = relatedItems;
 
             return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Associations(int id, string errorMessage)
+        {
+            if (string.IsNullOrEmpty(errorMessage))
+            {
+                SuccessMessage(Resources.Views.Collections.Edit.SaveSuccess);
+            }
+            else
+            {
+                ErrorMessage(errorMessage);
+            }
+
+            return Associations(id);
         }
 
         // GET: Manager/Collections/Edit/5
@@ -103,12 +118,17 @@ namespace Catfish.Areas.Manager.Controllers
                 CFCollection dbModel = CollectionService.UpdateStoredCollection(model);
                 Db.SaveChanges(User.Identity);
 
+                SuccessMessage(Catfish.Resources.Views.Collections.Edit.SaveSuccess);
+
                 if (model.Id == 0)
                     return RedirectToAction("Edit", new { id = dbModel.Id });
                 else
                     return View(dbModel);
 
             }
+
+            ErrorMessage(Catfish.Resources.Views.Collections.Edit.SaveInvalid);
+
             return View(model);
         }
 
@@ -131,8 +151,8 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
 
-
-        public ActionResult AddUserAccessDefinition(EntityAccessDefinitionsViewModel entityAccessVM)
+        [HttpPost]
+        public ActionResult AccessGroup(int id, EntityAccessDefinitionsViewModel entityAccessVM)
         {
 
             CFCollection collection = CollectionService.GetCollection(entityAccessVM.Id);//ItemService.GetItem(entityAccessVM.Id);
@@ -144,8 +164,9 @@ namespace Catfish.Areas.Manager.Controllers
             collection.Serialize();
             Db.SaveChanges();
 
+            SuccessMessage(Catfish.Resources.Views.Shared.EntityAccessGroup.SaveSuccess);
 
-            return RedirectToAction("AccessGroup", new { id = entityAccessVM.Id });
+            return AccessGroup(entityAccessVM.Id);
         }
 
         public JsonResult GetuserPermissions(string userGuid, int entityId)
