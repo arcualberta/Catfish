@@ -276,14 +276,15 @@ namespace Catfish.Areas.Manager.Controllers
         {
             SecurityService.CreateAccessContext();
             CFItem item = ItemService.GetItem(entityAccessVM.Id, AccessMode.Control);
-           
-            AccessGroupService accessGroupService = new AccessGroupService(Db);
-            item = accessGroupService.UpdateEntityAccessGroups(item, entityAccessVM) as CFItem;
-            item = EntityService.UpdateEntity(item) as CFItem;
-           
-            item.Serialize();
-            Db.SaveChanges();
+            if (item != null)
+            {
+                AccessGroupService accessGroupService = new AccessGroupService(Db);
+                item = accessGroupService.UpdateEntityAccessGroups(item, entityAccessVM) as CFItem;
+                item = EntityService.UpdateEntity(item) as CFItem;
 
+                item.Serialize();
+                Db.SaveChanges();
+            }            
 
             return RedirectToAction("AccessGroup", new { id = entityAccessVM.Id });
         }

@@ -6,6 +6,7 @@ using System.Security.Principal;
 using System.Collections.Generic;
 using Catfish.Core.Helpers;
 using Catfish.Core.Contexts;
+using Catfish.Core.Models.Access;
 
 namespace Catfish.Core.Services
 {
@@ -26,9 +27,12 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="id">The id of the Collection to obtain.</param>
         /// <returns>The requested collection from the database. A null value is returned if no collection is found.</returns>
-        public CFCollection GetCollection(int id)
+        public CFCollection GetCollection(int id, AccessMode accessMode = AccessMode.Read)
         {
-            return Db.Collections.Where(c => c.Id == id).FirstOrDefault();
+            return Db.Collections.FindAccessible(AccessContext.current.IsAdmin,
+                AccessContext.current.AllGuids,
+                accessMode)
+                .Where(i => i.Id == id).FirstOrDefault();
         }
 
         /// <summary>
@@ -65,7 +69,7 @@ namespace Catfish.Core.Services
             CFCollection model = null;
             if (id > 0)
             {
-                model = Db.Collections.Where(et => et.Id == id).FirstOrDefault();
+                model = GetCollection(id, AccessMode.Control);
                 if (model != null)
                 {
                     Db.Entry(model).State = EntityState.Deleted;
@@ -102,7 +106,7 @@ namespace Catfish.Core.Services
 
             if (changedCollection.Id > 0)
             {
-                dbModel = GetCollection(changedCollection.Id);
+                dbModel = GetCollection(changedCollection.Id, AccessMode.Write);
             }
             else
             {

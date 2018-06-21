@@ -139,15 +139,17 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult AddUserAccessDefinition(EntityAccessDefinitionsViewModel entityAccessVM)
         {
             SecurityService.CreateAccessContext();
-            CFCollection collection = CollectionService.GetCollection(entityAccessVM.Id);
+            CFCollection collection = CollectionService.GetCollection(entityAccessVM.Id, AccessMode.Control);
 
-            AccessGroupService accessGroupService = new AccessGroupService(Db);
-            collection = accessGroupService.UpdateEntityAccessGroups(collection, entityAccessVM) as CFCollection;
-            collection = EntityService.UpdateEntity(collection) as CFCollection;
+            if (collection != null)
+            {
+                AccessGroupService accessGroupService = new AccessGroupService(Db);
+                collection = accessGroupService.UpdateEntityAccessGroups(collection, entityAccessVM) as CFCollection;
+                collection = EntityService.UpdateEntity(collection) as CFCollection;
 
-            collection.Serialize();
-            Db.SaveChanges();
-
+                collection.Serialize();
+                Db.SaveChanges();
+            }
 
             return RedirectToAction("AccessGroup", new { id = entityAccessVM.Id });
         }

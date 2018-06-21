@@ -68,26 +68,26 @@ namespace Catfish.Core.Services
         /// Removes an item from the database.
         /// </summary>
         /// <param name="id">The id of the item to be removed.</param>
-        //public void DeleteItem(int id)
-        //{
-        //    CFItem model = null;
-        //    if (id > 0)
-        //    {
-        //        model = GetItem(id);
-        //        if (model != null)
-        //        {
-        //            Db.Entry(model).State = EntityState.Deleted;
-        //        }
-        //        else
-        //        {
-        //            throw new ArgumentException(string.Format("Item {0} not found.", id));
-        //        }
-        //    }
-        //    else
-        //    {
-        //        throw new ArgumentException(string.Format("Invalid item id {0}.", id));
-        //    }
-        //}
+        public void DeleteItem(int id)
+        {
+            CFItem model = null;
+            if (id > 0)
+            {
+                model = GetItem(id, AccessMode.Control);
+                if (model != null)
+                {
+                    Db.Entry(model).State = EntityState.Deleted;
+                }
+                else
+                {
+                    throw new ArgumentException(string.Format("Item {0} not found.", id));
+                }
+            }
+            else
+            {
+                throw new ArgumentException(string.Format("Invalid item id {0}.", id));
+            }
+        }
 
         /// <summary>
         /// Creates a new item based on the given entity type.
@@ -170,7 +170,8 @@ namespace Catfish.Core.Services
 
             if (changedItem.Id > 0)
             {
-                dbModel = Db.XmlModels.Find(changedItem.Id) as CFItem;
+                //dbModel = Db.XmlModels.Find(changedItem.Id) as CFItem;
+                dbModel = GetItem(changedItem.Id, AccessMode.Write);
             }
             else
             {
