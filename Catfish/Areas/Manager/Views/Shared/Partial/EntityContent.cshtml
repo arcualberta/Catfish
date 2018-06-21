@@ -9,7 +9,11 @@
     var contextName = ViewBag.contanierId as string;
     if (string.IsNullOrEmpty(contextName))
     {
-        contextName = "ctx_" + Guid.NewGuid().ToString("N");
+        contextName = ViewData["contextName"] as string;
+
+        if(string.IsNullOrEmpty(contextName)){
+            contextName = "ctx_" + Guid.NewGuid().ToString("N");
+        }
     }
 
     var ko = Html.CreateKnockoutContext(contextName);
@@ -25,7 +29,7 @@
                     <div class="bs right">
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
-                        @ko.Html.Button("Save", saveAction, "EntityAssociation",null, new {@class="save" })
+                        @*@ko.Html.Button("Save", saveAction, "EntityAssociation",null, new {@class="save" })*@
                     </div>
                 </div>
 

@@ -15,7 +15,7 @@
         margin-left: -300px;
     }
 </style>
-@using (Html.BeginForm(action, controller, FormMethod.Post))
+@using (Html.BeginForm(action, controller, FormMethod.Post, new { id = Model.Id }))
 {
 
     @Html.HiddenFor(m => Model.Id)
@@ -86,8 +86,6 @@
     </table>
 
 }
-
-
 
 <script>
     var selectedUser = "";

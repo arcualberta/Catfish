@@ -21,6 +21,8 @@ namespace Catfish.Core.Models
 
         [NotMapped]
         public bool Deletable { get; set; }
+        [NotMapped]
+        public int CFEntityType_Id { get; set; }
 
         public CFEntityTypeAttributeMapping() {
             Deletable = true;

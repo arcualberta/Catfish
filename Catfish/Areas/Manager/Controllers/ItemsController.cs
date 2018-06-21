@@ -145,14 +145,20 @@ namespace Catfish.Areas.Manager.Controllers
                 CFItem dbModel = ItemService.UpdateStoredItem(model);
                 Db.SaveChanges(User.Identity);
 
+                SuccessMessage(Catfish.Resources.Views.Items.Edit.SaveSuccess);
+
                 if (model.Id == 0)
                     return RedirectToAction("Edit", new { id = dbModel.Id });
                 else
                     return View(dbModel);
             }
+
+            ErrorMessage(Catfish.Resources.Views.Items.Edit.SaveInvalid);
+
             return View(model);
         }
 
+        [HttpGet]
         public ActionResult Associations(int id)
         {
             SecurityService.CreateAccessContext();
@@ -175,6 +181,21 @@ namespace Catfish.Areas.Manager.Controllers
             ViewBag.RelatedItems = relatedItems;
 
             return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Associations(int id, string errorMessage)
+        {
+            if (string.IsNullOrEmpty(errorMessage))
+            {
+                SuccessMessage(Resources.Views.Items.Edit.SaveSuccess);
+            }
+            else
+            {
+                ErrorMessage(errorMessage);
+            }
+
+            return Associations(id);
         }
 
         //XXX This method should be moved to a file controller
@@ -266,13 +287,11 @@ namespace Catfish.Areas.Manager.Controllers
             var accessList = accessGroupService.GetAccessCodesList();
             accessList.Remove(accessList.First()); //remove "None"
             ViewBag.AccessCodesList = accessList;
-            return View(entityAccessVM);
+            return View("AccessGroup", entityAccessVM);
         }
-
         
-
-     
-        public ActionResult AddUserAccessDefinition(EntityAccessDefinitionsViewModel entityAccessVM)
+        [HttpPost]
+        public ActionResult AccessGroup(int id, EntityAccessDefinitionsViewModel entityAccessVM)
         {
             SecurityService.CreateAccessContext();
             CFItem item = ItemService.GetItem(entityAccessVM.Id, AccessMode.Control);
@@ -286,7 +305,9 @@ namespace Catfish.Areas.Manager.Controllers
                 Db.SaveChanges();
             }            
 
-            return RedirectToAction("AccessGroup", new { id = entityAccessVM.Id });
+            SuccessMessage(Catfish.Resources.Views.Shared.EntityAccessGroup.SaveSuccess);
+
+            return AccessGroup(entityAccessVM.Id);
         }
     }
 }

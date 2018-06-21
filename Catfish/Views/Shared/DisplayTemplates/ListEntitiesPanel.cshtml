@@ -1,0 +1,81 @@
+﻿@model Catfish.Models.Regions.ListEntitiesPanel
+@using Catfish.Core.Models;
+
+
+ @{ string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
+     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
+     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+ }
+<div id="@cssId" class="bs @cssClasses container container-fluid">
+    <style type="text/css" scoped>
+           @Html.Raw(cssStyles)
+    </style>
+   <div class="row" style="text-align:center;margin-top:20px;">
+       <button class="btn-link" id="listEntitiesPanel_prev_button"><span style="align-content:center"><span class="glyphicon glyphicon-backward"></span>Prev</span></button>
+       <input id="listEntitiesPanel_page_number" placeholder="1" value="@Model.CurrentPage" style="width:15px; height:15px;" />
+       <button class="btn-link" id="listEntitiesPanel_next_button"><span style="align-content:center">Next<span class="glyphicon glyphicon-forward"></span></span></button>
+    </div>
+    <div class="row ">
+        <table class="table table-responsive table-striped">
+            <tr>
+                @*header*@
+                @foreach (var f in Model.Fields)
+                {
+                    string header = Model.Items[0].GetAttributeMappingLabel(f);
+                    if (!string.IsNullOrEmpty(header))
+                    {
+                        <th>@header </th>
+                    }
+                }
+            </tr>
+
+            @*content*@
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    @foreach (var f in Model.Fields)
+                    {
+                        string content = item.GetAttributeMappingValue(f);
+                        <td>@content</td>
+                    }
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="row" style="text-align:center;">
+        <button class="btn-link" id="listEntitiesPanel_prev_button"><span style="align-content:center"><span class="glyphicon glyphicon-backward"></span>Prev</span></button>
+        <input id="listEntitiesPanel_page_number" placeholder="1" value="@Model.CurrentPage" style="width:15px; height:15px;" />
+        <button class="btn-link" id="listEntitiesPanel_next_button"><span style="align-content:center">Next<span class="glyphicon glyphicon-forward"></span></span></button>
+    </div>
+</div>
+
+<script>
+   
+   $(document).ready(function() {
+       var curPage =@Model.CurrentPage;
+       if(curPage == 1)
+        {
+           $("#listEntitiesPanel_prev_button").hide();
+        }
+   });
+
+    $("#listEntitiesPanel_prev_button").click(function(){
+
+       var minX = null;
+       var  maxX =null;
+        var currPage =@Model.CurrentPage;
+        alert("base: " + window.location.pathname);
+        alert("search: " + window.location.search);
+     //   var url_string = "http://www.example.com/t.html?a=1&b=3&c=m2-m3-m4-m5"; //window.location.href window.location.pathname
+//var url = new URL(url_string);
+//var c = url.searchParams.get("c");
+
+         var url_str = window.location.href;
+         if (url_str.indexOf('?') > -1){
+            var base_url = url_str.substr(0,url_str.indexOf("?"));
+           // var params =   url_str.substr(url_str.indexOf("?"), );
+         }
+       // url += "?minYear=" + minX +"&maxYear=" + maxX;
+        //window.location.href = url;
+    });
+</script>
