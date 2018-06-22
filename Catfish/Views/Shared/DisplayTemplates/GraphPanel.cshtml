@@ -72,7 +72,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
          if (url.indexOf('?') > -1){
             url = url.substr(0,url.indexOf("?"));
         }
-        url += "?minYear=" + minX +"&maxYear=" + maxX;
+        var search_url = "?" + '@Model.MinX_Parameter' + "=" + minX +"&" + '@Model.MaxX_Parameter' + "=" + maxX;
+        url += search_url;
         window.location.href = url;
     });
 
