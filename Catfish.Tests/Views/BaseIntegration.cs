@@ -53,16 +53,17 @@ namespace Catfish.Tests.Views
     {
         protected IWebDriver Driver;
         protected string ManagerUrl;
-        private const string AddLabel = "Add new";
-        private const string SaveLabel = "Save";
-        private const string SystemLabel = "SYSTEM";
-        private const string ContentLabel = "CONTENT";
-        private const string UsersLabel = "Users";
-        private const string GroupsLabel = "Groups";
-        private const string CollectionsLabel = "Collections";
-        private const string ItemsLabel = "Items";
-        private const string UserListLabel = "User List";
-        private const string AccessDefinitionLabel = "Access Definitions";
+        protected const string AddLabel = "Add new";
+        protected const string SaveLabel = "Save";
+        protected const string SystemLabel = "SYSTEM";
+        protected const string ContentLabel = "CONTENT";
+        protected const string LogoutLabel = "LOGOUT";
+        protected const string UsersLabel = "Users";
+        protected const string GroupsLabel = "Groups";
+        protected const string CollectionsLabel = "Collections";
+        protected const string ItemsLabel = "Items";
+        protected const string UserListLabel = "User List";
+        protected const string AccessDefinitionLabel = "Access Definitions";
 
         [SetUp]
         public void SetUp()
@@ -90,6 +91,11 @@ namespace Catfish.Tests.Views
             this.Driver.FindElement(By.Id("login")).SendKeys(user);
             this.Driver.FindElement(By.Name("password")).SendKeys(password);
             this.Driver.FindElement(By.TagName("button")).Click();
+        }
+
+        protected void Logout()
+        {
+            this.Driver.FindElement(By.LinkText(LogoutLabel)).Click();
         }
 
         protected void WaitMethod(int tries, int milliseonds, Func<bool> myMethod)
@@ -134,7 +140,7 @@ namespace Catfish.Tests.Views
             Driver.FindElement(By.LinkText(SaveLabel)).Click();
         }
 
-        private void Navigate(IEnumerable<string> links)
+        public void Navigate(IEnumerable<string> links)
         {
             foreach (string link in links)
             {
@@ -224,8 +230,9 @@ namespace Catfish.Tests.Views
 
             IWebElement groupElement = Driver.FindElement(By.Id("User_GroupId"));
             SelectElement selectElement = new SelectElement(groupElement);
-            // assuming there is a first group
-            selectElement.SelectByIndex(1);
+            // assuming there are at least 2 groups to avoid creating 
+            // administrators
+            selectElement.SelectByIndex(2);
         }
 
         // XXX System breaks when creating user lists 20180613

@@ -69,18 +69,117 @@ namespace Catfish.Tests.Views
         }
 
         [Test]
-        public void TestMethods()
+        public void CanFilterAccessibleEntities()
         {
-            //CreateItem("item name now this is an itemr");
-            AccessMode modes = AccessMode.Write;
-            AccessDefinitionParameters accessDef = new AccessDefinitionParameters()
+            /*
+             * admin create user
+             * admin create accessdefinition
+             * admin create item
+             * admin create collection
+             * admin add permission to view item
+             * can admin see item ?
+             * can admin see collection ?
+             * can user can see item ?
+             * can user not see collection ?
+             * delete user
+             * delete item
+             * delete collection
+             */
+
+            string userName1 = "user read permission";
+            string userName2 = "user with user list read permission";
+            string userListName = "userlist read permission";
+            string accessDefinitionName = "access modes for integration tests";
+            string password = "password";
+
+            UserParameters user1Parameters = new UserParameters
             {
-                Modes = modes,
-                AccessModesLabel = GetAccessModesLabel(modes)
+                UserName = userName1,
+                Password = password
             };
-            CreateAccessDefinition(accessDef);
-            
-            Assert.IsTrue(true);
+
+            UserParameters user2Parameters = new UserParameters
+            {
+                UserName = userName2,
+                Password = password
+            };            
+
+            ItemParameters itemParameters = new ItemParameters
+            {
+                ItemName = "Item for access integration tests"
+            };
+
+            CollectionParameters collectionParameters = new CollectionParameters
+            {
+                CollectionName = "Collection for access integration tests"
+            };
+
+            AccessDefinitionParameters accessDefinitionParameters = new AccessDefinitionParameters
+            {
+                Modes = AccessMode.Read,
+                AccessModesLabel = accessDefinitionName
+            };
+
+            UserListParameters userListParameters = new UserListParameters
+            {
+                ListName = userListName,
+                Users = new string[] { userName2 }
+            };
+
+
+            //CreateUser(user1Parameters);
+            //CreateUser(user2Parameters);
+            //CreateUserList(userListParameters);
+            //CreateItem(itemParameters);
+            //CreateCollection(collectionParameters);
+            //CreateAccessDefinition(accessDefinitionParameters);
+
+            // navigate to newly created item
+            // click on its button with class glyphicon-eye-close
+
+            Navigate(new string[] { ContentLabel, ItemsLabel });
+
+            // click on last item
+            //Driver.FindElement(By.XPath("//button[@class='glyphicon-eye-close']")).Click();
+            //Driver.FindElement(By.XPath("//table/tbody/tr[last()]/tr[last()]/form[last()]/button[@class='glyphicon glyphicon-eye-close']")).Click();
+            Driver.FindElement(By.XPath("(//button[@class[contains(.,'glyphicon-eye-close')]])[last()]")).Click();
+            Driver.FindElement(By.Id("usrName")).SendKeys(userName1);
+            WaitPageSourceChange(5, 500);
+            Driver.FindElement(By.XPath("//li/div[contains(string(), '"+userName1+"')]")).Click();
+
+            IWebElement groupElement = Driver.FindElement(By.Id("SelectedAccessDefinition"));
+            SelectElement selectElement = new SelectElement(groupElement);
+            // assuming there are at least 2 groups to avoid creating 
+            // administrators
+            selectElement.SelectByText(accessDefinitionName + " - Read");
+            Driver.FindElement(By.Id("btnAddUserAccess")).Click();
+            Driver.FindElement(By.LinkText(SaveLabel)).Click();
+
+            Logout();
+            Login(userName1, password);
+
+
+            // delete item
+            // delete collection
+            // delete access definition
+            // delete user1
+            // delete user2
+
         }
+        
+        //[Test]
+        //public void TestMethods()
+        //{
+        //    //CreateItem("item name now this is an itemr");
+        //    AccessMode modes = AccessMode.Write;
+        //    AccessDefinitionParameters accessDef = new AccessDefinitionParameters()
+        //    {
+        //        Modes = modes,
+        //        AccessModesLabel = GetAccessModesLabel(modes)
+        //    };
+        //    CreateAccessDefinition(accessDef);
+
+        //    Assert.IsTrue(true);
+        //}
     }
 }
