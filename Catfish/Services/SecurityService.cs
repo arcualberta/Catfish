@@ -18,6 +18,11 @@ namespace Catfish.Services
         {            
         }
 
+        public bool IsCurrentUserAdmin()
+        {
+            return IsAdmin(HttpContext.Current.User.Identity.Name);
+        }
+
         public override bool IsAdmin(string userGuid)
         {
             Piranha.Entities.User user = UserService.GetUserById(userGuid);

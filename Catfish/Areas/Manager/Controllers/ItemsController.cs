@@ -33,25 +33,9 @@ namespace Catfish.Areas.Manager.Controllers
             SecurityService.CreateAccessContext();
             if (limit == int.MaxValue)
                 limit = ConfigHelper.PageSize;
-
-            // XXX What happens if user is admin ?
-            // XXX How to check for admin ?
-
-            //UserService.GetUserById(User.Identity.Name.ToString());
-
-            //SecurityService ss = new SecurityService(Db);
-
-            //if (ss.IsAdmin(User.Identity.Name))
-            //{
-            //    return ItemService.
-            //}
-
+            
             var itemQuery = ItemService.GetItems();
-            var entities = itemQuery.OrderBy(e => e.Id)
-                .Skip(offset)
-                .Take(limit)
-                .Include(e => (e as CFEntity).EntityType)
-                .Select(e => e as CFEntity);
+            var entities = itemQuery.OrderBy(e => e.Id).Skip(offset).Take(limit).Include(e => (e as CFEntity).EntityType).Select(e => e as CFEntity);
             var total = itemQuery.Count();
 
             ViewBag.TotalItems = total;
@@ -65,13 +49,13 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int id)
         {
             SecurityService.CreateAccessContext();
             CFItem model = null;
-            if (id.HasValue && id.Value > 0)
+            if (id > 0)
             {
-                model = Db.Items.Where(et => et.Id == id).FirstOrDefault();
+                model = ItemService.GetItem(id);
                 if (model != null)
                 {
                     Db.Entry(model).State = EntityState.Deleted;
@@ -104,9 +88,10 @@ namespace Catfish.Areas.Manager.Controllers
         {
             SecurityService.CreateAccessContext();
             CFItem model;
+          
             if (id.HasValue && id.Value > 0)
             {
-                model = ItemService.GetItem(id.Value, AccessMode.Write);
+                model = ItemService.GetItem(id.Value);
                 if (model == null)
                     return HttpNotFound("Item was not found");
             }
@@ -172,7 +157,6 @@ namespace Catfish.Areas.Manager.Controllers
             childItems.LoadNextMasterSet(ItemService.GetItems());
             ViewBag.ChildItems = childItems;
 
-           
 
             EntityContentViewModel relatedItems = new EntityContentViewModel();
             relatedItems.Id = model.Id;
@@ -286,6 +270,7 @@ namespace Catfish.Areas.Manager.Controllers
             ViewBag.SugestedUsers = entityAccessVM.AvailableUsers2.ToArray();
             var accessList = accessGroupService.GetAccessCodesList();
             accessList.Remove(accessList.First()); //remove "None"
+            accessList.Remove(accessList.Last()); //remove all
             ViewBag.AccessCodesList = accessList;
             return View("AccessGroup", entityAccessVM);
         }
@@ -293,17 +278,14 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpPost]
         public ActionResult AccessGroup(int id, EntityAccessDefinitionsViewModel entityAccessVM)
         {
-            SecurityService.CreateAccessContext();
-            CFItem item = ItemService.GetItem(entityAccessVM.Id, AccessMode.Control);
-            if (item != null)
-            {
-                AccessGroupService accessGroupService = new AccessGroupService(Db);
-                item = accessGroupService.UpdateEntityAccessGroups(item, entityAccessVM) as CFItem;
-                item = EntityService.UpdateEntity(item) as CFItem;
-
-                item.Serialize();
-                Db.SaveChanges();
-            }            
+            CFItem item = ItemService.GetItem(entityAccessVM.Id);
+           
+            AccessGroupService accessGroupService = new AccessGroupService(Db);
+            item = accessGroupService.UpdateEntityAccessGroups(item, entityAccessVM) as CFItem;
+            item = EntityService.UpdateEntity(item) as CFItem;
+           
+            item.Serialize();
+            Db.SaveChanges();
 
             SuccessMessage(Catfish.Resources.Views.Shared.EntityAccessGroup.SaveSuccess);
 

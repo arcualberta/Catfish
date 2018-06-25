@@ -33,6 +33,33 @@ namespace Catfish.Areas.Manager.Controllers
             return View(entityGroupVM);
         }
 
+        [HttpPost]
+        public ActionResult Delete(string id)
+        {
+
+            //SecurityService.CreateAccessContext();
+            //CFItem model = null;
+            //if (id > 0)
+            //{
+            //    model = ItemService.GetItem(id);
+            //    if (model != null)
+            //    {
+            //        Db.Entry(model).State = EntityState.Deleted;
+            //        Db.SaveChanges(User.Identity);
+            //    }
+            //}
+
+            // Simplifyng to test if current user has admin priviledges
+            // XXX should we chech for other permissions ?
+            if (SecurityService.IsCurrentUserAdmin())
+            {
+                CFUserList entityGroup = EntityGroupService.GetEntityGroup(id);
+                EntityGroupService.DeleteEntityGroup(entityGroup);
+            }
+
+            return RedirectToAction("index");
+        }
+
         // POST: Manager/EntityGroups/Edit/5
         [HttpPost]
         public JsonResult Edit(CFUserListViewModel entGrpVM)

@@ -90,6 +90,24 @@ namespace Catfish.Core.Services
 
             return entityGroup;
         }
-        
+
+        public void DeleteEntityGroup(string id)
+        {
+            //check if this entityGroup existing in the database
+            CFUserList userList = GetEntityGroup(id);
+            if (userList != null)
+            {
+                DeleteEntityGroup(userList);
+            }           
+        }
+
+
+        public void DeleteEntityGroup(CFUserList userList)
+        {
+            //check if this entityGroup existing in the database
+            Db.UserLists.Remove(userList);
+         
+        }
+
     }
 }

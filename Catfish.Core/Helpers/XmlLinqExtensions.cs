@@ -28,6 +28,15 @@ namespace Catfish.Core.Helpers
         }
 
         public static IQueryable<TSource> FindAccessible<TSource>(
+            this DbSet<TSource> set,
+            bool isAdmin,
+            Guid guid,
+            AccessMode mode) where TSource : CFXmlModel
+        {
+            return FindAccessible(set, isAdmin, new List<Guid>{ guid }, mode);
+        }
+
+        public static IQueryable<TSource> FindAccessible<TSource>(
             this DbSet<TSource> set, 
             bool isAdmin,
             ICollection<Guid> Guids, 
