@@ -23,11 +23,13 @@
                     <td>@String.Join(" | ", @m.UserNames())</td>
                     <td>
                         Details |
-                        Details |
                         <span data-toggle="tooltip" title="Edit" data-container="body">
                             @Html.ActionLink(" ", "Edit", "UserLists", new { Id = m.Guid.ToString() }, new { @class = "glyphicon glyphicon-edit" })
                         </span>
-                        | Delete
+                        |
+                        <span data-toggle="tooltip" title="Delete" data-container="body">
+                            @Html.ActionLink(" ", "Delete", "UserLists", new { Id = m.Guid.ToString() }, new { @class = "glyphicon glyphicon-trash" })
+                        </span>
                     </td>
                 </tr>
                 }
