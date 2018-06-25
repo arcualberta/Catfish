@@ -19,7 +19,8 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/EntityGroups
         public ActionResult Index()
         {
-            return View(EntityGroupService.GetAllUserLists());
+            List<CFUserList> allUserlists = EntityGroupService.GetAllUserLists().ToList();
+            return View(allUserlists.Select(u => new CFUserListIndexViewModel(u)));
         }
 
         

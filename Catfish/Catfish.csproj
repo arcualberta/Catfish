@@ -348,6 +348,7 @@
     <Compile Include="Areas\Manager\Controllers\FormTemplatesController.cs" />
     <Compile Include="Areas\Manager\ModelBinders\DateModelBinder.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\AccessDefinitionsViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\CFUserListIndexViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\CFUserListViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityAccessDefinitionsViewModel.cs" />
     <Compile Include="Areas\Manager\Services\AccessGroupService.cs" />

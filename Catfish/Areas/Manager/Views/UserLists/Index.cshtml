@@ -1,9 +1,6 @@
-﻿@model IQueryable<Catfish.Core.Models.CFUserList>
-@using Catfish.Services;
-@using Catfish.Core.Models;
+﻿@model IEnumerable<Catfish.Areas.Manager.Models.ViewModels.CFUserListIndexViewModel>
 @{
     ViewBag.Title = "CFUser Groups";
-    UserService userService = new UserService();
 }
 @section Toolbar {
     @Html.Partial("Partial/IndexToolbar")
@@ -21,21 +18,21 @@
             @{
                 foreach (var m in Model)
                 {
-                    string users = string.Empty;
-                    foreach(CFUserListEntry u in m.CFUserListEntries)
-                    {
-                        Piranha.Entities.User user = userService.GetUserById(u.UserId.ToString());
-                        users += user.Login + " | ";
-                    }
-                    users = users.Substring(0, users.Length - 2);
-                    <tr><td>@m.Name</td><td>@users</td><td>Details | 
-                                <span data-toggle="tooltip" title="Edit"data-container="body" >
-                                      @Html.ActionLink(" ", "Edit", "UserLists", new { Id = m.Id.ToString() }, new { @class = "glyphicon glyphicon-edit" })
-                                </span>
-                                                         | Delete
-</td></tr>
+                <tr >
+                    <td>@m.UserListName</td>
+                    <td>@String.Join(" | ", @m.UserNames())</td>
+                    <td>
+                        Details |
+                        Details |
+                        <span data-toggle="tooltip" title="Edit" data-container="body">
+                            @Html.ActionLink(" ", "Edit", "UserLists", new { Id = m.Guid.ToString() }, new { @class = "glyphicon glyphicon-edit" })
+                        </span>
+                        | Delete
+                    </td>
+                </tr>
                 }
-            }
+
+                }
         </table>
     </div>
 </div>
