@@ -101,12 +101,6 @@ namespace Catfish.Core.Models.Access
                     }
                 }
 
-                //XXX If we need to check agains AccessMode.None add here
-                //if (accessModes.Count == 0)
-                //{
-                //    accessModes.Add(AccessMode.None);
-                //}
-
                 return accessModes;
             }            
         }
