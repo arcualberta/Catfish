@@ -22,19 +22,19 @@
                     <td>@m.UserListName</td>
                     <td>@String.Join(" | ", @m.UserNames())</td>
                     <td>
-                        Details |
-                        <span data-toggle="tooltip" title="Edit" data-container="body">
-                            @Html.ActionLink(" ", "Edit", "UserLists", new { Id = m.Guid.ToString() }, new { @class = "glyphicon glyphicon-edit" })
-                        </span>
-                        |
-                        <span data-toggle="tooltip" title="Delete" data-container="body">
-                            @Html.ActionLink(" ", "Delete", "UserLists", new { Id = m.Guid.ToString() }, new { @class = "glyphicon glyphicon-trash" })
-                        </span>
+                        <button>Details</button>
+                        <form action="@Url.Action("Edit", "UserLists", new {Id = m.Guid.ToString() })" method="get" class="inline">
+                            <button type="submit" value="Submit" class="glyphicon glyphicon-edit"></button>
+                        </form>
+
+                        <form action="@Url.Action("Delete", "UserLists", new {Id = m.Guid.ToString() })" method="post" class="inline">
+                            <button type="submit" value="Submit" class="glyphicon glyphicon-trash"></button>
+                        </form>
+
                     </td>
                 </tr>
                 }
-
-                }
+            }
         </table>
     </div>
 </div>

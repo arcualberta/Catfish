@@ -54,7 +54,8 @@ namespace Catfish.Core.Services
            
             try
             {
-                CFUserList entGroup = GetEntityGroup(entityGroup.Id.ToString());//check if this entityGroup existing in the database
+                //check if this entityGroup existing in the database
+                CFUserList entGroup = GetEntityGroup(entityGroup.Id.ToString());
                 if (entGroup != null)
                 {
                     
@@ -106,7 +107,7 @@ namespace Catfish.Core.Services
         {
             //check if this entityGroup existing in the database
             Db.UserLists.Remove(userList);
-         
+            Db.SaveChanges();
         }
 
     }
