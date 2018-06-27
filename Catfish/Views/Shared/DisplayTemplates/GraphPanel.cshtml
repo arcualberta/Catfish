@@ -6,15 +6,11 @@
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
 }
-<div id="@cssId" class="bs @cssClasses container container-fluid">
+<div id="@cssId" class="bs @cssClasses container container-fluid" style="margin-left:0;">
     <style type="text/css" scoped>
                     @Html.Raw(cssStyles)
     </style>
-    @*<div>Start Year<input type="text" id="MinX_Parameter" name="MinX_Parameter" class="input filterInput" placeholder="1960"/>
-            End Year <input type="text" id="MaxX_Parameter" name="MaxX_Parameter" class="input filterInput" placeholder="2018" />
-             <button id="graphPanel_filterYear_button" class="btn btn-sm sm-search-btn" onclick="appendUrl(); return false;">
-            <span class="glyphicon glyphicon-search"></span> </button>
-        </div>*@
+   
     <svg class="line-chart"> </svg>
     <div class="legend"></div>
 
@@ -23,6 +19,11 @@
     <script src="~/Scripts/D3/graph.js"></script>
 
     <script>
+    //Need to be set in order to also use QueryFilterPanel --
+    //Min_ParameterName and Max_ParameterName are needed by QueryFilterPanel
+    Min_ParameterName = '@Model.MinX_Parameter'; //minParameter appended on the ulr for search query
+    Max_ParameterName = '@Model.MaxX_Parameter'; //maxParameter appended on the ulr for search query
+
     const XLabel = '@Model.XaxisLabel';
     const YLabel ='@Model.YaxisLabel';
     const GraphTitle = '@Model.GraphTitle';
@@ -30,7 +31,7 @@
     const YScale=parseInt('@Model.YScale');
     var minX="", maxX="";
 
-  /*  const api = "https://api.coindesk.com/v1/bpi/historical/close.json?start=2017-12-31&end=2018-04-01"; */
+ 
     const xapi = "@Html.Raw(Url.Action("GetGraphData", "Items", new
              {
                  xMetadataSet = Model.SelectedMetadataSetX,
@@ -65,43 +66,22 @@ document.addEventListener("DOMContentLoaded", function (event) {
                .catch(function (err) { console.log(err); })
 });
 
-    $("#graphPanel_filterYear_button").click(function(){
-        minX = $("#Min_Parameter").val();
-         maxX = $("#Max_Parameter").val();
-         var url = window.location.href;
-         if (url.indexOf('?') > -1){
-            url = url.substr(0,url.indexOf("?"));
-        }
-        var search_url = "?" + '@Model.MinX_Parameter' + "=" + minX +"&" + '@Model.MaxX_Parameter' + "=" + maxX;
-        url += search_url;
-        window.location.href = url;
-    });
 
 
     </script>
 
     <style>
-        .sm-search-btn {
-            height: 20px;
-            padding-top: 1px;
-            vertical-align: top;
-        }
-
         .legend {
             font-size: 14px !important;
             width: 100px;
             border: 1px solid grey;
             float: right;
-            margin-right: 37%;
+            margin-right: 20%;
             margin-top: 10%;
             padding: 5px;
         }
 
-        .filterInput {
-            width: 50px;
-            margin: 0 10px;
-        }
-
+      
         .line-chart {
             margin-top: 20px;
         }

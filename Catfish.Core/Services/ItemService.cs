@@ -193,5 +193,7 @@ namespace Catfish.Core.Services
             ", facetMetadataGuid, facetFieldGuid, facetMin, facetMax, page * itemsPerPage, itemsPerPage);
             return Db.Items.SqlQuery(query).Skip(page * itemsPerPage).Take(itemsPerPage);
         }
+
+       
     }
 }

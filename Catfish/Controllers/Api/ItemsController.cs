@@ -14,9 +14,36 @@ namespace Catfish.Controllers.Api
 {
     public class ItemsController : CatfishController
     {   
+        public JsonResult GetPageItems(int page, int itemPerPage, string selectedMetadataSet, string selectedField, string min, string max, [Bind(Include = "mapIds[]")] int[] mapIds)
+        {
+            int iMin = string.IsNullOrEmpty(min) ? int.MinValue : int.Parse(min);
+            int iMax = string.IsNullOrEmpty(max) ? int.MaxValue : int.Parse(max);
+            var items = ItemService.GetPagedItems(page, itemPerPage + 1, selectedMetadataSet, selectedField, iMin, iMax).ToList();
+
+            List<List<string>> result = new List<List<string>>();
+
+            EntityTypeService entityTypeService = new EntityTypeService(Db);
+            if (items.Count > 0)
+            {
+                foreach (var itm in items)
+                {
+                    List<string> rowContent = new List<string>();
+                    foreach(int id in mapIds)
+                    {
+                        CFEntityTypeAttributeMapping am = entityTypeService.GetEntityTypeAttributeMappingById(id);
+                        string content = itm.GetAttributeMappingValue(am.Name);
+                        rowContent.Add(content);
+                    }
+                    result.Add(rowContent);
+                }
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+
+        }
         public JsonResult GetGraphData(string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField,int xmin = 0, int xmax = 0)
         {
-             xmin = xmin == 0 ? DateTime.MinValue.Year : xmin;
+            xmin = xmin == 0 ? DateTime.MinValue.Year : xmin;
             xmax = xmax == 0 ? DateTime.Now.Year : xmax;
             string xQuerySelect = "SELECT a.Year as YValue, SUM(a.Amount) AS XValue, COUNT(*) as 'Count', a.Category" + 
                                    " FROM(" +

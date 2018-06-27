@@ -41,29 +41,31 @@ namespace Catfish.Models.Regions
 
         public string SelectedMetadataSetCat { get; set; }
         [Display(Name = "Include Fields")]
-        public List<string> Fields { get; set; }
+        public List<string> Fields { get; set; }  //contain AttributeMapping Id
 
         [ScriptIgnore]
         public SelectList FieldsMapping { get; set; }
 
         [ScriptIgnore]
-        public List<CFItem> Items { get; set; }
+        public List<CFEntityTypeAttributeMapping> Mappings { get; set; }
 
         [ScriptIgnore]
-        public List<Result> Results { get; set; }   //for holding quesry results to display
-
+        public List<CFItem> Items { get; set; }
+        
         [ScriptIgnore]
         public int CurrentPage { get; set; }  
 
         [ScriptIgnore]
         public int ItemCount { get; set; }   //total items returned
+
+        
         public ListEntitiesPanel()
         {
             ListMetadataSets = new List<SelectListItem>();
             MetadataFields = new List<SelectListItem>();
             Fields = new List<string>();
-            Results = new List<Result>();
             CurrentPage = 1;
+            Mappings = new List<CFEntityTypeAttributeMapping>();
         }
         public override void InitManager(object model)
         {
@@ -88,18 +90,10 @@ namespace Catfish.Models.Regions
                 }
             }
 
-
             EntityTypeService entityTypeSrv = new EntityTypeService(db);
-
-            FieldsMapping = new SelectList((entityTypeSrv.GetEntityTypeAttributeMappings()).GroupBy(e => e.Name).Select(e => e.FirstOrDefault()), "Name", "Name");
-            if (Fields.Count <= 0)
-            {
-                foreach (SelectListItem f in FieldsMapping)
-                {
-                    if (f.Text.Equals("Name Mapping") || f.Text.Equals("Description Mapping"))
-                        Fields.Add(f.Text);
-                }
-            }
+       
+            FieldsMapping = new SelectList((entityTypeSrv.GetEntityTypeAttributeMappings()), "Id", "Name");
+           
             base.InitManager(model);
         }
 
@@ -130,18 +124,21 @@ namespace Catfish.Models.Regions
                 ItemService itemService = new ItemService(db);
 
 
-                Items = itemService.GetPagedItems(page, ItemPerPage + 1, SelectedMetadataSet, selectedFilterField, min, max).ToList();
+                Items = itemService.GetPagedItems(page, ItemPerPage+1, SelectedMetadataSet, selectedFilterField, min, max).ToList();
+
+               // var mappings = entityTypeSrv.GetEntityTypeAttributeMappings().Where(a => FieldsMappingId.Contains(a.Id)).OrderBy(a => FieldsMappingId.IndexOf(a.Id));
+               //grab the columnHeaders
+               foreach(string id in Fields)
+                {
+                    CFEntityTypeAttributeMapping map= entityTypeService.GetEntityTypeAttributeMappingById(int.Parse(id));
+                    Mappings.Add(map);
+                }
 
                 ItemCount = Items.Count;
             }
-
             return base.GetContent(model);
         }
 
-        public class Result
-        {
-            public string Label { get; set; }
-            public string Value { get; set; }
-        }
+        
     }
 }

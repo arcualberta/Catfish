@@ -52,6 +52,7 @@ namespace Catfish.Core.Models
 
         [JsonIgnore] //Ignore this in JSON serialization to avoid stuck in a continuous loop
         [IgnoreDataMember]
+        [InverseProperty("EntityType")]
         public virtual ICollection<CFEntityTypeAttributeMapping> AttributeMappings { get; set; }
 
         [NotMapped]

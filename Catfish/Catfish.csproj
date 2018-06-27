@@ -312,6 +312,8 @@
     <Content Include="Areas\Manager\Views\Shared\Partial\EntityAccessGroup.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\GraphPanel.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\ListEntitiesPanel.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\CalculatedFieldPanel.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\QueryFilterPanel.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
@@ -353,7 +355,9 @@
     <Compile Include="Areas\Manager\Services\AccessGroupService.cs" />
     <Compile Include="Areas\Manager\Services\PageService.cs" />
     <Compile Include="Models\Regions\GraphPanel.cs" />
+    <Compile Include="Models\Regions\CalculatedFieldPanel.cs" />
     <Compile Include="Models\Regions\ListEntitiesPanel.cs" />
+    <Compile Include="Models\Regions\QueryFilterPanel.cs" />
     <Compile Include="Resources\Global.fr.Designer.cs">
       <DependentUpon>Global.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -374,6 +378,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EntityAccessGroup.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\ItemQueryService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Controllers\Api\FormsController.cs" />
     <Compile Include="Controllers\Api\ItemsController.cs" />
@@ -494,6 +499,8 @@
     <Content Include="Views\FormSubmission\EditorTemplates\ClientInfo.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\GraphPanel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\ListEntitiesPanel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\CalculatedFieldPanel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\QueryFilterPanel.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
