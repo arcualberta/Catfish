@@ -1,0 +1,42 @@
+﻿@model Catfish.Models.Regions.CalculatedFieldPanel
+
+@{
+    string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
+    string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
+    string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+
+}
+<style>
+    .calculatedField {
+        float: left;
+        width: 15%;
+        background-color: #a3a2a2;
+        border-radius: 5px;
+        text-align: center;
+        margin-right:10px;
+    }
+</style>
+<div id="@cssId" class="bs @cssClasses container container-fluid calculatedField" >
+   
+        <style type="text/css" scoped>
+                    @Html.Raw(cssStyles)
+        </style>
+        <div>@Html.DisplayFor(m => m.Title)</div>
+        <div>@string.Format("{0:C}", Model.Result)</div>
+   
+</div>
+
+<script>
+    //Need to be set in order to also use QueryFilterPanel
+    Min_ParameterName = '@Model.Min_Parameter';
+    Max_ParameterName = '@Model.Max_Parameter';
+
+    Min_Value = '@Model.MinValue';
+    Max_Value = '@Model.MaxValue';
+    //Min_Parameter and Max_parameter is the <input> id on QueryFilterPanel
+     $("#Min_Parameter").val(Min_Value);
+     $("#Max_Parameter").val(Max_Value);
+
+
+
+</script>

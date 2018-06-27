@@ -1,0 +1,94 @@
+﻿@model Catfish.Models.Regions.CalculatedFieldPanel
+<style>
+    .input select {
+        background: #efeeee85;
+        border-radius: 2px;
+        padding-right:5px;
+    }
+</style>
+<ul class="form">
+    
+    @Html.Partial("_CatfishRegion", Model)
+    <li>
+        @Html.LabelFor(m => m.Title)
+        <div class="input">
+            @Html.EditorFor(m => m.Title)
+        </div>
+    </li>
+   
+    <li>
+        @Html.Label("Field ")
+        <div class="input">
+            @Html.DropDownListFor(m => m.SelectedFieldMetadataSet, new SelectList(Model.ListMetadataSets, "Value", "Text"), new {@style="width:auto;", @class="dropdown" })
+            @Html.DropDownListFor(m => m.SelectedField, new SelectList(Model.MetadataFields, "Value", "Text"), new {@style="width:auto" })
+       </div>
+    </li>
+    <li>
+        @Html.Label("Filter By ")
+        <div class="input">
+            @Html.DropDownListFor(m => m.SelectedFilterMetadataSet, new SelectList(Model.ListMetadataSets, "Value", "Text"), new { @style = "width:auto;", @class = "dropdown" })
+            @Html.DropDownListFor(m => m.selectedFilterField, new SelectList(Model.MetadataFields, "Value", "Text"), new { @style = "width:auto" })
+        </div>
+    </li>
+    
+    <li>
+        @Html.LabelFor(m => m.Min_Parameter)
+        <div class="input">
+            @Html.EditorFor(m => m.Min_Parameter)       
+        </div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.Max_Parameter)
+        <div class="input">
+            @Html.EditorFor(m => m.Max_Parameter)
+        </div>
+    </li>
+   
+    <li>
+        @Html.Label("Function ")
+        <div class="input">
+            @Html.DropDownListFor(m => m.SelectedFunction, new SelectList(Model.FunctionModes, "Value", "Text"), new { @style = "width:auto;", @class = "dropdown" })
+
+        </div>
+    </li>
+  
+</ul>
+
+<script type="text/javascript">
+   /*
+    $( document ).ready(function() {
+       $('.up,.down').click(function () {
+          var row = $(this).parents('tr:first');
+          if ($(this).is('.up')) {
+               row.insertBefore(row.prev())
+          }
+         else {
+            row.insertAfter(row.next());
+           }
+     });
+
+
+    });
+    function AddField()
+    {
+      var Field = $("#Regions_0__Body_selectedField").val();
+      var uniqueId = Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
+     var rowCount = $('#AttributeMappingTable tr').length;
+    var rowId = "row_" + (rowCount - 1);
+
+
+      var t = `<tr id="` + rowId +`"><input type="hidden" name="Regions[0].Body.Fields.Index" value="` + uniqueId + `">
+               <input name="Regions[0].Body.Fields[` + uniqueId +  `]" type="hidden" value="` + Field +`">
+                    <td><span>` + Field + `</span></td>
+                    <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteRow('` + rowId +`')"></span><span class="glyphicon glyphicon-arrow-up"></span><span class="glyphicon glyphicon-arrow-down"></span></td>
+                </tr>`;
+
+      $("#ddFields").before(t)
+    }
+
+    function DeleteRow(index)
+    {
+       $("#" + index).remove();
+    }
+    */
+</script>
