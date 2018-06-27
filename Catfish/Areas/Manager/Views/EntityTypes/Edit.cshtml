@@ -52,7 +52,7 @@
 }
 
 @section Toolbar {
-    @Html.Partial("Partial/koEditToolbar")
+    @Html.Partial("Partial/koEditToolbar", Model, new ViewDataDictionary() { { "saveButtonFunctionCall", "saveEntityType" } })
 }
 
 @{
@@ -60,17 +60,23 @@
     var ko = Html.CreateKnockoutContext(context);
 }
 
+@if (Model.redirect)
+{
+    <script type="text/javascript">window.location = "@Model.url";</script>
+}
+
 <div id="@context">
-        @using (ko.Html.Form("Save", "EntityTypes", null, new { id = context + "Form" }))
+        @*@using (ko.Html.Form("Edit", "EntityTypes", null, new { id = context + "Form" }))*@
+        @using(Html.BeginForm("Edit", "EntityTypes", new { id = Model.Id }, FormMethod.Post))
         {
           <div class="grid_12">
                 <div class="box">
                     <div class="title">
                         Basic Information
                         <div class="bs right">
-                            <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
+                            @*<span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
                             <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
-                            @ko.Html.Button("Save", "Save", "EntityTypes", null, new { @id = "btnSave" }).Enable(m=>m.ErrorMessage != "*" && m.AssociatedMetadataSets.Count > 1)
+                            @ko.Html.Button("Save", "Save", "EntityTypes", null, new { @id = "btnSave" }).Enable(m=>m.ErrorMessage != "*" && m.AssociatedMetadataSets.Count > 1)*@
                         </div>
                     </div>
                     <div class="inner">
@@ -113,12 +119,12 @@
                     </div>
                 </div>
               
-              @using (ko.If(m => m.AssociatedMetadataSets.Count <= 0))
+              @using (ko.If(m => m.AvailableMetadataSets.Count <= 1))
               {
                   <div class="alert alert-warning">A Metadata Set must be created before creating an Entity Type.</div>
                  
               }
-             @using (ko.If(m => m.AssociatedMetadataSets.Count > 0))
+             @using (ko.If(m => m.AvailableMetadataSets.Count > 1))
              {
                 <div id="fields-container">
                     <div class="box">
@@ -149,7 +155,7 @@
               }
 
               @*show the attribute mapping apnel when associated metadataset is not empty -- > 1, because the 1st was empty, added there to force user to choose*@
-              @using (ko.If(m=>m.AssociatedMetadataSets.Count > 1)) {
+              @using (ko.If(m=>m.AssociatedMetadataSets.Count > 0)) {
                 <div id="fieldmappings-container">
                     <div class="box">
                         <div class="title">
@@ -231,6 +237,7 @@
           </div>
         }
   </div>
+
 @ko.Apply(Model, context)
 
 <script>
@@ -241,5 +248,47 @@
                 @(context).ErrorMessage(newValue.length > 0 ? "" : "*");
         });
     });
+
+    function saveEntityType() {
+        var data = {
+            vm: @(context)
+        };
+        data = ko.toJS(data); // This is done to remove all observable objects.
+        data.vm.SelectedMetadataSets = null; // This is to avoid binding errors when reloading the page.
+
+        var pageForm = $("#@(context) > form");
+
+        /*var form = document.createElement("form");
+        form.setAttribute("method", "POST");
+        form.setAttribute("accept", "text/javascript");
+        form.setAttribute("action", pageForm.attr("action"));
+
+        var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("name", "vm");
+        hiddenField.setAttribute("value", ko.toJSON());
+        hiddenField.setAttribute("type", "hidden");
+        form.appendChild(hiddenField);
+
+        document.body.appendChild(form);
+        form.submit();*/
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("post", pageForm.attr("action"), )
+
+        var form = document.createElement("form");
+        form.setAttribute("method", "POST");
+        form.setAttribute("action", pageForm.attr("action"), true);
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+
+        xhr.onload = function (result) {
+            delete @context;
+            delete @(context)Js;
+            document.open("text/html", "replace");
+            document.write(xhr.response);
+            document.close();
+        }
+
+        xhr.send(JSON.stringify(data));
+    }
 
 </script>
