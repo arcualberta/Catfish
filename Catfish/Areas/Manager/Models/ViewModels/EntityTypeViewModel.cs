@@ -119,8 +119,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
             else
             {
-                AttributeMappings.Add(new AttributeMapping { Name = "Name Mapping", Deletable=false });     
-                AttributeMappings.Add(new AttributeMapping { Name = "Description Mapping", Deletable=false});
+                AttributeMappings.Add(new AttributeMapping { Name = "Name Mapping", Deletable = false });
+                AttributeMappings.Add(new AttributeMapping { Name = "Description Mapping", Deletable = false });
             }
             
         }

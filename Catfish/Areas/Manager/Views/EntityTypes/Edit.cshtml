@@ -60,6 +60,11 @@
     var ko = Html.CreateKnockoutContext(context);
 }
 
+@if (Model.redirect)
+{
+    <script type="text/javascript">window.location = "@Model.url";</script>
+}
+
 <div id="@context">
         @*@using (ko.Html.Form("Edit", "EntityTypes", null, new { id = context + "Form" }))*@
         @using(Html.BeginForm("Edit", "EntityTypes", new { id = Model.Id }, FormMethod.Post))
@@ -114,12 +119,12 @@
                     </div>
                 </div>
               
-              @using (ko.If(m => m.AssociatedMetadataSets.Count <= 0))
+              @using (ko.If(m => m.AvailableMetadataSets.Count <= 1))
               {
                   <div class="alert alert-warning">A Metadata Set must be created before creating an Entity Type.</div>
                  
               }
-             @using (ko.If(m => m.AssociatedMetadataSets.Count > 0))
+             @using (ko.If(m => m.AvailableMetadataSets.Count > 1))
              {
                 <div id="fields-container">
                     <div class="box">

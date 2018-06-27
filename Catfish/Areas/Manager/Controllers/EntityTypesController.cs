@@ -200,6 +200,7 @@ namespace Catfish.Areas.Manager.Controllers
                     //so that the ID is added to the URL.
                     vm.redirect = true;
                     vm.url = Url.Action("Edit", "EntityTypes", new { id = model.Id });
+                    return View(vm);
                 }
             }
             else
