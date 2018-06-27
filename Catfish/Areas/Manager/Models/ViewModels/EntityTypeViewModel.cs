@@ -74,6 +74,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             //populating the available metadata sets array
             MetadataService srv = new MetadataService(db);
             var metadataSets = srv.GetMetadataSets();
+            AvailableMetadataSets.Clear();
             AvailableMetadataSets.Add(new MetadataSetListItem(0, ""));
             foreach (var ms in metadataSets)
             {
@@ -82,12 +83,12 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
 
             //populating the associated metadata sets array
+            AssociatedMetadataSets.Clear();
             foreach (var ms in model.MetadataSets)
                 AssociatedMetadataSets.Add(new MetadataSetListItem(ms.Id, ms.Name));
 
 
-            //melania
-
+            AttributeMappings.Clear();
             if (model.AttributeMappings.Count > 0)
             {
 
@@ -118,8 +119,6 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
             else
             {
-                AttributeMappings.Clear();
-                
                 AttributeMappings.Add(new AttributeMapping { Name = "Name Mapping", Deletable=false });     
                 AttributeMappings.Add(new AttributeMapping { Name = "Description Mapping", Deletable=false});
             }

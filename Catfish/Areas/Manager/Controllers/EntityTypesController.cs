@@ -18,7 +18,7 @@ namespace Catfish.Areas.Manager.Controllers
             return View(EntityTypeService.GetEntityTypes());
         }
 
-
+        [HttpGet]
         // GET: Manager/EntityTypes/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -219,6 +219,9 @@ namespace Catfish.Areas.Manager.Controllers
                 ErrorMessage(Catfish.Resources.Views.EntityTypes.Edit.SaveInvalid);
                 return View(vm);
             }
+
+            var m = EntityTypeService.GetEntityTypeById(vm.Id);
+            vm.UpdateViewModel(m, Db);
 
             SuccessMessage(Catfish.Resources.Views.EntityTypes.Edit.SaveSuccess);
             return View(vm);
