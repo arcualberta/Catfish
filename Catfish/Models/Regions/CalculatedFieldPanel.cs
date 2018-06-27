@@ -17,6 +17,7 @@ namespace Catfish.Models.Regions
     public class QueryResultObject
     {  
         public decimal calculatedValue { get; set; }
+        public int count { get; set; }
     }
 
     [Export(typeof(IExtension))]
@@ -126,8 +127,10 @@ namespace Catfish.Models.Regions
                 var result = itemQuerySrv.GetCalculatedField(functionName, SelectedFieldMetadataSet, SelectedField, SelectedFilterMetadataSet, selectedFilterField, min, max);
               
                 foreach (var r in result)
-                {        
-                    Result = r.calculatedValue;    
+                {       if (functionName == FunctionMode.COUNT.ToString())
+                        Result = r.count;
+                    else
+                        Result = r.calculatedValue;    
                 }
             }
 

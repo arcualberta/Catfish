@@ -16,7 +16,11 @@ namespace Catfish.Services
         public IEnumerable<QueryResultObject> GetCalculatedField(string functionName, string SelectedFieldMetadataSet, string SelectedField, string SelectedFilterMetadataSet, string selectedFilterField, int min, int max)
         {
             CatfishDbContext db = new CatfishDbContext();
-            string xQuerySelect = "SELECT " + functionName + "(a.Amount) AS calculatedValue " +
+            if(functionName == "COUNT")
+            {
+                functionName = "SUM"; //when it's only asking for count, this function operation is not matter
+            }
+            string xQuerySelect = "SELECT " + functionName + "(a.Amount) AS calculatedValue, COUNT(*) as 'count' " +
                              " FROM(" +
                              " SELECT  Content.value('(/item/metadata/metadata-set[@guid=\"" + SelectedFieldMetadataSet + "\"]/fields/field[@guid=\"" + SelectedField + "\"]/value/text/text())[1]', 'DECIMAL') AS Amount, " +
                               " Content.value('(/item/metadata/metadata-set[@guid=\"" + SelectedFilterMetadataSet + "\"]/fields/field[@guid=\"" + selectedFilterField + "\"]/value/text/text())[1]', 'INT') AS Year " +

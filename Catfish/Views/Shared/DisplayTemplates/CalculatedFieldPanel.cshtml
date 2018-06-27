@@ -4,7 +4,6 @@
     string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
-
 }
 <style>
     .calculatedField {
@@ -22,7 +21,15 @@
                     @Html.Raw(cssStyles)
         </style>
         <div>@Html.DisplayFor(m => m.Title)</div>
-        <div>@string.Format("{0:C}", Model.Result)</div>
+             @if (Model.SelectedFunction == "COUNT")
+             {
+                <div>@Model.Result</div>
+             }
+             else
+             {
+                <div>@string.Format("{0:C}", Model.Result)</div>
+             }
+        
    
 </div>
 
