@@ -37,9 +37,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpPost]
         public ActionResult Delete(string id)
         {
-
-            //XXX should we chech for other permissions ?
-            //XXX Add security context checks
+            SecurityService.CreateAccessContext();
             if (SecurityService.IsCurrentUserAdmin())
             {
                 EntityGroupService.DeleteEntityGroup(id);

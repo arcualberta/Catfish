@@ -1,11 +1,16 @@
 ﻿
+using Catfish.Core.Contexts;
+using Catfish.Core.Helpers;
 using Catfish.Core.Models;
+using Catfish.Core.Models.Access;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace Catfish.Core.Services
 {
@@ -92,14 +97,34 @@ namespace Catfish.Core.Services
             return entityGroup;
         }
 
+        private void RemoveAccessGroups(IEnumerable<CFAggregation> aggregations, string id)
+        {
+            foreach (CFItem aggregation in aggregations)
+            {
+                string accessGroupXPath = "//access-group[access-guid[text()='" + id + "']]";
+                aggregation.Data.XPathSelectElement(accessGroupXPath).Remove();
+                aggregation.Serialize();
+            }
+        }
+
         public void DeleteEntityGroup(string id)
         {
             //check if this entityGroup existing in the database
             CFUserList userList = GetEntityGroup(id);
             if (userList != null)
             {
+                // Remove from all agregations references to userList
+                Guid removedGuid = new Guid(id);
+                IEnumerable<CFAggregation> items = Db.Items.FindAccessibleByGuid(removedGuid, AccessMode.Read).ToList();
+                IEnumerable<CFAggregation> collections = Db.Collections.FindAccessibleByGuid(removedGuid, AccessMode.Read).ToList();                
+
+                RemoveAccessGroups(items, id);              
+                RemoveAccessGroups(collections, id);
+
                 DeleteEntityGroup(userList);
-            }           
+                Db.SaveChanges();
+
+            }
         }
 
 

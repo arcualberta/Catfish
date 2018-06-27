@@ -141,6 +141,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpGet]
         public ActionResult AccessGroup(int id)
         {
+            SecurityService.CreateAccessContext();
             var entity = CollectionService.GetCollection(id); //ItemService.GetAnEntity(id);
             EntityAccessDefinitionsViewModel entityAccessVM = new EntityAccessDefinitionsViewModel();
             AccessGroupService accessGroupService = new AccessGroupService(Db);

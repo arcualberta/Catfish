@@ -263,6 +263,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpGet]
         public ActionResult AccessGroup(int id)
         {
+            SecurityService.CreateAccessContext();
             var entity = ItemService.GetAnEntity(id);
             EntityAccessDefinitionsViewModel entityAccessVM = new EntityAccessDefinitionsViewModel();
             AccessGroupService accessGroupService = new AccessGroupService(Db);
@@ -278,6 +279,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpPost]
         public ActionResult AccessGroup(int id, EntityAccessDefinitionsViewModel entityAccessVM)
         {
+            SecurityService.CreateAccessContext();
             CFItem item = ItemService.GetItem(entityAccessVM.Id);
            
             AccessGroupService accessGroupService = new AccessGroupService(Db);

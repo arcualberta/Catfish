@@ -28,9 +28,9 @@
         <li class="form form-custom">
             <label class="control-label col-md-2">User List</label>
             <div class="inner">
-                <div class="input" style="width:500px !important" >
+                <div class="input" style="width:500px !important">
 
-                    @ko.Html.TextBox(m => m.CFUserListName, new { @required = "required", @style = "width:413px !important;", @id="txtGrpName" })
+                    @ko.Html.TextBox(m => m.CFUserListName, new { @required = "required", @style = "width:413px !important;", @id = "txtGrpName" })
                     @* XXX m.ErrorMessage is null *@
                     @*@ko.Html.Span(m => m.ErrorMessage, new { @style = "float: right;color:red;" }).Visible(m => m.ErrorMessage.Length > 0)*@
 
