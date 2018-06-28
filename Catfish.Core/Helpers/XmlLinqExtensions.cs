@@ -52,7 +52,9 @@ namespace Catfish.Core.Helpers
                 FROM CFXmlModels CROSS APPLY
                 content.nodes('//access/access-group') AS contentCast(pref)
             ) AS Result
-            WHERE Discriminator = '{(string)typeof(TSource).Name.ToString()}' AND Mode & {(int)mode} = {(int)mode} AND Guid IN ({(string)guidList})
+            WHERE Discriminator = '{(string)typeof(TSource).Name.ToString()}' 
+            AND Mode & {(int)mode} = {(int)mode} 
+            AND Guid IN ({(string)guidList})
             ";
 
             return set.SqlQuery(sqlQuery).AsQueryable().Distinct();
@@ -80,22 +82,6 @@ namespace Catfish.Core.Helpers
             }
 
             return FindAccessibleByGuid(set, guids, mode);
-            //string guidList = string.Join(",", Array.ConvertAll(Guids.ToArray(), g => "'" + g + "'"));
-            //string sqlQuery = $@"
-            //SELECT *
-            //FROM
-            //(SELECT 
-            //    CFXmlModels.*,
-            //    CAST( [content] AS NVARCHAR(MAX) ) AS [contentCast],
-            //    pref.value('access-definition[1]/access-modes[1]', 'int') AS Mode,
-            //    pref.value('access-guid[1]', 'char(36)') AS Guid
-            //    FROM CFXmlModels CROSS APPLY
-            //    content.nodes('//access/access-group') AS contentCast(pref)
-            //) AS Result
-            //WHERE Mode & {(int)mode} = {(int)mode} AND Guid IN ({(string)guidList})
-            //";
-
-            //return set.SqlQuery(sqlQuery).AsQueryable().Distinct();
         }
 
     }

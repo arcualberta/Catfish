@@ -102,7 +102,7 @@ namespace Catfish.Tests.Views
             {
                 UserName = userName2,
                 Password = password
-            };            
+            };
 
             ItemParameters itemParameters = new ItemParameters
             {
@@ -129,44 +129,78 @@ namespace Catfish.Tests.Views
 
             //CreateUser(user1Parameters);
             //CreateUser(user2Parameters);
-            //CreateUserList(userListParameters);
-            //CreateItem(itemParameters);
-            //CreateCollection(collectionParameters);
-            //CreateAccessDefinition(accessDefinitionParameters);
+            ////CreateUserList(userListParameters);
+            CreateItem(itemParameters);
+            ////CreateCollection(collectionParameters);
+            ////CreateAccessDefinition(accessDefinitionParameters);
 
-            // navigate to newly created item
-            // click on its button with class glyphicon-eye-close
-
-            Navigate(new string[] { ContentLabel, ItemsLabel });
-
-            // click on last item
-            //Driver.FindElement(By.XPath("//button[@class='glyphicon-eye-close']")).Click();
-            //Driver.FindElement(By.XPath("//table/tbody/tr[last()]/tr[last()]/form[last()]/button[@class='glyphicon glyphicon-eye-close']")).Click();
-            Driver.FindElement(By.XPath("(//button[@class[contains(.,'glyphicon-eye-close')]])[last()]")).Click();
-            Driver.FindElement(By.Id("usrName")).SendKeys(userName1);
+            //// navigate to newly created item
+            //// click on its button with class glyphicon-eye-close
             WaitPageSourceChange(5, 500);
-            Driver.FindElement(By.XPath("//li/div[contains(string(), '"+userName1+"')]")).Click();
 
-            IWebElement groupElement = Driver.FindElement(By.Id("SelectedAccessDefinition"));
-            SelectElement selectElement = new SelectElement(groupElement);
-            // assuming there are at least 2 groups to avoid creating 
-            // administrators
-            selectElement.SelectByText(accessDefinitionName + " - Read");
-            Driver.FindElement(By.Id("btnAddUserAccess")).Click();
-            Driver.FindElement(By.LinkText(SaveLabel)).Click();
+            //Navigate(new string[] { ContentLabel, ItemsLabel });
 
-            Logout();
-            Login(userName1, password);
+            //// click on last item
+            ////Driver.FindElement(By.XPath("//button[@class='glyphicon-eye-close']")).Click();
+            ////Driver.FindElement(By.XPath("//table/tbody/tr[last()]/tr[last()]/form[last()]/button[@class='glyphicon glyphicon-eye-close']")).Click();
+            //Driver.FindElement(By.XPath("(//button[@class[contains(.,'glyphicon-eye-close')]])[last()]")).Click();
+            //Driver.FindElement(By.Id("usrName")).SendKeys(userName1);
+            //WaitPageSourceChange(5, 500);
+            //Driver.FindElement(By.XPath("//li/div[contains(string(), '"+userName1+"')]")).Click();
+
+            //IWebElement groupElement = Driver.FindElement(By.Id("SelectedAccessDefinition"));
+            //SelectElement selectElement = new SelectElement(groupElement);
+            //// assuming there are at least 2 groups to avoid creating 
+            //// administrators
+            //selectElement.SelectByText(accessDefinitionName + " - Read");
+            //Driver.FindElement(By.Id("btnAddUserAccess")).Click();
+            //Driver.FindElement(By.LinkText(SaveLabel)).Click();
+
+            //Logout();
+            //Login(userName1, password);
+
+            //// check if user 1 can see what it needs
+
+            //Logout();
+            //Login(userName2, password);
+            //// check if user 2 can see what it needs
+
+
+            //Logout();
+
+            //LoginAsAdmin();
+            // Cleanup
 
 
             // delete item
+            Navigate(new string[] { ContentLabel, ItemsLabel });
+            
+            string pathToRemoveButton = "//td[text()='"
+                + itemParameters.ItemName
+                + "']/../td[contains[@class='action-panel']]"
+                + "//button[contains[@class='glyphicon-remove']]";
+
+            Driver.FindElement(By.XPath(pathToRemoveButton)).Click();
+
+
             // delete collection
+            //Navigate(new string[] { ContentLabel, CollectionsLabel });
+
             // delete access definition
+            //Navigate(new string[] { SystemLabel, AccessDefinitionLabel });
             // delete user1
+
+
             // delete user2
 
         }
-        
+
+        [Test]
+        public void CanRemoveUserList()
+        {
+            Assert.Fail();
+        }
+
         //[Test]
         //public void TestMethods()
         //{
