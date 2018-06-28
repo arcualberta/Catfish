@@ -46,6 +46,7 @@
         var afterComplete = function (errorMessage) {
             var form = document.createElement("form");
             form.setAttribute("method", "POST");
+            form.setAttribute("accept", "text/javascript");
             form.setAttribute("action", "@Url.Action("Associations", "Collections", new { id = Model.Id })");
 
             var hiddenField = document.createElement("input");
