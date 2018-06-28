@@ -31,5 +31,8 @@ namespace Catfish.Core.Models
         [IgnoreDataMember]
         public virtual ICollection<CFEntityType> EntityTypes { get; set; }
 
+        [NotMapped]
+        public bool HasAssociations { get { return false; } }
+
     }
 }

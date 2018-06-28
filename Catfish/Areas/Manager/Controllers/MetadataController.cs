@@ -20,7 +20,23 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult Index()
         {
+            ViewData["showDeleteButton"] = true;
             return View(MetadataService.GetMetadataSets());
+        }
+
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            SecurityService.CreateAccessContext();
+            
+            CFMetadataSet metadataSet = MetadataService.GetMetadataSet(id);
+            if (metadataSet != null)
+            {
+                Db.MetadataSets.Remove(metadataSet);
+                Db.SaveChanges();
+            }
+            
+            return RedirectToAction("index");
         }
 
     }
