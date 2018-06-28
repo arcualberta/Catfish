@@ -26,7 +26,8 @@ namespace Catfish.Services
                               " Content.value('(/item/metadata/metadata-set[@guid=\"" + SelectedFilterMetadataSet + "\"]/fields/field[@guid=\"" + selectedFilterField + "\"]/value/text/text())[1]', 'INT') AS Year " +
 
                               " FROM [dbo].[CFXmlModels]" +
-                              " WHERE Discriminator = 'CFItem' AND Content.exist('/item/metadata/metadata-set[@guid=\"" + SelectedFieldMetadataSet + "\"]') = 1" +
+                             
+                              " WHERE Discriminator = 'CFItem' AND Content.exist('number((/item/metadata/metadata-set[@guid=\"" + SelectedFieldMetadataSet + "\"]/fields/field[@guid=\"" + SelectedField + "\"]/value/text)[1])') = 1 " +
                               " ) as a" +
                                " WHERE a.Year >= " + min + " AND a.Year <= " + max;
 
@@ -40,18 +41,28 @@ namespace Catfish.Services
             CatfishDbContext db = new CatfishDbContext();
             xmin = xmin == 0 ? DateTime.MinValue.Year : xmin;
             xmax = xmax == 0 ? DateTime.Now.Year : xmax;
-            string xQuerySelect = "SELECT a.Year as YValue, SUM(a.Amount) AS XValue, COUNT(*) as 'Count', a.Category" +
-                                  " FROM(" +
-                                  " SELECT  Content.value('(/item/metadata/metadata-set[@guid=\"" + xMetadataSet + "\"]/fields/field[@guid=\"" + xField + "\"]/value/text/text())[1]', 'INT') AS Year ," +
-                                   " Content.value('(/item/metadata/metadata-set[@guid=\"" + yMetadataSet + "\"]/fields/field[@guid=\"" + yField + "\"]/value/text/text())[1]', 'DECIMAL') AS Amount," +
-                                   " Content.value('(/item/metadata/metadata-set[@guid=\"" + catMetadataSet + "\"]/fields/Field[@guid=\"" + catField + "\"]/options/option[@selected=\"true\"]/text/text())[1]', 'VARCHAR(25)') AS Category" +
-                                   " FROM[dbo].[CFXmlModels]" +
-                                   " WHERE Discriminator = 'CFItem' AND Content.exist('/item/metadata/metadata-set[@guid=\"" + xMetadataSet + "\"]') = 1" +
-                                   " ) as a" +
-                                    " WHERE a.Year >= " + xmin + " AND a.Year <= " + xmax +
-                                    " GROUP BY a.Year, a.Category" +
-                                    " ORDER BY a.Year";
-
+            //string xQuerySelect = "SELECT a.Year as YValue, SUM(a.Amount) AS XValue, COUNT(*) as 'Count', a.Category" +
+            //                      " FROM(" +
+            //                      " SELECT  Content.value('(/item/metadata/metadata-set[@guid=\"" + xMetadataSet + "\"]/fields/field[@guid=\"" + xField + "\"]/value/text/text())[1]', 'INT') AS Year ," +
+            //                       " Content.value('(/item/metadata/metadata-set[@guid=\"" + yMetadataSet + "\"]/fields/field[@guid=\"" + yField + "\"]/value/text/text())[1]', 'DECIMAL') AS Amount," +
+            //                       " Content.value('(/item/metadata/metadata-set[@guid=\"" + catMetadataSet + "\"]/fields/Field[@guid=\"" + catField + "\"]/options/option[@selected=\"true\"]/text/text())[1]', 'VARCHAR(25)') AS Category" +
+            //                       " FROM[dbo].[CFXmlModels]" +
+            //                       " WHERE Discriminator = 'CFItem' AND Content.exist('/item/metadata/metadata-set[@guid=\"" + xMetadataSet + "\"]') = 1" +
+            //                       " ) as a" +
+            //                        " WHERE a.Year >= " + xmin + " AND a.Year <= " + xmax +
+            //                        " GROUP BY a.Year, a.Category" +
+            //                        " ORDER BY a.Year";
+            string xQuerySelect = "SELECT a.Year as YValue, SUM(a.Amount) AS XValue, COUNT(*) as 'Count' , a.Category" +
+                                   " FROM(" +
+                                   " SELECT Content.value('(/item/metadata/metadata-set[@guid=\"" + xMetadataSet + "\"]/fields/field[@guid=\"" + xField + "\"]/value/text/text())[1]', 'INT') AS Year ," +
+                                    " Content.value('(/item/metadata/metadata-set[@guid=\"" + yMetadataSet + "\"]/fields/field[@guid=\"" + yField + "\"]/value/text/text())[1]', 'DECIMAL') AS Amount " +
+                                     " , Content.value('(/item/metadata/metadata-set[@guid=\"" + catMetadataSet + "\"]/fields/Field[@guid=\"" + catField + "\"]/options/option[@selected=\"true\"]/text/text())[1]', 'VARCHAR(25)') AS Category" +
+                                    " FROM[dbo].[CFXmlModels] " +
+                                    " WHERE Discriminator = 'CFItem' AND Content.exist('number((/item/metadata/metadata-set[@guid=\"" + xMetadataSet + "\"]/fields/field[@guid=\"" + xField + "\"]/value/text)[1])') = 1 AND Content.exist('number((/item/metadata/metadata-set[@guid=\"" + yMetadataSet + "\"]/fields/field[@guid=\"" + yField + "\"]/value/text)[1])') = 1" +
+                                    " ) as a" +
+                                     " WHERE a.Year >= " + xmin + " AND a.Year <= " + xmax +
+                                     " GROUP BY a.Year , a.Category" +
+                                     " ORDER BY a.Year";
 
             var result = db.Database.SqlQuery<GraphQueryObject>(xQuerySelect, new object[] { xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, xMetadataSet });
 

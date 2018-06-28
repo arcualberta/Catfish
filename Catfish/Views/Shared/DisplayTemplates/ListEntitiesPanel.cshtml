@@ -63,6 +63,7 @@
 
    $(document).ready(function() {
        var curPage =@Model.CurrentPage;
+         curPage = curPage ? curPage : 1;
        if(curPage == 1)
         {
            $("[name='listEntitiesPanel_prev_button']").hide();
@@ -72,11 +73,12 @@
         {
              $("[name='listEntitiesPanel_next_button']").hide();
         }
-        $("[name='listEntitiesPanel_page_number']").val(currPage);
+        $("[name='listEntitiesPanel_page_number']").val(curPage);
    });
 
     function GoToPage(whichPage){
         var currPage =@Model.CurrentPage;
+         currPage = currPage ? currPage : 1;
         if(whichPage === "Prev")
         {
              currPage = currPage - 1;
