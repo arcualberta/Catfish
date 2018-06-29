@@ -126,7 +126,9 @@ namespace Catfish.Models.Regions
 
                 int min = String.IsNullOrWhiteSpace(minParam) ? int.MinValue : int.Parse(minParam);
                 int max = String.IsNullOrWhiteSpace(maxParam) ? int.MaxValue : int.Parse(maxParam);
-              
+
+                MinValue = min;
+                MaxValue = max;
 
                 string functionName = SelectedFunction.ToString();
 
