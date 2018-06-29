@@ -51,11 +51,8 @@
     fetch(xapi).then(function (response) { return response.json(); })  //temporary commented this one out until we are ready to call api again
               .then(function (data) {
                   var parsedData = parseDataSF(data);
-
-                 // drawChart@(Model.SelectedGraphType.ToString())(parsedData); //--SF real data --single line chart
-                 //  drawChartBar(parsedData); //-SF real data -- single Bar chart
                   drawChartMulti@(Model.SelectedGraphType.ToString())(parsedData);
-    //drawChartMultiBar(parsedData);
+                  //drawChartMultiBar(parsedData);
 
                   //set min/max year
                     var urlParams = new URLSearchParams(window.location.search);
@@ -68,22 +65,21 @@
                .catch(function (err) { console.log(err); })
 });
 */
-    document.addEventListener("DOMContentLoaded", function (event) {
-    
-                  var parsedData = parseDataSF(result);
+    document.addEventListener("DOMContentLoaded", function (event) { //temporary using json object directly
 
-                
-                  drawChartMulti@(Model.SelectedGraphType.ToString())(parsedData);
-    
-
-                  //set min/max year
+                   //set min/max year
                     var urlParams = new URLSearchParams(window.location.search);
-
                   minX =urlParams.has('@Model.MinX_Parameter') ? urlParams.get('@Model.MinX_Parameter') : minX.getFullYear();
                   maxX = urlParams.has('@Model.MaxX_Parameter') ? urlParams.get('@Model.MaxX_Parameter')  : maxX.getFullYear();
+
+                  var parsedData = parseDataSF(result.filter(function(d){ return d.YValue >= minX && d.YValue <= maxX; }));
+                  drawChartMulti@(Model.SelectedGraphType.ToString())(parsedData);
+                   minX =urlParams.has('@Model.MinX_Parameter') ? urlParams.get('@Model.MinX_Parameter') : minX.getFullYear();
+                  maxX = urlParams.has('@Model.MaxX_Parameter') ? urlParams.get('@Model.MaxX_Parameter')  : maxX.getFullYear();
+
                   $("#Min_Parameter").val(minX);
                   $("#Max_Parameter").val(maxX);
-             
+
 });
 
 

@@ -98,9 +98,7 @@
       var max = urlParams.has('@Model.Max_Parameter') ? urlParams.get('@Model.Max_Parameter')  : "";
       var mapIds = [@Html.Raw(String.Join(",", Model.Fields.ToArray().Select(i=>i)))]; //[13,15]
 
-
-
-    var url = `@Url.Action("GetPageItems", "Items")`;
+      var url = `@Url.Action("GetPageItems", "Items")`;
 
        $.ajax({
         type: 'GET',

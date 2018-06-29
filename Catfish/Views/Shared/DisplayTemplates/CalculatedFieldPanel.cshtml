@@ -23,11 +23,13 @@
         <div>@Html.DisplayFor(m => m.Title)</div>
              @if (Model.SelectedFunction == "COUNT")
              {
-                <div>@Model.Result</div>
+                 string divId = cssId + "_Result";
+                <div id="@divId">@Model.Result</div>
              }
              else
              {
-                <div>@string.Format("{0:C}", Model.Result)</div>
+                 string divId = cssId + "_Result";
+                <div id="@divId">@string.Format("{0:C}", Model.Result)</div>
              }
         
    
@@ -44,6 +46,37 @@
      $("#Min_Parameter").val(Min_Value);
      $("#Max_Parameter").val(Max_Value);
 
+    //temporary solution
+      var data = @Html.Raw(Model.QueryResult);
+     
+     var functionName = '@Model.SelectedFunction';
+     var result =0;
+     if(functionName === "SUM")
+     {
+        result =0;
+        (data.filter(function(d){ return d.Year >= Min_Value && d.Year <= Max_Value; })).forEach(function(dt,i) {
+           result += dt.Amount;
+        });
 
+        result = "$" + result;
+     }
+    else if(functionName === "COUNT"){
+         result=0;
+        (data.filter(function(d){ return d.Year >= Min_Value && d.Year <= Max_Value; })).forEach(function(dt,i) {
+           result += dt.Projects;
+        });
+    }
+    else if(functionName === "MEAN" )
+    {
+         var totalAmount = 0;
+         var totalProj = 0;
+         (data.filter(function(d){ return d.Year >= Min_Value && d.Year <= Max_Value; })).forEach(function(dt,i) {
+           totalAmount += dt.Amount;
+            totalProj += dt.Projects;
+        });
 
+        result = "$" + (totalAmount / totalProj);
+    }
+    var id = "@(cssId)_Result";
+    $("#" + id).text(result);
 </script>
