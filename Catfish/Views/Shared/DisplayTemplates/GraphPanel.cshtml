@@ -31,7 +31,7 @@
     const YScale=parseInt('@Model.YScale');
     var minX="", maxX="";
 
- 
+
     const xapi = "@Html.Raw(Url.Action("GetGraphData", "Items", new
              {
                  xMetadataSet = Model.SelectedMetadataSetX,
@@ -44,11 +44,13 @@
                 xmax= Request.Params.AllKeys.Contains(Model.MaxX_Parameter) ? int.Parse(Request.Params[Model.MaxX_Parameter]) : int.MaxValue,
              }))";
 
+/* This is temporary solution until we figure out the indexing. We are going not querying the data directly through api call !!! */
+ var result = @Html.Raw(Model.QueryResult);
 /* loading data */
-document.addEventListener("DOMContentLoaded", function (event) {
-    fetch(xapi).then(function (response) { return response.json(); })
+/*document.addEventListener("DOMContentLoaded", function (event) {
+    fetch(xapi).then(function (response) { return response.json(); })  //temporary commented this one out until we are ready to call api again
               .then(function (data) {
-                  var parsedData =parseDataSF(data);
+                  var parsedData = parseDataSF(data);
 
                  // drawChart@(Model.SelectedGraphType.ToString())(parsedData); //--SF real data --single line chart
                  //  drawChartBar(parsedData); //-SF real data -- single Bar chart
@@ -64,6 +66,24 @@ document.addEventListener("DOMContentLoaded", function (event) {
                   $("#Max_Parameter").val(maxX);
               })
                .catch(function (err) { console.log(err); })
+});
+*/
+    document.addEventListener("DOMContentLoaded", function (event) {
+    
+                  var parsedData = parseDataSF(result);
+
+                
+                  drawChartMulti@(Model.SelectedGraphType.ToString())(parsedData);
+    
+
+                  //set min/max year
+                    var urlParams = new URLSearchParams(window.location.search);
+
+                  minX =urlParams.has('@Model.MinX_Parameter') ? urlParams.get('@Model.MinX_Parameter') : minX.getFullYear();
+                  maxX = urlParams.has('@Model.MaxX_Parameter') ? urlParams.get('@Model.MaxX_Parameter')  : maxX.getFullYear();
+                  $("#Min_Parameter").val(minX);
+                  $("#Max_Parameter").val(maxX);
+             
 });
 
 

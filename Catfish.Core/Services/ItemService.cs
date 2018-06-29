@@ -184,13 +184,19 @@ namespace Catfish.Core.Services
 
         public IEnumerable<CFItem> GetPagedItems(int page, int itemsPerPage, string facetMetadataGuid = null, string facetFieldGuid = null, int facetMin = 0, int facetMax = 0)
         {
+            int skip = page * itemsPerPage;
+            int take = itemsPerPage + 1; // We add an extra value to calculate the next button.
+
             Db.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
-            string query = string.Format(@"SELECT *
+
+            // We will select only the maximumn number of items we need for pagination. This is due to older versions of SQL Server not having the appropriate pagination methods.
+            string query = string.Format(@"SELECT TOP " + (skip + take) + @"*
                 FROM CFXmlModels
                 WHERE Discriminator = 'CFItem'
                     AND Content.value('(/item/metadata/metadata-set[@guid=""{0}""]/fields/field[@guid=""{1}""]/value/text/text())[1]', 'INT') >= {2}
                     AND Content.value('(/item/metadata/metadata-set[@guid=""{0}""]/fields/field[@guid=""{1}""]/value/text/text())[1]', 'INT') <= {3}
             ", facetMetadataGuid, facetFieldGuid, facetMin, facetMax, page * itemsPerPage, itemsPerPage);
+
             return Db.Items.SqlQuery(query).Skip(page * itemsPerPage).Take(itemsPerPage);
         }
 

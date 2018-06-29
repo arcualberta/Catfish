@@ -124,7 +124,7 @@ namespace Catfish.Models.Regions
                 ItemService itemService = new ItemService(db);
 
 
-                Items = itemService.GetPagedItems(page, ItemPerPage+1, SelectedMetadataSet, selectedFilterField, min, max).ToList();
+                Items = itemService.GetPagedItems(page, ItemPerPage, SelectedMetadataSet, selectedFilterField, min, max).ToList();
 
                // var mappings = entityTypeSrv.GetEntityTypeAttributeMappings().Where(a => FieldsMappingId.Contains(a.Id)).OrderBy(a => FieldsMappingId.IndexOf(a.Id));
                //grab the columnHeaders

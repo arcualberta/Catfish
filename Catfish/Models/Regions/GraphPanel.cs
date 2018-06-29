@@ -59,6 +59,10 @@ namespace Catfish.Models.Regions
         [Display(Name = "Y-data Scale")]
         public int YScale {get; set;}
 
+        [Display(Name ="Query Result")]
+        [DataType(DataType.MultilineText)]
+        public string QueryResult { get; set; } 
+
         [ScriptIgnore]
         public List<SelectListItem> ListMetadataSets { get; set; }
 
