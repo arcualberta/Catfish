@@ -55,7 +55,7 @@
       //Need to be set in order to also use QueryFilterPanel
     Min_ParameterName = '@Model.Min_Parameter';
     Max_ParameterName = '@Model.Max_Parameter';
-    var @(cssId)page = @Model.CurrentPage;
+    var curr@(cssId)page = @Model.CurrentPage;
 
 
     //Min_Parameter and Max_parameter is the <input> id on QueryFilterPanel
@@ -63,7 +63,7 @@
    //  $("#Max_Parameter").val(Max_Value);
 
    $(document).ready(function() {
-       var curPage = @(cssId)page;
+       var curPage = curr@(cssId)page;
 
        if(curPage == 1)
         {
@@ -78,7 +78,7 @@
    });
 
     function GoToPage(whichPage){
-        var currPage = @(cssId)page;
+        var currPage = curr@(cssId)page;
 
         if(whichPage === "Prev")
         {
