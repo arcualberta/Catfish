@@ -19,7 +19,7 @@ namespace Catfish.Controllers.Api
         {
             int iMin = string.IsNullOrEmpty(min) ? int.MinValue : int.Parse(min);
             int iMax = string.IsNullOrEmpty(max) ? int.MaxValue : int.Parse(max);
-            var items = ItemService.GetPagedItems(page, itemPerPage + 1, selectedMetadataSet, selectedField, iMin, iMax).ToList();
+            var items = ItemService.GetPagedItems(page, itemPerPage, selectedMetadataSet, selectedField, iMin, iMax).ToList();
 
             List<List<string>> result = new List<List<string>>();
 
