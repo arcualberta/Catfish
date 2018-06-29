@@ -55,6 +55,7 @@
       //Need to be set in order to also use QueryFilterPanel
     Min_ParameterName = '@Model.Min_Parameter';
     Max_ParameterName = '@Model.Max_Parameter';
+    var @(cssId)page = @Model.CurrentPage;
 
 
     //Min_Parameter and Max_parameter is the <input> id on QueryFilterPanel
@@ -62,8 +63,8 @@
    //  $("#Max_Parameter").val(Max_Value);
 
    $(document).ready(function() {
-       var curPage =@Model.CurrentPage;
-         curPage = curPage ? curPage : 1;
+       var curPage = @(cssId)page;
+
        if(curPage == 1)
         {
            $("[name='listEntitiesPanel_prev_button']").hide();
@@ -77,8 +78,8 @@
    });
 
     function GoToPage(whichPage){
-        var currPage =@Model.CurrentPage;
-         currPage = currPage ? currPage : 1;
+        var currPage = @(cssId)page;
+
         if(whichPage === "Prev")
         {
              currPage = currPage - 1;
