@@ -108,9 +108,9 @@ namespace Catfish.Models.Regions
                 string maxParam = context.Request.QueryString[Max_Parameter];
                 string pageParam = context.Request.QueryString["page"];
 
-               int min = minParam == null ? int.MinValue : int.Parse(minParam);
-                int max = maxParam == null ? int.MaxValue : int.Parse(maxParam);
-                int page = pageParam == null ? 0 : int.Parse(pageParam) - 1;
+               int min = string.IsNullOrWhiteSpace(minParam) ? int.MinValue : int.Parse(minParam);
+                int max = string.IsNullOrWhiteSpace(null) ? int.MaxValue : int.Parse(maxParam);
+                int page = string.IsNullOrWhiteSpace(null) ? 0 : int.Parse(pageParam) - 1;
 
                 if(page == 0)
                 {
