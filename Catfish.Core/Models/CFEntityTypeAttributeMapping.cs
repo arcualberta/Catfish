@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace Catfish.Core.Models
 {
@@ -19,10 +21,14 @@ namespace Catfish.Core.Models
 
         public string Label { get; set; }
 
+        [Column("CFEntityType_Id")]
+        public int? EntityTypeId { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
+        public CFEntityType EntityType { get; set; }
+
         [NotMapped]
         public bool Deletable { get; set; }
-        [NotMapped]
-        public int CFEntityType_Id { get; set; }
 
         public CFEntityTypeAttributeMapping() {
             Deletable = true;

@@ -10,30 +10,43 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Catfish.Services;
 
 namespace Catfish.Controllers.Api
 {
     public class ItemsController : CatfishController
     {   
+        public JsonResult GetPageItems(int page, int itemPerPage, string selectedMetadataSet, string selectedField, string min, string max, [Bind(Include = "mapIds[]")] int[] mapIds)
+        {
+            int iMin = string.IsNullOrEmpty(min) ? int.MinValue : int.Parse(min);
+            int iMax = string.IsNullOrEmpty(max) ? int.MaxValue : int.Parse(max);
+            var items = ItemService.GetPagedItems(page, itemPerPage, selectedMetadataSet, selectedField, iMin, iMax).ToList();
+
+            List<List<string>> result = new List<List<string>>();
+
+            EntityTypeService entityTypeService = new EntityTypeService(Db);
+            if (items.Count > 0)
+            {
+                foreach (var itm in items)
+                {
+                    List<string> rowContent = new List<string>();
+                    foreach(int id in mapIds)
+                    {
+                        CFEntityTypeAttributeMapping am = entityTypeService.GetEntityTypeAttributeMappingById(id);
+                        string content = itm.GetAttributeMappingValue(am.Name);
+                        rowContent.Add(content);
+                    }
+                    result.Add(rowContent);
+                }
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+
+        }
         public JsonResult GetGraphData(string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField,int xmin = 0, int xmax = 0)
         {
-             xmin = xmin == 0 ? DateTime.MinValue.Year : xmin;
-            xmax = xmax == 0 ? DateTime.Now.Year : xmax;
-            string xQuerySelect = "SELECT a.Year as YValue, SUM(a.Amount) AS XValue, COUNT(*) as 'Count', a.Category" + 
-                                   " FROM(" +
-                                   " SELECT  Content.value('(/item/metadata/metadata-set[@guid=\"" + xMetadataSet + "\"]/fields/field[@guid=\"" + xField + "\"]/value/text/text())[1]', 'INT') AS Year ," +
-                                    " Content.value('(/item/metadata/metadata-set[@guid=\"" + yMetadataSet + "\"]/fields/field[@guid=\"" + yField + "\"]/value/text/text())[1]', 'DECIMAL') AS Amount," +
-                                    " Content.value('(/item/metadata/metadata-set[@guid=\"" + catMetadataSet + "\"]/fields/Field[@guid=\"" +catField + "\"]/options/option[@selected=\"true\"]/text/text())[1]', 'VARCHAR(25)') AS Category" +
-                                    " FROM[dbo].[CFXmlModels]" +
-                                    " WHERE Discriminator = 'CFItem' AND Content.exist('/item/metadata/metadata-set[@guid=\"" + xMetadataSet + "\"]') = 1" +
-                                    " ) as a" +
-                                     " WHERE a.Year >= " + xmin + " AND a.Year <= " +  xmax  +
-                                     " GROUP BY a.Year, a.Category" +
-                                     " ORDER BY a.Year";
-
-            
-            var result = Db.Database.SqlQuery<GraphQueryObject>(xQuerySelect, new object[] { xMetadataSet, xField, yMetadataSet, yField,catMetadataSet, catField, xMetadataSet });
-
+            ItemQueryService itemQueryService = new ItemQueryService(); 
+            var result = itemQueryService.GetGraphData(xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, xmin, xmax);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 

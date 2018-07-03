@@ -80,21 +80,22 @@
         var uniqueId = Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
         var regionName = $(".hdregion").val(); // Region_0
          var regionInd = regionName.split("_")[1];//0,1,etc
-      var Field = $("#" + regionName + "_selectedField").val();
-
+      var FieldId = $("#" + regionName + "_selectedField").val();
+     var FieldText = $("#" + regionName + "_selectedField option:selected").text(); 
+    
      var rowCount = $('#AttributeMappingTable tr').length;
-    var rowId = "row_" + (rowCount - 1);
+     var rowId = "row_" + (rowCount - 1);
 
 
       var t = `<tr id="` + rowId +`"><input type="hidden" name="Regions[`+regionInd +`].Body.Fields.Index" value="` + uniqueId + `">
-               <input name="Regions[`+regionInd +`].Body.Fields[` + uniqueId +  `]" type="hidden" value="` + Field +`">
-                    <td><span>` + Field + `</span></td>
+               <input name="Regions[`+regionInd +`].Body.Fields[` + uniqueId +  `]" type="hidden" value="` + FieldId +`">
+                    <td><span>` + FieldText + `</span></td>
                     <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteRow('` + rowId +`')"></span><span class="glyphicon glyphicon-arrow-up"></span><span class="glyphicon glyphicon-arrow-down"></span></td>
                 </tr>`;
 
       $("#ddFields").before(t)
 
-   
+
     }
 
     function DeleteRow(index)

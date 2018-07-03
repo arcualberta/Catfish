@@ -59,6 +59,10 @@ namespace Catfish.Models.Regions
         [Display(Name = "Y-data Scale")]
         public int YScale {get; set;}
 
+        [Display(Name ="Query Result")]
+        [DataType(DataType.MultilineText)]
+        public string QueryResult { get; set; } 
+
         [ScriptIgnore]
         public List<SelectListItem> ListMetadataSets { get; set; }
 
@@ -131,26 +135,12 @@ namespace Catfish.Models.Regions
                                      " ORDER BY a.Year";
             var result = db.Database.SqlQuery<GraphQueryObject>(xQuerySelect, new object[] { SelectedMetadataSetX, XaxisField, SelectedMetadataSetY, YaxisField, SelectedMetadataSetX });
 
-            foreach(var r in result)
-            {
-                Console.WriteLine("{0}, {1}, {2}", r.YValue, r.XValue, r.Count);
-            }
-
-            //For testing -- go to the page that use this region and add ?entity=[entityId]
-            //HttpContext context = HttpContext.Current;
-
-            //if (context != null)
+            //foreach(var r in result)
             //{
-            //    string entityId = context.Request.QueryString[EntityContainer.ENTITY_PARAM];
-
-            //    if (!string.IsNullOrEmpty(entityId))
-            //    {
-            //        CatfishDbContext db = new CatfishDbContext();
-            //        EntityService es = new EntityService(db);
-
-            //        Entity = es.GetAnEntity(Convert.ToInt32(entityId));
-            //    }
+            //    Console.WriteLine("{0}, {1}, {2}", r.YValue, r.XValue, r.Count);
             //}
+
+           
 
             return base.GetContent(model);
         }

@@ -11,71 +11,134 @@
            @Html.Raw(cssStyles)
     </style>
    <div class="row" style="text-align:center;margin-top:20px;">
-       <button class="btn-link" id="listEntitiesPanel_prev_button"><span style="align-content:center"><span class="glyphicon glyphicon-backward"></span>Prev</span></button>
-       <input id="listEntitiesPanel_page_number" placeholder="1" value="@Model.CurrentPage" style="width:15px; height:15px;" />
-       <button class="btn-link" id="listEntitiesPanel_next_button"><span style="align-content:center">Next<span class="glyphicon glyphicon-forward"></span></span></button>
+       <button class="btn-link" name="listEntitiesPanel_prev_button" onclick="GoToPage('Prev'); return false;"><span style="align-content:center"><span class="glyphicon glyphicon-backward"></span>Prev</span></button>
+       <input name="listEntitiesPanel_page_number" placeholder="1" value="" style="width:15px; height:15px;" />
+       <button class="btn-link" name="listEntitiesPanel_next_button" onclick="GoToPage('Next'); return false;"><span style="align-content:center">Next<span class="glyphicon glyphicon-forward"></span></span></button>
     </div>
     <div class="row ">
         <table class="table table-responsive table-striped">
             <tr>
                 @*header*@
-                @foreach (var f in Model.Fields)
+                @foreach (var m in Model.Mappings)
                 {
-                    string header = Model.Items[0].GetAttributeMappingLabel(f);
+                    string header = m.Label;
                     if (!string.IsNullOrEmpty(header))
                     {
-                        <th>@header </th>
+                        <th>@header</th>
                     }
                 }
             </tr>
 
             @*content*@
-            @foreach (var item in Model.Items)
-            {
-                <tr>
-                    @foreach (var f in Model.Fields)
-                    {
-                        string content = item.GetAttributeMappingValue(f);
-                        <td>@content</td>
-                    }
-                </tr>
-            }
+            <tbody id="ListEntitiesPanelTableBody">
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        @foreach (var f in Model.Mappings)
+                        {
+                            string content = item.GetAttributeMappingValue(f.Name);
+                            <td>@content</td>
+                        }
+                    </tr>
+                }
+            </tbody>
         </table>
     </div>
     <div class="row" style="text-align:center;">
-        <button class="btn-link" id="listEntitiesPanel_prev_button"><span style="align-content:center"><span class="glyphicon glyphicon-backward"></span>Prev</span></button>
-        <input id="listEntitiesPanel_page_number" placeholder="1" value="@Model.CurrentPage" style="width:15px; height:15px;" />
-        <button class="btn-link" id="listEntitiesPanel_next_button"><span style="align-content:center">Next<span class="glyphicon glyphicon-forward"></span></span></button>
+        <button class="btn-link" name="listEntitiesPanel_prev_button"  onclick="GoToPage('Prev'); return false;" ><span style="align-content:center"><span class="glyphicon glyphicon-backward"></span>Prev</span></button>
+        <input name="listEntitiesPanel_page_number" placeholder="1" value="" style="width:15px; height:15px;" />
+        <button class="btn-link" name="listEntitiesPanel_next_button" onclick="GoToPage('Next'); return false;"><span style="align-content:center">Next<span class="glyphicon glyphicon-forward"></span></span></button>
     </div>
 </div>
 
 <script>
-   
+      //Need to be set in order to also use QueryFilterPanel
+    Min_ParameterName = '@Model.Min_Parameter';
+    Max_ParameterName = '@Model.Max_Parameter';
+    var curr@(cssId)page = @Model.CurrentPage;
+
+
+    //Min_Parameter and Max_parameter is the <input> id on QueryFilterPanel
+   //  $("#Min_Parameter").val(Min_Value);
+   //  $("#Max_Parameter").val(Max_Value);
+
    $(document).ready(function() {
-       var curPage =@Model.CurrentPage;
+       var curPage = curr@(cssId)page;
+
        if(curPage == 1)
         {
-           $("#listEntitiesPanel_prev_button").hide();
+           $("[name='listEntitiesPanel_prev_button']").hide();
         }
+
+       if(@Model.ItemCount < @Model.ItemPerPage)
+        {
+             $("[name='listEntitiesPanel_next_button']").hide();
+        }
+        $("[name='listEntitiesPanel_page_number']").val(curPage);
    });
 
-    $("#listEntitiesPanel_prev_button").click(function(){
+    function GoToPage(whichPage){
+        var currPage = curr@(cssId)page;
 
-       var minX = null;
-       var  maxX =null;
-        var currPage =@Model.CurrentPage;
-        alert("base: " + window.location.pathname);
-        alert("search: " + window.location.search);
-     //   var url_string = "http://www.example.com/t.html?a=1&b=3&c=m2-m3-m4-m5"; //window.location.href window.location.pathname
-//var url = new URL(url_string);
-//var c = url.searchParams.get("c");
+        if(whichPage === "Prev")
+        {
+             currPage = currPage - 1;
+             currPage = currPage < 1 ? 1 : currPage; //to avoid 0
+        }
+        else if(whichPage === "Next"){
+             currPage = currPage + 1;
+        }
 
-         var url_str = window.location.href;
-         if (url_str.indexOf('?') > -1){
-            var base_url = url_str.substr(0,url_str.indexOf("?"));
-           // var params =   url_str.substr(url_str.indexOf("?"), );
-         }
-       // url += "?minYear=" + minX +"&maxYear=" + maxX;
-        //window.location.href = url;
+        curr@(cssId)page = currPage;
+
+     //set min/max year
+      var urlParams = new URLSearchParams(window.location.search);
+
+      var min =urlParams.has('@Model.Min_Parameter') ? urlParams.get('@Model.Min_Parameter') : "";
+      var max = urlParams.has('@Model.Max_Parameter') ? urlParams.get('@Model.Max_Parameter')  : "";
+      var mapIds = [@Html.Raw(String.Join(",", Model.Fields.ToArray().Select(i=>i)))]; //[13,15]
+
+      var url = `@Url.Action("GetPageItems", "Items")`;
+
+       $.ajax({
+        type: 'GET',
+        url:url,
+        dataType: 'json',
+        traditional: true,
+        data:{page: currPage, itemPerPage:@Model.ItemPerPage,selectedMetadataSet: `@Model.SelectedMetadataSet`, selectedField: `@Model.selectedFilterField`,mapIds:mapIds, min: min, max: max},
+        success:function(result){
+
+        //remove all rows in the tbody
+        var body = $("#ListEntitiesPanelTableBody");
+            body.children().remove();  //remove all row on the tbody
+
+        //update table data
+        result.forEach(function(r, i){ //going through each row
+             var new_row = "<tr>";
+              r.forEach(function(c, j){ //going through each column
+                     new_row += "<td>" + c + "</td>";
+               });
+              new_row += "</tr>";
+              body.append(new_row);
+           });
+
+            $("[name='listEntitiesPanel_page_number']").val(currPage);
+             if(currPage == 1)
+            {
+                $("[name='listEntitiesPanel_prev_button']").hide();
+            }
+             else{
+                 $("[name='listEntitiesPanel_prev_button']").show();
+            }
+
+        },
+        error: function(){
+          alert("Problems while updating table data");
+        }
     });
+
+
+    }
+
+
 </script>

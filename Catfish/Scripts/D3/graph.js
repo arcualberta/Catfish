@@ -133,7 +133,7 @@ function drawChartMultiLine(data) {
     // Adds the svg canvas
     var svg = d3.select("svg.line-chart").attr("width", 600).attr("height", 400);
 
-    var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + " )");
+    var g1 = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + " )");
 
 
     var divLegend = d3.select("div.legend");
@@ -169,69 +169,174 @@ function drawChartMultiLine(data) {
 
     // set the colour scale
     var color = d3.scaleOrdinal(d3.schemeCategory10);
+   
+    function redrawChart(dataNest, g1) {
+        dataNest.forEach(function (d) {
+            if (!d.checked) return;
 
+            var path = g1.append("path")
+           .attr("class", "line")
+           .style("stroke", function () { // Add the colours dynamically
+               return d.color;
+           })
+           .attr("d", lineFunction(d.values))
+           .attr("id", "line_" + d.id);
+
+            var totalLength = path.node().getTotalLength();
+            path.attr("stroke-dasharray", totalLength + " " + totalLength)
+                .attr("stroke-dashoffset", totalLength).transition().duration(100).ease(d3.easeCubicOut)
+                .attr("stroke-dashoffset", 0);
+            
+            // Add the Legend  
+            // drawlegend(d);
+            
+        });
+    }
+
+    function drawAxis(g1) {
+        // Add the X Axis
+        g1.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x))
+             .append("text").attr("fill", "#1f77b4").attr("y", 35).attr("x", width / 2).attr("text-anchor", "end").text(XLabel);
+
+        // Add the Y Axis
+        g1.append("g")
+            .attr("class", "axis")
+            .call(d3.axisLeft(y))
+            .append("text").attr("fill", "#1f77b4")
+                  .attr("transform", "rotate(-90)")
+                  .attr("y", 0 - (margin.left / 2))
+
+                  .attr("x", 0 - (height / 2))
+                  .attr("dy", "0.17em")
+                  .attr("text-anchor", "middle")
+                  .text(YLabel);
+        //adding title
+        g1.append("text").attr("fill", "#1f77b4")
+            .attr("x", (width / 2))
+            .attr("y", 0 - (margin.top / 2))
+            .attr("text-anchor", "middle")
+            .style("font-size", "16px")
+            .style("text-decoration", "bold")
+
+            .text(GraphTitle);
+    }
+
+    function update(dataUpdate) {
+        g1.remove();
+        g1 = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + " )");
+
+        var new_max = 0;
+        dataUpdate.forEach(function (dt) {
+            if(dt.checked){
+                var check = d3.max(dt.values, function (d) {
+                    return d.value;
+                });
+
+                if (check > new_max) { new_max = check; }
+            }
+        });
+       
+        y.domain([0, new_max]);
+        d3.select("g1").remove();
+
+        drawAxis(g1);
+        redrawChart(dataNest, g1);
+    }
+
+    dataNest.forEach(function (d, i) {
+        d.checked = true;
+        d.color = color(d.key);
+        d.id = d.key;
+
+        //Add the legend
+        var divCategory = divLegend.append("div")
+                //.attr("x", (legendSpace / 2) + i * legendSpace)  // space legend
+               // .attr("y", height + (margin.bottom / 2) + 5)
+                .attr("class", "legend-item")    // style the legend
+                .style("color", function () { // Add the colours dynamically
+                    return d.color;
+                });
+
+        divCategory.append("input")
+            .attr("id", "checkbox_" + d.id)
+            .attr("type", "checkbox")
+            .attr("checked", "checked")
+            .on("change", function (checkData, i, input) {
+                d.checked = input[i].checked;
+
+                if (input[i].checked) {
+                    $("#line_" + d.id).show();
+                } else {
+                    $("#line_" + d.id).hide();
+                }
+                update(dataNest);
+
+            });
+
+        divCategory.append("span")
+            .text(d.key);
+    });
+
+    function drawLegend(d)
+    {
+        var divCategory = divLegend.append("div")
+               //.attr("x", (legendSpace / 2) + i * legendSpace)  // space legend
+              // .attr("y", height + (margin.bottom / 2) + 5)
+               .attr("class", "legend-item")    // style the legend
+               .style("color", function () { // Add the colours dynamically
+                   return d.color;
+               });
+
+        divCategory.append("input")
+            .attr("id", "checkbox_" + d.id)
+            .attr("type", "checkbox")
+            .attr("checked", "checked")
+
+            .on("change", function (checkData, i, input) {
+                d.checked = input[i].checked;
+
+                if (input[i].checked) {
+                    $("#line_" + d.id).show();
+                } else {
+                    $("#line_" + d.id).hide();
+                }
+                update(dataNest);
+                // svg.call(zoom)
+            });
+
+        divCategory.append("span")
+            .text(d.key);
+    }
     legendSpace = width / dataNest.length; // spacing for the legend
 
 
     // Loop through each category / key
-    var paths = {};
-    dataNest.forEach(function (d, i) {  //key = category
-      var path =  g.append("path")
-            .attr("class", "line")
-            .style("stroke", function () { // Add the colours dynamically
-                return d.color = color(d.key);
-            })
-        .attr("d", lineFunction(d.values));
+    //var paths = {};
+    //dataNest.forEach(function (d, i) {  //key = category
+    //  var path =  g.append("path")
+    //        .attr("class", "line")
+    //        .style("stroke", function () { // Add the colours dynamically
+    //            return d.color;
+    //        })
+    //    .attr("d", lineFunction(d.values))
+    //    .attr("id", "line_" + d.id);
        
-      var totalLength = path.node().getTotalLength();
-      path.attr("stroke-dasharray", totalLength + " " + totalLength)
-          .attr("stroke-dashoffset", totalLength).transition().duration(3000).ease(d3.easeCubicOut)
-          .attr("stroke-dashoffset", 0);
-     // paths[i] = path;
+    //  var totalLength = path.node().getTotalLength();
+    //  path.attr("stroke-dasharray", totalLength + " " + totalLength)
+    //      .attr("stroke-dashoffset", totalLength).transition().duration(3000).ease(d3.easeCubicOut)
+    //      .attr("stroke-dashoffset", 0);
+    // // paths[i] = path;
 
-        // Add the Legend  
-        divLegend.append("div")
-            //.attr("x", (legendSpace / 2) + i * legendSpace)  // space legend
-           // .attr("y", height + (margin.bottom / 2) + 5)
-            .attr("class", "legend-item")    // style the legend
-            .style("color", function () { // Add the colours dynamically
-                return d.color = color(d.key);
-            })
-            .text(d.key);
-
-    });
+    //});
 
   
  
-    // Add the X Axis
-    g.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x))
-         .append("text").attr("fill", "#1f77b4").attr("y", 35).attr("x", width / 2).attr("text-anchor", "end").text(XLabel);
-
-    // Add the Y Axis
-    g.append("g")
-        .attr("class", "axis")
-        .call(d3.axisLeft(y))
-        .append("text").attr("fill", "#1f77b4")
-              .attr("transform", "rotate(-90)")
-              .attr("y", 0 - (margin.left/2))
-             
-              .attr("x", 0 - (height/2))
-              .attr("dy", "0.17em")
-              .attr("text-anchor", "middle")
-              .text(YLabel);
-    //adding title
-    g.append("text").attr("fill", "#1f77b4")
-        .attr("x", (width / 2))
-        .attr("y", 0 - (margin.top / 2))
-        .attr("text-anchor", "middle")
-        .style("font-size", "16px")
-        .style("text-decoration", "bold")
-        
-        .text(GraphTitle);
     
+    
+    update(dataNest);
 }
 
 function drawChartMultiBar(data) {
