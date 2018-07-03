@@ -47,8 +47,14 @@
      $("#Max_Parameter").val(Max_Value);
 
     //temporary solution
+    var currency = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2
+     });
+
       var data = @Html.Raw(Model.QueryResult);
-     
+
      var functionName = '@Model.SelectedFunction';
      var result =0;
      if(functionName === "SUM")
@@ -58,7 +64,7 @@
            result += dt.Amount;
         });
 
-        result = "$" + result.toFixed(2);
+        result = currency.format(result);
      }
     else if(functionName === "COUNT"){
          result=0;
@@ -75,7 +81,7 @@
             totalProj += dt.Projects;
         });
 
-        result = "$" + (totalAmount / totalProj).toFixed(2);
+        result = currency.format((totalAmount / totalProj));
     }
     var id = "@(cssId)_Result";
     $("#" + id).text(result);

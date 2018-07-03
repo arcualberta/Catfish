@@ -58,7 +58,7 @@
                     var urlParams = new URLSearchParams(window.location.search);
 
                   minX =urlParams.has('@Model.MinX_Parameter') ? urlParams.get('@Model.MinX_Parameter') : minX.getFullYear();
-                  maxX = urlParams.has('@Model.MaxX_Parameter') ? urlParams.get('@Model.MaxX_Parameter')  : maxX.getFullYear();
+                  maxX = urlParams.has('@Model.MaxX_Parameter') ? urlParams.get('@Model.MaxX_Parameter')  :maxX.getFullYear();
                   $("#Min_Parameter").val(minX);
                   $("#Max_Parameter").val(maxX);
               })
@@ -69,13 +69,11 @@
 
                    //set min/max year
                     var urlParams = new URLSearchParams(window.location.search);
-                  minX =urlParams.has('@Model.MinX_Parameter') ? urlParams.get('@Model.MinX_Parameter') : minX.getFullYear();
-                  maxX = urlParams.has('@Model.MaxX_Parameter') ? urlParams.get('@Model.MaxX_Parameter')  : maxX.getFullYear();
+                  minX =urlParams.has('@Model.MinX_Parameter') ? urlParams.get('@Model.MinX_Parameter') : minX;
+                  maxX = urlParams.has('@Model.MaxX_Parameter') ? urlParams.get('@Model.MaxX_Parameter')  : maxX;
 
                   var parsedData = parseDataSF(result.filter(function(d){ return d.YValue >= minX && d.YValue <= maxX; }));
                   drawChartMulti@(Model.SelectedGraphType.ToString())(parsedData);
-                   minX =urlParams.has('@Model.MinX_Parameter') ? urlParams.get('@Model.MinX_Parameter') : minX.getFullYear();
-                  maxX = urlParams.has('@Model.MaxX_Parameter') ? urlParams.get('@Model.MaxX_Parameter')  : maxX.getFullYear();
 
                   $("#Min_Parameter").val(minX);
                   $("#Max_Parameter").val(maxX);
