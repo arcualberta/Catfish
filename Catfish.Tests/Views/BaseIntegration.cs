@@ -17,7 +17,8 @@ namespace Catfish.Tests.Views
 
     public interface IIntegrationParameters { }
 
-    public class AccessDefinitionParameters : IIntegrationParameters {
+    public class AccessDefinitionParameters : IIntegrationParameters
+    {
         public AccessMode Modes;
         public string AccessModesLabel;
     }
@@ -49,6 +50,60 @@ namespace Catfish.Tests.Views
         public string ItemName;
     }
 
+    public class MetadataSetParameters : IIntegrationParameters
+    {
+        public string MetadataSetName;
+    }
+
+    [Flags]
+    public enum ApplicabilityValues
+    {
+        Collections,
+        Items,
+        Files,
+        Forms
+    }
+
+    public class EntityTypeParameters : IIntegrationParameters
+    {
+        public string EntityTypeName;
+        // Possible values for Applicability
+        // chk_Collections
+        // chk_Items
+        // chk_Files
+        // chk_Forms
+        public ApplicabilityValues ApplicabilityFlags;
+
+
+        public List<string> Applicability
+        {
+            get
+            {
+                List<string> result = new List<string>();
+
+                foreach (ApplicabilityValues value in Enum.GetValues(typeof(ApplicabilityValues)))
+                {
+                    if ((ApplicabilityFlags & value) != 0)
+                    {
+                        result.Add(ApplicabilityStrings[value]);
+                    } 
+                }
+
+                return result;
+            }
+        }
+        
+        private Dictionary<ApplicabilityValues, string> ApplicabilityStrings = new Dictionary<ApplicabilityValues, string>
+        {
+            { ApplicabilityValues.Collections, "chk_Collections"},
+            { ApplicabilityValues.Items, "chk_Items"},
+            { ApplicabilityValues.Files, "chk_Files"},
+            { ApplicabilityValues.Forms, "chk_Forms"}
+        };
+
+        public string[] MetadataSets;
+    }
+
     public class BaseIntegration<TWebDriver> where TWebDriver : IWebDriver, new()
     {
         protected IWebDriver Driver;
@@ -57,6 +112,7 @@ namespace Catfish.Tests.Views
         protected const string SaveLabel = "Save";
         protected const string SystemLabel = "SYSTEM";
         protected const string ContentLabel = "CONTENT";
+        protected const string SettingsLabel = "SETTINGS";
         protected const string LogoutLabel = "LOGOUT";
         protected const string UsersLabel = "Users";
         protected const string GroupsLabel = "Groups";
@@ -64,6 +120,8 @@ namespace Catfish.Tests.Views
         protected const string ItemsLabel = "Items";
         protected const string UserListLabel = "User List";
         protected const string AccessDefinitionLabel = "Access Definitions";
+        protected const string MetadataSetsLabel = "Metadata Sets";
+        protected const string EntityTypesLabel = "Entity Types";
 
         [SetUp]
         public void SetUp()
@@ -127,13 +185,13 @@ namespace Catfish.Tests.Views
         // Methods to create things on webpage
 
         private void NavigateToCreate(
-            string mainMenu, 
+            string mainMenu,
             string submenu,
             IIntegrationParameters parameters,
-            Action<IIntegrationParameters> fillValues 
+            Action<IIntegrationParameters> fillValues
             )
         {
-            Navigate(new string[] { mainMenu, submenu, AddLabel});
+            Navigate(new string[] { mainMenu, submenu, AddLabel });
 
             fillValues(parameters);
 
@@ -160,8 +218,8 @@ namespace Catfish.Tests.Views
                 Driver.FindElement(By.XPath(GetAccessModeSiblingInputXPath(mode))).Click();
             }
         }
-        
-        protected void CreateAccessDefinition(IIntegrationParameters parameters, 
+
+        protected void CreateAccessDefinition(IIntegrationParameters parameters,
             Action<IIntegrationParameters> fillValues)
         {
             NavigateToCreate(SystemLabel, AccessDefinitionLabel, parameters, fillValues);
@@ -182,7 +240,7 @@ namespace Catfish.Tests.Views
             SelectAllAccessModes(modesList);
         }
 
-        protected void CreateGroup(IIntegrationParameters parameters, 
+        protected void CreateGroup(IIntegrationParameters parameters,
             Action<IIntegrationParameters> fillValues)
         {
             NavigateToCreate(SystemLabel, GroupsLabel, parameters, fillValues);
@@ -204,7 +262,7 @@ namespace Catfish.Tests.Views
         }
 
         // W
-        protected void CreateUser(IIntegrationParameters parameters, 
+        protected void CreateUser(IIntegrationParameters parameters,
             Action<IIntegrationParameters> fillValues)
         {
             NavigateToCreate(SystemLabel, UsersLabel, parameters, fillValues);
@@ -236,7 +294,7 @@ namespace Catfish.Tests.Views
         }
 
         // XXX System breaks when creating user lists 20180613
-        protected void CreateUserList(IIntegrationParameters parameters, 
+        protected void CreateUserList(IIntegrationParameters parameters,
             Action<IIntegrationParameters> fillValues)
         {
             NavigateToCreate(SystemLabel, UserListLabel, parameters, fillValues);
@@ -262,7 +320,7 @@ namespace Catfish.Tests.Views
             }
         }
 
-        protected void CreateItem(IIntegrationParameters parameters, 
+        protected void CreateItem(IIntegrationParameters parameters,
             Action<IIntegrationParameters> fillValues)
         {
             NavigateToCreate(ContentLabel, ItemsLabel, parameters, fillValues);
@@ -277,8 +335,8 @@ namespace Catfish.Tests.Views
         {
             ItemParameters itemParameters = (ItemParameters)parameters;
             string name = itemParameters.ItemName;
-            Driver.FindElement(By.Id("add-field")).Click();
-            WaitPageSourceChange(5, 500);
+            //Driver.FindElement(By.Id("add-field")).Click();
+            //WaitPageSourceChange(5, 500);
             Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value"))
                 .SendKeys(name);
         }
@@ -298,10 +356,81 @@ namespace Catfish.Tests.Views
         {
             CollectionParameters collectionParameters = (CollectionParameters)parameters;
             string name = collectionParameters.CollectionName;
-            Driver.FindElement(By.Id("add-field")).Click();
-            WaitPageSourceChange(5, 500);
+            //Driver.FindElement(By.Id("add-field")).Click();
+            //WaitPageSourceChange(5, 500);
             Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value"))
                 .SendKeys(name);
         }
-    }    
+
+        protected void CreateMetadataSet(IIntegrationParameters parameters,
+            Action<IIntegrationParameters> fillValues)
+        {
+            NavigateToCreate(SettingsLabel, MetadataSetsLabel, parameters, fillValues);
+        }
+
+        protected void CreateMetadataSet(IIntegrationParameters parameters)
+        {
+            CreateMetadataSet(parameters, FillMetadataSet);
+        }
+
+        protected void FillMetadataSet(IIntegrationParameters parameters)
+        {
+            MetadataSetParameters metadataSetParameters = (MetadataSetParameters)parameters;
+
+            Driver.FindElement(By.Id("Name")).SendKeys(metadataSetParameters.MetadataSetName);            
+
+            IWebElement fieldTypeElement = Driver.FindElement(By.Id("field-type-selector"));
+            SelectElement selectElement = new SelectElement(fieldTypeElement);
+            selectElement.SelectByText("Short text");
+            Driver.FindElement(By.Id("add-field")).Click();
+            WaitPageSourceChange(5, 500);
+            //"//button[contains[@class='glyphicon-remove']]
+            Driver.FindElement(By.XPath("(//div[contains(@class, 'field-entry')][1]//input[contains(@class, 'input-field')])[1]"))
+                .SendKeys("test");
+
+            
+            // add at least one field
+        }
+
+        protected void CreateEntityType(IIntegrationParameters parameters,
+            Action<IIntegrationParameters> fillValues)
+        {
+            NavigateToCreate(SettingsLabel, EntityTypesLabel, parameters, fillValues);
+        }
+
+        protected void CreateEntitype(IIntegrationParameters parameters)
+        {
+            CreateEntityType(parameters, FillEntityType);
+        }
+
+        protected void FillEntityType(IIntegrationParameters parameters)
+        {
+            EntityTypeParameters entityTypeParameters = (EntityTypeParameters)parameters;
+            Driver.FindElement(By.Id("Name")).SendKeys(entityTypeParameters.EntityTypeName);
+            
+            // fill in Applicability based on applicability flags
+            foreach (string id in entityTypeParameters.Applicability)
+            {
+                Driver.FindElement(By.Id(id)).Click();
+            }
+
+            IWebElement metadataSetsElement = Driver.FindElement(By.Id("dd_MetadataSets"));
+
+            SelectElement selectElement = new SelectElement(metadataSetsElement);
+
+            selectElement.SelectByText("test");
+            Driver.FindElement(By.Id("btnAddMetadataSet")).Click();
+
+
+            // Add name mapping
+
+
+
+        }
+
+    }
 }
+
+
+
+

@@ -130,6 +130,8 @@ namespace Catfish.Tests.Views
             //CreateUser(user1Parameters);
             //CreateUser(user2Parameters);
             ////CreateUserList(userListParameters);
+            // Create metadata set
+            // Create entityh type
             CreateItem(itemParameters);
             ////CreateCollection(collectionParameters);
             ////CreateAccessDefinition(accessDefinitionParameters);
@@ -193,12 +195,26 @@ namespace Catfish.Tests.Views
 
             // delete user2
 
+            // delete entity type
+            // delete metadata set
+
         }
 
         [Test]
         public void CanRemoveUserList()
         {
             Assert.Fail();
+        }
+
+        [Test]
+        public void TestTests()
+        {
+            MetadataSetParameters parameters = new MetadataSetParameters
+            {
+                MetadataSetName = "Test metadataset name"
+            };
+
+            CreateMetadataSet(parameters);
         }
 
         //[Test]
