@@ -6,7 +6,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:template match="/">
 	<fields>
 		<xsl:for-each select="//metadata/metadata-set/fields/field">
-			<field elementguid="{../../../../@guid}" metadatasetguid="{../../@guid}" guid="{@guid}">
+			<field elementguid="{../../../../@guid}" metadatasetguid="{../../@guid}" guid="{@guid}" model-type="{@model-type}">
 				<xsl:for-each select="value/text">
 					<entry lang="{@xml:lang}">
 						<name><xsl:value-of select="../../name/text[@xml:lang=current()/@xml:lang]"/></name>
