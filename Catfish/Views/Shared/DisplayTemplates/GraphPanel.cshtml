@@ -10,11 +10,15 @@
     <style type="text/css" scoped>
                     @Html.Raw(cssStyles)
     </style>
-   
+   <form>
+       <label><input type="radio" name="mode" value="grouped" />Grouped</label>
+       <label><input type="radio" name="mode" value="stacked" checked />Stacked</label>
+   </form>
     <svg class="line-chart"> </svg>
     <div class="legend"></div>
 
     </div>
+@*<script src="//d3js.org/d3.v3.min.js"></script>*@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="~/Scripts/D3/graph.js"></script>
 
@@ -44,10 +48,10 @@
                 xmax= Request.Params.AllKeys.Contains(Model.MaxX_Parameter) ? int.Parse(Request.Params[Model.MaxX_Parameter]) : int.MaxValue,
              }))";
 
-/* This is temporary solution until we figure out the indexing. We are going not querying the data directly through api call !!! */
- var result = @Html.Raw(Model.QueryResult);
+
 /* loading data */
-/*document.addEventListener("DOMContentLoaded", function (event) {
+        /*
+document.addEventListener("DOMContentLoaded", function (event) {
     fetch(xapi).then(function (response) { return response.json(); })  //temporary commented this one out until we are ready to call api again
               .then(function (data) {
                   var parsedData = parseDataSF(data);
@@ -65,16 +69,22 @@
                .catch(function (err) { console.log(err); })
 });
 */
+
+/* ********This is temporary solution until we figure out the indexing. We are going not querying the data directly through api call !!!************** */
+
+
+ var result = @Html.Raw(Model.QueryResult);
     document.addEventListener("DOMContentLoaded", function (event) { //temporary using json object directly
 
                    //set min/max year
                     var urlParams = new URLSearchParams(window.location.search);
-                  minX =urlParams.has('@Model.MinX_Parameter') ? urlParams.get('@Model.MinX_Parameter') : minX;
-                  maxX = urlParams.has('@Model.MaxX_Parameter') ? urlParams.get('@Model.MaxX_Parameter')  : maxX;
+                  minX =urlParams.has('@Model.MinX_Parameter') ? urlParams.get('@Model.MinX_Parameter') : 1;
+                  maxX = urlParams.has('@Model.MaxX_Parameter') ? urlParams.get('@Model.MaxX_Parameter')  : Number.MAX_SAFE_INTEGER;
 
                   var parsedData = parseDataSF(result.filter(function(d){ return d.YValue >= minX && d.YValue <= maxX; }));
-                  drawChartMulti@(Model.SelectedGraphType.ToString())(parsedData);
-
+                //  drawChartMulti@(Model.SelectedGraphType.ToString())(parsedData);
+      drawChartMultiBar(parsedData);
+      
                   $("#Min_Parameter").val(minX);
                   $("#Max_Parameter").val(maxX);
 
@@ -88,7 +98,7 @@
         .legend {
             font-size: 14px !important;
             width: 100px;
-            border: 1px solid grey;
+            /* border: 1px solid grey;*/
             float: right;
             margin-right: 20%;
             margin-top: 10%;
