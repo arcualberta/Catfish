@@ -73,7 +73,7 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
-        public JsonResult Save(FormBuilderViewModel vm)
+        public ActionResult Save(FormBuilderViewModel vm)
         {
             if (ModelState.IsValid)
             {
@@ -83,7 +83,7 @@ namespace Catfish.Areas.Manager.Controllers
                 {
                     model = FormService.GetForm<AbstractForm>(vm.Id);
                     if (model == null)
-                        return Json(vm.Error("Specified form not found"));
+                        return HttpNotFound();
                 }
                 else
                 {
@@ -104,11 +104,13 @@ namespace Catfish.Areas.Manager.Controllers
                     controller = controller.Substring(0, controller.Length - "Controller".Length);
                     vm.url = Url.Action("Edit", controller, new { id = model.Id });
                 }
+
+                SuccessMessage(Resources.Views.Form.Edit.SaveSuccess);
             }
             else
-                return Json(vm.Error("Model validation failed"));
+                ErrorMessage(Resources.Views.Form.Edit.SaveInvalid);
 
-            return Json(vm);
+            return View("Edit", vm);
         }
     }
 }

@@ -258,20 +258,6 @@
 
         var pageForm = $("#@(context) > form");
 
-        /*var form = document.createElement("form");
-        form.setAttribute("method", "POST");
-        form.setAttribute("accept", "text/javascript");
-        form.setAttribute("action", pageForm.attr("action"));
-
-        var hiddenField = document.createElement("input");
-        hiddenField.setAttribute("name", "vm");
-        hiddenField.setAttribute("value", ko.toJSON());
-        hiddenField.setAttribute("type", "hidden");
-        form.appendChild(hiddenField);
-
-        document.body.appendChild(form);
-        form.submit();*/
-
         var xhr = new XMLHttpRequest();
         xhr.open("post", pageForm.attr("action"), )
 

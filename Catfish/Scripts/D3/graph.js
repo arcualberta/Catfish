@@ -184,7 +184,7 @@ function drawChartMultiLine(data) {
 
             var totalLength = path.node().getTotalLength();
             path.attr("stroke-dasharray", totalLength + " " + totalLength)
-                .attr("stroke-dashoffset", totalLength).transition().duration(0).ease(d3.easeCubicOut)
+                .attr("stroke-dashoffset", totalLength).transition().duration(100).ease(d3.easeCubicOut)
                 .attr("stroke-dashoffset", 0);
 
             path.exit().remove();

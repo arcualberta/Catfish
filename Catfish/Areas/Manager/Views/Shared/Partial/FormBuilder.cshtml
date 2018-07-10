@@ -183,7 +183,20 @@
 <script type="text/javascript">
   @(context).uploadFileKoWrapper = function (data, containerId, uploadApiUrl, deleteApiUrl, fieldFileGuids) {
       uploadFileKo(containerId, uploadApiUrl, deleteApiUrl, fieldFileGuids, data)
-  };
+    };
+
+    function getFormBuilderContext() {
+        return @(context);
+    }
+
+    function getFormBuilderForm() {
+        return $("#@(context) > form");
+    }
+
+    function deleteFormBuilderContext() {
+        delete @context;
+        delete @(context)Js;
+    }
 </script>
 
 

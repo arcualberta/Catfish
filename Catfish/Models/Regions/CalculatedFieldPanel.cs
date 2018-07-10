@@ -124,9 +124,11 @@ namespace Catfish.Models.Regions
                 string maxParam = context.Request.QueryString[Max_Parameter];
                
 
-                int min = minParam == null ? int.MinValue : int.Parse(minParam);
-                int max = maxParam == null ? int.MaxValue : int.Parse(maxParam);
-              
+                int min = String.IsNullOrWhiteSpace(minParam) ? int.MinValue : int.Parse(minParam);
+                int max = String.IsNullOrWhiteSpace(maxParam) ? int.MaxValue : int.Parse(maxParam);
+
+                MinValue = min;
+                MaxValue = max;
 
                 string functionName = SelectedFunction.ToString();
 
