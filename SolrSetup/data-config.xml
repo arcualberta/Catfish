@@ -7,15 +7,24 @@
 				var language = row.get("langCode");
 				var name = row.get("name");
 				var value = row.get("value");
+				var fieldType = row.get("fieldType");
 				
 				for(var i = 0; i < language.length; ++i){
 					row.put("name_txt_" + language[i], name[i]);
 					row.put("value_txt_" + language[i], value[i]);
+					
+					if(fieldType.startsWith("Catfish.Core.Models.Forms.NumberField"){
+						if(!Number.isNaN(value[i]) and value[i].length > 0){
+							row.put("value_i", value[i]);
+							row.put("value_d", value[i]);
+						}
+					}
 				}
 				
 				row.remove("langCode");
 				row.remove("name");
 				row.remove("value");
+				row.remove("fieldType");
 
 				return row;
 			}
@@ -40,6 +49,7 @@
 			<field column="langCode" xpath="/fields/field/entry/@lang" multiValued="true"/>
 			<field column="name" xpath="/fields/field/entry/name" multiValued="true"/>
 			<field column="value" xpath="/fields/field/entry/value" multiValued="true"/>
+			<field column="fieldType" xpath="/fields/field/@model-type" multiValued="true"/>
 		</entity>
     </entity>
   </document>
