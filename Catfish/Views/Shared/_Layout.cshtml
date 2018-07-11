@@ -57,7 +57,18 @@
 <body>
     <header role="banner">
         <div class="wrapper">
-            <a class="site-title" href="~/">@Html.Raw(title)</a>
+            <a class="site-title" href="~/">
+                @try
+                {
+                    var logo = global.Regions.Logo;
+                    @UI.Thumbnail(logo.Id, 150)
+                }
+                catch (Exception)
+                {
+                    @Html.Raw(title)
+                }
+            </a>
+
             @Html.Partial("_LanguageSwitcher")
             <p class="site-desc">
                 @try
