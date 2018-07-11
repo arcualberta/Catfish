@@ -11,6 +11,7 @@ using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Catfish.Core.Models.Forms;
 using Catfish.Services;
+using Newtonsoft.Json;
 
 namespace Catfish.Models.Regions
 {
@@ -18,6 +19,13 @@ namespace Catfish.Models.Regions
     {  
         public decimal calculatedValue { get; set; }
         public int count { get; set; }
+    }
+
+    public class CalculatedField
+    {
+        public int Year { get; set; }
+        public int Amount { get; set; }
+        public int NumProjects { get; set; }
     }
 
     [Export(typeof(IExtension))]
@@ -61,6 +69,9 @@ namespace Catfish.Models.Regions
 
         [ScriptIgnore]
         public int MaxValue { get; set; }
+        [Display(Name="Query Result")]
+        [DataType(DataType.MultilineText)]
+        public string QueryResult { get; set; }
 
         public CalculatedFieldPanel()
         {
@@ -113,9 +124,11 @@ namespace Catfish.Models.Regions
                 string maxParam = context.Request.QueryString[Max_Parameter];
                
 
-                int min = minParam == null ? int.MinValue : int.Parse(minParam);
-                int max = maxParam == null ? int.MaxValue : int.Parse(maxParam);
-              
+                int min = String.IsNullOrWhiteSpace(minParam) ? int.MinValue : int.Parse(minParam);
+                int max = String.IsNullOrWhiteSpace(maxParam) ? int.MaxValue : int.Parse(maxParam);
+
+                MinValue = min;
+                MaxValue = max;
 
                 string functionName = SelectedFunction.ToString();
 
@@ -123,15 +136,17 @@ namespace Catfish.Models.Regions
                     functionName = "AVG";
 
                 ItemQueryService itemQuerySrv = new ItemQueryService();
-               
-                var result = itemQuerySrv.GetCalculatedField(functionName, SelectedFieldMetadataSet, SelectedField, SelectedFilterMetadataSet, selectedFilterField, min, max);
-              
-                foreach (var r in result)
-                {       if (functionName == FunctionMode.COUNT.ToString())
-                        Result = r.count;
-                    else
-                        Result = r.calculatedValue;    
-                }
+
+                //TEMPORARY COMMENTED BELOW SINCE THE CALCULATION WILL BASED ON JSON!!!!!
+                //var result = itemQuerySrv.GetCalculatedField(functionName, SelectedFieldMetadataSet, SelectedField, SelectedFilterMetadataSet, selectedFilterField, min, max);
+
+                //foreach (var r in result)
+                //{       if (functionName == FunctionMode.COUNT.ToString())
+                //        Result = r.count;
+                //    else
+                //        Result = r.calculatedValue;    
+                //}
+                //TEMPORARY COMMENTED BELOW SINCE THE CALCULATION WILL BASED ON JSON!!!!!
             }
 
             return base.GetContent(model);

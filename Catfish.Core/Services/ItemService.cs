@@ -188,16 +188,20 @@ namespace Catfish.Core.Services
             int take = itemsPerPage + 1; // We add an extra value to calculate the next button.
 
             Db.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
+            
+            string query = string.Format(@"SELECT TOP {5} a.*
+                FROM (
+                    SELECT c.*, ROW_NUMBER() OVER(ORDER BY c.Id) as RowNumber
+                    FROM CFXmlModels c
+		            CROSS APPLY c.Content.nodes('(/item/metadata/metadata-set[@guid=""{0}""]/fields[field/@guid=""{1}""])') as T(fields)
+                    WHERE c.Discriminator = 'CFItem'
+		                AND fields.exist('number((./field[@guid=""{1}""]/value/text/text())[1])') = 1
+                        AND fields.value('(./field[@guid=""{1}""]/value/text/text())[1]', 'INT') BETWEEN {2} AND {3}
+                ) a
+                WHERE a.RowNumber > {4}
+            ", facetMetadataGuid, facetFieldGuid, facetMin, facetMax, page * itemsPerPage, take);
 
-            // We will select only the maximumn number of items we need for pagination. This is due to older versions of SQL Server not having the appropriate pagination methods.
-            string query = string.Format(@"SELECT TOP " + (skip + take) + @"*
-                FROM CFXmlModels
-                WHERE Discriminator = 'CFItem'
-                    AND Content.value('(/item/metadata/metadata-set[@guid=""{0}""]/fields/field[@guid=""{1}""]/value/text/text())[1]', 'INT') >= {2}
-                    AND Content.value('(/item/metadata/metadata-set[@guid=""{0}""]/fields/field[@guid=""{1}""]/value/text/text())[1]', 'INT') <= {3}
-            ", facetMetadataGuid, facetFieldGuid, facetMin, facetMax, page * itemsPerPage, itemsPerPage);
-
-            return Db.Items.SqlQuery(query).Skip(page * itemsPerPage).Take(itemsPerPage);
+            return Db.Items.SqlQuery(query);
         }
 
        
