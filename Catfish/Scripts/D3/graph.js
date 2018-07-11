@@ -314,7 +314,7 @@ function drawChartMultiLine(data) {
    based on stacked/group bar by bl.ocks.org/mbostock/3943967
 */
 function drawChartMultiBar(data) {
-    var svgWidth = 1000, svgHeight = 500;
+    var svgWidth = 1100, svgHeight = 500;
     var cats = [];
     var years = [];
     var nested = d3.nest()
@@ -418,10 +418,12 @@ function drawChartMultiBar(data) {
         .on("mouseover", function(){tooltip.style("opacity", 1)})
          .on("mouseout", function () { tooltip.style("opacity", 0) })
          .on("mousemove", function (d) {
-              var xPos = d3.mouse(this)[0] - 5;
-              var yPos = d3.mouse(this)[1] - 5;
-              var amt = d[1] - d[0]
+              var xPos = d3.mouse(this)[0] + 15;
+              var yPos = d3.mouse(this)[1] - 15;
+              var f = d3.format(".2f");
+              var amt = f(d[1] - d[0]);
               tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
+              tooltip.style("background", "White");
               tooltip.select("text").text(amt);
           })
         ;
@@ -475,17 +477,31 @@ function drawChartMultiBar(data) {
     var tooltip = g1.append("g")
                   .attr("class", "tooltip");
                 // .style("display", "none");
-    tooltip.append("rect").attr("width", 80)
+    tooltip.append("rect").attr("width", 60)
                           .attr("height", 20)
-                          .attr("fill", "white")
-                          .style("opacity", 0)
-                          .style("border", "solid 1px Red");
+                          .attr("fill", "black")
+                          .style("opacity", 0.7);
+                          
     tooltip.append("text").attr("x", 30)
                           .attr("dy", "1.2em")
                           .style("text-anchor", "middle")
+                          .style("text-align", "center")
                           .attr("font-size", "12px")
+                           .attr("fill", "white")
                           .attr("font-weight", "bold");
-    
+  
+  
+    //var form = d3.select("body").append("form");
+    //   form.append("input")
+    //                   .attr("type", "radio")
+    //                   .attr("value", "stacked").attr("name", "mode")
+    //                   .property("checked", true).append("label").text("Stacked");
+    //   form.append("input")
+    //                     .attr("type", "radio")
+    //                     .attr("value", "grouped").attr("name", "mode")
+    //                     .property("checked", false).append("label").text("Grouped");
+    //   svg.append(form).attr("transform", "translate(0,0)");
+
     d3.selectAll("input").on("change", change);
 
     function change() {

@@ -314,6 +314,7 @@
     <Content Include="Areas\Manager\Views\Extensions\ListEntitiesPanel.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\CalculatedFieldPanel.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\QueryFilterPanel.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\AdvanceSearchContainer.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
@@ -354,6 +355,7 @@
     <Compile Include="Areas\Manager\Models\ViewModels\EntityAccessDefinitionsViewModel.cs" />
     <Compile Include="Areas\Manager\Services\AccessGroupService.cs" />
     <Compile Include="Areas\Manager\Services\PageService.cs" />
+    <Compile Include="Models\Regions\AdvanceSearchContainer.cs" />
     <Compile Include="Models\Regions\GraphPanel.cs" />
     <Compile Include="Models\Regions\CalculatedFieldPanel.cs" />
     <Compile Include="Models\Regions\ListEntitiesPanel.cs" />
@@ -511,6 +513,7 @@
     <Content Include="Views\Shared\DisplayTemplates\ListEntitiesPanel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\CalculatedFieldPanel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\QueryFilterPanel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\AdvanceSearchContainer.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
