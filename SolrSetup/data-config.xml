@@ -17,13 +17,13 @@
 					value = values[i];
 					
 					if(id){
-						row.put(id + "name_txt_" + language, names[i]);
-						row.put(id + "value_txt_" + language, value);
+						row.put("name_" + id + "txt_" + language, names[i]);
+						row.put("value_" + id + "txt_" + language, value);
 						
 						if(modelTypes[i].startsWith("Catfish.Core.Models.Forms.NumberField")){
 							if(!isNaN(value) && value.length > 0){
-								row.put(id + "value_i", value[i]);
-								row.put(id + "value_d", value[i]);
+								row.put("value_" + id + "i", value);
+								row.put("value_" + id + "d", value);
 							}
 						}
 					}
@@ -50,8 +50,8 @@
 					value = values[i];
 					
 					if(id){
-						row.put(id + "option_name_txt_" + language, names[i]);
-						row.put(id + "option_value_txt_" + language, value);
+						row.put("option_name_" + id + "txt_" + language, names[i]);
+						row.put("option_value_" + id + "txt_" + language, value);
 					}
 				}
 				
