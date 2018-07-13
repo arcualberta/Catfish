@@ -33,5 +33,15 @@ namespace Catfish.Core.Models
         public CFEntityTypeAttributeMapping() {
             Deletable = true;
         }
+
+        [NotMapped]
+        [IgnoreDataMember]
+        public FormField Field
+        {
+            get
+            {
+                return MetadataSet.Fields.Where(f => f.Name == FieldName).FirstOrDefault();
+            }
+        }
     }
 }

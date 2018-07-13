@@ -36,13 +36,13 @@
                 <table class="table table-responsive table-striped" id="AttributeMappingTable">
                     @{
                         int i = 0;
-                        foreach (string f in Model.Fields)
+                        foreach (var f in Model.Mappings)
                         {
                             string rowId = "row_" + i;
                             <tr id="@rowId">
                                 <input type="hidden" name="@(Html.NameFor(m => m.Fields)).Index" value="@(i)" />
                                 @Html.HiddenFor(m => m.Fields[i])
-                                <td><span>@f</span></td>
+                                <td><span>@f.Name</span></td>
                                 <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteRow('@rowId');"></span><span class="glyphicon glyphicon-arrow-up up"></span><span class="glyphicon glyphicon-arrow-down down"></span></td>
                             </tr>
 

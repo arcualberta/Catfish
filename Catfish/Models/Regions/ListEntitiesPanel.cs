@@ -93,7 +93,17 @@ namespace Catfish.Models.Regions
             EntityTypeService entityTypeSrv = new EntityTypeService(db);
        
             FieldsMapping = new SelectList((entityTypeSrv.GetEntityTypeAttributeMappings()), "Id", "Name");
-           
+
+            if (Fields.Count > 0)
+            {
+                foreach (var id in Fields)
+                {
+                    CFEntityTypeAttributeMapping map = entityTypeService.GetEntityTypeAttributeMappingById(int.Parse(id));
+
+                    Mappings.Add(map);
+                }
+            }
+
             base.InitManager(model);
         }
 

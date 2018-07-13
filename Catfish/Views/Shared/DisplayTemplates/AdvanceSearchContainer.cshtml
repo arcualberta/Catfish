@@ -5,125 +5,79 @@
 @{ string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+    int i = 0;
 }
 <div id="@cssId" class="bs @cssClasses container container-fluid">
     <style type="text/css" scoped>
            @Html.Raw(cssStyles)
     </style>
-    <div class="row" style="text-align:center;margin-top:20px;">
-        <button class="btn-link" name="listEntitiesPanel_prev_button" onclick="GoToPage('Prev'); return false;"><span style="align-content:center"><span class="glyphicon glyphicon-backward"></span>Prev</span></button>
-        <input name="listEntitiesPanel_page_number" placeholder="1" value="" style="width:15px; height:15px;" />
-        <button class="btn-link" name="listEntitiesPanel_next_button" onclick="GoToPage('Next'); return false;"><span style="align-content:center">Next<span class="glyphicon glyphicon-forward"></span></span></button>
-    </div>
-    <div class="row ">
-        
+   
+   
+       
+       @foreach (var m in Model.Mappings)
+       {
+           var label = m.Label;
+           var fType = m.Field.GetType();
+          
 
-            @*content*@
-            <div id="ListEntitiesPanelTableBody">
-                @foreach (var item in Model.Items)
+        <div class="row advanceSearchContainerInput">
+            <div style="font-size: 1.3em;">@label  </div>
+            @if (fType.FullName == "Catfish.Core.Models.Forms.TextField")
+            {
+                <div style="height:30px" class="divText"><input type="text" class="input" id="AdvanceSearchContainer-@label-Text" /></div>
+
+            }
+            else if (fType.FullName == "Catfish.Core.Models.Forms.NumberField" || fType.FullName == "Catfish.Core.Models.Forms.DateField")
+            {
+                //number field or Date field
+                <div class="divNumber">
+                    <span class="label-default" style="font-size:1em;">From</span><input type="text" id="AdvanceSearchContainer-@label-From" style="height:30px" />
+                    <span class="label-default" style="font-size:1em;">To</span><input type="text" id="AdvanceSearchContainer-@label-To" style="height:30px" />
+                </div>
+
+            }
+            else if (typeof(Catfish.Core.Models.Forms.OptionsField).IsAssignableFrom(fType))
+            {
+                if (Model.Multiples[i])
                 {
-                    <div>
-                        @foreach (var f in Model.Mappings)
+                    <div class="divCheckbox">
+                        <ul>
+                            @foreach (var option in ((Catfish.Core.Models.Forms.OptionsField)m.Field).Options)
                         {
-                            string content = item.GetAttributeMappingValue(f.Name);
-                            <td>@content</td>
-                        }
+                            var nm = "AdvanceSearchContainer-Chkbox";
+                                <li>
+                                    <input type="checkbox" name="@nm" value="@option.Guid" />
+                                    <span>@option.Value[0].Value</span>
+                                </li>
+                            }
+                        </ul>
                     </div>
                 }
-            </div>
-    
-    </div>
-  
+                else
+                {
+                    @:<div class="divDropDownList">
+                        var options = new SelectList(((Catfish.Core.Models.Forms.OptionsField)m.Field).Options, "Guid", "Value[0].Value");
+                        var nm = "AdvanceSearchContainer-DropdownList";
+                        @Html.DropDownList("@nm", options)
+                    @:</div>
+                }
+            }
+
+        </div>
+           i++;
+       }
+
+      
+    <div class="row"><button id="AdvanceSearchContainer_Search_Button" class="btn btn-default"><span class="glyphicon glyphicon-search"></span>Search</button></div>
 </div>
 
 <script>
-      //Need to be set in order to also use QueryFilterPanel
-    Min_ParameterName = '@Model.Min_Parameter';
-    Max_ParameterName = '@Model.Max_Parameter';
-    var curr@(cssId)page = @Model.CurrentPage;
-
-
-    //Min_Parameter and Max_parameter is the <input> id on QueryFilterPanel
-   //  $("#Min_Parameter").val(Min_Value);
-   //  $("#Max_Parameter").val(Max_Value);
-
-   $(document).ready(function() {
-       var curPage = curr@(cssId)page;
-
-       if(curPage == 1)
-        {
-           $("[name='listEntitiesPanel_prev_button']").hide();
-        }
-
-       if(@Model.ItemCount < @Model.ItemPerPage)
-        {
-             $("[name='listEntitiesPanel_next_button']").hide();
-        }
-        $("[name='listEntitiesPanel_page_number']").val(curPage);
-   });
-
-    function GoToPage(whichPage){
-        var currPage = curr@(cssId)page;
-
-        if(whichPage === "Prev")
-        {
-             currPage = currPage - 1;
-             currPage = currPage < 1 ? 1 : currPage; //to avoid 0
-        }
-        else if(whichPage === "Next"){
-             currPage = currPage + 1;
-        }
-
-        curr@(cssId)page = currPage;
-
-     //set min/max year
-      var urlParams = new URLSearchParams(window.location.search);
-
-      var min =urlParams.has('@Model.Min_Parameter') ? urlParams.get('@Model.Min_Parameter') : "";
-      var max = urlParams.has('@Model.Max_Parameter') ? urlParams.get('@Model.Max_Parameter')  : "";
-      var mapIds = [@Html.Raw(String.Join(",", Model.Fields.ToArray().Select(i=>i)))]; //[13,15]
-
-      var url = `@Url.Action("GetPageItems", "Items")`;
-
-       $.ajax({
-        type: 'GET',
-        url:url,
-        dataType: 'json',
-        traditional: true,
-        data:{page: currPage, itemPerPage:@Model.ItemPerPage,selectedMetadataSet: `@Model.SelectedMetadataSet`, selectedField: `@Model.selectedFilterField`,mapIds:mapIds, min: min, max: max},
-        success:function(result){
-
-        //remove all rows in the tbody
-        var body = $("#ListEntitiesPanelTableBody");
-            body.children().remove();  //remove all row on the tbody
-
-        //update table data
-        result.forEach(function(r, i){ //going through each row
-             var new_row = "<tr>";
-              r.forEach(function(c, j){ //going through each column
-                     new_row += "<td>" + c + "</td>";
-               });
-              new_row += "</tr>";
-              body.append(new_row);
+   $(function() {
+        $("#AdvanceSearchContainer_Search_Button").click(function(){
+           var rows = $(".advanceSearchContainerInput");
+           rows.forEach(function(d){
+          
            });
-
-            $("[name='listEntitiesPanel_page_number']").val(currPage);
-             if(currPage == 1)
-            {
-                $("[name='listEntitiesPanel_prev_button']").hide();
-            }
-             else{
-                 $("[name='listEntitiesPanel_prev_button']").show();
-            }
-
-        },
-        error: function(){
-          alert("Problems while updating table data");
-        }
+        });
     });
-
-
-    }
-
-
 </script>
