@@ -36,7 +36,19 @@ namespace Catfish.Services
             return result;
         }
 
-        public IEnumerable<GraphQueryObject> GetGraphData(string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, int xmin = 0, int xmax = 0)
+        public IEnumerable<GraphQueryObject> GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, bool isCatDropdown = false)
+        {
+            string xIndexId = string.Format("value_{0}_{1}_i", xMetadataSet.Replace('-', '_'), xField.Replace('-', '_'));
+            string yIndexId = string.Format("value_{0}_{1}_i", yMetadataSet.Replace('-', '_'), yField.Replace('-', '_'));
+            string catIndexId = string.Format("{2}value_{0}_{1}_i", catMetadataSet.Replace('-', '_'), catField.Replace('-', '_'), isCatDropdown ? "option_" : "");
+
+            SolrService solrSrv = new SolrService();
+            solrSrv.GetGraphData(q, xIndexId, yIndexId, catIndexId);
+
+            return null;
+        }
+
+        public IEnumerable<GraphQueryObject> GetGraphData_old(string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, int xmin = 0, int xmax = 0)
         {
             CatfishDbContext db = new CatfishDbContext();
             xmin = xmin == 0 ? DateTime.MinValue.Year : xmin;
