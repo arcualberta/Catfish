@@ -17,7 +17,7 @@
 					value = values[i];
 					
 					if(id){
-						id = id.replace('-', '_');
+						id = id.replace(/-/g, '_');
 						row.put("name_" + id + "txt_" + language, names[i]);
 						row.put("value_" + id + "txt_" + language, value);
 						
@@ -51,7 +51,7 @@
 					value = values[i];
 					
 					if(id){
-						id = id.replace('-', '_');
+						id = id.replace(/-/g, '_');
 						row.put("option_name_" + id + "txt_" + language, names[i]);
 						row.put("option_value_" + id + "txt_" + language, value);
 					}
