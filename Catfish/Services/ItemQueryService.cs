@@ -5,6 +5,8 @@ using System.Web;
 using Catfish.Core.Services;
 using Catfish.Core.Models;
 using Catfish.Models.Regions;
+using System.IO;
+using System.Text;
 
 namespace Catfish.Services
 {
@@ -36,7 +38,121 @@ namespace Catfish.Services
             return result;
         }
 
-        public IEnumerable<GraphQueryObject> GetGraphData(string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, int xmin = 0, int xmax = 0)
+        private IEnumerable<GraphQueryObject> ReadFacet(System.Xml.XmlReader reader)
+        {
+            int level = 1;
+            int xVal = 0;
+            decimal yVal = 0;
+            int count = 0;
+            string category = string.Empty;
+
+            IList<GraphQueryObject> result = new List<GraphQueryObject>();
+
+            while (reader.Read())
+            {
+                if (reader.IsStartElement())
+                {
+                    if(reader.Name == "lst")
+                    {
+                        ++level;
+                    }else if((reader.Name == "int" || reader.Name == "long") && level == 3 && reader.GetAttribute("name") == "val")
+                    {
+                        reader.Read();
+                        xVal = reader.ReadContentAsInt();
+                    }else if(level == 5)
+                    {
+                        string name = reader.GetAttribute("name");
+                        reader.Read();
+                        string value = reader.ReadContentAsString();
+
+                        if (!string.IsNullOrWhiteSpace(value))
+                        {
+                            if (name == "val")
+                            {
+                                category = value;
+                            }
+                            else if (name == "count")
+                            {
+                                count = int.Parse(value);
+                            }
+                            else if (name == "sumYValuesArg")
+                            {
+                                yVal = Convert.ToDecimal(double.Parse(value));
+                            }
+                        }
+                    }
+                }
+                else if(reader.NodeType == System.Xml.XmlNodeType.EndElement)
+                {
+                    if (reader.Name == "lst")
+                    {
+                        --level;
+
+                        if (level < 1)
+                        {
+                            break;
+                        }else if(level == 2)
+                        {
+                            xVal = 0;
+                        }else if(level == 4)
+                        {
+                            result.Add(new GraphQueryObject()
+                            {
+                                XValue = yVal,
+                                YValue = xVal,
+                                Category = category,
+                                Count = count
+                            });
+
+                            yVal = 0.0m;
+                            category = string.Empty;
+                            count = 0;
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private IEnumerable<GraphQueryObject> ConvertSolrXml(string solrXml)
+        {
+            IEnumerable<GraphQueryObject> result = null;
+
+            MemoryStream memStream = new MemoryStream();
+            byte[] data = Encoding.Default.GetBytes(solrXml);
+            memStream.Write(data, 0, data.Length);
+            memStream.Position = 0;
+            
+            using (System.Xml.XmlReader reader = System.Xml.XmlReader.Create(memStream))
+            {
+                while (reader.Read())
+                {
+                    if(reader.IsStartElement() && reader.Name == "lst" && reader.GetAttribute("name") == "facets")
+                    {
+                        result = ReadFacet(reader);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public IEnumerable<GraphQueryObject> GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, bool isCatDropdown = false, string languageCode = "en")
+        {
+            string xIndexId = string.Format("value_{0}_{1}_i", xMetadataSet.Replace('-', '_'), xField.Replace('-', '_'));
+            string yIndexId = string.Format("value_{0}_{1}_i", yMetadataSet.Replace('-', '_'), yField.Replace('-', '_'));
+            string catIndexId = string.Format("{2}value_{0}_{1}_txt_{3}", catMetadataSet.Replace('-', '_'), catField.Replace('-', '_'), isCatDropdown ? "option_" : "", languageCode);
+
+            SolrService solrSrv = new SolrService();
+            string result = solrSrv.GetGraphData(q, xIndexId, yIndexId, catIndexId);
+
+            if (string.IsNullOrEmpty(result)) { return null; }
+
+            return ConvertSolrXml(result);
+        }
+
+        public IEnumerable<GraphQueryObject> GetGraphData_old(string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, int xmin = 0, int xmax = 0)
         {
             CatfishDbContext db = new CatfishDbContext();
             xmin = xmin == 0 ? DateTime.MinValue.Year : xmin;

@@ -2,6 +2,8 @@
 <dataConfig name="xml-document-schema" version="1.6">
 	<script>
 		<![CDATA[ 
+			var replaceRegex = new RegExp('-', 'g');
+			
 			function convertFields(row){
 				var ids = row.get("field_id");
 				var languages = row.get("field_langCode");
@@ -17,7 +19,7 @@
 					value = values[i];
 					
 					if(id){
-						id = id.replace(/-/g, '_');
+						id = id.replace(replaceRegex, '_');
 						row.put("name_" + id + "txt_" + language, names[i]);
 						row.put("value_" + id + "txt_" + language, value);
 						
@@ -51,7 +53,7 @@
 					value = values[i];
 					
 					if(id){
-						id = id.replace(/-/g, '_');
+						id = id.replace(replaceRegex, '_');
 						row.put("option_name_" + id + "txt_" + language, names[i]);
 						row.put("option_value_" + id + "txt_" + language, value);
 					}
@@ -72,31 +74,31 @@
 		]]>
 	</script>
 
-  <dataSource name="d1" type="JdbcDataSource" driver="com.microsoft.sqlserver.jdbc.SQLServerDriver" url="jdbc:sqlserver://localhost:1433;instance=SQLEXPRESS;databaseName=CatfishTest2;" user="catfish" password="password" />
-  <dataSource name="d2" type="FieldReaderDataSource" />
-  
-  <document name="FieldDoc">
-	<entity processor="SqlEntityProcessor" dataSource="d1" name="dbData" pk="Id" query="select * from [dbo].[CFXmlModels] WHERE EntityTypeId IS NOT NULL" deltaImportQuery="SELECT * FROM [dbo].[CFXmlModels] WHERE Id = ${dih.delta.Id}" deltaQuery="SELECT Id FROM [dbo].[CFXmlModels] WHERE EntityTypeId IS NOT NULL AND ([Content].value(N'(/./@created)[1]', 'datetime') &gt;= '${dih.last_index_time}' OR [Content].value(N'(/./@updated)[1]', 'datetime') &gt;= '${dih.last_index_time}')" rootEntity="false">
-	
-		<field column="Id" name="id_s"/>
-		<field column="Discriminator" name="modeltype_s"/>
+	<dataSource name="d1" type="JdbcDataSource" driver="com.microsoft.sqlserver.jdbc.SQLServerDriver" url="jdbc:sqlserver://localhost:1433;instance=SQLEXPRESS;databaseName=CatfishTest2;" user="catfish" password="password" />
+	<dataSource name="d2" type="FieldReaderDataSource" />
 
-		<entity processor="XPathEntityProcessor" transformer="TemplateTransformer,script:convertDocument" name="fields" dataSource="d2" dataField="dbData.Content" forEach="/fields" xsl="PCDTransform.xslt" >
-			<field column="id" xpath="/fields/@guid"/>
-			
-			<!-- These fields will be transformed to each language code -->
-			<field column="field_id" xpath="/fields/field/entry/guid" multiValued="true"/>
-			<field column="field_langCode" xpath="/fields/field/entry/@lang" multiValued="true"/>
-			<field column="field_name" xpath="/fields/field/entry/name" multiValued="true"/>
-			<field column="field_value" xpath="/fields/field/entry/value" multiValued="true"/>
-			<field column="field_modelType" xpath="/fields/field/entry/model-type" multiValued="true"/>
-			
-			<!-- These options will be transformed to each language code -->
-			<field column="option_id" xpath="/fields/field/option/guid" multiValued="true"/>
-			<field column="option_langCode" xpath="/fields/field/option/@lang" multiValued="true"/>
-			<field column="option_name" xpath="/fields/field/option/name" multiValued="true"/>
-			<field column="option_value" xpath="/fields/field/option/value" multiValued="true"/>
+	<document name="FieldDoc">
+		<entity processor="SqlEntityProcessor" dataSource="d1" name="dbData" pk="Id" query="select * from [dbo].[CFXmlModels] WHERE EntityTypeId IS NOT NULL" deltaImportQuery="SELECT * FROM [dbo].[CFXmlModels] WHERE Id = ${dih.delta.Id}" deltaQuery="SELECT Id FROM [dbo].[CFXmlModels] WHERE EntityTypeId IS NOT NULL AND ([Content].value(N'(/./@created)[1]', 'datetime') &gt;= '${dih.last_index_time}' OR [Content].value(N'(/./@updated)[1]', 'datetime') &gt;= '${dih.last_index_time}')" rootEntity="false">
+
+			<field column="Id" name="id_s"/>
+			<field column="Discriminator" name="modeltype_s"/>
+
+			<entity processor="XPathEntityProcessor" transformer="TemplateTransformer,script:convertDocument" name="fields" dataSource="d2" dataField="dbData.Content" forEach="/fields" xsl="PCDTransform.xslt" >
+				<field column="id" xpath="/fields/@guid"/>
+				
+				<!-- These fields will be transformed to each language code -->
+				<field column="field_id" xpath="/fields/field/entry/guid" multiValued="true"/>
+				<field column="field_langCode" xpath="/fields/field/entry/@lang" multiValued="true"/>
+				<field column="field_name" xpath="/fields/field/entry/name" multiValued="true"/>
+				<field column="field_value" xpath="/fields/field/entry/value" multiValued="true"/>
+				<field column="field_modelType" xpath="/fields/field/entry/model-type" multiValued="true"/>
+				
+				<!-- These options will be transformed to each language code -->
+				<field column="option_id" xpath="/fields/field/option/guid" multiValued="true"/>
+				<field column="option_langCode" xpath="/fields/field/option/@lang" multiValued="true"/>
+				<field column="option_name" xpath="/fields/field/option/name" multiValued="true"/>
+				<field column="option_value" xpath="/fields/field/option/value" multiValued="true"/>
+			</entity>
 		</entity>
-    </entity>
-  </document>
+	</document>
 </dataConfig>

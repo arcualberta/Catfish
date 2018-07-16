@@ -42,10 +42,19 @@ namespace Catfish.Controllers.Api
             return Json(result, JsonRequestBehavior.AllowGet);
 
         }
-        public JsonResult GetGraphData(string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField,int xmin = 0, int xmax = 0)
+
+        public JsonResult GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, bool isCatOptionsIndex = false)
+        {
+            ItemQueryService itemQueryService = new ItemQueryService();
+            var result = itemQueryService.GetGraphData(q, xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, isCatOptionsIndex);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetGraphData_old(string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField,int xmin = 0, int xmax = 0)
         {
             ItemQueryService itemQueryService = new ItemQueryService(); 
-            var result = itemQueryService.GetGraphData(xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, xmin, xmax);
+            var result = itemQueryService.GetGraphData_old(xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, xmin, xmax);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 

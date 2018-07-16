@@ -5,36 +5,27 @@
     string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+
+    string q = Request.Params.AllKeys.Contains("q") ? Request.Params.Get("q") : "*:*";
 }
 <div id="@cssId" class="bs @cssClasses container container-fluid" style="margin-left:0;">
     <style type="text/css" scoped>
                     @Html.Raw(cssStyles)
     </style>
-   <form>
-       <label><input type="radio" name="mode" value="grouped" />Grouped</label>
-       <label><input type="radio" name="mode" value="stacked" checked />Stacked</label>
-   </form>
+   
     <svg class="line-chart"> </svg>
-    <div class="legend"></div>
+    <div class="legend"></div>  
 
     </div>
-@*<script src="//d3js.org/d3.v3.min.js"></script>*@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="~/Scripts/D3/graph.js"></script>
 
     <script>
-    //Need to be set in order to also use QueryFilterPanel --
-    //Min_ParameterName and Max_ParameterName are needed by QueryFilterPanel
-    Min_ParameterName = '@Model.MinX_Parameter'; //minParameter appended on the ulr for search query
-    Max_ParameterName = '@Model.MaxX_Parameter'; //maxParameter appended on the ulr for search query
-
     const XLabel = '@Model.XaxisLabel';
     const YLabel ='@Model.YaxisLabel';
     const GraphTitle = '@Model.GraphTitle';
     const XScale=parseInt('@Model.XScale');
     const YScale=parseInt('@Model.YScale');
-    var minX="", maxX="";
-
 
     const xapi = "@Html.Raw(Url.Action("GetGraphData", "Items", new
              {
@@ -44,61 +35,27 @@
                  yField = Model.YaxisField,
                  catMetadataset = Model.SelectedMetadataSetCat,
                  catField = Model.Category,
-                 xmin = Request.Params.AllKeys.Contains(Model.MinX_Parameter) ? int.Parse(Request.Params[Model.MinX_Parameter]) : int.MinValue,
-                xmax= Request.Params.AllKeys.Contains(Model.MaxX_Parameter) ? int.Parse(Request.Params[Model.MaxX_Parameter]) : int.MaxValue,
+                 q = q,
+                 isCatOptionsIndex = Model.IsCategoryOptionsField
              }))";
-
-
-/* loading data */
-        /*
-document.addEventListener("DOMContentLoaded", function (event) {
-    fetch(xapi).then(function (response) { return response.json(); })  //temporary commented this one out until we are ready to call api again
-              .then(function (data) {
-                  var parsedData = parseDataSF(data);
-                  drawChartMulti@(Model.SelectedGraphType.ToString())(parsedData);
-                  //drawChartMultiBar(parsedData);
-
-                  //set min/max year
-                    var urlParams = new URLSearchParams(window.location.search);
-
-                  minX =urlParams.has('@Model.MinX_Parameter') ? urlParams.get('@Model.MinX_Parameter') : minX.getFullYear();
-                  maxX = urlParams.has('@Model.MaxX_Parameter') ? urlParams.get('@Model.MaxX_Parameter')  :maxX.getFullYear();
-                  $("#Min_Parameter").val(minX);
-                  $("#Max_Parameter").val(maxX);
-              })
-               .catch(function (err) { console.log(err); })
-});
-*/
-
-/* ********This is temporary solution until we figure out the indexing. We are going not querying the data directly through api call !!!************** */
-
-
- var result = @Html.Raw(Model.QueryResult);
-    document.addEventListener("DOMContentLoaded", function (event) { //temporary using json object directly
-
-                   //set min/max year
-                    var urlParams = new URLSearchParams(window.location.search);
-                  minX =urlParams.has('@Model.MinX_Parameter') ? urlParams.get('@Model.MinX_Parameter') : 1;
-                  maxX = urlParams.has('@Model.MaxX_Parameter') ? urlParams.get('@Model.MaxX_Parameter')  : Number.MAX_SAFE_INTEGER;
-
-                  var parsedData = parseDataSF(result.filter(function(d){ return d.YValue >= minX && d.YValue <= maxX; }));
-                //  drawChartMulti@(Model.SelectedGraphType.ToString())(parsedData);
-      drawChartMultiBar(parsedData);
-      
-                  $("#Min_Parameter").val(minX);
-                  $("#Max_Parameter").val(maxX);
-
-});
-
-
-
+        
+    /* loading data */
+    $(document).ready(function (event) {
+        fetch(xapi).then(function (response) { return response.json(); })
+                    .then(function (data) {
+                        var parsedData = parseDataSF(data);
+                        drawChartMulti@(Model.SelectedGraphType.ToString())(parsedData);
+                        //drawChartMultiBar(parsedData);
+                    })
+                    .catch(function (err) { console.log(err); })
+    });
     </script>
 
     <style>
         .legend {
             font-size: 14px !important;
             width: 100px;
-            /* border: 1px solid grey;*/
+            border: 1px solid grey;
             float: right;
             margin-right: 20%;
             margin-top: 10%;

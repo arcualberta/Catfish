@@ -18,7 +18,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 					</xsl:for-each>
 					<xsl:for-each select="options/option[@selected='true']/text">
 						<option lang="{@xml:lang}">
-							<guid><xsl:value-of select="../../../../../@guid"/>_<xsl:value-of select="../../../@guid"/>_<xsl:value-of select="../@guid"/>_</guid>
+							<guid><xsl:value-of select="../../../../../@guid"/>_<xsl:value-of select="../../../@guid"/>_</guid>
 							<name><xsl:value-of select="../../../name/text[@xml:lang=current()/@xml:lang]"/></name>
 							<value><xsl:value-of select="current()"/></value>
 						</option>

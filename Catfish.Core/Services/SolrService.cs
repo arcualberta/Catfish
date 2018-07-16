@@ -1,12 +1,9 @@
-﻿using Catfish.Core.Models;
+﻿using CommonServiceLocator;
 using SolrNet;
 using SolrNet.Attributes;
 using SolrNet.Impl;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Catfish.Core.Services
 {
@@ -45,6 +42,48 @@ namespace Catfish.Core.Services
         public SolrService()
         {
         }
+
+        public string GetGraphData(string query, string xIndexId, string yIndexId, string categoryId)
+        {
+            const string facetJson = @"{{
+                xValues:{{
+                    sort : index,
+                    type : terms,
+                    limit : 1000,
+                    field : {0},
+                    facet : {{
+                        sumYValues : ""sum({1})"",
+                        groups : {{
+                            type : terms,
+                            field : {2},
+                            limit: 10000,
+                            facet : {{
+                                sumYValuesArg : ""sum({1})""
+                            }}
+                        }}
+                    }}
+                }}
+            }}";
+
+            if (SolrService.IsInitialized)
+            {
+                var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
+
+                IEnumerable<KeyValuePair<string, string>> parameters = new KeyValuePair<string, string>[]{
+                    new KeyValuePair<string, string>("q", query),
+                    new KeyValuePair<string, string>("json.facet", string.Format(facetJson, xIndexId, yIndexId, categoryId)),
+                    new KeyValuePair<string, string>("rows", "0"),
+                    new KeyValuePair<string, string>("sort", xIndexId + " asc"),
+                    new KeyValuePair<string, string>("wt", "xml")
+                };
+
+                var result = SolrService.mSolr.Get("/select", parameters);
+
+                return result;                
+            }
+
+            return null;
+        }        
     }
 
     public class SolrIndex
@@ -54,5 +93,10 @@ namespace Catfish.Core.Services
 
         [SolrField("id_s")]
         public int Id { get; set; }
+    }
+
+    public class GraphData
+    {
+        
     }
 }
