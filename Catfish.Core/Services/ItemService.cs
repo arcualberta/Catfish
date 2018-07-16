@@ -182,7 +182,15 @@ namespace Catfish.Core.Services
             return dbModel;
         }
 
-        public IEnumerable<CFItem> GetPagedItems(int page, int itemsPerPage, string facetMetadataGuid = null, string facetFieldGuid = null, int facetMin = 0, int facetMax = 0)
+        public IEnumerable<CFItem> GetPagedItems(string query, int page, int itemsPerPage)
+        {
+            int start = page * itemsPerPage;
+            int rows = itemsPerPage + 1;
+
+            return Db.Items.FromSolr(query, start, itemsPerPage);
+        }
+
+        public IEnumerable<CFItem> GetPagedItems_old(int page, int itemsPerPage, string facetMetadataGuid = null, string facetFieldGuid = null, int facetMin = 0, int facetMax = 0)
         {
             int skip = page * itemsPerPage;
             int take = itemsPerPage + 1; // We add an extra value to calculate the next button.

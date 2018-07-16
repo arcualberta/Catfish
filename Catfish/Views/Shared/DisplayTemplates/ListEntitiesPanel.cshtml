@@ -52,15 +52,7 @@
 </div>
 
 <script>
-      //Need to be set in order to also use QueryFilterPanel
-    Min_ParameterName = '@Model.Min_Parameter';
-    Max_ParameterName = '@Model.Max_Parameter';
     var curr@(cssId)page = @Model.CurrentPage;
-
-
-    //Min_Parameter and Max_parameter is the <input> id on QueryFilterPanel
-   //  $("#Min_Parameter").val(Min_Value);
-   //  $("#Max_Parameter").val(Max_Value);
 
    $(document).ready(function() {
        var curPage = curr@(cssId)page;
@@ -91,11 +83,7 @@
 
         curr@(cssId)page = currPage;
 
-     //set min/max year
       var urlParams = new URLSearchParams(window.location.search);
-
-      var min =urlParams.has('@Model.Min_Parameter') ? urlParams.get('@Model.Min_Parameter') : "";
-      var max = urlParams.has('@Model.Max_Parameter') ? urlParams.get('@Model.Max_Parameter')  : "";
       var mapIds = [@Html.Raw(String.Join(",", Model.Fields.ToArray().Select(i=>i)))]; //[13,15]
 
       var url = `@Url.Action("GetPageItems", "Items")`;
@@ -105,7 +93,7 @@
         url:url,
         dataType: 'json',
         traditional: true,
-        data:{page: currPage, itemPerPage:@Model.ItemPerPage,selectedMetadataSet: `@Model.SelectedMetadataSet`, selectedField: `@Model.selectedFilterField`,mapIds:mapIds, min: min, max: max},
+        data:{page: currPage - 1, itemPerPage:@Model.ItemPerPage,mapIds:mapIds},
         success:function(result){
 
         //remove all rows in the tbody

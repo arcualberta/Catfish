@@ -15,11 +15,9 @@ namespace Catfish.Controllers.Api
 {
     public class ItemsController : CatfishController
     {   
-        public JsonResult GetPageItems(int page, int itemPerPage, string selectedMetadataSet, string selectedField, string min, string max, [Bind(Include = "mapIds[]")] int[] mapIds)
+        public JsonResult GetPageItems(string q, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds)
         {
-            int iMin = string.IsNullOrEmpty(min) ? int.MinValue : int.Parse(min);
-            int iMax = string.IsNullOrEmpty(max) ? int.MaxValue : int.Parse(max);
-            var items = ItemService.GetPagedItems(page, itemPerPage, selectedMetadataSet, selectedField, iMin, iMax).ToList();
+            var items = ItemService.GetPagedItems(q, page, itemPerPage).ToList();
 
             List<List<string>> result = new List<List<string>>();
 
