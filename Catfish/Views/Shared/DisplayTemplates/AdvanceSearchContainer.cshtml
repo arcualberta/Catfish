@@ -18,16 +18,11 @@
        {
            var label = m.Label;
            var fType = m.Field.GetType();
-          
 
-        <div class="row advanceSearchContainerInput">
+
+        <div class="row advanceSearchContainerInput" data-searchid="value_@(m.MetadataSet.Guid.Replace("-", "_"))_@(m.Field.Guid.Replace("-", "_"))_">
             <div style="font-size: 1.3em;">@label  </div>
-            @if (fType.FullName == "Catfish.Core.Models.Forms.TextField")
-            {
-                <div style="height:30px" class="divText"><input type="text" class="input" id="AdvanceSearchContainer-@label-Text" /></div>
-
-            }
-            else if (fType.FullName == "Catfish.Core.Models.Forms.NumberField" || fType.FullName == "Catfish.Core.Models.Forms.DateField")
+            @if (fType.FullName == "Catfish.Core.Models.Forms.NumberField" || fType.FullName == "Catfish.Core.Models.Forms.DateField")
             {
                 //number field or Date field
                 <div class="divNumber">
@@ -43,8 +38,8 @@
                     <div class="divCheckbox">
                         <ul>
                             @foreach (var option in ((Catfish.Core.Models.Forms.OptionsField)m.Field).Options)
-                        {
-                            var nm = "AdvanceSearchContainer-Chkbox";
+                            {
+                                var nm = "AdvanceSearchContainer-Chkbox";
                                 <li>
                                     <input type="checkbox" name="@nm" value="@option.Guid" />
                                     <span>@option.Value[0].Value</span>
@@ -57,11 +52,17 @@
                 {
                     @:<div class="divDropDownList">
                         var options = new SelectList(((Catfish.Core.Models.Forms.OptionsField)m.Field).Options, "Guid", "Value[0].Value");
-                        var nm = "AdvanceSearchContainer-DropdownList";
-                        @Html.DropDownList("@nm", options)
+                    var nm = "AdvanceSearchContainer-DropdownList";
+                        @Html.DropDownList(@nm, options)
                     @:</div>
                 }
             }
+            else //(fType.FullName == "Catfish.Core.Models.Forms.TextField")
+            {
+                 <div style = "height:30px" class="divText">
+                   <input type = "text" class="input" id="AdvanceSearchContainer-@label-Text" /></div>
+            }
+
 
         </div>
            i++;
@@ -73,11 +74,88 @@
 
 <script>
    $(function() {
+      var url = window.location.href;
+       if(url.indexOf("?q") > 0 )
+       {
+           var params = url.split("?")[1];
+           reloadForm(params);
+       }
+
         $("#AdvanceSearchContainer_Search_Button").click(function(){
-           var rows = $(".advanceSearchContainerInput");
-           rows.forEach(function(d){
-          
-           });
-        });
+                var searchString="", searchValue;
+                var elmId = "AdvanceSearchContainer-";
+                var rows = $(".advanceSearchContainerInput");
+
+                rows.each(function(index){
+                    var searchId = $(this).attr("data-searchid");
+                    var r = rows[index];
+                    var label = (r.innerText).trim();
+                    if(rows[index].lastElementChild.className === "divText")
+                    {
+                         var id =elmId + label + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                         searchValue = $("#" + id).val();
+                         searchString = searchString.length > 0 ? searchString + "&" : "";
+                         searchString = searchString + (searchId + 'txt_en:"' + searchValue + '"');
+                    }
+                    else if(rows[index].lastElementChild.className === "divNumber")
+                    {
+                        label = r.firstElementChild.innerText;
+                         var id =elmId + label;// + "-From"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                         var from = $("#" + id + "-From").val();
+
+                         var to = $("#" + id + "-To").val();
+                          searchString = searchString.length > 0 ? searchString + "&" : "";
+                         searchString = searchString + (searchId + "i" + ':[' + from + ' To ' + to + ']');
+                    }
+                     else if(rows[index].lastElementChild.className === "divCheckbox")
+                    {
+                         var name =elmId + "Chkbox";
+                         var selectedValues=[];
+                         var checkboxes = $('input[name="'+ name +'"]');
+                            selectedValues = checkboxes.filter(":checked").map(function () {
+                                  return this.parentElement.innerText;
+                         }).get()
+
+                           var searchOption="(";
+                           for(var i =0; i < selectedValues.length; i++)
+                           {
+                                 if(i > 0)
+                                 { searchOption += "|"; }
+
+                                 searchOption += "option_" + searchId + 'text_en:"' + selectedValues[i].trim() + '"';
+                           }
+                          searchOption=searchOption +")";
+                         searchString = searchString.length > 0 ? searchString + "&" : "";
+                         searchString = searchString + searchOption;
+                    }
+                      else if(rows[index].lastElementChild.className === "divDropDownList")
+                    {
+                         var id ="region_Value_" + elmId + "DropdownList";
+                         selectedValue = $("#" + id +" option:selected").text();
+                         searchString = searchString.length > 0 ? searchString + "&" : "";
+                         searchString = searchString + (searchId + 'text_en:"' + selectedValue + '"');
+                    }
+
+                });
+               alert(searchString);
+               var queryEncoded= "?q=" + encodeURIComponent(searchString);
+               if(url.indexOf("?q") > 0 )
+                {
+                   url = url.split("?")[0];
+                }
+                url = url + queryEncoded;
+                window.location.href = url; //reload the page
+               alert(queryEncoded);
+            });
     });
+
+
+    function reloadForm(content)
+    {
+
+        var params = decodeURIComponent(content);
+        alert(param);
+
+
+    }
 </script>
