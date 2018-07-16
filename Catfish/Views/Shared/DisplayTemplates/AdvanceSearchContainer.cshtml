@@ -94,8 +94,11 @@
                     {
                          var id =elmId + label + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
                          searchValue = $("#" + id).val();
+                         if(searchValue.length > 0)
+                        {
                          searchString = searchString.length > 0 ? searchString + "&" : "";
-                         searchString = searchString + (searchId + 'txt_en:"' + searchValue + '"');
+                         searchString = searchString + (searchId + 'txt_en:"' + searchValue + '"*');
+                        }
                     }
                     else if(rows[index].lastElementChild.className === "divNumber")
                     {
@@ -104,8 +107,12 @@
                          var from = $("#" + id + "-From").val();
 
                          var to = $("#" + id + "-To").val();
-                          searchString = searchString.length > 0 ? searchString + "&" : "";
-                         searchString = searchString + (searchId + "i" + ':[' + from + ' To ' + to + ']');
+                          if(from.length > 0 || to.length > 0 ){
+                                from = from ? from : 0;
+                                to = to? to : Number.MAX_SAFE_INTEGER;
+                                searchString = searchString.length > 0 ? searchString + "&" : "";
+                                searchString = searchString + (searchId + "i" + ':[' + from + ' To ' + to + ']');
+                          }
                     }
                      else if(rows[index].lastElementChild.className === "divCheckbox")
                     {
@@ -116,36 +123,41 @@
                                   return this.parentElement.innerText;
                          }).get()
 
+                          if(selectedValues.length > 0){
+
                            var searchOption="(";
                            for(var i =0; i < selectedValues.length; i++)
                            {
                                  if(i > 0)
                                  { searchOption += "|"; }
 
-                                 searchOption += "option_" + searchId + 'text_en:"' + selectedValues[i].trim() + '"';
-                           }
-                          searchOption=searchOption +")";
-                         searchString = searchString.length > 0 ? searchString + "&" : "";
-                         searchString = searchString + searchOption;
+                                 searchOption += "option_" + searchId + 'text_en:"' + selectedValues[i].trim() + '"*';
+                            }
+                            searchOption=searchOption +")";
+                            searchString = searchString.length > 0 ? searchString + "&" : "";
+                            searchString = searchString + searchOption;
+                         }
                     }
                       else if(rows[index].lastElementChild.className === "divDropDownList")
                     {
                          var id ="region_Value_" + elmId + "DropdownList";
                          selectedValue = $("#" + id +" option:selected").text();
-                         searchString = searchString.length > 0 ? searchString + "&" : "";
-                         searchString = searchString + (searchId + 'text_en:"' + selectedValue + '"');
+                         if(selectedValue.length > 0){
+                            searchString = searchString.length > 0 ? searchString + "&" : "";
+                            searchString = searchString + (searchId + 'text_en:"' + selectedValue + '"');
+                         }
                     }
 
                 });
-               alert(searchString);
+              // alert(searchString);
                var queryEncoded= "?q=" + encodeURIComponent(searchString);
-               if(url.indexOf("?q") > 0 )
+               if(url.indexOf("?") > -1 )
                 {
-                   url = url.split("?")[0];
+                   url = url.substr(0,url.indexOf("?"));
                 }
                 url = url + queryEncoded;
                 window.location.href = url; //reload the page
-               alert(queryEncoded);
+              // alert(queryEncoded);
             });
     });
 
@@ -154,7 +166,7 @@
     {
 
         var params = decodeURIComponent(content);
-        alert(param);
+     //   alert(params);
 
 
     }
