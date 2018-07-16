@@ -7,15 +7,83 @@ using Catfish.Core.Models;
 using Catfish.Models.Regions;
 using System.IO;
 using System.Text;
+using Catfish.Core.Models.Forms;
 
 namespace Catfish.Services
 {
     public class ItemQueryService //: ServiceBase
     {
-        
-       // public ItemQueryService(CatfishDbContext db) : base(db) { }
+        public CatfishDbContext Db { get; protected set; }
 
-        public IEnumerable<QueryResultObject> GetCalculatedField(string functionName, string SelectedFieldMetadataSet, string SelectedField, string SelectedFilterMetadataSet, string selectedFilterField, int min, int max)
+        private SolrService mSolrSrv { get; set; }
+        public SolrService SolrSrv
+        {
+            get
+            {
+                if(mSolrSrv == null)
+                {
+                    mSolrSrv = new SolrService();
+                }
+
+                return mSolrSrv;
+            }
+        }
+
+        private MetadataService mMetadataSrv { get; set; }
+        public MetadataService MetadataSrv
+        {
+            get
+            {
+                if(mMetadataSrv == null)
+                {
+                    mMetadataSrv = new MetadataService(Db);
+                }
+
+                return mMetadataSrv;
+            }
+        }
+
+        public enum eFunctionMode
+        {
+            SUM = 0, COUNT, MEAN, MAX, MIN
+        }
+
+        public ItemQueryService(CatfishDbContext db)
+        {
+            Db = db;
+        }
+
+        public decimal GetCalculatedField(string query, eFunctionMode function, string SelectedFieldMetadataSet, string SelectedField, string languageCode = "en")
+        {
+            string metadataGuid = SelectedFieldMetadataSet.Replace('-', '_');
+            string fieldGuid = SelectedField.Replace('-', '_');
+            bool isOptionField = false;
+            string resultType = "d"; //TODO: check the field type. At the moment, we can only do stats on number fields.
+
+            string fieldString = string.Format("{0}value_{1}_{2}_{3}", isOptionField ? "option_" : string.Empty, metadataGuid, fieldGuid, resultType);
+            
+            switch (function)
+            {
+                case eFunctionMode.SUM:
+                    return SolrSrv.SumField(fieldString, query);
+
+                case eFunctionMode.COUNT:
+                    return SolrSrv.CountField(fieldString, query);
+
+                case eFunctionMode.MEAN:
+                    return SolrSrv.MeanField(fieldString, query);
+
+                case eFunctionMode.MAX:
+                    return SolrSrv.MaxField(fieldString, query);
+
+                case eFunctionMode.MIN:
+                    return SolrSrv.MinField(fieldString, query);
+            }
+
+            return -1m;
+        }
+
+        /*public IEnumerable<QueryResultObject> GetCalculatedField_old(string functionName, string SelectedFieldMetadataSet, string SelectedField, string SelectedFilterMetadataSet, string selectedFilterField, int min, int max)
         {
             CatfishDbContext db = new CatfishDbContext();
             if(functionName == "COUNT")
@@ -36,7 +104,7 @@ namespace Catfish.Services
 
             var result = db.Database.SqlQuery<QueryResultObject>(xQuerySelect, new object[] { functionName, SelectedFieldMetadataSet, SelectedField, SelectedFilterMetadataSet, selectedFilterField, SelectedFieldMetadataSet });
             return result;
-        }
+        }*/
 
         private IEnumerable<GraphQueryObject> ReadFacet(System.Xml.XmlReader reader)
         {
@@ -143,9 +211,8 @@ namespace Catfish.Services
             string xIndexId = string.Format("value_{0}_{1}_i", xMetadataSet.Replace('-', '_'), xField.Replace('-', '_'));
             string yIndexId = string.Format("value_{0}_{1}_i", yMetadataSet.Replace('-', '_'), yField.Replace('-', '_'));
             string catIndexId = string.Format("{2}value_{0}_{1}_txt_{3}", catMetadataSet.Replace('-', '_'), catField.Replace('-', '_'), isCatDropdown ? "option_" : "", languageCode);
-
-            SolrService solrSrv = new SolrService();
-            string result = solrSrv.GetGraphData(q, xIndexId, yIndexId, catIndexId);
+            
+            string result = SolrSrv.GetGraphData(q, xIndexId, yIndexId, catIndexId);
 
             if (string.IsNullOrEmpty(result)) { return null; }
 

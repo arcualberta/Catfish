@@ -1,4 +1,13 @@
 ﻿@model Catfish.Models.Regions.CalculatedFieldPanel
+@{
+    string changeFieldFunction = "changeField" + Guid.NewGuid().ToString().Replace('-', 'J');
+    var firstFields = Model.MetadataFields.Keys.Count > 0 ? Model.MetadataFields[Model.MetadataFields.Keys.First()] : new List<SelectListItem>();
+
+    if (!string.IsNullOrEmpty(Model.SelectedField) && Model.MetadataFields.Keys.Contains(Model.SelectedField))
+    {
+        firstFields = Model.MetadataFields[Model.SelectedField];
+    }
+}
 <style>
     .input select {
         background: #efeeee85;
@@ -19,31 +28,11 @@
     <li>
         @Html.Label("Field ")
         <div class="input">
-            @Html.DropDownListFor(m => m.SelectedFieldMetadataSet, new SelectList(Model.ListMetadataSets, "Value", "Text"), new {@style="width:auto;", @class="dropdown" })
-            @Html.DropDownListFor(m => m.SelectedField, new SelectList(Model.MetadataFields, "Value", "Text"), new {@style="width:auto" })
+            @Html.DropDownListFor(m => m.SelectedFieldMetadataSet, new SelectList(Model.ListMetadataSets, "Value", "Text"), new {@style="width:auto;", @class="dropdown", onchange = changeFieldFunction + "('" + Html.IdFor(model => model.SelectedFieldMetadataSet) + "','" + Html.IdFor(model => model.SelectedField) + "');" })
+            @Html.DropDownListFor(m => m.SelectedField, new SelectList(firstFields, "Value", "Text"), new {@style="width:auto" })
        </div>
     </li>
-    <li>
-        @Html.Label("Filter By ")
-        <div class="input">
-            @Html.DropDownListFor(m => m.SelectedFilterMetadataSet, new SelectList(Model.ListMetadataSets, "Value", "Text"), new { @style = "width:auto;", @class = "dropdown" })
-            @Html.DropDownListFor(m => m.selectedFilterField, new SelectList(Model.MetadataFields, "Value", "Text"), new { @style = "width:auto" })
-        </div>
-    </li>
-    
-    <li>
-        @Html.LabelFor(m => m.Min_Parameter)
-        <div class="input">
-            @Html.EditorFor(m => m.Min_Parameter)       
-        </div>
-    </li>
-    <li>
-        @Html.LabelFor(m => m.Max_Parameter)
-        <div class="input">
-            @Html.EditorFor(m => m.Max_Parameter)
-        </div>
-    </li>
-   
+       
     <li>
         @Html.Label("Function ")
         <div class="input">
@@ -51,15 +40,41 @@
 
         </div>
     </li>
+
     <li>
-        @Html.LabelFor(m=>m.QueryResult)
+        @Html.Label("Prefix ")
         <div class="input">
-           @Html.EditorFor(m=>m.QueryResult)
+            @Html.EditorFor(m => m.Prefix)
+
+        </div>
+    </li>
+
+    <li>
+        @Html.Label("Decimal Places ")
+        <div class="input">
+            @Html.EditorFor(m => m.DecimalPlaces)
+
         </div>
     </li>
 </ul>
 
 <script type="text/javascript">
+    function @(changeFieldFunction)(metadatasetId, fieldId) {
+        var fieldDictionary = @Html.Raw(Json.Encode(Model.MetadataFields));
+
+        var metadataSet = $('#' + metadatasetId).val();
+        var fields = fieldDictionary[metadataSet];
+        var fieldSelect = $('#' + fieldId);
+        fieldSelect.empty();
+
+        for (var i = 0; i < fields.length; ++i) {
+            var option = $('<option></option>');
+            option.attr("value", fields[i].Value);
+            option.text(fields[i].Text);
+
+            fieldSelect.append(option);
+        }
+    }
    /*
     $( document ).ready(function() {
        $('.up,.down').click(function () {
