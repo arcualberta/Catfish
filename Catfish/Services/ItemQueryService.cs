@@ -55,7 +55,7 @@ namespace Catfish.Services
                     if(reader.Name == "lst")
                     {
                         ++level;
-                    }else if(reader.Name == "int" && level == 3 && reader.GetAttribute("name") == "val")
+                    }else if((reader.Name == "int" || reader.Name == "long") && level == 3 && reader.GetAttribute("name") == "val")
                     {
                         reader.Read();
                         xVal = reader.ReadContentAsInt();
