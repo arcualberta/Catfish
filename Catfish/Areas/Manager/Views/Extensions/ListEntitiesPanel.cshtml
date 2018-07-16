@@ -5,25 +5,6 @@
     @Html.Partial("_CatfishRegion", Model)
 
     <li>
-        @Html.Label("Filter By")
-        <div class="input">
-            @Html.DropDownListFor(m => m.SelectedMetadataSet, new SelectList(Model.ListMetadataSets, "Value", "Text"), new { @style = "width:auto;", @class = "dropdown" })
-            @Html.DropDownListFor(m => m.selectedFilterField, new SelectList(Model.MetadataFields, "Value", "Text"), new { @style = "width:auto" })
-        </div>
-    </li>
-    <li>
-        @Html.LabelFor(m => m.Min_Parameter)
-        <div class="input">
-            @Html.EditorFor(m => m.Min_Parameter)
-        </div>
-    </li>
-    <li>
-        @Html.LabelFor(m => m.Max_Parameter)
-        <div class="input">
-            @Html.EditorFor(m => m.Max_Parameter)
-        </div>
-    </li>
-    <li>
         @Html.LabelFor(m => m.ItemPerPage)
         <div class="input">
             @Html.EditorFor(m => m.ItemPerPage)

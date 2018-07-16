@@ -15,11 +15,9 @@ namespace Catfish.Controllers.Api
 {
     public class ItemsController : CatfishController
     {   
-        public JsonResult GetPageItems(int page, int itemPerPage, string selectedMetadataSet, string selectedField, string min, string max, [Bind(Include = "mapIds[]")] int[] mapIds)
+        public JsonResult GetPageItems(string q, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds)
         {
-            int iMin = string.IsNullOrEmpty(min) ? int.MinValue : int.Parse(min);
-            int iMax = string.IsNullOrEmpty(max) ? int.MaxValue : int.Parse(max);
-            var items = ItemService.GetPagedItems(page, itemPerPage, selectedMetadataSet, selectedField, iMin, iMax).ToList();
+            var items = ItemService.GetPagedItems(q, page, itemPerPage).ToList();
 
             List<List<string>> result = new List<List<string>>();
 
@@ -45,7 +43,7 @@ namespace Catfish.Controllers.Api
 
         public JsonResult GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, bool isCatOptionsIndex = false)
         {
-            ItemQueryService itemQueryService = new ItemQueryService();
+            ItemQueryService itemQueryService = new ItemQueryService(Db);
             var result = itemQueryService.GetGraphData(q, xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, isCatOptionsIndex);
 
             return Json(result, JsonRequestBehavior.AllowGet);
@@ -53,7 +51,7 @@ namespace Catfish.Controllers.Api
 
         public JsonResult GetGraphData_old(string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField,int xmin = 0, int xmax = 0)
         {
-            ItemQueryService itemQueryService = new ItemQueryService(); 
+            ItemQueryService itemQueryService = new ItemQueryService(Db); 
             var result = itemQueryService.GetGraphData_old(xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, xmin, xmax);
             return Json(result, JsonRequestBehavior.AllowGet);
         }

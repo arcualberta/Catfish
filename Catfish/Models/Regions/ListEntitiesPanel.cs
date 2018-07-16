@@ -20,26 +20,9 @@ namespace Catfish.Models.Regions
     [Serializable]
     public class ListEntitiesPanel : CatfishRegion
     {
-        [ScriptIgnore]
-        public List<SelectListItem> ListMetadataSets { get; set; }
-
-        [ScriptIgnore]
-        public List<SelectListItem> MetadataFields { get; set; }
-       
-        public string SelectedMetadataSet { get; set; }
-        public string selectedFilterField { get; set; }
-
-        [Display(Name = "Min Parameter")]
-        public string Min_Parameter { get; set; }
-        [Display(Name = "Max Parameter")]
-        public string Max_Parameter { get; set; }
         [Display(Name = "Item Per Page")]
         public int ItemPerPage { get; set; }
-
-        public string SelectedMetadataSetX { get; set; }
-        public string SelectedMetadataSetY { get; set; }
-
-        public string SelectedMetadataSetCat { get; set; }
+        
         [Display(Name = "Include Fields")]
         public List<string> Fields { get; set; }  //contain AttributeMapping Id
 
@@ -61,35 +44,12 @@ namespace Catfish.Models.Regions
         
         public ListEntitiesPanel()
         {
-            ListMetadataSets = new List<SelectListItem>();
-            MetadataFields = new List<SelectListItem>();
             Fields = new List<string>();
             CurrentPage = 1;
             Mappings = new List<CFEntityTypeAttributeMapping>();
         }
         public override void InitManager(object model)
         {
-            // get db context
-            CatfishDbContext db = new CatfishDbContext();
-            MetadataService metadataService = new MetadataService(db);
-            IQueryable<CFMetadataSet> metadataSets = metadataService.GetMetadataSets();
-            foreach (CFMetadataSet m in metadataSets)
-            {
-                ListMetadataSets.Add(new SelectListItem { Text = m.Name, Value = m.Guid });
-            }
-
-            //set the default metadatasEt Fields to the first metadataSet in the list
-            if (metadataSets.Count() > 0)
-            {
-                if (metadataSets.ToArray()[0].Fields.Count > 0)
-                {
-                    foreach (FormField f in metadataSets.ToArray()[0].Fields)
-                    {
-                        MetadataFields.Add(new SelectListItem { Text = f.Name, Value = f.Guid });
-                    }
-                }
-            }
-
             EntityTypeService entityTypeSrv = new EntityTypeService(db);
        
             FieldsMapping = new SelectList((entityTypeSrv.GetEntityTypeAttributeMappings()), "Id", "Name");
@@ -112,17 +72,19 @@ namespace Catfish.Models.Regions
             //For testing -- go to the page that use this region and add ?entity=[entityId]
             HttpContext context = HttpContext.Current;
 
-            if (context != null && SelectedMetadataSet != null)
+            if (context != null)
             {
-                string minParam = context.Request.QueryString[Min_Parameter];
-                string maxParam = context.Request.QueryString[Max_Parameter];
                 string pageParam = context.Request.QueryString["page"];
+                string query = context.Request.QueryString["q"];
 
-               int min = string.IsNullOrWhiteSpace(minParam) ? int.MinValue : int.Parse(minParam);
-                int max = string.IsNullOrWhiteSpace(null) ? int.MaxValue : int.Parse(maxParam);
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    query = "*:*";
+                }
+
                 int page = string.IsNullOrWhiteSpace(null) ? 0 : int.Parse(pageParam) - 1;
 
-                if(page == 0)
+                if(page < 1)
                 {
                     CurrentPage = 1;
                 }
@@ -130,11 +92,10 @@ namespace Catfish.Models.Regions
                 {
                     CurrentPage = int.Parse(pageParam);
                 }
-                CatfishDbContext db = new CatfishDbContext();
                 ItemService itemService = new ItemService(db);
 
 
-                Items = itemService.GetPagedItems(page, ItemPerPage, SelectedMetadataSet, selectedFilterField, min, max).ToList();
+                Items = itemService.GetPagedItems(query, page, ItemPerPage).ToList();
 
                // var mappings = entityTypeSrv.GetEntityTypeAttributeMappings().Where(a => FieldsMappingId.Contains(a.Id)).OrderBy(a => FieldsMappingId.IndexOf(a.Id));
                //grab the columnHeaders

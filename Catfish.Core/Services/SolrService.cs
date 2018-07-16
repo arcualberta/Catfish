@@ -1,6 +1,7 @@
 ﻿using CommonServiceLocator;
 using SolrNet;
 using SolrNet.Attributes;
+using SolrNet.Commands.Parameters;
 using SolrNet.Impl;
 using System;
 using System.Collections.Generic;
@@ -83,7 +84,86 @@ namespace Catfish.Core.Services
             }
 
             return null;
-        }        
+        }   
+
+        public IDictionary<string, StatsResult> GetStats(string field, string query)
+        {
+            if (SolrService.IsInitialized)
+            {
+                var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
+                var results = solr.Query(query, new QueryOptions {
+                    Rows = 0, ExtraParams = new KeyValuePair<string, string>[]
+                    {
+                        new KeyValuePair<string,string>("stats", "true"),
+                        new KeyValuePair<string, string>("stats.field", field)
+                    }
+                });
+
+                return results.Stats;
+            }
+
+            return null;
+        }
+        
+        public decimal SumField(string field, string query = "*:*")
+        {
+            var stats = GetStats(field, query);
+
+            if(stats != null)
+            {
+                return Convert.ToDecimal(stats[field].Sum);
+            }
+
+            return 0m;
+        }
+
+        public decimal CountField(string field, string query = "*:*")
+        {
+            var stats = GetStats(field, query);
+
+            if (stats != null)
+            {
+                return Convert.ToDecimal(stats[field].Count);
+            }
+
+            return 0m;
+        }
+
+        public decimal MeanField(string field, string query = "*:*")
+        {
+            var stats = GetStats(field, query);
+
+            if (stats != null)
+            {
+                return Convert.ToDecimal(stats[field].Mean);
+            }
+
+            return 0m;
+        }
+
+        public decimal MinField(string field, string query = "*:*")
+        {
+            var stats = GetStats(field, query);
+
+            if (stats != null)
+            {
+                return Convert.ToDecimal(stats[field].Min);
+            }
+
+            return 0m;
+        }
+
+        public decimal MaxField(string field, string query = "*:*")
+        {
+            var stats = GetStats(field, query);
+
+            if (stats != null)
+            {
+                return Convert.ToDecimal(stats[field].Max);
+            }
+
+            return 0m;
+        }
     }
 
     public class SolrIndex
