@@ -93,7 +93,7 @@
         url:url,
         dataType: 'json',
         traditional: true,
-        data:{page: currPage - 1, itemPerPage:@Model.ItemPerPage,mapIds:mapIds},
+        data:{page: currPage - 1, itemPerPage:@Model.ItemPerPage,mapIds:mapIds, q:@Html.Raw(Json.Encode(Model.Query))},
         success:function(result){
 
         //remove all rows in the tbody

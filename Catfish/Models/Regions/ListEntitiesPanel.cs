@@ -41,6 +41,9 @@ namespace Catfish.Models.Regions
         [ScriptIgnore]
         public int ItemCount { get; set; }   //total items returned
 
+        [ScriptIgnore]
+        public string Query { get; set; }
+
         
         public ListEntitiesPanel()
         {
@@ -75,11 +78,11 @@ namespace Catfish.Models.Regions
             if (context != null)
             {
                 string pageParam = context.Request.QueryString["page"];
-                string query = context.Request.QueryString["q"];
+                Query = context.Request.QueryString["q"];
 
-                if (string.IsNullOrWhiteSpace(query))
+                if (string.IsNullOrWhiteSpace(Query))
                 {
-                    query = "*:*";
+                    Query = "*:*";
                 }
 
                 int page = string.IsNullOrWhiteSpace(null) ? 0 : int.Parse(pageParam) - 1;
@@ -95,7 +98,7 @@ namespace Catfish.Models.Regions
                 ItemService itemService = new ItemService(db);
 
 
-                Items = itemService.GetPagedItems(query, page, ItemPerPage).ToList();
+                Items = itemService.GetPagedItems(Query, page, ItemPerPage).ToList();
 
                // var mappings = entityTypeSrv.GetEntityTypeAttributeMappings().Where(a => FieldsMappingId.Contains(a.Id)).OrderBy(a => FieldsMappingId.IndexOf(a.Id));
                //grab the columnHeaders
