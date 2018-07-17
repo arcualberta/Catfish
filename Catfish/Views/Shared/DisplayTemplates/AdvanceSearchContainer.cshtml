@@ -98,7 +98,7 @@
                          searchValue = $("#" + id).val();
                          if(searchValue.length > 0)
                         {
-                         searchString = searchString.length > 0 ? searchString + "&" : "";
+                         searchString = searchString.length > 0 ? searchString + " && " : "";
                          searchString = searchString + (searchId + 'txt_en:"' + searchValue + '"*');
                         }
                     }
@@ -112,7 +112,7 @@
                           if(from.length > 0 || to.length > 0 ){
                                 from = from ? from : '*';
                                 to = to? to : '*';
-                                searchString = searchString.length > 0 ? searchString + "&" : "";
+                                searchString = searchString.length > 0 ? searchString + " && " : "";
                                 searchString = searchString + (searchId + "i" + ':[' + from + ' TO ' + to + ']');
                           }
                     }
@@ -131,12 +131,12 @@
                            for(var i =0; i < selectedValues.length; i++)
                            {
                                  if(i > 0)
-                                 { searchOption += "|"; }
+                                 { searchOption += " || "; }
 
                                  searchOption += "option_" + searchId + 'txt_en:"' + selectedValues[i].trim() + '"*';
                             }
                             searchOption=searchOption +")";
-                            searchString = searchString.length > 0 ? searchString + "&" : "";
+                            searchString = searchString.length > 0 ? searchString + " && " : "";
                             searchString = searchString + searchOption;
                          }
                     }
@@ -145,7 +145,7 @@
                          var id ="region_Value_" + elmId + "DropdownList";
                          selectedValue = $("#" + id +" option:selected").text();
                          if(selectedValue.length > 0){
-                            searchString = searchString.length > 0 ? searchString + "&" : "";
+                            searchString = searchString.length > 0 ? searchString + " && " : "";
                             searchString = searchString + ("option_" + searchId + 'txt_en:"' + selectedValue + '"');
                          }
                     }
@@ -167,7 +167,7 @@
     function reloadForm(content)
     {
         var params = decodeURIComponent(content);
-        var contents = params.split("&");
+        var contents = params.split(" && ");
          for(var index = 0; index < contents.length; index++){
             var c = contents[index];
              var id="";
@@ -177,7 +177,7 @@
               var start = c.indexOf("(") + 1;
               var end = c.indexOf(")");
 
-              var orVals = c.substr(start,end).split("|");
+              var orVals = c.substr(start,end).split(" || ");
               for(var i=0; i< orVals.length ; i++)
                {
                     var v = orVals[i];

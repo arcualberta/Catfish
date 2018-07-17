@@ -86,7 +86,6 @@ namespace Catfish.Core.Services
 
         public IDictionary<string, string> GetSolrCategories(string query, string fieldId, int rows = int.MaxValue)
         {
-            // TODO:
             var dictionary = new Dictionary<string, string>();
 
             if (SolrService.IsInitialized)
