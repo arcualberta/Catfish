@@ -110,8 +110,8 @@
 
                          var to = $("#" + id + "-To").val();
                           if(from.length > 0 || to.length > 0 ){
-                                from = from ? from : 0;
-                                to = to? to : Number.MAX_SAFE_INTEGER;
+                                from = from ? from : '*';
+                                to = to? to : '*';
                                 searchString = searchString.length > 0 ? searchString + "&" : "";
                                 searchString = searchString + (searchId + "i" + ':[' + from + ' TO ' + to + ']');
                           }
@@ -235,9 +235,11 @@
 
                   var label = (div[0].children[0].innerText).trim();
                   id =elmId + label + "-From"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                  fromVal = fromVal?fromVal : '*';
                   $("#" + id).val(fromVal);
 
                     id =elmId + label + "-To"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                  toVal = toVal?toVal : '*';
                   $("#" + id).val(toVal);
              }
              else if(c.indexOf("txt") > -1) //text field

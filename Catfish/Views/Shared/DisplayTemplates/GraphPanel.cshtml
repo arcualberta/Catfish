@@ -15,7 +15,10 @@
    
     <svg class="line-chart"> </svg>
     <div class="legend"></div>  
-
+    <form id="barchartOption">
+        <label><input type="radio" name="mode" value="grouped" />Grouped</label>
+        <label><input type="radio" name="mode" value="stacked" checked />Stackeded</label>
+    </form>
     </div>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="~/Scripts/D3/graph.js"></script>
@@ -38,24 +41,39 @@
                  q = q,
                  isCatOptionsIndex = Model.IsCategoryOptionsField
              }))";
-        
+
     /* loading data */
     $(document).ready(function (event) {
+        var chartType = "@Model.SelectedGraphType.ToString()";
+        if( chartType === "Bar")
+        {
+             var barOption = document.getElementById("barchartOption");
+             barOption.style.display = "block";
+        }
+        else{
+            var barOption = document.getElementById("barchartOption");
+             barOption.style.display = "none";
+        }
+
         fetch(xapi).then(function (response) { return response.json(); })
                     .then(function (data) {
                         var parsedData = parseDataSF(data);
                         drawChartMulti@(Model.SelectedGraphType.ToString())(parsedData);
-                        //drawChartMultiBar(parsedData);
+
                     })
                     .catch(function (err) { console.log(err); })
     });
     </script>
 
     <style>
+        #barchartOption{
+            display: none;
+        }
+        
         .legend {
             font-size: 14px !important;
             width: 100px;
-            border: 1px solid grey;
+            /*border: 1px solid grey;*/
             float: right;
             margin-right: 20%;
             margin-top: 10%;
