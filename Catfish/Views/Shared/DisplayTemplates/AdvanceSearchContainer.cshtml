@@ -21,13 +21,13 @@
 
 
         <div class="row advanceSearchContainerInput" data-searchid="value_@(m.MetadataSet.Guid.Replace("-", "_"))_@(m.Field.Guid.Replace("-", "_"))_">
-            <div style="font-size: 1.3em;">@label  </div>
+            <div class="field-title">@label  </div>
             @if (fType.FullName == "Catfish.Core.Models.Forms.NumberField" || fType.FullName == "Catfish.Core.Models.Forms.DateField")
             {
                 //number field or Date field
-                <div class="divNumber">
-                    <span class="label-default" style="font-size:1em;">From</span><input type="text" id="AdvanceSearchContainer-@label-From" style="height:30px" />
-                    <span class="label-default" style="font-size:1em;">To</span><input type="text" id="AdvanceSearchContainer-@label-To" style="height:30px" />
+                <div class="search-entry divNumber">
+                    <span class="label-default field-sub-title">From</span><input type="text" id="AdvanceSearchContainer-@label-From"/>
+                    <span class="label-default field-sub-title">To</span><input type="text" id="AdvanceSearchContainer-@label-To"/>
                 </div>
 
             }
@@ -35,7 +35,7 @@
             {
                 if (Model.Multiples[i])
                 {
-                    <div class="divCheckbox">
+                    <div class="search-entry divCheckbox">
                         <ul>
                             @foreach (var option in ((Catfish.Core.Models.Forms.OptionsField)m.Field).Options)
                             {
@@ -50,7 +50,7 @@
                 }
                 else
                 {
-                    @:<div class="divDropDownList">
+                    @:<div class="search-entry divDropDownList">
                         var options = new SelectList(((Catfish.Core.Models.Forms.OptionsField)m.Field).Options, "Guid", "Value[0].Value");
                     var nm = "AdvanceSearchContainer-DropdownList";
                         @Html.DropDownList(@nm, options)
@@ -59,7 +59,7 @@
             }
             else //(fType.FullName == "Catfish.Core.Models.Forms.TextField")
             {
-                 <div style = "height:30px" class="divText">
+                 <div class="search-entry divText">
                    <input type = "text" class="input" id="AdvanceSearchContainer-@label-Text" /></div>
             }
 
