@@ -50,7 +50,7 @@ namespace Catfish.Core.Services
                 xValues:{{
                     sort : index,
                     type : terms,
-                    limit : 1000,
+                    limit : 10000,
                     field : {0},
                     facet : {{
                         sumYValues : ""sum({1})"",
@@ -68,8 +68,6 @@ namespace Catfish.Core.Services
 
             if (SolrService.IsInitialized)
             {
-                var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
-
                 IEnumerable<KeyValuePair<string, string>> parameters = new KeyValuePair<string, string>[]{
                     new KeyValuePair<string, string>("q", query),
                     new KeyValuePair<string, string>("json.facet", string.Format(facetJson, xIndexId, yIndexId, categoryId)),
@@ -85,6 +83,44 @@ namespace Catfish.Core.Services
 
             return null;
         }   
+
+        public IDictionary<string, string> GetSolrCategories(string query, string fieldId, int rows = int.MaxValue)
+        {
+            // TODO:
+            var dictionary = new Dictionary<string, string>();
+
+            if (SolrService.IsInitialized)
+            {
+                IEnumerable<KeyValuePair<string, string>> parameters = new KeyValuePair<string, string>[]{
+                    new KeyValuePair<string, string>("q", query),
+                    new KeyValuePair<string, string>("rows", rows.ToString()),
+                    new KeyValuePair<string, string>("wt", "json"),
+                    new KeyValuePair<string, string>("group", "true"),
+                    new KeyValuePair<string, string>("group.field", fieldId),
+                    new KeyValuePair<string, string>("fl", fieldId)
+                };
+
+                string result = mSolr.Get("/select", parameters);
+
+                if(result != null)
+                {
+                    SolrResponse response = Newtonsoft.Json.JsonConvert.DeserializeObject<SolrResponse>(result);
+
+                    if (response.grouped.ContainsKey(fieldId))
+                    {
+                        foreach(var g in response.grouped[fieldId].groups)
+                        {
+                            if (g.groupValue != null)
+                            {
+                                dictionary.Add(g.groupValue, g.docList.docs[0][fieldId]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return dictionary;
+        }
 
         public IDictionary<string, StatsResult> GetStats(string field, string query)
         {
@@ -175,8 +211,26 @@ namespace Catfish.Core.Services
         public int Id { get; set; }
     }
 
-    public class GraphData
+    public class DocList
     {
-        
+        public int numFound { get; set; }
+        public IList<IDictionary<string, string>> docs { get; set; }
+    }
+
+    public class GroupedEntry
+    {
+        public string groupValue { get; set; }
+
+        public DocList docList { get; set; }
+    }
+
+    public class GroupedResult
+    {
+        public IEnumerable<GroupedEntry> groups { get; set; }
+    }
+
+    public class SolrResponse
+    {
+        public Dictionary<string, GroupedResult> grouped { get; set; }
     }
 }

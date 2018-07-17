@@ -106,7 +106,7 @@ namespace Catfish.Services
             return result;
         }*/
 
-        private IEnumerable<GraphQueryObject> ReadFacet(System.Xml.XmlReader reader)
+        private IEnumerable<GraphQueryObject> ReadFacet(System.Xml.XmlReader reader, IDictionary<string, string> categories)
         {
             int level = 1;
             int xVal = 0;
@@ -168,7 +168,7 @@ namespace Catfish.Services
                             {
                                 XValue = yVal,
                                 YValue = xVal,
-                                Category = category,
+                                Category = categories.ContainsKey(category) ? categories[category] : category,
                                 Count = count
                             });
 
@@ -183,7 +183,7 @@ namespace Catfish.Services
             return result;
         }
 
-        private IEnumerable<GraphQueryObject> ConvertSolrXml(string solrXml)
+        private IEnumerable<GraphQueryObject> ConvertSolrXml(string solrXml, IDictionary<string, string> categories)
         {
             IEnumerable<GraphQueryObject> result = null;
 
@@ -198,7 +198,7 @@ namespace Catfish.Services
                 {
                     if(reader.IsStartElement() && reader.Name == "lst" && reader.GetAttribute("name") == "facets")
                     {
-                        result = ReadFacet(reader);
+                        result = ReadFacet(reader, categories);
                     }
                 }
             }
@@ -211,12 +211,14 @@ namespace Catfish.Services
             string xIndexId = string.Format("value_{0}_{1}_i", xMetadataSet.Replace('-', '_'), xField.Replace('-', '_'));
             string yIndexId = string.Format("value_{0}_{1}_i", yMetadataSet.Replace('-', '_'), yField.Replace('-', '_'));
             string catIndexId = string.Format("{2}value_{0}_{1}_txt_{3}", catMetadataSet.Replace('-', '_'), catField.Replace('-', '_'), isCatDropdown ? "option_" : "", languageCode);
-            
+
             string result = SolrSrv.GetGraphData(q, xIndexId, yIndexId, catIndexId);
 
             if (string.IsNullOrEmpty(result)) { return null; }
 
-            return ConvertSolrXml(result);
+            IDictionary<string, string> categories = SolrSrv.GetSolrCategories(q, catIndexId);
+
+            return ConvertSolrXml(result, categories);
         }
 
         public IEnumerable<GraphQueryObject> GetGraphData_old(string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, int xmin = 0, int xmax = 0)
