@@ -26,7 +26,7 @@ namespace Catfish.Models.Regions
         [Display(Name = "Include Fields")]
         public List<string> Fields { get; set; }  //contain AttributeMapping Id
         [Display(Name = "Sort By Field")]
-        public string SortByField { get; set; }
+        public int SortByField { get; set; }
 
         [ScriptIgnore]
         public SelectList FieldsMapping { get; set; }
@@ -100,7 +100,7 @@ namespace Catfish.Models.Regions
                 ItemService itemService = new ItemService(db);
 
 
-                Items = itemService.GetPagedItems(Query, page, ItemPerPage).ToList();
+                Items = itemService.GetPagedItems(Query, SortByField, page, ItemPerPage).ToList();
 
                // var mappings = entityTypeSrv.GetEntityTypeAttributeMappings().Where(a => FieldsMappingId.Contains(a.Id)).OrderBy(a => FieldsMappingId.IndexOf(a.Id));
                //grab the columnHeaders

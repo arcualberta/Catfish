@@ -29,7 +29,7 @@ namespace Catfish.Core.Helpers
                     options.OrderBy = new List<SortOrder>()
                     {
                         new SortOrder(sortRowId, sortAscending ? Order.ASC : Order.DESC)
-                    }
+                    };
                 }
 
                 var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
