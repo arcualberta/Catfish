@@ -66,12 +66,11 @@
      var chkIndex = Math.floor(Math.random() * 10) + 100;
 
       var t = `<tr id="` + rowId +`"><input type="hidden" name="Regions[`+regionInd +`].Body.Fields.Index" value="` + uniqueId + `">
-    <input type="hidden" name="Regions[`+regionInd +`].Body.Multiples.Index" value="M` + uniqueId + `">
                <input name="Regions[`+regionInd +`].Body.Fields[` + uniqueId +  `]" type="hidden" value="` + FieldId +`">
                     <td><span>` + FieldText + `</span></td>
 
-                      <td><input data-val="true" data-val-required="The Boolean field is required." id="Regions_` + regionInd + `__Body_Multiples_M` + uniqueId +`_"  name="Regions[`+regionInd +`].Body.Multiples[M`+uniqueId +`]" type="checkbox" value="true">
-                           <input name="Regions[`+ regionInd + `].Body.Multiples[M`+ uniqueId +`]" type="hidden" value="false">
+                      <td><input data-val="true" data-val-required="The Boolean field is required." id="Regions_` + regionInd + `__Body_Multiples_` + chkIndex +`_"  name="Regions[`+regionInd +`].Body.Multiples[`+chkIndex +`]" type="checkbox" value="true">
+                           <input name="Regions[`+ regionInd + `].Body.Multiples[`+ chkIndex +`]" type="hidden" value="false">
                       </td>
                     <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteAdvancedSearchRow('` + rowId +`')"></span><span class="glyphicon glyphicon-arrow-up"></span><span class="glyphicon glyphicon-arrow-down"></span></td>
                 </tr>`;
