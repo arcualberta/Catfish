@@ -72,15 +72,25 @@
     <div class="row"><button id="AdvanceSearchContainer_Search_Button" class="btn btn-default"><span class="glyphicon glyphicon-search"></span>Search</button></div>
 </div>
 
+@{ 
+    string qParam = null;
+
+    try
+    {
+        qParam = Request.QueryString.Get("q");
+    }catch(Exception ex)
+    {
+        // No q param
+    }
+}
+
 <script>
      const elmId = "AdvanceSearchContainer-";
    $(function() {
-
-      var url = window.location.href;
-       if(url.indexOf("?q") > 0 )
+       var q = @Html.Raw(Json.Encode(qParam));
+       if(q)
        {
-           var params = url.split("?")[1];
-           reloadForm(params);
+           reloadForm(q);
        }
 
         $("#AdvanceSearchContainer_Search_Button").click(function(){
@@ -92,7 +102,7 @@
                     var searchId = $(this).attr("data-searchid");
                     var r = rows[index];
                     var label = (r.innerText).trim();
-                    if(rows[index].lastElementChild.className === "divText")
+                    if (rows[index].lastElementChild.classList.contains("divText"))
                     {
                          var id =elmId + label + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
                          searchValue = $("#" + id).val();
@@ -102,7 +112,7 @@
                          searchString = searchString + (searchId + 'txt_en:"' + searchValue + '"*');
                         }
                     }
-                    else if(rows[index].lastElementChild.className === "divNumber")
+                    else if (rows[index].lastElementChild.classList.contains("divNumber"))
                     {
                         label = r.firstElementChild.innerText;
                          var id =elmId + label;// + "-From"; //single text box id "AdvanceSearchContainer-{Label}-Text"
@@ -116,7 +126,7 @@
                                 searchString = searchString + (searchId + "i" + ':[' + from + ' TO ' + to + ']');
                           }
                     }
-                     else if(rows[index].lastElementChild.className === "divCheckbox")
+                    else if (rows[index].lastElementChild.classList.contains("divCheckbox"))
                     {
                          var name =elmId + "Chkbox";
                          var selectedValues=[];
@@ -140,7 +150,7 @@
                             searchString = searchString + searchOption;
                          }
                     }
-                      else if(rows[index].lastElementChild.className === "divDropDownList")
+                    else if (rows[index].lastElementChild.classList.contains("divDropDownList"))
                     {
                          var id ="region_Value_" + elmId + "DropdownList";
                          selectedValue = $("#" + id +" option:selected").text();
@@ -151,22 +161,26 @@
                     }
 
                 });
-              // alert(searchString);
-               var queryEncoded= "?q=" + encodeURIComponent(searchString);
-               if(url.indexOf("?") > -1 )
-                {
-                   url = url.substr(0,url.indexOf("?"));
-                }
-                url = url + queryEncoded;
-                window.location.href = url; //reload the page
-              // alert(queryEncoded);
+
+                // Search using form
+                var form = $("<form></form>");
+                form.attr("method", "GET");
+                form.attr("action", ".");
+
+                var qField = $("<input></input>");
+                qField.attr("name", "q");
+                qField.attr("type", "hidden");
+                qField.attr("value", searchString);
+                form.append(qField);
+
+                $("body").append(form);
+                form[0].submit();
             });
     });
 
 
-    function reloadForm(content)
+    function reloadForm(params)
     {
-        var params = decodeURIComponent(content);
         var contents = params.split(" && ");
          for(var index = 0; index < contents.length; index++){
             var c = contents[index];
@@ -235,11 +249,11 @@
 
                   var label = (div[0].children[0].innerText).trim();
                   id =elmId + label + "-From"; //single text box id "AdvanceSearchContainer-{Label}-Text"
-                  fromVal = fromVal?fromVal : '*';
+                  fromVal = fromVal?fromVal : '';
                   $("#" + id).val(fromVal);
 
                     id =elmId + label + "-To"; //single text box id "AdvanceSearchContainer-{Label}-Text"
-                  toVal = toVal?toVal : '*';
+                  toVal = toVal?toVal : '';
                   $("#" + id).val(toVal);
              }
              else if(c.indexOf("txt") > -1) //text field

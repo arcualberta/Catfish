@@ -7,6 +7,10 @@
     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
 
     string q = Request.Params.AllKeys.Contains("q") ? Request.Params.Get("q") : "*:*";
+    if (string.IsNullOrEmpty(q.Trim()))
+    {
+        q = "*:*";
+    }
 }
 <div id="@cssId" class="bs @cssClasses container container-fluid" style="margin-left:0;">
     <style type="text/css" scoped>
