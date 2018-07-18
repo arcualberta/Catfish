@@ -5,6 +5,8 @@
  @{ string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
      string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
      string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+    
+     var rowNum = ((Model.CurrentPage - 1) * Model.ItemPerPage) + 1;
  }
 <div id="@cssId" class="bs @cssClasses container container-fluid">
     <style type="text/css" scoped>
@@ -19,6 +21,7 @@
         <table class="table table-responsive table-striped">
             <tr>
                 @*header*@
+                <th></th>
                 @foreach (var m in Model.Mappings)
                 {
                     string header = m.Label;
@@ -31,15 +34,21 @@
 
             @*content*@
             <tbody id="ListEntitiesPanelTableBody">
+               
                 @foreach (var item in Model.Items)
                 {
-                    <tr>
+                    var i = 0;
+                    
+                    <tr >
+                        <td>@rowNum</td>
                         @foreach (var f in Model.Mappings)
                         {
                             string content = item.GetAttributeMappingValue(f.Name);
-                            <td>@content</td>
+                            <td class="column-@i">@content</td>
+                            i++;
                         }
                     </tr>
+                    rowNum++;
                 }
             </tbody>
         </table>
@@ -53,6 +62,7 @@
 
 <script>
     var curr@(cssId)page = @Model.CurrentPage;
+    var rowNum = @rowNum;
 
    $(document).ready(function() {
        var curPage = curr@(cssId)page;
@@ -102,12 +112,15 @@
 
         //update table data
         result.forEach(function(r, i){ //going through each row
-             var new_row = "<tr>";
+             var new_row = "<tr><td>"+rowNum + "</td>";
+             var col = 0;
               r.forEach(function(c, j){ //going through each column
-                     new_row += "<td>" + c + "</td>";
+                     new_row += "<td class='column-'" + col + "'>" + c + "</td>";
+                     col = col +1;
                });
               new_row += "</tr>";
               body.append(new_row);
+              rowNum = rowNum +1;
            });
 
             $("[name='listEntitiesPanel_page_number']").val(currPage);

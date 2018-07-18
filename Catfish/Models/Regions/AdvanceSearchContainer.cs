@@ -65,6 +65,13 @@ namespace Catfish.Models.Regions
                     Mappings.Add(map);
 
                 }
+                if(Multiples.Count < Fields.Count)
+                {
+                    for (int i = Multiples.Count; i < Fields.Count; i++)
+                    {
+                        Multiples.Add(false);
+                    }
+                }
             }
 
             base.InitManager(model);
@@ -84,6 +91,13 @@ namespace Catfish.Models.Regions
                 Mappings.Add(map);
             }
 
+            if(Multiples.Count < Fields.Count)
+            {
+                for(int i = Multiples.Count; i< Fields.Count; i++)
+                {
+                    Multiples.Add(false);
+                }
+            }
            
             return base.GetContent(model);
         }
