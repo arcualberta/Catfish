@@ -111,6 +111,7 @@
             body.children().remove();  //remove all row on the tbody
 
         //update table data
+        rowNum = 1 + ((currPage - 1) * @Model.ItemPerPage);
         result.forEach(function(r, i){ //going through each row
              var new_row = "<tr><td>"+rowNum + "</td>";
              var col = 0;
