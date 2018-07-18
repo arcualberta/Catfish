@@ -25,6 +25,8 @@ namespace Catfish.Models.Regions
         
         [Display(Name = "Include Fields")]
         public List<string> Fields { get; set; }  //contain AttributeMapping Id
+        [Display(Name = "Sort By Field")]
+        public string SortByField { get; set; }
 
         [ScriptIgnore]
         public SelectList FieldsMapping { get; set; }

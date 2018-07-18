@@ -3,7 +3,14 @@
     string fieldFunction = "Field" + Guid.NewGuid().ToString().Replace('-', 'J');
     string fieldsId = Guid.NewGuid().ToString().Replace('-', 'I');
 }
-
+<style>
+    #listPanelDd {
+        padding: 2px 2px;
+        width:415px;
+        color:#333;
+        border:1px solid #adadad;
+    }
+</style>
 <ul class="form">
 
     @Html.Partial("_CatfishRegion", Model)
@@ -15,8 +22,15 @@
         </div>
     </li>
     <li>
+        @Html.LabelFor(m => m.SortByField)
+        <div class="input">
+            @Html.DropDownListFor(m=>m.SortByField, Model.FieldsMapping, new { @class = "btn btn-default", @id= "listPanelDd" })
+        </div>
+    </li>
+    <li>
         @Html.LabelFor(m => m.Fields)
         <div class="bs input">
+          
             <div>
                 <table class="table table-responsive table-striped" id="AttributeMappingTable@(fieldsId)">
                     @{
