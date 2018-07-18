@@ -15,7 +15,7 @@
                         foreach (var f in Model.Mappings)
                         {
                            
-                            string rowId = "row_" + i;
+                            string rowId = "AdvanceSearchRegion_row_" + i;
                             <tr id="@rowId">
                                 <input type="hidden" name="@(Html.NameFor(m => m.Fields)).Index" value="@(i)" />
                                 @Html.HiddenFor(m => m.Fields[i])
@@ -26,8 +26,8 @@
 
                             ++i;
                         }
-                        <tr id="ddFields">
-                            <input type="hidden" class="hdregion" value="@Html.IdFor(m => m)" />
+                        <tr id="AdvanceSearchRegion_ddFields">
+                            <input type="hidden" class="hdregionAdvanceSearchContainer" value="@Html.IdFor(m => m)" />
                             <td>@Html.DropDownList("selectedField", Model.FieldsMapping, new { @class = "btn btn-default", @style = "padding: 2px 2px" })</td>
                             <td><span class="glyphicon glyphicon-plus-sign" onclick="AddAdvancedSearchField()"></span></td>
                         </tr>
@@ -56,25 +56,27 @@
     function AddAdvancedSearchField()
     {
         var uniqueId = Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
-        var regionName = $(".hdregion").val(); // Region_0
+        var regionName = $(".hdregionAdvanceSearchContainer").val(); // Region_0
          var regionInd = regionName.split("_")[1];//0,1,etc
       var FieldId = $("#" + regionName + "_selectedField").val();
      var FieldText = $("#" + regionName + "_selectedField option:selected").text();
 
      var rowCount = $('#AttributeMappingTable tr').length;
-     var rowId = "row_" + (rowCount - 1);
-
+     var rowId = "AdvanceSearchRegion_row_" + (rowCount - 1);
+     var chkIndex = Math.floor(Math.random() * 10) + 100;
 
       var t = `<tr id="` + rowId +`"><input type="hidden" name="Regions[`+regionInd +`].Body.Fields.Index" value="` + uniqueId + `">
+    <input type="hidden" name="Regions[`+regionInd +`].Body.Multiples.Index" value="M` + uniqueId + `">
                <input name="Regions[`+regionInd +`].Body.Fields[` + uniqueId +  `]" type="hidden" value="` + FieldId +`">
                     <td><span>` + FieldText + `</span></td>
 
-                      <td><input  name="Regions[`+regionInd +`].Body.Multiples[`+uniqueId+`]" type="checkbox" value="false">
-                           </td>
+                      <td><input data-val="true" data-val-required="The Boolean field is required." id="Regions_` + regionInd + `__Body_Multiples_M` + uniqueId +`_"  name="Regions[`+regionInd +`].Body.Multiples[M`+uniqueId +`]" type="checkbox" value="true">
+                           <input name="Regions[`+ regionInd + `].Body.Multiples[M`+ uniqueId +`]" type="hidden" value="false">
+                      </td>
                     <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteAdvancedSearchRow('` + rowId +`')"></span><span class="glyphicon glyphicon-arrow-up"></span><span class="glyphicon glyphicon-arrow-down"></span></td>
                 </tr>`;
 
-      $("#ddFields").before(t)
+      $("#AdvanceSearchRegion_ddFields").before(t)
 
 
     }
@@ -84,3 +86,5 @@
        $("#" + index).remove();
     }
 </script>
+<input data-val="true" data-val-required="The Boolean field is required." id="Regions_0__Body_Multiples_0_" name="Regions[0].Body.Multiples[0]" type="checkbox" value="true">
+<input name="Regions[0].Body.Multiples[0]" type="hidden" value="false">
