@@ -182,10 +182,25 @@ namespace Catfish.Core.Services
             return dbModel;
         }
 
-        public IEnumerable<CFItem> GetPagedItems(string query, int page, int itemsPerPage)
+        public IEnumerable<CFItem> GetPagedItems(string query, int sortAttributeMappingId, int page, int itemsPerPage)
         {
             int start = page * itemsPerPage;
             int rows = itemsPerPage + 1;
+
+            CFEntityTypeAttributeMapping attrMap = Db.EntityTypeAttributeMappings.Where(m => m.Id == sortAttributeMappingId).FirstOrDefault();
+
+            if(attrMap != null)
+            {
+                string resultType = "txt_en";
+                FormField field = attrMap.Field;
+
+                if (typeof(NumberField).IsAssignableFrom(field.GetType())){
+                    resultType = "i";
+                }
+
+                return Db.Items.FromSolr(query, start, itemsPerPage,
+                    string.Format("value_{0}_{1}_{2}", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType), true);
+            }
 
             return Db.Items.FromSolr(query, start, itemsPerPage);
         }

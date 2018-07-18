@@ -14,7 +14,7 @@ namespace Catfish.Core.Helpers
 {
     public static class XmlLinqExtensions
     {
-        public static IQueryable<TSource> FromSolr<TSource>(this DbSet<TSource> set, string q, int start = 0, int rows = 1000000) where TSource : CFXmlModel
+        public static IQueryable<TSource> FromSolr<TSource>(this DbSet<TSource> set, string q, int start = 0, int rows = 1000000, string sortRowId = null, bool sortAscending = false) where TSource : CFXmlModel
         {
             if (SolrService.IsInitialized)
             {
@@ -23,6 +23,14 @@ namespace Catfish.Core.Helpers
                     StartOrCursor = new StartOrCursor.Start(start),
                     Rows = rows
                 };
+
+                if (!string.IsNullOrEmpty(sortRowId))
+                {
+                    options.OrderBy = new List<SortOrder>()
+                    {
+                        new SortOrder(sortRowId, sortAscending ? Order.ASC : Order.DESC)
+                    }
+                }
 
                 var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
                 var results = solr.Query(q, options).Select(s => s.Id).Distinct();
