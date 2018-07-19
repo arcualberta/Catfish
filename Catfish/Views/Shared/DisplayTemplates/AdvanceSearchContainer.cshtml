@@ -16,18 +16,17 @@
        
        @foreach (var m in Model.Mappings)
        {
-           var label = m.Label;
            var fType = m.Field.GetType();
+           var id = "value_" + (m.MetadataSet.Guid.Replace("-", "_")) + "_" + (m.Field.Guid.Replace("-", "_")) + "_";
 
-
-        <div class="row advanceSearchContainerInput" data-searchid="value_@(m.MetadataSet.Guid.Replace("-", "_"))_@(m.Field.Guid.Replace("-", "_"))_">
-            <div class="field-title">@label  </div>
+        <div class="row advanceSearchContainerInput" data-searchid="@id">
+            <div class="field-title">@m.Label</div>
             @if (fType.FullName == "Catfish.Core.Models.Forms.NumberField" || fType.FullName == "Catfish.Core.Models.Forms.DateField")
             {
                 //number field or Date field
                 <div class="search-entry divNumber">
-                    <span class="label-default field-sub-title">From</span><input type="text" id="AdvanceSearchContainer-@label-From"/>
-                    <span class="label-default field-sub-title">To</span><input type="text" id="AdvanceSearchContainer-@label-To"/>
+                    <span class="label-default field-sub-title">From</span><input type="text" id="@id-From"/>
+                    <span class="label-default field-sub-title">To</span><input type="text" id="@id-To"/>
                 </div>
 
             }
@@ -60,7 +59,7 @@
             else //(fType.FullName == "Catfish.Core.Models.Forms.TextField")
             {
                  <div class="search-entry divText">
-                   <input type = "text" class="input" id="AdvanceSearchContainer-@label-Text" /></div>
+                   <input type = "text" class="input" id="@id-Text" /></div>
             }
 
 
@@ -101,10 +100,9 @@
                 rows.each(function(index){
                     var searchId = $(this).attr("data-searchid");
                     var r = rows[index];
-                    var label = (r.innerText).trim();
                     if (rows[index].lastElementChild.classList.contains("divText"))
                     {
-                         var id =elmId + label + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                        var id = searchId + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
                          searchValue = $("#" + id).val();
                          if(searchValue.length > 0)
                         {
@@ -115,7 +113,7 @@
                     else if (rows[index].lastElementChild.classList.contains("divNumber"))
                     {
                         label = r.firstElementChild.innerText;
-                         var id =elmId + label;// + "-From"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                        var id = searchId;// + "-From"; //single text box id "AdvanceSearchContainer-{Label}-Text"
                          var from = $("#" + id + "-From").val();
 
                          var to = $("#" + id + "-To").val();
@@ -143,7 +141,7 @@
                                  if(i > 0)
                                  { searchOption += " || "; }
 
-                                 searchOption += "option_" + searchId + 'txt_en:"' + selectedValues[i].trim() + '"*';
+                                 searchOption += "option_" + searchId + 'txt_en:"' + selectedValues[i].trim() + '"';
                             }
                             searchOption=searchOption +")";
                             searchString = searchString.length > 0 ? searchString + " && " : "";
@@ -246,13 +244,12 @@
                   var vals = (contentValue.substr(1, (contentValue.length -2))).split(" ");
                   var fromVal = vals[0].trim();
                   var toVal =vals[vals.length - 1];
-
-                  var label = (div[0].children[0].innerText).trim();
-                  id =elmId + label + "-From"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                 
+                  id = idValue + "-From"; //single text box id "AdvanceSearchContainer-{Label}-Text"
                   fromVal = fromVal?fromVal : '';
                   $("#" + id).val(fromVal);
 
-                    id =elmId + label + "-To"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                  id = idValue + "-To"; //single text box id "AdvanceSearchContainer-{Label}-Text"
                   toVal = toVal?toVal : '';
                   $("#" + id).val(toVal);
              }
@@ -262,8 +259,7 @@
                   var end = c.indexOf("txt") - start;
                   var idValue = c.substr(start,end );
                   var div = $("div[data-searchid='"+ idValue +"']");
-                  var label = (div[0].children[0].innerText).trim();
-                  id =elmId + label + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                  id = idValue + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
                   $("#" + id).val(contentValue);
              }
           }

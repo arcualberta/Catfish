@@ -45,7 +45,7 @@ namespace Catfish.Services
 
         public enum eFunctionMode
         {
-            SUM = 0, COUNT, MEAN, MAX, MIN
+            SUM = 0, COUNT, MEAN, MAX, MIN, STANDARD_DEVIATION
         }
 
         public ItemQueryService(CatfishDbContext db)
@@ -78,6 +78,9 @@ namespace Catfish.Services
 
                 case eFunctionMode.MIN:
                     return SolrSrv.MinField(fieldString, query);
+
+                case eFunctionMode.STANDARD_DEVIATION:
+                    return SolrSrv.StandardDeviationField(fieldString, query);
             }
 
             return -1m;

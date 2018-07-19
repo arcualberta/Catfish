@@ -114,7 +114,7 @@ function selectSvg()
     var y = d3.scaleLinear().range([height, 0]);
 
     // Adds the svg canvas
-    var svg = d3.select("svg").attr("width", 600).attr("height", 400);
+    var svg = d3.select("svg").attr("viewBox", "0 0 600 400");
     return svg;
 }
 
@@ -131,7 +131,7 @@ function drawChartMultiLine(data) {
     var y = d3.scaleLinear().range([height, 0]);
 
     // Adds the svg canvas
-    var svg = d3.select("svg.line-chart").attr("width", 600).attr("height", 400);
+    var svg = d3.select("svg.line-chart").attr("viewBox", "0 0 600 400");
 
     var g1 = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + " )");
 

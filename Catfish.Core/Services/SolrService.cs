@@ -199,6 +199,18 @@ namespace Catfish.Core.Services
 
             return 0m;
         }
+
+        public decimal StandardDeviationField(string field, string query = "*:*")
+        {
+            var stats = GetStats(field, query);
+
+            if(stats != null)
+            {
+                return Convert.ToDecimal(stats[field].StdDev);
+            }
+
+            return 0m;
+        }
     }
 
     public class SolrIndex
