@@ -144,7 +144,7 @@ namespace Catfish.Core.Services
         {
             var stats = GetStats(field, query);
 
-            if(stats != null)
+            if(stats != null && stats[field].Count > 0)
             {
                 return Convert.ToDecimal(stats[field].Sum);
             }
@@ -168,7 +168,7 @@ namespace Catfish.Core.Services
         {
             var stats = GetStats(field, query);
 
-            if (stats != null)
+            if (stats != null && stats[field].Count > 0)
             {
                 return Convert.ToDecimal(stats[field].Mean);
             }
@@ -180,7 +180,7 @@ namespace Catfish.Core.Services
         {
             var stats = GetStats(field, query);
 
-            if (stats != null)
+            if (stats != null && stats[field].Count > 0)
             {
                 return Convert.ToDecimal(stats[field].Min);
             }
@@ -192,7 +192,7 @@ namespace Catfish.Core.Services
         {
             var stats = GetStats(field, query);
 
-            if (stats != null)
+            if (stats != null && stats[field].Count > 0)
             {
                 return Convert.ToDecimal(stats[field].Max);
             }
@@ -204,7 +204,7 @@ namespace Catfish.Core.Services
         {
             var stats = GetStats(field, query);
 
-            if(stats != null)
+            if(stats != null && stats[field].Count > 0)
             {
                 return Convert.ToDecimal(stats[field].StdDev);
             }

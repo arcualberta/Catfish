@@ -1,4 +1,4 @@
-﻿@model Catfish.Core.Models.Form
+﻿@model Catfish.Areas.Manager.Models.ViewModels.FormBuilderViewModel
 @using Catfish.Areas.Manager.Models.ViewModels;
 
 @{ ViewBag.Title = Model.Id > 0 ? "Edit Form" : "Create Form"; }
@@ -42,11 +42,7 @@
     @Html.Partial("Partial/koEditToolbar", Model, new ViewDataDictionary() { { "saveButtonFunctionCall", "saveFormTemplate" } })
 }
 
-@{
-    FormBuilderViewModel vm = new FormBuilderViewModel(Model) { ShowFieldDescriptions = true };
-}
-
-@Html.Partial("Partial/FormBuilder", vm, new ViewDataDictionary() { { "controller", "formtemplates" }, { "action", "save" } })
+@Html.Partial("Partial/FormBuilder", Model, new ViewDataDictionary() { { "controller", "formtemplates" }, { "action", "save" } })
 
 <script type="text/javascript">
         function saveFormTemplate() {

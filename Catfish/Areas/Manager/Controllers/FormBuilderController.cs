@@ -10,22 +10,23 @@ using System.Web.Mvc;
 
 namespace Catfish.Areas.Manager.Controllers
 {
-    public abstract class FormBuilderController : CatfishController
+    public abstract class FormBuilderController<T> : CatfishController where T:AbstractForm
     {
-        public abstract AbstractForm CreateDataModel();
+        public abstract T CreateDataModel();
+        public abstract FormBuilderViewModel CreateViewModel(T model);
 
 
         [HttpGet]
         public ActionResult Edit(int? id)
         {
-            AbstractForm model;
+            T model;
 
             if (id.HasValue && id.Value > 0)
-                model = FormService.GetForm<AbstractForm>(id.Value);
+                model = FormService.GetForm<T>(id.Value);
             else
                 model = CreateDataModel();
 
-            return View(model);
+            return View(CreateViewModel(model));
         }
 
         [HttpPost]
@@ -73,15 +74,15 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
-        public ActionResult Save(FormBuilderViewModel vm)
+        public ActionResult Save(int? id, FormBuilderViewModel vm)
         {
             if (ModelState.IsValid)
             {
-                AbstractForm model;
+                T model;
 
                 if (vm.Id > 0)
                 {
-                    model = FormService.GetForm<AbstractForm>(vm.Id);
+                    model = FormService.GetForm<T>(vm.Id);
                     if (model == null)
                         return HttpNotFound();
                 }
@@ -104,7 +105,7 @@ namespace Catfish.Areas.Manager.Controllers
                     controller = controller.Substring(0, controller.Length - "Controller".Length);
                     vm.url = Url.Action("Edit", controller, new { id = model.Id });
                 }
-
+                
                 SuccessMessage(Resources.Views.Form.Edit.SaveSuccess);
             }
             else

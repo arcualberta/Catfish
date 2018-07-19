@@ -9,6 +9,12 @@
     string controller = ViewData["controller"] as string;
     string saveAction = ViewData["action"] as string;
 }
+
+@if (Model.redirect)
+{
+    <script type="text/javascript">window.location = "@Model.url";</script>
+}
+
 @ko.Initialize(Model)
 
 @section scripts {
@@ -52,16 +58,17 @@
 }
 
 <div id="@context">
-    @using (ko.Html.Form(saveAction, controller, null, new { id = context + "Form" }))
+    @*@using (ko.Html.Form(saveAction, controller, null, new { id = context + "Form" }))*@
+    @using (Html.BeginForm(saveAction, controller, new { id = Model.Id }, FormMethod.Post))
     {
         <div class="grid_12">
             <div class="box">
                 <div class="title">
                     <h2>Basic Information</h2>
                     <div class="bs right">
-                        <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
+                        @*<span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
-                        @ko.Html.Button("Save", saveAction, controller, new { }, new { @class = "save" })
+                        @ko.Html.Button("Save", saveAction, controller, new { }, new { @class = "save" })*@
                     </div>
                 </div>
                 <div class="inner">
