@@ -4,6 +4,9 @@
 @{ 
     string lang = ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName;
     Model.Value = Model.Options.Where(o => o.Selected).SelectMany(o => o.Value.Where(v => v.LanguageCode == lang)).Select(v => v.Value).FirstOrDefault();
+    IEnumerable<SelectListItem> items = Model.Options.SelectMany(o => o.Value.Where(v => v.LanguageCode == lang)).Select(v => new SelectListItem { Value = v.Value, Text = v.Value });
+    var options = new List<SelectListItem>() { new SelectListItem { Text = "", Value = "" } };
+    options.AddRange(items);
 }
 
 @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
@@ -18,5 +21,5 @@
 </div>
 <div class="form-field-value">
     @{ bool showLanguageLabel = Model.Values.Count() > 1; }
-    @Html.DropDownListFor(m => m.Value, Model.Options.SelectMany(o => o.Value.Where(v => v.LanguageCode == lang)).Select(v => new SelectListItem { Value = v.Value, Text = v.Value }))
+    @Html.DropDownListFor(m => m.Value, options)
 </div>
