@@ -83,7 +83,7 @@
     }
 }
 
-<script>
+<script type="text/javascript">
      const elmId = "AdvanceSearchContainer-";
    $(function() {
        var q = @Html.Raw(Json.Encode(qParam));
@@ -99,20 +99,19 @@
 
                 rows.each(function(index){
                     var searchId = $(this).attr("data-searchid");
-                    var r = rows[index];
-                    if (rows[index].lastElementChild.classList.contains("divText"))
+                    var r = $(this);
+                    if (r.children(".divText").length > 0)
                     {
                         var id = searchId + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
                          searchValue = $("#" + id).val();
                          if(searchValue.length > 0)
                         {
                          searchString = searchString.length > 0 ? searchString + " && " : "";
-                         searchString = searchString + (searchId + 'txt_en:"' + searchValue + '"*');
+                         searchString = searchString + (searchId + 'txt_en:"' + searchValue + '"');
                         }
                     }
-                    else if (rows[index].lastElementChild.classList.contains("divNumber"))
+                    else if (r.children(".divNumber").length > 0)
                     {
-                        label = r.firstElementChild.innerText;
                         var id = searchId;// + "-From"; //single text box id "AdvanceSearchContainer-{Label}-Text"
                          var from = $("#" + id + "-From").val();
 
@@ -124,12 +123,12 @@
                                 searchString = searchString + (searchId + "i" + ':[' + from + ' TO ' + to + ']');
                           }
                     }
-                    else if (rows[index].lastElementChild.classList.contains("divCheckbox"))
+                    else if (r.children(".divCheckbox").length > 0)
                     {
                          var name =elmId + "Chkbox";
                          var selectedValues=[];
                          var checkboxes = $('input[name="'+ name +'"]');
-                            selectedValues = checkboxes.filter(":checked").map(function () {
+                         selectedValues = checkboxes.filter(":checked").map(function () {
                                   return this.parentElement.innerText;
                          }).get()
 
@@ -148,7 +147,7 @@
                             searchString = searchString + searchOption;
                          }
                     }
-                    else if (rows[index].lastElementChild.classList.contains("divDropDownList"))
+                    else if (r.children(".divDropDownList").length > 0)
                     {
                          var id ="region_Value_" + elmId + "DropdownList";
                          selectedValue = $("#" + id +" option:selected").text();
