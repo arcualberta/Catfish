@@ -357,6 +357,7 @@
     <Compile Include="Areas\Manager\Services\AccessGroupService.cs" />
     <Compile Include="Areas\Manager\Services\PageService.cs" />
     <Compile Include="Models\Regions\AdvanceSearchContainer.cs" />
+    <Compile Include="Models\Regions\CSEntityPanel.cs" />
     <Compile Include="Models\Regions\GraphPanel.cs" />
     <Compile Include="Models\Regions\CalculatedFieldPanel.cs" />
     <Compile Include="Models\Regions\ListEntitiesPanel.cs" />
