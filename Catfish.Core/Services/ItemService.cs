@@ -133,11 +133,42 @@ namespace Catfish.Core.Services
                         //moving the thumbnail, if it's not a shared one
                         if (file.ThumbnailType == CFDataFile.eThumbnailTypes.NonShared)
                         {
-                            string srcThumbnail = Path.Combine(file.Path, file.Thumbnail);
-                            string dstThumbnail = Path.Combine(dstDir, file.Thumbnail);
-                            File.Move(srcThumbnail, dstThumbnail);
+                            //aug 1 2018 -- also move the small, med.large size image 
+                            // string srcThumbnail = Path.Combine(file.Path, file.Thumbnail);
+                            // string dstThumbnail = Path.Combine(dstDir, file.Thumbnail);
+                            //  File.Move(srcThumbnail, dstThumbnail);
+                            foreach (var enumValue in Enum.GetValues(typeof(ConfigHelper.eImageSize)))
+                            {
+                                if(enumValue.Equals(ConfigHelper.eImageSize.Thumbnail))
+                                {
+                                    string srcThumbnail = Path.Combine(file.Path, file.Thumbnail);
+                                    string dstThumbnail = Path.Combine(dstDir, file.Thumbnail);
+                                    File.Move(srcThumbnail, dstThumbnail);
+                                }
+                                else if(enumValue.Equals(ConfigHelper.eImageSize.Small))
+                                {
+                                    string srcImg = Path.Combine(file.Path, file.Small);
+                                    string dstImg = Path.Combine(dstDir, file.Small);
+                                    File.Move(srcImg, dstImg);
+                                }
+                                else if (enumValue.Equals(ConfigHelper.eImageSize.Medium))
+                                {
+                                    string srcImg = Path.Combine(file.Path, file.Medium);
+                                    string dstImg = Path.Combine(dstDir, file.Medium);
+                                    File.Move(srcImg, dstImg);
+                                }
+                                else if (enumValue.Equals(ConfigHelper.eImageSize.Large))
+                                {
+                                    string srcImg = Path.Combine(file.Path, file.Large);
+                                    string dstImg = Path.Combine(dstDir, file.Large);
+                                    File.Move(srcImg, dstImg);
+                                }
+
+                            }
                         }
 
+                       
+                      
                         //updating the file path
                         file.Path = dstDir;
                     }
