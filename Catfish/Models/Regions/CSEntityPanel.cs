@@ -1,11 +1,14 @@
-﻿using Piranha.Extend;
+﻿using Catfish.Helpers;
+using Piranha.Extend;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Web;
+using System.Web.Razor;
 
 namespace Catfish.Models.Regions
 {
@@ -28,8 +31,8 @@ namespace Catfish.Models.Regions
         public CSEntityPanel() : base()
         {
             CsHtml = "@model Catfish.Models.ViewModels.EntityViewModel\n\n" +
-                "@Html.HiddenFor(m => m.Guid)\n" +
-                "<p>@Model.Content</p>";
+                "@Html.HiddenFor(m => m.Id)\n" +
+                "<p>@Model.Id</p>";
 
         }
 
@@ -40,6 +43,11 @@ namespace Catfish.Models.Regions
 
         public override void OnManagerSave(object model)
         {
+            Assembly result = ViewHelper.CompileView(CsHtml, "CustomCSEntityPanelView", "Catfish.Models.Regions.CSEntityPanel");
+
+            // Convert the code to binary
+            CompiledCode = System.IO.File.ReadAllBytes(result.Location);
+
             base.OnManagerSave(model);
         }
 

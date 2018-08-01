@@ -10,6 +10,11 @@ using System.Globalization;
 using Catfish.Models.Regions;
 using System.Web.Script.Serialization;
 using Catfish.Core.Models;
+using System.Reflection;
+using System.Web.Razor;
+using System.IO;
+using System.CodeDom.Compiler;
+using Microsoft.CSharp;
 
 namespace Catfish.Helpers
 {
@@ -59,6 +64,48 @@ namespace Catfish.Helpers
             //var regions = pageModel.Regions;
             //MultilingualText pageTitle = null;
 
+        }
+
+        public static Assembly CompileView(string viewCode, string defaultClassName, string defaultNamespace, string defaultBaseClass = "RazorGenerator.Mvc.PrecompiledMvcView")
+        {
+            string tempFileName = String.Format(@"{0}\{1}.dll",
+                    Path.GetTempPath(),
+                    "temp_compile" + DateTime.Now.Ticks.ToString("x"));
+
+            var language = new CSharpRazorCodeLanguage();
+            var host = new RazorEngineHost(language)
+            {
+                DefaultBaseClass = defaultBaseClass,
+                DefaultClassName = defaultClassName,
+                DefaultNamespace = defaultNamespace
+            };
+
+            host.NamespaceImports.Add("System");
+
+            RazorTemplateEngine engine = new RazorTemplateEngine(host);
+            GeneratorResults razorResult = engine.GenerateCode(new StringReader(viewCode));
+
+            CompilerParameters parameters = new CompilerParameters();
+            parameters.ReferencedAssemblies.Add(typeof(ViewHelper).Assembly.Location);
+            parameters.ReferencedAssemblies.Add(typeof(CFEntity).Assembly.Location);
+            parameters.ReferencedAssemblies.Add(typeof(RazorGenerator.Mvc.PrecompiledMvcView).Assembly.Location);
+            parameters.ReferencedAssemblies.Add(typeof(System.Web.Mvc.IView).Assembly.Location);
+
+            parameters.GenerateExecutable = false;
+            parameters.GenerateInMemory = false;
+            parameters.OutputAssembly = tempFileName;
+            parameters.TreatWarningsAsErrors = false;
+
+
+            CompilerResults compilerResults = new CSharpCodeProvider()
+                .CompileAssemblyFromDom(parameters, razorResult.GeneratedCode);
+
+            if (compilerResults.Errors.HasErrors)
+            {
+                throw new HttpCompileException(compilerResults.Errors.ToString());
+            }
+
+            return compilerResults.CompiledAssembly;
         }
     }
 }
