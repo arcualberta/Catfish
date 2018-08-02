@@ -15,6 +15,8 @@ using System.Web.Razor;
 using System.IO;
 using System.CodeDom.Compiler;
 using Microsoft.CSharp;
+using System.Text;
+using System.Web.Mvc;
 
 namespace Catfish.Helpers
 {
@@ -66,7 +68,7 @@ namespace Catfish.Helpers
 
         }
 
-        public static Assembly CompileView(string viewCode, string defaultClassName, string defaultNamespace, string defaultBaseClass = "RazorGenerator.Mvc.PrecompiledMvcView")
+        public static Assembly CompileView(string viewCode, string defaultClassName, string defaultNamespace, string baseClassGeneric = null, string defaultBaseClass = "Catfish.Helpers.CatfishCompiledView")
         {
             string tempFileName = String.Format(@"{0}\{1}.dll",
                     Path.GetTempPath(),
@@ -75,12 +77,13 @@ namespace Catfish.Helpers
             var language = new CSharpRazorCodeLanguage();
             var host = new RazorEngineHost(language)
             {
-                DefaultBaseClass = defaultBaseClass,
+                DefaultBaseClass = defaultBaseClass + (string.IsNullOrEmpty(baseClassGeneric) ? string.Empty : '<' + baseClassGeneric + '>'),
                 DefaultClassName = defaultClassName,
                 DefaultNamespace = defaultNamespace
             };
 
             host.NamespaceImports.Add("System");
+            host.NamespaceImports.Add("System.Web.Mvc.Html");
 
             RazorTemplateEngine engine = new RazorTemplateEngine(host);
             GeneratorResults razorResult = engine.GenerateCode(new StringReader(viewCode));
@@ -90,6 +93,12 @@ namespace Catfish.Helpers
             parameters.ReferencedAssemblies.Add(typeof(CFEntity).Assembly.Location);
             parameters.ReferencedAssemblies.Add(typeof(RazorGenerator.Mvc.PrecompiledMvcView).Assembly.Location);
             parameters.ReferencedAssemblies.Add(typeof(System.Web.Mvc.IView).Assembly.Location);
+            parameters.ReferencedAssemblies.Add(typeof(System.Web.HtmlString).Assembly.Location);
+            parameters.ReferencedAssemblies.Add(typeof(System.Linq.Expressions.Expression).Assembly.Location);
+
+#if DEBUG
+            parameters.IncludeDebugInformation = true;
+#endif
 
             parameters.GenerateExecutable = false;
             parameters.GenerateInMemory = false;
@@ -106,6 +115,69 @@ namespace Catfish.Helpers
             }
 
             return compilerResults.CompiledAssembly;
+        }
+    }
+    
+    public interface ICatfishCompiledView
+    {
+        void SetModel(object obj);
+        void Execute(ViewContext viewContext);
+    }
+
+    public abstract class CatfishCompiledView<T> : ICatfishCompiledView
+    {
+        public StringBuilder Builder { get; private set; }
+        public T Model { get; set; }
+        public HtmlHelper<T> Html { get; set; }
+
+        public CatfishCompiledView()
+        {
+            Builder = new StringBuilder();
+        }
+
+        public abstract void Execute();
+
+        public virtual void WriteAttribute(string attr, Tuple<string, int> open, Tuple<string, int> close, Tuple<Tuple<string, int>, Tuple<object, int>, bool> data)
+        {
+            string value;
+            if (data != null)
+                value = data.Item2.Item1.ToString();
+            else
+                value = string.Empty;
+
+            Builder.Append(open.Item1);
+            Builder.Append(value);
+            Builder.Append(close.Item1);
+        }
+
+        public virtual void Write(object value)
+        {
+            Builder.Append(value);
+        }
+
+        public virtual void WriteLiteral(object value)
+        {
+            Builder.Append(value);
+        }
+
+        public override string ToString()
+        {
+            return Builder.ToString();
+        }
+
+        public void SetModel(object obj)
+        {
+            if (typeof(T).IsAssignableFrom(obj.GetType()))
+            {
+                Model = (T)obj;
+            }
+        }
+
+        public void Execute(ViewContext viewContext)
+        {
+            Html = new HtmlHelper<T>(viewContext, new ViewPage());
+
+            Execute();
         }
     }
 }

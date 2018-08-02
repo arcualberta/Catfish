@@ -519,6 +519,7 @@
     <Content Include="Views\Shared\DisplayTemplates\QueryFilterPanel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\AdvanceSearchContainer.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DropDownMenu.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\CSEntityPanel.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -2,6 +2,7 @@
 
 <ul class="form">
     @Html.Partial("_CatfishRegion", Model)
+    @Html.HiddenFor(m => m.ClassId)
 
     <li>
         @Html.LabelFor(m => m.DefaultEntityId)
