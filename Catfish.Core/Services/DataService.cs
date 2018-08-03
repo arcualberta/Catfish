@@ -128,17 +128,7 @@ namespace Catfish.Core.Services
                 file.Medium = CreateVariatyImageSizeName(file.Guid, file.Extension, "Medium");
                 file.Large = CreateVariatyImageSizeName(file.Guid, file.Extension, "Large");
 
-                //using (Image image = new Bitmap(file.AbsoluteFilePathName))
-                //{
-                //    Size thumbSize = image.Width < image.Height
-                //        ? new Size() { Height = ConfigHelper.ThumbnailSize, Width = (image.Width * ConfigHelper.ThumbnailSize) / image.Height }
-                //        : new Size() { Width = ConfigHelper.ThumbnailSize, Height = (image.Height * ConfigHelper.ThumbnailSize) / image.Width };
-
-                //    Image thumbnail = image.GetThumbnailImage(thumbSize.Width, thumbSize.Height, null, IntPtr.Zero);
-                //    ImageFormat format = GetThumbnailFormat(file.Extension);
-                //    thumbnail.Save(Path.Combine(file.Path, file.Thumbnail), format);
-                //}
-
+              //august 1 2018 -- adding different size of image, not just thumbnail
                 using (Image image = new Bitmap(file.AbsoluteFilePathName))
                 {
                     foreach (var enumValue in Enum.GetValues(typeof(ConfigHelper.eImageSize)))
