@@ -104,8 +104,7 @@ namespace Catfish.Helpers
             parameters.GenerateInMemory = false;
             parameters.OutputAssembly = tempFileName;
             parameters.TreatWarningsAsErrors = false;
-
-
+            
             CompilerResults compilerResults = new CSharpCodeProvider()
                 .CompileAssemblyFromDom(parameters, razorResult.GeneratedCode);
 
@@ -176,6 +175,7 @@ namespace Catfish.Helpers
         public void Execute(ViewContext viewContext)
         {
             Html = new HtmlHelper<T>(viewContext, new ViewPage());
+            Html.ViewData["Model"] = Model;
 
             Execute();
         }

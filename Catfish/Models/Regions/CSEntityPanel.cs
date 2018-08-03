@@ -45,17 +45,28 @@ namespace Catfish.Models.Regions
         public CSEntityPanel() : base()
         {
             CsHtml = "@model Catfish.Models.ViewModels.EntityViewModel\n\n" +
-                "@Html.HiddenFor(m => m.Id)\n" +
                 "<p>@Model.Id</p>";
 
             Error = null;
 
-            ClassId = "CSEntityPanel" + Guid.NewGuid().ToString("X");
+            ClassId = "CSEntityPanel" + Guid.NewGuid().ToString("N");
         }
 
         public override void InitManager(object model)
         {
             base.InitManager(model);
+        }
+
+        public string[] GetReferencedAssemblies()
+        {
+            return new string[]{
+                typeof(System.Web.Mvc.IView).Assembly.Location,
+                typeof(System.Web.HtmlString).Assembly.Location,
+                typeof(RazorGenerator.Mvc.PrecompiledMvcView).Assembly.Location,
+                typeof(System.Linq.Expressions.Expression).Assembly.Location,
+                typeof(CFEntity).Assembly.Location,
+                typeof(ViewHelper).Assembly.Location
+            };
         }
 
         public override void OnManagerSave(object model)
@@ -82,7 +93,8 @@ namespace Catfish.Models.Regions
             if (CompiledCode != null)
             {
                 HttpContext context = HttpContext.Current;
-                View = (ICatfishCompiledView)Activator.CreateInstance(assembly.GetType("Catfish.Models.Regions.CSEntityPanel.CustomCSEntityPanelView"));
+                Assembly assembly = Assembly.Load(CompiledCode);
+                View = (ICatfishCompiledView)Activator.CreateInstance(assembly.GetType("Catfish.Models.Regions.CSEntityPanel." + ClassId));
 
                 string entityId = context.Request.QueryString[EntityContainer.ENTITY_PARAM];
                 int id = 0;
@@ -94,15 +106,16 @@ namespace Catfish.Models.Regions
                     }
                 }
 
-                if(id < 0)
+                if(id > 0)
                 {
                     EntityService es = new EntityService(db);
 
-                    View.SetModel(es.GetAnEntity(id));
+                    View.SetModel(new EntityViewModel(es.GetAnEntity(id), new string[] { "en" })); //TODO: Get Language codes
                 }
             }
 
             return base.GetContent(model);
         }
+        
     }
 }
