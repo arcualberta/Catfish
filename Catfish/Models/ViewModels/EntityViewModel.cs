@@ -1,9 +1,11 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Data;
 using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using static Catfish.Core.Models.Data.CFDataFile;
 
 namespace Catfish.Models.ViewModels
 {
@@ -16,6 +18,8 @@ namespace Catfish.Models.ViewModels
         public ICollection<EntityViewModel> Children { get; set; }
 
         public ICollection<MetadataSetViewModel> MetadataSets { get; set; }
+
+        public ICollection<DataFileViewModel> Files { get; set; }
         
         public EntityViewModel()
         {
@@ -40,8 +44,20 @@ namespace Catfish.Models.ViewModels
                 MetadataSets.Add(new MetadataSetViewModel(metadataset, languageCodes));
             }
 
+            if (typeof(CFItem).IsAssignableFrom(entity.GetType()))
+            {
+                foreach(CFDataObject dataObject in ((CFItem)entity).DataObjects)
+                {
+                    if (typeof(CFDataFile).IsAssignableFrom(dataObject.GetType()))
+                    {
+                        Files.Add(new DataFileViewModel((CFDataFile)dataObject));
+                    }
+                }
+            }
+            
             if (typeof(CFAggregation).IsAssignableFrom(entity.GetType()))
             {
+                
                 foreach (CFEntity member in ((CFAggregation)entity).ChildMembers)
                 {
                     if (previousEntities.ContainsKey(member.Guid))
@@ -59,6 +75,28 @@ namespace Catfish.Models.ViewModels
         public IEnumerable<FormFieldViewModel> GetAllFormFields()
         {
             return MetadataSets.SelectMany(m => m.Fields);
+        }
+
+        public DataFileViewModel GetFirstImage()
+        {
+            foreach(DataFileViewModel file in Files)
+            {
+                if(file.MimeType == MimeType.Image)
+                {
+                    return file;
+                }
+            }
+
+            foreach(EntityViewModel child in Children)
+            {
+                DataFileViewModel result = child.GetFirstImage();
+                if(result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
         }
     }
 
@@ -115,10 +153,21 @@ namespace Catfish.Models.ViewModels
         }
     }
 
-    public class FileViewModel
+    public class DataFileViewModel
     {
-        public string MetadataType { get; set; }
+        public MimeType MimeType { get; set; }
 
         public string Guid { get; set; }
+
+        public DataFileViewModel()
+        {
+
+        }
+
+        public DataFileViewModel(CFDataFile dataFile) : this()
+        {
+            Guid = dataFile.Guid;
+            MimeType = dataFile.TopMimeType;
+        }
     }
 }
