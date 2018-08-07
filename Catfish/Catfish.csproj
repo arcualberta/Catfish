@@ -317,6 +317,7 @@
     <Content Include="Areas\Manager\Views\Extensions\AdvanceSearchContainer.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\Javascript.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\EntityImagePanel.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\CSEntityPanel.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
@@ -364,6 +365,7 @@
     <Compile Include="Models\Regions\CalculatedFieldPanel.cs" />
     <Compile Include="Models\Regions\ListEntitiesPanel.cs" />
     <Compile Include="Models\Regions\QueryFilterPanel.cs" />
+    <Compile Include="Models\ViewModels\EntityViewModel.cs" />
     <Compile Include="Resources\Global.fr.Designer.cs">
       <DependentUpon>Global.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -520,6 +522,7 @@
     <Content Include="Views\Shared\DisplayTemplates\AdvanceSearchContainer.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DropDownMenu.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\EntityImagePanel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\CSEntityPanel.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
