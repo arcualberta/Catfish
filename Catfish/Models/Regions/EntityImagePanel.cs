@@ -24,7 +24,7 @@ namespace Catfish.Models.Regions
 
         [ScriptIgnore]
         public string ImageUrl { get; set; }
-       // public List<CFDataFile> Files { get; set; }
+     
 
         [ScriptIgnore]
         public CFEntity Entity { get; set; }
@@ -36,19 +36,6 @@ namespace Catfish.Models.Regions
 
         public override void InitManager(object model)
         {
-            // get db context
-            //CatfishDbContext db = new CatfishDbContext();
-            //EntityTypeService entityTypeSrv = new EntityTypeService(db);
-
-            //FieldsMapping = new SelectList(entityTypeSrv.GetEntityTypeAttributeMappings().GroupBy(e => e.Name).Select(e => e.FirstOrDefault()), "Name", "Name");
-            //if (Fields.Count <= 0)
-            //{
-            //    foreach (SelectListItem f in FieldsMapping)
-            //    {
-            //        if (f.Text.Equals("Name Mapping") || f.Text.Equals("Description Mapping"))
-            //            Fields.Add(f.Text);
-            //    }
-            //}
             base.InitManager(model);
         }
 
@@ -67,9 +54,6 @@ namespace Catfish.Models.Regions
                     CatfishDbContext db = new CatfishDbContext();
                     EntityService es = new EntityService(db);
 
-                    //ItemService itemService = new ItemService(db);
-                    
-
                     Entity = es.GetAnEntity(Convert.ToInt32(entityId));
                     EntityId = Entity.Id;
 
@@ -77,14 +61,11 @@ namespace Catfish.Models.Regions
                     {
                         CFDataFile img = f;
                         FileGuid = f.Guid;
-                       // ImageUrl = System.IO.Path.Combine(f.Path, f.Large);
+                       
                     }
 
-                    //if (checkInItems && model is CFItem)
-                    //    return (model as CFItem).Files.Where(f => f.Guid == guid).FirstOrDefault();
                 }
             }
-
             return base.GetContent(model);
         }
     }
