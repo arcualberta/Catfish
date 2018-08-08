@@ -25,6 +25,7 @@ namespace Catfish.Models.ViewModels
         {
             Children = new List<EntityViewModel>();
             MetadataSets = new List<MetadataSetViewModel>();
+            Files = new List<DataFileViewModel>();
         }
 
         public EntityViewModel(CFEntity entity, string[] languageCodes, IDictionary<string, EntityViewModel> previousEntities = null) : this()
