@@ -78,6 +78,29 @@ namespace Catfish.Models.ViewModels
             return MetadataSets.SelectMany(m => m.Fields);
         }
 
+        public IEnumerable<string> GetFieldValuesByName(string name, string languageCode = null)
+        {
+            IEnumerable<string> results = GetAllFormFields().SelectMany((f) => {
+                if(languageCode == null)
+                {
+                    var keys = f.Names.Where(n => n.Value == name).Select(n => n.Key);
+                    return f.Values.Where(v => keys.Contains(v.Key)).Select(v => v.Value);
+                }
+                else
+                {
+                    var result = new List<string>();
+                    if(f.Names[languageCode] == name)
+                    {
+                        result.Add(f.Values[languageCode]);
+                    }
+
+                    return result;
+                }
+            });
+
+            return results;
+        }
+
         public DataFileViewModel GetFirstImage()
         {
             foreach(DataFileViewModel file in Files)
