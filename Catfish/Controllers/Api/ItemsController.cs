@@ -138,9 +138,14 @@ namespace Catfish.Controllers.Api
                 eSize = (ConfigHelper.eImageSize)Enum.Parse(typeof(ConfigHelper.eImageSize), size);
             }
 
-            CFDataFile file = DataService.GetFile(id, guid);
+            CFDataFile file = null;
+            if (!string.IsNullOrEmpty(guid))
+            {
+                file = DataService.GetFile(id, guid);    
+            }
             if (file == null)
                 return HttpNotFound("File not found");
+
             string path_name = string.Empty;
             string[] fnames = file.LocalFileName.Split('.'); 
             if (eSize == null)
