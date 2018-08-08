@@ -110,7 +110,12 @@ namespace Catfish.Helpers
 
             if (compilerResults.Errors.HasErrors)
             {
-                throw new HttpCompileException(compilerResults.Errors.ToString());
+                StringBuilder error = new StringBuilder("Error compiling view: \n");
+                foreach(var e in compilerResults.Errors)
+                {
+                    error.AppendLine(e.ToString());
+                }
+                throw new HttpCompileException(error.ToString());
             }
 
             return compilerResults.CompiledAssembly;

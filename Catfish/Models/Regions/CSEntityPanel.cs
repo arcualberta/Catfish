@@ -80,7 +80,15 @@ namespace Catfish.Models.Regions
             {
                 modelType = lines.FirstOrDefault().Substring(6).Trim();
             }
-            Assembly result = ViewHelper.CompileView(string.Join("\n", lines, 1, lines.Length - 1), ClassId, "Catfish.Models.Regions.CSEntityPanel", modelType);
+            Assembly result;
+
+            try
+            {
+                result = ViewHelper.CompileView(string.Join("\n", lines, 1, lines.Length - 1), ClassId, "Catfish.Models.Regions.CSEntityPanel", modelType);
+            }catch(HttpCompileException ex)
+            {
+                throw (ex);
+            }
 
             // Convert the code to binary
             CompiledCode = System.IO.File.ReadAllBytes(result.Location);
