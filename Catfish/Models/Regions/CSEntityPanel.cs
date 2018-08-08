@@ -109,8 +109,16 @@ namespace Catfish.Models.Regions
                 if(id > 0)
                 {
                     EntityService es = new EntityService(db);
+                    CFEntity entity = es.GetAnEntity(id);
 
-                    View.SetModel(new EntityViewModel(es.GetAnEntity(id), new string[] { "en" })); //TODO: Get Language codes
+                    if (entity == null)
+                    {
+                        Error = Catfish.Resources.Views.Shared.DisplayTemplates.CSEntityPanel.NotFound;
+                    }
+                    else
+                    {
+                        View.SetModel(new EntityViewModel(es.GetAnEntity(id), new string[] { "en" })); //TODO: Get Language codes
+                    }
                 }
             }
 
