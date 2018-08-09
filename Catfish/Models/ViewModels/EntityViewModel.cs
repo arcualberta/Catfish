@@ -51,7 +51,7 @@ namespace Catfish.Models.ViewModels
                 {
                     if (typeof(CFDataFile).IsAssignableFrom(dataObject.GetType()))
                     {
-                        Files.Add(new DataFileViewModel((CFDataFile)dataObject));
+                        Files.Add(new DataFileViewModel((CFDataFile)dataObject, entity.Id));
                     }
                 }
             }
@@ -179,6 +179,7 @@ namespace Catfish.Models.ViewModels
 
     public class DataFileViewModel
     {
+        public int ParentId { get; set; }
         public MimeType MimeType { get; set; }
 
         public string Guid { get; set; }
@@ -188,8 +189,9 @@ namespace Catfish.Models.ViewModels
 
         }
 
-        public DataFileViewModel(CFDataFile dataFile) : this()
+        public DataFileViewModel(CFDataFile dataFile, int parentId) : this()
         {
+            ParentId = parentId;
             Guid = dataFile.Guid;
             MimeType = dataFile.TopMimeType;
         }
