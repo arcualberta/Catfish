@@ -48,23 +48,34 @@ namespace Catfish.Models.Regions
             if (context != null)
             {
                 string entityId = context.Request.QueryString[EntityImagePanel.ENTITY_PARAM];
+                CatfishDbContext db = new CatfishDbContext();
+                EntityService es = new EntityService(db);
 
-                if (!string.IsNullOrEmpty(entityId))
+                if (!string.IsNullOrEmpty(entityId)) //get it from url param
                 {
-                    CatfishDbContext db = new CatfishDbContext();
-                    EntityService es = new EntityService(db);
-
+                  
                     Entity = es.GetAnEntity(Convert.ToInt32(entityId));
                     EntityId = Entity.Id;
 
-                    foreach(var f in ((CFItem)Entity).Files)
+                }
+                else
+                {
+                    if(EntityId > 0) //the default entity Id
+                    {
+                        Entity = es.GetAnEntity(Convert.ToInt32(EntityId));
+                    }
+                }
+
+                if (Entity != null)
+                {
+                    foreach (var f in ((CFItem)Entity).Files)
                     {
                         CFDataFile img = f;
                         FileGuid = f.Guid;
-                       
-                    }
 
+                    }
                 }
+
             }
             return base.GetContent(model);
         }
