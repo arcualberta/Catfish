@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Data;
 using Catfish.Core.Models.Forms;
+using Catfish.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,8 @@ namespace Catfish.Models.ViewModels
         public ICollection<MetadataSetViewModel> MetadataSets { get; set; }
 
         public ICollection<DataFileViewModel> Files { get; set; }
+
+        public string[] LanguageCodes { get; private set; }
         
         public EntityViewModel()
         {
@@ -32,6 +35,7 @@ namespace Catfish.Models.ViewModels
         {
             this.Id = entity.Id;
             this.Guid = entity.Guid;
+            this.LanguageCodes = languageCodes;
 
             // Added to prevent circular child members.
             if(previousEntities == null)
@@ -67,10 +71,25 @@ namespace Catfish.Models.ViewModels
                     }
                     else
                     {
-                        Children.Add(new EntityViewModel(member, languageCodes, previousEntities));
+                        EntityViewModel child = new EntityViewModel(member, languageCodes, previousEntities);
+                        Children.Add(child);
                     }
                 }
             }
+        }
+
+        public IEnumerable<EntityViewModel> GetParents()
+        {
+            CatfishDbContext context = new CatfishDbContext();
+            EntityService es = new EntityService(context);
+
+            CFEntity entity = es.GetAnEntity(Id);
+
+            if(entity != null && typeof(CFAggregation).IsAssignableFrom(entity.GetType())) {
+                return ((CFAggregation)entity).ParentMembers.Select(p => new EntityViewModel(p, LanguageCodes));
+            }
+
+            return new List<EntityViewModel>();
         }
 
         public IEnumerable<FormFieldViewModel> GetAllFormFields()

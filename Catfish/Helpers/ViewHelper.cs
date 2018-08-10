@@ -84,6 +84,7 @@ namespace Catfish.Helpers
 
             host.NamespaceImports.Add("System");
             host.NamespaceImports.Add("System.Web.Mvc.Html");
+            host.NamespaceImports.Add("System.Linq");
 
             RazorTemplateEngine engine = new RazorTemplateEngine(host);
             GeneratorResults razorResult = engine.GenerateCode(new StringReader(viewCode));
