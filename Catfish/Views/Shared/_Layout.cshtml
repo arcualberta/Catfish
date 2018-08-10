@@ -50,15 +50,12 @@
 
     @UI.Head()
 
-    @try{
-        if (typeof(Piranha.Extend.Regions.HtmlRegion).IsAssignableFrom(global.Regions.Head.GetType()))
-        {
-            <text>@Html.Raw(global.Regions.Head)</text>
-        }
-    }
-    catch (Exception)
+    @try
     {
-        // Region does not exist.
+        <text>@Html.Partial("Shared/_CustomHead")</text>
+    } catch (Exception)
+    {
+        // custom view does not exist.
     }
 
     @RenderSection("head", required: false)
