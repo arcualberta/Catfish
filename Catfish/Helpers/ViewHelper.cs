@@ -142,7 +142,37 @@ namespace Catfish.Helpers
 
         public abstract void Execute();
 
-        public virtual void WriteAttribute(string attr, Tuple<string, int> open, Tuple<string, int> close, Tuple<Tuple<string, int>, Tuple<object, int>, bool> data)
+        public virtual void WriteAttribute(string name, Tuple<string, int> open, Tuple<string, int> close, params object[] fragments)
+        {
+            Builder.Append(open.Item1);
+
+            foreach(var fragment in fragments)
+            {
+                var stringFragment = fragment as Tuple<Tuple<string, int>, Tuple<string, int>, bool>;
+                var objectFragment = stringFragment == null ? (Tuple<Tuple<string, int>, Tuple<object, int>, bool>)fragment : null;
+
+                var writeString = stringFragment != null ? stringFragment.Item1.Item1 : objectFragment.Item1.Item1;
+                var literal = stringFragment != null ? stringFragment.Item3 : objectFragment.Item3;
+                var value = stringFragment != null ? stringFragment.Item2.Item1 : objectFragment.Item2.Item1;
+
+                if (value == null)
+                    continue;
+
+                Builder.Append(writeString);
+
+                if (literal)
+                {
+                    Builder.Append(value);
+                }else if(value != null)
+                {
+                    Builder.Append(value.ToString());
+                }
+            }
+
+            Builder.Append(close.Item1);
+        }
+
+        /*public virtual void WriteAttribute(string attr, Tuple<string, int> open, Tuple<string, int> close, Tuple<Tuple<string, int>, Tuple<object, int>, bool> data)
         {
             string value;
             if (data != null)
@@ -153,7 +183,7 @@ namespace Catfish.Helpers
             Builder.Append(open.Item1);
             Builder.Append(value);
             Builder.Append(close.Item1);
-        }
+        }*/
 
         public virtual void Write(object value)
         {
