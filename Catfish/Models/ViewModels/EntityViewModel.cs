@@ -25,6 +25,7 @@ namespace Catfish.Models.ViewModels
         {
             Children = new List<EntityViewModel>();
             MetadataSets = new List<MetadataSetViewModel>();
+            Files = new List<DataFileViewModel>();
         }
 
         public EntityViewModel(CFEntity entity, string[] languageCodes, IDictionary<string, EntityViewModel> previousEntities = null) : this()
@@ -50,7 +51,7 @@ namespace Catfish.Models.ViewModels
                 {
                     if (typeof(CFDataFile).IsAssignableFrom(dataObject.GetType()))
                     {
-                        Files.Add(new DataFileViewModel((CFDataFile)dataObject));
+                        Files.Add(new DataFileViewModel((CFDataFile)dataObject, entity.Id));
                     }
                 }
             }
@@ -75,6 +76,29 @@ namespace Catfish.Models.ViewModels
         public IEnumerable<FormFieldViewModel> GetAllFormFields()
         {
             return MetadataSets.SelectMany(m => m.Fields);
+        }
+
+        public IEnumerable<string> GetFieldValuesByName(string name, string languageCode = null)
+        {
+            IEnumerable<string> results = GetAllFormFields().SelectMany((f) => {
+                if(languageCode == null)
+                {
+                    var keys = f.Names.Where(n => n.Value == name).Select(n => n.Key);
+                    return f.Values.Where(v => keys.Contains(v.Key)).Select(v => v.Value);
+                }
+                else
+                {
+                    var result = new List<string>();
+                    if(f.Names[languageCode] == name)
+                    {
+                        result.Add(f.Values[languageCode]);
+                    }
+
+                    return result;
+                }
+            });
+
+            return results;
         }
 
         public DataFileViewModel GetFirstImage()
@@ -155,6 +179,7 @@ namespace Catfish.Models.ViewModels
 
     public class DataFileViewModel
     {
+        public int ParentId { get; set; }
         public MimeType MimeType { get; set; }
 
         public string Guid { get; set; }
@@ -164,8 +189,9 @@ namespace Catfish.Models.ViewModels
 
         }
 
-        public DataFileViewModel(CFDataFile dataFile) : this()
+        public DataFileViewModel(CFDataFile dataFile, int parentId) : this()
         {
+            ParentId = parentId;
             Guid = dataFile.Guid;
             MimeType = dataFile.TopMimeType;
         }

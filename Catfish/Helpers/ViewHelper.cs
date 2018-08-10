@@ -110,7 +110,12 @@ namespace Catfish.Helpers
 
             if (compilerResults.Errors.HasErrors)
             {
-                throw new HttpCompileException(compilerResults.Errors.ToString());
+                StringBuilder error = new StringBuilder("Error compiling view: \n");
+                foreach(var e in compilerResults.Errors)
+                {
+                    error.AppendLine(e.ToString());
+                }
+                throw new HttpCompileException(error.ToString());
             }
 
             return compilerResults.CompiledAssembly;
@@ -127,7 +132,8 @@ namespace Catfish.Helpers
     {
         public StringBuilder Builder { get; private set; }
         public T Model { get; set; }
-        public HtmlHelper<T> Html { get; set; }
+        public HtmlHelper<T> Html { get; protected set; }
+        public UrlHelper Url { get; protected set; }
 
         public CatfishCompiledView()
         {
@@ -176,6 +182,8 @@ namespace Catfish.Helpers
         {
             Html = new HtmlHelper<T>(viewContext, new ViewPage());
             Html.ViewData["Model"] = Model;
+
+            Url = new UrlHelper(viewContext.RequestContext);
 
             Execute();
         }
