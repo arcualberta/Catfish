@@ -83,13 +83,7 @@ namespace Catfish.Models.ViewModels
             CatfishDbContext context = new CatfishDbContext();
             EntityService es = new EntityService(context);
 
-            CFEntity entity = es.GetAnEntity(Id);
-
-            if(entity != null && typeof(CFAggregation).IsAssignableFrom(entity.GetType())) {
-                return ((CFAggregation)entity).ParentMembers.Select(p => new EntityViewModel(p, LanguageCodes));
-            }
-
-            return new List<EntityViewModel>();
+            return es.GetEntityParents(Id).ToList().Select(e => new EntityViewModel(e, LanguageCodes));
         }
 
         public IEnumerable<FormFieldViewModel> GetAllFormFields()
