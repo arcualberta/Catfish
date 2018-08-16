@@ -34,9 +34,7 @@ namespace Catfish.Core.Services
 
         public IEnumerable<CFEntity> GetEntityParents(int id)
         {
-            return Db.Entities.Where(e => e is CFAggregation)
-                .ToList()
-                .Cast<CFAggregation>()
+            return Db.Entities.OfType<CFAggregation>()
                 .Where(e => e.ChildMembers.Select(c => c.Id).Contains(id));
         }
 
