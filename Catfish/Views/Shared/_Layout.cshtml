@@ -96,6 +96,14 @@
     <div class="wrapper">
         @RenderBody()
     </div>
+    @try
+    {
+        <text>@Html.Partial("_CustomFooter")</text>
+    }
+    catch (Exception)
+    {
+        // custom view does not exist.
+    }
 </body>
 @RenderSection("script", required: false)
 </html>

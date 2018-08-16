@@ -32,6 +32,14 @@ namespace Catfish.Core.Services
             return Db.Entities.Where(e => e.Id == id).FirstOrDefault();
         }
 
+        public IEnumerable<CFEntity> GetEntityParents(int id)
+        {
+            return Db.Entities.Where(e => e is CFAggregation)
+                .ToList()
+                .Cast<CFAggregation>()
+                .Where(e => e.ChildMembers.Select(c => c.Id).Contains(id));
+        }
+
         public T CreateEntity<T>(int entityTypeId) where T : CFEntity, new()
         {
             CFEntityType et = Db.EntityTypes.Where(t => t.Id == entityTypeId).FirstOrDefault();
