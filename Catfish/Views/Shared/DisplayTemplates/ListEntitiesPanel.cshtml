@@ -18,18 +18,20 @@
     </div>
     <div class="row ">
         <table class="table table-responsive table-striped">
-            <tr>
-                @*header*@
-                <th></th>
-                @foreach (var m in Model.Mappings)
-                {
-                    string header = m.Label;
-                    if (!string.IsNullOrEmpty(header))
+            <thead>
+                <tr>
+                    @*header*@
+                    <th></th>
+                    @foreach (var m in Model.Mappings)
                     {
-                        <th>@header</th>
+                        string header = m.Label;
+                        if (!string.IsNullOrEmpty(header))
+                        {
+                            <th>@header</th>
+                        }
                     }
-                }
-            </tr>
+                </tr>
+            </thead>
 
             @*content*@
             <tbody id="ListEntitiesPanelTableBody">
@@ -130,7 +132,7 @@
                 url:@Html.Raw(Json.Encode(Url.Action("GetPageItems", "Items"))),
                 dataType: 'json',
                 traditional: true,
-                data: { page: currPage - 1, sortAttributeMappingId: sortAttributeMappingId, itemPerPage: itemsPerPage,mapIds:mapIds, q: query},
+                data: { page: currPage - 1, sortAttributeMappingId: sortAttributeMappingId, itemPerPage: itemsPerPage + 1,mapIds:mapIds, q: query},
                 success: handleTableResults,
                 error: function(){
                   alert("Problems while updating table data");
