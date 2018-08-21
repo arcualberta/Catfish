@@ -48,6 +48,33 @@ namespace Catfish.Core.Models
 
         }
 
+        public CFAccessGroup GetAccessGroup(Guid guid)
+        {
+            return AccessGroups.Where(x => x.AccessGuid == guid).FirstOrDefault();
+        }
+
+        public CFAccessGroup GetOrCreateAccess(Guid guid)
+        {
+            CFAccessGroup accessGroup = GetAccessGroup(guid);
+
+            if (accessGroup == null)
+            {
+                accessGroup = new CFAccessGroup();
+                AccessGroups.Add(accessGroup);
+            }
+
+            return accessGroup;
+        }
+
+        public void SetAccess(Guid guid, AccessMode accessMode, bool isInherited = false)
+        {            
+            CFAccessGroup accessGroup = GetOrCreateAccess(guid);
+            accessGroup.IsInherited = isInherited;
+            accessGroup.AccessGuid = guid;
+            accessGroup.AccessDefinition.AccessModes = accessMode;
+            // XXX is this saved ?
+        }
+
         [NotMapped]
         [IgnoreDataMember]
         public List<CFAccessGroup> AccessGroups
@@ -69,16 +96,22 @@ namespace Catfish.Core.Models
         [IgnoreDataMember]
         public bool BlockInheritance
         {
-            get { XElement access = GetImmediateChild("access");
-                  if(access != null)
-                    {
-                     return GetAttribute("blockInheritance", access) == "true";
-                    }
+            get
+            {
+                XElement access = GetImmediateChild("access");
+                if (access != null)
+                {
+                    return GetAttribute("blockInheritance", access) == "true";
+                }
                 return false;
-             }
-            set { SetAttribute("blockInheritance", value,GetImmediateChild("access"));
-             }
+            }
+            set
+            {
+                SetAttribute("blockInheritance", value, GetImmediateChild("access"));
+            }
         }
+
+
         public void RemoveAllMetadataSets()
         {
             //Removing all children inside the metadata set element

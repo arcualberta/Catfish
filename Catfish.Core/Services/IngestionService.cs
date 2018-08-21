@@ -273,18 +273,18 @@ namespace Catfish.Core.Services
                 CFAggregation parent = Db.XmlModels.Where(x => x.MappedGuid == parentGuid).FirstOrDefault() as CFAggregation;
                 CFAggregation child = Db.XmlModels.Where(x => x.MappedGuid == childGuid).FirstOrDefault() as CFAggregation;
                 if(!overwrite)
-                { parent.ChildMembers.Add(child); }
+                { parent.AddChild(child); }
                 else
                 {
                     //remove all child members first before adding new one
                     foreach(var c in parent.ChildMembers)
                     {
                         CFAggregation removeChild = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFAggregation;
-                        parent.ChildMembers.Remove(removeChild);
+                        parent.RemoveChild(removeChild);
                     }
 
                     //add new one
-                    parent.ChildMembers.Add(child);
+                    parent.AddChild(child);
                 }
             
                 
