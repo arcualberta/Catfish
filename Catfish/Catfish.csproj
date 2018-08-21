@@ -323,6 +323,7 @@
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
+    <Content Include="Scripts\catfish-global.js" />
     <Content Include="Scripts\D3\graph.js" />
     <Content Include="Scripts\fileupload.js" />
     <Content Include="Scripts\form.js" />

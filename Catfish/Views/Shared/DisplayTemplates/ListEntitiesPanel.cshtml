@@ -61,6 +61,110 @@
 </div>
 
 <script>
+    {
+        var currPage = curr@(cssId)page;
+        var itemsPerPage = @Model.ItemPerPage;
+        var totalPages = 100;
+        var sortAttributeMappingId = @Model.SortByField;
+        var query = '';
+
+        function goToPage(whichPage){
+            var page = currPage;
+
+            if(whichPage === "Prev")
+            {
+                 page = Math.max(currPage - 1, 1);
+            }
+            else if (whichPage === "Next") {
+                page = Math.min(currPage + 1, totalPages);
+            }
+
+            window.updateUrlParameters({
+                'page' : page
+            });
+        }
+
+        @("#@cssId button[name='listEntitiesPanel_prev_button']").click(function () {
+            goToPage('Prev');
+        });
+
+        @("#@cssId button[name='listEntitiesPanel_next_button']").click(function () {
+            goToPage('Next');
+        });
+
+        function handleTableResults(results) {
+            //remove all rows in the tbody
+            var body = $("#ListEntitiesPanelTableBody");
+            body.children().remove();  //remove all row on the tbody
+
+            //update table data
+            var rowNum = 1 + ((currPage - 1) * itemsPerPage);
+            result.forEach(function(r, i){ //going through each row
+                var new_row = "<tr><td>"+rowNum + "</td>";
+                var col = 0;
+                r.forEach(function(c, j){ //going through each column
+                        new_row += "<td class='column-" + col + "'>" + c + "</td>";
+                        col = col +1;
+                });
+                new_row += "</tr>";
+                body.append(new_row);
+                rowNum = rowNum +1;
+            });
+
+            $("[name='listEntitiesPanel_page_number']").val(currPage);
+                if(currPage == 1)
+            {
+                $("[name='listEntitiesPanel_prev_button']").hide();
+            }
+                else{
+                    $("[name='listEntitiesPanel_prev_button']").show();
+            }
+        }
+
+        function updateTable() {
+            $.ajax({
+                type: 'GET',
+                url:url,
+                dataType: 'json',
+                traditional: true,
+                data: { page: currPage - 1, sortAttributeMappingId: @Model.SortByField, itemPerPage:@Model.ItemPerPage,mapIds:mapIds, q:@Html.Raw(Json.Encode(Model.Query))},
+                success: handleTableResults,
+                error: function(){
+                  alert("Problems while updating table data");
+                }
+            });
+        }
+
+        window.addEventListener('updatedparams', function (e) {
+            var params = e.updatedparams;
+            var updateTable = false;
+
+            if ('q' in e) {
+                updateTable = true;
+                query = e['q'];
+            }
+
+            if ('page' in e) {
+                updateTable = true;
+                currPage = parseInt(e['page']);
+            }
+
+            if ('itemsPerPage' in e) {
+                updateTable = true;
+                itemsPerPage = parseInt(e['itemsPerPage']);
+            }
+
+            if ('sort' in e) {
+                updateTable = true;
+                sortAttributeMappingId = parseInt(e['sort']);
+            }
+
+            if (updateTable) {
+                updateTable();
+            }
+        });
+    }
+
     var curr@(cssId)page = @Model.CurrentPage;
     var rowNum = @rowNum;
 
@@ -78,69 +182,4 @@
         }
         $("[name='listEntitiesPanel_page_number']").val(curPage);
    });
-
-    function GoToPage(whichPage){
-        var currPage = curr@(cssId)page;
-
-        if(whichPage === "Prev")
-        {
-             currPage = currPage - 1;
-             currPage = currPage < 1 ? 1 : currPage; //to avoid 0
-        }
-        else if(whichPage === "Next"){
-             currPage = currPage + 1;
-        }
-
-        curr@(cssId)page = currPage;
-
-      var urlParams = new URLSearchParams(window.location.search);
-      var mapIds = [@Html.Raw(String.Join(",", Model.Fields.ToArray().Select(i=>i)))]; //[13,15]
-
-      var url = `@Url.Action("GetPageItems", "Items")`;
-
-       $.ajax({
-        type: 'GET',
-        url:url,
-        dataType: 'json',
-        traditional: true,
-        data: { page: currPage - 1, sortAttributeMappingId: @Model.SortByField, itemPerPage:@Model.ItemPerPage,mapIds:mapIds, q:@Html.Raw(Json.Encode(Model.Query))},
-        success:function(result){
-
-        //remove all rows in the tbody
-        var body = $("#ListEntitiesPanelTableBody");
-            body.children().remove();  //remove all row on the tbody
-
-        //update table data
-        rowNum = 1 + ((currPage - 1) * @Model.ItemPerPage);
-        result.forEach(function(r, i){ //going through each row
-             var new_row = "<tr><td>"+rowNum + "</td>";
-             var col = 0;
-              r.forEach(function(c, j){ //going through each column
-                     new_row += "<td class='column-" + col + "'>" + c + "</td>";
-                     col = col +1;
-               });
-              new_row += "</tr>";
-              body.append(new_row);
-              rowNum = rowNum +1;
-           });
-
-            $("[name='listEntitiesPanel_page_number']").val(currPage);
-             if(currPage == 1)
-            {
-                $("[name='listEntitiesPanel_prev_button']").hide();
-            }
-             else{
-                 $("[name='listEntitiesPanel_prev_button']").show();
-            }
-
-        },
-        error: function(){
-          alert("Problems while updating table data");
-        }
-    });
-
-
-    }
-
-
 </script>
