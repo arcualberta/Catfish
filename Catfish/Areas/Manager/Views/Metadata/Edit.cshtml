@@ -1,4 +1,4 @@
-﻿@model Catfish.Core.Models.CFMetadataSet
+﻿@model Catfish.Areas.Manager.Models.ViewModels.FormBuilderViewModel
 @using Catfish.Areas.Manager.Models.ViewModels
 
 @{ ViewBag.Title = ViewBag.Id > 0 ? "Edit Metadata Set Definition" : "Create Metadata Set Definition"; }
@@ -9,15 +9,82 @@
     <script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
     <script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
     <script type="text/javascript" src="~/Scripts/attachment.js"></script>
+    <style>
+        .chkBox-label {
+            background: #ececec;
+            width: 100px;
+            height: 25px;
+            padding-top: 5px;
+        }
+
+        .mapLabel {
+            height: 25px;
+            position: relative;
+            border: 2px solid #cdcdcd !important;
+            border-color: rgba(0,0,0,.14) !important;
+            background-color: AliceBlue !important;
+        }
+
+        .alert {
+            padding: .75rem 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: .25rem;
+        }
+
+        .alert-warning {
+            background-color: #fcf8e3;
+            border-color: #faf2cc;
+            color: #8a6d3b;
+        }
+
+        .error {
+            float: right;
+            color: #a94442;
+            margin-right: 0 !important;
+        }
+
+        .width99 {
+            width: 99% !important;
+        }
+
+        .width98 {
+            width: 98% !important;
+        }
+    </style>
 
 }
 
 @section Toolbar {
-    @Html.Partial("Partial/koEditToolbar")
+    @Html.Partial("Partial/koEditToolbar", Model, new ViewDataDictionary() { { "saveButtonFunctionCall", "saveMetadataset" } })
 }
 
-@{
-    FormBuilderViewModel vm = new FormBuilderViewModel(Model) { ShowFieldDescriptions = false };
-}
+@Html.Partial("Partial/FormBuilder", Model, new ViewDataDictionary() { { "controller", "metadata" }, { "action", "save" } })
 
-@Html.Partial("Partial/FormBuilder", vm, new ViewDataDictionary() { { "controller", "metadata" }, { "action", "save" } })
+<script type="text/javascript">
+    function saveMetadataset() {
+        var data = {
+            vm: getFormBuilderContext()
+        };
+        data = ko.toJS(data);
+
+        var pageForm = getFormBuilderForm();
+        var xhr = new XMLHttpRequest();
+
+        xhr.open("post", pageForm.attr("action"), )
+
+        var form = document.createElement("form");
+        form.setAttribute("method", "POST");
+        form.setAttribute("action", pageForm.attr("action"), true);
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+
+        xhr.onload = function (result) {
+            deleteFormBuilderContext();
+            document.open("text/html", "replace");
+            document.write(xhr.response);
+            document.close();
+        }
+
+        xhr.send(JSON.stringify(data));
+    }
+</script>

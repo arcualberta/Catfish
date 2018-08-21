@@ -12,6 +12,7 @@ namespace Catfish.Core.Helpers
 {
     public static class ConfigHelper
     {
+        public enum eImageSize { Thumbnail = 150, Small = 256, Medium = 512, Large = 1024 } //in px
         public static List<string> GetSettingArray(string key, char seperator)
         {
             var val = ConfigurationManager.AppSettings[key];

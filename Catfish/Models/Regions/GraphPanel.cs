@@ -37,10 +37,7 @@ namespace Catfish.Models.Regions
         [Display(Name = "X-Axis Field")]
         public string XaxisField { get; set; } //the guid of metadataset Field
         public string MetadataSet { get; set; } //the guid of MetadataSet
-        [Display(Name = "Min X Parameter")]
-        public string MinX_Parameter { get; set; }
-        [Display(Name = "Max X Parameter")]
-        public string MaxX_Parameter { get; set; }
+
         [Display(Name = "Y-Axis Label")]
         public string YaxisLabel { get; set; }
 
@@ -58,18 +55,17 @@ namespace Catfish.Models.Regions
 
         [Display(Name = "Y-data Scale")]
         public int YScale {get; set;}
-
-        [Display(Name ="Query Result")]
-        [DataType(DataType.MultilineText)]
-        public string QueryResult { get; set; } 
-
+        
         [ScriptIgnore]
         public List<SelectListItem> ListMetadataSets { get; set; }
 
         [ScriptIgnore]
-        public List<SelectListItem> MetadataFields { get; set; }
+        public IDictionary<string, List<SelectListItem>> MetadataFields { get; set; }
         [ScriptIgnore]
         public List<SelectListItem> GraphTypes { get; set; }
+
+        [ScriptIgnore]
+        public bool IsCategoryOptionsField { get; set; }
 
         public string SelectedMetadataSetX { get; set; }
         public string SelectedMetadataSetY { get; set; }
@@ -81,8 +77,10 @@ namespace Catfish.Models.Regions
         public GraphPanel()
         {
             ListMetadataSets = new List<SelectListItem>();
-            MetadataFields = new List<SelectListItem>();
+            MetadataFields = new Dictionary<string, List<SelectListItem>>();
             GraphTypes = new List<SelectListItem>();
+            IsCategoryOptionsField = false;
+
             foreach (GraphType am in Enum.GetValues(typeof(GraphType)))
             {
                 GraphTypes.Add(new SelectListItem { Text = am.ToString(), Value = am.ToString() });
@@ -106,11 +104,22 @@ namespace Catfish.Models.Regions
             //set the default metadatasEt Fields to the first metadataSet in the list
             if(metadataSets.Count() > 0)
             {
-                if(metadataSets.ToArray()[0].Fields.Count > 0)
+                foreach(var metadataSet in metadataSets)
                 {
-                    foreach (FormField f in metadataSets.ToArray()[0].Fields)
+                    var metadataFields = new List<SelectListItem>();
+
+                    foreach (FormField f in metadataSet.Fields)
                     {
-                        MetadataFields.Add(new SelectListItem { Text = f.Name, Value = f.Guid });
+                        metadataFields.Add(new SelectListItem { Text = f.Name, Value = f.Guid });
+                    }
+
+                    if (MetadataFields.Keys.Contains(metadataSet.Guid))
+                    {
+                        MetadataFields[metadataSet.Guid] = metadataFields;
+                    }
+                    else
+                    {
+                        MetadataFields.Add(metadataSet.Guid, metadataFields);
                     }
                 }
             }
@@ -123,25 +132,16 @@ namespace Catfish.Models.Regions
         public override object GetContent(object model)
         {
             CatfishDbContext db = new CatfishDbContext();
+            MetadataService metadataSrv = new MetadataService(db);
 
-            string xQuerySelect = "SELECT a.Year as YValue, SUM(a.Amount) AS XValue, COUNT(*) as 'Count'" +
-                                   " FROM(" +
-                                   " SELECT TOP 200 Content.value('(/item/metadata/metadata-set[@guid=\"" +SelectedMetadataSetX + "\"]/fields/field[@guid=\"" +XaxisField + "\"]/value/text)[1]', 'INT') AS Year ," +
-                                    " Content.value('(/item/metadata/metadata-set[@guid=\"" + SelectedMetadataSetY+ "\"]/fields/field[@guid=\"" +YaxisField + "\"]/value/text)[1]', 'DECIMAL') AS Amount" +
-                                    " FROM[dbo].[CFXmlModels]" +
-                                    " WHERE Discriminator = 'CFItem' AND Content.exist('/item/metadata/metadata-set[@guid=\"" +SelectedMetadataSetX + "\"]') = 1" +
-                                    " ) as a" +
-                                     " GROUP BY a.Year" +
-                                     " ORDER BY a.Year";
-            var result = db.Database.SqlQuery<GraphQueryObject>(xQuerySelect, new object[] { SelectedMetadataSetX, XaxisField, SelectedMetadataSetY, YaxisField, SelectedMetadataSetX });
-
-            //foreach(var r in result)
-            //{
-            //    Console.WriteLine("{0}, {1}, {2}", r.YValue, r.XValue, r.Count);
-            //}
-
-           
-
+            if (!String.IsNullOrEmpty(Category))
+            {
+                var metadataSet = metadataSrv.GetMetadataSet(SelectedMetadataSetCat);
+                if(metadataSet != null)
+                {
+                    IsCategoryOptionsField = metadataSet.Fields.Where(f => f.Guid == Category && typeof(OptionsField).IsAssignableFrom(f.GetType())).Any();
+                }
+            }
             return base.GetContent(model);
         }
     }

@@ -163,10 +163,44 @@ namespace Catfish.Core.Models
                     return string.Format("ERROR: INCORRECT {0} MAPPING FOUND FOR THIS ENTITY TYPE", mapping);
                 }
 
+                if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
+                {
+                    return string.Join(", ", GetAttributeMappingOptionValues(name, lang));
+                }
+
                 return MultilingualHelper.Join(field.GetValues(), " / ", false);
             }
 
             return null;
+        }
+
+        public string[] GetAttributeMappingOptionValues(string name, string lang = null)
+        {
+            var mapping = EntityType.AttributeMappings.Where(m => m.Name == name).FirstOrDefault();
+            if (mapping != null)
+            {
+                string msGuid = mapping.MetadataSet.Guid;
+                string fieldName = mapping.FieldName;
+
+                FormField field = GetMetadataSetField(msGuid, fieldName);
+
+                if (field == null || !typeof(OptionsField).IsAssignableFrom(field.GetType()))
+                {
+                    return new string[] { string.Format("ERROR: INCORRECT {0} OPTIONS MAPPING FOUND FOR THIS ENTITY TYPE", mapping) };
+                }
+
+                OptionsField optionField = (OptionsField)field;
+                IEnumerable<List<TextValue>> values = optionField.Options.Where(o => o.Selected).Select(o => o.Value);
+
+                if (lang != null)
+                {
+                    return values.SelectMany(v => v).Where(v => v.LanguageCode == lang).Select(v => v.Value).ToArray();
+                }
+
+                return values.Select(v => MultilingualHelper.Join(v, " / ", false)).ToArray();
+            }
+
+            return new string[] { };
         }
 
         public string GetAttributeMappingLabel(string name, string lang = null)

@@ -5,78 +5,12 @@
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
 }
-<style>
-    .calculatedField {
-        float: left;
-        width: 15%;
-        background-color: #a3a2a2;
-        border-radius: 5px;
-        text-align: center;
-        margin-right:10px;
-    }
-</style>
+
 <div id="@cssId" class="bs @cssClasses container container-fluid calculatedField" >
    
         <style type="text/css" scoped>
                     @Html.Raw(cssStyles)
         </style>
         <div>@Html.DisplayFor(m => m.Title)</div>
-             @if (Model.SelectedFunction == "COUNT")
-             {
-                 string divId = cssId + "_Result";
-                <div id="@divId">@Model.Result</div>
-             }
-             else
-             {
-                 string divId = cssId + "_Result";
-                <div id="@divId">@string.Format("{0:C}", Model.Result)</div>
-             }
-        
-   
+        <div id="@(cssId)_Result">@(string.IsNullOrEmpty(Model.Prefix) ? "" : Model.Prefix)@string.Format("{0:n" + Model.DecimalPlaces + "}", Model.Result)</div>        
 </div>
-
-<script>
-    {
-        //Need to be set in order to also use QueryFilterPanel
-        Min_ParameterName = '@Model.Min_Parameter';
-        Max_ParameterName = '@Model.Max_Parameter';
-
-        var Min_Value = @Model.MinValue;
-        var Max_Value = @Model.MaxValue;
-        //Min_Parameter and Max_parameter is the <input> id on QueryFilterPanel
-        //$("#Min_Parameter").val(Min_Value);
-        //$("#Max_Parameter").val(Max_Value);
-
-        //temporary solution
-        var data = @Html.Raw(Model.QueryResult);
-     
-        var functionName = '@Model.SelectedFunction';
-        var result = 0;
-        if (functionName === "SUM") {
-            result = 0;
-            (data.filter(function (d) { return d.Year >= Min_Value && d.Year <= Max_Value; })).forEach(function (dt, i) {
-                result += dt.Amount;
-            });
-
-            result = "$" + result.toFixed(2);
-        }
-        else if (functionName === "COUNT") {
-            result = 0;
-            (data.filter(function (d) { return d.Year >= Min_Value && d.Year <= Max_Value; })).forEach(function (dt, i) {
-                result += dt.Projects;
-            });
-        }
-        else if (functionName === "MEAN") {
-            var totalAmount = 0;
-            var totalProj = 0;
-            (data.filter(function (d) { return d.Year >= Min_Value && d.Year <= Max_Value; })).forEach(function (dt, i) {
-                totalAmount += dt.Amount;
-                totalProj += dt.Projects;
-            });
-
-            result = "$" + (totalAmount / totalProj).toFixed(2);
-        }
-        var id = "@(cssId)_Result";
-        $("#" + id).text(result);
-    }
-</script>

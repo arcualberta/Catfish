@@ -147,11 +147,42 @@ namespace Catfish.Core.Services
                         //moving the thumbnail, if it's not a shared one
                         if (file.ThumbnailType == CFDataFile.eThumbnailTypes.NonShared)
                         {
-                            string srcThumbnail = Path.Combine(file.Path, file.Thumbnail);
-                            string dstThumbnail = Path.Combine(dstDir, file.Thumbnail);
-                            File.Move(srcThumbnail, dstThumbnail);
+                            //aug 1 2018 -- also move the small, med.large size image 
+                            // string srcThumbnail = Path.Combine(file.Path, file.Thumbnail);
+                            // string dstThumbnail = Path.Combine(dstDir, file.Thumbnail);
+                            //  File.Move(srcThumbnail, dstThumbnail);
+                            foreach (var enumValue in Enum.GetValues(typeof(ConfigHelper.eImageSize)))
+                            {
+                                if(enumValue.Equals(ConfigHelper.eImageSize.Thumbnail))
+                                {
+                                    string srcThumbnail = Path.Combine(file.Path, file.Thumbnail);
+                                    string dstThumbnail = Path.Combine(dstDir, file.Thumbnail);
+                                    File.Move(srcThumbnail, dstThumbnail);
+                                }
+                                else if(enumValue.Equals(ConfigHelper.eImageSize.Small))
+                                {
+                                    string srcImg = Path.Combine(file.Path, file.Small);
+                                    string dstImg = Path.Combine(dstDir, file.Small);
+                                    File.Move(srcImg, dstImg);
+                                }
+                                else if (enumValue.Equals(ConfigHelper.eImageSize.Medium))
+                                {
+                                    string srcImg = Path.Combine(file.Path, file.Medium);
+                                    string dstImg = Path.Combine(dstDir, file.Medium);
+                                    File.Move(srcImg, dstImg);
+                                }
+                                else if (enumValue.Equals(ConfigHelper.eImageSize.Large))
+                                {
+                                    string srcImg = Path.Combine(file.Path, file.Large);
+                                    string dstImg = Path.Combine(dstDir, file.Large);
+                                    File.Move(srcImg, dstImg);
+                                }
+
+                            }
                         }
 
+                       
+                      
                         //updating the file path
                         file.Path = dstDir;
                     }
@@ -197,7 +228,30 @@ namespace Catfish.Core.Services
             return dbModel;
         }
 
-        public IEnumerable<CFItem> GetPagedItems(int page, int itemsPerPage, string facetMetadataGuid = null, string facetFieldGuid = null, int facetMin = 0, int facetMax = 0)
+        public IEnumerable<CFItem> GetPagedItems(string query, int sortAttributeMappingId, int page, int itemsPerPage)
+        {
+            int start = page * itemsPerPage;
+            int rows = itemsPerPage + 1;
+
+            CFEntityTypeAttributeMapping attrMap = Db.EntityTypeAttributeMappings.Where(m => m.Id == sortAttributeMappingId).FirstOrDefault();
+
+            if(attrMap != null)
+            {
+                string resultType = "txt_en";
+                FormField field = attrMap.Field;
+
+                if (typeof(NumberField).IsAssignableFrom(field.GetType())){
+                    resultType = "i";
+                }
+
+                return Db.Items.FromSolr(query, start, itemsPerPage,
+                    string.Format("value_{0}_{1}_{2}", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType), true);
+            }
+
+            return Db.Items.FromSolr(query, start, itemsPerPage);
+        }
+
+        public IEnumerable<CFItem> GetPagedItems_old(int page, int itemsPerPage, string facetMetadataGuid = null, string facetFieldGuid = null, int facetMin = 0, int facetMax = 0)
         {
             int skip = page * itemsPerPage;
             int take = itemsPerPage + 1; // We add an extra value to calculate the next button.

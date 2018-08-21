@@ -1,0 +1,271 @@
+﻿@model Catfish.Models.Regions.AdvanceSearchContainer
+@using Catfish.Core.Models;
+
+
+@{ string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
+    string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
+    string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+    int i = 0;
+}
+<div id="@cssId" class="bs @cssClasses container container-fluid">
+    <style type="text/css" scoped>
+           @Html.Raw(cssStyles)
+    </style>
+   
+   
+       
+       @foreach (var m in Model.Mappings)
+       {
+           var fType = m.Field.GetType();
+           var id = "value_" + (m.MetadataSet.Guid.Replace("-", "_")) + "_" + (m.Field.Guid.Replace("-", "_")) + "_";
+
+        <div class="row advanceSearchContainerInput" data-searchid="@id">
+            <div class="field-title">@m.Label</div>
+            @if (fType.FullName == "Catfish.Core.Models.Forms.NumberField" || fType.FullName == "Catfish.Core.Models.Forms.DateField")
+            {
+                //number field or Date field
+                <div class="search-entry divNumber">
+                    <span class="label-default field-sub-title">From</span><input type="text" id="@id-From"/>
+                    <span class="label-default field-sub-title">To</span><input type="text" id="@id-To"/>
+                </div>
+
+            }
+            else if (typeof(Catfish.Core.Models.Forms.OptionsField).IsAssignableFrom(fType))
+            {
+                if (Model.Multiples[i])
+                {
+                    <div class="search-entry divCheckbox">
+                        <ul>
+                            @foreach (var option in ((Catfish.Core.Models.Forms.OptionsField)m.Field).Options)
+                            {
+                                var nm = "AdvanceSearchContainer-Chkbox";
+                                <li>
+                                    <input type="checkbox" name="@nm" value="@option.Guid" />
+                                    <span>@option.Value[0].Value</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    @:<div class="search-entry divDropDownList">
+                        var options = new SelectList(((Catfish.Core.Models.Forms.OptionsField)m.Field).Options, "Guid", "Value[0].Value");
+                    var nm = "AdvanceSearchContainer-DropdownList";
+                        @Html.DropDownList(@nm, options)
+                    @:</div>
+                }
+            }
+            else //(fType.FullName == "Catfish.Core.Models.Forms.TextField")
+            {
+                 <div class="search-entry divText">
+                   <input type = "text" class="input" id="@id-Text" /></div>
+            }
+
+
+        </div>
+           i++;
+       }
+
+      
+    <div class="row"><button id="AdvanceSearchContainer_Search_Button" class="btn btn-default"><span class="glyphicon glyphicon-search"></span>Search</button></div>
+</div>
+
+@{ 
+    string qParam = null;
+
+    try
+    {
+        qParam = Request.QueryString.Get("q");
+    }catch(Exception ex)
+    {
+        // No q param
+    }
+}
+
+<script type="text/javascript">
+     const elmId = "AdvanceSearchContainer-";
+   $(function() {
+       var q = @Html.Raw(Json.Encode(qParam));
+       if(q)
+       {
+           reloadForm(q);
+       }
+
+        $("#AdvanceSearchContainer_Search_Button").click(function(){
+                var searchString="", searchValue;
+
+                var rows = $(".advanceSearchContainerInput");
+
+                rows.each(function(index){
+                    var searchId = $(this).attr("data-searchid");
+                    var r = $(this);
+                    if (r.children(".divText").length > 0)
+                    {
+                        var id = searchId + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                         searchValue = $("#" + id).val();
+                         if(searchValue.length > 0)
+                        {
+                         searchString = searchString.length > 0 ? searchString + " && " : "";
+                         searchString = searchString + (searchId + 'txt_en:"' + searchValue + '"');
+                        }
+                    }
+                    else if (r.children(".divNumber").length > 0)
+                    {
+                        var id = searchId;// + "-From"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                         var from = $("#" + id + "-From").val();
+
+                         var to = $("#" + id + "-To").val();
+                          if(from.length > 0 || to.length > 0 ){
+                                from = from ? from : '*';
+                                to = to? to : '*';
+                                searchString = searchString.length > 0 ? searchString + " && " : "";
+                                searchString = searchString + (searchId + "i" + ':[' + from + ' TO ' + to + ']');
+                          }
+                    }
+                    else if (r.children(".divCheckbox").length > 0)
+                    {
+                         var name =elmId + "Chkbox";
+                         var selectedValues=[];
+                         var checkboxes = $('input[name="'+ name +'"]');
+                         selectedValues = checkboxes.filter(":checked").map(function () {
+                                  return this.parentElement.innerText;
+                         }).get()
+
+                          if(selectedValues.length > 0){
+
+                           var searchOption="(";
+                           for(var i =0; i < selectedValues.length; i++)
+                           {
+                                 if(i > 0)
+                                 { searchOption += " || "; }
+
+                                 searchOption += "option_" + searchId + 'txt_en:"' + selectedValues[i].trim() + '"';
+                            }
+                            searchOption=searchOption +")";
+                            searchString = searchString.length > 0 ? searchString + " && " : "";
+                            searchString = searchString + searchOption;
+                         }
+                    }
+                    else if (r.children(".divDropDownList").length > 0)
+                    {
+                         var id ="region_Value_" + elmId + "DropdownList";
+                         selectedValue = $("#" + id +" option:selected").text();
+                         if(selectedValue.length > 0){
+                            searchString = searchString.length > 0 ? searchString + " && " : "";
+                            searchString = searchString + ("option_" + searchId + 'txt_en:"' + selectedValue + '"');
+                         }
+                    }
+
+                });
+
+                // Search using form
+                var form = $("<form></form>");
+                form.attr("method", "GET");
+                form.attr("action", ".");
+
+                var qField = $("<input></input>");
+                qField.attr("name", "q");
+                qField.attr("type", "hidden");
+                qField.attr("value", searchString);
+                form.append(qField);
+
+                $("body").append(form);
+                form[0].submit();
+            });
+    });
+
+
+    function reloadForm(params)
+    {
+        var contents = params.split(" && ");
+         for(var index = 0; index < contents.length; index++){
+            var c = contents[index];
+             var id="";
+          if(c.indexOf("(") > -1 )
+          {
+               //options field --checkboxes
+              var start = c.indexOf("(") + 1;
+              var end = c.indexOf(")");
+
+              var orVals = c.substr(start,end).split(" || ");
+              for(var i=0; i< orVals.length ; i++)
+               {
+                    var v = orVals[i];
+                    var start = v.indexOf("value");
+                    var end = v.indexOf("txt") - start;
+                    var idValue = v.substr(start,end );
+                    var div = $("div[data-searchid='"+ idValue +"']");
+
+
+                    var optText = (orVals[i].split(":")[1]).replace(/[*")]+/g, '')
+
+                     var name =elmId + "Chkbox";
+
+                     var checkboxes = $('input[name="'+ name +'"]');
+                     for(var j=0; j<checkboxes.length; j++)
+                     {
+                         if((checkboxes[j].nextSibling.parentElement.innerText).trim() === optText.trim())
+                         {
+                                checkboxes[j].checked=true;
+                                break;
+                         }
+                     }
+               }
+
+          }
+          else{
+               c = contents[index].split(":")[0];
+             var contentValue = (contents[index].split(":")[1]).replace(/[*"]+/g, '')
+             if(c.indexOf("option") > -1)  //dropdownlist
+             {
+                     var start = c.indexOf("option");
+                  var end = c.indexOf("txt") - start;
+                  var idValue = c.substr(start,end );
+                  var div = $("div[data-searchid='"+ idValue +"']");
+                  var id ="region_Value_" + elmId + "DropdownList";
+
+                 $("#" + id +" option").each(function () {
+                    if ($(this).html() === contentValue) {
+                        $(this).attr("selected", "selected");
+                        return;
+                    }
+                });
+                  //$("#" + id + " option[text='" + contentValue + "']").attr("selected","selected");
+              }
+
+             else if(c.indexOf("_i") > -1) //number field
+             {
+                 var start = c.indexOf("value");
+                  var end = c.indexOf("i") - start;
+                  var idValue = c.substr(start,end );
+                  var div = $("div[data-searchid='"+ idValue +"']");
+                  var vals = (contentValue.substr(1, (contentValue.length -2))).split(" ");
+                  var fromVal = vals[0].trim();
+                  var toVal =vals[vals.length - 1];
+                 
+                  id = idValue + "-From"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                  fromVal = fromVal?fromVal : '';
+                  $("#" + id).val(fromVal);
+
+                  id = idValue + "-To"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                  toVal = toVal?toVal : '';
+                  $("#" + id).val(toVal);
+             }
+             else if(c.indexOf("txt") > -1) //text field
+             {
+                  var start = c.indexOf("value");
+                  var end = c.indexOf("txt") - start;
+                  var idValue = c.substr(start,end );
+                  var div = $("div[data-searchid='"+ idValue +"']");
+                  id = idValue + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                  $("#" + id).val(contentValue);
+             }
+          }
+
+       }
+     //   alert(params);
+
+
+    }
+</script>

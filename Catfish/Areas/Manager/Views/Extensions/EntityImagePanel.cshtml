@@ -1,0 +1,14 @@
+﻿@model Catfish.Models.Regions.EntityImagePanel
+
+<ul class="form">
+
+    @Html.Partial("_CatfishRegion", Model)
+    <li>
+        @Html.LabelFor(m=>m.EntityId)
+        <div class="bs input">
+           @Html.EditorFor(m=>m.EntityId)
+
+        </div>
+    </li>
+</ul>
+

@@ -11,16 +11,15 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Catfish.Services;
+using Catfish.Core.Helpers;
 
 namespace Catfish.Controllers.Api
 {
     public class ItemsController : CatfishController
     {   
-        public JsonResult GetPageItems(int page, int itemPerPage, string selectedMetadataSet, string selectedField, string min, string max, [Bind(Include = "mapIds[]")] int[] mapIds)
+        public JsonResult GetPageItems(string q, int sortAttributeMappingId, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds)
         {
-            int iMin = string.IsNullOrEmpty(min) ? int.MinValue : int.Parse(min);
-            int iMax = string.IsNullOrEmpty(max) ? int.MaxValue : int.Parse(max);
-            var items = ItemService.GetPagedItems(page, itemPerPage, selectedMetadataSet, selectedField, iMin, iMax).ToList();
+            var items = ItemService.GetPagedItems(q, sortAttributeMappingId, page, itemPerPage).ToList();
 
             List<List<string>> result = new List<List<string>>();
 
@@ -43,10 +42,19 @@ namespace Catfish.Controllers.Api
             return Json(result, JsonRequestBehavior.AllowGet);
 
         }
-        public JsonResult GetGraphData(string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField,int xmin = 0, int xmax = 0)
+
+        public JsonResult GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, bool isCatOptionsIndex = false)
         {
-            ItemQueryService itemQueryService = new ItemQueryService(); 
-            var result = itemQueryService.GetGraphData(xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, xmin, xmax);
+            ItemQueryService itemQueryService = new ItemQueryService(Db);
+            var result = itemQueryService.GetGraphData(q, xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, isCatOptionsIndex);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetGraphData_old(string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField,int xmin = 0, int xmax = 0)
+        {
+            ItemQueryService itemQueryService = new ItemQueryService(Db); 
+            var result = itemQueryService.GetGraphData_old(xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, xmin, xmax);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
@@ -116,6 +124,56 @@ namespace Catfish.Controllers.Api
             return new FilePathResult(path_name, file.ContentType);
         }
 
+        //August 1 2018 -- get image with different size
+        /// <summary>
+        /// If no size provided, it will return regular size image
+        /// </summary>
+        /// <param name="id">EntityId</param>
+        /// <param name="guid">File Guid</param>
+        /// <param name="size">image size (i.e: Thumbnail, small, medium, large)</param>
+        /// <returns></returns>
+        public ActionResult Image(int id, string guid, string size = null)
+        {
+            ConfigHelper.eImageSize? eSize = null;
 
+            if (!string.IsNullOrEmpty(size))
+            {
+                eSize = (ConfigHelper.eImageSize)Enum.Parse(typeof(ConfigHelper.eImageSize), size);
+            }
+
+            CFDataFile file = null;
+            if (!string.IsNullOrEmpty(guid))
+            {
+                file = DataService.GetFile(id, guid);    
+            }
+            if (file == null)
+                return HttpNotFound("File not found");
+
+            string path_name = string.Empty;
+            string[] fnames = file.LocalFileName.Split('.'); 
+            if (eSize == null)
+            {
+                path_name = Path.Combine(file.Path, file.LocalFileName);
+            }
+            else if (eSize.Equals(ConfigHelper.eImageSize.Thumbnail))
+            {
+                path_name = Path.Combine(file.Path, fnames[0] + "_t." + fnames[1]);
+            }
+            else if (eSize.Equals(ConfigHelper.eImageSize.Small))
+            {
+                path_name = Path.Combine(file.Path, fnames[0] + "_s." + fnames[1]);
+            }
+            else if (eSize.Equals(ConfigHelper.eImageSize.Medium))
+            {
+                path_name = Path.Combine(file.Path, fnames[0] + "_m." + fnames[1]);
+            }
+            else if (eSize.Equals(ConfigHelper.eImageSize.Large))
+            {
+                path_name = Path.Combine(file.Path, fnames[0] + "_l." + fnames[1]);
+            }
+
+            FilePathResult filePathResult = new FilePathResult(path_name, file.ContentType);
+            return filePathResult; // Json(filePathResult, JsonRequestBehavior.AllowGet);
+        }
     }
 }

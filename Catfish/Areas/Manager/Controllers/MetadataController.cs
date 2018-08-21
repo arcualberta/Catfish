@@ -14,9 +14,16 @@ using System.Data.Entity;
 
 namespace Catfish.Areas.Manager.Controllers
 {
-    public class MetadataController : FormBuilderController
+    public class MetadataController : FormBuilderController<CFMetadataSet>
     {
-        public override AbstractForm CreateDataModel() { return new CFMetadataSet(); }
+        public override CFMetadataSet CreateDataModel() { return new CFMetadataSet(); }
+
+        public override FormBuilderViewModel CreateViewModel(CFMetadataSet model)
+        {
+            FormBuilderViewModel vm = new FormBuilderViewModel(model) { ShowFieldDescriptions = false };
+
+            return vm;
+        }
 
         public ActionResult Index()
         {

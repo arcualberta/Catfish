@@ -1,28 +1,20 @@
 ﻿@model Catfish.Models.Regions.ListEntitiesPanel
-
+@{ 
+    string fieldFunction = "Field" + Guid.NewGuid().ToString().Replace('-', 'J');
+    string fieldsId = Guid.NewGuid().ToString().Replace('-', 'I');
+}
+<style>
+    #listPanelDd {
+        padding: 2px 2px;
+        width:415px;
+        color:#333;
+        border:1px solid #adadad;
+    }
+</style>
 <ul class="form">
 
     @Html.Partial("_CatfishRegion", Model)
 
-    <li>
-        @Html.Label("Filter By")
-        <div class="input">
-            @Html.DropDownListFor(m => m.SelectedMetadataSet, new SelectList(Model.ListMetadataSets, "Value", "Text"), new { @style = "width:auto;", @class = "dropdown" })
-            @Html.DropDownListFor(m => m.selectedFilterField, new SelectList(Model.MetadataFields, "Value", "Text"), new { @style = "width:auto" })
-        </div>
-    </li>
-    <li>
-        @Html.LabelFor(m => m.Min_Parameter)
-        <div class="input">
-            @Html.EditorFor(m => m.Min_Parameter)
-        </div>
-    </li>
-    <li>
-        @Html.LabelFor(m => m.Max_Parameter)
-        <div class="input">
-            @Html.EditorFor(m => m.Max_Parameter)
-        </div>
-    </li>
     <li>
         @Html.LabelFor(m => m.ItemPerPage)
         <div class="input">
@@ -30,28 +22,35 @@
         </div>
     </li>
     <li>
+        @Html.LabelFor(m => m.SortByField)
+        <div class="input">
+            @Html.DropDownListFor(m=>m.SortByField, Model.FieldsMapping, new { @class = "btn btn-default", @id= "listPanelDd" })
+        </div>
+    </li>
+    <li>
         @Html.LabelFor(m => m.Fields)
         <div class="bs input">
+          
             <div>
-                <table class="table table-responsive table-striped" id="AttributeMappingTable">
+                <table class="table table-responsive table-striped" id="AttributeMappingTable@(fieldsId)">
                     @{
                         int i = 0;
-                        foreach (string f in Model.Fields)
+                        foreach (var f in Model.Mappings)
                         {
                             string rowId = "row_" + i;
                             <tr id="@rowId">
                                 <input type="hidden" name="@(Html.NameFor(m => m.Fields)).Index" value="@(i)" />
                                 @Html.HiddenFor(m => m.Fields[i])
-                                <td><span>@f</span></td>
+                                <td><span>@f.Name</span></td>
                                 <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteRow('@rowId');"></span><span class="glyphicon glyphicon-arrow-up up"></span><span class="glyphicon glyphicon-arrow-down down"></span></td>
                             </tr>
 
                             ++i;
                         }
-                        <tr id="ddFields">
+                        <tr id="ddFields@(fieldsId)">
                             <input type="hidden" class="hdregion" value="@Html.IdFor(m => m)" />
                             <td>@Html.DropDownList("selectedField", Model.FieldsMapping, new { @class = "btn btn-default", @style = "padding: 2px 2px" })</td>
-                            <td><span class="glyphicon glyphicon-plus-sign" onclick="AddField()"></span></td>
+                            <td><span class="glyphicon glyphicon-plus-sign" onclick="Add@(fieldFunction)()"></span></td>
                         </tr>
 
                     }
@@ -75,15 +74,15 @@
 
 
     });
-    function AddField()
+    function Add@(fieldFunction)()
     {
         var uniqueId = Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
-        var regionName = $(".hdregion").val(); // Region_0
+        var regionName = '@Html.Raw(Html.IdFor(m => m))'; // Region_0
          var regionInd = regionName.split("_")[1];//0,1,etc
       var FieldId = $("#" + regionName + "_selectedField").val();
      var FieldText = $("#" + regionName + "_selectedField option:selected").text(); 
     
-     var rowCount = $('#AttributeMappingTable tr').length;
+     var rowCount = $('#AttributeMappingTable@(fieldsId) tr').length;
      var rowId = "row_" + (rowCount - 1);
 
 
@@ -93,7 +92,7 @@
                     <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteRow('` + rowId +`')"></span><span class="glyphicon glyphicon-arrow-up"></span><span class="glyphicon glyphicon-arrow-down"></span></td>
                 </tr>`;
 
-      $("#ddFields").before(t)
+      $("#ddFields@(fieldsId)").before(t)
 
 
     }

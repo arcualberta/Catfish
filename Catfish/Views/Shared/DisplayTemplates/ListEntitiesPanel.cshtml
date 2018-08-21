@@ -5,6 +5,8 @@
  @{ string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
      string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
      string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+    
+     var rowNum = ((Model.CurrentPage - 1) * Model.ItemPerPage) + 1;
  }
 <div id="@cssId" class="bs @cssClasses container container-fluid">
     <style type="text/css" scoped>
@@ -19,6 +21,7 @@
         <table class="table table-responsive table-striped">
             <tr>
                 @*header*@
+                <th></th>
                 @foreach (var m in Model.Mappings)
                 {
                     string header = m.Label;
@@ -31,15 +34,21 @@
 
             @*content*@
             <tbody id="ListEntitiesPanelTableBody">
+               
                 @foreach (var item in Model.Items)
                 {
-                    <tr>
+                    var i = 0;
+                    
+                    <tr >
+                        <td>@rowNum</td>
                         @foreach (var f in Model.Mappings)
                         {
                             string content = item.GetAttributeMappingValue(f.Name);
-                            <td>@content</td>
+                            <td class="column-@i">@content</td>
+                            i++;
                         }
                     </tr>
+                    rowNum++;
                 }
             </tbody>
         </table>
@@ -52,15 +61,8 @@
 </div>
 
 <script>
-      //Need to be set in order to also use QueryFilterPanel
-    Min_ParameterName = '@Model.Min_Parameter';
-    Max_ParameterName = '@Model.Max_Parameter';
     var curr@(cssId)page = @Model.CurrentPage;
-
-
-    //Min_Parameter and Max_parameter is the <input> id on QueryFilterPanel
-   //  $("#Min_Parameter").val(Min_Value);
-   //  $("#Max_Parameter").val(Max_Value);
+    var rowNum = @rowNum;
 
    $(document).ready(function() {
        var curPage = curr@(cssId)page;
@@ -91,11 +93,7 @@
 
         curr@(cssId)page = currPage;
 
-     //set min/max year
       var urlParams = new URLSearchParams(window.location.search);
-
-      var min =urlParams.has('@Model.Min_Parameter') ? urlParams.get('@Model.Min_Parameter') : "";
-      var max = urlParams.has('@Model.Max_Parameter') ? urlParams.get('@Model.Max_Parameter')  : "";
       var mapIds = [@Html.Raw(String.Join(",", Model.Fields.ToArray().Select(i=>i)))]; //[13,15]
 
       var url = `@Url.Action("GetPageItems", "Items")`;
@@ -105,7 +103,7 @@
         url:url,
         dataType: 'json',
         traditional: true,
-        data:{page: currPage, itemPerPage:@Model.ItemPerPage,selectedMetadataSet: `@Model.SelectedMetadataSet`, selectedField: `@Model.selectedFilterField`,mapIds:mapIds, min: min, max: max},
+        data: { page: currPage - 1, sortAttributeMappingId: @Model.SortByField, itemPerPage:@Model.ItemPerPage,mapIds:mapIds, q:@Html.Raw(Json.Encode(Model.Query))},
         success:function(result){
 
         //remove all rows in the tbody
@@ -113,13 +111,17 @@
             body.children().remove();  //remove all row on the tbody
 
         //update table data
+        rowNum = 1 + ((currPage - 1) * @Model.ItemPerPage);
         result.forEach(function(r, i){ //going through each row
-             var new_row = "<tr>";
+             var new_row = "<tr><td>"+rowNum + "</td>";
+             var col = 0;
               r.forEach(function(c, j){ //going through each column
-                     new_row += "<td>" + c + "</td>";
+                     new_row += "<td class='column-" + col + "'>" + c + "</td>";
+                     col = col +1;
                });
               new_row += "</tr>";
               body.append(new_row);
+              rowNum = rowNum +1;
            });
 
             $("[name='listEntitiesPanel_page_number']").val(currPage);

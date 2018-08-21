@@ -1,0 +1,29 @@
+﻿@model Catfish.Models.Regions.CSEntityPanel
+
+@{
+    string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
+    string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
+    string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+
+}
+
+@if (string.IsNullOrEmpty(Model.Error))
+{
+    Model.View.Execute(ViewContext);
+
+<div id="@cssId" class="bs @cssClasses">
+    <style type="text/css" scoped>
+                    @Html.Raw(cssStyles)
+    </style>
+
+    <div class="entity-panel">
+        @Html.Raw(Model.View.ToString())
+    </div>
+</div>
+}
+else
+{
+    <div id="@cssId" class="bs panel panel-danger">
+        <div class="panel-body">@Model.Error</div>
+    </div>
+}
