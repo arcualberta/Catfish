@@ -1,21 +1,20 @@
 ﻿@model Catfish.Models.Regions.ListEntitiesPanel
 @using Catfish.Core.Models;
 
+@{ 
+    string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
+    string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
+    string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+}
 
- @{ string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
-     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
-     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
-    
-     var rowNum = ((Model.CurrentPage - 1) * Model.ItemPerPage) + 1;
- }
 <div id="@cssId" class="bs @cssClasses container container-fluid">
     <style type="text/css" scoped>
            @Html.Raw(cssStyles)
     </style>
    <div class="row" style="text-align:center;margin-top:20px;">
-       <button class="btn-link" name="listEntitiesPanel_prev_button" onclick="GoToPage('Prev'); return false;"><span style="align-content:center"><span class="glyphicon glyphicon-backward"></span>Prev</span></button>
+       <button class="btn-link" name="listEntitiesPanel_prev_button"><span style="align-content:center"><span class="glyphicon glyphicon-backward"></span>Prev</span></button>
        <input name="listEntitiesPanel_page_number" placeholder="1" value="" style="width:15px; height:15px;" />
-       <button class="btn-link" name="listEntitiesPanel_next_button" onclick="GoToPage('Next'); return false;"><span style="align-content:center">Next<span class="glyphicon glyphicon-forward"></span></span></button>
+       <button class="btn-link" name="listEntitiesPanel_next_button"><span style="align-content:center">Next<span class="glyphicon glyphicon-forward"></span></span></button>
     </div>
     <div class="row ">
         <table class="table table-responsive table-striped">
@@ -34,39 +33,24 @@
 
             @*content*@
             <tbody id="ListEntitiesPanelTableBody">
-               
-                @foreach (var item in Model.Items)
-                {
-                    var i = 0;
-                    
-                    <tr >
-                        <td>@rowNum</td>
-                        @foreach (var f in Model.Mappings)
-                        {
-                            string content = item.GetAttributeMappingValue(f.Name);
-                            <td class="column-@i">@content</td>
-                            i++;
-                        }
-                    </tr>
-                    rowNum++;
-                }
             </tbody>
         </table>
     </div>
     <div class="row" style="text-align:center;">
-        <button class="btn-link" name="listEntitiesPanel_prev_button"  onclick="GoToPage('Prev'); return false;" ><span style="align-content:center"><span class="glyphicon glyphicon-backward"></span>Prev</span></button>
+        <button class="btn-link" name="listEntitiesPanel_prev_button"><span style="align-content:center"><span class="glyphicon glyphicon-backward"></span>Prev</span></button>
         <input name="listEntitiesPanel_page_number" placeholder="1" value="" style="width:15px; height:15px;" />
-        <button class="btn-link" name="listEntitiesPanel_next_button" onclick="GoToPage('Next'); return false;"><span style="align-content:center">Next<span class="glyphicon glyphicon-forward"></span></span></button>
+        <button class="btn-link" name="listEntitiesPanel_next_button"><span style="align-content:center">Next<span class="glyphicon glyphicon-forward"></span></span></button>
     </div>
 </div>
 
 <script>
     {
-        var currPage = curr@(cssId)page;
+        var currPage = 1;
         var itemsPerPage = @Model.ItemPerPage;
-        var totalPages = 100;
+        var totalPages = 0;
         var sortAttributeMappingId = @Model.SortByField;
-        var query = '';
+        var query = '*:*';
+        var isLoaded = false;
 
         function goToPage(whichPage){
             var page = currPage;
@@ -84,50 +68,69 @@
             });
         }
 
-        @("#@cssId button[name='listEntitiesPanel_prev_button']").click(function () {
+        $("#@cssId button[name='listEntitiesPanel_prev_button']").click(function () {
             goToPage('Prev');
         });
 
-        @("#@cssId button[name='listEntitiesPanel_next_button']").click(function () {
+        $("#@cssId button[name='listEntitiesPanel_next_button']").click(function () {
             goToPage('Next');
         });
 
         function handleTableResults(results) {
+            var tr, td;
+            isLoaded = true;
+
             //remove all rows in the tbody
             var body = $("#ListEntitiesPanelTableBody");
             body.children().remove();  //remove all row on the tbody
 
             //update table data
             var rowNum = 1 + ((currPage - 1) * itemsPerPage);
-            result.forEach(function(r, i){ //going through each row
-                var new_row = "<tr><td>"+rowNum + "</td>";
-                var col = 0;
-                r.forEach(function(c, j){ //going through each column
-                        new_row += "<td class='column-" + col + "'>" + c + "</td>";
-                        col = col +1;
+            var minRow = Math.min(results.length, itemsPerPage);
+            for (var i = 0; i < minRow; ++i){ //going through each row
+                tr = $("<tr></tr>");
+
+                td = $("<td></td>");
+                td.text(rowNum + i);
+                tr.append(td);
+                
+                results[i].forEach(function (c, j) { //going through each column
+                    td = $("<td></td>");
+                    td.attr("class", "column-" + (j + 1));
+                    td.text(c);
+                    tr.append(td);
                 });
-                new_row += "</tr>";
-                body.append(new_row);
-                rowNum = rowNum +1;
-            });
+
+                body.append(tr);
+            };
 
             $("[name='listEntitiesPanel_page_number']").val(currPage);
-                if(currPage == 1)
+
+            if (results.length > itemsPerPage) {
+                totalPages = currPage + 1;
+                $("[name='listEntitiesPanel_next_button']").show();
+            } else {
+                totalPages = currPage;
+                $("[name='listEntitiesPanel_next_button']").hide();
+            }
+            
+            if(currPage == 1)
             {
                 $("[name='listEntitiesPanel_prev_button']").hide();
-            }
-                else{
-                    $("[name='listEntitiesPanel_prev_button']").show();
+            } else {
+                $("[name='listEntitiesPanel_prev_button']").show();
             }
         }
 
         function updateTable() {
+            var mapIds = @Html.Raw(Json.Encode(Model.Fields.Select(s => int.Parse(s)))); //[@Html.Raw(String.Join(",", Model.Fields.ToArray().Select(i=>i)))];
+
             $.ajax({
                 type: 'GET',
-                url:url,
+                url:@Html.Raw(Json.Encode(Url.Action("GetPageItems", "Items"))),
                 dataType: 'json',
                 traditional: true,
-                data: { page: currPage - 1, sortAttributeMappingId: @Model.SortByField, itemPerPage:@Model.ItemPerPage,mapIds:mapIds, q:@Html.Raw(Json.Encode(Model.Query))},
+                data: { page: currPage - 1, sortAttributeMappingId: sortAttributeMappingId, itemPerPage: itemsPerPage,mapIds:mapIds, q: query},
                 success: handleTableResults,
                 error: function(){
                   alert("Problems while updating table data");
@@ -136,50 +139,32 @@
         }
 
         window.addEventListener('updatedparams', function (e) {
-            var params = e.updatedparams;
-            var updateTable = false;
+            var params = e.detail;
+            var triggerUpdate = !isLoaded;
 
-            if ('q' in e) {
-                updateTable = true;
-                query = e['q'];
+            if ('q' in params) {
+                triggerUpdate = true;
+                query = params['q'];
             }
 
-            if ('page' in e) {
-                updateTable = true;
-                currPage = parseInt(e['page']);
+            if ('page' in params) {
+                triggerUpdate = true;
+                currPage = parseInt(params['page']);
             }
 
-            if ('itemsPerPage' in e) {
-                updateTable = true;
-                itemsPerPage = parseInt(e['itemsPerPage']);
+            if ('itemsPerPage' in params) {
+                triggerUpdate = true;
+                itemsPerPage = parseInt(params['itemsPerPage']);
             }
 
-            if ('sort' in e) {
-                updateTable = true;
-                sortAttributeMappingId = parseInt(e['sort']);
+            if ('sort' in params) {
+                triggerUpdate = true;
+                sortAttributeMappingId = parseInt(params['sort']);
             }
 
-            if (updateTable) {
+            if (triggerUpdate) {
                 updateTable();
             }
         });
     }
-
-    var curr@(cssId)page = @Model.CurrentPage;
-    var rowNum = @rowNum;
-
-   $(document).ready(function() {
-       var curPage = curr@(cssId)page;
-
-       if(curPage == 1)
-        {
-           $("[name='listEntitiesPanel_prev_button']").hide();
-        }
-
-       if(@Model.ItemCount < @Model.ItemPerPage)
-        {
-             $("[name='listEntitiesPanel_next_button']").hide();
-        }
-        $("[name='listEntitiesPanel_page_number']").val(curPage);
-   });
 </script>

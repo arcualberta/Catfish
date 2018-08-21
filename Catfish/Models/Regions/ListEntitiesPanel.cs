@@ -70,51 +70,6 @@ namespace Catfish.Models.Regions
             }
 
             base.InitManager(model);
-        }
-
-        public override object GetContent(object model)
-        {
-            //For testing -- go to the page that use this region and add ?entity=[entityId]
-            HttpContext context = HttpContext.Current;
-
-            if (context != null)
-            {
-                string pageParam = context.Request.QueryString["page"];
-                Query = context.Request.QueryString["q"];
-
-                if (string.IsNullOrWhiteSpace(Query))
-                {
-                    Query = "*:*";
-                }
-
-                int page = string.IsNullOrWhiteSpace(null) ? 0 : int.Parse(pageParam) - 1;
-
-                if(page < 1)
-                {
-                    CurrentPage = 1;
-                }
-                else
-                {
-                    CurrentPage = int.Parse(pageParam);
-                }
-                ItemService itemService = new ItemService(db);
-
-
-                Items = itemService.GetPagedItems(Query, SortByField, page, ItemPerPage).ToList();
-
-               // var mappings = entityTypeSrv.GetEntityTypeAttributeMappings().Where(a => FieldsMappingId.Contains(a.Id)).OrderBy(a => FieldsMappingId.IndexOf(a.Id));
-               //grab the columnHeaders
-               foreach(string id in Fields)
-                {
-                    CFEntityTypeAttributeMapping map= entityTypeService.GetEntityTypeAttributeMappingById(int.Parse(id));
-                    Mappings.Add(map);
-                }
-
-                ItemCount = Items.Count;
-            }
-            return base.GetContent(model);
-        }
-
-        
+        }        
     }
 }
