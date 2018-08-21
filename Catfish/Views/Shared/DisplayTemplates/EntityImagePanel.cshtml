@@ -5,8 +5,8 @@
     string medImg = "Medium";
 }
 
-<div id="@(cssId)_wrapper" class="@Model.CssClasses" style="width:100%;max-height:400px;">
-    <button class="glyphicon glyphicon-search" id="@(cssId)_toggleZoom" ></button>
+<div id="@(cssId)_wrapper" class="@Model.CssClasses" style="width:100%;">
+    <button class="glyphicon glyphicon-search btn-img-zoom" id="@(cssId)_toggleZoom" ></button>
     <image  src="@Url.Action("Image","Items",new { id =Model.EntityId, guid=Model.FileGuid, size = largeImg })" id="@cssId" data-zoom-image="@Url.Action("Image","Items",new { id =Model.EntityId, guid=Model.FileGuid})"  />
 </div>
 
@@ -45,4 +45,7 @@
         height:50px;
     }
    
+    .zoomLens {
+        pointer-events: none;
+    }
 </style>
