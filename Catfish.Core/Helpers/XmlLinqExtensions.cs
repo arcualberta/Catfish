@@ -39,8 +39,28 @@ namespace Catfish.Core.Helpers
 
                 var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
                 var results = solr.Query(q, options).Select(s => s.Id).Distinct();
+                int resultsCount = results.Count();
+                string query;
 
-                return set.Where(p => results.Contains(p.Id));
+                if(resultsCount > 0)
+                {
+                    StringBuilder values = new StringBuilder(results.First().ToString()); // This method is twice as fast as String.Join
+                    for (int i = 1; i < resultsCount; ++i)
+                    {
+                        values.Append(',');
+                        values.Append(results.ElementAt(i));
+                    }
+
+                    query = string.Format("SELECT * FROM [dbo].[CFXmlModels] WHERE Id IN ({0})", values.ToString());
+                }
+                else
+                {
+                    query = "SELECT * FROM [dbo].[CFXmlModels] WHERE Id < 0"; // Produces an empty result
+                }
+                return set.SqlQuery(query).AsQueryable();
+
+                //return set.Where(p => results.Contains(p.Id)); // the Contians method is slow because it creates several or expressions. 
+                // More info can be found here: https://stackoverflow.com/questions/8107439/why-is-contains-slow-most-efficient-way-to-get-multiple-entities-by-primary-ke
             }
 
             throw new InvalidOperationException("The SolrService has not been initialized.");

@@ -18,7 +18,8 @@ namespace Catfish.Controllers.Api
     {   
         public JsonResult GetPageItems(string q, int sortAttributeMappingId, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds)
         {
-            var items = ItemService.GetPagedItems(q, sortAttributeMappingId, page, itemPerPage).ToList();
+            uint total;
+            var items = ItemService.GetPagedItems(q, sortAttributeMappingId, page, itemPerPage, out total).ToList();
 
             List<List<string>> result = new List<List<string>>();
 

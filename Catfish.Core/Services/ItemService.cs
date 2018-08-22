@@ -213,8 +213,9 @@ namespace Catfish.Core.Services
             return dbModel;
         }
 
-        public IEnumerable<CFItem> GetPagedItems(string query, int sortAttributeMappingId, int page, int itemsPerPage)
+        public IEnumerable<CFItem> GetPagedItems(string query, int sortAttributeMappingId, int page, int itemsPerPage, out uint total)
         {
+            total = 0;
             int start = page * itemsPerPage;
             int rows = itemsPerPage + 1;
 
