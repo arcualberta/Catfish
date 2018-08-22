@@ -34,23 +34,10 @@ namespace Catfish.Models.Regions
         [ScriptIgnore]
         public List<CFEntityTypeAttributeMapping> Mappings { get; set; }
 
-        [ScriptIgnore]
-        public List<CFItem> Items { get; set; }
-        
-        [ScriptIgnore]
-        public int CurrentPage { get; set; }  
-
-        [ScriptIgnore]
-        public int ItemCount { get; set; }   //total items returned
-
-        [ScriptIgnore]
-        public string Query { get; set; }
-
         
         public ListEntitiesPanel()
         {
             Fields = new List<string>();
-            CurrentPage = 1;
             Mappings = new List<CFEntityTypeAttributeMapping>();
         }
         public override void InitManager(object model)
@@ -70,6 +57,17 @@ namespace Catfish.Models.Regions
             }
 
             base.InitManager(model);
-        }        
+        }
+
+        public override object GetContent(object model)
+        {
+            foreach (string id in Fields)
+            {
+                CFEntityTypeAttributeMapping map = entityTypeService.GetEntityTypeAttributeMappingById(int.Parse(id));
+                Mappings.Add(map);
+            }
+
+            return base.GetContent(model);
+        }
     }
 }
