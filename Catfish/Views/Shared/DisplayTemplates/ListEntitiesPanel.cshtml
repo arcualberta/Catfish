@@ -95,7 +95,7 @@
                 td = $("<td></td>");
                 td.text(rowNum + i);
                 tr.append(td);
-                
+
                 results[i].forEach(function (c, j) { //going through each column
                     td = $("<td></td>");
                     td.attr("class", "column-" + (j + 1));
@@ -115,17 +115,20 @@
                 totalPages = currPage;
                 $("[name='listEntitiesPanel_next_button']").hide();
             }
-            
+
             if(currPage == 1)
             {
                 $("[name='listEntitiesPanel_prev_button']").hide();
             } else {
                 $("[name='listEntitiesPanel_prev_button']").show();
             }
+
+            window.stopLoading("@cssId");
         }
 
         function updateTable() {
             var mapIds = @Html.Raw(Json.Encode(Model.Fields.Select(s => int.Parse(s)))); //[@Html.Raw(String.Join(",", Model.Fields.ToArray().Select(i=>i)))];
+            window.startLoading("@cssId", 60000);
 
             $.ajax({
                 type: 'GET',

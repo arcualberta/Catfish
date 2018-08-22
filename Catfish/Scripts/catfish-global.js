@@ -37,3 +37,23 @@
         window.updateUrlParameters(result);
     });
 }
+
+window.startLoading = function (containerPath, timeout, timeoutCallback) {
+    var container = $(containerPath);
+    var children = container.children(".loading-panel");
+
+    if (!(children[0])) {
+        var loadingPanel = $("<div></div>");
+        loadingPanel.addClass("loading-panel");
+
+        window.setTimeout(function () { window.stopLoading(containerPath); timeoutCallback(containerPath); }, timeout);
+    }
+}
+
+window.stopLoading = function (containerPath) {
+    var children = $(containerPath).children(".loading-panel");
+
+    if (children[0]) {
+        children.remove();
+    }
+}
