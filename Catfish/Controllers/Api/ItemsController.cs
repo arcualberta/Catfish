@@ -18,28 +18,30 @@ namespace Catfish.Controllers.Api
     {   
         public JsonResult GetPageItems(string q, int sortAttributeMappingId, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds)
         {
-            uint total;
-            var items = ItemService.GetPagedItems(q, sortAttributeMappingId, page, itemPerPage, out total).ToList();
+            int total;
+            var items = ItemService.GetPagedItems(q, sortAttributeMappingId, page, itemPerPage, out total);
 
-            List<List<string>> result = new List<List<string>>();
+            List<List<string>> result = new List<List<string>>(items.Count());
 
-            EntityTypeService entityTypeService = new EntityTypeService(Db);
-            if (items.Count > 0)
+            List<string> mappings = new List<string>(mapIds.Length);
+            foreach(int id in mapIds)
             {
-                foreach (var itm in items)
-                {
-                    List<string> rowContent = new List<string>();
-                    foreach(int id in mapIds)
-                    {
-                        CFEntityTypeAttributeMapping am = entityTypeService.GetEntityTypeAttributeMappingById(id);
-                        string content = itm.GetAttributeMappingValue(am.Name);
-                        rowContent.Add(content);
-                    }
-                    result.Add(rowContent);
-                }
+                CFEntityTypeAttributeMapping am = EntityTypeService.GetEntityTypeAttributeMappingById(id);
+                mappings.Add(am.Name);
             }
 
-            return Json(result, JsonRequestBehavior.AllowGet);
+            foreach (var itm in items)
+            {
+                List<string> rowContent = new List<string>(mapIds.Length);
+                foreach(string mapping in mappings)
+                {
+                    string content = itm.GetAttributeMappingValue(mapping);
+                    rowContent.Add(content);
+                }
+                result.Add(rowContent);
+            }
+
+            return Json(new { total = total, result = result }, JsonRequestBehavior.AllowGet);
 
         }
 

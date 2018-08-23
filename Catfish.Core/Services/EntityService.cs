@@ -152,8 +152,9 @@ namespace Catfish.Core.Services
             }
 
             string query = GenerateSolrQuery(searchString, languageCodes, fields, modelTypes);
+            int total;
 
-            return Entities.FromSolr(query);
+            return Entities.FromSolr(query, out total);
         }
     }
 }

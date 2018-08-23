@@ -24,5 +24,8 @@ namespace Catfish.Controllers
 
         private DataService mDataService;
         public DataService DataService { get { if (mDataService == null) mDataService = new DataService(Db); return mDataService; } }
+
+        private EntityTypeService mEntityTypeService;
+        public EntityTypeService EntityTypeService { get { if (mEntityTypeService == null) mEntityTypeService = new EntityTypeService(Db); return mEntityTypeService; } }
     }
 }

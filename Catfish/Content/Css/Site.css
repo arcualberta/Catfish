@@ -182,3 +182,9 @@
         color: white;
         text-align: center;
     }
+
+.current-page {
+    height: 1.1em;
+    width: 40px;
+    text-align: right;
+}

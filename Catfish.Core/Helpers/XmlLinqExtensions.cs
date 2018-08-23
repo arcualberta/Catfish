@@ -14,7 +14,7 @@ namespace Catfish.Core.Helpers
 {
     public static class XmlLinqExtensions
     {
-        public static IQueryable<TSource> FromSolr<TSource>(this DbSet<TSource> set, string q, int start = 0, int rows = int.MaxValue, string sortRowId = null, bool sortAscending = false) where TSource : CFXmlModel
+        public static IQueryable<TSource> FromSolr<TSource>(this DbSet<TSource> set, string q, out int total, int start = 0, int rows = int.MaxValue, string sortRowId = null, bool sortAscending = false) where TSource : CFXmlModel
         {
             if(start < 0)
             {
@@ -38,17 +38,20 @@ namespace Catfish.Core.Helpers
                 }
 
                 var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
-                var results = solr.Query(q, options).Select(s => s.Id).Distinct();
+                var results = solr.Query(q, options);
+                total = results.NumFound;
+
                 int resultsCount = results.Count();
                 string query;
 
                 if(resultsCount > 0)
                 {
-                    StringBuilder values = new StringBuilder(results.First().ToString()); // This method is twice as fast as String.Join
+                    StringBuilder values = new StringBuilder(resultsCount << 3); // This method is twice as fast as String.Join
+                    values.Append(results.First().Id.ToString());
                     for (int i = 1; i < resultsCount; ++i)
                     {
                         values.Append(',');
-                        values.Append(results.ElementAt(i));
+                        values.Append(results.ElementAt(i).Id);
                     }
 
                     query = string.Format("SELECT * FROM [dbo].[CFXmlModels] WHERE Id IN ({0})", values.ToString());
