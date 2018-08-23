@@ -53,6 +53,13 @@ namespace Catfish.Controllers.Api
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetStatsData(string q, ItemQueryService.eFunctionMode statMode, string selectedFieldMetadataSet, string selectedField)
+        {
+            decimal result = ItemQueryService.GetCalculatedField(q, statMode, selectedFieldMetadataSet, selectedField);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult GetGraphData_old(string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField,int xmin = 0, int xmax = 0)
         {
             ItemQueryService itemQueryService = new ItemQueryService(Db); 
