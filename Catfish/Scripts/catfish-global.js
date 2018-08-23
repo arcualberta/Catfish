@@ -45,8 +45,17 @@ window.startLoading = function (containerPath, timeout, timeoutCallback) {
     if (!(children[0])) {
         var loadingPanel = $("<div></div>");
         loadingPanel.addClass("loading-panel");
+        container.append(loadingPanel);
 
-        window.setTimeout(function () { window.stopLoading(containerPath); timeoutCallback(containerPath); }, timeout);
+        var loadingDiv = $("<div></div>");
+        loadingPanel.append(loadingDiv);
+
+        var element = $("<div></div>");
+        element.addClass("message");
+        element.text("Loading...");
+        loadingDiv.append(element);
+
+        window.setTimeout(function () { window.stopLoading(containerPath); if (timeoutCallback) { timeoutCallback(containerPath); } }, timeout);
     }
 }
 
