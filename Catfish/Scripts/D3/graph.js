@@ -1,12 +1,19 @@
 ﻿//javascript
 
 //Parse data into key-value pairs
-var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale) {
+var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, legendElement) {
     const XLabel = xLabel;
     const YLabel = yLabel;
     const GraphTitle = graphTitle;
     const XScale = xScale;
     const YScale = yScale;
+    const Svg = svgElement;
+    const Legend = legendElement;
+
+    this.clear = function () {
+        $(Svg).empty();
+        $(Legend).empty();
+    }
 
     this.parseDataSF = function(data) {
         var arr = [];
@@ -119,7 +126,7 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale) {
         var y = d3.scaleLinear().range([height, 0]);
 
         // Adds the svg canvas
-        var svg = d3.select("svg").attr("viewBox", "0 0 600 400");
+        var svg = d3.select(Svg).attr("viewBox", "0 0 600 400");
         return svg;
     }
 
@@ -136,12 +143,12 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale) {
         var y = d3.scaleLinear().range([height, 0]);
 
         // Adds the svg canvas
-        var svg = d3.select("svg.line-chart").attr("viewBox", "0 0 600 400");
+        var svg = d3.select(Svg).attr("viewBox", "0 0 600 400");
 
         var g1 = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + " )");
 
 
-        var divLegend = d3.select("div.legend");
+        var divLegend = d3.select(Legend);
 
         var parseTime = d3.timeParse("%Y");
         // Get the data   
@@ -390,7 +397,7 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale) {
         var yAxis = d3.axisLeft(y).tickPadding(6);
 
 
-        var svg = d3.select("body").append("svg")
+        var svg = d3.select(Svg)
             .attr("width", svgWidth)
             .attr("height", height + margin.top + margin.bottom);
         var g1 = svg.append("g")
