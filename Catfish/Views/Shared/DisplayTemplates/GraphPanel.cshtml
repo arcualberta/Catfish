@@ -5,12 +5,6 @@
     string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
-
-    string q = Request.Params.AllKeys.Contains("q") ? Request.Params.Get("q") : "*:*";
-    if (string.IsNullOrEmpty(q.Trim()))
-    {
-        q = "*:*";
-    }
 }
 <div id="@cssId" class="bs @cssClasses container container-fluid" style="margin-left:0;">
     <style type="text/css" scoped>
@@ -28,45 +22,65 @@
     <script src="~/Scripts/D3/graph.js"></script>
 
     <script>
-    const XLabel = '@Model.XaxisLabel';
-    const YLabel ='@Model.YaxisLabel';
-    const GraphTitle = '@Model.GraphTitle';
-    const XScale=parseInt('@Model.XScale');
-    const YScale=parseInt('@Model.YScale');
-
-    const xapi = "@Html.Raw(Url.Action("GetGraphData", "Items", new
-             {
-                 xMetadataSet = Model.SelectedMetadataSetX,
-                 yMetadataSet = Model.SelectedMetadataSetY,
-                 xField = Model.XaxisField,
-                 yField = Model.YaxisField,
-                 catMetadataset = Model.SelectedMetadataSetCat,
-                 catField = Model.Category,
-                 q = q,
-                 isCatOptionsIndex = Model.IsCategoryOptionsField
-             }))";
-
-    /* loading data */
-    $(document).ready(function (event) {
-        var chartType = "@Model.SelectedGraphType.ToString()";
-        if( chartType === "Bar")
         {
-             var barOption = document.getElementById("barchartOption");
-             barOption.style.display = "block";
-        }
-        else{
-            var barOption = document.getElementById("barchartOption");
-             barOption.style.display = "none";
-        }
+            var graph = new Graph('@Model.XaxisLabel', '@Model.YaxisLabel', '@Model.GraphTitle', parseInt('@Model.XScale'), parseInt('@Model.YScale'));
+            var isLoaded = false;
+            var query = '*:*';
+            var chartType = "@Model.SelectedGraphType.ToString()";
 
-        fetch(xapi).then(function (response) { return response.json(); })
-                    .then(function (data) {
-                        var parsedData = parseDataSF(data);
-                        drawChartMulti@(Model.SelectedGraphType.ToString())(parsedData);
+            function updateChart() {
+                window.startLoading("#@cssId", 60000);
 
-                    })
-                    .catch(function (err) { console.log(err); })
-    });
+                $.ajax({
+                    type: 'GET',
+                    url: @Html.Raw(Json.Encode(Url.Action("GetGraphData", "Items"))),
+                    dataType: 'json',
+                    data: {
+                        xMetadataSet: @Html.Raw(Json.Encode(Model.SelectedMetadataSetX)),
+                        yMetadataSet: @Html.Raw(Json.Encode(Model.SelectedMetadataSetY)),
+                        xField: @Html.Raw(Json.Encode(Model.XaxisField)),
+                        yField: @Html.Raw(Json.Encode(Model.YaxisField)),
+                        catMetadataset: @Html.Raw(Json.Encode(Model.SelectedMetadataSetCat)),
+                        catField: @Html.Raw(Json.Encode(Model.Category)),
+                        q: query,
+                        isCatOptionsIndex: @Html.Raw(Json.Encode(Model.IsCategoryOptionsField))
+                    },
+                    success: function (response) {
+                        if (chartType === "Bar") {
+                            var barOption = document.getElementById("barchartOption");
+                            barOption.style.display = "block";
+                        }
+                        else {
+                            var barOption = document.getElementById("barchartOption");
+                            barOption.style.display = "none";
+                        }
+
+                        var parsedData = graph.parseDataSF(response);
+                        graph["drawChartMulti" + chartType](response);
+                        window.stopLoading("#@cssId");
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        window.stopLoading("#@cssId");
+                    }
+                });
+            }
+
+            window.addEventListener('updatedparams', function (e) {
+                var params = e.detail;
+                var triggerUpdate = !isLoaded;
+
+                if ('q' in params) {
+                    triggerUpdate = true;
+                    query = params['q'];
+                }
+
+                if (triggerUpdate) {
+                    updateChart();
+                }
+            });
+
+        }
     </script>
 
     <style>

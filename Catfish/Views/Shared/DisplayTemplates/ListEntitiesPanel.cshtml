@@ -153,7 +153,8 @@
                 data: { page: currPage - 1, sortAttributeMappingId: sortAttributeMappingId, itemPerPage: itemsPerPage,mapIds:mapIds, q: query},
                 success: handleTableResults,
                 error: function(){
-                  alert("Problems while updating table data");
+                    alert("Problems while updating table data");
+                    window.stopLoading("#@cssId");
                 }
             });
         }
