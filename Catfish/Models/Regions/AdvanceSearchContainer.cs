@@ -37,8 +37,9 @@ namespace Catfish.Models.Regions
         [ScriptIgnore]
         public List<CFItem> Items { get; set; }
 
-        
-
+        private static int mTestId = 0;
+        [ScriptIgnore]
+        public int TestId { get; set; }
 
         public AdvanceSearchContainer()
         {
@@ -47,6 +48,8 @@ namespace Catfish.Models.Regions
          
             Mappings = new List<CFEntityTypeAttributeMapping>();
             Multiples = new List<bool>();
+            
+            TestId = ++mTestId;
         }
         public override void InitManager(object model)
         {
@@ -59,6 +62,11 @@ namespace Catfish.Models.Regions
             
             if (Fields.Count > 0)
             {
+                if(Multiples == null)
+                {
+                    Multiples = new List<bool>();
+                }
+
                 foreach(var id in Fields)
                 {
                     CFEntityTypeAttributeMapping map = entityTypeService.GetEntityTypeAttributeMappingById(int.Parse(id));
@@ -77,28 +85,36 @@ namespace Catfish.Models.Regions
             base.InitManager(model);
         }
 
+        public override void Init(object model)
+        {
+            base.Init(model);
+        }
+        
         public override object GetContent(object model)
         {
-            //For testing -- go to the page that use this region and add ?entity=[entityId]
-            HttpContext context = HttpContext.Current;
-
-           
-            //grab the columnHeaders
-            foreach (string id in Fields)
+            if (Fields.Count > 0)
             {
-                CFEntityTypeAttributeMapping map = entityTypeService.GetEntityTypeAttributeMappingById(int.Parse(id));
-               
-                Mappings.Add(map);
-            }
+                //For testing -- go to the page that use this region and add ?entity=[entityId]
+                HttpContext context = HttpContext.Current;
 
-            if(Multiples.Count < Fields.Count)
-            {
-                for(int i = Multiples.Count; i< Fields.Count; i++)
+
+                //grab the columnHeaders
+                foreach (string id in Fields)
                 {
-                    Multiples.Add(false);
+                    CFEntityTypeAttributeMapping map = entityTypeService.GetEntityTypeAttributeMappingById(int.Parse(id));
+
+                    Mappings.Add(map);
+                }
+
+                if (Multiples.Count < Fields.Count)
+                {
+                    for (int i = Multiples.Count; i < Fields.Count; i++)
+                    {
+                        Multiples.Add(false);
+                    }
                 }
             }
-           
+
             return base.GetContent(model);
         }
 

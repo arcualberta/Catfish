@@ -20,7 +20,7 @@ namespace Catfish.Controllers
         /// </summary>
         /// <returns>The view result</returns>
         public ActionResult Index() {
-			var model = GetModel() ;
+            var model = GetModel();
 
             return View(model.GetView(), model) ;
         }
