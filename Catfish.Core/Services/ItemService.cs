@@ -213,7 +213,7 @@ namespace Catfish.Core.Services
             return dbModel;
         }
 
-        public IEnumerable<CFItem> GetPagedItems(string query, int sortAttributeMappingId, int page, int itemsPerPage, out int total)
+        public IEnumerable<CFItem> GetPagedItems(string query, int sortAttributeMappingId, bool sortAsc, int page, int itemsPerPage, out int total)
         {
             int start = page * itemsPerPage;
             int rows = itemsPerPage + 1;
@@ -230,7 +230,7 @@ namespace Catfish.Core.Services
                 }
 
                 return Db.Items.FromSolr(query, out total, start, itemsPerPage,
-                    string.Format("value_{0}_{1}_{2}", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType), true);
+                    string.Format("value_{0}_{1}_{2}", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType), sortAsc);
             }
 
             return Db.Items.FromSolr(query, out total, start, itemsPerPage);

@@ -36,11 +36,7 @@ namespace Catfish.Models.Regions
 
         [ScriptIgnore]
         public List<CFItem> Items { get; set; }
-
-        private static int mTestId = 0;
-        [ScriptIgnore]
-        public int TestId { get; set; }
-
+        
         public AdvanceSearchContainer()
         {
            
@@ -48,8 +44,6 @@ namespace Catfish.Models.Regions
          
             Mappings = new List<CFEntityTypeAttributeMapping>();
             Multiples = new List<bool>();
-            
-            TestId = ++mTestId;
         }
         public override void InitManager(object model)
         {

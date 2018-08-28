@@ -16,10 +16,10 @@ namespace Catfish.Controllers.Api
 {
     public class ItemsController : CatfishController
     {   
-        public JsonResult GetPageItems(string q, int sortAttributeMappingId, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds)
+        public JsonResult GetPageItems(string q, int sortAttributeMappingId, bool sortAsc, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds)
         {
             int total;
-            var items = ItemService.GetPagedItems(q, sortAttributeMappingId, page, itemPerPage, out total);
+            var items = ItemService.GetPagedItems(q, sortAttributeMappingId, sortAsc, page, itemPerPage, out total);
 
             List<List<string>> result = new List<List<string>>(items.Count());
 

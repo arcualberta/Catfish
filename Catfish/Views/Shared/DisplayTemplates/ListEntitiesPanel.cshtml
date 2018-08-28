@@ -21,13 +21,14 @@
             <thead>
                 <tr>
                     @*header*@
+                    <!-- Default Sort: @Model.SortByField -->
                     <th></th>
                     @foreach (var m in Model.Mappings)
                     {
                         string header = m.Label;
                         if (!string.IsNullOrEmpty(header))
                         {
-                            <th>@header</th>
+                            <th class="sortable @Html.Raw(m.Id == Model.SortByField ? "sort sort-asc" : "")" data-column-id="@m.Id">@header</th>
                         }
                     }
                 </tr>
@@ -51,6 +52,7 @@
         var itemsPerPage = @Model.ItemPerPage;
         var totalPages = 0;
         var sortAttributeMappingId = @Model.SortByField;
+        var sortAsc = true;
         var query = '*:*';
         var isLoaded = false;
 
@@ -90,6 +92,17 @@
             goToPage($(ev.currentTarget).val());
         });
 
+        $("#@cssId .sortable").bind("click touch", function (ev) {
+            var target = $(this);
+            var id = parseInt(target.attr("data-column-id"));
+            var sort = id == sortAttributeMappingId ? !sortAsc : true;
+
+            window.updateUrlParameters({
+                'sort': id,
+                'sortAsc': sort
+            });
+        })
+
         function handleTableResults(resultData) {
             var tr, td;
             isLoaded = true;
@@ -97,6 +110,10 @@
 
             totalPages = Math.ceil(resultData.total / itemsPerPage);
             $("#@cssId .total-pages").text(totalPages);
+
+            // Change the sort column
+            $("#@cssId .sortable").removeClass("sort").removeClass("sort-asc").removeClass("sort-desc");
+            $("#@cssId  th[data-column-id='" + sortAttributeMappingId + "']").addClass("sort").addClass(sortAsc ? "sort-asc" : "sort-desc");
 
             //remove all rows in the tbody
             var body = $("#ListEntitiesPanelTableBody");
@@ -150,7 +167,7 @@
                 url:@Html.Raw(Json.Encode(Url.Action("GetPageItems", "Items"))),
                 dataType: 'json',
                 traditional: true,
-                data: { page: currPage - 1, sortAttributeMappingId: sortAttributeMappingId, itemPerPage: itemsPerPage,mapIds:mapIds, q: query},
+                data: { page: currPage - 1, sortAttributeMappingId: sortAttributeMappingId, sortAsc: sortAsc, itemPerPage: itemsPerPage, mapIds: mapIds, q: query },
                 success: handleTableResults,
                 error: function(){
                     alert("Problems while updating table data");
@@ -181,6 +198,11 @@
             if ('sort' in params) {
                 triggerUpdate = true;
                 sortAttributeMappingId = parseInt(params['sort']);
+            }
+
+            if ('sortAsc' in params) {
+                triggerUpdate = true;
+                sortAsc = params['sortAsc'];
             }
 
             if (triggerUpdate) {
