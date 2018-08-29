@@ -5,6 +5,8 @@
     string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+
+
 }
 
 <div id="@cssId" class="bs @cssClasses container container-fluid loadable-panel">
@@ -55,6 +57,18 @@
         var sortAsc = true;
         var query = '*:*';
         var isLoaded = false;
+        var links = {
+            @for(int i = 0; i < Model.Fields.Count; ++i)
+            {
+                var field = Model.Fields[i];
+                if(!string.IsNullOrEmpty(field.Link))
+                {
+                    Catfish.Areas.Manager.Services.PageService pageService = new Catfish.Areas.Manager.Services.PageService();
+                    var page = pageService.GetAPage(field.Link);
+                    <text>@Html.Raw(i + " : " + Json.Encode(UI.Permalink(page.Permalink).ToString()) + ",")</text>
+                }
+            }
+        }
 
         function goToPage(whichPage){
             var page = currPage;
@@ -104,7 +118,7 @@
         })
 
         function handleTableResults(resultData) {
-            var tr, td;
+            var tr, td, a;
             isLoaded = true;
             var results = resultData.result;
 
@@ -128,10 +142,20 @@
                 td.text(rowNum + i);
                 tr.append(td);
 
-                results[i].forEach(function (c, j) { //going through each column
+                results[i].Item2.forEach(function (c, j) { //going through each column
                     td = $("<td></td>");
                     td.attr("class", "column-" + (j + 1));
-                    td.text(c);
+
+                    if (links[j]) {
+                        a = $("<a></a>");
+                        a.attr("href", links[j] + "?entity=" + results[i].Item1);
+                        a.text(c);
+
+                        td.append(a);
+                    } else {
+                        td.text(c);
+                    }
+
                     tr.append(td);
                 });
 
@@ -159,7 +183,7 @@
         }
 
         function updateTable() {
-            var mapIds = @Html.Raw(Json.Encode(Model.Fields.Select(s => int.Parse(s))));
+            var mapIds = @Html.Raw(Json.Encode(Model.Fields.Select(s => s.Id)));
             window.startLoading("#@cssId", 60000);
 
             $.ajax({

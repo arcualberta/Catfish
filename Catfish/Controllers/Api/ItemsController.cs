@@ -21,7 +21,7 @@ namespace Catfish.Controllers.Api
             int total;
             var items = ItemService.GetPagedItems(q, sortAttributeMappingId, sortAsc, page, itemPerPage, out total);
 
-            List<List<string>> result = new List<List<string>>(items.Count());
+            List<Tuple<int, List<string>>> result = new List<Tuple<int, List<string>>>(items.Count());
 
             List<string> mappings = new List<string>(mapIds.Length);
             foreach(int id in mapIds)
@@ -38,11 +38,10 @@ namespace Catfish.Controllers.Api
                     string content = itm.GetAttributeMappingValue(mapping);
                     rowContent.Add(content);
                 }
-                result.Add(rowContent);
+                result.Add(new Tuple<int, List<string>>(itm.Id, rowContent));
             }
 
             return Json(new { total = total, result = result }, JsonRequestBehavior.AllowGet);
-
         }
 
         public JsonResult GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, bool isCatOptionsIndex = false)
