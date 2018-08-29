@@ -151,7 +151,9 @@
     <Content Include="Areas\Manager\Content\Img\logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Areas\Manager\Views\Extensions\index.html" />
+    <Content Include="Areas\Manager\Views\Extensions\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bs-bootstrap\css\bootstrap.css" />
@@ -279,12 +281,20 @@
     <Content Include="Areas\Manager\Views\Shared\Partial\EntityContent.cshtml" />
     <Content Include="Areas\Manager\Views\Items\Associations.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\ParentCollectionList.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\Carousel.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\Carousel.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\TextValue.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\RadioOption.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\MultilingualText.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\_CatfishRegion.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\FormContainer.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\MultilingualText.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Extensions\_CatfishRegion.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Extensions\FormContainer.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Areas\Manager\Views\FormTemplates\Index.cshtml" />
     <Content Include="Areas\Manager\Views\FormTemplates\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\FormBuilder.cshtml" />
@@ -295,29 +305,59 @@
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\CheckBoxSet.cshtml" />
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\RadioButtonSet.cshtml" />
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\Attachment.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\HtmlTag.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\BulletinBoard.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\SimpleSearch.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\SearchResults.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\HtmlTag.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Extensions\BulletinBoard.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Extensions\SimpleSearch.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Extensions\SearchResults.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Areas\Manager\Views\UserLists\Index.cshtml" />
     <Content Include="Areas\Manager\Views\UserLists\Edit.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\EntityContainer.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\MembershipContainer.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\RelationshipContainer.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\EntityContainer.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Extensions\MembershipContainer.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Extensions\RelationshipContainer.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\ClientInfo.cshtml" />
     <Content Include="Areas\Manager\Views\AccessDefinitions\Index.cshtml" />
     <Content Include="Areas\Manager\Views\AccessDefinitions\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\Items\AccessGroup.cshtml" />
     <Content Include="Areas\Manager\Views\Collections\AccessGroup.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\EntityAccessGroup.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\GraphPanel.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\ListEntitiesPanel.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\CalculatedFieldPanel.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\QueryFilterPanel.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\AdvanceSearchContainer.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\Javascript.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\EntityImagePanel.cshtml" />
-    <Content Include="Areas\Manager\Views\Extensions\CSEntityPanel.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\GraphPanel.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Extensions\ListEntitiesPanel.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Extensions\CalculatedFieldPanel.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Extensions\QueryFilterPanel.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Extensions\AdvanceSearchContainer.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Extensions\Javascript.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Extensions\EntityImagePanel.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Extensions\CSEntityPanel.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
