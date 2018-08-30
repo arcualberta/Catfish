@@ -26,6 +26,7 @@ namespace Catfish.Models.Regions
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
             return typeof(string).IsAssignableFrom(sourceType) || typeof(ListEntitiesPanelField).IsAssignableFrom(sourceType);
+            
         }
 
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)

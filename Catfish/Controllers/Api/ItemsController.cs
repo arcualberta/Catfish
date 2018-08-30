@@ -44,6 +44,13 @@ namespace Catfish.Controllers.Api
             return Json(new { total = total, result = result }, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult AutoCompleteField(string fieldId, string partialText, int rows = 10)
+        {
+            string jsonResult = SolrService.GetPartialMatichingText(fieldId, partialText, rows);
+
+            return this.Content(jsonResult, "application/json");
+        }
+
         public JsonResult GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, bool isCatOptionsIndex = false)
         {
             ItemQueryService itemQueryService = new ItemQueryService(Db);

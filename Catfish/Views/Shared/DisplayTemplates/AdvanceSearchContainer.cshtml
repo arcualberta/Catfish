@@ -18,6 +18,7 @@
            {
                var fType = m.Field.GetType();
                var id = "value_" + (m.MetadataSet.Guid.Replace("-", "_")) + "_" + (m.Field.Guid.Replace("-", "_")) + "_";
+               var field = Model.Fields[i];
 
             <div class="row advanceSearchContainerInput" data-searchid="@id">
                 <div class="field-title">@m.Label</div>
@@ -25,14 +26,14 @@
                 {
                     //number field or Date field
                     <div class="search-entry divNumber">
-                        <span class="label-default field-sub-title">From</span><input type="text" class="search-from" id="@id-From"/>
-                        <span class="label-default field-sub-title">To</span><input type="text" class="search-to" id="@id-To"/>
+                        <span class="label-default field-sub-title">From</span><input type="text" class="search-from @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)" id="@id-From"/>
+                        <span class="label-default field-sub-title">To</span><input type="text" class="search-to @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)" id="@id-To"/>
                     </div>
 
                 }
                 else if (typeof(Catfish.Core.Models.Forms.OptionsField).IsAssignableFrom(fType))
                 {
-                    if (Model.Multiples[i])
+                    if (field.IsMultiple)
                     {
                         <div class="search-entry divCheckbox">
                             <ul>
@@ -40,7 +41,7 @@
                                 {
                                     var nm = "AdvanceSearchContainer-Chkbox";
                                     <li>
-                                        <input type="checkbox" name="@nm" value="@option.Guid" />
+                                        <input type="checkbox" name="@nm" value="@option.Guid"/>
                                         <span>@option.Value[0].Value</span>
                                     </li>
                                 }
@@ -59,7 +60,7 @@
                 else //(fType.FullName == "Catfish.Core.Models.Forms.TextField")
                 {
                      <div class="search-entry divText">
-                       <input type="text" class="input"/>
+                       <input type="text" class="input @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)"/>
                      </div>
                 }
 
@@ -88,6 +89,13 @@
     {
         var isLoaded = false;
         const elmId = "AdvanceSearchContainer-";
+
+        function getSearchValueField(divContainer) {
+            var field = divContainer.closest("div[data-searchid]");
+            var searchEntries = field.children(".search-entry");
+            
+            return field.attr("data-searchid") + "txt_en";
+        }
 
         $("#@cssId form").submit(function (ev) {
             ev.preventDefault();
@@ -264,6 +272,35 @@
             if (triggerUpdate) {
                 reloadForm(query);
             }
+        });
+
+        function autocompleteCall(request, response) {
+            var field = getSearchValueField($(this.element));
+
+            $.ajax({
+                method: 'GET',
+                url: @Html.Raw(Json.Encode(Url.Action("AutoCompleteField", "Items"))),
+                data: {
+                    fieldId: field,
+                    partialText: request.term,
+                    rows: 100
+                },
+                dataType: 'json',
+                success: function (result) {
+                    var result = $.unique(result.response.docs.map(function (m) { return m[field]; })).slice(0, 10); // Only use 10 options.
+
+                    response(result);
+                },
+                error: function (err) {
+                    console.error(err);
+                    response([]);
+                }
+            });
+        }
+
+        $("#@cssId  .autocomplete-text").autocomplete({
+            minLength: 1,
+            source: autocompleteCall
         });
     }
 </script>
