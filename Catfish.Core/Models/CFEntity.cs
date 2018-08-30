@@ -10,6 +10,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Catfish.Core.Helpers;
 using Catfish.Core.Models.Access;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 
 namespace Catfish.Core.Models
 {
@@ -111,6 +112,77 @@ namespace Catfish.Core.Models
             }
         }
 
+        private string buildSolrKey(string prefix, string metadatasetGuid, string fieldGuid, string type, string languageCode)
+        {
+            string key = prefix + "_"
+                + metadatasetGuid + "_"
+                + fieldGuid + "_"
+                + type + "_"
+                + languageCode;
+
+            return key;
+        }
+
+        private Dictionary<string, object> GetSolrValues(string prefix, 
+            string metadatasetGuid, 
+            string fieldGuid, 
+            TextValue value)
+        {
+            Dictionary<string, object> result = new Dictionary<string, object>();
+
+            string txtKey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "txt", value.LanguageCode);
+            result[txtKey] = value.Value;
+
+            MatchCollection matches = Regex.Matches(value.Value, @"^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$");
+
+            //if (matches.Count > 0)
+            //{
+            //    Decimal decimalValue = Decimal.Parse(value.Value);
+            //    string decimalkey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "d", value.LanguageCode);
+            //    string integerKey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "i", value.LanguageCode);
+            //    result[decimalkey] = decimalValue;                
+            //    result[integerKey] = Decimal.Round(decimalValue);
+            //}
+
+            //^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$
+
+            return result;
+        }
+
+        public Dictionary<string, object> ToSolrDictionary()
+        {
+            Dictionary<string, object> result = new Dictionary<string, object>
+            {
+                {"id", Id.ToString()},
+                //{"modeltype_s", GetType().Name}
+                {"modeltype_s", System.Data.Entity.Core.Objects.ObjectContext.GetObjectType(GetType()).Name
+            }
+            };
+
+            foreach (CFMetadataSet metadataset in MetadataSets)
+            {
+                string metadatasetGuid = metadataset.Guid.Replace("-", "_");
+
+                foreach (FormField field in metadataset.Fields)
+                {
+                    string fieldGuid = field.Guid.Replace("-", "_");
+                    foreach (TextValue name in field.GetNames(false))
+                    {
+                        Dictionary<string, object> names = GetSolrValues("name", metadatasetGuid, fieldGuid, name);
+                        names.ToList().ForEach(x => result.Add(x.Key, x.Value));
+                    }
+
+                    foreach (TextValue value in field.Values)
+                    {
+                        Dictionary<string, object> values = GetSolrValues("value", metadatasetGuid, fieldGuid, value);
+                        values.ToList().ForEach(x => result.Add(x.Key, x.Value));
+                    }
+
+                }
+            }
+
+            return result;
+        }
 
         public void RemoveAllMetadataSets()
         {

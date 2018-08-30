@@ -7,6 +7,9 @@ using Catfish.Core.Models.Forms;
 using Catfish.Core.Models.Data;
 using System.Security.Principal;
 using Catfish.Core.Models.Access;
+using SolrNet;
+using SolrNet.Attributes;
+using CommonServiceLocator;
 
 namespace Catfish.Core.Models
 {
@@ -23,6 +26,24 @@ namespace Catfish.Core.Models
 
         }
 
+        private void UpdateSolr()
+        {
+            ISolrOperations<Dictionary<string, object>> solr = ServiceLocator
+                .Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+            IEnumerable<Dictionary<string, object>> savedEntities = ChangeTracker
+                .Entries<CFEntity>().Select(x => x.Entity.ToSolrDictionary());
+            solr.AddRange(savedEntities);
+            solr.Commit();
+        }
+
+        public override int SaveChanges()
+        {
+            
+            int result = base.SaveChanges();
+            UpdateSolr();
+            return result;
+        }
+
         public int SaveChanges(IIdentity actor)
         {
             if (actor.IsAuthenticated)
@@ -33,8 +54,8 @@ namespace Catfish.Core.Models
         public int SaveChanges(string actor)
         {
             if (this.ChangeTracker.HasChanges())
-            {
-                foreach(var entry in this.ChangeTracker.Entries<CFXmlModel>())
+            {                
+                foreach (var entry in this.ChangeTracker.Entries<CFXmlModel>())
                 {
                     if (entry.State != EntityState.Unchanged && entry.State != EntityState.Deleted)
                     {
@@ -44,8 +65,8 @@ namespace Catfish.Core.Models
                     }
                 }
             }
-
-            return base.SaveChanges();
+            
+            return SaveChanges();
         }
 
         /**
