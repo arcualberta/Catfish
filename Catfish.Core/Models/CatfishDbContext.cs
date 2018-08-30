@@ -37,8 +37,7 @@ namespace Catfish.Core.Models
         }
 
         public override int SaveChanges()
-        {
-            
+        {            
             int result = base.SaveChanges();
             UpdateSolr();
             return result;

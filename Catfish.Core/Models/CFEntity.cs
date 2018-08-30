@@ -114,12 +114,15 @@ namespace Catfish.Core.Models
 
         private string buildSolrKey(string prefix, string metadatasetGuid, string fieldGuid, string type, string languageCode)
         {
+            return buildSolrKey(prefix, metadatasetGuid, fieldGuid, type) + "_" + languageCode;              
+        }
+
+        private string buildSolrKey(string prefix, string metadatasetGuid, string fieldGuid, string type)
+        {
             string key = prefix + "_"
                 + metadatasetGuid + "_"
                 + fieldGuid + "_"
-                + type + "_"
-                + languageCode;
-
+                + type;
             return key;
         }
 
@@ -135,49 +138,83 @@ namespace Catfish.Core.Models
 
             MatchCollection matches = Regex.Matches(value.Value, @"^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$");
 
-            //if (matches.Count > 0)
-            //{
-            //    Decimal decimalValue = Decimal.Parse(value.Value);
-            //    string decimalkey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "d", value.LanguageCode);
-            //    string integerKey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "i", value.LanguageCode);
-            //    result[decimalkey] = decimalValue;                
-            //    result[integerKey] = Decimal.Round(decimalValue);
-            //}
-
-            //^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$
+            if (matches.Count > 0)
+            {
+                Decimal decimalValue = Decimal.Parse(value.Value);
+                string decimalkey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "d");
+                string integerKey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "i");
+                result[decimalkey] = decimalValue;
+                result[integerKey] = (int)Decimal.Round(decimalValue);
+            }
 
             return result;
         }
 
+        private string CleanGuid(string guid)
+        {
+            return guid.Replace("-", "_");
+        }
+
         public Dictionary<string, object> ToSolrDictionary()
         {
+
+            string modelType = System.Data.Entity.Core.Objects.ObjectContext.GetObjectType(GetType()).Name;
+
             Dictionary<string, object> result = new Dictionary<string, object>
             {
                 {"id", Id.ToString()},
-                //{"modeltype_s", GetType().Name}
-                {"modeltype_s", System.Data.Entity.Core.Objects.ObjectContext.GetObjectType(GetType()).Name
-            }
+                {"modeltype_s", modelType}
             };
 
             foreach (CFMetadataSet metadataset in MetadataSets)
             {
-                string metadatasetGuid = metadataset.Guid.Replace("-", "_");
+                string metadatasetGuid = CleanGuid(metadataset.Guid);
 
                 foreach (FormField field in metadataset.Fields)
                 {
-                    string fieldGuid = field.Guid.Replace("-", "_");
+
+                    //XXX clean into private method
+                    string fieldGuid = CleanGuid(field.Guid);
                     foreach (TextValue name in field.GetNames(false))
                     {
                         Dictionary<string, object> names = GetSolrValues("name", metadatasetGuid, fieldGuid, name);
-                        names.ToList().ForEach(x => result.Add(x.Key, x.Value));
+                        names.ToList().ForEach(x => result[x.Key] = x.Value);
                     }
 
-                    foreach (TextValue value in field.Values)
+                    // now lets get the appropriate values
+
+                    if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
                     {
-                        Dictionary<string, object> values = GetSolrValues("value", metadatasetGuid, fieldGuid, value);
-                        values.ToList().ForEach(x => result.Add(x.Key, x.Value));
-                    }
+                        // Check if the field has options
 
+                        OptionsField optionsField = (OptionsField)field;
+                        foreach (Option option in optionsField.Options)
+                        {
+                            if (option.Selected)
+                            {
+                                //metadatasetGuid;
+                                string optionGuid = CleanGuid(option.Guid);
+
+                                foreach (TextValue value in option.Value)
+                                {
+                                    Dictionary<string, object> values = GetSolrValues("option_value", metadatasetGuid, optionGuid, value);
+                                    values.ToList().ForEach(x => result[x.Key] = x.Value);
+                                }
+
+                                // option_name
+                                // option_value
+                            }
+                        }
+                    } else
+                    {
+                        // if this is not an options field
+
+                        foreach (TextValue value in field.Values)
+                        {
+                            Dictionary<string, object> values = GetSolrValues("value", metadatasetGuid, fieldGuid, value);
+                            values.ToList().ForEach(x => result[x.Key] = x.Value);
+                        }
+                    }                                     
                 }
             }
 
