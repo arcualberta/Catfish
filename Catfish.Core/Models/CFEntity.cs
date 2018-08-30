@@ -155,6 +155,46 @@ namespace Catfish.Core.Models
             return guid.Replace("-", "_");
         }
 
+
+        private Dictionary<string, object> GetFieldValues(FormField field, string metadatasetGuid, string fieldGuid)
+        {
+            Dictionary<string, object> values;
+            Dictionary<string, object> result = new Dictionary<string, object>();
+
+            if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
+            {
+                // Check if the field has options
+
+                OptionsField optionsField = (OptionsField)field;
+                foreach (Option option in optionsField.Options)
+                {
+                    if (option.Selected)
+                    {
+                        //metadatasetGuid;
+                        string optionGuid = CleanGuid(option.Guid);
+
+                        foreach (TextValue value in option.Value)
+                        {
+                            values = GetSolrValues("option_value", metadatasetGuid, optionGuid, value);
+                            values.ToList().ForEach(x => result[x.Key] = x.Value);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // if this is not an options field
+
+                foreach (TextValue value in field.Values)
+                {
+                    values = GetSolrValues("value", metadatasetGuid, fieldGuid, value);
+                    values.ToList().ForEach(x => result[x.Key] = x.Value);
+                }
+            }
+
+            return result;
+        }
+
         public Dictionary<string, object> ToSolrDictionary()
         {
 
@@ -172,8 +212,6 @@ namespace Catfish.Core.Models
 
                 foreach (FormField field in metadataset.Fields)
                 {
-
-                    //XXX clean into private method
                     string fieldGuid = CleanGuid(field.Guid);
                     foreach (TextValue name in field.GetNames(false))
                     {
@@ -181,40 +219,8 @@ namespace Catfish.Core.Models
                         names.ToList().ForEach(x => result[x.Key] = x.Value);
                     }
 
-                    // now lets get the appropriate values
-
-                    if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
-                    {
-                        // Check if the field has options
-
-                        OptionsField optionsField = (OptionsField)field;
-                        foreach (Option option in optionsField.Options)
-                        {
-                            if (option.Selected)
-                            {
-                                //metadatasetGuid;
-                                string optionGuid = CleanGuid(option.Guid);
-
-                                foreach (TextValue value in option.Value)
-                                {
-                                    Dictionary<string, object> values = GetSolrValues("option_value", metadatasetGuid, optionGuid, value);
-                                    values.ToList().ForEach(x => result[x.Key] = x.Value);
-                                }
-
-                                // option_name
-                                // option_value
-                            }
-                        }
-                    } else
-                    {
-                        // if this is not an options field
-
-                        foreach (TextValue value in field.Values)
-                        {
-                            Dictionary<string, object> values = GetSolrValues("value", metadatasetGuid, fieldGuid, value);
-                            values.ToList().ForEach(x => result[x.Key] = x.Value);
-                        }
-                    }                                     
+                    Dictionary<string, object> values = GetFieldValues(field, metadatasetGuid, fieldGuid);
+                    values.ToList().ForEach(x => result[x.Key] = x.Value);
                 }
             }
 
