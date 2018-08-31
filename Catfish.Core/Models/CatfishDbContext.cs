@@ -10,14 +10,19 @@ using Catfish.Core.Models.Access;
 using SolrNet;
 using SolrNet.Attributes;
 using CommonServiceLocator;
+using System.Data.Entity.Infrastructure;
 
 namespace Catfish.Core.Models
 {
     public class CatfishDbContext : DbContext
     {
+
+        ISolrOperations<Dictionary<string, object>> solr;
+
         public CatfishDbContext()
             : base("piranha")
         {
+            solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
 
         }
 
@@ -28,18 +33,41 @@ namespace Catfish.Core.Models
 
         private void UpdateSolr()
         {
-            ISolrOperations<Dictionary<string, object>> solr = ServiceLocator
-                .Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
-            IEnumerable<Dictionary<string, object>> savedEntities = ChangeTracker
-                .Entries<CFEntity>().Select(x => x.Entity.ToSolrDictionary());
+
+            //XXX Busca EntityState.Deleted para quitarlas
+     
+
+            List<Dictionary<string, object>> savedEntities = new List<Dictionary<string, object>>();
+            List<string> deletedEntities = new List<string>();
+            
+            foreach (DbEntityEntry entry in ChangeTracker.Entries<CFEntity>())
+            {
+                if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
+                {                    
+                    savedEntities.Add(((CFEntity)entry.Entity).ToSolrDictionary());
+                } else if (entry.State == EntityState.Deleted)
+                {
+                    deletedEntities.Add(((CFEntity)entry.Entity).Guid);
+                }
+            }
             solr.AddRange(savedEntities);
-            solr.Commit();
+            solr.Delete(deletedEntities);
         }
 
         public override int SaveChanges()
-        {            
-            int result = base.SaveChanges();
-            UpdateSolr();
+        {
+
+            int result = 0;
+            try
+            {
+                UpdateSolr();
+                result = base.SaveChanges();
+                                
+            } catch
+            {
+                throw;
+            }
+            solr.Commit();
             return result;
         }
 

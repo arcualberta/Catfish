@@ -202,7 +202,7 @@ namespace Catfish.Core.Models
 
             Dictionary<string, object> result = new Dictionary<string, object>
             {
-                {"id", Id.ToString()},
+                {"id", Guid},
                 {"modeltype_s", modelType}
             };
 
