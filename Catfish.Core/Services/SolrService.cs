@@ -21,7 +21,6 @@ namespace Catfish.Core.Services
             {
                 mSolr = new SolrConnection(server);
                 Startup.Init<SolrIndex>(mSolr);
-                Startup.Init<Dictionary<string, object>>(mSolr);
 
                 //TODO: Should we update the database here or have it in an external cron job
 
