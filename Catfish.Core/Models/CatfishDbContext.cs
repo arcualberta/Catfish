@@ -11,6 +11,7 @@ using SolrNet;
 using SolrNet.Attributes;
 using CommonServiceLocator;
 using System.Data.Entity.Infrastructure;
+using SolrNet.Exceptions;
 
 namespace Catfish.Core.Models
 {
@@ -56,19 +57,30 @@ namespace Catfish.Core.Models
 
         public override int SaveChanges()
         {
-
-            int result = 0;
-            try
+            using (DbContextTransaction dbContextTransaction = Database.BeginTransaction())
             {
-                UpdateSolr();
-                result = base.SaveChanges();
-                                
-            } catch
-            {
-                throw;
+                try
+                {
+                    UpdateSolr();
+                    int result = base.SaveChanges();
+                    dbContextTransaction.Commit();
+                    solr.Commit();                    
+                    return result;
+                }
+                catch (SolrNetException e)
+                {
+                    // rollback savechanges
+                    dbContextTransaction.Rollback();
+                    throw e;
+                }
+                catch
+                {
+                    //XXX rollback commit needed ?
+                    //solr.Rollback();
+                    throw;
+                }
             }
-            solr.Commit();
-            return result;
+            
         }
 
         public int SaveChanges(IIdentity actor)
