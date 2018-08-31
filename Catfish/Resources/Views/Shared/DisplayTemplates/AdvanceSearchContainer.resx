@@ -117,19 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="lang" xml:space="preserve">
-    <value>en</value>
+  <data name="IsAutoComplete" xml:space="preserve">
+    <value>Auto Complete</value>
   </data>
-  <data name="No" xml:space="preserve">
-    <value>No</value>
-  </data>
-  <data name="Submit" xml:space="preserve">
-    <value>Submit</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Yes</value>
-  </data>
-  <data name="Loading" xml:space="preserve">
-    <value>Loading...</value>
+  <data name="IsMultiple" xml:space="preserve">
+    <value>Multiselect</value>
   </data>
 </root>

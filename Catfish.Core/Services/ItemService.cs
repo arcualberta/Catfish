@@ -228,7 +228,7 @@ namespace Catfish.Core.Services
             return dbModel;
         }
 
-        public IEnumerable<CFItem> GetPagedItems(string query, int sortAttributeMappingId, int page, int itemsPerPage)
+        public IEnumerable<CFItem> GetPagedItems(string query, int sortAttributeMappingId, bool sortAsc, int page, int itemsPerPage, out int total)
         {
             int start = page * itemsPerPage;
             int rows = itemsPerPage + 1;
@@ -244,11 +244,11 @@ namespace Catfish.Core.Services
                     resultType = "i";
                 }
 
-                return Db.Items.FromSolr(query, start, itemsPerPage,
-                    string.Format("value_{0}_{1}_{2}", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType), true);
+                return Db.Items.FromSolr(query, out total, start, itemsPerPage,
+                    string.Format("value_{0}_{1}_{2}", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType), sortAsc);
             }
 
-            return Db.Items.FromSolr(query, start, itemsPerPage);
+            return Db.Items.FromSolr(query, out total, start, itemsPerPage);
         }
 
         public IEnumerable<CFItem> GetPagedItems_old(int page, int itemsPerPage, string facetMetadataGuid = null, string facetFieldGuid = null, int facetMin = 0, int facetMax = 0)

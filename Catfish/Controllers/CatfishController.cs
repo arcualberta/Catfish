@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Services;
+using Catfish.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,5 +25,11 @@ namespace Catfish.Controllers
 
         private DataService mDataService;
         public DataService DataService { get { if (mDataService == null) mDataService = new DataService(Db); return mDataService; } }
+
+        private EntityTypeService mEntityTypeService;
+        public EntityTypeService EntityTypeService { get { if (mEntityTypeService == null) mEntityTypeService = new EntityTypeService(Db); return mEntityTypeService; } }
+
+        private ItemQueryService mItemQueryService;
+        public ItemQueryService ItemQueryService { get { if (mItemQueryService == null) mItemQueryService = new ItemQueryService(Db); return mItemQueryService; } }
     }
 }
