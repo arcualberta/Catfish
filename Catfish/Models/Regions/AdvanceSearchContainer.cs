@@ -86,7 +86,8 @@ namespace Catfish.Models.Regions
     [Serializable]
     public class AdvanceSearchContainer : CatfishRegion
     {
-        
+        [Display(Name = "Include General Search")]
+        public bool HasGeneralSearch { get; set; }
        
         [Display(Name = "Include Fields")]
         public List<AdvancedSearchContainerField> Fields { get; set; }  //contain AttributeMapping Id
@@ -106,6 +107,8 @@ namespace Catfish.Models.Regions
             Fields = new List<AdvancedSearchContainerField>();
          
             Mappings = new List<CFEntityTypeAttributeMapping>();
+
+            HasGeneralSearch = false;
         }
         public override void InitManager(object model)
         {
