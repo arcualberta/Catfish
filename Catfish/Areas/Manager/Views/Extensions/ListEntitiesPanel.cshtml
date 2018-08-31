@@ -40,8 +40,9 @@
                             string rowId = "row_" + i;
                             <tr id="@rowId">
                                 <input type="hidden" name="@(Html.NameFor(m => m.Fields)).Index" value="@(i)" />
-                                @Html.HiddenFor(m => m.Fields[i])
+                                @Html.HiddenFor(m => m.Fields[i].Id)
                                 <td><span>@f.Name</span></td>
+                                <td>@Html.DropDownListFor(m => m.Fields[i].Link, Model.Pages.Select(n => new SelectListItem() { Value = n.Value, Text = n.Text, Selected = Model.Fields[i].Link == n.Value }), "No Link")</td>
                                 <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteRow('@rowId');"></span><span class="glyphicon glyphicon-arrow-up up"></span><span class="glyphicon glyphicon-arrow-down down"></span></td>
                             </tr>
 
@@ -77,18 +78,22 @@
     function Add@(fieldFunction)()
     {
         var uniqueId = Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
+        var dropdown = @Html.Raw(Json.Encode(Html.DropDownList("x1xChangeThisValuex1x", Model.Pages, "No Link", new { id = "id_x1xNewIdx1x" }).ToString()));
         var regionName = '@Html.Raw(Html.IdFor(m => m))'; // Region_0
          var regionInd = regionName.split("_")[1];//0,1,etc
       var FieldId = $("#" + regionName + "_selectedField").val();
-     var FieldText = $("#" + regionName + "_selectedField option:selected").text(); 
-    
+     var FieldText = $("#" + regionName + "_selectedField option:selected").text();
+
      var rowCount = $('#AttributeMappingTable@(fieldsId) tr').length;
      var rowId = "row_" + (rowCount - 1);
 
+     var fieldName = "Regions[" + regionInd + "].Body.Fields[" + uniqueId + "]";
 
-      var t = `<tr id="` + rowId +`"><input type="hidden" name="Regions[`+regionInd +`].Body.Fields.Index" value="` + uniqueId + `">
-               <input name="Regions[`+regionInd +`].Body.Fields[` + uniqueId +  `]" type="hidden" value="` + FieldId +`">
+
+     var t = `<tr id="` + rowId + `"><input type="hidden" name="Regions[` + regionInd + `].Body.Fields.Index" value="` + uniqueId + `">
+               <input name="` + fieldName + `.Id" type="hidden" value="` + FieldId + `">
                     <td><span>` + FieldText + `</span></td>
+                    <td>` + dropdown.replace(/x1xChangeThisValuex1x/g, fieldName + '.Link') + `</td>
                     <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteRow('` + rowId +`')"></span><span class="glyphicon glyphicon-arrow-up"></span><span class="glyphicon glyphicon-arrow-down"></span></td>
                 </tr>`;
 

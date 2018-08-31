@@ -44,8 +44,6 @@ namespace Catfish.Models.Regions
        
         public string Title { get; set; }
 
-        public decimal Result { get; set; }
-
         public CalculatedFieldPanel()
         {
             ListMetadataSets = new List<SelectListItem>();
@@ -56,8 +54,6 @@ namespace Catfish.Models.Regions
             {
                 FunctionModes.Add(new SelectListItem { Text = am, Value = am });
             }
-
-            Result = 0m;
         }
         public override void InitManager(object model)
         {
@@ -93,29 +89,6 @@ namespace Catfish.Models.Regions
             }
 
             base.InitManager(model);
-        }
-
-        public override object GetContent(object model)
-        {
-            HttpContext context = HttpContext.Current;
-
-            if (context != null && SelectedFieldMetadataSet != null)
-            {
-                string query = context.Request.QueryString["q"];
-
-                if (string.IsNullOrEmpty(query))
-                {
-                    query = "*:*";
-                }
-                
-                ItemQueryService itemQuerySrv = new ItemQueryService(db);
-                
-                Result = itemQuerySrv.GetCalculatedField(query, SelectedFunction, SelectedFieldMetadataSet, SelectedField);
-            }
-
-            return base.GetContent(model);
-        }
-
-       
+        }       
     }
 }

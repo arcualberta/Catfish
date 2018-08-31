@@ -16,36 +16,52 @@ namespace Catfish.Controllers.Api
 {
     public class ItemsController : CatfishController
     {   
-        public JsonResult GetPageItems(string q, int sortAttributeMappingId, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds)
+        public JsonResult GetPageItems(string q, int sortAttributeMappingId, bool sortAsc, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds)
         {
-            var items = ItemService.GetPagedItems(q, sortAttributeMappingId, page, itemPerPage).ToList();
+            int total;
+            var items = ItemService.GetPagedItems(q, sortAttributeMappingId, sortAsc, page, itemPerPage, out total);
 
-            List<List<string>> result = new List<List<string>>();
+            List<Tuple<int, List<string>>> result = new List<Tuple<int, List<string>>>(items.Count());
 
-            EntityTypeService entityTypeService = new EntityTypeService(Db);
-            if (items.Count > 0)
+            List<string> mappings = new List<string>(mapIds.Length);
+            foreach(int id in mapIds)
             {
-                foreach (var itm in items)
-                {
-                    List<string> rowContent = new List<string>();
-                    foreach(int id in mapIds)
-                    {
-                        CFEntityTypeAttributeMapping am = entityTypeService.GetEntityTypeAttributeMappingById(id);
-                        string content = itm.GetAttributeMappingValue(am.Name);
-                        rowContent.Add(content);
-                    }
-                    result.Add(rowContent);
-                }
+                CFEntityTypeAttributeMapping am = EntityTypeService.GetEntityTypeAttributeMappingById(id);
+                mappings.Add(am.Name);
             }
 
-            return Json(result, JsonRequestBehavior.AllowGet);
+            foreach (var itm in items)
+            {
+                List<string> rowContent = new List<string>(mapIds.Length);
+                foreach(string mapping in mappings)
+                {
+                    string content = itm.GetAttributeMappingValue(mapping);
+                    rowContent.Add(content);
+                }
+                result.Add(new Tuple<int, List<string>>(itm.Id, rowContent));
+            }
 
+            return Json(new { total = total, result = result }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AutoCompleteField(string fieldId, string partialText, int rows = 10)
+        {
+            string jsonResult = SolrService.GetPartialMatichingText(fieldId, partialText, rows);
+
+            return this.Content(jsonResult, "application/json");
         }
 
         public JsonResult GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, bool isCatOptionsIndex = false)
         {
             ItemQueryService itemQueryService = new ItemQueryService(Db);
             var result = itemQueryService.GetGraphData(q, xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, isCatOptionsIndex);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetStatsData(string q, ItemQueryService.eFunctionMode statMode, string selectedFieldMetadataSet, string selectedField)
+        {
+            decimal result = ItemQueryService.GetCalculatedField(q, statMode, selectedFieldMetadataSet, selectedField);
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }

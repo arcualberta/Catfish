@@ -81,11 +81,10 @@
 		<entity processor="SqlEntityProcessor" dataSource="d1" name="dbData" pk="Id" query="select * from [dbo].[CFXmlModels] WHERE EntityTypeId IS NOT NULL" deltaImportQuery="SELECT * FROM [dbo].[CFXmlModels] WHERE Id = ${dih.delta.Id}" deltaQuery="SELECT Id FROM [dbo].[CFXmlModels] WHERE EntityTypeId IS NOT NULL AND ([Content].value(N'(/./@created)[1]', 'datetime') &gt;= '${dih.last_index_time}' OR [Content].value(N'(/./@updated)[1]', 'datetime') &gt;= '${dih.last_index_time}')" rootEntity="false">
 
 			<field column="Id" name="id_s"/>
+			<field column="Id" xpath="id"/>
 			<field column="Discriminator" name="modeltype_s"/>
 
 			<entity processor="XPathEntityProcessor" transformer="TemplateTransformer,script:convertDocument" name="fields" dataSource="d2" dataField="dbData.Content" forEach="/fields" xsl="PCDTransform.xslt" >
-				<field column="id" xpath="/fields/@guid"/>
-				
 				<!-- These fields will be transformed to each language code -->
 				<field column="field_id" xpath="/fields/field/entry/guid" multiValued="true"/>
 				<field column="field_langCode" xpath="/fields/field/entry/@lang" multiValued="true"/>

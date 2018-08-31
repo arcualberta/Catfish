@@ -33,6 +33,28 @@ namespace Catfish.Core.Services
             }
         }
 
+        public static string GetPartialMatichingText(string field, string text, int rows = 10)
+        {
+            if (SolrService.IsInitialized)
+            {
+                IEnumerable<KeyValuePair<string, string>> parameters = new KeyValuePair<string, string>[]{
+                    new KeyValuePair<string, string>("q", field + ":" + SolrService.EscapeQueryString(text + "*")),
+                    new KeyValuePair<string, string>("rows", rows.ToString()),
+                    new KeyValuePair<string, string>("sort", field + " asc"),
+                    new KeyValuePair<string, string>("fl", field),
+                    new KeyValuePair<string, string>("wt", "json"),
+                    new KeyValuePair<string, string>("facet", "on"),
+                    new KeyValuePair<string, string>("facet.field", field)
+                };
+
+                var result = SolrService.mSolr.Get("/select", parameters);
+
+                return result;
+            }
+
+            return string.Empty;
+        }
+
         public static string EscapeQueryString(string searchString)
         {
             string result = searchString.Replace("\"", "\\\"")
