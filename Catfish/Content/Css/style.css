@@ -208,3 +208,8 @@ input[type=range]:focus::-ms-fill-upper {
     text-align: center;
     margin-right: 10px;
 }
+
+.ui-autocomplete {
+    background-color: #FFF;
+    border: 1px solid rgba(106, 175, 230, 0.83);
+}

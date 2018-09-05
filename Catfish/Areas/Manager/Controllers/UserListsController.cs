@@ -19,7 +19,8 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/EntityGroups
         public ActionResult Index()
         {
-            return View(EntityGroupService.GetAllUserLists());
+            List<CFUserList> allUserlists = EntityGroupService.GetAllUserLists().ToList();
+            return View(allUserlists.Select(u => new CFUserListIndexViewModel(u)));
         }
 
         
@@ -31,6 +32,18 @@ namespace Catfish.Areas.Manager.Controllers
 
             ViewBag.SugestedNames = entityGroupVM.AllUsers2.Values.ToArray();
             return View(entityGroupVM);
+        }
+
+        [HttpPost]
+        public ActionResult Delete(string id)
+        {
+            SecurityService.CreateAccessContext();
+            if (SecurityService.IsCurrentUserAdmin())
+            {
+                EntityGroupService.DeleteEntityGroup(id);
+            }
+
+            return RedirectToAction("index");
         }
 
         // POST: Manager/EntityGroups/Edit/5

@@ -26,22 +26,21 @@ namespace Catfish.Tests
         }
 
         [TestMethod]
-        public void CanUseAccessGuids()
+        public void CanUseAccessGuid()
         {
-            int guidCount = 5;
-            List<Guid> guidList = new List<Guid>();
 
-            for (int i = 0; i < guidCount; ++i)
-            {
-                guidList.Add(Guid.NewGuid());
-            }
+            Guid guid1 = Guid.NewGuid();
+            Guid guid2 = guid1;
 
-            AccessGroup.AccessGuids = guidList;
+            AccessGroup.AccessGuid = guid1;
+            Assert.AreEqual(guid2, AccessGroup.AccessGuid);
+        }
 
-            for (int i = 0; i < guidCount; ++i)
-            {
-                Assert.AreEqual(guidList[i], AccessGroup.AccessGuids[i]);
-            }
+        [TestMethod]
+        public void CanCheckIsInheritable()
+        {
+            AccessGroup.IsInherited = false;
+            Assert.IsFalse(AccessGroup.IsInherited);
         }
     }
 }

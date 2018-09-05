@@ -71,7 +71,7 @@ namespace Catfish.Areas.Manager.Controllers
                 throw ex;
                 
             }
-            return View();
+            //return View();
         }
 
         // GET: Manager/AccessDefinition/Delete/5

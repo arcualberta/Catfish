@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Catfish.Core.Models.Access;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -9,11 +10,28 @@ namespace Catfish.Core.Models
     [Serializable]
     public abstract class CFAggregation : CFEntity
     {
-        [IgnoreDataMember]
-        public virtual ICollection<CFAggregation> ParentMembers { get; set; }
 
         [IgnoreDataMember]
-        public virtual ICollection<CFAggregation> ChildMembers { get; set; }
+        public List<CFAggregation> ManagedParentMembers { get; set; }
+
+        [IgnoreDataMember]
+        public List<CFAggregation> ManagedChildMembers { get; set; }
+
+
+        [IgnoreDataMember]
+        public virtual IReadOnlyCollection<CFAggregation> ParentMembers {
+            get {
+                return ManagedParentMembers.AsReadOnly();
+            }
+        }
+
+        [IgnoreDataMember]
+        public virtual IReadOnlyCollection<CFAggregation> ChildMembers {
+            get
+            {
+                return ManagedChildMembers.AsReadOnly();
+            }
+        }
 
         [IgnoreDataMember]
         public virtual ICollection<CFItem> ChildRelations { get; set; }
@@ -25,8 +43,8 @@ namespace Catfish.Core.Models
 
         public CFAggregation()
         {
-            ParentMembers = new List<CFAggregation>();
-            ChildMembers = new List<CFAggregation>();
+            ManagedParentMembers = new List<CFAggregation>();
+            ManagedChildMembers = new List<CFAggregation>();
             ChildRelations = new List<CFItem>();
         }
 
@@ -34,21 +52,42 @@ namespace Catfish.Core.Models
         /// WARNING: Check for circular references first!
         /// </summary>
         /// <param name="child"></param>
-        public void AppendChild(CFAggregation child)
+        public void AddChild(CFAggregation child)
         {
-            this.ChildMembers.Add(child);
-            child.ParentMembers.Add(this);
+            ManagedChildMembers.Add(child);
+            child.ManagedParentMembers.Add(this);
+
+            this.AccessGroups.ForEach(x => child.SetAccess(x.AccessGuid, 
+                x.AccessDefinition.AccessModes, 
+                true));
+
+        }
+
+       
+        public void RemoveChild(CFAggregation child)
+        {
+            ManagedChildMembers.Remove(child);
+            child.ManagedParentMembers.Remove(this);
+            child.AccessGroups.RemoveAll(x => x.IsInherited == true);
+            
+            foreach (CFAggregation parent in child.ManagedParentMembers)
+            {
+                parent.AccessGroups.ForEach(x => child.SetAccess(
+                    x.AccessGuid, 
+                    x.AccessDefinition.AccessModes, 
+                    true));
+            }            
         }
 
         /// <summary>
         /// WARNING: Check for circular references first!
         /// </summary>
         /// <param name="child"></param>
-        public void AppendParent(CFAggregation parent)
-        {
-            parent.ChildMembers.Add(this);
-            this.ParentMembers.Add(parent);
-        }
+        //public void AppendParent(CFAggregation parent)
+        //{
+        //    parent.ChildMembers.Add(this);
+        //    this.ParentMembers.Add(parent);
+        //}
 
         [IgnoreDataMember]
         public virtual IEnumerable<CFAggregation> ChildItems
@@ -56,6 +95,58 @@ namespace Catfish.Core.Models
             get
             {
                 return ChildMembers.Where(c => typeof(CFItem).IsAssignableFrom(c.GetType()));
+            }
+        }
+
+        protected AccessMode RecalculateInheritedPermissions(Guid guid)
+        {
+            AccessMode accessMode = AccessMode.None;
+
+            foreach (CFAggregation parent in ParentMembers)
+            {
+                CFAccessGroup accessGroup = parent.AccessGroups
+                    .Where(x => x.Guid == guid.ToString()).FirstOrDefault();
+                if (accessGroup != null)
+                {
+                    accessMode = accessMode | accessGroup.AccessDefinition.AccessModes;
+                }
+            }
+
+            return accessMode;
+        }
+
+        public new void SetAccess(Guid guid, AccessMode accessMode, bool isInherited = false)
+        {
+            //XXX Check control permission
+            //User.Identity.IsAuthenticated
+            CFAccessGroup accessGroup = GetAccessGroup(guid);
+
+            if (accessGroup == null)
+            {
+                base.SetAccess(guid, accessMode, isInherited);
+                return;
+            } else if (accessGroup.IsInherited == false && isInherited == true)
+            {
+                return;
+            }
+
+            AccessGroups.Remove(accessGroup);
+            CFAccessGroup newAccessGroup = new CFAccessGroup();
+            newAccessGroup.IsInherited = isInherited;
+            newAccessGroup.Guid = guid.ToString();
+            newAccessGroup.AccessDefinition.AccessModes = accessMode;
+            
+            if (accessGroup.IsInherited == true && isInherited == true)
+            {
+                AccessMode inheritedAccessMode = RecalculateInheritedPermissions(guid);
+                newAccessGroup.AccessDefinition.AccessModes |= inheritedAccessMode;
+            }
+
+            AccessGroups.Add(newAccessGroup);
+            
+            foreach (CFAggregation child in ChildMembers)
+            {
+                child.SetAccess(guid, accessMode, true);
             }
         }
 

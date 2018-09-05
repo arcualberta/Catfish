@@ -21,6 +21,7 @@ namespace Catfish.Core.Services
             {
                 mSolr = new SolrConnection(server);
                 Startup.Init<SolrIndex>(mSolr);
+                Startup.Init<Dictionary<string, object>>(mSolr);
 
                 //TODO: Should we update the database here or have it in an external cron job
 
@@ -30,6 +31,28 @@ namespace Catfish.Core.Services
             {
                 throw new InvalidOperationException("The app parameter Solr Server string has not been defined.");
             }
+        }
+
+        public static string GetPartialMatichingText(string field, string text, int rows = 10)
+        {
+            if (SolrService.IsInitialized)
+            {
+                IEnumerable<KeyValuePair<string, string>> parameters = new KeyValuePair<string, string>[]{
+                    new KeyValuePair<string, string>("q", field + ":" + SolrService.EscapeQueryString(text + "*")),
+                    new KeyValuePair<string, string>("rows", rows.ToString()),
+                    new KeyValuePair<string, string>("sort", field + " asc"),
+                    new KeyValuePair<string, string>("fl", field),
+                    new KeyValuePair<string, string>("wt", "json"),
+                    new KeyValuePair<string, string>("group", "true"),
+                    new KeyValuePair<string, string>("group.field", field)
+                };
+
+                var result = SolrService.mSolr.Get("/select", parameters);
+
+                return result;
+            }
+
+            return string.Empty;
         }
 
         public static string EscapeQueryString(string searchString)

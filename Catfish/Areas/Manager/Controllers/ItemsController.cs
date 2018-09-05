@@ -30,9 +30,10 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Items
         public ActionResult Index(int offset=0, int limit=int.MaxValue)
         {
-            if(limit == int.MaxValue)
+            SecurityService.CreateAccessContext();
+            if (limit == int.MaxValue)
                 limit = ConfigHelper.PageSize;
-
+            
             var itemQuery = ItemService.GetItems();
             var entities = itemQuery.OrderBy(e => e.Id).Skip(offset).Take(limit).Include(e => (e as CFEntity).EntityType).Select(e => e as CFEntity);
             var total = itemQuery.Count();
@@ -48,12 +49,13 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int id)
         {
+            SecurityService.CreateAccessContext();
             CFItem model = null;
-            if (id.HasValue && id.Value > 0)
+            if (id > 0)
             {
-                model = Db.Items.Where(et => et.Id == id).FirstOrDefault();
+                model = ItemService.GetItem(id);
                 if (model != null)
                 {
                     Db.Entry(model).State = EntityState.Deleted;
@@ -67,6 +69,7 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Items/Details/5
         public ActionResult Details(int? id)
         {
+            SecurityService.CreateAccessContext();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -83,6 +86,7 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Items/Edit/5
         public ActionResult Edit(int? id, int? entityTypeId)
         {
+            SecurityService.CreateAccessContext();
             CFItem model;
           
             if (id.HasValue && id.Value > 0)
@@ -120,6 +124,7 @@ namespace Catfish.Areas.Manager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(CFItem model)
         {
+            SecurityService.CreateAccessContext();
             if (ModelState.IsValid)
             {
                 CFItem dbModel = ItemService.UpdateStoredItem(model);
@@ -141,6 +146,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpGet]
         public ActionResult Associations(int id)
         {
+            SecurityService.CreateAccessContext();
             CFItem model = ItemService.GetItem(id);
             if (model == null)
                 throw new Exception("Item not found");
@@ -257,6 +263,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpGet]
         public ActionResult AccessGroup(int id)
         {
+            SecurityService.CreateAccessContext();
             var entity = ItemService.GetAnEntity(id);
             EntityAccessDefinitionsViewModel entityAccessVM = new EntityAccessDefinitionsViewModel();
             AccessGroupService accessGroupService = new AccessGroupService(Db);
@@ -272,6 +279,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpPost]
         public ActionResult AccessGroup(int id, EntityAccessDefinitionsViewModel entityAccessVM)
         {
+            SecurityService.CreateAccessContext();
             CFItem item = ItemService.GetItem(entityAccessVM.Id);
            
             AccessGroupService accessGroupService = new AccessGroupService(Db);
@@ -284,20 +292,6 @@ namespace Catfish.Areas.Manager.Controllers
             SuccessMessage(Catfish.Resources.Views.Shared.EntityAccessGroup.SaveSuccess);
 
             return AccessGroup(entityAccessVM.Id);
-        }
-
-        public JsonResult GetuserPermissions(string userGuid, int entityId)
-        {
-            CFAggregation entity = EntityService.GetAnEntity(entityId) as CFAggregation;
-            SecurityService securityService = new SecurityService(Db);
-            AccessMode accessMode = securityService.GetAggregationPermissions(userGuid, entity);
-
-            CFAccessDefinition cFAccessDefinition = new CFAccessDefinition();
-            cFAccessDefinition.AccessModes = (AccessMode)accessMode;
-
-            
-
-            return Json(cFAccessDefinition.AccessModes.AsStringList(), JsonRequestBehavior.AllowGet);
         }
     }
 }

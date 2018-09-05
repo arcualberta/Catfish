@@ -62,37 +62,45 @@
 
 </head>
 <body>
-    <header role="banner">
-        <div class="wrapper">
-            <a class="site-title" href="~/">
-                @try
-                {
-                    var logo = global.Regions.Logo;
-                    @UI.Thumbnail(logo.Id, 150)
-                }
-                catch (Exception)
-                {
-                    @Html.Raw(title)
-                }
-            </a>
+    @try
+    {
+        // Use Custom header.
+        <text>@Html.Partial("_CustomHeader")</text>
+    }
+    catch (Exception)
+    {
+        <header role="banner">
+            <div class="wrapper">
+                <a class="site-title" href="~/">
+                    @try
+                    {
+                        var logo = global.Regions.Logo;
+                        @UI.Thumbnail(logo.Id, 150)
+                    }
+                    catch (Exception)
+                    {
+                        @Html.Raw(title)
+                    }
+                </a>
 
-            @Html.Partial("_LanguageSwitcher")
-            <p class="site-desc">
-                @try
-                {
-                    MultilingualText field = global.Regions.SiteDesc;
-                    @Html.DisplayFor(m => field, new { raw = true })
-                }
-                catch (Exception)
-                {
-                    @Site.SiteDescription
-                }
-            </p>
-            <navigation role="main-navigation">
-                @UI.Menu(StopLevel: 1)
-            </navigation>
-        </div>
-    </header>
+                @Html.Partial("_LanguageSwitcher")
+                <p class="site-desc">
+                    @try
+                    {
+                        MultilingualText field = global.Regions.SiteDesc;
+                        @Html.DisplayFor(m => field, new { raw = true })
+                    }
+                    catch (Exception)
+                    {
+                        @Site.SiteDescription
+                    }
+                </p>
+                <navigation role="main-navigation">
+                    @UI.Menu(StopLevel: 1)
+                </navigation>
+            </div>
+        </header>
+    }
     <div class="wrapper">
         @RenderBody()
     </div>

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Catfish.Resources {
+namespace Catfish.Resources.Views.Shared.DisplayTemplates {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Catfish.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Global {
+    public class AdvanceSearchContainer {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Global() {
+        internal AdvanceSearchContainer() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Catfish.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Catfish.Resources.Global", typeof(Global).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Catfish.Resources.Views.Shared.DisplayTemplates.AdvanceSearchContainer", typeof(AdvanceSearchContainer).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,47 +61,29 @@ namespace Catfish.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to en.
+        ///   Looks up a localized string similar to Keywords.
         /// </summary>
-        public static string lang {
+        public static string GeneralSearch {
             get {
-                return ResourceManager.GetString("lang", resourceCulture);
+                return ResourceManager.GetString("GeneralSearch", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading....
+        ///   Looks up a localized string similar to Auto Complete.
         /// </summary>
-        public static string Loading {
+        public static string IsAutoComplete {
             get {
-                return ResourceManager.GetString("Loading", resourceCulture);
+                return ResourceManager.GetString("IsAutoComplete", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No.
+        ///   Looks up a localized string similar to Multiselect.
         /// </summary>
-        public static string No {
+        public static string IsMultiple {
             get {
-                return ResourceManager.GetString("No", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Submit.
-        /// </summary>
-        public static string Submit {
-            get {
-                return ResourceManager.GetString("Submit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Yes.
-        /// </summary>
-        public static string Yes {
-            get {
-                return ResourceManager.GetString("Yes", resourceCulture);
+                return ResourceManager.GetString("IsMultiple", resourceCulture);
             }
         }
     }

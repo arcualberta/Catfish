@@ -13,62 +13,74 @@
     </style>
    
    
-       
-       @foreach (var m in Model.Mappings)
-       {
-           var fType = m.Field.GetType();
-           var id = "value_" + (m.MetadataSet.Guid.Replace("-", "_")) + "_" + (m.Field.Guid.Replace("-", "_")) + "_";
+       <form method="get" action="#">
+           @if (Model.HasGeneralSearch)
+           {
+               <div class="row general-search advanceSearchContainerInput" data-searchid="value_*_">
+                   <div class="field-title">@Catfish.Resources.Views.Shared.DisplayTemplates.AdvanceSearchContainer.GeneralSearch</div>
+                   <div class="search-entry divKeyword">
+                       <input type="text"/>
+                   </div>
+               </div>
+           }
 
-        <div class="row advanceSearchContainerInput" data-searchid="@id">
-            <div class="field-title">@m.Label</div>
-            @if (fType.FullName == "Catfish.Core.Models.Forms.NumberField" || fType.FullName == "Catfish.Core.Models.Forms.DateField")
-            {
-                //number field or Date field
-                <div class="search-entry divNumber">
-                    <span class="label-default field-sub-title">From</span><input type="text" id="@id-From"/>
-                    <span class="label-default field-sub-title">To</span><input type="text" id="@id-To"/>
-                </div>
+           @foreach (var m in Model.Mappings)
+           {
+               var fType = m.Field.GetType();
+               var id = "value_" + (m.MetadataSet.Guid.Replace("-", "_")) + "_" + (m.Field.Guid.Replace("-", "_")) + "_";
+               var field = Model.Fields[i];
 
-            }
-            else if (typeof(Catfish.Core.Models.Forms.OptionsField).IsAssignableFrom(fType))
-            {
-                if (Model.Multiples[i])
+            <div class="row advanceSearchContainerInput" data-searchid="@id">
+                <div class="field-title">@m.Label</div>
+                @if (fType.FullName == "Catfish.Core.Models.Forms.NumberField" || fType.FullName == "Catfish.Core.Models.Forms.DateField")
                 {
-                    <div class="search-entry divCheckbox">
-                        <ul>
-                            @foreach (var option in ((Catfish.Core.Models.Forms.OptionsField)m.Field).Options)
-                            {
-                                var nm = "AdvanceSearchContainer-Chkbox";
-                                <li>
-                                    <input type="checkbox" name="@nm" value="@option.Guid" />
-                                    <span>@option.Value[0].Value</span>
-                                </li>
-                            }
-                        </ul>
+                    //number field or Date field
+                    <div class="search-entry divNumber">
+                        <span class="label-default field-sub-title">From</span><input type="text" class="search-from @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)" id="@id-From"/>
+                        <span class="label-default field-sub-title">To</span><input type="text" class="search-to @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)" id="@id-To"/>
                     </div>
+
                 }
-                else
+                else if (typeof(Catfish.Core.Models.Forms.OptionsField).IsAssignableFrom(fType))
                 {
-                    @:<div class="search-entry divDropDownList">
-                        var options = new SelectList(((Catfish.Core.Models.Forms.OptionsField)m.Field).Options, "Guid", "Value[0].Value");
-                    var nm = "AdvanceSearchContainer-DropdownList";
-                        @Html.DropDownList(@nm, options)
-                    @:</div>
+                    if (field.IsMultiple)
+                    {
+                        <div class="search-entry divCheckbox">
+                            <ul>
+                                @foreach (var option in ((Catfish.Core.Models.Forms.OptionsField)m.Field).Options)
+                                {
+                                    var nm = "AdvanceSearchContainer-Chkbox";
+                                    <li>
+                                        <input type="checkbox" name="@nm" value="@option.Guid"/>
+                                        <span>@option.Value[0].Value</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        @:<div class="search-entry divDropDownList">
+                            var options = new SelectList(((Catfish.Core.Models.Forms.OptionsField)m.Field).Options, "Guid", "Value[0].Value");
+                        var nm = "AdvanceSearchContainer-DropdownList";
+                            @Html.DropDownList(@nm, options)
+                        @:</div>
+                    }
                 }
-            }
-            else //(fType.FullName == "Catfish.Core.Models.Forms.TextField")
-            {
-                 <div class="search-entry divText">
-                   <input type = "text" class="input" id="@id-Text" /></div>
-            }
+                else //(fType.FullName == "Catfish.Core.Models.Forms.TextField")
+                {
+                     <div class="search-entry divText">
+                       <input type="text" class="input @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)"/>
+                     </div>
+                }
 
 
-        </div>
-           i++;
-       }
-
-      
-    <div class="row"><button id="AdvanceSearchContainer_Search_Button" class="btn btn-default"><span class="glyphicon glyphicon-search"></span>Search</button></div>
+            </div>
+               i++;
+           }
+           
+           <div class="row"><button id="AdvanceSearchContainer_Search_Button" class="btn btn-default search-button"><span class="glyphicon glyphicon-search"></span>Search</button></div>
+       </form>
 </div>
 
 @{ 
@@ -84,188 +96,244 @@
 }
 
 <script type="text/javascript">
-     const elmId = "AdvanceSearchContainer-";
-   $(function() {
-       var q = @Html.Raw(Json.Encode(qParam));
-       if(q)
-       {
-           reloadForm(q);
-       }
+    {
+        var isLoaded = false;
+        const elmId = "AdvanceSearchContainer-";
 
-        $("#AdvanceSearchContainer_Search_Button").click(function(){
-                var searchString="", searchValue;
+        function getSearchValueField(divContainer) {
+            var field = divContainer.closest("div[data-searchid]");
+            var searchEntries = field.children(".search-entry");
+            
+            return field.attr("data-searchid") + "txt_en";
+        }
 
-                var rows = $(".advanceSearchContainerInput");
+        function solrEscapeValue(input) {
+            return input.replace(/\\/g, "\\").replace(/\(/g, "(").replace(/\)/g, ")");
+        }
 
-                rows.each(function(index){
-                    var searchId = $(this).attr("data-searchid");
-                    var r = $(this);
-                    if (r.children(".divText").length > 0)
-                    {
-                        var id = searchId + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
-                         searchValue = $("#" + id).val();
-                         if(searchValue.length > 0)
-                        {
-                         searchString = searchString.length > 0 ? searchString + " && " : "";
-                         searchString = searchString + (searchId + 'txt_en:"' + searchValue + '"');
+        $("#@cssId form").submit(function (ev) {
+            ev.preventDefault();
+
+            var searchString = "", searchValue;
+
+            var rows = $("#@cssId .advanceSearchContainerInput");
+
+            rows.each(function (index) {
+                var searchId = $(this).attr("data-searchid");
+                var r = $(this);
+                r.children(".search-entry").each(function (index) {
+                    var entry = $(this);
+                    var searchValue;
+
+                    if (entry.hasClass("divText")) {
+                        searchValue = entry.children("input").val();
+                        if (searchValue.length > 0) {
+                            searchString = searchString.length > 0 ? searchString + " && " : "";
+                            searchString = searchString + (searchId + 'txt_en:"' + searchValue + '"');
                         }
-                    }
-                    else if (r.children(".divNumber").length > 0)
-                    {
-                        var id = searchId;// + "-From"; //single text box id "AdvanceSearchContainer-{Label}-Text"
-                         var from = $("#" + id + "-From").val();
+                    } else if (entry.hasClass("divNumber")) {
+                        var from = entry.find(".search-from").val();
+                        var to = entry.find(".search-to").val();
 
-                         var to = $("#" + id + "-To").val();
-                          if(from.length > 0 || to.length > 0 ){
-                                from = from ? from : '*';
-                                to = to? to : '*';
-                                searchString = searchString.length > 0 ? searchString + " && " : "";
-                                searchString = searchString + (searchId + "i" + ':[' + from + ' TO ' + to + ']');
-                          }
-                    }
-                    else if (r.children(".divCheckbox").length > 0)
-                    {
-                         var name =elmId + "Chkbox";
-                         var selectedValues=[];
-                         var checkboxes = $('input[name="'+ name +'"]');
-                         selectedValues = checkboxes.filter(":checked").map(function () {
-                                  return this.parentElement.innerText;
-                         }).get()
+                        if (from.length > 0 || to.length > 0) {
+                            from = from ? from : '*';
+                            to = to ? to : '*';
+                            searchString = searchString.length > 0 ? searchString + " && " : "";
+                            searchString = searchString + (searchId + "i" + ':[' + from + ' TO ' + to + ']');
+                        }
+                    } else if (entry.hasClass("divCheckbox")) {
+                        var name = elmId + "Chkbox";
+                        var selectedValues = [];
+                        var checkboxes = entry.find('input[type="checkbox"]');
+                        selectedValues = checkboxes.filter(":checked").map(function () {
+                            return this.parentElement.innerText;
+                        }).get()
 
-                          if(selectedValues.length > 0){
+                        if (selectedValues.length > 0) {
 
-                           var searchOption="(";
-                           for(var i =0; i < selectedValues.length; i++)
-                           {
-                                 if(i > 0)
-                                 { searchOption += " || "; }
+                            var searchOption = "(";
+                            for (var i = 0; i < selectedValues.length; i++) {
+                                if (i > 0)
+                                { searchOption += " || "; }
 
-                                 searchOption += "option_" + searchId + 'txt_en:"' + selectedValues[i].trim() + '"';
+                                searchOption += "option_" + searchId + 'txt_en:"' + selectedValues[i].trim() + '"';
                             }
-                            searchOption=searchOption +")";
+                            searchOption = searchOption + ")";
                             searchString = searchString.length > 0 ? searchString + " && " : "";
                             searchString = searchString + searchOption;
-                         }
-                    }
-                    else if (r.children(".divDropDownList").length > 0)
-                    {
-                         var id ="region_Value_" + elmId + "DropdownList";
-                         selectedValue = $("#" + id +" option:selected").text();
-                         if(selectedValue.length > 0){
+                        }
+                    } else if (entry.hasClass("divDropDownList")) {
+                        selectedValue = entry.find("select option:selected").text();
+                        if (selectedValue.length > 0) {
                             searchString = searchString.length > 0 ? searchString + " && " : "";
                             searchString = searchString + ("option_" + searchId + 'txt_en:"' + selectedValue + '"');
-                         }
+                        }
+                    } else if (entry.hasClass("divKeyword")) {
+                        var check = entry.children("input").val().trim();
+                        var values = check.split(/\s/g);
+
+                        if (check.length > 0 && values.length > 0) {
+                            searchString = searchString.length > 0 ? searchString + " && " : "";
+                            searchString += '(';
+                            searchString += solrEscapeValue(values[0]);
+
+                            for (var v = 1; v < values.length; ++v) {
+                                searchString += " || " + solrEscapeValue(values[v]);
+                            }
+
+                            searchString += ')';
+                        }
                     }
-
                 });
-
-                // Search using form
-                var form = $("<form></form>");
-                form.attr("method", "GET");
-                form.attr("action", ".");
-
-                var qField = $("<input></input>");
-                qField.attr("name", "q");
-                qField.attr("type", "hidden");
-                qField.attr("value", searchString);
-                form.append(qField);
-
-                $("body").append(form);
-                form[0].submit();
             });
-    });
+
+            // Search using form
+            if (searchString.trim().length <= 0) {
+                searchString = "*:*";
+            }
+
+            window.updateUrlParameters({ q: searchString });
+            return false;
+        });
+
+        function reloadForm(query)
+        {
+            var form = $("#@cssId form");
+            var contents = query.split(" && ");
+
+            for (var index = 0; index < contents.length; index++) {
+                var c = contents[index].trim();
+                var id = "";
+                if (c.indexOf("(") == 0) {
+                    var keywords = c.substr(1, c.length - 2).replace(/\s\|\|\s/g, " ");
+                    form.find(".divKeyword input").val(keywords);
+                }
+                else if (c.indexOf("(") > 0) {
+                    //options field --checkboxes
+                    var start = c.indexOf("(") + 1;
+                    var end = c.indexOf(")");
+
+                    var orVals = c.substr(start, end).split(" || ");
+                    for (var i = 0; i < orVals.length; i++) {
+                        var v = orVals[i];
+                        var start = v.indexOf("value");
+                        var end = v.indexOf("txt") - start;
+                        var idValue = v.substr(start, end);
+                        var div = form.find("div[data-searchid='" + idValue + "']");
 
 
-    function reloadForm(params)
-    {
-        var contents = params.split(" && ");
-         for(var index = 0; index < contents.length; index++){
-            var c = contents[index];
-             var id="";
-          if(c.indexOf("(") > -1 )
-          {
-               //options field --checkboxes
-              var start = c.indexOf("(") + 1;
-              var end = c.indexOf(")");
+                        var optText = (orVals[i].split(":")[1]).replace(/[*")]+/g, '')
 
-              var orVals = c.substr(start,end).split(" || ");
-              for(var i=0; i< orVals.length ; i++)
-               {
-                    var v = orVals[i];
-                    var start = v.indexOf("value");
-                    var end = v.indexOf("txt") - start;
-                    var idValue = v.substr(start,end );
-                    var div = $("div[data-searchid='"+ idValue +"']");
+                        var name = elmId + "Chkbox";
 
-
-                    var optText = (orVals[i].split(":")[1]).replace(/[*")]+/g, '')
-
-                     var name =elmId + "Chkbox";
-
-                     var checkboxes = $('input[name="'+ name +'"]');
-                     for(var j=0; j<checkboxes.length; j++)
-                     {
-                         if((checkboxes[j].nextSibling.parentElement.innerText).trim() === optText.trim())
-                         {
-                                checkboxes[j].checked=true;
+                        var checkboxes = div.find('input[type="checkbox"]');
+                        for (var j = 0; j < checkboxes.length; j++) {
+                            if ((checkboxes[j].nextSibling.parentElement.innerText).trim() === optText.trim()) {
+                                checkboxes[j].checked = true;
                                 break;
-                         }
-                     }
-               }
-
-          }
-          else{
-               c = contents[index].split(":")[0];
-             var contentValue = (contents[index].split(":")[1]).replace(/[*"]+/g, '')
-             if(c.indexOf("option") > -1)  //dropdownlist
-             {
-                     var start = c.indexOf("option");
-                  var end = c.indexOf("txt") - start;
-                  var idValue = c.substr(start,end );
-                  var div = $("div[data-searchid='"+ idValue +"']");
-                  var id ="region_Value_" + elmId + "DropdownList";
-
-                 $("#" + id +" option").each(function () {
-                    if ($(this).html() === contentValue) {
-                        $(this).attr("selected", "selected");
-                        return;
+                            }
+                        }
                     }
-                });
-                  //$("#" + id + " option[text='" + contentValue + "']").attr("selected","selected");
-              }
 
-             else if(c.indexOf("_i") > -1) //number field
-             {
-                 var start = c.indexOf("value");
-                  var end = c.indexOf("i") - start;
-                  var idValue = c.substr(start,end );
-                  var div = $("div[data-searchid='"+ idValue +"']");
-                  var vals = (contentValue.substr(1, (contentValue.length -2))).split(" ");
-                  var fromVal = vals[0].trim();
-                  var toVal =vals[vals.length - 1];
-                 
-                  id = idValue + "-From"; //single text box id "AdvanceSearchContainer-{Label}-Text"
-                  fromVal = fromVal?fromVal : '';
-                  $("#" + id).val(fromVal);
+                }
+                else {
+                    c = contents[index].split(":")[0];
+                    var contentValue = (contents[index].split(":")[1]).replace(/[*"]+/g, '')
+                    if (c.indexOf("option") > -1)  //dropdownlist
+                    {
+                        var start = c.indexOf("option");
+                        var end = c.indexOf("txt") - start;
+                        var idValue = c.substr(start, end);
+                        var div = form.find("div[data-searchid='" + idValue + "']");
+                        var id = "region_Value_" + elmId + "DropdownList";
 
-                  id = idValue + "-To"; //single text box id "AdvanceSearchContainer-{Label}-Text"
-                  toVal = toVal?toVal : '';
-                  $("#" + id).val(toVal);
-             }
-             else if(c.indexOf("txt") > -1) //text field
-             {
-                  var start = c.indexOf("value");
-                  var end = c.indexOf("txt") - start;
-                  var idValue = c.substr(start,end );
-                  var div = $("div[data-searchid='"+ idValue +"']");
-                  id = idValue + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
-                  $("#" + id).val(contentValue);
-             }
-          }
+                        div.find("select option").each(function () {
+                            if ($(this).html() === contentValue) {
+                                $(this).attr("selected", "selected");
+                                return;
+                            }
+                        });
+                        //$("#" + id + " option[text='" + contentValue + "']").attr("selected","selected");
+                    }
 
-       }
-     //   alert(params);
+                    else if (c.indexOf("_i") > -1) //number field
+                    {
+                        var start = c.indexOf("value");
+                        var end = c.indexOf("i") - start;
+                        var idValue = c.substr(start, end);
+                        var div = $("div[data-searchid='" + idValue + "']");
+                        var vals = (contentValue.substr(1, (contentValue.length - 2))).split(" ");
+                        var fromVal = vals[0].trim();
+                        var toVal = vals[vals.length - 1];
+
+                        id = idValue + "-From"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                        fromVal = fromVal ? fromVal : '';
+                        div.find(".search-from").val(fromVal);
+
+                        id = idValue + "-To"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                        toVal = toVal ? toVal : '';
+                        div.find(".search-to").val(toVal);
+                    }
+                    else if (c.indexOf("txt") > -1) //text field
+                    {
+                        var start = c.indexOf("value");
+                        var end = c.indexOf("txt") - start;
+                        var idValue = c.substr(start, end);
+                        var div = $("div[data-searchid='" + idValue + "']");
+                        id = idValue + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
+                        div.find("input").val(contentValue);
+                    }
+                }
+
+            }
+            //   alert(params);
 
 
+        }
+
+
+        window.addEventListener('updatedparams', function (e) {
+            var params = e.detail;
+            var triggerUpdate = !isLoaded;
+            var query = "*:*";
+
+            if ('q' in params) {
+                triggerUpdate = true;
+                query = params['q'];
+            }
+
+            if (triggerUpdate) {
+                reloadForm(query);
+            }
+        });
+
+        function autocompleteCall(request, response) {
+            var field = getSearchValueField($(this.element));
+
+            $.ajax({
+                method: 'GET',
+                url: @Html.Raw(Json.Encode(Url.Action("AutoCompleteField", "Items"))),
+                data: {
+                    fieldId: field,
+                    partialText: request.term,
+                    rows: 10
+                },
+                dataType: 'json',
+                success: function (result) {
+                    var result = $.unique(result.grouped[field].groups.map(function (m) { return m.doclist.docs[0][field]; }));
+
+                    response(result);
+                },
+                error: function (err) {
+                    console.error(err);
+                    response([]);
+                }
+            });
+        }
+
+        $("#@cssId  .autocomplete-text").autocomplete({
+            minLength: 1,
+            source: autocompleteCall
+        });
     }
 </script>

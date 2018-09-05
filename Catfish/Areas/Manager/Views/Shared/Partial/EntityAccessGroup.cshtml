@@ -29,10 +29,7 @@
             <tr>
                 <td>
                     <table>
-                        <tr>
-                            <td>@Html.LabelFor(m => m.BlockInheritance)</td>
-                            <td class="input" style="text-align:left">@Html.CheckBoxFor(m => m.BlockInheritance)</td>
-                        </tr>
+
                         <tr>
                             <td><label>Access Definitions</label></td>
                             <td class="input">
@@ -74,7 +71,6 @@
                                         <td>
 
                                             @Html.DropDownListFor(x => Model.SelectedAccessDefinition, new SelectList(Model.AvailableAccessDefinitions, "Value", "Text"), htmlAttributes: new { @class = "form-control" })
-
 
                                         </td>
                                         <td><button id="btnAddUserAccess" class="glyphicon glyphicon-plus-sign" onclick="AddUserAccessDefinition();return false;"></button></td>

@@ -12,11 +12,10 @@ namespace Catfish.Core.Models.Access
     {
         None     = 0,
         Read     = 1,
-        Write    = 2 | AccessMode.Read,
-        Append   = 4 | AccessMode.Read,
-        Control  = 8 | AccessMode.Read,
-
-        All = AccessMode.Read | AccessMode.Write | AccessMode.Append | AccessMode.Control
+        // Use 1 to add read modes to rest of values
+        Write    = 2 | 1,
+        Append   = 4 | 1,
+        Control  = 8 | 1
     }
 
     public static class AccessModeMethods
@@ -32,17 +31,11 @@ namespace Catfish.Core.Models.Access
 
             foreach (AccessMode accessMode in Enum.GetValues(typeof(AccessMode)))
             {
-                if (mode.HasMode(accessMode))
+                if (accessMode != AccessMode.None && mode.HasMode(accessMode))
                 {
                     accessModes.Add((AccessMode)accessMode);
                 }
-            }
-
-            //XXX If we need to check agains AccessMode.None add here
-            //if (accessModes.Count == 0)
-            //{
-            //    accessModes.Add(AccessMode.None);
-            //}
+            }            
 
             return accessModes;
         }
@@ -107,12 +100,6 @@ namespace Catfish.Core.Models.Access
                         accessModes.Add((AccessMode)accessMode);
                     }
                 }
-
-                //XXX If we need to check agains AccessMode.None add here
-                //if (accessModes.Count == 0)
-                //{
-                //    accessModes.Add(AccessMode.None);
-                //}
 
                 return accessModes;
             }            

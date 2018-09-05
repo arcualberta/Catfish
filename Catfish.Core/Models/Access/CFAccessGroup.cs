@@ -11,12 +11,11 @@ namespace Catfish.Core.Models.Access
 {
     public class CFAccessGroup : CFXmlModel
     {
-        public static string TagName {
-            get
-            {
-                return "access-group";                
-            }
-        }
+        
+        public  static string TagName { get; } = "access-group";
+
+        private static string IsInheritedAttribute { get; } = "is-inherited";
+        private static string AccessGuidElementName { get; } = "access-guid";
 
         public override string GetTagName() { return TagName; }
 
@@ -40,51 +39,73 @@ namespace Catfish.Core.Models.Access
             set
             {
 
-                RemoveAllElements("access-group", Data);                
+                RemoveAllElements(TagName, Data);                
                 InitializeAccessDefinition(value);
             }
         }
 
         [NotMapped]
-        public List<Guid> AccessGuids
+        public bool IsInherited
         {
             get
             {
                 try
                 {
-                    XElement accessGuidsElement = Data.Element("access-guids");
-                 
-                    List<XElement> accessGuidsElements = accessGuidsElement.Elements("access-guid").ToList();
-                    List<Guid> accessGuids = new List<Guid>();
-
-                    foreach (XElement accessGuidElement in accessGuidsElements)
+                    XAttribute isInherited = Data.Attribute(IsInheritedAttribute);
+                    if (isInherited != null)
                     {
-                        accessGuids.Add(new Guid(accessGuidElement.Value));
+                        return Convert.ToBoolean(isInherited.Value);
                     }
-
-                    return accessGuids;
+                    return true;
                 }
                 catch
                 {
-                    return null;
+                    return true;
                 }
-
             }
 
             set
             {
-                XElement accessGuids = Data.Element("access-guids");
-                if (accessGuids == null)
+                XAttribute isInherited = Data.Attribute(IsInheritedAttribute);
+                if (isInherited == null)
                 {
-                    accessGuids = new XElement("access-guids");
-                    Data.Add(accessGuids);
+                    isInherited = new XAttribute(IsInheritedAttribute, value.ToString());                    
+                    Data.Add(isInherited);
                 }
-                foreach (Guid accessGuid in value)
+
+                isInherited.Value = value.ToString();
+            }
+        }
+
+        [NotMapped]
+        public Guid AccessGuid
+        {
+            get
+            {
+                try
                 {
-                    XElement accessGuidElement = new XElement("access-guid");
-                    accessGuidElement.Value = accessGuid.ToString();
-                    accessGuids.Add(accessGuidElement);
+
+                    XElement accessGuidElement = Data.Element(AccessGuidElementName);
+                    return new Guid(accessGuidElement.Value);
                 }
+                catch
+                {
+                    // Empty Guid by default
+                    return new Guid();
+                }
+            }
+
+            set
+            {
+                XElement accessGuid = Data.Element(AccessGuidElementName);
+                if (accessGuid == null)
+                {
+                    accessGuid = new XElement(AccessGuidElementName);
+                    Data.Add(accessGuid);
+                }
+
+                accessGuid.Value = value.ToString();
+                             
             }
         }
 
@@ -95,9 +116,7 @@ namespace Catfish.Core.Models.Access
 
         public CFAccessGroup()
         {
-            AccessGuids = new List<System.Guid>();
-        }
-        
-
+            //AccessGuids = new List<System.Guid>();
+        }             
     }
 }
