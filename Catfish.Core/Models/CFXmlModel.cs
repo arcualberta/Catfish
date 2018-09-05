@@ -18,14 +18,16 @@ using System.Xml.XPath;
 
 namespace Catfish.Core.Models
 {
+
+    //public static class CF
+
     [Serializable]
     public abstract class CFXmlModel : IDisposable
     {
         public abstract string GetTagName();
-
         public int Id { get; set; }
-
         public string MappedGuid { get; set; }
+        public static Action<CFXmlModel> InitializeFromWeb = (m) => {};
 
         [NotMapped]
         [IgnoreDataMember]
@@ -125,17 +127,60 @@ namespace Catfish.Core.Models
             }
         }
 
+        private XAttribute GetAttributeByName(string attributeName) 
+        {
+            XAttribute att = Data.Attribute(attributeName);
+            if (att == null || string.IsNullOrEmpty(att.Value))
+            {
+                Data.SetAttributeValue(attributeName, "");
+                att = Data.Attribute(attributeName);
+            }
+
+            return att;
+        }
+
+        [NotMapped]
+        [IgnoreDataMember]
+        public string CreatedByName
+        {
+            get
+            {                
+                return GetAttributeByName("created-by-name").Value;
+            }
+            set
+            {
+                Data.SetAttributeValue("created-by-name", value);
+            }
+        }
+
+        [NotMapped]
+        [IgnoreDataMember]
+        public string CreatedByGuid
+        {
+            get
+            {
+                return GetAttributeByName("created-by-guid").Value;
+            }
+            set
+            {
+                Data.SetAttributeValue("created-by-guid", value);
+            }
+        }
+
 
 
         public CFXmlModel()
         {
+#pragma warning disable CS0612 // Type or member is obsolete
             DefaultLanguage = "en";
+#pragma warning restore CS0612 // Type or member is obsolete
             Data = new XElement(GetTagName());
             Created = DateTime.Now;
             Data.SetAttributeValue("model-type", this.GetType().AssemblyQualifiedName);
             Data.SetAttributeValue("IsRequired", false);
             MappedGuid = Guid; //Creates and uses the guid.
             mChangeLog = new List<CFAuditChangeLog>();
+            InitializeFromWeb(this);
         }
 
         public XElement GetWrapper(string tagName, bool createIfNotExist, bool enforceGuid)
@@ -536,7 +581,9 @@ namespace Catfish.Core.Models
             var type = Type.GetType(typeString);
             CFXmlModel model = Activator.CreateInstance(type) as CFXmlModel;
             model.Data = ele;
+#pragma warning disable CS0612 // Type or member is obsolete
             model.DefaultLanguage = defaultLang;
+#pragma warning restore CS0612 // Type or member is obsolete
             return model;
         }
 
