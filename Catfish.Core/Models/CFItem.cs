@@ -16,8 +16,7 @@ namespace Catfish.Core.Models
         public virtual ICollection<CFAggregation> ParentRelations { get; set; }
 
         public CFItem()
-            : base()
-        {
+        { 
             ParentRelations = new List<CFAggregation>();
             Data.Add(new XElement("data"));
         }
