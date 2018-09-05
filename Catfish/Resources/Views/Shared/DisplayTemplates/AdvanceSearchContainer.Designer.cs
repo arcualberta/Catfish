@@ -61,15 +61,6 @@ namespace Catfish.Resources.Views.Shared.DisplayTemplates {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keywords.
-        /// </summary>
-        public static string GeneralSearch {
-            get {
-                return ResourceManager.GetString("GeneralSearch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Auto Complete.
         /// </summary>
         public static string IsAutoComplete {
