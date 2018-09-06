@@ -75,7 +75,7 @@ namespace Catfish
                 SolrService.Init(solrString);
             }
 
-            CFXmlModel.InitializeFromWeb = (CFXmlModel model) =>
+            CFXmlModel.InitializeExternally = (CFXmlModel model) =>
             {
                 string guid = HttpContext.Current.User.Identity.Name;
                 model.CreatedByGuid = guid;                

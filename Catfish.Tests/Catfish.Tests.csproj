@@ -151,6 +151,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mocks\MockCFXmlModel.cs" />
+    <Compile Include="Models\CFXmlModelTests.cs" />
     <Compile Include="Views\BaseIntegration.cs" />
     <Compile Include="Views\AccessIntegration.cs" />
     <Compile Include="Api\ItemsControllerTest.cs" />
