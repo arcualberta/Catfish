@@ -27,7 +27,11 @@ namespace Catfish.Core.Models
         public abstract string GetTagName();
         public int Id { get; set; }
         public string MappedGuid { get; set; }
-        public static Action<CFXmlModel> InitializeFromWeb = (m) => {};
+        public static Action<CFXmlModel> InitializeExternally = (m) => {};
+
+        private const string CreatedByNameAttribute = "created-by-name";
+        private const string CreatedByGuidAttribute = "created-by-guid";
+
 
         [NotMapped]
         [IgnoreDataMember]
@@ -145,11 +149,17 @@ namespace Catfish.Core.Models
         {
             get
             {                
-                return GetAttributeByName("created-by-name").Value;
+                return GetAttributeByName(CreatedByNameAttribute).Value;
             }
             set
             {
-                Data.SetAttributeValue("created-by-name", value);
+                string attributeValue = GetAttributeByName(CreatedByNameAttribute).Value;
+                // faling silently by design
+                if (string.IsNullOrEmpty(attributeValue))
+                {
+                    Data.SetAttributeValue(CreatedByNameAttribute, value);
+                }
+                
             }
         }
 
@@ -159,11 +169,17 @@ namespace Catfish.Core.Models
         {
             get
             {
-                return GetAttributeByName("created-by-guid").Value;
+                return GetAttributeByName(CreatedByGuidAttribute).Value;
             }
             set
             {
-                Data.SetAttributeValue("created-by-guid", value);
+                //Data.SetAttributeValue(CreatedByGuidAttribute, value);
+                string attributeValue = GetAttributeByName(CreatedByGuidAttribute).Value;
+                // faling silently by design
+                if (string.IsNullOrEmpty(attributeValue))
+                {
+                    Data.SetAttributeValue(CreatedByGuidAttribute, value);
+                }
             }
         }
 
@@ -180,7 +196,7 @@ namespace Catfish.Core.Models
             Data.SetAttributeValue("IsRequired", false);
             MappedGuid = Guid; //Creates and uses the guid.
             mChangeLog = new List<CFAuditChangeLog>();
-            InitializeFromWeb(this);
+            InitializeExternally(this);
         }
 
         public XElement GetWrapper(string tagName, bool createIfNotExist, bool enforceGuid)
