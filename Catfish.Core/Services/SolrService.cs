@@ -162,7 +162,37 @@ namespace Catfish.Core.Services
 
             return null;
         }
-        
+
+        public SolrQueryResults<SolrIndex> GetMedian(string field, string query)
+        {
+            if (SolrService.IsInitialized)
+            {
+                var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
+                var results = solr.Query(query,new QueryOptions
+                {
+                    Rows = 0,
+                    ExtraParams = new KeyValuePair<string, string>[]
+                    {
+                        new KeyValuePair<string,string>("facet", "on"),
+                        new KeyValuePair<string, string>("facet.field", field),
+                        new KeyValuePair<string, string>("facet.query", "percentile(50)")
+                    }
+                    //,Facet = new FacetParameters
+                    //{
+                    //    Queries = new[] { 
+                    //                       new SolrFacetQuery("percentile(50)"),
+                    //                       new SolrFacetFieldQuery(field)
+                    //                    }
+                    //}
+                });
+
+                return results;
+            }
+
+            return null;
+        }
+
+
         public decimal SumField(string field, string query = "*:*")
         {
             var stats = GetStats(field, query);
@@ -230,6 +260,19 @@ namespace Catfish.Core.Services
             if(stats != null && stats[field].Count > 0)
             {
                 return Convert.ToDecimal(stats[field].StdDev);
+            }
+
+            return 0m;
+        }
+
+        public decimal MedianField(string field, string query = "*:*")
+        {
+            //query = "percentile(50)";
+            var stats = GetMedian(field, query);
+
+            if (stats != null && stats.NumFound > 0)
+            {
+                return Convert.ToDecimal(stats.NumFound);
             }
 
             return 0m;
