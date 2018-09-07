@@ -177,13 +177,7 @@ namespace Catfish.Core.Services
                         new KeyValuePair<string, string>("facet.field", field),
                         new KeyValuePair<string, string>("facet.query", "percentile(50)")
                     }
-                    //,Facet = new FacetParameters
-                    //{
-                    //    Queries = new[] { 
-                    //                       new SolrFacetQuery("percentile(50)"),
-                    //                       new SolrFacetFieldQuery(field)
-                    //                    }
-                    //}
+                    
                 });
 
                 return results;
