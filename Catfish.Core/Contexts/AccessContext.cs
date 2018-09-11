@@ -28,6 +28,7 @@ namespace Catfish.Core.Contexts
                 List<Guid> guids = new List<Guid>();
 
                 guids.Add(UserGuid);
+
                 guids.AddRange(
                     Db.UserListEntries
                     .Where(x => x.UserId == UserGuid)

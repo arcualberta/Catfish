@@ -57,7 +57,7 @@
         </div>
 }
 
-<div id="@context">
+<div id="@context" class="form-builder">
     @*@using (ko.Html.Form(saveAction, controller, null, new { id = context + "Form" }))*@
     @using (Html.BeginForm(saveAction, controller, new { id = Model.Id }, FormMethod.Post))
     {

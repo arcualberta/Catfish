@@ -24,12 +24,11 @@ namespace Catfish.Core.Models
             : base("piranha")
         {
             solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
-
         }
 
         public CatfishDbContext(System.Data.Common.DbConnection connection, bool contextOwnsConnection) : base(connection, contextOwnsConnection)
         {
-
+            solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
         }
 
         private void UpdateSolr()

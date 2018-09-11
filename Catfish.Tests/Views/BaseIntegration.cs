@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
 using Catfish.Core.Models.Access;
+using System.Data.Common;
 
 namespace Catfish.Tests.Views
 {
@@ -104,12 +105,11 @@ namespace Catfish.Tests.Views
         public string[] MetadataSets;
     }
 
-    public class BaseIntegration<TWebDriver> where TWebDriver : IWebDriver, new()
+    public abstract class BaseIntegration
     {
-        protected IWebDriver Driver;
-        protected string ManagerUrl;
-        protected const string AddLabel = "Add new";
-        protected const string SaveLabel = "Save";
+        protected const string AddId = "toolbar_add_button";
+        protected const string SaveId = "toolbar_save_button";
+        
         protected const string SystemLabel = "SYSTEM";
         protected const string ContentLabel = "CONTENT";
         protected const string SettingsLabel = "SETTINGS";
@@ -122,20 +122,86 @@ namespace Catfish.Tests.Views
         protected const string AccessDefinitionLabel = "Access Definitions";
         protected const string MetadataSetsLabel = "Metadata Sets";
         protected const string EntityTypesLabel = "Entity Types";
+    }
+
+    public class BaseIntegration<TWebDriver> : BaseIntegration where TWebDriver : IWebDriver, new()
+    {
+        protected IWebDriver Driver;
+        protected string ManagerUrl;
+
+        protected IJavaScriptExecutor JsExecutor
+        {
+            get
+            {
+                return (IJavaScriptExecutor)Driver;
+            }
+        }
 
         [SetUp]
-        public void SetUp()
+        public virtual void SetUp()
         {
+            ResetDatabase();
+
             this.Driver = new TWebDriver();
             this.ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
             this.LoginAsAdmin();
         }
 
         [TearDown]
-        public void TearDown()
+        public virtual void TearDown()
         {
-            //this.Driver.Close();
+            this.Driver.Close();
         }
+
+        protected void ResetDatabase()
+        {
+            //ClearDatabase();
+            //ClearSolr();
+
+        }
+
+        private void ClearDatabase()
+        {
+            ConnectionStringSettingsCollection settings = ConfigurationManager.ConnectionStrings;
+            ConnectionStringSettings connectionString = null;
+
+            if(settings != null)
+            {
+                foreach(ConnectionStringSettings s in settings)
+                {
+                    if(s.Name == "pirahna")
+                    {
+                        connectionString = s;
+                    }
+                }
+            }
+
+            Assert.NotNull(connectionString);
+
+            try
+            {
+                DbProviderFactory factory = DbProviderFactories.GetFactory(connectionString.ProviderName);
+                DbConnection connection = factory.CreateConnection();
+                connection.ConnectionString = connectionString.ConnectionString;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+
+            //TODO: Clear the database
+        }
+
+        private void ClearSolr()
+        {
+
+        }
+
+        private void CreateAdmin()
+        {
+
+        }
+
 
         protected void LoginAsAdmin()
         {
@@ -154,6 +220,12 @@ namespace Catfish.Tests.Views
         protected void Logout()
         {
             this.Driver.FindElement(By.LinkText(LogoutLabel)).Click();
+        }
+
+        protected void WaitUnitVisibleById(int milliseconds, string id)
+        {
+            WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromMilliseconds(milliseconds));
+            wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.Id(id)));
         }
 
         protected void WaitMethod(int tries, int milliseonds, Func<bool> myMethod)
@@ -191,18 +263,39 @@ namespace Catfish.Tests.Views
             Action<IIntegrationParameters> fillValues
             )
         {
-            Navigate(new string[] { mainMenu, submenu, AddLabel });
+            Navigate(new string[] { mainMenu, submenu });
+
+            Click(AddId);
 
             fillValues(parameters);
 
-            Driver.FindElement(By.LinkText(SaveLabel)).Click();
+            Click(SaveId);
         }
 
-        public void Navigate(IEnumerable<string> links)
+        public void Navigate(params string[] links)
         {
             foreach (string link in links)
             {
                 Driver.FindElement(By.LinkText(link)).Click();
+            }
+        }
+
+        public void Click(params string[] ids)
+        {
+            foreach(string id in ids)
+            {
+                IWebElement element = Driver.FindElement(By.Id(id));
+
+                Click(element);
+            }
+        }
+
+        public void Click(params IWebElement[] elements)
+        {
+            foreach(var element in elements)
+            {
+                IJavaScriptExecutor ex = (IJavaScriptExecutor)Driver;
+                ex.ExecuteScript("arguments[0].focus(); arguments[0].click()", element);
             }
         }
 
@@ -426,6 +519,23 @@ namespace Catfish.Tests.Views
 
 
 
+        }
+
+        protected IWebElement GetField(string cssPath)
+        {
+            return Driver.FindElement(By.CssSelector(cssPath));
+        }
+
+        protected string GetTextFieldValue(string cssPath)
+        {
+            IWebElement element = GetField(cssPath);
+
+            if(element != null)
+            {
+                return element.Text;
+            }
+
+            return null;
         }
 
     }

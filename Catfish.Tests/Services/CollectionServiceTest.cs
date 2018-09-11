@@ -1,7 +1,7 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Catfish.Tests.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 
 namespace Catfish.Tests.Services
 {
-    [TestClass]
-    public class CollectionServiceTest
+    [TestFixture]
+    public class CollectionServiceTest : BaseServiceTest
     {
         private CFCollection CreateCollection(CollectionService cs, int entityTypeId, string name, string description, bool store = false)
         {
@@ -29,7 +29,7 @@ namespace Catfish.Tests.Services
             return c;
         }
 
-        [TestMethod]
+        [Test]
         public void TestCreateCollection()
         {
             DatabaseHelper Dh = new DatabaseHelper(true);
@@ -44,7 +44,7 @@ namespace Catfish.Tests.Services
             Assert.AreEqual(description, c.Description);
         }
 
-        [TestMethod]
+        [Test]
         public void TestUpdateCollection()
         {
             DatabaseHelper Dh = new DatabaseHelper(true);
@@ -83,10 +83,10 @@ namespace Catfish.Tests.Services
             Assert.AreEqual(id, c2.Id);
         }
 
-        [Ignore]
+        [Ignore("Not yet implemented")]
         // This test uses Collection Service Get Collection with Guid, this is 
         // the only place this methods is used
-        [TestMethod]
+        [Test]
         public void TestGetCollection()
         {
             //DatabaseHelper Dh = new DatabaseHelper(true);
@@ -109,9 +109,9 @@ namespace Catfish.Tests.Services
             //Assert.AreEqual(c2.Content, c3.Content);
         }
 
-        [Ignore]
+        [Ignore("Not yet implemented")]
         // Need to figure out how to get collections using user identity
-        [TestMethod]
+        [Test]
         public void GetCollections()
         {
             //DatabaseHelper Dh = new DatabaseHelper(true);
@@ -122,9 +122,9 @@ namespace Catfish.Tests.Services
             //Assert.AreEqual(DatabaseHelper.TOTAL_COLLECTIONS, collections.Count());
         }
 
-        [Ignore]
+        [Ignore("Not yet implemented")]
         // Need to figure out how to get collections using user identity
-        [TestMethod]
+        [Test]
         public void DeleteCollection()
         {
             //DatabaseHelper Dh = new DatabaseHelper(true);

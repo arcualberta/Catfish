@@ -12,25 +12,33 @@ namespace Catfish.Core.Services
     {
         public static bool IsInitialized { get; private set; }
 
-        private static SolrConnection mSolr { get; set; }
+        private static ISolrConnection mSolr { get; set; }
 
         public static void Init(string server)
         {
             IsInitialized = false;
             if (!string.IsNullOrEmpty(server))
             {
-                mSolr = new SolrConnection(server);
-                Startup.Init<SolrIndex>(mSolr);
-                Startup.Init<Dictionary<string, object>>(mSolr);
+                ISolrConnection connection = new SolrConnection(server);
 
-                //TODO: Should we update the database here or have it in an external cron job
-
-                IsInitialized = true;
+                SolrService.Init(connection);
             }
             else
             {
                 throw new InvalidOperationException("The app parameter Solr Server string has not been defined.");
             }
+        }
+
+        public static void Init(ISolrConnection connection)
+        {
+            mSolr = connection;
+
+            Startup.Init<SolrIndex>(mSolr);
+            Startup.Init<Dictionary<string, object>>(mSolr);
+
+            //TODO: Should we update the database here or have it in an external cron job
+
+            IsInitialized = true;
         }
 
         public static string GetPartialMatichingText(string field, string text, int rows = 10)
