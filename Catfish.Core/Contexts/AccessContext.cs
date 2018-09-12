@@ -53,10 +53,11 @@ namespace Catfish.Core.Contexts
         [ThreadStatic]
         public static AccessContext current;
 
-        public AccessContext(Guid userGuid, bool isAdmin)
+        public AccessContext(Guid userGuid, bool isAdmin, CatfishDbContext db = null)
         {
             UserGuid = userGuid;
             IsAdmin = isAdmin;
+            mDb = db;
         }
 
         protected List<Guid> GetUserGuids()

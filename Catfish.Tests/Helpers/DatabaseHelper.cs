@@ -26,6 +26,7 @@ using SolrNet;
 using System.Threading.Tasks;
 using System.Text;
 using NUnit.Framework;
+using Catfish.Core.Contexts;
 
 namespace Catfish.Tests.Helpers
 {
@@ -56,7 +57,7 @@ namespace Catfish.Tests.Helpers
         {
             get
             {
-                if(mPDb == null)
+                if (mPDb == null)
                 {
                     mPDb = new Piranha.DataContext();
                     SetupPiranha(mPDb);
@@ -141,7 +142,7 @@ namespace Catfish.Tests.Helpers
         {
             get
             {
-                if(mIgs == null){
+                if (mIgs == null) {
                     mIgs = new IngestionService(Db);
                 }
 
@@ -154,7 +155,7 @@ namespace Catfish.Tests.Helpers
         {
             get
             {
-                if(mSs == null)
+                if (mSs == null)
                 {
                     mSs = new UnitTestSecurityService(Db);
                 }
@@ -165,11 +166,11 @@ namespace Catfish.Tests.Helpers
 
         public DatabaseHelper(bool setupData = false, MockConnection solrConnection = null)
         {
-            if(solrConnection == null)
+            if (solrConnection == null)
             {
                 solrConnection = new MockConnection();
             }
-            
+
             Initialize(solrConnection);
             Ss.SetCurrentUser(Guid.NewGuid());
             CreateUserLists(); // This is done always to support the security system.
@@ -184,11 +185,11 @@ namespace Catfish.Tests.Helpers
         {
             ConnectionStringSettingsCollection settings = ConfigurationManager.ConnectionStrings;
 
-            if(settings != null)
+            if (settings != null)
             {
-                foreach(ConnectionStringSettings s in settings)
+                foreach (ConnectionStringSettings s in settings)
                 {
-                    if(s.Name == name)
+                    if (s.Name == name)
                     {
                         return s;
                     }
@@ -207,7 +208,7 @@ namespace Catfish.Tests.Helpers
                 DbProviderFactory factory = DbProviderFactories.GetFactory(settings.ProviderName);
                 connection = factory.CreateConnection();
                 connection.ConnectionString = settings.ConnectionString;
-            }catch(Exception ex)
+            } catch (Exception ex)
             {
                 throw ex;
             }
@@ -312,7 +313,7 @@ namespace Catfish.Tests.Helpers
                 CFCollection c = Cs.CreateEntity<CFCollection>(ets[index]);
                 c.SetName("Collection " + (i + 1));
                 c.SetDescription("Description for Collection " + (i + 1));
-                
+
                 Cs.UpdateStoredCollection(c);
             }
 
@@ -329,7 +330,7 @@ namespace Catfish.Tests.Helpers
                 CFItem e = Is.CreateEntity<CFItem>(ets[index]);
                 e.SetName("Item " + (i + 1));
                 e.SetDescription("Description for Item " + (i + 1));
-                
+
                 Is.UpdateStoredItem(e);
             }
 
@@ -346,7 +347,14 @@ namespace Catfish.Tests.Helpers
 
         public void Initialize(MockConnection solrConnection)
         {
-            SolrService.InitWithConnection(solrConnection);
+            if (SolrService.IsInitialized)
+            {
+                //TODO: Inject the new connection into this current solr thread.
+            }
+            else
+            {
+                SolrService.InitWithConnection(solrConnection);
+            }
 
             try
             {
@@ -372,10 +380,10 @@ namespace Catfish.Tests.Helpers
 
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
-            }            
+            }
         }
 
         public void SetupPiranha(Piranha.DataContext PDb)
@@ -386,7 +394,7 @@ namespace Catfish.Tests.Helpers
                 File.Delete("./piranha.db");
             }
 
-            if(HttpContext.Current == null)
+            if (HttpContext.Current == null)
             {
                 SimpleWorkerRequest request = new SimpleWorkerRequest("", "", "", null, new StringWriter());
                 HttpContext context = new HttpContext(request);
@@ -456,11 +464,11 @@ namespace Catfish.Tests.Helpers
 
                         Piranha.Models.SysUser.Execute(statement, tx.UnderlyingTransaction);
                     }
-                        
+
                 }
                 tx.Commit();
             }
-            
+
         }
 
         public void SetupDbData()
@@ -510,10 +518,10 @@ namespace Catfish.Tests.Helpers
             SetProviderServices("System.Data.SQLite", (DbProviderServices)SQLiteProviderFactory.Instance.GetService(typeof(DbProviderServices)));
         }
     }
-    
+
     public class CatfishTestDbContext : CatfishDbContext
     {
-        public CatfishTestDbContext() : base(){
+        public CatfishTestDbContext() : base() {
 
         }
 
@@ -528,7 +536,7 @@ namespace Catfish.Tests.Helpers
             builder.Entity<CFXmlModel>().Property(xm => xm.Content).HasColumnType("");
         }
     }
-    
+
     public class CatfishMediaCacheProvider : Piranha.IO.IMediaCacheProvider
     {
         public void Delete(Guid id, MediaType type = MediaType.Media)
