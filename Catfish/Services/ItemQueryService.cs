@@ -58,14 +58,13 @@ namespace Catfish.Services
             string metadataGuid = SelectedFieldMetadataSet.Replace('-', '_');
             string fieldGuid = SelectedField.Replace('-', '_');
             bool isOptionField = false;
-
-            isOptionField = IsOptionField(SelectedFieldMetadataSet, SelectedField) ? true : false;
-           
-            // isNumbericField();
             string resultType = "d"; //TODO: check the field type. At the moment, we can only do stats on number fields.
 
-            resultType = IsNumberField(SelectedFieldMetadataSet, SelectedField) ? "d" : "txt_" + languageCode;
-
+            if (!string.IsNullOrEmpty(SelectedFieldMetadataSet) && !string.IsNullOrEmpty(SelectedField))
+            {
+                isOptionField = IsOptionField(SelectedFieldMetadataSet, SelectedField) ? true : false;
+                resultType = IsNumberField(SelectedFieldMetadataSet, SelectedField) ? "d" : "txt_" + languageCode;
+            }
 
 
             string fieldString = string.Format("{0}value_{1}_{2}_{3}", isOptionField ? "option_" : string.Empty, metadataGuid, fieldGuid, resultType);
@@ -74,8 +73,11 @@ namespace Catfish.Services
             string groupByMetadataGuid = string.IsNullOrEmpty(SelectedGroupByFieldMetadataSet)? string.Empty : SelectedGroupByFieldMetadataSet.Replace('-', '_');
             string groupByFieldGuid = string.IsNullOrEmpty(SelectedGroupByField) ? string.Empty : SelectedGroupByField.Replace('-', '_');
             string groupByFieldString = string.Empty;
-            resultType = IsNumberField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? "d" : "txt_" + languageCode;
-            isOptionField = IsOptionField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? true : false;
+            if (!string.IsNullOrEmpty(SelectedGroupByFieldMetadataSet) && !string.IsNullOrEmpty(SelectedGroupByField))
+            {
+                resultType = IsNumberField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? "d" : "txt_" + languageCode;
+                isOptionField = IsOptionField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? true : false;
+            }
 
           
             if (!string.IsNullOrEmpty(groupByFieldGuid))
