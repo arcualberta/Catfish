@@ -21,7 +21,7 @@ namespace Catfish.Core.Services
             {
                 ISolrConnection connection = new SolrConnection(server);
 
-                SolrService.Init(connection);
+                SolrService.InitWithConnection(connection);
             }
             else
             {
@@ -29,7 +29,7 @@ namespace Catfish.Core.Services
             }
         }
 
-        public static void Init(ISolrConnection connection)
+        public static void InitWithConnection(ISolrConnection connection)
         {
             mSolr = connection;
 

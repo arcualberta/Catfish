@@ -172,6 +172,7 @@ namespace Catfish.Tests.Helpers
             
             Initialize(solrConnection);
             Ss.SetCurrentUser(Guid.NewGuid());
+            CreateUserLists(); // This is done always to support the security system.
 
             if (setupData)
             {
@@ -337,7 +338,6 @@ namespace Catfish.Tests.Helpers
 
         private void SetupData()
         {
-            CreateUserLists();
             CreateMetadata();
             CreateEntityTypes();
             CreateCollections();
@@ -346,7 +346,7 @@ namespace Catfish.Tests.Helpers
 
         public void Initialize(MockConnection solrConnection)
         {
-            SolrService.Init(solrConnection);
+            SolrService.InitWithConnection(solrConnection);
 
             try
             {

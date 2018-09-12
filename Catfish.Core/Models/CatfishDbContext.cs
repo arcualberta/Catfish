@@ -12,6 +12,7 @@ using SolrNet.Attributes;
 using CommonServiceLocator;
 using System.Data.Entity.Infrastructure;
 using SolrNet.Exceptions;
+using Catfish.Core.Services;
 
 namespace Catfish.Core.Models
 {
@@ -23,7 +24,10 @@ namespace Catfish.Core.Models
         public CatfishDbContext()
             : base("piranha")
         {
-            solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+            if (SolrService.IsInitialized)
+            {
+                solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+            }
         }
 
         public CatfishDbContext(System.Data.Common.DbConnection connection, bool contextOwnsConnection) : base(connection, contextOwnsConnection)
