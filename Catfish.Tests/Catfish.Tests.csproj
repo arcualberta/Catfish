@@ -215,16 +215,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\IngestionDatabase3.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\IngestionDatabase2.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\IngestionDatabase1.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <EmbeddedResource Include="Resources\IngestionDatabase3.xml" />
+    <EmbeddedResource Include="Resources\IngestionDatabase2.xml" />
+    <EmbeddedResource Include="Resources\IngestionDatabase1.xml">
       <SubType>Designer</SubType>
-    </Content>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Helpers\" />
