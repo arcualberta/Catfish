@@ -143,22 +143,41 @@ namespace Catfish.Core.Services
             return dictionary;
         }
 
-        public IDictionary<string, StatsResult> GetStats(string field, string query)
+        public IDictionary<string, StatsResult> GetStats(string field, string query/*, string groupByField= ""*/)
         {
             if (SolrService.IsInitialized)
             {
                 var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
-                var results = solr.Query(query, new QueryOptions {
-                    Rows = 0, ExtraParams = new KeyValuePair<string, string>[]
-                    {
+                var results = solr.Query(query, new QueryOptions
+                {
+                    Rows = 0,
+                    ExtraParams = new KeyValuePair<string, string>[]
+                        {
                         new KeyValuePair<string,string>("stats", "true"),
                         new KeyValuePair<string, string>("stats.field", field)
-                    }
+                        }
                 });
-
-                return results.Stats;
+                return results.Stats;  
             }
+            return null;
+        }
 
+        public IDictionary<string, ICollection<KeyValuePair<string, int>>> CountProjects(string field, string query,string groupByField)
+        {
+            if (SolrService.IsInitialized)
+            {
+                var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
+                var results = solr.Query(query, new QueryOptions
+                {
+                    Rows = 0,
+                    ExtraParams = new KeyValuePair<string, string>[]
+                          {
+                        new KeyValuePair<string, string>("facet", "on"),
+                        new KeyValuePair<string, string>("facet.field", groupByField)
+                          }
+                });
+                return results.FacetFields;
+            }
             return null;
         }
 
@@ -198,13 +217,21 @@ namespace Catfish.Core.Services
             return 0m;
         }
 
-        public decimal CountField(string field, string query = "*:*")
+        public decimal CountField(string field, string query = "*:*", string groupByField="")
         {
-            var stats = GetStats(field, query);
-
-            if (stats != null)
+            if (string.IsNullOrEmpty(groupByField))
             {
-                return Convert.ToDecimal(stats[field].Count);
+                var stats = GetStats(field, query);
+                if (stats != null)
+                {
+                    return Convert.ToDecimal(stats[field].Count);
+                }
+            }            
+            else
+            { 
+                var stats = CountProjects(field, query, groupByField);
+                //groupByField is not null or empty
+                return Convert.ToDecimal(stats[groupByField].Count);
             }
 
             return 0m;

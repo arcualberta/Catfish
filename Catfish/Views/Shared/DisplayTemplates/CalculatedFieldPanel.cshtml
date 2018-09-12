@@ -22,7 +22,7 @@
 
         function handleStatsResult(result) {
             $('#@(cssId)_Result')
-                .text(@Html.Raw(Json.Encode(string.IsNullOrEmpty(Model.Prefix) ? "" : Model.Prefix)) 
+                .text(@Html.Raw(Json.Encode(string.IsNullOrEmpty(Model.Prefix) ? "" : Model.Prefix))
                 + result.toLocaleString('en-US', {
                     minimumFractionDigits: @Html.Raw(Model.DecimalPlaces),
                     maximumFractionDigits: @Html.Raw(Model.DecimalPlaces)
@@ -40,7 +40,9 @@
                     q: query,
                     statMode: @Html.Raw(Json.Encode(Model.SelectedFunction)),
                     selectedFieldMetadataSet: @Html.Raw(Json.Encode(Model.SelectedFieldMetadataSet)),
-                    selectedField: @Html.Raw(Json.Encode(Model.SelectedField))
+                    selectedField: @Html.Raw(Json.Encode(Model.SelectedField)),
+                    selectedGroupByFieldMetadataSet: @Html.Raw(Json.Encode(Model.SelectedGroupByFieldMetadataSet)),
+                    selectedGroupByField: @Html.Raw(Json.Encode(Model.SelectedGroupByField))
                 },
                 success: handleStatsResult,
                 error: function () {
