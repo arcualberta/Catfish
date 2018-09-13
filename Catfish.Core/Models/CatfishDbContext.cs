@@ -8,11 +8,15 @@ using Catfish.Core.Models.Data;
 using System.Security.Principal;
 using Catfish.Core.Models.Access;
 using Catfish.Core.Services;
+using CommonServiceLocator;
+using SolrNet;
 
 namespace Catfish.Core.Models
 {
     public class CatfishDbContext : DbContext
     {
+        private ISolrOperations<Dictionary<string, object>> solr { get; set; }
+
         public CatfishDbContext()
             : base("piranha")
         {
