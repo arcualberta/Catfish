@@ -14,16 +14,6 @@
    
    
        <form method="get" action="#">
-           @if (Model.HasGeneralSearch)
-           {
-               <div class="row general-search advanceSearchContainerInput" data-searchid="value_*_">
-                   <div class="field-title">@Catfish.Resources.Views.Shared.DisplayTemplates.AdvanceSearchContainer.GeneralSearch</div>
-                   <div class="search-entry divKeyword">
-                       <input type="text"/>
-                   </div>
-               </div>
-           }
-
            @foreach (var m in Model.Mappings)
            {
                var fType = m.Field.GetType();
@@ -107,10 +97,6 @@
             return field.attr("data-searchid") + "txt_en";
         }
 
-        function solrEscapeValue(input) {
-            return input.replace(/\\/g, "\\").replace(/\(/g, "(").replace(/\)/g, ")");
-        }
-
         $("#@cssId form").submit(function (ev) {
             ev.preventDefault();
 
@@ -168,21 +154,6 @@
                             searchString = searchString.length > 0 ? searchString + " && " : "";
                             searchString = searchString + ("option_" + searchId + 'txt_en:"' + selectedValue + '"');
                         }
-                    } else if (entry.hasClass("divKeyword")) {
-                        var check = entry.children("input").val().trim();
-                        var values = check.split(/\s/g);
-
-                        if (check.length > 0 && values.length > 0) {
-                            searchString = searchString.length > 0 ? searchString + " && " : "";
-                            searchString += '(';
-                            searchString += solrEscapeValue(values[0]);
-
-                            for (var v = 1; v < values.length; ++v) {
-                                searchString += " || " + solrEscapeValue(values[v]);
-                            }
-
-                            searchString += ')';
-                        }
                     }
                 });
             });
@@ -204,11 +175,7 @@
             for (var index = 0; index < contents.length; index++) {
                 var c = contents[index].trim();
                 var id = "";
-                if (c.indexOf("(") == 0) {
-                    var keywords = c.substr(1, c.length - 2).replace(/\s\|\|\s/g, " ");
-                    form.find(".divKeyword input").val(keywords);
-                }
-                else if (c.indexOf("(") > 0) {
+                if (c.indexOf("(") > -1) {
                     //options field --checkboxes
                     var start = c.indexOf("(") + 1;
                     var end = c.indexOf(")");
@@ -316,11 +283,11 @@
                 data: {
                     fieldId: field,
                     partialText: request.term,
-                    rows: 10
+                    rows: 100
                 },
                 dataType: 'json',
                 success: function (result) {
-                    var result = $.unique(result.grouped[field].groups.map(function (m) { return m.doclist.docs[0][field]; }));
+                    var result = $.unique(result.response.docs.map(function (m) { return m[field]; })).slice(0, 10); // Only use 10 options.
 
                     response(result);
                 },

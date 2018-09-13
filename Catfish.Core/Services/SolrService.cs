@@ -5,6 +5,10 @@ using SolrNet.Commands.Parameters;
 using SolrNet.Impl;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Catfish.Core.Services
 {
@@ -51,8 +55,8 @@ namespace Catfish.Core.Services
                     new KeyValuePair<string, string>("sort", field + " asc"),
                     new KeyValuePair<string, string>("fl", field),
                     new KeyValuePair<string, string>("wt", "json"),
-                    new KeyValuePair<string, string>("group", "true"),
-                    new KeyValuePair<string, string>("group.field", field)
+                    new KeyValuePair<string, string>("facet", "on"),
+                    new KeyValuePair<string, string>("facet.field", field)
                 };
 
                 var result = SolrService.mSolr.Get("/select", parameters);
@@ -109,11 +113,11 @@ namespace Catfish.Core.Services
 
                 var result = SolrService.mSolr.Get("/select", parameters);
 
-                return result;                
+                return result;
             }
 
             return null;
-        }   
+        }
 
         public IDictionary<string, string> GetSolrCategories(string query, string fieldId, int rows = int.MaxValue)
         {
@@ -132,13 +136,13 @@ namespace Catfish.Core.Services
 
                 string result = mSolr.Get("/select", parameters);
 
-                if(result != null)
+                if (result != null)
                 {
                     SolrResponse response = Newtonsoft.Json.JsonConvert.DeserializeObject<SolrResponse>(result);
 
                     if (response.grouped.ContainsKey(fieldId))
                     {
-                        foreach(var g in response.grouped[fieldId].groups)
+                        foreach (var g in response.grouped[fieldId].groups)
                         {
                             if (g.groupValue != null)
                             {
@@ -152,25 +156,77 @@ namespace Catfish.Core.Services
             return dictionary;
         }
 
-        public IDictionary<string, StatsResult> GetStats(string field, string query)
+        public IDictionary<string, StatsResult> GetStats(string field, string query/*, string groupByField= ""*/)
         {
             if (SolrService.IsInitialized)
             {
                 var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
-                var results = solr.Query(query, new QueryOptions {
-                    Rows = 0, ExtraParams = new KeyValuePair<string, string>[]
-                    {
+                var results = solr.Query(query, new QueryOptions
+                {
+                    Rows = 0,
+                    ExtraParams = new KeyValuePair<string, string>[]
+                        {
                         new KeyValuePair<string,string>("stats", "true"),
                         new KeyValuePair<string, string>("stats.field", field)
-                    }
+                        }
                 });
-
                 return results.Stats;
+            }
+            return null;
+        }
+
+        public IDictionary<string, ICollection<KeyValuePair<string, int>>> CountProjects(string field, string query, string groupByField)
+        {
+            if (SolrService.IsInitialized)
+            {
+                var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
+                var results = solr.Query(query, new QueryOptions
+                {
+                    Rows = 0,
+                    ExtraParams = new KeyValuePair<string, string>[]
+                     {
+                        new KeyValuePair<string, string>("facet", "on"),
+                        new KeyValuePair<string, string>("facet.field", groupByField)
+                     }
+                });
+                return results.FacetFields;
+            }
+            return null;
+        }
+
+        public string GetMedian(string field, string query)
+        {
+            const string facetJson = @"{{Median : ""percentile({0},50)""}}";
+
+            if (SolrService.IsInitialized)
+            {
+                IEnumerable<KeyValuePair<string, string>> parameters = new KeyValuePair<string, string>[]{
+                    new KeyValuePair<string, string>("q", query),
+                    new KeyValuePair<string, string>("json.facet",string.Format(facetJson, field)),
+                    new KeyValuePair<string, string>("rows", "0")
+                   
+                };
+
+                var result = SolrService.mSolr.Get("/select", parameters);
+
+                 var xmlRes = XElement.Parse(result);
+                XNode lastNode = xmlRes.LastNode;
+                foreach(XNode n in (lastNode as XElement).Nodes().ToList())
+                {
+                    if((n as XElement).Attribute("name").Value == "Median")
+                    {
+                        var v = (n as XElement).Value;
+                        return (n as XElement).Value;
+                    }
+                }
+
+                return result;
             }
 
             return null;
         }
-        
+
+
         public decimal SumField(string field, string query = "*:*")
         {
             var stats = GetStats(field, query);
@@ -183,13 +239,21 @@ namespace Catfish.Core.Services
             return 0m;
         }
 
-        public decimal CountField(string field, string query = "*:*")
+        public decimal CountField(string field, string query = "*:*", string groupByField="")
         {
-            var stats = GetStats(field, query);
-
-            if (stats != null)
+            if (string.IsNullOrEmpty(groupByField))
             {
-                return Convert.ToDecimal(stats[field].Count);
+                var stats = GetStats(field, query);
+                if (stats != null)
+                {
+                    return Convert.ToDecimal(stats[field].Count);
+                }
+            }            
+            else
+            { 
+                var stats = CountProjects(field, query, groupByField);
+                //groupByField is not null or empty
+                return Convert.ToDecimal(stats[groupByField].Count);
             }
 
             return 0m;
@@ -238,6 +302,19 @@ namespace Catfish.Core.Services
             if(stats != null && stats[field].Count > 0)
             {
                 return Convert.ToDecimal(stats[field].StdDev);
+            }
+
+            return 0m;
+        }
+
+        public decimal MedianField(string field, string query = "*:*")
+        {
+            //query = "percentile(50)";
+            var median = GetMedian(field, query);
+
+            if (median != null)
+            {
+                return Convert.ToDecimal(median);
             }
 
             return 0m;

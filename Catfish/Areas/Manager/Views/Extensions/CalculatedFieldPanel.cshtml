@@ -32,7 +32,13 @@
             @Html.DropDownListFor(m => m.SelectedField, new SelectList(firstFields, "Value", "Text"), new {@style="width:auto" })
        </div>
     </li>
-       
+    <li>
+        @Html.Label("Group By ")
+        <div class="input">
+            @Html.DropDownListFor(m => m.SelectedGroupByFieldMetadataSet, new SelectList(Model.ListMetadataSets, "Value", "Text")," ", new { @style = "width:auto;", @class = "dropdown", onchange = changeFieldFunction + "('" + Html.IdFor(model => model.SelectedFieldMetadataSet) + "','" + Html.IdFor(model => model.SelectedField) + "' );" })
+            @Html.DropDownListFor(m => m.SelectedGroupByField, new SelectList(firstFields, "Value", "Text"), " ", new { @style = "width:auto" })
+        </div>
+    </li>
     <li>
         @Html.Label("Function ")
         <div class="input">

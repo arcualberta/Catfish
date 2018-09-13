@@ -45,7 +45,7 @@ namespace Catfish.Services
 
         public enum eFunctionMode
         {
-            SUM = 0, COUNT, MEAN, MAX, MIN, STANDARD_DEVIATION
+            SUM = 0, COUNT, MEAN, MAX, MIN, STANDARD_DEVIATION, MEDIAN
         }
 
         public ItemQueryService(CatfishDbContext db)
@@ -53,22 +53,46 @@ namespace Catfish.Services
             Db = db;
         }
 
-        public decimal GetCalculatedField(string query, eFunctionMode function, string SelectedFieldMetadataSet, string SelectedField, string languageCode = "en")
+        public decimal GetCalculatedField(string query, eFunctionMode function, string SelectedFieldMetadataSet, string SelectedField, string SelectedGroupByFieldMetadataSet, string SelectedGroupByField, string languageCode = "en")
         {
             string metadataGuid = SelectedFieldMetadataSet.Replace('-', '_');
             string fieldGuid = SelectedField.Replace('-', '_');
             bool isOptionField = false;
             string resultType = "d"; //TODO: check the field type. At the moment, we can only do stats on number fields.
 
+            if (!string.IsNullOrEmpty(SelectedFieldMetadataSet) && !string.IsNullOrEmpty(SelectedField))
+            {
+                isOptionField = IsOptionField(SelectedFieldMetadataSet, SelectedField) ? true : false;
+                resultType = IsNumberField(SelectedFieldMetadataSet, SelectedField) ? "d" : "txt_" + languageCode;
+            }
+
+
             string fieldString = string.Format("{0}value_{1}_{2}_{3}", isOptionField ? "option_" : string.Empty, metadataGuid, fieldGuid, resultType);
-            
+
+            //adding group by
+            string groupByMetadataGuid = string.IsNullOrEmpty(SelectedGroupByFieldMetadataSet)? string.Empty : SelectedGroupByFieldMetadataSet.Replace('-', '_');
+            string groupByFieldGuid = string.IsNullOrEmpty(SelectedGroupByField) ? string.Empty : SelectedGroupByField.Replace('-', '_');
+            string groupByFieldString = string.Empty;
+            if (!string.IsNullOrEmpty(SelectedGroupByFieldMetadataSet) && !string.IsNullOrEmpty(SelectedGroupByField))
+            {
+                resultType = IsNumberField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? "d" : "txt_" + languageCode;
+                isOptionField = IsOptionField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? true : false;
+            }
+
+          
+            if (!string.IsNullOrEmpty(groupByFieldGuid))
+            {
+                groupByFieldString = string.Format("{0}value_{1}_{2}_{3}", isOptionField ? "option_" : string.Empty, groupByMetadataGuid, groupByFieldGuid, resultType);
+            }
+           
+
             switch (function)
             {
                 case eFunctionMode.SUM:
                     return SolrSrv.SumField(fieldString, query);
 
                 case eFunctionMode.COUNT:
-                    return SolrSrv.CountField(fieldString, query);
+                    return SolrSrv.CountField(fieldString, query, groupByFieldString);
 
                 case eFunctionMode.MEAN:
                     return SolrSrv.MeanField(fieldString, query);
@@ -81,11 +105,51 @@ namespace Catfish.Services
 
                 case eFunctionMode.STANDARD_DEVIATION:
                     return SolrSrv.StandardDeviationField(fieldString, query);
+                case eFunctionMode.MEDIAN:
+                    return SolrSrv.MedianField(fieldString, query);
             }
 
             return -1m;
         }
 
+
+        public bool IsNumberField(string metadataSetGuid, string fieldGuid)
+        {
+            //Sept 12 2018 -- check if the field is a numberField otherwise text field
+            CFMetadataSet metadataSet = (new MetadataService(Db)).GetMetadataSet(metadataSetGuid);
+            foreach (FormField formField in metadataSet.Fields)
+            {
+                if (formField.Guid.Equals(fieldGuid))
+                {
+                    if (typeof(NumberField).IsAssignableFrom(formField.GetType()))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+
+        }
+
+        public bool IsOptionField(string metadataSetGuid, string fieldGuid)
+        {
+            //Sept 12 2018 -- check if the field is a numberField otherwise text field
+            CFMetadataSet metadataSet = (new MetadataService(Db)).GetMetadataSet(metadataSetGuid);
+            foreach (FormField formField in metadataSet.Fields)
+            {
+                if (formField.Guid.Equals(fieldGuid))
+                {
+                    if (typeof(OptionsField).IsAssignableFrom(formField.GetType()))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+
+        }
         /*public IEnumerable<QueryResultObject> GetCalculatedField_old(string functionName, string SelectedFieldMetadataSet, string SelectedField, string SelectedFilterMetadataSet, string selectedFilterField, int min, int max)
         {
             CatfishDbContext db = new CatfishDbContext();

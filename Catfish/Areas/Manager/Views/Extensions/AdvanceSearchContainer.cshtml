@@ -4,10 +4,6 @@
 
     @Html.Partial("_CatfishRegion", Model)
 
-    <li>
-        @Html.LabelFor(m => m.HasGeneralSearch);
-        <div class="input">@Html.CheckBoxFor(m => m.HasGeneralSearch)</div>
-    </li>
    
     <li>
         @Html.LabelFor(m => m.Fields)
@@ -18,7 +14,7 @@
                         int i = 0;
                         foreach (var f in Model.Mappings)
                         {
-
+                           
                             string rowId = "AdvanceSearchRegion_row_" + i;
                             <tr id="@rowId">
                                 <input type="hidden" name="@(Html.NameFor(m => m.Fields)).Index" value="@(i)" />

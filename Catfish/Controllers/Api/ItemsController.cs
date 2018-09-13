@@ -59,9 +59,9 @@ namespace Catfish.Controllers.Api
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetStatsData(string q, ItemQueryService.eFunctionMode statMode, string selectedFieldMetadataSet, string selectedField)
+        public JsonResult GetStatsData(string q, ItemQueryService.eFunctionMode statMode, string selectedFieldMetadataSet, string selectedField, string selectedGroupByFieldMetadataSet, string selectedGroupByField)
         {
-            decimal result = ItemQueryService.GetCalculatedField(q, statMode, selectedFieldMetadataSet, selectedField);
+            decimal result = ItemQueryService.GetCalculatedField(q, statMode, selectedFieldMetadataSet, selectedField, selectedGroupByFieldMetadataSet, selectedGroupByField);
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }

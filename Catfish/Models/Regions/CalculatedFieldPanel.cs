@@ -41,7 +41,11 @@ namespace Catfish.Models.Regions
 
         public string SelectedFieldMetadataSet { get; set; }
         public string SelectedField { get; set; }
-       
+
+        public string SelectedGroupByFieldMetadataSet { get; set; }
+        public string SelectedGroupByField { get; set; }
+
+
         public string Title { get; set; }
 
         public CalculatedFieldPanel()
@@ -50,6 +54,8 @@ namespace Catfish.Models.Regions
             MetadataFields = new Dictionary<string, List<SelectListItem>>();
             FunctionModes = new List<SelectListItem>();
             DecimalPlaces = 0;
+            SelectedGroupByFieldMetadataSet = string.Empty;
+            SelectedGroupByField = string.Empty;
             foreach (string am in Enum.GetNames(typeof(ItemQueryService.eFunctionMode)))
             {
                 FunctionModes.Add(new SelectListItem { Text = am, Value = am });

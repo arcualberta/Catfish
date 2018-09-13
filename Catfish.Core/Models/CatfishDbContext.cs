@@ -7,20 +7,12 @@ using Catfish.Core.Models.Forms;
 using Catfish.Core.Models.Data;
 using System.Security.Principal;
 using Catfish.Core.Models.Access;
-using SolrNet;
-using SolrNet.Attributes;
-using CommonServiceLocator;
-using System.Data.Entity.Infrastructure;
-using SolrNet.Exceptions;
 using Catfish.Core.Services;
 
 namespace Catfish.Core.Models
 {
     public class CatfishDbContext : DbContext
     {
-
-        ISolrOperations<Dictionary<string, object>> solr;
-
         public CatfishDbContext()
             : base("piranha")
         {
@@ -35,57 +27,6 @@ namespace Catfish.Core.Models
             solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
         }
 
-        private void UpdateSolr()
-        {
-
-            //XXX Busca EntityState.Deleted para quitarlas
-     
-
-            List<Dictionary<string, object>> savedEntities = new List<Dictionary<string, object>>();
-            List<string> deletedEntities = new List<string>();
-            
-            foreach (DbEntityEntry entry in ChangeTracker.Entries<CFEntity>())
-            {
-                if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
-                {                    
-                    savedEntities.Add(((CFEntity)entry.Entity).ToSolrDictionary());
-                } else if (entry.State == EntityState.Deleted)
-                {
-                    deletedEntities.Add(((CFEntity)entry.Entity).Guid);
-                }
-            }
-            solr.AddRange(savedEntities);
-            solr.Delete(deletedEntities);
-        }
-
-        public override int SaveChanges()
-        {
-            using (DbContextTransaction dbContextTransaction = Database.BeginTransaction())
-            {
-                try
-                {
-                    UpdateSolr();
-                    int result = base.SaveChanges();
-                    dbContextTransaction.Commit();
-                    solr.Commit();                    
-                    return result;
-                }
-                catch (SolrNetException e)
-                {
-                    // rollback savechanges
-                    dbContextTransaction.Rollback();
-                    throw e;
-                }
-                catch
-                {
-                    //XXX rollback commit needed ?
-                    //solr.Rollback();
-                    throw;
-                }
-            }
-            
-        }
-
         public int SaveChanges(IIdentity actor)
         {
             if (actor.IsAuthenticated)
@@ -96,8 +37,8 @@ namespace Catfish.Core.Models
         public int SaveChanges(string actor)
         {
             if (this.ChangeTracker.HasChanges())
-            {                
-                foreach (var entry in this.ChangeTracker.Entries<CFXmlModel>())
+            {
+                foreach(var entry in this.ChangeTracker.Entries<CFXmlModel>())
                 {
                     if (entry.State != EntityState.Unchanged && entry.State != EntityState.Deleted)
                     {
@@ -107,8 +48,8 @@ namespace Catfish.Core.Models
                     }
                 }
             }
-            
-            return SaveChanges();
+
+            return base.SaveChanges();
         }
 
         /**

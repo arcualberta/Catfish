@@ -163,6 +163,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mocks\MockCFXmlModel.cs" />
+    <Compile Include="Models\CFXmlModelTests.cs" />
     <Compile Include="Helpers\BaseUnitTest.cs" />
     <Compile Include="Services\BaseServiceTest.cs" />
     <Compile Include="Views\BaseIntegration.cs" />
