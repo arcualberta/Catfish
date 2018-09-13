@@ -5,6 +5,10 @@ using SolrNet.Commands.Parameters;
 using SolrNet.Impl;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Catfish.Core.Services
 {
@@ -100,11 +104,11 @@ namespace Catfish.Core.Services
 
                 var result = SolrService.mSolr.Get("/select", parameters);
 
-                return result;                
+                return result;
             }
 
             return null;
-        }   
+        }
 
         public IDictionary<string, string> GetSolrCategories(string query, string fieldId, int rows = int.MaxValue)
         {
@@ -123,13 +127,13 @@ namespace Catfish.Core.Services
 
                 string result = mSolr.Get("/select", parameters);
 
-                if(result != null)
+                if (result != null)
                 {
                     SolrResponse response = Newtonsoft.Json.JsonConvert.DeserializeObject<SolrResponse>(result);
 
                     if (response.grouped.ContainsKey(fieldId))
                     {
-                        foreach(var g in response.grouped[fieldId].groups)
+                        foreach (var g in response.grouped[fieldId].groups)
                         {
                             if (g.groupValue != null)
                             {
@@ -157,12 +161,12 @@ namespace Catfish.Core.Services
                         new KeyValuePair<string, string>("stats.field", field)
                         }
                 });
-                return results.Stats;  
+                return results.Stats;
             }
             return null;
         }
 
-        public IDictionary<string, ICollection<KeyValuePair<string, int>>> CountProjects(string field, string query,string groupByField)
+        public IDictionary<string, ICollection<KeyValuePair<string, int>>> CountProjects(string field, string query, string groupByField)
         {
             if (SolrService.IsInitialized)
             {
@@ -171,34 +175,43 @@ namespace Catfish.Core.Services
                 {
                     Rows = 0,
                     ExtraParams = new KeyValuePair<string, string>[]
-                          {
+                     {
                         new KeyValuePair<string, string>("facet", "on"),
                         new KeyValuePair<string, string>("facet.field", groupByField)
-                          }
+                     }
                 });
                 return results.FacetFields;
             }
             return null;
         }
 
-        public SolrQueryResults<SolrIndex> GetMedian(string field, string query)
+        public string GetMedian(string field, string query)
         {
+            const string facetJson = @"{{Median : ""percentile({0},50)""}}";
+
             if (SolrService.IsInitialized)
             {
-                var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
-                var results = solr.Query(query,new QueryOptions
-                {
-                    Rows = 0,
-                    ExtraParams = new KeyValuePair<string, string>[]
-                    {
-                        new KeyValuePair<string,string>("facet", "on"),
-                        new KeyValuePair<string, string>("facet.field", field),
-                        new KeyValuePair<string, string>("facet.query", "percentile(50)")
-                    }
-                    
-                });
+                IEnumerable<KeyValuePair<string, string>> parameters = new KeyValuePair<string, string>[]{
+                    new KeyValuePair<string, string>("q", query),
+                    new KeyValuePair<string, string>("json.facet",string.Format(facetJson, field)),
+                    new KeyValuePair<string, string>("rows", "0")
+                   
+                };
 
-                return results;
+                var result = SolrService.mSolr.Get("/select", parameters);
+
+                 var xmlRes = XElement.Parse(result);
+                XNode lastNode = xmlRes.LastNode;
+                foreach(XNode n in (lastNode as XElement).Nodes().ToList())
+                {
+                    if((n as XElement).Attribute("name").Value == "Median")
+                    {
+                        var v = (n as XElement).Value;
+                        return (n as XElement).Value;
+                    }
+                }
+
+                return result;
             }
 
             return null;
@@ -288,11 +301,11 @@ namespace Catfish.Core.Services
         public decimal MedianField(string field, string query = "*:*")
         {
             //query = "percentile(50)";
-            var stats = GetMedian(field, query);
+            var median = GetMedian(field, query);
 
-            if (stats != null && stats.NumFound > 0)
+            if (median != null)
             {
-                return Convert.ToDecimal(stats.NumFound);
+                return Convert.ToDecimal(median);
             }
 
             return 0m;
