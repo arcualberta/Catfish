@@ -23,26 +23,15 @@ namespace Catfish.Tests.Views
    
 
     [TestFixture(typeof(ChromeDriver))]
-    public class CollectionViewTests<TWebDriver> where TWebDriver : IWebDriver, new()
+    public class CollectionViewTests<TWebDriver> : BaseIntegration<TWebDriver> where TWebDriver : IWebDriver, new()
     {
-        private IWebDriver Driver;
-        private string ManagerUrl;
         private string indexUrl = "";
 
-        [SetUp]
-        public void SetUp()
+        protected override void OnSetup()
         {
-            this.Driver = new TWebDriver();
-            this.ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
             this.indexUrl = ManagerUrl + "/collections";
-            this.Login();
         }
 
-        [TearDown]
-        public void TearDown()
-        {
-            this.Driver.Close();
-        }
         private void Login()
         {
             this.Driver.Navigate().GoToUrl(ManagerUrl);

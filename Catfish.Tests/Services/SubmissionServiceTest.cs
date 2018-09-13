@@ -2,7 +2,7 @@
 using Catfish.Core.Models.Forms;
 using Catfish.Core.Services;
 using Catfish.Tests.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 
 namespace Catfish.Tests.Services
 {
-    [TestClass]
-    public class SubmissionServiceTest
+    [TestFixture]
+    public class SubmissionServiceTest : BaseServiceTest
     {
         private Form CreateFormTemplate(SubmissionService subSrv, string name, string description, string questionPrefix)
         {
@@ -52,7 +52,7 @@ namespace Catfish.Tests.Services
             return f;
         }
 
-        [TestMethod]
+        [Test]
         public void CreateSubmissionFormTest()
         {
             DatabaseHelper Dh = new DatabaseHelper(true);
@@ -77,10 +77,10 @@ namespace Catfish.Tests.Services
             Assert.AreEqual(form1.Fields.Count, form2.Fields.Count);
         }
 
-        [Ignore]
+        [Ignore("Not yet implemented")]
         // This test is currently using teh Item service method Get Item which
         // requires IIdentity as a parameter
-        [TestMethod]
+        [Test]
         public void SaveSubmissionTest()
         {
             //DatabaseHelper Dh = new DatabaseHelper(true);

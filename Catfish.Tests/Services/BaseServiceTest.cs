@@ -10,6 +10,12 @@ namespace Catfish.Tests.Services
 
     public abstract class BaseServiceTest : BaseUnitTest
     {
+        protected override void OnSetup()
+        {
+        }
 
+        protected override void OnTearDown()
+        {
+        }
     }
 }

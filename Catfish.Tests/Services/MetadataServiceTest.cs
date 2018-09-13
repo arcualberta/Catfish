@@ -2,7 +2,7 @@
 using Catfish.Core.Models.Forms;
 using Catfish.Core.Services;
 using Catfish.Tests.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +11,12 @@ using System.Threading.Tasks;
 
 namespace Catfish.Tests.Services
 {
-    [TestClass]
-   public class MetadataServiceTest
+    [TestFixture]
+   public class MetadataServiceTest : BaseServiceTest
     {
         private DatabaseHelper mDh { get; set; }
-
-        [TestInitialize]
-        public void InitializeTesting()
+        
+        protected override void OnSetup()
         {
             mDh = new DatabaseHelper(false);
         }
@@ -70,7 +69,7 @@ namespace Catfish.Tests.Services
             return fields;
         }
 
-        [TestMethod]
+        [Test]
         public void GetMetadataSetTest()
         {
             MetadataService ms = mDh.Ms;
@@ -99,7 +98,7 @@ namespace Catfish.Tests.Services
             Assert.AreEqual(fieldCount, result.Fields.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void GetMetadataSetsTest()
         {
             int fieldCount = 7;
@@ -129,7 +128,7 @@ namespace Catfish.Tests.Services
             }
         } 
 
-        [TestMethod]
+        [Test]
         public void GetMetadataFieldTypesTest()
         {
             Type[] types =
@@ -155,7 +154,7 @@ namespace Catfish.Tests.Services
             }
         }
 
-        [TestMethod]
+        [Test]
         public void UpdateMetadataSetTest()
         {
             MetadataService ms = mDh.Ms;

@@ -2,7 +2,7 @@
 using Catfish.Core.Models.Forms;
 using Catfish.Core.Services;
 using Catfish.Tests.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,21 +15,20 @@ using Catfish.Services;
 
 namespace Catfish.Tests.Services
 {
-    [TestClass]
-    public class UserServiceTest
+    [TestFixture]
+    public class UserServiceTest : BaseServiceTest
     {
         private DatabaseHelper mDh { get; set; }
         private UserService userService;
 
-        [TestInitialize]
-        public void InitializeTesting()
+        protected override void OnSetup()
         {
             mDh = new DatabaseHelper(true);
             var pdb = mDh.PDb;
             userService = new UserService();
         }
 
-        [TestMethod]
+        [Test]
         public void CanGetUserByLogin()
         {
             Piranha.Entities.User user = userService.GetUserByLogin("sys");
@@ -37,14 +36,14 @@ namespace Catfish.Tests.Services
              Assert.AreEqual("sys", user.Login);
         }
 
-        [TestMethod]
+        [Test]
         public void CanGetUserByEmail()
         {
             Piranha.Entities.User user = userService.GetUserByEmail("admin@ualberta.ca");
             Assert.AreEqual("admin@ualberta.ca", user.Email);
         }
         
-        [TestMethod]
+        [Test]
         public void CanGetListUsers()
         {
            var users = userService.GetAllUsers();

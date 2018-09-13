@@ -13,29 +13,12 @@ using System.Threading.Tasks;
 namespace Catfish.Tests.Views.Regions
 {
     [TestFixture(typeof(ChromeDriver))]  
-    public class EntityContainerTest<TWebDriver> where TWebDriver : IWebDriver, new()
+    public class EntityContainerTest<TWebDriver> : BaseIntegration<TWebDriver> where TWebDriver : IWebDriver, new()
     {
         const string PAGE_TYPE = "Entity Container";
         const string PAGE_TITLE = "Entity Container Test";
-        private IWebDriver Driver;
-        private string ManagerUrl;
         
         private string customMapping;
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.Driver = new TWebDriver();
-            this.ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
-         
-            Login();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            this.Driver.Close();
-        }
 
         private void Login()
         {
@@ -44,6 +27,7 @@ namespace Catfish.Tests.Views.Regions
             this.Driver.FindElement(By.Name("password")).SendKeys(ConfigurationManager.AppSettings["AdminPassword"]);
             this.Driver.FindElement(By.TagName("button")).Click();
         }
+
         [TestCase]
         public void CanCreateAPage()
         {

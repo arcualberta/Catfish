@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Catfish.Tests.Views;
+using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
@@ -22,26 +23,9 @@ namespace Catfish.Tests.Api
 
 
     [TestFixture(typeof(ChromeDriver))]
-    public class ItemsControllerTest<TWebDriver> where TWebDriver : IWebDriver, new()
+    public class ItemsControllerTest<TWebDriver> : BaseIntegration<TWebDriver> where TWebDriver : IWebDriver, new()
     {
-        private IWebDriver Driver;
-        private string ManagerUrl;
         private string indexUrl = "";
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.Driver = new TWebDriver();
-            this.ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
-            this.indexUrl = ManagerUrl + "/items";
-            this.Login();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            this.Driver.Close();
-        }
 
         private void Login()
         {

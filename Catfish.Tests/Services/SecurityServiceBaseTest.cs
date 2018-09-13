@@ -3,7 +3,7 @@ using Catfish.Core.Models;
 using Catfish.Core.Models.Access;
 using Catfish.Core.Services;
 using Catfish.Tests.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Piranha.Entities;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 /*
 namespace Catfish.Tests.Services
 {
-    [TestClass]
+    [TestFixture]
     public class SecurityServiceBaseTest
     {
         private DatabaseHelper mDh { get; set; }
@@ -88,7 +88,7 @@ namespace Catfish.Tests.Services
 
         }
 
-        [TestMethod]
+        [Test]
         public void TestUserIsAdmin()
         {
             SecurityServiceBase srv = new TestSecurityService(Db);
@@ -126,7 +126,7 @@ namespace Catfish.Tests.Services
             Assert.AreNotEqual(AccessMode.All, modes);
         }
 
-        [TestMethod]
+        [Test]
         public void TestNoAccessDefinitionNoParents()
         {
             SecurityServiceBase srv = new TestSecurityService(Db);
@@ -177,7 +177,7 @@ namespace Catfish.Tests.Services
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestNoAccessDefinitionWithParents()
         {
             SecurityServiceBase srv = new TestSecurityService(Db);
@@ -209,7 +209,7 @@ namespace Catfish.Tests.Services
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestHasAccessDefinitionNoParents()
         {
             SecurityServiceBase srv = new TestSecurityService(Db);
@@ -256,7 +256,7 @@ namespace Catfish.Tests.Services
             Assert.AreEqual(defaultAccess, modes4);
         }
 
-        [TestMethod]
+        [Test]
         public void TestHasAccessDefinitionHasParent()
         {
             SecurityServiceBase srv = new TestSecurityService(Db);
@@ -316,7 +316,7 @@ namespace Catfish.Tests.Services
             Assert.AreEqual(defaultAccess | ad2.AccessModes | ad3.AccessModes, modes4);
         }
 
-        [TestMethod]
+        [Test]
         public void TestHasAccessDefinitionHasParents()
         {
             SecurityServiceBase srv = new TestSecurityService(Db);
@@ -407,7 +407,7 @@ namespace Catfish.Tests.Services
             Assert.AreEqual(defaultAccess, modes4);
         }
 
-        [TestMethod]
+        [Test]
         public void TestDenyInheritanceFlag()
         {
             SecurityServiceBase srv = new TestSecurityService(Db);
@@ -455,7 +455,7 @@ namespace Catfish.Tests.Services
             Assert.AreEqual(AccessMode.None, modes4);
         }
 
-        [TestMethod]
+        [Test]
         public void TestDenyInheritanceFlagOnSingleParent()
         {
             SecurityServiceBase srv = new TestSecurityService(Db);
@@ -516,7 +516,7 @@ namespace Catfish.Tests.Services
             Assert.AreEqual(ad2.AccessModes | ad3.AccessModes, modes4);
         }
 
-        [TestMethod]
+        [Test]
         public void TestDenyInheritanceFlagOnMultipleParents()
         {
             SecurityServiceBase srv = new TestSecurityService(Db);
@@ -636,7 +636,7 @@ namespace Catfish.Tests.Services
             Assert.AreEqual(defaultAccess | ad4.AccessModes, modes4);
         }
 
-        [TestMethod]
+        [Test]
         public void TestCircularParents()
         {
             SecurityServiceBase srv = new TestSecurityService(Db);

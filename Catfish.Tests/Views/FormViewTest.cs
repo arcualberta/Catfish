@@ -26,26 +26,15 @@ namespace Catfish.Tests.Views
         
     }
     [TestFixture(typeof(ChromeDriver))]
-    public class FormViewTests<TWebDriver> where TWebDriver : IWebDriver, new()
+    public class FormViewTests<TWebDriver> : BaseIntegration<TWebDriver> where TWebDriver : IWebDriver, new()
     {
-        private IWebDriver Driver;
-        private string ManagerUrl;
         private string formUrl;
-
-        [SetUp]
-        public void SetUp()
+        
+        protected override void OnSetup()
         {
-            this.Driver = new TWebDriver();
-            this.ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
             this.formUrl = ManagerUrl + "/FormTemplates";
-            this.Login();
         }
 
-        [TearDown]
-        public void TearDown()
-        {
-            this.Driver.Close();
-        }
         private void Login()
         {
             this.Driver.Navigate().GoToUrl(ManagerUrl);

@@ -124,7 +124,7 @@ namespace Catfish.Tests.Views
         protected const string EntityTypesLabel = "Entity Types";
     }
 
-    public class BaseIntegration<TWebDriver> : BaseIntegration where TWebDriver : IWebDriver, new()
+    public abstract class BaseIntegration<TWebDriver> : BaseIntegration where TWebDriver : IWebDriver, new()
     {
         protected IWebDriver Driver;
         protected string ManagerUrl;
@@ -145,12 +145,26 @@ namespace Catfish.Tests.Views
             this.Driver = new TWebDriver();
             this.ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
             this.LoginAsAdmin();
+
+            OnSetup();
         }
 
         [TearDown]
         public virtual void TearDown()
         {
             this.Driver.Close();
+
+            OnTearDown();
+        }
+
+        protected virtual void OnSetup()
+        {
+
+        }
+
+        protected virtual void OnTearDown()
+        {
+
         }
 
         protected void ResetDatabase()

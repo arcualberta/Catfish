@@ -1,28 +1,32 @@
 ﻿using Catfish.Core.Models.Access;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Catfish.Tests.Helpers;
+using NUnit.Framework;
 using System.Collections.Generic;
 
 namespace Catfish.Tests
 {
-    [TestClass]
-    public class AccessDefinitionTests
+    [TestFixture]
+    public class AccessDefinitionTests : BaseUnitTest
     {
         CFAccessDefinition AccessDefinition;
-
-        [TestInitialize]
-        public void Initialize()
+        
+        protected override void OnSetup()
         {
             AccessDefinition = new CFAccessDefinition();
-        }     
+        }
 
-        [TestMethod]
+        protected override void OnTearDown()
+        {
+        }
+
+        [Test]
         public void CanUseAccessModes()
         {
             AccessDefinition.AccessModes = AccessMode.Append;
             Assert.IsTrue(AccessDefinition.HasMode(AccessMode.Append));
         }
 
-        [TestMethod]
+        [Test]
         public void CanUseMixedAccessModes()
         {
             AccessMode mixedAccessMode = AccessMode.Append | AccessMode.Control;
@@ -30,7 +34,7 @@ namespace Catfish.Tests
             Assert.IsTrue(AccessDefinition.HasModes(mixedAccessMode));
         }
 
-        [TestMethod]
+        [Test]
         public void CanUseSingleAccessModeFromMixed()
         {
             AccessMode mixedAccessMode = AccessMode.Control
@@ -43,7 +47,7 @@ namespace Catfish.Tests
             Assert.IsTrue(AccessDefinition.HasMode(AccessMode.Write));
         }
 
-        [TestMethod]
+        [Test]
         public void CanFindMissingAccessMode()
         {
             AccessMode mixedAccessMode = AccessMode.Control
@@ -56,7 +60,7 @@ namespace Catfish.Tests
 
         }
 
-        [TestMethod]
+        [Test]
         public void CanFindMissingMixedAccessMode()
         {
             AccessMode mixedAccessMode = AccessMode.Control
@@ -71,7 +75,7 @@ namespace Catfish.Tests
 
         }
 
-        [TestMethod]
+        [Test]
         public void CanListAccessModes()
         {
             AccessMode controlWriteAccessMode = AccessMode.Control | AccessMode.Write;

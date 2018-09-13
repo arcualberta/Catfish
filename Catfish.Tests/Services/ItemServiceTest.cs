@@ -1,7 +1,7 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Catfish.Tests.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 
 namespace Catfish.Tests.Services
 {
-    [TestClass]
-    public class ItemServiceTest
+    [TestFixture]
+    public class ItemServiceTest : BaseServiceTest
     {
         private CFItem CreateItem(ItemService itemSrv, int entityTypeId, string name, string description, bool store = false)
         {
@@ -29,7 +29,7 @@ namespace Catfish.Tests.Services
             return i;
         }
 
-        [TestMethod]
+        [Test]
         public void TestCreateItem()
         {
             DatabaseHelper Dh = new DatabaseHelper(true);
@@ -44,10 +44,10 @@ namespace Catfish.Tests.Services
             Assert.AreEqual(description, i.Description);
         }
 
-        [Ignore]
+        [Ignore("Not yet implemented")]
         // This test is using the Item service GetItem method which requires 
         // a IIdentity as parameter
-        [TestMethod]
+        [Test]
         public void TestUpdateItem()
         {
             //DatabaseHelper Dh = new DatabaseHelper(true);
@@ -86,10 +86,10 @@ namespace Catfish.Tests.Services
             //Assert.AreEqual(id, i2.Id);
         }
 
-        [Ignore]
+        [Ignore("Not yet implemented")]
         // This test uses Item Service Get Item with Guid, this is the only place
         // this method is used
-        [TestMethod]
+        [Test]
         public void TestGetItem()
         {
             //DatabaseHelper Dh = new DatabaseHelper(true);
@@ -112,9 +112,9 @@ namespace Catfish.Tests.Services
             //Assert.AreEqual(i2.Content, i3.Content);
         }
 
-        [Ignore]
+        [Ignore("Not yet implemented")]
         // Need to use IIdentity for GetItems
-        [TestMethod]
+        [Test]
         public void GetItems()
         {
             //DatabaseHelper Dh = new DatabaseHelper(true);
@@ -125,9 +125,9 @@ namespace Catfish.Tests.Services
             //Assert.AreEqual(DatabaseHelper.TOTAL_ITEMS, items.Count());
         }
 
-        [Ignore]
+        [Ignore("Not yet implemented")]
         // Need to use IIdentity for GetItems
-        [TestMethod]
+        [Test]
         public void DeleteItem()
         {
             //DatabaseHelper Dh = new DatabaseHelper(true);

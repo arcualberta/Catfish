@@ -14,13 +14,17 @@ namespace Catfish.Tests.Helpers
         [SetUp]
         public virtual void SetUp()
         {
-
+            OnSetup();
         }
 
         [TearDown]
         public virtual void TearDown()
         {
-
+            OnTearDown();
         }
+
+        protected abstract void OnSetup();
+
+        protected abstract void OnTearDown();
     }    
 }

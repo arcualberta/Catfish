@@ -18,24 +18,8 @@ namespace Catfish.Tests.Views
         public static string UserLogin = "admin";
     }
     [TestFixture(typeof(ChromeDriver))]
-    public class EntityGroupViewTests<TWebDriver> where TWebDriver : IWebDriver, new()
+    public class EntityGroupViewTests<TWebDriver> : BaseIntegration<TWebDriver> where TWebDriver : IWebDriver, new()
     {
-        private IWebDriver Driver;
-        private string ManagerUrl;
-
-        [SetUp]
-        public void SetUp()
-        {
-            this.Driver = new TWebDriver();
-            this.ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
-            this.Login();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            this.Driver.Close();
-        }
         private void Login()
         {
             this.Driver.Navigate().GoToUrl(ManagerUrl);
