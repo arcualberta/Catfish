@@ -2,45 +2,102 @@
 <dataConfig name="xml-document-schema" version="1.6">
 	<script>
 		<![CDATA[ 
-			// code found here :https://stackoverflow.com/questions/7081318/solr-dataimporthandler-can-i-get-a-dynamic-field-name-from-xml-attribute-with-x
-			function extractLanguageField(row) {
-				var language = row.get("langCode");
-				var name = row.get("name");
-				var value = row.get("value");
+			var replaceRegex = new RegExp('-', 'g');
+			
+			function convertFields(row){
+				var ids = row.get("field_id");
+				var languages = row.get("field_langCode");
+				var names = row.get("field_name");
+				var values = row.get("field_value");
+				var modelTypes = row.get("field_modelType");
+				var id, language, value;
 				
-				for(var i = 0; i < language.length; ++i){
-					row.put("name_txt_" + language[i], name[i]);
-					row.put("value_txt_" + language[i], value[i]);
+				
+				for(var i = 0; i < languages.length; ++i){
+					id = ids[i];
+					language = languages[i];
+					value = values[i];
+					
+					if(id){
+						id = id.replace(replaceRegex, '_');
+						row.put("name_" + id + "txt_" + language, names[i]);
+						row.put("value_" + id + "txt_" + language, value);
+						
+						if(modelTypes[i].startsWith("Catfish.Core.Models.Forms.NumberField")){
+							if(!isNaN(value) && value.length > 0){
+								row.put("value_" + id + "i", value);
+								row.put("value_" + id + "d", value);
+							}
+						}
+					}
 				}
 				
-				row.remove("langCode");
-				row.remove("name");
-				row.remove("value");
-
+				row.remove("field_id");
+				row.remove("field_langCode");
+				row.remove("field_name");
+				row.remove("field_value");
+				row.remove("field_modelType");
+			}
+			
+			function convertOptions(row){
+				var ids = row.get("option_id");
+				var languages = row.get("option_langCode");
+				var names = row.get("option_name");
+				var values = row.get("option_value");
+				var id, language, value;
+				
+				
+				for(var i = 0; i < languages.length; ++i){
+					id = ids[i];
+					language = languages[i];
+					value = values[i];
+					
+					if(id){
+						id = id.replace(replaceRegex, '_');
+						row.put("option_name_" + id + "txt_" + language, names[i]);
+						row.put("option_value_" + id + "txt_" + language, value);
+					}
+				}
+				
+				row.remove("option_id");
+				row.remove("option_langCode");
+				row.remove("option_name");
+				row.remove("option_value");
+			}
+			
+			function convertDocument(row) {
+				convertFields(row);
+				convertOptions(row);
+				
 				return row;
 			}
 		]]>
 	</script>
 
-  <dataSource name="d1" type="JdbcDataSource" driver="com.microsoft.sqlserver.jdbc.SQLServerDriver" url="jdbc:sqlserver://localhost:1433;instance=SQLEXPRESS;databaseName=CatfishTest2;" user="catfish" password="password" />
-  <dataSource name="d2" type="FieldReaderDataSource" />
-  
-  <document name="FieldDoc">
-	<entity processor="SqlEntityProcessor" dataSource="d1" name="dbData" pk="Id" query="select * from [dbo].[XmlModels] WHERE EntityTypeId IS NOT NULL" deltaImportQuery="SELECT * FROM [dbo].[XmlModels] WHERE Id = ${dih.delta.Id}" deltaQuery="SELECT Id FROM [dbo].[XmlModels] WHERE EntityTypeId IS NOT NULL AND ([Content].value(N'(/./@created)[1]', 'datetime') &gt;= '${dih.last_index_time}' OR [Content].value(N'(/./@updated)[1]', 'datetime') &gt;= '${dih.last_index_time}')" rootEntity="false">
-	
-		<field column="Id" name="id_s"/>
-		<field column="Discriminator" name="modeltype_s"/>
+	<dataSource name="d1" type="JdbcDataSource" driver="com.microsoft.sqlserver.jdbc.SQLServerDriver" url="jdbc:sqlserver://localhost:1433;instance=SQLEXPRESS;databaseName=CatfishTest2;" user="catfish" password="password" />
+	<dataSource name="d2" type="FieldReaderDataSource" />
 
-		<entity processor="XPathEntityProcessor" transformer="TemplateTransformer,script:extractLanguageField" name="fields" dataSource="d2" dataField="dbData.Content" forEach="/fields/field" xsl="PCDTransform.xslt" >
-			<field column="guid_s" xpath="/fields/field/@guid"/>
-			<field column="metadataset_guid_s" xpath="/fields/field/@metadatasetguid"/>
-			<field column="id" template="${dbData.Id}-${fields.metadataset_guid_s}-${fields.guid_s}"/>
-			
-			<!-- These fields will be transformed to each language code -->
-			<field column="langCode" xpath="/fields/field/entry/@lang" multiValued="true"/>
-			<field column="name" xpath="/fields/field/entry/name" multiValued="true"/>
-			<field column="value" xpath="/fields/field/entry/value" multiValued="true"/>
+	<document name="FieldDoc">
+		<entity processor="SqlEntityProcessor" dataSource="d1" name="dbData" pk="Id" query="select * from [dbo].[CFXmlModels] WHERE EntityTypeId IS NOT NULL" deltaImportQuery="SELECT * FROM [dbo].[CFXmlModels] WHERE Id = ${dih.delta.Id}" deltaQuery="SELECT Id FROM [dbo].[CFXmlModels] WHERE EntityTypeId IS NOT NULL AND ([Content].value(N'(/./@created)[1]', 'datetime') &gt;= '${dih.last_index_time}' OR [Content].value(N'(/./@updated)[1]', 'datetime') &gt;= '${dih.last_index_time}')" rootEntity="false">
+
+			<field column="Id" name="id_s"/>
+			<field column="Id" xpath="id"/>
+			<field column="Discriminator" name="modeltype_s"/>
+
+			<entity processor="XPathEntityProcessor" transformer="TemplateTransformer,script:convertDocument" name="fields" dataSource="d2" dataField="dbData.Content" forEach="/fields" xsl="PCDTransform.xslt" >
+				<!-- These fields will be transformed to each language code -->
+				<field column="field_id" xpath="/fields/field/entry/guid" multiValued="true"/>
+				<field column="field_langCode" xpath="/fields/field/entry/@lang" multiValued="true"/>
+				<field column="field_name" xpath="/fields/field/entry/name" multiValued="true"/>
+				<field column="field_value" xpath="/fields/field/entry/value" multiValued="true"/>
+				<field column="field_modelType" xpath="/fields/field/entry/model-type" multiValued="true"/>
+				
+				<!-- These options will be transformed to each language code -->
+				<field column="option_id" xpath="/fields/field/option/guid" multiValued="true"/>
+				<field column="option_langCode" xpath="/fields/field/option/@lang" multiValued="true"/>
+				<field column="option_name" xpath="/fields/field/option/name" multiValued="true"/>
+				<field column="option_value" xpath="/fields/field/option/value" multiValued="true"/>
+			</entity>
 		</entity>
-    </entity>
-  </document>
+	</document>
 </dataConfig>

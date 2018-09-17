@@ -4,17 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Xml.Linq;
 
 namespace Catfish.Core.Models
 {
+    [Serializable]
     public class CFItem : CFAggregation
     {
+        [IgnoreDataMember]
         public virtual ICollection<CFAggregation> ParentRelations { get; set; }
 
         public CFItem()
-            : base()
-        {
+        { 
             ParentRelations = new List<CFAggregation>();
             Data.Add(new XElement("data"));
         }
@@ -22,6 +24,7 @@ namespace Catfish.Core.Models
         public override string GetTagName() { return "item"; }
 
         [NotMapped]
+        [IgnoreDataMember]
         public virtual IEnumerable<CFDataObject> DataObjects
         {
             get
@@ -34,6 +37,7 @@ namespace Catfish.Core.Models
         /// This field is only used for passing file attachments between controller action and Items/Edit view through model binding
         /// </summary>
         [NotMapped]
+        [IgnoreDataMember]
         public Attachment AttachmentField
         {
             get
@@ -50,9 +54,12 @@ namespace Catfish.Core.Models
                 mAttachmentField = value;
             }
         }
+
+        [NonSerialized]
         private Attachment mAttachmentField;
 
         [NotMapped]
+        [IgnoreDataMember]
         public virtual IEnumerable<CFDataFile> Files
         {
             get
@@ -62,6 +69,7 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
+        [IgnoreDataMember]
         public virtual IEnumerable<CFFormSubmission> FormSubmissions
         {
             get

@@ -5,6 +5,8 @@
     @Html.Partial("Partial/IndexToolbar")
 }
 
-@Html.Partial("Partial/ObjectList")
+@Html.Partial("Partial/ObjectList", Model, new ViewDataDictionary() { { "showDeleteButton", true } })
+@{ 
 
+}
 

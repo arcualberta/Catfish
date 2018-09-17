@@ -1,25 +1,27 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Ingestion;
 using Catfish.Tests.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Catfish.Tests.Services
 {
-    [TestClass]
-    public class IngestionServiceTest
-    {        
-        [TestMethod]
+    [TestFixture]
+    public class IngestionServiceTest : BaseServiceTest
+    {
+        [Ignore("Test needs to be corrected")]
+        [Test]
         public void ImportCorrectNewTest()
         {
             DatabaseHelper Dh = new DatabaseHelper(false);
-            using( FileStream stream = File.Open("./Resources/IngestionDatabase1.xml", FileMode.Open))
+            using(Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.Resources.IngestionDatabase1.xml"))
             {
                 Dh.Igs.Import(stream);
                 Dh.Db.SaveChanges();
@@ -47,11 +49,12 @@ namespace Catfish.Tests.Services
             
         }
 
-        [TestMethod]
+        [Ignore("Test needs to be corrected")]
+        [Test]
         public void ImportCorrectOverwriteTest()
         {
             DatabaseHelper Dh = new DatabaseHelper(false);
-            using (FileStream stream = File.Open("./Resources/IngestionDatabase2.xml", FileMode.Open))
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.Resources.IngestionDatabase2.xml"))
             {
                 Dh.Igs.Import(stream);
                 Dh.Db.SaveChanges();
@@ -96,14 +99,14 @@ namespace Catfish.Tests.Services
             Assert.IsTrue(Dh.Db.Items.SelectMany(i => i.ChildRelations).ToList().Where(i => i.Guid == "34bd149fe442478f878b3e0b39a68144").Any());
         }
 
-        [TestMethod]
+        [Test]
         public void ImportBadTest()
         {
             DatabaseHelper Dh = new DatabaseHelper(false);
 
             try
             {
-                using (FileStream stream = File.Open("./Resources/IngestionDatabase3.xml", FileMode.Open))
+                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.Resources.IngestionDatabase3.xml"))
                 {
                     Dh.Igs.Import(stream);
                     Dh.Db.SaveChanges();
@@ -272,7 +275,7 @@ namespace Catfish.Tests.Services
             Assert.AreEqual(elements.Count, 0);
         }
 
-        [TestMethod]
+        [Test]
         public void ExportPartialTest()
         {
             string result = "";
@@ -330,7 +333,7 @@ namespace Catfish.Tests.Services
             AsserXmlEqualIngestion(testResult, ingestion);
         }
 
-        [TestMethod]
+        [Test]
         public void ExportAllTest()
         {
             string result;

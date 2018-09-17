@@ -44,14 +44,14 @@ namespace Catfish.Areas.Manager.Controllers
                     if (child == null)
                         throw new Exception("Id=" + c.Id + ": Specified child entity of type Aggregation not found");
 
-                    model.ChildMembers.Add(child);
+                    model.AddChild(child);
                 }
 
                 //Removing deleted children
                 foreach (var c in vm.RemovalPendingChildEntities)
                 {
                     CFAggregation child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFAggregation;
-                    model.ChildMembers.Remove(child);
+                    model.RemoveChild(child);
                 }
 
                 Db.Entry(model).State = System.Data.Entity.EntityState.Modified;

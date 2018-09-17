@@ -2,11 +2,14 @@
 using Catfish.Core.Models.Ingestion;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace Catfish.Core.Services
@@ -31,6 +34,10 @@ namespace Catfish.Core.Services
         
         public void Import(Ingestion ingestion)
         {
+#if DEBUG
+            Console.Error.WriteLine("Starting ingestion of Ingestion object.");
+#endif
+
             //create new GUID and new EntityType-Id
             Dictionary<string, string> GuidMap = new Dictionary<string, string>();
             Dictionary<int, int> IdMap = new Dictionary<int, int>();
@@ -75,7 +82,15 @@ namespace Catfish.Core.Services
                 }
                 else
                 {
-                    Db.MetadataSets.Add(ms);
+                    try
+                    {
+                        Db.MetadataSets.Add(ms);
+                    }catch(ProviderIncompatibleException ex)
+                    {
+                        Console.Error.WriteLine("Current Connection String: " + Db.Database.Connection.ConnectionString);
+
+                        throw ex;
+                    }
                 }
             }
 
@@ -137,16 +152,51 @@ namespace Catfish.Core.Services
 
             //add aggregations
             GuidMap.Clear();
-            foreach (var agg in ingestion.Aggregations)
+            int completed = 0;
+            int failed = 0;
+            IDictionary<Type, Func<IngestionService, CFXmlModel, CFAggregation>> createAggrigationCache = new Dictionary<Type, Func<IngestionService, CFXmlModel, CFAggregation>>();
+            Func<CFXmlModel, CFAggregation> getNewAggrigation = agg =>
             {
-                string oldId = agg.Guid;
+                Type t = agg.GetType();
+
+                try
+                {
+                    return createAggrigationCache[t](this, agg);
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    MethodInfo method = this.GetType().GetMethod("CreateAggregation");
+                    MethodInfo genMethod = method.MakeGenericMethod(t);
+                    Func<IngestionService, CFXmlModel, CFAggregation> func = (Func<IngestionService, CFXmlModel, CFAggregation>)Delegate.CreateDelegate(typeof(Func<IngestionService, CFXmlModel, CFAggregation>), genMethod);
+                    createAggrigationCache.Add(t, func);
+
+                    return func(this, agg);
+                }
+            };
+
+            ingestion.Aggregations.ForEach((agg) => {
+                Regex guidRegex = new Regex(@"(guid)=[""']?((?:.(?![""']?\s + (?:\S +)=|[> ""']))+.)[""']?");
+                string oldId = guidRegex.Match(agg.Content).Groups[2].Value;
                 string newGuid = NewGuid();
 
+                //saving the aggregation object
                 if (ingestion.Overwrite)
                 {
                     //use whatever GUID in the file
                     //check to make sure the GUID in not existing in the Db, if it's replace the one in the database
                     GuidMap.Add(oldId, oldId); //if overwrite is true use existing GUID
+
+                    CFAggregation _aggregation = Db.XmlModels.Where(a => a.MappedGuid == oldId).FirstOrDefault() as CFAggregation;
+                    if (_aggregation != null)
+                    {
+                        _aggregation = (CFAggregation)agg;
+                        Db.Entry(_aggregation).State = System.Data.Entity.EntityState.Modified;
+                    }
+                    else
+                    {
+                        var _agg = getNewAggrigation(agg);
+                        Db.Entities.Add(_agg);
+                    }
                 }
                 else
                 {
@@ -154,36 +204,37 @@ namespace Catfish.Core.Services
                     agg.MappedGuid = newGuid;
 
                     GuidMap.Add(oldId, newGuid);
+
+                    var _agg = getNewAggrigation(agg);
+
+                    try
+                    {
+                        Db.Entities.Add(_agg);
+                    }catch(Exception ex)
+                    {
+#if DEBUG
+                        Console.Error.WriteLine("{0} Error reading aggrigation: {1}", ex.Message, _agg.Name);
+#endif
+                        return false;
+                    }
+
+                    _agg.Dispose();
                 }
 
-                //saving the aggregation object
-                if (ingestion.Overwrite)
-                {
-                    CFAggregation _aggregation = Db.XmlModels.Where(a => a.MappedGuid == newGuid).FirstOrDefault() as CFAggregation;
-                    if(_aggregation != null)
-                    {
-                        _aggregation =(CFAggregation) agg;
-                        Db.Entry(_aggregation).State = System.Data.Entity.EntityState.Modified;
-                    }
-                    else
-                    {
-                        Type t = agg.GetType();
-                        MethodInfo method = this.GetType().GetMethod("CreateAggregation");
-                        MethodInfo genMethod = method.MakeGenericMethod(t);
-                        var _agg = (CFAggregation)genMethod.Invoke(this, new object[] { agg });
-                        Db.Entities.Add(_agg);
-                    }
-                }
-                else
-                {
-                    Type t = agg.GetType();
-                    MethodInfo method = this.GetType().GetMethod("CreateAggregation");
-                    MethodInfo genMethod = method.MakeGenericMethod(t);
-                    var _agg = (CFAggregation)genMethod.Invoke(this, new object[] { agg });
-                    Db.Entities.Add(_agg);
-                }
-                
-            }
+                return true;
+            }, (successCount, failCount) =>
+            {
+                completed += successCount;
+                failed += failCount;
+
+#if DEBUG
+                Console.Error.WriteLine("{0} Completed, {1} Failed", completed, failed);
+#endif
+
+                Db.SaveChanges();
+                return true;
+            });
+
             Db.SaveChanges();
             foreach (var rel in ingestion.Relationships)
             { 
@@ -222,18 +273,18 @@ namespace Catfish.Core.Services
                 CFAggregation parent = Db.XmlModels.Where(x => x.MappedGuid == parentGuid).FirstOrDefault() as CFAggregation;
                 CFAggregation child = Db.XmlModels.Where(x => x.MappedGuid == childGuid).FirstOrDefault() as CFAggregation;
                 if(!overwrite)
-                { parent.ChildMembers.Add(child); }
+                { parent.AddChild(child); }
                 else
                 {
                     //remove all child members first before adding new one
                     foreach(var c in parent.ChildMembers)
                     {
                         CFAggregation removeChild = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFAggregation;
-                        parent.ChildMembers.Remove(removeChild);
+                        parent.RemoveChild(removeChild);
                     }
 
                     //add new one
-                    parent.ChildMembers.Add(child);
+                    parent.AddChild(child);
                 }
             
                 
@@ -275,12 +326,14 @@ namespace Catfish.Core.Services
             }
         }
         public T CreateAggregation<T>(CFXmlModel aggregation) where T : CFAggregation, new()
-        {  
-            T agg = new T();
-            string entityTypeName = aggregation.Data.Attribute("entity-type").Value;
-            CFEntityType entType = Db.EntityTypes.Where(e => e.Name == entityTypeName).FirstOrDefault();
-            agg = (T)aggregation;
-            agg.EntityType = entType;
+        {
+            //T agg = new T();
+            Regex entityTypeRegex = new Regex(@"(entity-type)=[""']?((?:.(?![""']?\s + (?:\S +)=|[>""']))+.)[""']?");
+
+            string entityTypeName = entityTypeRegex.Match(aggregation.Content).Groups[2].Value;
+            int? entType = Db.EntityTypes.Where(e => e.Name == entityTypeName).Select(e => e.Id).FirstOrDefault();
+            T agg = (T)aggregation;
+            agg.EntityTypeId = entType;
            
             return agg;
         }
@@ -295,11 +348,16 @@ namespace Catfish.Core.Services
             Import(input);
         }
 
-        public void Import(Stream ingestion)
+        public void Import(Stream ingestion, int threads = 1)
         {
-            XElement result = XElement.Load(ingestion);
+#if DEBUG
+            Console.Error.WriteLine("Converting ingestion stream to Ingestion object.");
+#endif
             Ingestion ing = new Ingestion();
-            Import(ing.Deserialize(result));
+
+            ing.Deserialize(ingestion);
+            
+            Import(ing);
         }
 
         public Ingestion Export()

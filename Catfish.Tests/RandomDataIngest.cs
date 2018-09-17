@@ -1,17 +1,18 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Catfish.Core.Models;
 using System.Collections.Generic;
 using System;
 using Catfish.Core.Services;
+using Catfish.Tests.Helpers;
 
 namespace Catfish.Tests
 {
-    //[TestClass]
-    public class RandomDataIngest
+    //[TestFixture]
+    public class RandomDataIngest : BaseUnitTest
     {
-        [Ignore] // Done to prevent the test from running each time we do a full test.
-        [TestMethod]
+        [Ignore("Not yet implemented")] // Done to prevent the test from running each time we do a full test.
+        [Test]
         public void CreateCollections()
         {
             int COUNT = 20;
@@ -35,7 +36,8 @@ namespace Catfish.Tests
             db.SaveChanges();
         }
 
-        [TestMethod]
+        [Ignore("Test needs to be corrected")]
+        [Test]
         public void CreateItems()
         {
             int COUNT = 50;
@@ -59,5 +61,12 @@ namespace Catfish.Tests
             db.SaveChanges();
         }
 
+        protected override void OnSetup()
+        {
+        }
+
+        protected override void OnTearDown()
+        {
+        }
     }
 }

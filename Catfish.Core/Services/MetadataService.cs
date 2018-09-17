@@ -26,6 +26,15 @@ namespace Catfish.Core.Services
             return metadata;
         }
 
+        public CFMetadataSet GetMetadataSet(string guid)
+        {
+            // TODO: Generalze to xpath lookup
+            CFMetadataSet metadata = Db.MetadataSets.ToList().Where(m => m.Guid == guid).FirstOrDefault();
+            //if (metadata != null)
+            //    metadata.Deserialize();
+            return metadata;
+        }
+
         /// <summary>
         /// Returns the list of metadata filed types that can be used as metadata fileds. 
         /// This excludes base classes that are not directly usable as fields in a form.

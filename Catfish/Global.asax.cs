@@ -16,6 +16,10 @@ using Catfish.Core.Services;
 using Catfish.Core.ModelBinders;
 using Catfish.Core.Validators;
 
+using Catfish.Core.Helpers;
+using Catfish.Services;
+using Piranha;
+
 namespace Catfish
 {
     public class Global : HttpApplication
@@ -43,6 +47,7 @@ namespace Catfish
                 str.Append("<script src=\"/Scripts/jquery-2.1.1.min.js\" type=\"text/javascript\" ></script>");
                 str.Append("<script src=\"/Scripts/jquery-ui.min.js\" type=\"text/javascript\" ></script>");
                 str.Append("<script src=\"/Scripts/bootstrap.min.js\" type=\"text/javascript\" ></script>");
+                str.Append("<script src=\"/Scripts/catfish-global.js\" type=\"text/javascript\" ></script>");
                 str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/jquery-ui.min.css\" />");
                 str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/bootstrap.min.css\" />");
                 str.Append("<link type=\"text/css\" rel=\"stylesheet\" href=\"/content/Custom.css\" />");
@@ -53,6 +58,12 @@ namespace Catfish
 
             //Multilingual menu
             Hooks.Menu.RenderItemLink = ViewHelper.MultilingualMenuRenderer;
+            //register multiple languange for the site --May 17 2018
+            foreach (string lang in ConfigHelper.LanguagesCodes)
+            {
+                Piranha.WebPages.WebPiranha.RegisterCulture(lang, new System.Globalization.CultureInfo(lang));
+            }
+
 
             // Setup Validation Attributes
             FormFieldValidationAttribute.CurrentLanguageCodes = () => new string[] { ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName };
@@ -63,6 +74,22 @@ namespace Catfish
             {
                 SolrService.Init(solrString);
             }
+
+            CFXmlModel.InitializeExternally = (CFXmlModel model) =>
+            {
+                string guid = HttpContext.Current.User.Identity.Name;
+                model.CreatedByGuid = guid;                
+                using (var db = new DataContext())
+                {
+                    Piranha.Entities.User user = db.Users.Where(u => u.Id.ToString() == guid).FirstOrDefault();
+                    if (user != null)
+                    {
+                        user = db.Users.Where(u => u.Id.ToString() == guid).FirstOrDefault();
+                        model.CreatedByName = user.Firstname + " " + user.Surname;
+                    }                    
+                }                               
+            };
+            
         }
 
         private void AddManagerMenus()

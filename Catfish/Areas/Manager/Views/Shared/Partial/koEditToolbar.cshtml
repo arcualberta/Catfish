@@ -1,17 +1,29 @@
 ﻿@Html.Partial("Partial/Tabs")
 
-@{ string reloadAction = string.IsNullOrEmpty(ViewData["reloadAction"] as string) ? "edit" : ViewData["reloadAction"] as string; }
+@{ 
+    string reloadAction = string.IsNullOrEmpty(ViewData["reloadAction"] as string) ? "edit" : ViewData["reloadAction"] as string;
+    string saveButtonFunctionCall = ViewData["saveButtonFunctionCall"] as string;
+}
 
 <div class="toolbar">
     <div class="inner">
         <ul>
+            @if (!string.IsNullOrEmpty(saveButtonFunctionCall))
+            {
+                <li id="save-btn">
+                    <a id="toolbar_save_button" class="save" onclick="@(saveButtonFunctionCall)(); return false;">
+                        @Piranha.Resources.Global.ToolbarSave
+                    </a>
+                </li>
+            }
+
             <li>
-                <a href="@Url.Action("index")" class="back">
+                <a id="toolbar_back_button" href="@Url.Action("index")" class="back">
                     @Piranha.Resources.Global.ToolbarBack
                 </a>
             </li>
             <li>
-                <a href="@Url.Action(@reloadAction, new { id = Model.Id })" class="refresh">
+                <a id="toolbar_refresh_button" href="@Url.Action(@reloadAction, new { id = Model.Id })" class="refresh">
                     @Piranha.Resources.Global.ToolbarReload
                 </a>
             </li>

@@ -17,6 +17,8 @@ namespace Catfish.Core.Models.Data
         public static string TagName { get { return "file"; } }
         public enum eThumbnailTypes { NonShared = 0, Shared }
 
+      
+
         public override string GetTagName() { return TagName; }
 
         [NotMapped]
@@ -67,6 +69,12 @@ namespace Catfish.Core.Models.Data
 
         [NotMapped]
         public string Thumbnail { get { return GetAttribute("thumbnail", null); } set { SetAttribute("thumbnail", value); } }
+        [NotMapped]
+        public string Small { get { return GetAttribute("small", null); } set { SetAttribute("small", value); } }
+        [NotMapped]
+        public string Medium { get { return GetAttribute("medium", null); } set { SetAttribute("medium", value); } }
+        [NotMapped]
+        public string Large { get { return GetAttribute("large", null); } set { SetAttribute("large", value); } }
 
         [NotMapped]
         public string Path
