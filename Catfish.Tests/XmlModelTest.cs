@@ -1,16 +1,17 @@
 ﻿using System;
 using Catfish.Core.Models.Forms;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Linq;
 using System.IO;
 using System.Xml.Linq;
 using Catfish.Core.Models;
 using System.Collections.Generic;
+using Catfish.Tests.Helpers;
 
 namespace Catfish.Tests
 {
-    [TestClass]
-    public class XmlModelTest
+    [TestFixture]
+    public class XmlModelTest : BaseUnitTest
     {
         public static string GetSampleDataFilePathName(string fileName)
         {
@@ -20,8 +21,8 @@ namespace Catfish.Tests
             return Path.Combine(dir, fileName);
         }
 
-        [Ignore]
-        [TestMethod]
+        [Ignore("Not yet implemented")]
+        [Test]
         public void TestMethod1()
         {
             var option_filed_types = typeof(OptionsField).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(OptionsField))).ToList();
@@ -29,7 +30,8 @@ namespace Catfish.Tests
             var n = option_filed_types.Count;
         }
 
-        [TestMethod]
+        [Ignore("Test needs to be corrected")]
+        [Test]
         public void MetadataFieldsTest()
         {
             string path = GetSampleDataFilePathName("MetadataSet.xml");
@@ -68,7 +70,8 @@ namespace Catfish.Tests
 
         }
 
-        [TestMethod]
+        [Ignore("Test needs to be corrected")]
+        [Test]
         public void ItemTest()
         {
             string path = GetSampleDataFilePathName("Item.xml");
@@ -82,6 +85,14 @@ namespace Catfish.Tests
 
         }
 
+        protected override void OnSetup()
+        {
+        }
+
+        protected override void OnTearDown()
+        {
+        }
+
         //[AssemblyInitialize]
         //public static void SetUp(TestContext context)
         //{
@@ -90,7 +101,7 @@ namespace Catfish.Tests
 
         //    string solution_dir = xx.ToString();
         //}
-        //[TestMethod]
+        //[Test]
         //public void Test()
         //{
         //    Assert.AreEqual(1, 1);

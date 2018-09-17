@@ -9,12 +9,16 @@ using System.Linq;
 using System.ComponentModel.DataAnnotations.Schema;
 using Catfish.Core.Helpers;
 using Catfish.Core.Models.Access;
+using System.Runtime.Serialization;
 
 namespace Catfish.Core.Models
 {
+    [Serializable]
     public abstract class CFEntity : CFXmlModel
     {
         public int? EntityTypeId { get; set; }
+
+        [IgnoreDataMember]
         public virtual CFEntityType EntityType { get; set; }
 
         protected static string AccessGroupXPath = "access/" + CFAccessGroup.TagName;
@@ -27,6 +31,7 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
+        [IgnoreDataMember]
         public List<CFMetadataSet> MetadataSets
         {
             get
@@ -43,7 +48,35 @@ namespace Catfish.Core.Models
 
         }
 
+        public CFAccessGroup GetAccessGroup(Guid guid)
+        {
+            return AccessGroups.Where(x => x.AccessGuid == guid).FirstOrDefault();
+        }
+
+        public CFAccessGroup GetOrCreateAccess(Guid guid)
+        {
+            CFAccessGroup accessGroup = GetAccessGroup(guid);
+
+            if (accessGroup == null)
+            {
+                accessGroup = new CFAccessGroup();
+                AccessGroups.Add(accessGroup);
+            }
+
+            return accessGroup;
+        }
+
+        public void SetAccess(Guid guid, AccessMode accessMode, bool isInherited = false)
+        {            
+            CFAccessGroup accessGroup = GetOrCreateAccess(guid);
+            accessGroup.IsInherited = isInherited;
+            accessGroup.AccessGuid = guid;
+            accessGroup.AccessDefinition.AccessModes = accessMode;
+            // XXX is this saved ?
+        }
+
         [NotMapped]
+        [IgnoreDataMember]
         public List<CFAccessGroup> AccessGroups
         {
             get
@@ -60,18 +93,25 @@ namespace Catfish.Core.Models
             }
         }
         [NotMapped]
+        [IgnoreDataMember]
         public bool BlockInheritance
         {
-            get { XElement access = GetImmediateChild("access");
-                  if(access != null)
-                    {
-                     return GetAttribute("blockInheritance", access) == "true";
-                    }
+            get
+            {
+                XElement access = GetImmediateChild("access");
+                if (access != null)
+                {
+                    return GetAttribute("blockInheritance", access) == "true";
+                }
                 return false;
-             }
-            set { SetAttribute("blockInheritance", value,GetImmediateChild("access"));
-             }
+            }
+            set
+            {
+                SetAttribute("blockInheritance", value, GetImmediateChild("access"));
+            }
         }
+
+
         public void RemoveAllMetadataSets()
         {
             //Removing all children inside the metadata set element
@@ -123,10 +163,44 @@ namespace Catfish.Core.Models
                     return string.Format("ERROR: INCORRECT {0} MAPPING FOUND FOR THIS ENTITY TYPE", mapping);
                 }
 
+                if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
+                {
+                    return string.Join(", ", GetAttributeMappingOptionValues(name, lang));
+                }
+
                 return MultilingualHelper.Join(field.GetValues(), " / ", false);
             }
 
             return null;
+        }
+
+        public string[] GetAttributeMappingOptionValues(string name, string lang = null)
+        {
+            var mapping = EntityType.AttributeMappings.Where(m => m.Name == name).FirstOrDefault();
+            if (mapping != null)
+            {
+                string msGuid = mapping.MetadataSet.Guid;
+                string fieldName = mapping.FieldName;
+
+                FormField field = GetMetadataSetField(msGuid, fieldName);
+
+                if (field == null || !typeof(OptionsField).IsAssignableFrom(field.GetType()))
+                {
+                    return new string[] { string.Format("ERROR: INCORRECT {0} OPTIONS MAPPING FOUND FOR THIS ENTITY TYPE", mapping) };
+                }
+
+                OptionsField optionField = (OptionsField)field;
+                IEnumerable<List<TextValue>> values = optionField.Options.Where(o => o.Selected).Select(o => o.Value);
+
+                if (lang != null)
+                {
+                    return values.SelectMany(v => v).Where(v => v.LanguageCode == lang).Select(v => v.Value).ToArray();
+                }
+
+                return values.Select(v => MultilingualHelper.Join(v, " / ", false)).ToArray();
+            }
+
+            return new string[] { };
         }
 
         public string GetAttributeMappingLabel(string name, string lang = null)
@@ -207,6 +281,7 @@ namespace Catfish.Core.Models
             }
         }
 
+        [IgnoreDataMember]
         public override string Name
         {
             get
@@ -215,6 +290,7 @@ namespace Catfish.Core.Models
             }
         }
 
+        [IgnoreDataMember]
         public override string Description
         {
             get

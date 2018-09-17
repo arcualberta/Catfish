@@ -1,36 +1,40 @@
 ﻿using Catfish.Core.Models.Access;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Catfish.Tests.Helpers;
+using NUnit.Framework;
 using System.Collections.Generic;
 
 namespace Catfish.Tests
 {
-    [TestClass]
-    public class AccessDefinitionTests
+    [TestFixture]
+    public class AccessDefinitionTests : BaseUnitTest
     {
         CFAccessDefinition AccessDefinition;
-
-        [TestInitialize]
-        public void Initialize()
+        
+        protected override void OnSetup()
         {
             AccessDefinition = new CFAccessDefinition();
-        }     
+        }
 
-        [TestMethod]
+        protected override void OnTearDown()
+        {
+        }
+
+        [Test]
         public void CanUseAccessModes()
         {
             AccessDefinition.AccessModes = AccessMode.Append;
             Assert.IsTrue(AccessDefinition.HasMode(AccessMode.Append));
         }
 
-        [TestMethod]
+        [Test]
         public void CanUseMixedAccessModes()
         {
-            AccessMode mixedAccessMode = AccessMode.Append | AccessMode.Discover;
+            AccessMode mixedAccessMode = AccessMode.Append | AccessMode.Control;
             AccessDefinition.AccessModes = mixedAccessMode;
             Assert.IsTrue(AccessDefinition.HasModes(mixedAccessMode));
         }
 
-        [TestMethod]
+        [Test]
         public void CanUseSingleAccessModeFromMixed()
         {
             AccessMode mixedAccessMode = AccessMode.Control
@@ -43,21 +47,23 @@ namespace Catfish.Tests
             Assert.IsTrue(AccessDefinition.HasMode(AccessMode.Write));
         }
 
-        [TestMethod]
+        [Test]
         public void CanFindMissingAccessMode()
         {
-            AccessMode mixedAccessMode = AccessMode.Discover
+            AccessMode mixedAccessMode = AccessMode.Control
                 | AccessMode.Append;
             AccessDefinition.AccessModes = mixedAccessMode;
 
-            Assert.IsFalse(AccessDefinition.HasMode(AccessMode.Read));
+            // Test used to check agains AccessMode.Read but now AccessMode.Read
+            // is always present for all modes
+            Assert.IsFalse(AccessDefinition.HasMode(AccessMode.Write));
 
         }
 
-        [TestMethod]
+        [Test]
         public void CanFindMissingMixedAccessMode()
         {
-            AccessMode mixedAccessMode = AccessMode.Discover
+            AccessMode mixedAccessMode = AccessMode.Control
                 | AccessMode.Append;
 
             AccessMode readWriteAccessMode = AccessMode.Read
@@ -69,13 +75,13 @@ namespace Catfish.Tests
 
         }
 
-        [TestMethod]
+        [Test]
         public void CanListAccessModes()
         {
-            AccessMode readWriteAccessMode = AccessMode.Read | AccessMode.Write;
-            AccessDefinition.AccessModes = readWriteAccessMode;
+            AccessMode controlWriteAccessMode = AccessMode.Control | AccessMode.Write;
+            AccessDefinition.AccessModes = controlWriteAccessMode;
             List<AccessMode> accessModes = AccessDefinition.AccessModesList;
-            Assert.IsTrue(accessModes.Contains(AccessMode.Read));
+            Assert.IsTrue(accessModes.Contains(AccessMode.Control));
             Assert.IsTrue(accessModes.Contains(AccessMode.Write));
             Assert.IsFalse(accessModes.Contains(AccessMode.Append));
         }

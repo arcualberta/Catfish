@@ -32,8 +32,12 @@ namespace Catfish.Areas.Manager.Services
             allUserLists.ToList().ForEach(x => entityAccessVM.AvailableUsers2.Add(x.Key, x.Value));
 
             AccessDefinitionService accessDefinitionService = new AccessDefinitionService(Db);
-            SelectList accessDefs = new SelectList(accessDefinitionService.GetSelectListAccessDefinitions().GroupBy(a => a.Name).Select(a => a.FirstOrDefault()), "AccessModes", "StringAccessModesList");
-
+            SelectList accessDefs = new SelectList(accessDefinitionService.GetSelectListAccessDefinitions()
+                .GroupBy(a => a.Name)
+                .Select(a => a.FirstOrDefault())
+                .Select(i => new SelectListItem() {
+                    Value = ((int)i.AccessModes).ToString(),
+                    Text = i.StringAccessModesList }), "Value", "Text");
             entityAccessVM.AvailableAccessDefinitions = accessDefs;
 
             entityAccessVM.AvailableAccessDefinitions2 = accessDefs.ToList();
@@ -45,7 +49,7 @@ namespace Catfish.Areas.Manager.Services
                 foreach (CFAccessGroup gr in entity.AccessGroups)
                 {
                     AccessGroup accGrp = new Models.ViewModels.AccessGroup();
-                    accGrp.userId = gr.AccessGuids.FirstOrDefault().ToString();
+                    accGrp.userId = gr.AccessGuid.ToString(); //FirstOrDefault().ToString();
                     var user = us.GetUserById(accGrp.userId);
                     string name = string.Empty;
                     if (user == null)
@@ -64,6 +68,7 @@ namespace Catfish.Areas.Manager.Services
                 }
             }
 
+            
             return entityAccessVM;
 
         }
@@ -74,7 +79,8 @@ namespace Catfish.Areas.Manager.Services
             foreach (var ag in entityAccessVM.SelectedAccessGroups)
             {
                 CFAccessGroup group = new CFAccessGroup();
-                group.AccessGuids = new List<Guid>() { Guid.Parse(ag.userId) };
+                //group.AccessGuids = new List<Guid>() { Guid.Parse(ag.userId) };
+                group.AccessGuid = Guid.Parse(ag.userId);
                 group.AccessDefinition.AccessModes = (AccessMode)ag.AccessModesNum;
                 if(ag.AccessMode != null)
                     group.AccessDefinition.Name = ag.AccessMode.Substring(0, ag.AccessMode.LastIndexOf("-"));
@@ -88,6 +94,19 @@ namespace Catfish.Areas.Manager.Services
 
             return entity;
 
+        }
+
+        public List<SelectListItem> GetAccessCodesList()
+        {
+            List<SelectListItem> accessCodesList = new List<SelectListItem>();
+            
+            foreach (AccessMode am in Enum.GetValues(typeof(AccessMode)))
+            {
+
+                accessCodesList.Add(new SelectListItem { Text = am.ToString(), Value = ((int)am).ToString() });
+
+            }
+            return accessCodesList;
         }
 
     }

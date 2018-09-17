@@ -31,11 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommonServiceLocator, Version=2.0.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.2.0.1\lib\net45\CommonServiceLocator.dll</HintPath>
+    <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net46\CommonServiceLocator.dll</HintPath>
     </Reference>
-    <Reference Include="CommonServiceLocator.SolrNet, Version=0.9.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SolrNet.1.0.0\lib\net46\CommonServiceLocator.SolrNet.dll</HintPath>
+    <Reference Include="CommonServiceLocator.SolrNet, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SolrNet.1.0.10\lib\net46\CommonServiceLocator.SolrNet.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
@@ -47,8 +47,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SolrNet, Version=0.9.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SolrNet.Core.1.0.0\lib\net46\SolrNet.dll</HintPath>
+    <Reference Include="SolrNet, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SolrNet.Core.1.0.10\lib\net46\SolrNet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -56,6 +56,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -73,6 +74,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contexts\AccessContext.cs" />
+    <Compile Include="Helpers\BigList.cs" />
     <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Helpers\MultilingualHelper.cs" />
     <Compile Include="Helpers\XmlLinqExtensions.cs" />
@@ -125,9 +128,14 @@
     <Compile Include="Migrations\201804261932173_RenameXMLModelToCFXMLModel.Designer.cs">
       <DependentUpon>201804261932173_RenameXMLModelToCFXMLModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806132141475_Added_XML_Indexing.cs" />
+    <Compile Include="Migrations\201806132141475_Added_XML_Indexing.Designer.cs">
+      <DependentUpon>201806132141475_Added_XML_Indexing.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Access\CFAccessDefinition.cs" />
     <Compile Include="Models\Access\CFAccessGroup.cs" />
+    <Compile Include="Helpers\CreateXmlIndexOperation.cs" />
     <Compile Include="Models\CFAggregation.cs" />
     <Compile Include="Models\Attributes\CFIgnoreAttribute.cs" />
     <Compile Include="Models\Attributes\CFInputTypeAttribute.cs" />
@@ -149,6 +157,8 @@
     <Compile Include="Models\Forms\Attachment.cs" />
     <Compile Include="Models\Forms\ClientInfo.cs" />
     <Compile Include="Models\Forms\PageBreak.cs" />
+    <Compile Include="Models\Forms\NumberField.cs" />
+    <Compile Include="Models\Forms\UrlField.cs" />
     <Compile Include="Models\Ingestion\Ingestion.cs" />
     <Compile Include="Models\Ingestion\Relationship.cs" />
     <Compile Include="Models\CFItem.cs" />
@@ -229,6 +239,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804261932173_RenameXMLModelToCFXMLModel.resx">
       <DependentUpon>201804261932173_RenameXMLModelToCFXMLModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806132141475_Added_XML_Indexing.resx">
+      <DependentUpon>201806132141475_Added_XML_Indexing.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Validators.resx">
       <Generator>ResXFileCodeGenerator</Generator>

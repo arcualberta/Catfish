@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Data.Entity;
 
 namespace Catfish.Services
 {
@@ -89,6 +90,24 @@ namespace Catfish.Services
                 throw ex;
             }
            // return users;
+        }
+
+        public Piranha.Entities.Group GetUsersGroup(Guid groupId)
+        {
+            // IEnumerable<Piranha.Entities.User> users = null;
+            try
+            {
+                using (var db = new DataContext())
+                {
+                    return db.Groups.Include(g=>g.Permissions).Where(g => g.Id == groupId).FirstOrDefault();
+                    // return users;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            // return users;
         }
     }
 }

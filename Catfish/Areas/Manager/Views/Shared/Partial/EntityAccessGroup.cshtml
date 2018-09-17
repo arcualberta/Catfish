@@ -1,21 +1,25 @@
 ﻿@model Catfish.Areas.Manager.Models.ViewModels.EntityAccessDefinitionsViewModel
 @using Catfish.Core.Models.Access
-@{ 
+
+@{
     string subTitle = Model.EntityName + " Access Permissions";
     string controller = ViewData["Controller"].ToString();
     string action = ViewData["Action"].ToString();
+    //get all available AccessMode enum
+   
 
 }
 
 <style>
-    #BlockInheritance{
+    #BlockInheritance {
         margin-left: -300px;
     }
 </style>
-@using (Html.BeginForm(action, controller, FormMethod.Post))
-    {
-  
-    @Html.HiddenFor(m=>Model.Id)
+@using (Html.BeginForm(action, controller, FormMethod.Post, new { id = Model.Id }))
+{
+
+    @Html.HiddenFor(m => Model.Id)
+
     <table class="list" style="margin-top:10px;">
         <thead>
             <tr><th>@subTitle</th></tr>
@@ -25,10 +29,7 @@
             <tr>
                 <td>
                     <table>
-                        <tr>
-                            <td>@Html.LabelFor(m => m.BlockInheritance)</td>
-                            <td class="input" style="text-align:left">@Html.CheckBoxFor(m => m.BlockInheritance)</td>
-                        </tr>
+
                         <tr>
                             <td><label>Access Definitions</label></td>
                             <td class="input">
@@ -65,12 +66,11 @@
                                     <tr id="rowAddOption">
                                         <td>
                                             @Html.TextBoxFor(m => Model.User, new { @id = "usrName", @placeholder = "Userlogin or User List Name", @class = "form-control" })
-                                           
+
                                         </td>
                                         <td>
 
                                             @Html.DropDownListFor(x => Model.SelectedAccessDefinition, new SelectList(Model.AvailableAccessDefinitions, "Value", "Text"), htmlAttributes: new { @class = "form-control" })
-
 
                                         </td>
                                         <td><button id="btnAddUserAccess" class="glyphicon glyphicon-plus-sign" onclick="AddUserAccessDefinition();return false;"></button></td>
@@ -86,13 +86,15 @@
     </table>
 
 }
+
 <script>
     var selectedUser = "";
+    var selectedUser2="";
     $(function(){
        var allAvailableUsers =@(Html.Raw(Json.Encode(ViewBag.SugestedUsers))).map(function(x){ return { key: x["Key"], label: x["Value"] }; });
 
         $('#btnAddUserAccess').attr('disabled','disabled');
-
+         $('#searchUserPermission').attr('disabled','disabled');
        $("#usrName").autocomplete({
           source: allAvailableUsers,
           select: function(event, ui){
@@ -101,6 +103,47 @@
            }
          });
 
+          $("#usrName2").autocomplete({
+          source: allAvailableUsers,
+          select: function(event, ui){
+                 selectedUser2 = ui.item.key;
+                 $('#searchUserPermission').removeAttr('disabled');
+           }
+         });
+
+         $('#searchUserPermission').click(function(){
+
+                var controllerName = $("#controllerName").val();
+               
+                var entityId = $("#entityId").val();
+                 
+                var url ='@Url.Action("GetuserPermissions", "controllerName")';
+                 url = url.replace("controllerName", controllerName);
+                
+                $.ajax({
+                        url : url,
+                        type : 'GET',
+                        data : {
+                                'userGuid' : selectedUser2, 'entityId': entityId
+                        },
+                        dataType:'json',
+                        success : function(data) {
+
+                                   $.each(data, function(index) {
+                                      
+                                        if(data[index] !== "None" && data[index] !== "All")
+                                        {
+                                           $("#chk_" + data[index]).prop("checked", true);
+                                         }
+                                    });
+                            },
+                        error : function(request,error)
+                        {
+                            alert("Request: "+JSON.stringify(request));
+                        }
+                });//closing ajax
+            return false;
+         });//closing click method
     });
 
 
@@ -139,4 +182,4 @@
 
 
 
-</script>
+            </script>

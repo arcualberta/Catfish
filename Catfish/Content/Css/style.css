@@ -201,3 +201,15 @@ input[type=range]:focus::-ms-fill-lower {
 input[type=range]:focus::-ms-fill-upper {
     background: #c7c7c7;
 }
+.calculatedField {
+    float: left;
+    background-color: #a3a2a2;
+    border-radius: 5px;
+    text-align: center;
+    margin-right: 10px;
+}
+
+.ui-autocomplete {
+    background-color: #FFF;
+    border: 1px solid rgba(106, 175, 230, 0.83);
+}

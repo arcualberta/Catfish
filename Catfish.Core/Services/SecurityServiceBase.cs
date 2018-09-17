@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Helpers;
+﻿using Catfish.Core.Contexts;
+using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Access;
 using System;
@@ -14,7 +15,7 @@ namespace Catfish.Core.Services
         private UserListService mUserListService;
         private UserListService userListService { get { if (mUserListService == null) mUserListService = new UserListService(Db); return mUserListService; } }
         
-        protected abstract bool IsAdmin(string userGuid);
+        public abstract bool IsAdmin(string userGuid);
 
         public SecurityServiceBase(CatfishDbContext db) : base(db)
         {
@@ -32,78 +33,34 @@ namespace Catfish.Core.Services
             return AccessMode.None;
         }
 
-        /// <summary>
-        /// NOTE: This only works for aggrigations at the moment. Future work will be needed for files and forms.
-        /// </summary>
-        /// <param name="userGuid">The guid of the user to compare the entity against</param>
-        /// <param name="entity">The object to validate against.</param>
-        /// <returns>The access modes given to the entity.</returns>
-        public AccessMode GetPermissions(string userGuid, CFEntity entity)
+        public List<Guid> GetUserGuids(Guid userGuid)
         {
-            if (typeof(CFAggregation).IsAssignableFrom(entity.GetType()))
-            {
-                return GetAggregationPermissions(userGuid, (CFAggregation)entity);
-            }
+            List<Guid> guids = new List<Guid>();
 
-            return AccessMode.None;
+            guids.Add(userGuid);
+            guids.AddRange(
+                Db.UserListEntries
+                .Where(x => x.UserId == userGuid)
+                .Select(x => x.CFUserListId)
+                );
+
+            return guids;
         }
 
-        protected AccessMode GetAggregationPermissions(string userGuid, CFAggregation entity)
+        public List<Guid> GetUserGuids(string guidString)
         {
-            if (IsAdmin(userGuid))
-            {
-                return AccessMode.All;
-            }
+            Guid userGuid = new Guid(guidString);
+            return GetUserGuids(userGuid);            
+        }
 
-            AccessMode modes = AccessMode.None;
-            List<string> userGroups = userListService.GetEntityGroupForUser(userGuid).Select(ul => ul.Id.ToString()).ToList();
-            IList<CFAggregation> visitedNodes = new List<CFAggregation>();
-            Queue<CFAggregation> entityQueue = new Queue<CFAggregation>();
+        protected void CreateAccessContext(string userGuidString)
+        {
+            CreateAccessContext(new Guid(userGuidString));
+        }
 
-            IList<string> accessableGuids = new List<string>(userGroups);
-            accessableGuids.Add(userGuid);
-
-            entityQueue.Enqueue(entity);
-
-            while(entityQueue.Count > 0)
-            {
-                CFAggregation currentEntity = entityQueue.Dequeue();
-                visitedNodes.Add(currentEntity);
-
-                // Check if we have any new permissions
-                foreach(CFAccessGroup accessGroup in currentEntity.AccessGroups)
-                {
-                    foreach(Guid guid in accessGroup.AccessGuids)
-                    {
-                        string guidString = guid.ToString();
-                        if (accessableGuids.Contains(guidString)){
-                            accessableGuids.Remove(guidString);
-                            modes |= accessGroup.AccessDefinition.AccessModes;
-                        }
-                    }
-                }
-
-                // Move up the tree
-                if(!currentEntity.BlockInheritance && modes < AccessMode.All)
-                {
-                    if(currentEntity.ParentMembers.Count > 0)
-                    {
-                        foreach(CFAggregation parent in currentEntity.ParentMembers)
-                        {
-                            if (!visitedNodes.Contains(parent))
-                            {
-                                entityQueue.Enqueue(parent);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        modes |= GetDefaultPermissions();
-                    }
-                }
-            }
-
-            return modes;
+        protected void CreateAccessContext(Guid userGuid)
+        {
+            AccessContext.current = new AccessContext(userGuid, IsAdmin(userGuid.ToString()), Db);
         }
     }
 }

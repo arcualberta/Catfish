@@ -1,0 +1,130 @@
+﻿@model Catfish.Models.Regions.GraphPanel
+@{ 
+    var firstFields = Model.MetadataFields.Keys.Count > 0 ? Model.MetadataFields[Model.MetadataFields.Keys.First()] : new List<SelectListItem>();
+}
+<style>
+    .input select {
+        background: #efeeee85;
+        border-radius: 2px;
+        padding-right:5px;
+    }
+</style>
+
+<script type="text/javascript">
+    function changeGraphFieldDropdown(metadatasetId, fieldId) {
+        var fieldDictionary = @Html.Raw(Json.Encode(Model.MetadataFields));
+
+        var metadataSet = $('#' + metadatasetId).val();
+        var fields = fieldDictionary[metadataSet];
+        var fieldSelect = $('#' + fieldId);
+        fieldSelect.empty();
+
+        for (var i = 0; i < fields.length; ++i) {
+            var option = $('<option></option>');
+            option.attr("value", fields[i].Value);
+            option.text(fields[i].Text);
+
+            fieldSelect.append(option);
+        }
+    }
+   /*
+    $( document ).ready(function() {
+       $('.up,.down').click(function () {
+          var row = $(this).parents('tr:first');
+          if ($(this).is('.up')) {
+               row.insertBefore(row.prev())
+          }
+         else {
+            row.insertAfter(row.next());
+           }
+     });
+
+
+    });
+    function AddField()
+    {
+      var Field = $("#Regions_0__Body_selectedField").val();
+      var uniqueId = Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
+     var rowCount = $('#AttributeMappingTable tr').length;
+    var rowId = "row_" + (rowCount - 1);
+
+
+      var t = `<tr id="` + rowId +`"><input type="hidden" name="Regions[0].Body.Fields.Index" value="` + uniqueId + `">
+               <input name="Regions[0].Body.Fields[` + uniqueId +  `]" type="hidden" value="` + Field +`">
+                    <td><span>` + Field + `</span></td>
+                    <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteRow('` + rowId +`')"></span><span class="glyphicon glyphicon-arrow-up"></span><span class="glyphicon glyphicon-arrow-down"></span></td>
+                </tr>`;
+
+      $("#ddFields").before(t)
+    }
+
+    function DeleteRow(index)
+    {
+       $("#" + index).remove();
+    }
+    */
+</script>
+
+<ul class="form">
+    
+    @Html.Partial("_CatfishRegion", Model)
+    <li>
+        @Html.LabelFor(m => m.GraphTitle)
+        <div class="input">
+            @Html.EditorFor(m => m.GraphTitle)
+        </div>
+    </li>
+    <li>
+       @Html.LabelFor(m=>m.XaxisLabel)
+        <div class="input">
+            @Html.EditorFor(m => m.XaxisLabel)
+        </div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.XaxisField)
+        <div class="input">
+            @Html.DropDownListFor(m => m.SelectedMetadataSetX, new SelectList(Model.ListMetadataSets, "Value", "Text"), new {@style="width:auto;", @class="dropdown", onchange="changeGraphFieldDropdown('" + Html.IdFor(model => model.SelectedMetadataSetX) + "','" + Html.IdFor(model => model.XaxisField) + "');" })
+            
+            @Html.DropDownListFor(m => m.XaxisField, new SelectList(firstFields, "Value", "Text"), new {@style="width:auto" })
+       </div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.YaxisLabel)
+        <div class="input">
+            @Html.EditorFor(m => m.YaxisLabel)
+        </div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.XScale)
+        <div class="input">
+            @Html.EditorFor(m => m.XScale)
+        </div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.YScale)
+        <div class="input">
+            @Html.EditorFor(m => m.YScale)
+        </div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.YaxisField)
+        <div class="input">
+            @Html.DropDownListFor(m => m.SelectedMetadataSetY, new SelectList(Model.ListMetadataSets, "Value", "Text"), new { @style = "width:auto;", @class = "dropdown", onchange = "changeGraphFieldDropdown('" + Html.IdFor(model => model.SelectedMetadataSetY) + "','" + Html.IdFor(model => model.YaxisField) + "');" })
+            @Html.DropDownListFor(m => m.YaxisField, new SelectList(firstFields, "Value", "Text"), new { @style = "width:auto" })
+        </div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.Category)
+        <div class="input">
+            @Html.DropDownListFor(m => m.SelectedMetadataSetCat, new SelectList(Model.ListMetadataSets, "Value", "Text"), new { @style = "width:auto;", @class = "dropdown", onchange = "changeGraphFieldDropdown('" + Html.IdFor(model => model.SelectedMetadataSetCat) + "','" + Html.IdFor(model => model.Category) + "');" })
+            @Html.DropDownListFor(m => m.Category, new SelectList(firstFields, "Value", "Text"), new { @style = "width:auto" })
+        </div>
+    </li>
+    <li>
+        @Html.LabelFor(m => m.SelectedGraphType)
+        <div class="input">
+            @Html.DropDownListFor(m => m.SelectedGraphType, new SelectList(Model.GraphTypes, "Value", "Text"), new { @style = "width:auto;", @class = "dropdown" })
+           
+        </div>
+    </li>
+</ul>

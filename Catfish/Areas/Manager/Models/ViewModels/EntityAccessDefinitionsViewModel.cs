@@ -29,20 +29,17 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string SelectedAccessDefinition { get; set; }
         public IEnumerable<SelectListItem> AvailableAccessDefinitions2 { get; set; }
 
-
+       
         public EntityAccessDefinitionsViewModel()
         {
             SelectedAccessGroups = new List<AccessGroup>();
             AvailableUsers2 = new Dictionary<string, string>();
-           // SelectedAccessGroups.Add(new AccessGroup { User = "User Name", userId = "846736524135467980j756", AccessMode = "Group 1 - Read, Write" });
+          
         }
         public void UpdateModel(CFEntity entity)
         {
-            
-
             Id = entity.Id;
             EntityName = entity.Name;
-
         }
 
     }
@@ -54,4 +51,6 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string AccessMode { get; set; }
         public int AccessModesNum { get; set; }
     }
+
+    
 }

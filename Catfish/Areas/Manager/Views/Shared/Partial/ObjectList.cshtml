@@ -22,7 +22,7 @@
             <tbody class="">
                 @foreach (var m in Model)
                 {
-                    <tr>
+                    <tr id="model-row-@m.Id">
                         <td>@m.Id</td>
                         <td>@m.Name</td>
                         @if (showType)

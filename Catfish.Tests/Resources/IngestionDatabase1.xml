@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?> 
 <ingestion overwrite="false">
   <metadata-sets>
-    <metadata-set updated="05/01/2018 9:42:12 AM" created="04/01/2018 3:03:31 PM" model-type="Catfish.Core.Models.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="964246e0dae940b7ae211dc60d992e35">
+    <metadata-set updated="05/01/2018 9:42:12 AM" created="04/01/2018 3:03:31 PM" model-type="Catfish.Core.Models.CFMetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="964246e0dae940b7ae211dc60d992e35">
       <fields>
         <field updated="05/01/2018 9:42:12 AM" created="05/01/2018 9:42:12 AM" model-type="Catfish.Core.Models.Forms.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true" guid="4341ba3b2df44f8fb25a9e70bf56097f" rank="1" page="1">
           <name>
@@ -65,9 +65,9 @@
   </entity-types>
     
   <aggregations>
-    <item updated="05/01/2018 2:28:03 PM" created="05/01/2018 2:28:03 PM" model-type="Catfish.Core.Models.Item, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="34bd149fe442478f878b3e0b39a68144" entity-type="Generic Object">
+    <item updated="05/01/2018 2:28:03 PM" created="05/01/2018 2:28:03 PM" model-type="Catfish.Core.Models.CFItem, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="34bd149fe442478f878b3e0b39a68144" entity-type="Generic Object">
       <metadata>
-        <metadata-set updated="05/01/2018 2:28:03 PM" created="04/01/2018 3:03:31 PM" model-type="Catfish.Core.Models.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="964246e0dae940b7ae211dc60d992e35">
+        <metadata-set updated="05/01/2018 2:28:03 PM" created="04/01/2018 3:03:31 PM" model-type="Catfish.Core.Models.CFMetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="964246e0dae940b7ae211dc60d992e35">
           <fields>
             <field updated="05/01/2018 2:28:03 PM" created="05/01/2018 9:42:12 AM" model-type="Catfish.Core.Models.Forms.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true" guid="4341ba3b2df44f8fb25a9e70bf56097f" rank="1" page="1">
               <name>
@@ -115,9 +115,9 @@
         <entry action="Create" actor="38a8052f-bacd-4ff9-b3bf-cdcb01bc904e" timestamp="2018-01-05T14:28:03.7961975-07:00" />
       </audit>
     </item>
-    <collection updated="17/01/2018 3:35:40 PM" created="17/01/2018 3:35:40 PM" model-type="Catfish.Core.Models.Collection, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="abdb71f7e05243a39ff6658799d9eed6" entity-type="Generic Object">
+    <collection updated="17/01/2018 3:35:40 PM" created="17/01/2018 3:35:40 PM" model-type="Catfish.Core.Models.CFCollection, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="abdb71f7e05243a39ff6658799d9eed6" entity-type="Generic Object">
       <metadata>
-        <metadata-set updated="17/01/2018 3:35:40 PM" created="04/01/2018 3:03:31 PM" model-type="Catfish.Core.Models.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="964246e0dae940b7ae211dc60d992e35">
+        <metadata-set updated="17/01/2018 3:35:40 PM" created="04/01/2018 3:03:31 PM" model-type="Catfish.Core.Models.CFMetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="964246e0dae940b7ae211dc60d992e35">
           <fields>
             <field updated="17/01/2018 3:35:40 PM" created="05/01/2018 9:42:12 AM" model-type="Catfish.Core.Models.Forms.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true" guid="4341ba3b2df44f8fb25a9e70bf56097f" rank="1" page="1">
               <name>
@@ -159,9 +159,9 @@
         </metadata-set>
       </metadata>
     </collection>
-    <item updated="17/01/2018 3:35:41 PM" created="17/01/2018 3:35:41 PM" model-type="Catfish.Core.Models.Item, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="844475ec5dc24de58110852a19988880" entity-type="Generic Object">
+    <item updated="17/01/2018 3:35:41 PM" created="17/01/2018 3:35:41 PM" model-type="Catfish.Core.Models.CFItem, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="844475ec5dc24de58110852a19988880" entity-type="Generic Object">
       <metadata>
-        <metadata-set updated="17/01/2018 3:35:41 PM" created="04/01/2018 3:03:31 PM" model-type="Catfish.Core.Models.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="964246e0dae940b7ae211dc60d992e35">
+        <metadata-set updated="17/01/2018 3:35:41 PM" created="04/01/2018 3:03:31 PM" model-type="Catfish.Core.Models.CFMetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="false" guid="964246e0dae940b7ae211dc60d992e35">
           <fields>
             <field updated="17/01/2018 3:35:41 PM" created="05/01/2018 9:42:12 AM" model-type="Catfish.Core.Models.Forms.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" IsRequired="true" guid="4341ba3b2df44f8fb25a9e70bf56097f" rank="1" page="1">
               <name>

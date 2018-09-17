@@ -1,23 +1,18 @@
 ﻿using Catfish.Core.Models.Access;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Catfish.Tests.Helpers;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
 namespace Catfish.Tests
 {
-    [TestClass]
-    public class AccessGroupTests
+    [TestFixture]
+    public class AccessGroupTests : BaseUnitTest
     {
 
         CFAccessGroup AccessGroup;
 
-        [TestInitialize]
-        public void Initialize()
-        {
-            AccessGroup = new CFAccessGroup();
-        }
-
-        [TestMethod]
+        [Test]
         public void CanUseAccessDefinition()
         {
             AccessMode readWriteAccessMode = AccessMode.Read | AccessMode.Write;
@@ -25,23 +20,31 @@ namespace Catfish.Tests
             Assert.IsTrue(AccessGroup.AccessDefinition.HasMode(readWriteAccessMode));
         }
 
-        [TestMethod]
-        public void CanUseAccessGuids()
+        [Test]
+        public void CanUseAccessGuid()
         {
-            int guidCount = 5;
-            List<Guid> guidList = new List<Guid>();
 
-            for (int i = 0; i < guidCount; ++i)
-            {
-                guidList.Add(Guid.NewGuid());
-            }
+            Guid guid1 = Guid.NewGuid();
+            Guid guid2 = guid1;
 
-            AccessGroup.AccessGuids = guidList;
+            AccessGroup.AccessGuid = guid1;
+            Assert.AreEqual(guid2, AccessGroup.AccessGuid);
+        }
 
-            for (int i = 0; i < guidCount; ++i)
-            {
-                Assert.AreEqual(guidList[i], AccessGroup.AccessGuids[i]);
-            }
+        [Test]
+        public void CanCheckIsInheritable()
+        {
+            AccessGroup.IsInherited = false;
+            Assert.IsFalse(AccessGroup.IsInherited);
+        }
+
+        protected override void OnSetup()
+        {
+            AccessGroup = new CFAccessGroup();
+        }
+
+        protected override void OnTearDown()
+        {
         }
     }
 }

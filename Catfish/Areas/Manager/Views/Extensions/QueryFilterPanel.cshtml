@@ -1,0 +1,16 @@
+﻿@model Catfish.Models.Regions.QueryFilterPanel
+<ul class="form">
+    <li>
+        @Html.LabelFor(m => m.MinLabel, new { @style="font-size:0.85em;"})
+        <div class="input">
+            @Html.EditorFor(m => m.MinLabel)
+        </div>
+    </li>
+    
+    <li>
+        @Html.LabelFor(m => m.MaxLabel, new { @style = "font-size:0.85em;" })
+        <div class="input">
+            @Html.EditorFor(m => m.MaxLabel)
+        </div>
+    </li>
+</ul>

@@ -12,12 +12,38 @@ namespace Catfish.Core.Models.Access
     {
         None     = 0,
         Read     = 1,
-        Write    = 2,
-        Append   = 4,
-        Control  = 8,
-        Discover = 16,
+        // Use 1 to add read modes to rest of values
+        Write    = 2 | 1,
+        Append   = 4 | 1,
+        Control  = 8 | 1
+    }
 
-        All = AccessMode.Read | AccessMode.Write | AccessMode.Append | AccessMode.Control | AccessMode.Discover
+    public static class AccessModeMethods
+    {
+        public static bool HasMode(this AccessMode current, AccessMode accessMode)
+        {
+            return (accessMode & current) == accessMode;
+        }
+
+        public static List<AccessMode> AsList(this AccessMode mode)
+        {
+            List<AccessMode> accessModes = new List<AccessMode>();
+
+            foreach (AccessMode accessMode in Enum.GetValues(typeof(AccessMode)))
+            {
+                if (accessMode != AccessMode.None && mode.HasMode(accessMode))
+                {
+                    accessModes.Add((AccessMode)accessMode);
+                }
+            }            
+
+            return accessModes;
+        }
+
+        public static List<string> AsStringList(this AccessMode mode)
+        {
+            return mode.AsList().Select(m => m.ToString()).ToList();
+        }
     }
 
     public class CFAccessDefinition : CFXmlModel
@@ -74,12 +100,6 @@ namespace Catfish.Core.Models.Access
                         accessModes.Add((AccessMode)accessMode);
                     }
                 }
-
-                //XXX If we need to check agains AccessMode.None add here
-                //if (accessModes.Count == 0)
-                //{
-                //    accessModes.Add(AccessMode.None);
-                //}
 
                 return accessModes;
             }            

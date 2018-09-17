@@ -39,11 +39,11 @@
                     <div style="display: table-cell; ">
                         @if (mode.Checked)
                         {
-                        <input type="checkbox" id="@mode.Value" name="SelectedAccessModes" value="@mode.Text" checked="checked" class="accessCB" />
+                        <input type="checkbox" id="@mode.Value" name="SelectedAccessModes" value="@mode.Value" checked="checked" class="accessCB" />
                         }
                         else
                         {
-                        <input type="checkbox" id="@mode.Value" name="SelectedAccessModes" value="@mode.Text" class="accessCB"  />
+                        <input type="checkbox" id="@mode.Value" name="SelectedAccessModes" value="@mode.Value" class="accessCB"  />
                         }
                         <label style="float:left">@mode.Text</label>
 

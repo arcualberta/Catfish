@@ -7,20 +7,28 @@ using Catfish.Core.Models.Forms;
 using Catfish.Core.Models.Data;
 using System.Security.Principal;
 using Catfish.Core.Models.Access;
+using Catfish.Core.Services;
+using CommonServiceLocator;
+using SolrNet;
 
 namespace Catfish.Core.Models
 {
     public class CatfishDbContext : DbContext
     {
+        private ISolrOperations<Dictionary<string, object>> solr { get; set; }
+
         public CatfishDbContext()
             : base("piranha")
         {
-
+            if (SolrService.IsInitialized)
+            {
+                solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+            }
         }
 
         public CatfishDbContext(System.Data.Common.DbConnection connection, bool contextOwnsConnection) : base(connection, contextOwnsConnection)
         {
-
+            solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
         }
 
         public int SaveChanges(IIdentity actor)
@@ -55,14 +63,14 @@ namespace Catfish.Core.Models
         {
             builder.Entity<CFXmlModel>().Property(xm => xm.Content).HasColumnType("xml");
         }
-
+        
         protected override void OnModelCreating(DbModelBuilder builder)
         {
             SetColumnTypes(builder);
 
             builder.Entity<CFAggregation>()
-                .HasMany<CFAggregation>(p => p.ChildMembers)
-                .WithMany(c => c.ParentMembers)
+                .HasMany<CFAggregation>(p => p.ManagedChildMembers)
+                .WithMany(c => c.ManagedParentMembers)
                 .Map(t =>
                 {
                     t.MapLeftKey("ParentId");

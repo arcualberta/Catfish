@@ -36,11 +36,39 @@ namespace Catfish.Core.Services
             return thumbnailFileName;
         }
 
+        protected string CreateVariatyImageSizeName(string guid, string srcExtension, string size)
+        {
+            string ext = "";
+            ImageFormat format = GetThumbnailFormat(srcExtension);
+            if (format == ImageFormat.Jpeg)
+                ext = "jpg";
+            else if (format == ImageFormat.Png)
+                ext = "png";
+            else
+                throw new Exception("Unknown image format");
+
+            string imageFileName = string.Empty;
+
+            if(size.Equals(ConfigHelper.eImageSize.Small.ToString()))
+                imageFileName = guid + "_s." + ext;
+            else if(size.Equals(ConfigHelper.eImageSize.Medium.ToString()))
+                imageFileName = guid + "_m." + ext;
+            else //large
+                imageFileName = guid + "_l." + ext;
+
+            return imageFileName;
+        }
+
         protected ImageFormat GetThumbnailFormat(string srcExtension)
         {
             return srcExtension == "jpg" ? ImageFormat.Jpeg : ImageFormat.Png;
         }
-        
+
+        protected ImageFormat GetImageFormat(string srcExtension)
+        {
+            return srcExtension == "jpg" ? ImageFormat.Jpeg : ImageFormat.Png;
+        }
+
         public List<CFDataFile> UploadTempFiles(HttpRequestBase request)
         {
             List<CFDataFile> files = UploadFiles(request, "temp-files");
@@ -94,15 +122,35 @@ namespace Catfish.Core.Services
             {
                 file.Thumbnail = CreateThumbnailName(file.Guid, file.Extension);
                 file.ThumbnailType = CFDataFile.eThumbnailTypes.NonShared;
+
+                //August 1 2018 -- create different size of image
+                file.Small = CreateVariatyImageSizeName(file.Guid, file.Extension, "Small");
+                file.Medium = CreateVariatyImageSizeName(file.Guid, file.Extension, "Medium");
+                file.Large = CreateVariatyImageSizeName(file.Guid, file.Extension, "Large");
+
+              //august 1 2018 -- adding different size of image, not just thumbnail
                 using (Image image = new Bitmap(file.AbsoluteFilePathName))
                 {
-                    Size thumbSize = image.Width < image.Height
-                        ? new Size() { Height = ConfigHelper.ThumbnailSize, Width = (image.Width * ConfigHelper.ThumbnailSize) / image.Height }
-                        : new Size() { Width = ConfigHelper.ThumbnailSize, Height = (image.Height * ConfigHelper.ThumbnailSize) / image.Width };
+                    foreach (var enumValue in Enum.GetValues(typeof(ConfigHelper.eImageSize)))
+                    {
+                            int sizeVal = (int)enumValue;
+                        Size imgSize = image.Width < image.Height
+                       ? new Size() { Height = sizeVal, Width = (image.Width * sizeVal) / image.Height }
+                       : new Size() { Width = sizeVal, Height = (image.Height * sizeVal) / image.Width };
 
-                    Image thumbnail = image.GetThumbnailImage(thumbSize.Width, thumbSize.Height, null, IntPtr.Zero);
-                    ImageFormat format = GetThumbnailFormat(file.Extension);
-                    thumbnail.Save(Path.Combine(file.Path, file.Thumbnail), format);
+                        Image img = image.GetThumbnailImage(imgSize.Width, imgSize.Height, null, IntPtr.Zero);
+                        ImageFormat format = GetImageFormat(file.Extension);
+
+                        if(enumValue.Equals(ConfigHelper.eImageSize.Thumbnail))
+                            img.Save(Path.Combine(file.Path, file.Thumbnail), format);
+                        else if (enumValue.Equals(ConfigHelper.eImageSize.Small))
+                            img.Save(Path.Combine(file.Path, file.Small), format);
+                        else if (enumValue.Equals(ConfigHelper.eImageSize.Medium))
+                            img.Save(Path.Combine(file.Path, file.Medium), format);
+                        else if (enumValue.Equals(ConfigHelper.eImageSize.Large))
+                                img.Save(Path.Combine(file.Path, file.Large), format);
+                    }
+                   
                 }
             }
             else

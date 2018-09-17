@@ -1,4 +1,4 @@
-﻿@model Catfish.Core.Models.Form
+﻿@model Catfish.Areas.Manager.Models.ViewModels.FormBuilderViewModel
 @using Catfish.Areas.Manager.Models.ViewModels;
 
 @{ ViewBag.Title = Model.Id > 0 ? "Edit Form" : "Create Form"; }
@@ -39,12 +39,36 @@
 }
 
 @section Toolbar {
-    @Html.Partial("Partial/koEditToolbar")
+    @Html.Partial("Partial/koEditToolbar", Model, new ViewDataDictionary() { { "saveButtonFunctionCall", "saveFormTemplate" } })
 }
 
-@{
-    FormBuilderViewModel vm = new FormBuilderViewModel(Model) { ShowFieldDescriptions = true };
-}
+@Html.Partial("Partial/FormBuilder", Model, new ViewDataDictionary() { { "controller", "formtemplates" }, { "action", "save" } })
 
-@Html.Partial("Partial/FormBuilder", vm, new ViewDataDictionary() { { "controller", "formtemplates" }, { "action", "save" } })
+<script type="text/javascript">
+        function saveFormTemplate() {
+            var data = {
+                vm: getFormBuilderContext()
+            };
+            data = ko.toJS(data);
+
+            var pageForm = getFormBuilderForm();
+            var xhr = new XMLHttpRequest();
+
+            xhr.open("post", pageForm.attr("action"), )
+
+            var form = document.createElement("form");
+            form.setAttribute("method", "POST");
+            form.setAttribute("action", pageForm.attr("action"), true);
+            xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+
+            xhr.onload = function (result) {
+                deleteFormBuilderContext();
+                document.open("text/html", "replace");
+                document.write(xhr.response);
+                document.close();
+            }
+
+            xhr.send(JSON.stringify(data));
+        }
+</script>
 

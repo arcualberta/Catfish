@@ -1,6 +1,6 @@
 ﻿using Catfish.Core.Services;
 using Catfish.Tests.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +9,18 @@ using System.Threading.Tasks;
 
 namespace Catfish.Tests.Services
 {
-    [TestClass]
-    public class SolrServiceTest
+    [TestFixture]
+    public class SolrServiceTest : BaseServiceTest
     {
         private DatabaseHelper mDh { get; set; }
 
-        [TestInitialize]
-        public void InitializeTesting()
+        protected override void OnSetup()
         {
             mDh = new DatabaseHelper(true);
             //(new ServerHelper()).Start();
         }
 
-        [TestMethod]
+        [Test]
         public void TestEscapeQueryString()
         {
             string inputString = "\"query:Test*\"*";
@@ -31,12 +30,12 @@ namespace Catfish.Tests.Services
             Assert.AreEqual(testString, result);
         }
 
-        [TestMethod]
+        [Test]
         public void TestFailedServiceInitialization()
         {
             try
             {
-                SolrService.Init(null);
+                SolrService.Init((string)null);
                 Assert.Fail("Initialization passed with no connection string.");
             }
             catch (InvalidOperationException e)
@@ -47,8 +46,8 @@ namespace Catfish.Tests.Services
 
         }
 
-        [Ignore]
-        [TestMethod]
+        [Ignore("Not yet implemented")]
+        [Test]
         public void TestSuccessServiceInitialization()
         {
             string connectionString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
