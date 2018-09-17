@@ -219,6 +219,8 @@ namespace Catfish.Tests.Views.Regions
             jex.ExecuteScript("arguments[0].focus(); ", element);
 
         }
+
+        [Ignore("Test needs to be corrected")]
         [Test]
         public void TestBasicForm()
         {
@@ -241,6 +243,7 @@ namespace Catfish.Tests.Views.Regions
              Assert.True(clientInfo.GetAttribute("Value").Contains("Chrome"));
         }
 
+        [Ignore("Test needs to be corrected")]
         [Test]
         public void TestBasicFormRequired()
         {

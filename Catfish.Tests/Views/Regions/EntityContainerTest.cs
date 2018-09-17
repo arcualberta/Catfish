@@ -28,6 +28,7 @@ namespace Catfish.Tests.Views.Regions
             this.Driver.FindElement(By.TagName("button")).Click();
         }
 
+        [Ignore("Test needs to be corrected")]
         [TestCase]
         public void CanCreateAPage()
         {
@@ -43,6 +44,8 @@ namespace Catfish.Tests.Views.Regions
             bool addAttributeMapping = VerifyAttributeMappingAdded();
             Assert.AreEqual(true, addAttributeMapping);
         }
+
+        [Ignore("Test needs to be corrected")]
         [TestCase]
         public void CanReorderMapping()
         {
@@ -76,6 +79,8 @@ namespace Catfish.Tests.Views.Regions
             Assert.AreEqual(originalOrder.ElementAt(1), rows[0].Text);
 
         }
+
+        [Ignore("Test needs to be corrected")]
         [TestCase]
         public void CanDeleteMapping()
         {

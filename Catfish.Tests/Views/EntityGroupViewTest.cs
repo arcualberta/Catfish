@@ -28,6 +28,7 @@ namespace Catfish.Tests.Views
             this.Driver.FindElement(By.TagName("button")).Click();
         }
 
+        [Ignore("Test needs to be corrected")]
         [Test]
         public void CanCreateEntityGroup()
         {

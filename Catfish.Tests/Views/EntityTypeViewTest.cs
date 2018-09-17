@@ -32,6 +32,7 @@ namespace Catfish.Tests.Views
             this.Driver.FindElement(By.TagName("button")).Click();
         }
 
+        [Ignore("Test needs to be corrected")]
         [Test]
         public void CanCreateEntityType()
         {
@@ -44,6 +45,7 @@ namespace Catfish.Tests.Views
          
         }
 
+        [Ignore("Test needs to be corrected")]
         [Test]
         public void CanEditBasicInfoEntityType()
         {
@@ -76,6 +78,7 @@ namespace Catfish.Tests.Views
            
         }
 
+        [Ignore("Test needs to be corrected")]
         [Test]
         public void CanModifyMetadataSets()
         {
@@ -133,6 +136,7 @@ namespace Catfish.Tests.Views
 
         }
 
+        [Ignore("Test needs to be corrected")]
         [Test]
         public void CanAddAttributeMapping()
         {

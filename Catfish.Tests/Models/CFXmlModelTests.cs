@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Tests.Helpers;
 using Catfish.Tests.Mocks;
 using NUnit.Framework;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Tests.Models
 {
-    class CFXmlModelTests
+    class CFXmlModelTests : BaseUnitTest
     {
         [Test]
         public void CanUseCreatedBy()
@@ -27,6 +28,14 @@ namespace Catfish.Tests.Models
 
             Assert.AreEqual(createdByName, mockCFXmlModel.CreatedByName);
             Assert.AreEqual(createdByGuid, mockCFXmlModel.CreatedByGuid);
+        }
+
+        protected override void OnSetup()
+        {
+        }
+
+        protected override void OnTearDown()
+        {
         }
     }
 }
