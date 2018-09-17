@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
@@ -206,17 +206,6 @@ namespace Catfish.Tests.Views
         public void CanRemoveUserList()
         {
             Assert.Fail();
-        }
-
-        [Test]
-        public void TestTests()
-        {
-            MetadataSetParameters parameters = new MetadataSetParameters
-            {
-                MetadataSetName = "Test metadataset name"
-            };
-
-            CreateMetadataSet(parameters);
         }
 
         //[Test]
