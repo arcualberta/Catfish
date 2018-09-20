@@ -22,6 +22,11 @@ using System.Data;
 using Piranha.IO;
 using System.Web;
 using System.Web.Hosting;
+using SolrNet;
+using System.Threading.Tasks;
+using System.Text;
+using NUnit.Framework;
+using Catfish.Core.Contexts;
 
 namespace Catfish.Tests.Helpers
 {
@@ -38,7 +43,7 @@ namespace Catfish.Tests.Helpers
             {
                 if (mDb == null)
                 {
-                    DbConnection connection = GetConnection(GetConnectionStringByName("catfish"));
+                    DbConnection connection = GetConnection(GetConnectionStringByName("unittest"));
                     connection.Open();
                     mDb = new CatfishTestDbContext(connection);
                 }
@@ -52,7 +57,7 @@ namespace Catfish.Tests.Helpers
         {
             get
             {
-                if(mPDb == null)
+                if (mPDb == null)
                 {
                     mPDb = new Piranha.DataContext();
                     SetupPiranha(mPDb);
@@ -137,7 +142,7 @@ namespace Catfish.Tests.Helpers
         {
             get
             {
-                if(mIgs == null){
+                if (mIgs == null) {
                     mIgs = new IngestionService(Db);
                 }
 
@@ -145,9 +150,30 @@ namespace Catfish.Tests.Helpers
             }
         }
 
-        public DatabaseHelper(bool setupData = false)
+        private UnitTestSecurityService mSs { get; set; }
+        public UnitTestSecurityService Ss
         {
-            Initialize();
+            get
+            {
+                if (mSs == null)
+                {
+                    mSs = new UnitTestSecurityService(Db);
+                }
+
+                return mSs;
+            }
+        }
+
+        public DatabaseHelper(bool setupData = false, MockConnection solrConnection = null)
+        {
+            if (solrConnection == null)
+            {
+                solrConnection = new MockConnection();
+            }
+
+            Initialize(solrConnection);
+            Ss.SetCurrentUser(Guid.NewGuid());
+            CreateUserLists(); // This is done always to support the security system.
 
             if (setupData)
             {
@@ -159,11 +185,11 @@ namespace Catfish.Tests.Helpers
         {
             ConnectionStringSettingsCollection settings = ConfigurationManager.ConnectionStrings;
 
-            if(settings != null)
+            if (settings != null)
             {
-                foreach(ConnectionStringSettings s in settings)
+                foreach (ConnectionStringSettings s in settings)
                 {
-                    if(s.Name == name)
+                    if (s.Name == name)
                     {
                         return s;
                     }
@@ -182,12 +208,29 @@ namespace Catfish.Tests.Helpers
                 DbProviderFactory factory = DbProviderFactories.GetFactory(settings.ProviderName);
                 connection = factory.CreateConnection();
                 connection.ConnectionString = settings.ConnectionString;
-            }catch(Exception ex)
+            } catch (Exception ex)
             {
                 throw ex;
             }
 
             return connection;
+        }
+
+        private void CreateUserLists()
+        {
+            CFUserList userList = new CFUserList();
+            userList.Name = "Admin";
+            userList = Db.UserLists.Add(userList);
+
+            Db.SaveChanges();
+
+            CFUserListEntry entry = new CFUserListEntry();
+            entry.UserId = Ss.CurrentUser;
+            entry.CFUserListId = userList.Id;
+
+            Db.UserListEntries.Add(entry);
+
+            Db.SaveChanges();
         }
 
         private void CreateMetadata()
@@ -270,7 +313,7 @@ namespace Catfish.Tests.Helpers
                 CFCollection c = Cs.CreateEntity<CFCollection>(ets[index]);
                 c.SetName("Collection " + (i + 1));
                 c.SetDescription("Description for Collection " + (i + 1));
-                
+
                 Cs.UpdateStoredCollection(c);
             }
 
@@ -287,7 +330,7 @@ namespace Catfish.Tests.Helpers
                 CFItem e = Is.CreateEntity<CFItem>(ets[index]);
                 e.SetName("Item " + (i + 1));
                 e.SetDescription("Description for Item " + (i + 1));
-                
+
                 Is.UpdateStoredItem(e);
             }
 
@@ -302,8 +345,17 @@ namespace Catfish.Tests.Helpers
             CreateItems();
         }
 
-        public void Initialize()
+        public void Initialize(MockConnection solrConnection)
         {
+            if (SolrService.IsInitialized)
+            {
+                //TODO: Inject the new connection into this current solr thread.
+            }
+            else
+            {
+                SolrService.InitWithConnection(solrConnection);
+            }
+
             try
             {
 
@@ -328,7 +380,7 @@ namespace Catfish.Tests.Helpers
 
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -342,7 +394,7 @@ namespace Catfish.Tests.Helpers
                 File.Delete("./piranha.db");
             }
 
-            if(HttpContext.Current == null)
+            if (HttpContext.Current == null)
             {
                 SimpleWorkerRequest request = new SimpleWorkerRequest("", "", "", null, new StringWriter());
                 HttpContext context = new HttpContext(request);
@@ -412,11 +464,11 @@ namespace Catfish.Tests.Helpers
 
                         Piranha.Models.SysUser.Execute(statement, tx.UnderlyingTransaction);
                     }
-                        
+
                 }
                 tx.Commit();
             }
-            
+
         }
 
         public void SetupDbData()
@@ -466,10 +518,10 @@ namespace Catfish.Tests.Helpers
             SetProviderServices("System.Data.SQLite", (DbProviderServices)SQLiteProviderFactory.Instance.GetService(typeof(DbProviderServices)));
         }
     }
-    
+
     public class CatfishTestDbContext : CatfishDbContext
     {
-        public CatfishTestDbContext() : base(){
+        public CatfishTestDbContext() : base() {
 
         }
 
@@ -484,7 +536,7 @@ namespace Catfish.Tests.Helpers
             builder.Entity<CFXmlModel>().Property(xm => xm.Content).HasColumnType("");
         }
     }
-    
+
     public class CatfishMediaCacheProvider : Piranha.IO.IMediaCacheProvider
     {
         public void Delete(Guid id, MediaType type = MediaType.Media)
@@ -566,6 +618,105 @@ namespace Catfish.Tests.Helpers
         public void Unpublish(Guid id, MediaType type = MediaType.Media)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    // Taken from SolrNet GitHub
+    public class MockConnection : ISolrConnection
+    {
+        private readonly ICollection<KeyValuePair<string, string>> expectations;
+        private const string response =
+            @"<?xml version=""1.0"" encoding=""UTF-8""?>
+                <response>
+                <lst name=""responseHeader""><int name=""status"">0</int><int name=""QTime"">0</int><lst name=""params""><str name=""q"">id:123456</str><str name=""?""/><str name=""version"">2.2</str></lst></lst><result name=""response"" numFound=""1"" start=""0""><doc></doc></result>
+                </response>
+                ";
+
+        public MockConnection() { }
+
+        public MockConnection(ICollection<KeyValuePair<string, string>> expectations)
+        {
+            this.expectations = expectations;
+        }
+
+        public virtual string ServerURL { get; set; }
+
+        public virtual string Version { get; set; }
+
+        public virtual Encoding XmlEncoding { get; set; }
+
+        public virtual string Post(string relativeUrl, string s)
+        {
+            return response;
+        }
+
+        public virtual Task<string> PostAsync(string relativeUrl, string s)
+        {
+            return Task.FromResult(Post(relativeUrl, s));
+        }
+
+        public virtual string PostStream(string relativeUrl, string contentType, Stream content, IEnumerable<KeyValuePair<string, string>> parameters)
+        {
+            return string.Empty;
+        }
+
+        public virtual Task<string> PostStreamAsync(string relativeUrl, string contentType, Stream content, IEnumerable<KeyValuePair<string, string>> parameters)
+        {
+            return Task.FromResult(PostStream(relativeUrl, contentType, content, parameters));
+        }
+
+
+        public string DumpParams(List<KeyValuePair<string, string>> parameters)
+        {
+            return string.Join("\n", parameters.ConvertAll(kv => string.Format("{0}={1}", kv.Key, kv.Value)).ToArray());
+        }
+
+        public string DumpParams(IEnumerable<KeyValuePair<string, string>> parameters)
+        {
+            return DumpParams(new List<KeyValuePair<string, string>>(parameters));
+        }
+
+        public virtual string Get(string relativeUrl, IEnumerable<KeyValuePair<string, string>> parameters)
+        {
+            var param = new List<KeyValuePair<string, string>>(parameters);
+            foreach (var e in expectations)
+            {
+                if (e.Key == "handler")
+                {
+                    Assert.AreEqual(relativeUrl, e.Value);
+                    param.Add(e);
+                }
+
+            }
+            Assert.AreEqual(expectations.Count, param.Count);
+            foreach (var p in param)
+                Assert.True(expectations.Contains(p));
+            return response;
+        }
+        public virtual Task<string> GetAsync(string relativeUrl, IEnumerable<KeyValuePair<string, string>> parameters)
+        {
+            return Task.FromResult(Get(relativeUrl, parameters));
+        }
+
+    }
+
+    public class UnitTestSecurityService : SecurityServiceBase
+    {
+        public Guid CurrentUser { get; private set; }
+
+        public UnitTestSecurityService(CatfishDbContext db) : base(db)
+        {
+        }
+
+        public override bool IsAdmin(string userGuid)
+        {
+            return true;
+        }
+
+        public void SetCurrentUser(Guid userGuid)
+        {
+            CurrentUser = userGuid;
+            CreateAccessContext(userGuid);
         }
     }
 }

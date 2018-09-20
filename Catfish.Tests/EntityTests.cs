@@ -1,25 +1,29 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Access;
+using Catfish.Tests.Helpers;
 using Catfish.Tests.Mocks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
 namespace Catfish.Tests
 {
-    [TestClass]
-    public class EntityTests
+    [TestFixture]
+    public class EntityTests : BaseUnitTest
     {
 
         MockEntity MockEntity;
-
-        [TestInitialize]
-        public void Initialize()
+        
+        protected override void OnSetup()
         {
             MockEntity = new MockEntity();
         }
 
-        [TestMethod]
+        protected override void OnTearDown()
+        {
+        }
+
+        [Test]
         public void CanUseAccessGroups()
         {
             int count = 3;

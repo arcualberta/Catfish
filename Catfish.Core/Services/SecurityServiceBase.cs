@@ -60,7 +60,7 @@ namespace Catfish.Core.Services
 
         protected void CreateAccessContext(Guid userGuid)
         {
-            AccessContext.current = new AccessContext(userGuid, IsAdmin(userGuid.ToString()));
+            AccessContext.current = new AccessContext(userGuid, IsAdmin(userGuid.ToString()), Db);
         }
     }
 }
