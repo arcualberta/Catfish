@@ -53,8 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Data\StateFundingData.csv" />
-    <None Include="Data\StateFundingData17Jan2018.csv" />
+    <None Include="Data\StateFundingDataFinalFall2018.csv" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
