@@ -7,20 +7,28 @@ using Catfish.Core.Models.Forms;
 using Catfish.Core.Models.Data;
 using System.Security.Principal;
 using Catfish.Core.Models.Access;
+using Catfish.Core.Services;
+using CommonServiceLocator;
+using SolrNet;
 
 namespace Catfish.Core.Models
 {
     public class CatfishDbContext : DbContext
     {
+        private ISolrOperations<Dictionary<string, object>> solr { get; set; }
+
         public CatfishDbContext()
             : base("piranha")
         {
-
+            if (SolrService.IsInitialized)
+            {
+                solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+            }
         }
 
         public CatfishDbContext(System.Data.Common.DbConnection connection, bool contextOwnsConnection) : base(connection, contextOwnsConnection)
         {
-
+            solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
         }
 
         public int SaveChanges(IIdentity actor)

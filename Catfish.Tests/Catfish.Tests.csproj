@@ -42,6 +42,12 @@
     <Reference Include="Catfish">
       <HintPath>..\Catfish\bin\Catfish.dll</HintPath>
     </Reference>
+    <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net46\CommonServiceLocator.dll</HintPath>
+    </Reference>
+    <Reference Include="CommonServiceLocator.SolrNet, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SolrNet.1.0.10\lib\net46\CommonServiceLocator.SolrNet.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
@@ -63,6 +69,9 @@
       <HintPath>..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="Piranha, Version=2.2.6231.40074, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="SolrNet, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SolrNet.Core.1.0.10\lib\net46\SolrNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.AppContext.4.3.0\lib\net46\System.AppContext.dll</HintPath>
@@ -126,6 +135,9 @@
     <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net46\System.Security.Cryptography.X509Certificates.dll</HintPath>
     </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.Extensions" />
@@ -151,43 +163,44 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Mocks\MockCFXmlModel.cs" />
-    <Compile Include="Models\CFXmlModelTests.cs" />
-    <Compile Include="Views\BaseIntegration.cs" />
-    <Compile Include="Views\AccessIntegration.cs" />
-    <Compile Include="Api\ItemsControllerTest.cs" />
-    <Compile Include="AccessDefinitionTests.cs" />
-    <Compile Include="AccessGroupTests.cs" />
+    <Compile Include="Helpers\BaseIntegrationTest.cs" />
+    <Compile Include="UnitTests\Mocks\MockCFXmlModel.cs" />
+    <Compile Include="UnitTests\Models\CFXmlModelTests.cs" />
+    <Compile Include="Helpers\BaseUnitTest.cs" />
+    <Compile Include="UnitTests\Services\BaseServiceTest.cs" />
+    <Compile Include="IntegrationTests\ObsoleteTests\BaseIntegration.cs" />
+    <Compile Include="IntegrationTests\ObsoleteTests\AccessIntegration.cs" />
+    <Compile Include="UnitTests\Api\ItemsControllerTest.cs" />
+    <Compile Include="UnitTests\AccessDefinitionTests.cs" />
+    <Compile Include="UnitTests\AccessGroupTests.cs" />
     <Compile Include="EntityTests.cs" />
     <Compile Include="Helpers\DatabaseHelper.cs" />
     <Compile Include="Helpers\MigrationSqLiteGenerator.cs" />
     <Compile Include="Helpers\ServerHelper.cs" />
-    <Compile Include="Migrations\201805082036486_InitialTestDb.cs" />
-    <Compile Include="Migrations\201805082036486_InitialTestDb.Designer.cs">
+    <Compile Include="UnitTests\Migrations\201805082036486_InitialTestDb.cs" />
+    <Compile Include="UnitTests\Migrations\201805082036486_InitialTestDb.Designer.cs">
       <DependentUpon>201805082036486_InitialTestDb.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Mocks\MockEntity.cs" />
-    <Compile Include="RandomDataIngest.cs" />
-    <Compile Include="Services\CollectionServiceTest.cs" />
-    <Compile Include="Services\IngestionServiceTest.cs" />
-    <Compile Include="Services\ItemServiceTest.cs" />
-    <Compile Include="Services\MetadataServiceTest.cs" />
-    <Compile Include="Services\SecurityServiceBaseTest.cs" />
-    <Compile Include="Services\SolrServiceTest.cs" />
-    <Compile Include="Services\SubmissionServiceTest.cs" />
-    <Compile Include="Services\PageServiceTest.cs" />
-    <Compile Include="Services\UserServiceTest.cs" />
-    <Compile Include="TestData.cs" />
-    <Compile Include="Views\EntityGroupViewTest.cs" />
-    <Compile Include="Views\CollectionViewTest.cs" />
-    <Compile Include="Views\ItemViewTest.cs" />
-    <Compile Include="Views\EntityTypeViewTest.cs" />
-    <Compile Include="Views\FormViewTest.cs" />
-    <Compile Include="Views\MetadataViewTest.cs" />
-    <Compile Include="Views\Regions\EntityContainerTest.cs" />
-    <Compile Include="Views\Regions\FormContainerTest.cs" />
-    <Compile Include="XmlModelTest.cs" />
+    <Compile Include="UnitTests\Migrations\Configuration.cs" />
+    <Compile Include="UnitTests\Mocks\MockEntity.cs" />
+    <Compile Include="UnitTests\Services\CollectionServiceTest.cs" />
+    <Compile Include="UnitTests\Services\IngestionServiceTest.cs" />
+    <Compile Include="UnitTests\Services\ItemServiceTest.cs" />
+    <Compile Include="UnitTests\Services\MetadataServiceTest.cs" />
+    <Compile Include="UnitTests\Services\SecurityServiceBaseTest.cs" />
+    <Compile Include="UnitTests\Services\SolrServiceTest.cs" />
+    <Compile Include="UnitTests\Services\SubmissionServiceTest.cs" />
+    <Compile Include="UnitTests\Services\PageServiceTest.cs" />
+    <Compile Include="UnitTests\Services\UserServiceTest.cs" />
+    <Compile Include="IntegrationTests\ObsoleteTests\EntityGroupViewTest.cs" />
+    <Compile Include="IntegrationTests\ObsoleteTests\CollectionViewTest.cs" />
+    <Compile Include="IntegrationTests\ObsoleteTests\ItemViewTest.cs" />
+    <Compile Include="IntegrationTests\ObsoleteTests\EntityTypeViewTest.cs" />
+    <Compile Include="IntegrationTests\ObsoleteTests\FormViewTest.cs" />
+    <Compile Include="IntegrationTests\ObsoleteTests\MetadataViewTest.cs" />
+    <Compile Include="IntegrationTests\ObsoleteTests\Regions\EntityContainerTest.cs" />
+    <Compile Include="IntegrationTests\ObsoleteTests\Regions\FormContainerTest.cs" />
+    <Compile Include="UnitTests\XmlModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -203,22 +216,18 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\IngestionDatabase3.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\IngestionDatabase2.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\IngestionDatabase1.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <EmbeddedResource Include="UnitTests\Resources\IngestionDatabase3.xml" />
+    <EmbeddedResource Include="UnitTests\Resources\IngestionDatabase2.xml" />
+    <EmbeddedResource Include="UnitTests\Resources\IngestionDatabase1.xml">
       <SubType>Designer</SubType>
-    </Content>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\Helpers\" />
+    <Folder Include="IntegrationTests\Helpers\" />
+    <Folder Include="InterfaceTests\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201805082036486_InitialTestDb.resx">
+    <EmbeddedResource Include="UnitTests\Migrations\201805082036486_InitialTestDb.resx">
       <DependentUpon>201805082036486_InitialTestDb.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
