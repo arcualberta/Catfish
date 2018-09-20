@@ -163,14 +163,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\BaseIntegrationTest.cs" />
+    <Compile Include="IntegrationTests\Helpers\BaseIntegrationTest.cs" />
+    <Compile Include="IntegrationTests\Manager\EntityTypeTests.cs" />
     <Compile Include="UnitTests\Mocks\MockCFXmlModel.cs" />
     <Compile Include="UnitTests\Models\CFXmlModelTests.cs" />
     <Compile Include="Helpers\BaseUnitTest.cs" />
     <Compile Include="UnitTests\Services\BaseServiceTest.cs" />
-    <Compile Include="IntegrationTests\ObsoleteTests\BaseIntegration.cs" />
-    <Compile Include="IntegrationTests\ObsoleteTests\AccessIntegration.cs" />
-    <Compile Include="UnitTests\Api\ItemsControllerTest.cs" />
     <Compile Include="UnitTests\AccessDefinitionTests.cs" />
     <Compile Include="UnitTests\AccessGroupTests.cs" />
     <Compile Include="EntityTests.cs" />
@@ -192,14 +190,6 @@
     <Compile Include="UnitTests\Services\SubmissionServiceTest.cs" />
     <Compile Include="UnitTests\Services\PageServiceTest.cs" />
     <Compile Include="UnitTests\Services\UserServiceTest.cs" />
-    <Compile Include="IntegrationTests\ObsoleteTests\EntityGroupViewTest.cs" />
-    <Compile Include="IntegrationTests\ObsoleteTests\CollectionViewTest.cs" />
-    <Compile Include="IntegrationTests\ObsoleteTests\ItemViewTest.cs" />
-    <Compile Include="IntegrationTests\ObsoleteTests\EntityTypeViewTest.cs" />
-    <Compile Include="IntegrationTests\ObsoleteTests\FormViewTest.cs" />
-    <Compile Include="IntegrationTests\ObsoleteTests\MetadataViewTest.cs" />
-    <Compile Include="IntegrationTests\ObsoleteTests\Regions\EntityContainerTest.cs" />
-    <Compile Include="IntegrationTests\ObsoleteTests\Regions\FormContainerTest.cs" />
     <Compile Include="UnitTests\XmlModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -222,10 +212,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="IntegrationTests\Helpers\" />
-    <Folder Include="InterfaceTests\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="UnitTests\Migrations\201805082036486_InitialTestDb.resx">
       <DependentUpon>201805082036486_InitialTestDb.cs</DependentUpon>

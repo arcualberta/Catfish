@@ -21,7 +21,6 @@ namespace Catfish.Tests.Api
         public static string EditedName = "Edited Item Name - Selenium" + Rnd.Next(1, 100);
     }
 
-
     [TestFixture(typeof(ChromeDriver))]
     public class ItemsControllerTest<TWebDriver> : BaseIntegration<TWebDriver> where TWebDriver : IWebDriver, new()
     {
