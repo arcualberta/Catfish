@@ -163,45 +163,34 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Mocks\MockCFXmlModel.cs" />
-    <Compile Include="Models\CFXmlModelTests.cs" />
+    <Compile Include="IntegrationTests\Helpers\BaseIntegrationTest.cs" />
+    <Compile Include="IntegrationTests\Manager\EntityTypeTests.cs" />
+    <Compile Include="UnitTests\Mocks\MockCFXmlModel.cs" />
+    <Compile Include="UnitTests\Models\CFXmlModelTests.cs" />
     <Compile Include="Helpers\BaseUnitTest.cs" />
-    <Compile Include="Services\BaseServiceTest.cs" />
-    <Compile Include="Views\BaseIntegration.cs" />
-    <Compile Include="Views\AccessIntegration.cs" />
-    <Compile Include="Api\ItemsControllerTest.cs" />
-    <Compile Include="AccessDefinitionTests.cs" />
-    <Compile Include="AccessGroupTests.cs" />
+    <Compile Include="UnitTests\Services\BaseServiceTest.cs" />
+    <Compile Include="UnitTests\AccessDefinitionTests.cs" />
+    <Compile Include="UnitTests\AccessGroupTests.cs" />
     <Compile Include="EntityTests.cs" />
     <Compile Include="Helpers\DatabaseHelper.cs" />
     <Compile Include="Helpers\MigrationSqLiteGenerator.cs" />
     <Compile Include="Helpers\ServerHelper.cs" />
-    <Compile Include="Migrations\201805082036486_InitialTestDb.cs" />
-    <Compile Include="Migrations\201805082036486_InitialTestDb.Designer.cs">
+    <Compile Include="UnitTests\Migrations\201805082036486_InitialTestDb.cs" />
+    <Compile Include="UnitTests\Migrations\201805082036486_InitialTestDb.Designer.cs">
       <DependentUpon>201805082036486_InitialTestDb.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Mocks\MockEntity.cs" />
-    <Compile Include="RandomDataIngest.cs" />
-    <Compile Include="Services\CollectionServiceTest.cs" />
-    <Compile Include="Services\IngestionServiceTest.cs" />
-    <Compile Include="Services\ItemServiceTest.cs" />
-    <Compile Include="Services\MetadataServiceTest.cs" />
-    <Compile Include="Services\SecurityServiceBaseTest.cs" />
-    <Compile Include="Services\SolrServiceTest.cs" />
-    <Compile Include="Services\SubmissionServiceTest.cs" />
-    <Compile Include="Services\PageServiceTest.cs" />
-    <Compile Include="Services\UserServiceTest.cs" />
-    <Compile Include="TestData.cs" />
-    <Compile Include="Views\EntityGroupViewTest.cs" />
-    <Compile Include="Views\CollectionViewTest.cs" />
-    <Compile Include="Views\ItemViewTest.cs" />
-    <Compile Include="Views\EntityTypeViewTest.cs" />
-    <Compile Include="Views\FormViewTest.cs" />
-    <Compile Include="Views\MetadataViewTest.cs" />
-    <Compile Include="Views\Regions\EntityContainerTest.cs" />
-    <Compile Include="Views\Regions\FormContainerTest.cs" />
-    <Compile Include="XmlModelTest.cs" />
+    <Compile Include="UnitTests\Migrations\Configuration.cs" />
+    <Compile Include="UnitTests\Mocks\MockEntity.cs" />
+    <Compile Include="UnitTests\Services\CollectionServiceTest.cs" />
+    <Compile Include="UnitTests\Services\IngestionServiceTest.cs" />
+    <Compile Include="UnitTests\Services\ItemServiceTest.cs" />
+    <Compile Include="UnitTests\Services\MetadataServiceTest.cs" />
+    <Compile Include="UnitTests\Services\SecurityServiceBaseTest.cs" />
+    <Compile Include="UnitTests\Services\SolrServiceTest.cs" />
+    <Compile Include="UnitTests\Services\SubmissionServiceTest.cs" />
+    <Compile Include="UnitTests\Services\PageServiceTest.cs" />
+    <Compile Include="UnitTests\Services\UserServiceTest.cs" />
+    <Compile Include="UnitTests\XmlModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -217,17 +206,15 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\IngestionDatabase3.xml" />
-    <EmbeddedResource Include="Resources\IngestionDatabase2.xml" />
-    <EmbeddedResource Include="Resources\IngestionDatabase1.xml">
+    <EmbeddedResource Include="UnitTests\Resources\IngestionDatabase3.xml" />
+    <EmbeddedResource Include="UnitTests\Resources\IngestionDatabase2.xml" />
+    <EmbeddedResource Include="UnitTests\Resources\IngestionDatabase1.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Views\Helpers\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201805082036486_InitialTestDb.resx">
+    <EmbeddedResource Include="UnitTests\Migrations\201805082036486_InitialTestDb.resx">
       <DependentUpon>201805082036486_InitialTestDb.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

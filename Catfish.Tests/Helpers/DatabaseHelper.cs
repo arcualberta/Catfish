@@ -43,7 +43,7 @@ namespace Catfish.Tests.Helpers
             {
                 if (mDb == null)
                 {
-                    DbConnection connection = GetConnection(GetConnectionStringByName("catfish"));
+                    DbConnection connection = GetConnection(GetConnectionStringByName("unittest"));
                     connection.Open();
                     mDb = new CatfishTestDbContext(connection);
                 }
