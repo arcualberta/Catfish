@@ -1,4 +1,5 @@
-﻿using Catfish.Tests.IntegrationTests.Helpers;
+﻿using Catfish.Core.Models.Forms;
+using Catfish.Tests.IntegrationTests.Helpers;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -26,7 +27,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
         [Test]
         public void CanCreateNewEntityType()
         {
-
+            CreateMetadataSet("name 1", "desc 1", new FormField[0]);
         }
     }
 }
