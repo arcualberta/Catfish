@@ -1,10 +1,11 @@
-﻿using Catfish.Core.Models;
+using Catfish.Core.Models;
 using Catfish.Core.Models.Forms;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity.Migrations;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,18 +18,30 @@ namespace Catfish.Tests.IntegrationTests.Helpers
     {
         protected IWebDriver Driver;
         protected string ManagerUrl;
+        protected const string ContentLinkText = "CONTENT";
+        protected const string SettingsLinkText = "SETTINGS";
+        protected const string MetadataSetsLinkText = "Metadata Sets";
+        protected const string EntityTypesLinkText = "Entity Types";
+        protected const string ItemsLinkText = "Items";
+        protected const string CollectionsLinkText = "Collections";
+        protected const string FormsLinkText = "Forms";
+        protected const string ToolBarAddButtonId = "toolbar_add_button";
+        protected const string ToolBarSaveButtonId = "toolbar_save_button";
+        protected const string NameId = "Name";
+        protected const string DescriptionId = "Description";
+
 
         [SetUp]
         public void SetUp()
         {
-            this.Driver = new TWebDriver();
-            this.ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
+            Driver = new TWebDriver();
+            ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
 
             ClearDatabase();
-
-            ResetServerCahce();
-
+            ResetServerCache();
             SetupPiranha();
+            //RunMigrations();
+            LoginAsAdmin();
 
             OnSetup();
         }
@@ -39,7 +52,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             ClearDatabase();
             OnTearDown();
 
-            Driver.Close();
+            //Driver.Close();
         }
 
         protected abstract void OnSetup();
@@ -71,22 +84,35 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             result = context.Database.ExecuteSqlCommand(query);
         }
 
-        private void ResetServerCahce()
+        private void ResetServerCache()
         {
             string webConfig = ConfigurationManager.AppSettings["WebConfigLocation"];
             File.SetLastWriteTime(webConfig, DateTime.Now);
         }
 
+        private void RunMigrations()
+        {
+            Catfish.Core.Migrations.Configuration config = new Catfish.Core.Migrations.Configuration();
+            var migrator = new DbMigrator(config);
+
+            foreach (string migName in migrator.GetPendingMigrations())
+            {
+                Type migration = config.MigrationsAssembly.GetType(string.Format("{0}.{1}", config.MigrationsNamespace, migName.Substring(16)));
+                DbMigration m = (DbMigration)Activator.CreateInstance(migration);
+                m.Up();
+            }
+        }
+
         private void SetupPiranha()
         {
 
-            this.Driver.Navigate().GoToUrl(ManagerUrl);
-            this.Driver.FindElement(By.Name("UserLogin")).SendKeys(ConfigurationManager.AppSettings["AdminLogin"]);
-            this.Driver.FindElement(By.Name("Password")).SendKeys(ConfigurationManager.AppSettings["AdminPassword"]);
-            this.Driver.FindElement(By.Name("PasswordConfirm")).SendKeys(ConfigurationManager.AppSettings["AdminPassword"]);
-            this.Driver.FindElement(By.Name("UserEmail")).SendKeys(ConfigurationManager.AppSettings["AdminEmail"]);
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.Name("UserLogin")).SendKeys(ConfigurationManager.AppSettings["AdminLogin"]);
+            Driver.FindElement(By.Name("Password")).SendKeys(ConfigurationManager.AppSettings["AdminPassword"]);
+            Driver.FindElement(By.Name("PasswordConfirm")).SendKeys(ConfigurationManager.AppSettings["AdminPassword"]);
+            Driver.FindElement(By.Name("UserEmail")).SendKeys(ConfigurationManager.AppSettings["AdminEmail"]);
 
-            this.Driver.FindElement(By.Id("full")).Click();
+            Driver.FindElement(By.Id("full")).Click();
         }
 
         protected void LoginAsAdmin()
@@ -97,15 +123,25 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
         protected void Login(string user, string password)
         {
-            this.Driver.Navigate().GoToUrl(ManagerUrl);
-            this.Driver.FindElement(By.Id("login")).SendKeys(user);
-            this.Driver.FindElement(By.Name("password")).SendKeys(password);
-            this.Driver.FindElement(By.TagName("button")).Click();
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.Id("login")).SendKeys(user);
+            Driver.FindElement(By.Name("password")).SendKeys(password);
+            Driver.FindElement(By.TagName("button")).Click();
         }
 
-        public int CreateMetadataSet(FormField[] fields)
+        public int CreateMetadataSet(string name, string description, FormField[] fields)
         {
-            throw new NotImplementedException();
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.LinkText(SettingsLinkText)).Click();
+            Driver.FindElement(By.Id(ToolBarAddButtonId)).Click();
+            Driver.FindElement(By.Id(NameId)).SendKeys(name);
+            Driver.FindElement(By.Id(DescriptionId)).SendKeys(description);
+
+            // Add metadata set fields
+
+            //Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
+            return -1;
+            //throw new NotImplementedException();         
         }
 
         public int CreateEntityType(int[] metadataSetIds, CFEntityType.eTarget[] targetTypes)
