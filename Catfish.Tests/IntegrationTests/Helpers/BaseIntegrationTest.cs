@@ -5,6 +5,7 @@ using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,15 +26,17 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
             ClearDatabase();
 
+            ResetServerCahce();
+
             SetupPiranha();
-            
+
             OnSetup();
         }
 
         [TearDown]
         public void TearDown()
         {
-            //ClearDatabase();
+            ClearDatabase();
             OnTearDown();
 
             Driver.Close();
@@ -68,8 +71,15 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             result = context.Database.ExecuteSqlCommand(query);
         }
 
+        private void ResetServerCahce()
+        {
+            string webConfig = ConfigurationManager.AppSettings["WebConfigLocation"];
+            File.SetLastWriteTime(webConfig, DateTime.Now);
+        }
+
         private void SetupPiranha()
         {
+
             this.Driver.Navigate().GoToUrl(ManagerUrl);
             this.Driver.FindElement(By.Name("UserLogin")).SendKeys(ConfigurationManager.AppSettings["AdminLogin"]);
             this.Driver.FindElement(By.Name("Password")).SendKeys(ConfigurationManager.AppSettings["AdminPassword"]);
