@@ -19,13 +19,13 @@ namespace StateFundingDataConversion
         private static string EntityTypeName = "Statefunding Entity Type";
         private static string[] headers;
         private static int TotAggregations = 10000;
-        private static string inputFileName = "StateFundingData17Jan2018.csv";
+        private static string inputFileName = "StateFundingDataFinalFall2018All.csv";
 
         public static void Main(string[] args)
         {
             string currDir = Environment.CurrentDirectory;
-            currDir = Path.GetFullPath(Path.Combine(currDir, @"..\..\"));
-            string dataDir = currDir + "Data\\" + inputFileName; ;
+          //currDir = Path.GetFullPath(Path.Combine(currDir, @"..\..\"));
+            string dataDir = currDir + "\\Data\\" + inputFileName; ;
            
             try
             {
@@ -104,7 +104,7 @@ namespace StateFundingDataConversion
             XElement entityTypes = AddEntityTypes(msGuid);
 
             ingestion.Add(entityTypes);
-            doc.Save(currDir + "\\SFIngestion17Jan2018-MSEntityType.xml");
+            doc.Save(currDir + "\\SFIngestionFinal2018-MSEntityType.xml");
 
             XElement aggregations = AddAggregations(msGuid, csv, currDir);
 
@@ -122,12 +122,12 @@ namespace StateFundingDataConversion
             foreach (string m in headers)
             {
                 //from col 11-15 -- movement
-                if (i < 11 || i > 15)
+                if (i < 13 || i > 18)
                 {//text
                     XElement field = new XElement("field");
                     field.Add(new XAttribute("updated", DateTime.Now.ToShortDateString()));
                     field.Add(new XAttribute("created", DateTime.Now.ToShortDateString()));
-                    if(i == 2 || i == 5)
+                    if(i == 2 || i == 4) //yearFunded and amount
                     {
                         field.Add(new XAttribute("model-type", "Catfish.Core.Models.Forms.NumberField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
 
@@ -212,7 +212,7 @@ namespace StateFundingDataConversion
             XElement options = new XElement("options");
             chkField.Add(options);
             fields.Add(chkField);
-            for (int j=0; j < 5; j++)
+            for (int j=0; j < 6; j++)
             {
                 XElement option = new XElement("option");
                 
@@ -227,11 +227,13 @@ namespace StateFundingDataConversion
                 else if(j==1)
                     optionVal = new XElement("text", "Environment");
                 else if (j == 2)
-                    optionVal = new XElement("text", "Other");
-                else if (j == 3)
                     optionVal = new XElement("text", "Rights");
-                else
+                else if (j == 3)
                     optionVal = new XElement("text", "Women");
+                else if (j == 4)
+                    optionVal = new XElement("text", "Other");
+                else
+                    optionVal = new XElement("text", "Aboriginal Government");
 
                 optionVal.Add(xmlLang);
                 option.Add(optionVal);
@@ -257,7 +259,7 @@ namespace StateFundingDataConversion
 
             XElement atrrMapping = new XElement("attribute-mapping");
             XElement mapName = new XElement("name", "Name Mapping");
-            XElement fieldname = new XElement("field-name", "governmentAgency");
+            XElement fieldname = new XElement("field-name", "ministryAgency");
            
             atrrMapping.Add(mapName);
             atrrMapping.Add(fieldname);
@@ -292,8 +294,6 @@ namespace StateFundingDataConversion
             while (csv.Read())
             {
                 StateFunding sf = csv.GetRecord<StateFunding>();
-
-
                
                 try
                 {
@@ -332,14 +332,14 @@ namespace StateFundingDataConversion
                     {
 
                         //from col 11-15 -- movement
-                        if (i < 11 || i > 15)
+                        if (i < 13 || i > 18)
                         {//te
                             XElement field = new XElement("field");
                             fields.Add(field);
 
                             field.Add(new XAttribute("updated", now));
                             field.Add(new XAttribute("created", now));
-                            if (i == 2 || i == 5) //Year and amount --set to Number Field
+                            if (i == 2 || i == 4) //Year and amount --set to Number Field
                             {
                                 field.Add(new XAttribute("model-type", "Catfish.Core.Models.Forms.NumberField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
 
@@ -423,11 +423,13 @@ namespace StateFundingDataConversion
                         else if (k == 11)
                             optionVal = new XElement("text", "Environment");
                         else if (k == 12)
-                            optionVal = new XElement("text", "Other");
-                        else if (k == 13)
                             optionVal = new XElement("text", "Rights");
-                        else
+                        else if (k == 13)
                             optionVal = new XElement("text", "Women");
+                        else if (k == 14)
+                            optionVal = new XElement("text", "Other");
+                        else
+                            optionVal = new XElement("text", "Aboriginal Government");
 
                         optionVal.Add(xmlLang);
                         option.Add(optionVal);
@@ -472,25 +474,32 @@ namespace StateFundingDataConversion
 
     public class StateFunding
     {
+        //the order is the same with the csv input headers
+
+       // public string recordNumber { get; set; }
         public string jurisdiction { get; set; }
         public string yearFunded { get; set; }
-        public string recipientPA { get; set; }
-        public string city { get; set; }
+        public string recipient { get; set; }
         public string amount { get; set; }
-        public string governmentAgency { get; set; }
-        public string FederalToJurisdiction { get; set; }
+        public string ministryAgency { get; set; }
+        public string city { get; set; }
+        public string jurisdictionFederal { get; set; }
+        public string source { get; set; }
         public string program { get; set; }
         public string masterProgram { get; set; }
         public string project { get; set; }
+        public string recipientOriginal { get; set; }
+
         public string movementAboriginal { get; set; }
        
         public string movementEnvironment { get; set; }
-        public string movementOther { get; set; }
         public string movementRights { get; set; }
         public string movementWomen { get; set; }
-
-        public string source { get; set; }
-
-        public string originalRecipientPA { get; set; }
+        public string movementOther { get; set; }
+       
+       
+        public string movementABgovt{ get; set; }
+        public string notes { get; set; }
     }
 }
+ 
