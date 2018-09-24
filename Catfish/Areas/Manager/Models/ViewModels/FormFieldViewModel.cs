@@ -20,6 +20,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         //public string Description { get; set; }
         public List<TextValue> Description { get; set; }
         public bool IsRequired { get; set; }
+        public bool IsRichText { get; set; }
+        public bool IsTextArea { get; set; }
         public bool IsOptionField { get; set; }
         public List<TextValue> MultilingualOptionSet { get; set; }
         public string Guid { get; set; }
@@ -81,6 +83,11 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                     }
                 }
             }
+
+            IsTextArea = typeof(TextArea).IsAssignableFrom(formField.GetType());
+            if(IsTextArea){
+                IsRichText = ((TextArea)formField).IsRichText;
+            }
         }
 
         //XXX turns to database model
@@ -130,6 +137,11 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 }
 
                 (field as OptionsField).Options = optList;
+            }
+
+            if (IsTextArea)
+            {
+                ((TextArea)field).IsRichText = IsRichText;
             }
 
             return field;

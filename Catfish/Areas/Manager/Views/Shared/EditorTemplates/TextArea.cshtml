@@ -9,7 +9,7 @@
 <div class="name">
     @Html.Label(string.IsNullOrEmpty(Model.Name) ? "" : Model.Name, new { @name = "label" })
 </div>
-<div>
+<div class="@(Model.IsRichText ? "rich-text-transform" : "")">
     @{ bool showLanguageLabel = Model.Values.Count() > 1; }
     @Html.EditorFor(m => m.Values, new { ShowLanguageLabel = showLanguageLabel, MultiLine = true })
 </div>
