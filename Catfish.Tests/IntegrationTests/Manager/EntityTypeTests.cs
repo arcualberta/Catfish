@@ -14,20 +14,15 @@ namespace Catfish.Tests.IntegrationTests.Manager
     [TestFixture(typeof(ChromeDriver))]
     class EntityTypeTests<TWebDriver> : BaseIntegrationTest<TWebDriver> where TWebDriver : IWebDriver, new()
     {
-        protected override void OnSetup()
-        {
-            
-        }
-
-        protected override void OnTearDown()
-        {
-            
-        }
-
+        [Ignore("Needs to be completed")]
         [Test]
         public void CanCreateNewEntityType()
         {
-            CreateMetadataSet("name 1", "desc 1", new FormField[0]);
+            string EntityTypeName = "Entity type name";
+            string EntityTypeDescription = "Entity type description";
+
+            CreateMetadataSet(EntityTypeName, EntityTypeDescription, new FormField[1]);
+            Driver.FindElement(By.LinkText(EntityTypesLinkText)).Click();
         }
     }
 }
