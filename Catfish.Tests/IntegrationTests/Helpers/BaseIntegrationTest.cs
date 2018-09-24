@@ -37,10 +37,10 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver = new TWebDriver();
             ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
 
-            ClearDatabase();
+            ClearDatabase();            
             ResetServerCache();
             SetupPiranha();
-            //RunMigrations();
+            RunMigrations();
             LoginAsAdmin();
 
             OnSetup();
@@ -49,15 +49,14 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         [TearDown]
         public void TearDown()
         {
+            OnTearDown();            
+            Driver.Close();
             ClearDatabase();
-            OnTearDown();
-
-            //Driver.Close();
         }
 
-        protected abstract void OnSetup();
+        protected virtual void OnSetup() { }
 
-        protected abstract void OnTearDown();
+        protected virtual void OnTearDown() { }
 
         private void ClearDatabase()
         {
@@ -91,16 +90,10 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         }
 
         private void RunMigrations()
-        {
+        {            
             Catfish.Core.Migrations.Configuration config = new Catfish.Core.Migrations.Configuration();
             var migrator = new DbMigrator(config);
-
-            foreach (string migName in migrator.GetPendingMigrations())
-            {
-                Type migration = config.MigrationsAssembly.GetType(string.Format("{0}.{1}", config.MigrationsNamespace, migName.Substring(16)));
-                DbMigration m = (DbMigration)Activator.CreateInstance(migration);
-                m.Up();
-            }
+            migrator.Update();
         }
 
         private void SetupPiranha()
@@ -139,9 +132,8 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
             // Add metadata set fields
 
-            //Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
-            return -1;
-            //throw new NotImplementedException();         
+            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
+            return 0;            
         }
 
         public int CreateEntityType(int[] metadataSetIds, CFEntityType.eTarget[] targetTypes)
