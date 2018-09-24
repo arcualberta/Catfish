@@ -379,6 +379,7 @@
     <Content Include="Scripts\knockout.mapping-latest.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\perpetuum.knockout.js" />
+    <Content Include="Scripts\richtext.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
