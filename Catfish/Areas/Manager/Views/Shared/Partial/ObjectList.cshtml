@@ -31,27 +31,27 @@
                             <td class="">@type</td>
                         }
                         <td class="action-panel action-panel-@m.Id">
-                            <form action="@Url.Action("edit", controller, new { @id = m.Id })" method="get" class="inline object-edit-@m.Id">
-                                <button type="submit" value="Submit" class="glyphicon glyphicon-edit"></button>
+                            <form action="@Url.Action("edit", controller, new { @id = m.Id })" method="get" class="inline">
+                                <button type="submit" value="Submit" class="glyphicon glyphicon-edit object-edit-@m.Id"></button>
                             </form>
                             @if (typeof(Catfish.Core.Models.CFCollection).IsAssignableFrom(m.GetType()) ||
                                  typeof(Catfish.Core.Models.CFItem).IsAssignableFrom(m.GetType()))
                             {
-                                <form action="@Url.Action("associations", controller, new { @id = m.Id })" method="get" class="inline object-associations-@m.Id">
-                                    <button type="submit" value="Submit" class="glyphicon glyphicon-link"></button>
+                                <form action="@Url.Action("associations", controller, new { @id = m.Id })" method="get" class="inline">
+                                    <button type="submit" value="Submit" class="glyphicon glyphicon-link object-associations-@m.Id"></button>
                                 </form>
                             }
                             @if (showDeleteButton)
                             {
-                                <form action="@Url.Action("delete", controller, new { @id = m.Id })" method="post" class="inline object-delete-@m.Id">
+                                <form action="@Url.Action("delete", controller, new { @id = m.Id })" method="post" class="inline">
                                     @{ var isDisabled = m.HasAssociations ? "disabled='disabled'" : ""; }
-                                    <button type="submit" value="Submit" class="glyphicon glyphicon-remove" onclick="return confirm('Confirm deletion');" @isDisabled></button>
+                                    <button type="submit" value="Submit" class="glyphicon glyphicon-remove object-delete-@m.Id" onclick="return confirm('Confirm deletion');" @isDisabled></button>
                                 </form>
                              }
                            @if (typeof(Catfish.Core.Models.CFCollection).IsAssignableFrom(m.GetType()) || typeof(Catfish.Core.Models.CFItem).IsAssignableFrom(m.GetType()))
                            {
-                            <form action="@Url.Action("accessGroup", controller, new { @id = m.Id })" method="get" class="inline object-accessgroup-@m.Id">
-                                <button type="submit" value="Submit" class="glyphicon glyphicon-eye-close"></button>
+                            <form action="@Url.Action("accessGroup", controller, new { @id = m.Id })" method="get" class="inline">
+                                <button type="submit" value="Submit" class="glyphicon glyphicon-eye-close object-accessgroup-@m.Id"></button>
                             </form>
                            }
                         </td>
