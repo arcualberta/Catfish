@@ -61,12 +61,13 @@ namespace Catfish.Core.Services
 
         protected ImageFormat GetThumbnailFormat(string srcExtension)
         {
-            return srcExtension == "jpg" ? ImageFormat.Jpeg : ImageFormat.Png;
+            //add .jpeg
+            return (srcExtension == "jpg" || srcExtension == "jpeg") ? ImageFormat.Jpeg : ImageFormat.Png;
         }
 
         protected ImageFormat GetImageFormat(string srcExtension)
         {
-            return srcExtension == "jpg" ? ImageFormat.Jpeg : ImageFormat.Png;
+            return (srcExtension == "jpg" || srcExtension == "jpeg") ? ImageFormat.Jpeg : ImageFormat.Png;
         }
 
         public List<CFDataFile> UploadTempFiles(HttpRequestBase request)
