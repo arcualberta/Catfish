@@ -165,26 +165,27 @@ namespace Catfish.Controllers.Api
                 return HttpNotFound("File not found");
 
             string path_name = string.Empty;
-            string[] fnames = file.LocalFileName.Split('.'); 
+            string[] fnames = file.LocalFileName.Split('.');
+            string jpgExt = (fnames[1] == "jpeg" || fnames[1] == "jpg") ? "jpg" : fnames[1];
             if (eSize == null)
             {
                 path_name = Path.Combine(file.Path, file.LocalFileName);
             }
             else if (eSize.Equals(ConfigHelper.eImageSize.Thumbnail))
             {
-                path_name = Path.Combine(file.Path, fnames[0] + "_t." + fnames[1]);
+                path_name = Path.Combine(file.Path, fnames[0] + "_t." + jpgExt);// fnames[1]);
             }
             else if (eSize.Equals(ConfigHelper.eImageSize.Small))
             {
-                path_name = Path.Combine(file.Path, fnames[0] + "_s." + fnames[1]);
+                path_name = Path.Combine(file.Path, fnames[0] + "_s." + jpgExt);
             }
             else if (eSize.Equals(ConfigHelper.eImageSize.Medium))
             {
-                path_name = Path.Combine(file.Path, fnames[0] + "_m." + fnames[1]);
+                path_name = Path.Combine(file.Path, fnames[0] + "_m." + jpgExt);
             }
             else if (eSize.Equals(ConfigHelper.eImageSize.Large))
             {
-                path_name = Path.Combine(file.Path, fnames[0] + "_l." + fnames[1]);
+                path_name = Path.Combine(file.Path, fnames[0] + "_l." + jpgExt);
             }
 
             FilePathResult filePathResult = new FilePathResult(path_name, file.ContentType);
