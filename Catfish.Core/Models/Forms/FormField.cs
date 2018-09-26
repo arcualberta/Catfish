@@ -110,7 +110,9 @@ namespace Catfish.Core.Models.Forms
                 if (valueWrapper == null)
                     Data.Add(valueWrapper = new XElement("value"));
 
-                return XmlHelper.GetTextValues(valueWrapper, true).ToList();
+                return (IsHtmlField() ? 
+                    XmlHelper.GetTextValues<HtmlTextValue>(valueWrapper, true) : XmlHelper.GetTextValues(valueWrapper, true))
+                    .ToList();
             }
 
             set
@@ -198,6 +200,11 @@ namespace Catfish.Core.Models.Forms
         }
 
         public virtual bool IsHidden()
+        {
+            return false;
+        }
+
+        protected virtual bool IsHtmlField()
         {
             return false;
         }

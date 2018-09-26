@@ -1,6 +1,8 @@
 ﻿using Catfish.Core.Models.Attributes;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Web.Mvc;
 using System.Web.Script.Serialization;
 
 namespace Catfish.Core.Models.Forms
@@ -27,6 +29,11 @@ namespace Catfish.Core.Models.Forms
             {
                 Data.SetAttributeValue("IsRichText", value);
             }
+        }
+
+        protected override bool IsHtmlField()
+        {
+            return IsRichText;
         }
     }
 }
