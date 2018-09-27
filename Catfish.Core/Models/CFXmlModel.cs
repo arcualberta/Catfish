@@ -196,7 +196,6 @@ namespace Catfish.Core.Models
             Data.SetAttributeValue("IsRequired", false);
             MappedGuid = Guid; //Creates and uses the guid.
             mChangeLog = new List<CFAuditChangeLog>();
-            InitializeExternally(this);
         }
 
         public XElement GetWrapper(string tagName, bool createIfNotExist, bool enforceGuid)
