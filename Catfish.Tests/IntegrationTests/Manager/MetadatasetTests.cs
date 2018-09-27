@@ -1,8 +1,10 @@
 ﻿using Catfish.Core.Models.Forms;
+using Catfish.Tests.Extensions;
 using Catfish.Tests.IntegrationTests.Helpers;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,20 +27,19 @@ namespace Catfish.Tests.IntegrationTests.Manager
 
             List<FormField> formFields = new List<FormField>();
             formFields.Add(field1);
-            int metadataSetId = CreateMetadataSet(MetadataSetName, MetadataSetDescription, formFields.ToArray());
+            CreateMetadataSet(MetadataSetName, MetadataSetDescription, formFields.ToArray());
 
-            Driver.FindElement(By.LinkText(SettingsLinkText)).Click();
-            Driver.FindElement(By.LinkText(MetadataSetsLinkText)).Click();
-
-            // find element in list
-            Driver.FindElement(By.ClassName($"object-edit-{metadataSetId.ToString()}")).Click();
-
-            string nameText = Driver.FindElement(By.Id("Name")).Text;
-            string descriptionText = Driver.FindElement(By.Id("Description")).Text;
+            Driver.FindElement(By.LinkText(SettingsLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(MetadataSetsLinkText), 10).Click();
+            
+            // Last edit button belongs to our newly created metadata set
+            IWebElement lastEditButton = GetLastEditButton();
+            lastEditButton.Click();
+            string nameText = Driver.FindElement(By.Id("Name")).GetAttribute("value");
+            string descriptionText = Driver.FindElement(By.Id("Description")).GetAttribute("value");
 
             Assert.AreEqual(MetadataSetName, nameText);
-            Assert.AreEqual(MetadataSetDescription, descriptionText);
-            //Driver.FindElement(By.LinkText(EntityTypesLinkText)).Click();
+            Assert.AreEqual(MetadataSetDescription, descriptionText);            
         }
     }
 }

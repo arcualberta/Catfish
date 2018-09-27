@@ -50,8 +50,8 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         public void TearDown()
         {
             OnTearDown();            
-            Driver.Close();
-            ClearDatabase();
+            //Driver.Close();
+            //ClearDatabase();
         }
 
         protected virtual void OnSetup() { }
@@ -122,7 +122,37 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.TagName("button")).Click();
         }
 
-        public int CreateMetadataSet(string name, string description, FormField[] fields)
+        protected IWebElement GetLastObjectRow()
+        {
+            return Driver.FindElement(By.XPath("(//tbody[contains(@class, 'object-list')]/tr)[last()]"));
+        }
+
+        protected IWebElement GetLastActionPanel()
+        {
+            return GetLastObjectRow().FindElement(By.XPath("//td[contains(@class, 'action-panel')]"));
+        }
+
+        protected IWebElement GetLastEditButton()
+        {
+            return GetLastObjectRow().FindElement(By.XPath("//button[contains(@class, 'object-edit')]"));
+        }
+
+        protected IWebElement GetLastAssociationsButton()
+        {
+            return GetLastObjectRow().FindElement(By.XPath("//button[contains(@class, 'object-associations')]"));
+        }
+
+        protected IWebElement GetLastDeleteButton()
+        {
+            return GetLastObjectRow().FindElement(By.XPath("//button[contains(@class, 'object-delete')]"));
+        }
+
+        protected IWebElement GetLastAccessGroupButton()
+        {
+            return GetLastObjectRow().FindElement(By.XPath("//button[contains(@class, 'object-accessgroup')]"));
+        }
+
+        public void CreateMetadataSet(string name, string description, FormField[] fields)
         {
             Driver.Navigate().GoToUrl(ManagerUrl);
             Driver.FindElement(By.LinkText(SettingsLinkText)).Click();
@@ -132,26 +162,25 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
             // Add metadata set fields
 
-            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
-            return 0;            
+            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();          
         }
 
-        public int CreateEntityType(int[] metadataSetIds, CFEntityType.eTarget[] targetTypes)
+        public void CreateEntityType(int[] metadataSetIds, CFEntityType.eTarget[] targetTypes)
         {
             throw new NotImplementedException();
         }
 
-        public int CreateItem(int entityTypeId)
+        public void CreateItem(int entityTypeId)
         {
             throw new NotImplementedException();
         }
 
-        public int CreateCollection(int entityTypeId)
+        public void CreateCollection(int entityTypeId)
         {
             throw new NotImplementedException();
         }
 
-        public int CreateForm(int entityTypeId)
+        public void CreateForm(int entityTypeId)
         {
             throw new NotImplementedException();
         }
