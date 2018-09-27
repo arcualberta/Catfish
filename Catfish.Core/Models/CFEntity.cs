@@ -28,11 +28,6 @@ namespace Catfish.Core.Models
         {
             Data.Add(new XElement("metadata"));
             Data.Add(new XElement("access"));
-
-            if (this.GetType().Namespace != "System.Data.Entity.DynamicProxies") // This is done to avoid a massive performance hit when loading models from the database.
-            {
-                InitializeExternally(this);
-            }
         }
 
         [NotMapped]
