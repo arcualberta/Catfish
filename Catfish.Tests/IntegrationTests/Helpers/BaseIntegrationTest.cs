@@ -121,7 +121,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Name("password")).SendKeys(password);
             Driver.FindElement(By.TagName("button")).Click();
         }
-
+       
         protected IWebElement GetLastObjectRow()
         {
             return Driver.FindElement(By.XPath("(//tbody[contains(@class, 'object-list')]/tr)[last()]"));
@@ -132,24 +132,29 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             return GetLastObjectRow().FindElement(By.XPath("//td[contains(@class, 'action-panel')]"));
         }
 
+        public IWebElement GetLastButtonByClass(string cssClass)
+        {
+            return GetLastObjectRow().FindElement(By.XPath($"//button[contains(@class, '{cssClass}')]"));
+        }
+
         protected IWebElement GetLastEditButton()
         {
-            return GetLastObjectRow().FindElement(By.XPath("//button[contains(@class, 'object-edit')]"));
+            return GetLastButtonByClass("object-edit");
         }
 
         protected IWebElement GetLastAssociationsButton()
         {
-            return GetLastObjectRow().FindElement(By.XPath("//button[contains(@class, 'object-associations')]"));
+            return GetLastButtonByClass("object-associations");
         }
 
         protected IWebElement GetLastDeleteButton()
         {
-            return GetLastObjectRow().FindElement(By.XPath("//button[contains(@class, 'object-delete')]"));
+            return GetLastButtonByClass("object-delete");
         }
 
         protected IWebElement GetLastAccessGroupButton()
         {
-            return GetLastObjectRow().FindElement(By.XPath("//button[contains(@class, 'object-accessgroup')]"));
+            return GetLastButtonByClass("object-accessgroup");
         }
 
         public void CreateMetadataSet(string name, string description, FormField[] fields)
