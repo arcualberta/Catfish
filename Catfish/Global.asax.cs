@@ -15,10 +15,7 @@ using Catfish.Helpers;
 using Catfish.Core.Services;
 using Catfish.Core.ModelBinders;
 using Catfish.Core.Validators;
-
 using Catfish.Core.Helpers;
-using Catfish.Services;
-using Piranha;
 
 namespace Catfish
 {
@@ -77,16 +74,19 @@ namespace Catfish
 
             CFXmlModel.InitializeExternally = (CFXmlModel model) =>
             {
-                string guid = HttpContext.Current.User.Identity.Name;
-                model.CreatedByGuid = guid;
-
-                // This is done to avoid a massive performance hit when loading models from the database
-                Catfish.Contexts.UserContext ctx = Catfish.Contexts.UserContext.GetContextForUser(guid);
-
-                if(ctx.User != null)
+                if (HttpContext.Current.User != null) // If we are just loading a model, this may be null.
                 {
-                    model.CreatedByName = ctx.User.Firstname + " " + ctx.User.Surname;
-                }                            
+                    string guid = HttpContext.Current.User.Identity.Name;
+                    model.CreatedByGuid = guid;
+
+                    // This is done to avoid a massive performance hit when loading models from the database
+                    var ctx = Catfish.Contexts.UserContext.GetContextForUser(guid);
+
+                    if (ctx != null && ctx.User != null)
+                    {
+                        model.CreatedByName = ctx.User.Firstname + " " + ctx.User.Surname;
+                    }
+                }
             };
             
         }

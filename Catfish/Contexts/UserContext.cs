@@ -19,20 +19,28 @@ namespace Catfish.Contexts
 
         public static UserContext GetContextForUser(string guid)
         {
-            if(Current == null || Current.User == null || Current.User.Id.ToString() != guid)
+            if(string.IsNullOrEmpty(guid))
+            {
+                return null;
+            }
+
+            if(UserContext.Current == null || UserContext.Current.User == null || UserContext.Current.User.Id.ToString() != guid)
             {
                 using (var db = new Piranha.DataContext())
                 {
                     Piranha.Entities.User user = db.Users.Where(u => u.Id.ToString() == guid).FirstOrDefault();
                     if (user != null)
                     {
-                        user = db.Users.Where(u => u.Id.ToString() == guid).FirstOrDefault();
-                        Current = new UserContext(user);
+                        UserContext.Current = new UserContext(user);
+                    }
+                    else
+                    {
+                        UserContext.Current = null;
                     }
                 }
             }
 
-            return Current;
+            return UserContext.Current;
         }
     }
 }
