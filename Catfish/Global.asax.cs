@@ -78,16 +78,15 @@ namespace Catfish
             CFXmlModel.InitializeExternally = (CFXmlModel model) =>
             {
                 string guid = HttpContext.Current.User.Identity.Name;
-                model.CreatedByGuid = guid;                
-                using (var db = new DataContext())
+                model.CreatedByGuid = guid;
+
+                // This is done to avoid a massive performance hit when loading models from the database
+                Catfish.Contexts.UserContext ctx = Catfish.Contexts.UserContext.GetContextForUser(guid);
+
+                if(ctx.User != null)
                 {
-                    Piranha.Entities.User user = db.Users.Where(u => u.Id.ToString() == guid).FirstOrDefault();
-                    if (user != null)
-                    {
-                        user = db.Users.Where(u => u.Id.ToString() == guid).FirstOrDefault();
-                        model.CreatedByName = user.Firstname + " " + user.Surname;
-                    }                    
-                }                               
+                    model.CreatedByName = ctx.User.Firstname + " " + ctx.User.Surname;
+                }                            
             };
             
         }
