@@ -95,6 +95,21 @@ namespace Catfish.Core.Services
         }
 
 
+        private Image ResizeImage(Image img, int width, int height)
+        {
+            Bitmap result = new Bitmap(width, height);
+
+            using(var graphic = Graphics.FromImage(result))
+            {
+                graphic.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                graphic.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                graphic.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                graphic.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                graphic.DrawImage(img, 0, 0, width, height);
+            }
+
+            return result;
+        }
 
         public CFDataFile InjestFile(Stream srcStream, string inputFileName, string contentType, string dstPath)
         {
@@ -139,7 +154,7 @@ namespace Catfish.Core.Services
                        ? new Size() { Height = sizeVal, Width = (image.Width * sizeVal) / image.Height }
                        : new Size() { Width = sizeVal, Height = (image.Height * sizeVal) / image.Width };
 
-                        Image img = image.GetThumbnailImage(imgSize.Width, imgSize.Height, null, IntPtr.Zero);
+                        Image img = ResizeImage(image, imgSize.Width, imgSize.Height);
                         ImageFormat format = GetImageFormat(file.Extension);
 
                         if(enumValue.Equals(ConfigHelper.eImageSize.Thumbnail))
