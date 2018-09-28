@@ -185,7 +185,7 @@ namespace Catfish.Core.Models
 
 
 
-        public CFXmlModel(bool initializeExternailly = false)
+        public CFXmlModel()
         {
 #pragma warning disable CS0612 // Type or member is obsolete
             DefaultLanguage = "en";
@@ -197,11 +197,7 @@ namespace Catfish.Core.Models
             MappedGuid = Guid; //Creates and uses the guid.
             mChangeLog = new List<CFAuditChangeLog>();
 
-            // TODO: FIND SOLUTION
-            if (initializeExternailly) // This is done to avoid a massive performance hit when loading models from the database.
-            {
-                InitializeExternally(this);
-            }
+            InitializeExternally(this);
         }
 
         public XElement GetWrapper(string tagName, bool createIfNotExist, bool enforceGuid)
