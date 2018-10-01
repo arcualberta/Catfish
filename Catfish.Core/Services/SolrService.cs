@@ -253,7 +253,7 @@ namespace Catfish.Core.Services
             return 0m;
         }
 
-        public decimal CountField(string field, string query = "*:*", string groupByField="")
+        public decimal CountField(string field, string query = "*:*", string groupByField=null)
         {
             if (string.IsNullOrEmpty(groupByField))
             {
@@ -264,7 +264,7 @@ namespace Catfish.Core.Services
                 }
             }            
             else
-            { 
+            {
                 var count = CountGroupBy(field, query, groupByField);
                 //groupByField is not null or empty
                if(count != null)

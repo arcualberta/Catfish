@@ -75,14 +75,17 @@ namespace Catfish.Services
             string groupByFieldString = string.Empty;
             if (!string.IsNullOrEmpty(SelectedGroupByFieldMetadataSet) && !string.IsNullOrEmpty(SelectedGroupByField))
             {
-                resultType = IsNumberField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? "d" : "txt_" + languageCode;
+                resultType = IsNumberField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? "d" : "txt_" + languageCode + "_s"; // This last bit is for full text groups.
                 isOptionField = IsOptionField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? true : false;
             }
 
           
             if (!string.IsNullOrEmpty(groupByFieldGuid))
             {
-                groupByFieldString = string.Format("{0}value_{1}_{2}_{3}", isOptionField ? "option_" : string.Empty, groupByMetadataGuid, groupByFieldGuid, resultType);
+                groupByFieldString = string.Format("{0}value_{1}_{2}_{3}", 
+                    isOptionField ? "option_" : string.Empty,
+                    groupByMetadataGuid, groupByFieldGuid, 
+                    resultType);
             }
            
 
