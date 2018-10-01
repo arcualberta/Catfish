@@ -66,6 +66,7 @@ namespace Catfish.Core.Helpers
                 {
                     query = "SELECT * FROM [dbo].[CFXmlModels] WHERE Id < 0"; // Produces an empty result
                 }
+
                 return set.SqlQuery(query).AsQueryable();
 
                 //return set.Where(p => results.Contains(p.Id)); // the Contians method is slow because it creates several or expressions. 

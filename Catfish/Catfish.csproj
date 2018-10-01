@@ -379,6 +379,7 @@
     <Content Include="Scripts\knockout.mapping-latest.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\perpetuum.knockout.js" />
+    <Content Include="Scripts\richtext.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -404,6 +405,7 @@
     <Compile Include="Areas\Manager\Models\ViewModels\EntityAccessDefinitionsViewModel.cs" />
     <Compile Include="Areas\Manager\Services\AccessGroupService.cs" />
     <Compile Include="Areas\Manager\Services\PageService.cs" />
+    <Compile Include="Contexts\UserContext.cs" />
     <Compile Include="Models\Regions\AdvanceSearchContainer.cs" />
     <Compile Include="Models\Regions\CSEntityPanel.cs" />
     <Compile Include="Models\Regions\EntityImagePanel.cs" />
