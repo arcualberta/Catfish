@@ -22,7 +22,6 @@
 						id = id.replace(replaceRegex, '_');
 						row.put("name_" + id + "txt_" + language, names[i]);
 						row.put("value_" + id + "txt_" + language, value);
-						row.put("value_" + id + "txt_" + language + "_s", value);
 						
 						if(modelTypes[i].startsWith("Catfish.Core.Models.Forms.NumberField")){
 							if(!isNaN(value) && value.length > 0){
@@ -57,6 +56,7 @@
 						id = id.replace(replaceRegex, '_');
 						row.put("option_name_" + id + "txt_" + language, names[i]);
 						row.put("option_value_" + id + "txt_" + language, value);
+						row.put("option_value_" + id + "txt_" + language + "_s", value);
 					}
 				}
 				
