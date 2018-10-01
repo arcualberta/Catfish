@@ -1,7 +1,9 @@
 using Catfish.Core.Models;
+using Catfish.Core.Models.Attributes;
 using Catfish.Core.Models.Forms;
 using NUnit.Framework;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -10,6 +12,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Catfish.Tests.Extensions;
+
 
 namespace Catfish.Tests.IntegrationTests.Helpers
 
@@ -157,22 +161,73 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             return GetLastButtonByClass("object-accessgroup");
         }
 
+        public void CreateMetadataSet(string name, string description)
+        {
+            CreateMetadataSet(name, description, new FormField[0]);
+        }
+
         public void CreateMetadataSet(string name, string description, FormField[] fields)
         {
             Driver.Navigate().GoToUrl(ManagerUrl);
             Driver.FindElement(By.LinkText(SettingsLinkText)).Click();
+            Driver.FindElement(By.LinkText(MetadataSetsLinkText)).Click();
             Driver.FindElement(By.Id(ToolBarAddButtonId)).Click();
             Driver.FindElement(By.Id(NameId)).SendKeys(name);
             Driver.FindElement(By.Id(DescriptionId)).SendKeys(description);
 
             // Add metadata set fields
 
+            // id field-type-selector
+            IWebElement fieldTypeSelectorElement = Driver.FindElement(By.Id("field-type-selector"));
+            SelectElement fieldTypeSelector = new SelectElement(fieldTypeSelectorElement);
+
+            foreach (FormField field in fields)
+            {
+                //field.GetType();
+                CFTypeLabelAttribute typeLabelAttribute = (CFTypeLabelAttribute)field.GetType()
+                    .GetCustomAttributes(typeof(CFTypeLabelAttribute), true)
+                    .First();
+
+                // select option by label
+                fieldTypeSelector.SelectByText(typeLabelAttribute.Name);
+                // click on id add-field
+
+                Driver.FindElement(By.Id("add-field")).Click();
+
+                // fill values on last field-entry
+                IWebElement lastFieldEntry = Driver.FindElement(By.XPath("(//div[contains(@class, 'field-entry')])[last()]"), 10);
+
+                // fill class field-is-required with fields[0].IsRequired
+
+                // XXX generalize to use all language codes Name_sp, Name_fr
+                lastFieldEntry.FindElement(By.Name("Name_en")).SendKeys(field.Name);
+
+                // XXX need to add options ?
+
+                if (field.IsRequired)
+                {
+                    lastFieldEntry.FindElement(By.ClassName("field-is-required")).Click();
+                }
+
+
+            }            
+
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();          
         }
 
-        public void CreateEntityType(int[] metadataSetIds, CFEntityType.eTarget[] targetTypes)
+        public void CreateEntityType(string name, string description, 
+            string[] metadataSetNames, CFEntityType.eTarget[] targetTypes)
         {
-            throw new NotImplementedException();
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.LinkText(SettingsLinkText)).Click();
+            Driver.FindElement(By.LinkText(EntityTypesLinkText)).Click();
+            Driver.FindElement(By.Id(ToolBarAddButtonId)).Click();
+            Driver.FindElement(By.Id(NameId)).SendKeys(name);
+            Driver.FindElement(By.Id(DescriptionId)).SendKeys(description);
+
+            // Need to add field mappings
+
+            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
 
         public void CreateItem(int entityTypeId)
