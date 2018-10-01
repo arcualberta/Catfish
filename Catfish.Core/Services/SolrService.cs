@@ -175,21 +175,35 @@ namespace Catfish.Core.Services
             return null;
         }
 
-        public IDictionary<string, ICollection<KeyValuePair<string, int>>> CountProjects(string field, string query, string groupByField)
+       // public IDictionary<string, ICollection<KeyValuePair<string, int>>> CountGroupBy(string field, string query, string groupByField)
+        public string CountGroupBy(string field, string query, string groupByField)
         {
+           
+            const string facetJson = @"{{groupByCount : ""unique({0})""}}";
+
             if (SolrService.IsInitialized)
             {
-                var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
-                var results = solr.Query(query, new QueryOptions
+                IEnumerable<KeyValuePair<string, string>> parameters = new KeyValuePair<string, string>[]{
+                    new KeyValuePair<string, string>("q", query),
+                    new KeyValuePair<string, string>("json.facet",string.Format(facetJson, groupByField)),
+                    new KeyValuePair<string, string>("rows", "0")
+
+                };
+
+                var result = SolrService.mSolr.Get("/select", parameters);
+
+                var xmlRes = XElement.Parse(result);
+                XNode lastNode = xmlRes.LastNode;
+                foreach (XNode n in (lastNode as XElement).Nodes().ToList())
                 {
-                    Rows = 0,
-                    ExtraParams = new KeyValuePair<string, string>[]
-                     {
-                        new KeyValuePair<string, string>("facet", "on"),
-                        new KeyValuePair<string, string>("facet.field", groupByField)
-                     }
-                });
-                return results.FacetFields;
+                    if ((n as XElement).Attribute("name").Value == "groupByCount")
+                    {
+                        var v = (n as XElement).Value;
+                        return (n as XElement).Value;
+                    }
+                }
+
+                return result;
             }
             return null;
         }
@@ -239,7 +253,7 @@ namespace Catfish.Core.Services
             return 0m;
         }
 
-        public decimal CountField(string field, string query = "*:*", string groupByField="")
+        public decimal CountField(string field, string query = "*:*", string groupByField=null)
         {
             if (string.IsNullOrEmpty(groupByField))
             {
@@ -250,10 +264,11 @@ namespace Catfish.Core.Services
                 }
             }            
             else
-            { 
-                var stats = CountProjects(field, query, groupByField);
+            {
+                var count = CountGroupBy(field, query, groupByField);
                 //groupByField is not null or empty
-                return Convert.ToDecimal(stats[groupByField].Count);
+               if(count != null)
+                    return Convert.ToDecimal(count);
             }
 
             return 0m;

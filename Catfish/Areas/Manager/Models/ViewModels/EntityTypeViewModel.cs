@@ -79,7 +79,18 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             foreach (var ms in metadataSets)
             {
                 if (!string.IsNullOrEmpty(ms.Name))
+                {
                     AvailableMetadataSets.Add(new MetadataSetListItem(ms.Id, ms.Name));
+
+                    List<string> addList = new List<string>();
+                    addList.Add("");
+                    addList = addList.Concat((ms.Fields.Select(f => f.Name).ToList())).ToList();
+
+                    if (!MetadataSetFields.ContainsKey(ms.Id.ToString()))
+                    {
+                        MetadataSetFields.Add(ms.Id.ToString(), addList);
+                    }
+                }
             }
 
             //populating the associated metadata sets array
@@ -94,14 +105,6 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
                 foreach (CFEntityTypeAttributeMapping map in model.AttributeMappings)
                 {
-                    List<string> addList = new List<string>();
-                    addList.Add("");
-                    addList = addList.Concat((map.MetadataSet.Fields.Select(f => f.Name).ToList())).ToList();
-                    if (!MetadataSetFields.ContainsKey(map.MetadataSetId.ToString()))
-                    {
-                        MetadataSetFields.Add(map.MetadataSetId.ToString(), addList);
-                    }
-                    
                     if(map.Name.Equals("Name Mapping") || map.Name.Equals("Description Mapping"))
                     {
                         map.Deletable = false;
