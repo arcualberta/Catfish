@@ -22,11 +22,11 @@ namespace Catfish.Tests.IntegrationTests.Manager
             string MetadataSetName = "Metadataset name";
             string MetadataSetDescription = "Metadataset description";
 
-            FormField field1 = new FormField();
+            TextField field1 = new TextField();
             field1.Name = "Test";
-
             List<FormField> formFields = new List<FormField>();
             formFields.Add(field1);
+
             CreateMetadataSet(MetadataSetName, MetadataSetDescription, formFields.ToArray());
 
             Driver.FindElement(By.LinkText(SettingsLinkText), 10).Click();
@@ -39,7 +39,12 @@ namespace Catfish.Tests.IntegrationTests.Manager
             string descriptionText = Driver.FindElement(By.Id("Description")).GetAttribute("value");
 
             Assert.AreEqual(MetadataSetName, nameText);
-            Assert.AreEqual(MetadataSetDescription, descriptionText);            
+            Assert.AreEqual(MetadataSetDescription, descriptionText);
+
+            // XXX Check metadataset field valiues
+
+
+
         }
     }
 }
