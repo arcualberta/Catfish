@@ -70,21 +70,18 @@ namespace Catfish.Services
             string fieldString = string.Format("{0}value_{1}_{2}_{3}", isOptionField ? "option_" : string.Empty, metadataGuid, fieldGuid, resultType);
 
             //adding group by
-            string groupByMetadataGuid = string.IsNullOrEmpty(SelectedGroupByFieldMetadataSet)? string.Empty : SelectedGroupByFieldMetadataSet.Replace('-', '_');
-            string groupByFieldGuid = string.IsNullOrEmpty(SelectedGroupByField) ? string.Empty : SelectedGroupByField.Replace('-', '_');
             string groupByFieldString = string.Empty;
             if (!string.IsNullOrEmpty(SelectedGroupByFieldMetadataSet) && !string.IsNullOrEmpty(SelectedGroupByField))
             {
+                string groupByMetadataGuid = string.IsNullOrEmpty(SelectedGroupByFieldMetadataSet) ? string.Empty : SelectedGroupByFieldMetadataSet.Replace('-', '_');
+                string groupByFieldGuid = string.IsNullOrEmpty(SelectedGroupByField) ? string.Empty : SelectedGroupByField.Replace('-', '_');
+
                 resultType = IsNumberField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? "d" : "txt_" + languageCode + "_s"; // This last bit is for full text groups.
                 isOptionField = IsOptionField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? true : false;
-            }
 
-          
-            if (!string.IsNullOrEmpty(groupByFieldGuid))
-            {
-                groupByFieldString = string.Format("{0}value_{1}_{2}_{3}", 
+                groupByFieldString = string.Format("{0}value_{1}_{2}_{3}",
                     isOptionField ? "option_" : string.Empty,
-                    groupByMetadataGuid, groupByFieldGuid, 
+                    groupByMetadataGuid, groupByFieldGuid,
                     resultType);
             }
            

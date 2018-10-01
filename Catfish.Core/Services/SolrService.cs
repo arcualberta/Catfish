@@ -185,7 +185,7 @@ namespace Catfish.Core.Services
             {
                 IEnumerable<KeyValuePair<string, string>> parameters = new KeyValuePair<string, string>[]{
                     new KeyValuePair<string, string>("q", query),
-                    new KeyValuePair<string, string>("json.facet",string.Format(facetJson, field)),
+                    new KeyValuePair<string, string>("json.facet",string.Format(facetJson, groupByField)),
                     new KeyValuePair<string, string>("rows", "0")
 
                 };
