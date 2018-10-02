@@ -11,7 +11,7 @@ using Catfish.Core.Helpers;
 
 namespace Catfish.Core.Services
 {
-    public class EntityService: ServiceBase
+    public class EntityService : ServiceBase
     {
         public EntityService(CatfishDbContext db) : base(db) { }
 
@@ -24,7 +24,7 @@ namespace Catfish.Core.Services
         //{
         //    // return Db.EntityTypes.Where(et => et.TargetType == target);
         //     return Db.EntityTypes.Where(et => et.TargetTypes.Contains(target.ToString())); //Mr Jan 15 2018
-         
+
         //}
 
         public CFEntity GetAnEntity(int id)
@@ -51,7 +51,7 @@ namespace Catfish.Core.Services
             entity.SetAttribute("entity-type", et.Name);
 
             //removing audit trail entry that was created when creating the metadata set originally
-            foreach(CFMetadataSet ms in entity.MetadataSets)
+            foreach (CFMetadataSet ms in entity.MetadataSets)
             {
                 XElement audit = ms.Data.Element("audit");
                 if (audit != null)
@@ -146,7 +146,7 @@ namespace Catfish.Core.Services
 
         protected IQueryable<T> GetEntitiesTextSearch<T>(DbSet<T> Entities, string searchString, string[] languageCodes = null, string[] fields = null, string[] modelTypes = null) where T : CFEntity
         {
-            if(languageCodes == null || languageCodes.Length == 0)
+            if (languageCodes == null || languageCodes.Length == 0)
             {
                 languageCodes = new string[] { "en" };
             }
@@ -155,6 +155,64 @@ namespace Catfish.Core.Services
             int total;
 
             return Entities.FromSolr(query, out total);
+        }
+
+        public IEnumerable<CFEntity> GetEntitiesWithMetadataSet(string metadatasetGuid)
+        {
+            var entityTypes = Db.MetadataSets.Where(m => m.MappedGuid == metadatasetGuid)
+                .SelectMany(ms => ms.EntityTypes)
+                .Select(e => e.Id);
+
+
+            var result = Db.Entities.Where(e => entityTypes.Any(i => i == e.Id));
+
+            return result;
+        }
+
+        private CFEntity UpdateEntityMetadataSet(CFEntity entity, CFMetadataSet metadata)
+        {
+            CFMetadataSet entityMetadata = entity.MetadataSets.Where(m => m.Guid == metadata.Guid).FirstOrDefault();
+
+            if (entityMetadata != null)
+            {
+                List<FormField> entityFields = new List<FormField>(metadata.Fields.Count);
+
+                foreach (FormField field in metadata.Fields)
+                {
+                    FormField entityField = entityMetadata.Fields.Where(f => f.Guid == field.Guid).FirstOrDefault();
+                    
+                    if(entityField == null)
+                    {
+                        entityFields.Add(field);
+                    }
+                    else
+                    {
+                        entityField.Merge(field);
+                    }
+                }
+
+                entityMetadata.Fields = entityFields;
+
+                return entity;
+            }
+
+            return null;
+        }
+
+        public void UpdateEntityMetadata(CFMetadataSet metadata)
+        {
+            CFEntity result;
+            List<CFEntity> entities = GetEntitiesWithMetadataSet(metadata.Guid).ToList();
+
+            foreach(CFEntity entity in entities)
+            {
+                result = UpdateEntityMetadataSet(entity, metadata);
+
+                if (result != null)
+                {
+                    Db.Entry(result).State = EntityState.Modified;
+                }
+            }
         }
     }
 }

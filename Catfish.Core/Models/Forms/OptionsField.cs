@@ -100,7 +100,14 @@ namespace Catfish.Core.Models.Forms
         {
             OptionsField optionsField = src as OptionsField;
             this.Options = optionsField.Options;
-        }        
+        }
+
+        public override void Merge(FormField newField)
+        {
+            base.Merge(newField);
+
+            //TODO: update each entry
+        }
     }
 
 }
