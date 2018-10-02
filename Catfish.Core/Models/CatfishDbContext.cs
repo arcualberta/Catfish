@@ -10,6 +10,8 @@ using Catfish.Core.Models.Access;
 using Catfish.Core.Services;
 using CommonServiceLocator;
 using SolrNet;
+using System.Data.Entity.Infrastructure;
+using SolrNet.Exceptions;
 
 namespace Catfish.Core.Models
 {
@@ -29,6 +31,53 @@ namespace Catfish.Core.Models
         public CatfishDbContext(System.Data.Common.DbConnection connection, bool contextOwnsConnection) : base(connection, contextOwnsConnection)
         {
             solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+        }
+
+        private void UpdateSolr()
+        {           
+
+            List<Dictionary<string, object>> savedEntities = new List<Dictionary<string, object>>();
+            List<string> deletedEntities = new List<string>();
+
+            foreach (DbEntityEntry entry in ChangeTracker.Entries<CFEntity>())
+            {
+                if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
+                {
+                    savedEntities.Add(((CFEntity)entry.Entity).ToSolrDictionary());
+                }
+                else if (entry.State == EntityState.Deleted)
+                {
+                    deletedEntities.Add(((CFEntity)entry.Entity).Guid);
+                }
+            }
+            solr.AddRange(savedEntities);
+            solr.Delete(deletedEntities);
+        }
+
+        public override int SaveChanges()
+        {
+            using (DbContextTransaction dbContextTransaction = Database.BeginTransaction())
+            {
+                try
+                {
+                    UpdateSolr();
+                    int result = base.SaveChanges();
+                    dbContextTransaction.Commit();
+                    solr.Commit();
+                    return result;
+                }
+                catch (SolrNetException e)
+                {
+                    // rollback savechanges
+                    dbContextTransaction.Rollback();
+                    throw e;
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+
         }
 
         public int SaveChanges(IIdentity actor)
@@ -53,7 +102,7 @@ namespace Catfish.Core.Models
                 }
             }
 
-            return base.SaveChanges();
+            return SaveChanges();
         }
 
         /**
