@@ -9,7 +9,9 @@ catch (Exception)
 {
     // custom view does not exist.
     <div class="post col-xs-12">
-        <h3><a href="#">@Model.Title</a></h3>
-        <div>@Model.Excerpt</div>
+        <h3 class="row"><a href="@UI.Permalink(Model.PermalinkId)">@Model.Title</a></h3>
+        <div class="row">
+            @Model.Excerpt
+        </div>
     </div>
 }
