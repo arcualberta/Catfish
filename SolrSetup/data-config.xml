@@ -84,6 +84,7 @@
 			<field column="Id" name="id_s"/>
 			<field column="Id" xpath="id"/>
 			<field column="Discriminator" name="modeltype_s"/>
+			<field column="EntityTypeId" name="entityType_i"/>
 
 			<entity processor="XPathEntityProcessor" transformer="TemplateTransformer,script:convertDocument" name="fields" dataSource="d2" dataField="dbData.Content" forEach="/fields" xsl="PCDTransform.xslt" >
 				<!-- These fields will be transformed to each language code -->
