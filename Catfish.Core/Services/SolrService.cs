@@ -21,11 +21,14 @@ namespace Catfish.Core.Services
         public static void Init(string server)
         {
             IsInitialized = false;
+
             if (!string.IsNullOrEmpty(server))
             {
                 ISolrConnection connection = new SolrConnection(server);
 
                 SolrService.InitWithConnection(connection);
+                IsInitialized = true;
+
             }
             else
             {
@@ -42,7 +45,6 @@ namespace Catfish.Core.Services
 
             //TODO: Should we update the database here or have it in an external cron job
 
-            IsInitialized = true;
         }
 
         public static string GetPartialMatichingText(string field, string text, int rows = 10)

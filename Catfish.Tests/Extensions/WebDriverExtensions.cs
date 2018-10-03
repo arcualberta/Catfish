@@ -13,10 +13,19 @@ namespace Catfish.Tests.Extensions
     {
         public static IWebElement FindElement(this IWebDriver driver, By by, int timeoutInSeconds)
         {
+            // OpenQA.Selenium.StaleElementReferenceException 
             if (timeoutInSeconds > 0)
             {
-                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
-                return wait.Until(drv => drv.FindElement(by));
+                WebDriverWait wait = new WebDriverWait(driver, 
+                    TimeSpan.FromSeconds(timeoutInSeconds));
+                wait.IgnoreExceptionTypes(
+                    typeof(NoSuchElementException), 
+                    typeof(ElementNotVisibleException),
+                    typeof(StaleElementReferenceException)
+                    );                
+                //return wait.Until(drv => drv.FindElement(by));
+
+                return wait.Until(ExpectedConditions.ElementToBeClickable(by));
             }
             return driver.FindElement(by);
         }

@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catfish.Tests.Extensions;
-
+using Catfish.Core.Services;
 
 namespace Catfish.Tests.IntegrationTests.Helpers
 
@@ -38,14 +38,17 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         [SetUp]
         public void SetUp()
         {
+            InitializeSolr();
             Driver = new TWebDriver();
             ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
 
             ClearDatabase();            
             ResetServerCache();
+            
             SetupPiranha();
             RunMigrations();
             LoginAsAdmin();
+            
 
             OnSetup();
         }
@@ -61,6 +64,12 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         protected virtual void OnSetup() { }
 
         protected virtual void OnTearDown() { }
+
+        private void InitializeSolr()
+        {
+            string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
+            SolrService.Init(solrString);
+        }
 
         private void ClearDatabase()
         {
