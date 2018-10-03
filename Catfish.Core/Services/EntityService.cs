@@ -199,8 +199,9 @@ namespace Catfish.Core.Services
             return null;
         }
 
-        public void UpdateEntityMetadata(CFMetadataSet metadata)
+        public int UpdateExistingEntityMetadata(CFMetadataSet metadata)
         {
+            int totalChanged = 0;
             CFEntity result;
             List<CFEntity> entities = GetEntitiesWithMetadataSet(metadata.Guid).ToList();
 
@@ -210,9 +211,12 @@ namespace Catfish.Core.Services
 
                 if (result != null)
                 {
+                    ++totalChanged;
                     Db.Entry(result).State = EntityState.Modified;
                 }
             }
+
+            return totalChanged;
         }
     }
 }
