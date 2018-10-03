@@ -43,7 +43,28 @@ namespace Catfish.Tests.IntegrationTests.Manager
 
             // XXX Check metadataset field valiues
 
+            List<IWebElement> fieldEntries = Driver.FindElements(By.ClassName("field-entry"), 10).ToList();
+            Assert.AreEqual(formFields.Count(), fieldEntries.Count(), "formFields and IWebelements count dont match");
+            
+            for(int i=0; i < formFields.Count; ++i)
+            {
+                CompareFormField(formFields[i], fieldEntries[i]);
+            }            
+        }
 
+        private void CompareFormField(FormField formField, IWebElement fieldEntry)
+        {
+            // XXX For now just check name and required
+
+            string expectedNameEn = formField.Name;
+            string realNameEn = fieldEntry.FindElement(By.Name("Name_en")).GetAttribute("value");
+
+            Assert.AreEqual(expectedNameEn, realNameEn, "Name mismatch");
+
+            bool expectedIsRequired = formField.IsRequired;
+            bool realIsRequired = fieldEntry.FindElement(By.ClassName("field-is-required")).Selected;
+
+            Assert.AreEqual(expectedIsRequired, realIsRequired, "Is required mismatch");
 
         }
     }
