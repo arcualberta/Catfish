@@ -35,9 +35,10 @@
         function updateEntityMetadatasets() {
             if (confirm("This will update all previously existing entities containing this metadata set. This change wil be performed on the last saved metadata set and is irreversible. Do you wish to continue?")) {
                 $.ajax({
-                    method: "POST",
-                    url: @Html.Raw(Json.Encode(@Url.Action("UpdateExisitingEntities", "Metadata", new { id = Model.Id }))),
+                    type: "POST",
+                    url: @Html.Raw(Json.Encode(@Url.Action("UpdateExisitingEntities", "Metadata", new { id = Model.Id}))),
                     data: {},
+                    dataType: "json",
                     success: function (result) {
                         alert("Entities updated successfully. Total changed: " + result);
                     },

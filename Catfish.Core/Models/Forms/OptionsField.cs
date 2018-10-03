@@ -105,8 +105,14 @@ namespace Catfish.Core.Models.Forms
         public override void Merge(FormField newField)
         {
             base.Merge(newField);
+            OptionsField optionsField = (OptionsField)newField;
 
-            //TODO: update each entry
+            List<Option> options = new List<Option>(optionsField.Options.Count);
+
+            foreach(var newOption in optionsField.Options)
+            {
+
+            }
         }
     }
 

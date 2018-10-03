@@ -157,14 +157,14 @@ namespace Catfish.Core.Services
             return Entities.FromSolr(query, out total);
         }
 
-        public IEnumerable<CFEntity> GetEntitiesWithMetadataSet(string metadatasetGuid)
+        public IEnumerable<CFEntity> GetEntitiesWithMetadataSet(int metadataId)
         {
-            var entityTypes = Db.MetadataSets.Where(m => m.MappedGuid == metadatasetGuid)
+            var entityTypes = Db.MetadataSets.Where(m => m.Id == metadataId)
                 .SelectMany(ms => ms.EntityTypes)
                 .Select(e => e.Id);
 
 
-            var result = Db.Entities.Where(e => entityTypes.Any(i => i == e.Id));
+            var result = Db.Entities.Where(e => entityTypes.Any(i => i == e.EntityTypeId));
 
             return result;
         }
@@ -188,6 +188,7 @@ namespace Catfish.Core.Services
                     else
                     {
                         entityField.Merge(field);
+                        entityFields.Add(entityField);
                     }
                 }
 
@@ -203,7 +204,7 @@ namespace Catfish.Core.Services
         {
             int totalChanged = 0;
             CFEntity result;
-            List<CFEntity> entities = GetEntitiesWithMetadataSet(metadata.Guid).ToList();
+            List<CFEntity> entities = GetEntitiesWithMetadataSet(metadata.Id).ToList();
 
             foreach(CFEntity entity in entities)
             {
