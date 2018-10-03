@@ -45,13 +45,15 @@ namespace Catfish.Areas.Manager.Controllers
 
             return RedirectToAction("index");
         }
-
+        
         [HttpPost]
         public JsonResult UpdateExisitingEntities(int id)
         {
             CFMetadataSet metadata = MetadataService.GetMetadataSet(id);
 
             int total = EntityService.UpdateExistingEntityMetadata(metadata);
+
+            Db.SaveChanges(User.Identity);
 
             return Json(total);
         }
