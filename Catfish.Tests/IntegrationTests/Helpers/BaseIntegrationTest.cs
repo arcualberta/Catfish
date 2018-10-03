@@ -57,8 +57,8 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         public void TearDown()
         {
             OnTearDown();            
-            //Driver.Close();
-            //ClearDatabase();
+            Driver.Close();
+            ClearDatabase();
         }
 
         protected virtual void OnSetup() { }
