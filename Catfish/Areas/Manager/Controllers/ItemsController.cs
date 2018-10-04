@@ -199,7 +199,7 @@ namespace Catfish.Areas.Manager.Controllers
                 var ret = files.Select(f => new FileViewModel(f, f.Id, ControllerContext.RequestContext, "items"));
                 return Json(ret);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Response.StatusCode = 500;
                 return Json(string.Empty);

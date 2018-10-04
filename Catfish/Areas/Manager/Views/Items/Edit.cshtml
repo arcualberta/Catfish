@@ -2,7 +2,10 @@
 @using Catfish.Areas.Manager.Models.ViewModels;
 @using Catfish.Core.Models.Forms;
 
-@{  ViewBag.Title = Model.Id > 0 ? "Edit Item" : "Create Item"; }
+@{  ViewBag.Title = Model.Id > 0 ? "Edit Item" : "Create Item";
+    ViewBag.UploadApiUrl = Url.Action("upload", "items", new {id = Model.Id });
+    ViewBag.Files = Model.Files.ToList(); //this is needed to display attachment file it's uploaded from metadata area of Item/edit page.
+ }
 
 @section HEAD
 {
