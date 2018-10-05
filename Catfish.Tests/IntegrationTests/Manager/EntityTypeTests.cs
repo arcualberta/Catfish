@@ -1,4 +1,4 @@
-﻿using Catfish.Core.Models;
+using Catfish.Core.Models;
 using Catfish.Core.Models.Forms;
 using Catfish.Tests.Extensions;
 using Catfish.Tests.IntegrationTests.Helpers;
