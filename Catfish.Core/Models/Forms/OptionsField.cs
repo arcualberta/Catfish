@@ -102,6 +102,20 @@ namespace Catfish.Core.Models.Forms
             this.Options = optionsField.Options;
         }
 
+        private void ReplaceOptions(IEnumerable<Option> newOptions)
+        {
+            var wrapper = Data.Element("options");
+            if (wrapper == null)
+                Data.Add(wrapper = new XElement("options"));
+
+            wrapper.RemoveNodes();
+
+            foreach (var option in newOptions)
+            {
+                wrapper.Add(option.ToXml());
+            }
+        }
+
         public override void Merge(FormField newField)
         {
             base.Merge(newField);
@@ -125,7 +139,7 @@ namespace Catfish.Core.Models.Forms
                 }
             }
 
-            Options = options;
+            ReplaceOptions(options);
         }
     }
 
