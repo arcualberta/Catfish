@@ -29,7 +29,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
             fieldName.Name = "Name";
 
             TextArea fieldDescription = new TextArea();
-            fieldName.Name = "Description";
+            fieldDescription.Name = "Description";
             List<FormField> formFields = new List<FormField>();
             formFields.Add(fieldName);
             formFields.Add(fieldDescription);
@@ -40,18 +40,20 @@ namespace Catfish.Tests.IntegrationTests.Manager
                 MetadataSetName
                 }, new CFEntityType.eTarget[0]);
 
-            // add linking
-
-            Driver.FindElement(By.LinkText(SettingsLinkText), 10).Click();
-            Driver.FindElement(By.LinkText(EntityTypesLinkText), 10).Click();
+            // XXX Aqui pasa el stale element exception
+            Driver.FindElement(By.LinkText(SettingsLinkText), 20).Click();
+            Driver.FindElement(By.LinkText(EntityTypesLinkText), 20).Click();
 
             IWebElement lastEditButton = GetLastEditButton();
             lastEditButton.Click();
             string nameText = Driver.FindElement(By.Id("Name")).GetAttribute("value");
             string descriptionText = Driver.FindElement(By.Id("Description")).GetAttribute("value");
 
-            Assert.AreEqual(MetadataSetName, nameText);
-            Assert.AreEqual(MetadataSetDescription, descriptionText);
+            // XXX Currently only checking for matching name and descriptions
+            // should extend this to assert field mappings
+
+            Assert.AreEqual(EntityTypeName, nameText);
+            Assert.AreEqual(EntityTypeDescription, descriptionText);
 
         }
     }
