@@ -19,7 +19,7 @@ namespace Catfish.Tests.Extensions
             // OpenQA.Selenium.StaleElementReferenceException 
             if (timeoutInSeconds > 0)
             {
-                Thread.Sleep(100);
+                Thread.Sleep(300);
                 WebDriverWait wait = new WebDriverWait(driver,
                     TimeSpan.FromSeconds(timeoutInSeconds));
                 wait.IgnoreExceptionTypes(
