@@ -38,7 +38,7 @@
                 if (!string.IsNullOrEmpty(buttonFunction))
                 {
                     <li>
-                        <a id="toolbar_refresh_button" href="javascript:@(buttonFunction)(@Model.Id);" class="@(ViewData[string.Format("Button{0}Class", buttonsIndex)])">
+                        <a id="toolbar_button@(buttonsIndex)" onclick="@(buttonFunction)(event); return false;" class="@(ViewData[string.Format("Button{0}Class", buttonsIndex)])">
                             @ViewData[string.Format("Button{0}Title", buttonsIndex)]
                         </a>
                     </li>
