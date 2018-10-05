@@ -56,7 +56,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         [TearDown]
         public void TearDown()
         {
-            OnTearDown();            
+            OnTearDown();
             Driver.Close();
             ClearDatabase();
         }
@@ -224,6 +224,30 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();          
         }
 
+        private void FillEntityTypeNameMapping()
+        {
+            string fieldElementsXpath = "//div[@id = 'fieldmappings-container']//div[contains(@class, 'fieldElement')]";
+            List<IWebElement> fieldElements = Driver.FindElements(By.XPath(fieldElementsXpath), 10).ToList();
+
+            // for simplicity sake link name and description to first element
+            
+            string mapMetadataXpath = $".//select[contains(@class, 'mapMetadata')]";
+            string mapFieldXpath = $".//select[contains(@class, 'mapField')]";
+
+            for (int i = 0; i < 2; ++i)
+            {             
+                IWebElement mapMetadataElement = fieldElements[i]
+                    .FindElement(By.XPath(mapMetadataXpath));
+                SelectElement mapMetadataSelector = new SelectElement(mapMetadataElement);
+                mapMetadataSelector.SelectByIndex(1);
+
+                IWebElement mapFieldElement = fieldElements[i]
+                    .FindElement(By.XPath(mapFieldXpath));
+                SelectElement mapFieldSelector = new SelectElement(mapFieldElement);
+                mapFieldSelector.SelectByIndex(1);                      
+            }
+        }
+
         public void CreateEntityType(string name, string description, 
             string[] metadataSetNames, CFEntityType.eTarget[] targetTypes)
         {
@@ -235,6 +259,19 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id(DescriptionId)).SendKeys(description);
 
             // Need to add field mappings
+
+            // use first metadataset and fields for name and description
+
+            IWebElement metadataSetSelectorElement = Driver.FindElement(By.Id("dd_MetadataSets"));
+            SelectElement metadatasetSelector = new SelectElement(metadataSetSelectorElement);           
+
+            foreach (string metadataSetName in metadataSetNames)
+            {
+                metadatasetSelector.SelectByText(metadataSetName);
+                Driver.FindElement(By.Id("btnAddMetadataSet")).Click();
+            }
+
+            FillEntityTypeNameMapping();
 
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
