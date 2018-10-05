@@ -108,11 +108,24 @@ namespace Catfish.Core.Models.Forms
             OptionsField optionsField = (OptionsField)newField;
 
             List<Option> options = new List<Option>(optionsField.Options.Count);
+            IReadOnlyList<Option> oldOptions = this.Options;
 
             foreach(var newOption in optionsField.Options)
             {
+                Option option = oldOptions.Where(o => o.Guid == newOption.Guid).FirstOrDefault();
 
+                if(option == null)
+                {
+                    options.Add(newOption);
+                }
+                else
+                {
+                    option.Value = newOption.Value;
+                    options.Add(option);
+                }
             }
+
+            Options = options;
         }
     }
 

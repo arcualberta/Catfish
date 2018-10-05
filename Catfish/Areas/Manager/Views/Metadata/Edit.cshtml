@@ -10,7 +10,7 @@
     {
         toolbarData.Add("Button0FunctionCall", "updateEntityMetadatasets");
         toolbarData.Add("Button0Title", "Update Entities");
-        toolbarData.Add("Button0Class", "update");
+        toolbarData.Add("Button0Class", "publish");
     }
 }
 
@@ -32,7 +32,12 @@
 @if(Model.Id > 0)
 {
     <script type="text/javascript">
-        function updateEntityMetadatasets() {
+        $(document).ready(function () {
+            // Remove the existing .publish click listener. This is done so the form does not submit.
+            $(".publish").off("click");
+        });
+
+        function updateEntityMetadatasets(ev) {
             if (confirm("This will update all previously existing entities containing this metadata set. This change wil be performed on the last saved metadata set and is irreversible. Do you wish to continue?")) {
                 $.ajax({
                     type: "POST",
@@ -45,7 +50,9 @@
                     error: function (error, type, message) {
                         alert("An error occurred while updating the metadata: " + message);
                     }
-                })
+                });
+            } else {
+
             }
         }
     </script>
