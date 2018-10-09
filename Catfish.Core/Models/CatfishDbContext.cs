@@ -34,7 +34,8 @@ namespace Catfish.Core.Models
         }
 
         private void UpdateSolr()
-        {           
+        {
+            string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
 
             List<Dictionary<string, object>> savedEntities = new List<Dictionary<string, object>>();
             List<string> deletedEntities = new List<string>();
@@ -50,8 +51,9 @@ namespace Catfish.Core.Models
                     deletedEntities.Add(((CFEntity)entry.Entity).Guid);
                 }
             }
+
             solr.AddRange(savedEntities);
-            solr.Delete(deletedEntities);
+            solr.Delete(deletedEntities);                                
         }
 
         public override int SaveChanges()

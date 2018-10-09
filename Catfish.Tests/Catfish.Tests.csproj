@@ -163,8 +163,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\WebDriverExtensions.cs" />
     <Compile Include="IntegrationTests\Helpers\BaseIntegrationTest.cs" />
     <Compile Include="IntegrationTests\Manager\EntityTypeTests.cs" />
+    <Compile Include="IntegrationTests\Manager\MetadatasetTests.cs" />
     <Compile Include="UnitTests\Mocks\MockCFXmlModel.cs" />
     <Compile Include="UnitTests\Models\CFXmlModelTests.cs" />
     <Compile Include="Helpers\BaseUnitTest.cs" />
