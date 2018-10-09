@@ -43,6 +43,26 @@ namespace Catfish.Core.Models.Forms
             }
             return optionElement;
         }
+
+        public float ScoreOption(Option option)
+        {
+            float result = 0.0f;
+
+            if(option.Guid == this.Guid)
+            {
+                return 1.0f;
+            }
+
+            foreach (var value in Value)
+            {
+                if(option.Value.Where(v => v.LanguageCode == value.LanguageCode && v.Value == value.Value).Any())
+                {
+                    result += 1.0f;
+                }
+            }
+
+            return result / (float)Value.Count;
+        }
     }
 
     [CFIgnore]
@@ -126,7 +146,7 @@ namespace Catfish.Core.Models.Forms
 
             foreach(var newOption in optionsField.Options)
             {
-                Option option = oldOptions.Where(o => o.Guid == newOption.Guid).FirstOrDefault();
+                Option option = oldOptions.Where(o => o.ScoreOption(newOption) > 0.0f).OrderByDescending(o => o.ScoreOption(newOption)).FirstOrDefault();
 
                 if(option == null)
                 {
