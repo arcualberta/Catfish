@@ -41,8 +41,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
                 }, new CFEntityType.eTarget[0]);
 
             // XXX Aqui pasa el stale element exception
-            Driver.FindElement(By.LinkText(SettingsLinkText), 20).Click();
-            Driver.FindElement(By.LinkText(EntityTypesLinkText), 20).Click();
+            Driver.FindElement(By.LinkText(SettingsLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(EntityTypesLinkText), 10).Click();
 
             IWebElement lastEditButton = GetLastEditButton();
             lastEditButton.Click();
