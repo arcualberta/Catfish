@@ -61,9 +61,9 @@ namespace Catfish.Core.Services
             return entity;
         }
 
-        public void CreateEntityType(CFEntityType entityType)
+        public CFEntityType CreateEntityType(CFEntityType entityType)
         {
-            Db.EntityTypes.Add(entityType);
+            CFEntityType result = Db.EntityTypes.Add(entityType);
             foreach (var m in entityType.MetadataSets)
             {
                 if (m.Id < 1)
@@ -71,6 +71,8 @@ namespace Catfish.Core.Services
 
                 Db.MetadataSets.Attach(m);
             }
+
+            return result;
         }
         public CFEntity UpdateEntity(CFEntity entity)
         {
