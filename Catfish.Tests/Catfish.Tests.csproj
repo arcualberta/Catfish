@@ -184,6 +184,7 @@
     <Compile Include="UnitTests\Migrations\Configuration.cs" />
     <Compile Include="UnitTests\Mocks\MockEntity.cs" />
     <Compile Include="UnitTests\Services\CollectionServiceTest.cs" />
+    <Compile Include="UnitTests\Services\EntityServiceTests.cs" />
     <Compile Include="UnitTests\Services\IngestionServiceTest.cs" />
     <Compile Include="UnitTests\Services\ItemServiceTest.cs" />
     <Compile Include="UnitTests\Services\MetadataServiceTest.cs" />
