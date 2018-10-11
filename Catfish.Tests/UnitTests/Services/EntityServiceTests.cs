@@ -96,6 +96,8 @@ namespace Catfish.Tests.UnitTests.Services
             CFMetadataSet metadata = CreateBasicMetadataSet(metadataName, metadataDescription);
 
             CFEntityType entityType = CreateEntityType(mDh, entityTypeName, entityTypeDescription, "Items", metadata);
+            entityType.AttributeMappings.Add(new CFEntityTypeAttributeMapping() { Name = "Name Mapping", MetadataSet = metadata, FieldName = NAME_NAME });
+            entityType.AttributeMappings.Add(new CFEntityTypeAttributeMapping() { Name = "DescriptionMapping", MetadataSet = metadata, FieldName = NAME_DESCRIPTION });
 
             mDh.Db.SaveChanges();
 
