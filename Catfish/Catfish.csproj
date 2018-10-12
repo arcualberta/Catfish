@@ -301,7 +301,7 @@
     <Content Include="Areas\Manager\Views\FormTemplates\Index.cshtml" />
     <Content Include="Areas\Manager\Views\FormTemplates\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\FormBuilder.cshtml" />
-    <Content Include="Areas\Manager\Views\Items\DisplayTemplates\FormSubmission.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\DisplayTemplates\CFFormSubmission.cshtml" />
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\TextField.cshtml" />
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\Form.cshtml" />
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\TextArea.cshtml" />
