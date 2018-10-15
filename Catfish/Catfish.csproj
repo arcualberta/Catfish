@@ -301,7 +301,7 @@
     <Content Include="Areas\Manager\Views\FormTemplates\Index.cshtml" />
     <Content Include="Areas\Manager\Views\FormTemplates\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\FormBuilder.cshtml" />
-    <Content Include="Areas\Manager\Views\Items\DisplayTemplates\FormSubmission.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\DisplayTemplates\CFFormSubmission.cshtml" />
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\TextField.cshtml" />
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\Form.cshtml" />
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\TextArea.cshtml" />
@@ -583,6 +583,7 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DropDownMenu.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\EntityImagePanel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\CSEntityPanel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Post.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

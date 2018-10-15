@@ -130,6 +130,16 @@ namespace Catfish.Core.Helpers
                         Statement(writer);
                     }
                     return;
+                } else if (typeof(RenameIndexOperation).IsAssignableFrom(type)) {
+                    using (var writer = Writer())
+                    {
+                        string newName = ((RenameIndexOperation)migrationOperation).NewName;
+                        string name = ((RenameIndexOperation)migrationOperation).Name;
+                        string table = ((RenameIndexOperation)migrationOperation).Table;
+                        writer.WriteLine($"sp_rename '{table}.{name}', '{newName}', 'INDEX';");
+                        Statement(writer);
+                        return;
+                    }                    
                 }
             }
 

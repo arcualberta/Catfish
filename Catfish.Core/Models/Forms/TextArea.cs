@@ -35,5 +35,12 @@ namespace Catfish.Core.Models.Forms
         {
             return IsRichText;
         }
+
+        public override void Merge(FormField newField)
+        {
+            base.Merge(newField);
+
+            IsRichText = ((TextArea)newField).IsRichText;
+        }
     }
 }

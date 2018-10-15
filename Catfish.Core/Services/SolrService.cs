@@ -17,15 +17,18 @@ namespace Catfish.Core.Services
         public static bool IsInitialized { get; private set; }
 
         private static ISolrConnection mSolr { get; set; }
-
+        private static bool IsSolrInitialized { get; set; } = false;
         public static void Init(string server)
         {
             IsInitialized = false;
+
             if (!string.IsNullOrEmpty(server))
             {
                 ISolrConnection connection = new SolrConnection(server);
 
                 SolrService.InitWithConnection(connection);
+                IsInitialized = true;
+
             }
             else
             {
@@ -35,14 +38,17 @@ namespace Catfish.Core.Services
 
         public static void InitWithConnection(ISolrConnection connection)
         {
-            mSolr = connection;
-
-            Startup.Init<SolrIndex>(mSolr);
-            Startup.Init<Dictionary<string, object>>(mSolr);
+            if (!IsSolrInitialized)
+            {
+                mSolr = connection;
+                Startup.Init<SolrIndex>(mSolr);
+                Startup.Init<Dictionary<string, object>>(mSolr);
+                IsSolrInitialized = true;
+            }
+            
 
             //TODO: Should we update the database here or have it in an external cron job
 
-            IsInitialized = true;
         }
 
         public static string GetPartialMatichingText(string field, string text, int rows = 10)
