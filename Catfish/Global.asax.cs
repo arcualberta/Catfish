@@ -67,6 +67,7 @@ namespace Catfish
 
             // Check for a SolrConnection
             string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
+
             if (!string.IsNullOrEmpty(solrString))
             {
                 SolrService.Init(solrString);

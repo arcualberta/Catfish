@@ -10,6 +10,7 @@ using Piranha;
 using System.Web.Script.Serialization;
 using Catfish.Core.Models;
 using Catfish.Core.Services;
+using Catfish.Services;
 
 namespace Catfish.Models.Regions
 {
@@ -41,6 +42,10 @@ namespace Catfish.Models.Regions
         private EntityTypeService mEntityTypeService;
         [ScriptIgnore]
         public EntityTypeService entityTypeService { get { if (mEntityTypeService == null) { mEntityTypeService = new EntityTypeService(db); } return mEntityTypeService; } }
+
+        private SecurityService mSecurityService;
+        [ScriptIgnore]
+        public SecurityService securityService { get { if (mSecurityService == null) { mSecurityService = new SecurityService(db); } return mSecurityService; } }
 
         [Display(Name = "CSS Id")]
         public string CssId { get; set; }

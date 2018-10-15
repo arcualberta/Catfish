@@ -1,14 +1,19 @@
-﻿using Catfish.Core.Models;
+using Catfish.Core.Models;
+using Catfish.Core.Models.Attributes;
 using Catfish.Core.Models.Forms;
 using NUnit.Framework;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity.Migrations;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Catfish.Tests.Extensions;
+using Catfish.Core.Services;
 
 namespace Catfish.Tests.IntegrationTests.Helpers
 
@@ -17,18 +22,33 @@ namespace Catfish.Tests.IntegrationTests.Helpers
     {
         protected IWebDriver Driver;
         protected string ManagerUrl;
+        protected const string ContentLinkText = "CONTENT";
+        protected const string SettingsLinkText = "SETTINGS";
+        protected const string MetadataSetsLinkText = "Metadata Sets";
+        protected const string EntityTypesLinkText = "Entity Types";
+        protected const string ItemsLinkText = "Items";
+        protected const string CollectionsLinkText = "Collections";
+        protected const string FormsLinkText = "Forms";
+        protected const string ToolBarAddButtonId = "toolbar_add_button";
+        protected const string ToolBarSaveButtonId = "toolbar_save_button";
+        protected const string NameId = "Name";
+        protected const string DescriptionId = "Description";
+
 
         [SetUp]
         public void SetUp()
         {
-            this.Driver = new TWebDriver();
-            this.ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
+            InitializeSolr();
+            Driver = new TWebDriver();
+            ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
 
-            ClearDatabase();
-
-            ResetServerCahce();
-
+            ClearDatabase();            
+            ResetServerCache();
+            
             SetupPiranha();
+            RunMigrations();
+            LoginAsAdmin();
+            
 
             OnSetup();
         }
@@ -36,15 +56,20 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         [TearDown]
         public void TearDown()
         {
-            ClearDatabase();
             OnTearDown();
-
             Driver.Close();
+            ClearDatabase();
         }
 
-        protected abstract void OnSetup();
+        protected virtual void OnSetup() { }
 
-        protected abstract void OnTearDown();
+        protected virtual void OnTearDown() { }
+
+        private void InitializeSolr()
+        {
+            string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
+            SolrService.Init(solrString);
+        }
 
         private void ClearDatabase()
         {
@@ -71,22 +96,29 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             result = context.Database.ExecuteSqlCommand(query);
         }
 
-        private void ResetServerCahce()
+        private void ResetServerCache()
         {
             string webConfig = ConfigurationManager.AppSettings["WebConfigLocation"];
             File.SetLastWriteTime(webConfig, DateTime.Now);
         }
 
+        private void RunMigrations()
+        {            
+            Catfish.Core.Migrations.Configuration config = new Catfish.Core.Migrations.Configuration();
+            var migrator = new DbMigrator(config);
+            migrator.Update();
+        }
+
         private void SetupPiranha()
         {
 
-            this.Driver.Navigate().GoToUrl(ManagerUrl);
-            this.Driver.FindElement(By.Name("UserLogin")).SendKeys(ConfigurationManager.AppSettings["AdminLogin"]);
-            this.Driver.FindElement(By.Name("Password")).SendKeys(ConfigurationManager.AppSettings["AdminPassword"]);
-            this.Driver.FindElement(By.Name("PasswordConfirm")).SendKeys(ConfigurationManager.AppSettings["AdminPassword"]);
-            this.Driver.FindElement(By.Name("UserEmail")).SendKeys(ConfigurationManager.AppSettings["AdminEmail"]);
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.Name("UserLogin")).SendKeys(ConfigurationManager.AppSettings["AdminLogin"]);
+            Driver.FindElement(By.Name("Password")).SendKeys(ConfigurationManager.AppSettings["AdminPassword"]);
+            Driver.FindElement(By.Name("PasswordConfirm")).SendKeys(ConfigurationManager.AppSettings["AdminPassword"]);
+            Driver.FindElement(By.Name("UserEmail")).SendKeys(ConfigurationManager.AppSettings["AdminEmail"]);
 
-            this.Driver.FindElement(By.Id("full")).Click();
+            Driver.FindElement(By.Id("full")).Click();
         }
 
         protected void LoginAsAdmin()
@@ -97,33 +129,164 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
         protected void Login(string user, string password)
         {
-            this.Driver.Navigate().GoToUrl(ManagerUrl);
-            this.Driver.FindElement(By.Id("login")).SendKeys(user);
-            this.Driver.FindElement(By.Name("password")).SendKeys(password);
-            this.Driver.FindElement(By.TagName("button")).Click();
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.Id("login")).SendKeys(user);
+            Driver.FindElement(By.Name("password")).SendKeys(password);
+            Driver.FindElement(By.TagName("button")).Click();
+        }
+       
+        protected IWebElement GetLastObjectRow()
+        {
+            return Driver.FindElement(By.XPath("(//tbody[contains(@class, 'object-list')]/tr)[last()]"));
         }
 
-        public int CreateMetadataSet(FormField[] fields)
+        protected IWebElement GetLastActionPanel()
+        {
+            return GetLastObjectRow().FindElement(By.XPath("//td[contains(@class, 'action-panel')]"));
+        }
+
+        public IWebElement GetLastButtonByClass(string cssClass)
+        {
+            return GetLastObjectRow().FindElement(By.XPath($"//button[contains(@class, '{cssClass}')]"));
+        }
+
+        protected IWebElement GetLastEditButton()
+        {
+            return GetLastButtonByClass("object-edit");
+        }
+
+        protected IWebElement GetLastAssociationsButton()
+        {
+            return GetLastButtonByClass("object-associations");
+        }
+
+        protected IWebElement GetLastDeleteButton()
+        {
+            return GetLastButtonByClass("object-delete");
+        }
+
+        protected IWebElement GetLastAccessGroupButton()
+        {
+            return GetLastButtonByClass("object-accessgroup");
+        }
+
+        public void CreateMetadataSet(string name, string description)
+        {
+            CreateMetadataSet(name, description, new FormField[0]);
+        }
+
+        public void CreateMetadataSet(string name, string description, FormField[] fields)
+        {
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.LinkText(SettingsLinkText)).Click();
+            Driver.FindElement(By.LinkText(MetadataSetsLinkText)).Click();
+            Driver.FindElement(By.Id(ToolBarAddButtonId)).Click();
+            Driver.FindElement(By.Id(NameId)).SendKeys(name);
+            Driver.FindElement(By.Id(DescriptionId)).SendKeys(description);
+
+            // Add metadata set fields
+
+            // id field-type-selector
+            IWebElement fieldTypeSelectorElement = Driver.FindElement(By.Id("field-type-selector"));
+            SelectElement fieldTypeSelector = new SelectElement(fieldTypeSelectorElement);
+
+            foreach (FormField field in fields)
+            {
+                //field.GetType();
+                CFTypeLabelAttribute typeLabelAttribute = (CFTypeLabelAttribute)field.GetType()
+                    .GetCustomAttributes(typeof(CFTypeLabelAttribute), true)
+                    .First();
+
+                // select option by label
+                fieldTypeSelector.SelectByText(typeLabelAttribute.Name);
+                // click on id add-field
+
+                Driver.FindElement(By.Id("add-field")).Click();
+
+                // fill values on last field-entry
+                IWebElement lastFieldEntry = Driver.FindElement(By.XPath("(//div[contains(@class, 'field-entry')])[last()]"), 10);
+
+                // fill class field-is-required with fields[0].IsRequired
+
+                // XXX generalize to use all language codes Name_sp, Name_fr
+                lastFieldEntry.FindElement(By.Name("Name_en")).SendKeys(field.Name);
+
+                // XXX need to add options ?
+
+                if (field.IsRequired)
+                {
+                    lastFieldEntry.FindElement(By.ClassName("field-is-required")).Click();
+                }
+
+
+            }            
+
+            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();          
+        }
+
+        private void FillEntityTypeNameMapping()
+        {
+            string fieldElementsXpath = "//div[@id = 'fieldmappings-container']//div[contains(@class, 'fieldElement')]";
+            List<IWebElement> fieldElements = Driver.FindElements(By.XPath(fieldElementsXpath), 10).ToList();
+
+            // for simplicity sake link name and description to first element
+            
+            string mapMetadataXpath = $".//select[contains(@class, 'mapMetadata')]";
+            string mapFieldXpath = $".//select[contains(@class, 'mapField')]";
+
+            for (int i = 0; i < 2; ++i)
+            {             
+                IWebElement mapMetadataElement = fieldElements[i]
+                    .FindElement(By.XPath(mapMetadataXpath));
+                SelectElement mapMetadataSelector = new SelectElement(mapMetadataElement);
+                mapMetadataSelector.SelectByIndex(1);
+
+                IWebElement mapFieldElement = fieldElements[i]
+                    .FindElement(By.XPath(mapFieldXpath));
+                SelectElement mapFieldSelector = new SelectElement(mapFieldElement);
+                mapFieldSelector.SelectByIndex(1);                      
+            }
+        }
+
+        public void CreateEntityType(string name, string description, 
+            string[] metadataSetNames, CFEntityType.eTarget[] targetTypes)
+        {
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.LinkText(SettingsLinkText)).Click();
+            Driver.FindElement(By.LinkText(EntityTypesLinkText)).Click();
+            Driver.FindElement(By.Id(ToolBarAddButtonId)).Click();
+            Driver.FindElement(By.Id(NameId)).SendKeys(name);
+            Driver.FindElement(By.Id(DescriptionId)).SendKeys(description);
+
+            // Need to add field mappings
+
+            // use first metadataset and fields for name and description
+
+            IWebElement metadataSetSelectorElement = Driver.FindElement(By.Id("dd_MetadataSets"));
+            SelectElement metadatasetSelector = new SelectElement(metadataSetSelectorElement);           
+
+            foreach (string metadataSetName in metadataSetNames)
+            {
+                metadatasetSelector.SelectByText(metadataSetName);
+                Driver.FindElement(By.Id("btnAddMetadataSet")).Click();
+            }
+
+            FillEntityTypeNameMapping();
+
+            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
+        }
+
+        public void CreateItem(int entityTypeId)
         {
             throw new NotImplementedException();
         }
 
-        public int CreateEntityType(int[] metadataSetIds, CFEntityType.eTarget[] targetTypes)
+        public void CreateCollection(int entityTypeId)
         {
             throw new NotImplementedException();
         }
 
-        public int CreateItem(int entityTypeId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int CreateCollection(int entityTypeId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int CreateForm(int entityTypeId)
+        public void CreateForm(int entityTypeId)
         {
             throw new NotImplementedException();
         }

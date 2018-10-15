@@ -38,7 +38,7 @@ namespace Catfish.Core.Models
             
         }
     }
-    
+
     public class TextValue
     {
         public const bool AllowHtml = false;
