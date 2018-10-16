@@ -16,6 +16,9 @@ using Catfish.Core.Services;
 using Catfish.Core.ModelBinders;
 using Catfish.Core.Validators;
 using Catfish.Core.Helpers;
+using Catfish.Core.Plugins;
+using System.Configuration;
+using System.Reflection;
 
 namespace Catfish
 {
@@ -89,7 +92,27 @@ namespace Catfish
                     }
                 }
             };
-            
+
+
+            // Initialize Plugins
+            InitializePlugins();
+        }
+
+        private void InitializePlugins()
+        {
+            PluginConfig config = ConfigurationManager.GetSection("catfishPlugins") as PluginConfig;
+
+            if(config != null)
+            {
+                foreach(PluginElement plugin in config.Plugins)
+                {
+                    AssemblyName name = AssemblyName.GetAssemblyName(plugin.LibraryPath);
+                    Assembly asm = Assembly.Load(name);
+
+                    Plugin result = asm.CreateInstance(plugin.Class) as Plugin;
+                    result.Initialize();
+                }
+            }
         }
 
         private void AddManagerMenus()
