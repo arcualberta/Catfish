@@ -15,9 +15,12 @@ namespace Catfish.Core.Services
     public class SolrService
     {
         public static bool IsInitialized { get; private set; }
+        public static ISolrOperations<Dictionary<string, object>> solrOperations { get; set; }
 
         private static ISolrConnection mSolr { get; set; }
         private static bool IsSolrInitialized { get; set; } = false;
+        
+
         public static void Init(string server)
         {
             IsInitialized = false;
@@ -27,6 +30,7 @@ namespace Catfish.Core.Services
                 ISolrConnection connection = new SolrConnection(server);
 
                 SolrService.InitWithConnection(connection);
+                SolrService.solrOperations = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
                 IsInitialized = true;
 
             }
@@ -46,7 +50,7 @@ namespace Catfish.Core.Services
                 IsSolrInitialized = true;
             }
             
-
+            
             //TODO: Should we update the database here or have it in an external cron job
 
         }

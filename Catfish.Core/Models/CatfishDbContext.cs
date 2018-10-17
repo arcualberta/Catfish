@@ -17,20 +17,23 @@ namespace Catfish.Core.Models
 {
     public class CatfishDbContext : DbContext
     {
-        private ISolrOperations<Dictionary<string, object>> solr { get; set; }
+        //private ISolrOperations<Dictionary<string, object>> solr { get; set; }
 
         public CatfishDbContext()
             : base("piranha")
         {
-            if (SolrService.IsInitialized)
-            {
-                solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
-            }
+            //if (SolrService.IsInitialized)
+            //{
+            //    solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+            //}
         }
 
         public CatfishDbContext(System.Data.Common.DbConnection connection, bool contextOwnsConnection) : base(connection, contextOwnsConnection)
         {
-            solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+            //if (SolrService.IsInitialized)
+            //{
+            //    solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+            //}
         }
 
         private void UpdateSolr()
@@ -52,8 +55,8 @@ namespace Catfish.Core.Models
                 }
             }
 
-            solr.AddRange(savedEntities);
-            solr.Delete(deletedEntities);                                
+            SolrService.solrOperations.AddRange(savedEntities);
+            SolrService.solrOperations.Delete(deletedEntities);                                
         }
 
         public override int SaveChanges()
@@ -65,7 +68,7 @@ namespace Catfish.Core.Models
                     UpdateSolr();
                     int result = base.SaveChanges();
                     dbContextTransaction.Commit();
-                    solr.Commit();
+                    SolrService.solrOperations.Commit();
                     return result;
                 }
                 catch (SolrNetException e)
