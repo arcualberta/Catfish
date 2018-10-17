@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Catfish.Tests.Extensions;
 using Catfish.Core.Services;
+using SolrNet;
 
 namespace Catfish.Tests.IntegrationTests.Helpers
 
@@ -92,8 +93,11 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             int result = context.Database.ExecuteSqlCommand(query);
 
             context.Database.ExecuteSqlCommand(@"EXEC sp_MSforeachtable 'DROP TABLE ?'");
-
+            
             result = context.Database.ExecuteSqlCommand(query);
+
+            ISolrQuery allEntries = new SolrQuery("*:*");
+            SolrService.solrOperations.Delete(allEntries);
         }
 
         private void ResetServerCache()
