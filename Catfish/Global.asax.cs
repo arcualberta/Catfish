@@ -110,7 +110,7 @@ namespace Catfish
                 foreach (PluginElement plugin in config.Plugins)
                 {
                     AssemblyName name = AssemblyName.GetAssemblyName(plugin.LibraryPath);
-                    Assembly asm = AppDomain.CurrentDomain.Load(name);
+                    Assembly asm = Assembly.Load(name);
 
                     Plugin result = asm.CreateInstance(plugin.Class) as Plugin;
 
