@@ -187,7 +187,7 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, le
                 if (!d.checked) return;
 
                 var path = g1.append("path")
-                    .attr("class", "line")
+                    .attr("class", "line item-" + d.id)
                     .style("stroke", function () { // Add the colours dynamically
                         return d.color;
                     })
@@ -262,7 +262,7 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, le
 
             //Add the legend
             var divCategory = divLegend.append("div")
-                .attr("class", "legend-item")    // style the legend
+                .attr("class", "legend-item item-" + d.key)    // style the legend
                 .style("color", function () { // Add the colours dynamically
                     return d.color;
                 });
@@ -284,7 +284,7 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, le
                 });
 
             divCategory.append("span")
-                .text(d.key);
+                .text(" " + d.key);
         });
 
         function drawLegend(d) {
