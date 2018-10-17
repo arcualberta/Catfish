@@ -26,8 +26,10 @@ namespace Catfish
     {
         void Application_Start(object sender, EventArgs e)
         {
+            // Load Plugins
+            IEnumerable<Plugin> plugins = LoadPlugins();
+
             // Code that runs on application startup
-           
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -93,25 +95,37 @@ namespace Catfish
                 }
             };
 
-
             // Initialize Plugins
-            InitializePlugins();
+            InitializePlugins(plugins);
         }
 
-        private void InitializePlugins()
+        private IEnumerable<Plugin> LoadPlugins()
         {
+            List<Plugin> plugins = new List<Plugin>();
+
             PluginConfig config = ConfigurationManager.GetSection("catfishPlugins") as PluginConfig;
 
-            if(config != null)
+            if (config != null)
             {
-                foreach(PluginElement plugin in config.Plugins)
+                foreach (PluginElement plugin in config.Plugins)
                 {
                     AssemblyName name = AssemblyName.GetAssemblyName(plugin.LibraryPath);
-                    Assembly asm = Assembly.Load(name);
+                    Assembly asm = AppDomain.CurrentDomain.Load(name);
 
                     Plugin result = asm.CreateInstance(plugin.Class) as Plugin;
-                    result.Initialize();
+
+                    plugins.Add(result);
                 }
+            }
+
+            return plugins;
+        }
+
+        private void InitializePlugins(IEnumerable<Plugin> plugins)
+        {
+            foreach(Plugin plugin in plugins)
+            {
+                plugin.Initialize();
             }
         }
 

@@ -1,6 +1,9 @@
+using Catfish.Core.Plugins;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -35,6 +38,20 @@ namespace Catfish
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
                 namespaces: new[] { "Catfish.Controllers" }
             ).DataTokens["UseNamespaceFallback"] = false;
+
+            // Check for any routes added through plugin
+            PluginConfig config = ConfigurationManager.GetSection("catfishPlugins") as PluginConfig;
+            if (config != null)
+            {
+                foreach (PluginElement plugin in config.Plugins)
+                {
+                    AssemblyName name = AssemblyName.GetAssemblyName(plugin.LibraryPath);
+                    Assembly asm = Assembly.Load(name);
+
+                    Plugin result = asm.CreateInstance(plugin.Class) as Plugin;
+                    result.Initialize();
+                }
+            }
         }
     }
 }
