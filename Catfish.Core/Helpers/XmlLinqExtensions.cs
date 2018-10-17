@@ -1,4 +1,4 @@
-﻿using Catfish.Core.Models;
+using Catfish.Core.Models;
 using Catfish.Core.Models.Access;
 using Catfish.Core.Services;
 using CommonServiceLocator;
@@ -47,24 +47,22 @@ namespace Catfish.Core.Helpers
 
                 if(resultsCount > 0)
                 {
-                    StringBuilder values = new StringBuilder(resultsCount << 4); // This method is twice as fast as String.Join
-                    values.Append("values(0,");
-                    values.Append(results.First().Id.ToString());
-                    values.Append(")");
-                    for (int i = 1; i < resultsCount; ++i)
-                    {
-                        values.Append(",(");
-                        values.Append(i.ToString());
-                        values.Append(',');
-                        values.Append(results.ElementAt(i).Id);
-                        values.Append(')');
-                    }
+                    IEnumerable<string> values = results.Select((r, i) => {
+                        return "(" + i + ",'" + r.SolrId + "')";
+                        });
+                    string valuesString = "values" + String.Join(",", values);                    
 
-                    query = string.Format("SELECT cf.* FROM [dbo].[CFXmlModels] cf JOIN ({0}) as x (ordering, id) on cf.Id = x.id ORDER BY x.ordering", values.ToString());
+                    query = $@" 
+                    SELECT cf.* FROM [dbo].[CFXmlModels] cf 
+                    JOIN ({valuesString}) 
+                    AS x (ordering, id) 
+                    ON cf.MappedGuid = x.id
+                    ORDER BY x.ordering ";
                 }
                 else
                 {
-                    query = "SELECT * FROM [dbo].[CFXmlModels] WHERE Id < 0"; // Produces an empty result
+                    // Produce an empty result
+                    query = "SELECT * FROM [dbo].[CFXmlModels] WHERE Id < 0"; 
                 }
 
                 return set.SqlQuery(query).AsQueryable();
