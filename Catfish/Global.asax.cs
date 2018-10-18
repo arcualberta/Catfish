@@ -89,7 +89,28 @@ namespace Catfish
                     }
                 }
             };
-            
+
+            AddPublicUserListIfDoesNotExist();
+
+        }
+
+        private void AddPublicUserListIfDoesNotExist()
+        {
+            // publicGuid guid is all 0 
+            Guid publicGuid = new Guid();
+            CatfishDbContext db = new CatfishDbContext();
+            CFUserList publicUserList = db.UserLists.Where(x => x.Id == publicGuid).FirstOrDefault();
+
+            if (publicUserList == null)
+            {
+                // Add public user list
+                publicUserList = new CFUserList();
+                publicUserList.Id = publicGuid;
+                publicUserList.Name = "Public";
+                db.UserLists.Add(publicUserList);
+                db.SaveChanges();
+
+            }
         }
 
         private void AddManagerMenus()
