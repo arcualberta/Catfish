@@ -1,4 +1,4 @@
-using Catfish.Core.Models;
+﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Access;
 using Catfish.Core.Services;
 using CommonServiceLocator;
@@ -87,6 +87,11 @@ namespace Catfish.Core.Helpers
         ICollection<Guid> guids,
         AccessMode mode = AccessMode.Read) where TSource : CFXmlModel
         {
+
+            // publicGroup guid is all 0 and everyone is part of this group
+            Guid publicGroup = new Guid();
+            guids.Add(publicGroup);
+
             string guidList = string.Join(",", Array.ConvertAll(guids.ToArray(), g => "'" + g + "'"));
             string sqlQuery = $@"
             SELECT *
