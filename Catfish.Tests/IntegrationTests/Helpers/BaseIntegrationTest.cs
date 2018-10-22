@@ -14,6 +14,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Catfish.Tests.Extensions;
 using Catfish.Core.Services;
+using System.Threading;
+
 
 namespace Catfish.Tests.IntegrationTests.Helpers
 
@@ -41,6 +43,8 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             InitializeSolr();
             Driver = new TWebDriver();
             ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
+
+            Driver.Manage().Window.Maximize(); //maximize the window
 
             ClearDatabase();            
             ResetServerCache();
@@ -219,7 +223,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                 }
 
 
-            }            
+            }
 
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();          
         }
@@ -247,6 +251,12 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                 mapFieldSelector.SelectByIndex(1);                      
             }
         }
+        private void ScrollTop()
+        {
+            IJavaScriptExecutor jex = (IJavaScriptExecutor)Driver;
+            jex.ExecuteScript("scroll(0, -250);");
+        }
+
 
         public void CreateEntityType(string name, string description, 
             string[] metadataSetNames, CFEntityType.eTarget[] targetTypes)
@@ -273,6 +283,16 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
             FillEntityTypeNameMapping();
 
+            //check on Items and collections checkboxes -- MR Oct 18 2016
+            IJavaScriptExecutor jsExecutor = (IJavaScriptExecutor)Driver;
+            foreach (var t in targetTypes)
+            {
+                IWebElement targetType = this.Driver.FindElement(By.Id("chk_" + t.ToString()));
+                jsExecutor.ExecuteScript("arguments[0].focus()", targetType);
+                targetType.Click();
+            }
+            //add forms
+
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
 
@@ -294,6 +314,106 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         public string CreateUser(string userName, string password, string email)
         {
             throw new NotImplementedException();
+        }
+
+        public void CreateItem(string entityTypeName, string name, bool attachment = false)
+        {
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.LinkText(ContentLinkText)).Click();
+            Driver.FindElement(By.LinkText(ItemsLinkText)).Click();
+            Driver.FindElement(By.Id(ToolBarAddButtonId)).Click();
+
+            // id field-type-selector
+            IWebElement fieldTypeSelectorElement = Driver.FindElement(By.Id("field-type-selector"));
+            SelectElement fieldTypeSelector = new SelectElement(fieldTypeSelectorElement);
+
+            fieldTypeSelector.SelectByText(entityTypeName);
+
+            Driver.FindElement(By.Id("add-field")).Click();
+            FilledItemFormFields(name);
+
+            //attach an image
+            if(attachment)
+            {           
+                 string sourceFile = ConfigurationManager.AppSettings["SourceTestFile"];
+                 sourceFile = Path.Combine(sourceFile, "image1.jpg");
+                //attach the file
+                var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(500));
+               wait.Until(drv => drv.FindElement(By.XPath("//input[@type='file']"))); //wait.Until(ExpectedConditions.ElementIsVisible(BY.id("elementId"))); -- deprecated
+               
+                
+                Driver.FindElement(By.XPath("//input[@type='file']")).SendKeys(sourceFile);
+            }
+         
+            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
+        }
+
+        private void FilledItemFormFields(string strname)
+        {
+            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(5));
+            wait.Until(drv => drv.FindElement(By.ClassName("form-field-name")));
+
+            IReadOnlyList<IWebElement> fields = this.Driver.FindElements(By.ClassName("form-field"));
+            int count = 0;
+            foreach (var f in fields)
+            {
+                IWebElement name = f.FindElement(By.Name("label")); //text field
+                string txt = name.Text;
+
+                if (count == 0)
+                {
+                    txt = strname;
+                    count++;
+                }
+                IReadOnlyList<IWebElement> inputs = f.FindElements(By.ClassName("languageInputField"));
+                //each field has 3 input fields each for each language -- eng, fr and sp
+                for (int i = 0; i < inputs.Count; i++)
+                {
+                    //grab text field or text area
+                    IWebElement textEl;
+                    bool bfound = IsElementFound(inputs[i], "input");
+                    if (bfound)
+                    {
+                        textEl = inputs[i].FindElement(By.TagName("input"));
+                    }
+                    else
+                    {
+                        textEl = inputs[i].FindElement(By.TagName("textarea"));
+                    }
+
+                    if (i == 0)  //eng
+                    {
+                        textEl.SendKeys(txt);
+                    }
+                    else if (i == 1)//fr
+                    {
+                        textEl.SendKeys(txt + " Fr");
+                    }
+                    else//sp
+                    {
+                        textEl.SendKeys(txt + " Sp");
+                    }
+                    textEl.SendKeys(Keys.Tab);
+
+                }
+
+            }
+        }
+
+        private bool IsElementFound(IWebElement el, string tagName)
+        {
+            bool found = false;
+            try
+            {
+                IWebElement elFound = el.FindElement(By.TagName(tagName));
+                found = true;
+            }
+            catch (NoSuchElementException ex)
+            {
+                found = false;
+            }
+
+            return found;
         }
     }
 }
