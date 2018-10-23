@@ -56,6 +56,7 @@ function deleteUnlinkedFile(fileGuid, deleteApiUrl, containerId, fileGuidListFie
         oReg.onreadystatechange = function (data) { stateChange(data.srcElement.responseText); };
     }
 
+    deleteApiUrl = deleteApiUrl == "" ? Url.Action("DeleteCashedFile", "items", new { guid: fileGuid }) : deleteApiUrl;
     oReg.open('POST', deleteApiUrl);
     oReg.send(myFrm);
 }
@@ -69,7 +70,7 @@ function updateFileListView(data, deleteApiUrl, containerId, fileGuidListFieldId
         var eleId = getThumbnailDivId(d.Guid);
         var ele = '<div class="fileThumbnail" id="' + eleId
             + '" > <div class="img" style="background-image:url('
-            + d.Thumbnail + ')" ></div>'
+            + d.ThumbnailUrl + ')" ></div>'
             + '<button class="glyphicon glyphicon-remove" onclick="deleteUnlinkedFile(\''
             + d.Guid + '\',\'' + deleteApiUrl + '\',\'' + containerId
             + '\',\'' + fileGuidListFieldId

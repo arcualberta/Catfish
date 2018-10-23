@@ -212,6 +212,28 @@ namespace Catfish.Core.Services
             //updating the "value" text elements
             dbModel.UpdateValues(changedItem);
 
+            //oct 10 2018 -- attemp to add attchment in the metadtaset to item.Attachment -- this might be wrong approach!
+            foreach (CFMetadataSet ms in changedItem.MetadataSets)
+            {
+                foreach (FormField field in ms.Fields)
+                {
+                    if (field.GetType().FullName == "Catfish.Core.Models.Forms.Attachment")
+                    {
+                        if (!string.IsNullOrEmpty((field as Catfish.Core.Models.Forms.Attachment).FileGuids))
+                        {
+                            if (string.IsNullOrEmpty(changedItem.AttachmentField.FileGuids))
+                            {
+                                changedItem.AttachmentField.FileGuids = (field as Catfish.Core.Models.Forms.Attachment).FileGuids;
+                            }
+                            else
+                            {
+                                changedItem.AttachmentField.FileGuids += "|" + (field as Catfish.Core.Models.Forms.Attachment).FileGuids;
+                            }
+                        }
+                    }
+                }
+            }
+
             //Processing any file attachments that have been submitted
             UpdateFiles(changedItem, dbModel);
 
