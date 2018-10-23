@@ -12,7 +12,7 @@ namespace Catfish.Core.Plugins
     {
         public abstract void Initialize();
 
-        public virtual void RegisterArea(AreaRegistrationContext context)
+        public virtual void RegisterRoutes(RouteCollection routes)
         {
 
         }

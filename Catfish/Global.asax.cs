@@ -27,12 +27,14 @@ namespace Catfish
         void Application_Start(object sender, EventArgs e)
         {
             // Load Plugins
-            IEnumerable<Plugin> plugins = LoadPlugins();
-
+            LoadPlugins();
+            
             // Code that runs on application startup
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            RegisterPluginRoutes();
 
             //Metadata provider
             ModelMetadataProviders.Current = new Catfish.Areas.Manager.Helpers.ModelMetadataProvider();
@@ -96,33 +98,36 @@ namespace Catfish
             };
 
             // Initialize Plugins
-            InitializePlugins(plugins);
+            InitializePlugins();
         }
 
-        private IEnumerable<Plugin> LoadPlugins()
+        private void RegisterPluginRoutes()
         {
-            List<Plugin> plugins = new List<Plugin>();
+            IEnumerable<Plugin> plugins = PluginContext.Current.Plugins;
 
+            foreach (Plugin plugin in plugins)
+            {
+                plugin.RegisterRoutes(RouteTable.Routes);
+            }
+        }
+
+        private void LoadPlugins()
+        {
             PluginConfig config = ConfigurationManager.GetSection("catfishPlugins") as PluginConfig;
 
             if (config != null)
             {
                 foreach (PluginElement plugin in config.Plugins)
                 {
-                    AssemblyName name = AssemblyName.GetAssemblyName(plugin.LibraryPath);
-                    Assembly asm = Assembly.Load(name);
-
-                    Plugin result = asm.CreateInstance(plugin.Class) as Plugin;
-
-                    plugins.Add(result);
+                    PluginContext.Current.LoadPlugin(plugin.Class, plugin.LibraryPath);
                 }
             }
-
-            return plugins;
         }
 
-        private void InitializePlugins(IEnumerable<Plugin> plugins)
+        private void InitializePlugins()
         {
+            IEnumerable<Plugin> plugins = PluginContext.Current.Plugins;
+
             foreach(Plugin plugin in plugins)
             {
                 plugin.Initialize();
