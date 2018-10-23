@@ -1,5 +1,6 @@
 namespace Catfish.Core.Migrations
 {
+    using Catfish.Core.Helpers;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -15,6 +16,8 @@ namespace Catfish.Core.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
+
+            SetSqlGenerator("System.Data.SqlClient", new XmlSqlServerMigrationSqlGenerator());
         }
 
         protected override void Seed(TSource context)

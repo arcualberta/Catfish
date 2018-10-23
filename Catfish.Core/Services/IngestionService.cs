@@ -2,11 +2,14 @@
 using Catfish.Core.Models.Ingestion;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace Catfish.Core.Services
@@ -31,12 +34,16 @@ namespace Catfish.Core.Services
         
         public void Import(Ingestion ingestion)
         {
+#if DEBUG
+            Console.Error.WriteLine("Starting ingestion of Ingestion object.");
+#endif
+
             //create new GUID and new EntityType-Id
             Dictionary<string, string> GuidMap = new Dictionary<string, string>();
             Dictionary<int, int> IdMap = new Dictionary<int, int>();
            
             
-            foreach (MetadataSet ms in ingestion.MetadataSets)
+            foreach (CFMetadataSet ms in ingestion.MetadataSets)
             {
                 string oldId = ms.Guid;
                 string newGuid = NewGuid();
@@ -61,7 +68,7 @@ namespace Catfish.Core.Services
                 {
                     //check if the metadataset with this guid is existed in the database
                     //if yes, replace the one in th edatabase with this one from the file
-                    MetadataSet metadataSet = Db.MetadataSets.Where(m => m.MappedGuid == ms.Guid).FirstOrDefault();
+                    CFMetadataSet metadataSet = Db.MetadataSets.Where(m => m.MappedGuid == ms.Guid).FirstOrDefault();
                     if(metadataSet != null)
                     {
                         metadataSet = ms;
@@ -75,20 +82,28 @@ namespace Catfish.Core.Services
                 }
                 else
                 {
-                    Db.MetadataSets.Add(ms);
+                    try
+                    {
+                        Db.MetadataSets.Add(ms);
+                    }catch(ProviderIncompatibleException ex)
+                    {
+                        Console.Error.WriteLine("Current Connection String: " + Db.Database.Connection.ConnectionString);
+
+                        throw ex;
+                    }
                 }
             }
 
             Db.SaveChanges();
             //add entityType
-            foreach (EntityType et in ingestion.EntityTypes)
+            foreach (CFEntityType et in ingestion.EntityTypes)
             {
                 int oldId = et.Id;
 
                 //I think below is not necessary since the DeserialiseEntytyType mtehod already grabbing the right metadataset
 
-                List<MetadataSet> newSets = new List<MetadataSet>();
-                foreach (MetadataSet set in et.MetadataSets)
+                List<CFMetadataSet> newSets = new List<CFMetadataSet>();
+                foreach (CFMetadataSet set in et.MetadataSets)
                 {
                     string mGuid = set.Guid;
                     if (GuidMap.ContainsKey(mGuid))
@@ -96,13 +111,13 @@ namespace Catfish.Core.Services
                         mGuid = GuidMap[mGuid];
                     }
 
-                    MetadataSet dbSet = Db.MetadataSets.Where(s => s.MappedGuid == mGuid).FirstOrDefault();
+                    CFMetadataSet dbSet = Db.MetadataSets.Where(s => s.MappedGuid == mGuid).FirstOrDefault();
                     newSets.Add(dbSet);
                 }
                 et.MetadataSets.Clear();
                 et.MetadataSets = newSets;
 
-                foreach (EntityTypeAttributeMapping mapping in et.AttributeMappings)
+                foreach (CFEntityTypeAttributeMapping mapping in et.AttributeMappings)
                 {
                     string mGuid = mapping.MetadataSet.Guid;
                     if (GuidMap.ContainsKey(mGuid))
@@ -112,10 +127,10 @@ namespace Catfish.Core.Services
                     mapping.MetadataSet = Db.MetadataSets.Where(m => m.MappedGuid == mGuid).FirstOrDefault();
                 }
 
-                EntityType newEt=null;
+                CFEntityType newEt=null;
                 if (ingestion.Overwrite)
                 {
-                    EntityType oldEt = Db.EntityTypes.Where(e => e.Name == et.Name).FirstOrDefault();
+                    CFEntityType oldEt = Db.EntityTypes.Where(e => e.Name == et.Name).FirstOrDefault();
                     if(oldEt != null)
                     {
                         //modified it --replace with current value
@@ -137,16 +152,51 @@ namespace Catfish.Core.Services
 
             //add aggregations
             GuidMap.Clear();
-            foreach (var agg in ingestion.Aggregations)
+            int completed = 0;
+            int failed = 0;
+            IDictionary<Type, Func<IngestionService, CFXmlModel, CFAggregation>> createAggrigationCache = new Dictionary<Type, Func<IngestionService, CFXmlModel, CFAggregation>>();
+            Func<CFXmlModel, CFAggregation> getNewAggrigation = agg =>
             {
-                string oldId = agg.Guid;
+                Type t = agg.GetType();
+
+                try
+                {
+                    return createAggrigationCache[t](this, agg);
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    MethodInfo method = this.GetType().GetMethod("CreateAggregation");
+                    MethodInfo genMethod = method.MakeGenericMethod(t);
+                    Func<IngestionService, CFXmlModel, CFAggregation> func = (Func<IngestionService, CFXmlModel, CFAggregation>)Delegate.CreateDelegate(typeof(Func<IngestionService, CFXmlModel, CFAggregation>), genMethod);
+                    createAggrigationCache.Add(t, func);
+
+                    return func(this, agg);
+                }
+            };
+
+            ingestion.Aggregations.ForEach((agg) => {
+                Regex guidRegex = new Regex(@"(guid)=[""']?((?:.(?![""']?\s + (?:\S +)=|[> ""']))+.)[""']?");
+                string oldId = guidRegex.Match(agg.Content).Groups[2].Value;
                 string newGuid = NewGuid();
 
+                //saving the aggregation object
                 if (ingestion.Overwrite)
                 {
                     //use whatever GUID in the file
                     //check to make sure the GUID in not existing in the Db, if it's replace the one in the database
                     GuidMap.Add(oldId, oldId); //if overwrite is true use existing GUID
+
+                    CFAggregation _aggregation = Db.XmlModels.Where(a => a.MappedGuid == oldId).FirstOrDefault() as CFAggregation;
+                    if (_aggregation != null)
+                    {
+                        _aggregation = (CFAggregation)agg;
+                        Db.Entry(_aggregation).State = System.Data.Entity.EntityState.Modified;
+                    }
+                    else
+                    {
+                        var _agg = getNewAggrigation(agg);
+                        Db.Entities.Add(_agg);
+                    }
                 }
                 else
                 {
@@ -154,36 +204,37 @@ namespace Catfish.Core.Services
                     agg.MappedGuid = newGuid;
 
                     GuidMap.Add(oldId, newGuid);
+
+                    var _agg = getNewAggrigation(agg);
+
+                    try
+                    {
+                        Db.Entities.Add(_agg);
+                    }catch(Exception ex)
+                    {
+#if DEBUG
+                        Console.Error.WriteLine("{0} Error reading aggrigation: {1}", ex.Message, _agg.Name);
+#endif
+                        return false;
+                    }
+
+                    _agg.Dispose();
                 }
 
-                //saving the aggregation object
-                if (ingestion.Overwrite)
-                {
-                    Aggregation _aggregation = Db.XmlModels.Where(a => a.MappedGuid == newGuid).FirstOrDefault() as Aggregation;
-                    if(_aggregation != null)
-                    {
-                        _aggregation =(Aggregation) agg;
-                        Db.Entry(_aggregation).State = System.Data.Entity.EntityState.Modified;
-                    }
-                    else
-                    {
-                        Type t = agg.GetType();
-                        MethodInfo method = this.GetType().GetMethod("CreateAggregation");
-                        MethodInfo genMethod = method.MakeGenericMethod(t);
-                        var _agg = (Aggregation)genMethod.Invoke(this, new object[] { agg });
-                        Db.Entities.Add(_agg);
-                    }
-                }
-                else
-                {
-                    Type t = agg.GetType();
-                    MethodInfo method = this.GetType().GetMethod("CreateAggregation");
-                    MethodInfo genMethod = method.MakeGenericMethod(t);
-                    var _agg = (Aggregation)genMethod.Invoke(this, new object[] { agg });
-                    Db.Entities.Add(_agg);
-                }
-                
-            }
+                return true;
+            }, (successCount, failCount) =>
+            {
+                completed += successCount;
+                failed += failCount;
+
+#if DEBUG
+                Console.Error.WriteLine("{0} Completed, {1} Failed", completed, failed);
+#endif
+
+                Db.SaveChanges();
+                return true;
+            });
+
             Db.SaveChanges();
             foreach (var rel in ingestion.Relationships)
             { 
@@ -219,21 +270,21 @@ namespace Catfish.Core.Services
         {
             try
             {
-                Aggregation parent = Db.XmlModels.Where(x => x.MappedGuid == parentGuid).FirstOrDefault() as Aggregation;
-                Aggregation child = Db.XmlModels.Where(x => x.MappedGuid == childGuid).FirstOrDefault() as Aggregation;
+                CFAggregation parent = Db.XmlModels.Where(x => x.MappedGuid == parentGuid).FirstOrDefault() as CFAggregation;
+                CFAggregation child = Db.XmlModels.Where(x => x.MappedGuid == childGuid).FirstOrDefault() as CFAggregation;
                 if(!overwrite)
-                { parent.ChildMembers.Add(child); }
+                { parent.AddChild(child); }
                 else
                 {
                     //remove all child members first before adding new one
                     foreach(var c in parent.ChildMembers)
                     {
-                        Aggregation removeChild = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as Aggregation;
-                        parent.ChildMembers.Remove(removeChild);
+                        CFAggregation removeChild = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFAggregation;
+                        parent.RemoveChild(removeChild);
                     }
 
                     //add new one
-                    parent.ChildMembers.Add(child);
+                    parent.AddChild(child);
                 }
             
                 
@@ -250,8 +301,8 @@ namespace Catfish.Core.Services
         {
             try
             {
-                Aggregation parent = Db.XmlModels.Where(x => x.MappedGuid == parentGuid).FirstOrDefault() as Aggregation;
-                Item child = Db.XmlModels.Where(x => x.MappedGuid == childGuid).FirstOrDefault() as Item;
+                CFAggregation parent = Db.XmlModels.Where(x => x.MappedGuid == parentGuid).FirstOrDefault() as CFAggregation;
+                CFItem child = Db.XmlModels.Where(x => x.MappedGuid == childGuid).FirstOrDefault() as CFItem;
                 if(!overwrite)
                    parent.ChildRelations.Add(child);
                 else
@@ -259,7 +310,7 @@ namespace Catfish.Core.Services
                     //remove all child members first before adding new one
                     foreach (var c in parent.ChildRelations)
                     {
-                        Item removeRel = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as Item;
+                        CFItem removeRel = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFItem;
                         parent.ChildRelations.Remove(removeRel);
                     }
 
@@ -274,13 +325,15 @@ namespace Catfish.Core.Services
                 throw ex;
             }
         }
-        public T CreateAggregation<T>(XmlModel aggregation) where T : Aggregation, new()
-        {  
-            T agg = new T();
-            string entityTypeName = aggregation.Data.Attribute("entity-type").Value;
-            EntityType entType = Db.EntityTypes.Where(e => e.Name == entityTypeName).FirstOrDefault();
-            agg = (T)aggregation;
-            agg.EntityType = entType;
+        public T CreateAggregation<T>(CFXmlModel aggregation) where T : CFAggregation, new()
+        {
+            //T agg = new T();
+            Regex entityTypeRegex = new Regex(@"(entity-type)=[""']?((?:.(?![""']?\s + (?:\S +)=|[>""']))+.)[""']?");
+
+            string entityTypeName = entityTypeRegex.Match(aggregation.Content).Groups[2].Value;
+            int? entType = Db.EntityTypes.Where(e => e.Name == entityTypeName).Select(e => e.Id).FirstOrDefault();
+            T agg = (T)aggregation;
+            agg.EntityTypeId = entType;
            
             return agg;
         }
@@ -295,19 +348,24 @@ namespace Catfish.Core.Services
             Import(input);
         }
 
-        public void Import(Stream ingestion)
+        public void Import(Stream ingestion, int threads = 1)
         {
-            XElement result = XElement.Load(ingestion);
+#if DEBUG
+            Console.Error.WriteLine("Converting ingestion stream to Ingestion object.");
+#endif
             Ingestion ing = new Ingestion();
-            Import(ing.Deserialize(result));
+
+            ing.Deserialize(ingestion);
+            
+            Import(ing);
         }
 
         public Ingestion Export()
         {
-            IEnumerable<Collection> collections = Db.Collections;
-            IEnumerable<Item> items = Db.Items;
-            IEnumerable<EntityType> entitytypes = Db.EntityTypes;
-            IEnumerable<MetadataSet> metadatasets = Db.MetadataSets;
+            IEnumerable<CFCollection> collections = Db.Collections;
+            IEnumerable<CFItem> items = Db.Items;
+            IEnumerable<CFEntityType> entitytypes = Db.EntityTypes;
+            IEnumerable<CFMetadataSet> metadatasets = Db.MetadataSets;
             //IEnumerable<Form> forms = Db.FormTemplates;
 
             Ingestion ingestion = new Ingestion();
@@ -318,12 +376,12 @@ namespace Catfish.Core.Services
             //ingestion.Aggregations.AddRange(forms);   //MR Feb 23 2018: Form is not an Aggregation object: ignore form now -- have to revisit this later
 
 
-            Item[] itemArray = items.ToArray();
+            CFItem[] itemArray = items.ToArray();
 
             //find all item member in each collection
-            foreach(Collection col in collections.ToList())
+            foreach(CFCollection col in collections.ToList())
             {
-                foreach(Item itm in items.ToList())
+                foreach(CFItem itm in items.ToList())
                 {
                     if(col.ChildMembers.Any(p=>p.MappedGuid == itm.Guid))
                     {
@@ -339,9 +397,9 @@ namespace Catfish.Core.Services
             }
 
             //find all item member in each item
-            foreach (Item parentItem in items.ToList())
+            foreach (CFItem parentItem in items.ToList())
             {
-                foreach (Item childItem in items.ToList())
+                foreach (CFItem childItem in items.ToList())
                 {
                     if (parentItem.ChildMembers.Any(member=>member.MappedGuid == childItem.Guid))
                     {

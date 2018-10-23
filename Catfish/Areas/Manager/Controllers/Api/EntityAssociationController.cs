@@ -33,25 +33,25 @@ namespace Catfish.Areas.Manager.Controllers
                 if (vm.Id == 0)
                     throw new Exception("Parent model ID mnot specified");
 
-                Aggregation model = Db.XmlModels.Where(x => x.Id == vm.Id).FirstOrDefault() as Aggregation;
+                CFAggregation model = Db.XmlModels.Where(x => x.Id == vm.Id).FirstOrDefault() as CFAggregation;
                 if (model == null)
                     throw new Exception("Specified parent entity of type Aggregation not found");
 
                 //Associating children
                 foreach (var c in vm.ChildEntityList)
                 {
-                    Aggregation child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as Aggregation;
+                    CFAggregation child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFAggregation;
                     if (child == null)
                         throw new Exception("Id=" + c.Id + ": Specified child entity of type Aggregation not found");
 
-                    model.ChildMembers.Add(child);
+                    model.AddChild(child);
                 }
 
                 //Removing deleted children
                 foreach (var c in vm.RemovalPendingChildEntities)
                 {
-                    Aggregation child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as Aggregation;
-                    model.ChildMembers.Remove(child);
+                    CFAggregation child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFAggregation;
+                    model.RemoveChild(child);
                 }
 
                 Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
@@ -76,14 +76,14 @@ namespace Catfish.Areas.Manager.Controllers
                 if (vm.Id == 0)
                     throw new Exception("Parent model ID mnot specified");
 
-                Aggregation model = Db.XmlModels.Where(x => x.Id == vm.Id).FirstOrDefault() as Aggregation;
+                CFAggregation model = Db.XmlModels.Where(x => x.Id == vm.Id).FirstOrDefault() as CFAggregation;
                 if (model == null)
                     throw new Exception("Specified parent entity of type Aggregation not found");
 
                 //Associating children
                 foreach (var c in vm.ChildEntityList)
                 {
-                    Item child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as Item;
+                    CFItem child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFItem;
                     if (child == null)
                         throw new Exception("Id=" + c.Id + ": Specified related item not found");
 
@@ -93,7 +93,7 @@ namespace Catfish.Areas.Manager.Controllers
                 //Removing deleted children
                 foreach (var c in vm.RemovalPendingChildEntities)
                 {
-                    Item child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as Item;
+                    CFItem child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFItem;
                     model.ChildRelations.Remove(child);
                 }
 

@@ -5,7 +5,7 @@
 @using Catfish.Areas.Manager.Models.ViewModels;
 @using Catfish.Helpers;
 
-@{ Item item = ViewBag.Item as Item; }
+@{ CFItem item = ViewBag.Item as CFItem; }
 
 <div class="form-field">
     <label class="name">@Html.Raw(MultilingualHelper.Join(Model.GetNames(false))): </label>

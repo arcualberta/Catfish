@@ -8,8 +8,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 {
     public class SelectEntityTypeViewModel : KoBaseViewModel
     {
-        public List<Catfish.Core.Models.EntityType> EntityTypes { get; set; }
-        public Catfish.Core.Models.EntityType SelectedEntityType { get; set; }
+        public List<Catfish.Core.Models.CFEntityType> EntityTypes { get; set; }
+        public Catfish.Core.Models.CFEntityType SelectedEntityType { get; set; }
 
         public override void UpdateDataModel(object dataModel, CatfishDbContext db)
         {

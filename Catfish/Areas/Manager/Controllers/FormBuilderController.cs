@@ -10,22 +10,23 @@ using System.Web.Mvc;
 
 namespace Catfish.Areas.Manager.Controllers
 {
-    public abstract class FormBuilderController : CatfishController
+    public abstract class FormBuilderController<T> : CatfishController where T:AbstractForm
     {
-        public abstract AbstractForm CreateDataModel();
+        public abstract T CreateDataModel();
+        public abstract FormBuilderViewModel CreateViewModel(T model);
 
 
         [HttpGet]
         public ActionResult Edit(int? id)
         {
-            AbstractForm model;
+            T model;
 
             if (id.HasValue && id.Value > 0)
-                model = Db.XmlModels.Find(id) as AbstractForm;
+                model = FormService.GetForm<T>(id.Value);
             else
                 model = CreateDataModel();
 
-            return View(model);
+            return View(CreateViewModel(model));
         }
 
         [HttpPost]
@@ -73,31 +74,25 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
-        public JsonResult Save(FormBuilderViewModel vm)
+        public ActionResult Save(int? id, FormBuilderViewModel vm)
         {
             if (ModelState.IsValid)
             {
-                AbstractForm model;
+                T model;
 
                 if (vm.Id > 0)
                 {
-                    model = Db.XmlModels.Where(x => x.Id == vm.Id && x is AbstractForm).FirstOrDefault() as AbstractForm;
+                    model = FormService.GetForm<T>(vm.Id);
                     if (model == null)
-                        return Json(vm.Error("Specified form not found"));
-                    else
-                    {
-                        vm.UpdateDataModel(model, Db);
-                        Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
-                    }
+                        return HttpNotFound();
                 }
                 else
                 {
                     model = CreateDataModel();
-                    vm.UpdateDataModel(model, Db);
-                    //XXX if the content is not saved do model.Serialize();
-                    Db.XmlModels.Add(model);
                 }
 
+                vm.UpdateDataModel(model, Db);
+                FormService.SaveForm(model);
                 Db.SaveChanges(User.Identity);
                 vm.Status = KoBaseViewModel.eStatus.Success;
 
@@ -110,11 +105,13 @@ namespace Catfish.Areas.Manager.Controllers
                     controller = controller.Substring(0, controller.Length - "Controller".Length);
                     vm.url = Url.Action("Edit", controller, new { id = model.Id });
                 }
+                
+                SuccessMessage(Resources.Views.Form.Edit.SaveSuccess);
             }
             else
-                return Json(vm.Error("Model validation failed"));
+                ErrorMessage(Resources.Views.Form.Edit.SaveInvalid);
 
-            return Json(vm);
+            return View("Edit", vm);
         }
     }
 }

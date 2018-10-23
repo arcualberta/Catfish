@@ -22,20 +22,20 @@
             <tbody class="">
                 @foreach (var m in Model)
                 {
-                    <tr>
+                    <tr id="model-row-@m.Id">
                         <td>@m.Id</td>
                         <td>@m.Name</td>
                         @if (showType)
                         {
-                            string type = (m as Catfish.Core.Models.Entity).EntityType.Name;
+                            string type = (m as Catfish.Core.Models.CFEntity).EntityType.Name;
                             <td class="">@type</td>
                         }
                         <td class="action-panel">
                             <form action="@Url.Action("edit", controller, new { @id = m.Id })" method="get" class="inline">
                                 <button type="submit" value="Submit" class="glyphicon glyphicon-edit"></button>
                             </form>
-                            @if (typeof(Catfish.Core.Models.Collection).IsAssignableFrom(m.GetType()) ||
-                                 typeof(Catfish.Core.Models.Item).IsAssignableFrom(m.GetType()))
+                            @if (typeof(Catfish.Core.Models.CFCollection).IsAssignableFrom(m.GetType()) ||
+                                 typeof(Catfish.Core.Models.CFItem).IsAssignableFrom(m.GetType()))
                             {
                                 <form action="@Url.Action("associations", controller, new { @id = m.Id })" method="get" class="inline">
                                     <button type="submit" value="Submit" class="glyphicon glyphicon-link"></button>
@@ -47,10 +47,16 @@
                                     @{ var isDisabled = m.HasAssociations ? "disabled='disabled'" : ""; }
                                     <button type="submit" value="Submit" class="glyphicon glyphicon-remove" onclick="return confirm('Confirm deletion');" @isDisabled></button>
                                 </form>
-                                        }
+                             }
+                           @if (typeof(Catfish.Core.Models.CFCollection).IsAssignableFrom(m.GetType()) || typeof(Catfish.Core.Models.CFItem).IsAssignableFrom(m.GetType()))
+                           {
+                            <form action="@Url.Action("accessGroup", controller, new { @id = m.Id })" method="get" class="inline">
+                                <button type="submit" value="Submit" class="glyphicon glyphicon-eye-close"></button>
+                            </form>
+                           }
                         </td>
                     </tr>
-                                        }
+                  }
             </tbody>
         </table>
     </div>

@@ -43,7 +43,7 @@
 
     .thumbnailPanel .fileThumbnail {
         margin: 15px 15px 15px 0;
-        font-size: smaller;
+        /*font-size: smaller;*/
         float: left;
         text-align:center;
         position:relative;
@@ -151,4 +151,56 @@
 
 .error {
     color: #FC615D;
+}
+
+.loadable-panel {
+    position: relative;
+}
+
+.loading-panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+    .loading-panel > div {
+        margin-top: 2em;
+        margin-left: auto;
+        margin-right: auto;
+        width: 112px;
+        display: block;
+        position: relative;
+        background-color: #49b9da;
+        border: 2px outset #59bedc;
+        padding: 10px;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 1.2em;
+        color: white;
+        text-align: center;
+    }
+
+.current-page {
+    height: 1.1em;
+    width: 40px;
+    text-align: right;
+}
+
+.sortable {
+    cursor: pointer;
+}
+
+.sort::after {
+    font-family: 'Glyphicons Halflings';
+}
+
+.sort.sort-desc::after {
+    content: " \e114";
+}
+
+.sort.sort-asc::after {
+    content: " \e113";
 }

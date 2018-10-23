@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Forms
 {
-    [TypeLabel("Attachment Field")]
+    [CFTypeLabel("Attachment Field")]
     public class Attachment : FormField
     {
         //public static char FileGuidSeparator = '|';
@@ -42,7 +42,7 @@ namespace Catfish.Core.Models.Forms
             FileGuids = "";
         }
 
-        public override void UpdateValues(XmlModel src)
+        public override void UpdateValues(CFXmlModel src)
         {
             XElement srcValueWrapper = src.Data.Element("value");
             if (srcValueWrapper == null)

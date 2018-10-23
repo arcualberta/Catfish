@@ -36,23 +36,23 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             PageSize = Int32.MaxValue; // 25;
         }
 
-        public void LoadNextChildrenSet(IEnumerable<Entity> src)
+        public void LoadNextChildrenSet(IEnumerable<CFEntity> src)
         {
             if (ChildCount == 0)
                 ChildCount = src.Count();
 
-            IEnumerable<Entity> elements = src.Skip(ChildOffset).Take(PageSize);
-            foreach (Entity e in elements)
+            IEnumerable<CFEntity> elements = src.Skip(ChildOffset).Take(PageSize);
+            foreach (CFEntity e in elements)
                 ChildEntityList.Add(new EntityViewModel(e));
         }
 
-        public void LoadNextMasterSet(IEnumerable<Entity> src)
+        public void LoadNextMasterSet(IEnumerable<CFEntity> src)
         {
             if (MasterCount == 0)
                 MasterCount = src.Count();
 
-            IEnumerable<Entity> elements = src.Where(e => e.Id != Id).Skip(MasterOffset).Take(PageSize);
-            foreach (Entity e in elements)
+            IEnumerable<CFEntity> elements = src.Where(e => e.Id != Id).Skip(MasterOffset).Take(PageSize);
+            foreach (CFEntity e in elements)
                 MasterEntityList.Add(new EntityViewModel(e));
         }
 

@@ -14,7 +14,7 @@
        {"class", "model-type"}
     })
     @{
-        TypeLabelAttribute att = Attribute.GetCustomAttribute(Model.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
+        CFTypeLabelAttribute att = Attribute.GetCustomAttribute(Model.GetType(), typeof(CFTypeLabelAttribute)) as CFTypeLabelAttribute;
         string title = att == null ? Model.GetType().ToString() : att.Name;
     }
     <div class="title contentright"><select class="template-selector"></select> <button class="remove-field" type="button">x</button></div>

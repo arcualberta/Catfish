@@ -1,4 +1,4 @@
-﻿@model Catfish.Core.Models.Item
+﻿@model Catfish.Core.Models.CFItem
 @using Catfish.Areas.Manager.Models.ViewModels;
 @using Catfish.Core.Models.Forms;
 
@@ -11,11 +11,28 @@
     <script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
     @*<script type="text/javascript" src="~/Scripts/fileupload.js"></script>*@
     <script type="text/javascript" src="~/Scripts/attachment.js"></script>
+    <script type="text/javascript" src="~/Scripts/richtext.js"></script>
     <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
 
     <script type="text/javascript">
         var uploadApiUrl = "@Url.Action("upload", "items", new { id = Model.Id })";
         var deleteApiUrl = "@Url.Action("deleteFile", "items", new { id = Model.Id })";
+    </script>
+
+    @* Code used to turn praragraph fields into rich text fields. *@
+    <script type="text/javascript" src="~/res.ashx/areas/manager/content/js/ext/tiny_mce/tinymce.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            @if (File.Exists(Server.MapPath("~/areas/manager/content/css/editor.css"))) {
+                <text>var cssPath = "@Url.Content("~/areas/manager/content/css/editor.css")";</text>
+            }
+            else
+            {
+                <text>var cssPath = null;</text>
+            }
+
+            convertToRichTextSwapper(".rich-text-transform textarea", cssPath);
+        });
     </script>
 }
 

@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using Catfish.Core.Models.Forms;
 using System.Web.Mvc.Html;
 using Catfish.Core.Models.Attributes;
+using System.Globalization;
 
 namespace Catfish.Areas.Manager.Helpers
 {
@@ -57,5 +58,7 @@ namespace Catfish.Areas.Manager.Helpers
 
             return new MvcHtmlString(type_label);
         }
+
+
     }
 }

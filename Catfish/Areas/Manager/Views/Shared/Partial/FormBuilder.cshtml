@@ -9,6 +9,12 @@
     string controller = ViewData["controller"] as string;
     string saveAction = ViewData["action"] as string;
 }
+
+@if (Model.redirect)
+{
+    <script type="text/javascript">window.location = "@Model.url";</script>
+}
+
 @ko.Initialize(Model)
 
 @section scripts {
@@ -27,16 +33,18 @@
 
         <div @field.Bind.Attr("id", m => m.Guid) class="inner file-upload" style="clear:both">
             <div class="thumbnailPanel">
-                <input type="hidden" id="Model_FieldFileGuids" @field.Bind.Value(m => m.FieldFileGuids) />
                 @using (KnockoutForeachContext<FileViewModel> fileViewModel = field.Foreach(f => f.Files))
                 {
-                    <div class="fileThumbnail" @fileViewModel.Bind.Attr("id", m => m.Guid)>
-                        @*@fileViewModel.Html.Span(m => m.ThumbnailUrl)
-                            @fileViewModel.Html.Span(m => m.Thumbnail)*@
-                        @*<div class="img" data-bind="style : {backgroundImage : 'url(' + $data.Thumbnail + ')' }"></div>*@
-                        <div class="img" @fileViewModel.Bind.Style("backgroundImage", (m => m.ThumbnailUrl))></div>
-                        <div class="label"><a @fileViewModel.Bind.Attr("href", f => f.Path)>@fileViewModel.Html.Span(s => s.FileName)</a></div>
-                    </div>
+                <div class="fileThumbnail" @fileViewModel.Bind.Attr("id", m => m.Guid)>
+                    <div class="img" @fileViewModel.Bind.Style("backgroundImage", (m => m.ThumbnailUrl))></div>
+                    <div class="label"><a @fileViewModel.Bind.Attr("href", f => f.Url)>@fileViewModel.Html.Span(s => s.FileName)</a></div>
+                    <div>@fileViewModel.Html.TextBox(m => m.Label).Attr("placeholder", m => "Label")</div>
+                    
+                    @using (fileViewModel.If(m => m.ShowPlayerControls))
+                    {
+                    <div><span>Play once</span>@fileViewModel.Html.CheckBox(m => m.PlayOnce)</div>    
+                    }                                                          
+                </div>
                 }
             </div>
             <div class="inner" style="clear:both">
@@ -49,17 +57,18 @@
         </div>
 }
 
-<div id="@context">
-    @using (ko.Html.Form(saveAction, controller, null, new { id = context + "Form" }))
+<div id="@context" class="form-builder">
+    @*@using (ko.Html.Form(saveAction, controller, null, new { id = context + "Form" }))*@
+    @using (Html.BeginForm(saveAction, controller, new { id = Model.Id }, FormMethod.Post))
     {
         <div class="grid_12">
             <div class="box">
                 <div class="title">
                     <h2>Basic Information</h2>
                     <div class="bs right">
-                        <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
+                        @*<span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Success) style="display: none;" class="alert alert-success">Success!</span>
                         <span @ko.Bind.Visible(m => m.Status == KoBaseViewModel.eStatus.Error) style="display: none;" class="alert alert-danger">Error!</span>
-                        @ko.Html.Button("Save", saveAction, controller, new { }, new { @class = "save" })
+                        @ko.Html.Button("Save", saveAction, controller, new { }, new { @class = "save" })*@
                     </div>
                 </div>
                 <div class="inner">
@@ -156,48 +165,26 @@
                                         </div>
                                     </li>
                                 }
+                                @using (field.If(f => f.IsTextArea == true))
+                                {
+                                    <li>
+                                        <label class="control-label col-md-2">Is Rich Text</label>
+                                        <div class="input">
+                                            @field.Html.CheckBox(f => f.IsRichText, new { @class = "field-is-richtext" })
+                                        </div>
+                                    </li>
+                                }
+
                                 <li>
                                     <label class="control-label col-md-2">Attached files</label>
                                     <div class="form-view">
-                                        @*@field.Html.Span(f => f.Files.Count)*@
                                         @RenderFileAttachments(field)
-                                        @*@using (KnockoutForeachContext<DataFile> fileViewModel = field.Foreach(f => f.Files))
-                                            {
-                                                @fileViewModel.Html.Span(omar => omar.FileName);
-                                            }*@
-                                        @*@using (KnockoutForeachContext<DataFile> fileViewModel = field.Model.Files.ForEach(f => f))*@
-                                        @*                                        @using (var file = field.Foreach(f => f.FileThings))*@
-                                        @*@using (var file = field.Foreach(f => f.Files))
-                                            {
-                                                @file.Html.Span(f => "Kamal");
-                                            }*@
-                                        @* XXX Change controller to file upload *@
-                                        @*@Html.Partial("Partial/FileAttachment", field,
-                                            //new ViewDataDictionary{
-                                            //                                                                   { "UploadApiUrl", @Url.Action("upload", "items")},
-                                            //                                                                   { "DeleteApiUrl",  @Url.Action("deleteCashedFile", "items")},
-                                            //                                                                   { "ParentId", Model.Id },
-                                            //                                                                   { "Controller", "items" }
-                                            //})*@
-
-                                        @*@if (field.Model != null)
-                                            {
-                                            @Html.EditorFor(m => field.Model.Attachment,
-                                                     new
-                                                     {
-                                                         UploadApiUrl = @Url.Action("upload", "items"),
-                                                         DeleteApiUrl = @Url.Action("deleteCashedFile", "items"),
-                                                         Files = field.Model.Files,
-                                                         ParentId = Model.Id,
-                                                         Controller = "items"
-                                                     })
-                                            }*@
                                     </div>
                                 </li>
                             </ul>
                         </div>
                     </div>
-                }
+                                }
             </div>
             <div id="fields-container">
                 <div class="right">
@@ -213,7 +200,20 @@
 <script type="text/javascript">
   @(context).uploadFileKoWrapper = function (data, containerId, uploadApiUrl, deleteApiUrl, fieldFileGuids) {
       uploadFileKo(containerId, uploadApiUrl, deleteApiUrl, fieldFileGuids, data)
-  };
+    };
+
+    function getFormBuilderContext() {
+        return @(context);
+    }
+
+    function getFormBuilderForm() {
+        return $("#@(context) > form");
+    }
+
+    function deleteFormBuilderContext() {
+        delete @context;
+        delete @(context)Js;
+    }
 </script>
 
 

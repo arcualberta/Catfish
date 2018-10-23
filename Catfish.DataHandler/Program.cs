@@ -15,6 +15,18 @@ namespace Catfish.DataHandler
     {
         public static void Main(string[] args)
         {
+            // Check for a SolrConnection
+            string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
+            if (!string.IsNullOrEmpty(solrString))
+            {
+                SolrService.Init(solrString);
+            }
+            else
+            {
+                Console.Error.WriteLine("Could not initialize connection to the Solr server. Please verify that your SolrServer app property is correct.");
+                return;
+            }
+
             if (args.Length > 0)
             {
                 Database.SetInitializer<CatfishDbContext>(null);
@@ -35,11 +47,14 @@ namespace Catfish.DataHandler
 
         private static void import(CatfishDbContext Db)
         {
+#if DEBUG
+            Console.Error.WriteLine("Starting ingestion import...");
+#endif
+
             Console.InputEncoding = Encoding.UTF8;
-            XElement file = XElement.Load(Console.OpenStandardInput());
-           
+
             IngestionService srv = new IngestionService(Db);
-            srv.Import(file);
+            srv.Import(Console.OpenStandardInput(), 4);
 
             Db.SaveChanges();
 
