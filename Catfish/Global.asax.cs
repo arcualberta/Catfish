@@ -28,6 +28,7 @@ namespace Catfish
         {
             // Load Plugins
             LoadPlugins();
+            ControllerBuilder.Current.SetControllerFactory(typeof(PluginControllerFactory));
             
             // Code that runs on application startup
             AreaRegistration.RegisterAllAreas();
@@ -35,7 +36,7 @@ namespace Catfish
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
             RegisterPluginRoutes();
-
+            
             //Metadata provider
             ModelMetadataProviders.Current = new Catfish.Areas.Manager.Helpers.ModelMetadataProvider();
 
