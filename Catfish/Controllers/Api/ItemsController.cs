@@ -166,7 +166,17 @@ namespace Catfish.Controllers.Api
 
             string path_name = string.Empty;
             string[] fnames = file.LocalFileName.Split('.');
-            string jpgExt = (fnames[1] == "jpeg" || fnames[1] == "jpg") ? "jpg" : fnames[1];
+            string jpgExt = fnames[1];
+            //string jpgExt = (fnames[1] == "jpeg" || fnames[1] == "jpg") ? "jpg" : fnames[1];
+            if(fnames[1] == "jpeg" || fnames[1] == "jpg")
+            {
+                jpgExt = "jpg";
+            }
+            else if (fnames[1] == "png" || fnames[1] == "tif" || fnames[1] == "tiff")
+            {
+                jpgExt = "png";
+            }
+
             if (eSize == null)
             {
                 path_name = Path.Combine(file.Path, file.LocalFileName);
