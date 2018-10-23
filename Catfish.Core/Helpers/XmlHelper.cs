@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Xml;
 using System.Configuration;
+using System.Reflection;
 
 namespace Catfish.Core.Helpers
 {
@@ -24,8 +25,14 @@ namespace Catfish.Core.Helpers
 
         public static IEnumerable<TextValue> GetTextValues(XElement element, bool forceAllLanguages = false, bool excludeBlanks = false)
         {
-            List<TextValue> ret = new List<TextValue>();
+            return XmlHelper.GetTextValues<TextValue>(element, forceAllLanguages, excludeBlanks);
+        }
+
+        public static IEnumerable<T> GetTextValues<T>(XElement element, bool forceAllLanguages = false, bool excludeBlanks = false) where T : TextValue
+        {
+            List<T> ret = new List<T>();
             List<string> languageCodes = ConfigHelper.LanguagesCodes;
+            ConstructorInfo cInfo = typeof(T).GetConstructor(new[] { typeof(string), typeof(string), typeof(string) });
 
             var children = element.Elements("text");
             foreach (XElement ele in children)
@@ -37,7 +44,7 @@ namespace Catfish.Core.Helpers
                 string lang = att == null ? "" : att.Value;
                 if (languageCodes.Contains(lang))
                 {
-                    TextValue txt = new TextValue(lang, ConfigHelper.GetLanguageLabel(lang), ele.Value);
+                    T txt = (T)cInfo.Invoke(new[] { lang, ConfigHelper.GetLanguageLabel(lang), ele.Value });
                     ret.Add(txt);
                 }
             }
@@ -47,7 +54,7 @@ namespace Catfish.Core.Helpers
                 foreach (var lang in ConfigHelper.Languages)
                 {
                     if (!ret.Where(t => t.LanguageCode == lang.TwoLetterISOLanguageName).Any())
-                        ret.Add(new TextValue(lang.TwoLetterISOLanguageName, lang.NativeName, ""));
+                        ret.Add((T)cInfo.Invoke(new[] { lang.TwoLetterISOLanguageName, lang.NativeName, "" }));
                 }
             }
 

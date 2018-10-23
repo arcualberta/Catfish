@@ -5,12 +5,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Catfish.Areas.Manager.Models.ViewModels;
 
 namespace Catfish.Areas.Manager.Controllers
 {
-    public class FormTemplatesController : FormBuilderController
+    public class FormTemplatesController : FormBuilderController<Form>
     {
-        public override AbstractForm CreateDataModel() { return new Form(); }
+        public override Form CreateDataModel() { return new Form(); }
+
+        public override FormBuilderViewModel CreateViewModel(Form model)
+        {
+            FormBuilderViewModel vm = new FormBuilderViewModel(model) { ShowFieldDescriptions = true };
+
+            return vm;
+        }
 
         // GET: Manager/SubmissionTemplate
         public ActionResult Index()

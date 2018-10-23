@@ -17,6 +17,7 @@ namespace Catfish.Core.Models.Forms
             get
             {
                 XElement val = Data.Element("value");
+
                 return val == null ? null : val.Value;
             }
 
@@ -28,7 +29,7 @@ namespace Catfish.Core.Models.Forms
                 val.Value = value == null ? "" : value;
             }
         }
-        public override void UpdateValues(XmlModel src)
+        public override void UpdateValues(CFXmlModel src)
         {
             //Unlike multi-select option fields such as check boxes, single select option fields such as radio buttons sends
             //the selected option as a value. Therefore, we need to find the corresponding value from the option set in the 
@@ -37,9 +38,8 @@ namespace Catfish.Core.Models.Forms
             var dstWrapper = Data.Element("options");
             if (dstWrapper == null)
                 Data.Add(dstWrapper = new XElement("options"));
-
-            var srcValueElement = src.Data.Element("value");
-            string srcValue = srcValueElement == null ? null : srcValueElement.Value;
+            
+            string srcValue = ((SingleSelectOptionsField)src).Value;
             string lang = Lang(null);
             //Iterating through all options in the destinatopn
             foreach (XElement opt in dstWrapper.Elements("option"))

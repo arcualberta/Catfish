@@ -12,6 +12,7 @@ namespace Catfish.Core.Helpers
 {
     public static class ConfigHelper
     {
+        public enum eImageSize { Thumbnail = 150, Small = 256, Medium = 512, Large = 1024 } //in px
         public static List<string> GetSettingArray(string key, char seperator)
         {
             var val = ConfigurationManager.AppSettings[key];
@@ -64,6 +65,8 @@ namespace Catfish.Core.Helpers
             string label = Languages.Where(c => c.TwoLetterISOLanguageName == languageCode).Select(c => c.NativeName).FirstOrDefault();
             return string.IsNullOrEmpty(label) ? languageCode : label;
         }
+
+        public static string GlobalAccessModes { get { return ConfigurationManager.AppSettings["GlobalAccessModes"]; } }
 
         public static string UploadRoot { get { return ConfigurationManager.AppSettings["UploadRoot"]; } }
 

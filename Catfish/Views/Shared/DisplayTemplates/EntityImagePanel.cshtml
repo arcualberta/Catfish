@@ -1,0 +1,56 @@
+﻿@model Catfish.Models.Regions.EntityImagePanel         
+@{ 
+    string cssId = Model.CssId + "_" + Model.FileGuid;
+    string largeImg = "Large";
+    string medImg = "Medium";
+}
+
+<div id="@(cssId)_wrapper" class="@Model.CssClasses" style="width:100%;">
+    <button class="glyphicon glyphicon-search btn-img-zoom" id="@(cssId)_toggleZoom" ></button>
+    <image  src="@Url.Action("Image","Items",new { id =Model.EntityId, guid=Model.FileGuid, size = largeImg })" id="@cssId" data-zoom-image="@Url.Action("Image","Items",new { id =Model.EntityId, guid=Model.FileGuid})"  />
+</div>
+
+<script src="~/Scripts/jquery.elevatezoom.js"></script>
+<script>
+
+   $( document ).ready(function(){
+     var btnId = "@(cssId)_toggleZoom";
+       $("#" + btnId).click(function(){
+          $("#"+ btnId).toggleClass("zoomingImage");
+          if( $("#"+ btnId).hasClass("zoomingImage"))
+            {
+                zoomImage();
+            }else{
+                $(".zoomContainer").remove();
+            }
+      });
+   
+ }); //end of document ready
+
+
+ function zoomImage(){
+    $("#@(cssId)").elevateZoom({
+                    zoomType : "lens",
+                    lensShape : "round",
+                    lensSize    : 200,
+                    responsive: true
+    });
+ }
+
+</script>
+<style>
+    #@(cssId)_toggleZoom{
+        float:right;
+        width:50px;
+        height:50px;
+    }
+
+    .zoomLens {
+        pointer-events: none;
+    }
+
+   #@(cssId)_wrapper > img{
+       width:100%;
+       height: auto;
+    }
+</style>

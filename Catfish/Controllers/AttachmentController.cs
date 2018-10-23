@@ -22,7 +22,7 @@ namespace Catfish.Controllers
         {
             try
             {
-                List<DataFile> files = DataService.UploadTempFiles(Request);
+                List<CFDataFile> files = DataService.UploadTempFiles(Request);
                 Db.SaveChanges(User.Identity);
 
                 //Saving ids  of uploaded files in the session because these files and thumbnails
@@ -47,7 +47,7 @@ namespace Catfish.Controllers
             if (!FileHelper.CheckGuidCache(Session, guid))
                 return HttpNotFound("File not found");
             
-            DataFile file = DataService.GetFile(id, guid);
+            CFDataFile file = DataService.GetFile(id, guid);
             if (file == null)
                 return HttpNotFound("File not found");
 
@@ -62,11 +62,11 @@ namespace Catfish.Controllers
             if (!FileHelper.CheckGuidCache(Session, name))
                 return HttpNotFound("File not found");
             
-            DataFile file = DataService.GetFile(id, name);
+            CFDataFile file = DataService.GetFile(id, name);
             if (file == null)
                 return HttpNotFound("File not found");
 
-            string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared
+            string path_name = file.ThumbnailType == CFDataFile.eThumbnailTypes.Shared
                 ? Path.Combine(FileHelper.GetThumbnailRoot(Request), file.Thumbnail)
                 : Path.Combine(file.Path, file.Thumbnail);
 

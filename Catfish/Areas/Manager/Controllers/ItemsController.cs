@@ -18,6 +18,9 @@ using Catfish.Core.Models.Data;
 using Catfish.Areas.Manager.Helpers;
 using Catfish.Helpers;
 using Catfish.Core.Helpers;
+using Catfish.Areas.Manager.Services;
+using Catfish.Core.Models.Access;
+using Catfish.Services;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -27,11 +30,12 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Items
         public ActionResult Index(int offset=0, int limit=int.MaxValue)
         {
-            if(limit == int.MaxValue)
+            SecurityService.CreateAccessContext();
+            if (limit == int.MaxValue)
                 limit = ConfigHelper.PageSize;
-
+            
             var itemQuery = ItemService.GetItems();
-            var entities = itemQuery.OrderBy(e => e.Id).Skip(offset).Take(limit).Include(e => (e as Entity).EntityType).Select(e => e as Entity);
+            var entities = itemQuery.OrderBy(e => e.Id).Skip(offset).Take(limit).Include(e => (e as CFEntity).EntityType).Select(e => e as CFEntity);
             var total = itemQuery.Count();
 
             ViewBag.TotalItems = total;
@@ -45,12 +49,13 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int id)
         {
-            Item model = null;
-            if (id.HasValue && id.Value > 0)
+            SecurityService.CreateAccessContext();
+            CFItem model = null;
+            if (id > 0)
             {
-                model = Db.Items.Where(et => et.Id == id).FirstOrDefault();
+                model = ItemService.GetItem(id);
                 if (model != null)
                 {
                     Db.Entry(model).State = EntityState.Deleted;
@@ -64,12 +69,13 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Items/Details/5
         public ActionResult Details(int? id)
         {
+            SecurityService.CreateAccessContext();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Item item = ItemService.GetItem(id.Value);
+            CFItem item = ItemService.GetItem(id.Value);
             if (item == null)
             {
                 return HttpNotFound();
@@ -80,7 +86,8 @@ namespace Catfish.Areas.Manager.Controllers
         // GET: Manager/Items/Edit/5
         public ActionResult Edit(int? id, int? entityTypeId)
         {
-            Item model;
+            SecurityService.CreateAccessContext();
+            CFItem model;
           
             if (id.HasValue && id.Value > 0)
             {
@@ -96,13 +103,13 @@ namespace Catfish.Areas.Manager.Controllers
                 }
                 else
                 {
-                    List<EntityType> entityTypes = EntityTypeService.GetEntityTypes(EntityType.eTarget.Items).ToList(); //srv.GetEntityTypes(EntityType.eTarget.Items).ToList();
+                    List<CFEntityType> entityTypes = EntityTypeService.GetEntityTypes(CFEntityType.eTarget.Items).ToList(); //srv.GetEntityTypes(EntityType.eTarget.Items).ToList();
                     ViewBag.SelectEntityViewModel = new SelectEntityTypeViewModel()
                     {
                         EntityTypes = entityTypes
                     };
 
-                    model = new Item();
+                    model = new CFItem();
                 }
             }
 
@@ -115,24 +122,32 @@ namespace Catfish.Areas.Manager.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Item model)
+        public ActionResult Edit(CFItem model)
         {
+            SecurityService.CreateAccessContext();
             if (ModelState.IsValid)
             {
-                Item dbModel = ItemService.UpdateStoredItem(model);
+                CFItem dbModel = ItemService.UpdateStoredItem(model);
                 Db.SaveChanges(User.Identity);
+
+                SuccessMessage(Catfish.Resources.Views.Items.Edit.SaveSuccess);
 
                 if (model.Id == 0)
                     return RedirectToAction("Edit", new { id = dbModel.Id });
                 else
                     return View(dbModel);
             }
+
+            ErrorMessage(Catfish.Resources.Views.Items.Edit.SaveInvalid);
+
             return View(model);
         }
 
+        [HttpGet]
         public ActionResult Associations(int id)
         {
-            Item model = ItemService.GetItem(id);
+            SecurityService.CreateAccessContext();
+            CFItem model = ItemService.GetItem(id);
             if (model == null)
                 throw new Exception("Item not found");
 
@@ -152,13 +167,28 @@ namespace Catfish.Areas.Manager.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public ActionResult Associations(int id, string errorMessage)
+        {
+            if (string.IsNullOrEmpty(errorMessage))
+            {
+                SuccessMessage(Resources.Views.Items.Edit.SaveSuccess);
+            }
+            else
+            {
+                ErrorMessage(errorMessage);
+            }
+
+            return Associations(id);
+        }
+
         //XXX This method should be moved to a file controller
         [HttpPost]
         public JsonResult Upload()
         {
             try
             {
-                List<DataFile> files = DataService.UploadTempFiles(Request);
+                List<CFDataFile> files = DataService.UploadTempFiles(Request);
                 Db.SaveChanges(User.Identity);
 
                 //Saving ids  of uploaded files in the session because these files and thumbnails
@@ -209,7 +239,7 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult File(int id, string guid)
         {
-            DataFile file = DataService.GetFile(id, guid);
+            CFDataFile file = DataService.GetFile(id, guid);
             if (file == null)
                 return HttpNotFound("File not found");
 
@@ -219,15 +249,49 @@ namespace Catfish.Areas.Manager.Controllers
 
         public ActionResult Thumbnail(int id, string name)
         {
-            DataFile file = DataService.GetFile(id, name);
+            CFDataFile file = DataService.GetFile(id, name);
             if (file == null)
                 return HttpNotFound("File not found");
-
-            string path_name = file.ThumbnailType == DataFile.eThumbnailTypes.Shared
+            var test = file.ThumbnailType;
+            string path_name = file.ThumbnailType == CFDataFile.eThumbnailTypes.Shared 
                 ? Path.Combine(FileHelper.GetThumbnailRoot(Request), file.Thumbnail)
                 : Path.Combine(file.Path, file.Thumbnail);
 
             return new FilePathResult(path_name, file.ContentType);
+        }
+
+        [HttpGet]
+        public ActionResult AccessGroup(int id)
+        {
+            SecurityService.CreateAccessContext();
+            var entity = ItemService.GetAnEntity(id);
+            EntityAccessDefinitionsViewModel entityAccessVM = new EntityAccessDefinitionsViewModel();
+            AccessGroupService accessGroupService = new AccessGroupService(Db);
+            entityAccessVM = accessGroupService.UpdateViewModel(entity);// UpdateViewModel(entity);
+            ViewBag.SugestedUsers = entityAccessVM.AvailableUsers2.ToArray();
+            var accessList = accessGroupService.GetAccessCodesList();
+            accessList.Remove(accessList.First()); //remove "None"
+            accessList.Remove(accessList.Last()); //remove all
+            ViewBag.AccessCodesList = accessList;
+            return View("AccessGroup", entityAccessVM);
+        }
+        
+        [HttpPost]
+        public ActionResult AccessGroup(int id, EntityAccessDefinitionsViewModel entityAccessVM)
+        {
+            SecurityService.CreateAccessContext();
+            CFItem item = ItemService.GetItem(entityAccessVM.Id);
+           
+            AccessGroupService accessGroupService = new AccessGroupService(Db);
+            item = accessGroupService.UpdateEntityAccessGroups(item, entityAccessVM) as CFItem;
+            item = EntityService.UpdateEntity(item) as CFItem;
+           
+            item.Serialize();
+            Db.SaveChanges();
+
+            SuccessMessage(Catfish.Resources.Views.Shared.EntityAccessGroup.SaveSuccess);
+
+            return AccessGroup(entityAccessVM.Id);
         }
     }
 }

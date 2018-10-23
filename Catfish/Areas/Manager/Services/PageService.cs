@@ -1,4 +1,5 @@
-﻿using Piranha.Models;
+﻿using Piranha;
+using Piranha.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,17 +11,16 @@ namespace Catfish.Areas.Manager.Services
     {
         public Page GetAPage(string strGuid)
         {
-            return Piranha.Models.Page.GetSingle(new Guid(strGuid));
+           var page = Piranha.Models.Page.GetSingle(new Guid(strGuid));
+
+            return page;
         }
 
         public Page GetPageByPermalink(string permalink)
         {
-            return Piranha.Models.Page.GetByPermalink(permalink);
+            var page = Piranha.Models.Page.GetByPermalink(permalink);//       Piranha.Models.Page.GetByPermalink(permalink);
+            return page;
         }
-
-        public List<Page> GetPages(Piranha.Data.Params param)
-        {
-            return Piranha.Models.Page.Get(param);
-        }
+        
     }
 }

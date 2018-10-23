@@ -21,17 +21,23 @@ namespace Catfish.Controllers.Api
             if (ModelState.IsValid)
             {
                 SubmissionService subSrv = new SubmissionService(Db);
-                Item submission = subSrv.SaveSubmission(
+                //add AttributeMappings -- Apr 10 2018
+                IDictionary<string, string> attributeMappings = new Dictionary<string,string>();
+                foreach(var map in formContainer.FieldMappings)
+                {
+                    attributeMappings.Add(map.AttributeName, map.FieldName);
+                }
+                CFItem submission = subSrv.SaveSubmission(
                     vm.Form,
                     vm.FormSubmissionRef,
                     vm.ItemId,
                     formContainer.EntityTypeId,
                     formContainer.FormId,
-                    formContainer.CollectionId);
+                    formContainer.CollectionId, attributeMappings);
 
                 // Set's the audit log value when saving.
                 // TODO: this should be more automated.
-                AuditEntry.eAction action = submission.Id == 0 ? AuditEntry.eAction.Create : AuditEntry.eAction.Update;
+                CFAuditEntry.eAction action = submission.Id == 0 ? CFAuditEntry.eAction.Create : CFAuditEntry.eAction.Update;
                 string actor = User.Identity.IsAuthenticated ? User.Identity.Name : "Annonymous";
                 Db.SaveChanges(User.Identity);
             }
@@ -48,5 +54,10 @@ namespace Catfish.Controllers.Api
 
             return Json(vm);
         }
+
+        
+      
     }
+
+    
 }

@@ -20,6 +20,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         //public string Description { get; set; }
         public List<TextValue> Description { get; set; }
         public bool IsRequired { get; set; }
+        public bool IsRichText { get; set; }
+        public bool IsTextArea { get; set; }
         public bool IsOptionField { get; set; }
         public List<TextValue> MultilingualOptionSet { get; set; }
         public string Guid { get; set; }
@@ -47,11 +49,11 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Rank = formField.Rank;
             Page = formField.Page;
             IsPageBreak = formField.IsPageBreak();
-            Files = formField.FileDescriptions.Select(m => new FileViewModel(m, abstractFormId)).ToList();
-            FieldFileGuids = formField.FieldFileGuidsArray;
+            Files = formField.Files.Select( m => new FileViewModel(m, abstractFormId)).ToList();
+            //FieldFileGuids = src.FieldFileGuidsArray;
             //Files = src.Files;
 
-            TypeLabelAttribute att = Attribute.GetCustomAttribute(formField.GetType(), typeof(TypeLabelAttribute)) as TypeLabelAttribute;
+            CFTypeLabelAttribute att = Attribute.GetCustomAttribute(formField.GetType(), typeof(CFTypeLabelAttribute)) as CFTypeLabelAttribute;
             TypeLabel = att == null ? formField.GetType().ToString() : att.Name;
 
             IsOptionField = typeof(OptionsField).IsAssignableFrom(formField.GetType());
@@ -81,7 +83,13 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                     }
                 }
             }
+
+            IsTextArea = typeof(TextArea).IsAssignableFrom(formField.GetType());
+            if(IsTextArea){
+                IsRichText = ((TextArea)formField).IsRichText;
+            }
         }
+
         //XXX turns to database model
         public FormField InstantiateDataModel()
         {
@@ -96,13 +104,10 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.Guid = Guid;
             field.Rank = Rank;
             field.Page = Page;
-            Files.Select(m => m.Guid);
-            //XXX setter puts the <value element and sets value
-            // this is where you search for the field on the database based on the fieldfileguids
 
-            //XXX Quizas quita esto y toma los archivos de la lista de file elements
-            //field.FieldFileGuids = String.Join("|", FieldFileGuids);
-            field.FieldFileGuids = String.Join("|", Files.Select(m => m.Guid));
+            field.Files = Files != null ? Files.Select(m => m.ToFileDescription()).ToList() :
+                 new List<CFFileDescription>();
+
 
             UpdateFileList(field);
 
@@ -134,6 +139,11 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 (field as OptionsField).Options = optList;
             }
 
+            if (IsTextArea)
+            {
+                ((TextArea)field).IsRichText = IsRichText;
+            }
+
             return field;
         }
 
@@ -153,50 +163,31 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         private void UpdateFileList(FormField field)
         {
-            // Remove old files (should we remove all files ?)
 
-            List<string> test = field.FieldFileGuidsArray.ToList();
-
-            foreach (FileDescription fileDescription in field.FileDescriptions.ToList())
+            List<CFDataFile> filesList = new List<CFDataFile>();
+            foreach (CFFileDescription fileDescription in field.Files)
             {
-                if (test.IndexOf(fileDescription.DataFile.Guid) < 0)
-                {
-                    //Deleting the file node from the XML Model
-                    //XXX Missing remove file
-                    //dstItem.RemoveFile(file);
-                }
-            }
-
-            // Add new files
-            //XXX Aqui es para recibir FieldFileGuids
-            List<FileDescription> fileDescriptions = new List<FileDescription>();
-            foreach (string fileGuid in field.FieldFileGuidsArray)
-            {
-                FileDescription fileDescription = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
-                    .Select(m => m as FileDescription)
+                string fileGuid = fileDescription.Guid;
+                CFDataFile file = Db.XmlModels.Where(m => m.MappedGuid == fileGuid)
+                    .Select(m => m as CFDataFile)
                     .FirstOrDefault();
 
-                if (fileDescription != null)
-                {
-                    //file.Path = Uploadrootdir + 
-                    MoveFileToField(fileDescription, field);
-                    fileDescriptions.Add(fileDescription);
-                    Db.XmlModels.Remove(fileDescription);
-
-                    // Move file from temp folder                    
-                }
+                if (file != null)
+                {                     
+                    MoveFileToField(file, field);
+                    fileDescription.DataFile = file;
+                    Db.XmlModels.Remove(file);                             
+                }  
             }
-
-            field.FileDescriptions = fileDescriptions;
-            Db.SaveChanges();
+            Db.SaveChanges();            
         }
 
         //XXX Duplicating code from ItemService.cs UpdateFiles method
 
-        private void MoveFileToField(FileDescription fileDescription, FormField field)
+        private void MoveFileToField(CFDataFile dataFile, FormField field)
         {
 
-            DataFile dataFile = fileDescription.DataFile;
+            //DataFile dataFile = fileDescription.DataFile;
 
             //moving the physical files from the temporary upload folder to a folder identified by the GUID of the
             //item inside the uploaded data folder
@@ -209,7 +200,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             File.Move(srcFile, dstFile);
 
             //moving the thumbnail, if it's not a shared one
-            if (dataFile.ThumbnailType == DataFile.eThumbnailTypes.NonShared)
+            if (dataFile.ThumbnailType == CFDataFile.eThumbnailTypes.NonShared)
             {
                 string srcThumbnail = Path.Combine(dataFile.Path, dataFile.Thumbnail);
                 string dstThumbnail = Path.Combine(dstDir, dataFile.Thumbnail);

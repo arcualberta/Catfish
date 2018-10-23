@@ -1,0 +1,136 @@
+﻿@model Catfish.Models.Regions.GraphPanel
+@using Catfish.Core.Models;
+
+@{
+    string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
+    string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
+    string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+}
+    <div id="@cssId" class="bs @cssClasses container container-fluid loadable-panel" style="margin-left:0;">
+        <style type="text/css" scoped>
+                        @Html.Raw(cssStyles)
+        </style>
+   
+        <svg class="line-chart" style="width: 75%;"> </svg>
+        <div class="legend" style="width: 25%;"></div>  
+        <form id="barchartOption">
+            <label><input type="radio" name="mode" value="grouped" />Grouped</label>
+            <label><input type="radio" name="mode" value="stacked" checked />Stackeded</label>
+        </form>
+    </div>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="~/Scripts/D3/graph.js"></script>
+
+    <script>
+        {
+            var graph = new Graph('@Model.XaxisLabel', '@Model.YaxisLabel', '@Model.GraphTitle', parseInt('@Model.XScale'), parseInt('@Model.YScale'), $('#@cssId > svg')[0], $('#@cssId > .legend')[0]);
+            var isLoaded = false;
+            var query = '*:*';
+            var chartType = "@Model.SelectedGraphType.ToString()";
+
+            function updateChart() {
+                window.startLoading("#@cssId", 60000);
+
+                $.ajax({
+                    type: 'GET',
+                    url: @Html.Raw(Json.Encode(Url.Action("GetGraphData", "Items"))),
+                    dataType: 'json',
+                    data: {
+                        xMetadataSet: @Html.Raw(Json.Encode(Model.SelectedMetadataSetX)),
+                        yMetadataSet: @Html.Raw(Json.Encode(Model.SelectedMetadataSetY)),
+                        xField: @Html.Raw(Json.Encode(Model.XaxisField)),
+                        yField: @Html.Raw(Json.Encode(Model.YaxisField)),
+                        catMetadataset: @Html.Raw(Json.Encode(Model.SelectedMetadataSetCat)),
+                        catField: @Html.Raw(Json.Encode(Model.Category)),
+                        q: query,
+                        isCatOptionsIndex: @Html.Raw(Json.Encode(Model.IsCategoryOptionsField))
+                    },
+                    success: function (response) {
+                        if (chartType === "Bar") {
+                            var barOption = document.getElementById("barchartOption");
+                            barOption.style.display = "block";
+                        }
+                        else {
+                            var barOption = document.getElementById("barchartOption");
+                            barOption.style.display = "none";
+                        }
+                        
+                        var parsedData = graph.parseDataSF(response);
+                        window.stopLoading("#@cssId");
+                        graph.clear();
+                        graph["drawChartMulti" + chartType](parsedData);
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        window.stopLoading("#@cssId");
+                    }
+                });
+            }
+
+            window.addEventListener('updatedparams', function (e) {
+                var params = e.detail;
+                var triggerUpdate = !isLoaded;
+
+                if ('q' in params) {
+                    triggerUpdate = true;
+                    query = params['q'];
+                }
+
+                if (triggerUpdate) {
+                    updateChart();
+                }
+            });
+
+        }
+    </script>
+
+    <style>
+        #barchartOption{
+            display: none;
+        }
+        
+        .legend {
+            font-size: 14px !important;
+            width: 100px;
+            /*border: 1px solid grey;*/
+            float: right;
+            margin-right: 20%;
+            margin-top: 10%;
+            padding: 5px;
+        }
+
+      
+        .line-chart {
+            margin-top: 20px;
+        }
+
+        .bar {
+            fill: steelblue;
+        }
+
+        .line {
+            fill: none;
+            stroke: steelblue;
+            stroke-width: 1.5px;
+        }
+
+        path {
+            stroke: steelblue;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: grey;
+            stroke-width: 1;
+            shape-rendering: crispEdges;
+        }
+
+        .legend {
+            font-size: 16px;
+            font-weight: bold;
+            text-anchor: middle;
+        }
+    </style>

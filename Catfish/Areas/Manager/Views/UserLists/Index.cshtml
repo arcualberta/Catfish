@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Catfish.Areas.Manager.Models.ViewModels.CFUserListIndexViewModel>
+@{
+    ViewBag.Title = "CFUser Groups";
+}
+@section Toolbar {
+    @Html.Partial("Partial/IndexToolbar")
+}
+<div class="bs">
+    <div class="container">
+        <table class="list">
+            <thead>
+                <tr>
+                    <th>User List Name</th>
+                    <th>Users</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            @{
+                foreach (var m in Model)
+                {
+                <tr >
+                    <td>@m.UserListName</td>
+                    <td>@String.Join(" | ", @m.UserNames())</td>
+                    <td>
+                        <button>Details</button>
+                        <form action="@Url.Action("Edit", "UserLists", new {Id = m.Guid.ToString() })" method="get" class="inline">
+                            <button type="submit" value="Submit" class="glyphicon glyphicon-edit"></button>
+                        </form>
+
+                        <form action="@Url.Action("Delete", "UserLists", new {Id = m.Guid.ToString() })" method="post" class="inline">
+                            <button type="submit" value="Submit" class="glyphicon glyphicon-trash"></button>
+                        </form>
+
+                    </td>
+                </tr>
+                }
+            }
+        </table>
+    </div>
+</div>

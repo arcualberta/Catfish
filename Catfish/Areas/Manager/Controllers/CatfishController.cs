@@ -7,6 +7,7 @@ using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Piranha.Areas.Manager.Controllers;
 using Catfish.Areas.Manager.Models.ViewModels;
+using Catfish.Services;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -23,16 +24,13 @@ namespace Catfish.Areas.Manager.Controllers
 
         private EntityService mEntityService;
         public EntityService EntityService { get { if (mEntityService == null) mEntityService = new EntityService(Db); return mEntityService; } }
-
-        private ItemService mItemService;
-        public ItemService ItemService { get { if (mItemService == null) mItemService = new ItemService(Db); return mItemService; } }
-
+          
         private CollectionService mCollectionService;
         public CollectionService CollectionService { get { if (mCollectionService == null) mCollectionService = new CollectionService(Db); return mCollectionService; } }
 
-        private EntityGroupService mEntityGroupService;
+        private UserListService mEntityGroupService;
 
-        public EntityGroupService EntityGroupService { get { if (mEntityGroupService == null) mEntityGroupService = new EntityGroupService(Db); return mEntityGroupService; } }
+        public UserListService EntityGroupService { get { if (mEntityGroupService == null) mEntityGroupService = new UserListService(Db); return mEntityGroupService; } }
 
         private EntityTypeService mEntityTypeService;
 
@@ -41,8 +39,32 @@ namespace Catfish.Areas.Manager.Controllers
         private DataService mDataService;
         public DataService DataService { get { if (mDataService == null) mDataService = new DataService(Db); return mDataService; } }
 
+        private AccessDefinitionService mAccessDefinitionService;
+        public AccessDefinitionService AccessDefinitionService { get { if (mAccessDefinitionService == null) mAccessDefinitionService = new AccessDefinitionService(Db); return mAccessDefinitionService; } }
 
-        [HttpPost]
+        private SecurityService mSecurityService;
+        public SecurityService SecurityService
+        {
+            get
+            {
+                if (mSecurityService == null)
+                {
+                    mSecurityService = new SecurityService(Db);
+                }
+                return mSecurityService;
+            }
+        }
+        
+        private ItemService mItemService;
+        public ItemService ItemService {
+            get {
+                if (mItemService == null)
+                    mItemService = new ItemService(Db);
+                return mItemService;
+            }
+        }
+
+        [HttpPost]        
         public JsonResult SelectEntity(SelectEntityTypeViewModel vm)
         {
             var id = vm.SelectedEntityType.Id;

@@ -13,8 +13,8 @@ namespace Catfish.Controllers.Api
         public JsonResult Index()
         {
             CatfishDbContext db = new CatfishDbContext();
-            int items = db.XmlModels.Where(x => x is Item).Count();
-            int collections = db.XmlModels.Where(x => x is Collection).Count();
+            int items = db.XmlModels.Where(x => x is CFItem).Count();
+            int collections = db.XmlModels.Where(x => x is CFCollection).Count();
             Object stats = new { Items = items, Collections = collections };
             return Json(stats, JsonRequestBehavior.AllowGet);
         }

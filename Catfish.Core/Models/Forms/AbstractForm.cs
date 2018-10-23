@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Forms
 {
-    public abstract class AbstractForm : XmlModel
+    [Serializable]
+    public abstract class AbstractForm : CFXmlModel
     {
         public AbstractForm()
         {
@@ -18,6 +20,7 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
+        [IgnoreDataMember]
         public IReadOnlyList<FormField> Fields
         {
             get
@@ -39,10 +42,11 @@ namespace Catfish.Core.Models.Forms
 
         [NotMapped]
         [DataType(DataType.MultilineText)]
+        [IgnoreDataMember]
         public string Description { get { return GetDescription(); } set { SetDescription(value); } }
 
 
-        public override void UpdateValues(XmlModel src)
+        public override void UpdateValues(CFXmlModel src)
         {
             base.UpdateValues(src);
 
@@ -55,11 +59,11 @@ namespace Catfish.Core.Models.Forms
                     field.UpdateValues(src_field);
             }
         }
-
         public void SetFieldValue(string fieldName, string fieldValue, string language)
         {
             SetFieldValue(fieldName, new List<string> { fieldValue }, language);
         }
+
         public void SetFieldValue(string fieldName, IEnumerable<string> fieldValues, string language)
         {
             FormField field = Fields.Where(f => f.Name == fieldName).FirstOrDefault();

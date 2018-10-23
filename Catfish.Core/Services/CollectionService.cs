@@ -3,6 +3,10 @@ using Catfish.Core.Models;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Principal;
+using System.Collections.Generic;
+using Catfish.Core.Helpers;
+using Catfish.Core.Contexts;
+using Catfish.Core.Models.Access;
 
 namespace Catfish.Core.Services
 {
@@ -16,15 +20,19 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="db">The database context containing the needed Collections.</param>
         public CollectionService(CatfishDbContext db) : base(db) { }
+        //public CollectionService(CatfishDbContext db, Func<string, bool> isAdmin) : base(db) { }
 
         /// <summary>
         /// Get a collection from the database.
         /// </summary>
         /// <param name="id">The id of the Collection to obtain.</param>
         /// <returns>The requested collection from the database. A null value is returned if no collection is found.</returns>
-        public Collection GetCollection(int id)
+        public CFCollection GetCollection(int id, AccessMode accessMode = AccessMode.Read)
         {
-            return Db.Collections.Where(c => c.Id == id).FirstOrDefault();
+            return Db.Collections.FindAccessible(AccessContext.current.IsAdmin,
+                AccessContext.current.AllGuids,
+                accessMode)
+                .Where(i => i.Id == id).FirstOrDefault();
         }
 
         /// <summary>
@@ -32,18 +40,24 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="guid">The mapped guid of the Collection to obtain.</param>
         /// <returns>The requested collection from the database. A null value is returned if no collection is found.</returns>
-        public Collection GetCollection(string guid)
-        {
-            return Db.Collections.Where(c => c.MappedGuid == guid).FirstOrDefault();
-        }
+        //public CFCollection GetCollection(string guid)
+        //{
+        //    return Db.Collections.Where(c => c.MappedGuid == guid).FirstOrDefault();
+        //}
 
         /// <summary>
         /// Get all collections accessable by the current user.
         /// </summary>
         /// <returns>The resulting list of collections.</returns>
-        public IQueryable<Collection> GetCollections()
+        public IQueryable<CFCollection> GetCollections()
         {
-            return Db.Collections;
+            //string guidString = actor.Name;
+            //List<Guid> guids = GetUserGuids(guidString);
+            //SecurityServiceBase.CreateSecurityAccessContext(actor.Name);
+            
+            return Db.Collections.FindAccessible(AccessContext.current.IsAdmin,
+                AccessContext.current.AllGuids, 
+                Models.Access.AccessMode.Read);
         }
 
         /// <summary>
@@ -52,10 +66,10 @@ namespace Catfish.Core.Services
         /// <param name="id">The id of the collection to be removed.</param>
         public void DeleteCollection(int id)
         {
-            Collection model = null;
+            CFCollection model = null;
             if (id > 0)
             {
-                model = Db.Collections.Where(et => et.Id == id).FirstOrDefault();
+                model = GetCollection(id, AccessMode.Control);
                 if (model != null)
                 {
                     Db.Entry(model).State = EntityState.Deleted;
@@ -76,9 +90,9 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="entityTypeId">The Id of the entity type to connect to the collection.</param>
         /// <returns>The newly created collection.</returns>
-        public Collection CreateCollection(int entityTypeId)
+        public CFCollection CreateCollection(int entityTypeId)
         {
-            return CreateEntity<Collection>(entityTypeId);
+            return CreateEntity<CFCollection>(entityTypeId);
         }
 
         /// <summary>
@@ -86,17 +100,17 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="changedCollection">The collection content to be modified.</param>
         /// <returns>The modified database collection.</returns>
-        public Collection UpdateStoredCollection(Collection changedCollection)
+        public CFCollection UpdateStoredCollection(CFCollection changedCollection)
         {
-            Collection dbModel = new Collection();
+            CFCollection dbModel = new CFCollection();
 
             if (changedCollection.Id > 0)
             {
-                dbModel = GetCollection(changedCollection.Id);
+                dbModel = GetCollection(changedCollection.Id, AccessMode.Write);
             }
             else
             {
-                dbModel = CreateEntity<Collection>(changedCollection.EntityTypeId.Value);
+                dbModel = CreateEntity<CFCollection>(changedCollection.EntityTypeId.Value);
             }
 
             //updating the "value" text elements

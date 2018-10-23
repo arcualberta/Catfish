@@ -1,0 +1,69 @@
+﻿@model Catfish.Models.Regions.EntityContainer
+
+<ul class="form">
+    
+    @Html.Partial("_CatfishRegion", Model)
+    <li>
+        @Html.LabelFor(m => m.Fields)
+        <div class="bs input">
+            <div><table class="table table-responsive table-striped" id="AttributeMappingTable">
+     @{ 
+         int i = 0;
+         foreach (string f in Model.Fields)
+         {
+             string rowId = "row_" + i;
+            <tr id="@rowId">
+                <input type="hidden" name="@(Html.NameFor(m => m.Fields)).Index" value="@(i)"/>
+                @Html.HiddenFor(m => m.Fields[i])
+                    <td><span>@f</span></td>
+                    <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteRow('@rowId');"></span><span class="glyphicon glyphicon-arrow-up up"></span><span class="glyphicon glyphicon-arrow-down down"></span></td>
+                </tr>
+
+             ++i;
+         }
+         <tr id="ddFields"><td>@Html.DropDownList("selectedField", Model.FieldsMapping, new { @class= "btn btn-default", @style="padding: 2px 2px" })</td>
+                <td><span class="glyphicon glyphicon-plus-sign" onclick="AddField()"></span></td></tr>
+
+    }
+        </table></div>
+           
+        </div>
+    </li>
+</ul>
+
+<script>
+    $( document ).ready(function() {
+       $('.up,.down').click(function () {
+          var row = $(this).parents('tr:first');
+          if ($(this).is('.up')) {
+               row.insertBefore(row.prev())
+          }
+         else {
+            row.insertAfter(row.next());
+           }
+     });
+
+
+    });
+    function AddField()
+    {
+      var Field = $("#Regions_0__Body_selectedField").val();
+      var uniqueId = Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
+     var rowCount = $('#AttributeMappingTable tr').length;
+    var rowId = "row_" + (rowCount - 1);
+
+
+      var t = `<tr id="` + rowId +`"><input type="hidden" name="Regions[0].Body.Fields.Index" value="` + uniqueId + `">
+               <input name="Regions[0].Body.Fields[` + uniqueId +  `]" type="hidden" value="` + Field +`">
+                    <td><span>` + Field + `</span></td>
+                    <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteRow('` + rowId +`')"></span><span class="glyphicon glyphicon-arrow-up"></span><span class="glyphicon glyphicon-arrow-down"></span></td>
+                </tr>`;
+
+      $("#ddFields").before(t)
+    }
+
+    function DeleteRow(index)
+    {
+       $("#" + index).remove();
+    }
+</script>

@@ -14,13 +14,36 @@ using System.Data.Entity;
 
 namespace Catfish.Areas.Manager.Controllers
 {
-    public class MetadataController : FormBuilderController
+    public class MetadataController : FormBuilderController<CFMetadataSet>
     {
-        public override AbstractForm CreateDataModel() { return new MetadataSet(); }
+        public override CFMetadataSet CreateDataModel() { return new CFMetadataSet(); }
+
+        public override FormBuilderViewModel CreateViewModel(CFMetadataSet model)
+        {
+            FormBuilderViewModel vm = new FormBuilderViewModel(model) { ShowFieldDescriptions = false };
+
+            return vm;
+        }
 
         public ActionResult Index()
         {
+            ViewData["showDeleteButton"] = true;
             return View(MetadataService.GetMetadataSets());
+        }
+
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            SecurityService.CreateAccessContext();
+            
+            CFMetadataSet metadataSet = MetadataService.GetMetadataSet(id);
+            if (metadataSet != null)
+            {
+                Db.MetadataSets.Remove(metadataSet);
+                Db.SaveChanges();
+            }
+            
+            return RedirectToAction("index");
         }
 
     }

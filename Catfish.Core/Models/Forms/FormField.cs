@@ -17,44 +17,17 @@ using System.Web.Script.Serialization;
 namespace Catfish.Core.Models.Forms
 {
     [FormFieldRequired]
-    public class FormField : XmlModel
+    public class FormField : CFXmlModel
     {
         public override string GetTagName() { return "field"; }
-
-        //XXX Add fileguids as in the attachment model
         public static char FileGuidSeparator = '|';
 
         [NotMapped]
-        public string[] FieldFileGuidsArray {
-            get {
-                return this.FieldFileGuids.Split(new char[] { Attachment.FileGuidSeparator });
-            }
-        }
-
-        [NotMapped]
-        public string FieldFileGuids
+        public List<CFFileDescription> Files
         {
             get
             {
-                XElement val = Data.Element("value");
-                return val == null ? "" : val.Value;
-            }
-            set
-            {
-                XElement val = Data.Element("value");
-                if (val == null)
-                    Data.Add(val = new XElement("value"));
-
-                val.Value = value == null ? "" : value;
-            }
-        }
-
-        [NotMapped]
-        public List<FileDescription> FileDescriptions
-        {
-            get
-            {
-                return GetChildModels("files/" + FileDescription.TagName, Data).Select(c => c as FileDescription).ToList();
+                return GetChildModels("files/" + CFFileDescription.TagName).Select(c => c as CFFileDescription).ToList();
             }
 
             set
@@ -65,63 +38,14 @@ namespace Catfish.Core.Models.Forms
                     filesElement = new XElement("files");
                     Data.Add(filesElement);
                 }
-                foreach (FileDescription fileDescription in value)
+                foreach (CFFileDescription fileDescription in value)
                 {
                     filesElement.Add(fileDescription.Data);
                 }
-                //XElement val = Data.Element("files");
-                //if (val == null)
-                //    Data.Add(val = new XElement("files"));
 
-                //val.Value = value == null ? "" : value;
             }
         }
 
-        //[ScriptIgnore]
-        //[NotMapped]
-        //public Attachment AttachmentField
-        //{
-        //    get
-        //    {
-        //        if (mAttachmentField == null)
-        //        {
-        //            mAttachmentField = new Attachment();
-        //            mAttachmentField.FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), Files.Select(f => f.Guid));
-        //        }
-        //        return mAttachmentField;
-        //    }
-        //    set
-        //    {
-        //        mAttachmentField = value;
-        //    }
-        //}
-        //private Attachment mAttachmentField;
-
-        //[ScriptIgnore]
-        //[NotMapped]
-        //public virtual IEnumerable<DataFile> Files
-        //{
-        //    get
-        //    {
-        //        return GetChildModels("data/" + DataFile.TagName, Data).Select(c => c as DataFile);
-        //    }
-        //}
-
-        //XXX End
-
-
-        //[NotMapped]
-        //public string Name
-        //{
-        //    get
-        //    {
-        //        return GetName();
-        //    }
-        //    set
-        //    {
-        //        SetName(value);
-        //    }
-        //}
 
         //[Display(Name = "Name")]
         [ScriptIgnore]
@@ -186,7 +110,9 @@ namespace Catfish.Core.Models.Forms
                 if (valueWrapper == null)
                     Data.Add(valueWrapper = new XElement("value"));
 
-                return XmlHelper.GetTextValues(valueWrapper, true).ToList();
+                return (IsHtmlField() ? 
+                    XmlHelper.GetTextValues<HtmlTextValue>(valueWrapper, true) : XmlHelper.GetTextValues(valueWrapper, true))
+                    .ToList();
             }
 
             set
@@ -243,7 +169,7 @@ namespace Catfish.Core.Models.Forms
             set { SetAttribute("page", value); }
         }
 
-        public override void UpdateValues(XmlModel src)
+        public override void UpdateValues(CFXmlModel src)
         {
             XElement srcValueWrapper = src.Data.Element("value");
             if (srcValueWrapper == null)
@@ -273,5 +199,14 @@ namespace Catfish.Core.Models.Forms
             return typeof(PageBreak).IsAssignableFrom(GetType());
         }
 
+        public virtual bool IsHidden()
+        {
+            return false;
+        }
+
+        protected virtual bool IsHtmlField()
+        {
+            return false;
+        }
     }
 }
