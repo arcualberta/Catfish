@@ -16,5 +16,30 @@ namespace Catfish.Core.Plugins
         {
 
         }
+
+        protected string GetVirtualPath()
+        {
+            System.Reflection.Assembly asm = this.GetType().Assembly;
+            string basePath = asm.Location.Substring(0, asm.Location.LastIndexOf(asm.ManifestModule.Name));
+
+            Uri path1 = new Uri(System.AppContext.BaseDirectory);
+            Uri path2 = new Uri(basePath);
+
+            return "~/" + path1.MakeRelativeUri(path2).OriginalString;
+        }
+
+        public virtual string GetAreaViewsPath()
+        {
+            string basePath = GetVirtualPath();
+
+            return string.Format("{0}/{1}/Manager/Views/", basePath, "{2}");
+        }
+
+        public virtual string GetViewsPath()
+        {
+            string basePath = GetVirtualPath();
+
+            return string.Format("{0}/Views/", basePath);
+        }
     }
 }

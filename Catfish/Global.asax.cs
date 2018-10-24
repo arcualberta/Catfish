@@ -29,7 +29,8 @@ namespace Catfish
             // Load Plugins
             LoadPlugins();
             ControllerBuilder.Current.SetControllerFactory(typeof(PluginControllerFactory));
-            
+            ViewEngines.Engines.Add(PluginContext.Current.ViewEngine);
+
             // Code that runs on application startup
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
