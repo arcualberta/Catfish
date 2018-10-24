@@ -48,8 +48,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
                 }, eTarget);
 
             CreateItem(EntityTypeName,ItemName, withAttachment);
-
-            Assert.IsTrue(Driver.FindElement(By.XPath("//div[@class='img']")).Displayed);
+          
+            Assert.IsTrue(Driver.FindElement(By.XPath("//div[@class='img']"),10).Displayed);
 
         }
 
