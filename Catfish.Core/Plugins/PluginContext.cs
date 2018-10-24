@@ -34,10 +34,13 @@ namespace Catfish.Core.Plugins
             }
         }
 
+        public PluginViewEngine ViewEngine { get; private set; }
+
         private PluginContext()
         {
             mPlugins = new List<Plugin>();
             mAssemblies = new List<Assembly>();
+            ViewEngine = new PluginViewEngine();
         }
 
         public Plugin LoadPlugin(string pluginClass, string assemblyLocation)
@@ -52,6 +55,7 @@ namespace Catfish.Core.Plugins
             if (!mAssemblies.Contains(asm))
             {
                 mAssemblies.Add(asm);
+                ViewEngine.RegisterPlugin(result);
             }
 
             return result;

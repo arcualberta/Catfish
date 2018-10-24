@@ -26,4 +26,43 @@ namespace Catfish.Core.Plugins
             return type;
         }
     }
+
+    public class PluginViewEngine : RazorViewEngine
+    {
+        public void RegisterPlugin(Plugin plugin)
+        {
+            string areaPath = plugin.GetAreaViewsPath();
+            string viewPath = plugin.GetViewsPath();
+
+            List<string> paths = new List<string>(this.AreaViewLocationFormats);
+            paths.Add(areaPath + "{1}/{0}.cshtml");
+            paths.Add(areaPath + "Shared/{0}.cshtml");
+            this.AreaViewLocationFormats = paths.ToArray();
+
+            paths = new List<string>(this.AreaMasterLocationFormats);
+            paths.Add(areaPath + "{1}/{0}.cshtml");
+            paths.Add(areaPath + "Shared/{0}.cshtml");
+            this.AreaMasterLocationFormats = paths.ToArray();
+
+            paths = new List<string>(this.AreaPartialViewLocationFormats);
+            paths.Add(areaPath + "{1}/Partial/{0}.cshtml");
+            paths.Add(areaPath + "Shared/Partial/{0}.cshtml");
+            this.AreaPartialViewLocationFormats = paths.ToArray();
+
+            paths = new List<string>(this.ViewLocationFormats);
+            paths.Add(viewPath + "{1}/{0}.cshtml");
+            paths.Add(viewPath + "Shared/{0}.cshtml");
+            this.ViewLocationFormats = paths.ToArray();
+
+            paths = new List<string>(this.MasterLocationFormats);
+            paths.Add(viewPath + "{1}/{0}.cshtml");
+            paths.Add(viewPath + "Shared/{0}.cshtml");
+            this.MasterLocationFormats = paths.ToArray();
+
+            paths = new List<string>(this.PartialViewLocationFormats);
+            paths.Add(viewPath + "{1}/Partial/{0}.cshtml");
+            paths.Add(viewPath + "Shared/Partial/{0}.cshtml");
+            this.PartialViewLocationFormats = paths.ToArray();
+        }
+    }
 }
