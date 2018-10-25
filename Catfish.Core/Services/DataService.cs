@@ -27,7 +27,7 @@ namespace Catfish.Core.Services
             ImageFormat format = GetThumbnailFormat(srcExtension);
             if (format == ImageFormat.Jpeg)
                 ext = "jpg";
-            else if (format == ImageFormat.Png)
+            else if (format == ImageFormat.Png || format == ImageFormat.Tiff)
                 ext = "png";
             else
                 throw new Exception("Unknown thumbnail format");
@@ -42,7 +42,7 @@ namespace Catfish.Core.Services
             ImageFormat format = GetThumbnailFormat(srcExtension);
             if (format == ImageFormat.Jpeg)
                 ext = "jpg";
-            else if (format == ImageFormat.Png)
+            else if (format == ImageFormat.Png || format == ImageFormat.Tiff)
                 ext = "png";
             else
                 throw new Exception("Unknown image format");
@@ -62,12 +62,34 @@ namespace Catfish.Core.Services
         protected ImageFormat GetThumbnailFormat(string srcExtension)
         {
             //add .jpeg
-            return (srcExtension == "jpg" || srcExtension == "jpeg") ? ImageFormat.Jpeg : ImageFormat.Png;
+            // return (srcExtension == "jpg" || srcExtension == "jpeg") ? ImageFormat.Jpeg : ImageFormat.Png;
+            ImageFormat imgFormat = null;
+           if(srcExtension == "jpg" || srcExtension == "jpeg")
+            {
+                imgFormat = ImageFormat.Jpeg;
+            }
+           else if(srcExtension == "png" || srcExtension == "tif" || srcExtension == "tiff")
+            {
+                imgFormat =  ImageFormat.Png;
+            }
+
+            return imgFormat;
         }
 
         protected ImageFormat GetImageFormat(string srcExtension)
         {
-            return (srcExtension == "jpg" || srcExtension == "jpeg") ? ImageFormat.Jpeg : ImageFormat.Png;
+            // return (srcExtension == "jpg" || srcExtension == "jpeg") ? ImageFormat.Jpeg : ImageFormat.Png;
+            ImageFormat imgFormat = null;
+            if (srcExtension == "jpg" || srcExtension == "jpeg")
+            {
+                imgFormat = ImageFormat.Jpeg;
+            }
+            else if (srcExtension == "png" || srcExtension == "tif" || srcExtension == "tiff")
+            {
+                imgFormat = ImageFormat.Png;
+            }
+
+            return imgFormat;
         }
 
         public List<CFDataFile> UploadTempFiles(HttpRequestBase request)
@@ -120,6 +142,9 @@ namespace Catfish.Core.Services
                 if (!Directory.Exists(dstPath))
                     throw new Exception("Unable to create the upload folder " + dstPath);
             }
+
+            //change the content type to image/png if the content type is image/tif
+            contentType = contentType == "image/tiff" ? "image/png" : contentType;
 
             CFDataFile file = new CFDataFile()
             {
