@@ -40,10 +40,18 @@ namespace Catfish.Core.Models.Access
             return accessModes;
         }
 
+        //public static List<AccessMode> AsListExcept(this AccessMode mode)
+        //{
+        //    var modes = Enum.GetValues(typeof(AccessMode))
+        //        .Cast<AccessMode>()
+        //        .Except(new AccessMode[] { AccessMode.None });
+        //}
+
         public static List<string> AsStringList(this AccessMode mode)
         {
             return mode.AsList().Select(m => m.ToString()).ToList();
         }
+
     }
 
     public class CFAccessDefinition : CFXmlModel
@@ -91,17 +99,7 @@ namespace Catfish.Core.Models.Access
         {
             get
             {
-                List<AccessMode> accessModes = new List<AccessMode>();
-
-                foreach (AccessMode accessMode in Enum.GetValues(typeof(AccessMode)))
-                {
-                    if (HasMode(accessMode))
-                    {
-                        accessModes.Add((AccessMode)accessMode);
-                    }
-                }
-
-                return accessModes;
+                return AccessModes.AsList();
             }            
         }
         
