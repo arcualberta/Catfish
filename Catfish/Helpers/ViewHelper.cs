@@ -85,6 +85,7 @@ namespace Catfish.Helpers
             host.NamespaceImports.Add("System");
             host.NamespaceImports.Add("System.Web.Mvc.Html");
             host.NamespaceImports.Add("System.Linq");
+            host.NamespaceImports.Add("System.Web.Helpers");
 
             RazorTemplateEngine engine = new RazorTemplateEngine(host);
             GeneratorResults razorResult = engine.GenerateCode(new StringReader(viewCode));
@@ -96,6 +97,7 @@ namespace Catfish.Helpers
             parameters.ReferencedAssemblies.Add(typeof(System.Web.Mvc.IView).Assembly.Location);
             parameters.ReferencedAssemblies.Add(typeof(System.Web.HtmlString).Assembly.Location);
             parameters.ReferencedAssemblies.Add(typeof(System.Linq.Expressions.Expression).Assembly.Location);
+            parameters.ReferencedAssemblies.Add(typeof(System.Web.Helpers.Json).Assembly.Location);
 
 #if DEBUG
             parameters.IncludeDebugInformation = true;
