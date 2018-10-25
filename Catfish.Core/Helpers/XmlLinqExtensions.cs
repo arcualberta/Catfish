@@ -15,7 +15,14 @@ namespace Catfish.Core.Helpers
 {
     public static class XmlLinqExtensions
     {
-        public static IQueryable<TSource> FromSolr<TSource>(this DbSet<TSource> set, string q, out int total, int start = 0, int rows = int.MaxValue, string sortRowId = null, bool sortAscending = false) where TSource : CFXmlModel
+        public static IQueryable<TSource> FromSolr<TSource>(
+            this DbSet<TSource> set, 
+            string q, 
+            out int total, 
+            int start = 0, 
+            int rows = int.MaxValue, 
+            string sortRowId = null, 
+            bool sortAscending = false) where TSource : CFXmlModel
         {
             if(start < 0)
             {

@@ -75,6 +75,7 @@ namespace Catfish.Areas.Manager.Services
 
         public CFEntity UpdateEntityAccessGroups(CFEntity entity, EntityAccessDefinitionsViewModel entityAccessVM)
         {
+            // XXX Here is where you need to update the access group on solr
             List<CFAccessGroup> accessGroups = new List<CFAccessGroup>();
             foreach (var ag in entityAccessVM.SelectedAccessGroups)
             {
@@ -83,14 +84,22 @@ namespace Catfish.Areas.Manager.Services
                 group.AccessGuid = Guid.Parse(ag.userId);
                 group.AccessDefinition.AccessModes = (AccessMode)ag.AccessModesNum;
                 if(ag.AccessMode != null)
+                {
                     group.AccessDefinition.Name = ag.AccessMode.Substring(0, ag.AccessMode.LastIndexOf("-"));
-
-
+                }
                 accessGroups.Add(group);
             }
-            entity.AccessGroups = accessGroups;
-           
+
+            entity.AccessGroups = accessGroups;           
             entity.BlockInheritance = entityAccessVM.BlockInheritance;
+
+            //entity.MappedGuid
+            // fetch solr entry by cfentity mapped guid
+            SolrNet.SolrQueryResults<Dictionary<string, object>> mapedEntity;
+            mapedEntity = SolrService.solrOperations.Query("id:" + entity.MappedGuid);
+
+            mapedEntity.First();
+            // remove all access entries
 
             return entity;
 
