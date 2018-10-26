@@ -121,7 +121,7 @@ namespace Catfish
             {
                 foreach (PluginElement plugin in config.Plugins)
                 {
-                    PluginContext.Current.LoadPlugin(plugin.Class, plugin.LibraryPath);
+                    PluginContext.Current.LoadPlugin(plugin.Class, plugin.LibraryPath, plugin.BasePath);
                 }
             }
         }

@@ -66,5 +66,22 @@ namespace Catfish.Core.Plugins
                 this["libraryPath"] = value;
             }
         }
+
+        /// <summary>
+        /// Base path defines where other folders for this plugin will be found. The main use of this will be used for creating shortcut's to views.
+        /// </summary>
+        [ConfigurationProperty("basePath", IsRequired = false)]
+        public string BasePath
+        {
+            get
+            {
+                return (string)this["basePath"];
+            }
+
+            set
+            {
+                this["basePath"] = value;
+            }
+        }
     }
 }
