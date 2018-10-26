@@ -43,12 +43,13 @@ namespace Catfish.Core.Plugins
             ViewEngine = new PluginViewEngine();
         }
 
-        public Plugin LoadPlugin(string pluginClass, string assemblyLocation)
+        public Plugin LoadPlugin(string pluginClass, string assemblyLocation, string basePath)
         {
             AssemblyName name = AssemblyName.GetAssemblyName(assemblyLocation);
             Assembly asm = Assembly.Load(name);
 
             Plugin result = asm.CreateInstance(pluginClass) as Plugin;
+            result.BasePath = basePath;
             
             mPlugins.Add(result);
 

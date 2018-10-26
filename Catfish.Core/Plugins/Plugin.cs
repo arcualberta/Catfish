@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -10,6 +12,8 @@ namespace Catfish.Core.Plugins
 {
     public abstract class Plugin
     {
+        public string BasePath { get; set; }
+
         public abstract void Initialize();
 
         public virtual void RegisterRoutes(RouteCollection routes)
@@ -17,29 +21,58 @@ namespace Catfish.Core.Plugins
 
         }
 
-        protected string GetVirtualPath()
+        protected void CopyDirectory(string sourceFolder, string destinationFolder, bool overwrite = false)
         {
-            System.Reflection.Assembly asm = this.GetType().Assembly;
-            string basePath = asm.Location.Substring(0, asm.Location.LastIndexOf(asm.ManifestModule.Name));
+            DirectoryInfo dir = new DirectoryInfo(sourceFolder);
 
-            Uri path1 = new Uri(System.AppContext.BaseDirectory);
-            Uri path2 = new Uri(basePath);
+            if (!dir.Exists)
+            {
+                throw new DirectoryNotFoundException("Source directory not found: " + sourceFolder);
+            }
 
-            return "~/" + path1.MakeRelativeUri(path2).OriginalString;
+            if (!Directory.Exists(destinationFolder))
+            {
+                Directory.CreateDirectory(destinationFolder);
+            }
+
+            // Copy files
+            FileInfo[] files = dir.GetFiles();
+            foreach(FileInfo file in files)
+            {
+                string resultPath = Path.Combine(destinationFolder, file.Name);
+                file.CopyTo(resultPath, overwrite);
+            }
+
+            // Recursivly copy folders
+            DirectoryInfo[] dirs = dir.GetDirectories();
+            foreach(DirectoryInfo childDir in dirs)
+            {
+                string resultPath = Path.Combine(destinationFolder, childDir.Name);
+                CopyDirectory(childDir.FullName, resultPath, overwrite);
+            }
         }
 
-        public virtual string GetAreaViewsPath()
+        public virtual string GetPluginPath()
         {
-            string basePath = GetVirtualPath();
+            if(BasePath != null)
+            {
+                return BasePath;
+            }
 
-            return string.Format("{0}/{1}/Manager/Views/", basePath, "{2}");
+            Assembly pluginAsm = GetType().Assembly;
+            string pluginPath = pluginAsm.Location.Substring(0, pluginAsm.Location.LastIndexOf(pluginAsm.ManifestModule.Name));
+
+            return pluginPath;
+        }
+        
+        public virtual void CopyBaseViews(string destinationFolder)
+        {
+            CopyDirectory(Path.Combine(GetPluginPath(), "Views"), destinationFolder, true);
         }
 
-        public virtual string GetViewsPath()
+        public virtual void CopyManagerViews(string destinationFolder)
         {
-            string basePath = GetVirtualPath();
-
-            return string.Format("{0}/Views/", basePath);
+            CopyDirectory(Path.Combine(GetPluginPath(), "Areas/Manager/Views"), destinationFolder, true);
         }
     }
 }
