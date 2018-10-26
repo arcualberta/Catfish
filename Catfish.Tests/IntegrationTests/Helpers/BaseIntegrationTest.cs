@@ -331,21 +331,17 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
             Driver.FindElement(By.Id("add-field")).Click();
             FilledItemFormFields(name);
-
+          
             //attach an image
-            if(attachment)
+            if (attachment)
             {           
                  string sourceFile = ConfigurationManager.AppSettings["SourceTestFile"];
                  sourceFile = Path.Combine(sourceFile, "image1.jpg");
-                //attach the file
-                var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(500));
-               wait.Until(drv => drv.FindElement(By.XPath("//input[@type='file']"))); //wait.Until(ExpectedConditions.ElementIsVisible(BY.id("elementId"))); -- deprecated
-               
-                
-                Driver.FindElement(By.XPath("//input[@type='file']")).SendKeys(sourceFile);
+              
+                Driver.FindElement(By.XPath("//input[@type='file']"), 10).SendKeys(sourceFile);
             }
-         
-            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
+
+            Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click(); //wait 10 sec before finding the element
         }
 
         private void FilledItemFormFields(string strname)
