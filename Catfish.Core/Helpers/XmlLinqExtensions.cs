@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models;
+﻿using Catfish.Core.Contexts;
+using Catfish.Core.Models;
 using Catfish.Core.Models.Access;
 using Catfish.Core.Services;
 using CommonServiceLocator;
@@ -15,20 +16,24 @@ namespace Catfish.Core.Helpers
 {
     public static class XmlLinqExtensions
     {
+
         public static IQueryable<TSource> FromSolr<TSource>(
-            this DbSet<TSource> set, 
-            string q, 
-            out int total, 
-            int start = 0, 
-            int rows = int.MaxValue, 
-            string sortRowId = null, 
-            bool sortAscending = false) where TSource : CFXmlModel
+        this DbSet<TSource> set,        
+        string q,
+        out int total,
+        int start = 0,
+        int rows = int.MaxValue,
+        string sortRowId = null,
+        bool sortAscending = false) where TSource : CFXmlModel
         {
-            if(start < 0)
+            if (start < 0)
             {
                 start = 0;
             }
 
+            bool isAdmin = AccessContext.current.IsAdmin;
+            ICollection<Guid> guids = AccessContext.current.AllGuids;
+            
             if (SolrService.IsInitialized)
             {
                 var options = new QueryOptions()
@@ -45,19 +50,55 @@ namespace Catfish.Core.Helpers
                     };
                 }
 
+                // XXX Add query parameters to filter out by access
+
                 var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
+
+                // Create filter query
+
+                // for solr based listing we just need to check if 
+                // user can read items: AccessMode.Read = 1
+
+                // XXX Aqui agrega lista de guids para solr
+                if (!isAdmin && guids.Count > 0)
+                {
+                    // XXX For now work with read access mode, add others later
+
+                    Guid publicGroup = new Guid();
+
+                    AbstractSolrQuery filterOptions = new SolrQueryByField("access_1_ss", publicGroup.ToString("N"));
+
+                    foreach (Guid guid in guids)
+                    {
+                        filterOptions += new SolrQueryByField("access_1_ss", guid.ToString("N"));
+                    }
+
+                    ISolrQuery[] filterQuery = new ISolrQuery[]
+                    {
+                        filterOptions
+                    };
+
+                    //ISolrQuery[] filterQuery = new ISolrQuery[]
+                    //{
+                    //new SolrQueryByField("access_1_ss", "86c337c908b14abab500a8a8060a4f8e")
+                    //+ new SolrQueryByField("access_1_ss", "2"),
+                    //};
+
+                    options.FilterQueries = filterQuery;
+                }
+
                 var results = solr.Query(q, options);
                 total = results.NumFound;
 
                 int resultsCount = results.Count();
                 string query;
 
-                if(resultsCount > 0)
+                if (resultsCount > 0)
                 {
                     IEnumerable<string> values = results.Select((r, i) => {
                         return "(" + i + ",'" + r.SolrId + "')";
-                        });
-                    string valuesString = "values" + String.Join(",", values);                    
+                    });
+                    string valuesString = "values" + String.Join(",", values);
 
                     query = $@" 
                     SELECT cf.* FROM [dbo].[CFXmlModels] cf 
@@ -69,7 +110,7 @@ namespace Catfish.Core.Helpers
                 else
                 {
                     // Produce an empty result
-                    query = "SELECT * FROM [dbo].[CFXmlModels] WHERE Id < 0"; 
+                    query = "SELECT * FROM [dbo].[CFXmlModels] WHERE Id < 0";
                 }
 
                 return set.SqlQuery(query).AsQueryable();
@@ -80,6 +121,91 @@ namespace Catfish.Core.Helpers
 
             throw new InvalidOperationException("The SolrService has not been initialized.");
         }
+
+        //public static IQueryable<TSource> FromSolr<TSource>(
+        //    this DbSet<TSource> set, 
+        //    string q, 
+        //    out int total, 
+        //    int start = 0, 
+        //    int rows = int.MaxValue, 
+        //    string sortRowId = null, 
+        //    bool sortAscending = false) where TSource : CFXmlModel
+        //{
+        //    if(start < 0)
+        //    {
+        //        start = 0;
+        //    }
+
+        //    if (SolrService.IsInitialized)
+        //    {
+        //        var options = new QueryOptions()
+        //        {
+        //            StartOrCursor = new StartOrCursor.Start(start),
+        //            Rows = rows
+        //        };
+
+        //        if (!string.IsNullOrEmpty(sortRowId))
+        //        {
+        //            options.OrderBy = new List<SortOrder>()
+        //            {
+        //                new SortOrder(sortRowId, sortAscending ? Order.ASC : Order.DESC)
+        //            };
+        //        }
+
+        //        // XXX Add query parameters to filter out by access
+
+        //        var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
+
+        //        // Create filter query
+
+        //        // for solr based listing we just need to check if 
+        //        // user can read items: AccessMode.Read = 1
+
+
+
+        //        // XXX Aqui agrega lista de guids para solr
+        //        ISolrQuery[] filterQuery = new ISolrQuery[]
+        //        {
+        //            new SolrQueryByField("access_1_ss", "86c337c908b14abab500a8a8060a4f8e")
+        //            + new SolrQueryByField("access_1_ss", "2"),
+        //        };
+
+        //        options.FilterQueries = filterQuery;
+
+        //        var results = solr.Query(q, options);
+        //        total = results.NumFound;
+
+        //        int resultsCount = results.Count();
+        //        string query;
+
+        //        if(resultsCount > 0)
+        //        {
+        //            IEnumerable<string> values = results.Select((r, i) => {
+        //                return "(" + i + ",'" + r.SolrId + "')";
+        //                });
+        //            string valuesString = "values" + String.Join(",", values);                    
+
+        //            query = $@" 
+        //            SELECT cf.* FROM [dbo].[CFXmlModels] cf 
+        //            JOIN ({valuesString}) 
+        //            AS x (ordering, id) 
+        //            ON cf.MappedGuid = x.id
+        //            ORDER BY x.ordering ";
+        //        }
+        //        else
+        //        {
+        //            // Produce an empty result
+        //            query = "SELECT * FROM [dbo].[CFXmlModels] WHERE Id < 0"; 
+        //        }
+
+        //        return set.SqlQuery(query).AsQueryable();
+
+        //        //return set.Where(p => results.Contains(p.Id)); // the Contians method is slow because it creates several or expressions. 
+        //        // More info can be found here: https://stackoverflow.com/questions/8107439/why-is-contains-slow-most-efficient-way-to-get-multiple-entities-by-primary-ke
+        //    }
+
+        //    throw new InvalidOperationException("The SolrService has not been initialized.");
+        //}
 
         public static IQueryable<TSource> FindAccessibleByGuid<TSource>(
            this DbSet<TSource> set,

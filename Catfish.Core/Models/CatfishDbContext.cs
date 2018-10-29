@@ -158,7 +158,7 @@ namespace Catfish.Core.Models
 
         public DbSet<CFXmlModel> XmlModels { get; set; }
 
-       public DbSet<CFEntity> Entities { get; set; }
+        public DbSet<CFEntity> Entities { get; set; }
 
         public DbSet<CFCollection> Collections { get; set; }
 

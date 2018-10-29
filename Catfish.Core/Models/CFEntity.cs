@@ -178,6 +178,7 @@ namespace Catfish.Core.Models
                     values.ToList().ForEach(x => result[x.Key] = x.Value);
                 }
             }
+
             return result;
         }
 
@@ -195,7 +196,8 @@ namespace Catfish.Core.Models
                         result[key] = new List<string>();
                     }
 
-                    result[key].Add(x.Guid.ToString());
+                    //result[key].Add(x.Guid.ToString());
+                    result[key].Add(x.AccessGuid.ToString());
                 }
 
             });
