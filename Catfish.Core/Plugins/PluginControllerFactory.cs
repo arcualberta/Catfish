@@ -32,6 +32,16 @@ namespace Catfish.Core.Plugins
     public class PluginViewEngine : RazorViewEngine
     {
 
+        protected override IView CreatePartialView(ControllerContext controllerContext, string partialPath)
+        {
+            return base.CreatePartialView(controllerContext, partialPath);
+        }
+        
+        public override ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
+        {
+            return base.FindPartialView(controllerContext, partialViewName, useCache);
+        }
+
         private string GetViewsBasePath(Plugin plugin, out string relativePath)
         {
             string coreBin = System.AppContext.BaseDirectory + "Plugins\\";
