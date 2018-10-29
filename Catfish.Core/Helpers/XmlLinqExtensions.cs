@@ -66,11 +66,11 @@ namespace Catfish.Core.Helpers
 
                     Guid publicGroup = new Guid();
 
-                    AbstractSolrQuery filterOptions = new SolrQueryByField("access_1_ss", publicGroup.ToString("N"));
+                    AbstractSolrQuery filterOptions = new SolrQueryByField("access_1_ss", publicGroup.ToString());
 
                     foreach (Guid guid in guids)
                     {
-                        filterOptions += new SolrQueryByField("access_1_ss", guid.ToString("N"));
+                        filterOptions += new SolrQueryByField("access_1_ss", guid.ToString());
                     }
 
                     ISolrQuery[] filterQuery = new ISolrQuery[]

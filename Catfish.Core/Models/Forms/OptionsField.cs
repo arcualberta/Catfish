@@ -20,14 +20,14 @@ namespace Catfish.Core.Models.Forms
         {
             Selected = XmlHelper.GetAttribute(optElement, "selected", false);
             Value = XmlHelper.GetTextValues(optElement, true).ToList();
-            Guid = XmlHelper.GetAttribute(optElement, "guid", System.Guid.NewGuid().ToString("N"));
+            Guid = XmlHelper.GetAttribute(optElement, "guid", System.Guid.NewGuid().ToString());
         }
 
         public Option()
         {
             Value = new List<TextValue>();
             Selected = false;
-            Guid = System.Guid.NewGuid().ToString("N");
+            Guid = System.Guid.NewGuid().ToString();
         }
 
         public XElement ToXml()
