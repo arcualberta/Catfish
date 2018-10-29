@@ -98,6 +98,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
             ISolrQuery allEntries = new SolrQuery("*:*");
             SolrService.solrOperations.Delete(allEntries);
+            SolrService.solrOperations.Commit();
         }
 
         private void ResetServerCache()
