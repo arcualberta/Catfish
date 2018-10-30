@@ -16,6 +16,9 @@ using Catfish.Core.Services;
 using Catfish.Core.ModelBinders;
 using Catfish.Core.Validators;
 using Catfish.Core.Helpers;
+using Catfish.Core.Plugins;
+using System.Configuration;
+using System.Reflection;
 
 namespace Catfish
 {
@@ -23,12 +26,18 @@ namespace Catfish
     {
         void Application_Start(object sender, EventArgs e)
         {
+            // Load Plugins
+            LoadPlugins();
+            ControllerBuilder.Current.SetControllerFactory(typeof(PluginControllerFactory));
+            ViewEngines.Engines.Add(PluginContext.Current.ViewEngine);
+
             // Code that runs on application startup
-           
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
+            RegisterPluginRoutes();
+            
             //Metadata provider
             ModelMetadataProviders.Current = new Catfish.Areas.Manager.Helpers.ModelMetadataProvider();
 
@@ -89,7 +98,42 @@ namespace Catfish
                     }
                 }
             };
-            
+
+            // Initialize Plugins
+            InitializePlugins();
+        }
+
+        private void RegisterPluginRoutes()
+        {
+            IEnumerable<Plugin> plugins = PluginContext.Current.Plugins;
+
+            foreach (Plugin plugin in plugins)
+            {
+                plugin.RegisterRoutes(RouteTable.Routes);
+            }
+        }
+
+        private void LoadPlugins()
+        {
+            PluginConfig config = ConfigurationManager.GetSection("catfishPlugins") as PluginConfig;
+
+            if (config != null)
+            {
+                foreach (PluginElement plugin in config.Plugins)
+                {
+                    PluginContext.Current.LoadPlugin(plugin.Class, plugin.LibraryPath, plugin.BasePath);
+                }
+            }
+        }
+
+        private void InitializePlugins()
+        {
+            IEnumerable<Plugin> plugins = PluginContext.Current.Plugins;
+
+            foreach(Plugin plugin in plugins)
+            {
+                plugin.Initialize();
+            }
         }
 
         private void AddManagerMenus()

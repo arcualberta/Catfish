@@ -183,16 +183,16 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, le
         var color = d3.scaleOrdinal(d3.schemeCategory10);
 
         function redrawChart(dataNest, g1) {
-            dataNest.forEach(function (d) {
+            dataNest.forEach(function (d, dIndex) {
                 if (!d.checked) return;
 
                 var path = g1.append("path")
-                    .attr("class", "line item-" + d.id)
+                    .attr("class", "line item-" + dIndex)
                     .style("stroke", function () { // Add the colours dynamically
                         return d.color;
                     })
                     .attr("d", lineFunction(d.values))
-                    .attr("id", "line_" + d.id);
+                    .attr("id", "line_" + dIndex);
 
                 var totalLength = path.node().getTotalLength();
                 path.attr("stroke-dasharray", totalLength + " " + totalLength)
@@ -262,22 +262,22 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, le
 
             //Add the legend
             var divCategory = divLegend.append("div")
-                .attr("class", "legend-item item-" + d.key)    // style the legend
+                .attr("class", "legend-item item-" + i)    // style the legend
                 .style("color", function () { // Add the colours dynamically
                     return d.color;
                 });
 
             divCategory.append("input")
-                .attr("id", "checkbox_" + d.id)
+                .attr("id", "checkbox_" + i)
                 .attr("type", "checkbox")
                 .attr("checked", "checked")
                 .on("change", function (checkData, i, input) {
                     d.checked = input[i].checked;
 
                     if (input[i].checked) {
-                        $("#line_" + d.id).show();
+                        $("#line_" + i).show();
                     } else {
-                        $("#line_" + d.id).hide();
+                        $("#line_" + i).hide();
                     }
                     update(dataNest);
 
@@ -305,9 +305,9 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, le
                     d.checked = input[i].checked;
 
                     if (input[i].checked) {
-                        $("#line_" + d.id).show();
+                        $("#line_" + i).show();
                     } else {
-                        $("#line_" + d.id).hide();
+                        $("#line_" + i).hide();
                     }
                     update(dataNest);
                     // svg.call(zoom)
