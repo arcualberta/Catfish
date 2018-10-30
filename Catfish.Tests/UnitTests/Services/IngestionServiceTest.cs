@@ -106,7 +106,8 @@ namespace Catfish.Tests.Services
 
             try
             {
-                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.Resources.IngestionDatabase3.xml"))
+                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.UnitTests.Resources.IngestionDatabase3.xml"))
+                //using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.Resources.IngestionDatabase3.xml"))
                 {
                     Dh.Igs.Import(stream);
                     Dh.Db.SaveChanges();
