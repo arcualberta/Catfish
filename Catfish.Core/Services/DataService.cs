@@ -64,7 +64,8 @@ namespace Catfish.Core.Services
             //add .jpeg
             // return (srcExtension == "jpg" || srcExtension == "jpeg") ? ImageFormat.Jpeg : ImageFormat.Png;
             ImageFormat imgFormat = null;
-           if(srcExtension == "jpg" || srcExtension == "jpeg")
+            srcExtension = srcExtension.ToLower();
+            if (srcExtension == "jpg" || srcExtension == "jpeg")
             {
                 imgFormat = ImageFormat.Jpeg;
             }
@@ -80,6 +81,7 @@ namespace Catfish.Core.Services
         {
             // return (srcExtension == "jpg" || srcExtension == "jpeg") ? ImageFormat.Jpeg : ImageFormat.Png;
             ImageFormat imgFormat = null;
+            srcExtension = srcExtension.ToLower();
             if (srcExtension == "jpg" || srcExtension == "jpeg")
             {
                 imgFormat = ImageFormat.Jpeg;
@@ -111,7 +113,7 @@ namespace Catfish.Core.Services
 
             List<CFDataFile> newFiles = new List<CFDataFile>();
             for (int i = 0; i < request.Files.Count; ++i)
-                newFiles.Add(InjestFile(request.Files[i].InputStream, request.Files[i].FileName, request.Files[i].ContentType, dstPath));
+                newFiles.Add(InjestFile(request.Files[i].InputStream, request.Files[i].FileName.ToLower(), request.Files[i].ContentType, dstPath));
 
             return newFiles;
         }

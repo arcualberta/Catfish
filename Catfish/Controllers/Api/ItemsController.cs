@@ -11,6 +11,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Catfish.Core.Helpers;
+using System.Drawing.Imaging;
 
 namespace Catfish.Controllers.Api
 {
@@ -177,9 +178,27 @@ namespace Catfish.Controllers.Api
                 jpgExt = "png";
             }
 
-            if (eSize == null)
+            if (eSize == null)  //get original size
             {
-                path_name = Path.Combine(file.Path, file.LocalFileName);
+                if (fnames[1] == "tif")
+                {
+                    //chrome ccan't display tif image
+                    string localFileNamePath = Path.Combine(file.Path, file.LocalFileName); //fnames[0] + ".png";
+                    string pngFilePath = (localFileNamePath.Split('.'))[0] + ".png";
+                   
+                   
+                    //make a copy of .tif image save it as .png if none existed yet
+                    if(!System.IO.File.Exists(pngFilePath))
+                    {
+                        System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(localFileNamePath);
+                        bitmap.Save(pngFilePath, ImageFormat.Png);
+                    }
+                    path_name = pngFilePath;
+                }
+                else
+                {
+                    path_name = Path.Combine(file.Path, file.LocalFileName);
+                }
             }
             else if (eSize.Equals(ConfigHelper.eImageSize.Thumbnail))
             {
