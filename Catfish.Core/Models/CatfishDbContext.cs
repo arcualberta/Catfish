@@ -34,6 +34,13 @@ namespace Catfish.Core.Models
             //{
             //    solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
             //}
+            string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
+
+            if (!string.IsNullOrEmpty(solrString))
+            {
+                SolrService.Init(solrString);
+            }
+
         }
 
         private void UpdateSolr()
@@ -77,9 +84,9 @@ namespace Catfish.Core.Models
                     dbContextTransaction.Rollback();
                     throw e;
                 }
-                catch
+                catch (Exception e)
                 {
-                    throw;
+                    throw e;
                 }
             }
 
