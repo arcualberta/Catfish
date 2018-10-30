@@ -206,14 +206,14 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, le
         function drawAxis(g1) {
             // Add the X Axis
             g1.append("g")
-                .attr("class", "axis")
+                .attr("class", "axis axis-y")
                 .attr("transform", "translate(0," + height + ")")
                 .call(d3.axisBottom(x))
                 .append("text").attr("fill", "#1f77b4").attr("y", 35).attr("x", width / 2).attr("text-anchor", "end").text(XLabel);
 
             // Add the Y Axis
             g1.append("g")
-                .attr("class", "axis")
+                .attr("class", "axis axis-x")
                 .call(d3.axisLeft(y))
                 .append("text").attr("fill", "#1f77b4")
                 .attr("transform", "rotate(-90)")
