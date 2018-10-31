@@ -1,4 +1,4 @@
-using Catfish.Core.Models;
+﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Forms;
 using Catfish.Tests.Extensions;
 using Catfish.Tests.IntegrationTests.Helpers;
@@ -14,14 +14,20 @@ using System.Threading.Tasks;
 namespace Catfish.Tests.IntegrationTests.Manager
 {
     [TestFixture(typeof(ChromeDriver))]
-    class EntityTypeTests<TWebDriver> : BaseIntegrationTest<TWebDriver> where TWebDriver : IWebDriver, new()
+    class ItemTests<TWebDriver> : BaseIntegrationTest<TWebDriver> where TWebDriver : IWebDriver, new()
     {
         [Test]
-        public void CanCreateNewEntityType()
+        public void CanCreateItem()
         {
 
+            // Create metadata set
+            // create entity type
+
             TextField fieldName = new TextField();
-            fieldName.Name = "Name";
+            fieldName.Name = FieldName;
+
+            TextValue textValue = new TextValue("en", "English", ItemValue);
+            fieldName.SetTextValues(new List<TextValue> { textValue });
 
             TextArea fieldDescription = new TextArea();
             fieldDescription.Name = "Description";
@@ -35,21 +41,18 @@ namespace Catfish.Tests.IntegrationTests.Manager
                 MetadataSetName
                 }, new CFEntityType.eTarget[0]);
 
-            // XXX Aqui pasa el stale element exception
-            Driver.FindElement(By.LinkText(SettingsLinkText), 10).Click();
-            Driver.FindElement(By.LinkText(EntityTypesLinkText), 10).Click();
+            // Finally create and check item
 
-            IWebElement lastEditButton = GetLastEditButton();
-            lastEditButton.Click();
-            string nameText = Driver.FindElement(By.Id("Name")).GetAttribute("value");
-            string descriptionText = Driver.FindElement(By.Id("Description")).GetAttribute("value");
+            CreateItem(EntityTypeName, formFields.ToArray());
 
-            // XXX Currently only checking for matching name and descriptions
-            // should extend this to assert field mappings
+            Driver.FindElement(By.LinkText(ContentLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(ItemsLinkText), 10).Click();
 
-            Assert.AreEqual(EntityTypeName, nameText);
-            Assert.AreEqual(EntityTypeDescription, descriptionText);
+            GetLastEditButton().Click();
 
+            string savedValue = Driver.FindElement(By.XPath("//input[contains(@class, 'text-box single-line')][1]")).GetAttribute("value");
+
+            Assert.AreEqual(ItemValue, savedValue);
         }
     }
 }
