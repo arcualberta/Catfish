@@ -64,7 +64,7 @@ namespace Catfish.Core.Helpers
                 {
                     // XXX For now work with read access mode, add others later
 
-                    Guid publicGroup = new Guid();
+                    Guid publicGroup = AccessContext.PublicAccessGuid;
 
                     AbstractSolrQuery filterOptions = new SolrQueryByField("access_1_ss", publicGroup.ToString());
 
@@ -222,7 +222,7 @@ namespace Catfish.Core.Helpers
         {
 
             // publicGroup guid is all 0 and everyone is part of this group
-            Guid publicGroup = new Guid();
+            Guid publicGroup = AccessContext.PublicAccessGuid;
             guids.Add(publicGroup);
 
             string guidList = string.Join(",", Array.ConvertAll(guids.ToArray(), g => "'" + g + "'"));

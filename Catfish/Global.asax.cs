@@ -16,6 +16,7 @@ using Catfish.Core.Services;
 using Catfish.Core.ModelBinders;
 using Catfish.Core.Validators;
 using Catfish.Core.Helpers;
+using Catfish.Core.Contexts;
 
 namespace Catfish
 {
@@ -97,7 +98,7 @@ namespace Catfish
         private void AddPublicUserListIfDoesNotExist()
         {
             // publicGuid guid is all 0 
-            Guid publicGuid = new Guid();
+            Guid publicGuid = AccessContext.PublicAccessGuid;
             CatfishDbContext db = new CatfishDbContext();
             CFUserList publicUserList = db.UserLists.Where(x => x.Id == publicGuid).FirstOrDefault();
 
