@@ -300,5 +300,10 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         {
             throw new NotImplementedException();
         }
+
+        public void CreateAccessDefinition()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
