@@ -100,6 +100,7 @@ namespace Catfish.Tests.Services
         }
 
         [Test]
+        [Ignore("Needs to clear solr index after finishing")]
         public void ImportBadTest()
         {
             DatabaseHelper Dh = new DatabaseHelper(false);
@@ -110,7 +111,7 @@ namespace Catfish.Tests.Services
                 //using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.Resources.IngestionDatabase3.xml"))
                 {
                     Dh.Igs.Import(stream);
-                    Dh.Db.SaveChanges();
+                    Dh.Db.SaveChanges();                    
                 }
 
                 Assert.Fail();
