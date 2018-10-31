@@ -36,6 +36,13 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         protected const string DescriptionId = "Description";
 
 
+        protected const string EntityTypeName = "Entity type name";
+        protected const string EntityTypeDescription = "Entity type description";
+        protected const string MetadataSetName = "Metadata set name";
+        protected const string MetadataSetDescription = "Metadata set description";
+        protected const string FieldName = "Field name";
+        protected const string ItemValue = "Item Name";
+
         [SetUp]
         public void SetUp()
         {
@@ -263,6 +270,15 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id(NameId)).SendKeys(name);
             Driver.FindElement(By.Id(DescriptionId)).SendKeys(description);
 
+            //XXX for now make it applicable to all
+
+            Driver.FindElement(By.Id("chk_Collections")).Click();
+            Driver.FindElement(By.Id("chk_Items")).Click();
+            Driver.FindElement(By.Id("chk_Files")).Click();
+            Driver.FindElement(By.Id("chk_Forms")).Click();
+
+
+
             // Need to add field mappings
 
             // use first metadataset and fields for name and description
@@ -281,9 +297,31 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
 
-        public void CreateItem(int entityTypeId)
-        {
-            throw new NotImplementedException();
+        public void CreateItem(string entityTypeName, FormField[] metadatasetValues) { 
+
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.LinkText(ContentLinkText)).Click();
+            Driver.FindElement(By.LinkText(ItemsLinkText)).Click();
+            Driver.FindElement(By.Id(ToolBarAddButtonId)).Click();
+
+
+            // entity type name ?
+
+            // selector by id field-type-selector
+
+            IWebElement fieldTypeSelectorElement = Driver.FindElement(By.Id("field-type-selector"));
+            SelectElement fieldTypeSelector = new SelectElement(fieldTypeSelectorElement);
+            fieldTypeSelector.SelectByText(entityTypeName);
+            Driver.FindElement(By.Id("add-field")).Click();
+
+            // XXX For now fill first input with field name
+            Driver.FindElement(By.XPath("//input[contains(@class, 'text-box single-line')][1]"), 10).SendKeys(metadatasetValues[0].Values[0].Value);
+            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
+            
+            // fill metadata set values
+            // save
+
+            //throw new NotImplementedException();
         }
 
         public void CreateCollection(int entityTypeId)
