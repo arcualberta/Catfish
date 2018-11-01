@@ -50,13 +50,13 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver = new TWebDriver();
             ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
 
-            ClearDatabase();            
+            ClearDatabase();
             ResetServerCache();
-            
+
             SetupPiranha();
             RunMigrations();
             LoginAsAdmin();
-            
+
 
             OnSetup();
         }
@@ -100,7 +100,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             int result = context.Database.ExecuteSqlCommand(query);
 
             context.Database.ExecuteSqlCommand(@"EXEC sp_MSforeachtable 'DROP TABLE ?'");
-            
+
             result = context.Database.ExecuteSqlCommand(query);
 
             ISolrQuery allEntries = new SolrQuery("*:*");
@@ -115,7 +115,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         }
 
         private void RunMigrations()
-        {            
+        {
             Catfish.Core.Migrations.Configuration config = new Catfish.Core.Migrations.Configuration();
             var migrator = new DbMigrator(config);
             migrator.Update();
@@ -146,7 +146,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Name("password")).SendKeys(password);
             Driver.FindElement(By.TagName("button")).Click();
         }
-       
+
         protected IWebElement GetLastObjectRow()
         {
             return Driver.FindElement(By.XPath("(//tbody[contains(@class, 'object-list')]/tr)[last()]"));
@@ -231,9 +231,9 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                 }
 
 
-            }            
+            }
 
-            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();          
+            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
 
         private void FillEntityTypeNameMapping()
@@ -242,12 +242,12 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             List<IWebElement> fieldElements = Driver.FindElements(By.XPath(fieldElementsXpath), 10).ToList();
 
             // for simplicity sake link name and description to first element
-            
+
             string mapMetadataXpath = $".//select[contains(@class, 'mapMetadata')]";
             string mapFieldXpath = $".//select[contains(@class, 'mapField')]";
 
             for (int i = 0; i < 2; ++i)
-            {             
+            {
                 IWebElement mapMetadataElement = fieldElements[i]
                     .FindElement(By.XPath(mapMetadataXpath));
                 SelectElement mapMetadataSelector = new SelectElement(mapMetadataElement);
@@ -256,11 +256,11 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                 IWebElement mapFieldElement = fieldElements[i]
                     .FindElement(By.XPath(mapFieldXpath));
                 SelectElement mapFieldSelector = new SelectElement(mapFieldElement);
-                mapFieldSelector.SelectByIndex(1);                      
+                mapFieldSelector.SelectByIndex(1);
             }
         }
 
-        public void CreateEntityType(string name, string description, 
+        public void CreateEntityType(string name, string description,
             string[] metadataSetNames, CFEntityType.eTarget[] targetTypes)
         {
             Driver.Navigate().GoToUrl(ManagerUrl);
@@ -284,7 +284,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             // use first metadataset and fields for name and description
 
             IWebElement metadataSetSelectorElement = Driver.FindElement(By.Id("dd_MetadataSets"));
-            SelectElement metadatasetSelector = new SelectElement(metadataSetSelectorElement);           
+            SelectElement metadatasetSelector = new SelectElement(metadataSetSelectorElement);
 
             foreach (string metadataSetName in metadataSetNames)
             {
@@ -297,17 +297,13 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
 
-        public void CreateItem(string entityTypeName, FormField[] metadatasetValues) { 
 
+        public void CreateCFAggregation(string aggregationLinkText, string entityTypeName, FormField[] metadatasetValues)
+        {
             Driver.Navigate().GoToUrl(ManagerUrl);
             Driver.FindElement(By.LinkText(ContentLinkText)).Click();
-            Driver.FindElement(By.LinkText(ItemsLinkText)).Click();
+            Driver.FindElement(By.LinkText(aggregationLinkText)).Click();
             Driver.FindElement(By.Id(ToolBarAddButtonId)).Click();
-
-
-            // entity type name ?
-
-            // selector by id field-type-selector
 
             IWebElement fieldTypeSelectorElement = Driver.FindElement(By.Id("field-type-selector"));
             SelectElement fieldTypeSelector = new SelectElement(fieldTypeSelectorElement);
@@ -317,11 +313,14 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             // XXX For now fill first input with field name
             Driver.FindElement(By.XPath("//input[contains(@class, 'text-box single-line')][1]"), 10).SendKeys(metadatasetValues[0].Values[0].Value);
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
-            
-            // fill metadata set values
-            // save
+        }
 
-            //throw new NotImplementedException();
+        public void CreateItem(string entityTypeName, FormField[] metadatasetValues) {
+            CreateCFAggregation(ItemsLinkText, entityTypeName, metadatasetValues);
+        }
+
+        public void CreateCollection(string entityTypeName, FormField[] metadatasetValues) {
+            CreateCFAggregation(CollectionsLinkText, entityTypeName, metadatasetValues);    
         }
 
         public void CreateCollection(int entityTypeId)

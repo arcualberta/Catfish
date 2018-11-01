@@ -14,10 +14,10 @@ using System.Threading.Tasks;
 namespace Catfish.Tests.IntegrationTests.Manager
 {
     [TestFixture(typeof(ChromeDriver))]
-    class ItemTests<TWebDriver> : BaseIntegrationTest<TWebDriver> where TWebDriver : IWebDriver, new()
+    class CollectionTests<TWebDriver> : BaseIntegrationTest<TWebDriver> where TWebDriver : IWebDriver, new()
     {
         [Test]
-        public void CanCreateItem()
+        public void CanCreateCollection()
         {
 
             // Create metadata set
@@ -43,13 +43,13 @@ namespace Catfish.Tests.IntegrationTests.Manager
 
             // Finally create and check item
 
-            CreateItem(EntityTypeName, formFields.ToArray());
+            CreateCollection(EntityTypeName, formFields.ToArray());
 
             Driver.FindElement(By.LinkText(ContentLinkText), 10).Click();
-            Driver.FindElement(By.LinkText(ItemsLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(CollectionsLinkText), 10).Click();
 
             GetLastEditButton().Click();
-            
+
             string savedValue = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value")).GetAttribute("value");
 
             Assert.AreEqual(ItemValue, savedValue);

@@ -165,6 +165,7 @@
   <ItemGroup>
     <Compile Include="Extensions\WebDriverExtensions.cs" />
     <Compile Include="IntegrationTests\Helpers\BaseIntegrationTest.cs" />
+    <Compile Include="IntegrationTests\Manager\CollectionTests.cs" />
     <Compile Include="IntegrationTests\Manager\EntityTypeTests.cs" />
     <Compile Include="IntegrationTests\Manager\ItemTests.cs" />
     <Compile Include="IntegrationTests\Manager\MetadatasetTests.cs" />
