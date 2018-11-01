@@ -49,8 +49,9 @@ namespace Catfish.Tests.IntegrationTests.Manager
             Driver.FindElement(By.LinkText(ItemsLinkText), 10).Click();
 
             GetLastEditButton().Click();
-
-            string savedValue = Driver.FindElement(By.XPath("//input[contains(@class, 'text-box single-line')][1]")).GetAttribute("value");
+            
+            string savedValue = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value")).GetAttribute("value");
+            //string savedValue = Driver.FindElement(By.XPath("//input[contains(@class, 'text-box single-line')][1]")).GetAttribute("value");
 
             Assert.AreEqual(ItemValue, savedValue);
         }
