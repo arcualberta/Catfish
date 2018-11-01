@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Catfish.Tests.Extensions;
 using Catfish.Core.Services;
 using SolrNet;
+using Catfish.Core.Models.Access;
 
 namespace Catfish.Tests.IntegrationTests.Helpers
 
@@ -25,11 +26,13 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         protected string ManagerUrl;
         protected const string ContentLinkText = "CONTENT";
         protected const string SettingsLinkText = "SETTINGS";
+        protected const string SystemLinkText = "SYSTEM";
         protected const string MetadataSetsLinkText = "Metadata Sets";
         protected const string EntityTypesLinkText = "Entity Types";
         protected const string ItemsLinkText = "Items";
         protected const string CollectionsLinkText = "Collections";
         protected const string FormsLinkText = "Forms";
+        protected const string AccessDefinitionsLinkText = "Access Definitions";
         protected const string ToolBarAddButtonId = "toolbar_add_button";
         protected const string ToolBarSaveButtonId = "toolbar_save_button";
         protected const string NameId = "Name";
@@ -323,11 +326,6 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             CreateCFAggregation(CollectionsLinkText, entityTypeName, metadatasetValues);    
         }
 
-        public void CreateCollection(int entityTypeId)
-        {
-            throw new NotImplementedException();
-        }
-
         public void CreateForm(int entityTypeId)
         {
             throw new NotImplementedException();
@@ -338,9 +336,25 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             throw new NotImplementedException();
         }
 
-        public void CreateAccessDefinition()
+        public void CreateAccessDefinition(string name, AccessMode accessMode)
         {
-            throw new NotImplementedException();
+
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.LinkText(SystemLinkText)).Click();
+            Driver.FindElement(By.LinkText(AccessDefinitionsLinkText)).Click();
+            Driver.FindElement(By.Id(ToolBarAddButtonId)).Click();
+
+            Driver.FindElement(By.Id("Name")).SendKeys(name);
+
+            //XXX For now just select read access mode and ignore accessMode parameter
+            bool isChecked = Driver.FindElement(By.Id("1")).Selected;
+
+            if (!isChecked)
+            {
+                Driver.FindElement(By.Id("1")).Click();
+            }
+
+            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
     }
 }
