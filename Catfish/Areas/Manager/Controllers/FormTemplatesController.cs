@@ -25,5 +25,19 @@ namespace Catfish.Areas.Manager.Controllers
         {
             return View(FormService.GetSubmissionTemplates());
         }
+
+        [HttpGet]
+        public ActionResult Ingest()
+        {
+            FormIngestionViewModel model = new FormIngestionViewModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Ingest(FormIngestionViewModel model)
+        {
+            return View(model);
+        }
+
     }
 }

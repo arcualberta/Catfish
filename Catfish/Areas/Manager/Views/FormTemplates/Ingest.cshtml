@@ -1,0 +1,35 @@
+﻿@model Catfish.Areas.Manager.Models.ViewModels.FormIngestionViewModel
+
+@{
+    ViewBag.Title = "Ingest Form";
+}
+
+@section Toolbar {
+    @Html.Partial("Partial/Tabs")
+    <div class="toolbar">
+        <div class="inner">
+            <ul>
+                @*<li>
+                    <a id="toolbar_upload_button" href="@Url.Action("ingest")" class="ingest">
+                        Upload
+                    </a>
+                </li>*@
+                <li>
+                    <a id="toolbar_refresh_button" href="@Url.Action("ingest")" class="refresh">
+                        @Piranha.Resources.Global.ToolbarReload
+                    </a>
+                </li>
+            </ul>
+            @*<button class="search" title="@Piranha.Resources.Global.ToolbarSearch"></button>
+                @Html.TextBox("search")*@
+            <div class="clear"></div>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm("Ingest", "FormTemplates", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.EditorForModel()
+    <input type="submit" value="Ingest" class="btn btn-primary"/>
+}
+
