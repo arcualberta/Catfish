@@ -1,0 +1,108 @@
+﻿@model Catfish.Core.Services.FormIngestionViewModel
+
+
+<ul class="form form-custom">
+    @if (string.IsNullOrEmpty(Model.SpreadSheetId))
+    {
+        <li>
+            <label class="control-label col-md-2">@Html.LabelFor(model => model.SpreadSheetId)</label>
+            <div class="input"> @Html.EditorFor(model => model.SpreadSheetId)</div>
+        </li>
+        <li class="no-shading"><input name="Button" type="submit" value="Next" class="btn btn-primary" /></li>
+    }
+    else
+    {
+        <li>
+            @{ var isDisabled = ViewBag.SheetList != null ? "disabled" : ""; }
+            <label class="control-label col-md-2">@Html.LabelFor(model => model.SpreadSheetId)</label>
+            <div class="input"> @Html.DisplayFor(model => model.SpreadSheetId)</div>
+            @Html.HiddenFor(model => model.SpreadSheetId)
+        </li>
+
+        if (string.IsNullOrEmpty(Model.DataSheet))
+        {
+            <li>
+                <label class="control-label col-md-2">@Html.LabelFor(model => model.DataSheet)</label>
+                <div class="input">
+                    @Html.DropDownList("DataSheet",
+                             new SelectList(ViewBag.SheetList as IEnumerable<string>),
+                             "",
+                             new { @class = "form-control" })
+                </div>
+            </li>
+            <li>
+                <label class="control-label col-md-2">@Html.LabelFor(model => model.PreContextColumnCount)</label>
+                <div class="input"> @Html.EditorFor(model => model.PreContextColumnCount)</div>
+            </li>
+            <li class="no-shading"><input name="Button" type="submit" value="Next" class="btn btn-primary" /></li>
+        }
+        else
+        {
+            <li>
+                <label class="control-label col-md-2">@Html.LabelFor(model => model.DataSheet)</label>
+                <div class="input">@Html.DisplayFor(model => model.DataSheet)</div>
+                @Html.HiddenFor(model => model.DataSheet)
+            </li>
+            <li>
+                <label class="control-label col-md-2">@Html.LabelFor(model => model.PreContextColumnCount, new { @class = "control-label col-md-2" })</label>
+                <div class="input">@Html.DisplayFor(model => model.PreContextColumnCount)</div>
+                @Html.HiddenFor(model => model.PreContextColumnCount)
+            </li>
+            <li style="column-span:2"><h3>Select Columns for the Folloiwings:</h3></li>
+            <li>
+                <label class="control-label col-md-2">@Html.LabelFor(model => model.ListIdColumn)</label>
+                <div class="input">
+                    @Html.DropDownList("ListIdColumn", new SelectList(ViewBag.columnHeadings as IEnumerable<string>), "", new { @class = "form-control" })
+                </div>
+            </li>
+            <li>
+                <label class="control-label col-md-2">@Html.LabelFor(model => model.BlockIdColumn)</label>
+                <div class="input">
+                    @Html.DropDownList("BlockIdColumn", new SelectList(ViewBag.columnHeadings as IEnumerable<string>), "", new { @class = "form-control" })
+                </div>
+            </li>
+            for (int i = 0; i < Model.PreContextColumns.Count; ++i)
+            {
+                var varMame = string.Format("PreContextColumns[{0}]", i);
+
+                <li>
+                    <label class="control-label col-md-2">Pre-context  @(i + 1)</label>
+                    <div class="input">
+                        @Html.DropDownList(varMame,
+                                 new SelectList(ViewBag.columnHeadings as IEnumerable<string>),
+                                 "",
+                                 new { @class = "form-control" })
+                    </div>
+                </li>
+            }
+            <li>
+                <label class="control-label col-md-2">@Html.LabelFor(model => model.QuestionColumn)</label>
+                <div class="input">
+                    @Html.DropDownList("QuestionColumn", new SelectList(ViewBag.columnHeadings as IEnumerable<string>), "", new { @class = "form-control" })
+                </div>
+            </li>
+            <li>
+                <label class="control-label col-md-2">@Html.LabelFor(model => model.AnswerTypeColumn)</label>
+                <div class="input">
+                    @Html.DropDownList("AnswerTypeColumn", new SelectList(ViewBag.columnHeadings as IEnumerable<string>), "", new { @class = "form-control" })
+                </div>
+            </li>
+            <li>
+                <label class="control-label col-md-2">@Html.LabelFor(model => model.AnswerOptionsColumn)</label>
+                <div class="input">
+                    @Html.DropDownList("AnswerOptionsColumn", new SelectList(ViewBag.columnHeadings as IEnumerable<string>), "", new { @class = "form-control" })
+                </div>
+            </li>
+            <li class="no-shading"><input name="Button" type="submit" value="Ingest" class="btn btn-primary" /></li>
+        }
+
+    }
+</ul>
+
+@*<div class="form-field-name">
+        @Html.LabelFor(model => model.Url)
+    </div>
+    <div class="form-field-value">
+        @Html.EditorFor(model => model.Url)
+    </div>*@
+
