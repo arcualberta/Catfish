@@ -44,7 +44,12 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         protected const string MetadataSetName = "Metadata set name";
         protected const string MetadataSetDescription = "Metadata set description";
         protected const string FieldName = "Field name";
-        protected const string ItemValue = "Item Name";
+        protected const string ItemValue = "Item value";
+
+        // FormFields will be used to share FormField values between CFAggregation 
+        // initialization
+
+        protected FormField[][] FormFields;
 
         [SetUp]
         public void SetUp()
@@ -185,10 +190,10 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             return GetLastButtonByClass("object-accessgroup");
         }
 
-        public void CreateMetadataSet(string name, string description)
-        {
-            CreateMetadataSet(name, description, new FormField[0]);
-        }
+        //public void CreateMetadataSet(string name, string description)
+        //{
+        //    CreateMetadataSet(name, description, new FormField[0]);
+        //}
 
         public void CreateMetadataSet(string name, string description, FormField[] fields)
         {
@@ -300,7 +305,6 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
 
-
         public void CreateCFAggregation(string aggregationLinkText, string entityTypeName, FormField[] metadatasetValues)
         {
             Driver.Navigate().GoToUrl(ManagerUrl);
@@ -355,6 +359,38 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             }
 
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
+        }
+
+        public void CreateBaseEntityType()
+        {
+            // Create metadata set
+            // create entity type
+
+            TextField fieldName = new TextField();
+            fieldName.Name = FieldName;
+
+            TextValue textValue = new TextValue("en", "English", ItemValue);
+            fieldName.SetTextValues(new List<TextValue> { textValue });
+
+            TextArea fieldDescription = new TextArea();
+            fieldDescription.Name = "Description";
+
+            FormFields = new FormField[2][];
+            FormFields[0] = new FormField[2];            
+
+            FormFields[0][0] = fieldName;
+            FormFields[0][1] = fieldDescription;
+
+
+            //List<FormField> formFields = new List<FormField>();
+            //formFields.Add(fieldName);
+            //formFields.Add(fieldDescription);
+
+            CreateMetadataSet(MetadataSetName, MetadataSetDescription, FormFields[0]);
+
+            CreateEntityType(EntityTypeName, EntityTypeDescription, new[] {
+                MetadataSetName
+                }, new CFEntityType.eTarget[0]);
         }
     }
 }
