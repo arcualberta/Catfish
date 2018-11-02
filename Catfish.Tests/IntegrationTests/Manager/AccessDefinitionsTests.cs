@@ -37,5 +37,11 @@ namespace Catfish.Tests.IntegrationTests.Manager
             Assert.AreEqual(stringAccessMode, setAccessMode);
             //XXX Check if accessMode is set
         }
+
+        [Test]
+        public void CanUseAccessDefinitions()
+        {
+
+        }
     }
 }

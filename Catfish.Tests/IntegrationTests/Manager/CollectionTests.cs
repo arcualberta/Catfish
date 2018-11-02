@@ -20,30 +20,9 @@ namespace Catfish.Tests.IntegrationTests.Manager
         public void CanCreateCollection()
         {
 
-            // Create metadata set
-            // create entity type
-
-            TextField fieldName = new TextField();
-            fieldName.Name = FieldName;
-
-            TextValue textValue = new TextValue("en", "English", ItemValue);
-            fieldName.SetTextValues(new List<TextValue> { textValue });
-
-            TextArea fieldDescription = new TextArea();
-            fieldDescription.Name = "Description";
-            List<FormField> formFields = new List<FormField>();
-            formFields.Add(fieldName);
-            formFields.Add(fieldDescription);
-
-            CreateMetadataSet(MetadataSetName, MetadataSetDescription, formFields.ToArray());
-
-            CreateEntityType(EntityTypeName, EntityTypeDescription, new[] {
-                MetadataSetName
-                }, new CFEntityType.eTarget[0]);
-
-            // Finally create and check item
-
-            CreateCollection(EntityTypeName, formFields.ToArray());
+            CreateBaseEntityType();
+            // FormFields is instantiated in CreateBaseEntityType
+            CreateCollection(EntityTypeName, FormFields[0]);
 
             Driver.FindElement(By.LinkText(ContentLinkText), 10).Click();
             Driver.FindElement(By.LinkText(CollectionsLinkText), 10).Click();
