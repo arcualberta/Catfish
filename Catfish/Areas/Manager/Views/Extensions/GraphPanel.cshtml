@@ -14,17 +14,20 @@
     function changeGraphFieldDropdown(metadatasetId, fieldId) {
         var fieldDictionary = @Html.Raw(Json.Encode(Model.MetadataFields));
 
-        var metadataSet = $('#' + metadatasetId).val();
-        var fields = fieldDictionary[metadataSet];
+        var metadataSet = metadatasetId == null || metadatasetId.trim().length == 0 ? null : $('#' + metadatasetId).val();
         var fieldSelect = $('#' + fieldId);
         fieldSelect.empty();
 
-        for (var i = 0; i < fields.length; ++i) {
-            var option = $('<option></option>');
-            option.attr("value", fields[i].Value);
-            option.text(fields[i].Text);
+        if (metadataSet == null) {
+            var fields = fieldDictionary[metadataSet];
 
-            fieldSelect.append(option);
+            for (var i = 0; i < fields.length; ++i) {
+                var option = $('<option></option>');
+                option.attr("value", fields[i].Value);
+                option.text(fields[i].Text);
+
+                fieldSelect.append(option);
+            }
         }
     }
    /*
@@ -109,7 +112,7 @@
     <li>
         @Html.LabelFor(m => m.YaxisField)
         <div class="input">
-            @Html.DropDownListFor(m => m.SelectedMetadataSetY, new SelectList(Model.ListMetadataSets, "Value", "Text"), new { @style = "width:auto;", @class = "dropdown", onchange = "changeGraphFieldDropdown('" + Html.IdFor(model => model.SelectedMetadataSetY) + "','" + Html.IdFor(model => model.YaxisField) + "');" })
+            @Html.DropDownListFor(m => m.SelectedMetadataSetY, new SelectList(Model.ListMetadataSets, "Value", "Text"), "", new { @style = "width:auto;", @class = "dropdown", onchange = "changeGraphFieldDropdown('" + Html.IdFor(model => model.SelectedMetadataSetY) + "','" + Html.IdFor(model => model.YaxisField) + "');" })
             @Html.DropDownListFor(m => m.YaxisField, new SelectList(firstFields, "Value", "Text"), new { @style = "width:auto" })
         </div>
     </li>
