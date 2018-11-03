@@ -1,0 +1,15 @@
+﻿@model Catfish.Core.Models.Forms.HtmlField
+
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+{
+    {"class", "model-type"}
+})
+
+@{
+    string lang = Catfish.Helpers.ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName;
+}
+
+@Html.HiddenFor(m => m.Guid)
+@Html.Raw(Model.GetDescription(false))
+
+
