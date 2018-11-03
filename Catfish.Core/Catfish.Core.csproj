@@ -173,6 +173,7 @@
     <Compile Include="Models\Forms\AbstractForm.cs" />
     <Compile Include="Models\Forms\Attachment.cs" />
     <Compile Include="Models\Forms\ClientInfo.cs" />
+    <Compile Include="Models\Forms\HtmlField.cs" />
     <Compile Include="Models\Forms\PageBreak.cs" />
     <Compile Include="Models\Forms\NumberField.cs" />
     <Compile Include="Models\Forms\UrlField.cs" />
