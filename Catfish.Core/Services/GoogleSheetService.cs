@@ -13,6 +13,7 @@ using System.Threading;
 using Newtonsoft.Json;
 using Catfish.Core.Models;
 using System.ComponentModel.DataAnnotations;
+using Catfish.Core.Models.Forms;
 
 namespace Catfish.Core.Services
 {
@@ -23,9 +24,12 @@ namespace Catfish.Core.Services
         protected SheetsService SheetsService { get; set; }
         protected Spreadsheet Spreadsheet { get; set; }
 
+        private Dictionary<string, List<string>> mColumnHeadings;
+
         public GoogleSheetService(string spreadsheetId, CatfishDbContext db)
             :base(db)
         {
+            mColumnHeadings = new Dictionary<string, List<string>>();
             InitRead(spreadsheetId);
         }
 
@@ -69,6 +73,7 @@ namespace Catfish.Core.Services
             var request = SheetsService.Spreadsheets.Get(spreadsheetId);
 
             Spreadsheet = request.Execute();
+            mColumnHeadings.Clear();
         }
 
         public IEnumerable<string> GetSheetNames()
@@ -76,20 +81,101 @@ namespace Catfish.Core.Services
             return Spreadsheet.Sheets.Select(s => s.Properties.Title);
         }
 
-        public IEnumerable<string> GetColumnHeadings(string sheetName)
+        public List<string> GetColumnHeadings(string sheetName)
         {
-            Sheet sheet = Spreadsheet.Sheets.Where(s => s.Properties.Title == sheetName).FirstOrDefault();
-            var request = SheetsService.Spreadsheets.Values.Get(Spreadsheet.SpreadsheetId, "A1:1");
-            var result = request.Execute();
+            if (!mColumnHeadings.ContainsKey(sheetName))
+            {
+                Sheet sheet = Spreadsheet.Sheets.Where(s => s.Properties.Title == sheetName).FirstOrDefault();
+                var request = SheetsService.Spreadsheets.Values.Get(Spreadsheet.SpreadsheetId, "A1:1");
+                var result = request.Execute();
+                List<string> columnHeadings = result.Values.First().Select(h => h.ToString().Trim()).ToList();
+                mColumnHeadings.Add(sheetName, columnHeadings);
+            }
 
-            var headings = result.Values.First().Select(h => h.ToString());
-            return headings;
+            return mColumnHeadings[sheetName];
         }
 
-        public int CreateForm(FormIngestionViewModel model)
+        public Form CreateForm(FormIngestionViewModel model)
         {
-            return 0;
+            try
+            {
+
+                model.ColumnHeadings = GetColumnHeadings(model.DataSheet);
+                string lastColName = GetColumnName(model.ColumnHeadings.Count - 1);
+                string dataRange = string.Format("A2:{0}", lastColName);
+
+                Sheet sheet = Spreadsheet.Sheets.Where(s => s.Properties.Title == model.DataSheet).FirstOrDefault();
+                var request = SheetsService.Spreadsheets.Values.Get(Spreadsheet.SpreadsheetId, dataRange);
+                var result = request.Execute();
+
+                int? listIdCol = string.IsNullOrEmpty(model.ListIdColumn) ? null : model.ColumnHeadings.IndexOf(model.ListIdColumn) as int?;
+                int? blockIdCol = string.IsNullOrEmpty(model.BlockIdColumn) ? null : model.ColumnHeadings.IndexOf(model.BlockIdColumn) as int?;
+
+                List<int> preReqColIndicies = model.PreContextColumns.Select(s => model.ColumnHeadings.IndexOf(s)).ToList();
+
+                if (string.IsNullOrEmpty(model.QuestionColumn))
+                    throw new Exception("Question column is not defined");
+                int questionCol = model.ColumnHeadings.IndexOf(model.QuestionColumn);
+
+                int? answerTypeCol = string.IsNullOrEmpty(model.AnswerTypeColumn) ? null : model.ColumnHeadings.IndexOf(model.AnswerTypeColumn) as int?;
+                int? answerOptionsCol = string.IsNullOrEmpty(model.AnswerOptionsColumn) ? null : model.ColumnHeadings.IndexOf(model.AnswerOptionsColumn) as int?;
+
+
+                Form form = new Form();
+
+                foreach (var row in result.Values)
+                {
+                    var values = row.Select(s => s.ToString().Trim()).ToList();
+
+                    int listNum = listIdCol.HasValue ? int.Parse(values[listIdCol.Value]) : 0;
+                    int blockNum = blockIdCol.HasValue ? int.Parse(values[blockIdCol.Value]) : 0;
+                    List<string> preContexts = preReqColIndicies.Select(i => values[i]).ToList();
+                    string question = values[questionCol];
+
+                    string answerType = answerOptionsCol.HasValue ? values[answerOptionsCol.Value] : "";
+                    string answerOptions = answerOptionsCol.HasValue ? values[answerOptionsCol.Value] : "";
+
+                    if (string.IsNullOrEmpty(answerType))
+                        answerType = "TextField";
+
+                    Type type = Type.GetType(answerType, true);
+                    if (!typeof(FormField).IsAssignableFrom(type))
+                        throw new InvalidOperationException("Bad Type");
+
+                    FormField field = Activator.CreateInstance(type) as FormField;
+                    ////field.MultilingualName = Name;
+                    ////field.MultilingualDescription = Description;
+                    ////field.IsRequired = IsRequired;
+                    ////field.Guid = Guid;
+                    ////field.Rank = Rank;
+                    ////field.Page = Page;
+
+                    ////FormField field = Activator.CreateInstance()
+
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                model.Error = ex.Message;
+            }
+
+            return null;
         }
+
+        public static string GetColumnName(int zeroBasedColumnIndex)
+        {
+            const byte BASE = 'Z' - 'A' + 1;
+            string name = String.Empty;
+            do
+            {
+                name = Convert.ToChar('A' + zeroBasedColumnIndex % BASE) + name;
+                zeroBasedColumnIndex = zeroBasedColumnIndex / BASE - 1;
+            }
+            while (zeroBasedColumnIndex >= 0);
+            return name;
+        } 
     }
 
     public class MemoryDataStore : IDataStore
@@ -149,16 +235,18 @@ namespace Catfish.Core.Services
         [Display(Name = "Data Sheet")]
         public string DataSheet { get; set; }
 
+        public List<string> ColumnHeadings { get; set; } = new List<string>();
+
         [Display(Name = "Num Pre-contexts")]
         public int PreContextColumnCount { get; set; }
 
+        public List<string> PreContextColumns { get; set; } = new List<string>();
+
         [Display(Name = "List Id")]
-        public int ListIdColumn { get; set; }
+        public string ListIdColumn { get; set; }
 
         [Display(Name = "Block Id")]
         public string BlockIdColumn { get; set; }
-
-        public List<string> PreContextColumns { get; set; } = new List<string>();
 
         [Display(Name = "Question")]
         public string QuestionColumn { get; set; }
@@ -170,5 +258,7 @@ namespace Catfish.Core.Services
         public string AnswerOptionsColumn { get; set; }
 
         public string Button { get; set; }
+
+        public string Error { get; set; } = null;
     }
 }
