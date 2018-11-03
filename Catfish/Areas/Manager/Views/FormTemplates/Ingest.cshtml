@@ -24,8 +24,11 @@
         </div>
     </div>
 }
-
-<div class="grid_12">
+<div class="grid_12 bs">
+    @if (!string.IsNullOrEmpty(Model.Error))
+    {
+        <div class="alert alert-danger">@Model.Error</div>
+    }
     <div class="box">
         <div class="title">
             Google Spreadsheet Information
