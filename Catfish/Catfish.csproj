@@ -363,6 +363,7 @@
     </Content>
     <Content Include="Areas\Manager\Views\FormTemplates\Ingest.cshtml" />
     <Content Include="Areas\Manager\Views\FormTemplates\EditorTemplates\FormIngestionViewModel.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\HtmlField.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.1.1-vsdoc.js" />
@@ -585,6 +586,7 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DropDownMenu.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\EntityImagePanel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\CSEntityPanel.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\HtmlField.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
