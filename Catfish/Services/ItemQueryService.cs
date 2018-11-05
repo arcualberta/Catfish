@@ -199,10 +199,10 @@ namespace Catfish.Services
                         if (name == "val")
                         {
                             xVal = reader.ReadContentAsInt();
-                        }else if(name == "count")
+                        }else if(name == "count" && categories == null)
                         {
                             count = reader.ReadContentAsInt();
-                        }else if(name == "sumYValues")
+                        }else if(name == "sumYValues" && categories == null)
                         {
                             yVal = reader.ReadContentAsDecimal();
                         }
