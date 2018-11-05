@@ -132,6 +132,7 @@ namespace Catfish.Core.Models
             Dictionary<string, object> result = new Dictionary<string, object>();
             string txtKey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "txt", value.LanguageCode);
             result[txtKey] = value.Value;
+            result[txtKey + "_s"] = value.Value;
             MatchCollection matches = Regex.Matches(value.Value, @"^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$");
             if (matches.Count > 0)
             {
@@ -160,7 +161,7 @@ namespace Catfish.Core.Models
                     if (option.Selected)
                     {
                         //metadatasetGuid;
-                        string optionGuid = CleanGuid(option.Guid);
+                        string optionGuid = CleanGuid(optionsField.Guid);// option.Guid
                         foreach (TextValue value in option.Value)
                         {
                             values = GetSolrValues("option_value", metadatasetGuid, optionGuid, value);
