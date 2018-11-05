@@ -12,7 +12,7 @@
         </style>
    
         <svg class="line-chart" style="width: 75%;"> </svg>
-        <div class="legend" style="width: 25%;"></div>  
+        <div class="legend" style="width: 25%;@(string.IsNullOrEmpty(Model.Category) ? "display: none !important;" : "")"></div>  
         <form id="barchartOption">
             <label><input type="radio" name="mode" value="grouped" />Grouped</label>
             <label><input type="radio" name="mode" value="stacked" checked />Stackeded</label>
