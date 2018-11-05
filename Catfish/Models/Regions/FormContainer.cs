@@ -128,6 +128,8 @@ namespace Catfish.Models.Regions
         {
             // get db context
             CatfishDbContext db = new CatfishDbContext();
+            new Services.SecurityService(db).CreateAccessContext();
+
             CollectionService collectionSrv = new CollectionService(db);
             EntityTypeService entityTypeSrv = new EntityTypeService(db);
             SubmissionService formService = new SubmissionService(db);
