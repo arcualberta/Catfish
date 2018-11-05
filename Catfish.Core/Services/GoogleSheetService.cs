@@ -130,31 +130,58 @@ namespace Catfish.Core.Services
                     int listNum = listIdCol.HasValue ? int.Parse(values[listIdCol.Value]) : 0;
                     int blockNum = blockIdCol.HasValue ? int.Parse(values[blockIdCol.Value]) : 0;
                     List<string> preContexts = preReqColIndicies.Select(i => values[i]).ToList();
-                    string question = values[questionCol];
+                    string questionText = values[questionCol];
 
                     string answerType = answerOptionsCol.HasValue ? values[answerOptionsCol.Value] : "";
                     string answerOptions = answerOptionsCol.HasValue ? values[answerOptionsCol.Value] : "";
 
                     if (string.IsNullOrEmpty(answerType))
-                        answerType = "TextField";
+                    {
+                        if (string.IsNullOrEmpty(answerOptions))
+                            answerType = "TextField";
+                        else
+                            answerType = "RadioButtonSet";
+                    }
 
-                    Type type = Type.GetType(answerType, true);
-                    if (!typeof(FormField).IsAssignableFrom(type))
-                        throw new InvalidOperationException("Bad Type");
+                    CompositeFormField cf = new CompositeFormField();
+                    foreach(string pc in preContexts)
+                    {
+                        HtmlField html = new HtmlField();
+                        html.SetDescription(pc);
+                        cf.InsertChildElement("./fields", html.Data);
+                    }
 
-                    FormField field = Activator.CreateInstance(type) as FormField;
-                    ////field.MultilingualName = Name;
-                    ////field.MultilingualDescription = Description;
-                    ////field.IsRequired = IsRequired;
-                    ////field.Guid = Guid;
-                    ////field.Rank = Rank;
-                    ////field.Page = Page;
+                    FormField question = null;
+                    if (answerType == "TextField")
+                        question = new TextField();
+                    else if (answerOptions == "RadioButtonSet")
+                    {
+                        List<string> optionStrings = answerOptions.Split(new char[] { '\n' }).Select(s => s.Trim()).ToList();
+                        List<Option> options = new List<Option>();
+                        foreach (var optVal in optionStrings)
+                        {
+                            Option opt = new Option();
+                            opt.Value = new List<TextValue>() { new TextValue() { Value = optVal } };
+                            options.Add(opt);
+                        }
 
-                    ////FormField field = Activator.CreateInstance()
+                        question = new RadioButtonSet()
+                        {
+                            Options = options
+                        };
+                    }
+                    else
+                        throw new Exception(string.Format("Answer type \"{0}\" is not implemented in survey form ingestion."));
 
+                    question.SetName(questionText);
+                    cf.InsertChildElement("./fields", question.Data);
 
-
+                    form.InsertChildElement("./fields", cf.Data);
                 }
+
+                Db.FormTemplates.Add(form);
+                //Db.SaveChanges();
+                //return form;
             }
             catch (Exception ex)
             {
