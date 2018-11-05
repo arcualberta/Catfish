@@ -24,27 +24,46 @@ namespace Catfish.Tests.IntegrationTests.Helpers
     {
         protected IWebDriver Driver;
         protected string ManagerUrl;
+        protected string FrontEndUrl;
         protected const string ContentLinkText = "CONTENT";
         protected const string SettingsLinkText = "SETTINGS";
         protected const string SystemLinkText = "SYSTEM";
+        protected const string LogoutLinkText = "LOGOUT";
         protected const string MetadataSetsLinkText = "Metadata Sets";
         protected const string EntityTypesLinkText = "Entity Types";
         protected const string ItemsLinkText = "Items";
         protected const string CollectionsLinkText = "Collections";
         protected const string FormsLinkText = "Forms";
         protected const string AccessDefinitionsLinkText = "Access Definitions";
+        protected const string PagesLinkText = "Pages";
+        protected const string PageTypesLinkText = "Page types";
+        protected const string StandardPageLinkText = "Standard page";
         protected const string ToolBarAddButtonId = "toolbar_add_button";
         protected const string ToolBarSaveButtonId = "toolbar_save_button";
         protected const string NameId = "Name";
         protected const string DescriptionId = "Description";
-
-
         protected const string EntityTypeName = "Entity type name";
         protected const string EntityTypeDescription = "Entity type description";
         protected const string MetadataSetName = "Metadata set name";
         protected const string MetadataSetDescription = "Metadata set description";
         protected const string FieldName = "Field name";
         protected const string ItemValue = "Item value";
+        protected const string AccessDefinitionName = "Access definition";
+        protected const string PublicGroupName = "Public";
+        protected const string UserNameFieldId = "usrName";
+        protected const string AddUserAccessButtonId = "btnAddUserAccess";
+        protected const string RegionNameFieldId = "newregionName";
+        protected const string RegionInternalIdId = "newregionInternalId";
+        protected const string RegionTypeSelectorId = "newregionType";
+        protected const string AddRegionButtonId = "btnAddRegion";
+        protected const string SaveLinkText = "Save";
+        protected const string StartLinkText = "Start";
+        protected const string UpdateButtonClass = "publish";
+        protected const string ObjectListClass = "object-list";
+        protected const string ListEntitiesId = "ListEntitiesPanelTableBody";
+        // There should be a better way of defining access permissions
+        protected const string MenuItemWrapperClass = "ui-menu-item-wrapper";
+        protected const AccessMode AccessDefinitionMode = AccessMode.Read;
 
         // FormFields will be used to share FormField values between CFAggregation 
         // initialization
@@ -56,7 +75,9 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         {
             InitializeSolr();
             Driver = new TWebDriver();
-            ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
+
+            FrontEndUrl = ConfigurationManager.AppSettings["ServerUrl"];
+            ManagerUrl = FrontEndUrl + "manager";
 
             ClearDatabase();
             ResetServerCache();
@@ -157,17 +178,17 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
         protected IWebElement GetLastObjectRow()
         {
-            return Driver.FindElement(By.XPath("(//tbody[contains(@class, 'object-list')]/tr)[last()]"));
+            return Driver.FindElement(By.XPath("(//tbody[contains(@class, 'object-list')]/tr)[last()]"), 10);
         }
 
         protected IWebElement GetLastActionPanel()
         {
-            return GetLastObjectRow().FindElement(By.XPath("//td[contains(@class, 'action-panel')]"));
+            return GetLastObjectRow().FindElement(By.XPath(".//td[contains(@class, 'action-panel')]"));
         }
 
         public IWebElement GetLastButtonByClass(string cssClass)
         {
-            return GetLastObjectRow().FindElement(By.XPath($"//button[contains(@class, '{cssClass}')]"));
+            return GetLastObjectRow().FindElement(By.XPath($".//button[contains(@class, '{cssClass}')]"));
         }
 
         protected IWebElement GetLastEditButton()
@@ -361,7 +382,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
 
-        public void CreateBaseEntityType()
+        protected void CreateBaseEntityType()
         {
             // Create metadata set
             // create entity type
@@ -391,6 +412,13 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             CreateEntityType(EntityTypeName, EntityTypeDescription, new[] {
                 MetadataSetName
                 }, new CFEntityType.eTarget[0]);
+        }
+
+        protected void CreateBaseItem(string itemString)
+        {
+            TextValue itemValue = new TextValue("en", "English", itemString);
+            FormFields[0][0].SetTextValues(new List<TextValue> { itemValue });
+            CreateItem(EntityTypeName, FormFields[0]);
         }
     }
 }
