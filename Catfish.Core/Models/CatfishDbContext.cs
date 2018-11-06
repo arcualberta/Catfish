@@ -124,5 +124,7 @@ namespace Catfish.Core.Models
         public DbSet<CFUserListEntry> UserListEntries { get; set; }
 
         public DbSet<CFAccessDefinition> AccessDefinitions { get; set; }
+
+        public System.Data.Entity.DbSet<Catfish.Core.Models.Forms.CompositeFormField> CFXmlModels { get; set; }
     }
 }

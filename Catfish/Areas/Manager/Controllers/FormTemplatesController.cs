@@ -46,6 +46,7 @@ namespace Catfish.Areas.Manager.Controllers
                 Form form = srv.CreateForm(model);
                 if (form != null)
                 {
+                    Db.FormTemplates.Add(form);
                     Db.SaveChanges();
                     return RedirectToAction("Edit", new { id = form.Id });
                 }
