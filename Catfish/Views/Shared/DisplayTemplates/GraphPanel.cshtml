@@ -6,6 +6,10 @@
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
 }
+
+    @Model.RenderScript("https://d3js.org/d3.v4.min.js", Url)
+    @Model.RenderScript("~/Scripts/D3/graph.js", Url)
+
     <div id="@cssId" class="bs @cssClasses container container-fluid loadable-panel" style="margin-left:0;">
         <style type="text/css" scoped>
                         @Html.Raw(cssStyles)
@@ -13,13 +17,11 @@
    
         <svg class="line-chart" style="width: 75%;"> </svg>
         <div class="legend" style="width: 25%;@(string.IsNullOrEmpty(Model.Category) ? "display: none !important;" : "")"></div>  
-        <form id="barchartOption">
+        <form class="barchartOption">
             <label><input type="radio" name="mode" value="grouped" />Grouped</label>
             <label><input type="radio" name="mode" value="stacked" checked />Stackeded</label>
         </form>
     </div>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="~/Scripts/D3/graph.js"></script>
 
     <script>
         {
@@ -47,14 +49,14 @@
                     },
                     success: function (response) {
                         if (chartType === "Bar") {
-                            var barOption = document.getElementById("barchartOption");
+                            var barOption = $("#@cssId .barchartOption")[0];
                             barOption.style.display = "block";
                         }
                         else {
-                            var barOption = document.getElementById("barchartOption");
+                            var barOption = $("#@cssId .barchartOption")[0];
                             barOption.style.display = "none";
                         }
-                        
+
                         var parsedData = graph.parseDataSF(response);
                         window.stopLoading("#@cssId");
                         graph.clear();
@@ -85,7 +87,7 @@
     </script>
 
     <style>
-        #barchartOption{
+        .barchartOption{
             display: none;
         }
         .legend-item{
