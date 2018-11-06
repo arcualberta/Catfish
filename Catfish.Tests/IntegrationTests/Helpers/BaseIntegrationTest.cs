@@ -262,7 +262,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
             }
 
-            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
+            Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();
         }
 
         private void FillEntityTypeNameMapping()
@@ -323,7 +323,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
             FillEntityTypeNameMapping();
 
-            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
+            Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();
         }
 
         public void CreateCFAggregation(string aggregationLinkText, string entityTypeName, FormField[] metadatasetValues)
