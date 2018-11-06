@@ -7,9 +7,17 @@
 
 @{
     string lang = Catfish.Helpers.ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName;
-}
+    var descriptions = Model.GetDescription(false).Select(d => d.Value);
 
-@Html.HiddenFor(m => m.Guid)
-@Html.Raw(Model.GetDescription(false))
+<div>
+    @foreach (var desc in descriptions)
+    {
+        <p>
+            @Html.Raw(desc)
+        </p>
+    }
+</div>
+
+}
 
 

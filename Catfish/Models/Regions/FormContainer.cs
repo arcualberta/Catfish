@@ -34,6 +34,15 @@ namespace Catfish.Models.Regions
         [Display(Name = "Collection")]
         public int CollectionId { get; set; }
 
+        [Display(Name = "Enforce Lists")]
+        public bool EnforceLists { get; set; }
+
+        [Display(Name = "Shuffle Blocks")]
+        public bool ShuffleBlocks { get; set; }
+
+        [Display(Name = "Shuffle Questions")]
+        public bool ShuffleQuestions { get; set; }
+
         private SelectList mForms;
         [ScriptIgnore]
         public SelectList Forms
@@ -154,7 +163,7 @@ namespace Catfish.Models.Regions
             {
                 SubmissionService subSrv = new SubmissionService(new CatfishDbContext());
 
-                Form form = subSrv.CreateSubmissionForm(FormId);
+                Form form = subSrv.CreateSubmissionForm(FormId, EnforceLists, ShuffleBlocks, ShuffleQuestions);
 
                 FormViewModel = new FormViewModel()
                 {

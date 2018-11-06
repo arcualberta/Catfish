@@ -68,7 +68,7 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="formTemplateId">The template to create the submission on.</param>
         /// <returns>The newly created submission.</returns>
-        public Form CreateSubmissionForm(int formTemplateId)
+        public Form CreateSubmissionForm(int formTemplateId, bool enforceLists, bool shuffleBlocks, bool shuffleQuestions)
         {
             //Obtaining the template
             Form template = Db.FormTemplates.Where(m => m.Id == formTemplateId).FirstOrDefault();
@@ -77,6 +77,79 @@ namespace Catfish.Core.Services
             //itself to avoid saving user data into the template.
             Form submission = new Form() { Data = template.Data };
             submission.Id = template.Id;
+
+            Random rand = new Random();
+            if (enforceLists)
+            {
+                //Assumes the top-level CompositeFormFields represents of the form sublists of fields in the form and selects only one of them 
+                //for the submission
+                var listSet = submission.Fields.Where(field => field is CompositeFormField);
+                var listCount = listSet.Count();
+                int selectedIndex = rand.Next(0, listCount);
+                CompositeFormField selectedList = listSet.Skip(selectedIndex).FirstOrDefault() as CompositeFormField;
+
+                //replacing the fields of the submission with composite field which represents the elected list
+                submission.Fields = new List<FormField>() { selectedList };
+            }
+
+            if(shuffleBlocks)
+            {
+                //Assumes that the top-level CompositeFormFields of the form represents sublists of felds and CompositeFormFields in each of those
+                //sublists represent blocks, and shuffles those blocks
+                var listSet = submission.Fields.Where(field => field is CompositeFormField).Select(field => field as CompositeFormField);
+                foreach (var list in listSet)
+                {
+                    List<CompositeFormField> blockSet = (list as CompositeFormField).Fields
+                        .Where(b => b is CompositeFormField)
+                        .Select(b => b as CompositeFormField)
+                        .ToList();
+
+                    List<CompositeFormField> shuffledBlockSet = new List<CompositeFormField>();
+                    int n = blockSet.Count;
+                    while(n > 0)
+                    {
+                        var selectedIndex = rand.Next(0, n);
+                        shuffledBlockSet.Add(blockSet[selectedIndex]);
+                        blockSet.RemoveAt(selectedIndex);
+                        --n;
+                    }
+
+                    //Replacing the fields with the shuffeled block set
+                    list.Fields = shuffledBlockSet;
+                }
+            }
+
+            if (shuffleQuestions)
+            {
+                //Assumes that the top-level CompositeFormFields of the form represents sublists of felds and CompositeFormFields in each of those
+                //sublists represent blocks, and each block to contain quesitons. This code section shudffles  questions inside those blocks.
+                var listSet = submission.Fields.Where(field => field is CompositeFormField).Select(field => field as CompositeFormField);
+                foreach (var list in listSet)
+                {
+                    List<CompositeFormField> blockSet = (list as CompositeFormField).Fields
+                        .Where(b => b is CompositeFormField)
+                        .Select(b => b as CompositeFormField)
+                        .ToList();
+
+                    foreach(var block in blockSet)
+                    {
+                        List<FormField> sourceFieldSet = block.Fields.ToList();
+                        List<FormField> shuffledFieldSet = new List<FormField>();
+                        int n = sourceFieldSet.Count;
+                        while (n > 0)
+                        {
+                            var selectedIndex = rand.Next(0, n);
+                            shuffledFieldSet.Add(sourceFieldSet[selectedIndex]);
+                            sourceFieldSet.RemoveAt(selectedIndex);
+                            --n;
+                        }
+
+                        //Replacing the fields with the shuffeled block set
+                        block.Fields = shuffledFieldSet;
+                    }
+                }
+            }
+
 
             //Removing the audit trail from the created form since the current trail contains info
             //from the form template creation.
