@@ -48,7 +48,20 @@
                 <div class="input">@Html.DisplayFor(model => model.PreContextColumnCount)</div>
                 @Html.HiddenFor(model => model.PreContextColumnCount)
             </li>
-            <li style="column-span:2"><h3>Select Columns for the Folloiwings:</h3></li>
+            <li style="column-span:2"><h3>Form Information</h3></li>
+            <li>
+                @Html.LabelFor(model => model.FormName, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.EditorFor(model => model.FormName)
+                </div>
+            </li>
+            <li>
+                @Html.LabelFor(model => model.FormDescription, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.TextAreaFor(model => model.FormDescription)
+                </div>
+            </li>
+            <li style="column-span:2"><h3>Select Columns for the Folloiwings</h3></li>
             <li>
                 @Html.LabelFor(model => model.ListIdColumn, new { @class = "control-label col-md-3" })
                 <div class="input">

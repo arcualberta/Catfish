@@ -121,8 +121,8 @@ namespace Catfish.Core.Services
                 int? answerOptionsCol = string.IsNullOrEmpty(model.AnswerOptionsColumn) ? null : model.ColumnHeadings.IndexOf(model.AnswerOptionsColumn) as int?;
 
 
-                Form form = new Form();
-
+                List<CompositeFormField> listFields = new List<CompositeFormField>();
+                Dictionary<int, List<CompositeFormField>> blockFieldSets = new Dictionary<int, List<CompositeFormField>>();
                 foreach (var row in result.Values)
                 {
                     var values = row.Select(s => s.ToString().Trim()).ToList();
@@ -143,12 +143,41 @@ namespace Catfish.Core.Services
                             answerType = "RadioButtonSet";
                     }
 
-                    CompositeFormField cf = new CompositeFormField();
+                    ///
+                    /// Each list is represented by a composite field at the top level of the form. 
+                    ///The list number is stored in the "page" property of the field.
+                    ///Get the composite field representing the given list number, or create a new one if it doesn't exist
+                    ///
+                    CompositeFormField list = listFields.Where(field => field.Page == listNum).FirstOrDefault();
+                    if(list == null)
+                    {
+                        list = new CompositeFormField() { Page = listNum };
+                        listFields.Add(list);
+                        blockFieldSets.Add(listNum, new List<CompositeFormField>()); //Placehoder for blocks of this list.
+                    }
+
+                    ///
+                    /// Each block is represented by a composite field in the "list". 
+                    ///The block number is stored in the "page" propoerty of this composite field.
+                    ///Get the composite field representinhg the give block number from the selected list. pr create a new one if it doesn't exist
+                    ///
+                    List<CompositeFormField> blocks = blockFieldSets[listNum];
+                    CompositeFormField block = blocks.Where(field => field.Page == blockNum).FirstOrDefault();
+                    if(block == null)
+                    {
+                        block = new CompositeFormField() { Page = blockNum };
+                        blocks.Add(block);
+                    }
+
+                    ///
+                    /// Each precontext and question are represented by a composite field inside the selected block.
+                    /// 
+                    CompositeFormField surveyItem = new CompositeFormField();
                     foreach(string pc in preContexts)
                     {
                         HtmlField html = new HtmlField();
                         html.SetDescription(pc);
-                        cf.InsertChildElement("./fields", html.Data);
+                        surveyItem.InsertChildElement("./fields", html.Data);
                     }
 
                     FormField question = null;
@@ -174,14 +203,33 @@ namespace Catfish.Core.Services
                         throw new Exception(string.Format("Answer type \"{0}\" is not implemented in survey form ingestion."));
 
                     question.SetName(questionText);
-                    cf.InsertChildElement("./fields", question.Data);
+                    surveyItem.InsertChildElement("./fields", question.Data);
 
-                    form.InsertChildElement("./fields", cf.Data);
+                    block.InsertChildElement("./fields", surveyItem.Data);
                 }
 
-                Db.FormTemplates.Add(form);
-                //Db.SaveChanges();
-                //return form;
+                ///
+                /// By this point, we have all "lists" in the listFields array and all "blocks" corresponding to 
+                /// each of those lists in the blockFieldSets dictionary.
+                /// 
+
+                //Inserting all blocks into each list entry
+                foreach(var list in listFields)
+                {
+                    List<CompositeFormField> blocks = blockFieldSets[list.Page];
+                    foreach (var block in blocks)
+                        list.InsertChildElement("./fields", block.Data);
+                }
+
+                Form form = new Form();
+                form.SetName(model.FormName);
+                form.SetDescription(model.FormDescription);
+
+                foreach (var field in listFields)
+                    form.InsertChildElement("./fields", field.Data);
+
+                form.Serialize();
+                return form;
             }
             catch (Exception ex)
             {
@@ -266,6 +314,12 @@ namespace Catfish.Core.Services
 
         [Display(Name = "Num Pre-contexts")]
         public int PreContextColumnCount { get; set; }
+
+        [Display(Name = "Name")]
+        public string FormName { get; set; }
+
+        [Display(Name = "Description")]
+        public string FormDescription { get; set; }
 
         public List<string> PreContextColumns { get; set; } = new List<string>();
 

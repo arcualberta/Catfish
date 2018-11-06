@@ -1,0 +1,20 @@
+﻿@model Catfish.Core.Models.Forms.CompositeFormField
+
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+{
+    {"class", "model-type"}
+})
+@Html.HiddenFor(m => m.Guid)
+
+<div>
+    @for (int i = 0; i < Model.Fields.Count; ++i)
+    {
+        string fieldName = Model.Fields[i].GetName();
+        if (!string.IsNullOrEmpty(fieldName))
+        {
+            <div><label class="control-label">@fieldName</label></div>
+        }
+        @Html.EditorFor(m => Model.Fields[i])
+    }
+
+</div>
