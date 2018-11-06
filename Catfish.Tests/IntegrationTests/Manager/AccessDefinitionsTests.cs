@@ -69,7 +69,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
             Driver.FindElement(By.XPath($@"//button[contains(.,'{regionName}')]"), 10).Click();
             Driver.FindElement(By.Id("Regions_1__Body_ItemPerPage"), 10).SendKeys("10");
             Driver.FindElement(By.XPath("//span[contains(@class, 'glyphicon glyphicon-plus-sign')]")).Click();
-            Driver.FindElement(By.ClassName(UpdateButtonClass)).Click();
+            Driver.FindElement(By.ClassName(UpdateButtonClass), 10).Click();
         }
 
         private void AssignAccessDefinitionToLastItem()
