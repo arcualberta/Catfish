@@ -2,13 +2,13 @@
 
 //Parse data into key-value pairs
 var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, legendElement) {
-    const XLabel = xLabel;
-    const YLabel = yLabel;
-    const GraphTitle = graphTitle;
-    const XScale = xScale;
-    const YScale = yScale;
-    const Svg = svgElement;
-    const Legend = legendElement;
+    var XLabel = xLabel;
+    var YLabel = yLabel;
+    var GraphTitle = graphTitle;
+    var XScale = xScale;
+    var YScale = yScale;
+    var Svg = svgElement;
+    var Legend = legendElement;
 
     this.clear = function () {
         $(Svg).empty();
@@ -27,95 +27,7 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, le
 
         return arr;
     }
-    /*
-    function drawChartLine(data) {
-        var svgWidth = 600, svgHeight = 400;
-        var margin = { top: 20, right: 20, bottom: 30, left: 50 };
-        var width = svgWidth - margin.left - margin.right;
-        var height = svgHeight - margin.top - margin.bottom;
     
-        var svg = d3.select("svg").attr("width", svgWidth).attr("height", svgHeight);
-    
-        var g = svg.append('g').attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    
-        var x = d3.scaleLinear().rangeRound([0, width]);// d3.scaleTime().rangeRound([0, width]);
-        var y = d3.scaleLinear().rangeRound([height, 0]);
-    
-        var line = d3.line().x(function (d) { return x(d.year); })
-                             .y(function (d) { return y(d.value); })
-        x.domain(d3.extent(data, function (d) { return d.year }));
-        y.domain(d3.extent(data, function (d) { return d.value }));
-        g.append("g").attr("transform", "translate(0," + height + ")")
-                     .call(d3.axisBottom(x))
-                      .append("text").attr("fill", "#0000ff").attr("y", 30).attr("x", svgWidth/2).attr("text-anchor", "end").text(XLabel);
-        //.select(".domain").remove();
-    
-        g.append("g").call(d3.axisLeft(y)).append("text").attr("fill", "#0000ff")
-                      .attr("transform", "rotate(-90)")
-                      .attr("y", -75)
-                     // .attr("x", 5)
-                      .attr("dy", "0.17em")
-                      .attr("text-anchor", "end")
-                      .text(YLabel);
-    
-        g.append("path").datum(data).attr("fill", "none")
-                                    .attr("stroke", "steelblue")
-                                    .attr("stroke-linejoin", "round")
-                                    .attr("stroke-linecap", "round")
-                                    .attr("stroke-width", 1.5)
-                                    .attr("d", line);
-    }
-    
-    function drawChartBar(dataset)
-    {
-        var svgWidth = 900, svgHeight = 500, barPadding = 5;
-        var barWidth = (svgWidth / dataset.length);
-        var margin = {top: 20, right:20, left:40, bottom:30};
-        var width = svgWidth - margin.left - margin.right;
-        var height = svgHeight - margin.top - margin.bottom;
-      
-        var svg = d3.select("svg").attr("width", svgWidth).attr("height", svgHeight);
-    
-        var x = d3.scaleBand()
-                  .rangeRound([0, width]).padding(0.1);
-        var y = d3.scaleLinear().rangeRound([height, 0]);
-       
-    
-        var g =  svg.append("g")
-             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-     
-        x.domain(dataset.map(function (d) { return d.year; }));
-        y.domain([0, d3.max(dataset, function (d) {
-            return d.value;
-        })]);
-    
-        g.append("g")
-         .attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x))
-           .append("text").attr("fill", "#0000ff").attr("y", 30).attr("x", svgWidth / 2).attr("text-anchor", "end").text(XLabel);
-    
-        g.append("g").attr("class", "axis")
-                      .call(d3.axisLeft(y))//.ticks(20, "M"))
-                      .append("text").attr("fill", "#0000ff")
-                      .attr("transform", "rotate(-90)")
-                      .attr("y", -35)
-                      .attr("dy", "0.71em")
-                      .attr("text-anchor", "end")
-                      .text(YLabel);
-    
-        g.selectAll(".bar")
-                      .data(dataset)
-                      .enter()
-                      .append("rect")
-                      .attr("class", "bar")
-                      .attr("x", function (d) { return x(d.year); })
-                      .attr("y", function (d) {
-                        
-                          return y(d.value);
-                      })
-                      .attr("height", function (d) { return height - y(d.value); })
-                      .attr("width", x.bandwidth());
-    }
-    */
     function selectSvg() {
         var margin = { top: 30, right: 20, bottom: 70, left: 70 },
             width = 600 - margin.left - margin.right,
@@ -135,9 +47,7 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, le
         var margin = { top: 30, right: 20, bottom: 70, left: 70 },
             width = 600 - margin.left - margin.right,
             height = 400 - margin.top - margin.bottom;
-
-
-
+        
         // Set the ranges
         var x = d3.scaleTime().range([0, width]);
         var y = d3.scaleLinear().range([height, 0]);
@@ -146,11 +56,11 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, le
         var svg = d3.select(Svg).attr("viewBox", "0 0 600 400");
 
         var g1 = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + " )");
-
-
+        
         var divLegend = d3.select(Legend);
 
         var parseTime = d3.timeParse("%Y");
+
         // Get the data   
         data.forEach(function (d) {
             d.year = parseTime(d.year);
@@ -249,7 +159,6 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, le
             });
 
             y.domain([0, new_max]);
-            d3.select("g1").remove();
 
             drawAxis(g1);
             redrawChart(dataNest, g1);
@@ -500,19 +409,7 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, le
             .attr("fill", "white")
             .attr("font-weight", "bold");
 
-
-        //var form = d3.select("body").append("form");
-        //   form.append("input")
-        //                   .attr("type", "radio")
-        //                   .attr("value", "stacked").attr("name", "mode")
-        //                   .property("checked", true).append("label").text("Stacked");
-        //   form.append("input")
-        //                     .attr("type", "radio")
-        //                     .attr("value", "grouped").attr("name", "mode")
-        //                     .property("checked", false).append("label").text("Grouped");
-        //   svg.append(form).attr("transform", "translate(0,0)");
-
-        d3.selectAll("input").on("change", change);
+        legend.selectAll("input").on("change", change);
 
         function change() {
             if (this.value === "grouped")
@@ -557,7 +454,5 @@ var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, le
         }
 
     }
-
-    return this;
 };
 

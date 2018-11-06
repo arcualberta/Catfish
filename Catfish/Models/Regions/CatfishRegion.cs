@@ -11,11 +11,16 @@ using System.Web.Script.Serialization;
 using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Catfish.Services;
+using System.Text;
+using System.Web.Mvc;
 
 namespace Catfish.Models.Regions
 {
     public class CatfishRegion : Piranha.Extend.IExtension
     {
+        [ThreadStatic]
+        private static IDictionary<string, CatfishRegion> mScripts;
+
         private CatfishDbContext mDb;
         [ScriptIgnore]
         public CatfishDbContext db
@@ -57,6 +62,11 @@ namespace Catfish.Models.Regions
         [DataType(DataType.MultilineText)]
         public string CssStyles { get; set; }
 
+        public CatfishRegion() : base()
+        {
+            mScripts = new Dictionary<string, CatfishRegion>();
+        }
+
         public virtual void Ensure(DataContext db)
         {
         }
@@ -80,6 +90,18 @@ namespace Catfish.Models.Regions
 
         public virtual void OnManagerSave(object model)
         {
+        }
+
+        public IHtmlString RenderScript(string scriptUrl, UrlHelper url)
+        {
+            if (!mScripts.ContainsKey(scriptUrl))
+            {
+                mScripts.Add(scriptUrl, this);
+                HtmlString result = new HtmlString(string.Format("<script src=\"{0}\"></script>\n", url.Content(scriptUrl)));
+                return result;
+            }
+
+            return new HtmlString("");
         }
     }
 }
