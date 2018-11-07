@@ -11,6 +11,8 @@
     // Change the controller to work with the FormSubmission controller and views.
     var oldController = ViewContext.Controller.ControllerContext.RouteData.Values["controller"];
     ViewContext.Controller.ControllerContext.RouteData.Values["controller"] = "FormSubmission";
+
+    List<string> questionIndex = new List<string>();
 }
 
 <div id="@cssId" class="bs @cssClasses form">
@@ -18,7 +20,7 @@
                     @Html.Raw(cssStyles)
     </style>
     <form method="post" action="@UI.Permalink()/Edit">
-        @Html.EditorFor(m => m.FormViewModel)
+        @Html.EditorFor(m => m.FormViewModel, new { QuestionIndex = questionIndex })
         <br />
         <br />
         <input class="btn btn-primary" name="submit" type="button" value="@Catfish.Resources.Global.Submit" />
@@ -37,6 +39,8 @@
 
 <script type="text/javascript">
     {
+        var questions = @Html.Raw(Json.Encode(questionIndex));
+
         function showSubmit() {
             $("#@cssId > form > input[name='submit']").show();
             $("#@cssId > form > .form-confirm").hide();
