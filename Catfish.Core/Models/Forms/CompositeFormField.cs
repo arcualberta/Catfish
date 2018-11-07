@@ -13,6 +13,7 @@ namespace Catfish.Core.Models.Forms
     [CFTypeLabel("Composite form field")]
     public class CompositeFormField : FormField
     {
+        [NotMapped]
         public bool Shuffle
         {
             get
@@ -26,6 +27,7 @@ namespace Catfish.Core.Models.Forms
             }
         }
 
+        [NotMapped]
         public string Header
         {
             get
@@ -39,6 +41,7 @@ namespace Catfish.Core.Models.Forms
             }
         }
 
+        [NotMapped]
         public string Footer
         {
             get
