@@ -168,13 +168,14 @@
                      UploadApiUrl = @Url.Action("upload", "attachment"),
                      DeleteApiUrl = @Url.Action("deleteCashedFile", "attachment"),
                      ParentId = Model.Id,
-                     Controller = "items"
+                     Controller = "items",
+                     QuestionIndex = ViewData["QuestionIndex"]
                  })
 
     }
     else
     {
-        @Html.EditorFor(m => Model.Fields[i])
+        @Html.EditorFor(m => Model.Fields[i], new { QuestionIndex = ViewData["QuestionIndex"]  })
         <div class="error form-error" name="@Html.NameFor(m => Model.Fields[i])" style="display:none;"></div>
     }
 </div>
