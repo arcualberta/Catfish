@@ -41,6 +41,15 @@
     {
         var questions = @Html.Raw(Json.Encode(questionIndex));
 
+        function showQuestion(index) {
+            if (index >= 0 || index < questions.length) {
+                $(".stepField").hide();
+                $(questions[index]).show();
+            }
+        }
+
+        showQuestion(0);
+
         function showSubmit() {
             $("#@cssId > form > input[name='submit']").show();
             $("#@cssId > form > .form-confirm").hide();
