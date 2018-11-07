@@ -13,6 +13,45 @@ namespace Catfish.Core.Models.Forms
     [CFTypeLabel("Composite form field")]
     public class CompositeFormField : FormField
     {
+        public bool Shuffle
+        {
+            get
+            {
+                return GetAttribute("shuffle", false);
+            }
+
+            set
+            {
+                SetAttribute("shuffle", value);
+            }
+        }
+
+        public string Header
+        {
+            get
+            {
+                return GetChildText("header", Data, null);
+            }
+
+            set
+            {
+                SetChildText("header", value, Data, null);
+            }
+        }
+
+        public string Footer
+        {
+            get
+            {
+                return GetChildText("footer", Data, null);
+            }
+
+            set
+            {
+                SetChildText("footer", value, Data, null);
+            }
+        }
+
         public CompositeFormField()
         {
             Data.Add(new XElement("fields"));
