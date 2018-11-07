@@ -16,6 +16,7 @@ using Catfish.Tests.Extensions;
 using Catfish.Core.Services;
 using SolrNet;
 using Catfish.Core.Models.Access;
+using System.Text.RegularExpressions;
 
 namespace Catfish.Tests.IntegrationTests.Helpers
 
@@ -419,6 +420,48 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             TextValue itemValue = new TextValue("en", "English", itemString);
             FormFields[0][0].SetTextValues(new List<TextValue> { itemValue });
             CreateItem(EntityTypeName, FormFields[0]);
+        }
+
+        protected bool MatchesSolrInformationFromUrl()
+        {
+            // get id from url
+            string url = Driver.Url;
+            string pattern = @".+\/(\d+)";
+
+            Regex regex = new Regex(pattern);
+
+            Match match = regex.Match(url);
+
+            if (match.Success && match.Groups.Count == 2) {
+                Int32 id = Convert.ToInt32(match.Groups[1].Value);
+                CatfishDbContext db = new CatfishDbContext();
+
+                CFEntity model = (CFEntity)db.XmlModels.Find(id);
+                Dictionary<string, object> result = model.ToSolrDictionary();
+
+                SolrQuery q = new SolrQuery($@"id:{model.MappedGuid}");
+                SolrQueryResults<Dictionary<string, object>> solrResults = SolrService.solrOperations.Query(q);
+                if (solrResults.Count == 1)
+                {
+                    Dictionary<string, object> fromSolr = solrResults[0];
+
+                    foreach (KeyValuePair<string, object> entry in result)
+                    {
+                        if (entry.Value.ToString() != fromSolr[entry.Key].ToString())
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                
+            }
+
+            // fetch information from database
+            // get from solr dictionary
+            // fetch solr data
+            // compare both dictionaries
+            return false;
         }
     }
 }
