@@ -6,9 +6,8 @@
     currentPath += "#" + id;
 
     bool stepThroughChildren = true; //TODO: Set as property on CopositeFormField
-    bool parentStepThrough = ViewData.ContainsKey("StepThroughChildren") ? (bool)ViewData["StepThroughChildren"] : false;
 
-    string newClass = parentStepThrough ? "stepField" : "";
+    string newClass = stepThroughChildren ? "stepField" : "";
     //bool isLeaf = !((bool)ViewData["StepThroughChildren"]);
 
 }
@@ -19,15 +18,23 @@
 })
 @Html.HiddenFor(m => m.Guid)
 
-<div id="@id" class="@newClass">
+<div>
     @for (int i = 0; i < Model.Fields.Count; ++i)
     {
         string fieldName = Model.Fields[i].GetName();
-        if (!string.IsNullOrEmpty(fieldName))
-        {
-            <div><label class="control-label">@fieldName</label></div>
-        }
-        @Html.EditorFor(m => Model.Fields[i], new { ParentPath = currentPath, QuestionIndex = ViewData["QuestionIndex"], StepThroughChildren = stepThroughChildren })
-    }
+        string fieldId = Model.Fields[i].Guid.Replace("-", "");
 
+        if(!(Model.Fields[i] is Catfish.Core.Models.Forms.CompositeFormField))
+        {
+            ((List<string>)ViewData["QuestionIndex"]).Add(string.Format("{0},#{1}", currentPath, fieldId));
+        }
+
+        <div id="@fieldId" class="@newClass">
+            @if (!string.IsNullOrEmpty(fieldName))
+            {
+                <div><label class="control-label">@fieldName</label></div>
+            }
+            @Html.EditorFor(m => Model.Fields[i], new { ParentPath = currentPath, QuestionIndex = ViewData["QuestionIndex"], StepThroughChildren = stepThroughChildren })
+        </div>
+    }
 </div>
