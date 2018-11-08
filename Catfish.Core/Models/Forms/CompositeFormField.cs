@@ -28,6 +28,20 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
+        public bool StepThroughChildren
+        {
+            get
+            {
+                return GetAttribute("stepThroughChildren", false);
+            }
+
+            set
+            {
+                SetAttribute("stepThroughChildren", value);
+            }
+        }
+
+        [NotMapped]
         public string Header
         {
             get
