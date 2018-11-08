@@ -15,6 +15,8 @@
     List<string> questionIndex = new List<string>();
 }
 
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+
 <div id="@cssId" class="bs @cssClasses form">
     <style type="text/css" scoped>
                     @Html.Raw(cssStyles)
@@ -24,13 +26,15 @@
         <br />
         <br />
         <input class="btn btn-primary" name="submit" type="button" value="@Catfish.Resources.Global.Submit" />
-        <div class="panel panel-default form-confirm" style="display: none">
+        <div class="panel panel-default form-submit form-confirm" style="display: none">
             <div class="panel-body">
                 <p>@Catfish.Resources.Views.Shared.DisplayTemplates.FormContainer.SubmitConfirm</p>
                 <input class="btn btn-primary" name="yes" type="submit" value="@Catfish.Resources.Global.Yes" />
                 <input class="btn btn-primary" name="no" type="button" value="@Catfish.Resources.Global.No" />
             </div>
         </div>
+
+        <input class="btn btn-primary" name="next" type="button" value="@Catfish.Resources.Global.Next" />
     </form>
     <div class="form-success" style="display: none">
         <p>@Catfish.Resources.Views.Shared.DisplayTemplates.FormContainer.SubmitSuccess</p>
@@ -40,32 +44,67 @@
 <script type="text/javascript">
     {
         var questions = @Html.Raw(Json.Encode(questionIndex));
+        var questionIndex = -1;
 
-        function showQuestion(index) {
+        function showQuestion() {
+            if (questionIndex >= questions.length) {
+                questionIndex = questions.length - 1;
+            }
+
+            var index = questionIndex;
+
             if (index >= 0 || index < questions.length) {
                 $(".stepField").hide();
                 $(questions[index]).show();
             }
+
+            if (questionIndex == questions.length - 1) {
+                $("#@cssId > form > input[name='submit']").show();
+                $("#@cssId > form > input[name='next']").hide();
+            } else {
+                $("#@cssId > form > input[name='submit']").hide();
+                $("#@cssId > form > input[name='next']").show();
+            }
         }
 
-        showQuestion(0);
+        function showNextQuestion(validate = true) {
+            var valid = true;
+
+            if (validate) {
+                var form = $("#@cssId > form");
+                form.validate({ ignore: ":not(:visible)" });
+                valid = form.valid();
+            }
+
+            if (valid) {
+                ++questionIndex;
+                showQuestion();
+            }
+        }
+
+        showNextQuestion(false);
 
         function showSubmit() {
             $("#@cssId > form > input[name='submit']").show();
-            $("#@cssId > form > .form-confirm").hide();
+            $("#@cssId > form > .form-submit.form-confirm").hide();
         };
 
         function hideSubmit() {
             $("#@cssId > form > input[name='submit']").hide();
-            $("#@cssId > form > .form-confirm").show();
+            $("#@cssId > form > .form-submit.form-confirm").show();
         };
+
+        $("#@cssId > form > input[name='next']").click(function (ev) {
+            ev.preventDefault();
+            showNextQuestion();
+        });
 
         $("#@cssId > form > input[name='submit']").click(function (ev) {
             ev.preventDefault();
             hideSubmit();
         });
 
-        $("#@cssId form input[name='no']").click(function (ev) {
+        $("#@cssId form .form-submit.form-confirm input[name='no']").click(function (ev) {
             ev.preventDefault();
             showSubmit();
         });
