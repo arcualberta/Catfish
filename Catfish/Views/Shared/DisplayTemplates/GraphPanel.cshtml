@@ -25,10 +25,10 @@
 
     <script>
         {
-            var graph = new Graph('@Model.XaxisLabel', '@Model.YaxisLabel', '@Model.GraphTitle', parseInt('@Model.XScale'), parseInt('@Model.YScale'), $('#@cssId > svg')[0], $('#@cssId > .legend')[0]);
-            var isLoaded = false;
-            var query = '*:*';
-            var chartType = "@Model.SelectedGraphType.ToString()";
+            let graph = new Graph('@Model.XaxisLabel', '@Model.YaxisLabel', '@Model.GraphTitle', parseInt('@Model.XScale'), parseInt('@Model.YScale'), $('#@cssId > svg')[0], $('#@cssId > .legend')[0]);
+            let isLoaded = false;
+            let query = '*:*';
+            let chartType = "@Model.SelectedGraphType.ToString()";
 
             function updateChart() {
                 window.startLoading("#@cssId", 60000);
