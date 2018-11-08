@@ -58,7 +58,7 @@
                 $(questions[index]).show();
             }
 
-            if (questionIndex == questions.length - 1) {
+            if (questionIndex >= questions.length - 1) {
                 $("#@cssId > form > input[name='submit']").show();
                 $("#@cssId > form > input[name='next']").hide();
             } else {

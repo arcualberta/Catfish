@@ -24,7 +24,7 @@
         string fieldName = Model.Fields[i].GetName();
         string fieldId = Model.Fields[i].Guid.Replace("-", "");
 
-        if(!(Model.Fields[i] is Catfish.Core.Models.Forms.CompositeFormField))
+        if(stepThroughChildren && !(Model.Fields[i] is Catfish.Core.Models.Forms.CompositeFormField))
         {
             ((List<string>)ViewData["QuestionIndex"]).Add(string.Format("{0},#{1}", currentPath, fieldId));
         }
