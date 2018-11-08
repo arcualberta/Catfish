@@ -50,14 +50,14 @@
 
 <script>
     {
-        var currPage = 1;
-        var itemsPerPage = @Model.ItemPerPage;
-        var totalPages = 0;
-        var sortAttributeMappingId = @Model.SortByField;
-        var sortAsc = true;
-        var query = '*:*';
-        var isLoaded = false;
-        var links = {
+        let currPage = 1;
+        let itemsPerPage = @Model.ItemPerPage;
+        let totalPages = 0;
+        let sortAttributeMappingId = @Model.SortByField;
+        let sortAsc = true;
+        let query = '*:*';
+        let isLoaded = false;
+        let links = {
             @for(int i = 0; i < Model.Fields.Count; ++i)
             {
                 var field = Model.Fields[i];
