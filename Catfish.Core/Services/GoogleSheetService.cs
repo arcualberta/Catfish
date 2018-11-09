@@ -111,7 +111,7 @@ namespace Catfish.Core.Services
                 int? listIdCol = string.IsNullOrEmpty(model.ListIdColumn) ? null : model.ColumnHeadings.IndexOf(model.ListIdColumn) as int?;
                 int? blockIdCol = string.IsNullOrEmpty(model.BlockIdColumn) ? null : model.ColumnHeadings.IndexOf(model.BlockIdColumn) as int?;
 
-                List<int> preReqColIndicies = model.PreContextColumns.Select(s => model.ColumnHeadings.IndexOf(s)).ToList();
+                List<int> preContextColIndicies = model.PreContextColumns.Select(s => model.ColumnHeadings.IndexOf(s)).ToList();
 
                 if (string.IsNullOrEmpty(model.QuestionColumn))
                     throw new Exception("Question column is not defined");
@@ -129,7 +129,7 @@ namespace Catfish.Core.Services
 
                     int listNum = listIdCol.HasValue ? int.Parse(values[listIdCol.Value]) : 0;
                     int blockNum = blockIdCol.HasValue ? int.Parse(values[blockIdCol.Value]) : 0;
-                    List<string> preContexts = preReqColIndicies.Select(i => values[i]).ToList();
+                    List<string> preContexts = preContextColIndicies.Select(i => values[i]).ToList();
                     string questionText = values[questionCol];
 
                     string answerType = answerOptionsCol.HasValue ? values[answerOptionsCol.Value] : "";
@@ -175,9 +175,12 @@ namespace Catfish.Core.Services
                     CompositeFormField surveyItem = new CompositeFormField();
                     foreach(string pc in preContexts)
                     {
-                        HtmlField html = new HtmlField();
-                        html.SetDescription(pc);
-                        surveyItem.InsertChildElement("./fields", html.Data);
+                        if(!string.IsNullOrEmpty(pc.Trim()))
+                        {
+                            HtmlField html = new HtmlField();
+                            html.SetDescription(pc);
+                            surveyItem.InsertChildElement("./fields", html.Data);
+                        }
                     }
 
                     FormField question = null;
