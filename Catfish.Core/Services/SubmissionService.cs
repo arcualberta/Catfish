@@ -180,13 +180,13 @@ namespace Catfish.Core.Services
                     foreach (var block in list.Fields.Where(field => field is CompositeFormField).Select(field => field as CompositeFormField))
                     {
                         if (stepThroughQuestions)
-                            block.StepThroughChildren = true;
+                            block.StepState = CompositeFormField.eStepState.StepThrough;
 
                         if (stepThroughQuestionParts)
                         {
                             foreach (var question in block.Fields.Where(field => field is CompositeFormField).Select(field => field as CompositeFormField))
                             {
-                                question.StepThroughChildren = true;
+                                question.StepState = CompositeFormField.eStepState.Accumulative;
                             }
                         }
                     }
