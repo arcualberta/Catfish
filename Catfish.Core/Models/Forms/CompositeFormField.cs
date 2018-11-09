@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Models.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -13,6 +14,14 @@ namespace Catfish.Core.Models.Forms
     [CFTypeLabel("Composite form field")]
     public class CompositeFormField : FormField
     {
+        public enum eStepOption
+        {
+            None = 0,
+            Step,
+            [Display(Name = "Cumulative Parts")]
+            CumulativeSteps
+        }
+
         [NotMapped]
         public bool Shuffle
         {
@@ -28,16 +37,21 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
-        public bool StepThroughChildren
+        public eStepOption StepThroughChildren
         {
             get
             {
-                return GetAttribute("stepThroughChildren", false);
+                eStepOption step = eStepOption.None;
+
+                if (Enum.TryParse<eStepOption>(GetAttribute("stepThroughChildren", null), out step))
+                    return step;
+                else
+                    return eStepOption.None;
             }
 
             set
             {
-                SetAttribute("stepThroughChildren", value);
+                SetAttribute("stepThroughChildren", value.ToString());
             }
         }
 
