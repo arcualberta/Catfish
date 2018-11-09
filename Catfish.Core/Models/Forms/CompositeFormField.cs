@@ -13,6 +13,13 @@ namespace Catfish.Core.Models.Forms
     [CFTypeLabel("Composite form field")]
     public class CompositeFormField : FormField
     {
+        public enum eStepState
+        {
+            None = 0,
+            StepThrough,
+            Accumulative
+        }
+
         [NotMapped]
         public bool Shuffle
         {
@@ -28,16 +35,16 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
-        public bool StepThroughChildren
+        public eStepState StepState
         {
             get
             {
-                return GetAttribute("stepThroughChildren", false);
+                return (eStepState)GetAttribute("stepThroughChildren", 0);
             }
 
             set
             {
-                SetAttribute("stepThroughChildren", value);
+                SetAttribute("stepThroughChildren", (int)value);
             }
         }
 
