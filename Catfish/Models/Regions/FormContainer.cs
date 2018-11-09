@@ -22,6 +22,14 @@ namespace Catfish.Models.Regions
     [Serializable]
     public class FormContainer : CatfishRegion
     {
+        public enum eStepOption
+        {
+            None = 0,
+            Questions,
+            [Display(Name = "Question Parts")]
+            QuestionParts
+        }
+
         [Display(Name = "Form")]
         public int FormId { get; set; }
 
@@ -29,7 +37,7 @@ namespace Catfish.Models.Regions
         public int EntityTypeId { get; set; }
         
        // public List<string> Fields_Mapping { get; set; }
-       public List<FieldMapping> FieldMappings { get; set; }
+        public List<FieldMapping> FieldMappings { get; set; }
 
         [Display(Name = "Collection")]
         public int CollectionId { get; set; }
@@ -42,6 +50,9 @@ namespace Catfish.Models.Regions
 
         [Display(Name = "Shuffle Questions")]
         public bool ShuffleQuestions { get; set; }
+
+        [Display(Name = "Step Options")]
+        public eStepOption StepOption { get; set; }
 
         private SelectList mForms;
         [ScriptIgnore]
@@ -163,7 +174,10 @@ namespace Catfish.Models.Regions
             {
                 SubmissionService subSrv = new SubmissionService(new CatfishDbContext());
 
-                Form form = subSrv.CreateSubmissionForm(FormId, EnforceLists, ShuffleBlocks, ShuffleQuestions);
+                bool stepThroughQuestionParts = StepOption == FormContainer.eStepOption.QuestionParts;
+                bool stepThroughQuestions = stepThroughQuestionParts || StepOption == FormContainer.eStepOption.Questions;
+
+                Form form = subSrv.CreateSubmissionForm(FormId, EnforceLists, ShuffleBlocks, ShuffleQuestions, stepThroughQuestions, stepThroughQuestionParts);
 
                 FormViewModel = new FormViewModel()
                 {

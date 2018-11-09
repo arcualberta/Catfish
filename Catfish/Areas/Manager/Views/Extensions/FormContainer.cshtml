@@ -1,4 +1,7 @@
 ﻿@model Catfish.Models.Regions.FormContainer
+
+@using Catfish.Models.Regions
+
 <style>
     .table-header {
         background-color: #dcddde;
@@ -38,6 +41,12 @@
         <div class="input">@Html.EditorFor(m => m.ShuffleQuestions)</div>
         @Html.ValidationMessageFor(m => m.ShuffleQuestions)
     </li>
+    <li>
+        @Html.LabelFor(m => m.StepOption)
+        <div class="input">@Html.EnumDropDownListFor(model => model.StepOption)</div>
+        @Html.ValidationMessageFor(m => m.StepOption)
+    </li>
+
     @Html.Partial("_CatfishRegion", Model)
 
     <li>
