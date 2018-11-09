@@ -84,7 +84,7 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="formTemplateId">The template to create the submission on.</param>
         /// <returns>The newly created submission.</returns>
-        public Form CreateSubmissionForm(int formTemplateId, bool enforceLists, bool shuffleBlocks, bool shuffleQuestions, bool stepThroughQuestions, bool stepThroughQuestionParts)
+        public Form CreateSubmissionForm(int formTemplateId, bool enforceLists, bool shuffleBlocks, bool shuffleQuestions, CompositeFormField.eStepOption questionStepOption, CompositeFormField.eStepOption questionPartsStepOption)
         {
             //Obtaining the template
             Form template = Db.FormTemplates.Where(m => m.Id == formTemplateId).FirstOrDefault();
@@ -169,7 +169,10 @@ namespace Catfish.Core.Services
             }
 
             //Activating stepping through
-            if (stepThroughQuestions || stepThroughQuestionParts)
+            if (questionStepOption == CompositeFormField.eStepOption.None && questionPartsStepOption != CompositeFormField.eStepOption.None)
+                questionStepOption = CompositeFormField.eStepOption.Step;
+
+            if (questionStepOption != CompositeFormField.eStepOption.None)
             {
                 //Assumes that the top-level CompositeFormFields of the form represents sublists of felds and CompositeFormFields in each of those
                 //sublists represent blocks, and each block to contain quesitons. This code initializes the step-through-children property of 
@@ -179,14 +182,13 @@ namespace Catfish.Core.Services
                 {
                     foreach (var block in list.Fields.Where(field => field is CompositeFormField).Select(field => field as CompositeFormField))
                     {
-                        if (stepThroughQuestions)
-                            block.StepThroughChildren = true;
+                        block.StepThroughChildren = questionStepOption;
 
-                        if (stepThroughQuestionParts)
+                        if (questionPartsStepOption != CompositeFormField.eStepOption.None)
                         {
                             foreach (var question in block.Fields.Where(field => field is CompositeFormField).Select(field => field as CompositeFormField))
                             {
-                                question.StepThroughChildren = true;
+                                question.StepThroughChildren = questionPartsStepOption;
                             }
                         }
                     }
