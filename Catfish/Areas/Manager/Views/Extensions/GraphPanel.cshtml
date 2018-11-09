@@ -45,7 +45,7 @@
         var fieldSelect = $('#' + fieldId);
         fieldSelect.empty();
 
-        if (metadataSet != null) {
+        if (metadataSet != null && metadataSet.length > 0) {
             var fields = fieldDictionary[metadataSet];
 
             for (var i = 0; i < fields.length; ++i) {
