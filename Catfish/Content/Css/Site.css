@@ -30,6 +30,37 @@
     margin-left: 20px !important;
 }
 
+.slidercontainer {
+    width: 250px;
+}
+
+.slidercontainer .sliderlabels {
+    width: 100%
+}
+
+.slidercontainer .center {
+    text-align: center;
+    left: 150px;
+    position: absolute;
+}
+
+.slidercontainer .left {
+    float: left;
+}
+
+.slidercontainer .right {
+    float: right;
+}
+
+.slidercontainer .div{
+    width: 100%;
+    padding: 0px;
+}
+
+.slidercontainer input[type="range"].slider {
+    width: 100%;
+}
+
     .form-view .form-field div.value div.checkbox, .form-view .form-field div.value div.radio {
         margin-top: 0px !important;
         margin-left: 20px !important;
