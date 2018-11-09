@@ -177,6 +177,7 @@
     <Compile Include="Models\Forms\HtmlField.cs" />
     <Compile Include="Models\Forms\PageBreak.cs" />
     <Compile Include="Models\Forms\NumberField.cs" />
+    <Compile Include="Models\Forms\SliderField.cs" />
     <Compile Include="Models\Forms\UrlField.cs" />
     <Compile Include="Models\Ingestion\Ingestion.cs" />
     <Compile Include="Models\Ingestion\Relationship.cs" />
