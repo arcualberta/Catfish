@@ -23,7 +23,9 @@ namespace Catfish.Controllers
 
             FormContainer formContainer = model.Region<FormContainer>("FormContainer");
 
-            Form form = SubmissionService.CreateSubmissionForm(formContainer.FormId, formContainer.EnforceLists, formContainer.ShuffleBlocks, formContainer.ShuffleQuestions);
+            bool stepThroughQuestionParts = formContainer.StepOption == FormContainer.eStepOption.QuestionParts;
+            bool stepThroughQuestions = stepThroughQuestionParts || formContainer.StepOption == FormContainer.eStepOption.Questions;
+            Form form = SubmissionService.CreateSubmissionForm(formContainer.FormId, formContainer.EnforceLists, formContainer.ShuffleBlocks, formContainer.ShuffleQuestions, stepThroughQuestions, stepThroughQuestionParts);
 
             FormViewModel vm = new FormViewModel()
             {
