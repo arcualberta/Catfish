@@ -156,6 +156,39 @@
                                         </div>
                                     </li>
                                 }
+                                @using (field.If(f => f.IsSliderField == true))
+                                {
+                                    <li>
+                                        <label class="control-label col-md-2">Min</label>
+                                        <div class="input">
+                                            @field.Html.TextBox(f => f.Min, new { @class = "input-field", type = "number" })
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <label class="control-label col-md-2">Max</label>
+                                        <div class="input">
+                                            @field.Html.TextBox(f => f.Max, new { @class = "input-field", type = "number" })
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <label class="control-label col-md-2">Step</label>
+                                        <div class="input">
+                                            @field.Html.TextBox(f => f.Step, new { @class = "input-field", type = "number" })
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <label class="control-label col-md-2">Min Label</label>
+                                        <div class="input">
+                                            @field.Html.TextBox(f => f.MinLabel, new { @class = "input-field" })
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <label class="control-label col-md-2">Max Label</label>
+                                        <div class="input">
+                                            @field.Html.TextBox(f => f.MaxLabel, new { @class = "input-field" })
+                                        </div>
+                                    </li>
+                                }
                                 @using (field.If(f => f.IsPageBreak == false))
                                 {
                                     <li>
