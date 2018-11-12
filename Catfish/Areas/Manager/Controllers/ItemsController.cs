@@ -28,19 +28,28 @@ namespace Catfish.Areas.Manager.Controllers
     {
  
         // GET: Manager/Items
-        public ActionResult Index(int offset=0, int limit=int.MaxValue)
+        public ActionResult Index(int offset=0, int limit=int.MaxValue, int? typeId = null)
         {
             SecurityService.CreateAccessContext();
             if (limit == int.MaxValue)
                 limit = ConfigHelper.PageSize;
             
             var itemQuery = ItemService.GetItems();
+            
+            if(typeId != null)
+            {
+                itemQuery = itemQuery.Where(i => i.EntityTypeId == typeId.Value);
+            }
+
             var entities = itemQuery.OrderBy(e => e.Id).Skip(offset).Take(limit).Include(e => (e as CFEntity).EntityType).Select(e => e as CFEntity);
             var total = itemQuery.Count();
 
             ViewBag.TotalItems = total;
             ViewBag.Limit = limit;
             ViewBag.Offset = offset;
+            ViewBag.SelectedType = typeId;
+
+            ViewBag.EntityTypes = new SelectList(EntityTypeService.GetEntityTypes(CFEntityType.eTarget.Items), "Id", "Name", typeId);
                        
             if (entities != null)
                 return View(entities);
