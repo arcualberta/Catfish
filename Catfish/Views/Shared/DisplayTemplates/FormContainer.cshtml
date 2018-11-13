@@ -55,7 +55,14 @@
 
             if (index >= 0 || index < questions.length) {
                 $(".stepField").hide();
-                $(questions[index]).show();
+                $(questions[index]).each(function () {
+                    var t = $(this);
+                    t.show();
+
+                    if (t.hasClass("stepOnce")) {
+                        t.removeClass("stepField");
+                    }
+                })
             }
 
             if (questionIndex >= questions.length - 1) {

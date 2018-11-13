@@ -45,10 +45,10 @@ namespace Catfish.Models.Regions
         public bool ShuffleQuestions { get; set; }
 
         [Display(Name = "Question Step Options")]
-        public CompositeFormField.eStepOption QuestionStepOption { get; set; }
+        public CompositeFormField.eStepState QuestionStepOption { get; set; }
 
         [Display(Name = "Question-parts Step Options")]
-        public CompositeFormField.eStepOption QuestionPartsStepOption { get; set; }
+        public CompositeFormField.eStepState QuestionPartsStepOption { get; set; }
 
         private SelectList mForms;
         [ScriptIgnore]
