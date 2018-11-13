@@ -1,14 +1,21 @@
 ﻿@model Catfish.Core.Models.Forms.CompositeFormField
+@using Catfish.Core.Models.Forms;
 
 @{ 
     string id = Model.Guid.Replace("-", "");
     string currentPath = ViewData.ContainsKey("ParentPath") ? (string)ViewData["ParentPath"] + "," : "";
     currentPath += "#" + id;
 
-    bool stepThroughChildren = Model.StepThroughChildren;
+    CompositeFormField.eStepState stepState = Model.StepState;
+
+    bool stepThroughChildren = Model.StepState != CompositeFormField.eStepState.None;
 
     string newClass = stepThroughChildren ? "stepField" : "";
-    //bool isLeaf = !((bool)ViewData["StepThroughChildren"]);
+
+    if(Model.StepState == CompositeFormField.eStepState.Accumulative)
+    {
+        newClass += " stepOnce";
+    }
 
 }
 
