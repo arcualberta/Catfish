@@ -14,12 +14,12 @@ namespace Catfish.Core.Models.Forms
     [CFTypeLabel("Composite form field")]
     public class CompositeFormField : FormField
     {
-        public enum eStepOption
+        public enum eStepState
         {
             None = 0,
-            Step,
-            [Display(Name = "Cumulative Parts")]
-            CumulativeSteps
+            [Display(Name = "Step Through")]
+            StepThrough,
+            Accumulative
         }
 
         [NotMapped]
@@ -37,21 +37,16 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
-        public eStepOption StepThroughChildren
+        public eStepState StepState
         {
             get
             {
-                eStepOption step = eStepOption.None;
-
-                if (Enum.TryParse<eStepOption>(GetAttribute("stepThroughChildren", null), out step))
-                    return step;
-                else
-                    return eStepOption.None;
+                return (eStepState)GetAttribute("stepThroughChildren", 0);
             }
 
             set
             {
-                SetAttribute("stepThroughChildren", value.ToString());
+                SetAttribute("stepThroughChildren", (int)value);
             }
         }
 
