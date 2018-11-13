@@ -42,9 +42,14 @@
         @Html.ValidationMessageFor(m => m.ShuffleQuestions)
     </li>
     <li>
-        @Html.LabelFor(m => m.StepOption)
-        <div class="input">@Html.EnumDropDownListFor(model => model.StepOption)</div>
-        @Html.ValidationMessageFor(m => m.StepOption)
+        @Html.LabelFor(m => m.QuestionStepOption)
+        <div class="input">@Html.EnumDropDownListFor(model => model.QuestionStepOption)</div>
+        @Html.ValidationMessageFor(m => m.QuestionStepOption)
+    </li>
+    <li>
+        @Html.LabelFor(m => m.QuestionPartsStepOption)
+        <div class="input">@Html.EnumDropDownListFor(model => model.QuestionPartsStepOption)</div>
+        @Html.ValidationMessageFor(m => m.QuestionPartsStepOption)
     </li>
 
     @Html.Partial("_CatfishRegion", Model)
