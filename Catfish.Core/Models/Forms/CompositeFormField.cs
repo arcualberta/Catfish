@@ -81,6 +81,8 @@ namespace Catfish.Core.Models.Forms
         public CompositeFormField()
         {
             Data.Add(new XElement("fields"));
+            Data.Add(new XElement("header"));
+            Data.Add(new XElement("footer"));
         }
 
         [NotMapped]
