@@ -191,8 +191,13 @@ namespace Catfish.Core.Services
                         string[] begin = options[0].Split(new char[] { ':' });
                         string[] end = options[1].Split(new char[] { ':' });
 
-                        question = new TextField();
-                        //question = new Scale
+                        question = new SliderField()
+                        {
+                            Min = begin.Length > 0 ? int.Parse(begin[0]) : 0,
+                            Max = end.Length > 0 ? int.Parse(end[0]) : 1,
+                            MinLabel = begin.Length > 1 ? begin[1] : "",
+                            MaxLabel = end.Length > 1 ? end[1] : ""
+                        };
                     }
                     else if (answerType == "RadioButtonSet")
                     {
