@@ -23,8 +23,15 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public bool IsRichText { get; set; }
         public bool IsTextArea { get; set; }
         public bool IsOptionField { get; set; }
+        public bool IsSliderField { get; set; }
         public List<TextValue> MultilingualOptionSet { get; set; }
         public string Guid { get; set; }
+
+        public decimal Min { get; set; }
+        public decimal Max { get; set; }
+        public decimal Step { get; set; }
+        public string MinLabel { get; set; }
+        public string MaxLabel { get; set; }
 
         public FormFieldViewModel() { }
         // Attachment creates multiple recursions on view leaving the page unresponsive
@@ -55,6 +62,17 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
             CFTypeLabelAttribute att = Attribute.GetCustomAttribute(formField.GetType(), typeof(CFTypeLabelAttribute)) as CFTypeLabelAttribute;
             TypeLabel = att == null ? formField.GetType().ToString() : att.Name;
+
+            IsSliderField = typeof(SliderField).IsAssignableFrom(formField.GetType());
+            if (IsSliderField)
+            {
+                Min = ((SliderField)formField).Min;
+                Max = ((SliderField)formField).Max;
+                Step = ((SliderField)formField).Step;
+                MinLabel = ((SliderField)formField).MinLabel;
+                MaxLabel = ((SliderField)formField).MaxLabel;
+            }
+
 
             IsOptionField = typeof(OptionsField).IsAssignableFrom(formField.GetType());
             if (IsOptionField)
@@ -110,6 +128,15 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
 
             UpdateFileList(field);
+
+            if (IsSliderField)
+            {
+                ((SliderField)field).Min = Min;
+                ((SliderField)field).Max = Max;
+                ((SliderField)field).Step = Step;
+                ((SliderField)field).MinLabel = MinLabel;
+                ((SliderField)field).MaxLabel = MaxLabel;
+            }
 
             if (typeof(OptionsField).IsAssignableFrom(type))
             {
