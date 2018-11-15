@@ -156,6 +156,38 @@
                                         </div>
                                     </li>
                                 }
+                                @using (field.If(f => f.IsExternalMediaField == true))
+                                {
+                                    <li>
+                                        <label class="control-label col-md-2">Source</label>
+                                        <div class="input">@field.Html.TextBox( f => f.Min, new { @class = "input-field" })</div>
+                                    </li>
+                                    <li>
+                                        <label class="control-label col-md-2">Type</label>
+                                        <div class="input">
+                                            <select @field.Bind.Value(f => f.MimeType)>
+                                                <option></option>
+                                                @foreach(var e in Enum.GetNames(typeof(CFDataFile.MimeType)))
+                                                {
+                                                    <option value="@e">@e</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </li>
+
+                                    using (var mediaProperty = field.Foreach(f => f.MediaProperties))
+                                    {
+                                        <li>
+                                            <label class="control-label col-md-2" @mediaProperty.Bind.Text(mp => mp.Key)></label>
+                                            <div class="input">
+                                                @using (var value = mediaProperty.With(mp => mp.Value))
+                                                {
+                                                    @value.Html.CheckBox(v => v.Item2, new {@class = "field-is-required" })
+                                                }
+                                            </div>
+                                        </li>
+                                                    }
+                                                }
                                 @using (field.If(f => f.IsSliderField == true))
                                 {
                                     <li>
