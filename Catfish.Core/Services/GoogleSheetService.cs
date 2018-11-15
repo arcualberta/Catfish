@@ -85,8 +85,8 @@ namespace Catfish.Core.Services
         {
             if (!mColumnHeadings.ContainsKey(sheetName))
             {
-                Sheet sheet = Spreadsheet.Sheets.Where(s => s.Properties.Title == sheetName).FirstOrDefault();
-                var request = SheetsService.Spreadsheets.Values.Get(Spreadsheet.SpreadsheetId, "A1:1");
+                string range = string.Format("'{0}'!A1:1", sheetName);
+                var request = SheetsService.Spreadsheets.Values.Get(Spreadsheet.SpreadsheetId, range);
                 var result = request.Execute();
                 List<string> columnHeadings = result.Values.First().Select(h => h.ToString().Trim()).ToList();
                 mColumnHeadings.Add(sheetName, columnHeadings);
@@ -101,9 +101,8 @@ namespace Catfish.Core.Services
             {
                 model.ColumnHeadings = GetColumnHeadings(model.DataSheet);
                 string lastColName = GetColumnName(model.ColumnHeadings.Count - 1);
-                string dataRange = string.Format("A2:{0}", lastColName);
+                string dataRange = string.Format("'{0}'!A2:{1}", model.DataSheet, lastColName);
 
-                Sheet sheet = Spreadsheet.Sheets.Where(s => s.Properties.Title == model.DataSheet).FirstOrDefault();
                 var request = SheetsService.Spreadsheets.Values.Get(Spreadsheet.SpreadsheetId, dataRange);
                 var result = request.Execute();
 
