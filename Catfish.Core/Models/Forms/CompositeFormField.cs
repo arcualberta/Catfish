@@ -88,41 +88,6 @@ namespace Catfish.Core.Models.Forms
             }
         }
 
-        ////[NotMapped]
-        ////public string Header
-        ////{
-        ////    get
-        ////    {
-        ////        return GetChildText("header", Data, null);
-        ////    }
-
-        ////    set
-        ////    {
-        ////        SetChildText("header", value, Data, null);
-        ////    }
-        ////}
-
-        ////[NotMapped]
-        ////public string Footer
-        ////{
-        ////    get
-        ////    {
-        ////        return GetChildText("footer", Data, null);
-        ////    }
-
-        ////    set
-        ////    {
-        ////        SetChildText("footer", value, Data, null);
-        ////    }
-        ////}
-
-        public CompositeFormField()
-        {
-            Data.Add(new XElement("fields"));
-            Data.Add(new XElement("header"));
-            Data.Add(new XElement("footer"));
-        }
-
         [NotMapped]
         [IgnoreDataMember]
         public IReadOnlyList<FormField> Fields
@@ -141,5 +106,44 @@ namespace Catfish.Core.Models.Forms
                     InsertChildElement("./fields", ms.Data);
             }
         }
+
+        public CompositeFormField()
+        {
+            Data.Add(new XElement("fields"));
+            Data.Add(new XElement("header"));
+            Data.Add(new XElement("footer"));
+        }
+
+        public override void UpdateValues(CFXmlModel src)
+        {
+            base.UpdateValues(src);
+
+            CompositeFormField srcField = src as CompositeFormField;
+
+            //Updating contents of all child fields
+            foreach (FormField field in Fields)
+            { // checkhere type of 
+                var src_field = srcField.Fields.Where(x => x.Guid == field.Guid).FirstOrDefault();
+                if (src_field != null)
+                    field.UpdateValues(src_field);
+            }
+
+            //Updating contents of the header fields
+            foreach (FormField field in Header)
+            { // checkhere type of 
+                var src_field = srcField.Header.Where(x => x.Guid == field.Guid).FirstOrDefault();
+                if (src_field != null)
+                    field.UpdateValues(src_field);
+            }
+
+            //Updating contents of the footer fields
+            foreach (FormField field in Footer)
+            { // checkhere type of 
+                var src_field = srcField.Footer.Where(x => x.Guid == field.Guid).FirstOrDefault();
+                if (src_field != null)
+                    field.UpdateValues(src_field);
+            }
+        }
+
     }
 }
