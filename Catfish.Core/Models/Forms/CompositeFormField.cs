@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Models.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -16,6 +17,7 @@ namespace Catfish.Core.Models.Forms
         public enum eStepState
         {
             None = 0,
+            [Display(Name = "Step Through")]
             StepThrough,
             Accumulative
         }
@@ -49,36 +51,41 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
-        public string Header
+        [IgnoreDataMember]
+        public IReadOnlyList<FormField> Header
         {
             get
             {
-                return GetChildText("header", Data, null);
+                return GetChildModels("header/field", Data).Select(c => c as FormField).ToList();
             }
 
             set
             {
-                SetChildText("header", value, Data, null);
+                //Removing all children inside the metadata set element
+                RemoveAllElements("header/field", Data);
+
+                foreach (FormField ms in value)
+                    InsertChildElement("./header", ms.Data);
             }
         }
 
         [NotMapped]
-        public string Footer
+        [IgnoreDataMember]
+        public IReadOnlyList<FormField> Footer
         {
             get
             {
-                return GetChildText("footer", Data, null);
+                return GetChildModels("footer/field", Data).Select(c => c as FormField).ToList();
             }
 
             set
             {
-                SetChildText("footer", value, Data, null);
-            }
-        }
+                //Removing all children inside the metadata set element
+                RemoveAllElements("footer/field", Data);
 
-        public CompositeFormField()
-        {
-            Data.Add(new XElement("fields"));
+                foreach (FormField ms in value)
+                    InsertChildElement("./footer", ms.Data);
+            }
         }
 
         [NotMapped]
@@ -99,5 +106,44 @@ namespace Catfish.Core.Models.Forms
                     InsertChildElement("./fields", ms.Data);
             }
         }
+
+        public CompositeFormField()
+        {
+            Data.Add(new XElement("fields"));
+            Data.Add(new XElement("header"));
+            Data.Add(new XElement("footer"));
+        }
+
+        public override void UpdateValues(CFXmlModel src)
+        {
+            base.UpdateValues(src);
+
+            CompositeFormField srcField = src as CompositeFormField;
+
+            //Updating contents of all child fields
+            foreach (FormField field in Fields)
+            { // checkhere type of 
+                var src_field = srcField.Fields.Where(x => x.Guid == field.Guid).FirstOrDefault();
+                if (src_field != null)
+                    field.UpdateValues(src_field);
+            }
+
+            //Updating contents of the header fields
+            foreach (FormField field in Header)
+            { // checkhere type of 
+                var src_field = srcField.Header.Where(x => x.Guid == field.Guid).FirstOrDefault();
+                if (src_field != null)
+                    field.UpdateValues(src_field);
+            }
+
+            //Updating contents of the footer fields
+            foreach (FormField field in Footer)
+            { // checkhere type of 
+                var src_field = srcField.Footer.Where(x => x.Guid == field.Guid).FirstOrDefault();
+                if (src_field != null)
+                    field.UpdateValues(src_field);
+            }
+        }
+
     }
 }
