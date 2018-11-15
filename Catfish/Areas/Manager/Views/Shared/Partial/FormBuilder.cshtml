@@ -27,7 +27,7 @@
 }
 @helper RenderFileAttachments(KnockoutContext<FormFieldViewModel> field)
     {
-        string containerId = Guid.NewGuid().ToString("N");
+        string containerId = Guid.NewGuid().ToString();
         string uploadApiUrl = Url.Action("upload", "items");
         string deleteApiUrl = Url.Action("deleteCashedFile", "items");
 

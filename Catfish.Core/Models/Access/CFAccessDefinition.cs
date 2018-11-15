@@ -27,23 +27,32 @@ namespace Catfish.Core.Models.Access
 
         public static List<AccessMode> AsList(this AccessMode mode)
         {
-            List<AccessMode> accessModes = new List<AccessMode>();
+            // return all elements that contain flags in mode except AccessMode.None
 
-            foreach (AccessMode accessMode in Enum.GetValues(typeof(AccessMode)))
+            AccessMode[] modes = (AccessMode[])Enum.GetValues(typeof(AccessMode));
+            List<AccessMode> exceptList = new List<AccessMode>()
             {
-                if (accessMode != AccessMode.None && mode.HasMode(accessMode))
-                {
-                    accessModes.Add((AccessMode)accessMode);
-                }
-            }            
+                AccessMode.None
+            };
+            return modes.ToList()
+                .Except(exceptList)
+                .Where(x => mode.HasMode(x))
+                .ToList();                             
 
-            return accessModes;
         }
+
+        //public static List<AccessMode> AsListExcept(this AccessMode mode)
+        //{
+        //    var modes = Enum.GetValues(typeof(AccessMode))
+        //        .Cast<AccessMode>()
+        //        .Except(new AccessMode[] { AccessMode.None });
+        //}
 
         public static List<string> AsStringList(this AccessMode mode)
         {
             return mode.AsList().Select(m => m.ToString()).ToList();
         }
+
     }
 
     public class CFAccessDefinition : CFXmlModel
@@ -91,17 +100,7 @@ namespace Catfish.Core.Models.Access
         {
             get
             {
-                List<AccessMode> accessModes = new List<AccessMode>();
-
-                foreach (AccessMode accessMode in Enum.GetValues(typeof(AccessMode)))
-                {
-                    if (HasMode(accessMode))
-                    {
-                        accessModes.Add((AccessMode)accessMode);
-                    }
-                }
-
-                return accessModes;
+                return AccessModes.AsList();
             }            
         }
         

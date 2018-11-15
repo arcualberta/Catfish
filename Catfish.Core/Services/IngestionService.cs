@@ -28,7 +28,7 @@ namespace Catfish.Core.Services
 
         private string NewGuid()
         {
-            return System.Guid.NewGuid().ToString("N");
+            return System.Guid.NewGuid().ToString();
         }
 
         

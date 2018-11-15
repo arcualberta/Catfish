@@ -55,10 +55,8 @@ namespace Catfish.Core.Services
 
         protected void CreateAccessContext(string userGuidString)
         {
-            if (!string.IsNullOrEmpty(userGuidString))
-            {
-                CreateAccessContext(new Guid(userGuidString));
-            }
+            Guid guid = userGuidString == "" ? AccessContext.PublicAccessGuid : new Guid(userGuidString);
+            CreateAccessContext(guid);
         }
 
         protected void CreateAccessContext(Guid userGuid)

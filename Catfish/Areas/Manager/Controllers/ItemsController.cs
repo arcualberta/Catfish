@@ -280,7 +280,7 @@ namespace Catfish.Areas.Manager.Controllers
             ViewBag.SugestedUsers = entityAccessVM.AvailableUsers2.ToArray();
             var accessList = accessGroupService.GetAccessCodesList();
             accessList.Remove(accessList.First()); //remove "None"
-            accessList.Remove(accessList.Last()); //remove all
+            //accessList.Remove(accessList.Last()); //remove all
             ViewBag.AccessCodesList = accessList;
             return View("AccessGroup", entityAccessVM);
         }
@@ -290,13 +290,13 @@ namespace Catfish.Areas.Manager.Controllers
         {
             SecurityService.CreateAccessContext();
             CFItem item = ItemService.GetItem(entityAccessVM.Id);
-           
+            
             AccessGroupService accessGroupService = new AccessGroupService(Db);
             item = accessGroupService.UpdateEntityAccessGroups(item, entityAccessVM) as CFItem;
-            item = EntityService.UpdateEntity(item) as CFItem;
-           
+            item = EntityService.UpdateEntity(item) as CFItem;           
             item.Serialize();
             Db.SaveChanges();
+            // commit changes to solr
 
             SuccessMessage(Catfish.Resources.Views.Shared.EntityAccessGroup.SaveSuccess);
 

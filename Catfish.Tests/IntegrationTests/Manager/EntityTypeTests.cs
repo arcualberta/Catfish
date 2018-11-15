@@ -19,28 +19,9 @@ namespace Catfish.Tests.IntegrationTests.Manager
         [Test]
         public void CanCreateNewEntityType()
         {
-            string EntityTypeName = "Entity type name";
-            string EntityTypeDescription = "Entity type description";
-            string MetadataSetName = "Metadata set name";
-            string MetadataSetDescription = "Metadata set description";
 
+            CreateBaseEntityType();
 
-            TextField fieldName = new TextField();
-            fieldName.Name = "Name";
-
-            TextArea fieldDescription = new TextArea();
-            fieldDescription.Name = "Description";
-            List<FormField> formFields = new List<FormField>();
-            formFields.Add(fieldName);
-            formFields.Add(fieldDescription);
-
-            CreateMetadataSet(MetadataSetName, MetadataSetDescription, formFields.ToArray());
-
-            CreateEntityType(EntityTypeName, EntityTypeDescription, new[] {
-                MetadataSetName
-                }, new CFEntityType.eTarget[0]);
-
-            // XXX Aqui pasa el stale element exception
             Driver.FindElement(By.LinkText(SettingsLinkText), 10).Click();
             Driver.FindElement(By.LinkText(EntityTypesLinkText), 10).Click();
 

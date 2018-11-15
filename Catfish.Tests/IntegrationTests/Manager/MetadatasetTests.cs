@@ -19,8 +19,6 @@ namespace Catfish.Tests.IntegrationTests.Manager
         [Test]
         public void CanCreateMetadataSet()
         {
-            string MetadataSetName = "Metadataset name";
-            string MetadataSetDescription = "Metadataset description";
 
             TextField field1 = new TextField();
             field1.Name = "Test";

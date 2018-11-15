@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Catfish.Core.Helpers;
+using Catfish.Core.Contexts;
 
 namespace Catfish.Core.Services
 {
@@ -155,6 +156,8 @@ namespace Catfish.Core.Services
 
             string query = GenerateSolrQuery(searchString, languageCodes, fields, modelTypes);
             int total;
+
+            
 
             return Entities.FromSolr(query, out total);
         }

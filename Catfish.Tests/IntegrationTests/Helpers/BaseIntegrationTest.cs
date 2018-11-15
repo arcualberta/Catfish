@@ -14,6 +14,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Catfish.Tests.Extensions;
 using Catfish.Core.Services;
+using SolrNet;
+using Catfish.Core.Models.Access;
 using System.Threading;
 
 
@@ -24,35 +26,68 @@ namespace Catfish.Tests.IntegrationTests.Helpers
     {
         protected IWebDriver Driver;
         protected string ManagerUrl;
+        protected string FrontEndUrl;
         protected const string ContentLinkText = "CONTENT";
         protected const string SettingsLinkText = "SETTINGS";
+        protected const string SystemLinkText = "SYSTEM";
+        protected const string LogoutLinkText = "LOGOUT";
         protected const string MetadataSetsLinkText = "Metadata Sets";
         protected const string EntityTypesLinkText = "Entity Types";
         protected const string ItemsLinkText = "Items";
         protected const string CollectionsLinkText = "Collections";
         protected const string FormsLinkText = "Forms";
+        protected const string AccessDefinitionsLinkText = "Access Definitions";
+        protected const string PagesLinkText = "Pages";
+        protected const string PageTypesLinkText = "Page types";
+        protected const string StandardPageLinkText = "Standard page";
         protected const string ToolBarAddButtonId = "toolbar_add_button";
         protected const string ToolBarSaveButtonId = "toolbar_save_button";
         protected const string NameId = "Name";
         protected const string DescriptionId = "Description";
+        protected const string EntityTypeName = "Entity type name";
+        protected const string EntityTypeDescription = "Entity type description";
+        protected const string MetadataSetName = "Metadata set name";
+        protected const string MetadataSetDescription = "Metadata set description";
+        protected const string FieldName = "Field name";
+        protected const string ItemValue = "Item value";
+        protected const string AccessDefinitionName = "Access definition";
+        protected const string PublicGroupName = "Public";
+        protected const string UserNameFieldId = "usrName";
+        protected const string AddUserAccessButtonId = "btnAddUserAccess";
+        protected const string RegionNameFieldId = "newregionName";
+        protected const string RegionInternalIdId = "newregionInternalId";
+        protected const string RegionTypeSelectorId = "newregionType";
+        protected const string AddRegionButtonId = "btnAddRegion";
+        protected const string SaveLinkText = "Save";
+        protected const string StartLinkText = "Start";
+        protected const string UpdateButtonClass = "publish";
+        protected const string ObjectListClass = "object-list";
+        protected const string ListEntitiesId = "ListEntitiesPanelTableBody";
+        // There should be a better way of defining access permissions
+        protected const string MenuItemWrapperClass = "ui-menu-item-wrapper";
+        protected const AccessMode AccessDefinitionMode = AccessMode.Read;
 
+        // FormFields will be used to share FormField values between CFAggregation 
+        // initialization
+
+        protected FormField[][] FormFields;
 
         [SetUp]
         public void SetUp()
         {
             InitializeSolr();
             Driver = new TWebDriver();
-            ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
 
-            Driver.Manage().Window.Maximize(); //maximize the window
+            FrontEndUrl = ConfigurationManager.AppSettings["ServerUrl"];
+            ManagerUrl = FrontEndUrl + "manager";
 
-            ClearDatabase();            
+            ClearDatabase();
             ResetServerCache();
-            
+
             SetupPiranha();
             RunMigrations();
             LoginAsAdmin();
-            
+
 
             OnSetup();
         }
@@ -98,6 +133,10 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             context.Database.ExecuteSqlCommand(@"EXEC sp_MSforeachtable 'DROP TABLE ?'");
 
             result = context.Database.ExecuteSqlCommand(query);
+
+            ISolrQuery allEntries = new SolrQuery("*:*");
+            SolrService.solrOperations.Delete(allEntries);
+            SolrService.solrOperations.Commit();
         }
 
         private void ResetServerCache()
@@ -107,7 +146,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         }
 
         private void RunMigrations()
-        {            
+        {
             Catfish.Core.Migrations.Configuration config = new Catfish.Core.Migrations.Configuration();
             var migrator = new DbMigrator(config);
             migrator.Update();
@@ -138,20 +177,20 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Name("password")).SendKeys(password);
             Driver.FindElement(By.TagName("button")).Click();
         }
-       
+
         protected IWebElement GetLastObjectRow()
         {
-            return Driver.FindElement(By.XPath("(//tbody[contains(@class, 'object-list')]/tr)[last()]"));
+            return Driver.FindElement(By.XPath("(//tbody[contains(@class, 'object-list')]/tr)[last()]"), 10);
         }
 
         protected IWebElement GetLastActionPanel()
         {
-            return GetLastObjectRow().FindElement(By.XPath("//td[contains(@class, 'action-panel')]"));
+            return GetLastObjectRow().FindElement(By.XPath(".//td[contains(@class, 'action-panel')]"));
         }
 
         public IWebElement GetLastButtonByClass(string cssClass)
         {
-            return GetLastObjectRow().FindElement(By.XPath($"//button[contains(@class, '{cssClass}')]"));
+            return GetLastObjectRow().FindElement(By.XPath($".//button[contains(@class, '{cssClass}')]"));
         }
 
         protected IWebElement GetLastEditButton()
@@ -174,10 +213,10 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             return GetLastButtonByClass("object-accessgroup");
         }
 
-        public void CreateMetadataSet(string name, string description)
-        {
-            CreateMetadataSet(name, description, new FormField[0]);
-        }
+        //public void CreateMetadataSet(string name, string description)
+        //{
+        //    CreateMetadataSet(name, description, new FormField[0]);
+        //}
 
         public void CreateMetadataSet(string name, string description, FormField[] fields)
         {
@@ -225,7 +264,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
             }
 
-            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();          
+            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
 
         private void FillEntityTypeNameMapping()
@@ -234,12 +273,12 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             List<IWebElement> fieldElements = Driver.FindElements(By.XPath(fieldElementsXpath), 10).ToList();
 
             // for simplicity sake link name and description to first element
-            
+
             string mapMetadataXpath = $".//select[contains(@class, 'mapMetadata')]";
             string mapFieldXpath = $".//select[contains(@class, 'mapField')]";
 
             for (int i = 0; i < 2; ++i)
-            {             
+            {
                 IWebElement mapMetadataElement = fieldElements[i]
                     .FindElement(By.XPath(mapMetadataXpath));
                 SelectElement mapMetadataSelector = new SelectElement(mapMetadataElement);
@@ -248,7 +287,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                 IWebElement mapFieldElement = fieldElements[i]
                     .FindElement(By.XPath(mapFieldXpath));
                 SelectElement mapFieldSelector = new SelectElement(mapFieldElement);
-                mapFieldSelector.SelectByIndex(1);                      
+                mapFieldSelector.SelectByIndex(1);
             }
         }
         private void ScrollTop()
@@ -257,8 +296,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             jex.ExecuteScript("scroll(0, -250);");
         }
 
-
-        public void CreateEntityType(string name, string description, 
+        public void CreateEntityType(string name, string description,
             string[] metadataSetNames, CFEntityType.eTarget[] targetTypes)
         {
             Driver.Navigate().GoToUrl(ManagerUrl);
@@ -268,12 +306,21 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id(NameId)).SendKeys(name);
             Driver.FindElement(By.Id(DescriptionId)).SendKeys(description);
 
+            //XXX for now make it applicable to all
+
+            Driver.FindElement(By.Id("chk_Collections")).Click();
+            Driver.FindElement(By.Id("chk_Items")).Click();
+            Driver.FindElement(By.Id("chk_Files")).Click();
+            Driver.FindElement(By.Id("chk_Forms")).Click();
+
+
+
             // Need to add field mappings
 
             // use first metadataset and fields for name and description
 
             IWebElement metadataSetSelectorElement = Driver.FindElement(By.Id("dd_MetadataSets"));
-            SelectElement metadatasetSelector = new SelectElement(metadataSetSelectorElement);           
+            SelectElement metadatasetSelector = new SelectElement(metadataSetSelectorElement);
 
             foreach (string metadataSetName in metadataSetNames)
             {
@@ -296,14 +343,29 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
 
-        public void CreateItem(int entityTypeId)
+        public void CreateCFAggregation(string aggregationLinkText, string entityTypeName, FormField[] metadatasetValues)
         {
-            throw new NotImplementedException();
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.LinkText(ContentLinkText)).Click();
+            Driver.FindElement(By.LinkText(aggregationLinkText)).Click();
+            Driver.FindElement(By.Id(ToolBarAddButtonId)).Click();
+
+            IWebElement fieldTypeSelectorElement = Driver.FindElement(By.Id("field-type-selector"));
+            SelectElement fieldTypeSelector = new SelectElement(fieldTypeSelectorElement);
+            fieldTypeSelector.SelectByText(entityTypeName);
+            Driver.FindElement(By.Id("add-field")).Click();
+
+            // XXX For now fill first input with field name
+            Driver.FindElement(By.XPath("//input[contains(@class, 'text-box single-line')][1]"), 10).SendKeys(metadatasetValues[0].Values[0].Value);
+            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
 
-        public void CreateCollection(int entityTypeId)
-        {
-            throw new NotImplementedException();
+        public void CreateItem(string entityTypeName, FormField[] metadatasetValues) {
+            CreateCFAggregation(ItemsLinkText, entityTypeName, metadatasetValues);
+        }
+
+        public void CreateCollection(string entityTypeName, FormField[] metadatasetValues) {
+            CreateCFAggregation(CollectionsLinkText, entityTypeName, metadatasetValues);    
         }
 
         public void CreateForm(int entityTypeId)
@@ -314,6 +376,66 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         public string CreateUser(string userName, string password, string email)
         {
             throw new NotImplementedException();
+        }
+
+        public void CreateAccessDefinition(string name, AccessMode accessMode)
+        {
+
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.LinkText(SystemLinkText)).Click();
+            Driver.FindElement(By.LinkText(AccessDefinitionsLinkText)).Click();
+            Driver.FindElement(By.Id(ToolBarAddButtonId)).Click();
+
+            Driver.FindElement(By.Id("Name")).SendKeys(name);
+
+            //XXX For now just select read access mode and ignore accessMode parameter
+            bool isChecked = Driver.FindElement(By.Id("1")).Selected;
+
+            if (!isChecked)
+            {
+                Driver.FindElement(By.Id("1")).Click();
+            }
+
+            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
+        }
+
+        protected void CreateBaseEntityType()
+        {
+            // Create metadata set
+            // create entity type
+
+            TextField fieldName = new TextField();
+            fieldName.Name = FieldName;
+
+            TextValue textValue = new TextValue("en", "English", ItemValue);
+            fieldName.SetTextValues(new List<TextValue> { textValue });
+
+            TextArea fieldDescription = new TextArea();
+            fieldDescription.Name = "Description";
+
+            FormFields = new FormField[2][];
+            FormFields[0] = new FormField[2];            
+
+            FormFields[0][0] = fieldName;
+            FormFields[0][1] = fieldDescription;
+
+
+            //List<FormField> formFields = new List<FormField>();
+            //formFields.Add(fieldName);
+            //formFields.Add(fieldDescription);
+
+            CreateMetadataSet(MetadataSetName, MetadataSetDescription, FormFields[0]);
+
+            CreateEntityType(EntityTypeName, EntityTypeDescription, new[] {
+                MetadataSetName
+                }, new CFEntityType.eTarget[0]);
+        }
+
+        protected void CreateBaseItem(string itemString)
+        {
+            TextValue itemValue = new TextValue("en", "English", itemString);
+            FormFields[0][0].SetTextValues(new List<TextValue> { itemValue });
+            CreateItem(EntityTypeName, FormFields[0]);
         }
 
         public void CreateItem(string entityTypeName, string name, bool attachment = false)
