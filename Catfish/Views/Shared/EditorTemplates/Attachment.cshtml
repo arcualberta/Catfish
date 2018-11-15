@@ -14,9 +14,9 @@
     string containerId = Guid.NewGuid().ToString();
     string uploadApiUrl = ViewBag.UploadApiUrl as string;
     string deleteApiUrl = ViewBag.DeleteApiUrl as string;
-    List<string> crossLinkedFileGuids = ViewBag.CrossLinkedFileGuids != null ? 
+    List<string> crossLinkedFileGuids = ViewBag.CrossLinkedFileGuids != null ?
         ViewBag.CrossLinkedFileGuids as List<string>
-        : new List<string>();
+        : new List<string>();   
 }
 
 
@@ -37,11 +37,16 @@
                 if (file != null)
                 {
                     FileViewModel vm= new FileViewModel(file, parentId, Request.RequestContext, controller);
+                  
                     bool undeletable = crossLinkedFileGuids.Contains(file.Guid);
                     string secondaryClass = undeletable ? "undeletable" : "";
                     var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
+
+
                     <div class="fileThumbnail @eleId @secondaryClass">
-                        <div class="img" style="background-image:url(@vm.Thumbnail)" ></div>
+                      
+                        <div class="img" style="background-image:url(@vm.ThumbnailUrl)"></div>
+                       
                         @if (!undeletable)
                         {
                             <button class="glyphicon glyphicon-remove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@containerId'); return false;"></button>
@@ -55,9 +60,9 @@
     <div class="inner" style="clear:both">
         <div class="alert alert-danger messageBox"></div>
 
-        <input type='file' class="uploadField" name="files" multiple="multiple" />
-        <input type="button" value="Upload" class="uploadButton" 
-               onclick="uploadFile('@containerId', '@uploadApiUrl', '@deleteApiUrl', '@fileGuidListFieldId'); return false;" />
+        <input type='file' class="uploadField" name="files" multiple="multiple" onchange="uploadFile('@containerId', '@uploadApiUrl', '@deleteApiUrl', '@fileGuidListFieldId'); return false;" />
+        @*<input type="button" value="Upload" class="uploadButton" 
+               onclick="uploadFile('@containerId', '@uploadApiUrl', '@deleteApiUrl', '@fileGuidListFieldId'); return false;" />*@
         <div class="progressBar"><progress></progress></div>
     </div>
 </div>
