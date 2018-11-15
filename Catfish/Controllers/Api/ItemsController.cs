@@ -11,6 +11,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Catfish.Core.Helpers;
+using System.Drawing.Imaging;
 
 namespace Catfish.Controllers.Api
 {
@@ -169,10 +170,38 @@ namespace Catfish.Controllers.Api
 
             string path_name = string.Empty;
             string[] fnames = file.LocalFileName.Split('.');
-            string jpgExt = (fnames[1] == "jpeg" || fnames[1] == "jpg") ? "jpg" : fnames[1];
-            if (eSize == null)
+            string jpgExt = fnames[1];
+            //string jpgExt = (fnames[1] == "jpeg" || fnames[1] == "jpg") ? "jpg" : fnames[1];
+            if(fnames[1] == "jpeg" || fnames[1] == "jpg")
             {
-                path_name = Path.Combine(file.Path, file.LocalFileName);
+                jpgExt = "jpg";
+            }
+            else if (fnames[1] == "png" || fnames[1] == "tif" || fnames[1] == "tiff")
+            {
+                jpgExt = "png";
+            }
+
+            if (eSize == null)  //get original size
+            {
+                if (fnames[1] == "tif")
+                {
+                    //chrome ccan't display tif image
+                    string localFileNamePath = Path.Combine(file.Path, file.LocalFileName); //fnames[0] + ".png";
+                    string pngFilePath = (localFileNamePath.Split('.'))[0] + ".png";
+                   
+                   
+                    //make a copy of .tif image save it as .png if none existed yet
+                    if(!System.IO.File.Exists(pngFilePath))
+                    {
+                        System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(localFileNamePath);
+                        bitmap.Save(pngFilePath, ImageFormat.Png);
+                    }
+                    path_name = pngFilePath;
+                }
+                else
+                {
+                    path_name = Path.Combine(file.Path, file.LocalFileName);
+                }
             }
             else if (eSize.Equals(ConfigHelper.eImageSize.Thumbnail))
             {

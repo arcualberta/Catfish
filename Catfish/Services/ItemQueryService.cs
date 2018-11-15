@@ -187,14 +187,32 @@ namespace Catfish.Services
             {
                 if (reader.IsStartElement())
                 {
-                    if(reader.Name == "lst")
+                    if (reader.Name == "lst")
                     {
                         ++level;
-                    }else if((reader.Name == "int" || reader.Name == "long") && level == 3 && reader.GetAttribute("name") == "val")
+                    }
+                    else if ((reader.Name == "int" || reader.Name == "long" || reader.Name == "double") && level == 3)
                     {
+                        string name = reader.GetAttribute("name");
                         reader.Read();
-                        xVal = reader.ReadContentAsInt();
-                    }else if(level == 5)
+
+                        if (name == "val")
+                        {
+                            xVal = reader.ReadContentAsInt();
+                        }else if(name == "count" && categories == null)
+                        {
+                            count = reader.ReadContentAsInt();
+                        }else if(name == "sumYValues" && categories == null)
+                        {
+                            try
+                            {
+                                yVal = reader.ReadContentAsDecimal();
+                            }catch(Exception fex)
+                            {
+                                throw new FormatException(string.Format("Unable to parse string \"{0}\" into decimal.", reader.Value), fex);
+                            }
+                        }
+                    }else if (level == 5 && category != null)
                     {
                         string name = reader.GetAttribute("name");
                         reader.Read();
@@ -226,10 +244,24 @@ namespace Catfish.Services
                         if (level < 1)
                         {
                             break;
-                        }else if(level == 2)
+                        } else if (level == 2)
                         {
+                            if(categories == null)
+                            {
+                                result.Add(new GraphQueryObject()
+                                {
+                                    XValue = yVal,
+                                    YValue = xVal,
+                                    Category = null,
+                                    Count = count
+                                });
+
+                                yVal = 0.0m;
+                                count = 0;
+                            }
+
                             xVal = 0;
-                        }else if(level == 4)
+                        } else if (level == 4 && categories != null)
                         {
                             result.Add(new GraphQueryObject()
                             {
@@ -277,13 +309,17 @@ namespace Catfish.Services
         {
             string xIndexId = string.Format("value_{0}_{1}_i", xMetadataSet.Replace('-', '_'), xField.Replace('-', '_'));
             string yIndexId = string.Format("value_{0}_{1}_i", yMetadataSet.Replace('-', '_'), yField.Replace('-', '_'));
-            string catIndexId = string.Format("{2}value_{0}_{1}_txt_{3}", catMetadataSet.Replace('-', '_'), catField.Replace('-', '_'), isCatDropdown ? "option_" : "", languageCode);
+            string catIndexId = string.IsNullOrEmpty(catField) ? null : string.Format("{2}value_{0}_{1}_txt_{3}_s", catMetadataSet.Replace('-', '_'), catField.Replace('-', '_'), isCatDropdown ? "option_" : "", languageCode);
 
             string result = SolrSrv.GetGraphData(q, xIndexId, yIndexId, catIndexId);
 
             if (string.IsNullOrEmpty(result)) { return null; }
 
-            IDictionary<string, string> categories = SolrSrv.GetSolrCategories(q, catIndexId);
+            IDictionary<string, string> categories = null;
+            if (catIndexId != null)
+            {
+                categories = SolrSrv.GetSolrCategories(q, catIndexId);
+            }
 
             return ConvertSolrXml(result, categories);
         }

@@ -91,7 +91,7 @@ namespace Catfish.Core.Services
 
         public string GetGraphData(string query, string xIndexId, string yIndexId, string categoryId)
         {
-            const string facetJson = @"{{
+            const string facetCategoryJson = @"{{
                 xValues:{{
                     sort : index,
                     type : terms,
@@ -111,11 +111,23 @@ namespace Catfish.Core.Services
                 }}
             }}";
 
+            const string facetJson = @"{{
+                xValues:{{
+                    sort : index,
+                    type : terms,
+                    limit : 10000,
+                    field : {0},
+                    facet : {{
+                        sumYValues : ""sum({1})""
+                    }}
+                }}
+            }}";
+
             if (SolrService.IsInitialized)
             {
                 IEnumerable<KeyValuePair<string, string>> parameters = new KeyValuePair<string, string>[]{
                     new KeyValuePair<string, string>("q", query),
-                    new KeyValuePair<string, string>("json.facet", string.Format(facetJson, xIndexId, yIndexId, categoryId)),
+                    new KeyValuePair<string, string>("json.facet", string.Format(categoryId == null ? facetJson : facetCategoryJson, xIndexId, yIndexId, categoryId)),
                     new KeyValuePair<string, string>("rows", "0"),
                     new KeyValuePair<string, string>("sort", xIndexId + " asc"),
                     new KeyValuePair<string, string>("wt", "xml")
