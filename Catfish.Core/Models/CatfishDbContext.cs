@@ -17,20 +17,30 @@ namespace Catfish.Core.Models
 {
     public class CatfishDbContext : DbContext
     {
-        private ISolrOperations<Dictionary<string, object>> solr { get; set; }
+        //private ISolrOperations<Dictionary<string, object>> solr { get; set; }
 
         public CatfishDbContext()
             : base("piranha")
         {
-            if (SolrService.IsInitialized)
-            {
-                solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
-            }
+            //if (SolrService.IsInitialized)
+            //{
+            //    solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+            //}
         }
 
         public CatfishDbContext(System.Data.Common.DbConnection connection, bool contextOwnsConnection) : base(connection, contextOwnsConnection)
         {
-            solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+            //if (SolrService.IsInitialized)
+            //{
+            //    solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+            //}
+            string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
+
+            if (!string.IsNullOrEmpty(solrString))
+            {
+                SolrService.Init(solrString);
+            }
+
         }
 
         private void UpdateSolr()
@@ -52,8 +62,8 @@ namespace Catfish.Core.Models
                 }
             }
 
-            solr.AddRange(savedEntities);
-            solr.Delete(deletedEntities);                                
+            SolrService.solrOperations.AddRange(savedEntities);
+            SolrService.solrOperations.Delete(deletedEntities);                                
         }
 
         public override int SaveChanges()
@@ -65,7 +75,7 @@ namespace Catfish.Core.Models
                     UpdateSolr();
                     int result = base.SaveChanges();
                     dbContextTransaction.Commit();
-                    solr.Commit();
+                    SolrService.solrOperations.Commit();
                     return result;
                 }
                 catch (SolrNetException e)
@@ -74,9 +84,9 @@ namespace Catfish.Core.Models
                     dbContextTransaction.Rollback();
                     throw e;
                 }
-                catch
+                catch (Exception e)
                 {
-                    throw;
+                    throw e;
                 }
             }
 
@@ -155,7 +165,7 @@ namespace Catfish.Core.Models
 
         public DbSet<CFXmlModel> XmlModels { get; set; }
 
-       public DbSet<CFEntity> Entities { get; set; }
+        public DbSet<CFEntity> Entities { get; set; }
 
         public DbSet<CFCollection> Collections { get; set; }
 

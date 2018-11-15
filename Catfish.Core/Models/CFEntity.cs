@@ -178,16 +178,46 @@ namespace Catfish.Core.Models
                     values.ToList().ForEach(x => result[x.Key] = x.Value);
                 }
             }
+
             return result;
         }
+
+        private Dictionary<string, List<string>> GetAccessDictionary()
+        {
+
+            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+            AccessGroups.ForEach( x =>
+            {
+                foreach (AccessMode mode in x.AccessDefinition.AccessModes.AsList())
+                {
+                    string key = $@"access_{(int)mode}_ss";
+                    if (!result.ContainsKey(key))
+                    {
+                        result[key] = new List<string>();
+                    }
+
+                    //result[key].Add(x.Guid.ToString());
+                    result[key].Add(x.AccessGuid.ToString());
+                }
+
+            });
+            return result;
+        }
+
         public Dictionary<string, object> ToSolrDictionary()
         {
             string modelType = System.Data.Entity.Core.Objects.ObjectContext.GetObjectType(GetType()).Name;
+
             Dictionary<string, object> result = new Dictionary<string, object>
             {
                 {"id", Guid},
                 {"modeltype_s", modelType}
             };
+
+            // Add access elements for secure searches in solr
+            Dictionary<string, List<string>> access = GetAccessDictionary();
+            access.ToList().ForEach(x => result[x.Key] = x.Value);
+            
             foreach (CFMetadataSet metadataset in MetadataSets)
             {
                 string metadatasetGuid = CleanGuid(metadataset.Guid);

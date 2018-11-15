@@ -16,6 +16,7 @@ using Catfish.Core.Services;
 using Catfish.Core.ModelBinders;
 using Catfish.Core.Validators;
 using Catfish.Core.Helpers;
+using Catfish.Core.Contexts;
 using Catfish.Core.Plugins;
 using System.Configuration;
 using System.Reflection;
@@ -99,8 +100,30 @@ namespace Catfish
                 }
             };
 
+            AddPublicUserListIfDoesNotExist();
+
+
             // Initialize Plugins
             InitializePlugins();
+        }
+
+        private void AddPublicUserListIfDoesNotExist()
+        {
+            // publicGuid guid is all 0 
+            Guid publicGuid = AccessContext.PublicAccessGuid;
+            CatfishDbContext db = new CatfishDbContext();
+            CFUserList publicUserList = db.UserLists.Where(x => x.Id == publicGuid).FirstOrDefault();
+
+            if (publicUserList == null)
+            {
+                // Add public user list
+                publicUserList = new CFUserList();
+                publicUserList.Id = publicGuid;
+                publicUserList.Name = "Public";
+                db.UserLists.Add(publicUserList);
+                db.SaveChanges();
+
+            }
         }
 
         private void RegisterPluginRoutes()

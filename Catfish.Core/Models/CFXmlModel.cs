@@ -120,7 +120,7 @@ namespace Catfish.Core.Models
                 var att = Data.Attribute("guid");
                 if(att == null || string.IsNullOrEmpty(att.Value))
                 {
-                    Data.SetAttributeValue("guid", System.Guid.NewGuid().ToString("N"));
+                    Data.SetAttributeValue("guid", System.Guid.NewGuid().ToString());
                     att = Data.Attribute("guid");
                 }
                 return att.Value;

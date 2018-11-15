@@ -17,9 +17,12 @@ namespace Catfish.Controllers.Api
 {
     public class ItemsController : CatfishController
     {   
+
         public JsonResult GetPageItems(string q, int sortAttributeMappingId, bool sortAsc, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds)
         {
             int total;
+            SecurityService.CreateAccessContext();
+
             var items = ItemService.GetPagedItems(q, sortAttributeMappingId, sortAsc, page, itemPerPage, out total);
 
             List<Tuple<int, List<string>>> result = new List<Tuple<int, List<string>>>(items.Count());

@@ -87,6 +87,7 @@
     <Reference Include="RazorGenerator.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
       <HintPath>..\packages\PiranhaCMS.Core.2.2.6.1\lib\net45\RazorGenerator.Mvc.dll</HintPath>
     </Reference>
+    <Reference Include="SolrNet, Version=1.0.10.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Linq" />
