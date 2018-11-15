@@ -12,6 +12,23 @@ using System.Web.Script.Serialization;
 
 namespace Catfish.Areas.Manager.Models.ViewModels
 {
+    public class ViewModelTuple<T1, T2>
+    {
+        public T1 Item1 { get; set; }
+        public T2 Item2 { get; set; }
+
+        public ViewModelTuple()
+        {
+            Item1 = default(T1);
+            Item2 = default(T2);
+        }
+
+        public ViewModelTuple(T1 a, T2 b) : this()
+        {
+            Item1 = a;
+            Item2 = b;
+        }
+    }
     public class FormFieldViewModel : KoBaseViewModel
     {
         public string TypeLabel { get; set; }
@@ -24,6 +41,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public bool IsTextArea { get; set; }
         public bool IsOptionField { get; set; }
         public bool IsSliderField { get; set; }
+        public bool IsExternalMediaField { get; set; }
         public List<TextValue> MultilingualOptionSet { get; set; }
         public string Guid { get; set; }
 
@@ -32,6 +50,10 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public decimal Step { get; set; }
         public string MinLabel { get; set; }
         public string MaxLabel { get; set; }
+
+        public string Source { get; set; }
+        public string MimeType { get; set; }
+        public List<KeyValuePair<string, ViewModelTuple<IEnumerable<string>, bool>>> MediaProperties{ get; set; }
 
         public FormFieldViewModel() { }
         // Attachment creates multiple recursions on view leaving the page unresponsive
@@ -73,6 +95,23 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 MaxLabel = ((SliderField)formField).MaxLabel;
             }
 
+            IsExternalMediaField = typeof(ExternalMediaField).IsAssignableFrom(formField.GetType());
+            MediaProperties = new List<KeyValuePair<string, ViewModelTuple<IEnumerable<string>, bool>>>();
+            if (IsExternalMediaField)
+            {
+                Source = ((ExternalMediaField)formField).Source;
+                MimeType = Enum.GetName(typeof(CFDataFile.MimeType), ((ExternalMediaField)formField).MediaType);
+
+                var mediaTypeProperties = formField.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(MediaTypeAttribute)));
+
+                foreach (var p in mediaTypeProperties)
+                {
+                    MediaProperties.Add(new KeyValuePair<string, ViewModelTuple<IEnumerable<string>, bool>>(p.Name, new ViewModelTuple<IEnumerable<string>, bool>(p.GetCustomAttribute<MediaTypeAttribute>(true)
+                        .MimeTypes.Select(m => Enum.GetName(typeof(CFDataFile.MimeType), m)),
+                        (bool)p.GetValue(formField))));
+                }
+            }
+            
 
             IsOptionField = typeof(OptionsField).IsAssignableFrom(formField.GetType());
             if (IsOptionField)
@@ -136,6 +175,19 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 ((SliderField)field).Step = Step;
                 ((SliderField)field).MinLabel = MinLabel;
                 ((SliderField)field).MaxLabel = MaxLabel;
+            }
+
+            if (IsExternalMediaField)
+            {
+                ((ExternalMediaField)field).Source = Source;
+                ((ExternalMediaField)field).MediaType = (CFDataFile.MimeType)Enum.Parse(typeof(CFDataFile.MimeType), MimeType);
+
+                var mediaTypeProperties = field.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(MediaTypeAttribute)));
+
+                foreach(var entry in MediaProperties)
+                {
+                    mediaTypeProperties.Where(p => p.Name == entry.Key).First().SetValue(field, entry.Value.Item2);
+                }
             }
 
             if (typeof(OptionsField).IsAssignableFrom(type))
