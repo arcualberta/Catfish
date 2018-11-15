@@ -84,7 +84,7 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="formTemplateId">The template to create the submission on.</param>
         /// <returns>The newly created submission.</returns>
-        public Form CreateSubmissionForm(int formTemplateId, bool enforceLists, bool shuffleBlocks, bool shuffleQuestions, bool stepThroughQuestions, bool stepThroughQuestionParts)
+        public Form CreateSubmissionForm(int formTemplateId, bool enforceLists, bool shuffleBlocks, bool shuffleQuestions, CompositeFormField.eStepState questionStepOption, CompositeFormField.eStepState questionPartsStepOption)
         {
             //Obtaining the template
             Form template = Db.FormTemplates.Where(m => m.Id == formTemplateId).FirstOrDefault();
@@ -169,28 +169,57 @@ namespace Catfish.Core.Services
             }
 
             //Activating stepping through
-            if (stepThroughQuestions || stepThroughQuestionParts)
+            if (questionStepOption == CompositeFormField.eStepState.None && questionPartsStepOption != CompositeFormField.eStepState.None)
+                questionStepOption = CompositeFormField.eStepState.StepThrough;
+
+            if (questionStepOption != CompositeFormField.eStepState.None)
             {
                 //Assumes that the top-level CompositeFormFields of the form represents sublists of felds and CompositeFormFields in each of those
                 //sublists represent blocks, and each block to contain quesitons. This code initializes the step-through-children property of 
                 //the blocks and the questions in order to enable shuffling questions and question-parts, respectively.
-
                 foreach (var list in submission.Fields.Where(field => field is CompositeFormField).Select(field => field as CompositeFormField))
                 {
-                    foreach (var block in list.Fields.Where(field => field is CompositeFormField).Select(field => field as CompositeFormField))
+                    foreach(var headerItem in list.Header.Where(h => h is CompositeFormField).Select(h => h as CompositeFormField))
                     {
-                        if (stepThroughQuestions)
-                            block.StepState = CompositeFormField.eStepState.StepThrough;
-
-                        if (stepThroughQuestionParts)
+                        headerItem.StepState = questionStepOption;
+                        if (questionPartsStepOption != CompositeFormField.eStepState.None)
                         {
-                            foreach (var question in block.Fields.Where(field => field is CompositeFormField).Select(field => field as CompositeFormField))
+                            foreach (var question in headerItem.Fields.Where(field => field is CompositeFormField).Select(field => field as CompositeFormField))
                             {
-                                question.StepState = CompositeFormField.eStepState.Accumulative;
+                                question.StepState = questionPartsStepOption;
                             }
                         }
                     }
+
+                    foreach (var block in list.Fields.Where(field => field is CompositeFormField).Select(field => field as CompositeFormField))
+                    {
+                        block.StepState = questionStepOption;
+
+                        if (questionPartsStepOption != CompositeFormField.eStepState.None)
+                        {
+                            foreach (var question in block.Fields.Where(field => field is CompositeFormField).Select(field => field as CompositeFormField))
+                            {
+                                question.StepState = questionPartsStepOption;
+                            }
+                        }
+                    }
+
+                    foreach (var footerItem in list.Footer.Where(h => h is CompositeFormField).Select(h => h as CompositeFormField))
+                    {
+                        footerItem.StepState = questionStepOption;
+                        if (questionPartsStepOption != CompositeFormField.eStepState.None)
+                        {
+                            foreach (var question in footerItem.Fields.Where(field => field is CompositeFormField).Select(field => field as CompositeFormField))
+                            {
+                                question.StepState = questionPartsStepOption;
+                            }
+                        }
+                    }
+
                 }
+
+                //throw new NotImplementedException("Handle stepping through footer questions here ...");
+
             }
 
 
