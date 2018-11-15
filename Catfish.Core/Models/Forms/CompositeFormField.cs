@@ -51,32 +51,70 @@ namespace Catfish.Core.Models.Forms
         }
 
         [NotMapped]
-        public string Header
+        [IgnoreDataMember]
+        public IReadOnlyList<FormField> Header
         {
             get
             {
-                return GetChildText("header", Data, null);
+                return GetChildModels("header/field", Data).Select(c => c as FormField).ToList();
             }
 
             set
             {
-                SetChildText("header", value, Data, null);
+                //Removing all children inside the metadata set element
+                RemoveAllElements("header/field", Data);
+
+                foreach (FormField ms in value)
+                    InsertChildElement("./header", ms.Data);
             }
         }
 
         [NotMapped]
-        public string Footer
+        [IgnoreDataMember]
+        public IReadOnlyList<FormField> Footer
         {
             get
             {
-                return GetChildText("footer", Data, null);
+                return GetChildModels("footer/field", Data).Select(c => c as FormField).ToList();
             }
 
             set
             {
-                SetChildText("footer", value, Data, null);
+                //Removing all children inside the metadata set element
+                RemoveAllElements("footer/field", Data);
+
+                foreach (FormField ms in value)
+                    InsertChildElement("./footer", ms.Data);
             }
         }
+
+        ////[NotMapped]
+        ////public string Header
+        ////{
+        ////    get
+        ////    {
+        ////        return GetChildText("header", Data, null);
+        ////    }
+
+        ////    set
+        ////    {
+        ////        SetChildText("header", value, Data, null);
+        ////    }
+        ////}
+
+        ////[NotMapped]
+        ////public string Footer
+        ////{
+        ////    get
+        ////    {
+        ////        return GetChildText("footer", Data, null);
+        ////    }
+
+        ////    set
+        ////    {
+        ////        SetChildText("footer", value, Data, null);
+        ////    }
+        ////}
 
         public CompositeFormField()
         {
