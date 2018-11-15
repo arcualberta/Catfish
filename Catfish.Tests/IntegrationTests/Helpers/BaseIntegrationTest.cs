@@ -442,8 +442,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             if (match.Success && match.Groups.Count == 2) {
                 Int32 id = Convert.ToInt32(match.Groups[1].Value);
                 CatfishDbContext db = new CatfishDbContext();
-
-                CFEntity model = (CFEntity)db.XmlModels.Find(id);
+                CFEntity model = db.Entities.Find(id);
                 Dictionary<string, object> result = model.ToSolrDictionary();
 
                 SolrQuery q = new SolrQuery($@"id:{model.MappedGuid}");
@@ -454,7 +453,9 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
                     foreach (KeyValuePair<string, object> entry in result)
                     {
-                        if (entry.Value.ToString() != fromSolr[entry.Key].ToString())
+                        // first we need to make sure the entry value is not empty, 
+                        // otherwise is not indexed in solr
+                        if (entry.Value.ToString().Length > 0 &&  entry.Value.ToString() != fromSolr[entry.Key].ToString())
                         {
                             return false;
                         }
@@ -464,10 +465,6 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                 
             }
 
-            // fetch information from database
-            // get from solr dictionary
-            // fetch solr data
-            // compare both dictionaries
             return false;
         }
 
