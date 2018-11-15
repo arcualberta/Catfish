@@ -12,6 +12,7 @@ using System.Web;
 using System.Web.Mvc;
 using Piranha;
 using System.Web.Script.Serialization;
+using Catfish.Core.Models.Forms;
 
 namespace Catfish.Models.Regions
 {
@@ -22,14 +23,6 @@ namespace Catfish.Models.Regions
     [Serializable]
     public class FormContainer : CatfishRegion
     {
-        public enum eStepOption
-        {
-            None = 0,
-            Questions,
-            [Display(Name = "Question Parts")]
-            QuestionParts
-        }
-
         [Display(Name = "Form")]
         public int FormId { get; set; }
 
@@ -51,8 +44,11 @@ namespace Catfish.Models.Regions
         [Display(Name = "Shuffle Questions")]
         public bool ShuffleQuestions { get; set; }
 
-        [Display(Name = "Step Options")]
-        public eStepOption StepOption { get; set; }
+        [Display(Name = "Question Step Options")]
+        public CompositeFormField.eStepState QuestionStepOption { get; set; }
+
+        [Display(Name = "Question-parts Step Options")]
+        public CompositeFormField.eStepState QuestionPartsStepOption { get; set; }
 
         private SelectList mForms;
         [ScriptIgnore]
@@ -174,10 +170,13 @@ namespace Catfish.Models.Regions
             {
                 SubmissionService subSrv = new SubmissionService(new CatfishDbContext());
 
-                bool stepThroughQuestionParts = StepOption == FormContainer.eStepOption.QuestionParts;
-                bool stepThroughQuestions = stepThroughQuestionParts || StepOption == FormContainer.eStepOption.Questions;
-
-                Form form = subSrv.CreateSubmissionForm(FormId, EnforceLists, ShuffleBlocks, ShuffleQuestions, stepThroughQuestions, stepThroughQuestionParts);
+                Form form = subSrv.CreateSubmissionForm(
+                    FormId,
+                    EnforceLists,
+                    ShuffleBlocks,
+                    ShuffleQuestions,
+                    QuestionStepOption, 
+                    QuestionPartsStepOption);
 
                 FormViewModel = new FormViewModel()
                 {
