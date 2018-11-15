@@ -143,7 +143,8 @@ namespace Catfish.Tests.Services
                 typeof(DateField),
                 typeof(CheckBoxSet),
                 typeof(Attachment),
-                typeof(SliderField)
+                typeof(SliderField),
+                typeof(ExternalMediaField)
             };
 
             List<Type> testTypes = mDh.Ms.GetMetadataFieldTypes();
