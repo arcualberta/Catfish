@@ -144,6 +144,5 @@ namespace Catfish.Core.Models.Forms
                     field.UpdateValues(src_field);
             }
         }
-
     }
 }
