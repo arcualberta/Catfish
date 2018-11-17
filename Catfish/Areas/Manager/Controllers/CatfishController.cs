@@ -64,6 +64,7 @@ namespace Catfish.Areas.Manager.Controllers
             }
         }
 
+
         [HttpPost]        
         public JsonResult SelectEntity(SelectEntityTypeViewModel vm)
         {
