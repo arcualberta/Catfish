@@ -27,6 +27,14 @@
             @Html.DropDownListFor(m=>m.SortByField, Model.FieldsMapping, new { @class = "btn btn-default", @id= "listPanelDd" })
         </div>
     </li>
+
+    <li>
+        @Html.LabelFor(m => m.EntityTypeFilter)
+        <div class="input">
+            @Html.EditorFor(m => m.EntityTypeFilter)
+        </div>
+    </li>
+
     <li>
         @Html.LabelFor(m => m.Fields)
         <div class="bs input">

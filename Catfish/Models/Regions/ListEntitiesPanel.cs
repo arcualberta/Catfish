@@ -90,6 +90,9 @@ namespace Catfish.Models.Regions
         [Display(Name = "Sort By Field")]
         public int SortByField { get; set; }
 
+        [Display(Name = "Entity type")]
+        public string EntityTypeFilter { get; set; }
+
         [ScriptIgnore]
         public SelectList FieldsMapping { get; set; }
 
