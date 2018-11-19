@@ -185,12 +185,13 @@ namespace Catfish.Areas.Manager.Controllers
         {
             SecurityService.CreateAccessContext();
             SurveyService srv = new SurveyService(Db);
-            var file = srv.ExportFormData(id);
-
-            if(file == null)
+            var data = srv.ExportFormData(id);
+            if (data == null)
                 return HttpNotFound("Not found");
 
-            return null;
+            string csv = srv.ToCsv(data);
+
+            return File(new System.Text.UTF8Encoding().GetBytes(csv), "text/csv", "formdata.csv");
         }
 
     }
