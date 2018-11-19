@@ -77,6 +77,19 @@ namespace Catfish.Core.Services
             return exportData;
         }
 
+        public string ToCsv(Dictionary<int, List<string>> data)
+        {
+            List<string> rows = new List<string>();
+            foreach(var item in data)
+            {
+                string row = item.Key.ToString() + "," + string.Join(",", item.Value);
+                rows.Add(row);
+            }
+
+            string csv = string.Join("\n", rows);
+            return csv;
+        }
+
         public Dictionary<string, List<string>> ExportValues(FormField field)
         {
             Dictionary<string, List<string>> values = new Dictionary<string, List<string>>();
