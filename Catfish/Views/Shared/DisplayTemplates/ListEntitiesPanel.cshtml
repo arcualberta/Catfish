@@ -57,6 +57,7 @@
         let sortAsc = true;
         let query = '*:*';
         let isLoaded = false;
+        let entityTypeFilter = "@Model.EntityTypeFilter";
         let links = {
             @for(int i = 0; i < Model.Fields.Count; ++i)
             {
@@ -184,6 +185,8 @@
 
         function updateTable() {
             var mapIds = @Html.Raw(Json.Encode(Model.Fields.Select(s => s.Id)));
+            console.log("test")
+            console.log(mapIds)
             window.startLoading("#@cssId", 60000);
 
             $.ajax({
@@ -191,7 +194,15 @@
                 url:@Html.Raw(Json.Encode(Url.Action("GetPageItems", "Items"))),
                 dataType: 'json',
                 traditional: true,
-                data: { page: currPage - 1, sortAttributeMappingId: sortAttributeMappingId, sortAsc: sortAsc, itemPerPage: itemsPerPage, mapIds: mapIds, q: query },
+                data: {
+                    page: currPage - 1,
+                    sortAttributeMappingId: sortAttributeMappingId,
+                    sortAsc: sortAsc,
+                    itemPerPage: itemsPerPage,
+                    mapIds: mapIds,
+                    entityTypeFilter: entityTypeFilter,
+                    q: query
+                },
                 success: handleTableResults,
                 error: function(){
                     alert("Problems while updating table data");
