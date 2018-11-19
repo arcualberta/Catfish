@@ -31,7 +31,7 @@
     <li>
         @Html.LabelFor(m => m.EntityTypeFilter)
         <div class="input">
-            @Html.EditorFor(m => m.EntityTypeFilter)
+            @Html.DropDownListFor(m => m.EntityTypeFilter, Model.EntityTypes)
         </div>
     </li>
 

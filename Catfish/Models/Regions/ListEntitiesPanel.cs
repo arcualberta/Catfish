@@ -94,6 +94,9 @@ namespace Catfish.Models.Regions
         public string EntityTypeFilter { get; set; }
 
         [ScriptIgnore]
+        public SelectList EntityTypes { get; set; }
+
+        [ScriptIgnore]
         public SelectList FieldsMapping { get; set; }
 
         [ScriptIgnore]
@@ -128,6 +131,8 @@ namespace Catfish.Models.Regions
                     Mappings.Add(map);
                 }
             }
+
+            EntityTypes = new SelectList(entityTypeService.GetEntityTypes(), "Name", "Name");
 
             base.InitManager(model);
         }
