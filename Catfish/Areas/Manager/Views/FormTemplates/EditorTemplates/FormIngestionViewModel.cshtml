@@ -61,6 +61,12 @@
                     @Html.TextAreaFor(model => model.FormDescription)
                 </div>
             </li>
+            <li>
+                @Html.LabelFor(model => model.MediaFolderUrl, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.EditorFor(model => model.MediaFolderUrl)
+                </div>
+            </li>
             <li style="column-span:2"><h3>Select Columns for the Folloiwings</h3></li>
             <li>
                 @Html.LabelFor(model => model.ListIdColumn, new { @class = "control-label col-md-3" })
@@ -72,6 +78,18 @@
                 @Html.LabelFor(model => model.BlockIdColumn, new { @class = "control-label col-md-3" })
                 <div class="input">
                     @Html.DropDownList("BlockIdColumn", new SelectList(Model.ColumnHeadings), "", new { @class = "form-control" })
+                </div>
+            </li>
+            <li>
+                @Html.LabelFor(model => model.QuestionIdColumn, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.DropDownList("QuestionIdColumn", new SelectList(Model.ColumnHeadings), "", new { @class = "form-control" })
+                </div>
+            </li>
+            <li>
+                @Html.LabelFor(model => model.IsRequiredIndicatorColumn, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.DropDownList("IsRequiredIndicatorColumn", new SelectList(Model.ColumnHeadings), "", new { @class = "form-control" })
                 </div>
             </li>
             for (int i = 0; i < Model.PreContextColumns.Count; ++i)
@@ -102,6 +120,12 @@
                 @Html.LabelFor(model => model.AnswerOptionsColumn, new { @class = "control-label col-md-3" })
                 <div class="input">
                     @Html.DropDownList("AnswerOptionsColumn", new SelectList(Model.ColumnHeadings), "", new { @class = "form-control" })
+                </div>
+            </li>
+            <li>
+                @Html.LabelFor(model => model.AudioFileColumn, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.DropDownList("AudioFileColumn", new SelectList(Model.ColumnHeadings), "", new { @class = "form-control" })
                 </div>
             </li>
             <li class="no-shading"><input name="Button" type="submit" value="Ingest" class="btn btn-primary" /></li>
