@@ -39,39 +39,6 @@ namespace Catfish.Tests.IntegrationTests.Manager
             //XXX Check if accessMode is set
         }
 
-        private void CreateAndAddEntityListToMain()
-        {
-            // create list entity region
-            Driver.FindElement(By.LinkText(SettingsLinkText)).Click();
-            Driver.FindElement(By.LinkText(PageTypesLinkText)).Click();
-            Driver.FindElement(By.LinkText(StandardPageLinkText)).Click();
-
-            // add region to main page
-            string regionName = "newRegionName";
-            Driver.FindElement(By.Id(RegionNameFieldId)).SendKeys(regionName);
-            Driver.FindElement(By.Id(RegionInternalIdId)).SendKeys(regionName);
-
-            IWebElement typeSelectorElement = Driver.FindElement(By.Id(RegionTypeSelectorId));
-            SelectElement typeSelector = new SelectElement(typeSelectorElement);
-            typeSelector.SelectByValue("Catfish.Models.Regions.ListEntitiesPanel");
-
-            Driver.FindElement(By.Id(AddRegionButtonId)).Click();
-
-            // Save button does not contain the id set on other views toolbar_save_button
-            // Instead we will click on "Save"
-            Driver.FindElement(By.LinkText(SaveLinkText)).Click();
-            Driver.FindElement(By.LinkText(ContentLinkText)).Click();
-            Driver.FindElement(By.LinkText(PagesLinkText)).Click();
-            // Start is the link to the starting page
-            // Send enter instead of clicking to get around element overlay
-            Driver.FindElement(By.LinkText(StartLinkText), 10).SendKeys(Keys.Return);
-            //Driver.FindElement(By.LinkText(regionName)).Click();
-            Driver.FindElement(By.XPath($@"//button[contains(.,'{regionName}')]"), 10).Click();
-            Driver.FindElement(By.Id("Regions_1__Body_ItemPerPage"), 10).SendKeys("10");
-            Driver.FindElement(By.XPath("//span[contains(@class, 'glyphicon glyphicon-plus-sign')]")).Click();
-            Driver.FindElement(By.ClassName(UpdateButtonClass), 10).Click();
-        }
-
         private void AssignAccessDefinitionToLastItem()
         {
             Driver.FindElement(By.LinkText(ContentLinkText)).Click();
@@ -101,7 +68,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
             // Set access definition for Item 2
             AssignAccessDefinitionToLastItem();
 
-            CreateAndAddEntityListToMain();
+            CreateAndAddEntityListToMain();            
 
             // Actual test goes here
 

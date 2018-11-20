@@ -5,6 +5,7 @@ using Catfish.Tests.IntegrationTests.Helpers;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,93 @@ namespace Catfish.Tests.IntegrationTests.Manager
             Assert.AreEqual(ItemValue, savedValue);
             Assert.IsTrue(MatchesSolrInformationFromUrl(), "Solr information does not match to CFEntity");
 
+        }
+
+        [Test]
+        public void CanFilterItemsByEntityType()
+        {
+            string itemA = "Item A";
+            string itemB = "Item B";
+            string entityTypeA = "Entity type A";
+            string entityTypeB = "Entity type B";            
+
+            CreateBaseMetadataSet();
+
+            CreateEntityType(entityTypeA, EntityTypeDescription, new[] {
+                MetadataSetName
+                }, new CFEntityType.eTarget[0]);
+
+            CreateEntityType(entityTypeB, EntityTypeDescription, new[] {
+                MetadataSetName
+                }, new CFEntityType.eTarget[0]);
+
+            CreateBaseItem(itemA, entityTypeA);
+            CreateBaseItem(itemB, entityTypeB);
+
+            // Now create the listing page 
+            CreateAndAddEntityListToMain();
+            // No filter is set. Check both appear
+            AssertItemsNameShows(new string[] {
+                itemB,
+                itemA
+                });
+
+            // Check filter for A
+            SetEnityFilterTo(entityTypeA);
+            AssertItemsNameShows(itemA);
+
+
+            // Check filter for B
+            SetEnityFilterTo(entityTypeB);
+            AssertItemsNameShows(itemB);
+        }
+
+        private void AssertItemsNameShows(string itemName)
+        {
+            AssertItemsNameShows(new string[] { itemName });
+        }
+
+        // names need to be in specific order
+        private void AssertItemsNameShows(string[] itemNames)
+        {
+            string tableRowsXpath = "//tbody[@id = 'ListEntitiesPanelTableBody']/tr";
+            Driver.Navigate().GoToUrl(FrontEndUrl);
+            List<IWebElement> rows = Driver.FindElements(By.XPath(tableRowsXpath), 10).ToList();
+            Assert.AreEqual(itemNames.Length, rows.Count);
+            
+            for (int i = 0; i < itemNames.Length; ++i)
+            {
+                string name = rows[i].FindElement(By.ClassName("column-1")).Text;                
+                Assert.AreEqual(itemNames[i], name);
+            }            
+        }
+
+        //private void AssertOnlyItemNameShows(string itemName)
+        //{
+        //    string tableRowsXpath = "//tbody[@id = 'ListEntitiesPanelTableBody']/tr";
+        //    Driver.Navigate().GoToUrl(FrontEndUrl);
+        //    List<IWebElement> rows = Driver.FindElements(By.XPath(tableRowsXpath), 10).ToList();
+        //    Assert.AreEqual(1, rows.Count);
+        //    string nameA = rows[0].FindElement(By.ClassName("column-1")).Text;
+        //    Assert.AreEqual(itemName, nameA);
+        //}
+
+        private void NavigateToEntitiyListRegionEditor()
+        {
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.LinkText(ContentLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(PagesLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(StartLinkText), 10).SendKeys(Keys.Return);
+            Driver.FindElement(By.Id("btn_RegionName"), 10).Click();
+        }
+
+        private void SetEnityFilterTo(string entityTypeFilterText)
+        {
+            NavigateToEntitiyListRegionEditor();
+            IWebElement entityTypeFilter = Driver.FindElement(By.Id("Regions_1__Body_EntityTypeFilter"), 10);
+            SelectElement entityTypeFilterSelector = new SelectElement(entityTypeFilter);
+            entityTypeFilterSelector.SelectByText(entityTypeFilterText);
+            Driver.FindElement(By.ClassName(UpdateButtonClass), 10).Click();
         }
     }
 }
