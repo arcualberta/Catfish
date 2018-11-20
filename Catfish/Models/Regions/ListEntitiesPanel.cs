@@ -90,7 +90,7 @@ namespace Catfish.Models.Regions
         [Display(Name = "Sort By Field")]
         public int SortByField { get; set; }
 
-        [Display(Name = "Entity type")]
+        [Display(Name = "Entity type filter")]
         public string EntityTypeFilter { get; set; }
 
         [ScriptIgnore]
@@ -121,7 +121,6 @@ namespace Catfish.Models.Regions
             EntityTypeService entityTypeSrv = new EntityTypeService(db);
        
             FieldsMapping = new SelectList((entityTypeSrv.GetEntityTypeAttributeMappings()), "Id", "Name");
-
             if (Fields.Count > 0)
             {
                 foreach (var field in Fields)
