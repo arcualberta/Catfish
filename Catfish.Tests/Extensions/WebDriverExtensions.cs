@@ -25,7 +25,11 @@ namespace Catfish.Tests.Extensions
                     typeof(ElementNotVisibleException),
                     typeof(StaleElementReferenceException)
                     );
-                return wait.Until(drv => drv.FindElement(by));
+                //return wait.Until(drv => drv.FindElement(by));
+                IWebElement element = wait.Until(drv => drv.FindElement(by));
+                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                js.ExecuteScript("arguments[0].scrollIntoView(false);", element);
+                return element;
             }
             return driver.FindElement(by);
         }
