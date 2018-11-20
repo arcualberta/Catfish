@@ -1,0 +1,14 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+@model Catfish.Core.Models.Forms.ExternalMediaField
+
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+{
+    {"class", "model-type"}
+})
+
+@Html.HiddenFor(m => m.Guid)
