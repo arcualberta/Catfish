@@ -128,6 +128,20 @@ namespace Catfish.Core.Services
                     throw new Exception("Please idenfify the Answer Options column");
                 int answerOptionsCol = model.ColumnHeadings.IndexOf(model.AnswerOptionsColumn);
 
+                if (string.IsNullOrEmpty(model.QuestionIdColumn))
+                    throw new Exception("Please idenfify the Question ID column");
+                int questionIdCol = model.ColumnHeadings.IndexOf(model.QuestionIdColumn);
+
+                if (string.IsNullOrEmpty(model.IsRequiredIndicatorColumn))
+                    throw new Exception("Please idenfify the Required Question Indicator column");
+                int isRequiredCol = model.ColumnHeadings.IndexOf(model.IsRequiredIndicatorColumn);
+
+                if (string.IsNullOrEmpty(model.AudioFileColumn))
+                    throw new Exception("Please idenfify the Audio File column");
+                int audioFileCol = model.ColumnHeadings.IndexOf(model.AudioFileColumn);
+
+                string urlBase = string.IsNullOrEmpty(model.MediaFolderUrl) ? "/media/" : model.MediaFolderUrl.TrimEnd(new char[] { '/' }) + "/";
+
                 //Iterating through all the data and creating numbered lists and list of blocks, list of headers and list of footers
                 //The key of each dictionary element represents the list where each block, header or foter belongs to.
                 List<CompositeFormField> listFields = new List<CompositeFormField>();
@@ -152,6 +166,7 @@ namespace Catfish.Core.Services
                     //Creating the question
                     List<string> preContexts = preContextColIndicies.Select(i => values[i]).ToList();
                     string questionText = values[questionCol];
+                    string questionId = values[questionIdCol];
                     string answerType = values[answerTypeCol];
                     string answerOptions = answerOptionsCol < values.Count ? values[answerOptionsCol] : "";
 
@@ -175,6 +190,22 @@ namespace Catfish.Core.Services
                             html.SetDescription(pc);
                             surveyItem.InsertChildElement("./fields", html.Data);
                         }
+                    }
+
+                    //Adding the question text
+                    HtmlField questionTextField = new HtmlField();
+                    questionTextField.SetDescription(questionText);
+                    surveyItem.InsertChildElement("./fields", questionTextField.Data);
+
+                    //Adding the media file
+                    string mediaFile = audioFileCol < values.Count ? values[audioFileCol].TrimStart(new char[] { '/' }) : null;
+                    if (!string.IsNullOrEmpty(mediaFile))
+                    {
+                        ////ExternalMediaField mf = new ExternalMediaField()
+                        ////{
+                        ////    Source = urlBase + mediaFile
+                        ////};
+                        ////surveyItem.InsertChildElement("./fields", mf.Data);
                     }
 
                     FormField question = null;
@@ -217,7 +248,9 @@ namespace Catfish.Core.Services
                     else
                         throw new Exception(string.Format("Answer type \"{0}\" is not implemented in survey form ingestion.", answerType));
 
-                    question.SetName(questionText);
+                    question.ReferenceLabel = questionId;
+                    question.IsRequired = values[isRequiredCol] == "1";
+                    question.SetAttribute("question-id", values[questionIdCol].ToString());
                     surveyItem.InsertChildElement("./fields", question.Data);
 
                     //Adding the question to the header, footer or the appropriate block of the 
@@ -247,7 +280,10 @@ namespace Catfish.Core.Services
                             block.InsertChildElement("./fields", surveyItem.Data);
                         }
                     }
-                }
+
+
+
+                }//END: foreach (var row in result.Values)
 
                 ///
                 /// By this point, we have all "lists" in the listFields array and all "blocks" corresponding to 
@@ -503,6 +539,12 @@ namespace Catfish.Core.Services
         [Display(Name = "Block Id")]
         public string BlockIdColumn { get; set; }
 
+        [Display(Name = "Question ID")]
+        public string QuestionIdColumn { get; set; }
+
+        [Display(Name = "Is Required Indicator")]
+        public string IsRequiredIndicatorColumn { get; set; }
+
         [Display(Name = "Question")]
         public string QuestionColumn { get; set; }
 
@@ -511,6 +553,13 @@ namespace Catfish.Core.Services
 
         [Display(Name = "Answer Options")]
         public string AnswerOptionsColumn { get; set; }
+
+        [Display(Name = "Audio File")]
+        public string AudioFileColumn { get; set; }
+
+        [Display(Name = "Media Folder URL")]
+        public string MediaFolderUrl { get; set; }
+
 
         public string Button { get; set; }
 
