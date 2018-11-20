@@ -595,6 +595,7 @@
     <Content Include="Views\Shared\DisplayTemplates\CSEntityPanel.cshtml" />
     <Content Include="Views\FormSubmission\EditorTemplates\HtmlField.cshtml" />
     <Content Include="Views\FormSubmission\EditorTemplates\CompositeFormField.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\ExternalMediaField.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
