@@ -11,7 +11,9 @@ catch (Exception)
     <div class="post col-xs-12">
         <h3 class="row"><a href="@UI.Permalink(Model.PermalinkId)">@Model.Title</a></h3>
         <div class="row">
-            @Model.Excerpt
+            <div class="col-xs-12">
+                @Html.Raw(Model.Body)
+            </div>
         </div>
     </div>
 }
