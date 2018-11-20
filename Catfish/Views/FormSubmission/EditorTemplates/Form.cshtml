@@ -40,12 +40,9 @@
                     + " / " + secondsToTime(audio.duration)
             }
 
-            var audioPlayersOnce = document.getElementsByClassName('audio-play-once');
-
-            for (var i = 0; i < audioPlayersOnce.length; ++i) {
-                var audioPlayer = audioPlayersOnce[i].getElementsByTagName('audio')[0];
-
-                var audioPlayerControls = audioPlayersOnce[i].getElementsByClassName('audio-player-controls')[0];
+            var setPlayFunctions = function (audioPlayerOnce) {
+                var audioPlayer = audioPlayerOnce.getElementsByTagName('audio')[0];
+                var audioPlayerControls = audioPlayerOnce.getElementsByClassName('audio-player-controls')[0];
                 var audioPlayerPlayButton = audioPlayerControls.getElementsByClassName('audio-play')[0];
                 var audioPlayerRange = audioPlayerControls.getElementsByClassName('audio-player-range')[0];
                 var audioPlayerTime = audioPlayerControls.getElementsByClassName('audio-player-time')[0];
@@ -53,9 +50,9 @@
                 audioPlayerRange.value = 0;
                 audioPlayerPlayButton.onclick = function (target) {
                     audioPlayerPlayButton.parentElement.setAttribute("disabled", true);
-                    audioPlayer.play();               
+                    audioPlayer.play();
                 }
-               
+
 
                 audioPlayer.onloadedmetadata = function (target) {
                     audioPlayerTime.innerHTML = getAudioDurationString(audioPlayer);
@@ -67,6 +64,14 @@
                     audioPlayerTime.innerHTML = getAudioDurationString(audioPlayer);
                 }
             }
+
+            var audioPlayersOnce = document.getElementsByClassName('audio-play-once');
+        
+            for (var i = 0; i < audioPlayersOnce.length; ++i){
+                let audioPlayerOnce = audioPlayersOnce[i];
+                
+                setPlayFunctions(audioPlayerOnce);
+            };
         });
         
     </script>
