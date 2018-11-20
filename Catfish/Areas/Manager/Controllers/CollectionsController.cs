@@ -179,5 +179,19 @@ namespace Catfish.Areas.Manager.Controllers
 
             return AccessGroup(entityAccessVM.Id);
         }
+
+        [HttpPost]
+        public ActionResult DownloadFormData(int id)
+        {
+            SecurityService.CreateAccessContext();
+            SurveyService srv = new SurveyService(Db);
+            var file = srv.ExportFormData(id);
+
+            if(file == null)
+                return HttpNotFound("Not found");
+
+            return null;
+        }
+
     }
 }
