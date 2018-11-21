@@ -25,7 +25,7 @@
 })
 @Html.HiddenFor(m => m.Guid)
 
-<div style="clear:both">
+<div class="form-field comp-field">
     @for (int i = 0; i < Model.Header.Count; ++i)
     {
         string fieldName = Model.Header[i].GetName();
@@ -36,7 +36,7 @@
             ((List<string>)ViewData["QuestionIndex"]).Add(string.Format("{0},#{1}", currentPath, fieldId));
         }
 
-        <div id="@fieldId" class="@newClass">
+        <div id="@fieldId" class="@newClass form-field">
             @if (!string.IsNullOrEmpty(fieldName))
             {
                 <div><label class="control-label">@fieldName</label></div>
@@ -55,7 +55,7 @@
             ((List<string>)ViewData["QuestionIndex"]).Add(string.Format("{0},#{1}", currentPath, fieldId));
         }
 
-        <div id="@fieldId" class="@newClass">
+        <div id="@fieldId" class="@newClass form-field">
             @if (!string.IsNullOrEmpty(fieldName))
             {
                 <div><label class="control-label">@fieldName</label></div>
@@ -74,7 +74,7 @@
             ((List<string>)ViewData["QuestionIndex"]).Add(string.Format("{0},#{1}", currentPath, fieldId));
         }
 
-        <div id="@fieldId" class="@newClass">
+        <div id="@fieldId" class="@newClass form-field">
             @if (!string.IsNullOrEmpty(fieldName))
             {
                 <div><label class="control-label">@fieldName</label></div>

@@ -31,16 +31,17 @@
 }
 
 .slidercontainer {
-    width: 250px;
+    width: 350px;
 }
 
 .slidercontainer .sliderlabels {
-    width: 100%
+    width: 100%;
+    margin-top: 8px;
 }
 
 .slidercontainer .center {
     text-align: center;
-    left: 150px;
+    left: 183px;
     position: absolute;
 }
 
@@ -66,6 +67,15 @@
         margin-left: 20px !important;
     }
 
+.form-field{
+    clear:both;
+    margin-top:10px;
+}
+
+.comp-field {
+    clear: both;
+    margin-top: 40px;
+}
 
 .thumbnailPanel {
     margin: 10px;
