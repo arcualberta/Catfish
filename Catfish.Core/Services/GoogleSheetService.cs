@@ -201,11 +201,14 @@ namespace Catfish.Core.Services
                     string mediaFile = audioFileCol < values.Count ? values[audioFileCol].TrimStart(new char[] { '/' }) : null;
                     if (!string.IsNullOrEmpty(mediaFile))
                     {
-                        ////ExternalMediaField mf = new ExternalMediaField()
-                        ////{
-                        ////    Source = urlBase + mediaFile
-                        ////};
-                        ////surveyItem.InsertChildElement("./fields", mf.Data);
+                        ExternalMediaField mf = new ExternalMediaField()
+                        {
+                            Source = urlBase + mediaFile,
+                            MediaType = Models.Data.CFDataFile.MimeType.Audio,
+                            PlayOnce = true,
+                            PlayOnShow = true
+                        };
+                        surveyItem.InsertChildElement("./fields", mf.Data);
                     }
 
                     FormField question = null;
@@ -229,22 +232,30 @@ namespace Catfish.Core.Services
                             MaxLabel = end.Length > 1 ? end[1] : ""
                         };
                     }
-                    else if (answerType == "RadioButtonSet")
+                    else if (answerType == "RadioButtonSet" || answerType == "DropDown")
                     {
                         List<string> optionStrings = answerOptions.Split(new char[] { '|' }).Select(s => s.Trim()).ToList();
                         List<Option> options = new List<Option>();
                         foreach (var optVal in optionStrings)
                         {
                             Option opt = new Option();
-                            opt.Value = new List<TextValue>() { new TextValue() { Value = optVal } };
+                            opt.Value = new List<TextValue>() { new TextValue() { Value = optVal, LanguageCode = "en" } };
                             options.Add(opt);
                         }
-
-                        question = new RadioButtonSet()
-                        {
-                            Options = options
-                        };
+                        question = new RadioButtonSet() { Options = options };
                     }
+                    ////else if(answerType == "DropDown")
+                    ////{
+                    ////    List<string> optionStrings = answerOptions.Split(new char[] { '|' }).Select(s => s.Trim()).ToList();
+                    ////    List<Option> options = new List<Option>();
+                    ////    foreach (var optVal in optionStrings)
+                    ////    {
+                    ////        Option opt = new Option();
+                    ////        opt.Value = new List<TextValue>() { new TextValue() { Value = optVal, LanguageCode = "en" } };
+                    ////        options.Add(opt);
+                    ////    }
+                    ////    question = new DropDownMenu() { Options = options };
+                    ////}
                     else
                         throw new Exception(string.Format("Answer type \"{0}\" is not implemented in survey form ingestion.", answerType));
 
