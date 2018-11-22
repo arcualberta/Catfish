@@ -42,9 +42,9 @@
 </div>
 
 <script type="text/javascript">
-    {
-        let questions = @Html.Raw(Json.Encode(questionIndex));
-        let questionIndex = -1;
+    function Setup@(cssId)(){
+        var questions = @Html.Raw(Json.Encode(questionIndex));
+        var questionIndex = -1;
 
         function playOnShowAudio() {
             $("#@cssId .audio-play-on-show .audio-play:visible:enabled").click();
@@ -132,7 +132,8 @@
                 showSubmit();
             });
         });
-    }
+    };
+    Setup@(cssId)();// WE are using this method inorder to keep this comparable with Safari
 </script>
 
 @{ 
