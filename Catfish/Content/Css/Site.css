@@ -58,6 +58,14 @@
     padding: 0px;
 }
 
+.sliderlabels b{
+    max-width: 45%;
+}
+
+.sliderlabel.right{
+    text-align:right;
+}
+
 .slidercontainer input[type="range"].slider {
     width: 100%;
 }
