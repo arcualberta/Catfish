@@ -3,6 +3,10 @@
     float:right;
 }
 
+.loading-form {
+    display: none;
+}
+
 .form{
     margin-top:20px;
 }
