@@ -17,7 +17,7 @@
 
 <script src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
 
-<div id="@cssId" class="bs @cssClasses form">
+<div id="@cssId" class="bs @cssClasses form loading-form">
     <style type="text/css" scoped>
                     @Html.Raw(cssStyles)
     </style>
@@ -132,6 +132,30 @@
                 showSubmit();
             });
         });
+
+        var disableCount = 0;
+        function onPlayStart() {
+            ++disableCount;
+            $("#@cssId > form > input[name='submit']").attr("disabled", "disabled");
+            $("#@cssId > form > input[name='next']").attr("disabled", "disabled");
+        }
+
+        function onPlayEnd() {
+            --disableCount;
+
+            if (disableCount <= 0) {
+                $("#@cssId > form > input[name='submit']").removeAttr("disabled");
+                $("#@cssId > form > input[name='next']").removeAttr("disabled");
+            }
+        }
+
+        $("#@cssId .audio-play").each(function (index, element) {
+            element["onPlayStart"] = onPlayStart;
+            element["onPlayEnd"] = onPlayEnd;
+        });
+
+        $("#@cssId").removeClass("loading-form");
+        $("#@cssId").addClass("loaded-form");
     };
     Setup@(cssId)();// WE are using this method inorder to keep this comparable with Safari
 </script>
