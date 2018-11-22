@@ -51,8 +51,11 @@
                 audioPlayerPlayButton.onclick = function (target) {
                     audioPlayerPlayButton.setAttribute("disabled", true);
                     audioPlayer.play();
-                }
 
+                    if (typeof(this["onPlayStart"]) == "function") {
+                        this["onPlayStart"]();
+                    }
+                }
 
                 audioPlayer.onloadedmetadata = function (target) {
                     audioPlayerTime.innerHTML = getAudioDurationString(audioPlayer);
@@ -62,6 +65,10 @@
                     var range = 100.0 * audioPlayer.currentTime / audioPlayer.duration;
                     audioPlayerRange.value = range;
                     audioPlayerTime.innerHTML = getAudioDurationString(audioPlayer);
+
+                    if (range >= 100.0 && typeof (audioPlayerPlayButton["onPlayEnd"]) == "function") {
+                        audioPlayerPlayButton["onPlayEnd"]();
+                    }
                 }
             }
 
