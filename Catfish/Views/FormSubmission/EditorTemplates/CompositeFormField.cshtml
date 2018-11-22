@@ -8,11 +8,11 @@
 
     CompositeFormField.eStepState stepState = Model.StepState;
 
-    bool stepThroughChildren = Model.StepState != CompositeFormField.eStepState.None;
+    bool stepThroughChildren = stepState != CompositeFormField.eStepState.None;
 
     string newClass = stepThroughChildren ? "stepField" : "";
 
-    if(Model.StepState == CompositeFormField.eStepState.Accumulative)
+    if(stepState == CompositeFormField.eStepState.Accumulative)
     {
         newClass += " stepOnce";
     }
