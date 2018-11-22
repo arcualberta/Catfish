@@ -70,5 +70,11 @@ namespace Catfish.Core.Models.Forms
             field.SetValues(fieldValues, language);
         }
 
+        [NotMapped]
+        [CFTypeLabel("String")]
+        [IgnoreDataMember]
+        public string FormReference { get { return GetAttribute("reference-id", null); } set { SetAttribute("reference-id", value); } }
+
+
     }
 }
