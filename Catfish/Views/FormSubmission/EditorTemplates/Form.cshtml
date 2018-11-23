@@ -88,6 +88,12 @@
     var culture = Catfish.Helpers.ViewHelper.GetActiveLanguage();
     string lang = culture.TwoLetterISOLanguageName;
 
+    if (!string.IsNullOrEmpty(Model.ReferenceCode))
+    {
+        <div class="reference-label">Reference Code: @Model.ReferenceCode</div>
+        @Html.HiddenFor(model => model.ReferenceCode)
+    }
+
     for (int i = 0; i < Model.Fields.Count; ++i)
     {
         string name = Model.Fields[i].GetName(lang, true);

@@ -27,6 +27,11 @@
         @Html.ValidationMessageFor(m => m.CollectionId)
     </li>
     <li>
+        @Html.LabelFor(m => m.EnableReferenceCodes)
+        <div class="input">@Html.EditorFor(m => m.EnableReferenceCodes)</div>
+        @Html.ValidationMessageFor(m => m.EnableReferenceCodes)
+    </li>
+    <li>
         @Html.LabelFor(m => m.EnforceLists)
         <div class="input">@Html.EditorFor(m => m.EnforceLists)</div>
         @Html.ValidationMessageFor(m => m.EnforceLists)
