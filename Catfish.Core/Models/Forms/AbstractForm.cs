@@ -73,7 +73,7 @@ namespace Catfish.Core.Models.Forms
         [NotMapped]
         [CFTypeLabel("String")]
         [IgnoreDataMember]
-        public string FormReference { get { return GetAttribute("reference-id", null); } set { SetAttribute("reference-id", value); } }
+        public string ReferenceCode { get { return GetAttribute("reference-code", null); } set { SetAttribute("reference-code", value); } }
 
 
     }
