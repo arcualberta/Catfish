@@ -4,6 +4,7 @@ using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -161,5 +162,67 @@ namespace Catfish.Core.Services
 
             return values;
         }
+
+
+        /// <summary>
+        /// Recursively through all fields in a form to find fields of type ExternalMediaField and 
+        /// checks whether the media sources referred by them exist. Returns the list of URLs of media 
+        /// sources that does not exist.
+        /// </summary>
+        /// <param name="model">The form or field.</param>
+        /// <returns></returns>
+        public List<string> CheckMedia(CFXmlModel model)
+        {
+            List<string> errorneousMedia = new List<string>();
+
+            if (typeof(Form).IsAssignableFrom(model.GetType()))
+            {
+                Form form = model as Form;
+                foreach (var child in form.Fields)
+                    errorneousMedia.AddRange(CheckMedia(child));
+            }
+            else if (typeof(ExternalMediaField).IsAssignableFrom(model.GetType()))
+            {
+                if (!CheckMedia((model as ExternalMediaField).Source))
+                    errorneousMedia.Add((model as ExternalMediaField).Source);
+            }
+            else if (typeof(CompositeFormField).IsAssignableFrom(model.GetType()))
+            {
+                CompositeFormField cfield = model as CompositeFormField;
+
+                foreach (var child in cfield.Header)
+                    errorneousMedia.AddRange(CheckMedia(child));
+
+                foreach (var child in cfield.Fields)
+                    errorneousMedia.AddRange(CheckMedia(child));
+
+                foreach (var child in cfield.Footer)
+                    errorneousMedia.AddRange(CheckMedia(child));
+            }
+
+            return errorneousMedia;
+        }
+
+        public bool CheckMedia(string url)
+        {
+            try
+            {
+                //Creating the HttpWebRequest
+                HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+                //Setting the Request method HEAD, you can also use GET too.
+                request.Method = "HEAD";
+                //Getting the Web Response.
+                HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                //Returns TRUE if the Status code == 200
+                response.Close();
+                return (response.StatusCode == HttpStatusCode.OK);
+            }
+            catch
+            {
+                //Any exception will returns false.
+                return false;
+            }
+        }
+
     }
 }

@@ -78,5 +78,19 @@ namespace Catfish.Areas.Manager.Controllers
                 return View(model);
             }
         }
+
+        [HttpGet]
+        public ActionResult CheckMedia(int id)
+        {
+            SecurityService.CreateAccessContext();
+            SurveyService srv = new SurveyService(Db);
+            var form = FormService.GetSubmissionTemplates().Where(f => f.Id == id).FirstOrDefault();
+            if (form == null)
+                return HttpNotFound("Not found");
+            var errors = srv.CheckMedia(form);
+            
+            return File(new System.Text.UTF8Encoding().GetBytes(string.Join("\n", errors)), "text/txt", "errors.txt");
+        }
+
     }
 }
