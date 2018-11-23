@@ -43,6 +43,9 @@ namespace Catfish.Core.Services
                     }
 
                     Dictionary<string, string> response = new Dictionary<string, string>();
+                    if (!string.IsNullOrEmpty(form.ReferenceCode))
+                        response.Add("-1", form.ReferenceCode);
+
                     foreach (var answer in formData)
                     {
                         response.Add(answer.Key, string.Join("|", answer.Value));

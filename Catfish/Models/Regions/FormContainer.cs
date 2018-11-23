@@ -35,6 +35,9 @@ namespace Catfish.Models.Regions
         [Display(Name = "Collection")]
         public int CollectionId { get; set; }
 
+        [Display(Name = "Enable Reference Codes")]
+        public bool EnableReferenceCodes { get; set; }
+
         [Display(Name = "Enforce Lists")]
         public bool EnforceLists { get; set; }
 
@@ -177,6 +180,12 @@ namespace Catfish.Models.Regions
                     ShuffleQuestions,
                     QuestionStepOption, 
                     QuestionPartsStepOption);
+
+                if (EnableReferenceCodes)
+                {
+                    Random rand = new Random();
+                   form.ReferenceCode = DateTime.Now.ToString("yyMMdd-HHmmss-") + rand.Next(1000, 10000);
+                }
 
                 FormViewModel = new FormViewModel()
                 {
