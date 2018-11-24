@@ -1,12 +1,8 @@
-﻿using Catfish.Core.Models;
-using Catfish.Core.Models.Forms;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Catfish.Areas.Manager.Models.ViewModels;
+﻿using Catfish.Areas.Manager.Models.ViewModels;
+using Catfish.Core.Models;
 using Catfish.Core.Services;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -89,7 +85,7 @@ namespace Catfish.Areas.Manager.Controllers
                 return HttpNotFound("Not found");
             var errors = srv.CheckMedia(form);
             
-            return File(new System.Text.UTF8Encoding().GetBytes(string.Join("\n", errors)), "text/txt", "errors.txt");
+            return File(new System.Text.UTF8Encoding().GetBytes(string.Join("\r\n", errors)), "text/txt", "errors.txt");
         }
 
     }
