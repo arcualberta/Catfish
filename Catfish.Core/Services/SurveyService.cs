@@ -217,7 +217,7 @@ namespace Catfish.Core.Services
                 response.Close();
                 return (response.StatusCode == HttpStatusCode.OK);
             }
-            catch
+            catch(Exception ex)
             {
                 //Any exception will returns false.
                 return false;
