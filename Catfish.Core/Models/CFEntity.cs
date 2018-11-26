@@ -217,20 +217,51 @@ namespace Catfish.Core.Models
             // Add access elements for secure searches in solr
             Dictionary<string, List<string>> access = GetAccessDictionary();
             access.ToList().ForEach(x => result[x.Key] = x.Value);
+
+            //foreach (CFMetadataSet metadataset in MetadataSets)
+            //{
+            //    string metadatasetGuid = CleanGuid(metadataset.Guid);
+            //    foreach (FormField field in metadataset.Fields)
+            //    {
+            //        string fieldGuid = CleanGuid(field.Guid);
+            //        foreach (TextValue name in field.GetNames(false))
+            //        {
+            //            Dictionary<string, object> names = GetSolrValues("name", metadatasetGuid, fieldGuid, name);
+            //            names.ToList().ForEach(x => result[x.Key] = x.Value);
+            //        }
+            //        Dictionary<string, object> values = GetFieldValues(field, metadatasetGuid, fieldGuid);
+            //        values.ToList().ForEach(x => result[x.Key] = x.Value);
+            //    }
+            //}
             
             foreach (CFMetadataSet metadataset in MetadataSets)
             {
                 string metadatasetGuid = CleanGuid(metadataset.Guid);
+
                 foreach (FormField field in metadataset.Fields)
                 {
-                    string fieldGuid = CleanGuid(field.Guid);
-                    foreach (TextValue name in field.GetNames(false))
+                    string keyFields = CleanGuid(metadataset.Guid + "_" + field.Guid);
+                    //result[key] = "test";
+                    foreach (TextValue textValue in field.GetNames(false))
                     {
-                        Dictionary<string, object> names = GetSolrValues("name", metadatasetGuid, fieldGuid, name);
-                        names.ToList().ForEach(x => result[x.Key] = x.Value);
+                        string key = $@"name_{keyFields}_txt_{textValue.LanguageCode}";
+                        result[key] = textValue.Value;
                     }
-                    Dictionary<string, object> values = GetFieldValues(field, metadatasetGuid, fieldGuid);
-                    values.ToList().ForEach(x => result[x.Key] = x.Value);
+
+                    foreach (TextValue textValue in field.Values)
+                    {
+                        // for now just text ignoring options
+                        string key = $@"value_{keyFields}_txts_{textValue.LanguageCode}";
+                        if (!result.ContainsKey(key))
+                        {
+                            result[key] = new List<string>();
+                        }
+
+                        //result[key] = new List<string>() { textValue.Value };
+                        ((List<string>)result[key]).Add(textValue.Value);
+
+
+                    }
                 }
             }
             return result;
