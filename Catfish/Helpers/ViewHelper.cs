@@ -74,7 +74,6 @@ namespace Catfish.Helpers
                     Path.GetTempPath(),
                     "temp_compile" + DateTime.Now.Ticks.ToString("x"));
 
-            defaultClassName = defaultClassName.Replace("-", "X");
             var language = new CSharpRazorCodeLanguage();
             var host = new RazorEngineHost(language)
             {
