@@ -211,7 +211,7 @@ namespace Catfish.Core.Models
             {
                 {"id", Guid},
                 {"modeltype_s", modelType},
-                {"entitytype_s", this.EntityType.Name }
+                {"entitytype_s", this.EntityType == null ? "" : this.EntityType.Name }
             };
 
             // Add access elements for secure searches in solr
