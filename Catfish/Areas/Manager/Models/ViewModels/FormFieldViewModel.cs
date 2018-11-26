@@ -90,7 +90,6 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
         }
 
-        //XXX turns to database model
         public FormField InstantiateDataModel()
         {
             Type type = Type.GetType(FieldType, true);

@@ -436,18 +436,20 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             CreateItem(entityTypeName, FormFields[0]);
         }
 
-        protected bool MatchesSolrInformationFromUrl()
+        protected void AssertMatchesSolrInformationFromUrl()
         {
             // get id from url
             string url = Driver.Url;
-            string pattern = @".+\/(\d+)";
+            const string urlPattern = @".+\/(\d+)";
+            const string keyValuePattern = @"^value_.+_txts_\w{2}$";
 
-            Regex regex = new Regex(pattern);
+            Regex urlRegex = new Regex(urlPattern);
+            Regex keyValyeRegex = new Regex(keyValuePattern);
 
-            Match match = regex.Match(url);
+            Match urlMatch = urlRegex.Match(url);
 
-            if (match.Success && match.Groups.Count == 2) {
-                Int32 id = Convert.ToInt32(match.Groups[1].Value);
+            if (urlMatch.Success && urlMatch.Groups.Count == 2) {
+                Int32 id = Convert.ToInt32(urlMatch.Groups[1].Value);
                 CatfishDbContext db = new CatfishDbContext();
                 CFEntity model = db.Entities.Find(id);
                 Dictionary<string, object> result = model.ToSolrDictionary();
@@ -462,17 +464,61 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                     {
                         // first we need to make sure the entry value is not empty, 
                         // otherwise is not indexed in solr
-                        if (entry.Value.ToString().Length > 0 &&  entry.Value.ToString() != fromSolr[entry.Key].ToString())
+                        //if (entry.Value.ToString().Length > 0 &&  entry.Value != fromSolr[entry.Key])
+                        //{
+                        //    return false;
+                        //}
+
+
+                        //if (entry.Value.ToString().Length > 0)
+                        //{
+                        //    // check if key has value pattern
+                        //    Match keyValueMatch = keyValyeRegex.Match(entry.Key);
+                        //    if (keyValueMatch.Success)
+                        //    {
+                        //        // compare as list of values
+
+                        //        CollectionAssert.AreEqual((List<string>)entry.Value, 
+                        //            (System.Collections.ArrayList)fromSolr[entry.Key]);
+
+                        //    } else
+                        //    {
+                        //        Assert.AreEqual(entry.Value, fromSolr[entry.Key]);
+                        //    }
+
+                        //}
+
+                        Match keyValueMatch = keyValyeRegex.Match(entry.Key);
+                        if (keyValueMatch.Success)
                         {
-                            return false;
+                            // treat as multi values
+
+                            List<string> test = (List<string>)entry.Value;
+
+                            if (test.Count > 0 && test[0] != "")
+                            {
+                                CollectionAssert.AreEqual(test, 
+                                    (System.Collections.ArrayList)fromSolr[entry.Key]);
+                            }
+
+                            //XXX Should it fail if the previous test is not passed?
+                        } else
+                        {
+                            // treat as regular values
+                            if (!string.IsNullOrEmpty(entry.Value.ToString()))
+                            {
+                                Assert.AreEqual(entry.Value, fromSolr[entry.Key]);
+                            }
                         }
+
+
                     }
-                    return true;
+                    //return true;
                 }
                 
             }
 
-            return false;
+            //return false;
         }
 
         //public void CreateItem(string entityTypeName, string name, bool attachment = false)

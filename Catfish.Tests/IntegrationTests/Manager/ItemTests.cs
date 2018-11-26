@@ -32,7 +32,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
             string savedValue = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value")).GetAttribute("value");
 
             Assert.AreEqual(ItemValue, savedValue);
-            Assert.IsTrue(MatchesSolrInformationFromUrl(), "Solr information does not match to CFEntity");
+            AssertMatchesSolrInformationFromUrl();
 
         }
 
@@ -61,8 +61,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
             CreateAndAddEntityListToMain();
             // No filter is set. Check both appear
             AssertItemsNameShows(new string[] {
-                itemB,
-                itemA
+                itemA,
+                itemB
                 });
 
             // Check filter for A
