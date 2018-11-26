@@ -74,6 +74,7 @@ namespace Catfish.Helpers
                     Path.GetTempPath(),
                     "temp_compile" + DateTime.Now.Ticks.ToString("x"));
 
+            defaultClassName = defaultClassName.Replace("-", "X");
             var language = new CSharpRazorCodeLanguage();
             var host = new RazorEngineHost(language)
             {
@@ -88,14 +89,14 @@ namespace Catfish.Helpers
             host.NamespaceImports.Add("System.Web.Helpers");
 
             RazorTemplateEngine engine = new RazorTemplateEngine(host);
-            GeneratorResults razorResult = engine.GenerateCode(new StringReader(viewCode));
+            GeneratorResults razorResult = engine.GenerateCode(new StringReader(viewCode.Trim()));
 
             CompilerParameters parameters = new CompilerParameters();
             parameters.ReferencedAssemblies.Add(typeof(ViewHelper).Assembly.Location);
             parameters.ReferencedAssemblies.Add(typeof(CFEntity).Assembly.Location);
             parameters.ReferencedAssemblies.Add(typeof(RazorGenerator.Mvc.PrecompiledMvcView).Assembly.Location);
-            parameters.ReferencedAssemblies.Add(typeof(System.Web.Mvc.IView).Assembly.Location);
-            parameters.ReferencedAssemblies.Add(typeof(System.Web.HtmlString).Assembly.Location);
+            parameters.ReferencedAssemblies.Add(typeof(IView).Assembly.Location);
+            parameters.ReferencedAssemblies.Add(typeof(HtmlString).Assembly.Location);
             parameters.ReferencedAssemblies.Add(typeof(System.Linq.Expressions.Expression).Assembly.Location);
             parameters.ReferencedAssemblies.Add(typeof(System.Web.Helpers.Json).Assembly.Location);
 
@@ -174,19 +175,6 @@ namespace Catfish.Helpers
 
             Builder.Append(close.Item1);
         }
-
-        /*public virtual void WriteAttribute(string attr, Tuple<string, int> open, Tuple<string, int> close, Tuple<Tuple<string, int>, Tuple<object, int>, bool> data)
-        {
-            string value;
-            if (data != null)
-                value = data.Item2.Item1.ToString();
-            else
-                value = string.Empty;
-
-            Builder.Append(open.Item1);
-            Builder.Append(value);
-            Builder.Append(close.Item1);
-        }*/
 
         public virtual void Write(object value)
         {
