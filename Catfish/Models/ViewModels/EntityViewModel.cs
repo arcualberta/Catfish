@@ -37,7 +37,7 @@ namespace Catfish.Models.ViewModels
             this.Guid = entity.Guid;
             this.LanguageCodes = languageCodes;
 
-            Type entityType = this.GetType();
+            Type entityType = entity.GetType();
 
             // Added to prevent circular child members.
             if(previousEntities == null)
