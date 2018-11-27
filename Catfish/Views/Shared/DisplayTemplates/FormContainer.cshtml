@@ -17,7 +17,7 @@
 
 <script src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
 
-<div id="@cssId" class="bs @cssClasses form loading-form">
+<div id="@cssId" class="bs @cssClasses form loading-form loadable-panel">
     <style type="text/css" scoped>
                     @Html.Raw(cssStyles)
     </style>
@@ -124,12 +124,15 @@
 
         $("#@cssId > form").submit(function (ev) {
             ev.preventDefault();
+            window.startLoading("#@cssId", 60000);
 
             submitFormContainer("@Html.NameFor(m => m.FormViewModel)", this, @Html.Raw(Json.Encode(Model)), "@Url.Action("submit", "forms")", function (caller, result) {
                 $("#@cssId > form").hide();
                 $("#@cssId > .form-success").show();
+                window.stopLoading("#@cssId");
             }, function (error) {
                 showSubmit();
+                window.stopLoading("#@cssId");
             });
         });
 
