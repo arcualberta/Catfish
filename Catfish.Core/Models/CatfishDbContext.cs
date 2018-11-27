@@ -10,6 +10,8 @@ using Catfish.Core.Models.Access;
 using Catfish.Core.Services;
 using CommonServiceLocator;
 using SolrNet;
+using System.Configuration;
+using System.Data.Entity.Infrastructure;
 
 namespace Catfish.Core.Models
 {
@@ -24,6 +26,10 @@ namespace Catfish.Core.Models
             {
                 solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
             }
+
+            var sqlTimeout = ConfigurationManager.AppSettings["SqlConnectionTimeoutSeconds"];
+            if (!string.IsNullOrEmpty(sqlTimeout))
+                ((IObjectContextAdapter)this).ObjectContext.CommandTimeout = int.Parse(sqlTimeout);
         }
 
         public CatfishDbContext(System.Data.Common.DbConnection connection, bool contextOwnsConnection) : base(connection, contextOwnsConnection)
