@@ -189,9 +189,9 @@ namespace Catfish.Areas.Manager.Controllers
             if (data == null)
                 return HttpNotFound("Not found");
 
-            string csv = srv.ToCsv(data);
+            string csv = srv.ToXml(data);
 
-            return File(new System.Text.UTF8Encoding().GetBytes(csv), "text/csv", "formdata.csv");
+            return File(new System.Text.UTF8Encoding().GetBytes(csv), "text/xml", "formdata.xml");
         }
 
     }
