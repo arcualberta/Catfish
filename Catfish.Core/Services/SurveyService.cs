@@ -81,17 +81,17 @@ namespace Catfish.Core.Services
             return exportData;
         }
 
-        public string ToCsv(Dictionary<int, List<string>> data)
+        public string ToXml(Dictionary<int, List<string>> data)
         {
             List<string> rows = new List<string>();
             foreach(var item in data)
             {
-                string row = item.Key.ToString() + "," + string.Join(",", item.Value);
+                string row = "<td>" + item.Key.ToString() + "</td><td>" + string.Join("</td><td>", item.Value) + "</td>";
                 rows.Add(row);
             }
 
-            string csv = string.Join("\n", rows);
-            return csv;
+            string xml = "<table><tr>" + string.Join("</tr><tr>", rows) + "</tr></table>";
+            return xml;
         }
 
         public Dictionary<string, List<string>> ExportValues(FormField field)
