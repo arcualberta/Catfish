@@ -37,6 +37,8 @@ namespace Catfish.Models.ViewModels
             this.Guid = entity.Guid;
             this.LanguageCodes = languageCodes;
 
+            Type entityType = entity.GetType();
+
             // Added to prevent circular child members.
             if(previousEntities == null)
             {
@@ -49,7 +51,7 @@ namespace Catfish.Models.ViewModels
                 MetadataSets.Add(new MetadataSetViewModel(metadataset, languageCodes));
             }
 
-            if (typeof(CFItem).IsAssignableFrom(entity.GetType()))
+            if (typeof(CFItem).IsAssignableFrom(entityType))
             {
                 foreach(CFDataObject dataObject in ((CFItem)entity).DataObjects)
                 {
@@ -60,7 +62,7 @@ namespace Catfish.Models.ViewModels
                 }
             }
             
-            if (typeof(CFAggregation).IsAssignableFrom(entity.GetType()))
+            if (typeof(CFAggregation).IsAssignableFrom(entityType))
             {
                 
                 foreach (CFEntity member in ((CFAggregation)entity).ChildMembers)
@@ -182,6 +184,7 @@ namespace Catfish.Models.ViewModels
     {
         public IDictionary<string, string> Names { get; set; }
         public IDictionary<string, string> Values { get; set; }
+        public List<IDictionary<string, string>> ValuesList { get; set; }
         public IDictionary<string, List<string>> SelectedOptions { get; set; }
         public string ModelType { get; set; }
 
@@ -189,7 +192,10 @@ namespace Catfish.Models.ViewModels
         {
             Names = new Dictionary<string, string>();
             Values = new Dictionary<string, string>();
+            ValuesList = new List<IDictionary<string, string>>();
             SelectedOptions = new Dictionary<string, List<string>>();
+
+            ValuesList.Add(Values);
         }
 
         public FormFieldViewModel(FormField field, string[] languageCodes) : this()
@@ -211,7 +217,15 @@ namespace Catfish.Models.ViewModels
             {
                 if (languageCodes.Contains(value.LanguageCode))
                 {
-                    Values.Add(value.LanguageCode, value.Value);
+                    if (Values.ContainsKey(value.LanguageCode))
+                    {
+                        Values = new Dictionary<string, string>();
+                        ValuesList.Add(Values);
+                    }
+                    else
+                    {
+                        Values.Add(value.LanguageCode, value.Value);
+                    }
                 }
             }
 

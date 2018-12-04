@@ -471,13 +471,6 @@ namespace Catfish.Tests.Helpers
 
         }
 
-        public void SetupDbData()
-        {
-            //SetupPiranha();
-            SetupData();
-            var test = Db.MetadataSets.ToArray();
-        }
-
         public CFCollection CreateCollection(CollectionService cs, int entityTypeId, string name, string description, bool store = false)
         {
             CFCollection c = cs.CreateCollection(entityTypeId);
