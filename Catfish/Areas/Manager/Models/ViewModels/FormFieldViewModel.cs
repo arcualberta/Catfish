@@ -26,6 +26,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public List<TextValue> MultilingualOptionSet { get; set; }
         public string Guid { get; set; }
 
+        public bool IsMultiple { get; set; } //Nov 19 2016 -- for multiple field entries
+        public bool IsTextField { get; set; }
+
         public FormFieldViewModel() { }
         // Attachment creates multiple recursions on view leaving the page unresponsive
         //[ScriptIgnore]
@@ -88,6 +91,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             if(IsTextArea){
                 IsRichText = ((TextArea)formField).IsRichText;
             }
+            IsTextField = typeof(TextField).IsAssignableFrom(formField.GetType());
+            if (IsTextField)
+                IsMultiple = ((TextField)formField).IsMultiple; //Nov 19 2016
         }
 
         //XXX turns to database model
@@ -104,6 +110,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.Guid = Guid;
             field.Rank = Rank;
             field.Page = Page;
+            
 
             field.Files = Files != null ? Files.Select(m => m.ToFileDescription()).ToList() :
                  new List<CFFileDescription>();
@@ -144,6 +151,10 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 ((TextArea)field).IsRichText = IsRichText;
             }
 
+            if (IsTextField)
+            {
+                ((TextField)field).IsMultiple = IsMultiple;
+            }
             return field;
         }
 
