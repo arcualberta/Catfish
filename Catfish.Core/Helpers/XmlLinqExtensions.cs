@@ -17,14 +17,18 @@ namespace Catfish.Core.Helpers
     public static class XmlLinqExtensions
     {
 
+
+        //XXX Asses query parameter order
         public static IQueryable<TSource> FromSolr<TSource>(
         this DbSet<TSource> set,        
-        string q,
+        string solrQuery,        
         out int total,
+        string entityTypeFilter = "",
         int start = 0,
         int rows = int.MaxValue,
         string sortRowId = null,
-        bool sortAscending = false) where TSource : CFXmlModel
+        bool sortAscending = false
+        ) where TSource : CFXmlModel
         {
             if (start < 0)
             {
@@ -33,7 +37,7 @@ namespace Catfish.Core.Helpers
 
             bool isAdmin = AccessContext.current.IsAdmin;
             ICollection<Guid> guids = AccessContext.current.AllGuids;
-            
+
             if (SolrService.IsInitialized)
             {
                 var options = new QueryOptions()
@@ -54,10 +58,14 @@ namespace Catfish.Core.Helpers
 
                 var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
 
+
+
                 // Create filter query
 
                 // for solr based listing we just need to check if 
                 // user can read items: AccessMode.Read = 1
+
+                List<ISolrQuery> filterQuery = new List<ISolrQuery>();
 
                 // XXX Aqui agrega lista de guids para solr
                 if (!isAdmin && guids.Count > 0)
@@ -66,28 +74,32 @@ namespace Catfish.Core.Helpers
 
                     Guid publicGroup = AccessContext.PublicAccessGuid;
 
-                    AbstractSolrQuery filterOptions = new SolrQueryByField("access_1_ss", publicGroup.ToString());
+                    AbstractSolrQuery accessFilterQuery = new SolrQueryByField("access_1_ss", publicGroup.ToString());
 
                     foreach (Guid guid in guids)
                     {
-                        filterOptions += new SolrQueryByField("access_1_ss", guid.ToString());
+                        accessFilterQuery += new SolrQueryByField("access_1_ss", guid.ToString());
                     }
-
-                    ISolrQuery[] filterQuery = new ISolrQuery[]
-                    {
-                        filterOptions
-                    };
 
                     //ISolrQuery[] filterQuery = new ISolrQuery[]
                     //{
-                    //new SolrQueryByField("access_1_ss", "86c337c908b14abab500a8a8060a4f8e")
-                    //+ new SolrQueryByField("access_1_ss", "2"),
+                    //    filterOptions
                     //};
 
-                    options.FilterQueries = filterQuery;
+                    filterQuery.Add(accessFilterQuery);
                 }
 
-                var results = solr.Query(q, options);
+                if (!string.IsNullOrEmpty(entityTypeFilter))
+                {
+                    AbstractSolrQuery entitiTypeFilterQuery = new SolrQueryByField("entitytype_s", entityTypeFilter);
+                    filterQuery.Add(entitiTypeFilterQuery);
+                }
+
+                options.FilterQueries = filterQuery;
+
+                
+
+                var results = solr.Query(solrQuery, options);
                 total = results.NumFound;
 
                 int resultsCount = results.Count();
