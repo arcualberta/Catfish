@@ -18,6 +18,7 @@ namespace Catfish.Areas.Manager.Controllers
 
             string githubUrl = Regex.Replace(ViewBag.GitUrl, @"\.git$", "");
             ViewBag.CommitUrl = githubUrl + "/commit/" + ViewBag.GitCommmitSha;
+
             return View();
         }
     }
