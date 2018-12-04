@@ -350,11 +350,17 @@ namespace Catfish.Core.Models
 
         public virtual void SetTextValues(IEnumerable<TextValue> values)
         {
-            string[] languages = values.Select(v => v.LanguageCode).Distinct().ToArray();
-            foreach(string lang in languages)
+            //string[] languages = values.Select(v => v.LanguageCode).Distinct().ToArray();
+            //foreach (string lang in languages)
+            //{
+            //    IEnumerable<string> vals = values.Where(v => v.LanguageCode == lang).Select(v => v.Value);
+            //    SetChildText("value", vals, Data, Lang(lang));
+            //}
+            foreach (var v in values)
             {
-                IEnumerable<string> vals = values.Where(v => v.LanguageCode == lang).Select(v => v.Value);
-                SetChildText("value", vals, Data, Lang(lang));
+                IEnumerable<string> vals = new string[] {v.Value };
+               
+                SetChildText("value", vals, Data, Lang(v.LanguageCode));
             }
         }
 
@@ -458,7 +464,7 @@ namespace Catfish.Core.Models
         /// <param name="lang"></param>
         protected void SetChildText(string childTagName, IEnumerable<string> values, XElement ele, string lang)
         {
-            RemoveChildTextElements(childTagName, ele, lang);
+           // RemoveChildTextElements(childTagName, ele, lang);
             InsertChildText(childTagName, values, ele, lang);
         }
 
