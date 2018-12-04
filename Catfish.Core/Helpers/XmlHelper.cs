@@ -41,7 +41,7 @@ namespace Catfish.Core.Helpers
                     continue;
 
                 XAttribute att = ele.Attribute(XNamespace.Xml + "lang");
-                string lang = att == null ? "" : att.Value;
+                string lang = att == null ? "" : att.Value.Trim();
                 if (languageCodes.Contains(lang))
                 {
                     T txt = (T)cInfo.Invoke(new[] { lang, ConfigHelper.GetLanguageLabel(lang), ele.Value });
