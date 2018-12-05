@@ -73,7 +73,6 @@ namespace Catfish.Core.Models
             accessGroup.IsInherited = isInherited;
             accessGroup.AccessGuid = guid;
             accessGroup.AccessDefinition.AccessModes = accessMode;
-            // XXX is this saved ?
         }
 
         [NotMapped]
@@ -211,7 +210,8 @@ namespace Catfish.Core.Models
             Dictionary<string, object> result = new Dictionary<string, object>
             {
                 {"id", Guid},
-                {"modeltype_s", modelType}
+                {"modeltype_s", modelType},
+                {"entitytype_s", this.EntityType == null ? "" : this.EntityType.Name }
             };
 
             // Add access elements for secure searches in solr
