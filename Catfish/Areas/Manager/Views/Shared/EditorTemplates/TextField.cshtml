@@ -37,7 +37,7 @@
             {
                 @:<div id="elGrpId_@grpCount" class="elementLangGroup">
             }
-                    @Html.EditorFor(m => Model.Values.ToArray()[i], new { ShowLanguageLabel = showLanguageLabel })
+                    @Html.EditorFor(m => Model.Values[i], new { ShowLanguageLabel = showLanguageLabel })
             if (ctn == 1)
             {
                 if(Model.IsMultiple)
