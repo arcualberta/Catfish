@@ -31,7 +31,7 @@
         int grpCount = 1;
         int ctn = langCount;
         //wrap lang group in a div
-        for (var i = 0; i < Model.Values.Count; i++)
+        @*for (var i = 0; i < Model.Values.Count; i++)
         {
             if (ctn == langCount)
             {
@@ -50,11 +50,11 @@
             ctn = langCount;
         }
         else { ctn--; }
-    }
+    }*@
 
     }
 
-           @*@Html.EditorFor(m => m.Values, new { ShowLanguageLabel = showLanguageLabel })*@
+           @Html.EditorFor(m => m.Values, new { ShowLanguageLabel = showLanguageLabel })
             @Html.HiddenFor(m => m.IsMultiple)
             @{
                 if (Model.IsMultiple)
