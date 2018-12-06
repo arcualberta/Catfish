@@ -35,12 +35,17 @@
         {
             if (ctn == langCount)
             {
-                @:<div id="elGrpId_@grpCount" class="elementLangGroup">
-            }
-                    @Html.EditorFor(m => Model.Values[i], new { ShowLanguageLabel = showLanguageLabel })
+                if(Model.IsMultiple)
+                {
+                    @Html.Raw("<div id=\"elGrpId_"+@grpCount+"\" class=\"elementLangGroup multiElGroup\">")
+                }
+                else { @Html.Raw("<div id=\"elGrpId_"+@grpCount+"\" class=\"elementLangGroup\">")}
+               
+                 }
+            @Html.EditorFor(m => Model.Values[i], new { ShowLanguageLabel = showLanguageLabel })
             if (ctn == 1)
             {
-                if(Model.IsMultiple)
+                if(Model.IsMultiple && grpCount > 1)
                 {
                     @Html.Raw("<span class=\"glyphicon glyphicon-remove removeLangGroup\" onclick=\"removeSection('elGrpId_" +grpCount+"'); return false; \"></span></div>")
                 }
@@ -70,8 +75,29 @@
 
     function removeSection(secId)
     {
-    alert("remove " + secId);
-       $("#" + secId).remove();
+         $("#" + secId).remove();
+         //reorder the index
+         let elName = '@Html.Raw(Html.NameFor(m => m.Values))';
+
+
+         $(".multiElGroup").each(function(divIndex, el){
+            if(el.id.split("_")[1] > secId.split("_")[1])
+            {
+                 alert(el.id);
+                 //reindex name for ModelType and Language
+                 $(this).find('input').each(function(i, c)
+                    {
+                        let atrName = $(this).attr('name');
+                        let attrs = atrName.split(".");
+                        let index = attrs[attrs.length -2].match(/\d+/);
+                        attrs[attrs.length -2] = "Values[" + (index - @langCount) + "]";
+                        $(this).attr('name', attrs.join(".") );
+
+                   });
+
+            }
+         });
+
     }
     var countClick=1;
     function AddField()
@@ -81,12 +107,12 @@
 
        var uniqueIndex= @countLangGrp * @langCount * countClick;
        let elGrpId ="langGrp_" + ( @countLangGrp +countClick);
-       var elToAdd='<div id="'+ elGrpId +'" class="elementLangGroup">';
+       var elToAdd='<div id="'+ elGrpId +'" class="elementLangGroup  multiElGroup">';
 
        for(var i=0; i<@langCount; i++)
        {
 
-         elToAdd = elToAdd + '<hidden name="' + elName +'.Index" value="' + uniqueIndex + '"></hidden>' +
+         elToAdd = elToAdd +
                       '<input class="model-type"  name="' + elName + '[' + uniqueIndex +'].ModelType" type="hidden" value="Catfish.Core.Models.TextValue, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">'+
                       '<input  name="' + elName + '[' + uniqueIndex +'].LanguageCode" type="hidden" value="' + langs[i].LanguageCode + '">' +
                      '<div class="languageInputField">' +
