@@ -407,6 +407,7 @@
     <Compile Include="Areas\Manager\Services\AccessGroupService.cs" />
     <Compile Include="Areas\Manager\Services\PageService.cs" />
     <Compile Include="Contexts\UserContext.cs" />
+    <Compile Include="Areas\Manager\Controllers\BuildController.cs" />
     <Compile Include="Models\Regions\AdvanceSearchContainer.cs" />
     <Compile Include="Models\Regions\CSEntityPanel.cs" />
     <Compile Include="Models\Regions\EntityImagePanel.cs" />
@@ -585,6 +586,7 @@
     <Content Include="Views\Shared\DisplayTemplates\EntityImagePanel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\CSEntityPanel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Post.cshtml" />
+    <Content Include="Areas\Manager\Views\Build\index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
