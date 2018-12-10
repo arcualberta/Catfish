@@ -65,7 +65,13 @@
                 if (Model.IsMultiple)
                 {
                     var elName = "'" + Html.NameFor(m => m.Values) + "'";
-                    <div id="addTextFieldEntry"><button id="ButtonTextFieldAddEntry" onclick="AddField(); return false;">Add Entry</button></div>
+                    string addDivId = "addEntry_" + Html.NameFor(m => m.Values);
+                    addDivId = addDivId.Replace('[', '_');
+                    addDivId = addDivId.Replace(']', '_');
+                    addDivId = addDivId.Replace('.', '_');
+
+                    @*<div id="addTextFieldEntry"><button class="ButtonTextFieldAddEntry" onclick="AddField(); return false;">Add Entry</button></div>*@
+                    <div id="@addDivId"><button class="ButtonTextFieldAddEntry" onclick="AddField('@addDivId'); return false;">Add Entry</button></div>
                 }
             }
         </div>
@@ -100,7 +106,7 @@
 
     }
     var countClick=1;
-    function AddField()
+    function AddField(addDivId)
     {
       let elName = '@Html.Raw(Html.NameFor(m => m.Values))';
       var langs =  @Html.Raw(Json.Encode(Model.MultilingualName.ToArray()));
@@ -121,7 +127,8 @@
          uniqueIndex++;
       }
       elToAdd= elToAdd +'<span class="glyphicon glyphicon-remove removeLangGroup" onclick="removeSection(\''+ elGrpId + '\'); return false;" ></span></div>';
-     $("#addTextFieldEntry").before(elToAdd);
+    // $("#addTextFieldEntry").before(elToAdd);
+     $("#"+addDivId).before(elToAdd);
      countClick++;
 
     }
