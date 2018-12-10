@@ -65,6 +65,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         protected const string UpdateButtonClass = "publish";
         protected const string ObjectListClass = "object-list";
         protected const string ListEntitiesId = "ListEntitiesPanelTableBody";
+        protected const string MultipleField = "Multiple Field";
         // There should be a better way of defining access permissions
         protected const string MenuItemWrapperClass = "ui-menu-item-wrapper";
         protected const AccessMode AccessDefinitionMode = AccessMode.Read;
@@ -215,7 +216,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             return GetLastButtonByClass("object-accessgroup");
         }
 
-        public void CreateMetadataSet(string name, string description, FormField[] fields)
+        public void CreateMetadataSet(string name, string description, FormField[] fields, bool isMultiple=false)
         {
             Driver.Navigate().GoToUrl(ManagerUrl);
             Driver.FindElement(By.LinkText(SettingsLinkText)).Click();
@@ -230,6 +231,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             IWebElement fieldTypeSelectorElement = Driver.FindElement(By.Id("field-type-selector"));
             SelectElement fieldTypeSelector = new SelectElement(fieldTypeSelectorElement);
 
+            int i = 1;
             foreach (FormField field in fields)
             {
                 //field.GetType();
@@ -258,7 +260,15 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                     lastFieldEntry.FindElement(By.ClassName("field-is-required")).Click();
                 }
 
-
+                if(isMultiple)
+                {
+                    //only make the first field multiple
+                    if(i==1)
+                    {
+                        lastFieldEntry.FindElement(By.ClassName("field-is-multiple")).Click();
+                        i++;
+                    }
+                }
             }
 
             Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();
@@ -330,7 +340,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();
         }
 
-        public void CreateCFAggregation(string aggregationLinkText, string entityTypeName, FormField[] metadatasetValues)
+        public void CreateCFAggregation(string aggregationLinkText, string entityTypeName, FormField[] metadatasetValues, bool isMultiple = false)
         {
             Driver.Navigate().GoToUrl(ManagerUrl);
             Driver.FindElement(By.LinkText(ContentLinkText)).Click();
@@ -344,11 +354,19 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
             // XXX For now fill first input with field name
             Driver.FindElement(By.XPath("//input[contains(@class, 'text-box single-line')][1]"), 10).SendKeys(metadatasetValues[0].Values[0].Value);
+
+            if (isMultiple)
+            {
+                Assert.IsTrue(Driver.FindElement(By.ClassName("ButtonTextFieldAddEntry"), 10).Displayed);
+                Driver.FindElement(By.ClassName("ButtonTextFieldAddEntry"), 10).Click();
+                Driver.FindElement(By.Name("MetadataSets[0].Fields[0].Values[3].Value"), 10).SendKeys(MultipleField);
+            }
+
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
 
-        public void CreateItem(string entityTypeName, FormField[] metadatasetValues) {
-            CreateCFAggregation(ItemsLinkText, entityTypeName, metadatasetValues);
+        public void CreateItem(string entityTypeName, FormField[] metadatasetValues, bool isMultiple=false) {
+            CreateCFAggregation(ItemsLinkText, entityTypeName, metadatasetValues, isMultiple);
         }
 
         public void CreateCollection(string entityTypeName, FormField[] metadatasetValues) {
@@ -386,7 +404,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
 
-        protected void CreateBaseMetadataSet()
+        protected void CreateBaseMetadataSet(bool multipleField = false)
         {
             TextField fieldName = new TextField();
             fieldName.Name = FieldName;
@@ -403,21 +421,20 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             FormFields[0][0] = fieldName;
             FormFields[0][1] = fieldDescription;
 
-
             //List<FormField> formFields = new List<FormField>();
             //formFields.Add(fieldName);
             //formFields.Add(fieldDescription);
 
-            CreateMetadataSet(MetadataSetName, MetadataSetDescription, FormFields[0]);
+            CreateMetadataSet(MetadataSetName, MetadataSetDescription, FormFields[0], multipleField);
         }
 
         //XXX Change to be able to specify entity type and metadata set names
-        protected void CreateBaseEntityType()
+        protected void CreateBaseEntityType(bool multipleField=false)
         {
             // Create metadata set
             // create entity type
 
-            CreateBaseMetadataSet();
+            CreateBaseMetadataSet(multipleField);
 
             CreateEntityType(EntityTypeName, EntityTypeDescription, new[] {
                 MetadataSetName
@@ -432,7 +449,11 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         protected void CreateBaseItem(string itemString, string entityTypeName)
         {
             TextValue itemValue = new TextValue("en", "English", itemString);
-            FormFields[0][0].SetTextValues(new List<TextValue> { itemValue });
+
+            //FormFields[0][0].SetTextValues(new List<TextValue> { itemValue });
+            FormField formField = new FormField();
+            formField.SetTextValues(new List<TextValue> { itemValue });
+            FormFields[0][0] = formField;
             CreateItem(entityTypeName, FormFields[0]);
         }
 
