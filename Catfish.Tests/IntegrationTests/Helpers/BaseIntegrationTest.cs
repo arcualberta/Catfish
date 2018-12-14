@@ -611,9 +611,9 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
             // Save button does not contain the id set on other views toolbar_save_button
             // Instead we will click on "Save"
-            Driver.FindElement(By.LinkText(SaveLinkText)).Click();
-            Driver.FindElement(By.LinkText(ContentLinkText)).Click();
-            Driver.FindElement(By.LinkText(PagesLinkText)).Click();
+            Driver.FindElement(By.LinkText(SaveLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(ContentLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(PagesLinkText), 10).Click();
             // Start is the link to the starting page
             // Send enter instead of clicking to get around element overlay
             Driver.FindElement(By.LinkText(StartLinkText), 10).SendKeys(Keys.Return);
