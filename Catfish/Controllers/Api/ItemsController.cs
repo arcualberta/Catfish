@@ -12,13 +12,19 @@ using System.Web;
 using System.Web.Mvc;
 using Catfish.Core.Helpers;
 using System.Drawing.Imaging;
+using Catfish.Models.ViewModels;
 
 namespace Catfish.Controllers.Api
 {
     public class ItemsController : CatfishController
     {   
 
-        public JsonResult GetPageItems(string q, string entityTypeFilter, int sortAttributeMappingId, bool sortAsc, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds)
+        private IEnumerable<DataFileViewModel> ExtractDataFiles(int id)
+        {
+            throw new NotImplementedException("Currently not yet implemented.");
+        }
+
+        public JsonResult GetPageItems(string q, string entityTypeFilter, int sortAttributeMappingId, bool sortAsc, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds, bool includeFiled = false)
         {
             int total;
             SecurityService.CreateAccessContext();

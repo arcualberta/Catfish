@@ -381,9 +381,9 @@ namespace Catfish.Core.Models
         }
 
 
-        public virtual void SetValues(IEnumerable<string> values, string lang = null)
+        public virtual void SetValues(IEnumerable<string> values, string lang = null, bool removePrevous = false)
         {
-            SetChildText("value", values, Data, Lang(lang));
+            SetChildText("value", values, Data, Lang(lang), removePrevous);
         }
 
         public List<CFXmlModel> GetChildModels(string xpath)
@@ -462,9 +462,13 @@ namespace Catfish.Core.Models
         /// <param name="values"></param>
         /// <param name="ele"></param>
         /// <param name="lang"></param>
-        protected void SetChildText(string childTagName, IEnumerable<string> values, XElement ele, string lang)
+        protected void SetChildText(string childTagName, IEnumerable<string> values, XElement ele, string lang, bool removePrevious = false)
         {
-           // RemoveChildTextElements(childTagName, ele, lang);
+            if (removePrevious)
+            {
+                RemoveChildTextElements(childTagName, ele, lang);
+            }
+
             InsertChildText(childTagName, values, ele, lang);
         }
 

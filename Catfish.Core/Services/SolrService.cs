@@ -19,6 +19,25 @@ namespace Catfish.Core.Services
 
         private static ISolrConnection mSolr { get; set; }
         private static bool IsSolrInitialized { get; set; } = false;
+
+        public static int Timeout
+        {
+            get
+            {
+                if (mSolr == null)
+                    return -1;
+
+                return ((SolrConnection)mSolr).Timeout;
+            }
+
+            set
+            {
+                if (mSolr == null)
+                    return;
+
+                ((SolrConnection)mSolr).Timeout = value;
+            }
+        }
         
 
         public static void Init(string server)
