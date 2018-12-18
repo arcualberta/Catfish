@@ -41,7 +41,6 @@ namespace Catfish.Tests.IntegrationTests.Manager
             }
                    
             AssertMatchesSolrInformationFromUrl();
-
         }
 
         [Test]

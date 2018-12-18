@@ -111,12 +111,12 @@ namespace Catfish.Core.Models
             }
         }
 
-        private string buildSolrKey(string prefix, string metadatasetGuid, string fieldGuid, string type, string languageCode)
+        private string BuildSolrKey(string prefix, string metadatasetGuid, string fieldGuid, string type, string languageCode)
         {
-            return buildSolrKey(prefix, metadatasetGuid, fieldGuid, type) + "_" + languageCode;
+            return BuildSolrKey(prefix, metadatasetGuid, fieldGuid, type) + "_" + languageCode;
         }
 
-        private string buildSolrKey(string prefix, string metadatasetGuid, string fieldGuid, string type)
+        private string BuildSolrKey(string prefix, string metadatasetGuid, string fieldGuid, string type)
         {
             string key = prefix + "_"
                 + metadatasetGuid + "_"
