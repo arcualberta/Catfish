@@ -8,6 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using CsvHelper;
 using System.Reflection;
+using Excel = Microsoft.Office.Interop.Excel;
 //using Catfish.Core.Models;
 
 namespace StateFundingDataConversion
@@ -17,9 +18,8 @@ namespace StateFundingDataConversion
         private static List<string> FieldGuids = new List<string>();
         private static List<string> OptionGuids = new List<string>();
         private static string EntityTypeName = "Statefunding Entity Type";
-        private static string[] headers;
         private static int TotAggregations = 10000;
-        private static string inputFileName = "StateFundingDataFinalFall2018All.csv";
+        private static string inputFileName = "StateFundingDatabase.xlsx";
 
         public static void Main(string[] args)
         {
@@ -37,16 +37,19 @@ namespace StateFundingDataConversion
             try
             {
                 Console.WriteLine("Data conversion is starting ...");
-                headers = File.ReadLines(dataDir).First().Split(',');
-                using (TextReader reader = File.OpenText(@dataDir))
-                {
-                    // TODO: Use Excel reader
-                    CsvReader csv = new CsvReader(reader);
-                    csv.Configuration.Delimiter = ",";
-                    csv.Configuration.MissingFieldFound = null;
-                    CreateXmlFile(csv, currDir, metadataSetStructure);
-                  
-                }
+                var app = new Excel.Application();
+                var workbook = app.Workbooks.Open(@dataDir, 0, true);
+                var worksheet = (Excel.Worksheet)workbook.Sheets[1];
+                CreateXmlFile(worksheet, currDir, metadataSetStructure);
+                workbook.Close();
+                //using (TextReader reader = File.OpenText(@dataDir))
+                //{
+                //    // TODO: Use Excel reader
+                //    CsvReader csv = new CsvReader(reader);
+                //    csv.Configuration.Delimiter = ",";
+                //    csv.Configuration.MissingFieldFound = null;
+                //    CreateXmlFile(csv, currDir, metadataSetStructure);
+                //}
                 Console.WriteLine("Done!");
             }
             catch (Exception ex)
@@ -56,7 +59,7 @@ namespace StateFundingDataConversion
            
         }
 
-        public static void CreateXmlFile(CsvReader csv/*string[] input*/, string currDir, XDocument metadataSetStructure)
+        public static void CreateXmlFile(Excel.Worksheet worksheet/*CsvReader csv*/, string currDir, XDocument metadataSetStructure)
         {
             XDocument doc = new XDocument(new XDeclaration("1.0", "utf-8","yes"));
             string now = DateTime.Now.ToShortDateString();
@@ -112,7 +115,7 @@ namespace StateFundingDataConversion
                 msGuid = metadataSet.Attribute("guid").Value;
             }
 
-            XElement aggregations = AddAggregations(msGuid, csv, currDir, metadataSet);
+            XElement aggregations = AddAggregations(msGuid, worksheet, currDir, metadataSet);
 
            // ingestion.Add(aggregations);
            
@@ -121,7 +124,30 @@ namespace StateFundingDataConversion
 
         public static XElement AddMetadataSetFields(XDocument doc, XAttribute xmlLang)
         {
-           
+            string[] headers =
+            {
+                "recordNumber",
+                "jurisdiction",
+                "yearFunded",
+                "recipient",
+                "amount",
+                "ministryAgency",
+                "city",
+                "jurisdictionFederal",
+                "source",
+                "program",
+                "masterProgram",
+                "project",
+                "recipientOriginal",
+                "movementAboriginal",
+                "movementEnvironment",
+                "movementRights",
+                "movementWomen",
+                "movementOther",
+                "movementABgovt",
+                "notes"
+            };
+
             XElement fields = new XElement("fields");
 
             int i = 1;
@@ -274,7 +300,36 @@ namespace StateFundingDataConversion
             return entityTypes;
         }
 
-         public static XElement AddAggregations(string msGuid, CsvReader csv, string currDir, XElement metadataSet)
+        protected static StateFunding ReadRow(Excel.Range row)
+        {
+            var cells = (System.Array)row.Cells.Value;
+            StateFunding result = new StateFunding();
+            result.jurisdiction = cells.GetValue(1, 2).ToString();
+            result.yearFunded = cells.GetValue(1, 3).ToString();
+            result.recipient = cells.GetValue(1, 4).ToString();
+            result.amount = cells.GetValue(1, 5).ToString();
+            result.ministryAgency = cells.GetValue(1, 6).ToString();
+            result.city = cells.GetValue(1, 7).ToString();
+            result.jurisdictionFederal = cells.GetValue(1, 8).ToString();
+            result.source = cells.GetValue(1, 9).ToString();
+            result.program = cells.GetValue(1, 10).ToString();
+            result.masterProgram = cells.GetValue(1, 11).ToString();
+            result.project = cells.GetValue(1, 12).ToString();
+            result.recipientOriginal = cells.GetValue(1, 13).ToString();
+            result.movementAboriginal = cells.GetValue(1, 14) as string;
+            result.movementEnvironment = cells.GetValue(1, 15) as string;
+            result.movementRights = cells.GetValue(1, 16) as string;
+            result.movementWomen = cells.GetValue(1, 17) as string;
+            result.movementOther = cells.GetValue(1, 18) as string;
+            result.movementABgovt = cells.GetValue(1, 19) as string;
+            result.notes = cells.GetValue(1, 20).ToString();
+
+            // TODO calcuate inflation
+
+            return result;
+        }
+
+         public static XElement AddAggregations(string msGuid, Excel.Worksheet worksheet/*CsvReader csv*/, string currDir, XElement metadataSet)
         {
             XDocument doc = new XDocument(new XDeclaration("1.0", "utf-8", "yes"));
            
@@ -287,9 +342,11 @@ namespace StateFundingDataConversion
 
             int countAggregation = 1;
             int fileCount = 1;
-            while (csv.Read())
+            Excel.Range range = worksheet.UsedRange;
+            int rowsCount = range.Rows.Count;
+            for(int i = 2; i <= rowsCount; ++i)
             {
-                StateFunding sf = csv.GetRecord<StateFunding>();
+                StateFunding sf = ReadRow(worksheet.get_Range("A" + i, "T" + i));
                
                 try
                 {
@@ -403,27 +460,27 @@ namespace StateFundingDataConversion
 
                                 if(optionName == "Aboriginal Peoples")
                                 {
-                                    option.SetAttributeValue("selected", sf.movementAboriginal);
+                                    option.SetAttributeValue("selected", sf.movementAboriginal == "1");
                                 }
                                 else if (optionName == "Environment")
                                 {
-                                    option.SetAttributeValue("selected", sf.movementEnvironment);
+                                    option.SetAttributeValue("selected", sf.movementEnvironment == "1");
                                 }
                                 else if (optionName == "Human Rights")
                                 {
-                                    option.SetAttributeValue("selected", sf.movementRights);
+                                    option.SetAttributeValue("selected", sf.movementRights == "1");
                                 }
                                 else if (optionName == "Women")
                                 {
-                                    option.SetAttributeValue("selected", sf.movementWomen);
+                                    option.SetAttributeValue("selected", sf.movementWomen == "1");
                                 }
                                 else if (optionName == "Other")
                                 {
-                                    option.SetAttributeValue("selected", sf.movementOther);
+                                    option.SetAttributeValue("selected", sf.movementOther == "1");
                                 }
                                 else if (optionName == "Aboriginal Government")
                                 {
-                                    option.SetAttributeValue("selected", sf.movementABgovt);
+                                    option.SetAttributeValue("selected", sf.movementABgovt == "1");
                                 }
                             }
                         }
