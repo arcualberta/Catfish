@@ -37,9 +37,9 @@
             {
                 if(Model.IsMultiple)
                 {
-                    @Html.Raw("<div id=\"elGrpId_"+@grpCount+"\" class=\"elementLangGroup multiElGroup\">")
+                    @Html.Raw("<div id=\"elGrpId_"+@grpCount+@i+"\" class=\"elementLangGroup multiElGroup\">")
                 }
-                else { @Html.Raw("<div id=\"elGrpId_"+@grpCount+"\" class=\"elementLangGroup\">")}
+                else { @Html.Raw("<div id=\"elGrpId_"+@grpCount + @i + "\" class=\"elementLangGroup\">")}
                
                  }
             @Html.EditorFor(m => Model.Values[i], new { ShowLanguageLabel = showLanguageLabel })
@@ -71,7 +71,7 @@
                     addDivId = addDivId.Replace('.', '_');
 
                     @*<div id="addTextFieldEntry"><button class="ButtonTextFieldAddEntry" onclick="AddField(); return false;">Add Entry</button></div>*@
-                    <div id="@addDivId"><button class="ButtonTextFieldAddEntry" onclick="AddField('@addDivId'); return false;">Add Entry</button></div>
+                    <div id="@addDivId"><button class="ButtonTextFieldAddEntry" onclick="AddField('@addDivId',@elName); return false;">Add Entry</button></div>
                 }
             }
         </div>
@@ -89,7 +89,7 @@
          $(".multiElGroup").each(function(divIndex, el){
             if(el.id.split("_")[1] > secId.split("_")[1])
             {
-                 alert(el.id);
+
                  //reindex name for ModelType and Language
                  $(this).find('input').each(function(i, c)
                     {
@@ -106,13 +106,19 @@
 
     }
     var countClick=1;
-    function AddField(addDivId)
+    var FieldName="";
+    function AddField(addDivId, elName) 
     {
-      let elName = '@Html.Raw(Html.NameFor(m => m.Values))';
+      if(FieldName !== elName)
+        {
+           FieldName = elName;
+           countClick = 1;
+        }
       var langs =  @Html.Raw(Json.Encode(Model.MultilingualName.ToArray()));
 
        var uniqueIndex= @countLangGrp * @langCount * countClick;
-       let elGrpId ="langGrp_" + ( @countLangGrp +countClick);
+        var randId = Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
+       let elGrpId ="langGrp_" + ( @countLangGrp +countClick) + "_" + randId;
        var elToAdd='<div id="'+ elGrpId +'" class="elementLangGroup  multiElGroup">';
 
        for(var i=0; i<@langCount; i++)
@@ -127,7 +133,7 @@
          uniqueIndex++;
       }
       elToAdd= elToAdd +'<span class="glyphicon glyphicon-remove removeLangGroup" onclick="removeSection(\''+ elGrpId + '\'); return false;" ></span></div>';
-    // $("#addTextFieldEntry").before(elToAdd);
+    
      $("#"+addDivId).before(elToAdd);
      countClick++;
 

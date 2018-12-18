@@ -428,7 +428,7 @@ namespace Catfish.Core.Models
             return null;
         }
 
-        protected void SetAttributeMappingValue(string name, string val, string lang = null)
+        protected void SetAttributeMappingValue(string name, string val, string lang = null, bool removePrevious=false)
         {
             CFEntityTypeAttributeMapping mapping = EntityType.AttributeMappings.Where(m => m.Name == name).FirstOrDefault();
             if (mapping == null)
@@ -438,7 +438,7 @@ namespace Catfish.Core.Models
                 throw new Exception(string.Format("Field is not specified in the {0} Mapping of this entity type", name));
 
             CFMetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == mapping.MetadataSet.Guid).FirstOrDefault();
-            metadataSet.SetFieldValue(mapping.FieldName, val, lang);
+            metadataSet.SetFieldValue(mapping.FieldName, val, lang, removePrevious);
         }
 
         public string GetName(string lang = null)
@@ -454,7 +454,7 @@ namespace Catfish.Core.Models
         }
         public override void SetName(string val, string lang = null)
         {
-            SetAttributeMappingValue("Name Mapping", val, lang);
+            SetAttributeMappingValue("Name Mapping", val, lang, true);
         }
 
         public override string GetDescription(string lang = null)
@@ -470,7 +470,7 @@ namespace Catfish.Core.Models
         }
         public override void SetDescription(string val, string lang = null)
         {
-            SetAttributeMappingValue("Description Mapping", val, lang);
+            SetAttributeMappingValue("Description Mapping", val, lang, true);
         }
 
         public override void UpdateValues(CFXmlModel src)
