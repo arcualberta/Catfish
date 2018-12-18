@@ -381,9 +381,9 @@ namespace Catfish.Core.Models
         }
 
 
-        public virtual void SetValues(IEnumerable<string> values, string lang = null, bool removePrevous = false)
+        public virtual void SetValues(IEnumerable<string> values, string lang = null, bool removePrevious=false)
         {
-            SetChildText("value", values, Data, Lang(lang), removePrevous);
+            SetChildText("value", values, Data, Lang(lang), removePrevious);
         }
 
         public List<CFXmlModel> GetChildModels(string xpath)
