@@ -17,8 +17,8 @@ namespace Catfish.Tests.Services
         private CFItem CreateItem(ItemService itemSrv, int entityTypeId, string name, string description, bool store = false)
         {
             CFItem i = itemSrv.CreateItem(entityTypeId);
-            i.Name = name;
-            i.Description = description;
+            i.SetName(name);
+            i.SetDescription(description);
 
 
             if (store)
