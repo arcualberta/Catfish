@@ -25,7 +25,14 @@ namespace StateFundingDataConversion
         {
             string currDir = Environment.CurrentDirectory;
           //currDir = Path.GetFullPath(Path.Combine(currDir, @"..\..\"));
-            string dataDir = currDir + "\\Data\\" + inputFileName; ;
+            string dataDir = currDir + "\\Data\\" + inputFileName;
+            XDocument metadataSetStructure = null;
+
+            // Use exisiting templates
+            if(args.Length > 0)
+            {
+                metadataSetStructure = XDocument.Load(args[0]);
+            }
            
             try
             {
@@ -33,10 +40,11 @@ namespace StateFundingDataConversion
                 headers = File.ReadLines(dataDir).First().Split(',');
                 using (TextReader reader = File.OpenText(@dataDir))
                 {
+                    // TODO: Use Excel reader
                     CsvReader csv = new CsvReader(reader);
                     csv.Configuration.Delimiter = ",";
                     csv.Configuration.MissingFieldFound = null;
-                    CreateXmlFile(csv, currDir);
+                    CreateXmlFile(csv, currDir, metadataSetStructure);
                   
                 }
                 Console.WriteLine("Done!");
@@ -48,72 +56,70 @@ namespace StateFundingDataConversion
            
         }
 
-        public static void CreateXmlFile(CsvReader csv/*string[] input*/, string currDir)
+        public static void CreateXmlFile(CsvReader csv/*string[] input*/, string currDir, XDocument metadataSetStructure)
         {
             XDocument doc = new XDocument(new XDeclaration("1.0", "utf-8","yes"));
             string now = DateTime.Now.ToShortDateString();
           //  XNamespace xhtml = "http://www.w3.org/1999/xhtml";
 
             XElement ingestion = new XElement("ingestion");
-            ingestion.Add(new XAttribute("overwrite", "false"));
+            ingestion.Add(new XAttribute("overwrite", (metadataSetStructure != null).ToString()));
             doc.Add(ingestion);
-            XAttribute xmlLang = new XAttribute(XNamespace.Xml + "lang", "en"); 
-             XAttribute xmlLangFr = new XAttribute(XNamespace.Xml + "lang", "fr"); 
-            XAttribute xmlLangEs = new XAttribute(XNamespace.Xml + "lang", "es");
-            XElement frEmpty = new XElement("text");
-            frEmpty.Add(xmlLangFr);
+            XAttribute xmlLang = new XAttribute(XNamespace.Xml + "lang", "en");
 
-            XElement esEmpty = new XElement("text");
-            esEmpty.Add(xmlLangEs);
+            XElement metadataSet;
 
-            XElement metadataSets = new XElement("metadata-sets");
-            ingestion.Add(metadataSets);
-           
-            XElement metadataSet = new XElement("metadata-set");
-            metadataSet.Add(new XAttribute("updated", now));
-            metadataSet.Add(new XAttribute("created", now));
-            metadataSet.Add(new XAttribute("model-type", "Catfish.Core.Models.CFMetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
-            metadataSet.Add(new XAttribute("IsRequired", "false"));
-            string msGuid = Guid.NewGuid().ToString();
-            metadataSet.Add(new XAttribute("guid", msGuid));
-            metadataSets.Add(metadataSet);
-   
-            XElement msName = new XElement("Name");
-            metadataSet.Add(msName);
-          
-            XElement text = new XElement("text", "StateFundingMetadataSet");
-            text.Add(xmlLang);
-            msName.Add(text);
-           
-            msName.Add(frEmpty);
-           // EmptyText.re;
-            msName.Add(esEmpty);
+            string msGuid;
+            if (metadataSetStructure == null)
+            {
+                XElement metadataSets = new XElement("metadata-sets");
+                ingestion.Add(metadataSets);
 
-            XElement msDescription = new XElement("description");
-            metadataSet.Add(msDescription);
-            XElement textDesc =new XElement("text", "Metadata set that use by State Funding database");
-            textDesc.Add(xmlLang);
+                metadataSet = new XElement("metadata-set");
+                metadataSet.Add(new XAttribute("updated", now));
+                metadataSet.Add(new XAttribute("created", now));
+                metadataSet.Add(new XAttribute("model-type", "Catfish.Core.Models.CFMetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
+                metadataSet.Add(new XAttribute("IsRequired", "false"));
+                msGuid = Guid.NewGuid().ToString();
+                metadataSet.Add(new XAttribute("guid", msGuid));
+                metadataSets.Add(metadataSet);
 
-            msDescription.Add(textDesc);
-            msDescription.Add(frEmpty);
-            msDescription.Add(esEmpty);
-            //add metadata fields
-            XElement fields = AddMetadataSetFields(doc, xmlLang, frEmpty, esEmpty); //header
-            metadataSet.Add(fields);
+                XElement msName = new XElement("Name");
+                metadataSet.Add(msName);
 
-            XElement entityTypes = AddEntityTypes(msGuid);
+                XElement text = new XElement("text", "StateFundingMetadataSet");
+                text.Add(xmlLang);
+                msName.Add(text);
 
-            ingestion.Add(entityTypes);
-            doc.Save(currDir + "\\SFIngestionFinal2018-MSEntityType.xml");
+                XElement msDescription = new XElement("description");
+                metadataSet.Add(msDescription);
+                XElement textDesc = new XElement("text", "Metadata set that use by State Funding database");
+                textDesc.Add(xmlLang);
 
-            XElement aggregations = AddAggregations(msGuid, csv, currDir);
+                msDescription.Add(textDesc);
+                //add metadata fields
+                XElement fields = AddMetadataSetFields(doc, xmlLang); //header
+                metadataSet.Add(fields);
+
+                XElement entityTypes = AddEntityTypes(msGuid);
+
+                ingestion.Add(entityTypes);
+                doc.Save(currDir + "\\SFIngestionFinal2018-MSEntityType.xml");
+            }
+            else
+            {
+                metadataSet = metadataSetStructure.Root;
+                msGuid = metadataSet.Attribute("guid").Value;
+            }
+
+            XElement aggregations = AddAggregations(msGuid, csv, currDir, metadataSet);
 
            // ingestion.Add(aggregations);
            
            // doc.Save(currDir + "\\StateFundingIngestion17Jan2018.xml");
         }
 
-        public static XElement AddMetadataSetFields(XDocument doc, XAttribute xmlLang, XElement frEmpty, XElement esEmpty)
+        public static XElement AddMetadataSetFields(XDocument doc, XAttribute xmlLang)
         {
            
             XElement fields = new XElement("fields");
@@ -150,8 +156,6 @@ namespace StateFundingDataConversion
 
                     XElement _nameVal = new XElement("text", m);
                     _nameVal.Add(xmlLang);
-                    xmlname.Add(frEmpty);
-                    xmlname.Add(esEmpty);
                     xmlname.Add(_nameVal);
                     field.Add(xmlname);
                     
@@ -162,8 +166,6 @@ namespace StateFundingDataConversion
                     _descVal.Add(xmlLang);
                     
                     _description.Add(_descVal);
-                    _description.Add(frEmpty);
-                    _description.Add(esEmpty);
                     field.Add(_description);
 
                     fields.Add(field);
@@ -194,8 +196,6 @@ namespace StateFundingDataConversion
             nameVal.Add(xmlLang);
 
             name.Add(nameVal);
-            name.Add(frEmpty);
-            name.Add(esEmpty);
             chkField.Add(name);
 
             XElement description = new XElement("description");
@@ -203,8 +203,6 @@ namespace StateFundingDataConversion
             XElement descVal = new XElement("text");
             descVal.Add(xmlLang);
             description.Add(descVal);
-            description.Add(frEmpty);
-            description.Add(esEmpty);
 
             chkField.Add(description);
 
@@ -276,7 +274,7 @@ namespace StateFundingDataConversion
             return entityTypes;
         }
 
-         public static XElement AddAggregations(string msGuid, CsvReader csv, string currDir)
+         public static XElement AddAggregations(string msGuid, CsvReader csv, string currDir, XElement metadataSet)
         {
             XDocument doc = new XDocument(new XDeclaration("1.0", "utf-8", "yes"));
            
@@ -285,8 +283,6 @@ namespace StateFundingDataConversion
             doc.Add(ingestion);
 
             XAttribute xmlLang = new XAttribute(XNamespace.Xml + "lang", "en");
-            XAttribute xmlLangFr = new XAttribute(XNamespace.Xml + "lang", "fr");
-            XAttribute xmlLangEs = new XAttribute(XNamespace.Xml + "lang", "es");
             XElement aggregations = new XElement("aggregations");
 
             int countAggregation = 1;
@@ -310,133 +306,128 @@ namespace StateFundingDataConversion
 
                     XElement metadata = new XElement("metadata");
                     item.Add(metadata);
-                    XElement ms = new XElement("metadata-set");
+                    XElement ms = new XElement(metadataSet);
                     metadata.Add(ms);
-                    ms.Add(new XAttribute("created", now));
-                    ms.Add(new XAttribute("updated", now));
-                    ms.Add(new XAttribute("model-type", "Catfish.Core.Models.CFMetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
-                    ms.Add(new XAttribute("IsRequired", "false"));
-                    ms.Add(new XAttribute("guid", msGuid));
-                    XElement fields = new XElement("fields");
-                    ms.Add(fields);
+                    ms.SetAttributeValue("created", now);
+                    ms.SetAttributeValue("updated", now);
+                    XElement fields = ms.Element("fields");
 
-
-
-                    int i = 1;
-                    int headerIdx = 0;
-                    int fieldGuidIdx = 0;
-                   
-                    //foreach (string m in contents)
-                    List<string> movements = new List<string>();
-                    foreach (PropertyInfo prop in typeof(StateFunding).GetProperties())
+                    Action<XElement, string> setValue = (field, value) =>
                     {
+                        XElement valueElement = field.Element("value");
 
-                        //from col 11-15 -- movement
-                        if (i < 13 || i > 18)
-                        {//te
-                            XElement field = new XElement("field");
-                            fields.Add(field);
-
-                            field.Add(new XAttribute("updated", now));
-                            field.Add(new XAttribute("created", now));
-                            if (i == 2 || i == 4) //Year and amount --set to Number Field
-                            {
-                                field.Add(new XAttribute("model-type", "Catfish.Core.Models.Forms.NumberField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
-
-                            }
-                            else
-                            {
-                                field.Add(new XAttribute("model-type", "Catfish.Core.Models.Forms.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
-                            }
-                            field.Add(new XAttribute("guid", FieldGuids.ElementAt(fieldGuidIdx)));
-                            field.Add(new XAttribute("rank", i.ToString()));
-                            field.Add(new XAttribute("page", "1"));
-
-                            XElement name = new XElement("name");
-                            field.Add(name);
-                            XElement nameVal = new XElement("text", headers[headerIdx]);
-                            nameVal.Add(xmlLang);
-                            name.Add(nameVal);
-
-                            XElement desc = new XElement("description");
-                            field.Add(desc);
-                            XElement descVal = new XElement("text", "");
-                            descVal.Add(xmlLang);
-                            desc.Add(descVal);
-
-                            XElement value = new XElement("value");
-                            field.Add(value);
-                            XElement valtext = new XElement("text", prop.GetValue(sf, null));
-                            valtext.Add(xmlLang);
-                            value.Add(valtext);
-                            fieldGuidIdx++;
-                        }
-                        else
+                        if(valueElement == null)
                         {
-                            movements.Add(prop.GetValue(sf, null).ToString());
+                            valueElement = new XElement("value");
+                            field.Add(valueElement);
                         }
-                        i++;
-                        headerIdx++;
-                    }
 
-                    //get the movement checkboxes
-                    XElement chkEl = new XElement("field");
-                    chkEl.Add(new XAttribute("created", now));
-                    chkEl.Add(new XAttribute("updated", now));
-                    chkEl.Add(new XAttribute("model-type", "Catfish.Core.Models.Forms.Forms.CheckBoxSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"));
-                    chkEl.Add(new XAttribute("IsReguired", "false"));
-                    chkEl.Add(new XAttribute("guid", FieldGuids.Last()));
-                    chkEl.Add(new XAttribute("rank", i.ToString()));
-                    chkEl.Add(new XAttribute("page", "1"));
-                    XElement movement = new XElement("name");
-                    chkEl.Add(movement);
-                    XElement movementVal = new XElement("text", "Movement");
-                    movementVal.Add(xmlLang);
-                    movement.Add(movementVal);
+                        XElement textValue = valueElement.Element("text");
 
-                    XElement moveDesc = new XElement("description");
-                    XElement moveDescVal = new XElement("text");
-                    moveDescVal.Add(xmlLang);
-                    moveDesc.Add(moveDescVal);
-                    chkEl.Add(moveDesc);
+                        if(textValue == null)
+                        {
+                            textValue = new XElement("text");
+                            valueElement.Add(textValue);
 
-                    XElement options = new XElement("options");
+                            textValue.Add(xmlLang);
+                        }
 
-                    chkEl.Add(options);
-                    fields.Add(chkEl);
-                    int optionInd = 0;
-                    int k = 10;
+                        textValue.Value = value;
+                    };
 
-
-                    foreach (string s in movements)//for (int k = 10; k < 15; k++) //col 11 to 15 
+                    foreach(XElement field in fields.Elements())
                     {
+                        field.SetAttributeValue("updated", now);
+                        string name = field.Element("name").Element("text").Value;
 
-                        XElement option = new XElement("option");
-                        string selected = string.IsNullOrEmpty(s) == true ? "false" : "true";
-                        option.Add(new XAttribute("selected", selected));
+                        if(name == "jurisdiction")
+                        {
+                            setValue(field, sf.jurisdiction);
+                        }
+                        else if(name == "yearFunded")
+                        {
+                            setValue(field, sf.yearFunded);
+                        }
+                        else if (name == "recipient")
+                        {
+                            setValue(field, sf.recipient);
+                        }
+                        else if (name == "amount")
+                        {
+                            //TODO: add the inflation amount
+                            setValue(field, sf.amount);
+                        }
+                        else if (name == "ministryAgency")
+                        {
+                            setValue(field, sf.ministryAgency);
+                        }
+                        else if (name == "city")
+                        {
+                            setValue(field, sf.city);
+                        }
+                        else if (name == "jurisdictionFederal")
+                        {
+                            setValue(field, sf.jurisdictionFederal);
+                        }
+                        else if (name == "source")
+                        {
+                            setValue(field, sf.source);
+                        }
+                        else if (name == "program")
+                        {
+                            setValue(field, sf.program);
+                        }
+                        else if (name == "masterProgram")
+                        {
+                            setValue(field, sf.masterProgram);
+                        }
+                        else if (name == "project")
+                        {
+                            setValue(field, sf.project);
+                        }
+                        else if (name == "recipientOriginal")
+                        {
+                            setValue(field, sf.recipientOriginal);
+                        }
+                        else if (name == "notes")
+                        {
+                            setValue(field, sf.notes);
+                        }
+                        else if (name == "movement")
+                        {
+                            var options = field.Element("options").Elements();
 
-                        option.Add(new XAttribute("guid", OptionGuids.ElementAt(optionInd)));
-                        options.Add(option);
-                        XElement optionVal;
-                        if (k == 10)
-                            optionVal = new XElement("text", "Aboriginal");
-                        else if (k == 11)
-                            optionVal = new XElement("text", "Environment");
-                        else if (k == 12)
-                            optionVal = new XElement("text", "Rights");
-                        else if (k == 13)
-                            optionVal = new XElement("text", "Women");
-                        else if (k == 14)
-                            optionVal = new XElement("text", "Other");
-                        else
-                            optionVal = new XElement("text", "Aboriginal Government");
+                            foreach (var option in options)
+                            {
+                                string optionName = option.Element("text").Value;
 
-                        optionVal.Add(xmlLang);
-                        option.Add(optionVal);
-                        optionInd++;
-                        k++;
+                                if(optionName == "Aboriginal Peoples")
+                                {
+                                    option.SetAttributeValue("selected", sf.movementAboriginal);
+                                }
+                                else if (optionName == "Environment")
+                                {
+                                    option.SetAttributeValue("selected", sf.movementEnvironment);
+                                }
+                                else if (optionName == "Human Rights")
+                                {
+                                    option.SetAttributeValue("selected", sf.movementRights);
+                                }
+                                else if (optionName == "Women")
+                                {
+                                    option.SetAttributeValue("selected", sf.movementWomen);
+                                }
+                                else if (optionName == "Other")
+                                {
+                                    option.SetAttributeValue("selected", sf.movementOther);
+                                }
+                                else if (optionName == "Aboriginal Government")
+                                {
+                                    option.SetAttributeValue("selected", sf.movementABgovt);
+                                }
+                            }
+                        }
                     }
-
                 }
                 catch (Exception ex)
                 {
