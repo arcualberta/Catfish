@@ -15,16 +15,20 @@ namespace StateFundingDataConversion
 {
     public class Program
     {
+        private const int MAX_YEAR = 2014;
         private static List<string> FieldGuids = new List<string>();
         private static List<string> OptionGuids = new List<string>();
         private static string EntityTypeName = "Statefunding Entity Type";
         private static int TotAggregations = 10000;
         private static string inputFileName = "StateFundingDatabase.xlsx";
+        private static string inflationFileName = "InflationCalc.xlsx";
+        private static IDictionary<int, decimal> AverageInflation;
 
         public static void Main(string[] args)
         {
             string currDir = Environment.CurrentDirectory;
-          //currDir = Path.GetFullPath(Path.Combine(currDir, @"..\..\"));
+            //currDir = Path.GetFullPath(Path.Combine(currDir, @"..\..\"));
+            string inflationDir = currDir + "\\Data\\" + inflationFileName;
             string dataDir = currDir + "\\Data\\" + inputFileName;
             XDocument metadataSetStructure = null;
 
@@ -40,6 +44,8 @@ namespace StateFundingDataConversion
                 var app = new Excel.Application();
                 var workbook = app.Workbooks.Open(@dataDir, 0, true);
                 var worksheet = (Excel.Worksheet)workbook.Sheets[1];
+
+                AverageInflation = GetAverageInflationTable(app, inflationDir, MAX_YEAR);
                 CreateXmlFile(worksheet, currDir, metadataSetStructure);
                 workbook.Close();
                 //using (TextReader reader = File.OpenText(@dataDir))
@@ -57,6 +63,53 @@ namespace StateFundingDataConversion
                 throw ex;
             }
            
+        }
+
+        protected static Dictionary<int, decimal> GetAverageInflationTable(Excel.Application app, string inflationFile, int maxDate)
+        {
+            Dictionary<int, decimal> calculated = new Dictionary<int, decimal>();
+            decimal totalValue = 0.0m;
+
+            var workbook = app.Workbooks.Open(inflationFile, 0, true);
+            var worksheet = (Excel.Worksheet)workbook.Sheets[1];
+
+            Excel.Range range = worksheet.UsedRange;
+            int rowsCount = range.Rows.Count;
+
+            for(int i = 2; i <= rowsCount; ++i)
+            {
+                var cells = (System.Array)worksheet.get_Range("A" + i, "D" + i).Cells.Value;
+                int index = int.Parse(cells.GetValue(1, 1).ToString());
+                decimal value = (decimal)(cells.GetValue(1, 4) == null ? 0.0 : (double)cells.GetValue(1, 4));
+
+                if (index <= maxDate)
+                {
+                    totalValue += value;
+
+                    calculated.Add(index, value);
+                }
+            }
+
+            for(int i = 0; i < calculated.Keys.Count; ++i)
+            {
+                int key = calculated.Keys.ElementAt(i);
+                decimal currentVal = calculated[key];
+                totalValue -= currentVal;
+
+                if (maxDate - key != 0)
+                {
+                    calculated[key] = totalValue / (maxDate - key);
+                }
+            }
+
+            // Due to the calculation, all of the keys are 1 year behind. We now need to move them up a value.
+            Dictionary<int, decimal> result = new Dictionary<int, decimal>();
+            foreach(int key in calculated.Keys)
+            {
+                result.Add(key + 1, calculated[key]);
+            }
+
+            return result;
         }
 
         public static void CreateXmlFile(Excel.Worksheet worksheet/*CsvReader csv*/, string currDir, XDocument metadataSetStructure)
@@ -145,7 +198,8 @@ namespace StateFundingDataConversion
                 "movementWomen",
                 "movementOther",
                 "movementABgovt",
-                "notes"
+                "notes",
+                ""
             };
 
             XElement fields = new XElement("fields");
@@ -302,29 +356,42 @@ namespace StateFundingDataConversion
 
         protected static StateFunding ReadRow(Excel.Range row)
         {
-            var cells = (System.Array)row.Cells.Value;
+            
             StateFunding result = new StateFunding();
-            result.jurisdiction = cells.GetValue(1, 2).ToString();
-            result.yearFunded = cells.GetValue(1, 3).ToString();
-            result.recipient = cells.GetValue(1, 4).ToString();
-            result.amount = cells.GetValue(1, 5).ToString();
-            result.ministryAgency = cells.GetValue(1, 6).ToString();
-            result.city = cells.GetValue(1, 7).ToString();
-            result.jurisdictionFederal = cells.GetValue(1, 8).ToString();
-            result.source = cells.GetValue(1, 9).ToString();
-            result.program = cells.GetValue(1, 10).ToString();
-            result.masterProgram = cells.GetValue(1, 11).ToString();
-            result.project = cells.GetValue(1, 12).ToString();
-            result.recipientOriginal = cells.GetValue(1, 13).ToString();
-            result.movementAboriginal = cells.GetValue(1, 14) as string;
-            result.movementEnvironment = cells.GetValue(1, 15) as string;
-            result.movementRights = cells.GetValue(1, 16) as string;
-            result.movementWomen = cells.GetValue(1, 17) as string;
-            result.movementOther = cells.GetValue(1, 18) as string;
-            result.movementABgovt = cells.GetValue(1, 19) as string;
-            result.notes = cells.GetValue(1, 20).ToString();
 
-            // TODO calcuate inflation
+            try
+            {
+                var cells = (System.Array)row.Cells.Value;
+                result.jurisdiction = cells.GetValue(1, 2) as string;
+                result.yearFunded = cells.GetValue(1, 3).ToString();
+                result.recipient = cells.GetValue(1, 4) as string;
+                result.amount = cells.GetValue(1, 5).ToString();
+                result.ministryAgency = cells.GetValue(1, 6) as string;
+                result.city = cells.GetValue(1, 7) as string;
+                result.jurisdictionFederal = cells.GetValue(1, 8) as string;
+                result.source = cells.GetValue(1, 9) as string;
+                result.program = cells.GetValue(1, 10) as string;
+                result.masterProgram = cells.GetValue(1, 11) as string;
+                result.project = cells.GetValue(1, 12) as string;
+                result.recipientOriginal = cells.GetValue(1, 13) as string;
+                result.movementAboriginal = cells.GetValue(1, 14) as string;
+                result.movementEnvironment = cells.GetValue(1, 15) as string;
+                result.movementRights = cells.GetValue(1, 16) as string;
+                result.movementWomen = cells.GetValue(1, 17) as string;
+                result.movementOther = cells.GetValue(1, 18) as string;
+                result.movementABgovt = cells.GetValue(1, 19) as string;
+                result.notes = cells.GetValue(1, 20) as string;
+
+                // calculate inflation
+                int year = int.Parse(result.yearFunded);
+                double average = 1.0 + decimal.ToDouble(AverageInflation[year]) / 100.0;
+                double inflatedAmount = double.Parse(result.amount) * Math.Pow(average, (double)(MAX_YEAR - year));
+                result.amountInflation = string.Format("{0:0.00}", inflatedAmount);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
 
             return result;
         }
@@ -344,6 +411,9 @@ namespace StateFundingDataConversion
             int fileCount = 1;
             Excel.Range range = worksheet.UsedRange;
             int rowsCount = range.Rows.Count;
+
+            string inflationField = "amount" + MAX_YEAR + "Inflation";
+
             for(int i = 2; i <= rowsCount; ++i)
             {
                 StateFunding sf = ReadRow(worksheet.get_Range("A" + i, "T" + i));
@@ -371,25 +441,31 @@ namespace StateFundingDataConversion
 
                     Action<XElement, string> setValue = (field, value) =>
                     {
-                        XElement valueElement = field.Element("value");
-
-                        if(valueElement == null)
+                        try
                         {
-                            valueElement = new XElement("value");
-                            field.Add(valueElement);
-                        }
+                            XElement valueElement = field.Element("value");
 
-                        XElement textValue = valueElement.Element("text");
+                            if (valueElement == null)
+                            {
+                                valueElement = new XElement("value");
+                                field.Add(valueElement);
+                            }
 
-                        if(textValue == null)
+                            XElement textValue = valueElement.Element("text");
+
+                            if (textValue == null)
+                            {
+                                textValue = new XElement("text");
+                                valueElement.Add(textValue);
+
+                                textValue.Add(xmlLang);
+                            }
+                            
+                            textValue.Value = value ?? "";
+                        }catch(Exception ex)
                         {
-                            textValue = new XElement("text");
-                            valueElement.Add(textValue);
-
-                            textValue.Add(xmlLang);
+                            throw ex;
                         }
-
-                        textValue.Value = value;
                     };
 
                     foreach(XElement field in fields.Elements())
@@ -449,6 +525,10 @@ namespace StateFundingDataConversion
                         else if (name == "notes")
                         {
                             setValue(field, sf.notes);
+                        }
+                        else if (name == inflationField)
+                        {
+                            setValue(field, sf.amountInflation);
                         }
                         else if (name == "movement")
                         {
@@ -548,6 +628,8 @@ namespace StateFundingDataConversion
        
         public string movementABgovt{ get; set; }
         public string notes { get; set; }
+
+        public string amountInflation { get; set; }
     }
 }
  
