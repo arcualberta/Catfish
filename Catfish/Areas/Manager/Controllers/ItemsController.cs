@@ -191,7 +191,6 @@ namespace Catfish.Areas.Manager.Controllers
             return Associations(id);
         }
 
-        //XXX This method should be moved to a file controller
         [HttpPost]
         public JsonResult Upload()
         {

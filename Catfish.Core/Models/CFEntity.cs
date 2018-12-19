@@ -111,11 +111,12 @@ namespace Catfish.Core.Models
             }
         }
 
-        private string buildSolrKey(string prefix, string metadatasetGuid, string fieldGuid, string type, string languageCode)
+        private string BuildSolrKey(string prefix, string metadatasetGuid, string fieldGuid, string type, string languageCode)
         {
-            return buildSolrKey(prefix, metadatasetGuid, fieldGuid, type) + "_" + languageCode;
+            return BuildSolrKey(prefix, metadatasetGuid, fieldGuid, type) + "_" + languageCode;
         }
-        private string buildSolrKey(string prefix, string metadatasetGuid, string fieldGuid, string type)
+
+        private string BuildSolrKey(string prefix, string metadatasetGuid, string fieldGuid, string type)
         {
             string key = prefix + "_"
                 + metadatasetGuid + "_"
@@ -123,63 +124,66 @@ namespace Catfish.Core.Models
                 + type;
             return key;
         }
-        private Dictionary<string, object> GetSolrValues(string prefix,
-            string metadatasetGuid,
-            string fieldGuid,
-            TextValue value)
-        {
-            Dictionary<string, object> result = new Dictionary<string, object>();
-            string txtKey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "txt", value.LanguageCode);
-            result[txtKey] = value.Value;
-            MatchCollection matches = Regex.Matches(value.Value, @"^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$");
-            if (matches.Count > 0)
-            {
-                Decimal decimalValue = Decimal.Parse(value.Value);
-                string decimalkey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "d");
-                string integerKey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "i");
-                result[decimalkey] = decimalValue;
-                result[integerKey] = (int)Decimal.Round(decimalValue);
-            }
-            return result;
-        }
+
+        //private Dictionary<string, object> GetSolrValues(string prefix,
+        //    string metadatasetGuid,
+        //    string fieldGuid,
+        //    TextValue value)
+        //{
+        //    Dictionary<string, object> result = new Dictionary<string, object>();
+        //    string txtKey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "txt", value.LanguageCode);
+        //    result[txtKey] = value.Value;
+        //    MatchCollection matches = Regex.Matches(value.Value, @"^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$");
+        //    if (matches.Count > 0)
+        //    {
+        //        Decimal decimalValue = Decimal.Parse(value.Value);
+        //        string decimalkey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "d");
+        //        string integerKey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "i");
+        //        result[decimalkey] = decimalValue;
+        //        result[integerKey] = (int)Decimal.Round(decimalValue);
+        //    }
+        //    return result;
+        //}
+
         private string CleanGuid(string guid)
         {
             return guid.Replace("-", "_");
         }
-        private Dictionary<string, object> GetFieldValues(FormField field, string metadatasetGuid, string fieldGuid)
-        {
-            Dictionary<string, object> values;
-            Dictionary<string, object> result = new Dictionary<string, object>();
-            if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
-            {
-                // Check if the field has options
-                OptionsField optionsField = (OptionsField)field;
-                foreach (Option option in optionsField.Options)
-                {
-                    if (option.Selected)
-                    {
-                        //metadatasetGuid;
-                        string optionGuid = CleanGuid(option.Guid);
-                        foreach (TextValue value in option.Value)
-                        {
-                            values = GetSolrValues("option_value", metadatasetGuid, optionGuid, value);
-                            values.ToList().ForEach(x => result[x.Key] = x.Value);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                // if this is not an options field
-                foreach (TextValue value in field.Values)
-                {
-                    values = GetSolrValues("value", metadatasetGuid, fieldGuid, value);
-                    values.ToList().ForEach(x => result[x.Key] = x.Value);
-                }
-            }
 
-            return result;
-        }
+        //private Dictionary<string, object> GetFieldValues(FormField field, string metadatasetGuid, string fieldGuid)
+        //{
+        //    Dictionary<string, object> values;
+        //    Dictionary<string, object> result = new Dictionary<string, object>();
+        //    if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
+        //    {
+        //        // Check if the field has options
+        //        OptionsField optionsField = (OptionsField)field;
+        //        foreach (Option option in optionsField.Options)
+        //        {
+        //            if (option.Selected)
+        //            {
+        //                //metadatasetGuid;
+        //                string optionGuid = CleanGuid(option.Guid);
+        //                foreach (TextValue value in option.Value)
+        //                {
+        //                    values = GetSolrValues("option_value", metadatasetGuid, optionGuid, value);
+        //                    values.ToList().ForEach(x => result[x.Key] = x.Value);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        // if this is not an options field
+        //        foreach (TextValue value in field.Values)
+        //        {
+        //            values = GetSolrValues("value", metadatasetGuid, fieldGuid, value);
+        //            values.ToList().ForEach(x => result[x.Key] = x.Value);
+        //        }
+        //    }
+
+        //    return result;
+        //}
 
         private Dictionary<string, List<string>> GetAccessDictionary()
         {
@@ -217,24 +221,107 @@ namespace Catfish.Core.Models
             // Add access elements for secure searches in solr
             Dictionary<string, List<string>> access = GetAccessDictionary();
             access.ToList().ForEach(x => result[x.Key] = x.Value);
-            
+
+            //foreach (CFMetadataSet metadataset in MetadataSets)
+            //{
+            //    string metadatasetGuid = CleanGuid(metadataset.Guid);
+            //    foreach (FormField field in metadataset.Fields)
+            //    {
+            //        string fieldGuid = CleanGuid(field.Guid);
+            //        foreach (TextValue name in field.GetNames(false))
+            //        {
+            //            Dictionary<string, object> names = GetSolrValues("name", metadatasetGuid, fieldGuid, name);
+            //            names.ToList().ForEach(x => result[x.Key] = x.Value);
+            //        }
+            //        Dictionary<string, object> values = GetFieldValues(field, metadatasetGuid, fieldGuid);
+            //        values.ToList().ForEach(x => result[x.Key] = x.Value);
+            //    }
+            //}
+
+            GetDynamicEntries(ref result);
+
+
+            return result;            
+        }
+
+        private void GetDynamicValues(
+            ref Dictionary<string, object> result, 
+            string keyFields, 
+            FormField field) {
+
+            Regex numberRegex = new Regex(@"^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$");
+
+            foreach (TextValue textValue in field.Values)
+            {
+
+                // language 
+                string key = $@"value_{keyFields}_txts_{textValue.LanguageCode}";
+                if (!result.ContainsKey(key))
+                {
+                    result[key] = new List<string>();
+                }
+
+                ((List<string>)result[key]).Add(textValue.Value);
+
+                // numbers
+
+                // if value can be interpreted as number add decimal and
+                // integer values to solr
+                if (numberRegex.Matches(textValue.Value).Count > 0)
+                {
+                    string integerKey = $@"value_{keyFields}_is";
+                    string decimalKey = $@"value_{keyFields}_ds";
+                    Decimal decimalValue = Decimal.Parse(textValue.Value);
+
+                    if (!result.ContainsKey(decimalKey))
+                    {
+                        result[decimalKey] = new List<decimal>();
+                    }
+                    if (!result.ContainsKey(integerKey))
+                    {
+                        result[integerKey] = new List<int>();
+                    }
+
+                    ((List<decimal>)result[decimalKey]).Add(decimalValue);
+                    ((List<int>)result[integerKey]).Add((int)Decimal.Round(decimalValue));
+                }
+            }
+        }
+
+        private void GetDynamicEntries(ref Dictionary<string, object> result)
+        {            
+            //Dictionary<string, object> result = new Dictionary<string, object>();
             foreach (CFMetadataSet metadataset in MetadataSets)
             {
                 string metadatasetGuid = CleanGuid(metadataset.Guid);
+
                 foreach (FormField field in metadataset.Fields)
                 {
-                    string fieldGuid = CleanGuid(field.Guid);
-                    foreach (TextValue name in field.GetNames(false))
+                    string keyFields = CleanGuid(metadataset.Guid + "_" + field.Guid);
+
+                    // name
+                    foreach (TextValue textValue in field.GetNames(false))
                     {
-                        Dictionary<string, object> names = GetSolrValues("name", metadatasetGuid, fieldGuid, name);
-                        names.ToList().ForEach(x => result[x.Key] = x.Value);
+                        string key = $@"name_{keyFields}_txt_{textValue.LanguageCode}";
+                        result[key] = textValue.Value;
                     }
-                    Dictionary<string, object> values = GetFieldValues(field, metadatasetGuid, fieldGuid);
-                    values.ToList().ForEach(x => result[x.Key] = x.Value);
+                    // values
+                    GetDynamicValues(ref result, keyFields, field);              
                 }
-            }
-            return result;
+            }        
         }
+
+
+
+        //    MatchCollection matches = Regex.Matches(value.Value, @"^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$");
+        //        if (matches.Count > 0)
+        //        {
+        //            Decimal decimalValue = Decimal.Parse(value.Value);
+        //    string decimalkey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "d");
+        //    string integerKey = buildSolrKey(prefix, metadatasetGuid, fieldGuid, "i");
+        //    result[decimalkey] = decimalValue;
+        //            result[integerKey] = (int) Decimal.Round(decimalValue);
+        //}
 
         public void RemoveAllMetadataSets()
         {
