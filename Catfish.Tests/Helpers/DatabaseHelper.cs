@@ -353,7 +353,7 @@ namespace Catfish.Tests.Helpers
             }
             else
             {
-                SolrService.InitWithConnection(solrConnection);
+                SolrService.ForceInit(solrConnection);
             }
 
             try

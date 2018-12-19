@@ -96,7 +96,6 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 IsMultiple = ((TextField)formField).IsMultiple; //Nov 19 2016
         }
 
-        //XXX turns to database model
         public FormField InstantiateDataModel()
         {
             Type type = Type.GetType(FieldType, true);
