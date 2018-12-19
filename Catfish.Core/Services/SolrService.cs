@@ -40,18 +40,24 @@ namespace Catfish.Core.Services
         }
         
 
-        public static void Init(string server)
+        public static void ForceInit(string server)
+        {
+            Init(server, true);
+        }
+
+        public static void ForceInit(ISolrConnection connection)
+        {
+            Init(connection, true);
+        }
+
+        public static void Init(string server, bool force = false)
         {
             IsInitialized = false;
 
             if (!string.IsNullOrEmpty(server))
             {
                 ISolrConnection connection = new SolrConnection(server);
-
-                SolrService.InitWithConnection(connection);
-                SolrService.solrOperations = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
-                IsInitialized = true;
-
+                Init(connection, force);                
             }
             else
             {
@@ -59,19 +65,32 @@ namespace Catfish.Core.Services
             }
         }
 
-        public static void InitWithConnection(ISolrConnection connection)
-        {
-            if (!IsSolrInitialized)
+        public static void Init(ISolrConnection connection, bool force = false)
+        {            
+
+            if (force)
             {
+                ClearContainer();
+            }
+
+            if (!IsSolrInitialized)
+            {                
                 mSolr = connection;
                 Startup.Init<SolrIndex>(mSolr);
                 Startup.Init<Dictionary<string, object>>(mSolr);
+                solrOperations = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+                IsInitialized = true;
                 IsSolrInitialized = true;
-            }
-            
-            
-            //TODO: Should we update the database here or have it in an external cron job
 
+            }         
+        }
+
+        private static void ClearContainer()
+        {
+            Startup.Container.Clear();
+            Startup.InitContainer();
+            IsSolrInitialized = false;
+            IsInitialized = false;
         }
 
         public static string GetPartialMatichingText(string field, string text, int rows = 10)
