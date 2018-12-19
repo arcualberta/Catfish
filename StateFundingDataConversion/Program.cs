@@ -37,31 +37,24 @@ namespace StateFundingDataConversion
             {
                 metadataSetStructure = XDocument.Load(args[0]);
             }
-           
-            try
-            {
-                Console.WriteLine("Data conversion is starting ...");
-                var app = new Excel.Application();
-                var workbook = app.Workbooks.Open(@dataDir, 0, true);
-                var worksheet = (Excel.Worksheet)workbook.Sheets[1];
 
-                AverageInflation = GetAverageInflationTable(app, inflationDir, MAX_YEAR);
-                CreateXmlFile(worksheet, currDir, metadataSetStructure);
-                workbook.Close();
-                //using (TextReader reader = File.OpenText(@dataDir))
-                //{
-                //    // TODO: Use Excel reader
-                //    CsvReader csv = new CsvReader(reader);
-                //    csv.Configuration.Delimiter = ",";
-                //    csv.Configuration.MissingFieldFound = null;
-                //    CreateXmlFile(csv, currDir, metadataSetStructure);
-                //}
-                Console.WriteLine("Done!");
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            Console.WriteLine("Data conversion is starting ...");
+            var app = new Excel.Application();
+            var workbook = app.Workbooks.Open(@dataDir, 0, true);
+            var worksheet = (Excel.Worksheet)workbook.Sheets[1];
+
+            AverageInflation = GetAverageInflationTable(app, inflationDir, MAX_YEAR);
+            CreateXmlFile(worksheet, currDir, metadataSetStructure);
+            workbook.Close();
+            //using (TextReader reader = File.OpenText(@dataDir))
+            //{
+            //    // TODO: Use Excel reader
+            //    CsvReader csv = new CsvReader(reader);
+            //    csv.Configuration.Delimiter = ",";
+            //    csv.Configuration.MissingFieldFound = null;
+            //    CreateXmlFile(csv, currDir, metadataSetStructure);
+            //}
+            Console.WriteLine("Done!");
            
         }
 
@@ -362,6 +355,7 @@ namespace StateFundingDataConversion
             try
             {
                 var cells = (System.Array)row.Cells.Value;
+                result.recordNumber = cells.GetValue(1, 1) as string;
                 result.jurisdiction = cells.GetValue(1, 2) as string;
                 result.yearFunded = cells.GetValue(1, 3).ToString();
                 result.recipient = cells.GetValue(1, 4) as string;
@@ -390,7 +384,9 @@ namespace StateFundingDataConversion
             }
             catch(Exception ex)
             {
-                throw ex;
+                Console.WriteLine("Error reading data:" + ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return null;
             }
 
             return result;
@@ -441,31 +437,25 @@ namespace StateFundingDataConversion
 
                     Action<XElement, string> setValue = (field, value) =>
                     {
-                        try
+                        XElement valueElement = field.Element("value");
+
+                        if (valueElement == null)
                         {
-                            XElement valueElement = field.Element("value");
-
-                            if (valueElement == null)
-                            {
-                                valueElement = new XElement("value");
-                                field.Add(valueElement);
-                            }
-
-                            XElement textValue = valueElement.Element("text");
-
-                            if (textValue == null)
-                            {
-                                textValue = new XElement("text");
-                                valueElement.Add(textValue);
-
-                                textValue.Add(xmlLang);
-                            }
-                            
-                            textValue.Value = value ?? "";
-                        }catch(Exception ex)
-                        {
-                            throw ex;
+                            valueElement = new XElement("value");
+                            field.Add(valueElement);
                         }
+
+                        XElement textValue = valueElement.Element("text");
+
+                        if (textValue == null)
+                        {
+                            textValue = new XElement("text");
+                            valueElement.Add(textValue);
+
+                            textValue.Add(xmlLang);
+                        }
+                            
+                        textValue.Value = value ?? "";
                     };
 
                     foreach(XElement field in fields.Elements())
@@ -568,7 +558,16 @@ namespace StateFundingDataConversion
                 }
                 catch (Exception ex)
                 {
-                    throw ex;
+                    if (sf != null)
+                    {
+                        Console.WriteLine(string.Format("An error occured while reading enty {0}: {1}", sf.recordNumber, ex.Message));
+                    }
+                    else
+                    {
+                        Console.WriteLine(string.Format("An error occured reading line {0} of the excel file:", i, ex.Message));
+                    }
+
+                    Console.WriteLine(ex.StackTrace);
                 }
 
                 if (countAggregation == TotAggregations) //save the file for every 10k items
@@ -604,7 +603,7 @@ namespace StateFundingDataConversion
     {
         //the order is the same with the csv input headers
 
-       // public string recordNumber { get; set; }
+        public string recordNumber { get; set; }
         public string jurisdiction { get; set; }
         public string yearFunded { get; set; }
         public string recipient { get; set; }
