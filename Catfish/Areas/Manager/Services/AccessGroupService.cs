@@ -75,7 +75,6 @@ namespace Catfish.Areas.Manager.Services
 
         public CFEntity UpdateEntityAccessGroups(CFEntity entity, EntityAccessDefinitionsViewModel entityAccessVM)
         {
-            // XXX Here is where you need to update the access group on solr
             List<CFAccessGroup> accessGroups = new List<CFAccessGroup>();
             foreach (var ag in entityAccessVM.SelectedAccessGroups)
             {
@@ -93,7 +92,6 @@ namespace Catfish.Areas.Manager.Services
             entity.AccessGroups = accessGroups;           
             entity.BlockInheritance = entityAccessVM.BlockInheritance;
 
-            //entity.MappedGuid
             // fetch solr entry by cfentity mapped guid
             SolrNet.SolrQueryResults<Dictionary<string, object>> mapedEntity;
             mapedEntity = SolrService.solrOperations.Query("id:" + entity.MappedGuid);
