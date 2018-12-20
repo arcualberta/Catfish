@@ -265,7 +265,7 @@ namespace Catfish.Core.Services
 
             if(attrMap != null)
             {
-                string resultType = "txt_en";
+                string resultType = "txts_en";
                 FormField field = attrMap.Field;
 
                 if (typeof(NumberField).IsAssignableFrom(field.GetType())){
