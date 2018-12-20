@@ -136,13 +136,13 @@ namespace Catfish.Core.Services
                     limit : 10000,
                     field : {0},
                     facet : {{
-                        sumYValues : ""sum({1})"",
+                        sumYValues : ""sum(field({1},max))"",
                         groups : {{
                             type : terms,
                             field : {2},
                             limit: 10000,
                             facet : {{
-                                sumYValuesArg : ""sum({1})""
+                                sumYValuesArg : ""sum(field({1},max))""
                             }}
                         }}
                     }}
@@ -156,7 +156,7 @@ namespace Catfish.Core.Services
                     limit : 10000,
                     field : {0},
                     facet : {{
-                        sumYValues : ""sum({1})""
+                        sumYValues : ""sum(field({1},max))""
                     }}
                 }}
             }}";
@@ -167,7 +167,7 @@ namespace Catfish.Core.Services
                     new KeyValuePair<string, string>("q", query),
                     new KeyValuePair<string, string>("json.facet", string.Format(categoryId == null ? facetJson : facetCategoryJson, xIndexId, yIndexId, categoryId)),
                     new KeyValuePair<string, string>("rows", "0"),
-                    new KeyValuePair<string, string>("sort", xIndexId + " asc"),
+                    new KeyValuePair<string, string>("sort", "field(" + xIndexId + ",min) asc"),
                     new KeyValuePair<string, string>("wt", "xml")
                 };
 
@@ -270,7 +270,7 @@ namespace Catfish.Core.Services
 
         public string GetMedian(string field, string query)
         {
-            const string facetJson = @"{{Median : ""percentile({0},50)""}}";
+            const string facetJson = @"{{Median : ""percentile(field({0},min),50)""}}";
 
             if (SolrService.IsInitialized)
             {

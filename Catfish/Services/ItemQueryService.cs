@@ -58,16 +58,16 @@ namespace Catfish.Services
             string metadataGuid = SelectedFieldMetadataSet.Replace('-', '_');
             string fieldGuid = SelectedField.Replace('-', '_');
             bool isOptionField = false;
-            string resultType = "d"; //TODO: check the field type. At the moment, we can only do stats on number fields.
+            string resultType = "ds"; //TODO: check the field type. At the moment, we can only do stats on number fields.
 
             if (!string.IsNullOrEmpty(SelectedFieldMetadataSet) && !string.IsNullOrEmpty(SelectedField))
             {
                 isOptionField = IsOptionField(SelectedFieldMetadataSet, SelectedField) ? true : false;
-                resultType = IsNumberField(SelectedFieldMetadataSet, SelectedField) ? "d" : "txt_" + languageCode;
+                resultType = IsNumberField(SelectedFieldMetadataSet, SelectedField) ? "ds" : "txts_" + languageCode;
             }
 
 
-            string fieldString = string.Format("{0}value_{1}_{2}_{3}", isOptionField ? "option_" : string.Empty, metadataGuid, fieldGuid, resultType);
+            string fieldString = string.Format("value_{0}_{1}_{2}", metadataGuid, fieldGuid, resultType);
 
             //adding group by
             string groupByFieldString = string.Empty;
@@ -76,11 +76,10 @@ namespace Catfish.Services
                 string groupByMetadataGuid = string.IsNullOrEmpty(SelectedGroupByFieldMetadataSet) ? string.Empty : SelectedGroupByFieldMetadataSet.Replace('-', '_');
                 string groupByFieldGuid = string.IsNullOrEmpty(SelectedGroupByField) ? string.Empty : SelectedGroupByField.Replace('-', '_');
 
-                resultType = IsNumberField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? "d" : "txt_" + languageCode;// + "_s"; // This last bit is for full text groups.
+                resultType = IsNumberField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? "ds" : "txts_" + languageCode;// + "_s"; // This last bit is for full text groups.
                 isOptionField = IsOptionField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? true : false;
 
-                groupByFieldString = string.Format("{0}value_{1}_{2}_{3}",
-                    isOptionField ? "option_" : string.Empty,
+                groupByFieldString = string.Format("value_{0}_{1}_{2}",
                     groupByMetadataGuid, groupByFieldGuid,
                     resultType);
             }
@@ -307,9 +306,9 @@ namespace Catfish.Services
 
         public IEnumerable<GraphQueryObject> GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, bool isCatDropdown = false, string languageCode = "en")
         {
-            string xIndexId = string.Format("value_{0}_{1}_i", xMetadataSet.Replace('-', '_'), xField.Replace('-', '_'));
-            string yIndexId = string.Format("value_{0}_{1}_i", yMetadataSet.Replace('-', '_'), yField.Replace('-', '_'));
-            string catIndexId = string.IsNullOrEmpty(catField) ? null : string.Format("{2}value_{0}_{1}_txt_{3}", catMetadataSet.Replace('-', '_'), catField.Replace('-', '_'), isCatDropdown ? "option_" : "", languageCode);
+            string xIndexId = string.Format("value_{0}_{1}_is", xMetadataSet.Replace('-', '_'), xField.Replace('-', '_'));
+            string yIndexId = string.Format("value_{0}_{1}_is", yMetadataSet.Replace('-', '_'), yField.Replace('-', '_'));
+            string catIndexId = string.IsNullOrEmpty(catField) ? null : string.Format("value_{0}_{1}_txts_{2}", catMetadataSet.Replace('-', '_'), catField.Replace('-', '_'), languageCode);
 
             string result = SolrSrv.GetGraphData(q, xIndexId, yIndexId, catIndexId);
 
