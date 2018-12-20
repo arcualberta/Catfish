@@ -110,7 +110,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         private void InitializeSolr()
         {
             string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
-            SolrService.Init(solrString);
+            SolrService.ForceInit(solrString);
         }
 
         private void ClearDatabase()
@@ -470,7 +470,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Match urlMatch = urlRegex.Match(url);
 
             if (urlMatch.Success && urlMatch.Groups.Count == 2) {
-                Int32 id = Convert.ToInt32(urlMatch.Groups[1].Value);
+                Int64 id = Convert.ToInt64(urlMatch.Groups[1].Value);
                 CatfishDbContext db = new CatfishDbContext();
                 CFEntity model = db.Entities.Find(id);
                 Dictionary<string, object> result = model.ToSolrDictionary();
