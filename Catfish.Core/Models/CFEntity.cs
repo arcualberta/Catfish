@@ -247,45 +247,98 @@ namespace Catfish.Core.Models
         private void GetDynamicValues(
             ref Dictionary<string, object> result, 
             string keyFields, 
-            FormField field) {
+            FormField field) {            
+
+            
 
             Regex numberRegex = new Regex(@"^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$");
 
-            foreach (TextValue textValue in field.Values)
-            {
 
-                // language 
+            // add field Options Values
+
+            if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
+            {
+                AddOptions(ref result, keyFields, field as OptionsField);
+            } else
+            {
+                // add field Values
+                foreach (TextValue textValue in field.Values)
+                {
+
+                    // language 
+                    AddTextValue(ref result, keyFields, textValue);
+
+                    // numbers
+
+                    // if value can be interpreted as number add decimal and
+                    // integer values to solr
+                    if (numberRegex.Matches(textValue.Value).Count > 0)
+                    {
+                        string integerKey = $@"value_{keyFields}_is";
+                        string decimalKey = $@"value_{keyFields}_ds";
+                        Decimal decimalValue = Decimal.Parse(textValue.Value);
+
+                        if (!result.ContainsKey(decimalKey))
+                        {
+                            result[decimalKey] = new List<decimal>();
+                        }
+                        if (!result.ContainsKey(integerKey))
+                        {
+                            result[integerKey] = new List<int>();
+                        }
+
+                        ((List<decimal>)result[decimalKey]).Add(decimalValue);
+                        ((List<int>)result[integerKey]).Add((int)Decimal.Round(decimalValue));
+                    }
+                }
+            }                    
+        }
+
+        /// <summary>
+        /// Loop through options in OptionField and add selected Options to 
+        /// result reference
+        /// </summary>
+        /// <param name="result">Reference to output value</param>
+        /// <param name="keyFields">String concatenating metadataset guid and field guid</param>
+        /// <param name="optionsField">Current working OptionField</param>
+        private void AddOptions(ref Dictionary<string, object> result, 
+            string keyFields, 
+            OptionsField optionsField)
+        {            
+
+            foreach (Option option in optionsField.Options)
+            {
+                if(option.Selected)
+                {
+                    foreach(TextValue textValue in option.Value)
+                    {
+                        AddTextValue(ref result, keyFields, textValue);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Add the TextValue value creating the key value it it does not exists
+        /// on result refrence parameter. The key generated includes the mapped
+        /// metadataset guid and field guid pair as well as the language code.
+        /// </summary>
+        /// <param name="result">Reference to output value</param>
+        /// <param name="keyFields">String concatenating metadataset guid and field guid</param>
+        /// <param name="textValue">Current working TextValue</param>
+        private void AddTextValue(ref Dictionary<string, object> result, 
+            string keyFields, 
+            TextValue textValue)
+        {
+            //if (!String.IsNullOrEmpty(textValue.Value))
+            //{
                 string key = $@"value_{keyFields}_txts_{textValue.LanguageCode}";
                 if (!result.ContainsKey(key))
                 {
                     result[key] = new List<string>();
                 }
-
                 ((List<string>)result[key]).Add(textValue.Value);
-
-                // numbers
-
-                // if value can be interpreted as number add decimal and
-                // integer values to solr
-                if (numberRegex.Matches(textValue.Value).Count > 0)
-                {
-                    string integerKey = $@"value_{keyFields}_is";
-                    string decimalKey = $@"value_{keyFields}_ds";
-                    Decimal decimalValue = Decimal.Parse(textValue.Value);
-
-                    if (!result.ContainsKey(decimalKey))
-                    {
-                        result[decimalKey] = new List<decimal>();
-                    }
-                    if (!result.ContainsKey(integerKey))
-                    {
-                        result[integerKey] = new List<int>();
-                    }
-
-                    ((List<decimal>)result[decimalKey]).Add(decimalValue);
-                    ((List<int>)result[integerKey]).Add((int)Decimal.Round(decimalValue));
-                }
-            }
+            //}            
         }
 
         private void GetDynamicEntries(ref Dictionary<string, object> result)
