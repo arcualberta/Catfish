@@ -247,21 +247,18 @@ namespace Catfish.Core.Models
         private void GetDynamicValues(
             ref Dictionary<string, object> result, 
             string keyFields, 
-            FormField field) {
+            FormField field) {            
+
+            
 
             Regex numberRegex = new Regex(@"^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$");
 
+            // add field Values
             foreach (TextValue textValue in field.Values)
             {
 
                 // language 
-                string key = $@"value_{keyFields}_txts_{textValue.LanguageCode}";
-                if (!result.ContainsKey(key))
-                {
-                    result[key] = new List<string>();
-                }
-
-                ((List<string>)result[key]).Add(textValue.Value);
+                AddTextValue(ref result, keyFields, textValue);
 
                 // numbers
 
@@ -286,6 +283,59 @@ namespace Catfish.Core.Models
                     ((List<int>)result[integerKey]).Add((int)Decimal.Round(decimalValue));
                 }
             }
+
+            // add field Options Values
+
+            if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
+            {
+                OptionsField optionsField = (OptionsField)field;
+                AddOptions(ref result, keyFields, optionsField);
+            }
+
+        }
+
+        /// <summary>
+        /// Loop through options in OptionField and add selected Options to 
+        /// result reference
+        /// </summary>
+        /// <param name="result">Reference to output value</param>
+        /// <param name="keyFields">String concatenating metadataset guid and field guid</param>
+        /// <param name="optionsField">Current working OptionField</param>
+        private void AddOptions(ref Dictionary<string, object> result, 
+            string keyFields, 
+            OptionsField optionsField)
+        {            
+
+            foreach (Option option in optionsField.Options)
+            {
+                if(option.Selected)
+                {
+                    foreach(TextValue textValue in option.Value)
+                    {
+                        AddTextValue(ref result, keyFields, textValue);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Add the TextValue value creating the key value it it does not exists
+        /// on result refrence parameter. The key generated includes the mapped
+        /// metadataset guid and field guid pair as well as the language code.
+        /// </summary>
+        /// <param name="result">Reference to output value</param>
+        /// <param name="keyFields">String concatenating metadataset guid and field guid</param>
+        /// <param name="textValue">Current working TextValue</param>
+        private void AddTextValue(ref Dictionary<string, object> result, 
+            string keyFields, 
+            TextValue textValue)
+        {
+            string key = $@"value_{keyFields}_txts_{textValue.LanguageCode}";
+            if (!result.ContainsKey(key))
+            {
+                result[key] = new List<string>();
+            }
+            ((List<string>)result[key]).Add(textValue.Value);
         }
 
         private void GetDynamicEntries(ref Dictionary<string, object> result)
