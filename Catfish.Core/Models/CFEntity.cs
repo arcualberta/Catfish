@@ -253,45 +253,45 @@ namespace Catfish.Core.Models
 
             Regex numberRegex = new Regex(@"^(?=.)([+-]?([0-9]*)(\.([0-9]+))?)$");
 
-            // add field Values
-            foreach (TextValue textValue in field.Values)
-            {
-
-                // language 
-                AddTextValue(ref result, keyFields, textValue);
-
-                // numbers
-
-                // if value can be interpreted as number add decimal and
-                // integer values to solr
-                if (numberRegex.Matches(textValue.Value).Count > 0)
-                {
-                    string integerKey = $@"value_{keyFields}_is";
-                    string decimalKey = $@"value_{keyFields}_ds";
-                    Decimal decimalValue = Decimal.Parse(textValue.Value);
-
-                    if (!result.ContainsKey(decimalKey))
-                    {
-                        result[decimalKey] = new List<decimal>();
-                    }
-                    if (!result.ContainsKey(integerKey))
-                    {
-                        result[integerKey] = new List<int>();
-                    }
-
-                    ((List<decimal>)result[decimalKey]).Add(decimalValue);
-                    ((List<int>)result[integerKey]).Add((int)Decimal.Round(decimalValue));
-                }
-            }
 
             // add field Options Values
 
             if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
             {
-                OptionsField optionsField = (OptionsField)field;
-                AddOptions(ref result, keyFields, optionsField);
-            }
+                AddOptions(ref result, keyFields, field as OptionsField);
+            } else
+            {
+                // add field Values
+                foreach (TextValue textValue in field.Values)
+                {
 
+                    // language 
+                    AddTextValue(ref result, keyFields, textValue);
+
+                    // numbers
+
+                    // if value can be interpreted as number add decimal and
+                    // integer values to solr
+                    if (numberRegex.Matches(textValue.Value).Count > 0)
+                    {
+                        string integerKey = $@"value_{keyFields}_is";
+                        string decimalKey = $@"value_{keyFields}_ds";
+                        Decimal decimalValue = Decimal.Parse(textValue.Value);
+
+                        if (!result.ContainsKey(decimalKey))
+                        {
+                            result[decimalKey] = new List<decimal>();
+                        }
+                        if (!result.ContainsKey(integerKey))
+                        {
+                            result[integerKey] = new List<int>();
+                        }
+
+                        ((List<decimal>)result[decimalKey]).Add(decimalValue);
+                        ((List<int>)result[integerKey]).Add((int)Decimal.Round(decimalValue));
+                    }
+                }
+            }                    
         }
 
         /// <summary>
@@ -330,12 +330,15 @@ namespace Catfish.Core.Models
             string keyFields, 
             TextValue textValue)
         {
-            string key = $@"value_{keyFields}_txts_{textValue.LanguageCode}";
-            if (!result.ContainsKey(key))
-            {
-                result[key] = new List<string>();
-            }
-            ((List<string>)result[key]).Add(textValue.Value);
+            //if (!String.IsNullOrEmpty(textValue.Value))
+            //{
+                string key = $@"value_{keyFields}_txts_{textValue.LanguageCode}";
+                if (!result.ContainsKey(key))
+                {
+                    result[key] = new List<string>();
+                }
+                ((List<string>)result[key]).Add(textValue.Value);
+            //}            
         }
 
         private void GetDynamicEntries(ref Dictionary<string, object> result)
