@@ -1,117 +1,29 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+    <head>
+        <title>@ViewBag.Title</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-@using Catfish.Models.Regions;
-@using Catfish.Helpers;
+        @UI.Head()
 
-@{
-    System.Threading.Thread.CurrentThread.CurrentCulture = Catfish.Helpers.ViewHelper.GetActiveLanguage();
+        <link type="text/css" rel="stylesheet" href="~/content/css/style.css" />
 
-    Piranha.Models.PageModel global;
-
-    if (HttpContext.Current.Items["Piranha_CurrentPage"] != null)
-    {
-        var current = (Piranha.Models.Page)HttpContext.Current.Items["Piranha_CurrentPage"];
-        global = Piranha.Models.PageModel.GetBySite(current.SiteTreeId);
-    }
-    else
-    {
-        global = Piranha.Models.PageModel.GetBySite(Piranha.Config.SiteTreeId);
-    }
-}
-
-
-<head>
-    @{ string title;}
-
-    @try
-    {
-        MultilingualText field = global.Regions.SiteTitle;
-        var activeLang = ViewHelper.GetActiveLanguage();
-        title = field.GetContent(activeLang.TwoLetterISOLanguageName);
-        if (string.IsNullOrEmpty(title))
-        {
-            title = Site.SiteTitle;
-        }
-    }
-    catch (Exception)
-    {
-        title = Site.SiteTitle;
-    }
-
-    <title>@Html.Raw(title)</title>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    
-    <link type="text/css" rel="stylesheet" href="~/content/css/style.css" />
-    <link type="text/css" rel="stylesheet" href="~/content/css/Site.css" />
-    <link href="~/Content/bs-bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
-
-    @UI.Head()
-
-    @try
-    {
-        <text>@Html.Partial("_CustomHead")</text>
-    } catch (Exception)
-    {
-        // custom view does not exist.
-    }
-
-    @RenderSection("head", required: false)
-
-</head>
-<body>
-    @try
-    {
-        // Use Custom header.
-        <text>@Html.Partial("_CustomHeader")</text>
-    }
-    catch (Exception)
-    {
+        @RenderSection("head", required: false)
+    </head>
+    <body>
         <header role="banner">
             <div class="wrapper">
-                <a class="site-title" href="~/">
-                    @try
-                    {
-                        var logo = global.Regions.Logo;
-                        @UI.Thumbnail(logo.Id, 150)
-                    }
-                    catch (Exception)
-                    {
-                        @Html.Raw(title)
-                    }
-                </a>
-
-                @Html.Partial("_LanguageSwitcher")
-                <p class="site-desc">
-                    @try
-                    {
-                        MultilingualText field = global.Regions.SiteDesc;
-                        @Html.DisplayFor(m => field, new { raw = true })
-                    }
-                    catch (Exception)
-                    {
-                        @Site.SiteDescription
-                    }
-                </p>
+                <a class="site-title" href="~/">@Site.SiteTitle</a>
+                <p class="site-desc">@Site.SiteDescription</p>
                 <navigation role="main-navigation">
                     @UI.Menu(StopLevel: 1)
                 </navigation>
             </div>
         </header>
-    }
-    <div class="wrapper">
-        @RenderBody()
-    </div>
-    @try
-    {
-        <text>@Html.Partial("_CustomFooter")</text>
-    }
-    catch (Exception)
-    {
-        // custom view does not exist.
-    }
-</body>
-@RenderSection("script", required: false)
+        <div class="wrapper">
+            @RenderBody()
+        </div>
+    </body>
+    @RenderSection("script", required: false)
 </html>
