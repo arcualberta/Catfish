@@ -273,7 +273,7 @@ namespace Catfish.Core.Services
                 }
 
                 return Db.Items.FromSolr(query, out total, entityTypeFilter, start, itemsPerPage,
-                    string.Format("value_{0}_{1}_{2}", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType), sortAsc);
+                    string.Format("field(value_{0}_{1}_{2})", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType), sortAsc);
             }
 
             return Db.Items.FromSolr(query, out total, entityTypeFilter, start, itemsPerPage);
