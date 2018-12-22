@@ -81,8 +81,36 @@ namespace Catfish.Tests
             numericField.SetTextValues(new List<TextValue>() { numericTextValue });
             formFields.Add(numericField);
 
-            //TextField numericField = new TextField();
-            //numericField.
+
+            // Add two options and select second 
+
+            OptionsField optionsField = new OptionsField();
+            optionsField.Name = "Options field";            
+
+            TextValue nonSelectedValue = new TextValue();
+            nonSelectedValue.LanguageCode = "en";
+            nonSelectedValue.Value = "Not selected";
+
+            TextValue selectedValue = new TextValue();
+            selectedValue.LanguageCode = "en";
+            selectedValue.Value = "Selected";
+
+            Option notSelectedOption = new Option();
+            notSelectedOption.Selected = false;
+            notSelectedOption.Value.Add(nonSelectedValue);
+
+            Option selectedOption = new Option();
+            selectedOption.Selected = true;
+            selectedOption.Value.Add(selectedValue);
+
+            List<Option> optList = new List<Option>();
+
+            optList.Add(notSelectedOption);
+            optList.Add(selectedOption);
+
+            optionsField.Options = optList;
+
+            formFields.Add(optionsField);
 
             CFMetadataSet metadataSet = CreateMetadataSet(
                 mDh, 
@@ -116,7 +144,8 @@ namespace Catfish.Tests
 
             string metadataSetGuid = metadataSet.MappedGuid.ToString().Replace("-", "_");
             string textFieldGuid = textField.MappedGuid.ToString().Replace("-", "_");
-            string numericFieldGuid = numericField.MappedGuid.ToString().Replace("-", "_");            
+            string numericFieldGuid = numericField.MappedGuid.ToString().Replace("-", "_");
+            string optionFieldGuid = optionsField.MappedGuid.ToString().Replace("-", "_");
 
             Dictionary<string, object> expectedResult = new Dictionary<string, object>()
             {
@@ -127,6 +156,8 @@ namespace Catfish.Tests
                     textField.Name },
                 { $@"name_{metadataSetGuid}_{numericFieldGuid}_txt_en",
                     numericField.Name },
+                { $@"name_{metadataSetGuid}_{optionFieldGuid}_txt_en",
+                    optionsField.Name },
                 { $@"value_{metadataSetGuid}_{textFieldGuid}_txts_en",
                     new List<string>(){textField.Values[0].Value} },
                 { $@"value_{metadataSetGuid}_{numericFieldGuid}_txts_en",
@@ -134,8 +165,9 @@ namespace Catfish.Tests
                 { $@"value_{metadataSetGuid}_{numericFieldGuid}_ds",
                     new List<decimal>(){ (decimal)numericValue } },
                 { $@"value_{metadataSetGuid}_{numericFieldGuid}_is",
-                    new List<int>(){(int)numericValue} }
-
+                    new List<int>(){(int)numericValue} },
+                { $@"value_{metadataSetGuid}_{optionFieldGuid}_txts_en",
+                    new List<string>(){ selectedValue.Value } }
             };
 
             foreach (KeyValuePair<string, object> entry in expectedResult)
