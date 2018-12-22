@@ -30,32 +30,35 @@
         int langCount = Model.MultilingualName.Count();
         int grpCount = 1;
         int ctn = langCount;
+        string divElGrpId = "";
         //wrap lang group in a div
         for (var i = 0; i < Model.Values.Count; i++)
         {
+
             if (ctn == langCount)
             {
-                if(Model.IsMultiple)
+                divElGrpId = "elGrpId_" + grpCount + i;
+                if (Model.IsMultiple)
                 {
-                    @Html.Raw("<div id=\"elGrpId_"+@grpCount+@i+"\" class=\"elementLangGroup multiElGroup\">")
+                    @Html.Raw("<div id=\""+divElGrpId +"\" class=\"elementLangGroup multiElGroup\">") //id=\"elGrpId_"+@grpCount+@i+"\"
                 }
-                else { @Html.Raw("<div id=\"elGrpId_"+@grpCount + @i + "\" class=\"elementLangGroup\">")}
-               
-                 }
+                else { @Html.Raw("<div id=\""+divElGrpId + "\" class=\"elementLangGroup\">")}
+
+            }
             @Html.EditorFor(m => Model.Values[i], new { ShowLanguageLabel = showLanguageLabel })
             if (ctn == 1)
             {
                 if(Model.IsMultiple && grpCount > 1)
                 {
-                    @Html.Raw("<span class=\"glyphicon glyphicon-remove removeLangGroup\" onclick=\"removeSection('elGrpId_" +grpCount+"'); return false; \"></span></div>")
+                    @Html.Raw("<span class=\"glyphicon glyphicon-remove removeLangGroup\" onclick=\"removeSection('" +divElGrpId + "'); return false; \"></span></div>")
                 }
                 else { @Html.Raw("</div>")}
-                    
-            grpCount++;
-            ctn = langCount;
+
+                grpCount++;
+                ctn = langCount;
+            }
+            else { ctn--; }
         }
-        else { ctn--; }
-    }
 
     }
 
