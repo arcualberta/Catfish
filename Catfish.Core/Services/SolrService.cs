@@ -14,7 +14,7 @@ namespace Catfish.Core.Services
 {
     public class SolrService
     {
-        public static bool IsInitialized { get; private set; }
+        public static bool IsInitialized { get; private set; } = false;
         public static ISolrOperations<Dictionary<string, object>> SolrOperations { get; set; }
 
         private static ISolrConnection mSolr { get; set; }
@@ -33,7 +33,7 @@ namespace Catfish.Core.Services
 
         public static void Init(string server, bool force = false)
         {
-            IsInitialized = false;
+            //IsInitialized = false;
 
             if (!string.IsNullOrEmpty(server))
             {
@@ -54,14 +54,14 @@ namespace Catfish.Core.Services
                 ClearContainer();
             }
 
-            if (!IsSolrInitialized)
+            if (!IsInitialized)
             {                
                 mSolr = connection;
                 Startup.Init<SolrIndex>(mSolr);
                 Startup.Init<Dictionary<string, object>>(mSolr);
                 SolrOperations = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
                 IsInitialized = true;
-                IsSolrInitialized = true;
+                //IsSolrInitialized = true;
 
             }         
         }
@@ -70,7 +70,7 @@ namespace Catfish.Core.Services
         {
             Startup.Container.Clear();
             Startup.InitContainer();
-            IsSolrInitialized = false;
+            //IsSolrInitialized = false;
             IsInitialized = false;
         }
 
