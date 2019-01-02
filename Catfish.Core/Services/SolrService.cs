@@ -15,7 +15,7 @@ namespace Catfish.Core.Services
     public class SolrService
     {
         public static bool IsInitialized { get; private set; } = false;
-        public static ISolrOperations<Dictionary<string, object>> SolrOperations { get; set; }
+        public static ISolrOperations<Dictionary<string, object>> SolrOperations { get; set; } = null;
 
         private static ISolrConnection mSolr { get; set; }
         private static bool IsSolrInitialized { get; set; } = false;
