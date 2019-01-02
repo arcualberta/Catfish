@@ -212,6 +212,28 @@ namespace Catfish.Core.Services
             //updating the "value" text elements
             dbModel.UpdateValues(changedItem);
 
+            //oct 10 2018 -- attemp to add attchment in the metadtaset to item.Attachment -- this might be wrong approach!
+            foreach (CFMetadataSet ms in changedItem.MetadataSets)
+            {
+                foreach (FormField field in ms.Fields)
+                {
+                    if (field.GetType().FullName == "Catfish.Core.Models.Forms.Attachment")
+                    {
+                        if (!string.IsNullOrEmpty((field as Catfish.Core.Models.Forms.Attachment).FileGuids))
+                        {
+                            if (string.IsNullOrEmpty(changedItem.AttachmentField.FileGuids))
+                            {
+                                changedItem.AttachmentField.FileGuids = (field as Catfish.Core.Models.Forms.Attachment).FileGuids;
+                            }
+                            else
+                            {
+                                changedItem.AttachmentField.FileGuids += "|" + (field as Catfish.Core.Models.Forms.Attachment).FileGuids;
+                            }
+                        }
+                    }
+                }
+            }
+
             //Processing any file attachments that have been submitted
             UpdateFiles(changedItem, dbModel);
 
@@ -228,11 +250,17 @@ namespace Catfish.Core.Services
             return dbModel;
         }
 
-        public IEnumerable<CFItem> GetPagedItems(string query, int sortAttributeMappingId, bool sortAsc, int page, int itemsPerPage, out int total)
+        public IEnumerable<CFItem> GetPagedItems(
+            string query,
+            string entityTypeFilter,
+            int sortAttributeMappingId, 
+            bool sortAsc, 
+            int page, 
+            int itemsPerPage,            
+            out int total)
         {
             int start = page * itemsPerPage;
             int rows = itemsPerPage + 1;
-
             CFEntityTypeAttributeMapping attrMap = Db.EntityTypeAttributeMappings.Where(m => m.Id == sortAttributeMappingId).FirstOrDefault();
 
             if(attrMap != null)
@@ -244,34 +272,34 @@ namespace Catfish.Core.Services
                     resultType = "i";
                 }
 
-                return Db.Items.FromSolr(query, out total, start, itemsPerPage,
+                return Db.Items.FromSolr(query, out total, entityTypeFilter, start, itemsPerPage,
                     string.Format("value_{0}_{1}_{2}", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType), sortAsc);
             }
 
-            return Db.Items.FromSolr(query, out total, start, itemsPerPage);
+            return Db.Items.FromSolr(query, out total, entityTypeFilter, start, itemsPerPage);
         }
 
-        public IEnumerable<CFItem> GetPagedItems_old(int page, int itemsPerPage, string facetMetadataGuid = null, string facetFieldGuid = null, int facetMin = 0, int facetMax = 0)
-        {
-            int skip = page * itemsPerPage;
-            int take = itemsPerPage + 1; // We add an extra value to calculate the next button.
+        //public IEnumerable<CFItem> GetPagedItems_old(int page, int itemsPerPage, string facetMetadataGuid = null, string facetFieldGuid = null, int facetMin = 0, int facetMax = 0)
+        //{
+        //    int skip = page * itemsPerPage;
+        //    int take = itemsPerPage + 1; // We add an extra value to calculate the next button.
 
-            Db.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
+        //    Db.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
             
-            string query = string.Format(@"SELECT TOP {5} a.*
-                FROM (
-                    SELECT c.*, ROW_NUMBER() OVER(ORDER BY c.Id) as RowNumber
-                    FROM CFXmlModels c
-		            CROSS APPLY c.Content.nodes('(/item/metadata/metadata-set[@guid=""{0}""]/fields[field/@guid=""{1}""])') as T(fields)
-                    WHERE c.Discriminator = 'CFItem'
-		                AND fields.exist('number((./field[@guid=""{1}""]/value/text/text())[1])') = 1
-                        AND fields.value('(./field[@guid=""{1}""]/value/text/text())[1]', 'INT') BETWEEN {2} AND {3}
-                ) a
-                WHERE a.RowNumber > {4}
-            ", facetMetadataGuid, facetFieldGuid, facetMin, facetMax, page * itemsPerPage, take);
+        //    string query = string.Format(@"SELECT TOP {5} a.*
+        //        FROM (
+        //            SELECT c.*, ROW_NUMBER() OVER(ORDER BY c.Id) as RowNumber
+        //            FROM CFXmlModels c
+		      //      CROSS APPLY c.Content.nodes('(/item/metadata/metadata-set[@guid=""{0}""]/fields[field/@guid=""{1}""])') as T(fields)
+        //            WHERE c.Discriminator = 'CFItem'
+		      //          AND fields.exist('number((./field[@guid=""{1}""]/value/text/text())[1])') = 1
+        //                AND fields.value('(./field[@guid=""{1}""]/value/text/text())[1]', 'INT') BETWEEN {2} AND {3}
+        //        ) a
+        //        WHERE a.RowNumber > {4}
+        //    ", facetMetadataGuid, facetFieldGuid, facetMin, facetMax, page * itemsPerPage, take);
 
-            return Db.Items.SqlQuery(query);
-        }
+        //    return Db.Items.SqlQuery(query);
+        //}
 
        
     }

@@ -15,20 +15,30 @@ namespace Catfish.Core.Services
     public class SolrService
     {
         public static bool IsInitialized { get; private set; }
+        public static ISolrOperations<Dictionary<string, object>> solrOperations { get; set; }
 
         private static ISolrConnection mSolr { get; set; }
         private static bool IsSolrInitialized { get; set; } = false;
-        public static void Init(string server)
+        
+
+        public static void ForceInit(string server)
+        {
+            Init(server, true);
+        }
+
+        public static void ForceInit(ISolrConnection connection)
+        {
+            Init(connection, true);
+        }
+
+        public static void Init(string server, bool force = false)
         {
             IsInitialized = false;
 
             if (!string.IsNullOrEmpty(server))
             {
                 ISolrConnection connection = new SolrConnection(server);
-
-                SolrService.InitWithConnection(connection);
-                IsInitialized = true;
-
+                Init(connection, force);                
             }
             else
             {
@@ -36,19 +46,32 @@ namespace Catfish.Core.Services
             }
         }
 
-        public static void InitWithConnection(ISolrConnection connection)
-        {
-            if (!IsSolrInitialized)
+        public static void Init(ISolrConnection connection, bool force = false)
+        {            
+
+            if (force)
             {
+                ClearContainer();
+            }
+
+            if (!IsSolrInitialized)
+            {                
                 mSolr = connection;
                 Startup.Init<SolrIndex>(mSolr);
                 Startup.Init<Dictionary<string, object>>(mSolr);
+                solrOperations = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+                IsInitialized = true;
                 IsSolrInitialized = true;
-            }
-            
 
-            //TODO: Should we update the database here or have it in an external cron job
+            }         
+        }
 
+        private static void ClearContainer()
+        {
+            Startup.Container.Clear();
+            Startup.InitContainer();
+            IsSolrInitialized = false;
+            IsInitialized = false;
         }
 
         public static string GetPartialMatichingText(string field, string text, int rows = 10)
@@ -87,7 +110,7 @@ namespace Catfish.Core.Services
 
         public string GetGraphData(string query, string xIndexId, string yIndexId, string categoryId)
         {
-            const string facetJson = @"{{
+            const string facetCategoryJson = @"{{
                 xValues:{{
                     sort : index,
                     type : terms,
@@ -107,11 +130,23 @@ namespace Catfish.Core.Services
                 }}
             }}";
 
+            const string facetJson = @"{{
+                xValues:{{
+                    sort : index,
+                    type : terms,
+                    limit : 10000,
+                    field : {0},
+                    facet : {{
+                        sumYValues : ""sum({1})""
+                    }}
+                }}
+            }}";
+
             if (SolrService.IsInitialized)
             {
                 IEnumerable<KeyValuePair<string, string>> parameters = new KeyValuePair<string, string>[]{
                     new KeyValuePair<string, string>("q", query),
-                    new KeyValuePair<string, string>("json.facet", string.Format(facetJson, xIndexId, yIndexId, categoryId)),
+                    new KeyValuePair<string, string>("json.facet", string.Format(categoryId == null ? facetJson : facetCategoryJson, xIndexId, yIndexId, categoryId)),
                     new KeyValuePair<string, string>("rows", "0"),
                     new KeyValuePair<string, string>("sort", xIndexId + " asc"),
                     new KeyValuePair<string, string>("wt", "xml")

@@ -14,6 +14,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Catfish.Tests.Extensions;
 using Catfish.Core.Services;
+using SolrNet;
+using Catfish.Core.Models.Access;
+using System.Text.RegularExpressions;
+using System.Threading;
+
 
 namespace Catfish.Tests.IntegrationTests.Helpers
 
@@ -22,33 +27,70 @@ namespace Catfish.Tests.IntegrationTests.Helpers
     {
         protected IWebDriver Driver;
         protected string ManagerUrl;
+        protected string FrontEndUrl;
         protected const string ContentLinkText = "CONTENT";
         protected const string SettingsLinkText = "SETTINGS";
+        protected const string SystemLinkText = "SYSTEM";
+        protected const string LogoutLinkText = "LOGOUT";
         protected const string MetadataSetsLinkText = "Metadata Sets";
         protected const string EntityTypesLinkText = "Entity Types";
         protected const string ItemsLinkText = "Items";
         protected const string CollectionsLinkText = "Collections";
         protected const string FormsLinkText = "Forms";
+        protected const string AccessDefinitionsLinkText = "Access Definitions";
+        protected const string PagesLinkText = "Pages";
+        protected const string PageTypesLinkText = "Page types";
+        protected const string StandardPageLinkText = "Standard page";
         protected const string ToolBarAddButtonId = "toolbar_add_button";
         protected const string ToolBarSaveButtonId = "toolbar_save_button";
         protected const string NameId = "Name";
         protected const string DescriptionId = "Description";
+        protected const string EntityTypeName = "Entity type name";
+        protected const string EntityTypeDescription = "Entity type description";
+        protected const string MetadataSetName = "Metadata set name";
+        protected const string MetadataSetDescription = "Metadata set description";
+        protected const string FieldName = "Field name";
+        protected const string ItemValue = "Item value";
+        protected const string RegionName = "Region Name";
+        protected const string AccessDefinitionName = "Access definition";
+        protected const string PublicGroupName = "Public";
+        protected const string UserNameFieldId = "usrName";
+        protected const string AddUserAccessButtonId = "btnAddUserAccess";
+        protected const string RegionNameFieldId = "newregionName";
+        protected const string RegionInternalIdId = "newregionInternalId";
+        protected const string RegionTypeSelectorId = "newregionType";
+        protected const string AddRegionButtonId = "btnAddRegion";
+        protected const string SaveLinkText = "Save";
+        protected const string StartLinkText = "Start";
+        protected const string UpdateButtonClass = "publish";
+        protected const string ObjectListClass = "object-list";
+        protected const string ListEntitiesId = "ListEntitiesPanelTableBody";
+        protected const string MultipleField = "Multiple Field";
+        // There should be a better way of defining access permissions
+        protected const string MenuItemWrapperClass = "ui-menu-item-wrapper";
+        protected const AccessMode AccessDefinitionMode = AccessMode.Read;
 
+        // FormFields will be used to share FormField values between CFAggregation 
+        // initialization
+
+        protected FormField[][] FormFields;
 
         [SetUp]
         public void SetUp()
         {
             InitializeSolr();
             Driver = new TWebDriver();
-            ManagerUrl = ConfigurationManager.AppSettings["ServerUrl"] + "manager";
 
-            ClearDatabase();            
+            FrontEndUrl = ConfigurationManager.AppSettings["ServerUrl"];
+            ManagerUrl = FrontEndUrl + "manager";
+
+            ClearDatabase();
             ResetServerCache();
-            
+
             SetupPiranha();
             RunMigrations();
             LoginAsAdmin();
-            
+
 
             OnSetup();
         }
@@ -68,7 +110,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         private void InitializeSolr()
         {
             string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
-            SolrService.Init(solrString);
+            SolrService.ForceInit(solrString);
         }
 
         private void ClearDatabase()
@@ -94,6 +136,10 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             context.Database.ExecuteSqlCommand(@"EXEC sp_MSforeachtable 'DROP TABLE ?'");
 
             result = context.Database.ExecuteSqlCommand(query);
+
+            ISolrQuery allEntries = new SolrQuery("*:*");
+            SolrService.solrOperations.Delete(allEntries);
+            SolrService.solrOperations.Commit();
         }
 
         private void ResetServerCache()
@@ -103,7 +149,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         }
 
         private void RunMigrations()
-        {            
+        {
             Catfish.Core.Migrations.Configuration config = new Catfish.Core.Migrations.Configuration();
             var migrator = new DbMigrator(config);
             migrator.Update();
@@ -134,20 +180,20 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Name("password")).SendKeys(password);
             Driver.FindElement(By.TagName("button")).Click();
         }
-       
+
         protected IWebElement GetLastObjectRow()
         {
-            return Driver.FindElement(By.XPath("(//tbody[contains(@class, 'object-list')]/tr)[last()]"));
+            return Driver.FindElement(By.XPath("(//tbody[contains(@class, 'object-list')]/tr)[last()]"), 10);
         }
 
         protected IWebElement GetLastActionPanel()
         {
-            return GetLastObjectRow().FindElement(By.XPath("//td[contains(@class, 'action-panel')]"));
+            return GetLastObjectRow().FindElement(By.XPath(".//td[contains(@class, 'action-panel')]"));
         }
 
         public IWebElement GetLastButtonByClass(string cssClass)
         {
-            return GetLastObjectRow().FindElement(By.XPath($"//button[contains(@class, '{cssClass}')]"));
+            return GetLastObjectRow().FindElement(By.XPath($".//button[contains(@class, '{cssClass}')]"));
         }
 
         protected IWebElement GetLastEditButton()
@@ -170,12 +216,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             return GetLastButtonByClass("object-accessgroup");
         }
 
-        public void CreateMetadataSet(string name, string description)
-        {
-            CreateMetadataSet(name, description, new FormField[0]);
-        }
-
-        public void CreateMetadataSet(string name, string description, FormField[] fields)
+        public void CreateMetadataSet(string name, string description, FormField[] fields, bool isMultiple=false)
         {
             Driver.Navigate().GoToUrl(ManagerUrl);
             Driver.FindElement(By.LinkText(SettingsLinkText)).Click();
@@ -190,6 +231,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             IWebElement fieldTypeSelectorElement = Driver.FindElement(By.Id("field-type-selector"));
             SelectElement fieldTypeSelector = new SelectElement(fieldTypeSelectorElement);
 
+            int i = 1;
             foreach (FormField field in fields)
             {
                 //field.GetType();
@@ -218,10 +260,18 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                     lastFieldEntry.FindElement(By.ClassName("field-is-required")).Click();
                 }
 
+                if(isMultiple)
+                {
+                    //only make the first field multiple
+                    if(i==1)
+                    {
+                        lastFieldEntry.FindElement(By.ClassName("field-is-multiple")).Click();
+                        i++;
+                    }
+                }
+            }
 
-            }            
-
-            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();          
+            Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();
         }
 
         private void FillEntityTypeNameMapping()
@@ -230,12 +280,12 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             List<IWebElement> fieldElements = Driver.FindElements(By.XPath(fieldElementsXpath), 10).ToList();
 
             // for simplicity sake link name and description to first element
-            
+
             string mapMetadataXpath = $".//select[contains(@class, 'mapMetadata')]";
             string mapFieldXpath = $".//select[contains(@class, 'mapField')]";
 
             for (int i = 0; i < 2; ++i)
-            {             
+            {
                 IWebElement mapMetadataElement = fieldElements[i]
                     .FindElement(By.XPath(mapMetadataXpath));
                 SelectElement mapMetadataSelector = new SelectElement(mapMetadataElement);
@@ -244,11 +294,16 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                 IWebElement mapFieldElement = fieldElements[i]
                     .FindElement(By.XPath(mapFieldXpath));
                 SelectElement mapFieldSelector = new SelectElement(mapFieldElement);
-                mapFieldSelector.SelectByIndex(1);                      
+                mapFieldSelector.SelectByIndex(1);
             }
         }
+        private void ScrollTop()
+        {
+            IJavaScriptExecutor jex = (IJavaScriptExecutor)Driver;
+            jex.ExecuteScript("scroll(0, -250);");
+        }
 
-        public void CreateEntityType(string name, string description, 
+        public void CreateEntityType(string name, string description,
             string[] metadataSetNames, CFEntityType.eTarget[] targetTypes)
         {
             Driver.Navigate().GoToUrl(ManagerUrl);
@@ -258,12 +313,21 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id(NameId)).SendKeys(name);
             Driver.FindElement(By.Id(DescriptionId)).SendKeys(description);
 
+            //XXX for now make it applicable to all
+
+            Driver.FindElement(By.Id("chk_Collections")).Click();
+            Driver.FindElement(By.Id("chk_Items")).Click();
+            Driver.FindElement(By.Id("chk_Files")).Click();
+            Driver.FindElement(By.Id("chk_Forms")).Click();
+
+
+
             // Need to add field mappings
 
             // use first metadataset and fields for name and description
 
             IWebElement metadataSetSelectorElement = Driver.FindElement(By.Id("dd_MetadataSets"));
-            SelectElement metadatasetSelector = new SelectElement(metadataSetSelectorElement);           
+            SelectElement metadatasetSelector = new SelectElement(metadataSetSelectorElement);
 
             foreach (string metadataSetName in metadataSetNames)
             {
@@ -273,17 +337,40 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
             FillEntityTypeNameMapping();
 
+            Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();
+        }
+
+        public void CreateCFAggregation(string aggregationLinkText, string entityTypeName, FormField[] metadatasetValues, bool isMultiple = false)
+        {
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.LinkText(ContentLinkText)).Click();
+            Driver.FindElement(By.LinkText(aggregationLinkText)).Click();
+            Driver.FindElement(By.Id(ToolBarAddButtonId)).Click();
+
+            IWebElement fieldTypeSelectorElement = Driver.FindElement(By.Id("field-type-selector"));
+            SelectElement fieldTypeSelector = new SelectElement(fieldTypeSelectorElement);
+            fieldTypeSelector.SelectByText(entityTypeName);
+            Driver.FindElement(By.Id("add-field")).Click();
+
+            // XXX For now fill first input with field name
+            Driver.FindElement(By.XPath("//input[contains(@class, 'text-box single-line')][1]"), 10).SendKeys(metadatasetValues[0].Values[0].Value);
+
+            if (isMultiple)
+            {
+                Assert.IsTrue(Driver.FindElement(By.ClassName("ButtonTextFieldAddEntry"), 10).Displayed);
+                Driver.FindElement(By.ClassName("ButtonTextFieldAddEntry"), 10).Click();
+                Driver.FindElement(By.Name("MetadataSets[0].Fields[0].Values[3].Value"), 10).SendKeys(MultipleField);
+            }
+
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
 
-        public void CreateItem(int entityTypeId)
-        {
-            throw new NotImplementedException();
+        public void CreateItem(string entityTypeName, FormField[] metadatasetValues, bool isMultiple=false) {
+            CreateCFAggregation(ItemsLinkText, entityTypeName, metadatasetValues, isMultiple);
         }
 
-        public void CreateCollection(int entityTypeId)
-        {
-            throw new NotImplementedException();
+        public void CreateCollection(string entityTypeName, FormField[] metadatasetValues) {
+            CreateCFAggregation(CollectionsLinkText, entityTypeName, metadatasetValues);    
         }
 
         public void CreateForm(int entityTypeId)
@@ -294,6 +381,293 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         public string CreateUser(string userName, string password, string email)
         {
             throw new NotImplementedException();
+        }
+
+        public void CreateAccessDefinition(string name, AccessMode accessMode)
+        {
+
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.LinkText(SystemLinkText)).Click();
+            Driver.FindElement(By.LinkText(AccessDefinitionsLinkText)).Click();
+            Driver.FindElement(By.Id(ToolBarAddButtonId)).Click();
+
+            Driver.FindElement(By.Id("Name")).SendKeys(name);
+
+            //XXX For now just select read access mode and ignore accessMode parameter
+            bool isChecked = Driver.FindElement(By.Id("1")).Selected;
+
+            if (!isChecked)
+            {
+                Driver.FindElement(By.Id("1")).Click();
+            }
+
+            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
+        }
+
+        protected void CreateBaseMetadataSet(bool multipleField = false)
+        {
+            TextField fieldName = new TextField();
+            fieldName.Name = FieldName;
+
+            TextValue textValue = new TextValue("en", "English", ItemValue);
+            fieldName.SetTextValues(new List<TextValue> { textValue });
+
+            TextArea fieldDescription = new TextArea();
+            fieldDescription.Name = "Description";
+
+            FormFields = new FormField[2][];
+            FormFields[0] = new FormField[2];
+
+            FormFields[0][0] = fieldName;
+            FormFields[0][1] = fieldDescription;
+
+            //List<FormField> formFields = new List<FormField>();
+            //formFields.Add(fieldName);
+            //formFields.Add(fieldDescription);
+
+            CreateMetadataSet(MetadataSetName, MetadataSetDescription, FormFields[0], multipleField);
+        }
+
+        //XXX Change to be able to specify entity type and metadata set names
+        protected void CreateBaseEntityType(bool multipleField=false)
+        {
+            // Create metadata set
+            // create entity type
+
+            CreateBaseMetadataSet(multipleField);
+
+            CreateEntityType(EntityTypeName, EntityTypeDescription, new[] {
+                MetadataSetName
+                }, new CFEntityType.eTarget[0]);
+        }
+
+        protected void CreateBaseItem(string itemString)
+        {
+            CreateBaseItem(itemString, EntityTypeName);
+        }
+
+        protected void CreateBaseItem(string itemString, string entityTypeName)
+        {
+            TextValue itemValue = new TextValue("en", "English", itemString);
+
+            //FormFields[0][0].SetTextValues(new List<TextValue> { itemValue });
+            FormField formField = new FormField();
+            formField.SetTextValues(new List<TextValue> { itemValue });
+            FormFields[0][0] = formField;
+            CreateItem(entityTypeName, FormFields[0]);
+        }
+
+        protected void AssertMatchesSolrInformationFromUrl()
+        {
+            // get id from url
+            string url = Driver.Url;
+            const string urlPattern = @".+\/(\d+)";
+            const string keyValuePattern = @"^value_.+_txts_\w{2}$";
+
+            Regex urlRegex = new Regex(urlPattern);
+            Regex keyValyeRegex = new Regex(keyValuePattern);
+
+            Match urlMatch = urlRegex.Match(url);
+
+            if (urlMatch.Success && urlMatch.Groups.Count == 2) {
+                Int64 id = Convert.ToInt64(urlMatch.Groups[1].Value);
+                CatfishDbContext db = new CatfishDbContext();
+                CFEntity model = db.Entities.Find(id);
+                Dictionary<string, object> result = model.ToSolrDictionary();
+
+                SolrQuery q = new SolrQuery($@"id:{model.MappedGuid}");
+                SolrQueryResults<Dictionary<string, object>> solrResults = SolrService.solrOperations.Query(q);
+                if (solrResults.Count == 1)
+                {
+                    Dictionary<string, object> fromSolr = solrResults[0];
+
+                    foreach (KeyValuePair<string, object> entry in result)
+                    {
+                        // first we need to make sure the entry value is not empty, 
+                        // otherwise is not indexed in solr
+                        //if (entry.Value.ToString().Length > 0 &&  entry.Value != fromSolr[entry.Key])
+                        //{
+                        //    return false;
+                        //}
+
+
+                        //if (entry.Value.ToString().Length > 0)
+                        //{
+                        //    // check if key has value pattern
+                        //    Match keyValueMatch = keyValyeRegex.Match(entry.Key);
+                        //    if (keyValueMatch.Success)
+                        //    {
+                        //        // compare as list of values
+
+                        //        CollectionAssert.AreEqual((List<string>)entry.Value, 
+                        //            (System.Collections.ArrayList)fromSolr[entry.Key]);
+
+                        //    } else
+                        //    {
+                        //        Assert.AreEqual(entry.Value, fromSolr[entry.Key]);
+                        //    }
+
+                        //}
+
+                        Match keyValueMatch = keyValyeRegex.Match(entry.Key);
+                        if (keyValueMatch.Success)
+                        {
+                            // treat as multi values
+
+                            List<string> test = (List<string>)entry.Value;
+
+                            if (test.Count > 0 && test[0] != "")
+                            {
+                                CollectionAssert.AreEqual(test, 
+                                    (System.Collections.ArrayList)fromSolr[entry.Key]);
+                            }
+
+                            //XXX Should it fail if the previous test is not passed?
+                        } else
+                        {
+                            // treat as regular values
+                            if (!string.IsNullOrEmpty(entry.Value.ToString()))
+                            {
+                                Assert.AreEqual(entry.Value, fromSolr[entry.Key]);
+                            }
+                        }
+
+
+                    }
+                    //return true;
+                }
+                
+            }
+
+            //return false;
+        }
+
+        //public void CreateItem(string entityTypeName, string name, bool attachment = false)
+        //{
+        //    Driver.Navigate().GoToUrl(ManagerUrl);
+        //    Driver.FindElement(By.LinkText(ContentLinkText)).Click();
+        //    Driver.FindElement(By.LinkText(ItemsLinkText)).Click();
+        //    Driver.FindElement(By.Id(ToolBarAddButtonId)).Click();
+
+        //    // id field-type-selector
+        //    IWebElement fieldTypeSelectorElement = Driver.FindElement(By.Id("field-type-selector"));
+        //    SelectElement fieldTypeSelector = new SelectElement(fieldTypeSelectorElement);
+
+        //    fieldTypeSelector.SelectByText(entityTypeName);
+
+        //    Driver.FindElement(By.Id("add-field")).Click();
+        //    FilledItemFormFields(name);
+          
+        //    //attach an image
+        //    if (attachment)
+        //    {           
+        //         string sourceFile = ConfigurationManager.AppSettings["SourceTestFile"];
+        //         sourceFile = Path.Combine(sourceFile, "image1.jpg");
+              
+        //        Driver.FindElement(By.XPath("//input[@type='file']"), 10).SendKeys(sourceFile);
+        //    }
+
+        //    Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click(); //wait 10 sec before finding the element
+        //}
+
+        private void FilledItemFormFields(string strname)
+        {
+            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(5));
+            wait.Until(drv => drv.FindElement(By.ClassName("form-field-name")));
+
+            IReadOnlyList<IWebElement> fields = this.Driver.FindElements(By.ClassName("form-field"));
+            int count = 0;
+            foreach (var f in fields)
+            {
+                IWebElement name = f.FindElement(By.Name("label")); //text field
+                string txt = name.Text;
+
+                if (count == 0)
+                {
+                    txt = strname;
+                    count++;
+                }
+                IReadOnlyList<IWebElement> inputs = f.FindElements(By.ClassName("languageInputField"));
+                //each field has 3 input fields each for each language -- eng, fr and sp
+                for (int i = 0; i < inputs.Count; i++)
+                {
+                    //grab text field or text area
+                    IWebElement textEl;
+                    bool bfound = IsElementFound(inputs[i], "input");
+                    if (bfound)
+                    {
+                        textEl = inputs[i].FindElement(By.TagName("input"));
+                    }
+                    else
+                    {
+                        textEl = inputs[i].FindElement(By.TagName("textarea"));
+                    }
+
+                    if (i == 0)  //eng
+                    {
+                        textEl.SendKeys(txt);
+                    }
+                    else if (i == 1)//fr
+                    {
+                        textEl.SendKeys(txt + " Fr");
+                    }
+                    else//sp
+                    {
+                        textEl.SendKeys(txt + " Sp");
+                    }
+                    textEl.SendKeys(Keys.Tab);
+
+                }
+
+            }
+        }
+
+        private bool IsElementFound(IWebElement el, string tagName)
+        {
+            bool found = false;
+            try
+            {
+                IWebElement elFound = el.FindElement(By.TagName(tagName));
+                found = true;
+            }
+            catch (NoSuchElementException ex)
+            {
+                found = false;
+            }
+
+            return found;
+        }
+
+        protected void CreateAndAddEntityListToMain()
+        {
+            // create list entity region
+            Driver.FindElement(By.LinkText(SettingsLinkText)).Click();
+            Driver.FindElement(By.LinkText(PageTypesLinkText)).Click();
+            Driver.FindElement(By.LinkText(StandardPageLinkText)).Click();
+
+            // add region to main page            
+            Driver.FindElement(By.Id(RegionNameFieldId)).SendKeys(RegionName);
+            Driver.FindElement(By.Id(RegionInternalIdId)).SendKeys(RegionName);
+
+            IWebElement typeSelectorElement = Driver.FindElement(By.Id(RegionTypeSelectorId));
+            SelectElement typeSelector = new SelectElement(typeSelectorElement);
+            typeSelector.SelectByValue("Catfish.Models.Regions.ListEntitiesPanel");
+
+            Driver.FindElement(By.Id(AddRegionButtonId)).Click();
+
+            // Save button does not contain the id set on other views toolbar_save_button
+            // Instead we will click on "Save"
+            Driver.FindElement(By.LinkText(SaveLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(ContentLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(PagesLinkText), 10).Click();
+            // Start is the link to the starting page
+            // Send enter instead of clicking to get around element overlay
+            Driver.FindElement(By.LinkText(StartLinkText), 10).SendKeys(Keys.Return);
+            //Driver.FindElement(By.LinkText(regionName)).Click();
+            Driver.FindElement(By.XPath($@"//button[contains(.,'{RegionName}')]"), 10).Click();
+            Driver.FindElement(By.Id("Regions_1__Body_ItemPerPage"), 10).SendKeys("10");
+            Driver.FindElement(By.XPath("//span[contains(@class, 'glyphicon glyphicon-plus-sign')]")).Click();
+            Driver.FindElement(By.ClassName(UpdateButtonClass), 10).Click();
         }
     }
 }

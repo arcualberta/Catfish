@@ -1,7 +1,7 @@
 ﻿using Catfish.Core.Models.Forms;
 using System;
 using System.Web.Mvc;
-
+using System.Xml.Serialization;
 namespace Catfish.Areas.Manager.ModelBinders
 {
     public class XmlModelBinder : DefaultModelBinder
@@ -10,6 +10,12 @@ namespace Catfish.Areas.Manager.ModelBinders
         {
             try
             {
+                var model = bindingContext.ModelType;
+                //2.
+               // var data = new XmlSerializer(model);
+                //3.
+                var receivedStream = controllerContext.HttpContext.Request.InputStream;
+
                 var key = bindingContext.ModelName + ".ModelType";
                 var typeObj = bindingContext.ValueProvider.GetValue(key);
                 if(typeObj == null)

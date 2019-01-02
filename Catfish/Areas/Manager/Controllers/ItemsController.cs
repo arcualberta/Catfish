@@ -28,19 +28,28 @@ namespace Catfish.Areas.Manager.Controllers
     {
  
         // GET: Manager/Items
-        public ActionResult Index(int offset=0, int limit=int.MaxValue)
+        public ActionResult Index(int offset=0, int limit=int.MaxValue, int? typeId = null)
         {
             SecurityService.CreateAccessContext();
             if (limit == int.MaxValue)
                 limit = ConfigHelper.PageSize;
             
             var itemQuery = ItemService.GetItems();
+            
+            if(typeId != null)
+            {
+                itemQuery = itemQuery.Where(i => i.EntityTypeId == typeId.Value);
+            }
+
             var entities = itemQuery.OrderBy(e => e.Id).Skip(offset).Take(limit).Include(e => (e as CFEntity).EntityType).Select(e => e as CFEntity);
             var total = itemQuery.Count();
 
             ViewBag.TotalItems = total;
             ViewBag.Limit = limit;
             ViewBag.Offset = offset;
+            ViewBag.SelectedType = typeId;
+
+            ViewBag.EntityTypes = new SelectList(EntityTypeService.GetEntityTypes(CFEntityType.eTarget.Items), "Id", "Name", typeId);
                        
             if (entities != null)
                 return View(entities);
@@ -182,7 +191,6 @@ namespace Catfish.Areas.Manager.Controllers
             return Associations(id);
         }
 
-        //XXX This method should be moved to a file controller
         [HttpPost]
         public JsonResult Upload()
         {
@@ -199,7 +207,7 @@ namespace Catfish.Areas.Manager.Controllers
                 var ret = files.Select(f => new FileViewModel(f, f.Id, ControllerContext.RequestContext, "items"));
                 return Json(ret);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Response.StatusCode = 500;
                 return Json(string.Empty);
@@ -271,7 +279,7 @@ namespace Catfish.Areas.Manager.Controllers
             ViewBag.SugestedUsers = entityAccessVM.AvailableUsers2.ToArray();
             var accessList = accessGroupService.GetAccessCodesList();
             accessList.Remove(accessList.First()); //remove "None"
-            accessList.Remove(accessList.Last()); //remove all
+            //accessList.Remove(accessList.Last()); //remove all
             ViewBag.AccessCodesList = accessList;
             return View("AccessGroup", entityAccessVM);
         }
@@ -281,13 +289,13 @@ namespace Catfish.Areas.Manager.Controllers
         {
             SecurityService.CreateAccessContext();
             CFItem item = ItemService.GetItem(entityAccessVM.Id);
-           
+            
             AccessGroupService accessGroupService = new AccessGroupService(Db);
             item = accessGroupService.UpdateEntityAccessGroups(item, entityAccessVM) as CFItem;
-            item = EntityService.UpdateEntity(item) as CFItem;
-           
+            item = EntityService.UpdateEntity(item) as CFItem;           
             item.Serialize();
             Db.SaveChanges();
+            // commit changes to solr
 
             SuccessMessage(Catfish.Resources.Views.Shared.EntityAccessGroup.SaveSuccess);
 

@@ -120,7 +120,7 @@ namespace Catfish.Core.Models
                 var att = Data.Attribute("guid");
                 if(att == null || string.IsNullOrEmpty(att.Value))
                 {
-                    Data.SetAttributeValue("guid", System.Guid.NewGuid().ToString("N"));
+                    Data.SetAttributeValue("guid", System.Guid.NewGuid().ToString());
                     att = Data.Attribute("guid");
                 }
                 return att.Value;
@@ -350,11 +350,17 @@ namespace Catfish.Core.Models
 
         public virtual void SetTextValues(IEnumerable<TextValue> values)
         {
-            string[] languages = values.Select(v => v.LanguageCode).Distinct().ToArray();
-            foreach(string lang in languages)
+            //string[] languages = values.Select(v => v.LanguageCode).Distinct().ToArray();
+            //foreach (string lang in languages)
+            //{
+            //    IEnumerable<string> vals = values.Where(v => v.LanguageCode == lang).Select(v => v.Value);
+            //    SetChildText("value", vals, Data, Lang(lang));
+            //}
+            foreach (var v in values)
             {
-                IEnumerable<string> vals = values.Where(v => v.LanguageCode == lang).Select(v => v.Value);
-                SetChildText("value", vals, Data, Lang(lang));
+                IEnumerable<string> vals = new string[] {v.Value };
+               
+                SetChildText("value", vals, Data, Lang(v.LanguageCode));
             }
         }
 
@@ -375,9 +381,9 @@ namespace Catfish.Core.Models
         }
 
 
-        public virtual void SetValues(IEnumerable<string> values, string lang = null)
+        public virtual void SetValues(IEnumerable<string> values, string lang = null, bool removePrevious=false)
         {
-            SetChildText("value", values, Data, Lang(lang));
+            SetChildText("value", values, Data, Lang(lang), removePrevious);
         }
 
         public List<CFXmlModel> GetChildModels(string xpath)
@@ -456,9 +462,10 @@ namespace Catfish.Core.Models
         /// <param name="values"></param>
         /// <param name="ele"></param>
         /// <param name="lang"></param>
-        protected void SetChildText(string childTagName, IEnumerable<string> values, XElement ele, string lang)
+        protected void SetChildText(string childTagName, IEnumerable<string> values, XElement ele, string lang, bool removePrevious = false)
         {
-            RemoveChildTextElements(childTagName, ele, lang);
+            if(removePrevious)
+               RemoveChildTextElements(childTagName, ele, lang);
             InsertChildText(childTagName, values, ele, lang);
         }
 
