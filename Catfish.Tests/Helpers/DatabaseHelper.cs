@@ -347,14 +347,16 @@ namespace Catfish.Tests.Helpers
 
         public void Initialize(MockConnection solrConnection)
         {
-            if (SolrService.IsInitialized)
-            {
-                //TODO: Inject the new connection into this current solr thread.
-            }
-            else
-            {
-                SolrService.ForceInit(solrConnection);
-            }
+            //if (SolrService.IsInitialized)
+            //{
+            //    //TODO: Inject the new connection into this current solr thread.
+            //}
+            //else
+            //{
+            //    SolrService.ForceInit(solrConnection);
+            //}
+
+            SolrService.ForceInit(solrConnection);
 
             try
             {
