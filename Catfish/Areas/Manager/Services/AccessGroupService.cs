@@ -94,7 +94,7 @@ namespace Catfish.Areas.Manager.Services
 
             // fetch solr entry by cfentity mapped guid
             SolrNet.SolrQueryResults<Dictionary<string, object>> mapedEntity;
-            mapedEntity = SolrService.solrOperations.Query("id:" + entity.MappedGuid);
+            mapedEntity = SolrService.SolrOperations.Query("id:" + entity.MappedGuid);
 
             mapedEntity.First();
             // remove all access entries

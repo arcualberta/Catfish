@@ -15,7 +15,7 @@ namespace Catfish.Core.Services
     public class SolrService
     {
         public static bool IsInitialized { get; private set; }
-        public static ISolrOperations<Dictionary<string, object>> solrOperations { get; set; }
+        public static ISolrOperations<Dictionary<string, object>> SolrOperations { get; set; }
 
         private static ISolrConnection mSolr { get; set; }
         private static bool IsSolrInitialized { get; set; } = false;
@@ -59,7 +59,7 @@ namespace Catfish.Core.Services
                 mSolr = connection;
                 Startup.Init<SolrIndex>(mSolr);
                 Startup.Init<Dictionary<string, object>>(mSolr);
-                solrOperations = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+                SolrOperations = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
                 IsInitialized = true;
                 IsSolrInitialized = true;
 
