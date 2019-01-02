@@ -208,5 +208,13 @@ namespace Catfish.Core.Models.Forms
         {
             return false;
         }
+
+        public virtual void Merge(FormField newField)
+        {
+            MultilingualName = newField.MultilingualName;
+            IsRequired = newField.IsRequired;
+            Help = newField.Help;
+            MultilingualDescription = newField.MultilingualDescription;
+        }
     }
 }

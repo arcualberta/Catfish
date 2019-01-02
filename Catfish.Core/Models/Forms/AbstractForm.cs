@@ -51,23 +51,34 @@ namespace Catfish.Core.Models.Forms
             base.UpdateValues(src);
 
             var src_item = src as AbstractForm;
+            UpdateValueFields(src_item.Fields.ToList());
+        }
 
+        /// <summary>
+        /// Helper method that assigns the abstract form's fields directly from a list.
+        /// The inpuit parameter formFields Guid's need to match to the abstract form's
+        /// Guid in order to assign them.
+        /// </summary>
+        /// <param name="formFields"></param>
+
+        public void UpdateValueFields(List<FormField> formFields)
+        {
             foreach (FormField field in this.Fields)
             { // checkhere type of 
-                var src_field = src_item.Fields.Where(x => x.Guid == field.Guid).FirstOrDefault();
+                var src_field = formFields.Where(x => x.Guid == field.Guid).FirstOrDefault();
                 if (src_field != null)
                     field.UpdateValues(src_field);
             }
         }
-        public void SetFieldValue(string fieldName, string fieldValue, string language)
+        public void SetFieldValue(string fieldName, string fieldValue, string language, bool removePrevious=false)
         {
-            SetFieldValue(fieldName, new List<string> { fieldValue }, language);
+            SetFieldValue(fieldName, new List<string> { fieldValue }, language, removePrevious);
         }
 
-        public void SetFieldValue(string fieldName, IEnumerable<string> fieldValues, string language)
+        public void SetFieldValue(string fieldName, IEnumerable<string> fieldValues, string language, bool removePrevious=false)
         {
             FormField field = Fields.Where(f => f.Name == fieldName).FirstOrDefault();
-            field.SetValues(fieldValues, language);
+            field.SetValues(fieldValues, language, removePrevious);
         }
 
     }

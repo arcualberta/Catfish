@@ -147,6 +147,7 @@
       <HintPath>..\Catfish\bin\System.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -165,7 +166,10 @@
   <ItemGroup>
     <Compile Include="Extensions\WebDriverExtensions.cs" />
     <Compile Include="IntegrationTests\Helpers\BaseIntegrationTest.cs" />
+    <Compile Include="IntegrationTests\Manager\AccessDefinitionsTests.cs" />
+    <Compile Include="IntegrationTests\Manager\CollectionTests.cs" />
     <Compile Include="IntegrationTests\Manager\EntityTypeTests.cs" />
+    <Compile Include="IntegrationTests\Manager\ItemTests.cs" />
     <Compile Include="IntegrationTests\Manager\MetadatasetTests.cs" />
     <Compile Include="UnitTests\Mocks\MockCFXmlModel.cs" />
     <Compile Include="UnitTests\Models\CFXmlModelTests.cs" />
@@ -184,6 +188,7 @@
     <Compile Include="UnitTests\Migrations\Configuration.cs" />
     <Compile Include="UnitTests\Mocks\MockEntity.cs" />
     <Compile Include="UnitTests\Services\CollectionServiceTest.cs" />
+    <Compile Include="UnitTests\Services\EntityServiceTests.cs" />
     <Compile Include="UnitTests\Services\IngestionServiceTest.cs" />
     <Compile Include="UnitTests\Services\ItemServiceTest.cs" />
     <Compile Include="UnitTests\Services\MetadataServiceTest.cs" />

@@ -49,7 +49,7 @@ namespace Catfish.Models.Regions
 
             Error = null;
 
-            ClassId = "CSEntityPanel" + Guid.NewGuid().ToString("N");
+            ClassId = "CSEntityPanel" + Guid.NewGuid().ToString("N"); // We remove the '-' in the GUID so the class name compiles correctly.
         }
 
         public override void InitManager(object model)

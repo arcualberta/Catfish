@@ -19,15 +19,13 @@ namespace Catfish.Tests.IntegrationTests.Manager
         [Test]
         public void CanCreateMetadataSet()
         {
-            string MetadataSetName = "Metadataset name";
-            string MetadataSetDescription = "Metadataset description";
 
             TextField field1 = new TextField();
             field1.Name = "Test";
             List<FormField> formFields = new List<FormField>();
             formFields.Add(field1);
-
-            CreateMetadataSet(MetadataSetName, MetadataSetDescription, formFields.ToArray());
+            bool isMultiple = true;
+            CreateMetadataSet(MetadataSetName, MetadataSetDescription, formFields.ToArray(), isMultiple);
 
             Driver.FindElement(By.LinkText(SettingsLinkText), 10).Click();
             Driver.FindElement(By.LinkText(MetadataSetsLinkText), 10).Click();

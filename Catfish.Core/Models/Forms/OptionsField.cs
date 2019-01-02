@@ -20,14 +20,14 @@ namespace Catfish.Core.Models.Forms
         {
             Selected = XmlHelper.GetAttribute(optElement, "selected", false);
             Value = XmlHelper.GetTextValues(optElement, true).ToList();
-            Guid = XmlHelper.GetAttribute(optElement, "guid", System.Guid.NewGuid().ToString("N"));
+            Guid = XmlHelper.GetAttribute(optElement, "guid", System.Guid.NewGuid().ToString());
         }
 
         public Option()
         {
             Value = new List<TextValue>();
             Selected = false;
-            Guid = System.Guid.NewGuid().ToString("N");
+            Guid = System.Guid.NewGuid().ToString();
         }
 
         public XElement ToXml()
@@ -42,6 +42,26 @@ namespace Catfish.Core.Models.Forms
                 optionElement.Add(textEelemnt);
             }
             return optionElement;
+        }
+
+        public float ScoreOption(Option option)
+        {
+            float result = 0.0f;
+
+            if(option.Guid == this.Guid)
+            {
+                return 1.0f;
+            }
+
+            foreach (var value in Value)
+            {
+                if(option.Value.Where(v => v.LanguageCode == value.LanguageCode && v.Value == value.Value).Any())
+                {
+                    result += 1.0f;
+                }
+            }
+
+            return result / (float)Value.Count;
         }
     }
 
@@ -100,7 +120,47 @@ namespace Catfish.Core.Models.Forms
         {
             OptionsField optionsField = src as OptionsField;
             this.Options = optionsField.Options;
-        }        
+        }
+
+        private void ReplaceOptions(IEnumerable<Option> newOptions)
+        {
+            var wrapper = Data.Element("options");
+            if (wrapper == null)
+                Data.Add(wrapper = new XElement("options"));
+
+            wrapper.RemoveNodes();
+
+            foreach (var option in newOptions)
+            {
+                wrapper.Add(option.ToXml());
+            }
+        }
+
+        public override void Merge(FormField newField)
+        {
+            base.Merge(newField);
+            OptionsField optionsField = (OptionsField)newField;
+
+            List<Option> options = new List<Option>(optionsField.Options.Count);
+            IReadOnlyList<Option> oldOptions = this.Options;
+
+            foreach(var newOption in optionsField.Options)
+            {
+                Option option = oldOptions.Where(o => o.ScoreOption(newOption) > 0.0f).OrderByDescending(o => o.ScoreOption(newOption)).FirstOrDefault();
+
+                if(option == null)
+                {
+                    options.Add(newOption);
+                }
+                else
+                {
+                    option.Value = newOption.Value;
+                    options.Add(option);
+                }
+            }
+
+            ReplaceOptions(options);
+        }
     }
 
 }

@@ -30,7 +30,7 @@ using Catfish.Core.Contexts;
 
 namespace Catfish.Tests.Helpers
 {
-    class DatabaseHelper
+    public class DatabaseHelper
     {
         public const int TOTAL_ENTITYTYPES = 5;
         public const int TOTAL_COLLECTIONS = 7;
@@ -353,7 +353,7 @@ namespace Catfish.Tests.Helpers
             }
             else
             {
-                SolrService.InitWithConnection(solrConnection);
+                SolrService.ForceInit(solrConnection);
             }
 
             try
@@ -469,13 +469,6 @@ namespace Catfish.Tests.Helpers
                 tx.Commit();
             }
 
-        }
-
-        public void SetupDbData()
-        {
-            //SetupPiranha();
-            SetupData();
-            var test = Db.MetadataSets.ToArray();
         }
 
         public CFCollection CreateCollection(CollectionService cs, int entityTypeId, string name, string description, bool store = false)

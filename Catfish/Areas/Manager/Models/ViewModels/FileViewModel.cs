@@ -94,13 +94,19 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             ContentType = src.ContentType;
             TopMimeType = src.TopMimeType;
             ThumbnailType = src.ThumbnailType;
-            ThumbnailUrl = "url('" + urlHelper.Action("Thumbnail", controller, new
+            //ThumbnailUrl = "url('" + urlHelper.Action("Thumbnail", controller, new
+            //{
+            //    id = idValue,
+            //    name = src.Guid
+            //}) + "')";
+            if(src.ContentType.Contains("image"))
             {
-                id = idValue,
-                name = src.Guid
-            }) + "')";
-
-
+                ThumbnailUrl = urlHelper.Action("Image", "Items", new { area = "", id = idValue, guid = src.Guid, size = "Thumbnail" });
+            }
+            else
+            {
+                ThumbnailUrl = "/Content/Thumbnails/" + src.Thumbnail;
+            }
             Url = urlHelper.Action("File", controller, new {
                 id = idValue,
                 guid = src.Guid
