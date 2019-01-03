@@ -100,7 +100,6 @@ namespace Catfish.Tests.Services
         }
 
         [Test]
-        [Ignore("Needs to clear solr index after finishing")]
         public void ImportBadTest()
         {
             DatabaseHelper Dh = new DatabaseHelper(false);
