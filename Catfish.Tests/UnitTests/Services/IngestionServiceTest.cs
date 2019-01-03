@@ -16,12 +16,11 @@ namespace Catfish.Tests.Services
     [TestFixture]
     public class IngestionServiceTest : BaseServiceTest
     {
-        [Ignore("Test needs to be corrected")]
         [Test]
         public void ImportCorrectNewTest()
         {
             DatabaseHelper Dh = new DatabaseHelper(false);
-            using(Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.Resources.IngestionDatabase1.xml"))
+            using(Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.UnitTests.Resources.IngestionDatabase1.xml"))
             {
                 Dh.Igs.Import(stream);
                 Dh.Db.SaveChanges();
@@ -35,7 +34,7 @@ namespace Catfish.Tests.Services
             Assert.AreEqual(Dh.Db.EntityTypes.Count(), 1);
             Assert.IsFalse(Dh.Db.EntityTypes.Where(e => e.Id == 3).Any());
             
-            //Check Aggrigations
+            //Check Aggregations
             Assert.AreEqual(Dh.Db.Collections.Count(), 1);
             Assert.AreEqual(Dh.Db.Items.Count(), 2);
 
@@ -45,7 +44,7 @@ namespace Catfish.Tests.Services
 
             // Check Relationships
             Assert.AreEqual(Dh.Db.Items.SelectMany(i => i.ChildRelations).Count(), 1);
-            Assert.AreEqual(Dh.Db.Collections.SelectMany(c => c.ChildMembers).Count(), 2);
+            Assert.AreEqual(Dh.Db.Collections.ToList().SelectMany(c => c.ChildMembers).Count(), 2);
             
         }
 
