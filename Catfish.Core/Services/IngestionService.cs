@@ -155,7 +155,7 @@ namespace Catfish.Core.Services
             int completed = 0;
             int failed = 0;
             IDictionary<Type, Func<IngestionService, CFXmlModel, CFAggregation>> createAggrigationCache = new Dictionary<Type, Func<IngestionService, CFXmlModel, CFAggregation>>();
-            Func<CFXmlModel, CFAggregation> getNewAggrigation = agg =>
+            Func<CFXmlModel, CFAggregation> getNewAggregation = agg =>
             {
                 Type t = agg.GetType();
 
@@ -194,7 +194,7 @@ namespace Catfish.Core.Services
                     }
                     else
                     {
-                        var _agg = getNewAggrigation(agg);
+                        var _agg = getNewAggregation(agg);
                         Db.Entities.Add(_agg);
                     }
                 }
@@ -205,7 +205,7 @@ namespace Catfish.Core.Services
 
                     GuidMap.Add(oldId, newGuid);
 
-                    var _agg = getNewAggrigation(agg);
+                    var _agg = getNewAggregation(agg);
 
                     try
                     {
@@ -218,7 +218,6 @@ namespace Catfish.Core.Services
                         return false;
                     }
 
-                    _agg.Dispose();
                 }
 
                 return true;
