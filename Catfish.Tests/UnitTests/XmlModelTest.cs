@@ -21,15 +21,6 @@ namespace Catfish.Tests
             return Path.Combine(dir, fileName);
         }
 
-        [Ignore("Not yet implemented")]
-        [Test]
-        public void TestMethod1()
-        {
-            var option_filed_types = typeof(OptionsField).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(OptionsField))).ToList();
-
-            var n = option_filed_types.Count;
-        }
-
         [Ignore("Test needs to be corrected")]
         [Test]
         public void MetadataFieldsTest()

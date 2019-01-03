@@ -62,8 +62,8 @@ namespace Catfish.Core.Models
                 }
             }
 
-            SolrService.solrOperations.AddRange(savedEntities);
-            SolrService.solrOperations.Delete(deletedEntities);                                
+            SolrService.SolrOperations.AddRange(savedEntities);
+            SolrService.SolrOperations.Delete(deletedEntities);                                
         }
 
         public override int SaveChanges()
@@ -75,7 +75,7 @@ namespace Catfish.Core.Models
                     UpdateSolr();
                     int result = base.SaveChanges();
                     dbContextTransaction.Commit();
-                    SolrService.solrOperations.Commit();
+                    SolrService.SolrOperations.Commit();
                     return result;
                 }
                 catch (SolrNetException e)
