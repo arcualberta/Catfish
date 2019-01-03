@@ -128,7 +128,6 @@ namespace Catfish.Tests.Services
             }
         }
 
-        [Ignore("Test needs to be corrected")]
         [Test]
         public void GetMetadataFieldTypesTest()
         {
@@ -142,7 +141,10 @@ namespace Catfish.Tests.Services
                 typeof(DropDownMenu),
                 typeof(DateField),
                 typeof(CheckBoxSet),
-                typeof(Attachment)
+                typeof(Attachment),
+                typeof(ClientInfo),
+                typeof(NumberField),
+                typeof(UrlField)
             };
 
             List<Type> testTypes = mDh.Ms.GetMetadataFieldTypes();
