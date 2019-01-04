@@ -199,7 +199,6 @@
     <Compile Include="UnitTests\Services\SubmissionServiceTest.cs" />
     <Compile Include="UnitTests\Services\PageServiceTest.cs" />
     <Compile Include="UnitTests\Services\UserServiceTest.cs" />
-    <Compile Include="UnitTests\XmlModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
