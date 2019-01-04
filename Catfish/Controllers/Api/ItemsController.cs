@@ -12,13 +12,19 @@ using System.Web;
 using System.Web.Mvc;
 using Catfish.Core.Helpers;
 using System.Drawing.Imaging;
+using Catfish.Models.ViewModels;
 
 namespace Catfish.Controllers.Api
 {
     public class ItemsController : CatfishController
     {   
 
-        public JsonResult GetPageItems(string q, string entityTypeFilter, int sortAttributeMappingId, bool sortAsc, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds)
+        private IEnumerable<DataFileViewModel> ExtractDataFiles(int id)
+        {
+            throw new NotImplementedException("Currently not yet implemented.");
+        }
+
+        public JsonResult GetPageItems(string q, string entityTypeFilter, int sortAttributeMappingId, bool sortAsc, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds, bool includeImage = false)
         {
             int total;
             SecurityService.CreateAccessContext();
@@ -41,6 +47,18 @@ namespace Catfish.Controllers.Api
                     string content = itm.GetAttributeMappingValue(mapping);
                     rowContent.Add(content);
                 }
+
+                if (includeImage)
+                {
+                    foreach(var file in itm.Files)
+                    {
+                        if(file.TopMimeType == CFDataFile.MimeType.Image)
+                        {
+                            rowContent.Add(file.Guid);
+                        }
+                    }
+                }
+
                 result.Add(new Tuple<int, List<string>>(itm.Id, rowContent));
             }
 

@@ -5,7 +5,6 @@ using System.Web;
 using System.Web.Mvc;
 
 using Piranha.Mvc;
-using Piranha.Models;
 
 namespace Catfish.Controllers
 {
@@ -15,12 +14,12 @@ namespace Catfish.Controllers
 	/// </summary>
     public class PageController : SinglePageController
     {
-        /// <summary>
-        /// Gets a standard page.
-        /// </summary>
-        /// <returns>The view result</returns>
+		/// <summary>
+		/// Gets a standard page.
+		/// </summary>
+		/// <returns>The view result</returns>
         public ActionResult Index() {
-            var model = GetModel();
+			var model = GetModel() ;
 
             return View(model.GetView(), model) ;
         }
