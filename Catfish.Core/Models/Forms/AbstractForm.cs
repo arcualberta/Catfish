@@ -43,7 +43,7 @@ namespace Catfish.Core.Models.Forms
         [NotMapped]
         [DataType(DataType.MultilineText)]
         [IgnoreDataMember]
-        public string Description { get { return GetDescription(); } set { SetDescription(value); } }
+        override public string Description { get { return GetDescription(); } set { SetDescription(value); } }
 
 
         public override void UpdateValues(CFXmlModel src)

@@ -209,6 +209,7 @@ namespace Catfish.Areas.Manager.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Exception : {0}", ex.Message);
                 Response.StatusCode = 500;
                 return Json(string.Empty);
             }

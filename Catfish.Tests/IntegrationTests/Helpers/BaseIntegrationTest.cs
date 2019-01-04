@@ -632,6 +632,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             }
             catch (NoSuchElementException ex)
             {
+                Console.WriteLine("Exception : {0}", ex.Message);
                 found = false;
             }
 

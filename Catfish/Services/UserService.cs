@@ -74,7 +74,7 @@ namespace Catfish.Services
             return user;
         }
 
-        [Obsolete("This method needs to be rewritten to make sure only an administrator can list all users", true)]
+        [Obsolete("This method needs to be rewritten to make sure only an administrator can list all users")]
         public IEnumerable<Piranha.Entities.User> GetAllUsers()
         {
            // IEnumerable<Piranha.Entities.User> users = null;

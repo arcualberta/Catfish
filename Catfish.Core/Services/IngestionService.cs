@@ -169,7 +169,7 @@ namespace Catfish.Core.Services
                     MethodInfo genMethod = method.MakeGenericMethod(t);
                     Func<IngestionService, CFXmlModel, CFAggregation> func = (Func<IngestionService, CFXmlModel, CFAggregation>)Delegate.CreateDelegate(typeof(Func<IngestionService, CFXmlModel, CFAggregation>), genMethod);
                     createAggrigationCache.Add(t, func);
-
+                    Console.WriteLine("Exception : {0}", ex.Message);
                     return func(this, agg);
                 }
             };
