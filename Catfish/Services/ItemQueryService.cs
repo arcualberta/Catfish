@@ -76,7 +76,7 @@ namespace Catfish.Services
                 string groupByMetadataGuid = string.IsNullOrEmpty(SelectedGroupByFieldMetadataSet) ? string.Empty : SelectedGroupByFieldMetadataSet.Replace('-', '_');
                 string groupByFieldGuid = string.IsNullOrEmpty(SelectedGroupByField) ? string.Empty : SelectedGroupByField.Replace('-', '_');
 
-                resultType = IsNumberField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? "ds" : "txts_" + languageCode;// + "_s"; // This last bit is for full text groups.
+                resultType = IsNumberField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? "ds" : languageCode + "_ss"; // This last bit is for full text groups.
                 isOptionField = IsOptionField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? true : false;
 
                 groupByFieldString = string.Format("value_{0}_{1}_{2}",
@@ -308,7 +308,7 @@ namespace Catfish.Services
         {
             string xIndexId = string.Format("value_{0}_{1}_is", xMetadataSet.Replace('-', '_'), xField.Replace('-', '_'));
             string yIndexId = string.Format("value_{0}_{1}_is", yMetadataSet.Replace('-', '_'), yField.Replace('-', '_'));
-            string catIndexId = string.IsNullOrEmpty(catField) ? null : string.Format("value_{0}_{1}_txts_{2}", catMetadataSet.Replace('-', '_'), catField.Replace('-', '_'), languageCode);
+            string catIndexId = string.IsNullOrEmpty(catField) ? null : string.Format("value_{0}_{1}_{2}_ss", catMetadataSet.Replace('-', '_'), catField.Replace('-', '_'), languageCode);
 
             string result = SolrSrv.GetGraphData(q, xIndexId, yIndexId, catIndexId);
 
