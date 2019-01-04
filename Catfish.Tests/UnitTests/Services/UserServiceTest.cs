@@ -44,5 +44,13 @@ namespace Catfish.Tests.Services
             Piranha.Entities.User user = userService.GetUserByEmail("admin@ualberta.ca");
             Assert.AreEqual("admin@ualberta.ca", user.Email);
         }
+
+        [Ignore("Test needs to be corrected")]
+        [Test]
+        public void CanGetListUsers()
+        {
+           var users = userService.GetAllUsers();
+            Assert.AreEqual(2, users.Count());
+        }
     }
 }
