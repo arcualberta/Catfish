@@ -74,6 +74,25 @@ namespace Catfish.Services
             return user;
         }
 
+        [Obsolete("This method needs to be rewritten to make sure only an administrator can list all users", true)]
+        public IEnumerable<Piranha.Entities.User> GetAllUsers()
+        {
+           // IEnumerable<Piranha.Entities.User> users = null;
+            try
+            {
+                using (var db = new DataContext())
+                {
+                    return db.Users.ToList();
+                   // return users;
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+           // return users;
+        }
+
         public Piranha.Entities.Group GetUsersGroup(Guid groupId)
         {
             // IEnumerable<Piranha.Entities.User> users = null;
