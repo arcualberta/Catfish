@@ -125,7 +125,7 @@ namespace Catfish.Core.Models.Forms
         [DataType(DataType.MultilineText)]
         [NotMapped]
         [ScriptIgnore]
-        public string Description
+        override public string Description
         {
             get
             {

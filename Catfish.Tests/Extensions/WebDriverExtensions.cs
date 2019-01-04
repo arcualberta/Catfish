@@ -65,7 +65,7 @@ namespace Catfish.Tests.Extensions
                     typeof(ElementNotVisibleException),
                     typeof(StaleElementReferenceException)
                     );
-                return wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(by));
+                return wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.PresenceOfAllElementsLocatedBy(by));
             }
             return driver.FindElements(by);
         }
