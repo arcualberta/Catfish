@@ -265,15 +265,21 @@ namespace Catfish.Core.Services
 
             if(attrMap != null)
             {
-                string resultType = "txt_en";
+                string resultType = "en_ss";
                 FormField field = attrMap.Field;
+                string sortField = null; ;
 
                 if (typeof(NumberField).IsAssignableFrom(field.GetType())){
                     resultType = "i";
+                    sortField = string.Format("field(value_{0}_{1}_{2}, min)", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType);
+                }
+                else
+                {
+                    sortField = string.Format("value_{0}_{1}_{2}", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType);
                 }
 
                 return Db.Items.FromSolr(query, out total, entityTypeFilter, start, itemsPerPage,
-                    string.Format("value_{0}_{1}_{2}", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType), sortAsc);
+                    sortField, sortAsc);
             }
 
             return Db.Items.FromSolr(query, out total, entityTypeFilter, start, itemsPerPage);

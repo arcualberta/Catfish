@@ -11,10 +11,9 @@
 @{
     ViewBag.Title = Model.Page.Title;
 
-     foreach (KeyValuePair<string, object> region in Model.Regions)
-     {
-         @Html.DisplayFor(m => region.Value)
-     }
+    foreach (KeyValuePair<string, object> region in Model.Regions)
+    {
+        @Html.DisplayFor(m => region.Value)
+    }
 
 }
-   

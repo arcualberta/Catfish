@@ -364,7 +364,7 @@ namespace Catfish.Tests.Helpers
                 Catfish.Tests.Migrations.Configuration config = new Catfish.Tests.Migrations.Configuration();
                 var migrator = new DbMigrator(config);
 
-                foreach (string migName in migrator.GetPendingMigrations())
+                foreach (string migName in migrator.GetLocalMigrations())
                 {
                     Type migration = config.MigrationsAssembly.GetType(string.Format("{0}.{1}", config.MigrationsNamespace, migName.Substring(16)));
                     DbMigration m = (DbMigration)Activator.CreateInstance(migration);

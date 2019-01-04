@@ -464,8 +464,11 @@ namespace Catfish.Core.Models
         /// <param name="lang"></param>
         protected void SetChildText(string childTagName, IEnumerable<string> values, XElement ele, string lang, bool removePrevious = false)
         {
-            if(removePrevious)
-               RemoveChildTextElements(childTagName, ele, lang);
+            if (removePrevious)
+            {
+                RemoveChildTextElements(childTagName, ele, lang);
+            }
+
             InsertChildText(childTagName, values, ele, lang);
         }
 
