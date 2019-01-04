@@ -74,24 +74,6 @@ namespace Catfish.Services
             return user;
         }
 
-        public IEnumerable<Piranha.Entities.User> GetAllUsers()
-        {
-           // IEnumerable<Piranha.Entities.User> users = null;
-            try
-            {
-                using (var db = new DataContext())
-                {
-                    return db.Users.ToList();
-                   // return users;
-                }
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
-           // return users;
-        }
-
         public Piranha.Entities.Group GetUsersGroup(Guid groupId)
         {
             // IEnumerable<Piranha.Entities.User> users = null;
