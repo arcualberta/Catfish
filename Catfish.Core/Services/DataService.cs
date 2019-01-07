@@ -27,6 +27,8 @@ namespace Catfish.Core.Services
             ImageFormat format = GetThumbnailFormat(srcExtension);
             if (format == ImageFormat.Jpeg)
                 ext = "jpg";
+            else if (format == ImageFormat.Gif)
+                ext = "gif";
             else if (format == ImageFormat.Png || format == ImageFormat.Tiff)
                 ext = "png";
             else
@@ -42,6 +44,8 @@ namespace Catfish.Core.Services
             ImageFormat format = GetThumbnailFormat(srcExtension);
             if (format == ImageFormat.Jpeg)
                 ext = "jpg";
+            else if (format == ImageFormat.Gif)
+                ext = "gif";
             else if (format == ImageFormat.Png || format == ImageFormat.Tiff)
                 ext = "png";
             else
@@ -69,7 +73,11 @@ namespace Catfish.Core.Services
             {
                 imgFormat = ImageFormat.Jpeg;
             }
-           else if(srcExtension == "png" || srcExtension == "tif" || srcExtension == "tiff")
+            else if (srcExtension == "gif")
+            {
+                imgFormat = ImageFormat.Gif;
+            }
+            else if(srcExtension == "png" || srcExtension == "tif" || srcExtension == "tiff")
             {
                 imgFormat =  ImageFormat.Png;
             }
@@ -85,6 +93,10 @@ namespace Catfish.Core.Services
             if (srcExtension == "jpg" || srcExtension == "jpeg")
             {
                 imgFormat = ImageFormat.Jpeg;
+            }
+            else if (srcExtension == "gif")
+            {
+                imgFormat = ImageFormat.Gif;
             }
             else if (srcExtension == "png" || srcExtension == "tif" || srcExtension == "tiff")
             {
@@ -119,9 +131,10 @@ namespace Catfish.Core.Services
         }
 
 
-        private Image ResizeImage(Image img, int width, int height)
+        private Image ResizeImage(BitmapData img, int width, int height)
         {
             Bitmap result = new Bitmap(width, height);
+            Bitmap original = new Bitmap(img.Width, img.Height, img.Stride, img.PixelFormat, img.Scan0);
 
             using(var graphic = Graphics.FromImage(result))
             {
@@ -129,7 +142,7 @@ namespace Catfish.Core.Services
                 graphic.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                 graphic.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
                 graphic.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                graphic.DrawImage(img, 0, 0, width, height);
+                graphic.DrawImage(original, 0, 0, width, height);
             }
 
             return result;
@@ -171,29 +184,34 @@ namespace Catfish.Core.Services
                 file.Medium = CreateVariatyImageSizeName(file.Guid, file.Extension, "Medium");
                 file.Large = CreateVariatyImageSizeName(file.Guid, file.Extension, "Large");
 
-              //august 1 2018 -- adding different size of image, not just thumbnail
-                using (Image image = new Bitmap(file.AbsoluteFilePathName))
+                ImageFormat format = GetImageFormat(file.Extension);
+
+                Action<string, BitmapData, int> saveImage = (path, image, sizeVal) =>
                 {
-                    foreach (var enumValue in Enum.GetValues(typeof(ConfigHelper.eImageSize)))
-                    {
-                            int sizeVal = (int)enumValue;
-                        Size imgSize = image.Width < image.Height
-                       ? new Size() { Height = sizeVal, Width = (image.Width * sizeVal) / image.Height }
-                       : new Size() { Width = sizeVal, Height = (image.Height * sizeVal) / image.Width };
+                    int width = image.Width;
+                    int height = image.Height;
 
-                        Image img = ResizeImage(image, imgSize.Width, imgSize.Height);
-                        ImageFormat format = GetImageFormat(file.Extension);
+                    Size imgSize = width < height
+                        ? new Size() { Height = sizeVal, Width = (width * sizeVal) / height }
+                        : new Size() { Width = sizeVal, Height = (height * sizeVal) / width };
 
-                        if(enumValue.Equals(ConfigHelper.eImageSize.Thumbnail))
-                            img.Save(Path.Combine(file.Path, file.Thumbnail), format);
-                        else if (enumValue.Equals(ConfigHelper.eImageSize.Small))
-                            img.Save(Path.Combine(file.Path, file.Small), format);
-                        else if (enumValue.Equals(ConfigHelper.eImageSize.Medium))
-                            img.Save(Path.Combine(file.Path, file.Medium), format);
-                        else if (enumValue.Equals(ConfigHelper.eImageSize.Large))
-                                img.Save(Path.Combine(file.Path, file.Large), format);
-                    }
-                   
+                    Image img = ResizeImage(image, imgSize.Width, imgSize.Height);
+
+                    img.Save(path, format);
+                    img.Dispose();
+                };
+
+                //august 1 2018 -- adding different size of image, not just thumbnail
+                using (Bitmap image = new Bitmap(file.AbsoluteFilePathName))
+                {
+                    var data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, image.PixelFormat);
+
+                    Parallel.Invoke(
+                        () => saveImage(Path.Combine(file.Path, file.Thumbnail), data, (int)ConfigHelper.eImageSize.Thumbnail),
+                        () => saveImage(Path.Combine(file.Path, file.Small), data, (int)ConfigHelper.eImageSize.Small),
+                        () => saveImage(Path.Combine(file.Path, file.Medium), data, (int)ConfigHelper.eImageSize.Medium),
+                        () => saveImage(Path.Combine(file.Path, file.Large), data, (int)ConfigHelper.eImageSize.Large)
+                    );
                 }
             }
             else
