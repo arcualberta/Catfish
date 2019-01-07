@@ -51,6 +51,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
             string entityTypeA = "Entity type A";
             string entityTypeB = "Entity type B";            
 
+
             CreateBaseMetadataSet();
 
             CreateEntityType(entityTypeA, EntityTypeDescription, new[] {
