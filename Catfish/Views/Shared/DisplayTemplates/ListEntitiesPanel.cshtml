@@ -204,8 +204,8 @@
                     q: query
                 },
                 success: handleTableResults,
-                error: function(){
-                    alert("Problems while updating table data");
+                error: function(error){
+                    alert("The following error occured:\n" + error);
                     window.stopLoading("#@cssId");
                 }
             });
