@@ -138,8 +138,8 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             result = context.Database.ExecuteSqlCommand(query);
 
             ISolrQuery allEntries = new SolrQuery("*:*");
-            SolrService.solrOperations.Delete(allEntries);
-            SolrService.solrOperations.Commit();
+            SolrService.SolrOperations.Delete(allEntries);
+            SolrService.SolrOperations.Commit();
         }
 
         private void ResetServerCache()
@@ -476,7 +476,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                 Dictionary<string, object> result = model.ToSolrDictionary();
 
                 SolrQuery q = new SolrQuery($@"id:{model.MappedGuid}");
-                SolrQueryResults<Dictionary<string, object>> solrResults = SolrService.solrOperations.Query(q);
+                SolrQueryResults<Dictionary<string, object>> solrResults = SolrService.SolrOperations.Query(q);
                 if (solrResults.Count == 1)
                 {
                     Dictionary<string, object> fromSolr = solrResults[0];

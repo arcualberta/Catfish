@@ -14,11 +14,30 @@ namespace Catfish.Core.Services
 {
     public class SolrService
     {
-        public static bool IsInitialized { get; private set; }
-        public static ISolrOperations<Dictionary<string, object>> solrOperations { get; set; }
+        public static bool IsInitialized { get; private set; } = false;
+        public static ISolrOperations<Dictionary<string, object>> SolrOperations { get; set; } = null;
 
         private static ISolrConnection mSolr { get; set; }
         private static bool IsSolrInitialized { get; set; } = false;
+
+        public static int Timeout
+        {
+            get
+            {
+                if (mSolr == null)
+                    return -1;
+
+                return ((SolrConnection)mSolr).Timeout;
+            }
+
+            set
+            {
+                if (mSolr == null)
+                    return;
+
+                ((SolrConnection)mSolr).Timeout = value;
+            }
+        }
         
 
         public static void ForceInit(string server)
@@ -33,7 +52,7 @@ namespace Catfish.Core.Services
 
         public static void Init(string server, bool force = false)
         {
-            IsInitialized = false;
+            //IsInitialized = false;
 
             if (!string.IsNullOrEmpty(server))
             {
@@ -54,14 +73,14 @@ namespace Catfish.Core.Services
                 ClearContainer();
             }
 
-            if (!IsSolrInitialized)
+            if (!IsInitialized)
             {                
                 mSolr = connection;
                 Startup.Init<SolrIndex>(mSolr);
                 Startup.Init<Dictionary<string, object>>(mSolr);
-                solrOperations = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+                SolrOperations = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
                 IsInitialized = true;
-                IsSolrInitialized = true;
+                //IsSolrInitialized = true;
 
             }         
         }
@@ -70,7 +89,7 @@ namespace Catfish.Core.Services
         {
             Startup.Container.Clear();
             Startup.InitContainer();
-            IsSolrInitialized = false;
+            //IsSolrInitialized = false;
             IsInitialized = false;
         }
 
@@ -117,13 +136,13 @@ namespace Catfish.Core.Services
                     limit : 10000,
                     field : {0},
                     facet : {{
-                        sumYValues : ""sum({1})"",
+                        sumYValues : ""sum(field({1},max))"",
                         groups : {{
                             type : terms,
                             field : {2},
                             limit: 10000,
                             facet : {{
-                                sumYValuesArg : ""sum({1})""
+                                sumYValuesArg : ""sum(field({1},max))""
                             }}
                         }}
                     }}
@@ -137,7 +156,7 @@ namespace Catfish.Core.Services
                     limit : 10000,
                     field : {0},
                     facet : {{
-                        sumYValues : ""sum({1})""
+                        sumYValues : ""sum(field({1},max))""
                     }}
                 }}
             }}";
@@ -148,7 +167,7 @@ namespace Catfish.Core.Services
                     new KeyValuePair<string, string>("q", query),
                     new KeyValuePair<string, string>("json.facet", string.Format(categoryId == null ? facetJson : facetCategoryJson, xIndexId, yIndexId, categoryId)),
                     new KeyValuePair<string, string>("rows", "0"),
-                    new KeyValuePair<string, string>("sort", xIndexId + " asc"),
+                    new KeyValuePair<string, string>("sort", "field(" + xIndexId + ",min) asc"),
                     new KeyValuePair<string, string>("wt", "xml")
                 };
 
@@ -251,7 +270,7 @@ namespace Catfish.Core.Services
 
         public string GetMedian(string field, string query)
         {
-            const string facetJson = @"{{Median : ""percentile({0},50)""}}";
+            const string facetJson = @"{{Median : ""percentile(field({0},min),50)""}}";
 
             if (SolrService.IsInitialized)
             {
