@@ -189,9 +189,11 @@
             console.log(mapIds)
             window.startLoading("#@cssId", 60000);
 
+            var url = @Html.Raw(Json.Encode(Url.Action("GetPageItems", "Items")));
+
             $.ajax({
                 type: 'GET',
-                url:@Html.Raw(Json.Encode(Url.Action("GetPageItems", "Items"))),
+                url: url,
                 dataType: 'json',
                 traditional: true,
                 data: {
@@ -204,8 +206,8 @@
                     q: query
                 },
                 success: handleTableResults,
-                error: function(){
-                    alert("Problems while updating table data");
+                error: function (response, ajaxOptions, error) {
+                    alert("The following error occured:\r\n" + url + "\r\n" + error + "\r\n" + response.responseText);
                     window.stopLoading("#@cssId");
                 }
             });
