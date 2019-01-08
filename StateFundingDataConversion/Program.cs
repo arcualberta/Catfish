@@ -15,6 +15,18 @@ namespace StateFundingDataConversion
 {
     public class Program
     {
+        public const string ACCESS = @"<access>
+            <access-group updated=""2018-12-24 8:59:48 AM"" created=""2018-12-24 8:59:48 AM"" model-type=""Catfish.Core.Models.Access.CFAccessGroup, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"" IsRequired=""false"" guid=""32fecbad-468b-4aa6-9b45-cbd98b6cff45"" created-by-guid=""EF098994-C688-4397-8D41-4AE3E5EC6E1C"" created-by-name=""Mark McKellar"">
+              <access-guid>00000000-0000-0000-0000-000000000001</access-guid>
+              <access-definition updated = ""2018-12-24 8:59:48 AM"" created=""2018-12-24 8:59:48 AM"" model-type=""Catfish.Core.Models.Access.CFAccessDefinition, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"" IsRequired=""false"" guid=""de1885fc-1f3c-47be-a45d-21bac5cdf9f4"" created-by-guid=""EF098994-C688-4397-8D41-4AE3E5EC6E1C"" created-by-name=""Mark McKellar"">
+                <access-modes>1</access-modes>
+                <name>
+                  <text xml:lang=""en"">Read</text>
+                </name>
+              </access-definition>
+            </access-group>
+          </access>";
+
         private const int MAX_YEAR = 2014;
         private static List<string> FieldGuids = new List<string>();
         private static List<string> OptionGuids = new List<string>();
