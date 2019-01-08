@@ -39,9 +39,6 @@
     <Reference Include="AutoMapper, Version=5.2.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.5.2.0\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="Catfish">
-      <HintPath>..\Catfish\bin\Catfish.dll</HintPath>
-    </Reference>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net46\CommonServiceLocator.dll</HintPath>
     </Reference>
@@ -211,6 +208,10 @@
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj">
       <Project>{5d2c027e-76f8-4cf0-8c58-cfd5219e3d18}</Project>
       <Name>Catfish.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Catfish\Catfish.csproj">
+      <Project>{3ee219a0-08c9-4dce-9cb8-7bf16007f6f6}</Project>
+      <Name>Catfish</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
