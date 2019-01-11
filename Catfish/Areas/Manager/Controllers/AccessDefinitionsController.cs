@@ -91,8 +91,9 @@ namespace Catfish.Areas.Manager.Controllers
                 Db.SaveChanges(User.Identity);
                 success = true;
             }catch(Exception ex)
-            {
+            {                
                 success = false;
+                Console.WriteLine("Exception : {0}", ex.Message);
             }
            
                 return Json(success, JsonRequestBehavior.AllowGet);
