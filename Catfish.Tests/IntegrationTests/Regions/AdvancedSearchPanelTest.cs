@@ -93,6 +93,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
                 nameList.Add(nameFunc(i));
             }
 
+            Driver.Navigate().GoToUrl(FrontEndUrl);
             AssertItemsNameShows(nameList);
 
             // Search on the year
@@ -109,7 +110,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
 
             IWebElement field = Driver.FindElements(By.ClassName("search-entry"))[3];
             field.FindElement(By.ClassName("search-from")).SendKeys(minYear.ToString());
-            field.FindElement(By.ClassName("search-from")).SendKeys(maxYear.ToString());
+            field.FindElement(By.ClassName("search-to")).SendKeys(maxYear.ToString());
             
             Driver.FindElement(By.ClassName("search-button")).Click();
 
@@ -127,7 +128,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
         private void AssertItemsNameShows(IEnumerable<string> itemNames)
         {
             string tableRowsXpath = "//tbody[@id = 'ListEntitiesPanelTableBody']/tr";
-            Driver.Navigate().GoToUrl(FrontEndUrl);
+            
             List<IWebElement> rows = Driver.FindElements(By.XPath(tableRowsXpath), 10).ToList();
             Assert.AreEqual(itemNames.Count(), rows.Count);
 
