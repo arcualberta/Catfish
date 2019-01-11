@@ -27,9 +27,9 @@ namespace Catfish.Tests.IntegrationTests.Regions
             new NumberField() { Name = "Amount" },
             new NumberField() { Name = "Year" },
             new DropDownMenu() { Name = "Category", Options = new List<Option>(){
-                new Option() { Value = { new TextValue("en", "English", "One") } },
-                new Option() { Value = { new TextValue("en", "English", "Two") } },
-                new Option() { Value = { new TextValue("en", "English", "Three") } },
+                new Option() { Value = { new TextValue("en", "English", "One 1") } },
+                new Option() { Value = { new TextValue("en", "English", "Two 2") } },
+                new Option() { Value = { new TextValue("en", "English", "Three 3") } },
             }.AsReadOnly() }
         };
 
@@ -85,7 +85,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
         {
             CreateSearchEntityType();
 
-            CreateAndAddAddvancedSearchToMain(true, MetadataFields, 1);
+            CreateAndAddAddvancedSearchToMain(true, new FormField[]{ MetadataFields[0], MetadataFields[1], MetadataFields[2] }, 1);
             CreateAndAddEntityListToMain(2);
 
             Func<int, int> yearFunc = i => i + 2000;
@@ -138,7 +138,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
         {
             CreateSearchEntityType();
 
-            CreateAndAddAddvancedSearchToMain(true, MetadataFields, 1);
+            CreateAndAddAddvancedSearchToMain(true, new FormField[] { MetadataFields[0], MetadataFields[1], MetadataFields[2] }, 1);
             CreateAndAddGraphToMain("Year", MetadataSetNames[0], MetadataFields[2].Name, "Amount", MetadataSetNames[0], MetadataFields[1].Name, 1, 1, null, null, 2);
 
             Func<int, int> yearFunc = i => (i % 10) + 2000;
@@ -149,13 +149,13 @@ namespace Catfish.Tests.IntegrationTests.Regions
                 switch(i % 3)
                 {
                     case 1:
-                        return "One";
+                        return "One 1";
 
                     case 2:
-                        return "Two";
+                        return "Two 2";
                 }
 
-                return "Three";
+                return "Three 3";
             };
 
             CreateItems(20, yearFunc, amountFunc, optionFunc, nameFunc);
@@ -209,9 +209,10 @@ namespace Catfish.Tests.IntegrationTests.Regions
         [Test]
         public void CanGenerateCatagorizedLineChart()
         {
+            //TODO: Test categories.
             CreateSearchEntityType();
 
-            CreateAndAddAddvancedSearchToMain(true, MetadataFields, 1);
+            CreateAndAddAddvancedSearchToMain(true, new FormField[] { MetadataFields[0], MetadataFields[1], MetadataFields[2] }, 1);
             CreateAndAddGraphToMain("Year", MetadataSetNames[0], MetadataFields[2].Name, "Amount", MetadataSetNames[0], MetadataFields[1].Name, 1, 1, MetadataSetNames[0], MetadataFields[3].Name, 2);
 
             Func<int, int> yearFunc = i => (i % 10) + 2000;
@@ -293,9 +294,6 @@ namespace Catfish.Tests.IntegrationTests.Regions
 
         private void AssertItemsNameShows(IEnumerable<string> itemNames)
         {
-            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(20.0));
-            wait.Until(driver => driver.FindElements(By.ClassName("loading-panel")).Count == 0);
-
             string tableRowsXpath = "//tbody[@id = 'ListEntitiesPanelTableBody']/tr";
             
             List<IWebElement> rows = Driver.FindElements(By.XPath(tableRowsXpath), 10).ToList();
