@@ -391,14 +391,19 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             // XXX For now fill first input with field name
             for (int i = 0; i < metadatasetValues.Length; ++i)
             {
-                IWebElement formField = Driver.FindElements(By.ClassName("form-field"), 10).ElementAt(i);
-                formField.FindElement(By.XPath(".//input[contains(@class, 'text-box single-line')][1]")).SendKeys(metadatasetValues[i].Values[0].Value);
 
-                if (isMultiple)
+                IWebElement formField = Driver.FindElements(By.ClassName("form-field"), 10).ElementAt(i);
+
+                if (typeof(TextField).IsAssignableFrom(metadatasetValues[i].GetType()))
                 {
-                    Assert.IsTrue(formField.FindElement(By.ClassName("ButtonTextFieldAddEntry")).Displayed);
-                    formField.FindElement(By.ClassName("ButtonTextFieldAddEntry")).Click();
-                    formField.FindElement(By.Name("MetadataSets[" + (i + 1) + "].Fields[0].Values[3].Value")).SendKeys(MultipleField);
+                    formField.FindElement(By.XPath(".//input[contains(@class, 'text-box single-line')][1]")).SendKeys(metadatasetValues[i].Values[0].Value);
+
+                    if (isMultiple)
+                    {
+                        Assert.IsTrue(formField.FindElement(By.ClassName("ButtonTextFieldAddEntry")).Displayed);
+                        formField.FindElement(By.ClassName("ButtonTextFieldAddEntry")).Click();
+                        Driver.FindElement(By.Name("MetadataSets[" + i + "].Fields[0].Values[3].Value"), 10).SendKeys(MultipleField);
+                    }
                 }
             }
 
@@ -491,7 +496,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             TextValue itemValue = new TextValue("en", "English", itemString);
 
             //FormFields[0][0].SetTextValues(new List<TextValue> { itemValue });
-            FormField formField = new FormField();
+            TextField formField = new TextField();
             formField.SetTextValues(new List<TextValue> { itemValue });
             FormFields[0][0] = formField;
             CreateItem(entityTypeName, FormFields[0]);
