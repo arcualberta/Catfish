@@ -55,13 +55,13 @@ namespace Catfish.Tests.IntegrationTests.Regions
             for (int i = 0; i < count; ++i)
             {
                 
-                fields[0] = new FormField() { Content = MetadataFields[0].Content };
+                fields[0] = new TextField() { Content = MetadataFields[0].Content };
                 fields[0].SetValues(new string[]{ nameFunction(i) });
 
-                fields[1] = new FormField() { Content = MetadataFields[1].Content };
+                fields[1] = new NumberField() { Content = MetadataFields[1].Content };
                 fields[1].SetValues(new string[] { amountFunction(i).ToString() });
 
-                fields[2] = new FormField() { Content = MetadataFields[2].Content };
+                fields[2] = new NumberField() { Content = MetadataFields[2].Content };
                 fields[2].SetValues(new string[] { yearFunction(i).ToString() });
 
                 CreateItem(EntityTypeName, fields, false);
