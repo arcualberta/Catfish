@@ -28,6 +28,9 @@ namespace Catfish.Models.Regions
         [Display(Name = "Default Entity Id")]
         public int? DefaultEntityId { get; set; }
 
+        [Display(Name = "Ignore Entity Property")]
+        public bool IgnoreEntityProperty { get; set; }
+
         [Display(Name = "CSHTML")]
         [Required]
         public string CsHtml { get; set; }
@@ -106,7 +109,7 @@ namespace Catfish.Models.Regions
 
                 string entityId = context.Request.QueryString[EntityContainer.ENTITY_PARAM];
                 int id = 0;
-                if(string.IsNullOrEmpty(entityId) || !int.TryParse(entityId, out id))
+                if(IgnoreEntityProperty || string.IsNullOrEmpty(entityId) || !int.TryParse(entityId, out id))
                 {
                     if (DefaultEntityId != null)
                     {
