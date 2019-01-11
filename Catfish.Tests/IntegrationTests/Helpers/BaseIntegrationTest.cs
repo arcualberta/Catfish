@@ -406,8 +406,8 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                     }
                 }
             }
-
-            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
+            
+            Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();
         }
 
         public void CreateItem(string entityTypeName, FormField[] metadatasetValues, bool isMultiple=false) {
