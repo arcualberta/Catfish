@@ -17,6 +17,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
     [TestFixture(typeof(ChromeDriver))]
     class AdvancedSearchPanelTest<TWebDriver> : BaseIntegrationTest<TWebDriver> where TWebDriver : IWebDriver, new()
     {
+        public static readonly string[] CategoryNames = { "One 1", "Two 2", "Three 3" };
         public static string[] MetadataSetNames = 
         {
             "BasicMetadata"
@@ -27,9 +28,9 @@ namespace Catfish.Tests.IntegrationTests.Regions
             new NumberField() { Name = "Amount" },
             new NumberField() { Name = "Year" },
             new DropDownMenu() { Name = "Category", Options = new List<Option>(){
-                new Option() { Value = { new TextValue("en", "English", "One 1") } },
-                new Option() { Value = { new TextValue("en", "English", "Two 2") } },
-                new Option() { Value = { new TextValue("en", "English", "Three 3") } },
+                new Option() { Value = { new TextValue("en", "English", CategoryNames[0]) } },
+                new Option() { Value = { new TextValue("en", "English", CategoryNames[1]) } },
+                new Option() { Value = { new TextValue("en", "English", CategoryNames[2]) } },
             }.AsReadOnly() }
         };
 
@@ -209,7 +210,6 @@ namespace Catfish.Tests.IntegrationTests.Regions
         [Test]
         public void CanGenerateCatagorizedLineChart()
         {
-            //TODO: Test categories.
             CreateSearchEntityType();
 
             CreateAndAddAddvancedSearchToMain(true, MetadataFields, 1);
@@ -247,7 +247,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
             }
 
             Driver.Navigate().GoToUrl(FrontEndUrl);
-            AssertGraphIsCorrect(amountList, yearList);
+            AssertGraphIsCorrect(amountList, yearList, CategoryNames);
 
             // Search on the year
             int minYear = 2001;
@@ -273,23 +273,44 @@ namespace Catfish.Tests.IntegrationTests.Regions
 
             Driver.FindElement(By.ClassName("search-button")).Click();
 
-            AssertGraphIsCorrect(amountList, yearList);
+            AssertGraphIsCorrect(amountList, yearList, CategoryNames);
 
             // Reload the page
             Driver.Navigate().Refresh();
-            AssertGraphIsCorrect(amountList, yearList);
+            AssertGraphIsCorrect(amountList, yearList, CategoryNames);
         }
 
-        private void AssertGraphIsCorrect(IEnumerable<float> amounts, IEnumerable<int> years)
+        private void AssertGraphIsCorrect(IEnumerable<float> amounts, IEnumerable<int> years, IEnumerable<string> categories = null)
         {
             var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(20.0));
             wait.Until(driver => driver.FindElements(By.ClassName("loading-panel")).Count == 0);
 
+            // Check if the axis is correct.
             IEnumerable<IWebElement> dateElements = Driver.FindElements(By.CssSelector("g.axis-y > g.tick > text"));
             Assert.Greater(dateElements.Count(), 0);
 
             IEnumerable<IWebElement> amountElements = Driver.FindElements(By.CssSelector("g.axis-x > g.tick > text"));
             Assert.Greater(amountElements.Count(), 0);
+
+            // Check the categories
+            IWebElement legend = Driver.FindElement(By.ClassName("legend"));
+            IEnumerable<IWebElement> categoryElements = legend.FindElements(By.ClassName("legend-item"));
+            string[] categoryElementNames = categoryElements.Select(e => e.FindElement(By.XPath(".//span")).Text.Trim()).ToArray();
+
+            if (categories == null)
+            {
+                Assert.AreEqual(1, categoryElements.Count());
+                Assert.AreEqual(1, categoryElementNames.Count());
+                Assert.AreEqual("", categoryElementNames[0]);
+            }
+            else { 
+                Assert.AreEqual(categories.Count(), categoryElements.Count());
+
+                foreach (string category in categories)
+                {
+                    Assert.Contains(category, categoryElementNames);
+                }
+            }
         }
 
         private void AssertItemsNameShows(IEnumerable<string> itemNames)
