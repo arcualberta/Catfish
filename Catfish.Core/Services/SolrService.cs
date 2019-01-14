@@ -190,7 +190,8 @@ namespace Catfish.Core.Services
                     new KeyValuePair<string, string>("rows", rows.ToString()),
                     new KeyValuePair<string, string>("wt", "json"),
                     new KeyValuePair<string, string>("facet.field", fieldId),
-                    new KeyValuePair<string, string>("fl", fieldId)
+                    new KeyValuePair<string, string>("fl", fieldId),
+                    new KeyValuePair<string, string>("sort", fieldId + " asc")
                 };
 
                 string result = mSolr.Get("/select", parameters);
