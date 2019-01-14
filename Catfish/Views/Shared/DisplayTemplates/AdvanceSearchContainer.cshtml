@@ -63,7 +63,7 @@
                         @:<div class="search-entry divDropDownList">
                             var options = new SelectList(((Catfish.Core.Models.Forms.OptionsField)m.Field).Options, "Guid", "Value[0].Value");
                         var nm = "AdvanceSearchContainer-DropdownList";
-                            @Html.DropDownList(@nm, options)
+                            @Html.DropDownList(@nm, options, "")
                         @:</div>
                     }
                 }
