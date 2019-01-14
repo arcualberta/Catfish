@@ -18,7 +18,7 @@ using SolrNet;
 using Catfish.Core.Models.Access;
 using System.Text.RegularExpressions;
 using System.Threading;
-
+using Catfish.Services;
 
 namespace Catfish.Tests.IntegrationTests.Helpers
 
@@ -754,6 +754,67 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                     region.FindElement(By.XPath(".//span[contains(@class, 'glyphicon glyphicon-plus-sign')][" + regionIndex + "]")).Click();
                 }
             }
+
+            // Save the page
+            Driver.FindElement(By.ClassName(UpdateButtonClass), 10).Click();
+        }
+
+        protected void CreateAndAddCalculationToMain(int regionIndex, string panelName, string panelId, ItemQueryService.eFunctionMode function, string title, string medatadataSetName, string fieldName, string prefix = "$", int decimalPlaces = 2, string groupByMetadataSetName = null, string groupByFieldName = null)
+        {
+            // Create the Graph Section
+            Driver.FindElement(By.LinkText(SettingsLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(PageTypesLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(StandardPageLinkText), 10).Click();
+
+            // add region to main page            
+            Driver.FindElement(By.Id(RegionNameFieldId)).SendKeys(panelName);
+            Driver.FindElement(By.Id(RegionInternalIdId)).SendKeys(panelId);
+
+            IWebElement typeSelectorElement = Driver.FindElement(By.Id(RegionTypeSelectorId));
+            SelectElement typeSelector = new SelectElement(typeSelectorElement);
+            typeSelector.SelectByValue("Catfish.Models.Regions.CalculatedFieldPanel");
+
+            Driver.FindElement(By.Id(AddRegionButtonId)).Click();
+
+            Driver.FindElement(By.LinkText(SaveLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(ContentLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(PagesLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(StartLinkText), 10).SendKeys(Keys.Return);
+
+            Driver.FindElement(By.XPath($@"//button[contains(.,'{panelName}')]"), 10).Click();
+
+            // Define the region settings
+            string regionBaseName = "Regions_" + regionIndex + "__Body_";
+
+            IWebElement element = Driver.FindElement(By.Id(regionBaseName + "Title"), 10);
+            element.Clear();
+            element.SendKeys(title);
+
+            element = Driver.FindElement(By.Id(regionBaseName + "Prefix"), 10);
+            element.Clear();
+            element.SendKeys(prefix);
+
+            element = Driver.FindElement(By.Id(regionBaseName + "DecimalPlaces"), 10);
+            element.Clear();
+            element.SendKeys(decimalPlaces.ToString());
+
+            SelectElement select = new SelectElement(Driver.FindElement(By.Id(regionBaseName + "SelectedFieldMetadataSet"), 10));
+            select.SelectByText(medatadataSetName);
+
+            select = new SelectElement(Driver.FindElement(By.Id(regionBaseName + "SelectedField"), 10));
+            select.SelectByText(fieldName);
+
+            if(groupByMetadataSetName != null && groupByFieldName != null)
+            {
+                select = new SelectElement(Driver.FindElement(By.Id(regionBaseName + "SelectedGroupByFieldMetadataSet"), 10));
+                select.SelectByText(groupByMetadataSetName);
+
+                select = new SelectElement(Driver.FindElement(By.Id(regionBaseName + "SelectedGroupByField"), 10));
+                select.SelectByText(groupByFieldName);
+            }
+
+            select = new SelectElement(Driver.FindElement(By.Id(regionBaseName + "SelectedFunction"), 10));
+            select.SelectByText(Enum.GetName(typeof(ItemQueryService.eFunctionMode), function));
 
             // Save the page
             Driver.FindElement(By.ClassName(UpdateButtonClass), 10).Click();
