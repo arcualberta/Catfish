@@ -212,7 +212,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
             //TODO: Test categories.
             CreateSearchEntityType();
 
-            CreateAndAddAddvancedSearchToMain(true, new FormField[] { MetadataFields[0], MetadataFields[1], MetadataFields[2] }, 1);
+            CreateAndAddAddvancedSearchToMain(true, MetadataFields, 1);
             CreateAndAddGraphToMain("Year", MetadataSetNames[0], MetadataFields[2].Name, "Amount", MetadataSetNames[0], MetadataFields[1].Name, 1, 1, MetadataSetNames[0], MetadataFields[3].Name, 2);
 
             Func<int, int> yearFunc = i => (i % 10) + 2000;
@@ -223,13 +223,13 @@ namespace Catfish.Tests.IntegrationTests.Regions
                 switch (i % 3)
                 {
                     case 1:
-                        return "One";
+                        return "One 1";
 
                     case 2:
-                        return "Two";
+                        return "Two 2";
                 }
 
-                return "Three";
+                return "Three 3";
             };
 
             CreateItems(20, yearFunc, amountFunc, optionFunc, nameFunc);
