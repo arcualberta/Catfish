@@ -118,7 +118,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
             Driver.FindElement(By.LinkText(ContentLinkText), 10).Click();
             Driver.FindElement(By.LinkText(PagesLinkText), 10).Click();
             Driver.FindElement(By.LinkText(StartLinkText), 10).SendKeys(Keys.Return);
-            Driver.FindElement(By.Id("btn_RegionName"), 10).Click();
+            Driver.FindElement(By.Id("btn_EntityListRegionName"), 10).Click();
         }
 
         private void SetEnityFilterTo(string entityTypeFilterText)

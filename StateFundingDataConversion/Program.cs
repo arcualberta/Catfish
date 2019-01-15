@@ -567,6 +567,9 @@ namespace StateFundingDataConversion
                             }
                         }
                     }
+
+                    XElement access = XElement.Parse(ACCESS);
+                    item.Add(access);
                 }
                 catch (Exception ex)
                 {
