@@ -209,11 +209,12 @@ namespace Catfish.Tests.IntegrationTests.Regions
             Func<int, string> nameFunc = i => "Item Entry " + i;
             Func<int, string> optionFunc = i => CategoryNames[i % 3];
 
-            CreateItems(20, yearFunc, amountFunc, optionFunc, nameFunc);
+            int totalItems = 20;
+            CreateItems(totalItems, yearFunc, amountFunc, optionFunc, nameFunc);
 
             List<float> amountList = new List<float>();
             List<int> yearList = new List<int>();
-            for (int i = 0; i < 20; ++i)
+            for (int i = 0; i < totalItems; ++i)
             {
                 amountList.Add(amountFunc(i));
             }
@@ -229,7 +230,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
             // Search on the year
             int minYear = 2001;
             int maxYear = 2005;
-            for (int i = 9; i >= 0; --i)
+            for (int i = totalItems - 1; i >= 0; --i)
             {
                 int year = yearFunc(i);
                 if (year < minYear || year > maxYear)
@@ -239,9 +240,9 @@ namespace Catfish.Tests.IntegrationTests.Regions
             }
 
             yearList.Clear();
-            for (int i = 1; i < 6; ++i)
+            for (int i = minYear; i <= maxYear; ++i)
             {
-                yearList.Add(i + 2000);
+                yearList.Add(i);
             }
 
             IWebElement field = Driver.FindElements(By.ClassName("search-entry"))[3];
@@ -273,14 +274,15 @@ namespace Catfish.Tests.IntegrationTests.Regions
 
             Func<int, int> yearFunc = i => (i % 10) + 2000;
             Func<int, float> amountFunc = i => (float)((Math.Sin((double)i) + 1.0) * i * 0.5);
-            Func<int, string> nameFunc = i => "Item Entry " + (i % 3);
+            Func<int, string> nameFunc = i => "Item Entry " + (i % 5);
             Func<int, string> optionFunc = i => CategoryNames[i % 3];
 
-            CreateItems(20, yearFunc, amountFunc, optionFunc, nameFunc);
+            int totalItems = 20;
+            CreateItems(totalItems, yearFunc, amountFunc, optionFunc, nameFunc);
 
             List<float> amountList = new List<float>();
             List<string> nameList = new List<string>();
-            for (int i = 0; i < 20; ++i)
+            for (int i = 0; i < totalItems; ++i)
             {
                 amountList.Add(amountFunc(i));
                 nameList.Add(nameFunc(i));
@@ -292,7 +294,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
             // Search on the year
             int minYear = 2001;
             int maxYear = 2005;
-            for (int i = 9; i >= 0; --i)
+            for (int i = totalItems - 1; i >= 0; --i)
             {
                 int year = yearFunc(i);
                 if (year < minYear || year > maxYear)
@@ -320,18 +322,18 @@ namespace Catfish.Tests.IntegrationTests.Regions
             // Check each calculated field.
             ICollection<IWebElement> elements = Driver.FindElements(By.ClassName("calculatedField"));
 
-            IEnumerable<decimal> amountRound = amounts.Select(a => Math.Round((decimal)a, 2));
+            IEnumerable<decimal> amountRound = amounts.OrderBy(d => d).Select(a => (decimal)a);
             int count = names.Distinct().Count();
-            decimal min = amountRound.Min();
-            decimal max = amountRound.Max();
-            decimal mean = amountRound.Average();
-            decimal median = amountRound.ElementAt(amountRound.Count() >> 1);
-            decimal sum = amountRound.Sum();
+            decimal min = Math.Round(amountRound.Min(), 2);
+            decimal max = Math.Round(amountRound.Max(), 2);
+            decimal mean = Math.Round(amountRound.Average(), 2);
+            decimal median = Math.Round(amountRound.ElementAt(amountRound.Count() >> 1), 2);
+            decimal sum = Math.Round(amountRound.Sum(), 2);
 
             AssertCalculationPanelIsCorrect(elements.ElementAt(0), count, 0);
             AssertCalculationPanelIsCorrect(elements.ElementAt(1), max);
             AssertCalculationPanelIsCorrect(elements.ElementAt(2), mean, 0.55m);
-            AssertCalculationPanelIsCorrect(elements.ElementAt(3), median, 0.55m);
+            AssertCalculationPanelIsCorrect(elements.ElementAt(3), median, 0.5m);
             AssertCalculationPanelIsCorrect(elements.ElementAt(4), min);
 
             AssertCalculationPanelIsCorrect(elements.ElementAt(6), sum, 0.1m);
