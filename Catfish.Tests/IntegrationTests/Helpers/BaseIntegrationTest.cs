@@ -18,7 +18,7 @@ using SolrNet;
 using Catfish.Core.Models.Access;
 using System.Text.RegularExpressions;
 using System.Threading;
-
+using Catfish.Services;
 
 namespace Catfish.Tests.IntegrationTests.Helpers
 
@@ -52,6 +52,9 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         protected const string FieldName = "Field name";
         protected const string ItemValue = "Item value";
         protected const string RegionName = "Region Name";
+        protected const string AdvancedSearchRegionName = "Advances Search Region Name";
+        protected const string EntityListRegionName = "Entity List Region Name";
+        protected const string GraphPanelName = "Graph Panel Region Name";
         protected const string AccessDefinitionName = "Access definition";
         protected const string PublicGroupName = "Public";
         protected const string UserNameFieldId = "usrName";
@@ -269,9 +272,51 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                         i++;
                     }
                 }
+
+                // Add options
+                if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
+                {
+                    IEnumerable<Option> options = ((OptionsField)field).Options;
+
+                    IEnumerable<IWebElement> elements = lastFieldEntry.FindElements(By.CssSelector(".languageInputField > textarea"));
+
+                    for(int f = 0; f < elements.Count(); ++f)
+                    {
+                        elements.ElementAt(f).SendKeys(string.Join("\n", options.Select(o => o.Value.Count > f ? o.Value.ElementAt(f).Value : " ")));
+                    }
+                }
             }
 
             Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();
+        }
+
+        private void AddEntityTypeFieldMapping(string name, string metadataName, string fieldName)
+        {
+            string fieldElementsXpath = "//div[@id = 'fieldmappings-container']//div[contains(@class, 'fieldElement')]";
+            List<IWebElement> fieldElements = Driver.FindElements(By.XPath(fieldElementsXpath), 10).ToList();
+            int count = fieldElements.Count + 1;
+
+            string fieldElementsAddXpath = "//div[@id = 'fieldmappings-container']//button[contains(@class, 'glyphicon glyphicon-plus')]";
+            Driver.FindElement(By.XPath(fieldElementsAddXpath)).Click();
+
+
+            IWebElement fieldElement = Driver.FindElement(By.XPath(fieldElementsXpath + "[" + count + "]"), 10);
+
+            string mapMetadataXpath = $".//select[contains(@class, 'mapMetadata')]";
+            string mapFieldXpath = $".//select[contains(@class, 'mapField')]";
+
+            // Set the data
+            IWebElement mapName = fieldElement.FindElement(By.Name("Name"));
+            mapName.Clear();
+            mapName.SendKeys(name);
+
+            IWebElement mapMetadataElement = fieldElement.FindElement(By.XPath(mapMetadataXpath));
+            SelectElement mapMetadataSelector = new SelectElement(mapMetadataElement);
+            mapMetadataSelector.SelectByText(metadataName);
+
+            IWebElement mapFieldElement = fieldElement.FindElement(By.XPath(mapFieldXpath));
+            SelectElement mapFieldSelector = new SelectElement(mapFieldElement);
+            mapFieldSelector.SelectByText(fieldName);
         }
 
         private void FillEntityTypeNameMapping()
@@ -304,7 +349,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         }
 
         public void CreateEntityType(string name, string description,
-            string[] metadataSetNames, CFEntityType.eTarget[] targetTypes)
+            string[] metadataSetNames, CFEntityType.eTarget[] targetTypes, Tuple<string, FormField>[] mappings = null)
         {
             Driver.Navigate().GoToUrl(ManagerUrl);
             Driver.FindElement(By.LinkText(SettingsLinkText)).Click();
@@ -319,11 +364,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id("chk_Items")).Click();
             Driver.FindElement(By.Id("chk_Files")).Click();
             Driver.FindElement(By.Id("chk_Forms")).Click();
-
-
-
-            // Need to add field mappings
-
+            
             // use first metadataset and fields for name and description
 
             IWebElement metadataSetSelectorElement = Driver.FindElement(By.Id("dd_MetadataSets"));
@@ -336,6 +377,15 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             }
 
             FillEntityTypeNameMapping();
+
+            // Need to add field mappings
+            if (mappings != null)
+            {
+                foreach (Tuple<string, FormField> field in mappings)
+                {
+                    AddEntityTypeFieldMapping(field.Item2.Name + " Mapping", field.Item1, field.Item2.Name);
+                }
+            }
 
             Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();
         }
@@ -353,16 +403,40 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id("add-field")).Click();
 
             // XXX For now fill first input with field name
-            Driver.FindElement(By.XPath("//input[contains(@class, 'text-box single-line')][1]"), 10).SendKeys(metadatasetValues[0].Values[0].Value);
-
-            if (isMultiple)
+            for (int i = 0; i < metadatasetValues.Length; ++i)
             {
-                Assert.IsTrue(Driver.FindElement(By.ClassName("ButtonTextFieldAddEntry"), 10).Displayed);
-                Driver.FindElement(By.ClassName("ButtonTextFieldAddEntry"), 10).Click();
-                Driver.FindElement(By.Name("MetadataSets[0].Fields[0].Values[3].Value"), 10).SendKeys(MultipleField);
-            }
 
-            Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
+                IWebElement formField = Driver.FindElements(By.ClassName("form-field"), 10).ElementAt(i);
+
+                if (typeof(TextField).IsAssignableFrom(metadatasetValues[i].GetType()))
+                {
+                    formField.FindElement(By.XPath(".//input[contains(@class, 'text-box single-line')][1]")).SendKeys(metadatasetValues[i].Values[0].Value);
+
+                    if (isMultiple)
+                    {
+                        Assert.IsTrue(formField.FindElement(By.ClassName("ButtonTextFieldAddEntry")).Displayed);
+                        formField.FindElement(By.ClassName("ButtonTextFieldAddEntry")).Click();
+                        Driver.FindElement(By.Name("MetadataSets[" + i + "].Fields[0].Values[3].Value"), 10).SendKeys(MultipleField);
+                    }
+                }else if (typeof(SingleSelectOptionsField).IsAssignableFrom(metadatasetValues[i].GetType()))
+                {
+                    SingleSelectOptionsField optionsField = (SingleSelectOptionsField)metadatasetValues[i];
+                    Option value = optionsField.Options.Where(o => o.Selected).FirstOrDefault();
+                    
+                    SelectElement select = new SelectElement(formField.FindElement(By.XPath(".//select")));
+                    
+                    if(value == null)
+                    {
+                        select.SelectByIndex(0);
+                    }
+                    else
+                    {
+                        select.SelectByText(string.Join(" / ", value.Value.Select(v => v.Value)));
+                    }
+                }
+            }
+            
+            Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();
         }
 
         public void CreateItem(string entityTypeName, FormField[] metadatasetValues, bool isMultiple=false) {
@@ -451,7 +525,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             TextValue itemValue = new TextValue("en", "English", itemString);
 
             //FormFields[0][0].SetTextValues(new List<TextValue> { itemValue });
-            FormField formField = new FormField();
+            TextField formField = new TextField();
             formField.SetTextValues(new List<TextValue> { itemValue });
             FormFields[0][0] = formField;
             CreateItem(entityTypeName, FormFields[0]);
@@ -639,7 +713,183 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             return found;
         }
 
-        protected void CreateAndAddEntityListToMain()
+        protected void CreateAndAddAddvancedSearchToMain(bool includeKeywordSearch, IEnumerable<FormField> fields, int regionIndex = 1)
+        {
+            // Create the advanced search region
+            Driver.FindElement(By.LinkText(SettingsLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(PageTypesLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(StandardPageLinkText), 10).Click();
+
+            // add region to main page            
+            Driver.FindElement(By.Id(RegionNameFieldId)).SendKeys(AdvancedSearchRegionName);
+            Driver.FindElement(By.Id(RegionInternalIdId)).SendKeys(AdvancedSearchRegionName);
+
+            IWebElement typeSelectorElement = Driver.FindElement(By.Id(RegionTypeSelectorId));
+            SelectElement typeSelector = new SelectElement(typeSelectorElement);
+            typeSelector.SelectByValue("Catfish.Models.Regions.AdvanceSearchContainer");
+
+            Driver.FindElement(By.Id(AddRegionButtonId)).Click();
+
+            Driver.FindElement(By.LinkText(SaveLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(ContentLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(PagesLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(StartLinkText), 10).SendKeys(Keys.Return);
+            
+            Driver.FindElement(By.XPath($@"//button[contains(.,'{AdvancedSearchRegionName}')]"), 10).Click();
+
+            IWebElement region = Driver.FindElement(By.Id(AdvancedSearchRegionName.Replace(" ", "")));
+
+            if (includeKeywordSearch)
+            {
+                region.FindElement(By.Id("Regions_" + regionIndex + "__Body_HasGeneralSearch")).Click();
+            }
+
+            if(fields != null)
+            {
+                foreach(FormField field in fields)
+                {
+                    IWebElement fieldSelectorElement = Driver.FindElement(By.Id("Regions_" + regionIndex + "__Body_selectedField"));
+                    SelectElement fieldSelector = new SelectElement(fieldSelectorElement);
+                    fieldSelector.SelectByText(field.Name + " Mapping");
+                    region.FindElement(By.XPath(".//span[contains(@class, 'glyphicon glyphicon-plus-sign')][" + regionIndex + "]")).Click();
+                }
+            }
+
+            // Save the page
+            Driver.FindElement(By.ClassName(UpdateButtonClass), 10).Click();
+        }
+
+        protected void CreateAndAddCalculationToMain(int regionIndex, string panelName, string panelId, ItemQueryService.eFunctionMode function, string title, string medatadataSetName, string fieldName, string prefix = "$", int decimalPlaces = 2, string groupByMetadataSetName = null, string groupByFieldName = null)
+        {
+            // Create the Graph Section
+            Driver.FindElement(By.LinkText(SettingsLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(PageTypesLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(StandardPageLinkText), 10).Click();
+
+            // add region to main page            
+            Driver.FindElement(By.Id(RegionNameFieldId)).SendKeys(panelName);
+            Driver.FindElement(By.Id(RegionInternalIdId)).SendKeys(panelId);
+
+            IWebElement typeSelectorElement = Driver.FindElement(By.Id(RegionTypeSelectorId));
+            SelectElement typeSelector = new SelectElement(typeSelectorElement);
+            typeSelector.SelectByValue("Catfish.Models.Regions.CalculatedFieldPanel");
+
+            Driver.FindElement(By.Id(AddRegionButtonId)).Click();
+
+            Driver.FindElement(By.LinkText(SaveLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(ContentLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(PagesLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(StartLinkText), 10).SendKeys(Keys.Return);
+
+            Driver.FindElement(By.XPath($@"//button[contains(.,'{panelName}')]"), 10).Click();
+
+            // Define the region settings
+            string regionBaseName = "Regions_" + regionIndex + "__Body_";
+
+            IWebElement element = Driver.FindElement(By.Id(regionBaseName + "Title"), 10);
+            element.Clear();
+            element.SendKeys(title);
+
+            element = Driver.FindElement(By.Id(regionBaseName + "Prefix"), 10);
+            element.Clear();
+            element.SendKeys(prefix);
+
+            element = Driver.FindElement(By.Id(regionBaseName + "DecimalPlaces"), 10);
+            element.Clear();
+            element.SendKeys(decimalPlaces.ToString());
+
+            SelectElement select = new SelectElement(Driver.FindElement(By.Id(regionBaseName + "SelectedFieldMetadataSet"), 10));
+            select.SelectByText(medatadataSetName);
+
+            select = new SelectElement(Driver.FindElement(By.Id(regionBaseName + "SelectedField"), 10));
+            select.SelectByText(fieldName);
+
+            if(groupByMetadataSetName != null && groupByFieldName != null)
+            {
+                select = new SelectElement(Driver.FindElement(By.Id(regionBaseName + "SelectedGroupByFieldMetadataSet"), 10));
+                select.SelectByText(groupByMetadataSetName);
+
+                select = new SelectElement(Driver.FindElement(By.Id(regionBaseName + "SelectedGroupByField"), 10));
+                select.SelectByText(groupByFieldName);
+            }
+
+            select = new SelectElement(Driver.FindElement(By.Id(regionBaseName + "SelectedFunction"), 10));
+            select.SelectByText(Enum.GetName(typeof(ItemQueryService.eFunctionMode), function));
+
+            // Save the page
+            Driver.FindElement(By.ClassName(UpdateButtonClass), 10).Click();
+        }
+
+        protected void CreateAndAddGraphToMain(string xAxisLabel, string xMetadataSet, string xFieldName, string yAxisLabel, string yMetadataSet, string yFieldName, float xDataScale, float yDataScale, string categoryMetadataSet = null, string categoryField = null, int regionIndex = 1)
+        {
+            // Create the Graph Section
+            Driver.FindElement(By.LinkText(SettingsLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(PageTypesLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(StandardPageLinkText), 10).Click();
+
+            // add region to main page            
+            Driver.FindElement(By.Id(RegionNameFieldId)).SendKeys(GraphPanelName);
+            Driver.FindElement(By.Id(RegionInternalIdId)).SendKeys(GraphPanelName);
+
+            IWebElement typeSelectorElement = Driver.FindElement(By.Id(RegionTypeSelectorId));
+            SelectElement typeSelector = new SelectElement(typeSelectorElement);
+            typeSelector.SelectByValue("Catfish.Models.Regions.GraphPanel");
+
+            Driver.FindElement(By.Id(AddRegionButtonId)).Click();
+
+            Driver.FindElement(By.LinkText(SaveLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(ContentLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(PagesLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(StartLinkText), 10).SendKeys(Keys.Return);
+
+            Driver.FindElement(By.XPath($@"//button[contains(.,'{GraphPanelName}')]"), 10).Click();
+
+            // Define the region settings
+            IWebElement region = Driver.FindElement(By.Id(GraphPanelName.Replace(" ", "")));
+            SelectElement metadataSelect, fieldSelect;
+            IWebElement scale;
+
+            // Set the X Values
+            region.FindElement(By.Id("Regions_" + regionIndex + "__Body_XaxisLabel")).SendKeys(xAxisLabel);
+
+            metadataSelect = new SelectElement(region.FindElement(By.Id("Regions_" + regionIndex + "__Body_SelectedMetadataSetX")));
+            metadataSelect.SelectByText(xMetadataSet);
+
+            fieldSelect = new SelectElement(region.FindElement(By.Id("Regions_" + regionIndex + "__Body_XaxisField")));
+            fieldSelect.SelectByText(xFieldName);
+
+            scale = region.FindElement(By.Id("Regions_" + regionIndex + "__Body_XScale"));
+            scale.Clear();
+            scale.SendKeys(xDataScale.ToString());
+
+            // Set the Y Values
+            region.FindElement(By.Id("Regions_" + regionIndex + "__Body_YaxisLabel")).SendKeys(yAxisLabel);
+
+            metadataSelect = new SelectElement(region.FindElement(By.Id("Regions_" + regionIndex + "__Body_SelectedMetadataSetY")));
+            metadataSelect.SelectByText(yMetadataSet);
+
+            fieldSelect = new SelectElement(region.FindElement(By.Id("Regions_" + regionIndex + "__Body_YaxisField")));
+            fieldSelect.SelectByText(yFieldName);
+
+            scale = region.FindElement(By.Id("Regions_" + regionIndex + "__Body_YScale"));
+            scale.Clear();
+            scale.SendKeys(yDataScale.ToString());
+
+            // Set the category
+            if (categoryMetadataSet != null)
+            {
+                metadataSelect = new SelectElement(region.FindElement(By.Id("Regions_" + regionIndex + "__Body_SelectedMetadataSetCat")));
+                metadataSelect.SelectByText(categoryMetadataSet);
+
+                fieldSelect = new SelectElement(region.FindElement(By.Id("Regions_" + regionIndex + "__Body_Category")));
+                fieldSelect.SelectByText(categoryField);
+            }
+
+            // Save the page
+            Driver.FindElement(By.ClassName(UpdateButtonClass), 10).Click();
+        }
+
+        protected void CreateAndAddEntityListToMain(int regionIndex = 1)
         {
             // create list entity region
             Driver.FindElement(By.LinkText(SettingsLinkText)).Click();
@@ -647,8 +897,8 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.LinkText(StandardPageLinkText)).Click();
 
             // add region to main page            
-            Driver.FindElement(By.Id(RegionNameFieldId)).SendKeys(RegionName);
-            Driver.FindElement(By.Id(RegionInternalIdId)).SendKeys(RegionName);
+            Driver.FindElement(By.Id(RegionNameFieldId)).SendKeys(EntityListRegionName);
+            Driver.FindElement(By.Id(RegionInternalIdId)).SendKeys(EntityListRegionName);
 
             IWebElement typeSelectorElement = Driver.FindElement(By.Id(RegionTypeSelectorId));
             SelectElement typeSelector = new SelectElement(typeSelectorElement);
@@ -664,10 +914,12 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             // Start is the link to the starting page
             // Send enter instead of clicking to get around element overlay
             Driver.FindElement(By.LinkText(StartLinkText), 10).SendKeys(Keys.Return);
+
+            IWebElement region = Driver.FindElement(By.Id(EntityListRegionName.Replace(" ", "")));
             //Driver.FindElement(By.LinkText(regionName)).Click();
-            Driver.FindElement(By.XPath($@"//button[contains(.,'{RegionName}')]"), 10).Click();
-            Driver.FindElement(By.Id("Regions_1__Body_ItemPerPage"), 10).SendKeys("10");
-            Driver.FindElement(By.XPath("//span[contains(@class, 'glyphicon glyphicon-plus-sign')]")).Click();
+            Driver.FindElement(By.XPath($@"//button[contains(.,'{EntityListRegionName}')]"), 10).Click();
+            region.FindElement(By.Id("Regions_" + regionIndex + "__Body_ItemPerPage")).SendKeys("10");
+            region.FindElement(By.XPath(".//span[contains(@class, 'glyphicon glyphicon-plus-sign')]")).Click();
             Driver.FindElement(By.ClassName(UpdateButtonClass), 10).Click();
         }
     }

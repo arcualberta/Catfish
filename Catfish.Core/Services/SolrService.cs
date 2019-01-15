@@ -189,9 +189,9 @@ namespace Catfish.Core.Services
                     new KeyValuePair<string, string>("q", query),
                     new KeyValuePair<string, string>("rows", rows.ToString()),
                     new KeyValuePair<string, string>("wt", "json"),
-                    new KeyValuePair<string, string>("group", "true"),
-                    new KeyValuePair<string, string>("group.field", fieldId),
-                    new KeyValuePair<string, string>("fl", fieldId)
+                    new KeyValuePair<string, string>("facet.field", fieldId),
+                    new KeyValuePair<string, string>("fl", fieldId),
+                    new KeyValuePair<string, string>("sort", fieldId + " asc")
                 };
 
                 string result = mSolr.Get("/select", parameters);
@@ -200,13 +200,13 @@ namespace Catfish.Core.Services
                 {
                     SolrResponse response = Newtonsoft.Json.JsonConvert.DeserializeObject<SolrResponse>(result);
 
-                    if (response.grouped.ContainsKey(fieldId))
+                    if (response.facet_counts != null && response.facet_counts.facet_fields.ContainsKey(fieldId))
                     {
-                        foreach (var g in response.grouped[fieldId].groups)
+                        foreach (var g in response.facet_counts.facet_fields[fieldId])
                         {
-                            if (g.groupValue != null)
+                            if (g.Length > 0)
                             {
-                                dictionary.Add(g.groupValue, g.docList.docs[0][fieldId]);
+                                dictionary.Add((string)g[0], fieldId);
                             }
                         }
                     }
@@ -426,5 +426,12 @@ namespace Catfish.Core.Services
     public class SolrResponse
     {
         public Dictionary<string, GroupedResult> grouped { get; set; }
+        public SolrFacetCount facet_counts { get; set; }
+        
+    }
+
+    public class SolrFacetCount
+    {
+        public Dictionary<string, List<object[]>> facet_fields { get; set; }
     }
 }
