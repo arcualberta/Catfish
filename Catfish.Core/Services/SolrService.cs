@@ -190,6 +190,7 @@ namespace Catfish.Core.Services
                     new KeyValuePair<string, string>("rows", rows.ToString()),
                     new KeyValuePair<string, string>("wt", "json"),
                     new KeyValuePair<string, string>("facet.field", fieldId),
+                    new KeyValuePair<string, string>("facet", "on"),
                     new KeyValuePair<string, string>("fl", fieldId),
                     new KeyValuePair<string, string>("sort", fieldId + " asc")
                 };
@@ -202,12 +203,9 @@ namespace Catfish.Core.Services
 
                     if (response.facet_counts != null && response.facet_counts.facet_fields.ContainsKey(fieldId))
                     {
-                        foreach (var g in response.facet_counts.facet_fields[fieldId])
+                        foreach (var g in response.facet_counts.GetFacetsForField(fieldId))
                         {
-                            if (g.Length > 0)
-                            {
-                                dictionary.Add((string)g[0], fieldId);
-                            }
+                            dictionary.Add(g.Item1, fieldId);
                         }
                     }
                 }
@@ -432,6 +430,23 @@ namespace Catfish.Core.Services
 
     public class SolrFacetCount
     {
-        public Dictionary<string, List<object[]>> facet_fields { get; set; }
+        public Dictionary<string, List<object>> facet_fields { get; set; }
+
+        public List<Tuple<string, int>> GetFacetsForField(string fieldId)
+        {
+            List<Tuple<string, int>> result = new List<Tuple<string, int>>();
+
+            if (facet_fields.ContainsKey(fieldId))
+            {
+                List<object> data = facet_fields[fieldId];
+
+                for (int i = 0; i < data.Count; i += 2)
+                {
+                    result.Add(new Tuple<string, int>((string)data[i], (int)data[i + 1]));
+                }
+            }
+
+            return result;
+        }
     }
 }
