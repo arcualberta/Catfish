@@ -194,21 +194,23 @@ namespace Catfish.Services
                     {
                         string name = reader.GetAttribute("name");
                         reader.Read();
+                        string value = reader.ReadContentAsString();
 
                         if (name == "val")
                         {
-                            xVal = reader.ReadContentAsInt();
+                            xVal = int.Parse(value);
                         }else if(name == "count" && categories == null)
                         {
-                            count = reader.ReadContentAsInt();
+                            count = int.Parse(value);
                         }else if(name == "sumYValues" && categories == null)
                         {
                             try
                             {
-                                yVal = reader.ReadContentAsDecimal();
-                            }catch(Exception fex)
+                                yVal = Convert.ToDecimal(double.Parse(value));
+                            }
+                            catch(Exception fex)
                             {
-                                throw new FormatException(string.Format("Unable to parse string \"{0}\" into decimal.", reader.Value), fex);
+                                throw new FormatException(string.Format("Unable to parse string \"{0}\" into decimal.", value), fex);
                             }
                         }
                     }else if (level == 5 && category != null)

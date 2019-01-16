@@ -1,5 +1,4 @@
-﻿//javascript
-var GraphField = function (metadataSet, field) {
+﻿var GraphField = function (metadataSet, field) {
     this.metadataSet = metadataSet;
     this.field = field;
 }
@@ -7,7 +6,6 @@ var GraphField = function (metadataSet, field) {
 function GraphPanel(panelId, updateUrl, chartType, xLabel, yLabel, graphTitle, xScale, yScale, xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, isCategoryOptionsField) {
     this.panelId = panelId;
     this.graph = new Graph(xLabel, yLabel, graphTitle, xScale, yScale, $('#' + panelId + ' > svg')[0], $('#' + panelId + ' > .legend')[0]);
-    this.isLoaded = false;
     this.query = '*:*';
     this.chartType = chartType;
     this.updateUrl = updateUrl;
@@ -16,6 +14,10 @@ function GraphPanel(panelId, updateUrl, chartType, xLabel, yLabel, graphTitle, x
     this.x = new GraphField(xMetadataSet, xField);
     this.y = new GraphField(yMetadataSet, yField);
     this.category = new GraphField(catMetadataSet, catField);
+
+    this.isLoaded = false;
+    this.isUpdating = false;
+    this.hasUpdate = false;
 
     var _this = this;
 
@@ -35,10 +37,17 @@ GraphPanel.prototype.updateParameters = function (e) {
     }
 
     if (triggerUpdate) {
+        this.isLoaded = true;
         this.updateChart();
     }
 }
 GraphPanel.prototype.updateChart = function () {
+    if (this.isUpdating) {
+        this.hasUpdate = true;
+        return;
+    }
+
+    this.isUpdating = true;    
     var _this = this;
     var panelId = "#" + _this.panelId;
     var graph = _this.graph;
@@ -76,14 +85,23 @@ GraphPanel.prototype.updateChart = function () {
             }
 
             var parsedData = graph.parseDataSF(response);
-            window.stopLoading(panelId);
             graph.clear();
             graph["drawChartMulti" + chartType](parsedData);
         },
         error: function (err) {
             console.log(err);
+        },
+        complete: function (err) {
             window.stopLoading(panelId);
+
+            // Prevent multiple updates from being triggered.
+            _this.isUpdating = false;
+            if (_this.hasUpdate) {
+                _this.hasUpdate = false;
+                _this.updateChart();
+            }
         }
+
     });
 }
 
