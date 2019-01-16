@@ -3,7 +3,8 @@
 module.exports = {
     entry: {
         main: './Scripts/es6/main.js',
-        file2: './Scripts/es6/file2.js'
+        file2: './Scripts/es6/file2.js',
+        collectionsView: './Scripts/es6/collectionsView.js'
     },
     output: {
         path: path.resolve(__dirname, './Scripts/dist'),

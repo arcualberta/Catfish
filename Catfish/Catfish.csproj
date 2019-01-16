@@ -369,6 +369,8 @@
     <Content Include="LICENSE" />
     <Content Include="Areas\Manager\Views\Web.config" />
     <Content Include="package.json" />
+    <Content Include="Scripts\es6\actionableEntityList.js" />
+    <Content Include="Scripts\es6\collectionsView.js" />
     <Content Include="Scripts\es6\file2.js" />
     <Content Include="webpack.config.js" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
