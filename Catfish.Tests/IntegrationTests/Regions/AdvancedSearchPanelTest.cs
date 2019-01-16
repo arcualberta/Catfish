@@ -11,12 +11,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium.Support.UI;
+using Catfish.Services;
 
 namespace Catfish.Tests.IntegrationTests.Regions
 {
     [TestFixture(typeof(ChromeDriver))]
     class AdvancedSearchPanelTest<TWebDriver> : BaseIntegrationTest<TWebDriver> where TWebDriver : IWebDriver, new()
     {
+        public static readonly string[] CategoryNames = { "One 1", "Two 2", "Three 3" };
         public static string[] MetadataSetNames = 
         {
             "BasicMetadata"
@@ -27,9 +29,9 @@ namespace Catfish.Tests.IntegrationTests.Regions
             new NumberField() { Name = "Amount" },
             new NumberField() { Name = "Year" },
             new DropDownMenu() { Name = "Category", Options = new List<Option>(){
-                new Option() { Value = { new TextValue("en", "English", "One 1") } },
-                new Option() { Value = { new TextValue("en", "English", "Two 2") } },
-                new Option() { Value = { new TextValue("en", "English", "Three 3") } },
+                new Option() { Value = { new TextValue("en", "English", CategoryNames[0]) } },
+                new Option() { Value = { new TextValue("en", "English", CategoryNames[1]) } },
+                new Option() { Value = { new TextValue("en", "English", CategoryNames[2]) } },
             }.AsReadOnly() }
         };
 
@@ -144,19 +146,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
             Func<int, int> yearFunc = i => (i % 10) + 2000;
             Func<int, float> amountFunc = i => (float)((Math.Sin((double)i) + 1.0) * i * 0.5);
             Func<int, string> nameFunc = i => "Item Entry " + i;
-            Func<int, string> optionFunc = i =>
-            {
-                switch(i % 3)
-                {
-                    case 1:
-                        return "One 1";
-
-                    case 2:
-                        return "Two 2";
-                }
-
-                return "Three 3";
-            };
+            Func<int, string> optionFunc = i => CategoryNames[i % 3];
 
             CreateItems(20, yearFunc, amountFunc, optionFunc, nameFunc);
 
@@ -209,7 +199,6 @@ namespace Catfish.Tests.IntegrationTests.Regions
         [Test]
         public void CanGenerateCatagorizedLineChart()
         {
-            //TODO: Test categories.
             CreateSearchEntityType();
 
             CreateAndAddAddvancedSearchToMain(true, MetadataFields, 1);
@@ -218,25 +207,14 @@ namespace Catfish.Tests.IntegrationTests.Regions
             Func<int, int> yearFunc = i => (i % 10) + 2000;
             Func<int, float> amountFunc = i => (float)((Math.Sin((double)i) + 1.0) * i * 0.5);
             Func<int, string> nameFunc = i => "Item Entry " + i;
-            Func<int, string> optionFunc = i =>
-            {
-                switch (i % 3)
-                {
-                    case 1:
-                        return "One 1";
+            Func<int, string> optionFunc = i => CategoryNames[i % 3];
 
-                    case 2:
-                        return "Two 2";
-                }
-
-                return "Three 3";
-            };
-
-            CreateItems(20, yearFunc, amountFunc, optionFunc, nameFunc);
+            int totalItems = 20;
+            CreateItems(totalItems, yearFunc, amountFunc, optionFunc, nameFunc);
 
             List<float> amountList = new List<float>();
             List<int> yearList = new List<int>();
-            for (int i = 0; i < 20; ++i)
+            for (int i = 0; i < totalItems; ++i)
             {
                 amountList.Add(amountFunc(i));
             }
@@ -247,12 +225,12 @@ namespace Catfish.Tests.IntegrationTests.Regions
             }
 
             Driver.Navigate().GoToUrl(FrontEndUrl);
-            AssertGraphIsCorrect(amountList, yearList);
+            AssertGraphIsCorrect(amountList, yearList, CategoryNames);
 
             // Search on the year
             int minYear = 2001;
             int maxYear = 2005;
-            for (int i = 9; i >= 0; --i)
+            for (int i = totalItems - 1; i >= 0; --i)
             {
                 int year = yearFunc(i);
                 if (year < minYear || year > maxYear)
@@ -262,9 +240,9 @@ namespace Catfish.Tests.IntegrationTests.Regions
             }
 
             yearList.Clear();
-            for (int i = 1; i < 6; ++i)
+            for (int i = minYear; i <= maxYear; ++i)
             {
-                yearList.Add(i + 2000);
+                yearList.Add(i);
             }
 
             IWebElement field = Driver.FindElements(By.ClassName("search-entry"))[3];
@@ -273,23 +251,154 @@ namespace Catfish.Tests.IntegrationTests.Regions
 
             Driver.FindElement(By.ClassName("search-button")).Click();
 
-            AssertGraphIsCorrect(amountList, yearList);
+            AssertGraphIsCorrect(amountList, yearList, CategoryNames);
 
             // Reload the page
             Driver.Navigate().Refresh();
-            AssertGraphIsCorrect(amountList, yearList);
+            AssertGraphIsCorrect(amountList, yearList, CategoryNames);
         }
 
-        private void AssertGraphIsCorrect(IEnumerable<float> amounts, IEnumerable<int> years)
+        [Test]
+        public void CalculatedPanelTest()
+        {
+            CreateSearchEntityType();
+
+            CreateAndAddAddvancedSearchToMain(true, MetadataFields, 1);
+            CreateAndAddCalculationToMain(2, "Count Panel", "countPanel", ItemQueryService.eFunctionMode.COUNT, "Count", MetadataSetNames[0], MetadataFields[0].Name, "", 0, MetadataSetNames[0], MetadataFields[0].Name);
+            CreateAndAddCalculationToMain(3, "Max Panel", "maxPanel", ItemQueryService.eFunctionMode.MAX, "Max Amount", MetadataSetNames[0], MetadataFields[1].Name);
+            CreateAndAddCalculationToMain(4, "Mean Panel", "meanPanel", ItemQueryService.eFunctionMode.MEAN, "Mean Amount", MetadataSetNames[0], MetadataFields[1].Name);
+            CreateAndAddCalculationToMain(5, "Median Panel", "medianPanel", ItemQueryService.eFunctionMode.MEDIAN, "Median Amount", MetadataSetNames[0], MetadataFields[1].Name);
+            CreateAndAddCalculationToMain(6, "Min Panel", "minPanel", ItemQueryService.eFunctionMode.MIN, "Min Amount", MetadataSetNames[0], MetadataFields[1].Name);
+            CreateAndAddCalculationToMain(7, "Standard Deviation Panel", "deviationPanel", ItemQueryService.eFunctionMode.STANDARD_DEVIATION, "Standard Deviation Amount", MetadataSetNames[0], MetadataFields[1].Name);
+            CreateAndAddCalculationToMain(8, "Sum Panel", "sumPanel", ItemQueryService.eFunctionMode.SUM, "Sum Amount", MetadataSetNames[0], MetadataFields[1].Name);
+
+            Func<int, int> yearFunc = i => (i % 10) + 2000;
+            Func<int, float> amountFunc = i => (float)((Math.Sin((double)i) + 1.0) * i * 0.5);
+            Func<int, string> nameFunc = i => "Item Entry " + (i % 5);
+            Func<int, string> optionFunc = i => CategoryNames[i % 3];
+
+            int totalItems = 20;
+            CreateItems(totalItems, yearFunc, amountFunc, optionFunc, nameFunc);
+
+            List<float> amountList = new List<float>();
+            List<string> nameList = new List<string>();
+            for (int i = 0; i < totalItems; ++i)
+            {
+                amountList.Add(amountFunc(i));
+                nameList.Add(nameFunc(i));
+            }
+
+            Driver.Navigate().GoToUrl(FrontEndUrl);
+            AssertCalculationPanelsAreCorrect(nameList, amountList);
+
+            // Search on the year
+            int minYear = 2001;
+            int maxYear = 2005;
+            for (int i = totalItems - 1; i >= 0; --i)
+            {
+                int year = yearFunc(i);
+                if (year < minYear || year > maxYear)
+                {
+                    amountList.RemoveAt(i);
+                    nameList.RemoveAt(i);
+                }
+            }
+
+            IWebElement field = Driver.FindElements(By.ClassName("search-entry"))[3];
+            field.FindElement(By.ClassName("search-from")).SendKeys(minYear.ToString());
+            field.FindElement(By.ClassName("search-to")).SendKeys(maxYear.ToString());
+
+            Driver.FindElement(By.ClassName("search-button")).Click();
+
+            AssertCalculationPanelsAreCorrect(nameList, amountList);
+
+            // Reload the page
+            Driver.Navigate().Refresh();
+            AssertCalculationPanelsAreCorrect(nameList, amountList);
+        }
+
+        private void AssertCalculationPanelsAreCorrect(IEnumerable<string> names, IEnumerable<float> amounts)
+        {
+            // Check each calculated field.
+            ICollection<IWebElement> elements = Driver.FindElements(By.ClassName("calculatedField"));
+
+            IEnumerable<decimal> amountRound = amounts.OrderBy(d => d).Select(a => (decimal)a);
+            int count = names.Distinct().Count();
+            decimal min = Math.Round(amountRound.Min(), 2);
+            decimal max = Math.Round(amountRound.Max(), 2);
+            decimal mean = Math.Round(amountRound.Average(), 2);
+            decimal median = Math.Round(amountRound.ElementAt(amountRound.Count() >> 1), 2);
+            decimal sum = Math.Round(amountRound.Sum(), 2);
+
+            AssertCalculationPanelIsCorrect(elements.ElementAt(0), count, 0);
+            AssertCalculationPanelIsCorrect(elements.ElementAt(1), max);
+            AssertCalculationPanelIsCorrect(elements.ElementAt(2), mean, 0.55m);
+            AssertCalculationPanelIsCorrect(elements.ElementAt(3), median, 0.5m);
+            AssertCalculationPanelIsCorrect(elements.ElementAt(4), min);
+
+            AssertCalculationPanelIsCorrect(elements.ElementAt(6), sum, 0.1m);
+        }
+
+        private string ConstructTestValue(decimal value, string prefix = "$", int decimalCount = 2)
+        {
+            string format = "#,##0";
+
+            if(decimalCount > 0)
+            {
+                format += ".";
+
+                for(int i = 0; i < decimalCount; ++i)
+                {
+                    format += "0";
+                }
+            }
+
+            return prefix + value.ToString(format);
+        }
+
+        private void AssertCalculationPanelIsCorrect(IWebElement element, decimal value, decimal epsilon = 0.25m)
+        {
+            Assert.NotNull(element);
+
+            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(20.0));
+            wait.Until(driver => !element.FindElement(By.XPath("./div[2]")).Text.Contains("Loading"));
+
+            decimal testResult = decimal.Parse(element.FindElement(By.XPath("./div[2]")).Text.Replace("$", "").Replace(",", ""));
+
+            Assert.LessOrEqual(Math.Abs(testResult - value), epsilon);
+        }
+
+        private void AssertGraphIsCorrect(IEnumerable<float> amounts, IEnumerable<int> years, IEnumerable<string> categories = null)
         {
             var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(20.0));
             wait.Until(driver => driver.FindElements(By.ClassName("loading-panel")).Count == 0);
 
+            // Check if the axis is correct.
             IEnumerable<IWebElement> dateElements = Driver.FindElements(By.CssSelector("g.axis-y > g.tick > text"));
             Assert.Greater(dateElements.Count(), 0);
 
             IEnumerable<IWebElement> amountElements = Driver.FindElements(By.CssSelector("g.axis-x > g.tick > text"));
             Assert.Greater(amountElements.Count(), 0);
+
+            // Check the categories
+            IWebElement legend = Driver.FindElement(By.ClassName("legend"));
+            IEnumerable<IWebElement> categoryElements = legend.FindElements(By.ClassName("legend-item"));
+            string[] categoryElementNames = categoryElements.Select(e => e.FindElement(By.XPath(".//span")).Text.Trim()).ToArray();
+
+            if (categories == null)
+            {
+                Assert.AreEqual(1, categoryElements.Count());
+                Assert.AreEqual(1, categoryElementNames.Count());
+                Assert.AreEqual("", categoryElementNames[0]);
+            }
+            else { 
+                Assert.AreEqual(categories.Count(), categoryElements.Count());
+
+                foreach (string category in categories)
+                {
+                    Assert.Contains(category, categoryElementNames);
+                }
+            }
         }
 
         private void AssertItemsNameShows(IEnumerable<string> itemNames)
