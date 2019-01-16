@@ -8,7 +8,8 @@
   },
   "babel": {
     "presets": [
-      "@babel/env"
+      "@babel/env",
+      "@babel/preset-react"
     ]
   },
   "keywords": [],
@@ -19,7 +20,14 @@
     "@babel/preset-env": "^7.2.3",
     "babel-loader": "^8.0.5",
     "babel-polyfill": "^6.26.0",
+    "babel-preset-react": "^6.24.1",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "@babel/preset-react": "^7.0.0",
+    "prop-types": "^15.6.2",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
   }
 }
