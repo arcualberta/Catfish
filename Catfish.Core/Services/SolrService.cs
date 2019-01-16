@@ -205,7 +205,7 @@ namespace Catfish.Core.Services
                     {
                         foreach (var g in response.facet_counts.GetFacetsForField(fieldId))
                         {
-                            dictionary.Add(g.Item1, fieldId);
+                            dictionary.Add(g.Item1, g.Item1);
                         }
                     }
                 }
@@ -432,9 +432,9 @@ namespace Catfish.Core.Services
     {
         public Dictionary<string, List<object>> facet_fields { get; set; }
 
-        public List<Tuple<string, int>> GetFacetsForField(string fieldId)
+        public List<Tuple<string, long>> GetFacetsForField(string fieldId)
         {
-            List<Tuple<string, int>> result = new List<Tuple<string, int>>();
+            List<Tuple<string, long>> result = new List<Tuple<string, long>>();
 
             if (facet_fields.ContainsKey(fieldId))
             {
@@ -442,7 +442,7 @@ namespace Catfish.Core.Services
 
                 for (int i = 0; i < data.Count; i += 2)
                 {
-                    result.Add(new Tuple<string, int>((string)data[i], (int)data[i + 1]));
+                    result.Add(new Tuple<string, long>((string)data[i], (long)data[i + 1]));
                 }
             }
 
