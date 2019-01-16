@@ -1,4 +1,91 @@
 ﻿//javascript
+var GraphField = function (metadataSet, field) {
+    this.metadataSet = metadataSet;
+    this.field = field;
+}
+
+function GraphPanel(panelId, updateUrl, chartType, xLabel, yLabel, graphTitle, xScale, yScale, xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, isCategoryOptionsField) {
+    this.panelId = panelId;
+    this.graph = new Graph(xLabel, yLabel, graphTitle, xScale, yScale, $('#' + panelId + ' > svg')[0], $('#' + panelId + ' > .legend')[0]);
+    this.isLoaded = false;
+    this.query = '*:*';
+    this.chartType = chartType;
+    this.updateUrl = updateUrl;
+    this.isCategoryOptionsField = isCategoryOptionsField;
+
+    this.x = new GraphField(xMetadataSet, xField);
+    this.y = new GraphField(yMetadataSet, yField);
+    this.category = new GraphField(catMetadataSet, catField);
+
+    var _this = this;
+
+    var updateParameters = function(e) {
+        _this.updateParameters(e);
+    }
+
+    window.addEventListener('updatedparams', updateParameters);
+}
+GraphPanel.prototype.updateParameters = function (e) {
+    var params = e.detail;
+    var triggerUpdate = !this.isLoaded;
+
+    if ('q' in params) {
+        triggerUpdate = true;
+        this.query = params['q'];
+    }
+
+    if (triggerUpdate) {
+        this.updateChart();
+    }
+}
+GraphPanel.prototype.updateChart = function () {
+    var _this = this;
+    var panelId = "#" + _this.panelId;
+    var graph = _this.graph;
+    var chartType = _this.chartType;
+
+    window.startLoading(panelId, 60000);
+
+    var data = {
+        q: _this.query,
+        xMetadataSet: _this.x.metadataSet,
+        yMetadataSet: _this.y.metadataSet,
+        xField: _this.x.field,
+        yField: _this.y.field
+    }
+
+    if (_this.category.metadataSet != null && _this.category.field != null) {
+        data.catMetadataset = _this.category.metadataSet;
+        data.catField = _this.category.field;
+        data.isCatOptionsIndex = _this.isCatOptionsIndex;
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: _this.updateUrl,
+        dataType: 'json',
+        data: data,
+        success: function (response) {
+            if (chartType === "Bar") {
+                var barOption = $(paneId + " .barchartOption")[0];
+                barOption.style.display = "block";
+            }
+            else {
+                var barOption = $(panelId + " .barchartOption")[0];
+                barOption.style.display = "none";
+            }
+
+            var parsedData = graph.parseDataSF(response);
+            window.stopLoading(panelId);
+            graph.clear();
+            graph["drawChartMulti" + chartType](parsedData);
+        },
+        error: function (err) {
+            console.log(err);
+            window.stopLoading(panelId);
+        }
+    });
+}
 
 //Parse data into key-value pairs
 var Graph = function (xLabel, yLabel, graphTitle, xScale, yScale, svgElement, legendElement) {
