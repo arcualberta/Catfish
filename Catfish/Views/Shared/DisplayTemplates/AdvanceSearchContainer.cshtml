@@ -36,13 +36,11 @@
                 {
                     if (field.IsDropdown)
                     {
-                       
-                        @:<div class="search-entry divDropDownList"  >
-                           string fieldId = field.Id.ToString(); 
-                           <select class="AdvanceSearchContainer-FieldList">
-                               <option></option>
-                           </select>
-                        @:</div>
+                      
+                        <div class="search-entry divNumber">
+                            <span class="label-default field-sub-title">From</span>@Html.DropDownList("AdvanceSearchContainer-DropdownList", field.ListFields,"", new {@id= @id+"-From", @class="numberDropDownFrom"})
+                            <span class="label-default field-sub-title">To</span>@Html.DropDownList("AdvanceSearchContainer-DropdownList", field.ListFields,"", new { @id = @id + "-To", @class="numberDropDownTo" })
+                        </div>
                     }
                     else
                     {
@@ -81,9 +79,20 @@
                 }
                 else //(fType.FullName == "Catfish.Core.Models.Forms.TextField")
                 {
+                    if (field.IsDropdown)
+                    {
+
+                        <div class="search-entry divText">
+                            @Html.DropDownList("AdvanceSearchContainer-DropdownList", field.ListFields,"", new { @class = "textDropDown" })
+                           
+                        </div>
+                    }
+                    else
+                    {
                      <div class="search-entry divText">
                        <input type="text" class="input @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)"/>
                      </div>
+                    }
                 }
 
 
@@ -147,14 +156,14 @@
                     var searchValue;
 
                     if (entry.hasClass("divText")) {
-                        searchValue = entry.children("input").val();
+                        searchValue = entry.children("input").val() == null ? entry.find(".textDropDown").val() : entry.children("input").val();
                         if (searchValue.length > 0) {
                             searchString = searchString.length > 0 ? searchString + " && " : "";
                             searchString = searchString + (searchId + 'txts_en:"' + searchValue + '"');
                         }
                     } else if (entry.hasClass("divNumber")) {
-                        var from = entry.find(".search-from").val();
-                        var to = entry.find(".search-to").val();
+                        var from = entry.find(".search-from").val() == null ? entry.find(".numberDropDownFrom").val() : entry.find(".search-from").val();
+                        var to = entry.find(".search-to").val() == null ? entry.find(".numberDropDownTo").val() : entry.find(".search-to").val();
 
                         if (from.length > 0 || to.length > 0) {
                             from = from ? from : '*';
