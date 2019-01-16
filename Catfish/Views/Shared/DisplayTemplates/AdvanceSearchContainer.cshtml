@@ -34,36 +34,48 @@
                 <div class="field-title">@m.Label</div>
                 @if (fType.FullName == "Catfish.Core.Models.Forms.NumberField" || fType.FullName == "Catfish.Core.Models.Forms.DateField")
                 {
-                    //number field or Date field
-                    <div class="search-entry divNumber">
-                        <span class="label-default field-sub-title">From</span><input type="text" class="search-from @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)" id="@id-From"/>
-                        <span class="label-default field-sub-title">To</span><input type="text" class="search-to @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)" id="@id-To"/>
-                    </div>
-
+                    if (field.IsDropdown)
+                    {
+                       
+                        @:<div class="search-entry divDropDownList"  >
+                           string fieldId = field.Id.ToString(); 
+                           <select class="AdvanceSearchContainer-FieldList">
+                               <option></option>
+                           </select>
+                        @:</div>
+                    }
+                    else
+                    {
+                        //number field or Date field
+                       <div class="search-entry divNumber">
+                           <span class="label-default field-sub-title">From</span><input type="text" class="search-from @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)" id="@id-From"/>
+                           <span class="label-default field-sub-title">To</span><input type="text" class="search-to @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)" id="@id-To"/>
+                       </div>
+                    }
                 }
                 else if (typeof(Catfish.Core.Models.Forms.OptionsField).IsAssignableFrom(fType))
                 {
                     if (field.IsMultiple)
                     {
-                        <div class="search-entry divCheckbox">
-                            <ul>
-                                @foreach (var option in ((Catfish.Core.Models.Forms.OptionsField)m.Field).Options)
-                                {
-                                    var nm = "AdvanceSearchContainer-Chkbox";
+                              @:< div class="search-entry divCheckbox">
+                                        <ul>
+                                    @foreach (var option in ((Catfish.Core.Models.Forms.OptionsField)m.Field).Options)
+                                    {
+                                        var nm = "AdvanceSearchContainer-Chkbox";
                                     <li>
                                         <input type="checkbox" name="@nm" value="@option.Guid"/>
                                         <span>@option.Value[0].Value</span>
                                     </li>
-                                }
-                            </ul>
-                        </div>
+                                    }
+                                    </ul>
+                                    @:</div>
                     }
                     else
                     {
                         @:<div class="search-entry divDropDownList">
                             var options = new SelectList(((Catfish.Core.Models.Forms.OptionsField)m.Field).Options, "Guid", "Value[0].Value");
                         var nm = "AdvanceSearchContainer-DropdownList";
-                            @Html.DropDownList(@nm, options, "")
+                        @Html.DropDownList(@nm, options, "")
                         @:</div>
                     }
                 }
@@ -112,7 +124,7 @@
         function getSearchValueField(divContainer) {
             var field = divContainer.closest("div[data-searchid]");
             var searchEntries = field.children(".search-entry");
-            
+
             return field.attr("data-searchid") + "txts_en";
         }
 
@@ -351,5 +363,9 @@
             minLength: 1,
             source: autocompleteCall
         });
+
+        $(function(){
+             var fields = autocompleteCall
+         });
     }
 </script>

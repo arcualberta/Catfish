@@ -62,6 +62,11 @@ namespace Catfish.Models.Regions
                 result.IsAutoComplete = bool.Parse(((IEnumerable<string>)value.RawValue).FirstOrDefault());
             }
 
+            value = bindingContext.ValueProvider.GetValue(bindingContext.ModelName + ".IsDropdown");
+            if (value != null)
+            {
+                result.IsDropdown = bool.Parse(((IEnumerable<string>)value.RawValue).FirstOrDefault());
+            }
             return result;
         }
     }
@@ -77,6 +82,9 @@ namespace Catfish.Models.Regions
 
         [Display(Name = "Autocomplete")]
         public bool IsAutoComplete { get; set; }
+
+        [Display(Name = "Dropdown")]
+        public bool IsDropdown { get; set; }
     }
 
     [Export(typeof(IExtension))]
@@ -100,7 +108,10 @@ namespace Catfish.Models.Regions
 
         [ScriptIgnore]
         public List<CFItem> Items { get; set; }
-        
+
+        [ScriptIgnore]
+        public SelectList ListFields { get; set; }
+
         public AdvanceSearchContainer()
         {
            
@@ -144,6 +155,23 @@ namespace Catfish.Models.Regions
                 foreach (var field in Fields)
                 {
                     CFEntityTypeAttributeMapping map = entityTypeService.GetEntityTypeAttributeMappingById(field.Id);
+
+                    if(!typeof(Catfish.Core.Models.Forms.OptionsField).IsAssignableFrom(field.GetType()))
+                    {
+                        if(field.IsDropdown)
+                        {
+                            string fId = "value_" + map.MetadataSet.Guid.Replace('-','_') + "_" + map.Field.Guid.Replace('-','_') + "_en_ss";
+
+
+                            string result = SolrService.GetPartialMatichingText(fId, "", 100);
+                            var response = Newtonsoft.Json.JsonConvert.DeserializeObject<SolrResponse>(result);
+                            //foreach(var r in response)
+                            //{
+                                
+                            //}
+
+                        }
+                    }
 
                     Mappings.Add(map);
                 }
