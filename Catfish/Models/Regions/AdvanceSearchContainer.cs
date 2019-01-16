@@ -73,7 +73,7 @@ namespace Catfish.Models.Regions
 
     [ModelBinder(typeof(AdvancedSearchContainerFieldBinder))]
     [TypeConverter(typeof(AdvancedSearchContainerFieldConverter))]
-    public struct AdvancedSearchContainerField
+    public class AdvancedSearchContainerField
     {
         public int Id { get; set; }
 
@@ -85,6 +85,17 @@ namespace Catfish.Models.Regions
 
         [Display(Name = "Dropdown")]
         public bool IsDropdown { get; set; }
+       
+        public List<SelectListItem> ListFields { get; set; }
+      
+        public AdvancedSearchContainerField()
+        {
+            Id = 0;
+            IsMultiple = false;
+            IsAutoComplete = false;
+            IsDropdown = false;
+            ListFields = new List<SelectListItem>();
+        }
     }
 
     [Export(typeof(IExtension))]
@@ -109,8 +120,7 @@ namespace Catfish.Models.Regions
         [ScriptIgnore]
         public List<CFItem> Items { get; set; }
 
-        [ScriptIgnore]
-        public SelectList ListFields { get; set; }
+        
 
         public AdvanceSearchContainer()
         {
@@ -136,7 +146,6 @@ namespace Catfish.Models.Regions
                 {
                     CFEntityTypeAttributeMapping map = entityTypeService.GetEntityTypeAttributeMappingById(field.Id);
                     Mappings.Add(map);
-
                 }
             }
 
@@ -145,18 +154,20 @@ namespace Catfish.Models.Regions
         
         public override object GetContent(object model)
         {
+            
             if (Fields.Count > 0)
             {
                 //For testing -- go to the page that use this region and add ?entity=[entityId]
                 HttpContext context = HttpContext.Current;
 
-
+                
+               
                 //grab the columnHeaders
                 foreach (var field in Fields)
                 {
                     CFEntityTypeAttributeMapping map = entityTypeService.GetEntityTypeAttributeMappingById(field.Id);
-
-                    if(!typeof(Catfish.Core.Models.Forms.OptionsField).IsAssignableFrom(field.GetType()))
+                    
+                    if (!typeof(Catfish.Core.Models.Forms.OptionsField).IsAssignableFrom(field.GetType()))
                     {
                         if(field.IsDropdown)
                         {
@@ -165,10 +176,16 @@ namespace Catfish.Models.Regions
 
                             string result = SolrService.GetPartialMatichingText(fId, "", 100);
                             var response = Newtonsoft.Json.JsonConvert.DeserializeObject<SolrResponse>(result);
-                            //foreach(var r in response)
-                            //{
-                                
-                            //}
+                           
+                            if (response.facet_counts.facet_fields.Count > 0)
+                            {
+
+                                foreach (var f in response.facet_counts.GetFacetsForField(fId))
+                                {
+                                    field.ListFields.Add(new SelectListItem { Text = f.Item1, Value =f.Item1 });              
+                                }
+                               
+                            }
 
                         }
                     }
