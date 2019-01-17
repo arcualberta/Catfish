@@ -1,6 +1,6 @@
 ﻿@model Catfish.Models.Regions.AdvanceSearchContainer
 @using Catfish.Core.Models;
-
+@using Catfish.Models.Regions;
 
 @{ string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
@@ -34,7 +34,7 @@
                 <div class="field-title">@m.Label</div>
                 @if (fType.FullName == "Catfish.Core.Models.Forms.NumberField" || fType.FullName == "Catfish.Core.Models.Forms.DateField")
                 {
-                    if (field.IsDropdown)
+                    if (field.SelectedDisplayOption.Equals(eDisplayOption.DropDownList))
                     {
                       
                         <div class="search-entry divNumber">
@@ -53,7 +53,7 @@
                 }
                 else if (typeof(Catfish.Core.Models.Forms.OptionsField).IsAssignableFrom(fType))
                 {
-                    if (field.IsMultiple)
+                    if (field.SelectedDisplayOption.Equals(eDisplayOption.MultipleSelect)) //(field.IsMultiple)
                     {
                               @:< div class="search-entry divCheckbox">
                                         <ul>
@@ -79,12 +79,20 @@
                 }
                 else //(fType.FullName == "Catfish.Core.Models.Forms.TextField")
                 {
-                    if (field.IsDropdown)
+                    if (field.SelectedDisplayOption.Equals(eDisplayOption.DropDownList))
                     {
 
                         <div class="search-entry divText">
                             @Html.DropDownList("AdvanceSearchContainer-DropdownList", field.ListFields,"", new { @class = "textDropDown" })
                            
+                        </div>
+                    }
+                    else if (field.SelectedDisplayOption.Equals(eDisplayOption.TextArea))
+                    {
+
+                        <div class="search-entry divText">
+                            <textarea type="text" class="input @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)" rows="3" cols="50"></textarea>
+
                         </div>
                     }
                     else
@@ -159,6 +167,7 @@
 
                     if (entry.hasClass("divText")) {
                         searchValue = entry.children("input").val() == null ? entry.find(".textDropDown").val() : entry.children("input").val();
+                        searchValue = searchValue == null ? entry.children("textarea").val(): searchValue;
                         if (searchValue.length > 0) {
                             searchString = searchString.length > 0 ? searchString + " && " : "";
                             searchString = searchString + (searchId + 'txts_en:"' + searchValue + '"');

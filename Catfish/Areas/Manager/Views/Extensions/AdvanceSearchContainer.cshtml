@@ -1,4 +1,5 @@
 ﻿@model Catfish.Models.Regions.AdvanceSearchContainer
+@using Catfish.Models.Regions;
 
 <ul class="form">
 
@@ -26,8 +27,11 @@
                                 <td><span>@f.Name</span></td>
                                 <td>
                                     <span style="float: right;">@Catfish.Resources.Views.Shared.DisplayTemplates.AdvanceSearchContainer.IsAutoComplete&nbsp;@Html.CheckBoxFor(m => m.Fields[i].IsAutoComplete)</span>
+                                    <span style="float: right;">@Html.EnumDropDownListFor(m=>m.Fields[i].SelectedDisplayOption,"")</span>
+                                   
+                                    @*<span style="float: right;">@Catfish.Resources.Views.Shared.DisplayTemplates.AdvanceSearchContainer.IsAutoComplete&nbsp;@Html.CheckBoxFor(m => m.Fields[i].IsAutoComplete)</span>
                                     <span style="float: right;">@Catfish.Resources.Views.Shared.DisplayTemplates.AdvanceSearchContainer.IsMultiple&nbsp;@Html.CheckBoxFor(m => m.Fields[i].IsMultiple)</span>
-                                    <span style="float: right;">@Catfish.Resources.Views.Shared.DisplayTemplates.AdvanceSearchContainer.IsDropdown&nbsp;@Html.CheckBoxFor(m => m.Fields[i].IsDropdown)</span>
+                                    <span style="float: right;">@Catfish.Resources.Views.Shared.DisplayTemplates.AdvanceSearchContainer.IsDropdown&nbsp;@Html.CheckBoxFor(m => m.Fields[i].IsDropdown)</span>*@
                                 </td>
                                 <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteAdvancedSearchRow('@rowId');"></span><span class="glyphicon glyphicon-arrow-up up"></span><span class="glyphicon glyphicon-arrow-down down"></span></td>
                             </tr>
