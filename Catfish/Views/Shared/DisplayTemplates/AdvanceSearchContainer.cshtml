@@ -128,6 +128,8 @@
             ev.preventDefault();
 
             $("#@(cssId) form")[0].reset();
+
+             window.updateUrlParameters({ q: "" });
         })
 
         function getSearchValueField(divContainer) {
