@@ -31,6 +31,7 @@ CalculatedField.prototype.updateParameters = function (e) {
     }
 
     if (triggerUpdate) {
+        this.isLoaded = true;
         this.updatePanel();
     }
 }
