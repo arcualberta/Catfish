@@ -5,12 +5,14 @@
     string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+
+    string scriptVariable = "GraphPanel" + Guid.NewGuid().ToString("N");
 }
 
     @Model.RenderScript("https://d3js.org/d3.v4.min.js", Url)
     @Model.RenderScript("~/Scripts/D3/graph.js", Url)
 
-    <div id="@cssId" class="bs @cssClasses container container-fluid loadable-panel" style="margin-left:0;">
+    <div id="@cssId" class="bs @cssClasses container container-fluid loadable-panel" style="margin-left:0;" data-script-variable="@scriptVariable">
         <style type="text/css" scoped>
                         @Html.Raw(cssStyles)
         </style>
@@ -24,66 +26,12 @@
     </div>
 
     <script>
-        {
-            let graph = new Graph('@Model.XaxisLabel', '@Model.YaxisLabel', '@Model.GraphTitle', parseInt('@Model.XScale'), parseInt('@Model.YScale'), $('#@cssId > svg')[0], $('#@cssId > .legend')[0]);
-            let isLoaded = false;
-            let query = '*:*';
-            let chartType = "@Model.SelectedGraphType.ToString()";
-
-            function updateChart() {
-                window.startLoading("#@cssId", 60000);
-
-                $.ajax({
-                    type: 'GET',
-                    url: @Html.Raw(Json.Encode(Url.Action("GetGraphData", "Items"))),
-                    dataType: 'json',
-                    data: {
-                        xMetadataSet: @Html.Raw(Json.Encode(Model.SelectedMetadataSetX)),
-                        yMetadataSet: @Html.Raw(Json.Encode(Model.SelectedMetadataSetY)),
-                        xField: @Html.Raw(Json.Encode(Model.XaxisField)),
-                        yField: @Html.Raw(Json.Encode(Model.YaxisField)),
-                        catMetadataset: @Html.Raw(Json.Encode(Model.SelectedMetadataSetCat)),
-                        catField: @Html.Raw(Json.Encode(Model.Category)),
-                        q: query,
-                        isCatOptionsIndex: @Html.Raw(Json.Encode(Model.IsCategoryOptionsField))
-                    },
-                    success: function (response) {
-                        if (chartType === "Bar") {
-                            var barOption = $("#@cssId .barchartOption")[0];
-                            barOption.style.display = "block";
-                        }
-                        else {
-                            var barOption = $("#@cssId .barchartOption")[0];
-                            barOption.style.display = "none";
-                        }
-
-                        var parsedData = graph.parseDataSF(response);
-                        window.stopLoading("#@cssId");
-                        graph.clear();
-                        graph["drawChartMulti" + chartType](parsedData);
-                    },
-                    error: function (err) {
-                        console.log(err);
-                        window.stopLoading("#@cssId");
-                    }
-                });
-            }
-
-            window.addEventListener('updatedparams', function (e) {
-                var params = e.detail;
-                var triggerUpdate = !isLoaded;
-
-                if ('q' in params) {
-                    triggerUpdate = true;
-                    query = params['q'];
-                }
-
-                if (triggerUpdate) {
-                    updateChart();
-                }
-            });
-
-        }
+        window['@scriptVariable'] = new GraphPanel('@cssId', @Html.Raw(Json.Encode(Url.Action("GetGraphData", "Items"))), '@Enum.GetName(typeof(Catfish.Models.Regions.GraphPanel.GraphType), Model.SelectedGraphType)',
+            '@Model.XaxisLabel', '@Model.YaxisLabel', '@Model.GraphTitle', parseInt('@Model.XScale'), parseInt('@Model.YScale'),
+            @Html.Raw(Json.Encode(Model.SelectedMetadataSetX)), @Html.Raw(Json.Encode(Model.XaxisField)),
+            @Html.Raw(Json.Encode(Model.SelectedMetadataSetY)), @Html.Raw(Json.Encode(Model.YaxisField)),
+            @Html.Raw(Json.Encode(Model.SelectedMetadataSetCat)), @Html.Raw(Json.Encode(Model.Category)),
+            @Html.Raw(Json.Encode(Model.IsCategoryOptionsField)));
     </script>
 
     <style>
