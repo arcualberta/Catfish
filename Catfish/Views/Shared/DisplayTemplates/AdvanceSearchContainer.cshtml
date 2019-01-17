@@ -364,11 +364,11 @@
                 data: {
                     fieldId: field,
                     partialText: request.term,
-                    rows: 100
+                    rows: 500
                 },
                 dataType: 'json',
                 success: function (result) {
-                    var result = $.unique(result.response.docs.map(function (m) { return m[field]; })).slice(0, 10); // Only use 10 options.
+                    var result = $.unique(result.response.docs.map(function (m) { return m[field][0]; })).slice(0, 10); // Only use 10 options.
 
                     response(result);
                 },
