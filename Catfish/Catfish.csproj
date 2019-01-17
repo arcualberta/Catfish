@@ -371,6 +371,7 @@
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="RazorGenerator.LICENSE.md" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\calculatedField.js" />
     <Content Include="Scripts\catfish-global.js" />
     <Content Include="Scripts\D3\graph.js" />
     <Content Include="Scripts\fileupload.js" />
