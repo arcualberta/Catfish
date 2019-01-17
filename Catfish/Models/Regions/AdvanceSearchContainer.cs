@@ -67,14 +67,22 @@ namespace Catfish.Models.Regions
             {
                 result.IsDropdown = bool.Parse(((IEnumerable<string>)value.RawValue).FirstOrDefault());
             }
+            value = bindingContext.ValueProvider.GetValue(bindingContext.ModelName + ".SelectedDisplayOption");
+            if (value != null)
+            {
+                result.SelectedDisplayOption = (eDisplayOption)Enum.Parse(typeof(eDisplayOption), ((IEnumerable<string>)value.RawValue).FirstOrDefault()); 
+            }
             return result;
         }
     }
+    public enum eDisplayOption { Default=1, TextArea, MultipleSelect, DropDownList }
 
     [ModelBinder(typeof(AdvancedSearchContainerFieldBinder))]
     [TypeConverter(typeof(AdvancedSearchContainerFieldConverter))]
     public class AdvancedSearchContainerField
     {
+        public eDisplayOption SelectedDisplayOption { get; set; }
+
         public int Id { get; set; }
 
         [Display(Name = "Multiple Select")]
@@ -85,7 +93,10 @@ namespace Catfish.Models.Regions
 
         [Display(Name = "Dropdown")]
         public bool IsDropdown { get; set; }
-       
+
+        public bool IsTextArea { get; set; }
+
+        [ScriptIgnore]
         public List<SelectListItem> ListFields { get; set; }
       
         public AdvancedSearchContainerField()
@@ -94,7 +105,9 @@ namespace Catfish.Models.Regions
             IsMultiple = false;
             IsAutoComplete = false;
             IsDropdown = false;
+            IsTextArea = false;
             ListFields = new List<SelectListItem>();
+            SelectedDisplayOption = eDisplayOption.Default;
         }
     }
 
@@ -105,6 +118,7 @@ namespace Catfish.Models.Regions
     [Serializable]
     public class AdvanceSearchContainer : CatfishRegion
     {
+        
         [Display(Name = "Include General Search")]
         public bool HasGeneralSearch { get; set; }
        
@@ -121,7 +135,6 @@ namespace Catfish.Models.Regions
         public List<CFItem> Items { get; set; }
 
         
-
         public AdvanceSearchContainer()
         {
            
@@ -165,11 +178,12 @@ namespace Catfish.Models.Regions
                 //grab the columnHeaders
                 foreach (var field in Fields)
                 {
+                   // field = CheckDisplayOption(field);
                     CFEntityTypeAttributeMapping map = entityTypeService.GetEntityTypeAttributeMappingById(field.Id);
                     
                     if (!typeof(Catfish.Core.Models.Forms.OptionsField).IsAssignableFrom(field.GetType()))
                     {
-                        if(field.IsDropdown)
+                        if(field.SelectedDisplayOption.Equals(eDisplayOption.DropDownList))//(field.IsDropdown)
                         {
                             string fId = "value_" + map.MetadataSet.Guid.Replace('-','_') + "_" + map.Field.Guid.Replace('-','_') + "_en_ss";
 
@@ -197,6 +211,6 @@ namespace Catfish.Models.Regions
             return base.GetContent(model);
         }
 
-
+      
     }
 }
