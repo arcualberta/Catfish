@@ -29,9 +29,6 @@
                                     <span style="float: right;">@Catfish.Resources.Views.Shared.DisplayTemplates.AdvanceSearchContainer.IsAutoComplete&nbsp;@Html.CheckBoxFor(m => m.Fields[i].IsAutoComplete)</span>
                                     <span style="float: right;">@Html.EnumDropDownListFor(m=>m.Fields[i].SelectedDisplayOption,"")</span>
                                    
-                                    @*<span style="float: right;">@Catfish.Resources.Views.Shared.DisplayTemplates.AdvanceSearchContainer.IsAutoComplete&nbsp;@Html.CheckBoxFor(m => m.Fields[i].IsAutoComplete)</span>
-                                    <span style="float: right;">@Catfish.Resources.Views.Shared.DisplayTemplates.AdvanceSearchContainer.IsMultiple&nbsp;@Html.CheckBoxFor(m => m.Fields[i].IsMultiple)</span>
-                                    <span style="float: right;">@Catfish.Resources.Views.Shared.DisplayTemplates.AdvanceSearchContainer.IsDropdown&nbsp;@Html.CheckBoxFor(m => m.Fields[i].IsDropdown)</span>*@
                                 </td>
                                 <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteAdvancedSearchRow('@rowId');"></span><span class="glyphicon glyphicon-arrow-up up"></span><span class="glyphicon glyphicon-arrow-down down"></span></td>
                             </tr>
@@ -86,7 +83,12 @@
                     <td><span>` + FieldText + `</span></td>
                       <td>
                         <span style="float: right;">` + autocomplete + `&nbsp;<input data-val="true" name="` + fieldName + `.IsAutoComplete" type="checkbox" value="true"/></span>
-                        <span style="float: right;">` + multiselect + `&nbsp;<input data-val="true" name="` + fieldName + `.IsMultiple" type="checkbox" value="true"/></span>
+                        <span style="float: right;"><select data-val="true" data-val-required="The SelectedDisplayOption field is required."  name="` +fieldName + `.SelectedDisplayOption"><option value=""></option>
+                            <option selected="selected" value="1">Default</option>
+                            <option value="2">TextArea</option>
+                            <option value="3">MultipleSelect</option>
+                            <option value="4">DropDownList</option>
+                          </select></span>
                       </td>
                     <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteAdvancedSearchRow('` + rowId + `')"></span><span class="glyphicon glyphicon-arrow-up"></span><span class="glyphicon glyphicon-arrow-down"></span></td>
                 </tr>`;
