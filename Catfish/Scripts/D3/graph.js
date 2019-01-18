@@ -336,11 +336,13 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
                 d.checked = true;
             }
 
-            d.values.forEach(function (d, i) {
-                if (d.checked && maxY < d.value) {
-                    maxY = d.value;
-                }
-            });
+            if (d.checked) {
+                d.values.forEach(function (d, i) {
+                    if (maxY < d.value) {
+                        maxY = d.value;
+                    }
+                });
+            }
         });
 
         // Max y
