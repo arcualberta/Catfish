@@ -337,7 +337,7 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
             }
 
             d.values.forEach(function (d, i) {
-                if (maxY < d.value) {
+                if (d.checked && maxY < d.value) {
                     maxY = d.value;
                 }
             });
