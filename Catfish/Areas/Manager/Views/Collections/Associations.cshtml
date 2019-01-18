@@ -2,7 +2,7 @@
 @using Catfish.Areas.Manager.Models.ViewModels;
 @using Catfish.Core.Models;
 
-@{ 
+@{
     ViewBag.Title = "Associations";
 
     string childrenItemsKoContext = "ctx_" + Guid.NewGuid().ToString("N");
@@ -16,28 +16,30 @@
     <script type="text/javascript" src="~/Scripts/knockout.mapping-latest.js"></script>
     <script type="text/javascript" src="~/Scripts/perpetuum.knockout.js"></script>
     <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
+
 }
 
 @section Toolbar {
     @Html.Partial("Partial/koEditToolbar", Model,
-        new ViewDataDictionary() { { "reloadAction", "associations" },
-            { "saveButtonFunctionCall", "saveAssociations" } })
+                new ViewDataDictionary() { { "reloadAction", "associations" },
+{ "saveButtonFunctionCall", "saveAssociations" } })
 }
 
 <div class="grid_12">
     <h3>@Model.GetName()</h3>
 
-    @Html.Partial("Partial/ParentCollectionList", Model)
+    @*@Html.Partial("Partial/ParentCollectionList", Model)
 
-    @{ EntityContentViewModel childCollections = ViewBag.ChildCollections as EntityContentViewModel; }
-    @Html.Partial("Partial/EntityContent", childCollections, new ViewDataDictionary() { { "title", "Child Collections" }, { "saveAction", "UpdateChildren" }, { "contextName", childrenCollectionsKoContext } })
+        @{ EntityContentViewModel childCollections = ViewBag.ChildCollections as EntityContentViewModel; }
+        @Html.Partial("Partial/EntityContent", childCollections, new ViewDataDictionary() { { "title", "Child Collections" }, { "saveAction", "UpdateChildren" }, { "contextName", childrenCollectionsKoContext } })
 
-    @{ EntityContentViewModel childItems = ViewBag.ChildItems as EntityContentViewModel; }
-    @Html.Partial("Partial/EntityContent", childItems, new ViewDataDictionary() { { "title", "Child Items" }, { "saveAction", "UpdateChildren" }, { "contextName", childrenItemsKoContext } })
+        @{ EntityContentViewModel childItems = ViewBag.ChildItems as EntityContentViewModel; }
+        @Html.Partial("Partial/EntityContent", childItems, new ViewDataDictionary() { { "title", "Child Items" }, { "saveAction", "UpdateChildren" }, { "contextName", childrenItemsKoContext } })
 
-    @{ EntityContentViewModel relatedItems = ViewBag.RelatedItems as EntityContentViewModel; }
-    @Html.Partial("Partial/EntityContent", relatedItems, new ViewDataDictionary() { { "title", "Related Items" }, { "saveAction", "UpdateRelatedItems" }, { "contextName", relationshipKoContext } })
+        @{ EntityContentViewModel relatedItems = ViewBag.RelatedItems as EntityContentViewModel; }
+        @Html.Partial("Partial/EntityContent", relatedItems, new ViewDataDictionary() { { "title", "Related Items" }, { "saveAction", "UpdateRelatedItems" }, { "contextName", relationshipKoContext } })*@
 
+    <div id="associations"></div>
 
 </div>
 
@@ -71,3 +73,6 @@
         });
     }
 </script>
+
+
+<script src="~/Scripts/dist/associationsView.js"></script>
