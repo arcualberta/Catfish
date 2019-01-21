@@ -2,7 +2,7 @@
 import ReactDOM from "react-dom";
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import ActionableEntityList from './actionableEntityList'; 
+import ActionableTable from './actionableTable'; 
 import update from 'immutability-helper';
 
 export default class AssociationsLists extends React.Component {
@@ -221,24 +221,28 @@ export default class AssociationsLists extends React.Component {
 
 
         return <div>
-                <ActionableEntityList
+            <div>{allData.title}</div>
+            <ActionableTable
                     listKey={allListKey}
                     data={allData}
                     toggle={this.toggle}
                     isChecked={this.isChecked}
                     toggleAll={this.toggleAll}
-                    areAllChecked={this.areAllChecked}
-                    actions={allActions}
-                />
-                <ActionableEntityList
-                    listKey={parentsListKey}
-                    data={parentsData}
-                    toggle={this.toggle}
-                    isChecked={this.isChecked}
                     toggleAll={this.toggleAll}
                     areAllChecked={this.areAllChecked}
-                    actions={parentsActions}
-                />
+                    actions={allActions}
+            />
+
+            <div>{parentsData.title}</div>
+            <ActionableTable
+                listKey={parentsListKey}
+                data={parentsData}
+                toggle={this.toggle}
+                isChecked={this.isChecked}
+                toggleAll={this.toggleAll}
+                areAllChecked={this.areAllChecked}
+                actions={parentsActions}
+            />
             </div>
     }
 
