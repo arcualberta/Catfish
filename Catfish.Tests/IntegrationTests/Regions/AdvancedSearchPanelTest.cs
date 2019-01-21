@@ -145,6 +145,66 @@ namespace Catfish.Tests.IntegrationTests.Regions
         }
 
         [Test]
+        public void CanSearchWithDropDownList()
+        {
+            CreateSearchEntityType();
+
+            CreateAndAddAddvancedSearchToMain(false, new FormField[] { MetadataFields[0], MetadataFields[1], MetadataFields[2] }, 1, true);
+            CreateAndAddEntityListToMain(2);
+
+            Func<int, int> yearFunc = i => i + 2000;
+            Func<int, float> amountFunc = i => (float)(Math.Sin((double)i) + 2.0);
+            Func<int, string> nameFunc = i => "Item Entry " + i;
+            Func<int, string> optionFunc = i => null;
+
+            CreateItems(10, yearFunc, amountFunc, optionFunc, nameFunc);
+
+            List<string> nameList = new List<string>();
+            for (int i = 0; i < 10; ++i)
+            {
+                nameList.Add(nameFunc(i));
+            }
+
+            Driver.Navigate().GoToUrl(FrontEndUrl);
+            AssertItemsNameShows(nameList);
+
+            // Search on the year
+            int minYear = 2001;
+            int maxYear = 2005;
+            for (int i = 9; i >= 0; --i)
+            {
+                int year = yearFunc(i);
+                if (year < minYear || year > maxYear)
+                {
+                    nameList.RemoveAt(i);
+                }
+            }
+
+          
+
+            SelectElement selectFrom = new SelectElement(Driver.FindElement(By.ClassName("numberDropDownFrom")));
+            selectFrom.SelectByText(minYear.ToString());
+
+            SelectElement selectTo = new SelectElement(Driver.FindElement(By.ClassName("numberDropDownTo")));
+            selectTo.SelectByText(maxYear.ToString());
+
+            Driver.FindElement(By.ClassName("search-button")).Click();
+
+            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(20.0));
+            wait.Until(driver => driver.FindElements(By.ClassName("loading-panel")).Count == 0);
+            AssertItemsNameShows(nameList);
+
+            // Reload the page
+            Driver.Navigate().Refresh();
+            wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(20.0));
+            wait.Until(driver => driver.FindElements(By.ClassName("loading-panel")).Count == 0);
+            AssertItemsNameShows(nameList);
+
+            
+        }
+
+
+        [Test]
         public void CanGenerateLineChart()
         {
             CreateSearchEntityType();
