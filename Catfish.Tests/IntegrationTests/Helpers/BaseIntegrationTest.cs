@@ -713,7 +713,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             return found;
         }
 
-        protected void CreateAndAddAddvancedSearchToMain(bool includeKeywordSearch, IEnumerable<FormField> fields, int regionIndex = 1)
+        protected void CreateAndAddAddvancedSearchToMain(bool includeKeywordSearch, IEnumerable<FormField> fields, int regionIndex = 1, bool isDropdown=false)
         {
             // Create the advanced search region
             Driver.FindElement(By.LinkText(SettingsLinkText), 10).Click();
@@ -761,6 +761,13 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                         region.FindElement(By.XPath(".//input[contains(@name, '.IsAutoComplete')]")).Click();
                     }
                     
+                    //display the year in dropdown
+                    if(field.Name.Equals("Year") && isDropdown)
+                    {
+                        SelectElement selectOptions = new SelectElement((region.FindElements(By.XPath(".//select[contains(@name, '.SelectedDisplayOption')]"))[2]));
+                        selectOptions.SelectByText("DropDownList");
+                       
+                    }
                 }
             }
 
