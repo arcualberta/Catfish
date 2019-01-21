@@ -119,6 +119,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
             }
 
             IWebElement field = Driver.FindElements(By.ClassName("search-entry"))[3];
+
             field.FindElement(By.ClassName("search-from")).SendKeys(minYear.ToString());
             field.FindElement(By.ClassName("search-to")).SendKeys(maxYear.ToString());
             
@@ -133,6 +134,14 @@ namespace Catfish.Tests.IntegrationTests.Regions
             wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(20.0));
             wait.Until(driver => driver.FindElements(By.ClassName("loading-panel")).Count == 0);
             AssertItemsNameShows(nameList);
+
+            //test the auto complete
+            IWebElement autofield = Driver.FindElements(By.ClassName("search-entry"))[1].FindElement(By.ClassName("autocomplete-text")); //this should pop up the auto suggest window
+            autofield.SendKeys("It");
+            //press arraow down key to select the 1st entry on the list
+            // autofield.SendKeys(Keys.ArrowDown);
+            selectOptionWithText("Item Entry 0");
+            Assert.AreEqual("Item Entry 0", autofield.GetAttribute("value"));
         }
 
         [Test]
@@ -305,6 +314,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
             }
 
             IWebElement field = Driver.FindElements(By.ClassName("search-entry"))[3];
+
             field.FindElement(By.ClassName("search-from")).SendKeys(minYear.ToString());
             field.FindElement(By.ClassName("search-to")).SendKeys(maxYear.ToString());
 
@@ -414,6 +424,33 @@ namespace Catfish.Tests.IntegrationTests.Regions
                 Assert.AreEqual(rows[i].FindElement(By.ClassName("column-1")).Text, name);
                 ++i;
             }
+        }
+        /// <summary>
+        /// Get selected text from Jquery auto select pop up drop down list
+        /// </summary>
+        /// <param name="textToSelect"></param>
+        public void selectOptionWithText(String textToSelect)
+        {
+            try
+            {
+                IWebElement autoOptions = Driver.FindElement(By.Id("ui-id-1"), 20);
+             
+                List<IWebElement> optionsToSelect = autoOptions.FindElements(By.TagName("li")).ToList();
+                foreach(IWebElement option in optionsToSelect)
+                {
+                   
+                    if (option.FindElement(By.TagName("div")).Text.Equals(textToSelect))
+                    {
+                        option.Click();
+                        break;
+                    }
+                }
+            }
+            catch (NoSuchElementException e)
+            {
+                throw e;
+            }
+          
         }
     }
 }
