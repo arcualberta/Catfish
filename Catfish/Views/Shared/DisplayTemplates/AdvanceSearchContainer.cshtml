@@ -1,6 +1,6 @@
 ﻿@model Catfish.Models.Regions.AdvanceSearchContainer
 @using Catfish.Core.Models;
-
+@using Catfish.Models.Regions;
 
 @{ string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
@@ -34,44 +34,73 @@
                 <div class="field-title">@m.Label</div>
                 @if (fType.FullName == "Catfish.Core.Models.Forms.NumberField" || fType.FullName == "Catfish.Core.Models.Forms.DateField")
                 {
-                    //number field or Date field
-                    <div class="search-entry divNumber">
-                        <span class="label-default field-sub-title">From</span><input type="text" class="search-from @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)" id="@id-From"/>
-                        <span class="label-default field-sub-title">To</span><input type="text" class="search-to @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)" id="@id-To"/>
-                    </div>
-
+                    if (field.SelectedDisplayOption.Equals(eDisplayOption.DropDownList))
+                    {
+                      
+                        <div class="search-entry divNumber">
+                            <span class="label-default field-sub-title">From</span>@Html.DropDownList("AdvanceSearchContainer-DropdownList", field.ListFields,"", new {@id= @id+"-From", @class="numberDropDownFrom"})
+                            <span class="label-default field-sub-title">To</span>@Html.DropDownList("AdvanceSearchContainer-DropdownList", field.ListFields,"", new { @id = @id + "-To", @class="numberDropDownTo" })
+                        </div>
+                    }
+                    else
+                    {
+                        //number field or Date field
+                       <div class="search-entry divNumber">
+                           <span class="label-default field-sub-title">From</span><input type="text" class="search-from @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)" id="@id-From"/>
+                           <span class="label-default field-sub-title">To</span><input type="text" class="search-to @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)" id="@id-To"/>
+                       </div>
+                    }
                 }
                 else if (typeof(Catfish.Core.Models.Forms.OptionsField).IsAssignableFrom(fType))
                 {
-                    if (field.IsMultiple)
+                    if (field.SelectedDisplayOption.Equals(eDisplayOption.MultipleSelect)) //(field.IsMultiple)
                     {
-                        <div class="search-entry divCheckbox">
-                            <ul>
-                                @foreach (var option in ((Catfish.Core.Models.Forms.OptionsField)m.Field).Options)
-                                {
-                                    var nm = "AdvanceSearchContainer-Chkbox";
+                              @:< div class="search-entry divCheckbox">
+                                        <ul>
+                                    @foreach (var option in ((Catfish.Core.Models.Forms.OptionsField)m.Field).Options)
+                                    {
+                                        var nm = "AdvanceSearchContainer-Chkbox";
                                     <li>
                                         <input type="checkbox" name="@nm" value="@option.Guid"/>
                                         <span>@option.Value[0].Value</span>
                                     </li>
-                                }
-                            </ul>
-                        </div>
+                                    }
+                                    </ul>
+                                    @:</div>
                     }
                     else
                     {
                         @:<div class="search-entry divDropDownList">
                             var options = new SelectList(((Catfish.Core.Models.Forms.OptionsField)m.Field).Options, "Guid", "Value[0].Value");
                         var nm = "AdvanceSearchContainer-DropdownList";
-                            @Html.DropDownList(@nm, options, "")
+                        @Html.DropDownList(@nm, options, "")
                         @:</div>
                     }
                 }
                 else //(fType.FullName == "Catfish.Core.Models.Forms.TextField")
                 {
+                    if (field.SelectedDisplayOption.Equals(eDisplayOption.DropDownList))
+                    {
+
+                        <div class="search-entry divText">
+                            @Html.DropDownList("AdvanceSearchContainer-DropdownList", field.ListFields,"", new { @class = "textDropDown" })
+                           
+                        </div>
+                    }
+                    else if (field.SelectedDisplayOption.Equals(eDisplayOption.TextArea))
+                    {
+
+                        <div class="search-entry divText">
+                            <textarea type="text" class="input @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)" rows="3" cols="50"></textarea>
+
+                        </div>
+                    }
+                    else
+                    {
                      <div class="search-entry divText">
                        <input type="text" class="input @(field.IsAutoComplete ? "autocomplete-text" : string.Empty)"/>
                      </div>
+                    }
                 }
 
 
@@ -107,12 +136,14 @@
             ev.preventDefault();
 
             $("#@(cssId) form")[0].reset();
+
+             window.updateUrlParameters({ q: "" });
         })
 
         function getSearchValueField(divContainer) {
             var field = divContainer.closest("div[data-searchid]");
             var searchEntries = field.children(".search-entry");
-            
+
             return field.attr("data-searchid") + "en_ss";
         }
 
@@ -135,14 +166,15 @@
                     var searchValue;
 
                     if (entry.hasClass("divText")) {
-                        searchValue = entry.children("input").val();
+                        searchValue = entry.children("input").val() == null ? entry.find(".textDropDown").val() : entry.children("input").val();
+                        searchValue = searchValue == null ? entry.children("textarea").val(): searchValue;
                         if (searchValue.length > 0) {
                             searchString = searchString.length > 0 ? searchString + " && " : "";
                             searchString = searchString + (searchId + 'txts_en:"' + searchValue + '"');
                         }
                     } else if (entry.hasClass("divNumber")) {
-                        var from = entry.find(".search-from").val();
-                        var to = entry.find(".search-to").val();
+                        var from = entry.find(".search-from").val() == null ? entry.find(".numberDropDownFrom").val() : entry.find(".search-from").val();
+                        var to = entry.find(".search-to").val() == null ? entry.find(".numberDropDownTo").val() : entry.find(".search-to").val();
 
                         if (from.length > 0 || to.length > 0) {
                             from = from ? from : '*';
@@ -351,5 +383,9 @@
             minLength: 1,
             source: autocompleteCall
         });
+
+        $(function(){
+             var fields = autocompleteCall
+         });
     }
 </script>
