@@ -55,7 +55,7 @@
                 {
                     if (field.SelectedDisplayOption.Equals(eDisplayOption.MultipleSelect)) //(field.IsMultiple)
                     {
-                              @:< div class="search-entry divCheckbox">
+                              <div class="search-entry divCheckbox">
                                         <ul>
                                     @foreach (var option in ((Catfish.Core.Models.Forms.OptionsField)m.Field).Options)
                                     {
@@ -66,15 +66,16 @@
                                     </li>
                                     }
                                     </ul>
-                                    @:</div>
+                               </div>
                     }
                     else
                     {
-                        @:<div class="search-entry divDropDownList">
-                            var options = new SelectList(((Catfish.Core.Models.Forms.OptionsField)m.Field).Options, "Guid", "Value[0].Value");
+                        var options = new SelectList(((Catfish.Core.Models.Forms.OptionsField)m.Field).Options, "Guid", "Value[0].Value");
                         var nm = "AdvanceSearchContainer-DropdownList";
-                        @Html.DropDownList(@nm, options, "")
-                        @:</div>
+
+                        <div class="search-entry divDropDownList">
+                            @Html.DropDownList(nm, options, "")
+                        </div>
                     }
                 }
                 else //(fType.FullName == "Catfish.Core.Models.Forms.TextField")
