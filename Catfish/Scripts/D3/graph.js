@@ -194,11 +194,11 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
         updateAxis(this.xAxis, this.yAxis, x, y);
     }
 
-    function updateAxis(xAxis, yAxis, x, y) {
-        xAxis.call(d3.axisBottom(x));
+    function updateAxis(xAxis, yAxis, x, y, transition) {
+        xAxis.transition(transition).call(d3.axisBottom(x));
             
 
-        yAxis.call(d3.axisLeft(y));
+        yAxis.transition(transition).call(d3.axisLeft(y));
     }
 
     function setPathProperties(path, lineFunction, transition) {
@@ -208,79 +208,105 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
                 return d.color;
             })
             .attr("d", function (d) {
-                return lineFunction(d.values);
+                if (d.checked) {
+                    return lineFunction(d.values);
+                } else {
+                    return lineFunction(d.values.map(function (d) { return { year: d.year, value: 0 }; }));
+                }
             })
             .attr("id", function (d, i) { return "line_" + i; });
     }
 
     function updateLines(chartArea, dataNest, lineFunction, transition) {
-        var data = dataNest.filter(function (d) {
-            return d.checked;
-        });
-
-        var lines = chartArea.selectAll("path.line").data(data);
+        var lines = chartArea.selectAll("path.line")
+            .data(dataNest, function (d) { return d.guid; });
 
         // Remove unused lines
         lines.exit().remove();
-        
-        // Update old elements
-        setPathProperties(lines, lineFunction, transition);
     
         // Add new elements
         path = lines.enter().append("path");
-        setPathProperties(path, lineFunction, transition);
 
-        if (path.node()) {
+        // Update Attributes
+        path.merge(lines)
+            .transition(transition)
+            .attr("class", function (d, i) {
+                return "line item-" + d.index;
+            })
+            .style("stroke", function (d) { // Add the colours dynamically
+                return d.color;
+            })
+            .attr("d", function (d) {
+                if (d.checked) {
+                    return lineFunction(d.values);
+                } else {
+                    return lineFunction(d.values.map(function (d) { return { year: d.year, value: 0 }; }));
+                }
+            })
+            .attr("id", function (d, i) {
+                return "line_" + d.index;
+            });
+
+        /*if (path.node()) {
             var totalLength = path.node().getTotalLength();
 
             path.attr("stroke-dasharray", totalLength + " " + totalLength)
                 .attr("stroke-dashoffset", 0);
             //.attr("stroke-dashoffset", totalLength).transition().duration(100).ease(d3.easeCubicOut)
-        }            
+        }  */          
     }
 
-    function setLegendItemProperties(div, dataNest, graph) {
+    function buildChangeFunction(dataNest, graph) {
+        return 
+    }
+
+    function updateLegendAttributes(div, graph, transition) {
         div.attr("class", function (d, i) {
-                return "legend-item item-" + i;
+                return "legend-item item-" + d.index;
             })
             .style("color", function (d, i) {
                 return d.color;
             });
 
-        div.selectAll("input").attr("id", function (d, i) {
-                return "checkbox_" + i;
+        div.selectAll("input")
+            .attr("id", function (d, i) {
+                return "checkbox_" + d.index;
             })
-            .attr("type", "checkbox")
-            .attr("checked", "checked")
-            .on("change", function (d, i, input) {
-                d.checked = this.checked;
+            .property("checked", getCheckProperty);
 
-                /*if (input[i].checked) {
-                    $("#line_" + i).show();
-                } else {
-                    $("#line_" + i).hide();
-                }*/
-
-                graph.update(dataNest);
+        div.selectAll("span")
+            .text(function (d, i) {
+                return " " + d.key;
             });
-
-        div.selectAll("span").text(function (d, i) { return " " + d.key; });
     }
 
-    function updateLegend(divLegend, dataNest, graph) {
-        var legendCategories = divLegend.selectAll("div.legend-item").data(dataNest);
+    function getCheckProperty(d) {
+        return d.checked;
+    }
+
+    function onChange(d, i, input) {
+        d.checked = this.checked;
+
+        d.nest.graph.update(d.nest);
+    }
+
+    function updateLegend(divLegend, dataNest, graph, transition) {
+        var legendCategories = divLegend.selectAll("div.legend-item")
+            .data(dataNest, function (d) { return d.guid; });
         
+        // Add new elements
+        var div = legendCategories.enter().append("div")
+
+        div.append("input")
+            .attr("type", "checkbox")
+            .on("change", onChange);
+
+        div.append("span");
+
+        updateLegendAttributes(div.merge(legendCategories), graph, transition);
+
         // Remove unused categories
         legendCategories.exit().remove();
-
-        // Update old elements
-        setLegendItemProperties(legendCategories, dataNest, graph);
-
-        // Add new elements
-        var div = legendCategories.enter().append("div");
-        div.append("input");
-        div.append("span");
-        setLegendItemProperties(div, dataNest, graph);
     }
 
     MultiLineChart.prototype.generateBase = function () {
@@ -297,7 +323,6 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
 
         this.svgD3 = svg;
         this.g1 = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + " )");
-        this.divLegend = d3.select(this.Legend);
         this.chartArea = svg.append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + " )");
 
@@ -316,9 +341,6 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
         var maxY = 0;
         var transition = d3.transition().duration(100).ease(d3.easeCubicOut);
 
-        // set the colour scale
-        var colorFunction = d3.scaleOrdinal(d3.schemeCategory10);
-
         // Define the line
         var lineFunction = d3.line()
             .x(function (d) {
@@ -328,14 +350,8 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
                 return y(d.value);
             });
 
-        // Setup the data
+        // Max y
         dataNest.forEach(function (d, i) {
-            d.color = colorFunction(d.key);
-
-            if (d.checked == undefined) {
-                d.checked = true;
-            }
-
             if (d.checked) {
                 d.values.forEach(function (d, i) {
                     if (maxY < d.value) {
@@ -345,39 +361,48 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
             }
         });
 
-        // Max y
         y.domain([0, maxY]);
 
         //legendSpace = width / dataNest.length; // spacing for the legend
-        updateAxis(this.xAxis, this.yAxis, x, y);
-        updateLegend(this.divLegend, dataNest, this);
-        updateLines(this.chartArea, dataNest, lineFunction);
-
+        updateAxis(this.xAxis, this.yAxis, x, y, transition);
+        updateLegend(d3.select(this.Legend), dataNest, this, transition);
+        updateLines(this.chartArea, dataNest, lineFunction, transition);
     }
 
     MultiLineChart.prototype.drawChart = function (data) {
         var parseTime = d3.timeParse("%Y");
         var x = this.x;
         var y = this.y;
+        var _this = this;
+
+        // set the colour scale
+        var colorFunction = d3.scaleOrdinal(d3.schemeCategory10);
 
         // Get the data   
         data.forEach(function (d) {
             d.year = parseTime(d.year);
             d.value = +d.value;
         });
-        
-        //get min/max year
-        var minX = d3.min(data, function (d) { return d.year; });
-        var maxX = d3.max(data, function (d) { return d.year; });
 
         // Scale the range of the data 
         x.domain(d3.extent(data, function (d) { return d.year; }));
-        y.domain([0, d3.max(data, function (d) { return d.value; })]);
 
         // Nest the entries by category
         var dataNest = d3.nest()
             .key(function (d) { return d.category; })
-            .entries(data);
+            .entries(data)
+            .sort(function (a, b) { return a.key.localeCompare(b.key) });
+
+        // Setup the data
+        dataNest.forEach(function (d, i) {
+            d.guid = Math.random().toString("16") + Math.random().toString("16");
+            d.color = colorFunction(d.key);
+            d.checked = true;
+            d.index = i;
+            d.nest = dataNest;
+        });
+
+        dataNest.graph = this;
 
         this.update(dataNest);
     }
