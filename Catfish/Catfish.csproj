@@ -369,7 +369,7 @@
     <Content Include="LICENSE" />
     <Content Include="Areas\Manager\Views\Web.config" />
     <Content Include="package.json" />
-    <Content Include="Scripts\es6\actionableEntityList.js" />
+    <Content Include="Scripts\es6\actionableTable.js" />
     <Content Include="Scripts\es6\associationsLists.js" />
     <Content Include="Scripts\es6\associationsView.js" />
     <Content Include="Scripts\es6\file2.js" />

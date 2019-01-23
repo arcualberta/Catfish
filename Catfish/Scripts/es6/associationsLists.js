@@ -1,9 +1,12 @@
-﻿import React from "react";
-import ReactDOM from "react-dom";
-import PropTypes from 'prop-types';
-import axios from 'axios';
-import ActionableTable from './actionableTable'; 
-import update from 'immutability-helper';
+﻿import React from "react"
+import ReactDOM from "react-dom"
+import PropTypes from 'prop-types'
+import axios from 'axios'
+import ActionableTable from './actionableTable'
+import update from 'immutability-helper'
+import ActionButtons from './actionButtons'
+import { objectify } from './helpers'
+import Pagination from './pagination'
 
 export default class AssociationsLists extends React.Component {
 
@@ -16,7 +19,8 @@ export default class AssociationsLists extends React.Component {
             // list of selected entity ids. Can span multiple pages
             selected: [],
             currentPage: 1,
-            totalPages: 1,
+            totalItems: 1,
+            itemsPerPage: 10,
             // N headers to be used as table headers
             // {
             //   id: int,
@@ -41,25 +45,27 @@ export default class AssociationsLists extends React.Component {
         }
 
         this.state = {
-            all: startingState,
-            parents: startingState,
-            children: startingState,
-            relations: startingState
+            all: objectify(startingState),
+            parents: objectify(startingState),
+            children: objectify(startingState),
+            relations: objectify(startingState)
         }
 
         this.toggle = this.toggle.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
         this.isChecked = this.isChecked.bind(this);
         this.areAllChecked = this.areAllChecked.bind(this);
+
+        this.initActions();
     }
 
     isChecked(listkey, id) {
-        const selected = this.state[listkey].selected;
+        const { selected } = this.state[listkey];
         return selected.includes(id);
     }
 
     toggle(listKey, id) {
-        let selected = this.state[listKey].selected;
+        let selected = this.state[listKey].selected.map( x => x );
         const index = selected.indexOf(id);
 
         if (index === -1) {
@@ -73,6 +79,7 @@ export default class AssociationsLists extends React.Component {
                 [listKey]: { selected: { $set: selected } }
             })
         this.setState(currentState)
+
     }
 
     toggleAll(listKey, checked) {
@@ -103,8 +110,7 @@ export default class AssociationsLists extends React.Component {
 
     areAllChecked(listKey) {
 
-        const entities = this.state[listKey].entities;
-        const selected = this.state[listKey].selected;
+        const { entities, selected } = this.state[listKey]
         
         let result = true
         entities.forEach((entity) => {
@@ -127,7 +133,8 @@ export default class AssociationsLists extends React.Component {
                         title: "All",
                         selected: [],
                         currentPage: 1,
-                        totalPages: 5,
+                        totalItems: 5,
+                        itemsPerPage: 10,
                         headers: [
                             {
                                 id: 0,
@@ -170,7 +177,8 @@ export default class AssociationsLists extends React.Component {
                         title: "Parents",
                         selected: [],
                         currentPage: 1,
-                        totalPages: 1,
+                        totalItems: 1,
+                        itemsPerPage: 10,
                         headers: [{
                             id: 0,
                             key: "name",
@@ -194,11 +202,8 @@ export default class AssociationsLists extends React.Component {
             })
     }
 
-    render() {
-
-        const allListKey = "all";
-        const allData = this.state[allListKey];
-        const allActions = [
+    initActions() {
+        this.allActions = [
             {
                 title: "Add",
                 action: (selected) => { console.log("Add " + selected) }
@@ -209,19 +214,29 @@ export default class AssociationsLists extends React.Component {
             }
         ]
 
-        const parentsListKey = "parents";
-        const parentsData = this.state[parentsListKey];
-        const parentsActions = [
+        this.parentsActions = [
             {
                 title: "Compare",
                 action: (selected) => { console.log("Compare " + selected) }
             }
         ]
+
+
+    }
+
+    render() {
+
+        const allListKey = "all";
+        const allData = this.state[allListKey];        
+        const parentsListKey = "parents";
+        const parentsData = this.state[parentsListKey];
         
-
-
         return <div>
             <div>{allData.title}</div>
+            <ActionButtons
+                actions={this.allActions}
+                data={this.state[allListKey].selected}
+                />
             <ActionableTable
                     listKey={allListKey}
                     data={allData}
@@ -230,10 +245,13 @@ export default class AssociationsLists extends React.Component {
                     toggleAll={this.toggleAll}
                     toggleAll={this.toggleAll}
                     areAllChecked={this.areAllChecked}
-                    actions={allActions}
             />
 
             <div>{parentsData.title}</div>
+            <ActionButtons
+                actions={this.parentsActions}
+                data={this.state[parentsListKey].selected}
+            />
             <ActionableTable
                 listKey={parentsListKey}
                 data={parentsData}
@@ -241,8 +259,13 @@ export default class AssociationsLists extends React.Component {
                 isChecked={this.isChecked}
                 toggleAll={this.toggleAll}
                 areAllChecked={this.areAllChecked}
-                actions={parentsActions}
             />
+
+            <Pagination
+                currentPage={allData.currentPage}
+                totalItems={allData.totalItems}
+                itemsPerPage={allData.itemsPerPage}
+                />
             </div>
     }
 

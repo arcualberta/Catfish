@@ -168,3 +168,4 @@ Catfish/App_Data
 /Catfish/App_Data/Uploads/temp-files/
 Plugins
 !/Catfish/Areas/Manager/Views/Build
+/Catfish/Scripts/dist
