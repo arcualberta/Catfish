@@ -219,7 +219,7 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
 
     function updateLines(chartArea, dataNest, lineFunction, transition) {
         var lines = chartArea.selectAll("path.line")
-            .data(dataNest, function (d) { return d.guid; });
+            .data(dataNest, function (d) { return d.key; });
 
         // Remove unused lines
         lines.exit().remove();
