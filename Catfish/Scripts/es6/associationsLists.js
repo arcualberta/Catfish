@@ -214,13 +214,16 @@ export default class AssociationsLists extends React.Component {
             }
         ]
 
-        this.parentsActions = [
+        this.parentsActions                  = [
             {
                 title: "Compare",
                 action: (selected) => { console.log("Compare " + selected) }
             }
         ]
 
+        this.goToPage = (page) => {
+            console.log(page)
+        }
 
     }
 
@@ -263,8 +266,9 @@ export default class AssociationsLists extends React.Component {
 
             <Pagination
                 currentPage={allData.currentPage}
-                totalItems={allData.totalItems}
-                itemsPerPage={allData.itemsPerPage}
+                totalPages={10}
+                goToPage={this.goToPage}
+                delta={2}
                 />
             </div>
     }
