@@ -306,11 +306,29 @@ namespace Catfish.Services
             return result;
         }
 
-        public IEnumerable<GraphQueryObject> GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, bool isCatDropdown = false, string languageCode = "en")
+        private string GetGraphFieldString(string metadataSetGuid, string fieldGuid, string languageCode = "en", bool wrapInFunction = false)
         {
-            string xIndexId = string.Format("value_{0}_{1}_is", xMetadataSet.Replace('-', '_'), xField.Replace('-', '_'));
-            string yIndexId = string.Format("value_{0}_{1}_is", yMetadataSet.Replace('-', '_'), yField.Replace('-', '_'));
-            string catIndexId = string.IsNullOrEmpty(catField) ? null : string.Format("value_{0}_{1}_{2}_ss", catMetadataSet.Replace('-', '_'), catField.Replace('-', '_'), languageCode);
+            string baseSearch = wrapInFunction ? "\"unique(value_{0}_{1}_{2}_ss)\"" : "value_{0}_{1}_{2}_ss";
+
+            CFMetadataSet metadataSet = MetadataSrv.GetMetadataSet(metadataSetGuid);
+            FormField field = metadataSet.Fields.Where(f => f.Guid.Equals(fieldGuid)).FirstOrDefault();
+
+            if(field != null)
+            {
+                if (typeof(NumberField).IsAssignableFrom(field.GetType()))
+                {
+                    baseSearch = wrapInFunction ? "\"sum(field(value_{0}_{1}_is, max))\"" : "value_{0}_{1}_is";
+                }
+            }
+
+            return string.Format(baseSearch, metadataSetGuid.Replace('-', '_'), fieldGuid.Replace('-', '_'), languageCode);
+        }
+
+        public IEnumerable<GraphQueryObject> GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, string languageCode = "en")
+        {
+            string xIndexId = GetGraphFieldString(xMetadataSet, xField, languageCode, false);
+            string yIndexId = GetGraphFieldString(yMetadataSet, yField, languageCode, true);
+            string catIndexId = string.IsNullOrEmpty(catField) ? null : GetGraphFieldString(catMetadataSet, catField, languageCode);
 
             string result = SolrSrv.GetGraphData(q, xIndexId, yIndexId, catIndexId);
 
