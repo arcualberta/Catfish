@@ -3,10 +3,10 @@
     this.field = field;
 }
 
-function GraphPanel(panelId, updateUrl, chartType, xLabel, yLabel, graphTitle, xScale, yScale, xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, isCategoryOptionsField) {
+function GraphPanel(panelId, updateUrl, chartType, xLabel, yLabel, graphTitle, xScale, yScale, xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, countResults) {
     this.panelId = panelId;
 
-    if (chartType == "Bar") {
+    if (chartType === "Bar") {
         this.graph = new MultiBarChart(xLabel, yLabel, graphTitle, xScale, yScale, $('#' + panelId + ' > svg')[0], $('#' + panelId + ' > .legend')[0]);
     } else {
         this.graph = new MultiLineChart(xLabel, yLabel, graphTitle, xScale, yScale, $('#' + panelId + ' > svg')[0], $('#' + panelId + ' > .legend')[0]);
@@ -15,7 +15,6 @@ function GraphPanel(panelId, updateUrl, chartType, xLabel, yLabel, graphTitle, x
     this.query = '*:*';
     this.chartType = chartType;
     this.updateUrl = updateUrl;
-    this.isCategoryOptionsField = isCategoryOptionsField;
 
     this.x = new GraphField(xMetadataSet, xField);
     this.y = new GraphField(yMetadataSet, yField);
@@ -24,6 +23,8 @@ function GraphPanel(panelId, updateUrl, chartType, xLabel, yLabel, graphTitle, x
     this.isLoaded = false;
     this.isUpdating = false;
     this.hasUpdate = false;
+
+    this.countResults = countResults;
 
     var _this = this;
 
@@ -69,10 +70,9 @@ GraphPanel.prototype.updateChart = function () {
         yField: _this.y.field
     }
 
-    if (_this.category.metadataSet != null && _this.category.field != null) {
+    if (_this.category.metadataSet !== null && _this.category.field !== null) {
         data.catMetadataset = _this.category.metadataSet;
         data.catField = _this.category.field;
-        data.isCatOptionsIndex = _this.isCatOptionsIndex;
     }
 
     $.ajax({
@@ -81,16 +81,18 @@ GraphPanel.prototype.updateChart = function () {
         dataType: 'json',
         data: data,
         success: function (response) {
+            var barOption;
+
             if (chartType === "Bar") {
-                var barOption = $(paneId + " .barchartOption")[0];
+                barOption = $(paneId + " .barchartOption")[0];
                 barOption.style.display = "block";
             }
             else {
-                var barOption = $(panelId + " .barchartOption")[0];
+                barOption = $(panelId + " .barchartOption")[0];
                 barOption.style.display = "none";
             }
 
-            var parsedData = graph.parseDataSF(response);
+            var parsedData = graph.parseDataSF(response, _this.countResults);
             //graph.clear();
             graph.drawChart(parsedData);
         },
@@ -133,15 +135,16 @@ Graph.prototype.clear = function () {
     $(this.Svg).empty();
     $(this.Legend).empty();
 }
-Graph.prototype.parseDataSF = function (data) {
+Graph.prototype.parseDataSF = function (data, countResults) {
     var arr = [];
     var XScale = this.XScale;
     var YScale = this.YScale;
+    var selector = countResults ? "Count" : "XValue"; 
 
     for (var i in data) {
         arr.push({
             year: data[i].YValue / XScale, //YValue = Year
-            value: +(data[i].XValue / YScale),//(Math.log(+data[i].XValue)), //XValue = Amount 
+            value: +(data[i][selector] / YScale),//(Math.log(+data[i].XValue)), //XValue = Amount 
             category: data[i].Category
         });
     }

@@ -136,13 +136,13 @@ namespace Catfish.Core.Services
                     limit : 10000,
                     field : {0},
                     facet : {{
-                        sumYValues : ""sum(field({1},max))"",
+                        sumYValues : {1},
                         groups : {{
                             type : terms,
                             field : {2},
                             limit: 10000,
                             facet : {{
-                                sumYValuesArg : ""sum(field({1},max))""
+                                sumYValuesArg : {1}
                             }}
                         }}
                     }}
@@ -156,7 +156,7 @@ namespace Catfish.Core.Services
                     limit : 10000,
                     field : {0},
                     facet : {{
-                        sumYValues : ""sum(field({1},max))""
+                        sumYValues : {1}
                     }}
                 }}
             }}";
