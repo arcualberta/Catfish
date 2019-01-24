@@ -127,7 +127,7 @@ namespace Catfish.Models.ViewModels
                 else
                 {
                     var result = new List<string>();
-                    if(f.Names[languageCode] == name)
+                    if(f.Names.ContainsKey(languageCode) && f.Names[languageCode] == name)
                     {
                         result.Add(f.Values[languageCode]);
                     }
