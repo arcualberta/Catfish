@@ -90,7 +90,8 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             ClearDatabase();
             ResetServerCache();
 
-            SetupPiranha();
+            Setup
+                ();
             RunMigrations();
             LoginAsAdmin();
 
