@@ -23,6 +23,8 @@ namespace Catfish.Models.ViewModels
         public ICollection<DataFileViewModel> Files { get; set; }
 
         public string[] LanguageCodes { get; private set; }
+
+        public string EntityTypeName { get; private set; }
         
         public EntityViewModel()
         {
@@ -36,6 +38,7 @@ namespace Catfish.Models.ViewModels
             this.Id = entity.Id;
             this.Guid = entity.Guid;
             this.LanguageCodes = languageCodes;
+            this.EntityTypeName = entity.EntityType.Name;
 
             Type entityType = entity.GetType();
 
