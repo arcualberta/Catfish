@@ -16,12 +16,11 @@ namespace Catfish.Tests.Services
     [TestFixture]
     public class IngestionServiceTest : BaseServiceTest
     {
-        [Ignore("Test needs to be corrected")]
         [Test]
         public void ImportCorrectNewTest()
         {
             DatabaseHelper Dh = new DatabaseHelper(false);
-            using(Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.Resources.IngestionDatabase1.xml"))
+            using(Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.UnitTests.Resources.IngestionDatabase1.xml"))
             {
                 Dh.Igs.Import(stream);
                 Dh.Db.SaveChanges();
@@ -35,7 +34,7 @@ namespace Catfish.Tests.Services
             Assert.AreEqual(Dh.Db.EntityTypes.Count(), 1);
             Assert.IsFalse(Dh.Db.EntityTypes.Where(e => e.Id == 3).Any());
             
-            //Check Aggrigations
+            //Check Aggregations
             Assert.AreEqual(Dh.Db.Collections.Count(), 1);
             Assert.AreEqual(Dh.Db.Items.Count(), 2);
 
@@ -45,16 +44,15 @@ namespace Catfish.Tests.Services
 
             // Check Relationships
             Assert.AreEqual(Dh.Db.Items.SelectMany(i => i.ChildRelations).Count(), 1);
-            Assert.AreEqual(Dh.Db.Collections.SelectMany(c => c.ChildMembers).Count(), 2);
+            Assert.AreEqual(Dh.Db.Collections.ToList().SelectMany(c => c.ChildMembers).Count(), 2);
             
         }
 
-        [Ignore("Test needs to be corrected")]
         [Test]
         public void ImportCorrectOverwriteTest()
         {
             DatabaseHelper Dh = new DatabaseHelper(false);
-            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.Resources.IngestionDatabase2.xml"))
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.UnitTests.Resources.IngestionDatabase2.xml"))
             {
                 Dh.Igs.Import(stream);
                 Dh.Db.SaveChanges();
@@ -92,9 +90,9 @@ namespace Catfish.Tests.Services
             Assert.IsTrue(Dh.Db.Items.ToList().Where(c => c.Guid == "844475ec5dc24de58110852a19988880").Any());
 
             // Check Relationships
-            Assert.AreEqual(Dh.Db.Collections.SelectMany(c => c.ChildMembers).Count(), 2);
-            Assert.IsTrue(Dh.Db.Collections.SelectMany(c => c.ChildMembers).ToList().Where(i => i.Guid == "34bd149fe442478f878b3e0b39a68144").Any());
-            Assert.IsTrue(Dh.Db.Collections.SelectMany(c => c.ChildMembers).ToList().Where(i => i.Guid == "844475ec5dc24de58110852a19988880").Any());
+            Assert.AreEqual(Dh.Db.Collections.ToList().SelectMany(c => c.ChildMembers).Count(), 2);
+            Assert.IsTrue(Dh.Db.Collections.ToList().SelectMany(c => c.ChildMembers).ToList().Where(i => i.Guid == "34bd149fe442478f878b3e0b39a68144").Any());
+            Assert.IsTrue(Dh.Db.Collections.ToList().SelectMany(c => c.ChildMembers).ToList().Where(i => i.Guid == "844475ec5dc24de58110852a19988880").Any());
             Assert.AreEqual(Dh.Db.Items.SelectMany(i => i.ChildRelations).Count(), 1);
             Assert.IsTrue(Dh.Db.Items.SelectMany(i => i.ChildRelations).ToList().Where(i => i.Guid == "34bd149fe442478f878b3e0b39a68144").Any());
         }
@@ -106,10 +104,11 @@ namespace Catfish.Tests.Services
 
             try
             {
-                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.Resources.IngestionDatabase3.xml"))
+                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.UnitTests.Resources.IngestionDatabase3.xml"))
+                //using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Catfish.Tests.Resources.IngestionDatabase3.xml"))
                 {
                     Dh.Igs.Import(stream);
-                    Dh.Db.SaveChanges();
+                    Dh.Db.SaveChanges();                    
                 }
 
                 Assert.Fail();

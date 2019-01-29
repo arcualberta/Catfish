@@ -17,8 +17,8 @@ namespace Catfish.Tests.Services
         private CFItem CreateItem(ItemService itemSrv, int entityTypeId, string name, string description, bool store = false)
         {
             CFItem i = itemSrv.CreateItem(entityTypeId);
-            i.Name = name;
-            i.Description = description;
+            i.SetName(name);
+            i.SetDescription(description);
 
 
             if (store)
@@ -85,31 +85,27 @@ namespace Catfish.Tests.Services
             //Assert.AreEqual(description2, i2.Description);
             //Assert.AreEqual(id, i2.Id);
         }
-
-        [Ignore("Not yet implemented")]
-        // This test uses Item Service Get Item with Guid, this is the only place
-        // this method is used
+        
         [Test]
         public void TestGetItem()
         {
-            //DatabaseHelper Dh = new DatabaseHelper(true);
-            //ItemService Is = new ItemService(Dh.Db);
-            //int entityTypeId = Dh.Db.EntityTypes.Where(e => e.TargetTypes.Contains("Item")).Select(e => e.Id).FirstOrDefault();
-            //string name = "Test 4";
-            //string description = "Descriptiony";
+            DatabaseHelper Dh = new DatabaseHelper(true);
+            ItemService Is = new ItemService(Dh.Db);
 
-            //CFItem i = CreateItem(Is, entityTypeId, name, description, true);
-            //Dh.Db.SaveChanges();
+            int entityTypeId = Dh.Db.EntityTypes.Where(e => e.TargetTypes.Contains("Item")).Select(e => e.Id).FirstOrDefault();
+            string name = "Test 4";
+            string description = "Description";
 
-            //CFItem i2 = Is.GetItem(i.Id);
+            CFItem item = CreateItem(Is, entityTypeId, name, description, true);
+            Dh.Db.SaveChanges();
 
-            //int id = i.Id;
-            //Assert.AreEqual(name, i2.Name);
-            //Assert.AreEqual(description, i2.Description);
+            CFItem fetchedItem = Is.GetItem(item.Id);
 
-            //CFItem i3 = Is.GetItem(i.Guid);
-            //Assert.AreEqual(id, i.Id);
-            //Assert.AreEqual(i2.Content, i3.Content);
+            int id = item.Id;
+            Assert.AreEqual(name, fetchedItem.Name);
+            Assert.AreEqual(description, fetchedItem.Description);
+            Assert.AreEqual(item.Content, fetchedItem.Content);
+            
         }
 
         [Ignore("Not yet implemented")]

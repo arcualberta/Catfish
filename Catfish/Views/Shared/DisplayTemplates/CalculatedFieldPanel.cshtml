@@ -4,9 +4,13 @@
     string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+
+    string scriptVariable = "CalculatedFieldPanel" + Guid.NewGuid().ToString("N");
 }
 
-<div id="@cssId" class="bs @cssClasses container container-fluid calculatedField" >
+@Model.RenderScript("~/Scripts/calculatedField.js", Url)
+
+<div id="@cssId" class="bs @cssClasses container container-fluid calculatedField" data-script-variable="@scriptVariable">
    
         <style type="text/css" scoped>
                     @Html.Raw(cssStyles)
@@ -16,53 +20,9 @@
 </div>
 
 <script>
-    {
-        var query = '*:*';
-        var isLoaded = false;
-
-        function handleStatsResult(result) {
-            $('#@(cssId)_Result')
-                .text(@Html.Raw(Json.Encode(string.IsNullOrEmpty(Model.Prefix) ? "" : Model.Prefix))
-                + result.toLocaleString('en-US', {
-                    minimumFractionDigits: @Html.Raw(Model.DecimalPlaces),
-                    maximumFractionDigits: @Html.Raw(Model.DecimalPlaces)
-                    })); // TODO: get locale.
-        }
-
-        function updatePanel() {
-            $('#@(cssId)_Result').text(@Html.Raw(Json.Encode(Catfish.Resources.Global.Loading)));
-
-            $.ajax({
-                type: 'GET',
-                url:@Html.Raw(Json.Encode(Url.Action("GetStatsData", "Items"))),
-                dataType: 'json',
-                data: {
-                    q: query,
-                    statMode: @Html.Raw(Json.Encode(Model.SelectedFunction)),
-                    selectedFieldMetadataSet: @Html.Raw(Json.Encode(Model.SelectedFieldMetadataSet)),
-                    selectedField: @Html.Raw(Json.Encode(Model.SelectedField)),
-                    selectedGroupByFieldMetadataSet: @Html.Raw(Json.Encode(Model.SelectedGroupByFieldMetadataSet)),
-                    selectedGroupByField: @Html.Raw(Json.Encode(Model.SelectedGroupByField))
-                },
-                success: handleStatsResult,
-                error: function () {
-                    $('#@(cssId)_Result').text('error');
-                }
-            });
-        }
-
-        window.addEventListener('updatedparams', function (e) {
-            var params = e.detail;
-            var triggerUpdate = !isLoaded;
-
-            if ('q' in params) {
-                triggerUpdate = true;
-                query = params['q'];
-            }
-
-            if (triggerUpdate) {
-                updatePanel();
-            }
-        });
-    }
+    window['@scriptVariable'] = new CalculatedField('@cssId', @Html.Raw(Json.Encode(Url.Action("GetStatsData", "Items"))),
+        @Html.Raw(Json.Encode(Catfish.Resources.Global.Loading)), @Html.Raw(Json.Encode(string.IsNullOrEmpty(Model.Prefix) ? "" : Model.Prefix)),
+        @Html.Raw(Model.DecimalPlaces), @Html.Raw(Json.Encode(Model.SelectedFunction)),
+        @Html.Raw(Json.Encode(Model.SelectedFieldMetadataSet)), @Html.Raw(Json.Encode(Model.SelectedField)),
+        @Html.Raw(Json.Encode(Model.SelectedGroupByFieldMetadataSet)), @Html.Raw(Json.Encode(Model.SelectedGroupByField)));
 </script>

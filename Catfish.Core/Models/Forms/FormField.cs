@@ -125,7 +125,7 @@ namespace Catfish.Core.Models.Forms
         [DataType(DataType.MultilineText)]
         [NotMapped]
         [ScriptIgnore]
-        public string Description
+        override public string Description
         {
             get
             {
@@ -215,6 +215,14 @@ namespace Catfish.Core.Models.Forms
         protected virtual bool IsHtmlField()
         {
             return false;
+        }
+
+        public virtual void Merge(FormField newField)
+        {
+            MultilingualName = newField.MultilingualName;
+            IsRequired = newField.IsRequired;
+            Help = newField.Help;
+            MultilingualDescription = newField.MultilingualDescription;
         }
     }
 }

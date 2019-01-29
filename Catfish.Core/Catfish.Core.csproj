@@ -34,17 +34,17 @@
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net46\CommonServiceLocator.dll</HintPath>
     </Reference>
-    <Reference Include="CommonServiceLocator.SolrNet, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SolrNet.1.0.10\lib\net46\CommonServiceLocator.SolrNet.dll</HintPath>
+    <Reference Include="CommonServiceLocator.SolrNet, Version=1.0.13.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SolrNet.1.0.13\lib\net46\CommonServiceLocator.SolrNet.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis, Version=1.36.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.36.1\lib\net45\Google.Apis.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Google.Apis.Auth, Version=1.36.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Auth.1.36.1\lib\net45\Google.Apis.Auth.dll</HintPath>
@@ -61,12 +61,6 @@
     <Reference Include="Google.Apis.Sheets.v4, Version=1.36.1.1387, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Sheets.v4.1.36.1.1387\lib\net45\Google.Apis.Sheets.v4.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="SolrNet, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SolrNet.Core.1.0.10\lib\net46\SolrNet.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -74,8 +68,8 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
-    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -198,6 +192,10 @@
     <Compile Include="Models\Form.cs" />
     <Compile Include="Models\TextValue.cs" />
     <Compile Include="Models\CFXmlModel.cs" />
+    <Compile Include="Plugins\Plugin.cs" />
+    <Compile Include="Plugins\PluginConfig.cs" />
+    <Compile Include="Plugins\PluginContext.cs" />
+    <Compile Include="Plugins\PluginControllerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Validators.Designer.cs">
       <AutoGen>True</AutoGen>
