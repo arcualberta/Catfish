@@ -185,8 +185,6 @@
 
         function updateTable() {
             var mapIds = @Html.Raw(Json.Encode(Model.Fields.Select(s => s.Id)));
-            console.log("test")
-            console.log(mapIds)
             window.startLoading("#@cssId", 60000);
 
             var url = @Html.Raw(Json.Encode(Url.Action("GetPageItems", "Items")));
