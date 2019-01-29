@@ -25,8 +25,8 @@
 <script>
     function switchLanguage(lang, defaultLang)
     {
-        var url = $(location).attr('href');
-        var location = window.location;
+        var urlString = window.location.href;
+        var location = new URL(urlString);
         var host = location.origin;
         var path = location.pathname;
         var pathVariables = path.split('/');
@@ -34,34 +34,21 @@
         var pathNoLang="";
         if(pathVariables[1].length == 2)
         {
-           currLang = pathVariables[1];
-           pathNoLang = path.substr(3, path.length);
+            currLang = pathVariables[1];
 
+            if (currLang.length > 0) {
+                path = path.substr(3, path.length);
+            }
         }
+
+        path += location.search;
         
         if(lang == defaultLang)
         {
-
-          if(currLang.length == 0)
-          {
-             window.location.assign(host + path);
-          }
-         else{
-
-
-
-              window.location.assign(host + pathNoLang);
-          }
-
+            window.location.assign(host + path);
         }
-        else{
-             if(currLang.length == 0)
-          {
-             window.location.assign(host + "/" + lang + path);
-          }
-         else{
-              window.location.assign(host + "/" + lang + pathNoLang);
-          }
+        else {
+            window.location.assign(host + "/" + lang + path);
         }
 
     }

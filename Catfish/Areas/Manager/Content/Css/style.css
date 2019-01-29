@@ -149,3 +149,7 @@ form.inline{
     color: red !important;
     font-weight:bold;
 }
+
+.right {
+    float: right;
+}

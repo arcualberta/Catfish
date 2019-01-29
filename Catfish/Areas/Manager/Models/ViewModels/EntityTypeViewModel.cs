@@ -105,7 +105,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
                 foreach (CFEntityTypeAttributeMapping map in model.AttributeMappings)
                 {
-                    if(map.Name.Equals("Name Mapping") || map.Name.Equals("Description Mapping"))
+                    if(map.Name.Equals("Name Mapping"))// || map.Name.Equals("Description Mapping"))
                     {
                         map.Deletable = false;
                     }
@@ -123,7 +123,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             else
             {
                 AttributeMappings.Add(new AttributeMapping { Name = "Name Mapping", Deletable = false });
-                AttributeMappings.Add(new AttributeMapping { Name = "Description Mapping", Deletable = false });
+                AttributeMappings.Add(new AttributeMapping { Name = "Description Mapping", Deletable = true, ErrorMessage="" });
             }
             
         }
@@ -216,7 +216,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public int MetadataSetFieldId { get; set; }
         [Required]
         public string Name { get; set; }
-        [Required]
+       // [Required]
         public string Field { get; set; }
 
         public string Label { get; set; }

@@ -16,6 +16,10 @@ using Catfish.Core.Services;
 using Catfish.Core.ModelBinders;
 using Catfish.Core.Validators;
 using Catfish.Core.Helpers;
+using Catfish.Core.Contexts;
+using Catfish.Core.Plugins;
+using System.Configuration;
+using System.Reflection;
 
 namespace Catfish
 {
@@ -23,12 +27,18 @@ namespace Catfish
     {
         void Application_Start(object sender, EventArgs e)
         {
+            // Load Plugins
+            LoadPlugins();
+            ControllerBuilder.Current.SetControllerFactory(typeof(PluginControllerFactory));
+            ViewEngines.Engines.Add(PluginContext.Current.ViewEngine);
+
             // Code that runs on application startup
-           
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
+            RegisterPluginRoutes();
+            
             //Metadata provider
             ModelMetadataProviders.Current = new Catfish.Areas.Manager.Helpers.ModelMetadataProvider();
 
@@ -67,6 +77,7 @@ namespace Catfish
 
             // Check for a SolrConnection
             string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
+
             if (!string.IsNullOrEmpty(solrString))
             {
                 SolrService.Init(solrString);
@@ -88,7 +99,64 @@ namespace Catfish
                     }
                 }
             };
-            
+
+            AddPublicUserListIfDoesNotExist();
+
+
+            // Initialize Plugins
+            InitializePlugins();
+        }
+
+        private void AddPublicUserListIfDoesNotExist()
+        {
+            // publicGuid guid is all 0 
+            Guid publicGuid = AccessContext.PublicAccessGuid;
+            CatfishDbContext db = new CatfishDbContext();
+            CFUserList publicUserList = db.UserLists.Where(x => x.Id == publicGuid).FirstOrDefault();
+
+            if (publicUserList == null)
+            {
+                // Add public user list
+                publicUserList = new CFUserList();
+                publicUserList.Id = publicGuid;
+                publicUserList.Name = "Public";
+                db.UserLists.Add(publicUserList);
+                db.SaveChanges();
+
+            }
+        }
+
+        private void RegisterPluginRoutes()
+        {
+            IEnumerable<Plugin> plugins = PluginContext.Current.Plugins;
+
+            foreach (Plugin plugin in plugins)
+            {
+                plugin.RegisterRoutes(RouteTable.Routes);
+            }
+        }
+
+        private void LoadPlugins()
+        {
+            PluginConfig config = ConfigurationManager.GetSection("catfishPlugins") as PluginConfig;
+
+            if (config != null)
+            {
+                foreach (PluginElement plugin in config.Plugins)
+                {
+                    PluginContext.Current.LoadPlugin(plugin.Class, plugin.LibraryPath, plugin.BasePath);
+                }
+            }
+        }
+
+        private void InitializePlugins()
+        {
+            IEnumerable<Plugin> plugins = PluginContext.Current.Plugins;
+
+            foreach(Plugin plugin in plugins)
+            {
+                plugin.Initialize();
+            }
         }
 
         private void AddManagerMenus()

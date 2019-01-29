@@ -14,18 +14,50 @@ namespace Catfish.Core.Services
 {
     public class SolrService
     {
-        public static bool IsInitialized { get; private set; }
+        public static bool IsInitialized { get; private set; } = false;
+        public static ISolrOperations<Dictionary<string, object>> SolrOperations { get; set; } = null;
 
         private static ISolrConnection mSolr { get; set; }
+        private static bool IsSolrInitialized { get; set; } = false;
 
-        public static void Init(string server)
+        public static int Timeout
         {
-            IsInitialized = false;
+            get
+            {
+                if (mSolr == null)
+                    return -1;
+
+                return ((SolrConnection)mSolr).Timeout;
+            }
+
+            set
+            {
+                if (mSolr == null)
+                    return;
+
+                ((SolrConnection)mSolr).Timeout = value;
+            }
+        }
+        
+
+        public static void ForceInit(string server)
+        {
+            Init(server, true);
+        }
+
+        public static void ForceInit(ISolrConnection connection)
+        {
+            Init(connection, true);
+        }
+
+        public static void Init(string server, bool force = false)
+        {
+            //IsInitialized = false;
+
             if (!string.IsNullOrEmpty(server))
             {
                 ISolrConnection connection = new SolrConnection(server);
-
-                SolrService.InitWithConnection(connection);
+                Init(connection, force);                
             }
             else
             {
@@ -33,16 +65,32 @@ namespace Catfish.Core.Services
             }
         }
 
-        public static void InitWithConnection(ISolrConnection connection)
+        public static void Init(ISolrConnection connection, bool force = false)
+        {            
+
+            if (force)
+            {
+                ClearContainer();
+            }
+
+            if (!IsInitialized)
+            {                
+                mSolr = connection;
+                Startup.Init<SolrIndex>(mSolr);
+                Startup.Init<Dictionary<string, object>>(mSolr);
+                SolrOperations = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+                IsInitialized = true;
+                //IsSolrInitialized = true;
+
+            }         
+        }
+
+        private static void ClearContainer()
         {
-            mSolr = connection;
-
-            Startup.Init<SolrIndex>(mSolr);
-            Startup.Init<Dictionary<string, object>>(mSolr);
-
-            //TODO: Should we update the database here or have it in an external cron job
-
-            IsInitialized = true;
+            Startup.Container.Clear();
+            Startup.InitContainer();
+            //IsSolrInitialized = false;
+            IsInitialized = false;
         }
 
         public static string GetPartialMatichingText(string field, string text, int rows = 10)
@@ -81,6 +129,26 @@ namespace Catfish.Core.Services
 
         public string GetGraphData(string query, string xIndexId, string yIndexId, string categoryId)
         {
+            const string facetCategoryJson = @"{{
+                xValues:{{
+                    sort : index,
+                    type : terms,
+                    limit : 10000,
+                    field : {0},
+                    facet : {{
+                        sumYValues : {1},
+                        groups : {{
+                            type : terms,
+                            field : {2},
+                            limit: 10000,
+                            facet : {{
+                                sumYValuesArg : {1}
+                            }}
+                        }}
+                    }}
+                }}
+            }}";
+
             const string facetJson = @"{{
                 xValues:{{
                     sort : index,
@@ -88,15 +156,7 @@ namespace Catfish.Core.Services
                     limit : 10000,
                     field : {0},
                     facet : {{
-                        sumYValues : ""sum({1})"",
-                        groups : {{
-                            type : terms,
-                            field : {2},
-                            limit: 10000,
-                            facet : {{
-                                sumYValuesArg : ""sum({1})""
-                            }}
-                        }}
+                        sumYValues : {1}
                     }}
                 }}
             }}";
@@ -105,9 +165,9 @@ namespace Catfish.Core.Services
             {
                 IEnumerable<KeyValuePair<string, string>> parameters = new KeyValuePair<string, string>[]{
                     new KeyValuePair<string, string>("q", query),
-                    new KeyValuePair<string, string>("json.facet", string.Format(facetJson, xIndexId, yIndexId, categoryId)),
+                    new KeyValuePair<string, string>("json.facet", string.Format(categoryId == null ? facetJson : facetCategoryJson, xIndexId, yIndexId, categoryId)),
                     new KeyValuePair<string, string>("rows", "0"),
-                    new KeyValuePair<string, string>("sort", xIndexId + " asc"),
+                    new KeyValuePair<string, string>("sort", "field(" + xIndexId + ",min) asc"),
                     new KeyValuePair<string, string>("wt", "xml")
                 };
 
@@ -129,9 +189,10 @@ namespace Catfish.Core.Services
                     new KeyValuePair<string, string>("q", query),
                     new KeyValuePair<string, string>("rows", rows.ToString()),
                     new KeyValuePair<string, string>("wt", "json"),
-                    new KeyValuePair<string, string>("group", "true"),
-                    new KeyValuePair<string, string>("group.field", fieldId),
-                    new KeyValuePair<string, string>("fl", fieldId)
+                    new KeyValuePair<string, string>("facet.field", fieldId),
+                    new KeyValuePair<string, string>("facet", "on"),
+                    new KeyValuePair<string, string>("fl", fieldId),
+                    new KeyValuePair<string, string>("sort", fieldId + " asc")
                 };
 
                 string result = mSolr.Get("/select", parameters);
@@ -140,14 +201,11 @@ namespace Catfish.Core.Services
                 {
                     SolrResponse response = Newtonsoft.Json.JsonConvert.DeserializeObject<SolrResponse>(result);
 
-                    if (response.grouped.ContainsKey(fieldId))
+                    if (response.facet_counts != null && response.facet_counts.facet_fields.ContainsKey(fieldId))
                     {
-                        foreach (var g in response.grouped[fieldId].groups)
+                        foreach (var g in response.facet_counts.GetFacetsForField(fieldId))
                         {
-                            if (g.groupValue != null)
-                            {
-                                dictionary.Add(g.groupValue, g.docList.docs[0][fieldId]);
-                            }
+                            dictionary.Add(g.Item1, g.Item1);
                         }
                     }
                 }
@@ -210,7 +268,7 @@ namespace Catfish.Core.Services
 
         public string GetMedian(string field, string query)
         {
-            const string facetJson = @"{{Median : ""percentile({0},50)""}}";
+            const string facetJson = @"{{Median : ""percentile(field({0},min),50)""}}";
 
             if (SolrService.IsInitialized)
             {
@@ -366,5 +424,29 @@ namespace Catfish.Core.Services
     public class SolrResponse
     {
         public Dictionary<string, GroupedResult> grouped { get; set; }
+        public SolrFacetCount facet_counts { get; set; }
+        
+    }
+
+    public class SolrFacetCount
+    {
+        public Dictionary<string, List<object>> facet_fields { get; set; }
+
+        public List<Tuple<string, long>> GetFacetsForField(string fieldId)
+        {
+            List<Tuple<string, long>> result = new List<Tuple<string, long>>();
+
+            if (facet_fields.ContainsKey(fieldId))
+            {
+                List<object> data = facet_fields[fieldId];
+
+                for (int i = 0; i < data.Count; i += 2)
+                {
+                    result.Add(new Tuple<string, long>((string)data[i], (long)data[i + 1]));
+                }
+            }
+
+            return result;
+        }
     }
 }

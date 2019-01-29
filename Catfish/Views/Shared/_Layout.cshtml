@@ -43,7 +43,7 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    
+
     <link type="text/css" rel="stylesheet" href="~/content/css/style.css" />
     <link type="text/css" rel="stylesheet" href="~/content/css/Site.css" />
     <link href="~/Content/bs-bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
@@ -53,7 +53,8 @@
     @try
     {
         <text>@Html.Partial("_CustomHead")</text>
-    } catch (Exception)
+    }
+    catch (Exception)
     {
         // custom view does not exist.
     }

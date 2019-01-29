@@ -23,6 +23,8 @@ namespace Catfish.Models.ViewModels
         public ICollection<DataFileViewModel> Files { get; set; }
 
         public string[] LanguageCodes { get; private set; }
+
+        public string EntityTypeName { get; private set; }
         
         public EntityViewModel()
         {
@@ -36,6 +38,9 @@ namespace Catfish.Models.ViewModels
             this.Id = entity.Id;
             this.Guid = entity.Guid;
             this.LanguageCodes = languageCodes;
+            this.EntityTypeName = entity.EntityType.Name;
+
+            Type entityType = entity.GetType();
 
             // Added to prevent circular child members.
             if(previousEntities == null)
@@ -49,7 +54,7 @@ namespace Catfish.Models.ViewModels
                 MetadataSets.Add(new MetadataSetViewModel(metadataset, languageCodes));
             }
 
-            if (typeof(CFItem).IsAssignableFrom(entity.GetType()))
+            if (typeof(CFItem).IsAssignableFrom(entityType))
             {
                 foreach(CFDataObject dataObject in ((CFItem)entity).DataObjects)
                 {
@@ -60,7 +65,7 @@ namespace Catfish.Models.ViewModels
                 }
             }
             
-            if (typeof(CFAggregation).IsAssignableFrom(entity.GetType()))
+            if (typeof(CFAggregation).IsAssignableFrom(entityType))
             {
                 
                 foreach (CFEntity member in ((CFAggregation)entity).ChildMembers)
@@ -91,6 +96,29 @@ namespace Catfish.Models.ViewModels
             return MetadataSets.SelectMany(m => m.Fields);
         }
 
+        public IEnumerable<string> GetSelectedOptions(string name, string languageCode = null)
+        {
+            IEnumerable<string> results = GetAllFormFields().SelectMany((f) => {
+                if (languageCode == null)
+                {
+                    var keys = f.Names.Where(n => n.Value == name).Select(n => n.Key);
+                    return f.SelectedOptions.Where(v => keys.Contains(v.Key)).SelectMany(v => v.Value);
+                }
+                else
+                {
+                    var result = new List<string>();
+                    if (f.Names[languageCode] == name)
+                    {
+                        result.AddRange(f.SelectedOptions[languageCode]);
+                    }
+
+                    return result;
+                }
+            });
+
+            return results;
+        }
+
         public IEnumerable<string> GetFieldValuesByName(string name, string languageCode = null)
         {
             IEnumerable<string> results = GetAllFormFields().SelectMany((f) => {
@@ -102,9 +130,9 @@ namespace Catfish.Models.ViewModels
                 else
                 {
                     var result = new List<string>();
-                    if(f.Names[languageCode] == name)
+                    if (f.Names.Where(n => n.Value == name && n.Key == languageCode).Any())
                     {
-                        result.Add(f.Values[languageCode]);
+                        result.AddRange(f.ValuesList.Where(v => v.ContainsKey(languageCode)).Select(v => v[languageCode]));
                     }
 
                     return result;
@@ -159,18 +187,26 @@ namespace Catfish.Models.ViewModels
     {
         public IDictionary<string, string> Names { get; set; }
         public IDictionary<string, string> Values { get; set; }
+        public List<IDictionary<string, string>> ValuesList { get; set; }
+        public IDictionary<string, List<string>> SelectedOptions { get; set; }
         public string ModelType { get; set; }
 
         public FormFieldViewModel()
         {
             Names = new Dictionary<string, string>();
             Values = new Dictionary<string, string>();
+            ValuesList = new List<IDictionary<string, string>>();
+            SelectedOptions = new Dictionary<string, List<string>>();
+
+            ValuesList.Add(Values);
         }
 
         public FormFieldViewModel(FormField field, string[] languageCodes) : this()
         {
             var names = field.GetNames(true);
             var values = field.GetValues(false);
+
+            IEnumerable<Option> options = typeof(OptionsField).IsAssignableFrom(field.GetType()) ? ((OptionsField)field).Options : new List<Option>();
 
             foreach(var name in names)
             {
@@ -184,7 +220,35 @@ namespace Catfish.Models.ViewModels
             {
                 if (languageCodes.Contains(value.LanguageCode))
                 {
-                    Values.Add(value.LanguageCode, value.Value);
+                    if (Values.ContainsKey(value.LanguageCode))
+                    {
+                        Values = new Dictionary<string, string>();
+                        ValuesList.Add(Values);
+                    }
+                    else
+                    {
+                        Values.Add(value.LanguageCode, value.Value);
+                    }
+                }
+            }
+
+
+            foreach(string code in languageCodes)
+            {
+                SelectedOptions.Add(code, new List<string>());
+            }
+            
+            foreach(var option in options)
+            {
+                if (option.Selected)
+                {
+                    foreach (var optionVal in option.Value)
+                    {
+                        if (languageCodes.Contains(optionVal.LanguageCode))
+                        {
+                            SelectedOptions[optionVal.LanguageCode].Add(optionVal.Value);
+                        }
+                    }
                 }
             }
         }

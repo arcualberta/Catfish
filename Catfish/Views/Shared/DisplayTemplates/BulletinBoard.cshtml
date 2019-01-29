@@ -2,7 +2,7 @@
 
 @{ 
     string apiUrl = "/apix/items";
-    string divId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString("N") : Model.CssId;
+    string divId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString() : Model.CssId;
  }
 
 <script>

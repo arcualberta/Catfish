@@ -12,6 +12,7 @@ using System.Web;
 using System.Web.Mvc;
 using Piranha;
 using System.Web.Script.Serialization;
+using Catfish.Services;
 using Catfish.Core.Models.Forms;
 
 namespace Catfish.Models.Regions
@@ -133,25 +134,31 @@ namespace Catfish.Models.Regions
         public FormContainer()
         {
             FieldMappings = new List<FieldMapping>();
+
            // Fields_Mapping = new List<string>();
         }
 
         
         public override void OnManagerSave(object model)
         {
-           // Console.WriteLine("TEST WRITE LINE");
+            securityService.CreateAccessContext();
+
+            // Console.WriteLine("TEST WRITE LINE");
             base.OnManagerSave(model);
         }
 
         public override void InitManager(object model)
         {
+            securityService.CreateAccessContext();
+
             // get db context
-            CatfishDbContext db = new CatfishDbContext();
             new Services.SecurityService(db).CreateAccessContext();
 
             CollectionService collectionSrv = new CollectionService(db);
             EntityTypeService entityTypeSrv = new EntityTypeService(db);
             SubmissionService formService = new SubmissionService(db);
+
+            securityService.CreateAccessContext();
 
             Form form = db.FormTemplates.Where(f => f.Id == FormId).FirstOrDefault();
             if (form != null)
@@ -169,6 +176,8 @@ namespace Catfish.Models.Regions
 
         public override object GetContent(object model)
         {
+            securityService.CreateAccessContext();
+
             if (FormId > 0)
             {
                 SubmissionService subSrv = new SubmissionService(new CatfishDbContext());

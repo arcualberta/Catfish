@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Contexts
 {
-    class AccessContext
+    public class AccessContext
     {
+
+        public static Guid PublicAccessGuid { get; private set; } = new Guid("00000000-0000-0000-0000-000000000001");
+
         private CatfishDbContext mDb;
         protected CatfishDbContext Db {
             get {

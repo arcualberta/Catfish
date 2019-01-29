@@ -35,16 +35,27 @@ namespace Catfish.Areas.Manager.Controllers
         public ActionResult Delete(int id)
         {
             SecurityService.CreateAccessContext();
-            
+
             CFMetadataSet metadataSet = MetadataService.GetMetadataSet(id);
             if (metadataSet != null)
             {
                 Db.MetadataSets.Remove(metadataSet);
                 Db.SaveChanges();
             }
-            
+
             return RedirectToAction("index");
         }
+        
+        [HttpPost]
+        public JsonResult UpdateExisitingEntities(int id)
+        {
+            CFMetadataSet metadata = MetadataService.GetMetadataSet(id);
 
+            int total = EntityService.UpdateExistingEntityMetadata(metadata);
+
+            Db.SaveChanges(User.Identity);
+
+            return Json(total);
+        }
     }
 }
