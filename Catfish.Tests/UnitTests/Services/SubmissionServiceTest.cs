@@ -11,6 +11,25 @@ using System.Threading.Tasks;
 
 namespace Catfish.Tests.Services
 {
+    /// <summary>
+    /// Compare two FormField objects based only on the name value
+    /// </summary>
+    class FormFieldNameComparer : System.Collections.IComparer
+    {
+
+        public int Compare(object x, object y)
+        {
+            FormField a = x as FormField;
+            FormField b = y as FormField;
+
+            if (a.Name == b.Name)
+            {
+                return 0;
+            }
+            return 1;
+        }
+    }
+
     [TestFixture]
     public class SubmissionServiceTest : BaseServiceTest
     {
@@ -52,7 +71,6 @@ namespace Catfish.Tests.Services
             return f;
         }
 
-        [Ignore("Test needs to be corrected")]
         [Test]
         public void CreateSubmissionFormTest()
         {
@@ -61,21 +79,16 @@ namespace Catfish.Tests.Services
             string testName = "Test 1";
             string testDescription = "This is a form for the first test.";
             string testPrefix = "Test 1 ";
+            FormFieldNameComparer fomrFieldComparer = new FormFieldNameComparer();
+
             Form form1 = CreateFormTemplate(SubSrv, testName, testDescription, testPrefix);
-            Dh.Db.SaveChanges();
-
+            Dh.Db.SaveChanges();       
             Form form2 = SubSrv.GetForm<Form>(form1.Id);
-
+            
             Assert.AreEqual(form2.Name, testName);
             Assert.AreEqual(form2.Description, testDescription);
-            Assert.AreNotEqual(0, form2.Fields.Count);
-
-            foreach (FormField field in form2.Fields)
-            {
-                Assert.IsTrue(field.Name.StartsWith(testPrefix));
-            }
-
-            Assert.AreEqual(form1.Fields.Count, form2.Fields.Count);
+            CollectionAssert.AreEqual(form1.Fields, form2.Fields, fomrFieldComparer);
+            
         }
 
         [Ignore("Not yet implemented")]

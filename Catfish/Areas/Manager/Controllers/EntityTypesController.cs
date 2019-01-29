@@ -216,7 +216,7 @@ namespace Catfish.Areas.Manager.Controllers
                         att.ErrorMessage = "*";
                     }
                 }
-
+               
                 ErrorMessage(Catfish.Resources.Views.EntityTypes.Edit.SaveInvalid);
                 return View(vm);
             }

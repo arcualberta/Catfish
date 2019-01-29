@@ -49,9 +49,6 @@ namespace Catfish.Services
         public void CreateAccessContext()
         {
             CreateAccessContext(HttpContext.Current.User.Identity.Name);
-        }
-
-
-            
+        }            
     }
 }

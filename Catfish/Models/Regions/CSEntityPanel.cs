@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models;
+﻿using Catfish.Core.Helpers;
+using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Catfish.Helpers;
 using Catfish.Models.ViewModels;
@@ -28,6 +29,9 @@ namespace Catfish.Models.Regions
         [Display(Name = "Default Entity Id")]
         public int? DefaultEntityId { get; set; }
 
+        [Display(Name = "Ignore Entity Property")]
+        public bool IgnoreEntityProperty { get; set; }
+
         [Display(Name = "CSHTML")]
         [Required]
         public string CsHtml { get; set; }
@@ -49,7 +53,7 @@ namespace Catfish.Models.Regions
 
             Error = null;
 
-            ClassId = "CSEntityPanel" + Guid.NewGuid().ToString("N");
+            ClassId = "CSEntityPanel" + Guid.NewGuid().ToString("N"); // We remove the '-' in the GUID so the class name compiles correctly.
         }
 
         public override void InitManager(object model)
@@ -106,7 +110,7 @@ namespace Catfish.Models.Regions
 
                 string entityId = context.Request.QueryString[EntityContainer.ENTITY_PARAM];
                 int id = 0;
-                if(string.IsNullOrEmpty(entityId) || !int.TryParse(entityId, out id))
+                if(IgnoreEntityProperty || string.IsNullOrEmpty(entityId) || !int.TryParse(entityId, out id))
                 {
                     if (DefaultEntityId != null)
                     {
@@ -125,7 +129,7 @@ namespace Catfish.Models.Regions
                     }
                     else
                     {
-                        View.SetModel(new EntityViewModel(es.GetAnEntity(id), new string[] { "en" })); //TODO: Get Language codes
+                        View.SetModel(new EntityViewModel(es.GetAnEntity(id), ConfigHelper.Languages.Select(l => l.TwoLetterISOLanguageName.ToLower()).ToArray())); //TODO: Get Language codes
                     }
                 }
             }

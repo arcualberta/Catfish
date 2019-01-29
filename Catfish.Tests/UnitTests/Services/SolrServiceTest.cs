@@ -38,20 +38,23 @@ namespace Catfish.Tests.Services
                 SolrService.Init((string)null);
                 Assert.Fail("Initialization passed with no connection string.");
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException ex)
             {
                 // Failed to initialize. This passes the test.
+                Console.WriteLine("Exception : {0}", ex.Message);
                 Assert.IsTrue(true);
             }
 
         }
-
-        [Ignore("Not yet implemented")]
+        
         [Test]
-        public void TestSuccessServiceInitialization()
+        public void CanInitializeSolr()
         {
             string connectionString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
             SolrService.Init(connectionString);
+
+            Assert.IsTrue(SolrService.IsInitialized);
+            Assert.IsNotNull(SolrService.SolrOperations);
         }
     }
 }
