@@ -3,6 +3,10 @@
 @{ 
     string reloadAction = string.IsNullOrEmpty(ViewData["reloadAction"] as string) ? "edit" : ViewData["reloadAction"] as string;
     string saveButtonFunctionCall = ViewData["saveButtonFunctionCall"] as string;
+
+    // Check for additional buttons
+    bool hasButtons = true;
+    int buttonsIndex = 0;
 }
 
 <div class="toolbar">
@@ -27,6 +31,25 @@
                     @Piranha.Resources.Global.ToolbarReload
                 </a>
             </li>
+
+            @while (hasButtons)
+            {
+                string buttonFunction = ViewData[string.Format("Button{0}FunctionCall", buttonsIndex)] as string;
+                if (!string.IsNullOrEmpty(buttonFunction))
+                {
+                    <li>
+                        <a id="toolbar_button@(buttonsIndex)" onclick="@(buttonFunction)(event); return false;" class="@(ViewData[string.Format("Button{0}Class", buttonsIndex)])">
+                            @ViewData[string.Format("Button{0}Title", buttonsIndex)]
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    hasButtons = false;
+                }
+
+                ++buttonsIndex;
+            }
         </ul>
         <div class="clear"></div>
     </div>

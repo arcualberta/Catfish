@@ -30,7 +30,7 @@ using Catfish.Core.Contexts;
 
 namespace Catfish.Tests.Helpers
 {
-    class DatabaseHelper
+    public class DatabaseHelper
     {
         public const int TOTAL_ENTITYTYPES = 5;
         public const int TOTAL_COLLECTIONS = 7;
@@ -347,14 +347,16 @@ namespace Catfish.Tests.Helpers
 
         public void Initialize(MockConnection solrConnection)
         {
-            if (SolrService.IsInitialized)
-            {
-                //TODO: Inject the new connection into this current solr thread.
-            }
-            else
-            {
-                SolrService.InitWithConnection(solrConnection);
-            }
+            //if (SolrService.IsInitialized)
+            //{
+            //    //TODO: Inject the new connection into this current solr thread.
+            //}
+            //else
+            //{
+            //    SolrService.ForceInit(solrConnection);
+            //}
+
+            SolrService.ForceInit(solrConnection);
 
             try
             {
@@ -362,7 +364,7 @@ namespace Catfish.Tests.Helpers
                 Catfish.Tests.Migrations.Configuration config = new Catfish.Tests.Migrations.Configuration();
                 var migrator = new DbMigrator(config);
 
-                foreach (string migName in migrator.GetPendingMigrations())
+                foreach (string migName in migrator.GetLocalMigrations())
                 {
                     Type migration = config.MigrationsAssembly.GetType(string.Format("{0}.{1}", config.MigrationsNamespace, migName.Substring(16)));
                     DbMigration m = (DbMigration)Activator.CreateInstance(migration);
@@ -469,13 +471,6 @@ namespace Catfish.Tests.Helpers
                 tx.Commit();
             }
 
-        }
-
-        public void SetupDbData()
-        {
-            //SetupPiranha();
-            SetupData();
-            var test = Db.MetadataSets.ToArray();
         }
 
         public CFCollection CreateCollection(CollectionService cs, int entityTypeId, string name, string description, bool store = false)

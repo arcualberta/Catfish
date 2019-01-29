@@ -23,9 +23,9 @@
                         if (file != null)
                         {
                             FileViewModel vm = new FileViewModel(file, item.Id, Request.RequestContext, "items");
-                            <div class="img" style="background-image:url(@vm.Thumbnail)"></div>
-                            @*<img src="@vm.Thumbnail" alt="@vm.FileName" />*@
-                            <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
+
+                            <div class="img" style="background-image:url(@vm.ThumbnailUrl)"></div>     
+                            <div class="label"><a href="@vm.Url">@vm.FileName </a></div>
                         }
                         else
                         {

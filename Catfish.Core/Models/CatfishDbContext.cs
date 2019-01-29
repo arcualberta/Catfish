@@ -12,19 +12,34 @@ using CommonServiceLocator;
 using SolrNet;
 using System.Configuration;
 using System.Data.Entity.Infrastructure;
+using SolrNet.Exceptions;
 
 namespace Catfish.Core.Models
 {
     public class CatfishDbContext : DbContext
     {
-        private ISolrOperations<Dictionary<string, object>> solr { get; set; }
+        //private ISolrOperations<Dictionary<string, object>> solr { get; set; }
 
         public CatfishDbContext()
             : base("piranha")
         {
-            if (SolrService.IsInitialized)
+            //if (SolrService.IsInitialized)
+            //{
+            //    solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+            //}
+        }
+
+        public CatfishDbContext(System.Data.Common.DbConnection connection, bool contextOwnsConnection) : base(connection, contextOwnsConnection)
+        {
+            //if (SolrService.IsInitialized)
+            //{
+            //    solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+            //}
+            string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
+
+            if (!string.IsNullOrEmpty(solrString))
             {
-                solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+                SolrService.Init(solrString);
             }
 
             var sqlTimeout = ConfigurationManager.AppSettings["SqlConnectionTimeoutSeconds"];
@@ -32,9 +47,53 @@ namespace Catfish.Core.Models
                 ((IObjectContextAdapter)this).ObjectContext.CommandTimeout = int.Parse(sqlTimeout);
         }
 
-        public CatfishDbContext(System.Data.Common.DbConnection connection, bool contextOwnsConnection) : base(connection, contextOwnsConnection)
+        private void UpdateSolr()
         {
-            solr = ServiceLocator.Current.GetInstance<ISolrOperations<Dictionary<string, object>>>();
+            string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
+
+            List<Dictionary<string, object>> savedEntities = new List<Dictionary<string, object>>();
+            List<string> deletedEntities = new List<string>();
+
+            foreach (DbEntityEntry entry in ChangeTracker.Entries<CFEntity>())
+            {
+                if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
+                {
+                    savedEntities.Add(((CFEntity)entry.Entity).ToSolrDictionary());
+                }
+                else if (entry.State == EntityState.Deleted)
+                {
+                    deletedEntities.Add(((CFEntity)entry.Entity).Guid);
+                }
+            }
+
+            SolrService.SolrOperations.AddRange(savedEntities);
+            SolrService.SolrOperations.Delete(deletedEntities);                                
+        }
+
+        public override int SaveChanges()
+        {
+            using (DbContextTransaction dbContextTransaction = Database.BeginTransaction())
+            {
+                try
+                {
+                    UpdateSolr();
+                    int result = base.SaveChanges();
+                    dbContextTransaction.Commit();
+                    SolrService.SolrOperations.Commit();
+                    return result;
+                }
+                catch (SolrNetException e)
+                {
+                    // rollback savechanges
+                    dbContextTransaction.Rollback();
+                    throw e;
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+
         }
 
         public int SaveChanges(IIdentity actor)
@@ -59,7 +118,7 @@ namespace Catfish.Core.Models
                 }
             }
 
-            return base.SaveChanges();
+            return SaveChanges();
         }
 
         /**
@@ -110,7 +169,7 @@ namespace Catfish.Core.Models
 
         public DbSet<CFXmlModel> XmlModels { get; set; }
 
-       public DbSet<CFEntity> Entities { get; set; }
+        public DbSet<CFEntity> Entities { get; set; }
 
         public DbSet<CFCollection> Collections { get; set; }
 

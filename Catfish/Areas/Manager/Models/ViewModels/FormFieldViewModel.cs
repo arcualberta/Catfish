@@ -47,6 +47,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public decimal Min { get; set; }
         public decimal Max { get; set; }
+        public bool IsMultiple { get; set; } //Nov 19 2016 -- for multiple field entries
+        public bool IsTextField { get; set; }
         public decimal Step { get; set; }
         public string MinLabel { get; set; }
         public string MaxLabel { get; set; }
@@ -54,7 +56,6 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string Source { get; set; }
         public string MimeType { get; set; }
         public List<KeyValuePair<string, ViewModelTuple<IEnumerable<string>, bool>>> MediaProperties{ get; set; }
-
         public FormFieldViewModel() { }
         // Attachment creates multiple recursions on view leaving the page unresponsive
         //[ScriptIgnore]
@@ -145,9 +146,11 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             if(IsTextArea){
                 IsRichText = ((TextArea)formField).IsRichText;
             }
+            IsTextField = typeof(TextField).IsAssignableFrom(formField.GetType());
+            if (IsTextField)
+                IsMultiple = ((TextField)formField).IsMultiple; //Nov 19 2016
         }
 
-        //XXX turns to database model
         public FormField InstantiateDataModel()
         {
             Type type = Type.GetType(FieldType, true);
@@ -161,6 +164,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             field.Guid = Guid;
             field.Rank = Rank;
             field.Page = Page;
+            
 
             field.Files = Files != null ? Files.Select(m => m.ToFileDescription()).ToList() :
                  new List<CFFileDescription>();
@@ -223,6 +227,10 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 ((TextArea)field).IsRichText = IsRichText;
             }
 
+            if (IsTextField)
+            {
+                ((TextField)field).IsMultiple = IsMultiple;
+            }
             return field;
         }
 

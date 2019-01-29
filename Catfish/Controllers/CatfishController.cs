@@ -31,5 +31,18 @@ namespace Catfish.Controllers
 
         private ItemQueryService mItemQueryService;
         public ItemQueryService ItemQueryService { get { if (mItemQueryService == null) mItemQueryService = new ItemQueryService(Db); return mItemQueryService; } }
+
+        private SecurityService mSecurityService;
+        public SecurityService SecurityService
+        {
+            get
+            {
+                if (mSecurityService == null)
+                {
+                    mSecurityService = new SecurityService(Db);
+                }
+                return mSecurityService;
+            }
+        }
     }
 }

@@ -58,16 +58,16 @@ namespace Catfish.Services
             string metadataGuid = SelectedFieldMetadataSet.Replace('-', '_');
             string fieldGuid = SelectedField.Replace('-', '_');
             bool isOptionField = false;
-            string resultType = "d"; //TODO: check the field type. At the moment, we can only do stats on number fields.
+            string resultType = "ds"; //TODO: check the field type. At the moment, we can only do stats on number fields.
 
             if (!string.IsNullOrEmpty(SelectedFieldMetadataSet) && !string.IsNullOrEmpty(SelectedField))
             {
                 isOptionField = IsOptionField(SelectedFieldMetadataSet, SelectedField) ? true : false;
-                resultType = IsNumberField(SelectedFieldMetadataSet, SelectedField) ? "d" : "txt_" + languageCode;
+                resultType = IsNumberField(SelectedFieldMetadataSet, SelectedField) ? "ds" : "txts_" + languageCode;
             }
 
 
-            string fieldString = string.Format("{0}value_{1}_{2}_{3}", isOptionField ? "option_" : string.Empty, metadataGuid, fieldGuid, resultType);
+            string fieldString = string.Format("value_{0}_{1}_{2}", metadataGuid, fieldGuid, resultType);
 
             //adding group by
             string groupByFieldString = string.Empty;
@@ -76,11 +76,10 @@ namespace Catfish.Services
                 string groupByMetadataGuid = string.IsNullOrEmpty(SelectedGroupByFieldMetadataSet) ? string.Empty : SelectedGroupByFieldMetadataSet.Replace('-', '_');
                 string groupByFieldGuid = string.IsNullOrEmpty(SelectedGroupByField) ? string.Empty : SelectedGroupByField.Replace('-', '_');
 
-                resultType = IsNumberField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? "d" : "txt_" + languageCode + "_s"; // This last bit is for full text groups.
+                resultType = IsNumberField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? "ds" : languageCode + "_ss"; // This last bit is for full text groups.
                 isOptionField = IsOptionField(SelectedGroupByFieldMetadataSet, SelectedGroupByField) ? true : false;
 
-                groupByFieldString = string.Format("{0}value_{1}_{2}_{3}",
-                    isOptionField ? "option_" : string.Empty,
+                groupByFieldString = string.Format("value_{0}_{1}_{2}",
                     groupByMetadataGuid, groupByFieldGuid,
                     resultType);
             }
@@ -187,14 +186,34 @@ namespace Catfish.Services
             {
                 if (reader.IsStartElement())
                 {
-                    if(reader.Name == "lst")
+                    if (reader.Name == "lst")
                     {
                         ++level;
-                    }else if((reader.Name == "int" || reader.Name == "long") && level == 3 && reader.GetAttribute("name") == "val")
+                    }
+                    else if ((reader.Name == "int" || reader.Name == "long" || reader.Name == "double") && level == 3)
                     {
+                        string name = reader.GetAttribute("name");
                         reader.Read();
-                        xVal = reader.ReadContentAsInt();
-                    }else if(level == 5)
+                        string value = reader.ReadContentAsString();
+
+                        if (name == "val")
+                        {
+                            xVal = int.Parse(value);
+                        }else if(name == "count" && categories == null)
+                        {
+                            count = int.Parse(value);
+                        }else if(name == "sumYValues" && categories == null)
+                        {
+                            try
+                            {
+                                yVal = Convert.ToDecimal(double.Parse(value));
+                            }
+                            catch(Exception fex)
+                            {
+                                throw new FormatException(string.Format("Unable to parse string \"{0}\" into decimal.", value), fex);
+                            }
+                        }
+                    }else if (level == 5 && category != null)
                     {
                         string name = reader.GetAttribute("name");
                         reader.Read();
@@ -226,10 +245,24 @@ namespace Catfish.Services
                         if (level < 1)
                         {
                             break;
-                        }else if(level == 2)
+                        } else if (level == 2)
                         {
+                            if(categories == null)
+                            {
+                                result.Add(new GraphQueryObject()
+                                {
+                                    XValue = yVal,
+                                    YValue = xVal,
+                                    Category = null,
+                                    Count = count
+                                });
+
+                                yVal = 0.0m;
+                                count = 0;
+                            }
+
                             xVal = 0;
-                        }else if(level == 4)
+                        } else if (level == 4 && categories != null)
                         {
                             result.Add(new GraphQueryObject()
                             {
@@ -273,17 +306,39 @@ namespace Catfish.Services
             return result;
         }
 
-        public IEnumerable<GraphQueryObject> GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, bool isCatDropdown = false, string languageCode = "en")
+        private string GetGraphFieldString(string metadataSetGuid, string fieldGuid, string languageCode = "en", bool wrapInFunction = false)
         {
-            string xIndexId = string.Format("value_{0}_{1}_i", xMetadataSet.Replace('-', '_'), xField.Replace('-', '_'));
-            string yIndexId = string.Format("value_{0}_{1}_i", yMetadataSet.Replace('-', '_'), yField.Replace('-', '_'));
-            string catIndexId = string.Format("{2}value_{0}_{1}_txt_{3}", catMetadataSet.Replace('-', '_'), catField.Replace('-', '_'), isCatDropdown ? "option_" : "", languageCode);
+            string baseSearch = wrapInFunction ? "\"unique(value_{0}_{1}_{2}_ss)\"" : "value_{0}_{1}_{2}_ss";
+
+            CFMetadataSet metadataSet = MetadataSrv.GetMetadataSet(metadataSetGuid);
+            FormField field = metadataSet.Fields.Where(f => f.Guid.Equals(fieldGuid)).FirstOrDefault();
+
+            if(field != null)
+            {
+                if (typeof(NumberField).IsAssignableFrom(field.GetType()))
+                {
+                    baseSearch = wrapInFunction ? "\"sum(field(value_{0}_{1}_is, max))\"" : "value_{0}_{1}_is";
+                }
+            }
+
+            return string.Format(baseSearch, metadataSetGuid.Replace('-', '_'), fieldGuid.Replace('-', '_'), languageCode);
+        }
+
+        public IEnumerable<GraphQueryObject> GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, string languageCode = "en")
+        {
+            string xIndexId = GetGraphFieldString(xMetadataSet, xField, languageCode, false);
+            string yIndexId = GetGraphFieldString(yMetadataSet, yField, languageCode, true);
+            string catIndexId = string.IsNullOrEmpty(catField) ? null : GetGraphFieldString(catMetadataSet, catField, languageCode);
 
             string result = SolrSrv.GetGraphData(q, xIndexId, yIndexId, catIndexId);
 
             if (string.IsNullOrEmpty(result)) { return null; }
 
-            IDictionary<string, string> categories = SolrSrv.GetSolrCategories(q, catIndexId);
+            IDictionary<string, string> categories = null;
+            if (catIndexId != null)
+            {
+                categories = SolrSrv.GetSolrCategories(q, catIndexId);
+            }
 
             return ConvertSolrXml(result, categories);
         }
