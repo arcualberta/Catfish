@@ -52,7 +52,7 @@
 }
 
 @section Toolbar {
-    @Html.Partial("Partial/koEditToolbar", Model, new ViewDataDictionary() { { "saveButtonFunctionCall", "saveEntityType" } })
+    @Html.Partial("Partial/koEditToolbar", Model, new ViewDataDictionary() { { "saveButtonFunctionCall", "saveEntityType(event)" } })
 }
 
 @{
@@ -249,12 +249,37 @@
         });
     });
 
-    function saveEntityType() {
+    function saveEntityType(e) {
         var data = {
             vm: @(context)
         };
         data = ko.toJS(data); // This is done to remove all observable objects.
+
+        if(data.vm.AttributeMappings[0].MetadataSetFieldId <= 0)
+        {
+            e.preventDefault();
+            SysMsg("Attribute Mapping", "Name mapping is mandatory");
+            return false;
+        }
+
         data.vm.SelectedMetadataSets = null; // This is to avoid binding errors when reloading the page.
+        //remove unmapped attribute mapping
+        var emptyAttributeMappingIndexs = [];
+        var c=0;
+        for(var i=0; i < data.vm.AttributeMappings.length; i++)
+        {
+           if(data.vm.AttributeMappings[i].MetadataSetFieldId <= 0)
+            {
+               emptyAttributeMappingIndexs[c] = i;
+               c++;
+            }
+        }
+
+        //remove the empty attrobute mappings
+         for(var i=0; i < emptyAttributeMappingIndexs.length; i++)
+        {
+            data.vm.AttributeMappings.splice(emptyAttributeMappingIndexs[i], 1);
+        }
 
         var pageForm = $("#@(context) > form");
 

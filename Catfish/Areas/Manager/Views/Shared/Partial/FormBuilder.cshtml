@@ -27,7 +27,7 @@
 }
 @helper RenderFileAttachments(KnockoutContext<FormFieldViewModel> field)
     {
-        string containerId = Guid.NewGuid().ToString("N");
+        string containerId = Guid.NewGuid().ToString();
         string uploadApiUrl = Url.Action("upload", "items");
         string deleteApiUrl = Url.Action("deleteCashedFile", "items");
 
@@ -239,7 +239,15 @@
                                         </div>
                                     </li>
                                 }
-
+                             @using (field.If(f => f.IsTextField == true))
+                             {
+                                    <li>
+                                        <label class="control-label col-md-2">Is Multiple</label>
+                                        <div class="input">
+                                            @field.Html.CheckBox(f => f.IsMultiple, new {@class="field-is-multiple" })
+                                        </div>
+                                    </li>
+                             }
                                 <li>
                                     <label class="control-label col-md-2">Attached files</label>
                                     <div class="form-view">

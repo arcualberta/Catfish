@@ -11,15 +11,24 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Catfish.Core.Helpers;
+using System.Drawing.Imaging;
+using Catfish.Models.ViewModels;
 
 namespace Catfish.Controllers.Api
 {
     public class ItemsController : CatfishController
     {   
-        public JsonResult GetPageItems(string q, int sortAttributeMappingId, bool sortAsc, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds)
+
+        private IEnumerable<DataFileViewModel> ExtractDataFiles(int id)
+        {
+            throw new NotImplementedException("Currently not yet implemented.");
+        }
+
+        public JsonResult GetPageItems(string q, string entityTypeFilter, int sortAttributeMappingId, bool sortAsc, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds, bool includeImage = false)
         {
             int total;
-            var items = ItemService.GetPagedItems(q, sortAttributeMappingId, sortAsc, page, itemPerPage, out total);
+            SecurityService.CreateAccessContext();
+            var items = ItemService.GetPagedItems(q, entityTypeFilter, sortAttributeMappingId, sortAsc, page, itemPerPage, out total);
 
             List<Tuple<int, List<string>>> result = new List<Tuple<int, List<string>>>(items.Count());
 
@@ -38,6 +47,18 @@ namespace Catfish.Controllers.Api
                     string content = itm.GetAttributeMappingValue(mapping);
                     rowContent.Add(content);
                 }
+
+                if (includeImage)
+                {
+                    foreach(var file in itm.Files)
+                    {
+                        if(file.TopMimeType == CFDataFile.MimeType.Image)
+                        {
+                            rowContent.Add(file.Guid);
+                        }
+                    }
+                }
+
                 result.Add(new Tuple<int, List<string>>(itm.Id, rowContent));
             }
 
@@ -51,10 +72,10 @@ namespace Catfish.Controllers.Api
             return this.Content(jsonResult, "application/json");
         }
 
-        public JsonResult GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, bool isCatOptionsIndex = false)
+        public JsonResult GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, bool countResults = false)
         {
             ItemQueryService itemQueryService = new ItemQueryService(Db);
-            var result = itemQueryService.GetGraphData(q, xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField, isCatOptionsIndex);
+            var result = itemQueryService.GetGraphData(q, xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField);
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -166,10 +187,38 @@ namespace Catfish.Controllers.Api
 
             string path_name = string.Empty;
             string[] fnames = file.LocalFileName.Split('.');
-            string jpgExt = (fnames[1] == "jpeg" || fnames[1] == "jpg") ? "jpg" : fnames[1];
-            if (eSize == null)
+            string jpgExt = fnames[1];
+            //string jpgExt = (fnames[1] == "jpeg" || fnames[1] == "jpg") ? "jpg" : fnames[1];
+            if(fnames[1] == "jpeg" || fnames[1] == "jpg")
             {
-                path_name = Path.Combine(file.Path, file.LocalFileName);
+                jpgExt = "jpg";
+            }
+            else if (fnames[1] == "png" || fnames[1] == "tif" || fnames[1] == "tiff")
+            {
+                jpgExt = "png";
+            }
+
+            if (eSize == null)  //get original size
+            {
+                if (fnames[1] == "tif")
+                {
+                    //chrome ccan't display tif image
+                    string localFileNamePath = Path.Combine(file.Path, file.LocalFileName); //fnames[0] + ".png";
+                    string pngFilePath = (localFileNamePath.Split('.'))[0] + ".png";
+                   
+                   
+                    //make a copy of .tif image save it as .png if none existed yet
+                    if(!System.IO.File.Exists(pngFilePath))
+                    {
+                        System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(localFileNamePath);
+                        bitmap.Save(pngFilePath, ImageFormat.Png);
+                    }
+                    path_name = pngFilePath;
+                }
+                else
+                {
+                    path_name = Path.Combine(file.Path, file.LocalFileName);
+                }
             }
             else if (eSize.Equals(ConfigHelper.eImageSize.Thumbnail))
             {
