@@ -1,4 +1,7 @@
 ﻿@model Catfish.Models.Regions.FormContainer
+
+@using Catfish.Models.Regions
+
 <style>
     .table-header {
         background-color: #dcddde;
@@ -10,12 +13,12 @@
     <li>
         @Html.LabelFor(m => m.FormId)
 
-        <div class="input">@Html.DropDownListFor(m => m.FormId, Model.Forms,"--- Please Select ---", new { @onchange = "UpdateFieldsMapping();" })</div>
+        <div class="input">@Html.DropDownListFor(m => m.FormId, Model.Forms, "--- Please Select ---", new { @onchange = "UpdateFieldsMapping();" })</div>
         @Html.ValidationMessageFor(m => m.FormId)
     </li>
     <li>
         @Html.LabelFor(m => m.EntityTypeId)
-        <div class="input">@Html.DropDownListFor(m => m.EntityTypeId, Model.EntityTypes,"--- Please Select ---", new { @onchange = "UpdateAttributesMapping();" })</div>
+        <div class="input">@Html.DropDownListFor(m => m.EntityTypeId, Model.EntityTypes, "--- Please Select ---", new { @onchange = "UpdateAttributesMapping();" })</div>
         @Html.ValidationMessageFor(m => m.EntityTypeId)
     </li>
     <li>
@@ -23,6 +26,37 @@
         <div class="input">@Html.DropDownListFor(m => m.CollectionId, Model.Collections)</div>
         @Html.ValidationMessageFor(m => m.CollectionId)
     </li>
+    <li>
+        @Html.LabelFor(m => m.EnableReferenceCodes)
+        <div class="input">@Html.EditorFor(m => m.EnableReferenceCodes)</div>
+        @Html.ValidationMessageFor(m => m.EnableReferenceCodes)
+    </li>
+    <li>
+        @Html.LabelFor(m => m.EnforceLists)
+        <div class="input">@Html.EditorFor(m => m.EnforceLists)</div>
+        @Html.ValidationMessageFor(m => m.EnforceLists)
+    </li>
+    <li>
+        @Html.LabelFor(m => m.ShuffleBlocks)
+        <div class="input">@Html.EditorFor(m => m.ShuffleBlocks)</div>
+        @Html.ValidationMessageFor(m => m.ShuffleBlocks)
+    </li>
+    <li>
+        @Html.LabelFor(m => m.ShuffleQuestions)
+        <div class="input">@Html.EditorFor(m => m.ShuffleQuestions)</div>
+        @Html.ValidationMessageFor(m => m.ShuffleQuestions)
+    </li>
+    <li>
+        @Html.LabelFor(m => m.QuestionStepOption)
+        <div class="input">@Html.EnumDropDownListFor(model => model.QuestionStepOption)</div>
+        @Html.ValidationMessageFor(m => m.QuestionStepOption)
+    </li>
+    <li>
+        @Html.LabelFor(m => m.QuestionPartsStepOption)
+        <div class="input">@Html.EnumDropDownListFor(model => model.QuestionPartsStepOption)</div>
+        @Html.ValidationMessageFor(m => m.QuestionPartsStepOption)
+    </li>
+
     @Html.Partial("_CatfishRegion", Model)
 
     <li>
@@ -38,14 +72,15 @@
                         <input type="hidden" name="@(Html.NameFor(m => m.FieldMappings)).Index" value="@(i)" />
                         @Html.HiddenFor(m => m.FieldMappings[i].AttributeName)
                         @Html.HiddenFor(m => m.FieldMappings[i].FieldName)
-                           <td>@fm.AttributeName</td><td>@fm.FieldName</td>
-                           <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteRow('@rowId');"></span></td>   
+                        <td>@fm.AttributeName</td>
+                        <td>@fm.FieldName</td>
+                        <td><span class="glyphicon glyphicon-minus-sign" onclick="DeleteRow('@rowId');"></span></td>
                     </tr>
                     i++;
                 }
             }
-           <tr id="addMapping" ><td>&nbsp;</td></tr>
-            <tr style="background-color:#ebecec;" >
+            <tr id="addMapping"><td>&nbsp;</td></tr>
+            <tr style="background-color:#ebecec;">
                 <input type="hidden" class="hdregion" value="@Html.IdFor(m => m)" />
                 <td>@Html.DropDownList("SelectedAttribute", Model.AttributesFields, new { @style = "padding: 2px 2px; width:auto;", @class = "btn btn-default" })</td>
                 <td>@Html.DropDownList("SelectedField", Model.FormFields, new { @style = "padding: 2px 2px; width:auto;", @class = "btn btn-default" })</td>
@@ -55,8 +90,8 @@
                 </td>
             </tr>
         </table>
-        
-        
+
+
     </li>
 </ul>
 <script>
