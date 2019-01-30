@@ -12,8 +12,14 @@ const Pagination = ({
 
     // << Prev 1 2 3 4 5 6 7 8 9 10 Next >>
 
-    const prevPage = currentPage - pageWindow
-    const nextPage = currentPage + pageWindow
+    let prevPage = currentPage - pageWindow
+    let nextPage = currentPage + pageWindow
+
+    if (prevPage < 1)
+        prevPage = 1
+
+    if nextPage
+
 
     return (
         <div>
