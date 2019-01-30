@@ -81,5 +81,11 @@ namespace Catfish.Core.Models.Forms
             field.SetValues(fieldValues, language, removePrevious);
         }
 
+        [NotMapped]
+        [CFTypeLabel("String")]
+        [IgnoreDataMember]
+        public string ReferenceCode { get { return GetAttribute("reference-code", null); } set { SetAttribute("reference-code", value); } }
+
+
     }
 }

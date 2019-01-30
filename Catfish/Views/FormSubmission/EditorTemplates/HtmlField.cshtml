@@ -1,0 +1,23 @@
+﻿@model Catfish.Core.Models.Forms.HtmlField
+
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+{
+    {"class", "model-type"}
+})
+
+@{
+    string lang = Catfish.Helpers.ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName;
+    var descriptions = Model.GetDescription(false).Select(d => d.Value);
+
+<div>
+    @foreach (var desc in descriptions)
+    {
+        <p>
+            @Html.Raw(desc)
+        </p>
+    }
+</div>
+
+}
+
+

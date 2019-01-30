@@ -13,6 +13,7 @@ using System.Web.Mvc;
 using Piranha;
 using System.Web.Script.Serialization;
 using Catfish.Services;
+using Catfish.Core.Models.Forms;
 
 namespace Catfish.Models.Regions
 {
@@ -30,10 +31,28 @@ namespace Catfish.Models.Regions
         public int EntityTypeId { get; set; }
         
        // public List<string> Fields_Mapping { get; set; }
-       public List<FieldMapping> FieldMappings { get; set; }
+        public List<FieldMapping> FieldMappings { get; set; }
 
         [Display(Name = "Collection")]
         public int CollectionId { get; set; }
+
+        [Display(Name = "Enable Reference Codes")]
+        public bool EnableReferenceCodes { get; set; }
+
+        [Display(Name = "Enforce Lists")]
+        public bool EnforceLists { get; set; }
+
+        [Display(Name = "Shuffle Blocks")]
+        public bool ShuffleBlocks { get; set; }
+
+        [Display(Name = "Shuffle Questions")]
+        public bool ShuffleQuestions { get; set; }
+
+        [Display(Name = "Question Step Options")]
+        public CompositeFormField.eStepState QuestionStepOption { get; set; }
+
+        [Display(Name = "Question-parts Step Options")]
+        public CompositeFormField.eStepState QuestionPartsStepOption { get; set; }
 
         private SelectList mForms;
         [ScriptIgnore]
@@ -133,6 +152,8 @@ namespace Catfish.Models.Regions
             securityService.CreateAccessContext();
 
             // get db context
+            new Services.SecurityService(db).CreateAccessContext();
+
             CollectionService collectionSrv = new CollectionService(db);
             EntityTypeService entityTypeSrv = new EntityTypeService(db);
             SubmissionService formService = new SubmissionService(db);
@@ -161,7 +182,19 @@ namespace Catfish.Models.Regions
             {
                 SubmissionService subSrv = new SubmissionService(new CatfishDbContext());
 
-                Form form = subSrv.CreateSubmissionForm(FormId);
+                Form form = subSrv.CreateSubmissionForm(
+                    FormId,
+                    EnforceLists,
+                    ShuffleBlocks,
+                    ShuffleQuestions,
+                    QuestionStepOption, 
+                    QuestionPartsStepOption);
+
+                if (EnableReferenceCodes)
+                {
+                    Random rand = new Random();
+                   form.ReferenceCode = DateTime.Now.ToString("yyMMdd-HHmmss-") + rand.Next(1000, 10000);
+                }
 
                 FormViewModel = new FormViewModel()
                 {

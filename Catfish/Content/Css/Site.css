@@ -3,6 +3,10 @@
     float:right;
 }
 
+.loading-form {
+    display: none;
+}
+
 .form{
     margin-top:20px;
 }
@@ -30,11 +34,60 @@
     margin-left: 20px !important;
 }
 
+.slidercontainer {
+    width: 350px;
+}
+
+.slidercontainer .sliderlabels {
+    width: 100%;
+    margin-top: 8px;
+}
+
+.slidercontainer .center {
+    text-align: center;
+    left: 183px;
+    position: absolute;
+}
+
+.slidercontainer .left {
+    float: left;
+}
+
+.slidercontainer .right {
+    float: right;
+}
+
+.slidercontainer .div{
+    width: 100%;
+    padding: 0px;
+}
+
+.sliderlabels b{
+    max-width: 45%;
+}
+
+.sliderlabel.right{
+    text-align:right;
+}
+
+.slidercontainer input[type="range"].slider {
+    width: 100%;
+}
+
     .form-view .form-field div.value div.checkbox, .form-view .form-field div.value div.radio {
         margin-top: 0px !important;
         margin-left: 20px !important;
     }
 
+.form-field{
+    clear:both;
+    margin-top:10px;
+}
+
+.comp-field {
+    clear: both;
+    margin-top: 40px;
+}
 
 .thumbnailPanel {
     margin: 10px;
