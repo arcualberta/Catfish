@@ -141,9 +141,9 @@ namespace Catfish.Tests.Services
                 typeof(DropDownMenu),
                 typeof(DateField),
                 typeof(CheckBoxSet),
-                typeof(Attachment)
+                typeof(Attachment),
                 typeof(SliderField),
-                typeof(ExternalMediaField)
+                typeof(ExternalMediaField),
                 typeof(UrlField)
             };
 
