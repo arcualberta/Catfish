@@ -51,76 +51,35 @@ export default class AssociationsLists extends React.Component {
             relations: objectify(startingState)
         }
 
-        this.toggle = this.toggle.bind(this);
-        this.toggleAll = this.toggleAll.bind(this);
-        this.isChecked = this.isChecked.bind(this);
-        this.areAllChecked = this.areAllChecked.bind(this);
-
+        this.updateSelected = this.updateSelected.bind(this)
+        this.updatePage = this.updatePage.bind(this)
         this.initActions();
+
     }
 
-    isChecked(listkey, id) {
-        const { selected } = this.state[listkey];
-        return selected.includes(id);
-    }
-
-    toggle(listKey, id) {
-        let selected = this.state[listKey].selected.map( x => x );
-        const index = selected.indexOf(id);
-
-        if (index === -1) {
-            selected.push(id)
-        } else {
-            selected.splice(index, 1)
-        }
-
-        const currentState = update(this.state,
+    updateSelected(location, payload) {
+        const newState = update(this.state,
             {
-                [listKey]: { selected: { $set: selected } }
-            })
-        this.setState(currentState)
-
+                [location]: { selected: { $set: payload } }
+            })        
+        this.setState(newState)        
     }
 
-    toggleAll(listKey, checked) {
+    updatePage(location, payload) {
+        console.log(location + " " + payload)
+        const newState = update(this.state, {
+            [location]: { currentPage: { $set: payload } }
+        })
 
-        let selected = [] 
-        
-        if (checked) {
-                                    
-            let missingEntities = this.state[listKey].entities
-                .filter(x => {
-                    return !this.state[listKey].selected.includes(x.id)
-                })
-                .map(x => x.id)
-          
-            selected = [...this.state[listKey].selected, ...missingEntities]
-        } else {           
-            selected = this.state[listKey].selected.filter(x => {
-                this.state[listKey].entities.includes(x)
-            })
+        this.setState(newState)
+    }
+
+    isEquivalentData(a, b) {
+        if (a.id === b.id) {
+            return true
         }
-       
-        const currentState = update(this.state, {
-            [listKey]: { selected: { $set: selected } }
-        })
 
-        this.setState(currentState)
-    }
-
-    areAllChecked(listKey) {
-
-        const { entities, selected } = this.state[listKey]
-        
-        let result = true
-        entities.forEach((entity) => {
-            if (!selected.includes(entity.id)) {
-                result = false;
-                return;
-            }
-        })
-
-        return result;
+        return false
     }
 
     componentDidMount() {
@@ -133,8 +92,8 @@ export default class AssociationsLists extends React.Component {
                         title: "All",
                         selected: [],
                         currentPage: 1,
-                        totalItems: 5,
-                        itemsPerPage: 10,
+                        totalPages: 22,
+                        itemsDelta: 2,
                         headers: [
                             {
                                 id: 0,
@@ -221,56 +180,81 @@ export default class AssociationsLists extends React.Component {
             }
         ]
 
-        this.goToPage = (page) => {
-            console.log(page)
+        this.goToPage = ({ listKey, page}) => {
+            
+            const currentState = update(this.state,
+                {
+                    [listKey]: { currentPage: { $set: page } }
+                })
+            this.setState(currentState)
+
         }
 
     }
 
     render() {
 
-        const allListKey = "all";
-        const allData = this.state[allListKey];        
-        const parentsListKey = "parents";
-        const parentsData = this.state[parentsListKey];
+        const all = this.state.all
         
         return <div>
-            <div>{allData.title}</div>
-            <ActionButtons
-                actions={this.allActions}
-                data={this.state[allListKey].selected}
-                />
-            <ActionableTable
-                    listKey={allListKey}
-                    data={allData}
-                    toggle={this.toggle}
-                    isChecked={this.isChecked}
-                    toggleAll={this.toggleAll}
-                    toggleAll={this.toggleAll}
-                    areAllChecked={this.areAllChecked}
-            />
 
-            <div>{parentsData.title}</div>
-            <ActionButtons
-                actions={this.parentsActions}
-                data={this.state[parentsListKey].selected}
-            />
             <ActionableTable
-                listKey={parentsListKey}
-                data={parentsData}
-                toggle={this.toggle}
-                isChecked={this.isChecked}
-                toggleAll={this.toggleAll}
-                areAllChecked={this.areAllChecked}
+                location="all"
+                data={all.entities}
+                selected={all.selected}
+                update={this.updateSelected}
+                headers={all.headers}
+                isEquivalent={this.isEquivalentData}
             />
 
             <Pagination
-                currentPage={allData.currentPage}
-                totalPages={10}
-                goToPage={this.goToPage}
-                delta={2}
-                />
-            </div>
+                location="all"
+                currentPage={all.currentPage}
+                totalPages={all.totalPages}
+                update={this.updatePage}
+            />
+
+        </div>
+
+        //return <div>
+        //    <div>{allData.title}</div>
+        //    <ActionButtons
+        //        actions={this.allActions}
+        //        data={this.state[allListKey].selected}
+        //        />
+        //    <ActionableTable
+        //            listKey={allListKey}
+        //            data={allData}
+        //            toggle={this.toggle}
+        //            isChecked={this.isChecked}
+        //            toggleAll={this.toggleAll}
+        //            toggleAll={this.toggleAll}
+        //            areAllChecked={this.areAllChecked}
+        //    />
+
+        //    <div>{parentsData.title}</div>
+        //    <ActionButtons
+        //        actions={this.parentsActions}
+        //        data={this.state[parentsListKey].selected}
+        //    />
+        //    <ActionableTable
+        //        listKey={parentsListKey}
+        //        data={parentsData}
+        //        toggle={this.toggle}
+        //        isChecked={this.isChecked}
+        //        toggleAll={this.toggleAll}
+        //        areAllChecked={this.areAllChecked}
+        //    />
+
+        //    <Pagination
+        //        currentPage={allData.currentPage}
+        //        totalPages={allData.totalPages}
+        //        delta={2}
+        //        goToPage={this.goToPage}
+        //        listKey={allListKey}
+        //        delta={2}
+        //        />
+        //    </div>
     }
 
 }
