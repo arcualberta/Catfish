@@ -11,24 +11,30 @@
     // Change the controller to work with the FormSubmission controller and views.
     var oldController = ViewContext.Controller.ControllerContext.RouteData.Values["controller"];
     ViewContext.Controller.ControllerContext.RouteData.Values["controller"] = "FormSubmission";
+
+    List<string> questionIndex = new List<string>();
 }
 
-<div id="@cssId" class="bs @cssClasses form">
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+
+<div id="@cssId" class="bs @cssClasses form loading-form loadable-panel">
     <style type="text/css" scoped>
                     @Html.Raw(cssStyles)
     </style>
     <form method="post" action="@UI.Permalink()/Edit">
-        @Html.EditorFor(m => m.FormViewModel)
+        @Html.EditorFor(m => m.FormViewModel, new { QuestionIndex = questionIndex })
         <br />
         <br />
         <input class="btn btn-primary" name="submit" type="button" value="@Catfish.Resources.Global.Submit" />
-        <div class="panel panel-default form-confirm" style="display: none">
+        <div class="panel panel-default form-submit form-confirm" style="display: none">
             <div class="panel-body">
                 <p>@Catfish.Resources.Views.Shared.DisplayTemplates.FormContainer.SubmitConfirm</p>
                 <input class="btn btn-primary" name="yes" type="submit" value="@Catfish.Resources.Global.Yes" />
                 <input class="btn btn-primary" name="no" type="button" value="@Catfish.Resources.Global.No" />
             </div>
         </div>
+
+        <input class="btn btn-primary" name="next" type="button" value="@Catfish.Resources.Global.Next" />
     </form>
     <div class="form-success" style="display: none">
         <p>@Catfish.Resources.Views.Shared.DisplayTemplates.FormContainer.SubmitSuccess</p>
@@ -36,38 +42,125 @@
 </div>
 
 <script type="text/javascript">
-    {
+    function Setup@(cssId)(){
+        var questions = @Html.Raw(Json.Encode(questionIndex));
+        var questionIndex = -1;
+
+        function playOnShowAudio() {
+            $("#@cssId .audio-play-on-show .audio-play:visible:enabled").click();
+        }
+
+        function showQuestion() {
+            if (questionIndex >= questions.length) {
+                questionIndex = questions.length - 1;
+            }
+
+            var index = questionIndex;
+
+            if (index >= 0 || index < questions.length) {
+                $(".stepField").hide();
+                $(questions[index]).each(function () {
+                    var t = $(this);
+                    t.show();
+
+                    if (t.hasClass("stepOnce")) {
+                        t.removeClass("stepField");
+                    }
+                })
+            }
+
+            if (questionIndex >= questions.length - 1) {
+                $("#@cssId > form > input[name='submit']").show();
+                $("#@cssId > form > input[name='next']").hide();
+            } else {
+                $("#@cssId > form > input[name='submit']").hide();
+                $("#@cssId > form > input[name='next']").show();
+            }
+
+            playOnShowAudio();
+        }
+
+        function showNextQuestion(validate = true) {
+            var valid = true;
+
+            if (validate) {
+                var form = $("#@cssId > form");
+                form.validate({ ignore: ":not(:visible)" });
+                valid = form.valid();
+            }
+
+            if (valid) {
+                ++questionIndex;
+                showQuestion();
+            }
+        }
+
+        showNextQuestion(false);
+
         function showSubmit() {
             $("#@cssId > form > input[name='submit']").show();
-            $("#@cssId > form > .form-confirm").hide();
+            $("#@cssId > form > .form-submit.form-confirm").hide();
         };
 
         function hideSubmit() {
             $("#@cssId > form > input[name='submit']").hide();
-            $("#@cssId > form > .form-confirm").show();
+            $("#@cssId > form > .form-submit.form-confirm").show();
         };
+
+        $("#@cssId > form > input[name='next']").click(function (ev) {
+            ev.preventDefault();
+            showNextQuestion();
+        });
 
         $("#@cssId > form > input[name='submit']").click(function (ev) {
             ev.preventDefault();
             hideSubmit();
         });
 
-        $("#@cssId form input[name='no']").click(function (ev) {
+        $("#@cssId form .form-submit.form-confirm input[name='no']").click(function (ev) {
             ev.preventDefault();
             showSubmit();
         });
 
         $("#@cssId > form").submit(function (ev) {
             ev.preventDefault();
+            window.startLoading("#@cssId", 60000);
 
             submitFormContainer("@Html.NameFor(m => m.FormViewModel)", this, @Html.Raw(Json.Encode(Model)), "@Url.Action("submit", "forms")", function (caller, result) {
                 $("#@cssId > form").hide();
                 $("#@cssId > .form-success").show();
+                window.stopLoading("#@cssId");
             }, function (error) {
                 showSubmit();
+                window.stopLoading("#@cssId");
             });
         });
-    }
+
+        var disableCount = 0;
+        function onPlayStart() {
+            ++disableCount;
+            $("#@cssId > form > input[name='submit']").attr("disabled", "disabled");
+            $("#@cssId > form > input[name='next']").attr("disabled", "disabled");
+        }
+
+        function onPlayEnd() {
+            --disableCount;
+
+            if (disableCount <= 0) {
+                $("#@cssId > form > input[name='submit']").removeAttr("disabled");
+                $("#@cssId > form > input[name='next']").removeAttr("disabled");
+            }
+        }
+
+        $("#@cssId .audio-play").each(function (index, element) {
+            element["onPlayStart"] = onPlayStart;
+            element["onPlayEnd"] = onPlayEnd;
+        });
+
+        $("#@cssId").removeClass("loading-form");
+        $("#@cssId").addClass("loaded-form");
+    };
+    Setup@(cssId)();// WE are using this method inorder to keep this comparable with Safari
 </script>
 
 @{ 
