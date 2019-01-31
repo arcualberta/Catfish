@@ -165,30 +165,20 @@ export default class AssociationsLists extends React.Component {
         this.allActions = [
             {
                 title: "Add",
-                action: (selected) => { console.log("Add " + selected) }
+                action: (selected) => { console.log("Add " + selected.map(x => x.id)) }
             },
             {
                 title: "Remove",
-                action: (selected) => { console.log("Remove " + selected) }
+                action: (selected) => { console.log("Remove " + selected.map(x => x.id)) }
             }
         ]
 
         this.parentsActions                  = [
             {
                 title: "Compare",
-                action: (selected) => { console.log("Compare " + selected) }
+                action: (selected) => { console.log("Compare " + selected.map(x => x.id)) }
             }
         ]
-
-        this.goToPage = ({ listKey, page}) => {
-            
-            const currentState = update(this.state,
-                {
-                    [listKey]: { currentPage: { $set: page } }
-                })
-            this.setState(currentState)
-
-        }
 
     }
 
@@ -197,6 +187,11 @@ export default class AssociationsLists extends React.Component {
         const all = this.state.all
         
         return <div>
+
+            <ActionButtons
+                actions={this.allActions}
+                data={all.selected}
+            />
 
             <ActionableTable
                 location="all"
