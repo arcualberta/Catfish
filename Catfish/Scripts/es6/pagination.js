@@ -18,7 +18,8 @@ const Pagination = ({
     if (prevPage < 1)
         prevPage = 1
 
-    if nextPage
+    if (nextPage > totalPages) 
+       nextPage = totalPages
 
 
     return (
@@ -34,14 +35,17 @@ const Pagination = ({
     
 }
 
-const getFirstPageInWindow = ({ currentPage, totalPages, pageWindow }) => 
-    Math.round(currentPage / totalPages) * pageWindow + 1
-
+const getFirstPageInWindow = ({ currentPage, pageWindow }) =>
+    (Math.floor((currentPage - 1) / pageWindow) * pageWindow) + 1
 
 const getPages = ({ location, currentPage, totalPages, pageWindow, update }) => {
-    const firstPage = getFirstPageInWindow({ currentPage, totalPages, pageWindow })
+    const firstPage = getFirstPageInWindow({ currentPage, pageWindow })
+    const lastPage = firstPage + pageWindow - 1
 
-    const pages = range(firstPage, firstPage + pageWindow - 1).map(page => 
+    const start = firstPage < 1 ? 1 : firstPage
+    const end = lastPage < totalPages ? lastPage : totalPages
+
+    const pages = range(start, end).map(page => 
         <a key={page} onClick={() => {
             update(location, page)
         }
