@@ -1,8 +1,8 @@
 ﻿
 
-export function objectify(toObjectify) {
-    return JSON.parse(JSON.stringify(toObjectify))
-}
+//export function clone(toObjectify) {
+//    return JSON.parse(JSON.stringify(toObjectify))
+//}
 
 // XXX improve
 export function range(start, end) {

@@ -5,7 +5,7 @@ import axios from 'axios'
 import ActionableTable from './actionableTable'
 import update from 'immutability-helper'
 import ActionButtons from './actionButtons'
-import { objectify } from './helpers'
+import { clone } from '../helpers'
 import Pagination from './pagination'
 
 export default class AssociationsLists extends React.Component {
@@ -20,6 +20,7 @@ export default class AssociationsLists extends React.Component {
             selected: [],
             currentPage: 1,
             totalItems: 1,
+            totalPages: 1,
             itemsPerPage: 10,
             // N headers to be used as table headers
             // {
@@ -45,10 +46,10 @@ export default class AssociationsLists extends React.Component {
         }
 
         this.state = {
-            all: objectify(startingState),
-            parents: objectify(startingState),
-            children: objectify(startingState),
-            relations: objectify(startingState)
+            all: { ...startingState },
+            parents: { ...startingState },
+            children: { ...startingState },
+            relations: { ...startingState }
         }
 
         this.updateSelected = this.updateSelected.bind(this)
@@ -190,7 +191,7 @@ export default class AssociationsLists extends React.Component {
 
             <ActionButtons
                 actions={this.allActions}
-                data={all.selected}
+                payload={all.selected}
             />
 
             <ActionableTable

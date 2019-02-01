@@ -3,7 +3,7 @@
 module.exports = {
     mode: 'development',
     entry: {
-        associationsView: './Scripts/es6/associationsView.js'
+        associationsView: './Scripts/es6/pages/associationsView.js'
     },
     output: {
         path: path.resolve(__dirname, './Scripts/dist'),

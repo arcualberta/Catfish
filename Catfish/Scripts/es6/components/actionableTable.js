@@ -2,20 +2,12 @@
 import ReactDOM from "react-dom"
 import PropTypes from 'prop-types'
 
-
-//location = "all"
-//data = { all.entities }
-//selected = { all.selected }
-//update = { this.updateSelected }
-//headers = { all.headers }
-//isEquivalent = { this.isEquivalentData }
-
 const ActionableTable = ({
     location,
     data,
     selected,
-    update,
     headers,
+    update,
     isEquivalent
 }) => {
     const renderParameters = { headers, data, selected, isEquivalent, update, location}
@@ -26,6 +18,15 @@ const ActionableTable = ({
         </table>
         )
 }
+ActionableTable.propTypes = {
+    location: PropTypes.string.isRequired,
+    data: PropTypes.array.isRequired,
+    selected: PropTypes.array.isRequired,
+    headers: PropTypes.array.isRequired,
+    update: PropTypes.func.isRequired,
+    isEquivalent: PropTypes.func.isRequired
+}
+
 
 const renderHead = ({ headers, data, selected, isEquivalent, update, location }) => 
     <thead>

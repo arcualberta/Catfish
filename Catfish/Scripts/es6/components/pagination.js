@@ -1,6 +1,7 @@
 ﻿import React from "react";
 import ReactDOM from "react-dom";
-import { range } from './helpers';
+import PropTypes from 'prop-types'
+import { range } from '../helpers';
 
 const Pagination = ({
     location = "",
@@ -33,6 +34,14 @@ const Pagination = ({
     )
         
     
+}
+
+Pagination.propTypes = {
+    location: PropTypes.string.isRequired,
+    currentPage: PropTypes.number.isRequired,
+    totalPages: PropTypes.number.isRequired,
+    pageWindow: PropTypes.number,
+    update: PropTypes.func.isRequired
 }
 
 const getFirstPageInWindow = ({ currentPage, pageWindow }) =>
