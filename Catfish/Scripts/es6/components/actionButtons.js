@@ -2,7 +2,6 @@
 import ReactDOM from "react-dom";
 import PropTypes from 'prop-types';
 
-
 const ActionButtons = ({ actions, payload }) =>
     <div>
         {actions.map((actionable, index) =>
@@ -19,7 +18,13 @@ const ActionButtons = ({ actions, payload }) =>
     </div>
 
 ActionButtons.propTypes = {
-    actions: PropTypes.array.isRequired,
+    //actions: PropTypes.arrayOf(PropTypes.instanceOf(Actionable)).isRequired,
+    actions: PropTypes.arrayOf(
+    PropTypes.shape({
+            title: PropTypes.string.isRequired,
+            action: PropTypes.func.isRequired
+        })
+    ).isRequired
     //payload: PropTypes.object
 }
 

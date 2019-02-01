@@ -1,16 +1,5 @@
 ﻿
 
-//export function clone(toObjectify) {
-//    return JSON.parse(JSON.stringify(toObjectify))
-//}
-
-// XXX improve
 export function range(start, end) {
-    
-    let result = []
-    for (let i = start; i <= end; ++i) {
-        result.push(i)
-    }
-
-    return result
+    return [...Array(1 + end - start).keys()].map(v => start + v)
 }
