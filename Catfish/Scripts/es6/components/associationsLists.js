@@ -18,10 +18,8 @@ export default class AssociationsLists extends React.Component {
             title: "",
             // list of selected entity ids. Can span multiple pages
             selected: [],
-            currentPage: 1,
-            totalItems: 1,
+            currentPage: 1,            
             totalPages: 1,
-            itemsPerPage: 10,
             // N headers to be used as table headers
             // {
             //   id: int,
@@ -29,18 +27,18 @@ export default class AssociationsLists extends React.Component {
             //   title: Title to show as column header
             //}
             headers: [],
-            // list of entities to show on a page
+            // list of data to show on a page
             // {
             //   id: int,
             //   name: Name of entity,
             //   entityType: Entity type defined on catfish,
             //   type: Type of entity, (collection, item)
             //  }
-            entities: [],
-            // list of actions to perform on selected entities
+            data: [],
+            // list of actions to perform on selected data
             // {
             //   title: title on action,
-            //   action: function to execute on selected entities
+            //   action: function to execute on selected data
             //}
             actions: []
         }
@@ -60,9 +58,10 @@ export default class AssociationsLists extends React.Component {
 
     updateSelected(location, payload) {
         const newState = update(this.state,
-            {
-                [location]: { selected: { $set: payload } }
-            })        
+        {
+            [location]: { selected: { $set: payload } }
+        })        
+        
         this.setState(newState)        
     }
 
@@ -112,7 +111,7 @@ export default class AssociationsLists extends React.Component {
                                 title: "Type"
                             }
                         ],
-                        entities: [
+                        data: [
                             {
                                 id: 3,
                                 name: "Item 1",
@@ -136,16 +135,14 @@ export default class AssociationsLists extends React.Component {
                     parents: {
                         title: "Parents",
                         selected: [],
-                        currentPage: 1,
-                        totalItems: 1,
-                        itemsPerPage: 10,
+                        currentPage: 1,                                                
                         headers: [{
                             id: 0,
                             key: "name",
                             title: "Name"
                         }                            
                         ],
-                        entities: [
+                        data: [
                             {
                                 id: 8,
                                 name: "Collection 1"
@@ -196,7 +193,7 @@ export default class AssociationsLists extends React.Component {
 
             <ActionableTable
                 location="all"
-                data={all.entities}
+                data={all.data}
                 selected={all.selected}
                 update={this.updateSelected}
                 headers={all.headers}
