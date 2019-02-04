@@ -94,7 +94,7 @@ const isPageChecked = ({ data, selected, isEquivalent }) => {
 }
 
 const toggle = ({ datum, selected, isEquivalent, update, location }) => {
-    let newSelected = selected.slice()
+    let newSelected = [...selected]
 
     const index = newSelected.findIndex((x) => isEquivalent(x, datum));
 
