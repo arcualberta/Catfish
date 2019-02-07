@@ -64,6 +64,17 @@ namespace Catfish.Areas.Manager.Controllers
             }
         }
 
+        private AggregationService mAggregationService;
+        public AggregationService AggregationService
+        {
+            get
+            {
+                if (mAggregationService == null)
+                    mAggregationService = new AggregationService(Db);
+                return mAggregationService;
+            }
+        }
+
         [HttpPost]        
         public JsonResult SelectEntity(SelectEntityTypeViewModel vm)
         {

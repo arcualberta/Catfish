@@ -52,6 +52,8 @@ namespace Catfish.Core.Models
 
             foreach (DbEntityEntry entry in ChangeTracker.Entries<CFEntity>())
             {
+
+                //entry.GetType().InvokeMember("ToSolrDictionary")
                 if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
                 {
                     savedEntities.Add(((CFEntity)entry.Entity).ToSolrDictionary());
@@ -166,6 +168,8 @@ namespace Catfish.Core.Models
         public DbSet<CFXmlModel> XmlModels { get; set; }
 
         public DbSet<CFEntity> Entities { get; set; }
+
+        public DbSet<CFAggregation> Aggregations { get; set; } 
 
         public DbSet<CFCollection> Collections { get; set; }
 

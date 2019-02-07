@@ -207,7 +207,7 @@ namespace Catfish.Core.Models
             return result;
         }
 
-        public Dictionary<string, object> ToSolrDictionary()
+        public virtual Dictionary<string, object> ToSolrDictionary()
         {
             string modelType = System.Data.Entity.Core.Objects.ObjectContext.GetObjectType(GetType()).Name;
 
@@ -221,6 +221,8 @@ namespace Catfish.Core.Models
             // Add access elements for secure searches in solr
             Dictionary<string, List<string>> access = GetAccessDictionary();
             access.ToList().ForEach(x => result[x.Key] = x.Value);
+
+            
 
             //foreach (CFMetadataSet metadataset in MetadataSets)
             //{
