@@ -24,7 +24,8 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <param name="db">The database context containing the needed Items.</param>
         /// 
-        public ItemService(CatfishDbContext db) : base(db){}
+        public ItemService(CatfishDbContext db) : base(db) { }
+
         //public ItemService(CatfishDbContext db, Func<string, bool> isAdmin) : base(db) {}
 
 
@@ -259,31 +260,57 @@ namespace Catfish.Core.Services
             int itemsPerPage,            
             out int total)
         {
-            int start = page * itemsPerPage;
-            int rows = itemsPerPage + 1;
-            CFEntityTypeAttributeMapping attrMap = Db.EntityTypeAttributeMappings.Where(m => m.Id == sortAttributeMappingId).FirstOrDefault();
-
-            if(attrMap != null)
-            {
-                string resultType = "en_ss";
-                FormField field = attrMap.Field;
-                string sortField = null; ;
-
-                if (typeof(NumberField).IsAssignableFrom(field.GetType())){
-                    resultType = "i";
-                    sortField = string.Format("field(value_{0}_{1}_{2}, min)", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType);
-                }
-                else
-                {
-                    sortField = string.Format("value_{0}_{1}_{2}", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType);
-                }
-
-                return Db.Items.FromSolr(query, out total, entityTypeFilter, start, itemsPerPage,
-                    sortField, sortAsc);
-            }
-
-            return Db.Items.FromSolr(query, out total, entityTypeFilter, start, itemsPerPage);
+            //int start = page * itemsPerPage;
+            //string sortField = SortField(sortAttributeMappingId);
+            //return Db.Items.FromSolr(query, out total, entityTypeFilter, start, itemsPerPage, sortField, sortAsc);
+            return Paginate(query, 
+                entityTypeFilter, 
+                sortAttributeMappingId, 
+                sortAsc, 
+                page, 
+                itemsPerPage, out total);
         }
+
+        public IEnumerable<CFItem> Paginate(
+            string query,
+            string entityTypeFilter,
+            int sortAttributeMappingId,
+            bool sortAsc,
+            int page,
+            int itemsPerPage,
+            out int total)
+        {
+            int start = page * itemsPerPage;
+            string sortField = SortField(sortAttributeMappingId);
+            return Db.Items.FromSolr(query, out total, entityTypeFilter, start, itemsPerPage, sortField, sortAsc);
+        }
+
+        //protected string SortField(int sortAttributeMappingId)
+        //{
+
+        //    string sortField = null;
+        //    CFEntityTypeAttributeMapping attrMap = Db.EntityTypeAttributeMappings.Where(m => m.Id == sortAttributeMappingId).FirstOrDefault();
+
+        //    if (attrMap != null)
+        //    {
+        //        string resultType = "en_ss";
+        //        FormField field = attrMap.Field;                
+
+        //        if (typeof(NumberField).IsAssignableFrom(field.GetType()))
+        //        {
+        //            resultType = "i";
+        //            sortField = string.Format("field(value_{0}_{1}_{2}, min)", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType);
+        //        }
+        //        else
+        //        {
+        //            sortField = string.Format("value_{0}_{1}_{2}", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType);
+        //        }
+
+        //        //return Db.Items.FromSolr(query, out total, entityTypeFilter, start, itemsPerPage,
+        //        //    sortField, sortAsc);
+        //    }
+        //    return sortField;
+        //}
 
         //public IEnumerable<CFItem> GetPagedItems_old(int page, int itemsPerPage, string facetMetadataGuid = null, string facetFieldGuid = null, int facetMin = 0, int facetMax = 0)
         //{
@@ -291,14 +318,14 @@ namespace Catfish.Core.Services
         //    int take = itemsPerPage + 1; // We add an extra value to calculate the next button.
 
         //    Db.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
-            
+
         //    string query = string.Format(@"SELECT TOP {5} a.*
         //        FROM (
         //            SELECT c.*, ROW_NUMBER() OVER(ORDER BY c.Id) as RowNumber
         //            FROM CFXmlModels c
-		      //      CROSS APPLY c.Content.nodes('(/item/metadata/metadata-set[@guid=""{0}""]/fields[field/@guid=""{1}""])') as T(fields)
+        //      CROSS APPLY c.Content.nodes('(/item/metadata/metadata-set[@guid=""{0}""]/fields[field/@guid=""{1}""])') as T(fields)
         //            WHERE c.Discriminator = 'CFItem'
-		      //          AND fields.exist('number((./field[@guid=""{1}""]/value/text/text())[1])') = 1
+        //          AND fields.exist('number((./field[@guid=""{1}""]/value/text/text())[1])') = 1
         //                AND fields.value('(./field[@guid=""{1}""]/value/text/text())[1]', 'INT') BETWEEN {2} AND {3}
         //        ) a
         //        WHERE a.RowNumber > {4}
@@ -307,6 +334,6 @@ namespace Catfish.Core.Services
         //    return Db.Items.SqlQuery(query);
         //}
 
-       
+
     }
 }

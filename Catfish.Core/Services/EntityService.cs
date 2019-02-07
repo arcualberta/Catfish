@@ -14,7 +14,10 @@ namespace Catfish.Core.Services
 {
     public class EntityService : ServiceBase
     {
+
+       
         public EntityService(CatfishDbContext db) : base(db) { }
+
 
         //public IQueryable<EntityType> GetEntityTypes()
         //{
@@ -75,6 +78,7 @@ namespace Catfish.Core.Services
 
             return result;
         }
+
         public CFEntity UpdateEntity(CFEntity entity)
         {
             Db.Entry(entity).State = EntityState.Modified;
@@ -224,5 +228,33 @@ namespace Catfish.Core.Services
 
             return totalChanged;
         }
+
+        protected string SortField(int sortAttributeMappingId)
+        {
+
+            string sortField = null;
+            CFEntityTypeAttributeMapping attrMap = Db.EntityTypeAttributeMappings.Where(m => m.Id == sortAttributeMappingId).FirstOrDefault();
+
+            if (attrMap != null)
+            {
+                string resultType = "en_ss";
+                FormField field = attrMap.Field;
+
+                if (typeof(NumberField).IsAssignableFrom(field.GetType()))
+                {
+                    resultType = "i";
+                    sortField = string.Format("field(value_{0}_{1}_{2}, min)", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType);
+                }
+                else
+                {
+                    sortField = string.Format("value_{0}_{1}_{2}", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType);
+                }
+
+                //return Db.Items.FromSolr(query, out total, entityTypeFilter, start, itemsPerPage,
+                //    sortField, sortAsc);
+            }
+            return sortField;
+        }
+
     }
 }

@@ -372,7 +372,7 @@
     <Content Include="package.json" />
     <Content Include="Scripts\es6\components\actionableTable.js" />
     <Content Include="Scripts\es6\components\associationsLists.js" />
-    <Content Include="Scripts\es6\associationsView.js" />
+    <Content Include="Scripts\es6\pages\associationsView.js" />
     <Content Include="Scripts\es6\helpers\index.js" />
     <Content Include="Scripts\es6\components\pagination.js" />
     <Content Include="webpack.config.js" />
@@ -405,6 +405,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Manager\Controllers\AccessDefinitionsController.cs" />
+    <Compile Include="Areas\Manager\Controllers\Api\AggregationsController.cs" />
     <Compile Include="Areas\Manager\Controllers\Api\EntityAssociationController.cs" />
     <Compile Include="Areas\Manager\Controllers\FormContainerController.cs" />
     <Compile Include="Areas\Manager\Controllers\CatfishController.cs" />
@@ -419,6 +420,7 @@
     <Compile Include="Areas\Manager\Models\ViewModels\AccessDefinitionsViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\CFUserListIndexViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\CFUserListViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\CFAggregationAssociationsViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityAccessDefinitionsViewModel.cs" />
     <Compile Include="Areas\Manager\Services\AccessGroupService.cs" />
     <Compile Include="Areas\Manager\Services\PageService.cs" />
@@ -609,6 +611,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Areas\Manager\Views\Aggregation\" />
     <Folder Include="Scripts\dist\" />
     <Folder Include="Views\Entities\" />
     <Folder Include="Views\Language\" />

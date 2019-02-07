@@ -28,7 +28,7 @@
 <div class="grid_12">
     <h3>@Model.GetName()</h3>
 
-    @*@Html.Partial("Partial/ParentCollectionList", Model)
+    @Html.Partial("Partial/ParentCollectionList", Model)
 
         @{ EntityContentViewModel childCollections = ViewBag.ChildCollections as EntityContentViewModel; }
         @Html.Partial("Partial/EntityContent", childCollections, new ViewDataDictionary() { { "title", "Child Collections" }, { "saveAction", "UpdateChildren" }, { "contextName", childrenCollectionsKoContext } })
@@ -37,7 +37,7 @@
         @Html.Partial("Partial/EntityContent", childItems, new ViewDataDictionary() { { "title", "Child Items" }, { "saveAction", "UpdateChildren" }, { "contextName", childrenItemsKoContext } })
 
         @{ EntityContentViewModel relatedItems = ViewBag.RelatedItems as EntityContentViewModel; }
-        @Html.Partial("Partial/EntityContent", relatedItems, new ViewDataDictionary() { { "title", "Related Items" }, { "saveAction", "UpdateRelatedItems" }, { "contextName", relationshipKoContext } })*@
+        @Html.Partial("Partial/EntityContent", relatedItems, new ViewDataDictionary() { { "title", "Related Items" }, { "saveAction", "UpdateRelatedItems" }, { "contextName", relationshipKoContext } })
 
     <div id="associations"></div>
 

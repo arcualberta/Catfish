@@ -8,8 +8,10 @@ using System.Runtime.Serialization;
 namespace Catfish.Core.Models
 {
     [Serializable]
-    public abstract class CFAggregation : CFEntity
+    public class CFAggregation : CFEntity
     {
+
+        public override string GetTagName() { return "aggregation"; }
 
         [IgnoreDataMember]
         public virtual List<CFAggregation> ManagedParentMembers { get; set; }
@@ -151,6 +153,15 @@ namespace Catfish.Core.Models
             {
                 child.SetAccess(guid, accessMode, true);
             }
+        }
+
+        override public Dictionary<string, object> ToSolrDictionary()
+        {
+            Dictionary<string, object> solrDictionary = base.ToSolrDictionary();
+            //solrDictionary["modeltype_s"] = "testingcall";
+            solrDictionary["parents_ss"] = ParentMembers.Select(x => x.Guid);
+            solrDictionary["related_ss"] = ChildRelations.Select(x => x.Guid);
+            return solrDictionary;
         }
 
     }
