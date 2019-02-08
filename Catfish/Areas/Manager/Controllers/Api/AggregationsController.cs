@@ -21,7 +21,7 @@ namespace Catfish.Controllers.Api
     public class AggregationsController : CatfishController
     {
         // GET: apix/Aggregation
-        public JsonResult Index()
+        public ContentResult Index()
         {
             SecurityService.CreateAccessContext();
 
@@ -44,7 +44,16 @@ namespace Catfish.Controllers.Api
 
             test.TotalPages = total;
 
-            return Json(test, JsonRequestBehavior.AllowGet);
+            //return Json(test, JsonRequestBehavior.AllowGet);
+
+            var list = JsonConvert.SerializeObject(test,
+            Formatting.None,
+            new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            });
+
+            return Content(list, "application/json");
         }
 
         [HttpGet]
