@@ -116,6 +116,28 @@ header[role="banner"] {
     http://danielstern.ca/range.css/#/
 */
 
+/* Double Range */
+.range-display {
+    width: 5em;
+}
+
+.range-slider {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    border: 1px solid rgb(204, 204, 204);
+    background-color: white;
+}
+
+.range-slider > .range-slider-handle {
+    border: 1px groove rgb(204, 204, 204);
+    background-color: white;
+}
+
+.range-slider > .range-slider-range {
+    background-color: #eeeeee;
+}
+
+/* Input Range*/
 input[type=range] {
     -webkit-appearance: none;
     width: 100%;
