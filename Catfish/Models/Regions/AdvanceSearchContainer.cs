@@ -75,7 +75,7 @@ namespace Catfish.Models.Regions
             return result;
         }
     }
-    public enum eDisplayOption { Default=1, TextArea, MultipleSelect, DropDownList }
+    public enum eDisplayOption { Default=1, TextArea, MultipleSelect, DropDownList, Slider }
 
     [ModelBinder(typeof(AdvancedSearchContainerFieldBinder))]
     [TypeConverter(typeof(AdvancedSearchContainerFieldConverter))]
@@ -98,6 +98,12 @@ namespace Catfish.Models.Regions
 
         [ScriptIgnore]
         public List<SelectListItem> ListFields { get; set; }
+
+        [ScriptIgnore]
+        public double Min { get; set; }
+
+        [ScriptIgnore]
+        public double Max { get; set; }
       
         public AdvancedSearchContainerField()
         {
@@ -106,6 +112,8 @@ namespace Catfish.Models.Regions
             IsAutoComplete = false;
             IsDropdown = false;
             IsTextArea = false;
+            Min = 0;
+            Max = 100;
             ListFields = new List<SelectListItem>();
             SelectedDisplayOption = eDisplayOption.Default;
         }
@@ -172,7 +180,7 @@ namespace Catfish.Models.Regions
             {
                 //For testing -- go to the page that use this region and add ?entity=[entityId]
                 HttpContext context = HttpContext.Current;
-
+                SolrService solrSrv = new SolrService();
                 
                
                 //grab the columnHeaders
@@ -201,6 +209,14 @@ namespace Catfish.Models.Regions
                                
                             }
 
+                        }else if (field.SelectedDisplayOption.Equals(eDisplayOption.Slider))
+                        {
+                            string fId = "value_" + map.MetadataSet.Guid.Replace('-', '_') + "_" + map.Field.Guid.Replace('-', '_') + "_is";
+
+                            IDictionary<string, SolrNet.StatsResult> statsResult = solrSrv.GetStats(fId, "*:*");
+
+                            field.Min = statsResult[fId].Min;
+                            field.Max = statsResult[fId].Max;
                         }
                     }
 
