@@ -32,7 +32,7 @@ namespace Catfish.Core.Services
             //total = 0;
 
             //return Db.Aggregations
-            List<CFItem> test =  Db.Items.FromSolr("*", out total).ToList();
+            List<CFAggregation> test =  Db.Aggregations.FromSolr(query, out total, "", start, itemsPerPage, null, false).ToList();
 
             return test;
             //return new IEnumerable<CFAggregation>();;

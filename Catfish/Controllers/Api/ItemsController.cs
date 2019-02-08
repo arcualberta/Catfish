@@ -24,7 +24,14 @@ namespace Catfish.Controllers.Api
             throw new NotImplementedException("Currently not yet implemented.");
         }
 
-        public JsonResult GetPageItems(string q, string entityTypeFilter, int sortAttributeMappingId, bool sortAsc, int page, int itemPerPage, [Bind(Include = "mapIds[]")] int[] mapIds, bool includeImage = false)
+        public JsonResult GetPageItems(string q, 
+            string entityTypeFilter, 
+            int sortAttributeMappingId, 
+            bool sortAsc, 
+            int page, 
+            int itemPerPage, 
+            [Bind(Include = "mapIds[]")] int[] mapIds, 
+            bool includeImage = false)
         {
             int total;
             SecurityService.CreateAccessContext();
