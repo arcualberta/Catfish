@@ -46,13 +46,13 @@
                     {
                         <div class="search-entry divNumber">
                             <span class="label-default field-sub-title">From</span><input type="text" class="search-from range-display" id="@id-From" value="@field.Min" />
-                            <span class="label-default field-sub-title">To</span><input type="text" class="search-to range-display" id="@id-To" value="field.Max" />
+                            <span class="label-default field-sub-title">To</span><input type="text" class="search-to range-display" id="@id-To" value="@field.Max" />
                         </div>
 
-                            <div id="@(cssId)_slider" class="col-xs-12"></div>
+                            <div id="@(id)_slider"></div>
 
                             <script type="text/javascript">
-                                $("#@(cssId)_slider").slider({
+                                $("#@(id)_slider").slider({
                                     range: true,
                                     classes: {
                                         "ui-slider": "range-slider",
@@ -69,7 +69,7 @@
                                 });
 
                                 $("#@id-From").on("change", function (event) {
-                                    var slider = $("#@(cssId)_slider");
+                                    var slider = $("#@(id)_slider");
                                     var value = parseInt($("#@id-From").val());
                                     var max = slider.slider("values", 1);
 
@@ -85,7 +85,7 @@
                                 });
 
                                 $("#@id-To").on("change", function (event) {
-                                    var slider = $("#@(cssId)_slider");
+                                    var slider = $("#@(id)_slider");
                                     var value = parseInt($("#@id-To").val());
                                     var min = slider.slider("values", 0);
 
