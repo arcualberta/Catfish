@@ -1,9 +1,11 @@
 ﻿using Catfish.Core.Models.Access;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Web.Script.Serialization;
 
 namespace Catfish.Core.Models
 {
@@ -22,7 +24,7 @@ namespace Catfish.Core.Models
             set;
         }
 
-
+        //[JsonIgnore]
         [IgnoreDataMember]
         public virtual IReadOnlyCollection<CFAggregation> ParentMembers {
             get {
@@ -30,6 +32,7 @@ namespace Catfish.Core.Models
             }
         }
 
+        //[JsonIgnore]
         [IgnoreDataMember]
         public virtual IReadOnlyCollection<CFAggregation> ChildMembers {
             get
@@ -38,6 +41,7 @@ namespace Catfish.Core.Models
             }
         }
 
+        //[JsonIgnore]
         [IgnoreDataMember]
         public virtual ICollection<CFItem> ChildRelations { get; set; }
 
