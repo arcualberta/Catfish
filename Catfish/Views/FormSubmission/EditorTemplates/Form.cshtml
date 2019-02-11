@@ -77,17 +77,6 @@
                 setPlayFunctions(audioPlayerOnce);
             };
         });
-        
-    </script>
-
-            audioPlayer.ontimeupdate = function (target) {
-                var range = 100.0 * audioPlayer.currentTime / audioPlayer.duration;
-                audioPlayerRange.value = range;
-                audioPlayerTime.innerHTML = getAudioDurationString(audioPlayer);
-            }
-        }
-    });
-
 </script>
 
 
@@ -200,7 +189,7 @@
                 }
                 else
                 {
-                    @Html.EditorFor(m => Model.Fields[i])
+                    @Html.EditorFor(m => Model.Fields[i], new { QuestionIndex = ViewData["QuestionIndex"] })
                     <div class="error form-error" name="@Html.NameFor(m => Model.Fields[i])" style="display:none;"></div>
                 }
             </div>
@@ -208,12 +197,3 @@
         </div>
         }
     }
-    else
-    {
-        @Html.EditorFor(m => Model.Fields[i], new { QuestionIndex = ViewData["QuestionIndex"]  })
-        <div class="error form-error" name="@Html.NameFor(m => Model.Fields[i])" style="display:none;"></div>
-    }
-</div>
-</div>
-    }
-}
