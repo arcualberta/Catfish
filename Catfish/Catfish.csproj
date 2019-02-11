@@ -435,6 +435,7 @@
     <Compile Include="Models\Regions\ListEntitiesPanel.cs" />
     <Compile Include="Models\Regions\QueryFilterPanel.cs" />
     <Compile Include="Models\Regions\TwitterTimelinePanel.cs" />
+    <Compile Include="Models\ViewModels\CFAggregationIndexViewModel.cs" />
     <Compile Include="Models\ViewModels\EntityViewModel.cs" />
     <Compile Include="Resources\Global.fr.Designer.cs">
       <DependentUpon>Global.fr.resx</DependentUpon>
