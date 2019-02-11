@@ -27,15 +27,19 @@ namespace Catfish.Core.Services
             int itemsPerPage = 10            
             ) 
         {
-            // XXX Implement
+
             int start = (page-1) * itemsPerPage;
-            //total = 0;
 
-            //return Db.Aggregations
-            List<CFAggregation> test =  Db.Aggregations.FromSolr(query, out total, "", start, itemsPerPage, null, false).ToList();
+            List<CFAggregation> data =  Db.Aggregations.FromSolr(query, 
+                out total, 
+                "", 
+                start, 
+                itemsPerPage, 
+                null, 
+                false).ToList();
 
-            return test;
-            //return new IEnumerable<CFAggregation>();;
+            return data;
+
             
         }
 

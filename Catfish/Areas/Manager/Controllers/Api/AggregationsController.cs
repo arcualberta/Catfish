@@ -21,7 +21,7 @@ namespace Catfish.Controllers.Api
     public class AggregationsController : CatfishController
     {
         // GET: apix/Aggregation
-        public ContentResult Index()
+        public ContentResult Index(string query = "*")
         {
             SecurityService.CreateAccessContext();
 
@@ -30,7 +30,7 @@ namespace Catfish.Controllers.Api
             CFAggregationAssociationsViewModel test = new CFAggregationAssociationsViewModel
             {
                 CurrentPage = 1,
-                TotalPages = 1
+                TotalPages = 1,
             };
 
 
@@ -40,20 +40,25 @@ namespace Catfish.Controllers.Api
                 test
             };
             int total;
-            test.Data = AggregationService.Index(out total, "", test.CurrentPage, 10);
+            test.Data = AggregationService.Index(out total, query, test.CurrentPage, 10);
 
             test.TotalPages = total;
-
+            //List<object> omar = test.Data.ToList();
             //return Json(test, JsonRequestBehavior.AllowGet);
 
             var list = JsonConvert.SerializeObject(test,
-            Formatting.None,
-            new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            });
+            Formatting.None//,
+            //new JsonSerializerSettings()
+            //{
+            //    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            //}
+            );
+
+            ////var list = new List<int>();
 
             return Content(list, "application/json");
+            //int tt = (test.Data.ToList()[0] as CFAggregation).Id;
+            //return Json(test, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
