@@ -224,6 +224,8 @@ namespace Catfish.Models.ViewModels
                     {
                         Values = new Dictionary<string, string>();
                         ValuesList.Add(Values);
+
+                        Values.Add(value.LanguageCode, value.Value);
                     }
                     else
                     {
