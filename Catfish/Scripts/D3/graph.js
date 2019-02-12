@@ -125,7 +125,7 @@ Graph.prototype.init = function (xLabel, yLabel, graphTitle, xScale, yScale, svg
     this.YScale = yScale;
     this.Svg = svgElement;
     this.Legend = legendElement;
-    
+
     this.generateBase.apply(this, arguments);
 }
 Graph.prototype.generateBase = function () {
@@ -139,7 +139,7 @@ Graph.prototype.parseDataSF = function (data, countResults) {
     var arr = [];
     var XScale = this.XScale;
     var YScale = this.YScale;
-    var selector = countResults ? "Count" : "XValue"; 
+    var selector = countResults ? "Count" : "XValue";
 
     for (var i in data) {
         arr.push({
@@ -179,12 +179,12 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
 
         this.yAxis.append("text").attr("fill", "#1f77b4")
             .attr("transform", "rotate(-90)")
-            .attr("y", 0 - (margin.left / 2))
+            .attr("y", 0 - (margin.left - 20))
             .attr("x", 0 - (height / 2))
             .attr("dy", "0.17em")
             .attr("text-anchor", "middle")
             .text(YLabel);
-            
+
         //adding title
         g1.append("text").attr("fill", "#1f77b4")
             .attr("x", (width / 2))
@@ -198,8 +198,15 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
     }
 
     function updateAxis(xAxis, yAxis, x, y, transition) {
-        xAxis.transition(transition).call(d3.axisBottom(x));
-            
+        var domain = x.domain();
+        var ticks = Math.min(Math.max(1, domain[1] - domain[0]), 10);
+
+
+        xAxis.transition(transition).call(
+            d3.axisBottom(x)
+                .ticks(ticks)
+                .tickFormat(d3.format("d")));
+
 
         yAxis.transition(transition).call(d3.axisLeft(y));
     }
@@ -226,7 +233,7 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
 
         // Remove unused lines
         lines.exit().remove();
-    
+
         // Add new elements
         path = lines.enter().append("path");
 
@@ -256,17 +263,17 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
             path.attr("stroke-dasharray", totalLength + " " + totalLength)
                 .attr("stroke-dashoffset", 0);
             //.attr("stroke-dashoffset", totalLength).transition().duration(100).ease(d3.easeCubicOut)
-        }  */          
+        }  */
     }
 
     function buildChangeFunction(dataNest, graph) {
-        return 
+        return
     }
 
     function updateLegendAttributes(div, graph, transition) {
         div.attr("class", function (d, i) {
-                return "legend-item item-" + d.index;
-            })
+            return "legend-item item-" + d.index;
+        })
             .style("color", function (d, i) {
                 return d.color;
             });
@@ -296,7 +303,7 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
     function updateLegend(divLegend, dataNest, graph, transition) {
         var legendCategories = divLegend.selectAll("div.legend-item")
             .data(dataNest, function (d) { return d.guid; });
-        
+
         // Add new elements
         var div = legendCategories.enter().append("div")
 
@@ -321,7 +328,7 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
         var height = 400 - margin.top - margin.bottom;
 
         //// Set the ranges
-        this.x = d3.scaleTime().range([0, width]);
+        this.x = d3.scaleLinear().range([0, width]);
         this.y = d3.scaleLinear().range([height, 0]);
 
         this.svgD3 = svg;
@@ -342,7 +349,7 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
         var x = this.x;
         var y = this.y;
         var maxY = 0;
-        var transition = d3.transition().duration(100).ease(d3.easeCubicOut);
+        var transition = d3.transition().duration(200).ease(d3.easeCubicOut);
 
         // Define the line
         var lineFunction = d3.line()
@@ -382,10 +389,10 @@ MultiLineChart.prototype = Object.create(Graph.prototype);
         var colorFunction = d3.scaleOrdinal(d3.schemeCategory10);
 
         // Get the data   
-        data.forEach(function (d) {
-            d.year = parseTime(d.year);
+        /*data.forEach(function (d) {
+            //d.year = parseTime(d.year);
             d.value = +d.value;
-        });
+        });*/
 
         // Scale the range of the data 
         x.domain(d3.extent(data, function (d) { return d.year; }));
