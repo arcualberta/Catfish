@@ -373,6 +373,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="LICENSE" />
     <Content Include="Areas\Manager\Views\Web.config" />
+    <Content Include="Areas\Manager\Views\Items\DisplayTemplates\FormField.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\DisplayTemplates\HtmlField.cshtml" />
+    <Content Include="Areas\Manager\Views\Items\DisplayTemplates\ExternalMediaField.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="RazorGenerator.LICENSE.md" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
