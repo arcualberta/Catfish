@@ -5,7 +5,7 @@ import { range } from '../helpers';
 
 const Pagination = ({
     location = "",
-    currentPage = 1,
+    page = 1,
     totalPages = 1,
     pageWindow = 10,
     update = () => { }
@@ -13,8 +13,8 @@ const Pagination = ({
 
     // << Prev 1 2 3 4 5 6 7 8 9 10 Next >>
 
-    let prevPage = currentPage - pageWindow
-    let nextPage = currentPage + pageWindow
+    let prevPage = page - pageWindow
+    let nextPage = page + pageWindow
 
     if (prevPage < 1)
         prevPage = 1
@@ -27,7 +27,7 @@ const Pagination = ({
         <div>
             <a onClick={() => update(location, 1)}>First</a>
             <a onClick={() => update(location, prevPage)}>Prev</a>
-            {getPages({ location, currentPage, totalPages, pageWindow, update })}
+            {getPages({ location, page, totalPages, pageWindow, update })}
             <a onClick={() => update(location, nextPage)}>Next</a>
             <a onClick={() => update(location, totalPages)}>Last</a>
         </div>
@@ -38,17 +38,17 @@ const Pagination = ({
 
 Pagination.propTypes = {
     location: PropTypes.string.isRequired,
-    currentPage: PropTypes.number.isRequired,
+    page: PropTypes.number.isRequired,
     totalPages: PropTypes.number.isRequired,
     pageWindow: PropTypes.number,
     update: PropTypes.func.isRequired
 }
 
-const getFirstPageInWindow = ({ currentPage, pageWindow }) =>
-    (Math.floor((currentPage - 1) / pageWindow) * pageWindow) + 1
+const getFirstPageInWindow = ({ page, pageWindow }) =>
+    (Math.floor((page - 1) / pageWindow) * pageWindow) + 1
 
-const getPages = ({ location, currentPage, totalPages, pageWindow, update }) => {
-    const firstPage = getFirstPageInWindow({ currentPage, pageWindow })
+const getPages = ({ location, page, totalPages, pageWindow, update }) => {
+    const firstPage = getFirstPageInWindow({ page, pageWindow })
     const lastPage = firstPage + pageWindow - 1
 
     const start = firstPage < 1 ? 1 : firstPage

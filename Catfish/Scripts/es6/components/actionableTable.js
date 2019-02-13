@@ -122,8 +122,7 @@ const togglePage = ({ data, selected, isEquivalent, update, location, checked })
     } else {
 
         newSelected = selected.filter(x => {
-            data.findIndex(datum => isEquivalent(x, datum) === -1
-            )
+            return data.findIndex(datum => isEquivalent(x, datum)) === -1
         })
 
     }
