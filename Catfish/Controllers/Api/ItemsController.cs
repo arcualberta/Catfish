@@ -48,6 +48,7 @@ namespace Catfish.Controllers.Api
 
                     if (content == null)
                     {
+                        // Check if the parent has the mapping.
                         foreach (var parent in itm.ParentMembers)
                         {
                             content = parent.GetAttributeMappingValue(mapping);
