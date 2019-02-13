@@ -16,7 +16,7 @@ namespace Catfish.Core.Models
         public virtual ICollection<CFAggregation> ParentRelations { get; set; }
 
         public CFItem()
-        { 
+        {
             ParentRelations = new List<CFAggregation>();
             Data.Add(new XElement("data"));
         }
@@ -111,6 +111,5 @@ namespace Catfish.Core.Models
 
             LogChange(file.Guid, "Deleted " + file.FileName);
         }
-
     }
 }

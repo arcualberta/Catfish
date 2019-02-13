@@ -564,6 +564,5 @@ namespace Catfish.Core.Models
                 return GetDescription();
             }
         }
-
     }
 }

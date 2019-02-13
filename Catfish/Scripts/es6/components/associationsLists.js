@@ -18,7 +18,7 @@ export default class AssociationsLists extends React.Component {
             title: "",
             // list of selected entity ids. Can span multiple pages
             selected: [],
-            currentPage: 1,            
+            page: 1,            
             totalPages: 1,
             // N headers to be used as table headers
             // {
@@ -65,13 +65,25 @@ export default class AssociationsLists extends React.Component {
         this.setState(newState)        
     }
 
-    updatePage(location, payload) {
-        console.log(location + " " + payload)
-        const newState = update(this.state, {
-            [location]: { currentPage: { $set: payload } }
-        })
+    updatePage(location, payload) {        
 
-        this.setState(newState)
+        const url = '/apix/Aggregations?itemsPerPage=5&page='+payload
+
+        axios.get(url)
+            .then(response => {
+                const data = response.data
+                const newState = update(this.state, {
+                    [location]: {
+                        page: { $set: payload },
+                        data: {$set: data.data}
+                    }
+                })
+
+                
+
+                this.setState(newState)
+            })
+        
     }
 
     isEquivalentData(a, b) {
@@ -83,17 +95,17 @@ export default class AssociationsLists extends React.Component {
     }
 
     componentDidMount() {
-        axios.get('/')
-            .then(() => {
+        axios.get('/apix/Aggregations?itemsPerPage=5')
+            .then( response => {                
 
                 // this should be replaced with the incoming data from api call
-                const response = {
+                const data = response.data
+                const resp = {
                     all: {
                         title: "All",
                         selected: [],
-                        currentPage: 1,
-                        totalPages: 22,
-                        itemsDelta: 2,
+                        page: data.page,
+                        totalPages: data.totalPages,
                         headers: [
                             {
                                 id: 0,
@@ -104,58 +116,18 @@ export default class AssociationsLists extends React.Component {
                                 id: 1,
                                 key: "entityType",
                                 title: "Entity type"
-                            },
-                            {
-                                id: 2,
-                                key: "type",
-                                title: "Type"
                             }
+                            //,
+                            //{
+                            //    id: 2,
+                            //    key: "type",
+                            //    title: "Type"
+                            //}
                         ],
-                        data: [
-                            {
-                                id: 3,
-                                name: "Item 1",
-                                entityType: "Entity 1",
-                                type: "Item"
-                            },
-                            {
-                                id: 4,
-                                name: "Collection 1",
-                                entityType: "Entity 2",
-                                type: "Collection"
-                            },
-                            {
-                                id: 5,
-                                name: "Item 2",
-                                entityType: "Entity 1",
-                                type: "Item"
-                            },
-                        ]
-                    },
-                    parents: {
-                        title: "Parents",
-                        selected: [],
-                        currentPage: 1,                                                
-                        headers: [{
-                            id: 0,
-                            key: "name",
-                            title: "Name"
-                        }                            
-                        ],
-                        data: [
-                            {
-                                id: 8,
-                                name: "Collection 1"
-                            },
-                            {
-                                id: 9,
-                                name: "Collection 2"
-                            }
-                        ]
+                        data: data.data
                     }
                 }                
-
-                this.setState(response)
+                this.setState(resp)
             })
     }
 
@@ -202,7 +174,7 @@ export default class AssociationsLists extends React.Component {
 
             <Pagination
                 location="all"
-                currentPage={all.currentPage}
+                page={all.page}
                 totalPages={all.totalPages}
                 update={this.updatePage}
             />
