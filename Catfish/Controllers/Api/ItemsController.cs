@@ -45,6 +45,20 @@ namespace Catfish.Controllers.Api
                 foreach(string mapping in mappings)
                 {
                     string content = itm.GetAttributeMappingValue(mapping);
+
+                    if (content == null)
+                    {
+                        foreach (var parent in itm.ParentMembers)
+                        {
+                            content = parent.GetAttributeMappingValue(mapping);
+
+                            if(content != null)
+                            {
+                                break;
+                            }
+                        }
+                    }
+
                     rowContent.Add(content);
                 }
 
