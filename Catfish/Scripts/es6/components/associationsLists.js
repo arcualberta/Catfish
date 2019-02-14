@@ -95,7 +95,7 @@ export default class AssociationsLists extends React.Component {
     }
 
     componentDidMount() {
-        axios.get('/apix/Aggregations?itemsPerPage=5')
+        axios.get('/apix/Aggregations')
             .then( response => {                
 
                 // this should be replaced with the incoming data from api call
@@ -134,8 +134,36 @@ export default class AssociationsLists extends React.Component {
     initActions() {
         this.allActions = [
             {
-                title: "Add",
-                action: (selected) => { console.log("Add " + selected.map(x => x.id)) }
+                title: "Add parents",
+                action: (selected) => {
+                    console.log("Add " + selected.map(x => x.id))
+                    axios.post('/apix/Aggregations/AddParents', {
+                        id: 8,
+                        objectIds: selected.map(x => x.id)
+                    })
+                    .then(function (response) {
+                        console.log(response);
+                        })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            },
+            {
+                title: "Add children",
+                action: (selected) => {
+                    console.log("Add " + selected.map(x => x.id))
+                    axios.post('/apix/Aggregations/AddChildren', {
+                        id: 8,
+                        objectIds: selected.map(x => x.id)
+                    })
+                        .then(function (response) {
+                            console.log(response);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                }
             },
             {
                 title: "Remove",
