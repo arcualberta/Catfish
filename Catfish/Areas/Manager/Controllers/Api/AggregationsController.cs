@@ -16,18 +16,19 @@ namespace Catfish.Controllers.Api
         public string Guid { get; set; } = "";
         public int Page { get; set; } = 1;
         public int ItemsPerPage { get; set; } = 10;
-        public string Query { get; set; } = "*";
+        public string Query { get; set; } = "*:*";
         public string SortBy { get; set; } = "";
     }
 
     public class AggregationsController : CatfishController
     {
         // GET: apix/Aggregation
+        [HttpGet]
         public ContentResult Index([System.Web.Http.FromUri] AggregationRelationParameters parameters)
         {
             SecurityService.CreateAccessContext();
 
-            CFAggregationAssociationsViewModel test = new CFAggregationAssociationsViewModel
+            CFAggregationAssociationsViewModel response = new CFAggregationAssociationsViewModel
             {
                 Page = parameters.Page,
                 TotalItems = 1,
@@ -37,47 +38,28 @@ namespace Catfish.Controllers.Api
 
 
             int total;
-            test.Data = AggregationService.Index(
+            response.Data = AggregationService.Index(
                 out total, 
                 parameters.Query, 
-                test.Page, 
+                response.Page, 
                 parameters.ItemsPerPage).Select(x => new CFAggregationIndexViewModel(x));
 
-            test.TotalItems = total;
-            test.ItemsPerPage = parameters.ItemsPerPage;
-            test.TotalPages = (int)Math.Ceiling((double)test.TotalItems / test.ItemsPerPage);
+            response.TotalItems = total;
+            response.ItemsPerPage = parameters.ItemsPerPage;
+            response.TotalPages = (int)Math.Ceiling((double)response.TotalItems / response.ItemsPerPage);
 
-            var list = JsonConvert.SerializeObject(test,
-                Formatting.Indented
+            string responseString = JsonConvert.SerializeObject(response,
+                Formatting.None
             );
 
-            return Content(list, "application/json");            
+            return Content(responseString, "application/json");            
         }
 
         [HttpGet]
-        public JsonResult GetParents(AggregationRelationParameters parameters) {
+        public ContentResult GetParents(AggregationRelationParameters parameters) {
 
-            //int start = page * itemsPerPage;
-            //string sortField = SortField(sortAttributeMappingId);
-            //return Db.Items.FromSolr(query, out total, entityTypeFilter, start, itemsPerPage, sortField, sortAsc);
+            return null;       
 
-            int start = parameters.Page * parameters.ItemsPerPage;
-            int total;
-            //Db.Items.FromSolr
-
-            List<CFAggregation> aggregations = AggregationService.Index(
-                out total, 
-                parameters.Query, 
-                parameters.Page, 
-                parameters.ItemsPerPage).ToList();
-            
-
-            return Json(new {
-                total,
-                aggregations
-            });
-            
-            
         }
 
         [HttpGet]
@@ -87,10 +69,67 @@ namespace Catfish.Controllers.Api
         public JsonResult GetRelations() { return null; }
 
         [HttpPost]
-        public JsonResult PostParents() { return null; }
+        public JsonResult AddParents(int id, int[] objectIds) {
+            SecurityService.CreateAccessContext();
+            CFAggregation aggregation = AggregationService.GetAggregation(id);
+
+            foreach(CFAggregation parent in AggregationService.GetAggregations(objectIds))
+            {                
+                parent.AddChild(aggregation);
+                Db.Entry(parent).State = System.Data.Entity.EntityState.Modified;
+
+            }
+
+            Db.SaveChanges(User.Identity);
+            return Json("Ok");
+
+        }
 
         [HttpPost]
-        public JsonResult PostChildren() { return null; }
+        public JsonResult RemoveParents(int id, int[] objectIds)
+        {
+            SecurityService.CreateAccessContext();
+            CFAggregation aggregation = AggregationService.GetAggregation(id);
+
+            foreach (CFAggregation parent in AggregationService.GetAggregations(objectIds))
+            {                
+                parent.RemoveChild(aggregation);
+            }
+
+            Db.SaveChanges(User.Identity);
+            return Json("");
+        }
+
+        [HttpPost]
+        public JsonResult AddChildren(int id, int[] objectIds) {
+            SecurityService.CreateAccessContext();
+            CFAggregation aggregation = AggregationService.GetAggregation(id);
+
+            foreach(CFAggregation child in AggregationService.GetAggregations(objectIds))
+            {
+                //CFAggregation child = AggregationService.GetAggregation(childId);
+                aggregation.AddChild(child);
+
+            }
+
+            Db.SaveChanges(User.Identity);
+            return Json("");
+        }
+
+        [HttpPost]
+        public JsonResult RemoveChildren(int id, int[] objectIds)
+        {
+            SecurityService.CreateAccessContext();
+            CFAggregation aggregation = AggregationService.GetAggregation(id);
+
+            foreach (CFAggregation child in AggregationService.GetAggregations(objectIds))
+            {
+                aggregation.RemoveChild(child);
+            }
+
+            Db.SaveChanges(User.Identity);
+            return Json("");
+        }
 
         [HttpPost]
         public JsonResult PostRelations() { return null; }
