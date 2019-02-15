@@ -86,7 +86,7 @@ namespace Catfish.Core.Models.Forms
             {
                 
                 XElement val = Data.Element("value");
-                if (string.IsNullOrEmpty(val.Value))
+                if (!string.IsNullOrEmpty(val.Value))
                 {
                     List<TextValue> textValues = new List<TextValue>();
                    
