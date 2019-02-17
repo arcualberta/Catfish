@@ -25,6 +25,8 @@ namespace Catfish.Models.ViewModels
         public string[] LanguageCodes { get; private set; }
 
         public string EntityTypeName { get; private set; }
+
+        public DateTime Created { get; private set; }
         
         public EntityViewModel()
         {
@@ -39,6 +41,8 @@ namespace Catfish.Models.ViewModels
             this.Guid = entity.Guid;
             this.LanguageCodes = languageCodes;
             this.EntityTypeName = entity.EntityType.Name;
+
+            this.Created = entity.Created;
 
             Type entityType = entity.GetType();
 
