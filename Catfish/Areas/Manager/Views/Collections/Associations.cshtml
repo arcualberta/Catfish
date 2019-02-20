@@ -39,6 +39,12 @@
         @{ EntityContentViewModel relatedItems = ViewBag.RelatedItems as EntityContentViewModel; }
         @Html.Partial("Partial/EntityContent", relatedItems, new ViewDataDictionary() { { "title", "Related Items" }, { "saveAction", "UpdateRelatedItems" }, { "contextName", relationshipKoContext } })
 
+    <script>
+        var external = {
+
+            modelId: @Model.Id
+        }
+    </script>
     <div id="associations"></div>
 
 </div>

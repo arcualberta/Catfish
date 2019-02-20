@@ -89,18 +89,13 @@ namespace Catfish.Core.Services
             int page = 1,
             int itemsPerPage = 10)
         {
-
-            // get parents ids y modifica query
-            //related_ss: ("da1faf51-aec8-4c37-9fe6-1e72e22f1340" "dc2c4b3b-51e2-43dd-8ac7-97e82d01f7a4")
-            // get from id
-
-            //int oneTotal;
-            //CFAggregation test = Db.Aggregations.FromSolr("id:" + id, out oneTotal, "", 1, 1, null, false).FirstOrDefault();            
+          
 
             CFAggregation aggregation = Db.Aggregations.Where(x => id == x.MappedGuid).FirstOrDefault();
+       
+            List<string> mappedGuids = aggregation.ParentMembers.Select(x => x.MappedGuid).ToList();
 
-            string parentIds = String.Join(" ", aggregation.ParentMembers);
-            aggregation.ParentMembers.ToList().ToString();
+            string parentIds = String.Join(" ", mappedGuids);
 
             //related_ss: ("da1faf51-aec8-4c37-9fe6-1e72e22f1340" "dc2c4b3b-51e2-43dd-8ac7-97e82d01f7a4") AND id:6c87d53e-e897-40f7-86dc-8f21185d83ef
 
@@ -112,6 +107,7 @@ namespace Catfish.Core.Services
             }
 
             newQuery += "id:(" + parentIds + ")";
+            //newQuery += "id: " + mappedGuids[0];
 
             return Index(out total, newQuery, page, itemsPerPage);
 

@@ -49,9 +49,13 @@ export default class AssociationsLists extends React.Component {
             children: { ...startingState },
             relations: { ...startingState }
         }
-
+        this.allActions = []
         this.updateSelected = this.updateSelected.bind(this)
-        this.updatePage = this.updatePage.bind(this)
+        this.updatePageAll = this.updatePageAll.bind(this)
+        this.updatePageChildren = this.updatePageChildren.bind(this)
+        this.updatePageParents = this.updatePageParents.bind(this)
+        this.addChildren = this.addChildren.bind(this)
+        this.addParents = this.addParents.bind(this)
         this.initActions();
 
     }
@@ -65,26 +69,70 @@ export default class AssociationsLists extends React.Component {
         this.setState(newState)        
     }
 
-    updatePage(location, payload) {        
+    updatePageAll(location, payload) {        
 
-        const url = '/apix/Aggregations?itemsPerPage=5&page='+payload
+        const url = '/apix/Aggregations'
 
-        axios.get(url)
+        axios.get(url, {
+            params: {
+                page: payload
+            }
+        })
+        .then(response => {
+            const data = response.data
+            const newState = update(this.state, {
+                [location]: {
+                    page: { $set: payload },
+                    data: {$set: data.data}
+                }
+            })                
+            this.setState(newState)
+        })
+        
+    }
+
+    updatePageChildren(location, payload) {
+        const url = '/apix/Aggregations/getChildren'
+
+            axios.get(url, {
+                params: {
+                    page: payload,
+                    id: external.modelId
+                }
+            })
             .then(response => {
                 const data = response.data
                 const newState = update(this.state, {
                     [location]: {
                         page: { $set: payload },
-                        data: {$set: data.data}
+                        data: { $set: data.data }
                     }
                 })
-
-                
-
                 this.setState(newState)
             })
-        
     }
+
+    updatePageParents(location, payload) {
+        const url = '/apix/Aggregations/getParents'
+
+        axios.get(url, {
+            params: {
+                page: payload,
+                id: external.modelId
+            }
+        })
+            .then(response => {
+                const data = response.data
+                const newState = update(this.state, {
+                    [location]: {
+                        page: { $set: payload },
+                        data: { $set: data.data }
+                    }
+                })
+                this.setState(newState)
+            })
+    }
+
 
     isEquivalentData(a, b) {
         if (a.id === b.id) {
@@ -94,7 +142,7 @@ export default class AssociationsLists extends React.Component {
         return false
     }
 
-    componentDidMount() {
+    componentDidMount() {        
         axios.get('/apix/Aggregations')
             .then( response => {                
 
@@ -117,53 +165,121 @@ export default class AssociationsLists extends React.Component {
                                 key: "entityType",
                                 title: "Entity type"
                             }
-                            //,
-                            //{
-                            //    id: 2,
-                            //    key: "type",
-                            //    title: "Type"
-                            //}
                         ],
                         data: data.data
                     }
                 }                
                 this.setState(resp)
             })
+        axios.get('/apix/Aggregations/getChildren', {
+            params: {
+                id: external.modelId
+            }
+        })
+            .then(response => {
+                console.log(response)
+                const data = response.data
+                const resp = {
+                    children: {
+                        title: "Children",
+                        selected: [],
+                        page: data.page,
+                        totalPages: data.totalPages,
+                        headers: [
+                            {
+                                id: 0,
+                                key: "name",
+                                title: "Name"
+                            },
+                            {
+                                id: 1,
+                                key: "entityType",
+                                title: "Entity type"
+                            }
+                        ],
+                        data: data.data
+                    }
+                }
+                this.setState(resp)
+            })
+        axios.get('/apix/Aggregations/getParents', {
+            params: {
+                id: external.modelId
+            }
+        })
+            .then(response => {
+                console.log(response)
+                const data = response.data
+                const resp = {
+                    parents: {
+                        title: "Parents",
+                        selected: [],
+                        page: data.page,
+                        totalPages: data.totalPages,
+                        headers: [
+                            {
+                                id: 0,
+                                key: "name",
+                                title: "Name"
+                            },
+                            {
+                                id: 1,
+                                key: "entityType",
+                                title: "Entity type"
+                            }
+                        ],
+                        data: data.data
+                    }
+                }
+                this.setState(resp)
+
+            })
+            .catch(error => console.log(error))
+    }
+
+    addChildren(selected) {
+        
+        console.log("Add " + selected.map(x => x.id))
+        const self = this
+
+        axios.post('/apix/Aggregations/AddChildren', {
+            id: external.modelId,
+            objectIds: selected.map(x => x.id)
+        })
+            .then(function (response) {
+                console.log(response);
+                self.updatePageChildren('children', self.state.children.page)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    addParents(selected) {
+        const self = this
+        console.log("Add " + selected.map(x => x.id))
+        axios.post('/apix/Aggregations/AddParents', {
+            id: external.modelId,
+            objectIds: selected.map(x => x.id)
+        })
+            .then(function (response) {
+                console.log(response);
+                self.updatePageChildren('children', self.state.children.page)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
     initActions() {
         this.allActions = [
             {
                 title: "Add parents",
-                action: (selected) => {
-                    console.log("Add " + selected.map(x => x.id))
-                    axios.post('/apix/Aggregations/AddParents', {
-                        id: 8,
-                        objectIds: selected.map(x => x.id)
-                    })
-                    .then(function (response) {
-                        console.log(response);
-                        })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-                }
+                action: this.addParents
             },
             {
                 title: "Add children",
-                action: (selected) => {
-                    console.log("Add " + selected.map(x => x.id))
-                    axios.post('/apix/Aggregations/AddChildren', {
-                        id: 8,
-                        objectIds: selected.map(x => x.id)
-                    })
-                        .then(function (response) {
-                            console.log(response);
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-                }
+                action: this.addChildren 
             },
             {
                 title: "Remove",
@@ -183,9 +299,14 @@ export default class AssociationsLists extends React.Component {
     render() {
 
         const all = this.state.all
-        
-        return <div>
+        const children = this.state.children
+        const parents = this.state.parents
 
+        return <div>
+                        -=-=-
+
+
+            <div>{all.title}</div>
             <ActionButtons
                 actions={this.allActions}
                 payload={all.selected}
@@ -204,7 +325,46 @@ export default class AssociationsLists extends React.Component {
                 location="all"
                 page={all.page}
                 totalPages={all.totalPages}
-                update={this.updatePage}
+                update={this.updatePageAll}
+            />
+
+                        -=-=-
+
+
+
+            <div>{children.title}</div>
+            <ActionableTable
+                location="children"
+                data={children.data}
+                selected={children.selected}
+                update={this.updateSelected}
+                headers={children.headers}
+                isEquivalent={this.isEquivalentData}
+            />
+
+            <Pagination
+                location="children"
+                page={children.page}
+                totalPages={children.totalPages}
+                update={this.updatePageChildren}
+            />
+            -=-=-
+
+            <div>{parents.title}</div>
+            <ActionableTable
+                location="parents"
+                data={parents.data}
+                selected={parents.selected}
+                update={this.updateSelected}
+                headers={parents.headers}
+                isEquivalent={this.isEquivalentData}
+            />
+
+            <Pagination
+                location="parents"
+                page={parents.page}
+                totalPages={parents.totalPages}
+                update={this.updatePageParents}
             />
 
         </div>

@@ -13,7 +13,7 @@ namespace Catfish.Controllers.Api
 
     public class AggregationRelationParameters
     {
-        public string Guid { get; set; } = "";
+        public int id { get; set; } = 0;
         public int Page { get; set; } = 1;
         public int ItemsPerPage { get; set; } = 10;
         public string Query { get; set; } = "*:*";
@@ -57,13 +57,80 @@ namespace Catfish.Controllers.Api
 
         [HttpGet]
         public ContentResult GetParents(AggregationRelationParameters parameters) {
+            // XXX Fixme, change from getting children to get parents
+            SecurityService.CreateAccessContext();
 
-            return null;       
+            CFAggregationAssociationsViewModel response = new CFAggregationAssociationsViewModel
+            {
+                Page = parameters.Page,
+                TotalItems = 1,
+                ItemsPerPage = 1,
+                TotalPages = 1
+            };
+
+
+            int total;
+
+            //string mappedGuid =
+            CFAggregation test = AggregationService.GetAggregation(parameters.id);
+            
+            response.Data = AggregationService.Parents(
+                test.MappedGuid,
+                out total,
+                parameters.Query,
+                response.Page,
+                parameters.ItemsPerPage).Select(x => new CFAggregationIndexViewModel(x));
+
+            response.TotalItems = total;
+            response.ItemsPerPage = parameters.ItemsPerPage;
+            response.TotalPages = (int)Math.Ceiling((double)response.TotalItems / response.ItemsPerPage);
+
+            string responseString = JsonConvert.SerializeObject(response,
+                Formatting.None
+            );
+
+            return Content(responseString, "application/json");
 
         }
 
         [HttpGet]
-        public JsonResult GetChildren() { return null; }
+        public ContentResult GetChildren([System.Web.Http.FromUri] AggregationRelationParameters parameters) {
+
+            SecurityService.CreateAccessContext();
+
+            CFAggregationAssociationsViewModel response = new CFAggregationAssociationsViewModel
+            {
+                Page = parameters.Page,
+                TotalItems = 1,
+                ItemsPerPage = 1,
+                TotalPages = 1
+            };
+
+
+            // XXX Fix me
+            int total;
+
+            //string mappedGuid =
+            CFAggregation test = AggregationService.GetAggregation(parameters.id);
+
+            response.Data = AggregationService.Children(
+                test.MappedGuid,
+                out total,
+                parameters.Query,
+                response.Page,
+                parameters.ItemsPerPage).Select(x => new CFAggregationIndexViewModel(x));
+
+            response.TotalItems = total;
+            response.ItemsPerPage = parameters.ItemsPerPage;
+            response.TotalPages = (int)Math.Ceiling((double)response.TotalItems / response.ItemsPerPage);
+
+            string responseString = JsonConvert.SerializeObject(response,
+                Formatting.None
+            );
+
+            return Content(responseString, "application/json");
+
+        }
 
         [HttpGet]
         public JsonResult GetRelations() { return null; }
@@ -109,8 +176,10 @@ namespace Catfish.Controllers.Api
             {
                 //CFAggregation child = AggregationService.GetAggregation(childId);
                 aggregation.AddChild(child);
+                Db.Entry(child).State = System.Data.Entity.EntityState.Modified;
 
             }
+            Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
 
             Db.SaveChanges(User.Identity);
             return Json("");
