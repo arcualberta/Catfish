@@ -146,6 +146,12 @@ namespace Catfish.Core.Services
             else
             {
                 var vals = field.GetValues();
+                //Melania 
+                if (typeof(OptionsField).IsAssignableFrom(field.GetType()))
+                {
+                    vals = field.GetOptionValues();
+                }
+               
                 if(vals.Count() > 0)
                 {
                     foreach (var val in vals)

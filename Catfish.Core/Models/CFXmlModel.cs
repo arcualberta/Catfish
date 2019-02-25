@@ -373,13 +373,35 @@ namespace Catfish.Core.Models
             }
             return Enumerable.Empty<string>();
         }
-
+        /// <summary>
+        /// Modified on: Feb 25 2019 -if option field is true, get the options text field when selected is set to true 
+        /// </summary>
+        /// <param name="excludeBlanks"></param>
+        /// <param name="optionField"></param>
+        /// <returns></returns>
         public virtual IEnumerable<TextValue> GetValues(bool excludeBlanks = true)
+
         {
+           
             XElement wrapper = GetWrapper("value", true, false);
+           
             return XmlHelper.GetTextValues(wrapper, false, excludeBlanks);
         }
 
+        public virtual IEnumerable<TextValue> GetOptionValues(bool excludeBlanks = true)
+        {
+
+            XElement wrapper = GetWrapper("options", true, false);
+
+            foreach(XElement option in wrapper.Nodes().ToList())
+            {
+                if(option.Attribute("selected").Value.Equals("true"))
+                {
+                    return XmlHelper.GetTextValues(option, false, excludeBlanks);
+                }
+            }
+            return XmlHelper.GetTextValues(wrapper, false, excludeBlanks);
+        }
 
         public virtual void SetValues(IEnumerable<string> values, string lang = null, bool removePrevious=false)
         {
