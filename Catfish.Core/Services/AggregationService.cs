@@ -71,7 +71,7 @@ namespace Catfish.Core.Services
 
             int start = (page-1) * itemsPerPage;
 
-            List<CFAggregation> data =  Db.Aggregations.FromSolr(query, 
+            List<CFAggregation> data =  new CatfishDbContext().Aggregations.FromSolr(query, 
                 out total, 
                 "", 
                 start, 
@@ -89,25 +89,25 @@ namespace Catfish.Core.Services
             int page = 1,
             int itemsPerPage = 10)
         {
-          
+
 
             CFAggregation aggregation = Db.Aggregations.Where(x => id == x.MappedGuid).FirstOrDefault();
-       
+
+
             List<string> mappedGuids = aggregation.ParentMembers.Select(x => x.MappedGuid).ToList();
-
-            string parentIds = String.Join(" ", mappedGuids);
-
-            //related_ss: ("da1faf51-aec8-4c37-9fe6-1e72e22f1340" "dc2c4b3b-51e2-43dd-8ac7-97e82d01f7a4") AND id:6c87d53e-e897-40f7-86dc-8f21185d83ef
-
             string newQuery = query;
+          
+            string parentIds = String.Join(" ", mappedGuids);
 
             if (newQuery.Length > 0)
             {
                 newQuery += " AND ";
             }
-
             newQuery += "id:(" + parentIds + ")";
+          
+            
             //newQuery += "id: " + mappedGuids[0];
+            //newQuery += " id: " + id;
 
             return Index(out total, newQuery, page, itemsPerPage);
 

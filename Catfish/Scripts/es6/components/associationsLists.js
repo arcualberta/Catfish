@@ -56,6 +56,8 @@ export default class AssociationsLists extends React.Component {
         this.updatePageParents = this.updatePageParents.bind(this)
         this.addChildren = this.addChildren.bind(this)
         this.addParents = this.addParents.bind(this)
+        this.removeParents = this.removeParents.bind(this)
+        this.removeChildren = this.removeChildren.bind(this)
         this.initActions();
 
     }
@@ -262,13 +264,40 @@ export default class AssociationsLists extends React.Component {
             id: external.modelId,
             objectIds: selected.map(x => x.id)
         })
-            .then(function (response) {
+            .then( response => {
                 console.log(response);
-                self.updatePageChildren('children', self.state.children.page)
+                self.updatePageParents('parents', self.state.parents.page)
             })
-            .catch(function (error) {
+            .catch( error => {
                 console.log(error);
             });
+    }
+
+    removeChildren(selected) {
+        const self = this
+        console.log("Remove children " + selected.map(x => x.id))
+        axios.post('/apix/Aggregations/RemoveChildren', {
+            id: external.modelId,
+            objectIds: selected.map(x => x.id)
+        })
+            .then(response => {
+                console.log("remove children " + selected.map(x => x.id))
+                console.log(response)
+                self.updatePageChildren('children', self.state.children.page)
+            })
+    }
+
+    removeParents(selected) {
+        const self = this
+        console.log("Remove parents " + selected.map(x => x.id))
+        axios.post('/apix/Aggregations/RemoveParents', {
+            id: external.modelId,
+            objectIds: selected.map(x => x.id)
+        })
+            .then(response => {
+                console.log(response)
+                self.updatePageParents('parents', self.state.parents.page)
+            })
     }
 
     initActions() {
@@ -280,17 +309,20 @@ export default class AssociationsLists extends React.Component {
             {
                 title: "Add children",
                 action: this.addChildren 
-            },
+            }            
+        ]
+
+        this.parentsActions = [
             {
                 title: "Remove",
-                action: (selected) => { console.log("Remove " + selected.map(x => x.id)) }
+                action: this.removeParents
             }
         ]
 
-        this.parentsActions                  = [
+        this.childrenActions = [
             {
-                title: "Compare",
-                action: (selected) => { console.log("Compare " + selected.map(x => x.id)) }
+                title: "Remove",
+                action: this.removeChildren
             }
         ]
 
@@ -302,71 +334,90 @@ export default class AssociationsLists extends React.Component {
         const children = this.state.children
         const parents = this.state.parents
 
-        return <div>
-                        -=-=-
+        const div100Style = {
+            width: '100%'
+        }
 
+        const allStyle = {
+            width: '50%',
+            float: 'left'
+        }
 
-            <div>{all.title}</div>
-            <ActionButtons
-                actions={this.allActions}
-                payload={all.selected}
-            />
+        return <div style={div100Style}>
+                 
 
-            <ActionableTable
-                location="all"
-                data={all.data}
-                selected={all.selected}
-                update={this.updateSelected}
-                headers={all.headers}
-                isEquivalent={this.isEquivalentData}
-            />
+            <div style={allStyle}>
+                <div>{all.title}</div>
+                <ActionButtons
+                    actions={this.allActions}
+                    payload={all.selected}
+                />
 
-            <Pagination
-                location="all"
-                page={all.page}
-                totalPages={all.totalPages}
-                update={this.updatePageAll}
-            />
+                <ActionableTable
+                    location="all"
+                    data={all.data}
+                    selected={all.selected}
+                    update={this.updateSelected}
+                    headers={all.headers}
+                    isEquivalent={this.isEquivalentData}
+                />
 
-                        -=-=-
+                <Pagination
+                    location="all"
+                    page={all.page}
+                    totalPages={all.totalPages}
+                    update={this.updatePageAll}
+                />
 
+            </div>
 
+            <div>
 
-            <div>{children.title}</div>
-            <ActionableTable
-                location="children"
-                data={children.data}
-                selected={children.selected}
-                update={this.updateSelected}
-                headers={children.headers}
-                isEquivalent={this.isEquivalentData}
-            />
+                <div>{children.title}</div>
+                <ActionButtons
+                    actions={this.childrenActions}
+                    payload={children.selected}
+                />
+                <ActionableTable
+                    location="children"
+                    data={children.data}
+                    selected={children.selected}
+                    update={this.updateSelected}
+                    headers={children.headers}
+                    isEquivalent={this.isEquivalentData}
+                />
 
-            <Pagination
-                location="children"
-                page={children.page}
-                totalPages={children.totalPages}
-                update={this.updatePageChildren}
-            />
-            -=-=-
+                <Pagination
+                    location="children"
+                    page={children.page}
+                    totalPages={children.totalPages}
+                    update={this.updatePageChildren}
+                />
+            </div>
+            <div>
+                <div>{parents.title}</div>
 
-            <div>{parents.title}</div>
-            <ActionableTable
-                location="parents"
-                data={parents.data}
-                selected={parents.selected}
-                update={this.updateSelected}
-                headers={parents.headers}
-                isEquivalent={this.isEquivalentData}
-            />
+                <ActionButtons
+                    actions={this.parentsActions}
+                    payload={parents.selected}
+                />
 
-            <Pagination
-                location="parents"
-                page={parents.page}
-                totalPages={parents.totalPages}
-                update={this.updatePageParents}
-            />
+                <ActionableTable
+                    location="parents"
+                    data={parents.data}
+                    selected={parents.selected}
+                    update={this.updateSelected}
+                    headers={parents.headers}
+                    isEquivalent={this.isEquivalentData}
+                />
 
+                <Pagination
+                    location="parents"
+                    page={parents.page}
+                    totalPages={parents.totalPages}
+                    update={this.updatePageParents}
+                />
+            </div>
         </div>
 
         //return <div>

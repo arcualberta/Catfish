@@ -12,6 +12,7 @@ using CommonServiceLocator;
 using SolrNet;
 using System.Data.Entity.Infrastructure;
 using SolrNet.Exceptions;
+using System.Data.Entity.Core.Objects;
 
 namespace Catfish.Core.Models
 {
@@ -41,6 +42,19 @@ namespace Catfish.Core.Models
                 SolrService.Init(solrString);
             }
 
+        }
+
+        public ObjectContext ObjectContext
+        {
+            get
+            {
+                return ((IObjectContextAdapter)this).ObjectContext;
+            }
+        }
+
+        public void Detach(object entity)
+        {
+            ObjectContext.Detach(entity);
         }
 
         private void UpdateSolr()

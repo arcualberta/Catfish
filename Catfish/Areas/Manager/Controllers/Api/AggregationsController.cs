@@ -72,10 +72,11 @@ namespace Catfish.Controllers.Api
             int total;
 
             //string mappedGuid =
-            CFAggregation test = AggregationService.GetAggregation(parameters.id);
-            
+            CFAggregation aggregation = AggregationService.GetAggregation(parameters.id);
+            string mappedGuid = aggregation.MappedGuid;
+            AggregationService.Detach(aggregation);
             response.Data = AggregationService.Parents(
-                test.MappedGuid,
+                mappedGuid,
                 out total,
                 parameters.Query,
                 response.Page,
@@ -146,7 +147,7 @@ namespace Catfish.Controllers.Api
                 Db.Entry(parent).State = System.Data.Entity.EntityState.Modified;
 
             }
-
+            Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
             Db.SaveChanges(User.Identity);
             return Json("Ok");
 
@@ -159,10 +160,12 @@ namespace Catfish.Controllers.Api
             CFAggregation aggregation = AggregationService.GetAggregation(id);
 
             foreach (CFAggregation parent in AggregationService.GetAggregations(objectIds))
-            {                
+            {
                 parent.RemoveChild(aggregation);
+                Db.Entry(parent).State = System.Data.Entity.EntityState.Modified;
             }
 
+            Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
             Db.SaveChanges(User.Identity);
             return Json("");
         }
@@ -194,7 +197,10 @@ namespace Catfish.Controllers.Api
             foreach (CFAggregation child in AggregationService.GetAggregations(objectIds))
             {
                 aggregation.RemoveChild(child);
+                Db.Entry(child).State = System.Data.Entity.EntityState.Modified;
             }
+            Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
+
 
             Db.SaveChanges(User.Identity);
             return Json("");
