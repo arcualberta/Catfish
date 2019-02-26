@@ -34,5 +34,10 @@ namespace Catfish.Core.Services
                 return 0;
             }
         }
+
+        public void Detach(object entity)
+        {
+            Db.Detach(entity);
+        }
     }
 }

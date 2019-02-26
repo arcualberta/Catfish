@@ -163,8 +163,8 @@ namespace Catfish.Core.Models
         {
             Dictionary<string, object> solrDictionary = base.ToSolrDictionary();
             //solrDictionary["modeltype_s"] = "testingcall";
-            solrDictionary["parents_ss"] = ParentMembers.Select(x => x.Guid);
-            solrDictionary["related_ss"] = ChildRelations.Select(x => x.Guid);
+            solrDictionary["parents_ss"] = ParentMembers.Select(x => x.Guid).ToList();
+            solrDictionary["related_ss"] = ChildRelations.Select(x => x.Guid).ToList();
             return solrDictionary;
         }
 
