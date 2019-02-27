@@ -7,6 +7,7 @@ import update from 'immutability-helper'
 import ActionButtons from './actionButtons'
 import { clone } from '../helpers'
 import Pagination from './pagination'
+import ConditionalRender from './conditionalRender'
 
 export default class AssociationsLists extends React.Component {
 
@@ -58,6 +59,8 @@ export default class AssociationsLists extends React.Component {
         this.addParents = this.addParents.bind(this)
         this.removeParents = this.removeParents.bind(this)
         this.removeChildren = this.removeChildren.bind(this)
+        this.clearSelected = this.clearSelected.bind(this)
+        this.clearAllSelected = this.clearAllSelected.bind(this)
         this.initActions();
 
     }
@@ -275,6 +278,7 @@ export default class AssociationsLists extends React.Component {
 
     removeChildren(selected) {
         const self = this
+        const location = 'children'
         console.log("Remove children " + selected.map(x => x.id))
         axios.post('/apix/Aggregations/RemoveChildren', {
             id: external.modelId,
@@ -283,12 +287,14 @@ export default class AssociationsLists extends React.Component {
             .then(response => {
                 console.log("remove children " + selected.map(x => x.id))
                 console.log(response)
-                self.updatePageChildren('children', self.state.children.page)
+                self.updatePageChildren(location, self.state.children.page)
+                self.clearSelected(location)
             })
     }
 
     removeParents(selected) {
         const self = this
+        const location = 'parents'
         console.log("Remove parents " + selected.map(x => x.id))
         axios.post('/apix/Aggregations/RemoveParents', {
             id: external.modelId,
@@ -296,8 +302,22 @@ export default class AssociationsLists extends React.Component {
         })
             .then(response => {
                 console.log(response)
-                self.updatePageParents('parents', self.state.parents.page)
+                self.updatePageParents(location, self.state.parents.page)
+                self.clearSelected(location);
             })
+    }
+
+    clearSelected(location) {
+        const newState = update(this.state,
+            {
+                [location]: { selected: { $set: [] } }
+            });        
+        this.setState(newState)        
+    }
+
+    clearAllSelected() {
+        const location = "all"
+        this.clearSelected(location)
     }
 
     initActions() {
@@ -309,7 +329,11 @@ export default class AssociationsLists extends React.Component {
             {
                 title: "Add children",
                 action: this.addChildren 
-            }            
+            },
+            {
+                title: "Clear selection",
+                action: this.clearAllSelected
+            }
         ]
 
         this.parentsActions = [
@@ -348,11 +372,12 @@ export default class AssociationsLists extends React.Component {
 
             <div style={allStyle}>
                 <div>{all.title}</div>
-                <ActionButtons
-                    actions={this.allActions}
-                    payload={all.selected}
-                />
-
+                <ConditionalRender condition={all.selected.length > 0}>                
+                    <ActionButtons
+                        actions={this.allActions}
+                        payload={all.selected}
+                    />
+                </ConditionalRender>
                 <ActionableTable
                     location="all"
                     data={all.data}
@@ -361,7 +386,6 @@ export default class AssociationsLists extends React.Component {
                     headers={all.headers}
                     isEquivalent={this.isEquivalentData}
                 />
-
                 <Pagination
                     location="all"
                     page={all.page}
@@ -369,15 +393,18 @@ export default class AssociationsLists extends React.Component {
                     update={this.updatePageAll}
                 />
 
+
             </div>
 
             <div>
 
                 <div>{children.title}</div>
-                <ActionButtons
-                    actions={this.childrenActions}
-                    payload={children.selected}
-                />
+                <ConditionalRender condition={children.selected.length > 0}>                
+                    <ActionButtons
+                        actions={this.childrenActions}
+                        payload={children.selected}
+                    />
+                </ConditionalRender>
                 <ActionableTable
                     location="children"
                     data={children.data}
@@ -397,10 +424,12 @@ export default class AssociationsLists extends React.Component {
             <div>
                 <div>{parents.title}</div>
 
-                <ActionButtons
-                    actions={this.parentsActions}
-                    payload={parents.selected}
-                />
+                <ConditionalRender condition={parents.selected.length > 0}>                
+                    <ActionButtons
+                        actions={this.parentsActions}
+                        payload={parents.selected}
+                    />
+                </ConditionalRender>
 
                 <ActionableTable
                     location="parents"

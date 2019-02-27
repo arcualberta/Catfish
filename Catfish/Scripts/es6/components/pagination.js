@@ -3,33 +3,27 @@ import ReactDOM from "react-dom";
 import PropTypes from 'prop-types'
 import { range } from '../helpers';
 
-const Pagination = ({
-    location = "",
-    page = 1,
-    totalPages = 1,
-    pageWindow = 10,
-    update = () => { }
-}) => {
+const Pagination = (props) => {
 
     // << Prev 1 2 3 4 5 6 7 8 9 10 Next >>
 
-    let prevPage = page - pageWindow
-    let nextPage = page + pageWindow
+    let prevPage = props.page - props.pageWindow
+    let nextPage = props.page + props.pageWindow
 
     if (prevPage < 1)
         prevPage = 1
 
-    if (nextPage > totalPages) 
-       nextPage = totalPages
+    if (nextPage > props.totalPages) 
+       nextPage = props.totalPages
 
 
     return (
         <div>
-            <a onClick={() => update(location, 1)}>First</a>
-            <a onClick={() => update(location, prevPage)}>Prev</a>
-            {getPages({ location, page, totalPages, pageWindow, update })}
-            <a onClick={() => update(location, nextPage)}>Next</a>
-            <a onClick={() => update(location, totalPages)}>Last</a>
+            <a onClick={() => update(props.location, 1)}>First</a>
+            <a onClick={() => update(props.location, prevPage)}>Prev</a>
+            {getPages({...props})}
+            <a onClick={() => update(props.location, nextPage)}>Next</a>
+            <a onClick={() => update(props.location, props.totalPages)}>Last</a>
         </div>
     )
         
@@ -42,6 +36,14 @@ Pagination.propTypes = {
     totalPages: PropTypes.number.isRequired,
     pageWindow: PropTypes.number,
     update: PropTypes.func.isRequired
+}
+
+Pagination.defaultProps = {
+    location: "",
+    page: 1,
+    totalPages: 1,
+    pageWindow: 10,
+    update: () => { }
 }
 
 const getFirstPageInWindow = ({ page, pageWindow }) =>

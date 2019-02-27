@@ -2,14 +2,14 @@
 import ReactDOM from "react-dom";
 import PropTypes from 'prop-types';
 
-const ActionButtons = ({ actions, payload }) =>
+const ActionButtons = (props) => //{ actions, payload }) =>
     <div>
-        {actions.map((actionable, index) =>
+        {props.actions.map((actionable, index) =>
             <button
                 key={index}
                 onClick={
                     (event) => {
-                        { actionable.action(payload) }
+                        { actionable.action(props.payload) }
                     }
                 }>
                 {actionable.title}
