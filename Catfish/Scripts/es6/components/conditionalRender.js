@@ -3,11 +3,13 @@ import ReactDOM from "react-dom";
 import PropTypes from 'prop-types';
 
 const ConditionalRender = (props) => {
+    let content 
+
     if (props.condition == true) {
-        return <div>{ props.children }</div>
-    } else {
-        return <div></div>
+        content = props.children
     }
+
+    return <div className="conditional-render">{content}</div>
 }
 
 export default ConditionalRender
