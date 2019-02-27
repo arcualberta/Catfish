@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 const ActionableTable = (props) => {
   
     return (
-        <table>
+        <table className="actionable-table">
             {renderHead({...props})}
             {renderBody({...props})}            
         </table>

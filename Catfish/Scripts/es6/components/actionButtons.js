@@ -2,8 +2,8 @@
 import ReactDOM from "react-dom";
 import PropTypes from 'prop-types';
 
-const ActionButtons = (props) => //{ actions, payload }) =>
-    <div>
+const ActionButtons = (props) =>
+    <div className="action-buttons">
         {props.actions.map((actionable, index) =>
             <button
                 key={index}

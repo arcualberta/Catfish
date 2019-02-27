@@ -18,7 +18,7 @@ const Pagination = (props) => {
 
 
     return (
-        <div>
+        <div className="pagination">
             <a onClick={() => update(props.location, 1)}>First</a>
             <a onClick={() => update(props.location, prevPage)}>Prev</a>
             {getPages({...props})}
