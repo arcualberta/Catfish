@@ -8,6 +8,8 @@ import ActionButtons from './actionButtons'
 import { clone } from '../helpers'
 import Pagination from './pagination'
 import ConditionalRender from './conditionalRender'
+import ActionableInputField from './actionableInputField'
+
 
 export default class AssociationsLists extends React.Component {
 
@@ -61,8 +63,13 @@ export default class AssociationsLists extends React.Component {
         this.removeChildren = this.removeChildren.bind(this)
         this.clearSelected = this.clearSelected.bind(this)
         this.clearAllSelected = this.clearAllSelected.bind(this)
+        this.test = this.test.bind(this)
         this.initActions();
 
+    }
+
+    test(x) {
+        console.log(x)
     }
 
     updateSelected(location, payload) {
@@ -75,19 +82,19 @@ export default class AssociationsLists extends React.Component {
     }
 
     updatePageAll(location, payload) {        
-
         const url = '/apix/Aggregations'
+        const { page } = payload
 
         axios.get(url, {
             params: {
-                page: payload
+                page: page
             }
         })
         .then(response => {
             const data = response.data
             const newState = update(this.state, {
                 [location]: {
-                    page: { $set: payload },
+                    page: { $set: page },
                     data: {$set: data.data}
                 }
             })                
@@ -98,31 +105,33 @@ export default class AssociationsLists extends React.Component {
 
     updatePageChildren(location, payload) {
         const url = '/apix/Aggregations/getChildren'
+        const { page } = payload
 
-            axios.get(url, {
-                params: {
-                    page: payload,
-                    id: external.modelId
+        axios.get(url, {
+            params: {
+                page: page,
+                id: external.modelId
+            }
+        })
+        .then(response => {
+            const data = response.data
+            const newState = update(this.state, {
+                [location]: {
+                    page: { $set: page },
+                    data: { $set: data.data }
                 }
             })
-            .then(response => {
-                const data = response.data
-                const newState = update(this.state, {
-                    [location]: {
-                        page: { $set: payload },
-                        data: { $set: data.data }
-                    }
-                })
-                this.setState(newState)
-            })
+            this.setState(newState)
+        })
     }
 
     updatePageParents(location, payload) {
         const url = '/apix/Aggregations/getParents'
+        const { page } = payload
 
         axios.get(url, {
             params: {
-                page: payload,
+                page: page,
                 id: external.modelId
             }
         })
@@ -130,7 +139,7 @@ export default class AssociationsLists extends React.Component {
                 const data = response.data
                 const newState = update(this.state, {
                     [location]: {
-                        page: { $set: payload },
+                        page: { $set: page },
                         data: { $set: data.data }
                     }
                 })
@@ -181,8 +190,7 @@ export default class AssociationsLists extends React.Component {
                 id: external.modelId
             }
         })
-            .then(response => {
-                console.log(response)
+            .then(response => {                
                 const data = response.data
                 const resp = {
                     children: {
@@ -212,8 +220,7 @@ export default class AssociationsLists extends React.Component {
                 id: external.modelId
             }
         })
-            .then(response => {
-                console.log(response)
+            .then(response => {               
                 const data = response.data
                 const resp = {
                     parents: {
@@ -242,52 +249,40 @@ export default class AssociationsLists extends React.Component {
             .catch(error => console.log(error))
     }
 
-    addChildren(selected) {
-        
-        console.log("Add " + selected.map(x => x.id))
+    addChildren(selected) {              
         const self = this
 
         axios.post('/apix/Aggregations/AddChildren', {
             id: external.modelId,
             objectIds: selected.map(x => x.id)
         })
-            .then(function (response) {
-                console.log(response);
-                self.updatePageChildren('children', self.state.children.page)
+            .then( response => {                
+                self.updatePageChildren('children', { page: self.state.children.page })
             })
-            .catch(function (error) {
-                console.log(error);
-            });
+            .catch( error => console.log(error) );
     }
 
     addParents(selected) {
-        const self = this
-        console.log("Add " + selected.map(x => x.id))
+        const self = this        
         axios.post('/apix/Aggregations/AddParents', {
             id: external.modelId,
             objectIds: selected.map(x => x.id)
         })
-            .then( response => {
-                console.log(response);
-                self.updatePageParents('parents', self.state.parents.page)
+            .then( response => {                
+                self.updatePageParents('parents', { page: self.state.parents.page })
             })
-            .catch( error => {
-                console.log(error);
-            });
+            .catch( error => console.log(error) );
     }
 
     removeChildren(selected) {
         const self = this
-        const location = 'children'
-        console.log("Remove children " + selected.map(x => x.id))
+        const location = 'children'        
         axios.post('/apix/Aggregations/RemoveChildren', {
             id: external.modelId,
             objectIds: selected.map(x => x.id)
         })
-            .then(response => {
-                console.log("remove children " + selected.map(x => x.id))
-                console.log(response)
-                self.updatePageChildren(location, self.state.children.page)
+            .then( response => {                
+                self.updatePageChildren(location, { page: self.state.children.page })
                 self.clearSelected(location)
             })
     }
@@ -295,14 +290,12 @@ export default class AssociationsLists extends React.Component {
     removeParents(selected) {
         const self = this
         const location = 'parents'
-        console.log("Remove parents " + selected.map(x => x.id))
         axios.post('/apix/Aggregations/RemoveParents', {
             id: external.modelId,
             objectIds: selected.map(x => x.id)
         })
-            .then(response => {
-                console.log(response)
-                self.updatePageParents(location, self.state.parents.page)
+            .then( response => {
+                self.updatePageParents(location, { page: self.state.parents.page })
                 self.clearSelected(location);
             })
     }
@@ -367,11 +360,17 @@ export default class AssociationsLists extends React.Component {
             float: 'left'
         }
 
+        
+
         return <div style={div100Style}>
                  
 
             <div style={allStyle}>
                 <div>{all.title}</div>
+                <ActionableInputField
+                    handleChange={this.test}
+                    placeholder="Search"
+                />
                 <ConditionalRender condition={all.selected.length > 0}>                
                     <ActionButtons
                         actions={this.allActions}
