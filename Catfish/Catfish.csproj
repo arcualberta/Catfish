@@ -155,6 +155,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Areas\Manager\Views\Extensions\index.html" />
+    <Content Include="Scripts\es6\components\actionableInputField.js" />
     <Content Include="Scripts\es6\components\conditionalRender.js" />
     <Content Include="testbabel.config.js" />
     <Content Include="Content\bootstrap-theme.css" />

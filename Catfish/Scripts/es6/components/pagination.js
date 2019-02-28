@@ -6,24 +6,29 @@ import { range } from '../helpers';
 const Pagination = (props) => {
 
     // << Prev 1 2 3 4 5 6 7 8 9 10 Next >>
+    const { page,
+        update,
+        pageWindow,
+        totalPages,
+        location } = props    
 
-    let prevPage = props.page - props.pageWindow
-    let nextPage = props.page + props.pageWindow
+    let prevPage = page - pageWindow
+    let nextPage = page + pageWindow
 
     if (prevPage < 1)
         prevPage = 1
 
-    if (nextPage > props.totalPages) 
-       nextPage = props.totalPages
+    if (nextPage > totalPages) 
+       nextPage = totalPages
 
 
     return (
         <div className="pagination">
-            <a onClick={() => update(props.location, 1)}>First</a>
-            <a onClick={() => update(props.location, prevPage)}>Prev</a>
+            <a onClick={() => update(location, { page: 1})}>First</a>
+            <a onClick={() => update(location, { page: prevPage })}>Prev</a>
             {getPages({...props})}
-            <a onClick={() => update(props.location, nextPage)}>Next</a>
-            <a onClick={() => update(props.location, props.totalPages)}>Last</a>
+            <a onClick={() => update(location, { page: nextPage })}>Next</a>
+            <a onClick={() => update(location, { page: totalPages })}>Last</a>
         </div>
     )
         
@@ -58,7 +63,7 @@ const getPages = ({ location, page, totalPages, pageWindow, update }) => {
 
     const pages = range(start, end).map(page => 
         <a key={page} onClick={() => {
-            update(location, page)
+            update(location, { page })
         }
         }> {page} </a>
     )
