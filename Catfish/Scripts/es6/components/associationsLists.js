@@ -54,9 +54,10 @@ export default class AssociationsLists extends React.Component {
         }
         this.allActions = []
         this.updateSelected = this.updateSelected.bind(this)
-        this.updatePageAll = this.updatePageAll.bind(this)
-        this.updatePageChildren = this.updatePageChildren.bind(this)
-        this.updatePageParents = this.updatePageParents.bind(this)
+        this.updatePage = this.updatePage.bind(this)
+        //this.updatePageAll = this.updatePageAll.bind(this)
+        //this.updatePageChildren = this.updatePageChildren.bind(this)
+        //this.updatePageParents = this.updatePageParents.bind(this)
         this.addChildren = this.addChildren.bind(this)
         this.addParents = this.addParents.bind(this)
         this.removeParents = this.removeParents.bind(this)
@@ -81,9 +82,51 @@ export default class AssociationsLists extends React.Component {
         this.setState(newState)        
     }
 
+    updatePage(location, payload) {
+        //const url = '/apix/Aggregations'
+        const { page } = payload
+        let url
+        let id
+
+        switch (location) {
+            case 'all':
+                url = '/apix/Aggregations'
+                break
+            case 'children':
+                url = '/apix/Aggregations/getChildren'
+                id = external.modelId
+                break
+            case 'parents':
+                url = '/apix/Aggregations/getParents'
+                id = external.modelId
+                break
+            default:
+                url = '/apix/Aggregations'
+                break
+                 
+        }
+
+        axios.get(url, {
+            params: {
+                page,
+                id
+            }
+        })
+            .then(response => {
+                const data = response.data
+                const newState = update(this.state, {
+                    [location]: {
+                        page: { $set: page },
+                        data: { $set: data.data }
+                    }
+                })
+                this.setState(newState)
+            })
+    }
+
     updatePageAll(location, payload) {        
         const url = '/apix/Aggregations'
-        const { page } = payload
+        const { page } = payload.page
 
         axios.get(url, {
             params: {
@@ -249,8 +292,8 @@ export default class AssociationsLists extends React.Component {
             .catch(error => console.log(error))
     }
 
-    searchAll() {
-
+    searchAll(entry) {
+        
     }
 
     addChildren(selected) {              
@@ -261,7 +304,7 @@ export default class AssociationsLists extends React.Component {
             objectIds: selected.map(x => x.id)
         })
             .then( response => {                
-                self.updatePageChildren('children', { page: self.state.children.page })
+                self.updatePage('children', { page: self.state.children.page })
             })
             .catch( error => console.log(error) );
     }
@@ -273,7 +316,7 @@ export default class AssociationsLists extends React.Component {
             objectIds: selected.map(x => x.id)
         })
             .then( response => {                
-                self.updatePageParents('parents', { page: self.state.parents.page })
+                self.updatePage('parents', { page: self.state.parents.page })
             })
             .catch( error => console.log(error) );
     }
@@ -286,7 +329,7 @@ export default class AssociationsLists extends React.Component {
             objectIds: selected.map(x => x.id)
         })
             .then( response => {                
-                self.updatePageChildren(location, { page: self.state.children.page })
+                self.updatePage(location, { page: self.state.children.page })
                 self.clearSelected(location)
             })
     }
@@ -299,7 +342,7 @@ export default class AssociationsLists extends React.Component {
             objectIds: selected.map(x => x.id)
         })
             .then( response => {
-                self.updatePageParents(location, { page: self.state.parents.page })
+                self.updatePage(location, { page: self.state.parents.page })
                 self.clearSelected(location);
             })
     }
@@ -393,7 +436,7 @@ export default class AssociationsLists extends React.Component {
                     location="all"
                     page={all.page}
                     totalPages={all.totalPages}
-                    update={this.updatePageAll}
+                    update={this.updatePage}
                 />
 
 
@@ -421,7 +464,7 @@ export default class AssociationsLists extends React.Component {
                     location="children"
                     page={children.page}
                     totalPages={children.totalPages}
-                    update={this.updatePageChildren}
+                    update={this.updatePage}
                 />
             </div>
             <div>
@@ -447,7 +490,7 @@ export default class AssociationsLists extends React.Component {
                     location="parents"
                     page={parents.page}
                     totalPages={parents.totalPages}
-                    update={this.updatePageParents}
+                    update={this.updatePage}
                 />
             </div>
         </div>
