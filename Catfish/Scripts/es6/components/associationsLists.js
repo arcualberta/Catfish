@@ -63,12 +63,12 @@ export default class AssociationsLists extends React.Component {
         this.removeChildren = this.removeChildren.bind(this)
         this.clearSelected = this.clearSelected.bind(this)
         this.clearAllSelected = this.clearAllSelected.bind(this)
-        this.test = this.test.bind(this)
+        this.log = this.log.bind(this)
         this.initActions();
 
     }
 
-    test(x) {
+    log(x) {
         console.log(x)
     }
 
@@ -249,6 +249,10 @@ export default class AssociationsLists extends React.Component {
             .catch(error => console.log(error))
     }
 
+    searchAll() {
+
+    }
+
     addChildren(selected) {              
         const self = this
 
@@ -368,7 +372,7 @@ export default class AssociationsLists extends React.Component {
             <div style={allStyle}>
                 <div>{all.title}</div>
                 <ActionableInputField
-                    handleChange={this.test}
+                    handleChange={this.log}
                     placeholder="Search"
                 />
                 <ConditionalRender condition={all.selected.length > 0}>                
