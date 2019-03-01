@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import PropTypes from 'prop-types'
 import { range } from '../helpers';
 
-const Pagination = (props) => {
+const Pagination = props => {
 
     // << Prev 1 2 3 4 5 6 7 8 9 10 Next >>
     const { page,
@@ -21,7 +21,6 @@ const Pagination = (props) => {
     if (nextPage > totalPages) 
        nextPage = totalPages
 
-
     return (
         <div className="pagination">
             <a onClick={() => update(location, { page: 1})}>First</a>
@@ -30,9 +29,7 @@ const Pagination = (props) => {
             <a onClick={() => update(location, { page: nextPage })}>Next</a>
             <a onClick={() => update(location, { page: totalPages })}>Last</a>
         </div>
-    )
-        
-    
+    )       
 }
 
 Pagination.propTypes = {
