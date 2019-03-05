@@ -19,10 +19,13 @@ export default class AssociationsLists extends React.Component {
         const startingState = {
             // Title to render as description for table
             title: "",
-            // list of selected entity ids. Can span multiple pages
+            // list of selected entity ids. Can span multiple pages filtered by 
+            // query
             selected: [],
-            page: 1,            
+            page: 1,
+            itemsPerPage: 1,
             totalPages: 1,
+            query: "*:*",
             // N headers to be used as table headers
             // {
             //   id: int,
@@ -52,25 +55,57 @@ export default class AssociationsLists extends React.Component {
             children: { ...startingState },
             relations: { ...startingState }
         }
-        this.allActions = []
+        //this.allActions = []
         this.updateSelected = this.updateSelected.bind(this)
         this.updatePage = this.updatePage.bind(this)
-        //this.updatePageAll = this.updatePageAll.bind(this)
-        //this.updatePageChildren = this.updatePageChildren.bind(this)
-        //this.updatePageParents = this.updatePageParents.bind(this)
         this.addChildren = this.addChildren.bind(this)
         this.addParents = this.addParents.bind(this)
         this.removeParents = this.removeParents.bind(this)
         this.removeChildren = this.removeChildren.bind(this)
         this.clearSelected = this.clearSelected.bind(this)
         this.clearAllSelected = this.clearAllSelected.bind(this)
-        this.log = this.log.bind(this)
-        this.initActions();
+        this.handleSearch = this.handleSearch.bind(this)
+        this.handleSearchAll = this.handleSearchAll.bind(this)
+        this.handleSearchParents = this.handleSearchParents.bind(this)
+        this.handleSearchChildren = this.handleSearchChildren.bind(this)
+        this.initActions()
+
+
+        this.searchTimeDelay = 200
+
+        this.searchTimers = {
+            'all': null,
+            'children': null,
+            'parents': null
+        }
 
     }
 
-    log(x) {
-        console.log(x)
+    handleSearchAll(x) {
+        this.handleSearch({ ...x }, 'all')
+    }
+
+    handleSearchParents(x) {
+        this.handleSearch({ ...x }, 'parents')
+    }
+
+    handleSearchChildren(x) {
+        this.handleSearch({ ...x }, 'children')
+    }
+
+    handleSearch(x, location) {
+
+        if (this.searchTimers[location] !== null) {
+            clearTimeout(this.searchTimers[location])
+            this.searchTimers[location] = null;
+        }
+
+        this.searchTimers[location] = setTimeout(() => {
+            const page = 1
+            const query = x.target.value
+            this.updatePage(location, { page, query })   
+            this.searchTimers[location] = null;
+        }, this.searchTimeDelay)             
     }
 
     updateSelected(location, payload) {
@@ -82,9 +117,7 @@ export default class AssociationsLists extends React.Component {
         this.setState(newState)        
     }
 
-    updatePage(location, payload) {
-        //const url = '/apix/Aggregations'
-        const { page } = payload
+    getPageParameters(location) {
         let url
         let id
 
@@ -103,19 +136,36 @@ export default class AssociationsLists extends React.Component {
             default:
                 url = '/apix/Aggregations'
                 break
-                 
+
+        }
+        return {url, id}
+    }
+
+    updatePage(location, payload) {
+        //const url = '/apix/Aggregations'
+        let { page, query } = payload
+        const { url, id } = this.getPageParameters(location)        
+
+        if (page == null) {
+            page = this.state[location].page
+        }
+
+        if (query == null) {
+            query = this.state[location].query
         }
 
         axios.get(url, {
             params: {
-                page,
-                id
+                id,
+                query,
+                page                
             }
         })
             .then(response => {
                 const data = response.data
                 const newState = update(this.state, {
                     [location]: {
+                        query: {$set: query},
                         page: { $set: page },
                         data: { $set: data.data }
                     }
@@ -123,73 +173,6 @@ export default class AssociationsLists extends React.Component {
                 this.setState(newState)
             })
     }
-
-    updatePageAll(location, payload) {        
-        const url = '/apix/Aggregations'
-        const { page } = payload.page
-
-        axios.get(url, {
-            params: {
-                page: page
-            }
-        })
-        .then(response => {
-            const data = response.data
-            const newState = update(this.state, {
-                [location]: {
-                    page: { $set: page },
-                    data: {$set: data.data}
-                }
-            })                
-            this.setState(newState)
-        })
-        
-    }
-
-    updatePageChildren(location, payload) {
-        const url = '/apix/Aggregations/getChildren'
-        const { page } = payload
-
-        axios.get(url, {
-            params: {
-                page: page,
-                id: external.modelId
-            }
-        })
-        .then(response => {
-            const data = response.data
-            const newState = update(this.state, {
-                [location]: {
-                    page: { $set: page },
-                    data: { $set: data.data }
-                }
-            })
-            this.setState(newState)
-        })
-    }
-
-    updatePageParents(location, payload) {
-        const url = '/apix/Aggregations/getParents'
-        const { page } = payload
-
-        axios.get(url, {
-            params: {
-                page: page,
-                id: external.modelId
-            }
-        })
-            .then(response => {
-                const data = response.data
-                const newState = update(this.state, {
-                    [location]: {
-                        page: { $set: page },
-                        data: { $set: data.data }
-                    }
-                })
-                this.setState(newState)
-            })
-    }
-
 
     isEquivalentData(a, b) {
         if (a.id === b.id) {
@@ -210,6 +193,7 @@ export default class AssociationsLists extends React.Component {
                         title: "All",
                         selected: [],
                         page: data.page,
+                        itemsPerPage: data.itemsPerPage,
                         totalPages: data.totalPages,
                         headers: [
                             {
@@ -240,6 +224,7 @@ export default class AssociationsLists extends React.Component {
                         title: "Children",
                         selected: [],
                         page: data.page,
+                        itemsPerPage: data.itemsPerPage,
                         totalPages: data.totalPages,
                         headers: [
                             {
@@ -270,6 +255,7 @@ export default class AssociationsLists extends React.Component {
                         title: "Parents",
                         selected: [],
                         page: data.page,
+                        itemsPerPage: data.itemsPerPage,
                         totalPages: data.totalPages,
                         headers: [
                             {
@@ -290,10 +276,6 @@ export default class AssociationsLists extends React.Component {
 
             })
             .catch(error => console.log(error))
-    }
-
-    searchAll(entry) {
-        
     }
 
     addChildren(selected) {              
@@ -402,138 +384,117 @@ export default class AssociationsLists extends React.Component {
             width: '100%'
         }
 
-        const allStyle = {
+        const leftColumnStyle = {
             width: '50%',
             float: 'left'
         }
 
+        const rightColumnStyle = {
+            width: '50%',
+            float: 'right'
+        }
+
         
 
-        return <div style={div100Style}>
-                 
+        return <div className="bs container">
 
-            <div style={allStyle}>
-                <div>{all.title}</div>
-                <ActionableInputField
-                    handleChange={this.log}
-                    placeholder="Search"
-                />
-                <ConditionalRender condition={all.selected.length > 0}>                
-                    <ActionButtons
-                        actions={this.allActions}
-                        payload={all.selected}
+            <div className="row">
+                <div className="col-md-6">
+
+                    <div>{all.title}</div>
+                    <ActionableInputField
+                        handleChange={this.handleSearchAll}
+                        placeholder="Search"
                     />
-                </ConditionalRender>
-                <ActionableTable
-                    location="all"
-                    data={all.data}
-                    selected={all.selected}
-                    update={this.updateSelected}
-                    headers={all.headers}
-                    isEquivalent={this.isEquivalentData}
-                />
-                <Pagination
-                    location="all"
-                    page={all.page}
-                    totalPages={all.totalPages}
-                    update={this.updatePage}
-                />
-
-
-            </div>
-
-            <div>
-
-                <div>{children.title}</div>
-                <ConditionalRender condition={children.selected.length > 0}>                
-                    <ActionButtons
-                        actions={this.childrenActions}
-                        payload={children.selected}
+                    <ConditionalRender condition={all.selected.length > 0}>                
+                        <ActionButtons
+                            actions={this.allActions}
+                            payload={all.selected}
+                        />
+                    </ConditionalRender>
+                    <ActionableTable
+                        location="all"
+                        data={all.data}
+                        selected={all.selected}
+                        update={this.updateSelected}
+                        headers={all.headers}
+                        isEquivalent={this.isEquivalentData}
+                        maxRows={all.itemsPerPage}
                     />
-                </ConditionalRender>
-                <ActionableTable
-                    location="children"
-                    data={children.data}
-                    selected={children.selected}
-                    update={this.updateSelected}
-                    headers={children.headers}
-                    isEquivalent={this.isEquivalentData}
-                />
-
-                <Pagination
-                    location="children"
-                    page={children.page}
-                    totalPages={children.totalPages}
-                    update={this.updatePage}
-                />
-            </div>
-            <div>
-                <div>{parents.title}</div>
-
-                <ConditionalRender condition={parents.selected.length > 0}>                
-                    <ActionButtons
-                        actions={this.parentsActions}
-                        payload={parents.selected}
+                    <Pagination
+                        location="all"
+                        page={all.page}
+                        totalPages={all.totalPages}
+                        update={this.updatePage}
                     />
-                </ConditionalRender>
+                </div>
 
-                <ActionableTable
-                    location="parents"
-                    data={parents.data}
-                    selected={parents.selected}
-                    update={this.updateSelected}
-                    headers={parents.headers}
-                    isEquivalent={this.isEquivalentData}
-                />
+                <div className="col-md-6">
+                    <div className="row">
+                    <div>{children.title}</div>
+                    <ActionableInputField
+                        handleChange={this.handleSearchChildren}
+                        placeholder="Search"
+                    />
+                    <ConditionalRender condition={children.selected.length > 0}>                
+                        <ActionButtons
+                            actions={this.childrenActions}
+                            payload={children.selected}
+                        />
+                    </ConditionalRender>
+                    <ActionableTable
+                        location="children"
+                        data={children.data}
+                        selected={children.selected}
+                        update={this.updateSelected}
+                        headers={children.headers}
+                        isEquivalent={this.isEquivalentData}
+                        maxRows={children.itemsPerPage}
+                    />
 
-                <Pagination
-                    location="parents"
-                    page={parents.page}
-                    totalPages={parents.totalPages}
-                    update={this.updatePage}
-                />
+                    <Pagination
+                        location="children"
+                        page={children.page}
+                        totalPages={children.totalPages}
+                        update={this.updatePage}
+                    />
+                </div>
+
+                <div className="row">
+                    <div>{parents.title}</div>
+                    <ActionableInputField
+                        handleChange={this.handleSearchParents}
+                        placeholder="Search"
+                    />
+                    <ConditionalRender condition={parents.selected.length > 0}>                
+                        <ActionButtons
+                            actions={this.parentsActions}
+                            payload={parents.selected}
+                        />
+                    </ConditionalRender>
+
+                    <ActionableTable
+                        location="parents"
+                        data={parents.data}
+                        selected={parents.selected}
+                        update={this.updateSelected}
+                        headers={parents.headers}
+                        isEquivalent={this.isEquivalentData}
+                        maxRows={parents.itemsPerPage}
+                    />
+
+                    <Pagination
+                        location="parents"
+                        page={parents.page}
+                        totalPages={parents.totalPages}
+                        update={this.updatePage}
+                    />
+                </div>
+                    </div>
             </div>
         </div>
 
-        //return <div>
-        //    <div>{allData.title}</div>
-        //    <ActionButtons
-        //        actions={this.allActions}
-        //        data={this.state[allListKey].selected}
-        //        />
-        //    <ActionableTable
-        //            listKey={allListKey}
-        //            data={allData}
-        //            toggle={this.toggle}
-        //            isChecked={this.isChecked}
-        //            toggleAll={this.toggleAll}
-        //            toggleAll={this.toggleAll}
-        //            areAllChecked={this.areAllChecked}
-        //    />
 
-        //    <div>{parentsData.title}</div>
-        //    <ActionButtons
-        //        actions={this.parentsActions}
-        //        data={this.state[parentsListKey].selected}
-        //    />
-        //    <ActionableTable
-        //        listKey={parentsListKey}
-        //        data={parentsData}
-        //        toggle={this.toggle}
-        //        isChecked={this.isChecked}
-        //        toggleAll={this.toggleAll}
-        //        areAllChecked={this.areAllChecked}
-        //    />
-
-        //    <Pagination
-        //        currentPage={allData.currentPage}
-        //        totalPages={allData.totalPages}
-        //        delta={2}
-        //        goToPage={this.goToPage}
-        //        listKey={allListKey}
-        //        delta={2}
-        //        />
-        //    </div>
     }
 
 }

@@ -28,6 +28,11 @@ namespace Catfish.Controllers.Api
         {
             SecurityService.CreateAccessContext();
 
+            if (String.IsNullOrEmpty(parameters.Query))
+            {
+                parameters.Query = "*:*";
+            }
+
             CFAggregationAssociationsViewModel response = new CFAggregationAssociationsViewModel
             {
                 Page = parameters.Page,
@@ -59,6 +64,11 @@ namespace Catfish.Controllers.Api
         public ContentResult GetParents(AggregationRelationParameters parameters) {
             // XXX Fixme, change from getting children to get parents
             SecurityService.CreateAccessContext();
+
+            if (String.IsNullOrEmpty(parameters.Query))
+            {
+                parameters.Query = "*:*";
+            }
 
             CFAggregationAssociationsViewModel response = new CFAggregationAssociationsViewModel
             {
@@ -98,6 +108,11 @@ namespace Catfish.Controllers.Api
         public ContentResult GetChildren([System.Web.Http.FromUri] AggregationRelationParameters parameters) {
 
             SecurityService.CreateAccessContext();
+
+            if (String.IsNullOrEmpty(parameters.Query))
+            {
+                parameters.Query = "*:*";
+            }
 
             CFAggregationAssociationsViewModel response = new CFAggregationAssociationsViewModel
             {

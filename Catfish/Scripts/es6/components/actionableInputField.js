@@ -6,7 +6,7 @@ const ActionableInputField = props =>
     <input type="text"
         placeholder={props.placeholder}
         onChange={props.handleChange}
-        className="actionable-input-field" />
+        className="actionable-input-field form-control" />
     
 ActionableInputField.propTypes = {
     handleChange: PropTypes.func.isRequired,
