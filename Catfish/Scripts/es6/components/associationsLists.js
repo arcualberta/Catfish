@@ -400,12 +400,18 @@ export default class AssociationsLists extends React.Component {
 
             <div className="row">
                 <div className="col-md-6">
+                    <form className="form-horizontal">
+                        <div className="form-group">
+                            <label className="col-sm-2 control-label">{all.title}</label>
+                            <div className="col-sm-10">
+                                <ActionableInputField
+                                    handleChange={this.handleSearchAll}
+                                    placeholder="Search"
+                                />
+                            </div>
+                        </div>
+                    </form>
 
-                    <div>{all.title}</div>
-                    <ActionableInputField
-                        handleChange={this.handleSearchAll}
-                        placeholder="Search"
-                    />
                     <ConditionalRender condition={all.selected.length > 0}>                
                         <ActionButtons
                             actions={this.allActions}
@@ -431,11 +437,19 @@ export default class AssociationsLists extends React.Component {
 
                 <div className="col-md-6">
                     <div className="row">
-                    <div>{children.title}</div>
-                    <ActionableInputField
-                        handleChange={this.handleSearchChildren}
-                        placeholder="Search"
-                    />
+
+                        <form className="form-horizontal">
+                            <div className="form-group">
+                                <label className="col-sm-2 control-label">{children.title}</label>
+                                <div className="col-sm-10">
+                                    <ActionableInputField
+                                        handleChange={this.handleSearchChildren}
+                                        placeholder="Search"
+                                    />
+                                </div>
+                            </div>
+                        </form>
+
                     <ConditionalRender condition={children.selected.length > 0}>                
                         <ActionButtons
                             actions={this.childrenActions}
@@ -461,11 +475,19 @@ export default class AssociationsLists extends React.Component {
                 </div>
 
                 <div className="row">
-                    <div>{parents.title}</div>
-                    <ActionableInputField
-                        handleChange={this.handleSearchParents}
-                        placeholder="Search"
-                    />
+
+                        <form className="form-horizontal">
+                            <div className="form-group">
+                                <label className="col-sm-2 control-label">{parents.title}</label>
+                                <div className="col-sm-10">
+                                    <ActionableInputField
+                                        handleChange={this.handleSearchParents}
+                                        placeholder="Search"
+                                    />
+                                </div>
+                            </div>
+                        </form>
+
                     <ConditionalRender condition={parents.selected.length > 0}>                
                         <ActionButtons
                             actions={this.parentsActions}
