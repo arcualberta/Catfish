@@ -37,7 +37,7 @@
             </thead>
 
             @*content*@
-            <tbody id="ListEntitiesPanelTableBody">
+            <tbody id="ListEntitiesPanelTableBody" class="list-entities-table-body">
             </tbody>
         </table>
     </div>
@@ -131,7 +131,7 @@
             $("#@cssId  th[data-column-id='" + sortAttributeMappingId + "']").addClass("sort").addClass(sortAsc ? "sort-asc" : "sort-desc");
 
             //remove all rows in the tbody
-            var body = $("#ListEntitiesPanelTableBody");
+            var body = $("#@cssId tbody.list-entities-table-body");
             body.children().remove();  //remove all row on the tbody
 
             //update table data
