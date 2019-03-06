@@ -94,11 +94,9 @@ namespace Catfish.Core.Helpers
                     filterQuery.Add(entitiTypeFilterQuery);
                 }
 
-                options.FilterQueries = filterQuery;
+                options.FilterQueries = filterQuery;                
 
-                
-
-                var results = solr.Query(solrQuery, options);
+                SolrQueryResults<SolrIndex> results = solr.Query(solrQuery, options);
                 total = results.NumFound;
 
                 int resultsCount = results.Count();
