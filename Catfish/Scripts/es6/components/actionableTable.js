@@ -4,6 +4,9 @@ import PropTypes from 'prop-types'
 import ConditionalRender from './conditionalRender'
 import ActionButtons from './actionButtons'
 import { range } from '../helpers'
+
+
+
 const ActionableTable = (props) => {
 
     const {
@@ -15,14 +18,16 @@ const ActionableTable = (props) => {
         location,
     } = props
 
+
+
     return (
         <div>
             <div className="row">
                 <div className="col-md-12">
                     <table className="table">
                         <tbody>
-                        <tr>
-                            <td>
+                            <tr>
+                                <td style={checkboxStyle}>
                                 <input
                                     type="checkbox"
                                     checked={isPageChecked({ data, selected, isEquivalent })}
@@ -80,7 +85,7 @@ const renderHead = props => {
         <thead>
             <tr>
 
-                <td>                   
+                <td style={checkboxStyle}>                   
                 </td>
 
                 {headers.map(x =>
@@ -130,7 +135,7 @@ const renderBody = props => {
                 data.map(datum =>
                     <tr key={datum.id}>
 
-                        <td>
+                        <td style={checkboxStyle}>
                             <input
                                 type="checkbox"
                                 checked={isChecked({ datum, selected, isEquivalent })}
