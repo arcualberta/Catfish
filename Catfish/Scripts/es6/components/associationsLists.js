@@ -412,12 +412,6 @@ export default class AssociationsLists extends React.Component {
                         </div>
                     </form>
 
-                    <ConditionalRender condition={all.selected.length > 0}>                
-                        <ActionButtons
-                            actions={this.allActions}
-                            payload={all.selected}
-                        />
-                    </ConditionalRender>
                     <ActionableTable
                         location="all"
                         data={all.data}
@@ -426,6 +420,7 @@ export default class AssociationsLists extends React.Component {
                         headers={all.headers}
                         isEquivalent={this.isEquivalentData}
                         maxRows={all.itemsPerPage}
+                        actions={this.allActions}
                     />
                     <Pagination
                         location="all"
@@ -450,12 +445,6 @@ export default class AssociationsLists extends React.Component {
                             </div>
                         </form>
 
-                    <ConditionalRender condition={children.selected.length > 0}>                
-                        <ActionButtons
-                            actions={this.childrenActions}
-                            payload={children.selected}
-                        />
-                    </ConditionalRender>
                     <ActionableTable
                         location="children"
                         data={children.data}
@@ -464,6 +453,7 @@ export default class AssociationsLists extends React.Component {
                         headers={children.headers}
                         isEquivalent={this.isEquivalentData}
                         maxRows={children.itemsPerPage}
+                        actions={this.childrenActions}
                     />
 
                     <Pagination
@@ -488,13 +478,6 @@ export default class AssociationsLists extends React.Component {
                             </div>
                         </form>
 
-                    <ConditionalRender condition={parents.selected.length > 0}>                
-                        <ActionButtons
-                            actions={this.parentsActions}
-                            payload={parents.selected}
-                        />
-                    </ConditionalRender>
-
                     <ActionableTable
                         location="parents"
                         data={parents.data}
@@ -503,6 +486,7 @@ export default class AssociationsLists extends React.Component {
                         headers={parents.headers}
                         isEquivalent={this.isEquivalentData}
                         maxRows={parents.itemsPerPage}
+                        actions={this.parentsActions}
                     />
 
                     <Pagination

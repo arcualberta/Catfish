@@ -96,16 +96,20 @@ namespace Catfish.Core.Services
 
             List<string> mappedGuids = aggregation.ParentMembers.Select(x => x.MappedGuid).ToList();
             string newQuery = query;
-          
-            string parentIds = String.Join(" ", mappedGuids);
-
-            if (newQuery.Length > 0)
+                     
+            if (mappedGuids.Count > 0)
             {
-                newQuery += " AND ";
+                string parentIds = String.Join(" ", mappedGuids);
+                if (newQuery.Length > 0)
+                {
+                    newQuery += " AND ";
+                }
+                newQuery += "id:(" + parentIds + ")";
+            } else
+            {
+                newQuery = "";
             }
-            newQuery += "id:(" + parentIds + ")";
-          
-            
+                                 
             //newQuery += "id: " + mappedGuids[0];
             //newQuery += " id: " + id;
 

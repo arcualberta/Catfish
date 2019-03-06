@@ -1,14 +1,56 @@
 ﻿import React from "react"
 import ReactDOM from "react-dom"
 import PropTypes from 'prop-types'
+import ConditionalRender from './conditionalRender'
+import ActionButtons from './actionButtons'
 import { range } from '../helpers'
 const ActionableTable = (props) => {
-  
+
+    const {
+        selected,
+        actions,
+        data,
+        isEquivalent,
+        update,
+        location,
+    } = props
+
     return (
-        <table className="table actionable-table">
-            {renderHead(props)}
-            {renderBody(props)}            
-        </table>
+        <div>
+            <div className="row">
+                <div className="col-md-12">
+                    <table className="table">
+                        <tbody>
+                        <tr>
+                            <td>
+                                <input
+                                    type="checkbox"
+                                    checked={isPageChecked({ data, selected, isEquivalent })}
+                                    onChange={(event) => {
+                                        const checked = event.target.checked
+                                        togglePage({ data, selected, isEquivalent, update, location, checked })
+                                    }}
+                                />
+                            </td>
+                            <td>
+                                <ConditionalRender condition={selected.length > 0}>
+                                    <ActionButtons
+                                        actions={actions}
+                                        payload={selected}
+                                    />
+                                </ConditionalRender>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <table className="table actionable-table">
+                {renderHead(props)}
+                {renderBody(props)}            
+            </table>
+        </div>
         )
 }
 
@@ -19,7 +61,8 @@ ActionableTable.propTypes = {
     headers: PropTypes.array.isRequired,
     update: PropTypes.func.isRequired,
     isEquivalent: PropTypes.func.isRequired,
-    maxRows: PropTypes.number
+    maxRows: PropTypes.number,
+    actions: PropTypes.array.isRequired
 }
 
 ActionableTable.defaultProps = {
@@ -37,15 +80,7 @@ const renderHead = props => {
         <thead>
             <tr>
 
-                <td>
-                    <input
-                        type="checkbox"
-                        checked={isPageChecked({ data, selected, isEquivalent })}
-                        onChange={(event) => {
-                            const checked = event.target.checked
-                            togglePage({ data, selected, isEquivalent, update, location, checked })
-                        }}
-                    />
+                <td>                   
                 </td>
 
                 {headers.map(x =>
