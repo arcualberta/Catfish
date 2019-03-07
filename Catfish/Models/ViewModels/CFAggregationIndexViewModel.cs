@@ -21,12 +21,17 @@ namespace Catfish.Models.ViewModels
         [JsonProperty("entityType")]
         public string EntityType { get; set; }
 
+        [JsonProperty("label")]
+        public string Label {get; set; }
+
+
         public CFAggregationIndexViewModel(CFAggregation aggregation)
         {
             Name = aggregation.Name;
             Id = aggregation.Id;
             MappedGuid = aggregation.MappedGuid;
             EntityType = aggregation.EntityType.Name;
+            Label = aggregation.Label;
         }
     }
 }

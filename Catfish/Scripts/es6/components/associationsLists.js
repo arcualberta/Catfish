@@ -16,6 +16,24 @@ export default class AssociationsLists extends React.Component {
     constructor(props) {
         super(props)
 
+        this.basicHeaders = [
+            {
+                id: 0,
+                key: "name",
+                title: "Name"
+            },
+            {
+                id: 1,
+                key: "entityType",
+                title: "Entity type"
+            },
+            {
+                id: 2,
+                key: "label",
+                title: "Type"
+            }
+        ]
+
         const startingState = {
             // Title to render as description for table
             title: "",
@@ -32,7 +50,7 @@ export default class AssociationsLists extends React.Component {
             //   key: hash key,
             //   title: Title to show as column header
             //}
-            headers: [],
+            headers: this.basicHeaders,
             // list of data to show on a page
             // {
             //   id: int,
@@ -158,7 +176,8 @@ export default class AssociationsLists extends React.Component {
             params: {
                 id,
                 query,
-                page                
+                page,
+                itemsPerPage: this.state[location].itemsPerPage
             }
         })
             .then(response => {
@@ -183,7 +202,11 @@ export default class AssociationsLists extends React.Component {
     }
 
     componentDidMount() {        
-        axios.get('/apix/Aggregations')
+        axios.get('/apix/Aggregations', { 
+            params: {
+                ItemsPerPage: 2
+            }            
+        })
             .then( response => {                
 
                 // this should be replaced with the incoming data from api call
@@ -195,18 +218,7 @@ export default class AssociationsLists extends React.Component {
                         page: data.page,
                         itemsPerPage: data.itemsPerPage,
                         totalPages: data.totalPages,
-                        headers: [
-                            {
-                                id: 0,
-                                key: "name",
-                                title: "Name"
-                            },
-                            {
-                                id: 1,
-                                key: "entityType",
-                                title: "Entity type"
-                            }
-                        ],
+                        headers: this.basicHeaders,
                         data: data.data
                     }
                 }                
@@ -226,18 +238,7 @@ export default class AssociationsLists extends React.Component {
                         page: data.page,
                         itemsPerPage: data.itemsPerPage,
                         totalPages: data.totalPages,
-                        headers: [
-                            {
-                                id: 0,
-                                key: "name",
-                                title: "Name"
-                            },
-                            {
-                                id: 1,
-                                key: "entityType",
-                                title: "Entity type"
-                            }
-                        ],
+                        headers: this.basicHeaders,
                         data: data.data
                     }
                 }
@@ -257,18 +258,7 @@ export default class AssociationsLists extends React.Component {
                         page: data.page,
                         itemsPerPage: data.itemsPerPage,
                         totalPages: data.totalPages,
-                        headers: [
-                            {
-                                id: 0,
-                                key: "name",
-                                title: "Name"
-                            },
-                            {
-                                id: 1,
-                                key: "entityType",
-                                title: "Entity type"
-                            }
-                        ],
+                        headers: this.basicHeaders,
                         data: data.data
                     }
                 }

@@ -21,6 +21,8 @@ namespace Catfish.Core.Models
 
         [IgnoreDataMember]
         public virtual CFEntityType EntityType { get; set; }
+        public virtual string Label => "Entity";
+
 
         protected static string AccessGroupXPath = "access/" + CFAccessGroup.TagName;
         protected static string MetadataSetXPath = "metadata/" + CFMetadataSet.TagName;
