@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Catfish.Core.Models.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace Catfish.Core.Models
     public class CFCollection : CFAggregation
     {
         public override string GetTagName() { return "collection"; }
+        public override string Label => "Collection";
 
         [NotMapped]
         [IgnoreDataMember]

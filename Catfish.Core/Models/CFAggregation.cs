@@ -14,6 +14,8 @@ namespace Catfish.Core.Models
     {
 
         public override string GetTagName() { return "aggregation"; }
+        public override string Label =>"Aggregation";
+
 
         [IgnoreDataMember]
         public virtual List<CFAggregation> ManagedParentMembers { get; set; }

@@ -12,24 +12,41 @@ const Pagination = props => {
         totalPages,
         location } = props    
 
-    let prevPage = page - pageWindow
-    let nextPage = page + pageWindow
 
-    if (prevPage < 1)
-        prevPage = 1
-
-    if (nextPage > totalPages) 
-       nextPage = totalPages
+    const pages = range(1, totalPages).map(x => <option key={x}>{x}</option>)
 
     return (
-        <div className="pagination">
-            <a onClick={() => update(location, { page: 1})}>First</a>
-            <a onClick={() => update(location, { page: prevPage })}>Prev</a>
-            {getPages({...props})}
-            <a onClick={() => update(location, { page: nextPage })}>Next</a>
-            <a onClick={() => update(location, { page: totalPages })}>Last</a>
+        <div>
+            <select
+                value={page}
+                onChange={event => update(location, { page: Number(event.target.value) })}                
+            >
+                {pages}                
+            </select>
+
+            / {totalPages}
         </div>
-    )       
+        
+    )
+
+    //let prevPage = page - pageWindow
+    //let nextPage = page + pageWindow
+
+    //if (prevPage < 1)
+    //    prevPage = 1
+
+    //if (nextPage > totalPages) 
+    //   nextPage = totalPages
+
+    //return (
+    //    <div className="pagination">
+    //        <a onClick={() => update(location, { page: 1})}>First</a>
+    //        <a onClick={() => update(location, { page: prevPage })}>Prev</a>
+    //        {getPages(props)}
+    //        <a onClick={() => update(location, { page: nextPage })}>Next</a>
+    //        <a onClick={() => update(location, { page: totalPages })}>Last</a>
+    //    </div>
+    //)       
 }
 
 Pagination.propTypes = {

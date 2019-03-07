@@ -5,7 +5,17 @@ import ConditionalRender from './conditionalRender'
 import ActionButtons from './actionButtons'
 import { range } from '../helpers'
 
+const checkboxStyle = {
+    width: "20px"
+}
 
+const height40pxStyle = {
+    height: "40px"
+}
+
+const height50pxStyle = {
+    height: "50px"
+}
 
 const ActionableTable = (props) => {
 
@@ -26,26 +36,26 @@ const ActionableTable = (props) => {
                 <div className="col-md-12">
                     <table className="table">
                         <tbody>
-                            <tr>
+                            <tr style={height50pxStyle}>
                                 <td style={checkboxStyle}>
-                                <input
-                                    type="checkbox"
-                                    checked={isPageChecked({ data, selected, isEquivalent })}
-                                    onChange={(event) => {
-                                        const checked = event.target.checked
-                                        togglePage({ data, selected, isEquivalent, update, location, checked })
-                                    }}
-                                />
-                            </td>
-                            <td>
-                                <ConditionalRender condition={selected.length > 0}>
-                                    <ActionButtons
-                                        actions={actions}
-                                        payload={selected}
+                                    <input
+                                        type="checkbox"
+                                        checked={isPageChecked({ data, selected, isEquivalent })}
+                                        onChange={(event) => {
+                                            const checked = event.target.checked
+                                            togglePage({ data, selected, isEquivalent, update, location, checked })
+                                        }}
                                     />
-                                </ConditionalRender>
-                            </td>
-                        </tr>
+                                </td>
+                                <td>
+                                    <ConditionalRender condition={selected.length > 0}>
+                                        <ActionButtons
+                                            actions={actions}
+                                            payload={selected}
+                                        />
+                                    </ConditionalRender>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
 
@@ -102,7 +112,7 @@ const getExtraRows = (maxRows, dataLength, headers) => {
     if (maxRows > dataLength + 1) {
         return range(dataLength + 1, maxRows)
             .map(value =>
-                <tr key={value}>
+                <tr key={value} style={height40pxStyle}>
 
                     <td></td>
                     {headers.map(header =>
@@ -133,7 +143,7 @@ const renderBody = props => {
         <tbody>
             {
                 data.map(datum =>
-                    <tr key={datum.id}>
+                    <tr key={datum.id} style={height40pxStyle}>
 
                         <td style={checkboxStyle}>
                             <input

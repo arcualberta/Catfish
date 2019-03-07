@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Data;
+﻿using Catfish.Core.Models.Attributes;
+using Catfish.Core.Models.Data;
 using Catfish.Core.Models.Forms;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,16 @@ namespace Catfish.Core.Models
             Data.Add(new XElement("data"));
         }
 
+        public override string Label => "Item";
+
         public override string GetTagName() { return "item"; }
+        //public override string Label
+        //{
+        //    get
+        //    {
+        //        return "Item";
+        //    }
+        //}
 
         [NotMapped]
         [IgnoreDataMember]
