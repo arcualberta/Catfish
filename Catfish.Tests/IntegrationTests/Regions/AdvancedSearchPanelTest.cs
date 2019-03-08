@@ -119,6 +119,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
             }
 
             IWebElement field = Driver.FindElements(By.ClassName("search-entry"))[3];
+
             field.FindElement(By.ClassName("search-from")).SendKeys(minYear.ToString());
             field.FindElement(By.ClassName("search-to")).SendKeys(maxYear.ToString());
             
@@ -133,7 +134,75 @@ namespace Catfish.Tests.IntegrationTests.Regions
             wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(20.0));
             wait.Until(driver => driver.FindElements(By.ClassName("loading-panel")).Count == 0);
             AssertItemsNameShows(nameList);
+
+            //test the auto complete
+            IWebElement autofield = Driver.FindElements(By.ClassName("search-entry"))[1].FindElement(By.ClassName("autocomplete-text")); //this should pop up the auto suggest window
+            autofield.SendKeys("It");
+            //press arraow down key to select the 1st entry on the list
+            // autofield.SendKeys(Keys.ArrowDown);
+            selectOptionWithText("Item Entry 0");
+            Assert.AreEqual("Item Entry 0", autofield.GetAttribute("value"));
         }
+
+        [Test]
+        public void CanSearchWithDropDownList()
+        {
+            CreateSearchEntityType();
+
+            CreateAndAddAddvancedSearchToMain(false, new FormField[] { MetadataFields[0], MetadataFields[1], MetadataFields[2] }, 1, true);
+            CreateAndAddEntityListToMain(2);
+
+            Func<int, int> yearFunc = i => i + 2000;
+            Func<int, float> amountFunc = i => (float)(Math.Sin((double)i) + 2.0);
+            Func<int, string> nameFunc = i => "Item Entry " + i;
+            Func<int, string> optionFunc = i => null;
+
+            CreateItems(10, yearFunc, amountFunc, optionFunc, nameFunc);
+
+            List<string> nameList = new List<string>();
+            for (int i = 0; i < 10; ++i)
+            {
+                nameList.Add(nameFunc(i));
+            }
+
+            Driver.Navigate().GoToUrl(FrontEndUrl);
+            AssertItemsNameShows(nameList);
+
+            // Search on the year
+            int minYear = 2001;
+            int maxYear = 2005;
+            for (int i = 9; i >= 0; --i)
+            {
+                int year = yearFunc(i);
+                if (year < minYear || year > maxYear)
+                {
+                    nameList.RemoveAt(i);
+                }
+            }
+
+          
+
+            SelectElement selectFrom = new SelectElement(Driver.FindElement(By.ClassName("numberDropDownFrom")));
+            selectFrom.SelectByText(minYear.ToString());
+
+            SelectElement selectTo = new SelectElement(Driver.FindElement(By.ClassName("numberDropDownTo")));
+            selectTo.SelectByText(maxYear.ToString());
+
+            Driver.FindElement(By.ClassName("search-button")).Click();
+
+            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(20.0));
+            wait.Until(driver => driver.FindElements(By.ClassName("loading-panel")).Count == 0);
+            AssertItemsNameShows(nameList);
+
+            // Reload the page
+            Driver.Navigate().Refresh();
+            wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(20.0));
+            wait.Until(driver => driver.FindElements(By.ClassName("loading-panel")).Count == 0);
+            AssertItemsNameShows(nameList);
+
+            
+        }
+
 
         [Test]
         public void CanGenerateLineChart()
@@ -305,6 +374,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
             }
 
             IWebElement field = Driver.FindElements(By.ClassName("search-entry"))[3];
+
             field.FindElement(By.ClassName("search-from")).SendKeys(minYear.ToString());
             field.FindElement(By.ClassName("search-to")).SendKeys(maxYear.ToString());
 
@@ -414,6 +484,33 @@ namespace Catfish.Tests.IntegrationTests.Regions
                 Assert.AreEqual(rows[i].FindElement(By.ClassName("column-1")).Text, name);
                 ++i;
             }
+        }
+        /// <summary>
+        /// Get selected text from Jquery auto select pop up drop down list
+        /// </summary>
+        /// <param name="textToSelect"></param>
+        public void selectOptionWithText(String textToSelect)
+        {
+            try
+            {
+                IWebElement autoOptions = Driver.FindElement(By.Id("ui-id-1"), 20);
+             
+                List<IWebElement> optionsToSelect = autoOptions.FindElements(By.TagName("li")).ToList();
+                foreach(IWebElement option in optionsToSelect)
+                {
+                   
+                    if (option.FindElement(By.TagName("div")).Text.Equals(textToSelect))
+                    {
+                        option.Click();
+                        break;
+                    }
+                }
+            }
+            catch (NoSuchElementException e)
+            {
+                throw e;
+            }
+          
         }
     }
 }

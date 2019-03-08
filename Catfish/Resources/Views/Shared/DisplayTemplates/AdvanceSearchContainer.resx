@@ -123,6 +123,9 @@
   <data name="IsAutoComplete" xml:space="preserve">
     <value>Auto Complete</value>
   </data>
+  <data name="IsDropdown" xml:space="preserve">
+    <value>Dropdown</value>
+  </data>
   <data name="IsMultiple" xml:space="preserve">
     <value>Multiselect</value>
   </data>
