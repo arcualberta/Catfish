@@ -186,7 +186,8 @@ export default class AssociationsLists extends React.Component {
                     [location]: {
                         query: {$set: query},
                         page: { $set: page },
-                        data: { $set: data.data }
+                        data: { $set: data.data },
+                        totalPages: {$set: data.totalPages}
                     }
                 })
                 this.setState(newState)
@@ -204,7 +205,7 @@ export default class AssociationsLists extends React.Component {
     componentDidMount() {        
         axios.get('/apix/Aggregations', { 
             params: {
-                ItemsPerPage: 2
+                ItemsPerPage: 10
             }            
         })
             .then( response => {                
@@ -226,7 +227,8 @@ export default class AssociationsLists extends React.Component {
             })
         axios.get('/apix/Aggregations/getChildren', {
             params: {
-                id: external.modelId
+                id: external.modelId,
+                ItemsPerPage: 5
             }
         })
             .then(response => {                
@@ -246,7 +248,8 @@ export default class AssociationsLists extends React.Component {
             })
         axios.get('/apix/Aggregations/getParents', {
             params: {
-                id: external.modelId
+                id: external.modelId,
+                ItemsPerPage: 5
             }
         })
             .then(response => {               
@@ -386,110 +389,110 @@ export default class AssociationsLists extends React.Component {
 
         
 
-        return <div className="bs container">
-
-            <div className="row">
-                <div className="col-md-6">
-                    <form className="form-horizontal">
-                        <div className="form-group">
-                            <label className="col-sm-2 control-label">{all.title}</label>
-                            <div className="col-sm-10">
-                                <ActionableInputField
-                                    handleChange={this.handleSearchAll}
-                                    placeholder="Search"
-                                />
+        return (            
+            <div className="bs container">
+                <div className="row">
+                    <div className="col-md-6">
+                        <form className="form-horizontal">
+                            <div className="form-group">
+                                <label className="col-sm-2 control-label">{all.title}</label>
+                                <div className="col-sm-10">
+                                    <ActionableInputField
+                                        handleChange={this.handleSearchAll}
+                                        placeholder="Search"
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
 
-                    <ActionableTable
-                        location="all"
-                        data={all.data}
-                        selected={all.selected}
-                        update={this.updateSelected}
-                        headers={all.headers}
-                        isEquivalent={this.isEquivalentData}
-                        maxRows={all.itemsPerPage}
-                        actions={this.allActions}
-                    />
-                    <Pagination
-                        location="all"
-                        page={all.page}
-                        totalPages={all.totalPages}
-                        update={this.updatePage}
-                    />
-                </div>
+                        <ActionableTable
+                            location="all"
+                            data={all.data}
+                            selected={all.selected}
+                            update={this.updateSelected}
+                            headers={all.headers}
+                            isEquivalent={this.isEquivalentData}
+                            maxRows={all.itemsPerPage}
+                            actions={this.allActions}
+                        />
+                        <Pagination
+                            location="all"
+                            page={all.page}
+                            totalPages={all.totalPages}
+                            update={this.updatePage}
+                        />
+                    </div>
 
-                <div className="col-md-6">
+                    <div className="col-md-6">
+                        <div className="row">
+
+                            <form className="form-horizontal">
+                                <div className="form-group">
+                                    <label className="col-sm-2 control-label">{children.title}</label>
+                                    <div className="col-sm-10">
+                                        <ActionableInputField
+                                            handleChange={this.handleSearchChildren}
+                                            placeholder="Search"
+                                        />
+                                    </div>
+                                </div>
+                            </form>
+
+                        <ActionableTable
+                            location="children"
+                            data={children.data}
+                            selected={children.selected}
+                            update={this.updateSelected}
+                            headers={children.headers}
+                            isEquivalent={this.isEquivalentData}
+                            maxRows={children.itemsPerPage}
+                            actions={this.childrenActions}
+                        />
+
+                        <Pagination
+                            location="children"
+                            page={children.page}
+                            totalPages={children.totalPages}
+                            update={this.updatePage}
+                        />
+                    </div>
+
                     <div className="row">
 
-                        <form className="form-horizontal">
-                            <div className="form-group">
-                                <label className="col-sm-2 control-label">{children.title}</label>
-                                <div className="col-sm-10">
-                                    <ActionableInputField
-                                        handleChange={this.handleSearchChildren}
-                                        placeholder="Search"
-                                    />
+                            <form className="form-horizontal">
+                                <div className="form-group">
+                                    <label className="col-sm-2 control-label">{parents.title}</label>
+                                    <div className="col-sm-10">
+                                        <ActionableInputField
+                                            handleChange={this.handleSearchParents}
+                                            placeholder="Search"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
 
-                    <ActionableTable
-                        location="children"
-                        data={children.data}
-                        selected={children.selected}
-                        update={this.updateSelected}
-                        headers={children.headers}
-                        isEquivalent={this.isEquivalentData}
-                        maxRows={children.itemsPerPage}
-                        actions={this.childrenActions}
-                    />
+                        <ActionableTable
+                            location="parents"
+                            data={parents.data}
+                            selected={parents.selected}
+                            update={this.updateSelected}
+                            headers={parents.headers}
+                            isEquivalent={this.isEquivalentData}
+                            maxRows={parents.itemsPerPage}
+                            actions={this.parentsActions}
+                        />
 
-                    <Pagination
-                        location="children"
-                        page={children.page}
-                        totalPages={children.totalPages}
-                        update={this.updatePage}
-                    />
-                </div>
-
-                <div className="row">
-
-                        <form className="form-horizontal">
-                            <div className="form-group">
-                                <label className="col-sm-2 control-label">{parents.title}</label>
-                                <div className="col-sm-10">
-                                    <ActionableInputField
-                                        handleChange={this.handleSearchParents}
-                                        placeholder="Search"
-                                    />
-                                </div>
-                            </div>
-                        </form>
-
-                    <ActionableTable
-                        location="parents"
-                        data={parents.data}
-                        selected={parents.selected}
-                        update={this.updateSelected}
-                        headers={parents.headers}
-                        isEquivalent={this.isEquivalentData}
-                        maxRows={parents.itemsPerPage}
-                        actions={this.parentsActions}
-                    />
-
-                    <Pagination
-                        location="parents"
-                        page={parents.page}
-                        totalPages={parents.totalPages}
-                        update={this.updatePage}
-                    />
-                </div>
+                        <Pagination
+                            location="parents"
+                            page={parents.page}
+                            totalPages={parents.totalPages}
+                            update={this.updatePage}
+                        />
+                    </div>
+                    </div>
                     </div>
             </div>
-        </div>
-
+        )
 
     }
 
