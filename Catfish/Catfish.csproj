@@ -151,6 +151,7 @@
     <Content Include="App_Data\Uploads\index.html" />
     <Content Include="Areas\Manager\Content\Css\Editor.css" />
     <Content Include="Areas\Manager\Content\Css\style.css" />
+    <Content Include="Areas\Manager\Content\Css\Components.css" />
     <Content Include="Areas\Manager\Content\Img\logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
