@@ -194,21 +194,23 @@ namespace Catfish.Services
                     {
                         string name = reader.GetAttribute("name");
                         reader.Read();
+                        string value = reader.ReadContentAsString();
 
                         if (name == "val")
                         {
-                            xVal = reader.ReadContentAsInt();
+                            xVal = int.Parse(value);
                         }else if(name == "count" && categories == null)
                         {
-                            count = reader.ReadContentAsInt();
+                            count = int.Parse(value);
                         }else if(name == "sumYValues" && categories == null)
                         {
                             try
                             {
-                                yVal = reader.ReadContentAsDecimal();
-                            }catch(Exception fex)
+                                yVal = Convert.ToDecimal(double.Parse(value));
+                            }
+                            catch(Exception fex)
                             {
-                                throw new FormatException(string.Format("Unable to parse string \"{0}\" into decimal.", reader.Value), fex);
+                                throw new FormatException(string.Format("Unable to parse string \"{0}\" into decimal.", value), fex);
                             }
                         }
                     }else if (level == 5 && category != null)
@@ -304,11 +306,29 @@ namespace Catfish.Services
             return result;
         }
 
-        public IEnumerable<GraphQueryObject> GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, bool isCatDropdown = false, string languageCode = "en")
+        private string GetGraphFieldString(string metadataSetGuid, string fieldGuid, string languageCode = "en", bool wrapInFunction = false)
         {
-            string xIndexId = string.Format("value_{0}_{1}_is", xMetadataSet.Replace('-', '_'), xField.Replace('-', '_'));
-            string yIndexId = string.Format("value_{0}_{1}_is", yMetadataSet.Replace('-', '_'), yField.Replace('-', '_'));
-            string catIndexId = string.IsNullOrEmpty(catField) ? null : string.Format("value_{0}_{1}_{2}_ss", catMetadataSet.Replace('-', '_'), catField.Replace('-', '_'), languageCode);
+            string baseSearch = wrapInFunction ? "\"unique(value_{0}_{1}_{2}_ss)\"" : "value_{0}_{1}_{2}_ss";
+
+            CFMetadataSet metadataSet = MetadataSrv.GetMetadataSet(metadataSetGuid);
+            FormField field = metadataSet.Fields.Where(f => f.Guid.Equals(fieldGuid)).FirstOrDefault();
+
+            if(field != null)
+            {
+                if (typeof(NumberField).IsAssignableFrom(field.GetType()))
+                {
+                    baseSearch = wrapInFunction ? "\"sum(field(value_{0}_{1}_is, max))\"" : "value_{0}_{1}_is";
+                }
+            }
+
+            return string.Format(baseSearch, metadataSetGuid.Replace('-', '_'), fieldGuid.Replace('-', '_'), languageCode);
+        }
+
+        public IEnumerable<GraphQueryObject> GetGraphData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, string languageCode = "en")
+        {
+            string xIndexId = GetGraphFieldString(xMetadataSet, xField, languageCode, false);
+            string yIndexId = GetGraphFieldString(yMetadataSet, yField, languageCode, true);
+            string catIndexId = string.IsNullOrEmpty(catField) ? null : GetGraphFieldString(catMetadataSet, catField, languageCode);
 
             string result = SolrSrv.GetGraphData(q, xIndexId, yIndexId, catIndexId);
 

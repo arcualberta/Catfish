@@ -1,0 +1,136 @@
+﻿@model Catfish.Core.Services.FormIngestionViewModel
+
+
+<ul class="form form-custom">
+    @if (string.IsNullOrEmpty(Model.SpreadSheetId))
+    {
+        <li>
+            @Html.LabelFor(model => model.SpreadSheetId, new { @class = "control-label col-md-3" })
+            <div class="input"> @Html.EditorFor(model => model.SpreadSheetId)</div>
+        </li>
+        <li class="no-shading"><input name="Button" type="submit" value="Next" class="btn btn-primary" /></li>
+    }
+    else
+    {
+        <li>
+            @{ var isDisabled = ViewBag.SheetList != null ? "disabled" : ""; }
+            @Html.LabelFor(model => model.SpreadSheetId, new { @class = "control-label col-md-3" })
+            <div class="input"> @Html.DisplayFor(model => model.SpreadSheetId)</div>
+            @Html.HiddenFor(model => model.SpreadSheetId)
+        </li>
+
+        if (string.IsNullOrEmpty(Model.DataSheet))
+        {
+            <li>
+                @Html.LabelFor(model => model.DataSheet, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.DropDownList("DataSheet",
+                             new SelectList(ViewBag.SheetList as IEnumerable<string>),
+                             "",
+                             new { @class = "form-control" })
+                </div>
+            </li>
+            <li>
+                @Html.LabelFor(model => model.PreContextColumnCount, new { @class = "control-label col-md-3" })
+                <div class="input"> @Html.EditorFor(model => model.PreContextColumnCount)</div>
+            </li>
+            <li class="no-shading"><input name="Button" type="submit" value="Next" class="btn btn-primary" /></li>
+        }
+        else
+        {
+            <li>
+                @Html.LabelFor(model => model.DataSheet, new { @class = "control-label col-md-3" })
+                <div class="input">@Html.DisplayFor(model => model.DataSheet)</div>
+                @Html.HiddenFor(model => model.DataSheet)
+            </li>
+            <li>
+                @Html.LabelFor(model => model.PreContextColumnCount, new { @class = "control-label col-md-3" })
+                <div class="input">@Html.DisplayFor(model => model.PreContextColumnCount)</div>
+                @Html.HiddenFor(model => model.PreContextColumnCount)
+            </li>
+            <li style="column-span:2"><h3>Form Information</h3></li>
+            <li>
+                @Html.LabelFor(model => model.FormName, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.EditorFor(model => model.FormName)
+                </div>
+            </li>
+            <li>
+                @Html.LabelFor(model => model.FormDescription, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.TextAreaFor(model => model.FormDescription)
+                </div>
+            </li>
+            <li>
+                @Html.LabelFor(model => model.MediaFolderUrl, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.EditorFor(model => model.MediaFolderUrl)
+                </div>
+            </li>
+            <li style="column-span:2"><h3>Select Columns for the Folloiwings</h3></li>
+            <li>
+                @Html.LabelFor(model => model.ListIdColumn, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.DropDownList("ListIdColumn", new SelectList(Model.ColumnHeadings), "", new { @class = "form-control" })
+                </div>
+            </li>
+            <li>
+                @Html.LabelFor(model => model.BlockIdColumn, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.DropDownList("BlockIdColumn", new SelectList(Model.ColumnHeadings), "", new { @class = "form-control" })
+                </div>
+            </li>
+            <li>
+                @Html.LabelFor(model => model.QuestionIdColumn, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.DropDownList("QuestionIdColumn", new SelectList(Model.ColumnHeadings), "", new { @class = "form-control" })
+                </div>
+            </li>
+            <li>
+                @Html.LabelFor(model => model.IsRequiredIndicatorColumn, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.DropDownList("IsRequiredIndicatorColumn", new SelectList(Model.ColumnHeadings), "", new { @class = "form-control" })
+                </div>
+            </li>
+            for (int i = 0; i < Model.PreContextColumns.Count; ++i)
+            {
+                var varMame = string.Format("PreContextColumns[{0}]", i);
+                var varId = Html.IdFor(model => model.PreContextColumns[i]);
+
+                <li>
+                    <label class="control-label col-md-3">Pre-context  @(i + 1)</label>
+                    <div class="input">
+                        @Html.DropDownList(varMame, new SelectList(Model.ColumnHeadings), "", new { @class = "form-control", id = varId })
+                    </div>
+                </li>
+            }
+            <li>
+                @Html.LabelFor(model => model.QuestionColumn, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.DropDownList("QuestionColumn", new SelectList(Model.ColumnHeadings), "", new { @class = "form-control" })
+                </div>
+            </li>
+            <li>
+                @Html.LabelFor(model => model.AnswerTypeColumn, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.DropDownList("AnswerTypeColumn", new SelectList(Model.ColumnHeadings), "", new { @class = "form-control" })
+                </div>
+            </li>
+            <li>
+                @Html.LabelFor(model => model.AnswerOptionsColumn, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.DropDownList("AnswerOptionsColumn", new SelectList(Model.ColumnHeadings), "", new { @class = "form-control" })
+                </div>
+            </li>
+            <li>
+                @Html.LabelFor(model => model.AudioFileColumn, new { @class = "control-label col-md-3" })
+                <div class="input">
+                    @Html.DropDownList("AudioFileColumn", new SelectList(Model.ColumnHeadings), "", new { @class = "form-control" })
+                </div>
+            </li>
+            <li class="no-shading"><input name="Button" type="submit" value="Ingest" class="btn btn-primary" /></li>
+        }
+
+    }
+</ul>
+

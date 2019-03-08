@@ -61,6 +61,15 @@ namespace Catfish.Resources.Views.Shared.DisplayTemplates {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Continue to the next question?.
+        /// </summary>
+        public static string NextConfirm {
+            get {
+                return ResourceManager.GetString("NextConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you wish to submit this form?.
         /// </summary>
         public static string SubmitConfirm {

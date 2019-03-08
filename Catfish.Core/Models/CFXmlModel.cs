@@ -373,13 +373,35 @@ namespace Catfish.Core.Models
             }
             return Enumerable.Empty<string>();
         }
-
+        /// <summary>
+        /// Modified on: Feb 25 2019 -if option field is true, get the options text field when selected is set to true 
+        /// </summary>
+        /// <param name="excludeBlanks"></param>
+        /// <param name="optionField"></param>
+        /// <returns></returns>
         public virtual IEnumerable<TextValue> GetValues(bool excludeBlanks = true)
+
         {
+           
             XElement wrapper = GetWrapper("value", true, false);
+           
             return XmlHelper.GetTextValues(wrapper, false, excludeBlanks);
         }
 
+        public virtual IEnumerable<TextValue> GetOptionValues(bool excludeBlanks = true)
+        {
+
+            XElement wrapper = GetWrapper("options", true, false);
+
+            foreach(XElement option in wrapper.Nodes().ToList())
+            {
+                if(option.Attribute("selected").Value.Equals("true"))
+                {
+                    return XmlHelper.GetTextValues(option, false, excludeBlanks);
+                }
+            }
+            return XmlHelper.GetTextValues(wrapper, false, excludeBlanks);
+        }
 
         public virtual void SetValues(IEnumerable<string> values, string lang = null, bool removePrevious=false)
         {
@@ -554,6 +576,12 @@ namespace Catfish.Core.Models
             return string.IsNullOrEmpty(val) ? defaultValue : int.Parse(val);
         }
 
+        public decimal GetAttribute(string name, decimal defaultValue = 0m, XElement data = null)
+        {
+            string val = GetAttribute(name, data);
+            return string.IsNullOrEmpty(val) ? defaultValue : decimal.Parse(val);
+        }
+
         public bool GetAttribute(string name, bool defaultValue = false, XElement data = null)
         {
             string val = GetAttribute(name, data);
@@ -569,6 +597,14 @@ namespace Catfish.Core.Models
         }
 
         public void SetAttribute(string attName, int attValue, XElement data = null)
+        {
+            if (data == null)
+                Data.SetAttributeValue(attName, attValue);
+            else
+                data.SetAttributeValue(attName, attValue);
+        }
+
+        public void SetAttribute(string attName, decimal attValue, XElement data = null)
         {
             if (data == null)
                 Data.SetAttributeValue(attName, attValue);
