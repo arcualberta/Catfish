@@ -55,7 +55,10 @@ namespace Catfish.Models.Regions
 
         [Display(Name = "Y-data Scale")]
         public int YScale {get; set;}
-        
+
+        [Display(Name = "Count All")]
+        public bool CountAll { get; set; }
+
         [ScriptIgnore]
         public List<SelectListItem> ListMetadataSets { get; set; }
 
@@ -63,9 +66,6 @@ namespace Catfish.Models.Regions
         public IDictionary<string, List<SelectListItem>> MetadataFields { get; set; }
         [ScriptIgnore]
         public List<SelectListItem> GraphTypes { get; set; }
-
-        [ScriptIgnore]
-        public bool IsCategoryOptionsField { get; set; }
 
         public string SelectedMetadataSetX { get; set; }
         public string SelectedMetadataSetY { get; set; }
@@ -79,7 +79,6 @@ namespace Catfish.Models.Regions
             ListMetadataSets = new List<SelectListItem>();
             MetadataFields = new Dictionary<string, List<SelectListItem>>();
             GraphTypes = new List<SelectListItem>();
-            IsCategoryOptionsField = false;
 
             foreach (GraphType am in Enum.GetValues(typeof(GraphType)))
             {
@@ -137,10 +136,6 @@ namespace Catfish.Models.Regions
             if (!String.IsNullOrEmpty(Category))
             {
                 var metadataSet = metadataSrv.GetMetadataSet(SelectedMetadataSetCat);
-                if(metadataSet != null)
-                {
-                    IsCategoryOptionsField = metadataSet.Fields.Where(f => f.Guid == Category && typeof(OptionsField).IsAssignableFrom(f.GetType())).Any();
-                }
             }
             return base.GetContent(model);
         }

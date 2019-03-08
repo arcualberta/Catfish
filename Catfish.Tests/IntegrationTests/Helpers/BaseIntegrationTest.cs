@@ -91,6 +91,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             ResetServerCache();
 
             SetupPiranha();
+
             RunMigrations();
             LoginAsAdmin();
 
@@ -713,7 +714,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             return found;
         }
 
-        protected void CreateAndAddAddvancedSearchToMain(bool includeKeywordSearch, IEnumerable<FormField> fields, int regionIndex = 1)
+        protected void CreateAndAddAddvancedSearchToMain(bool includeKeywordSearch, IEnumerable<FormField> fields, int regionIndex = 1, bool isDropdown=false)
         {
             // Create the advanced search region
             Driver.FindElement(By.LinkText(SettingsLinkText), 10).Click();
@@ -743,15 +744,31 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             {
                 region.FindElement(By.Id("Regions_" + regionIndex + "__Body_HasGeneralSearch")).Click();
             }
-
+            
             if(fields != null)
             {
-                foreach(FormField field in fields)
+              
+                foreach (FormField field in fields)
                 {
                     IWebElement fieldSelectorElement = Driver.FindElement(By.Id("Regions_" + regionIndex + "__Body_selectedField"));
                     SelectElement fieldSelector = new SelectElement(fieldSelectorElement);
                     fieldSelector.SelectByText(field.Name + " Mapping");
+
+                        
                     region.FindElement(By.XPath(".//span[contains(@class, 'glyphicon glyphicon-plus-sign')][" + regionIndex + "]")).Click();
+                    //turn on the auto complete for textField
+                    if(field.GetType().FullName.Equals("Catfish.Core.Models.Forms.TextField"))
+                    {
+                        region.FindElement(By.XPath(".//input[contains(@name, '.IsAutoComplete')]")).Click();
+                    }
+                    
+                    //display the year in dropdown
+                    if(field.Name.Equals("Year") && isDropdown)
+                    {
+                        SelectElement selectOptions = new SelectElement((region.FindElements(By.XPath(".//select[contains(@name, '.SelectedDisplayOption')]"))[2]));
+                        selectOptions.SelectByText("DropDownList");
+                       
+                    }
                 }
             }
 

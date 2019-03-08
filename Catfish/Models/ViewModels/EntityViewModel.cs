@@ -23,6 +23,10 @@ namespace Catfish.Models.ViewModels
         public ICollection<DataFileViewModel> Files { get; set; }
 
         public string[] LanguageCodes { get; private set; }
+
+        public string EntityTypeName { get; private set; }
+
+        public DateTime Created { get; private set; }
         
         public EntityViewModel()
         {
@@ -36,6 +40,9 @@ namespace Catfish.Models.ViewModels
             this.Id = entity.Id;
             this.Guid = entity.Guid;
             this.LanguageCodes = languageCodes;
+            this.EntityTypeName = entity.EntityType.Name;
+
+            this.Created = entity.Created;
 
             Type entityType = entity.GetType();
 
@@ -127,9 +134,9 @@ namespace Catfish.Models.ViewModels
                 else
                 {
                     var result = new List<string>();
-                    if(f.Names[languageCode] == name)
+                    if (f.Names.Where(n => n.Value == name && n.Key == languageCode).Any())
                     {
-                        result.Add(f.Values[languageCode]);
+                        result.AddRange(f.ValuesList.Where(v => v.ContainsKey(languageCode)).Select(v => v[languageCode]));
                     }
 
                     return result;
@@ -221,6 +228,8 @@ namespace Catfish.Models.ViewModels
                     {
                         Values = new Dictionary<string, string>();
                         ValuesList.Add(Values);
+
+                        Values.Add(value.LanguageCode, value.Value);
                     }
                     else
                     {
