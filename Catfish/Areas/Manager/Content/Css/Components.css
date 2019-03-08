@@ -26,3 +26,8 @@
 .actionable-table .control-row td {
     border-top: 0px !important;
 }
+
+.pagination {
+    display: block !important;
+    text-align: center !important;
+}
