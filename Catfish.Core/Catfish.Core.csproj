@@ -46,6 +46,21 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Apis, Version=1.36.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.36.1\lib\net45\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth, Version=1.36.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.36.1\lib\net45\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.36.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.36.1\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core, Version=1.36.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.36.1\lib\net45\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Sheets.v4, Version=1.36.1.1387, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Sheets.v4.1.36.1.1387\lib\net45\Google.Apis.Sheets.v4.dll</HintPath>
+    </Reference>
     <Reference Include="SolrNet, Version=1.0.13.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SolrNet.Core.1.0.13\lib\net46\SolrNet.dll</HintPath>
     </Reference>
@@ -155,8 +170,12 @@
     <Compile Include="Models\Forms\AbstractForm.cs" />
     <Compile Include="Models\Forms\Attachment.cs" />
     <Compile Include="Models\Forms\ClientInfo.cs" />
+    <Compile Include="Models\Forms\CompositeFormField.cs" />
+    <Compile Include="Models\Forms\ExternalMediaField.cs" />
+    <Compile Include="Models\Forms\HtmlField.cs" />
     <Compile Include="Models\Forms\PageBreak.cs" />
     <Compile Include="Models\Forms\NumberField.cs" />
+    <Compile Include="Models\Forms\SliderField.cs" />
     <Compile Include="Models\Forms\UrlField.cs" />
     <Compile Include="Models\Ingestion\Ingestion.cs" />
     <Compile Include="Models\Ingestion\Relationship.cs" />
@@ -189,7 +208,9 @@
     <Compile Include="Services\AccessDefinitionService.cs" />
     <Compile Include="Services\AggregationService.cs" />
     <Compile Include="Services\DataService.cs" />
+    <Compile Include="Services\GoogleSheetService.cs" />
     <Compile Include="Services\SecurityServiceBase.cs" />
+    <Compile Include="Services\SurveyService.cs" />
     <Compile Include="Services\UserListService.cs" />
     <Compile Include="Services\EntityTypeService.cs" />
     <Compile Include="Services\IngestionService.cs" />

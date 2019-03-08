@@ -10,6 +10,7 @@ using Catfish.Core.Models.Access;
 using Catfish.Core.Services;
 using CommonServiceLocator;
 using SolrNet;
+using System.Configuration;
 using System.Data.Entity.Infrastructure;
 using SolrNet.Exceptions;
 using System.Data.Entity.Core.Objects;
@@ -42,6 +43,9 @@ namespace Catfish.Core.Models
                 SolrService.Init(solrString);
             }
 
+            var sqlTimeout = ConfigurationManager.AppSettings["SqlConnectionTimeoutSeconds"];
+            if (!string.IsNullOrEmpty(sqlTimeout))
+                ((IObjectContextAdapter)this).ObjectContext.CommandTimeout = int.Parse(sqlTimeout);
         }
 
         public ObjectContext ObjectContext
@@ -203,5 +207,7 @@ namespace Catfish.Core.Models
         public DbSet<CFUserListEntry> UserListEntries { get; set; }
 
         public DbSet<CFAccessDefinition> AccessDefinitions { get; set; }
+
+        public System.Data.Entity.DbSet<Catfish.Core.Models.Forms.CompositeFormField> CFXmlModels { get; set; }
     }
 }

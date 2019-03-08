@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models;
+﻿using Catfish.Core.Helpers;
+using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Catfish.Helpers;
 using Catfish.Models.ViewModels;
@@ -128,7 +129,7 @@ namespace Catfish.Models.Regions
                     }
                     else
                     {
-                        View.SetModel(new EntityViewModel(es.GetAnEntity(id), new string[] { "en" })); //TODO: Get Language codes
+                        View.SetModel(new EntityViewModel(es.GetAnEntity(id), ConfigHelper.Languages.Select(l => l.TwoLetterISOLanguageName.ToLower()).ToArray())); //TODO: Get Language codes
                     }
                 }
             }
