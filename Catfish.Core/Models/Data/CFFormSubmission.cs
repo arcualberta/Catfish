@@ -42,6 +42,8 @@ namespace Catfish.Core.Models.Data
             var xpath = "./data/" + Form.TagName;
             Form storedForm = GetChildModels(xpath, Data).FirstOrDefault() as Form;
             storedForm.UpdateValues(src);
+            if (!string.IsNullOrEmpty(src.ReferenceCode))
+                storedForm.ReferenceCode = src.ReferenceCode;
         }
     }
 }

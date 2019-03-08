@@ -145,6 +145,12 @@
         </div>
     </li>
     <li>
+        @Html.LabelFor(m => m.CountAll)
+        <div class="input">
+            @Html.EditorFor(m => m.CountAll)
+        </div>
+    </li>
+    <li>
         @Html.LabelFor(m => m.Category)
         <div class="input">
             @AddMetadataFieldSelection(m => m.SelectedMetadataSetCat,

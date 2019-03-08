@@ -169,6 +169,14 @@ namespace Catfish.Core.Models.Forms
             set { SetAttribute("page", value); }
         }
 
+        [NotMapped]
+        [ScriptIgnore]
+        public string ReferenceLabel
+        {
+            get { return GetAttribute("reference-label", null); }
+            set { SetAttribute("reference-label", value); }
+        }
+
         public override void UpdateValues(CFXmlModel src)
         {
             XElement srcValueWrapper = src.Data.Element("value");
