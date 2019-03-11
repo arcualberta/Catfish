@@ -538,9 +538,11 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             string url = Driver.Url;
             const string urlPattern = @".+\/(\d+)";
             const string keyValuePattern = @"^value_.+_txts_\w{2}$";
+            const string associationsPattern = @"^(?:parents|related)_ss$";
 
             Regex urlRegex = new Regex(urlPattern);
             Regex keyValyeRegex = new Regex(keyValuePattern);
+            Regex associationsRegex = new Regex(associationsPattern);
 
             Match urlMatch = urlRegex.Match(url);
 
@@ -585,7 +587,8 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                         //}
 
                         Match keyValueMatch = keyValyeRegex.Match(entry.Key);
-                        if (keyValueMatch.Success)
+                        Match associationsMatch = associationsRegex.Match(entry.Key);
+                        if (keyValueMatch.Success || associationsMatch.Success)
                         {
                             // treat as multi values
 
