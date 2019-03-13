@@ -149,7 +149,47 @@ namespace Catfish.Controllers.Api
         }
 
         [HttpGet]
-        public JsonResult GetRelations() { return null; }
+        public ContentResult GetRelated([System.Web.Http.FromUri] AggregationRelationParameters parameters)
+        {
+            SecurityService.CreateAccessContext();
+
+            if (String.IsNullOrEmpty(parameters.Query))
+            {
+                parameters.Query = "*:*";
+            }
+
+            CFAggregationAssociationsViewModel response = new CFAggregationAssociationsViewModel
+            {
+                Page = parameters.Page,
+                TotalItems = 1,
+                ItemsPerPage = 1,
+                TotalPages = 1
+            };
+
+
+            // XXX Fix me
+            int total;
+
+            //string mappedGuid =
+            CFAggregation test = AggregationService.GetAggregation(parameters.id);
+
+            response.Data = AggregationService.Related(
+                test.MappedGuid,
+                out total,
+                parameters.Query,
+                response.Page,
+                parameters.ItemsPerPage).Select(x => new CFAggregationIndexViewModel(x));
+
+            response.TotalItems = total;
+            response.ItemsPerPage = parameters.ItemsPerPage;
+            response.TotalPages = (int)Math.Ceiling((double)response.TotalItems / response.ItemsPerPage);
+
+            string responseString = JsonConvert.SerializeObject(response,
+                Formatting.None
+            );
+
+            return Content(responseString, "application/json");
+        }
 
         [HttpPost]
         public JsonResult AddParents(int id, int[] objectIds) {
