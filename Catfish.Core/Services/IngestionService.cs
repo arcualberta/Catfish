@@ -303,18 +303,18 @@ namespace Catfish.Core.Services
                 CFAggregation parent = Db.XmlModels.Where(x => x.MappedGuid == parentGuid).FirstOrDefault() as CFAggregation;
                 CFItem child = Db.XmlModels.Where(x => x.MappedGuid == childGuid).FirstOrDefault() as CFItem;
                 if(!overwrite)
-                   parent.ChildRelations.Add(child);
+                   parent.AddRelated(child);
                 else
                 {
                     //remove all child members first before adding new one
-                    foreach (var c in parent.ChildRelations)
+                    foreach (var c in parent.ManagedRelatedMembers)
                     {
                         CFItem removeRel = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFItem;
-                        parent.ChildRelations.Remove(removeRel);
+                        parent.RemoveRelated(removeRel);
                     }
 
                     //add new one
-                    parent.ChildRelations.Add(child);
+                    parent.AddRelated(child);
                 }
 
                 Db.Entry(parent).State = System.Data.Entity.EntityState.Modified;
@@ -412,7 +412,7 @@ namespace Catfish.Core.Services
                     }
 
                     //find related items
-                    if (parentItem.ChildRelations.Any(member => member.MappedGuid == childItem.Guid))
+                    if (parentItem.RelatedMembers.Any(member => member.MappedGuid == childItem.Guid))
                     {
                         ingestion.Relationships.Add(new Relationship
                         {
