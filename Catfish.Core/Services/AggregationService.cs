@@ -108,10 +108,7 @@ namespace Catfish.Core.Services
             } else
             {
                 newQuery = "";
-            }
-                                 
-            //newQuery += "id: " + mappedGuids[0];
-            //newQuery += " id: " + id;
+            }                                
 
             return Index(out total, newQuery, page, itemsPerPage);
 
@@ -143,16 +140,28 @@ namespace Catfish.Core.Services
             int page = 1,
             int itemsPerPage = 10)
         {
+
+            CFAggregation aggregation = Db.Aggregations.Where(x => id == x.MappedGuid).FirstOrDefault();
+
+            List<string> mappedGuids = aggregation.RelatedMembers.Select(x => x.MappedGuid).ToList();
             string newQuery = query;
 
-            if (newQuery.Length > 0)
+            if (mappedGuids.Count > 0)
             {
-                newQuery += " AND ";
+                string relatedIds = String.Join(" ", mappedGuids);
+                if (newQuery.Length > 0)
+                {
+                    newQuery += " AND ";
+                }
+                newQuery += "id:(" + relatedIds + ")";
+            }
+            else
+            {
+                newQuery = "";
             }
 
-            newQuery += " related_ss: " + id;
-
             return Index(out total, newQuery, page, itemsPerPage);
+
         }
 
     }

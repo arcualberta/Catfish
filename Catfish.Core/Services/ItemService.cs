@@ -55,6 +55,19 @@ namespace Catfish.Core.Services
                 .Where(i => i.Id == id).FirstOrDefault();
         }
 
+
+        public List<CFItem> GetItems(IEnumerable<int> ids, AccessMode accessMode = AccessMode.Read)
+        {
+            List<CFItem> result = new List<CFItem>();
+
+            foreach (int id in ids)
+            {
+                result.Add(GetItem(id, accessMode));
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Get a item from the database.
         /// </summary>
