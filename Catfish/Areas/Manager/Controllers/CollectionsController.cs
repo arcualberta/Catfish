@@ -59,7 +59,7 @@ namespace Catfish.Areas.Manager.Controllers
 
             EntityContentViewModel relatedItems = new EntityContentViewModel();
             relatedItems.Id = model.Id;
-            relatedItems.LoadNextChildrenSet(model.RelatedMembers);
+            relatedItems.LoadNextChildrenSet(model.ChildRelations);
             relatedItems.LoadNextMasterSet(ItemService.GetItems());
             ViewBag.RelatedItems = relatedItems;
 

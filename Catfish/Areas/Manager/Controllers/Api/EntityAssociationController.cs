@@ -87,14 +87,14 @@ namespace Catfish.Areas.Manager.Controllers
                     if (child == null)
                         throw new Exception("Id=" + c.Id + ": Specified related item not found");
 
-                    model.AddRelated(child);
+                    model.ChildRelations.Add(child);
                 }
 
                 //Removing deleted children
                 foreach (var c in vm.RemovalPendingChildEntities)
                 {
                     CFItem child = Db.XmlModels.Where(x => x.Id == c.Id).FirstOrDefault() as CFItem;
-                    model.RemoveRelated(child);
+                    model.ChildRelations.Remove(child);
                 }
 
                 Db.Entry(model).State = System.Data.Entity.EntityState.Modified;
