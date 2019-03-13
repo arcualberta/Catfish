@@ -70,7 +70,7 @@ namespace Catfish.Models.Regions
                     EntityService es = new EntityService(db);
 
                     Entity = es.GetAnEntity(Convert.ToInt32(entityId));
-                    RelatedMembers = (Entity as CFItem).ChildRelations.ToList();
+                    RelatedMembers = (Entity as CFItem).RelatedMembers.ToList();
                     
                 }
             }
