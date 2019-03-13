@@ -26,6 +26,13 @@ namespace Catfish.Core.Models
             set;
         }
 
+        [IgnoreDataMember]
+        public virtual List<CFItem> ManagedRelatedMembers
+        {
+            get;
+            set;
+        }
+
         //[JsonIgnore]
         [IgnoreDataMember]
         public virtual IReadOnlyCollection<CFAggregation> ParentMembers {
@@ -45,18 +52,24 @@ namespace Catfish.Core.Models
 
         //[JsonIgnore]
         [IgnoreDataMember]
-        public virtual ICollection<CFItem> ChildRelations { get; set; }
+        public virtual IReadOnlyCollection<CFItem> RelatedMembers
+        {
+            get
+            {
+                return ManagedRelatedMembers.AsReadOnly();
+            }
+        }
 
         [NotMapped]
         [IgnoreDataMember]
-        public bool HasAssociations { get { return ParentMembers.Count > 0 || ChildMembers.Count > 0 || ChildRelations.Count > 0; } }
+        public bool HasAssociations { get { return ParentMembers.Count > 0 || ChildMembers.Count > 0 || RelatedMembers.Count > 0; } }
 
 
         public CFAggregation()
         {
             ManagedParentMembers = new List<CFAggregation>();
             ManagedChildMembers = new List<CFAggregation>();
-            ChildRelations = new List<CFItem>();
+            ManagedRelatedMembers = new List<CFItem>();
         }
 
         /// <summary>
@@ -88,6 +101,16 @@ namespace Catfish.Core.Models
                     x.AccessDefinition.AccessModes, 
                     true));
             }            
+        }
+
+        public void AddRelated(CFItem related)
+        {
+            ManagedRelatedMembers.Add(related);
+        }
+
+        public void RemoveRelated(CFItem related)
+        {
+            ManagedRelatedMembers.Remove(related);
         }
 
         /// <summary>
@@ -166,7 +189,7 @@ namespace Catfish.Core.Models
             Dictionary<string, object> solrDictionary = base.ToSolrDictionary();
             //solrDictionary["modeltype_s"] = "testingcall";
             solrDictionary["parents_ss"] = ParentMembers.Select(x => x.Guid).ToList();
-            solrDictionary["related_ss"] = ChildRelations.Select(x => x.Guid).ToList();
+            solrDictionary["related_ss"] = RelatedMembers.Select(x => x.Guid).ToList();
             return solrDictionary;
         }
 

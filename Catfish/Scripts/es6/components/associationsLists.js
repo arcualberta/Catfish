@@ -71,21 +71,24 @@ export default class AssociationsLists extends React.Component {
             all: { ...startingState },
             parents: { ...startingState },
             children: { ...startingState },
-            relations: { ...startingState }
+            related: { ...startingState }
         }
         //this.allActions = []
         this.updateSelected = this.updateSelected.bind(this)
         this.updatePage = this.updatePage.bind(this)
         this.addChildren = this.addChildren.bind(this)
         this.addParents = this.addParents.bind(this)
+        this.addRelated = this.addRelated.bind(this)
         this.removeParents = this.removeParents.bind(this)
         this.removeChildren = this.removeChildren.bind(this)
+        this.removeRelated = this.removeRelated.bind(this)
         this.clearSelected = this.clearSelected.bind(this)
         this.clearAllSelected = this.clearAllSelected.bind(this)
         this.handleSearch = this.handleSearch.bind(this)
         this.handleSearchAll = this.handleSearchAll.bind(this)
         this.handleSearchParents = this.handleSearchParents.bind(this)
         this.handleSearchChildren = this.handleSearchChildren.bind(this)
+        this.handleSearchRelated = this.handleSearchRelated.bind(this)
         this.initActions()
 
 
@@ -94,7 +97,8 @@ export default class AssociationsLists extends React.Component {
         this.searchTimers = {
             'all': null,
             'children': null,
-            'parents': null
+            'parents': null,
+            'related': null
         }
 
     }
@@ -111,6 +115,10 @@ export default class AssociationsLists extends React.Component {
         this.handleSearch({ ...x }, 'children')
     }
 
+    handleSearchRelated(x) {
+        this.handleSearch({ ...x }, 'related')
+    }
+
     handleSearch(x, location) {
 
         if (this.searchTimers[location] !== null) {
@@ -121,18 +129,18 @@ export default class AssociationsLists extends React.Component {
         this.searchTimers[location] = setTimeout(() => {
             const page = 1
             const query = x.target.value
-            this.updatePage(location, { page, query })   
+            this.updatePage(location, { page, query })
             this.searchTimers[location] = null;
-        }, this.searchTimeDelay)             
+        }, this.searchTimeDelay)
     }
 
     updateSelected(location, payload) {
         const newState = update(this.state,
-        {
-            [location]: { selected: { $set: payload } }
-        })        
-        
-        this.setState(newState)        
+            {
+                [location]: { selected: { $set: payload } }
+            })
+
+        this.setState(newState)
     }
 
     getPageParameters(location) {
@@ -151,18 +159,22 @@ export default class AssociationsLists extends React.Component {
                 url = '/apix/Aggregations/getParents'
                 id = external.modelId
                 break
+            case 'related':
+                url = '/apix/Aggregations/getRelated'
+                id = external.modelId
+                break
             default:
                 url = '/apix/Aggregations'
                 break
 
         }
-        return {url, id}
+        return { url, id }
     }
 
     updatePage(location, payload) {
         //const url = '/apix/Aggregations'
         let { page, query } = payload
-        const { url, id } = this.getPageParameters(location)        
+        const { url, id } = this.getPageParameters(location)
 
         if (page == null) {
             page = this.state[location].page
@@ -184,10 +196,10 @@ export default class AssociationsLists extends React.Component {
                 const data = response.data
                 const newState = update(this.state, {
                     [location]: {
-                        query: {$set: query},
+                        query: { $set: query },
                         page: { $set: page },
                         data: { $set: data.data },
-                        totalPages: {$set: data.totalPages}
+                        totalPages: { $set: data.totalPages }
                     }
                 })
                 this.setState(newState)
@@ -202,13 +214,13 @@ export default class AssociationsLists extends React.Component {
         return false
     }
 
-    componentDidMount() {        
-        axios.get('/apix/Aggregations', { 
+    componentDidMount() {
+        axios.get('/apix/Aggregations', {
             params: {
                 ItemsPerPage: 10
-            }            
+            }
         })
-            .then( response => {                
+            .then(response => {
 
                 // this should be replaced with the incoming data from api call
                 const data = response.data
@@ -222,7 +234,7 @@ export default class AssociationsLists extends React.Component {
                         headers: this.basicHeaders,
                         data: data.data
                     }
-                }                
+                }
                 this.setState(resp)
             })
         axios.get('/apix/Aggregations/getChildren', {
@@ -231,7 +243,7 @@ export default class AssociationsLists extends React.Component {
                 ItemsPerPage: 5
             }
         })
-            .then(response => {                
+            .then(response => {
                 const data = response.data
                 const resp = {
                     children: {
@@ -252,7 +264,7 @@ export default class AssociationsLists extends React.Component {
                 ItemsPerPage: 5
             }
         })
-            .then(response => {               
+            .then(response => {
                 const data = response.data
                 const resp = {
                     parents: {
@@ -269,41 +281,77 @@ export default class AssociationsLists extends React.Component {
 
             })
             .catch(error => console.log(error))
+
+        axios.get('/apix/Aggregations/getRelated', {
+            params: {
+                id: external.modelId,
+                ItemsPerPage: 5
+            }
+        })
+            .then(response => {
+                const data = response.data
+                const resp = {
+                    related: {
+                        title: "Related",
+                        selected: [],
+                        page: data.page,
+                        itemsPerPage: data.itemsPerPage,
+                        totalPages: data.totalPages,
+                        headers: this.basicHeaders,
+                        data: data.data
+                    }
+                }
+                this.setState(resp)
+
+            })
+            .catch(error => console.log(error))
     }
 
-    addChildren(selected) {              
+    addChildren(selected) {
         const self = this
 
         axios.post('/apix/Aggregations/AddChildren', {
             id: external.modelId,
             objectIds: selected.map(x => x.id)
         })
-            .then( response => {                
+            .then(response => {
                 self.updatePage('children', { page: self.state.children.page })
             })
-            .catch( error => console.log(error) );
+            .catch(error => console.log(error));
     }
 
     addParents(selected) {
-        const self = this        
+        const self = this
         axios.post('/apix/Aggregations/AddParents', {
             id: external.modelId,
             objectIds: selected.map(x => x.id)
         })
-            .then( response => {                
+            .then(response => {
                 self.updatePage('parents', { page: self.state.parents.page })
             })
-            .catch( error => console.log(error) );
+            .catch(error => console.log(error));
+    }
+
+    addRelated(selected) {
+        const self = this
+        axios.post('/apix/Aggregations/AddRelated', {
+            id: external.modelId,
+            objectIds: selected.map(x => x.id)
+        })
+            .then(response => {
+                self.updatePage('related', { page: self.state.related.page })
+            })
+            .catch(error => console.log(error));
     }
 
     removeChildren(selected) {
         const self = this
-        const location = 'children'        
+        const location = 'children'
         axios.post('/apix/Aggregations/RemoveChildren', {
             id: external.modelId,
             objectIds: selected.map(x => x.id)
         })
-            .then( response => {                
+            .then(response => {
                 self.updatePage(location, { page: self.state.children.page })
                 self.clearSelected(location)
             })
@@ -316,8 +364,21 @@ export default class AssociationsLists extends React.Component {
             id: external.modelId,
             objectIds: selected.map(x => x.id)
         })
-            .then( response => {
+            .then(response => {
                 self.updatePage(location, { page: self.state.parents.page })
+                self.clearSelected(location);
+            })
+    }
+
+    removeRelated(selected) {
+        const self = this
+        const location = 'related'
+        axios.post('/apix/Aggregations/RemoveRelated', {
+            id: external.modelId,
+            objectIds: selected.map(x => x.id)
+        })
+            .then(response => {
+                self.updatePage(location, { page: self.state.related.page })
                 self.clearSelected(location);
             })
     }
@@ -326,8 +387,8 @@ export default class AssociationsLists extends React.Component {
         const newState = update(this.state,
             {
                 [location]: { selected: { $set: [] } }
-            });        
-        this.setState(newState)        
+            });
+        this.setState(newState)
     }
 
     clearAllSelected() {
@@ -343,7 +404,11 @@ export default class AssociationsLists extends React.Component {
             },
             {
                 title: "Add children",
-                action: this.addChildren 
+                action: this.addChildren
+            },
+            {
+                title: "Add related",
+                action: this.addRelated
             },
             {
                 title: "Clear selection",
@@ -365,6 +430,13 @@ export default class AssociationsLists extends React.Component {
             }
         ]
 
+        this.relatedActions = [
+            {
+                title: "Remove",
+                action: this.removeRelated
+            }
+        ]
+
     }
 
     render() {
@@ -372,6 +444,7 @@ export default class AssociationsLists extends React.Component {
         const all = this.state.all
         const children = this.state.children
         const parents = this.state.parents
+        const related = this.state.related
 
         const div100Style = {
             width: '100%'
@@ -387,9 +460,9 @@ export default class AssociationsLists extends React.Component {
             float: 'right'
         }
 
-        
 
-        return (            
+
+        return (
             <div className="bs container">
                 <div className="row">
                     <div className="col-md-6">
@@ -438,26 +511,26 @@ export default class AssociationsLists extends React.Component {
                                 </div>
                             </form>
 
-                        <ActionableTable
-                            location="children"
-                            data={children.data}
-                            selected={children.selected}
-                            update={this.updateSelected}
-                            headers={children.headers}
-                            isEquivalent={this.isEquivalentData}
-                            maxRows={children.itemsPerPage}
-                            actions={this.childrenActions}
-                        />
+                            <ActionableTable
+                                location="children"
+                                data={children.data}
+                                selected={children.selected}
+                                update={this.updateSelected}
+                                headers={children.headers}
+                                isEquivalent={this.isEquivalentData}
+                                maxRows={children.itemsPerPage}
+                                actions={this.childrenActions}
+                            />
 
-                        <Pagination
-                            location="children"
-                            page={children.page}
-                            totalPages={children.totalPages}
-                            update={this.updatePage}
-                        />
-                    </div>
+                            <Pagination
+                                location="children"
+                                page={children.page}
+                                totalPages={children.totalPages}
+                                update={this.updatePage}
+                            />
+                        </div>
 
-                    <div className="row">
+                        <div className="row">
 
                             <form className="form-horizontal">
                                 <div className="form-group">
@@ -471,26 +544,61 @@ export default class AssociationsLists extends React.Component {
                                 </div>
                             </form>
 
-                        <ActionableTable
-                            location="parents"
-                            data={parents.data}
-                            selected={parents.selected}
-                            update={this.updateSelected}
-                            headers={parents.headers}
-                            isEquivalent={this.isEquivalentData}
-                            maxRows={parents.itemsPerPage}
-                            actions={this.parentsActions}
-                        />
+                            <ActionableTable
+                                location="parents"
+                                data={parents.data}
+                                selected={parents.selected}
+                                update={this.updateSelected}
+                                headers={parents.headers}
+                                isEquivalent={this.isEquivalentData}
+                                maxRows={parents.itemsPerPage}
+                                actions={this.parentsActions}
+                            />
 
-                        <Pagination
-                            location="parents"
-                            page={parents.page}
-                            totalPages={parents.totalPages}
-                            update={this.updatePage}
-                        />
+                            <Pagination
+                                location="parents"
+                                page={parents.page}
+                                totalPages={parents.totalPages}
+                                update={this.updatePage}
+                            />
+                        </div>
+
+
+                        <div className="row">
+
+                            <form className="form-horizontal">
+                                <div className="form-group">
+                                    <label className="col-sm-2 control-label">{related.title}</label>
+                                    <div className="col-sm-10">
+                                        <ActionableInputField
+                                            handleChange={this.handleSearchRelated}
+                                            placeholder="Search"
+                                        />
+                                    </div>
+                                </div>
+                            </form>
+
+                            <ActionableTable
+                                location="related"
+                                data={related.data}
+                                selected={related.selected}
+                                update={this.updateSelected}
+                                headers={related.headers}
+                                isEquivalent={this.isEquivalentData}
+                                maxRows={related.itemsPerPage}
+                                actions={this.relatedActions}
+                            />
+
+                            <Pagination
+                                location="parents"
+                                page={related.page}
+                                totalPages={related.totalPages}
+                                update={this.updatePage}
+                            />
+                        </div>
+
                     </div>
-                    </div>
-                    </div>
+                </div>
             </div>
         )
 
