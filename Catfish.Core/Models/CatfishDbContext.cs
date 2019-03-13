@@ -160,7 +160,7 @@ namespace Catfish.Core.Models
                 });
 
             builder.Entity<CFAggregation>()
-                .HasMany<CFItem>(p => p.ChildRelations)
+                .HasMany<CFItem>(p => p.ManagedRelatedMembers)
                 .WithMany(c => c.ParentRelations)
                 .Map(t =>
                 {
