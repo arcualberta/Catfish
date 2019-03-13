@@ -198,9 +198,11 @@ namespace Catfish.Controllers.Api
 
             foreach(CFAggregation parent in AggregationService.GetAggregations(objectIds))
             {                
-                parent.AddChild(aggregation);
-                Db.Entry(parent).State = System.Data.Entity.EntityState.Modified;
-
+                if (parent != null)
+                {
+                    parent.AddChild(aggregation);
+                    Db.Entry(parent).State = System.Data.Entity.EntityState.Modified;
+                }               
             }
             Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
             Db.SaveChanges(User.Identity);
@@ -216,8 +218,11 @@ namespace Catfish.Controllers.Api
 
             foreach (CFAggregation parent in AggregationService.GetAggregations(objectIds))
             {
-                parent.RemoveChild(aggregation);
-                Db.Entry(parent).State = System.Data.Entity.EntityState.Modified;
+                if (parent != null)
+                {
+                    parent.RemoveChild(aggregation);
+                    Db.Entry(parent).State = System.Data.Entity.EntityState.Modified;
+                }                
             }
 
             Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
@@ -233,9 +238,11 @@ namespace Catfish.Controllers.Api
             foreach(CFAggregation child in AggregationService.GetAggregations(objectIds))
             {
                 //CFAggregation child = AggregationService.GetAggregation(childId);
-                aggregation.AddChild(child);
-                Db.Entry(child).State = System.Data.Entity.EntityState.Modified;
-
+                if (child != null)
+                {
+                    aggregation.AddChild(child);
+                    Db.Entry(child).State = System.Data.Entity.EntityState.Modified;
+                }               
             }
             Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
 
@@ -251,8 +258,11 @@ namespace Catfish.Controllers.Api
 
             foreach (CFAggregation child in AggregationService.GetAggregations(objectIds))
             {
-                aggregation.RemoveChild(child);
-                Db.Entry(child).State = System.Data.Entity.EntityState.Modified;
+                if (child != null)
+                {
+                    aggregation.RemoveChild(child);
+                    Db.Entry(child).State = System.Data.Entity.EntityState.Modified;
+                }                
             }
             Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
 
@@ -262,6 +272,45 @@ namespace Catfish.Controllers.Api
         }
 
         [HttpPost]
-        public JsonResult PostRelations() { return null; }
+        public JsonResult AddRelated(int id, int[] objectIds)
+        {
+            SecurityService.CreateAccessContext();
+            CFAggregation aggregation = AggregationService.GetAggregation(id);
+
+            foreach (CFItem related in ItemService.GetItems(objectIds))
+            {
+                //CFAggregation child = AggregationService.GetAggregation(childId);
+                if (related != null)
+                {
+                    aggregation.AddRelated(related);
+                    Db.Entry(related).State = System.Data.Entity.EntityState.Modified;
+                }                
+            }
+            Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
+
+            Db.SaveChanges(User.Identity);
+            return Json("");
+        }
+
+        [HttpPost]
+        public JsonResult RemoveRelated(int id, int[] objectIds)
+        {
+            SecurityService.CreateAccessContext();
+            CFAggregation aggregation = AggregationService.GetAggregation(id);
+
+            foreach (CFItem related in ItemService.GetItems(objectIds))
+            {
+                if (related != null)
+                {
+                    aggregation.RemoveRelated(related);
+                    Db.Entry(related).State = System.Data.Entity.EntityState.Modified;
+                }
+            }
+            Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
+
+
+            Db.SaveChanges(User.Identity);
+            return Json("");
+        }
     }
 }
