@@ -18,20 +18,13 @@ namespace Catfish.Core.Models
 
 
         [IgnoreDataMember]
-        public virtual List<CFAggregation> ManagedParentMembers { get; set; }
+        internal virtual List<CFAggregation> ManagedParentMembers { get; set; }
 
         [IgnoreDataMember]
-        public virtual List<CFAggregation> ManagedChildMembers {
-            get;
-            set;
-        }
+        internal virtual List<CFAggregation> ManagedChildMembers { get; set; }
 
         [IgnoreDataMember]
-        public virtual List<CFItem> ManagedRelatedMembers
-        {
-            get;
-            set;
-        }
+        internal virtual List<CFItem> ManagedRelatedMembers { get; set; }
 
         //[JsonIgnore]
         [IgnoreDataMember]
