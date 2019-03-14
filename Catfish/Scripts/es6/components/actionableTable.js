@@ -26,12 +26,13 @@ const ActionableTable = (props) => {
         isEquivalent,
         update,
         location,
+        id
     } = props
 
 
 
     return (
-        <div className="actionable-table">
+        <div className="actionable-table" id={id}>
             <div className="row">
                 <div className="col-md-12">
                     <table className="table">

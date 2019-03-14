@@ -10,13 +10,15 @@ const Pagination = props => {
         update,
         pageWindow,
         totalPages,
-        location } = props    
+        location,
+        className,
+        id} = props    
 
 
     const pages = range(1, totalPages).map(x => <option key={x}>{x}</option>)
 
     return (
-        <div className="pagination">
+        <div className="pagination" id={id}>
             <select
                 value={page}
                 onChange={event => update(location, { page: Number(event.target.value) })}                
