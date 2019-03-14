@@ -82,6 +82,8 @@ namespace Catfish.Core.Services
             return data;            
         }
 
+        // XXX Parents and Related can be refactored
+
         public IEnumerable<CFAggregation> Parents(
             string id,
             out int total,
@@ -114,25 +116,6 @@ namespace Catfish.Core.Services
 
         }
 
-        public IEnumerable<CFAggregation> Children(
-            string id,
-            out int total,
-            string query = "*:*",
-            int page = 1,
-            int itemsPerPage = 10)            
-        {
-            string newQuery = query;
-
-            if (newQuery.Length > 0)
-            {
-                newQuery += " AND ";
-            }
-
-            newQuery += " parents_ss: " + id;
-
-            return Index(out total, newQuery, page, itemsPerPage);
-        }
-
         public IEnumerable<CFAggregation> Related(
             string id,
             out int total,
@@ -142,8 +125,8 @@ namespace Catfish.Core.Services
         {
 
             CFAggregation aggregation = Db.Aggregations.Where(x => id == x.MappedGuid).FirstOrDefault();
-
             List<string> mappedGuids = aggregation.RelatedMembers.Select(x => x.MappedGuid).ToList();
+
             string newQuery = query;
 
             if (mappedGuids.Count > 0)
@@ -163,6 +146,27 @@ namespace Catfish.Core.Services
             return Index(out total, newQuery, page, itemsPerPage);
 
         }
+
+        public IEnumerable<CFAggregation> Children(
+            string id,
+            out int total,
+            string query = "*:*",
+            int page = 1,
+            int itemsPerPage = 10)            
+        {
+            string newQuery = query;
+
+            if (newQuery.Length > 0)
+            {
+                newQuery += " AND ";
+            }
+
+            newQuery += " parents_ss: " + id;
+
+            return Index(out total, newQuery, page, itemsPerPage);
+        }
+
+        
 
     }
 }
