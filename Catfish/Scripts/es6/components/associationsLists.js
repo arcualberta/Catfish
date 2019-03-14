@@ -400,40 +400,47 @@ export default class AssociationsLists extends React.Component {
         this.allActions = [
             {
                 title: "Add parents",
-                action: this.addParents
+                action: this.addParents,
+                id: "add-parents-action"
             },
             {
                 title: "Add children",
-                action: this.addChildren
+                action: this.addChildren,
+                id: "add-children-action"
             },
             {
                 title: "Add related",
-                action: this.addRelated
+                action: this.addRelated,
+                id: "add-related-action"
             },
             {
                 title: "Clear selection",
-                action: this.clearAllSelected
+                action: this.clearAllSelected,
+                id: "clear-selection-action"
             }
         ]
 
         this.parentsActions = [
             {
                 title: "Remove",
-                action: this.removeParents
+                action: this.removeParents,
+                id: "remove-parents-action"
             }
         ]
 
         this.childrenActions = [
             {
                 title: "Remove",
-                action: this.removeChildren
+                action: this.removeChildren,
+                id: "remove-children-action"
             }
         ]
 
         this.relatedActions = [
             {
                 title: "Remove",
-                action: this.removeRelated
+                action: this.removeRelated,
+                id: "remove-related-action"
             }
         ]
 
@@ -487,12 +494,14 @@ export default class AssociationsLists extends React.Component {
                             isEquivalent={this.isEquivalentData}
                             maxRows={all.itemsPerPage}
                             actions={this.allActions}
+                            id="all-actionable-table"
                         />
                         <Pagination
                             location="all"
                             page={all.page}
                             totalPages={all.totalPages}
                             update={this.updatePage}
+                            id="all-pagination"
                         />
                     </div>
 
@@ -520,6 +529,7 @@ export default class AssociationsLists extends React.Component {
                                 isEquivalent={this.isEquivalentData}
                                 maxRows={children.itemsPerPage}
                                 actions={this.childrenActions}
+                                id="children-actionable-table"
                             />
 
                             <Pagination
@@ -527,6 +537,7 @@ export default class AssociationsLists extends React.Component {
                                 page={children.page}
                                 totalPages={children.totalPages}
                                 update={this.updatePage}
+                                id="children-pagination"
                             />
                         </div>
 
@@ -553,6 +564,7 @@ export default class AssociationsLists extends React.Component {
                                 isEquivalent={this.isEquivalentData}
                                 maxRows={parents.itemsPerPage}
                                 actions={this.parentsActions}
+                                id="parents-actionable-table"
                             />
 
                             <Pagination
@@ -560,6 +572,8 @@ export default class AssociationsLists extends React.Component {
                                 page={parents.page}
                                 totalPages={parents.totalPages}
                                 update={this.updatePage}
+                                id="parents-pagination"
+
                             />
                         </div>
 
@@ -587,6 +601,7 @@ export default class AssociationsLists extends React.Component {
                                 isEquivalent={this.isEquivalentData}
                                 maxRows={related.itemsPerPage}
                                 actions={this.relatedActions}
+                                id="related-actionable-table"
                             />
 
                             <Pagination
@@ -594,6 +609,7 @@ export default class AssociationsLists extends React.Component {
                                 page={related.page}
                                 totalPages={related.totalPages}
                                 update={this.updatePage}
+                                id="related-pagination"
                             />
                         </div>
 
