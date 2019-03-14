@@ -7,6 +7,7 @@ const ActionButtons = (props) =>
         {props.actions.map((actionable, index) =>
             <button
                 key={index}
+                id={actionable.id}
                 onClick={
                     (event) => {
                         { actionable.action(props.payload) }

@@ -60,6 +60,18 @@ namespace Catfish.Core.Services
                 Models.Access.AccessMode.Read);
         }
 
+        public List<CFCollection> GetCollections(IEnumerable<int> ids, AccessMode accessMode = AccessMode.Read)
+        {
+            List<CFCollection> result = new List<CFCollection>();
+
+            foreach (int id in ids)
+            {
+                result.Add(GetCollection(id, accessMode));
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Removes a collection from the database.
         /// </summary>
