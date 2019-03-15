@@ -494,7 +494,17 @@ namespace Catfish.Tests.IntegrationTests.Regions
             try
             {
                 IWebElement autoOptions = Driver.FindElement(By.Id("ui-id-1"), 20);
-             
+
+                // This is down to wait for the server to populate the list
+                try
+                {
+                    var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(2.0));
+                    wait.Until(d => false);
+                }catch(WebDriverTimeoutException ex)
+                {
+                    // Ignore this exception.
+                }
+
                 List<IWebElement> optionsToSelect = autoOptions.FindElements(By.TagName("li")).ToList();
                 foreach(IWebElement option in optionsToSelect)
                 {
