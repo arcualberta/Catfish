@@ -59,10 +59,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
             CreateEntityType(EntityTypeName, "Simple entity type", MetadataSetNames, TargetTypes,
                 new Tuple<string, FormField>[] {
                     new Tuple<string, FormField>(MetadataSetNames[0], MetadataFields[0]),
-                });
-
-            CreateCollections(10);
-            CreateItems(10);
+                });            
         }
 
         [Test]
@@ -70,15 +67,80 @@ namespace Catfish.Tests.IntegrationTests.Manager
         {
 
             SetUpAssociationTest();
+            CreateCollections(5);
             // Create simple entity type
             NavigateToCollections();
             GetFirstAssociationsButton().Click();
+
+            // select aggregation to add
+            //IWebElement allTable = Driver.FindElement(By.Id("all-actionable-table"));
+
+            // first checkbox
+            string allDataTable = "(//div[@id='all-actionable-table']//table)[2]";
+
+            Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[1]"), 10).Click();
+            string aggregationName1 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[1]//td[2]"), 10).Text;
+
+            // first aggregation name
+            Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[2]"), 10).Click();
+            string aggregationName2 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[2]//td[2]"), 10).Text;
+
+            Driver.FindElement(By.Id("add-parents-action"), 10).Click();
+
+            string parentsDataTable = "(//div[@id='parents-actionable-table']//table)[2]";
+            string parentName1 = Driver.FindElement(By.XPath($@"{parentsDataTable}//tbody//tr[1]//td[2]"), 10).Text;
+            string parentName2 = Driver.FindElement(By.XPath($@"{parentsDataTable}//tbody//tr[2]//td[2]"), 10).Text;
+
+            Assert.AreEqual(aggregationName1, parentName1);
+            Assert.AreEqual(aggregationName2, parentName2);
+
             int i = 0;
-            // Go To collections
 
-
-            // Go to associations for collection 1
         }
+
+        [Test]
+        public void CanAssociateChildren()
+        {
+
+            SetUpAssociationTest();
+            CreateCollections(1);
+            CreateItems(1);
+            // Create simple entity type
+            NavigateToCollections();
+            GetFirstAssociationsButton().Click();
+
+            // select aggregation to add
+            //IWebElement allTable = Driver.FindElement(By.Id("all-actionable-table"));
+
+            // first checkbox
+            string allDataTable = "(//div[@id='all-actionable-table']//table)[2]";
+
+            Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[1]"), 10).Click();
+            string aggregationName1 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[1]//td[2]"), 10).Text;
+
+            // first aggregation name
+            Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[2]"), 10).Click();
+            string aggregationName2 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[2]//td[2]"), 10).Text;
+
+            Driver.FindElement(By.Id("add-children-action"), 10).Click();
+
+            string chidlrenDataTable = "(//div[@id='children-actionable-table']//table)[2]";
+            string childName1 = Driver.FindElement(By.XPath($@"{chidlrenDataTable}//tbody//tr[1]//td[2]"), 10).Text;
+            string childName2 = Driver.FindElement(By.XPath($@"{chidlrenDataTable}//tbody//tr[2]//td[2]"), 10).Text;
+
+            Assert.AreEqual(aggregationName1, childName1);
+            Assert.AreEqual(aggregationName2, childName2);
+
+            int i = 0;
+        }
+
+        [Test]
+        public void CanAssociateRelated()
+        {
+            SetUpAssociationTest();
+            CreateItems(5);
+        }
+
 
         private void CreateCollections(int count)
         {
