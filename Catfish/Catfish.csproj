@@ -606,6 +606,7 @@
     <Content Include="Views\FormSubmission\EditorTemplates\HtmlField.cshtml" />
     <Content Include="Views\FormSubmission\EditorTemplates\CompositeFormField.cshtml" />
     <Content Include="Views\FormSubmission\EditorTemplates\ExternalMediaField.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\DropDownMenu.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
