@@ -16,6 +16,22 @@ namespace Catfish.Tests.IntegrationTests.Manager
     [TestFixture(typeof(ChromeDriver))]
     class CollectionTests<TWebDriver> : BaseIntegrationTest<TWebDriver> where TWebDriver : IWebDriver, new()
     {
+        public static string[] MetadataSetNames =
+        {
+            "Simple metadata"
+        };
+
+        private static FormField[] MetadataFields =
+        {
+            new TextField() {Name = "Simple field"}
+        };
+
+        private static CFEntityType.eTarget[] TargetTypes =
+        {
+            CFEntityType.eTarget.Items,
+            CFEntityType.eTarget.Collections
+        };
+
         [Test]
         public void CanCreateCollection()
         {
@@ -32,6 +48,66 @@ namespace Catfish.Tests.IntegrationTests.Manager
             string savedValue = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value")).GetAttribute("value");
 
             Assert.AreEqual(ItemValue, savedValue);
+        }
+
+        private void SetUpAssociationTest()
+        {
+            CreateMetadataSet(MetadataSetNames[0],
+                "Simple metadata",
+                MetadataFields);
+
+            CreateEntityType(EntityTypeName, "Simple entity type", MetadataSetNames, TargetTypes,
+                new Tuple<string, FormField>[] {
+                    new Tuple<string, FormField>(MetadataSetNames[0], MetadataFields[0]),
+                });
+
+            CreateCollections(10);
+            CreateItems(10);
+        }
+
+        [Test]
+        public void CanAssociateParents()
+        {
+
+            SetUpAssociationTest();
+            // Create simple entity type
+            NavigateToCollections();
+            GetFirstAssociationsButton().Click();
+            int i = 0;
+            // Go To collections
+
+
+            // Go to associations for collection 1
+        }
+
+        private void CreateCollections(int count)
+        {
+            FormField[] fields = new FormField[1];
+
+            MetadataFields[0].Serialize();
+
+            for (int i = 0; i < count; ++i)
+            {
+                fields[0] = new TextField() { Content = MetadataFields[0].Content };
+                fields[0].SetValues(new string[] { "Collection " + i });
+
+                CreateCollection(EntityTypeName, fields);
+            }
+        }
+
+        private void CreateItems(int count)
+        {
+            FormField[] fields = new FormField[1];
+
+            MetadataFields[0].Serialize();
+
+            for (int i = 0; i < count; ++i)
+            {
+                fields[0] = new TextField() { Content = MetadataFields[0].Content };
+                fields[0].SetValues(new string[] { "Item " + i });
+
+                CreateItem(EntityTypeName, fields, false);
+            }
         }
     }
 }

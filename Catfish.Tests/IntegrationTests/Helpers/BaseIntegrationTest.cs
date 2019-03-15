@@ -185,6 +185,45 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.TagName("button")).Click();
         }
 
+        // First
+
+        protected IWebElement GetFirstObjectRow()
+        {
+            return Driver.FindElement(By.XPath("(//tbody[contains(@class, 'object-list')]/tr)[1]"), 10);
+        }
+
+        protected IWebElement GetFirstActionPanel()
+        {
+            return GetFirstObjectRow().FindElement(By.XPath(".//td[contains(@class, 'action-panel')]"));
+        }
+
+        public IWebElement GetFirstButtonByClass(string cssClass)
+        {
+            return GetFirstObjectRow().FindElement(By.XPath($".//button[contains(@class, '{cssClass}')]"));
+        }
+
+        protected IWebElement GetFirstEditButton()
+        {
+            return GetFirstButtonByClass("object-edit");
+        }
+
+        protected IWebElement GetFirstAssociationsButton()
+        {
+            return GetFirstButtonByClass("object-associations");
+        }
+
+        protected IWebElement GetFirstDeleteButton()
+        {
+            return GetFirstButtonByClass("object-delete");
+        }
+
+        protected IWebElement GetFirstAccessGroupButton()
+        {
+            return GetFirstButtonByClass("object-accessgroup");
+        }
+
+        // Last
+
         protected IWebElement GetLastObjectRow()
         {
             return Driver.FindElement(By.XPath("(//tbody[contains(@class, 'object-list')]/tr)[last()]"), 10);
@@ -220,7 +259,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             return GetLastButtonByClass("object-accessgroup");
         }
 
-        public void CreateMetadataSet(string name, string description, FormField[] fields, bool isMultiple=false)
+        public void CreateMetadataSet(string name, string description, FormField[] fields, bool isMultiple = false)
         {
             Driver.Navigate().GoToUrl(ManagerUrl);
             Driver.FindElement(By.LinkText(SettingsLinkText)).Click();
@@ -264,10 +303,10 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                     lastFieldEntry.FindElement(By.ClassName("field-is-required")).Click();
                 }
 
-                if(isMultiple)
+                if (isMultiple)
                 {
                     //only make the first field multiple
-                    if(i==1)
+                    if (i == 1)
                     {
                         lastFieldEntry.FindElement(By.ClassName("field-is-multiple")).Click();
                         i++;
@@ -281,7 +320,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
                     IEnumerable<IWebElement> elements = lastFieldEntry.FindElements(By.CssSelector(".languageInputField > textarea"));
 
-                    for(int f = 0; f < elements.Count(); ++f)
+                    for (int f = 0; f < elements.Count(); ++f)
                     {
                         elements.ElementAt(f).SendKeys(string.Join("\n", options.Select(o => o.Value.Count > f ? o.Value.ElementAt(f).Value : " ")));
                     }
@@ -365,7 +404,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id("chk_Items")).Click();
             Driver.FindElement(By.Id("chk_Files")).Click();
             Driver.FindElement(By.Id("chk_Forms")).Click();
-            
+
             // use first metadataset and fields for name and description
 
             IWebElement metadataSetSelectorElement = Driver.FindElement(By.Id("dd_MetadataSets"));
@@ -419,14 +458,15 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                         formField.FindElement(By.ClassName("ButtonTextFieldAddEntry")).Click();
                         Driver.FindElement(By.Name("MetadataSets[" + i + "].Fields[0].Values[3].Value"), 10).SendKeys(MultipleField);
                     }
-                }else if (typeof(SingleSelectOptionsField).IsAssignableFrom(metadatasetValues[i].GetType()))
+                }
+                else if (typeof(SingleSelectOptionsField).IsAssignableFrom(metadatasetValues[i].GetType()))
                 {
                     SingleSelectOptionsField optionsField = (SingleSelectOptionsField)metadatasetValues[i];
                     Option value = optionsField.Options.Where(o => o.Selected).FirstOrDefault();
-                    
+
                     SelectElement select = new SelectElement(formField.FindElement(By.XPath(".//select")));
-                    
-                    if(value == null)
+
+                    if (value == null)
                     {
                         select.SelectByIndex(0);
                     }
@@ -436,16 +476,18 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                     }
                 }
             }
-            
+
             Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();
         }
 
-        public void CreateItem(string entityTypeName, FormField[] metadatasetValues, bool isMultiple=false) {
+        public void CreateItem(string entityTypeName, FormField[] metadatasetValues, bool isMultiple = false)
+        {
             CreateCFAggregation(ItemsLinkText, entityTypeName, metadatasetValues, isMultiple);
         }
 
-        public void CreateCollection(string entityTypeName, FormField[] metadatasetValues) {
-            CreateCFAggregation(CollectionsLinkText, entityTypeName, metadatasetValues);    
+        public void CreateCollection(string entityTypeName, FormField[] metadatasetValues)
+        {
+            CreateCFAggregation(CollectionsLinkText, entityTypeName, metadatasetValues);
         }
 
         public void CreateForm(int entityTypeId)
@@ -504,7 +546,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         }
 
         //XXX Change to be able to specify entity type and metadata set names
-        protected void CreateBaseEntityType(bool multipleField=false)
+        protected void CreateBaseEntityType(bool multipleField = false)
         {
             // Create metadata set
             // create entity type
@@ -546,7 +588,8 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
             Match urlMatch = urlRegex.Match(url);
 
-            if (urlMatch.Success && urlMatch.Groups.Count == 2) {
+            if (urlMatch.Success && urlMatch.Groups.Count == 2)
+            {
                 Int64 id = Convert.ToInt64(urlMatch.Groups[1].Value);
                 CatfishDbContext db = new CatfishDbContext();
                 CFEntity model = db.Entities.Find(id);
@@ -596,12 +639,13 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
                             if (test.Count > 0 && test[0] != "")
                             {
-                                CollectionAssert.AreEqual(test, 
+                                CollectionAssert.AreEqual(test,
                                     (System.Collections.ArrayList)fromSolr[entry.Key]);
                             }
 
                             //XXX Should it fail if the previous test is not passed?
-                        } else
+                        }
+                        else
                         {
                             // treat as regular values
                             if (!string.IsNullOrEmpty(entry.Value.ToString()))
@@ -614,7 +658,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                     }
                     //return true;
                 }
-                
+
             }
 
             //return false;
@@ -635,13 +679,13 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
         //    Driver.FindElement(By.Id("add-field")).Click();
         //    FilledItemFormFields(name);
-          
+
         //    //attach an image
         //    if (attachment)
         //    {           
         //         string sourceFile = ConfigurationManager.AppSettings["SourceTestFile"];
         //         sourceFile = Path.Combine(sourceFile, "image1.jpg");
-              
+
         //        Driver.FindElement(By.XPath("//input[@type='file']"), 10).SendKeys(sourceFile);
         //    }
 
@@ -717,7 +761,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             return found;
         }
 
-        protected void CreateAndAddAddvancedSearchToMain(bool includeKeywordSearch, IEnumerable<FormField> fields, int regionIndex = 1, bool isDropdown=false)
+        protected void CreateAndAddAddvancedSearchToMain(bool includeKeywordSearch, IEnumerable<FormField> fields, int regionIndex = 1, bool isDropdown = false)
         {
             // Create the advanced search region
             Driver.FindElement(By.LinkText(SettingsLinkText), 10).Click();
@@ -738,7 +782,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.LinkText(ContentLinkText), 10).Click();
             Driver.FindElement(By.LinkText(PagesLinkText), 10).Click();
             Driver.FindElement(By.LinkText(StartLinkText), 10).SendKeys(Keys.Return);
-            
+
             Driver.FindElement(By.XPath($@"//button[contains(.,'{AdvancedSearchRegionName}')]"), 10).Click();
 
             IWebElement region = Driver.FindElement(By.Id(AdvancedSearchRegionName.Replace(" ", "")));
@@ -747,30 +791,30 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             {
                 region.FindElement(By.Id("Regions_" + regionIndex + "__Body_HasGeneralSearch")).Click();
             }
-            
-            if(fields != null)
+
+            if (fields != null)
             {
-              
+
                 foreach (FormField field in fields)
                 {
                     IWebElement fieldSelectorElement = Driver.FindElement(By.Id("Regions_" + regionIndex + "__Body_selectedField"));
                     SelectElement fieldSelector = new SelectElement(fieldSelectorElement);
                     fieldSelector.SelectByText(field.Name + " Mapping");
 
-                        
+
                     region.FindElement(By.XPath(".//span[contains(@class, 'glyphicon glyphicon-plus-sign')][" + regionIndex + "]")).Click();
                     //turn on the auto complete for textField
-                    if(field.GetType().FullName.Equals("Catfish.Core.Models.Forms.TextField"))
+                    if (field.GetType().FullName.Equals("Catfish.Core.Models.Forms.TextField"))
                     {
                         region.FindElement(By.XPath(".//input[contains(@name, '.IsAutoComplete')]")).Click();
                     }
-                    
+
                     //display the year in dropdown
-                    if(field.Name.Equals("Year") && isDropdown)
+                    if (field.Name.Equals("Year") && isDropdown)
                     {
                         SelectElement selectOptions = new SelectElement((region.FindElements(By.XPath(".//select[contains(@name, '.SelectedDisplayOption')]"))[2]));
                         selectOptions.SelectByText("DropDownList");
-                       
+
                     }
                 }
             }
@@ -824,7 +868,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             select = new SelectElement(Driver.FindElement(By.Id(regionBaseName + "SelectedField"), 10));
             select.SelectByText(fieldName);
 
-            if(groupByMetadataSetName != null && groupByFieldName != null)
+            if (groupByMetadataSetName != null && groupByFieldName != null)
             {
                 select = new SelectElement(Driver.FindElement(By.Id(regionBaseName + "SelectedGroupByFieldMetadataSet"), 10));
                 select.SelectByText(groupByMetadataSetName);
@@ -941,6 +985,18 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             region.FindElement(By.Id("Regions_" + regionIndex + "__Body_ItemPerPage")).SendKeys("10");
             region.FindElement(By.XPath(".//span[contains(@class, 'glyphicon glyphicon-plus-sign')]")).Click();
             Driver.FindElement(By.ClassName(UpdateButtonClass), 10).Click();
+        }
+
+        protected void NavigateToCollections()
+        {
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.LinkText(CollectionsLinkText), 10).Click();
+        }
+
+        protected void NavigateToItems()
+        {
+            Driver.Navigate().GoToUrl(ManagerUrl);
+            Driver.FindElement(By.LinkText(ItemsLinkText), 10).Click();
         }
     }
 }
