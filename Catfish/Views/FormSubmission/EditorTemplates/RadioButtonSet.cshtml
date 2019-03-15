@@ -1,6 +1,16 @@
 ﻿@model Catfish.Core.Models.Forms.RadioButtonSet
 @using Catfish.Helpers;
 
+@{
+    IDictionary<string, object> htmlAttributes = new Dictionary<string, object>();
+    htmlAttributes.Add("class", "auto-width");
+
+    if (Model.IsRequired)
+    {
+        htmlAttributes.Add("required", "required");
+    }
+}
+
 @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
 {
     {"class", "model-type"}
@@ -19,6 +29,6 @@
         label = Model.Options[i].Value[0].Value;
     }
 
-    @Html.RadioButton("Value", label, Model.Options[i].Selected, new { @class = "auto-width" })
+    @Html.RadioButton("Value", label, Model.Options[i].Selected, htmlAttributes)
     <span class="option-label">@label</span>
 }
