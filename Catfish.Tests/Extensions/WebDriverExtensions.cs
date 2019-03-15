@@ -17,7 +17,7 @@ namespace Catfish.Tests.Extensions
         {
             if (timeoutInSeconds > 0)
             {
-                Thread.Sleep(300);
+                Thread.Sleep(3000);
                 WebDriverWait wait = new WebDriverWait(driver,
                     TimeSpan.FromSeconds(timeoutInSeconds));
                 wait.IgnoreExceptionTypes(
