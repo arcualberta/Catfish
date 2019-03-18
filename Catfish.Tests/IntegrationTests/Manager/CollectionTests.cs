@@ -138,9 +138,107 @@ namespace Catfish.Tests.IntegrationTests.Manager
         public void CanAssociateRelated()
         {
             SetUpAssociationTest();
-            CreateItems(5);
+            CreateItems(1);
+            CreateCollections(1);
+
+            NavigateToCollections();
+            GetFirstAssociationsButton().Click();
+
+            // first checkbox
+            string allDataTable = "(//div[@id='all-actionable-table']//table)[2]";
+
+            Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[1]"), 10).Click();
+            string aggregationName1 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[1]//td[2]"), 10).Text;
+
+            // first aggregation name
+            Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[2]"), 10).Click();
+            //string aggregationName2 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[2]//td[2]"), 10).Text;
+
+            Driver.FindElement(By.Id("add-related-action"), 10).Click();
+
+            string relatedDataTable = "(//div[@id='related-actionable-table']//table)[2]";
+            string relatedName1 = Driver.FindElement(By.XPath($@"{relatedDataTable}//tbody//tr[1]//td[2]"), 10).Text;
+            string relatedName2 = Driver.FindElement(By.XPath($@"{relatedDataTable}//tbody//tr[2]//td[2]"), 10).Text;
+
+            // there should be only one item related, the second value should be blank
+
+            Assert.AreEqual(aggregationName1, relatedName1);
+            //Assert.AreEqual(aggregationName2, relatedName2);
+            Assert.IsEmpty(relatedName2);
+
         }
 
+        private void TestForRemoval(string testName)
+        {
+            // first checkbox
+            string allDataTable = "(//div[@id='all-actionable-table']//table)[2]";
+
+            string aggregationName = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[1]//td[2]"), 10).Text;
+            Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[1]"), 10).Click();
+            //string aggregationName1 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[1]//td[2]"), 10).Text;
+
+            // first aggregation name
+
+            Driver.FindElement(By.Id("add-"+testName+"-action"), 10).Click();
+
+
+
+            string dataTable = "(//div[@id='"+testName+"-actionable-table']//table)[2]";
+
+            string aggregationNameAdded = Driver.FindElement(By.XPath($@"{dataTable}//tbody//tr[1]//td[2]"), 10).Text;
+            Assert.AreEqual(aggregationName, aggregationNameAdded);
+            // XXX remove action
+
+            Driver.FindElement(By.XPath($@"({dataTable}//input[1])[1]"), 10).Click();
+            Driver.FindElement(By.Id("remove-" + testName + "-action"), 10).Click();
+
+
+            // Make surte it is not empty
+
+            // there should be only one item related, the second value should be blank
+            string aggregationNameRemoved = Driver.FindElement(By.XPath($@"{dataTable}//tbody//tr[1]//td[2]"), 10).Text;
+
+            //Assert.AreEqual(aggregationName2, relatedName2);
+            Assert.IsEmpty(aggregationNameRemoved);
+        }
+
+        [Test]
+        public void CanRemoveParents()
+        {
+            SetUpAssociationTest();
+            CreateCollections(1);
+            NavigateToCollections();
+            GetFirstAssociationsButton().Click();
+            TestForRemoval("parents");
+
+        }
+
+        [Test]
+        public void CanRemoveChild()
+        {
+            SetUpAssociationTest();
+            CreateCollections(1);
+            NavigateToCollections();
+            GetFirstAssociationsButton().Click();
+            TestForRemoval("children");
+        }
+
+        [Test]
+        public void CanRemoveRelated()
+        {
+            SetUpAssociationTest();
+            CreateItems(1);
+            CreateCollections(1);
+            NavigateToCollections();
+            GetFirstAssociationsButton().Click();
+            TestForRemoval("related");
+        }
+
+        [Test]
+        public void CanPaginate()
+        {
+
+        }
 
         private void CreateCollections(int count)
         {
