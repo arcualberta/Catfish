@@ -5,6 +5,7 @@ using Catfish.Tests.IntegrationTests.Helpers;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,8 +94,6 @@ namespace Catfish.Tests.IntegrationTests.Manager
 
             Assert.AreEqual(aggregationName1, parentName1);
             Assert.AreEqual(aggregationName2, parentName2);
-
-            int i = 0;
 
         }
 
@@ -234,10 +233,94 @@ namespace Catfish.Tests.IntegrationTests.Manager
             TestForRemoval("related");
         }
 
+        private void CheckNamesInPage()
+        {
+            string aggregationNamesXpath =
+                "//div[@id='all-actionable-table']//tr[@class='data-row']//td[2]";
+
+            TimeSpan timeout = new System.TimeSpan(500);
+
+            WebDriverWait wait = new WebDriverWait(Driver, timeout);
+                   
+            IList<IWebElement> names = Driver.FindElements(By.XPath(aggregationNamesXpath), 10);
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(names[0]));
+
+
+            foreach (IWebElement element in names)
+            {
+                Assert.IsNotEmpty(element.Text);
+            }
+        }
+
         [Test]
         public void CanPaginate()
         {
+            SetUpAssociationTest();
+            CreateCollections(20);
+            NavigateToCollections();
+            GetFirstAssociationsButton().Click();
 
+            // id all-pagination
+            // check drop down has two values
+
+            //SelectElement paginationSelect = new SelectElement(
+            //    Driver.FindElement(By.Id("all-pagination"), 10)
+            //    );
+
+            SelectElement paginationSelect = new SelectElement(
+                Driver.FindElement(By.XPath("//div[@id='all-pagination']//select"), 10)
+                );
+
+            //"(//div[@id='all-actionable-table']//table)[2]";
+
+            IList<IWebElement> pagesList = paginationSelect.Options;
+            Assert.AreEqual(2, pagesList.Count);
+            
+            string aggregationNamesXpath =
+               "//div[@id='all-actionable-table']//tr[@class='data-row']//td[2]";
+            
+            IList<IWebElement> names = Driver.FindElements(By.XPath(aggregationNamesXpath), 10);
+            
+            foreach (IWebElement element in names)
+            {
+                Assert.IsNotEmpty(element.Text);
+            }
+
+            paginationSelect.SelectByIndex(1);
+            TimeSpan timeout = TimeSpan.FromSeconds(5);
+            WebDriverWait wait = new WebDriverWait(Driver, timeout);
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(names[0]));
+            names = Driver.FindElements(By.XPath(aggregationNamesXpath), 10);
+
+            foreach (IWebElement element in names)
+            {
+                Assert.IsNotEmpty(element.Text);
+            }
+            
+        }
+
+        [Test]
+        public void CanSearch()
+        {
+            SetUpAssociationTest();
+            CreateCollections(2);
+            NavigateToCollections();
+            GetFirstAssociationsButton().Click();
+            TimeSpan timeout = TimeSpan.FromSeconds(5);
+            WebDriverWait wait = new WebDriverWait(Driver, timeout);
+            // CreateCollections would have created 'Collection 0' and 
+            // 'Collection 1', filter out by typing 1
+            string dataXpath = "(//div[@id='all-actionable-table']//table)[2]//tbody//tr//td[2]";
+            By dataBy = By.XPath(dataXpath);
+
+
+            IWebElement allTable = Driver.FindElement(dataBy, 10);
+            Driver.FindElement(By.Id("all-search"), 10).SendKeys("1");            
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(allTable));           
+            IList<IWebElement> data = Driver.FindElements(dataBy, 10);
+            Assert.AreEqual("Collection 1", data[0].Text);
+            Assert.IsEmpty(data[1].Text);
+            
         }
 
         private void CreateCollections(int count)
