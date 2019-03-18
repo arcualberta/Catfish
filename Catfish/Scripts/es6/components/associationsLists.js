@@ -480,6 +480,7 @@ export default class AssociationsLists extends React.Component {
                                     <ActionableInputField
                                         handleChange={this.handleSearchAll}
                                         placeholder="Search"
+                                        id="all-search"
                                     />
                                 </div>
                             </div>
@@ -515,6 +516,7 @@ export default class AssociationsLists extends React.Component {
                                         <ActionableInputField
                                             handleChange={this.handleSearchChildren}
                                             placeholder="Search"
+                                            id="children-search"
                                         />
                                     </div>
                                 </div>
@@ -550,6 +552,7 @@ export default class AssociationsLists extends React.Component {
                                         <ActionableInputField
                                             handleChange={this.handleSearchParents}
                                             placeholder="Search"
+                                            id="parents-search"
                                         />
                                     </div>
                                 </div>
@@ -587,6 +590,7 @@ export default class AssociationsLists extends React.Component {
                                         <ActionableInputField
                                             handleChange={this.handleSearchRelated}
                                             placeholder="Search"
+                                            id="related-search"
                                         />
                                     </div>
                                 </div>
