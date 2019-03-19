@@ -17,7 +17,7 @@ namespace Catfish.Tests.Extensions
         {
             if (timeoutInSeconds > 0)
             {
-                Thread.Sleep(3000);
+                Thread.Sleep(300);
                 WebDriverWait wait = new WebDriverWait(driver,
                     TimeSpan.FromSeconds(timeoutInSeconds));
                 wait.IgnoreExceptionTypes(
@@ -32,6 +32,31 @@ namespace Catfish.Tests.Extensions
                 return element;
             }
             return driver.FindElement(by);
+        }
+
+        // Web driver extensions
+
+        public static IWebElement FindElement(
+            this IWebDriver driver,
+            By by,
+            Action jsTrigger = null,
+            int timeoutInSeconds = 5)
+        {
+            if (jsTrigger == null)
+            {
+                return driver.FindElement(by);
+            }
+            TimeSpan timeout = TimeSpan.FromSeconds(timeoutInSeconds);
+            WebDriverWait wait = new WebDriverWait(driver, timeout);
+
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(by));
+            IWebElement element = driver.FindElement(by);
+            jsTrigger?.Invoke();
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(element));
+            element = driver.FindElement(by);
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+            js.ExecuteScript("arguments[0].scrollIntoView(false);", element);
+            return element;
         }
 
         //public static IWebElement FindElement(this IWebDriver driver, By by, int timeoutInSeconds)
