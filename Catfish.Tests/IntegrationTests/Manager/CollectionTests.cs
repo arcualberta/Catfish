@@ -300,27 +300,30 @@ namespace Catfish.Tests.IntegrationTests.Manager
         }
 
         [Test]
-        public void CanSearch()
+        public void CanSearchInActionableTable()
         {
             SetUpAssociationTest();
             CreateCollections(2);
             NavigateToCollections();
             GetFirstAssociationsButton().Click();
-            TimeSpan timeout = TimeSpan.FromSeconds(5);
-            WebDriverWait wait = new WebDriverWait(Driver, timeout);
+            //TimeSpan timeout = TimeSpan.FromSeconds(5);
+            //WebDriverWait wait = new WebDriverWait(Driver, timeout);
             // CreateCollections would have created 'Collection 0' and 
             // 'Collection 1', filter out by typing 1
             string dataXpath = "(//div[@id='all-actionable-table']//table)[2]//tbody//tr//td[2]";
             By dataBy = By.XPath(dataXpath);
 
 
-            IWebElement allTable = Driver.FindElement(dataBy, 10);
-            Driver.FindElement(By.Id("all-search"), 10).SendKeys("1");            
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(allTable));           
-            IList<IWebElement> data = Driver.FindElements(dataBy, 10);
+            IWebElement allTable = Driver.FindElement(dataBy, () =>
+            {
+                Driver.FindElement(By.Id("all-search")).SendKeys("1");
+            });
+
+            IList<IWebElement> data = Driver.FindElements(dataBy);
+
             Assert.AreEqual("Collection 1", data[0].Text);
             Assert.IsEmpty(data[1].Text);
-            
+
         }
 
         private void CreateCollections(int count)
