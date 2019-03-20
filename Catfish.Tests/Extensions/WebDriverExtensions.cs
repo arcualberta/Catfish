@@ -13,11 +13,15 @@ namespace Catfish.Tests.Extensions
     public static class WebDriverExtensions
     {
 
-        public static IWebElement FindElement(this IWebDriver driver, By by, int timeoutInSeconds)
+        public static IWebElement FindElement(
+            this IWebDriver driver, 
+            By by, 
+            int timeoutInSeconds,
+            int threadSleepMicroSeconds = 300)
         {
             if (timeoutInSeconds > 0)
             {
-                Thread.Sleep(300);
+                Thread.Sleep(threadSleepMicroSeconds);
                 WebDriverWait wait = new WebDriverWait(driver,
                     TimeSpan.FromSeconds(timeoutInSeconds));
                 wait.IgnoreExceptionTypes(
