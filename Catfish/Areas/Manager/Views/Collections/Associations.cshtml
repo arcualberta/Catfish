@@ -22,7 +22,7 @@
 @section Toolbar {
     @Html.Partial("Partial/koEditToolbar", Model,
                 new ViewDataDictionary() { { "reloadAction", "associations" },
-{ "saveButtonFunctionCall", "saveAssociations" } })
+{ "saveButtonFunctionCall", null } })
 }
 
 <div class="grid_12">
@@ -37,36 +37,6 @@
 
 </div>
 
-<script type="text/javascript">
-    function saveAssociations() {
-        var afterComplete = function (errorMessage) {
-            var form = document.createElement("form");
-            form.setAttribute("method", "POST");
-            form.setAttribute("accept", "text/javascript");
-            form.setAttribute("action", "@Url.Action("Associations", "Collections", new { id = Model.Id })");
-
-            var hiddenField = document.createElement("input");
-            hiddenField.setAttribute("name", "errorMessage");
-            hiddenField.setAttribute("value", errorMessage);
-            hiddenField.setAttribute("type", "hidden");
-            form.appendChild(hiddenField);
-
-            document.body.appendChild(form);
-            form.submit();
-        };
-
-        var updateChildrenUrl = '@Url.Action("UpdateChildren", "EntityAssociation")';
-        var updateRelationshipUrl = '@Url.Action("UpdateRelatedItems", "EntityAssociation")';
-
-        executeOnServer(@childrenCollectionsKoContext, updateChildrenUrl, function (result) {
-            executeOnServer(@childrenItemsKoContext, updateChildrenUrl, function (result) {
-                executeOnServer(@relationshipKoContext, updateRelationshipUrl, function (result) {
-                    afterComplete("");
-                });
-            });
-        });
-    }
-</script>
 
 
 <script src="~/Scripts/dist/associationsView.js"></script>
