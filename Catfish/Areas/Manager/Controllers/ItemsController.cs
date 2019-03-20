@@ -160,18 +160,18 @@ namespace Catfish.Areas.Manager.Controllers
             if (model == null)
                 throw new Exception("Item not found");
 
-            EntityContentViewModel childItems = new EntityContentViewModel();
-            childItems.Id = model.Id;
-            childItems.LoadNextChildrenSet(model.ChildItems);
-            childItems.LoadNextMasterSet(ItemService.GetItems());
-            ViewBag.ChildItems = childItems;
+            //EntityContentViewModel childItems = new EntityContentViewModel();
+            //childItems.Id = model.Id;
+            //childItems.LoadNextChildrenSet(model.ChildItems);
+            //childItems.LoadNextMasterSet(ItemService.GetItems());
+            //ViewBag.ChildItems = childItems;
 
 
-            EntityContentViewModel relatedItems = new EntityContentViewModel();
-            relatedItems.Id = model.Id;
-            relatedItems.LoadNextChildrenSet(model.RelatedMembers);
-            relatedItems.LoadNextMasterSet(ItemService.GetItems());
-            ViewBag.RelatedItems = relatedItems;
+            //EntityContentViewModel relatedItems = new EntityContentViewModel();
+            //relatedItems.Id = model.Id;
+            //relatedItems.LoadNextChildrenSet(model.RelatedMembers);
+            //relatedItems.LoadNextMasterSet(ItemService.GetItems());
+            //ViewBag.RelatedItems = relatedItems;
 
             return View(model);
         }
