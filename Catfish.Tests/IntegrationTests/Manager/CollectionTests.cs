@@ -147,7 +147,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
             string allDataTable = "(//div[@id='all-actionable-table']//table)[2]";
 
             Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[1]"), 10).Click();
-            string aggregationName1 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[1]//td[2]"), 10).Text;
+            string aggregationName1 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[1]//td[2]"), 10, 1500).Text;
 
             // first aggregation name
             Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[2]"), 10).Click();
@@ -239,7 +239,6 @@ namespace Catfish.Tests.IntegrationTests.Manager
                 "//div[@id='all-actionable-table']//tr[@class='data-row']//td[2]";
 
             TimeSpan timeout = new System.TimeSpan(500);
-
             WebDriverWait wait = new WebDriverWait(Driver, timeout);
                    
             IList<IWebElement> names = Driver.FindElements(By.XPath(aggregationNamesXpath), 10);
@@ -268,7 +267,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
             //    );
 
             SelectElement paginationSelect = new SelectElement(
-                Driver.FindElement(By.XPath("//div[@id='all-pagination']//select"), 10)
+                Driver.FindElement(By.XPath("//div[@id='all-pagination']//select"), 10, 1500)
                 );
 
             //"(//div[@id='all-actionable-table']//table)[2]";
@@ -306,24 +305,21 @@ namespace Catfish.Tests.IntegrationTests.Manager
             CreateCollections(2);
             NavigateToCollections();
             GetFirstAssociationsButton().Click();
-            //TimeSpan timeout = TimeSpan.FromSeconds(5);
-            //WebDriverWait wait = new WebDriverWait(Driver, timeout);
+            TimeSpan timeout = TimeSpan.FromSeconds(5);
+            WebDriverWait wait = new WebDriverWait(Driver, timeout);
             // CreateCollections would have created 'Collection 0' and 
             // 'Collection 1', filter out by typing 1
             string dataXpath = "(//div[@id='all-actionable-table']//table)[2]//tbody//tr//td[2]";
             By dataBy = By.XPath(dataXpath);
 
 
-            IWebElement allTable = Driver.FindElement(dataBy, () =>
-            {
-                Driver.FindElement(By.Id("all-search")).SendKeys("1");
-            });
-
-            IList<IWebElement> data = Driver.FindElements(dataBy);
-
+            IWebElement allTable = Driver.FindElement(dataBy, 10);
+            Driver.FindElement(By.Id("all-search"), 10).SendKeys("1");            
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.StalenessOf(allTable));           
+            IList<IWebElement> data = Driver.FindElements(dataBy, 10);
             Assert.AreEqual("Collection 1", data[0].Text);
             Assert.IsEmpty(data[1].Text);
-
+            
         }
 
         private void CreateCollections(int count)
