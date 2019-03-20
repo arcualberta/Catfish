@@ -83,7 +83,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         {
             InitializeSolr();
             Driver = new TWebDriver();
-
+            //Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
             FrontEndUrl = ConfigurationManager.AppSettings["ServerUrl"];
             ManagerUrl = FrontEndUrl + "manager";
 
