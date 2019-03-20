@@ -45,23 +45,23 @@ namespace Catfish.Areas.Manager.Controllers
             if (model == null)
                 return HttpNotFound("Collection was not found");
             
-            EntityContentViewModel childCollections = new EntityContentViewModel();
-            childCollections.Id = model.Id;
-            childCollections.LoadNextChildrenSet(model.ChildCollections);
-            childCollections.LoadNextMasterSet(CollectionService.GetCollections());
-            ViewBag.ChildCollections = childCollections;
+            //EntityContentViewModel childCollections = new EntityContentViewModel();
+            //childCollections.Id = model.Id;
+            //childCollections.LoadNextChildrenSet(model.ChildCollections);
+            //childCollections.LoadNextMasterSet(CollectionService.GetCollections());
+            //ViewBag.ChildCollections = childCollections;
 
-            EntityContentViewModel childItems = new EntityContentViewModel();
-            childItems.Id = model.Id;
-            childItems.LoadNextChildrenSet(model.ChildItems);
-            childItems.LoadNextMasterSet(ItemService.GetItems());
-            ViewBag.ChildItems = childItems;
+            //EntityContentViewModel childItems = new EntityContentViewModel();
+            //childItems.Id = model.Id;
+            //childItems.LoadNextChildrenSet(model.ChildItems);
+            //childItems.LoadNextMasterSet(ItemService.GetItems());
+            //ViewBag.ChildItems = childItems;
 
-            EntityContentViewModel relatedItems = new EntityContentViewModel();
-            relatedItems.Id = model.Id;
-            relatedItems.LoadNextChildrenSet(model.RelatedMembers);
-            relatedItems.LoadNextMasterSet(ItemService.GetItems());
-            ViewBag.RelatedItems = relatedItems;
+            //EntityContentViewModel relatedItems = new EntityContentViewModel();
+            //relatedItems.Id = model.Id;
+            //relatedItems.LoadNextChildrenSet(model.RelatedMembers);
+            //relatedItems.LoadNextMasterSet(ItemService.GetItems());
+            //ViewBag.RelatedItems = relatedItems;
 
             return View(model);
         }
