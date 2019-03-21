@@ -50,7 +50,7 @@ namespace Catfish.Core.Services
         /// </summary>
         /// <typeparam name="T">The type of AbstractForm to obtain.</typeparam>
         /// <param name="form">The form to be saved</param>
-        public void SaveForm<T>(T form) where T : AbstractForm
+        public int SaveForm<T>(T form) where T : AbstractForm
         {
             form.Serialize();
             if(form.Id > 0)
@@ -59,8 +59,10 @@ namespace Catfish.Core.Services
             }
             else
             {
-                Db.XmlModels.Add(form);
+                form = (T)Db.XmlModels.Add(form);
             }
+
+            return form.Id;
         }
 
         ////private void EvaluateCompositeField(IEnumerable<FormField> fields)

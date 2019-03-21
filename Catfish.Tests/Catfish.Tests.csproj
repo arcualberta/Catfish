@@ -178,6 +178,7 @@
     <Compile Include="IntegrationTests\Manager\ItemTests.cs" />
     <Compile Include="IntegrationTests\Manager\MetadatasetTests.cs" />
     <Compile Include="IntegrationTests\Regions\AdvancedSearchPanelTest.cs" />
+    <Compile Include="IntegrationTests\Regions\FormContainerTest.cs" />
     <Compile Include="UnitTests\Mocks\MockCFXmlModel.cs" />
     <Compile Include="UnitTests\Models\CFXmlModelTests.cs" />
     <Compile Include="Helpers\BaseUnitTest.cs" />
