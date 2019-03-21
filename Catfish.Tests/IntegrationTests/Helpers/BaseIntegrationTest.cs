@@ -53,6 +53,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         protected const string ItemValue = "Item value";
         protected const string RegionName = "Region Name";
         protected const string AdvancedSearchRegionName = "Advances Search Region Name";
+        protected const string FormContainerRegionName = "Form Container Region Name";
         protected const string EntityListRegionName = "Entity List Region Name";
         protected const string GraphPanelName = "Graph Panel Region Name";
         protected const string AccessDefinitionName = "Access definition";
