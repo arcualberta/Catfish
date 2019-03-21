@@ -242,7 +242,11 @@ namespace Catfish.Core.Services
                             opt.Value = new List<TextValue>() { new TextValue() { Value = optVal, LanguageCode = "en" } };
                             options.Add(opt);
                         }
-                        question = new RadioButtonSet() { Options = options };
+
+                        if(answerType == "RadioButtonSet")
+                            question = new RadioButtonSet() { Options = options };
+                        else
+                            question = new DropDownMenu() { Options = options };
                     }
                     ////else if(answerType == "DropDown")
                     ////{
