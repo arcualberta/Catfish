@@ -1,5 +1,13 @@
-﻿
-@model Catfish.Core.Models.Forms.TextArea
+﻿@model Catfish.Core.Models.Forms.TextArea
+
+@{
+    IDictionary<string, object> htmlAttributes = new Dictionary<string, object>();
+
+    if (Model.IsRequired)
+    {
+        htmlAttributes.Add("required", "required");
+    }
+}
 
 @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
 {
@@ -17,7 +25,8 @@
     if (Model.Values[i].LanguageCode == lang)
     {
         @Html.HiddenFor(m => m.Values[i].LanguageCode)
-        @Html.TextAreaFor(m => m.Values[i].Value)
+        @Html.TextAreaFor(m => m.Values[i].Value, htmlAttributes)
+        @Html.ValidationMessageFor(m => m.Values[i].Value)
     }
 }
 
