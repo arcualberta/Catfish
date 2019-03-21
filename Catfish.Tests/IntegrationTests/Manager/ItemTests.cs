@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace Catfish.Tests.IntegrationTests.Manager
 {
     [TestFixture(typeof(ChromeDriver))]
-    class ItemTests<TWebDriver> : BaseIntegrationTest<TWebDriver> where TWebDriver : IWebDriver, new()
+    class ItemTests<TWebDriver> : AggregationTests<TWebDriver> where TWebDriver : IWebDriver, new()
     {
         [Test]
         public void CanCreateItem()
@@ -130,41 +130,101 @@ namespace Catfish.Tests.IntegrationTests.Manager
             Driver.FindElement(By.ClassName(UpdateButtonClass), 10).Click();
         }
 
-        //[Test]
-        //public void CanCreateItemWithAttachment()
-        //{
-        //    Driver.Manage().Window.Maximize();
-        //    string EntityTypeName = "Entity type name";
-        //    string EntityTypeDescription = "Entity type description";
-        //    string MetadataSetName = "Metadata set name";
-        //    string MetadataSetDescription = "Metadata set description";
-        //    string ItemName = "Item name";
-        //    bool withAttachment = true;
-        //    TextField fieldName = new TextField();
-        //    fieldName.Name = "Name";
-        //    CFEntityType.eTarget[] eTarget = new CFEntityType.eTarget[] { CFEntityType.eTarget.Items };
+        [Test]
+        public void CanAssociateItemParents()
+        {
 
+            SetUpAssociationTest();
+            CreateCollections(2);
+            CreateItems(1);
+            // Create simple entity type
+            NavigateToItems();
+            GetFirstAssociationsButton().Click();
+            AssertAssociateParents();
 
+        }
 
-        //    TextArea fieldDescription = new TextArea();
-        //    fieldDescription.Name = "Description";
-        //    List<FormField> formFields = new List<FormField>();
-        //    formFields.Add(fieldName);
-        //    formFields.Add(fieldDescription);
+        [Test]
+        public void CanAssociateItemChildren()
+        {
 
-        //    CreateMetadataSet(MetadataSetName, MetadataSetDescription, formFields.ToArray());
+            SetUpAssociationTest();
+            CreateCollections(1);
+            CreateItems(1);
+            // Create simple entity type
+            NavigateToItems();
+            GetFirstAssociationsButton().Click();
+            AssertAssociateChildren();
 
+        }
 
+        [Test]
+        public void CanAssociateItemRelated()
+        {
+            SetUpAssociationTest();
+            CreateItems(1);
+            CreateCollections(1);
+            NavigateToItems();
+            GetFirstAssociationsButton().Click();
+            AssertAssociateRelated();
 
-        //    CreateEntityType(EntityTypeName, EntityTypeDescription, new[] {
-        //        MetadataSetName
-        //        }, eTarget);
+        }
 
-        //    CreateItem(EntityTypeName, ItemName, withAttachment);
+        [Test]
+        public void CanRemoveItemParents()
+        {
+            SetUpAssociationTest();
+            CreateItems(1);
+            CreateCollections(1);
+            NavigateToItems();
+            GetFirstAssociationsButton().Click();
+            TestForRemoval("parents");
 
-        //    Assert.IsTrue(Driver.FindElement(By.XPath("//div[@class='img']"), 10).Displayed);
+        }
 
-        //}
+        [Test]
+        public void CanRemoveItemChildren()
+        {
+            SetUpAssociationTest();
+            CreateCollections(1);
+            CreateItems(1);
+            NavigateToItems();
+            GetFirstAssociationsButton().Click();
+            TestForRemoval("children");
+        }
+
+        [Test]
+        public void CanRemoveItemRelated()
+        {
+            SetUpAssociationTest();
+            CreateItems(1);
+            CreateCollections(1);                        
+            NavigateToItems();
+            GetFirstAssociationsButton().Click();
+            TestForRemoval("related");
+        }
+
+       
+        [Test]
+        public void CanPaginateItem()
+        {
+            SetUpAssociationTest();
+            CreateItems(20);
+            NavigateToItems();
+            GetFirstAssociationsButton().Click();
+            AssertPagination();
+
+        }
+
+        [Test]
+        public void CanSearchInItemActionableTable()
+        {
+            SetUpAssociationTest();
+            CreateItems(2);
+            NavigateToItems();
+            GetFirstAssociationsButton().Click();
+            AssertSearchInActionableTable("1", "Item 1");
+        }
 
     }
 }
