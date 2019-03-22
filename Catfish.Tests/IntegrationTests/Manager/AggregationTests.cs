@@ -100,8 +100,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
             // first checkbox
             string allDataTable = "(//div[@id='all-actionable-table']//table)[2]";
 
-            Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[1]"), 10, 1500).Click();
-            string aggregationName1 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[1]//td[2]"), 10, 1500).Text;
+            Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[1]"), 10, 3000).Click();
+            string aggregationName1 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[1]//td[2]"), 10, 3000).Text;
 
             // first aggregation name
             Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[2]"), 10).Click();
@@ -110,8 +110,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
             Driver.FindElement(By.Id("add-related-action"), 10).Click();
 
             string relatedDataTable = "(//div[@id='related-actionable-table']//table)[2]";
-            string relatedName1 = Driver.FindElement(By.XPath($@"{relatedDataTable}//tbody//tr[1]//td[2]"), 10).Text;
-            string relatedName2 = Driver.FindElement(By.XPath($@"{relatedDataTable}//tbody//tr[2]//td[2]"), 10).Text;
+            string relatedName1 = Driver.FindElement(By.XPath($@"{relatedDataTable}//tbody//tr[1]//td[2]"), 10, 3000).Text;
+            string relatedName2 = Driver.FindElement(By.XPath($@"{relatedDataTable}//tbody//tr[2]//td[2]"), 10, 3000).Text;
 
             // there should be only one item related, the second value should be blank
 
