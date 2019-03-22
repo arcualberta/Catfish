@@ -81,10 +81,15 @@ namespace Catfish.Tests.Extensions
         //    return driver.FindElement(by);
         //}
 
-        public static ReadOnlyCollection<IWebElement> FindElements(this IWebDriver driver, By by, int timeoutInSeconds)
+        public static ReadOnlyCollection<IWebElement> FindElements(
+            this IWebDriver driver, 
+            By by, 
+            int timeoutInSeconds, 
+            int threadSleepMicroSeconds = 300)
         {
             if (timeoutInSeconds > 0)
             {
+                Thread.Sleep(threadSleepMicroSeconds);
                 WebDriverWait wait = new WebDriverWait(driver,
                     TimeSpan.FromSeconds(timeoutInSeconds));
                 wait.IgnoreExceptionTypes(
