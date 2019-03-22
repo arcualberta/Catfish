@@ -224,18 +224,21 @@ export default class AssociationsLists extends React.Component {
 
                 // this should be replaced with the incoming data from api call
                 const data = response.data
-                const resp = {
-                    all: {
-                        title: "All",
-                        selected: [],
-                        page: data.page,
-                        itemsPerPage: data.itemsPerPage,
-                        totalPages: data.totalPages,
-                        headers: this.basicHeaders,
-                        data: data.data
-                    }
-                }
-                this.setState(resp)
+                const newState = update(this.state,
+                    {
+                        all: {                            
+                            title: { $set: "All" },
+                            selected: { $set: [] },
+                            page: { $set: data.page },
+                            itemsPerPage: { $set: data.itemsPerPage },
+                            totalPages: { $set: data.totalPages },
+                            headers: { $set: this.basicHeaders },
+                            data: { $set: data.data }
+                        }
+                    });
+                this.setState(newState)
+
+                //this.setState(resp)
             })
         axios.get('/apix/Aggregations/getChildren', {
             params: {
@@ -245,18 +248,19 @@ export default class AssociationsLists extends React.Component {
         })
             .then(response => {
                 const data = response.data
-                const resp = {
-                    children: {
-                        title: "Children",
-                        selected: [],
-                        page: data.page,
-                        itemsPerPage: data.itemsPerPage,
-                        totalPages: data.totalPages,
-                        headers: this.basicHeaders,
-                        data: data.data
-                    }
-                }
-                this.setState(resp)
+                const newState = update(this.state,
+                    {
+                        children: {
+                            title: { $set: "Children" },
+                            selected: { $set: [] },
+                            page: { $set: data.page },
+                            itemsPerPage: { $set: data.itemsPerPage },
+                            totalPages: { $set: data.totalPages },
+                            headers: { $set: this.basicHeaders },
+                            data: { $set: data.data }
+                        }
+                    });
+                this.setState(newState)
             })
         axios.get('/apix/Aggregations/getParents', {
             params: {
@@ -266,18 +270,19 @@ export default class AssociationsLists extends React.Component {
         })
             .then(response => {
                 const data = response.data
-                const resp = {
-                    parents: {
-                        title: "Parents",
-                        selected: [],
-                        page: data.page,
-                        itemsPerPage: data.itemsPerPage,
-                        totalPages: data.totalPages,
-                        headers: this.basicHeaders,
-                        data: data.data
-                    }
-                }
-                this.setState(resp)
+                const newState = update(this.state,
+                    {
+                        parents: {
+                            title: { $set: "Parents" },
+                            selected: { $set: [] },
+                            page: { $set: data.page },
+                            itemsPerPage: { $set: data.itemsPerPage },
+                            totalPages: { $set: data.totalPages },
+                            headers: { $set: this.basicHeaders },
+                            data: { $set: data.data }
+                        }
+                    });
+                this.setState(newState)
 
             })
             .catch(error => console.log(error))
@@ -290,18 +295,19 @@ export default class AssociationsLists extends React.Component {
         })
             .then(response => {
                 const data = response.data
-                const resp = {
-                    related: {
-                        title: "Related",
-                        selected: [],
-                        page: data.page,
-                        itemsPerPage: data.itemsPerPage,
-                        totalPages: data.totalPages,
-                        headers: this.basicHeaders,
-                        data: data.data
-                    }
-                }
-                this.setState(resp)
+                const newState = update(this.state,
+                    {
+                        related: {
+                            title: { $set: "Related" },
+                            selected: { $set: [] },
+                            page: { $set: data.page },
+                            itemsPerPage: { $set: data.itemsPerPage },
+                            totalPages: { $set: data.totalPages },
+                            headers: { $set: this.basicHeaders },
+                            data: { $set: data.data }
+                        }
+                    });
+                this.setState(newState)
 
             })
             .catch(error => console.log(error))
