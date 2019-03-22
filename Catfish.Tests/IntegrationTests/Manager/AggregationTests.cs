@@ -187,7 +187,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
         protected void AssertPagination()
         {
             SelectElement paginationSelect = new SelectElement(
-                Driver.FindElement(By.XPath("//div[@id='all-pagination']//select"), 10, 1500)
+                Driver.FindElement(By.XPath("//div[@id='all-pagination']//select"), 10, 2500)
                 );
 
             //"(//div[@id='all-actionable-table']//table)[2]";
