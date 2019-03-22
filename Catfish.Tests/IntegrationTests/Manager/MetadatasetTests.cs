@@ -27,8 +27,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
             bool isMultiple = true;
             CreateMetadataSet(MetadataSetName, MetadataSetDescription, formFields.ToArray(), isMultiple);
 
-            Driver.FindElement(By.LinkText(SettingsLinkText), 10).Click();
-            Driver.FindElement(By.LinkText(MetadataSetsLinkText), 10).Click();
+            Driver.FindElement(By.LinkText(SettingsLinkText), 10, 1000).Click();
+            Driver.FindElement(By.LinkText(MetadataSetsLinkText), 10, 1000).Click();
             
             // Last edit button belongs to our newly created metadata set
             IWebElement lastEditButton = GetLastEditButton();
@@ -41,7 +41,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
 
             // XXX Check metadataset field valiues
 
-            List<IWebElement> fieldEntries = Driver.FindElements(By.ClassName("field-entry"), 10).ToList();
+            List<IWebElement> fieldEntries = Driver.FindElements(By.ClassName("field-entry"), 10, 1000).ToList();
             Assert.AreEqual(formFields.Count(), fieldEntries.Count(), "formFields and IWebelements count dont match");
             
             for(int i=0; i < formFields.Count; ++i)
