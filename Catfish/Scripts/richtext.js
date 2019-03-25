@@ -4,12 +4,13 @@
         selector: selector,
         convert_urls: false,
         plugins: [
-            "autoresize autolink code hr paste piranhaimage link"
+            "autoresize autolink anchor code hr paste piranhaimage link wordcount lists searchreplace textcolor visualblocks"
         ],
         width: width,
         height: height,
         autoresize_min_height: autoresizeMinHeight,
-        toolbar: "bold italic underline | bullist numlist hr | formatselect removeformat | cut copy paste | link piranhaimage | code",
+        autoresize_max_height: height,
+        toolbar: "bold italic underline | bullist numlist hr | formatselect removeformat | cut copy paste | link piranhaimage | superscript subscript | code",
     };
 
     if (editorCss && editorCss != null) {
