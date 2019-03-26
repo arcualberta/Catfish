@@ -41,7 +41,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
 
             // XXX Check metadataset field valiues
 
-            List<IWebElement> fieldEntries = Driver.FindElements(By.ClassName("field-entry"), 10, 1000).ToList();
+            List<IWebElement> fieldEntries = Driver.FindElements(By.ClassName("field-entry"), 10).ToList();
             Assert.AreEqual(formFields.Count(), fieldEntries.Count(), "formFields and IWebelements count dont match");
             
             for(int i=0; i < formFields.Count; ++i)
