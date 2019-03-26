@@ -17,7 +17,7 @@ namespace Catfish.Tests.Extensions
             this IWebDriver driver, 
             By by, 
             int timeoutInSeconds,
-            int threadSleepMicroSeconds = 300)
+            int threadSleepMicroSeconds = 1500)
         {
             if (timeoutInSeconds > 0)
             {
