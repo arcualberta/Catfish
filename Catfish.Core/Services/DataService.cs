@@ -131,10 +131,16 @@ namespace Catfish.Core.Services
         }
 
 
-        private Image ResizeImage(BitmapData img, int width, int height)
+        private Image ResizeImage(BitmapData img, ColorPalette palette, int width, int height)
         {
             Bitmap result = new Bitmap(width, height);
+
             Bitmap original = new Bitmap(img.Width, img.Height, img.Stride, img.PixelFormat, img.Scan0);
+
+            if (palette != null && palette.Entries.Length > 0)
+            {
+                original.Palette = palette;
+            }
 
             using(var graphic = Graphics.FromImage(result))
             {
@@ -186,7 +192,7 @@ namespace Catfish.Core.Services
 
                 ImageFormat format = GetImageFormat(file.Extension);
 
-                Action<string, BitmapData, int> saveImage = (path, image, sizeVal) =>
+                Action<string, BitmapData, ColorPalette, int> saveImage = (path, image, palette, sizeVal) =>
                 {
                     int width = image.Width;
                     int height = image.Height;
@@ -195,7 +201,7 @@ namespace Catfish.Core.Services
                         ? new Size() { Height = sizeVal, Width = (width * sizeVal) / height }
                         : new Size() { Width = sizeVal, Height = (height * sizeVal) / width };
 
-                    Image img = ResizeImage(image, imgSize.Width, imgSize.Height);
+                    Image img = ResizeImage(image, palette, imgSize.Width, imgSize.Height);
 
                     img.Save(path, format);
                     img.Dispose();
@@ -205,12 +211,13 @@ namespace Catfish.Core.Services
                 using (Bitmap image = new Bitmap(file.AbsoluteFilePathName))
                 {
                     var data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, image.PixelFormat);
+                    ColorPalette palette = image.Palette;
 
                     Parallel.Invoke(
-                        () => saveImage(Path.Combine(file.Path, file.Thumbnail), data, (int)ConfigHelper.eImageSize.Thumbnail),
-                        () => saveImage(Path.Combine(file.Path, file.Small), data, (int)ConfigHelper.eImageSize.Small),
-                        () => saveImage(Path.Combine(file.Path, file.Medium), data, (int)ConfigHelper.eImageSize.Medium),
-                        () => saveImage(Path.Combine(file.Path, file.Large), data, (int)ConfigHelper.eImageSize.Large)
+                        () => saveImage(Path.Combine(file.Path, file.Thumbnail), data, palette, (int)ConfigHelper.eImageSize.Thumbnail),
+                        () => saveImage(Path.Combine(file.Path, file.Small), data, palette, (int)ConfigHelper.eImageSize.Small),
+                        () => saveImage(Path.Combine(file.Path, file.Medium), data, palette, (int)ConfigHelper.eImageSize.Medium),
+                        () => saveImage(Path.Combine(file.Path, file.Large), data, palette, (int)ConfigHelper.eImageSize.Large)
                     );
                 }
             }
