@@ -78,10 +78,10 @@ namespace Catfish.Core.Models
             ManagedChildMembers.Add(child);
             child.ManagedParentMembers.Add(this);
 
-            this.AccessGroups.ForEach(x => child.SetAccess(x.AccessGuid, 
+            AccessGroups.ForEach(x => child.SetAccess(x.AccessGuid, 
                 x.AccessDefinition.AccessModes, 
                 true));
-
+            int i = 0;
         }
 
        
@@ -89,8 +89,10 @@ namespace Catfish.Core.Models
         {
             ManagedChildMembers.Remove(child);
             child.ManagedParentMembers.Remove(this);
-            child.AccessGroups.RemoveAll(x => x.IsInherited == true);
-            
+            List<CFAccessGroup> accessGroups = child.AccessGroups;
+            accessGroups.RemoveAll(x => x.IsInherited == true);
+            child.AccessGroups = accessGroups;
+
             foreach (CFAggregation parent in child.ManagedParentMembers)
             {
                 parent.AccessGroups.ForEach(x => child.SetAccess(
@@ -155,26 +157,62 @@ namespace Catfish.Core.Models
             if (accessGroup == null)
             {
                 base.SetAccess(guid, accessMode, isInherited);
-                return;
-            } else if (accessGroup.IsInherited == false && isInherited == true)
-            {
-                return;
             }
-
-            AccessGroups.Remove(accessGroup);
-            CFAccessGroup newAccessGroup = new CFAccessGroup();
-            newAccessGroup.IsInherited = isInherited;
-            newAccessGroup.Guid = guid.ToString();
-            newAccessGroup.AccessDefinition.AccessModes = accessMode;
-            
-            if (accessGroup.IsInherited == true && isInherited == true)
+            else
             {
-                AccessMode inheritedAccessMode = RecalculateInheritedPermissions(guid);
-                newAccessGroup.AccessDefinition.AccessModes |= inheritedAccessMode;
-            }
+                if (accessGroup.IsInherited == false && isInherited == true)
+                {
+                    return;
+                }
 
-            AccessGroups.Add(newAccessGroup);
+                List<CFAccessGroup> accessGroups = AccessGroups;
+                accessGroups.Remove(accessGroup);
+                CFAccessGroup newAccessGroup = new CFAccessGroup();
+                newAccessGroup.IsInherited = isInherited;
+                newAccessGroup.Guid = guid.ToString();
+                newAccessGroup.AccessDefinition.AccessModes = accessMode;
+
+                if (accessGroup.IsInherited == true && isInherited == true)
+                {
+                    AccessMode inheritedAccessMode = RecalculateInheritedPermissions(guid);
+                    newAccessGroup.AccessDefinition.AccessModes |= inheritedAccessMode;
+                }
+
+                accessGroups.Add(newAccessGroup);
+                AccessGroups = accessGroups;
+            } 
             
+            
+            
+
+
+
+            //if (accessGroup == null)
+            //{
+            //    base.SetAccess(guid, accessMode, isInherited);                
+            //} else if (accessGroup.IsInherited == false && isInherited == true)
+            //{
+            //    return;
+            //} else
+            //{
+            //    List<CFAccessGroup> accessGroups = AccessGroups;
+            //    accessGroups.Remove(accessGroup);
+            //    CFAccessGroup newAccessGroup = new CFAccessGroup();
+            //    newAccessGroup.IsInherited = isInherited;
+            //    newAccessGroup.Guid = guid.ToString();
+            //    newAccessGroup.AccessDefinition.AccessModes = accessMode;
+
+            //    if (accessGroup.IsInherited == true && isInherited == true)
+            //    {
+            //        AccessMode inheritedAccessMode = RecalculateInheritedPermissions(guid);
+            //        newAccessGroup.AccessDefinition.AccessModes |= inheritedAccessMode;
+            //    }
+
+            //    accessGroups.Add(newAccessGroup);
+            //    AccessGroups = accessGroups;
+
+            //}
+
             foreach (CFAggregation child in ChildMembers)
             {
                 child.SetAccess(guid, accessMode, true);
