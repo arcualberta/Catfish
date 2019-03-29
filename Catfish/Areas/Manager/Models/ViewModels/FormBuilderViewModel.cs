@@ -23,10 +23,12 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
         public bool ShowFieldDescriptions { get; set; }
 
+        
         public FormBuilderViewModel()
         {
             Fields = new List<FormFieldViewModel>();
             SelectedFieldTypes = new List<FormFieldType>();
+           
         }
 
         public FormBuilderViewModel(AbstractForm src)
@@ -41,7 +43,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
             Fields = new List<FormFieldViewModel>();
             foreach (var field in src.Fields)
-                Fields.Add(new FormFieldViewModel(field, src.Id));
+            {  
+                  Fields.Add(new FormFieldViewModel(field, src.Id));
+            }
 
             Fields = Fields.OrderBy(f => f.Rank).ToList();
         }
@@ -122,5 +126,5 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         }
     }
 
-
+   
 }
