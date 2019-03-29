@@ -9,6 +9,10 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Script.Serialization;
+using static Catfish.Core.Models.Forms.CompositeFormField;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Web.Mvc;
 
 namespace Catfish.Areas.Manager.Models.ViewModels
 {
@@ -56,7 +60,12 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public string Source { get; set; }
         public string MimeType { get; set; }
         public List<KeyValuePair<string, ViewModelTuple<IEnumerable<string>, bool>>> MediaProperties{ get; set; }
-        public FormFieldViewModel() { }
+        public FormFieldViewModel() {
+            IsCompositeFormField = typeof(CompositeFormField).IsAssignableFrom(new FormFieldType().GetType());//March 27 2019
+            Headers = new List<FormFieldViewModel>();
+            HeaderSelectedFieldTypes = new List<FormFieldType>();
+            
+        }
         // Attachment creates multiple recursions on view leaving the page unresponsive
         //[ScriptIgnore]
         //public Attachment Attachment { get; set; }
@@ -66,6 +75,67 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public int Rank { get; set; }
         public int Page { get; set; }
         public bool IsPageBreak { get; set; }
+
+        //adding extra field for CompositeFormField -- March 27 2019
+        public bool IsCompositeFormField { get; set; }
+        public List<FormFieldViewModel> Headers { get; set; }
+        //public CompositeFormField CompositeFormField { get; set; }
+        public bool Shuffle { get; set; }
+        public eStepState StepState { get; set; }
+        [NotMapped]
+        public IEnumerable<SelectListItem> SelectedStepState { get; set; }
+        [NotMapped]
+        public List<FormFieldType> HeaderSelectedFieldTypes { get; set; }
+        [NotMapped]
+        public  List<SelectListItem> StepSatesList
+        {
+            get
+            {
+                return Enum.GetNames(typeof(eStepState)).Select(e => new SelectListItem { Text = e, Value = ((int)Enum.Parse(typeof(eStepState), e)).ToString() }).ToList();  
+            }
+        }
+
+
+        [NotMapped]
+        public List<FormFieldType> FieldTypes
+        {
+            get
+            {
+                List<FormFieldType> mFieldTypes = new List<FormFieldType>();
+                mFieldTypes.Add(new FormFieldType());
+
+                var fieldTypes = typeof(FormField).Assembly.GetTypes()
+                    .Where(t => t.IsSubclassOf(typeof(FormField))
+                        && !t.CustomAttributes.Where(a => a.AttributeType.IsAssignableFrom(typeof(CFIgnoreAttribute))).Any())
+                    .ToList();
+
+                foreach (var t in fieldTypes)
+                {
+                    CFTypeLabelAttribute att = Attribute.GetCustomAttribute(t, typeof(CFTypeLabelAttribute)) as CFTypeLabelAttribute;
+
+                    //We expect Metadata Fields that are usable by the interface
+                    //to have a TypeLabel attribute to be defined (and labeled)
+                    if (att != null)
+                    {
+                        mFieldTypes.Add(new FormFieldType()
+                        {
+                            FieldType = t.AssemblyQualifiedName,
+                            Label = att.Name
+                        });
+                    }
+                }
+                return mFieldTypes;
+            }
+        }
+        private void SetAttribute(string v, int value)
+        {
+            throw new NotImplementedException();
+        }
+
+        private eStepState GetAttribute(string v1, int v2)
+        {
+            throw new NotImplementedException();
+        }
 
         private CatfishDbContext Db = new CatfishDbContext();
 
@@ -80,6 +150,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             Page = formField.Page;
             IsPageBreak = formField.IsPageBreak();
             Files = formField.Files.Select( m => new FileViewModel(m, abstractFormId)).ToList();
+            
             //FieldFileGuids = src.FieldFileGuidsArray;
             //Files = src.Files;
 
@@ -149,6 +220,15 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             IsTextField = typeof(TextField).IsAssignableFrom(formField.GetType());
             if (IsTextField)
                 IsMultiple = ((TextField)formField).IsMultiple; //Nov 19 2016
+
+            IsCompositeFormField = typeof(CompositeFormField).IsAssignableFrom(formField.GetType());//March 27 2019
+
+            if (SelectedStepState != null && SelectedStepState.Count() > 0)
+            {
+                StepState = (eStepState) Enum.Parse(typeof(eStepState), SelectedStepState.ElementAt(0).Text.ToString());
+                
+            }
+           
         }
 
         public FormField InstantiateDataModel()
@@ -231,6 +311,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             {
                 ((TextField)field).IsMultiple = IsMultiple;
             }
+
+            IsCompositeFormField = typeof(CompositeFormField).IsAssignableFrom(field.GetType());//March 27 2019
+
             return field;
         }
 
@@ -246,7 +329,9 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         ////    return optList;
         ////}
 
-        public override void UpdateDataModel(object dataModel, CatfishDbContext db) { }
+        public override void UpdateDataModel(object dataModel, CatfishDbContext db) {
+
+        }
 
         private void UpdateFileList(FormField field)
         {

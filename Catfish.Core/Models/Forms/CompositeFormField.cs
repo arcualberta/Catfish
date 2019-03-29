@@ -112,6 +112,8 @@ namespace Catfish.Core.Models.Forms
             Data.Add(new XElement("fields"));
             Data.Add(new XElement("header"));
             Data.Add(new XElement("footer"));
+           // SelectedFormFieldHeader = new List<FormFieldType>();
+           // SelectedFormFieldTypeList = new List<string>();
         }
 
         public override void UpdateValues(CFXmlModel src)
@@ -144,5 +146,62 @@ namespace Catfish.Core.Models.Forms
                     field.UpdateValues(src_field);
             }
         }
+
+        [NotMapped]
+        [IgnoreDataMember]
+        public List<FormFieldType> FormFields
+        {
+            get
+            {
+                //List<FormField> formFieldList = new List<FormField>();
+                List<FormFieldType> mFieldTypes = new List<FormFieldType>();
+                var fieldTypes = typeof(FormField).Assembly.GetTypes()
+                    .Where(t => t.IsSubclassOf(typeof(FormField))
+                        && !t.CustomAttributes.Where(a => a.AttributeType.IsAssignableFrom(typeof(CFIgnoreAttribute))).Any())
+                    .ToList();
+
+                foreach (var t in fieldTypes)
+                {
+                    CFTypeLabelAttribute att = Attribute.GetCustomAttribute(t, typeof(CFTypeLabelAttribute)) as CFTypeLabelAttribute;
+
+                    //We expect Metadata Fields that are usable by the interface
+                    //to have a TypeLabel attribute to be defined (and labeled)
+                    if (att != null)
+                    {
+                        mFieldTypes.Add(new FormFieldType()
+                        {
+                            FieldType = t.AssemblyQualifiedName,
+                            Label = att.Name
+                        });
+                    }
+                }
+
+                return mFieldTypes;
+            }
+
+        }
+
+
+        //[NotMapped]
+        //public List<FormFieldType> SelectedFormFieldHeader { get; set; }
+        //[NotMapped]
+        //public List<string> SelectedFormFieldTypeList { get; set; }
+        [NotMapped]
+        public string SelectedFormFieldType { get; set; }
+
+        public class FormFieldType
+        {
+            public string FieldType { get; set; }
+            public string Label { get; set; }
+            public FormFieldType()
+            {
+                Label = "";
+                FieldType = "";
+            }
+        }
+        //[NotMapped]
+        //public FieldTypeViewModel fieldTypeViewModel { get; set; }
+
+
     }
 }
