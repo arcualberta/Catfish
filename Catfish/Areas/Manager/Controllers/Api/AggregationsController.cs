@@ -312,5 +312,13 @@ namespace Catfish.Controllers.Api
             Db.SaveChanges(User.Identity);
             return Json("");
         }
+
+        [HttpPost]
+        public JsonResult ReIndex()
+        {
+            int result = AggregationService.ReIndex();
+
+            return Json(result);
+        }
     }
 }
