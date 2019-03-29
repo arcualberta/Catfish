@@ -47,6 +47,22 @@ namespace Catfish.Core.Services
             return result;
         }
 
+        public int ReIndex()
+        {
+            int result = 0;
+            IEnumerable<CFAggregation> aggrigations = Db.Aggregations;
+
+            foreach(CFAggregation aggrigation in aggrigations)
+            {
+                Db.Entry(aggrigation).State = System.Data.Entity.EntityState.Modified;
+                ++result;
+            }
+
+            Db.SaveChanges();
+
+            return result;
+        }
+
         ///// <summary>
         ///// Get an aggregation from the database.
         ///// </summary>
