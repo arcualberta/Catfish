@@ -376,6 +376,9 @@
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\FormField.cshtml" />
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\HtmlField.cshtml" />
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\ExternalMediaField.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\CompositeFormField.cshtml" />
+    <Content Include="Views\Shared\Partial\FieldPartialView.cshtml" />
+    <Content Include="Areas\Manager\Views\FormTemplates\EditorTemplates\CompositeFormField.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="RazorGenerator.LICENSE.md" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -411,6 +414,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Manager\Controllers\AccessDefinitionsController.cs" />
     <Compile Include="Areas\Manager\Controllers\Api\EntityAssociationController.cs" />
+    <Compile Include="Areas\Manager\Controllers\CompositeFormFieldController.cs" />
     <Compile Include="Areas\Manager\Controllers\FormContainerController.cs" />
     <Compile Include="Areas\Manager\Controllers\CatfishController.cs" />
     <Compile Include="Areas\Manager\Controllers\CollectionsController.cs" />
@@ -424,7 +428,9 @@
     <Compile Include="Areas\Manager\Models\ViewModels\AccessDefinitionsViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\CFUserListIndexViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\CFUserListViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\CompositeFormFieldViewModel.cs" />
     <Compile Include="Areas\Manager\Models\ViewModels\EntityAccessDefinitionsViewModel.cs" />
+    <Compile Include="Areas\Manager\Models\ViewModels\FieldTypeViewModel.cs" />
     <Compile Include="Areas\Manager\Services\AccessGroupService.cs" />
     <Compile Include="Areas\Manager\Services\PageService.cs" />
     <Compile Include="Contexts\UserContext.cs" />
@@ -618,6 +624,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Areas\Manager\Views\CompositeFormField\" />
     <Folder Include="Views\Entities\" />
     <Folder Include="Views\Language\" />
     <Folder Include="Views\Stats\" />
