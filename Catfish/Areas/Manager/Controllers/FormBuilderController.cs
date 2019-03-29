@@ -45,9 +45,38 @@ namespace Catfish.Areas.Manager.Controllers
                 if (field.IsPageBreak())
                     page = page + 1;
                 field.Page = page;
+                
                 vm.Fields.Add(new FormFieldViewModel(field, vm.Id));
+                
             }
             vm.SelectedFieldTypes.Clear();
+            return Json(vm);
+        }
+
+        [HttpPost]
+        public JsonResult AddFieldRegion(FormFieldViewModel vm)
+        {
+           
+
+                int rank = vm.Headers.Count;
+                int page = vm.Headers.Count > 0 ? vm.Headers[vm.Headers.Count - 1].Page : 1;
+                foreach (FormFieldType t in vm.HeaderSelectedFieldTypes)
+                {
+                    Type type = Type.GetType(t.FieldType, true);
+                    if (!typeof(FormField).IsAssignableFrom(type))
+                        throw new InvalidOperationException("Bad Type");
+
+                    FormField field = Activator.CreateInstance(type) as FormField;
+                    field.Rank = ++rank;
+                    if (field.IsPageBreak())
+                        page = page + 1;
+                    field.Page = page;
+
+                    vm.Headers.Add(new FormFieldViewModel(field, vm.Id));
+
+                }
+                vm.HeaderSelectedFieldTypes.Clear();
+            
             return Json(vm);
         }
 

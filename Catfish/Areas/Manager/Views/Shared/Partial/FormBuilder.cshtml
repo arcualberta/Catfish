@@ -2,7 +2,7 @@
 @using PerpetuumSoft.Knockout
 @using Catfish.Areas.Manager.Models.ViewModels
 @using Catfish.Core.Models.Data
-
+@using Catfish.Core.Models.Forms
 @{
     var context = "ctx_" + Guid.NewGuid().ToString("N");
     var ko = Html.CreateKnockoutContext(context);
@@ -58,7 +58,7 @@
 }
 
 <div id="@context" class="form-builder">
-    @*@using (ko.Html.Form(saveAction, controller, null, new { id = context + "Form" }))*@
+   
     @using (Html.BeginForm(saveAction, controller, new { id = Model.Id }, FormMethod.Post))
     {
         <div class="grid_12">
@@ -89,6 +89,8 @@
             <div id="fields-container">
                 @using (var field = ko.Foreach(m => m.Fields))
                 {
+                    field.ViewModelName = "$data";
+                    
                     <div class="box field-entry">
                         <div class="title">
                             @field.Html.Span(f => f.TypeLabel)
@@ -248,6 +250,38 @@
                                         </div>
                                     </li>
                              }
+                                @using (field.If(f => f.IsCompositeFormField == true))
+                                {
+                                    <li>
+                                        <label class="control-label col-md-2">Shuffle</label>
+                                        <div class="input">
+                                            @field.Html.CheckBox(f => f.Shuffle, new { @class = "field-is-multiple" })
+                                        </div>
+                                    </li>
+                                    <li>
+                                       
+                                            <label class="control-label col-md-2">StepState</label>
+                                        <div class="input">
+                                               
+                                                @field.Html.DropDownList(f=>f.StepSatesList,null,ft=>ft.Text).SelectedOptions(f=>f.SelectedStepState)
+                                             
+                                        
+                                        </div>
+                                      
+                                    </li>
+
+                                    @*<li>
+                                        <label class="control-label col-md-2">Header</label>
+                                        <div class="input" style="height: 200px;">
+                                            <div id="fields-container">
+                                                <div class="right">
+                                                    @field.Html.DropDownList(f => f.FieldTypes, new { @class = "field-types" }, ft => ft.Label).SelectedOptions(f=>f.HeaderSelectedFieldTypes)
+                                                    @field.Html.Button("Add Field", "AddFieldRegion", controller, new { }, new { @class = "add-field-region" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>*@
+                                }
                                 <li>
                                     <label class="control-label col-md-2">Attached files</label>
                                     <div class="form-view">
@@ -288,6 +322,11 @@
         delete @(context)Js;
     }
 </script>
-
+<style>
+    .field-types{
+        width: 200px !important;
+        border: 1px solid #a9a9a9 !important;
+    }
+</style>
 
 @ko.Apply(Model, context)
