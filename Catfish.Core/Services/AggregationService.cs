@@ -166,6 +166,26 @@ namespace Catfish.Core.Services
             return Index(out total, newQuery, page, itemsPerPage);
         }
 
+        public void VisitHierarchy(CFAggregation aggregation, Action<CFAggregation> visitor)
+        {
+            visitor(aggregation);
+
+            foreach (CFAggregation child in aggregation.ChildMembers)
+            {
+                VisitHierarchy(child, visitor);
+            }
+        }
+
+        public void SetHierarchyModified(CFAggregation aggregation)
+        {
+
+            Action<CFAggregation> setChildModified = (x) =>
+            {
+                Db.Entry(x).State = System.Data.Entity.EntityState.Modified;
+            };
+
+            VisitHierarchy(aggregation, setChildModified);
+        }
         
 
     }
