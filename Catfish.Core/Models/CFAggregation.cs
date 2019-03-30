@@ -78,9 +78,17 @@ namespace Catfish.Core.Models
             ManagedChildMembers.Add(child);
             child.ManagedParentMembers.Add(this);
 
-            AccessGroups.ForEach(x => child.SetAccess(x.AccessGuid, 
-                x.AccessDefinition.AccessModes, 
-                true));
+            //AccessGroups.Select(x => child.SetAccess(x.AccessGuid, 
+            //    x.AccessDefinition.AccessModes, 
+            //    true));
+
+            foreach(CFAccessGroup accessGroup in AccessGroups)
+            {
+                child.SetAccess(accessGroup.AccessGuid,
+                    accessGroup.AccessDefinition.AccessModes,
+                    true);
+            }
+
             int i = 0;
         }
 
@@ -89,16 +97,24 @@ namespace Catfish.Core.Models
         {
             ManagedChildMembers.Remove(child);
             child.ManagedParentMembers.Remove(this);
-            List<CFAccessGroup> accessGroups = child.AccessGroups;
+            List<CFAccessGroup> accessGroups = child.AccessGroups.ToList();
             accessGroups.RemoveAll(x => x.IsInherited == true);
             child.AccessGroups = accessGroups;
 
             foreach (CFAggregation parent in child.ManagedParentMembers)
             {
-                parent.AccessGroups.ForEach(x => child.SetAccess(
-                    x.AccessGuid, 
-                    x.AccessDefinition.AccessModes, 
-                    true));
+                //parent.AccessGroups.ForEach(x => child.SetAccess(
+                //    x.AccessGuid, 
+                //    x.AccessDefinition.AccessModes, 
+                //    true));
+
+                foreach(CFAccessGroup accessGroup in parent.AccessGroups)
+                {
+                    child.SetAccess(accessGroup.AccessGuid,
+                        accessGroup.AccessDefinition.AccessModes,
+                        true);
+                }
+
             }            
         }
 
@@ -158,14 +174,15 @@ namespace Catfish.Core.Models
             {
                 base.SetAccess(guid, accessMode, isInherited);
             }
+            else if (accessGroup.IsInherited == false && isInherited == true)
+            {
+                return;
+            }
             else
             {
-                if (accessGroup.IsInherited == false && isInherited == true)
-                {
-                    return;
-                }
+                
 
-                List<CFAccessGroup> accessGroups = AccessGroups;
+                List<CFAccessGroup> accessGroups = AccessGroups.ToList() ;
                 accessGroups.Remove(accessGroup);
                 CFAccessGroup newAccessGroup = new CFAccessGroup();
                 newAccessGroup.IsInherited = isInherited;
@@ -180,10 +197,14 @@ namespace Catfish.Core.Models
 
                 accessGroups.Add(newAccessGroup);
                 AccessGroups = accessGroups;
-            } 
-            
-            
-            
+            }
+
+            foreach (CFAggregation child in ChildMembers)
+            {
+                child.SetAccess(guid, accessMode, true);
+                //Db.Entry(child).State = System.Data.Entity.EntityState.Modified;
+            }
+
 
 
 
@@ -213,10 +234,11 @@ namespace Catfish.Core.Models
 
             //}
 
-            foreach (CFAggregation child in ChildMembers)
-            {
-                child.SetAccess(guid, accessMode, true);
-            }
+            //foreach (CFAggregation child in ChildMembers)
+            //{
+            //    child.SetAccess(guid, accessMode, true);
+            //    //Db.Entry(child).State = System.Data.Entity.EntityState.Modified;
+            //}
         }
 
         override public Dictionary<string, object> ToSolrDictionary()

@@ -63,7 +63,9 @@ namespace Catfish.Core.Models
             if (accessGroup == null)
             {
                 accessGroup = new CFAccessGroup();
-                AccessGroups.Add(accessGroup);
+                List<CFAccessGroup> accessGroups = AccessGroups.ToList();
+                accessGroups.Add(accessGroup);
+                AccessGroups = accessGroups;
             }
 
             return accessGroup;
@@ -76,14 +78,14 @@ namespace Catfish.Core.Models
             accessGroup.AccessGuid = guid;
             accessGroup.AccessDefinition.AccessModes = accessMode;
             // We replace AccessGroups because it cannot be modified in place
-            List<CFAccessGroup> accessGroups = AccessGroups;
+            List<CFAccessGroup> accessGroups = AccessGroups.ToList();
             accessGroups.Add(accessGroup);
             AccessGroups = accessGroups;            
         }
 
         [NotMapped]
         [IgnoreDataMember]
-        public List<CFAccessGroup> AccessGroups
+        public IReadOnlyList<CFAccessGroup> AccessGroups
         {
             get
             {
@@ -195,9 +197,10 @@ namespace Catfish.Core.Models
         {
 
             Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
-            AccessGroups.ForEach( x =>
+            //AccessGroups.ForEach( x =>
+            foreach (CFAccessGroup accessGroup in AccessGroups)
             {
-                foreach (AccessMode mode in x.AccessDefinition.AccessModes.AsList())
+                foreach (AccessMode mode in accessGroup.AccessDefinition.AccessModes.AsList())
                 {
                     string key = $@"access_{(int)mode}_ss";
                     if (!result.ContainsKey(key))
@@ -206,10 +209,10 @@ namespace Catfish.Core.Models
                     }
 
                     //result[key].Add(x.Guid.ToString());
-                    result[key].Add(x.AccessGuid.ToString());
+                    result[key].Add(accessGroup.AccessGuid.ToString());
                 }
 
-            });
+            }
             return result;
         }
 
