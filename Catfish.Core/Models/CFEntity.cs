@@ -73,14 +73,11 @@ namespace Catfish.Core.Models
 
         public void SetAccess(Guid guid, AccessMode accessMode, bool isInherited = false)
         {            
+            // At this point accessGroup is already part of the AccessGroups list
             CFAccessGroup accessGroup = GetOrCreateAccess(guid);
             accessGroup.IsInherited = isInherited;
             accessGroup.AccessGuid = guid;
             accessGroup.AccessDefinition.AccessModes = accessMode;
-            // We replace AccessGroups because it cannot be modified in place
-            List<CFAccessGroup> accessGroups = AccessGroups.ToList();
-            accessGroups.Add(accessGroup);
-            AccessGroups = accessGroups;            
         }
 
         [NotMapped]
