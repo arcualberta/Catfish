@@ -146,6 +146,10 @@
     <Compile Include="Migrations\201806132141475_Added_XML_Indexing.Designer.cs">
       <DependentUpon>201806132141475_Added_XML_Indexing.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904021941027_AddedOrderingToAggregationMembers.cs" />
+    <Compile Include="Migrations\201904021941027_AddedOrderingToAggregationMembers.Designer.cs">
+      <DependentUpon>201904021941027_AddedOrderingToAggregationMembers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Access\CFAccessDefinition.cs" />
     <Compile Include="Models\Access\CFAccessGroup.cs" />
@@ -155,6 +159,7 @@
     <Compile Include="Models\Attributes\CFInputTypeAttribute.cs" />
     <Compile Include="Models\Attributes\CFRankAttribute.cs" />
     <Compile Include="Models\Attributes\CFTypeLabelAttribute.cs" />
+    <Compile Include="Models\CFAggregationHasMembers.cs" />
     <Compile Include="Models\CFAuditChangeLog.cs" />
     <Compile Include="Models\CFAuditEntry.cs" />
     <Compile Include="Models\CatfishDbContext.cs" />
@@ -267,6 +272,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806132141475_Added_XML_Indexing.resx">
       <DependentUpon>201806132141475_Added_XML_Indexing.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904021941027_AddedOrderingToAggregationMembers.resx">
+      <DependentUpon>201904021941027_AddedOrderingToAggregationMembers.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Validators.resx">
       <Generator>ResXFileCodeGenerator</Generator>
