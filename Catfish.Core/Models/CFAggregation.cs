@@ -16,13 +16,18 @@ namespace Catfish.Core.Models
         public override string GetTagName() { return "aggregation"; }
         public override string Label =>"Aggregation";
 
+        [IgnoreDataMember]
+        [InverseProperty("Child")]
+        public virtual List<CFAggregationHasMembers> ConnectionToParents { get; set; }
 
         [IgnoreDataMember]
-        public virtual List<CFAggregation> ManagedParentMembers { get; set; }
+        [InverseProperty("Parent")]
+        public virtual List<CFAggregationHasMembers> ConnectionToChildren { get; set; }
 
+        [NotMapped]
         [IgnoreDataMember]
-        public virtual List<CFAggregation> ManagedChildMembers { get; set; }
-
+        protected object ChildConnectionLock = new object(); // Used to synchronize addition of child members;
+        
         [IgnoreDataMember]
         public virtual List<CFItem> ManagedRelatedMembers { get; set; }
 
@@ -30,7 +35,7 @@ namespace Catfish.Core.Models
         [IgnoreDataMember]
         public virtual IReadOnlyCollection<CFAggregation> ParentMembers {
             get {
-                return ManagedParentMembers.AsReadOnly();
+                return ConnectionToParents.Select(m => m.Parent).ToList().AsReadOnly();
             }
         }
 
@@ -39,7 +44,7 @@ namespace Catfish.Core.Models
         public virtual IReadOnlyCollection<CFAggregation> ChildMembers {
             get
             {
-                return ManagedChildMembers.AsReadOnly();
+                return ConnectionToChildren.OrderBy(m => m.Order).Select(m => m.Child).ToList().AsReadOnly();
             }
         }
 
@@ -64,40 +69,90 @@ namespace Catfish.Core.Models
 
         public CFAggregation()
         {
-            ManagedParentMembers = new List<CFAggregation>();
-            ManagedChildMembers = new List<CFAggregation>();
+            ConnectionToChildren = new List<CFAggregationHasMembers>();
+            ConnectionToParents = new List<CFAggregationHasMembers>();
             ManagedRelatedMembers = new List<CFItem>();
+        }
+
+        protected void RefreshChildrenOrdering(int order, int increment)
+        {
+            lock (ChildConnectionLock)
+            {
+                foreach(CFAggregationHasMembers connection in ConnectionToChildren)
+                {
+                    if(connection.Order >= order)
+                    {
+                        connection.Order += increment;
+                    }
+                }
+            }
         }
 
         /// <summary>
         /// WARNING: Check for circular references first!
         /// </summary>
         /// <param name="child"></param>
-        public void AddChild(CFAggregation child)
+        public void AddChild(CFAggregation child, int order = -1)
         {
-            ManagedChildMembers.Add(child);
-            child.ManagedParentMembers.Add(this);
+            lock (ChildConnectionLock)
+            {
+                CFAggregationHasMembers member = new CFAggregationHasMembers();
+                member.Parent = this;
+                member.Child = child;
 
-            this.AccessGroups.ForEach(x => child.SetAccess(x.AccessGuid, 
-                x.AccessDefinition.AccessModes, 
-                true));
+                if (order < 0 || order >= ConnectionToChildren.Count)
+                {
+                    member.Order = ConnectionToChildren.Count;
+                    ConnectionToChildren.Add(member);
+                }else
+                {
+                    member.Order = order;
+                    RefreshChildrenOrdering(order, 1);
+                    ConnectionToChildren.Add(member);
+                    
+                }
 
+                child.ConnectionToParents.Add(member);
+
+                this.AccessGroups.ForEach(x => child.SetAccess(x.AccessGuid,
+                    x.AccessDefinition.AccessModes,
+                    true));
+            }
         }
 
+        public void RemoveChild(CFAggregationHasMembers connection)
+        {
+            lock (ChildConnectionLock)
+            {
+                CFAggregation child = connection.Child;
+
+                ConnectionToChildren.Remove(connection);
+                child.ConnectionToParents.Remove(connection);
+                child.AccessGroups.RemoveAll(x => x.IsInherited == true);
+
+                foreach (CFAggregationHasMembers parent in child.ConnectionToParents)
+                {
+                    parent.Parent.AccessGroups.ForEach(x => child.SetAccess(
+                        x.AccessGuid,
+                        x.AccessDefinition.AccessModes,
+                        true));
+                }
+
+                RefreshChildrenOrdering(connection.Order + 1, -1);
+            }
+        }
        
         public void RemoveChild(CFAggregation child)
         {
-            ManagedChildMembers.Remove(child);
-            child.ManagedParentMembers.Remove(this);
-            child.AccessGroups.RemoveAll(x => x.IsInherited == true);
-            
-            foreach (CFAggregation parent in child.ManagedParentMembers)
+            lock (ChildConnectionLock)
             {
-                parent.AccessGroups.ForEach(x => child.SetAccess(
-                    x.AccessGuid, 
-                    x.AccessDefinition.AccessModes, 
-                    true));
-            }            
+                CFAggregationHasMembers childConnection = ConnectionToChildren.Where(connection => connection.ChildId == child.Id).FirstOrDefault();
+
+                if (childConnection != null)
+                {
+                    RemoveChild(childConnection);
+                }
+            }
         }
 
         public void AddRelated(CFItem related)
