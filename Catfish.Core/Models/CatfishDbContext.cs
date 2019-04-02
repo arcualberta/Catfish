@@ -150,16 +150,6 @@ namespace Catfish.Core.Models
             SetColumnTypes(builder);
 
             builder.Entity<CFAggregation>()
-                .HasMany<CFAggregation>(p => p.ManagedChildMembers)
-                .WithMany(c => c.ManagedParentMembers)
-                .Map(t =>
-                {
-                    t.MapLeftKey("ParentId");
-                    t.MapRightKey("ChildId");
-                    t.ToTable("AggregationHasMembers");
-                });
-
-            builder.Entity<CFAggregation>()
                 .HasMany<CFItem>(p => p.ManagedRelatedMembers)
                 .WithMany(c => c.ParentRelations)
                 .Map(t =>
