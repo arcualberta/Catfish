@@ -107,7 +107,7 @@ namespace Catfish.Core.Models
                 }else
                 {
                     member.Order = order;
-                    RefreshChildrenOrdering(order, 1);
+                    //RefreshChildrenOrdering(order, 1); // This is currently breaking the system
                     ConnectionToChildren.Add(member);
                     
                 }
@@ -138,7 +138,7 @@ namespace Catfish.Core.Models
                         true));
                 }
 
-                RefreshChildrenOrdering(connection.Order + 1, -1);
+                //RefreshChildrenOrdering(connection.Order + 1, -1); // This is currently breaking the system
             }
         }
        
