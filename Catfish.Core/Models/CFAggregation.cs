@@ -93,29 +93,52 @@ namespace Catfish.Core.Models
         }
 
        
+        private void ResetPermissions(CFAggregation agregation)
+        {
+            List<CFAccessGroup> accessGroups = agregation.AccessGroups.ToList();
+            accessGroups.RemoveAll(x => x.IsInherited == true);
+            agregation.AccessGroups = accessGroups;
+
+            foreach (CFAggregation parent in agregation.ManagedParentMembers)
+            {                
+                foreach (CFAccessGroup accessGroup in parent.AccessGroups)
+                {
+                    agregation.SetAccess(accessGroup.AccessGuid,
+                        accessGroup.AccessDefinition.AccessModes,
+                        true);
+                }
+            }
+
+            foreach (CFAggregation child in agregation.ChildMembers)
+            {
+                ResetPermissions(child);
+            }
+        }
+
         public void RemoveChild(CFAggregation child)
         {
             ManagedChildMembers.Remove(child);
             child.ManagedParentMembers.Remove(this);
-            List<CFAccessGroup> accessGroups = child.AccessGroups.ToList();
-            accessGroups.RemoveAll(x => x.IsInherited == true);
-            child.AccessGroups = accessGroups;
+            ResetPermissions(child);
+            //List<CFAccessGroup> accessGroups = child.AccessGroups.ToList();
+            //accessGroups.RemoveAll(x => x.IsInherited == true);
+            //child.AccessGroups = accessGroups;
 
-            foreach (CFAggregation parent in child.ManagedParentMembers)
-            {
-                //parent.AccessGroups.ForEach(x => child.SetAccess(
-                //    x.AccessGuid, 
-                //    x.AccessDefinition.AccessModes, 
-                //    true));
+            //foreach (CFAggregation parent in child.ManagedParentMembers)
+            //{
+            //    //parent.AccessGroups.ForEach(x => child.SetAccess(
+            //    //    x.AccessGuid, 
+            //    //    x.AccessDefinition.AccessModes, 
+            //    //    true));
 
-                foreach(CFAccessGroup accessGroup in parent.AccessGroups)
-                {
-                    child.SetAccess(accessGroup.AccessGuid,
-                        accessGroup.AccessDefinition.AccessModes,
-                        true);
-                }
+            //    foreach(CFAccessGroup accessGroup in parent.AccessGroups)
+            //    {
+            //        child.SetAccess(accessGroup.AccessGuid,
+            //            accessGroup.AccessDefinition.AccessModes,
+            //            true);
+            //    }
 
-            }            
+            //}            
         }
 
         public void AddRelated(CFItem related)

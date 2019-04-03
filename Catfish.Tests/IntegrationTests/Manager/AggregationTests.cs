@@ -70,10 +70,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
 
         protected void AssertAssociateChildren()
         {
-
-            // select aggregation to add
-            //IWebElement allTable = Driver.FindElement(By.Id("all-actionable-table"));
-
+            
             // first checkbox
             string allDataTable = "(//div[@id='all-actionable-table']//table)[2]";
 
@@ -87,6 +84,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
             Driver.FindElement(By.Id("add-children-action"), 10).Click();
 
             string chidlrenDataTable = "(//div[@id='children-actionable-table']//table)[2]";
+            // Sometimes the order that shows up on the list does not match
             string childName1 = Driver.FindElement(By.XPath($@"{chidlrenDataTable}//tbody//tr[1]//td[2]"), 10).Text;
             string childName2 = Driver.FindElement(By.XPath($@"{chidlrenDataTable}//tbody//tr[2]//td[2]"), 10).Text;
 

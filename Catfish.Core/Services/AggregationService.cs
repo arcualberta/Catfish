@@ -168,12 +168,28 @@ namespace Catfish.Core.Services
 
         public void VisitHierarchy(CFAggregation aggregation, Action<CFAggregation> visitor)
         {
+
             visitor(aggregation);
 
-            foreach (CFAggregation child in aggregation.ChildMembers)
+            List<CFAggregation> children = aggregation.ChildMembers.ToList();
+
+            
+            for (int i = 0; i < children.Count; ++i)
             {
-                VisitHierarchy(child, visitor);
+                CFAggregation child = children[i];
+                visitor(child);
+                foreach (CFAggregation test in child.ChildMembers)
+                {
+                    if (! children.Contains(test))
+                    {
+                        children.Add(test);
+                    }
+                }
             }
+            //foreach (CFAggregation child in aggregation.ChildMembers)
+            //{
+            //    VisitHierarchy(child, visitor);
+            //}
         }
 
         public void SetHierarchyModified(CFAggregation aggregation)
