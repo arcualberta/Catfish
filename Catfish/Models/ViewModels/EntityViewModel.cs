@@ -146,26 +146,44 @@ namespace Catfish.Models.ViewModels
             return results;
         }
 
-        public DataFileViewModel GetFirstImage()
+        public DataFileViewModel GetFirstDataFile(MimeType type, ref int depth, int maxDepth = int.MaxValue)
         {
-            foreach(DataFileViewModel file in Files)
+            if(depth >= maxDepth)
             {
-                if(file.MimeType == MimeType.Image)
+                return null;
+            }
+
+            foreach (DataFileViewModel file in Files)
+            {
+                if (file.MimeType == type)
                 {
                     return file;
                 }
             }
 
-            foreach(EntityViewModel child in Children)
+            // Perform a bredth first search.
+            int minDepth = maxDepth;
+            DataFileViewModel result = null;
+            foreach (EntityViewModel child in Children)
             {
-                DataFileViewModel result = child.GetFirstImage();
-                if(result != null)
+                int checkDepth = depth + 1;
+                DataFileViewModel checkResult = child.GetFirstDataFile(type, ref checkDepth, minDepth);
+
+                if (checkResult != null)
                 {
-                    return result;
+                    minDepth = checkDepth;
+                    result = checkResult;
                 }
             }
 
-            return null;
+            depth = minDepth;
+            return result;
+        }
+
+        public DataFileViewModel GetFirstImage()
+        {
+            int depth = 0;
+            return GetFirstDataFile(MimeType.Image, ref depth);
         }
     }
 
