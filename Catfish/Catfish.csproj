@@ -156,6 +156,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Areas\Manager\Views\Extensions\index.html" />
+    <Content Include="Scripts\dist\associationsView.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Scripts\es6\components\actionableInputField.js" />
     <Content Include="Scripts\es6\components\conditionalRender.js" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -633,7 +636,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Manager\Views\Aggregation\" />
-    <Folder Include="Scripts\dist\" />
     <Folder Include="Views\Entities\" />
     <Folder Include="Views\Language\" />
     <Folder Include="Views\Stats\" />
