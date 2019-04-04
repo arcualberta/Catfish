@@ -136,7 +136,7 @@
     <dynamicField name="*_i"  type="int"    indexed="true"  stored="true"/>
     <dynamicField name="*_is" type="ints"    indexed="true"  stored="true"/>
     <dynamicField name="*_s"  type="string"  indexed="true"  stored="true" />
-    <dynamicField name="*_ss" maxChars="32000" type="strings"  indexed="true"  stored="true"/>
+    <dynamicField name="*_ss" type="strings"  indexed="true"  stored="true"/>
     <dynamicField name="*_l"  type="long"   indexed="true"  stored="true"/>
     <dynamicField name="*_ls" type="longs"   indexed="true"  stored="true"/>
     <dynamicField name="*_t"   type="text_general" indexed="true" stored="true"/>

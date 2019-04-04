@@ -47,6 +47,22 @@ namespace Catfish.Core.Services
             return result;
         }
 
+        public int ReIndex()
+        {
+            int result = 0;
+            IEnumerable<CFAggregation> aggrigations = Db.Aggregations;
+
+            foreach(CFAggregation aggrigation in aggrigations)
+            {
+                Db.Entry(aggrigation).State = System.Data.Entity.EntityState.Modified;
+                ++result;
+            }
+
+            Db.SaveChanges();
+
+            return result;
+        }
+
         ///// <summary>
         ///// Get an aggregation from the database.
         ///// </summary>
@@ -71,7 +87,10 @@ namespace Catfish.Core.Services
 
             int start = (page-1) * itemsPerPage;
 
-            List<CFAggregation> data =  new CatfishDbContext().Aggregations.FromSolr(query, 
+            // The query has been modified to only allow for aggrigations with an entity type to be shown.
+            string modifiedQuery = string.Format("entitytype_s:* AND ({0})", query);
+
+            List<CFAggregation> data =  new CatfishDbContext().Aggregations.FromSolr(modifiedQuery, 
                 out total, 
                 "", 
                 start, 
