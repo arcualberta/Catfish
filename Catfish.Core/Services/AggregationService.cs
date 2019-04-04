@@ -166,32 +166,6 @@ namespace Catfish.Core.Services
             return Index(out total, newQuery, page, itemsPerPage);
         }
 
-        public void VisitHierarchy(CFAggregation aggregation, Action<CFAggregation> visitor)
-        {
-
-            visitor(aggregation);
-
-            List<CFAggregation> children = aggregation.ChildMembers.ToList();
-
-            
-            for (int i = 0; i < children.Count; ++i)
-            {
-                CFAggregation child = children[i];
-                visitor(child);
-                foreach (CFAggregation test in child.ChildMembers)
-                {
-                    if (! children.Contains(test))
-                    {
-                        children.Add(test);
-                    }
-                }
-            }
-            //foreach (CFAggregation child in aggregation.ChildMembers)
-            //{
-            //    VisitHierarchy(child, visitor);
-            //}
-        }
-
         public void SetHierarchyModified(CFAggregation aggregation)
         {
 
@@ -200,7 +174,8 @@ namespace Catfish.Core.Services
                 Db.Entry(x).State = System.Data.Entity.EntityState.Modified;
             };
 
-            VisitHierarchy(aggregation, setChildModified);
+            //VisitHierarchy(aggregation, setChildModified);
+            aggregation.VisitHierarchy(setChildModified);
         }
         
 
