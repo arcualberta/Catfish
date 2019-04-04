@@ -15,7 +15,6 @@ namespace Catfish.Core.Models
 
         public override string GetTagName() { return "aggregation"; }
         public override string Label =>"Aggregation";
-        private List<CFAggregation> childrenSetAccess = new List<CFAggregation>();
         private List<CFAggregation> resetSetAccess = new List<CFAggregation>();
 
         [IgnoreDataMember]
@@ -79,17 +78,6 @@ namespace Catfish.Core.Models
             ManagedChildMembers.Add(child);
             child.ManagedParentMembers.Add(this);
             ResetPermissions(child);
-            //AccessGroups.Select(x => child.SetAccess(x.AccessGuid, 
-            //    x.AccessDefinition.AccessModes, 
-            //    true));
-
-            //foreach (CFAccessGroup accessGroup in AccessGroups)
-            //{
-            //    child.SetAccess(accessGroup.AccessGuid,
-            //        accessGroup.AccessDefinition.AccessModes,
-            //        true);
-            //}
-
         }
 
        
@@ -106,8 +94,6 @@ namespace Catfish.Core.Models
                 visitor(currentAggregation);
                 foreach (CFAggregation child in currentAggregation.ChildMembers)
                 {
-                    //child.Guid
-                    //if (!toVisit.Any(x => x.Guid == child.Guid))
                     if(!toVisit.Contains(child))
                     {
                         toVisit.Add(child);
@@ -155,30 +141,34 @@ namespace Catfish.Core.Models
             }
         }
 
+        //public void VisitHierarchy(Action<CFAggregation> visitor)
+        //{
+
+        //    visitor(this);
+
+        //    List<CFAggregation> children = ChildMembers.ToList();
+
+
+        //    for (int i = 0; i < children.Count; ++i)
+        //    {
+        //        CFAggregation child = children[i];
+        //        visitor(child);
+        //        foreach (CFAggregation test in child.ChildMembers)
+        //        {
+        //            if (!children.Contains(test))
+        //            {
+        //                children.Add(test);
+        //            }
+        //        }
+        //    }
+
+        //}
+
         public void RemoveChild(CFAggregation child)
         {
             ManagedChildMembers.Remove(child);
             child.ManagedParentMembers.Remove(this);
-            ResetPermissions(child);
-            //List<CFAccessGroup> accessGroups = child.AccessGroups.ToList();
-            //accessGroups.RemoveAll(x => x.IsInherited == true);
-            //child.AccessGroups = accessGroups;
-
-            //foreach (CFAggregation parent in child.ManagedParentMembers)
-            //{
-            //    //parent.AccessGroups.ForEach(x => child.SetAccess(
-            //    //    x.AccessGuid, 
-            //    //    x.AccessDefinition.AccessModes, 
-            //    //    true));
-
-            //    foreach(CFAccessGroup accessGroup in parent.AccessGroups)
-            //    {
-            //        child.SetAccess(accessGroup.AccessGuid,
-            //            accessGroup.AccessDefinition.AccessModes,
-            //            true);
-            //    }
-
-            //}            
+            ResetPermissions(child);  
         }
 
         public void AddRelated(CFItem related)
@@ -262,54 +252,6 @@ namespace Catfish.Core.Models
                 AccessGroups = accessGroups;
             }
 
-            //List<CFAggregation> childrenSetAccess = new List<CFAggregation>();
-
-            foreach (CFAggregation child in ChildMembers)
-            {
-                if (!childrenSetAccess.Contains(child))
-                {
-                    childrenSetAccess.Add(child);
-                    //child.SetAccess(guid, accessMode, true);
-                    
-                }
-                
-                //Db.Entry(child).State = System.Data.Entity.EntityState.Modified;
-            }
-
-
-
-
-            //if (accessGroup == null)
-            //{
-            //    base.SetAccess(guid, accessMode, isInherited);                
-            //} else if (accessGroup.IsInherited == false && isInherited == true)
-            //{
-            //    return;
-            //} else
-            //{
-            //    List<CFAccessGroup> accessGroups = AccessGroups;
-            //    accessGroups.Remove(accessGroup);
-            //    CFAccessGroup newAccessGroup = new CFAccessGroup();
-            //    newAccessGroup.IsInherited = isInherited;
-            //    newAccessGroup.Guid = guid.ToString();
-            //    newAccessGroup.AccessDefinition.AccessModes = accessMode;
-
-            //    if (accessGroup.IsInherited == true && isInherited == true)
-            //    {
-            //        AccessMode inheritedAccessMode = RecalculateInheritedPermissions(guid);
-            //        newAccessGroup.AccessDefinition.AccessModes |= inheritedAccessMode;
-            //    }
-
-            //    accessGroups.Add(newAccessGroup);
-            //    AccessGroups = accessGroups;
-
-            //}
-
-            //foreach (CFAggregation child in ChildMembers)
-            //{
-            //    child.SetAccess(guid, accessMode, true);
-            //    //Db.Entry(child).State = System.Data.Entity.EntityState.Modified;
-            //}
         }
 
         override public Dictionary<string, object> ToSolrDictionary()
