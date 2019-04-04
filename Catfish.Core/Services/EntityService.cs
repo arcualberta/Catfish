@@ -39,7 +39,7 @@ namespace Catfish.Core.Services
         public IEnumerable<CFEntity> GetEntityParents(int id)
         {
             return Db.Entities.OfType<CFAggregation>()
-                .Where(e => e.ManagedChildMembers.Select(c => c.Id).Contains(id));
+                .Where(e => e.ConnectionToChildren.Select(c => c.ChildId).Contains(id));
         }
 
         public T CreateEntity<T>(int entityTypeId) where T : CFEntity, new()
