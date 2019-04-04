@@ -125,7 +125,7 @@
 
     <!-- Only enabled in the "schemaless" data-driven example (assuming the client
          does not know what fields may be searched) because it's very expensive to index everything twice. -->
-    <copyField maxChars="3000" source="*" dest="_text_"/>
+    <copyField source="*" dest="_text_"/>
 
     <!-- Dynamic field definitions allow using convention over configuration
        for fields via the specification of patterns to match field names. 
@@ -207,7 +207,7 @@
        is added to the index.  It's used either to index the same field differently,
        or to add multiple fields to the same field for easier/faster searching.
 
-    <copyField maxChars="3000" source="sourceFieldName" dest="destinationFieldName"/>
+    <copyField source="sourceFieldName" dest="destinationFieldName"/>
     -->
 
     <!-- field type definitions. The "name" attribute is
@@ -402,7 +402,7 @@
          also applies synonyms from synonyms.txt. -->
     <dynamicField name="*_txt_en" type="text_en"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_en" type="text_en"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_en" dest="*_en_ss" maxChars="32000"/>
+    <copyField source="*_txts_en" dest="*_en_ss" maxChars="32000"/>
     <fieldType name="text_en" class="solr.TextField" positionIncrementGap="100">
       <analyzer type="index">
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -647,7 +647,7 @@
     <!-- Arabic -->
     <dynamicField name="*_txt_ar" type="text_ar"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_ar" type="text_ar"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_ar" dest="*_ar_ss" maxChars="32000"/>
+    <copyField source="*_txts_ar" dest="*_ar_ss" maxChars="32000"/>
     <fieldType name="text_ar" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -663,7 +663,7 @@
     <!-- Bulgarian -->
     <dynamicField name="*_txt_bg" type="text_bg"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_bg" type="text_bg"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_bg" dest="*_bg_ss" maxChars="32000"/>
+    <copyField source="*_txts_bg" dest="*_bg_ss" maxChars="32000"/>
     <fieldType name="text_bg" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/> 
@@ -676,7 +676,7 @@
     <!-- Catalan -->
     <dynamicField name="*_txt_ca" type="text_ca"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_ca" type="text_ca"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_ca" dest="*_ca_ss" maxChars="32000"/>
+    <copyField source="*_txts_ca" dest="*_ca_ss" maxChars="32000"/>
     <fieldType name="text_ca" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -704,7 +704,7 @@
     <!-- Czech -->
     <dynamicField name="*_txt_cz" type="text_cz"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_cz" type="text_cz"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_cz" dest="*_cz_ss" maxChars="32000"/>
+    <copyField source="*_txts_cz" dest="*_cz_ss" maxChars="32000"/>
     <fieldType name="text_cz" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -717,7 +717,7 @@
     <!-- Danish -->
     <dynamicField name="*_txt_da" type="text_da"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_da" type="text_da"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_da" dest="*_da_ss" maxChars="32000"/>
+    <copyField source="*_txts_da" dest="*_da_ss" maxChars="32000"/>
     <fieldType name="text_da" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -730,7 +730,7 @@
     <!-- German -->
     <dynamicField name="*_txt_de" type="text_de"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_de" type="text_de"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_de" dest="*_de_ss" maxChars="32000"/>
+    <copyField source="*_txts_de" dest="*_de_ss" maxChars="32000"/>
     <fieldType name="text_de" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -746,7 +746,7 @@
     <!-- Greek -->
     <dynamicField name="*_txt_el" type="text_el"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_el" type="text_el"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_el" dest="*_el_ss" maxChars="32000"/>
+    <copyField source="*_txts_el" dest="*_el_ss" maxChars="32000"/>
     <fieldType name="text_el" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -760,7 +760,7 @@
     <!-- Spanish -->
     <dynamicField name="*_txt_es" type="text_es"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_es" type="text_es"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_es" dest="*_es_ss" maxChars="32000"/>
+    <copyField source="*_txts_es" dest="*_es_ss" maxChars="32000"/>
     <fieldType name="text_es" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -774,7 +774,7 @@
     <!-- Basque -->
     <dynamicField name="*_txt_eu" type="text_eu"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_eu" type="text_eu"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_eu" dest="*_eu_ss" maxChars="32000"/>
+    <copyField source="*_txts_eu" dest="*_eu_ss" maxChars="32000"/>
     <fieldType name="text_eu" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -787,7 +787,7 @@
     <!-- Persian -->
     <dynamicField name="*_txt_fa" type="text_fa"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_fa" type="text_fa"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_fa" dest="*_fa_ss" maxChars="32000"/>
+    <copyField source="*_txts_fa" dest="*_fa_ss" maxChars="32000"/>
     <fieldType name="text_fa" class="solr.TextField" positionIncrementGap="100">
       <analyzer>
         <!-- for ZWNJ -->
@@ -803,7 +803,7 @@
     <!-- Finnish -->
     <dynamicField name="*_txt_fi" type="text_fi"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_fi" type="text_fi"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_fi" dest="*_fi_ss" maxChars="32000"/>
+    <copyField source="*_txts_fi" dest="*_fi_ss" maxChars="32000"/>
     <fieldType name="text_fi" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -817,7 +817,7 @@
     <!-- French -->
     <dynamicField name="*_txt_fr" type="text_fr"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_fr" type="text_fr"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_fr" dest="*_fr_ss" maxChars="32000"/>
+    <copyField source="*_txts_fr" dest="*_fr_ss" maxChars="32000"/>
     <fieldType name="text_fr" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -834,7 +834,7 @@
     <!-- Irish -->
     <dynamicField name="*_txt_ga" type="text_ga"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_ga" type="text_ga"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_ga" dest="*_ga_ss" maxChars="32000"/>
+    <copyField source="*_txts_ga" dest="*_ga_ss" maxChars="32000"/>
     <fieldType name="text_ga" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -851,7 +851,7 @@
     <!-- Galician -->
     <dynamicField name="*_txt_gl" type="text_gl"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_gl" type="text_gl"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_gl" dest="*_gl_ss" maxChars="32000"/>
+    <copyField source="*_txts_gl" dest="*_gl_ss" maxChars="32000"/>
     <fieldType name="text_gl" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -865,7 +865,7 @@
     <!-- Hindi -->
     <dynamicField name="*_txt_hi" type="text_hi"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_hi" type="text_hi"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_hi" dest="*_hi_ss" maxChars="32000"/>
+    <copyField source="*_txts_hi" dest="*_hi_ss" maxChars="32000"/>
     <fieldType name="text_hi" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -882,7 +882,7 @@
     <!-- Hungarian -->
     <dynamicField name="*_txt_hu" type="text_hu"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_hu" type="text_hu"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_hu" dest="*_hu_ss" maxChars="32000"/>
+    <copyField source="*_txts_hu" dest="*_hu_ss" maxChars="32000"/>
     <fieldType name="text_hu" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -896,7 +896,7 @@
     <!-- Armenian -->
     <dynamicField name="*_txt_hy" type="text_hy"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_hy" type="text_hy"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_hy" dest="*_hy_ss" maxChars="32000"/>
+    <copyField source="*_txts_hy" dest="*_hy_ss" maxChars="32000"/>
     <fieldType name="text_hy" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -909,7 +909,7 @@
     <!-- Indonesian -->
     <dynamicField name="*_txt_id" type="text_id"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_id" type="text_id"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_id" dest="*_id_ss" maxChars="32000"/>
+    <copyField source="*_txts_id" dest="*_id_ss" maxChars="32000"/>
     <fieldType name="text_id" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -923,7 +923,7 @@
     <!-- Italian -->
   <dynamicField name="*_txt_it" type="text_it"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_it" type="text_it"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_it" dest="*_it_ss" maxChars="32000"/>
+    <copyField source="*_txts_it" dest="*_it_ss" maxChars="32000"/>
   <fieldType name="text_it" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -943,7 +943,7 @@
     -->
     <dynamicField name="*_txt_ja" type="text_ja"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_ja" type="text_ja"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_ja" dest="*_ja_ss" maxChars="32000"/>
+    <copyField source="*_txts_ja" dest="*_ja_ss" maxChars="32000"/>
     <fieldType name="text_ja" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="false">
       <analyzer>
         <!-- Kuromoji Japanese morphological analyzer/tokenizer (JapaneseTokenizer)
@@ -994,7 +994,7 @@
     <!-- Latvian -->
     <dynamicField name="*_txt_lv" type="text_lv"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_lv" type="text_lv"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_lv" dest="*_lv_ss" maxChars="32000"/>
+    <copyField source="*_txts_lv" dest="*_lv_ss" maxChars="32000"/>
     <fieldType name="text_lv" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -1007,7 +1007,7 @@
     <!-- Dutch -->
     <dynamicField name="*_txt_nl" type="text_nl"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_nl" type="text_nl"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_nl" dest="*_nl_ss" maxChars="32000"/>
+    <copyField source="*_txts_nl" dest="*_nl_ss" maxChars="32000"/>
     <fieldType name="text_nl" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -1021,7 +1021,7 @@
     <!-- Norwegian -->
     <dynamicField name="*_txt_no" type="text_no"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_no" type="text_no"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_no" dest="*_no_ss" maxChars="32000"/>
+    <copyField source="*_txts_no" dest="*_no_ss" maxChars="32000"/>
     <fieldType name="text_no" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -1036,7 +1036,7 @@
     <!-- Portuguese -->
   <dynamicField name="*_txt_pt" type="text_pt"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_pt" type="text_pt"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_pt" dest="*_pt_ss" maxChars="32000"/>
+    <copyField source="*_txts_pt" dest="*_pt_ss" maxChars="32000"/>
   <fieldType name="text_pt" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -1052,7 +1052,7 @@
     <!-- Romanian -->
     <dynamicField name="*_txt_ro" type="text_ro"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_ro" type="text_ro"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_ro" dest="*_ro_ss" maxChars="32000"/>
+    <copyField source="*_txts_ro" dest="*_ro_ss" maxChars="32000"/>
     <fieldType name="text_ro" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -1065,7 +1065,7 @@
     <!-- Russian -->
     <dynamicField name="*_txt_ru" type="text_ru"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_ru" type="text_ru"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_ru" dest="*_ru_ss" maxChars="32000"/>
+    <copyField source="*_txts_ru" dest="*_ru_ss" maxChars="32000"/>
     <fieldType name="text_ru" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -1079,7 +1079,7 @@
     <!-- Swedish -->
     <dynamicField name="*_txt_sv" type="text_sv"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_sv" type="text_sv"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_sv" dest="*_sv_ss" maxChars="32000"/>
+    <copyField source="*_txts_sv" dest="*_sv_ss" maxChars="32000"/>
     <fieldType name="text_sv" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -1093,7 +1093,7 @@
     <!-- Thai -->
     <dynamicField name="*_txt_th" type="text_th"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_th" type="text_th"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_th" dest="*_th_ss" maxChars="32000"/>
+    <copyField source="*_txts_th" dest="*_th_ss" maxChars="32000"/>
     <fieldType name="text_th" class="solr.TextField" positionIncrementGap="100">
       <analyzer>
         <tokenizer class="solr.ThaiTokenizerFactory"/>
@@ -1105,7 +1105,7 @@
     <!-- Turkish -->
     <dynamicField name="*_txt_tr" type="text_tr"  indexed="true"  stored="true"/>
     <dynamicField name="*_txts_tr" type="text_tr"  indexed="true"  stored="true" multiValued="true"/>
-    <copyField maxChars="3000" source="*_txts_tr" dest="*_tr_ss" maxChars="32000"/>
+    <copyField source="*_txts_tr" dest="*_tr_ss" maxChars="32000"/>
     <fieldType name="text_tr" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
