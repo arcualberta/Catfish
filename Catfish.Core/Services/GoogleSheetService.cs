@@ -17,7 +17,7 @@ using Catfish.Core.Models.Forms;
 
 namespace Catfish.Core.Services
 {
-    public class GoogleSheetService: ServiceBase
+    public class GoogleSheetService : ServiceBase
     {
         protected static MemoryDataStore DataStore = new MemoryDataStore();
 
@@ -27,7 +27,7 @@ namespace Catfish.Core.Services
         private Dictionary<string, List<string>> mColumnHeadings;
 
         public GoogleSheetService(string spreadsheetId, CatfishDbContext db)
-            :base(db)
+            : base(db)
         {
             mColumnHeadings = new Dictionary<string, List<string>>();
             InitRead(spreadsheetId);
@@ -44,7 +44,7 @@ namespace Catfish.Core.Services
             if (string.IsNullOrEmpty(credentialsFile))
                 throw new Exception("Google API Credentials JSON file not defined in Web.config");
 
-            else if(!File.Exists(credentialsFile))
+            else if (!File.Exists(credentialsFile))
                 throw new Exception(string.Format("Google API Credentials JSON file \"{0}\"not found", credentialsFile));
 
             // If modifying these scopes, delete your previously saved credentials
@@ -63,7 +63,7 @@ namespace Catfish.Core.Services
 
 
             // Create Google Sheets API service.
-            SheetsService  = new SheetsService(new BaseClientService.Initializer()
+            SheetsService = new SheetsService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credentials,
                 ApplicationName = appName
@@ -150,7 +150,7 @@ namespace Catfish.Core.Services
                 Dictionary<int, CompositeFormField> footers = new Dictionary<int, CompositeFormField>();
 
                 var uniqueListIds = result.Values.Select(x => x[listIdCol] as string).Distinct().ToList();
-                foreach (var listId in uniqueListIds.Where(x => x != "*").Select(x =>int.Parse(x)))
+                foreach (var listId in uniqueListIds.Where(x => x != "*").Select(x => int.Parse(x)))
                 {
                     listFields.Add(new CompositeFormField() { Page = listId });
                     blockFieldSets.Add(listId, new List<CompositeFormField>());
@@ -232,7 +232,7 @@ namespace Catfish.Core.Services
                             MaxLabel = end.Length > 1 ? end[1] : ""
                         };
                     }
-                    else if (answerType == "RadioButtonSet" || answerType == "DropDown")
+                    else if (answerType == "RadioButtonSet" || answerType == "DropDown" || answerType == "CheckBoxSet")
                     {
                         List<string> optionStrings = answerOptions.Split(new char[] { '|' }).Select(s => s.Trim()).ToList();
                         List<Option> options = new List<Option>();
@@ -243,10 +243,20 @@ namespace Catfish.Core.Services
                             options.Add(opt);
                         }
 
-                        if(answerType == "RadioButtonSet")
+                        if (answerType == "RadioButtonSet")
                             question = new RadioButtonSet() { Options = options };
+                        else if (answerType == "CheckBoxSet")
+                            question = new CheckBoxSet() { Options = options };
                         else
                             question = new DropDownMenu() { Options = options };
+                    }
+                    else if (answerType == "TextArea")
+                    {
+                        question = new TextArea();
+                    }
+                    else if (answerType == "Attachment")
+                    {
+                        question = new Attachment();
                     }
                     ////else if(answerType == "DropDown")
                     ////{
@@ -475,7 +485,7 @@ namespace Catfish.Core.Services
             }
             while (zeroBasedColumnIndex >= 0);
             return name;
-        } 
+        }
     }
 
     public class MemoryDataStore : IDataStore

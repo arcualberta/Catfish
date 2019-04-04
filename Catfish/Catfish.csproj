@@ -24,7 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>3.2</TypeScriptToolsVersion>
     <Use64BitIISExpress />
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -156,6 +156,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Areas\Manager\Views\Extensions\index.html" />
+    <Content Include="Scripts\dist\associationsView.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Scripts\es6\components\actionableInputField.js" />
     <Content Include="Scripts\es6\components\conditionalRender.js" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -633,7 +636,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Manager\Views\Aggregation\" />
-    <Folder Include="Scripts\dist\" />
     <Folder Include="Views\Entities\" />
     <Folder Include="Views\Language\" />
     <Folder Include="Views\Stats\" />
@@ -738,7 +740,12 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.3\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.3\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <PropertyGroup>
-    <PreBuildEvent>npm run build --prefix $(ProjectDir)</PreBuildEvent>
+    <PreBuildEvent>call $(SolutionDir)build-node.bat "$(ProjectDir)"
+</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
