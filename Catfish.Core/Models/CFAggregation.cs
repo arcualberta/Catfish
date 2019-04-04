@@ -15,7 +15,8 @@ namespace Catfish.Core.Models
 
         public override string GetTagName() { return "aggregation"; }
         public override string Label =>"Aggregation";
-
+        private List<CFAggregation> childrenSetAccess = new List<CFAggregation>();
+        private List<CFAggregation> resetSetAccess = new List<CFAggregation>();
 
         [IgnoreDataMember]
         public virtual List<CFAggregation> ManagedParentMembers { get; set; }
@@ -77,22 +78,55 @@ namespace Catfish.Core.Models
         {
             ManagedChildMembers.Add(child);
             child.ManagedParentMembers.Add(this);
-
+            ResetPermissions(child);
             //AccessGroups.Select(x => child.SetAccess(x.AccessGuid, 
             //    x.AccessDefinition.AccessModes, 
             //    true));
 
-            foreach(CFAccessGroup accessGroup in AccessGroups)
-            {
-                child.SetAccess(accessGroup.AccessGuid,
-                    accessGroup.AccessDefinition.AccessModes,
-                    true);
-            }
+            //foreach (CFAccessGroup accessGroup in AccessGroups)
+            //{
+            //    child.SetAccess(accessGroup.AccessGuid,
+            //        accessGroup.AccessDefinition.AccessModes,
+            //        true);
+            //}
 
-            int i = 0;
         }
 
        
+        public void VisitHierarchy(Action<CFAggregation> visitor)
+        {
+            List<CFAggregation> toVisit = new List<CFAggregation>
+            {
+                this
+            };
+
+            for(int i=0; i<toVisit.Count; ++i)
+            {
+                CFAggregation currentAggregation = toVisit[i];
+                visitor(currentAggregation);
+                foreach (CFAggregation child in currentAggregation.ChildMembers)
+                {
+                    //child.Guid
+                    //if (!toVisit.Any(x => x.Guid == child.Guid))
+                    if(!toVisit.Contains(child))
+                    {
+                        toVisit.Add(child);
+                    }
+                }
+            }
+        }
+
+        public bool Equals(CFAggregation other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return Guid == other.Guid && 
+                Id == other.Id;
+        }
+
         private void ResetPermissions(CFAggregation agregation)
         {
             List<CFAccessGroup> accessGroups = agregation.AccessGroups.ToList();
@@ -108,10 +142,16 @@ namespace Catfish.Core.Models
                         true);
                 }
             }
+            // XXX aqui es otra
 
             foreach (CFAggregation child in agregation.ChildMembers)
             {
-                ResetPermissions(child);
+                if (! resetSetAccess.Contains(child))
+                {
+                    resetSetAccess.Add(child);
+                    ResetPermissions(child);
+                }
+                
             }
         }
 
@@ -222,9 +262,17 @@ namespace Catfish.Core.Models
                 AccessGroups = accessGroups;
             }
 
+            //List<CFAggregation> childrenSetAccess = new List<CFAggregation>();
+
             foreach (CFAggregation child in ChildMembers)
             {
-                child.SetAccess(guid, accessMode, true);
+                if (!childrenSetAccess.Contains(child))
+                {
+                    childrenSetAccess.Add(child);
+                    //child.SetAccess(guid, accessMode, true);
+                    
+                }
+                
                 //Db.Entry(child).State = System.Data.Entity.EntityState.Modified;
             }
 
