@@ -5,7 +5,7 @@
     {"class", "model-type"}
 })
 @Html.HiddenFor(m => m.Guid)
-
+@Html.HiddenFor(model => model.IsRequired)
 
 <div class="form-field-name">
     @Html.Label(string.IsNullOrEmpty(Model.Name) ? "" : Model.Name, new { @name = "label" })
