@@ -21,7 +21,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
         public void CanCreateItem()
         {
             bool multipleField = true;
-            CreateBaseEntityType(multipleField);
+            bool requiredField = true;
+            CreateBaseEntityType(multipleField, requiredField);
             // FormFields is instantiated in CreateBaseEntityType
             CreateItem(EntityTypeName, FormFields[0], multipleField);
            
