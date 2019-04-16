@@ -76,17 +76,32 @@ namespace Catfish.Core.Services
             object resultLock = new object();
 
             int result = 0;
-            Action[] actions = new Action[poolSize];
-            IEnumerable<CFAggregation> aggrigations = Db.Aggregations.AsNoTracking();
-            int totalTasks = (int)Math.Ceiling((double)aggrigations.Count() / (double)bucketSize);
-            int actionIndex = 0;
+            
+            IEnumerator<CFAggregation> aggrigations = Db.Aggregations.AsNoTracking().AsEnumerable().GetEnumerator();
+            int taskIndex = 0;
             HttpContext currentContext = HttpContext.Current;
+            bool continueLoop = true;
 
-            for(int taskIndex = 0; taskIndex < totalTasks; ++taskIndex)
+            Task[] tasks = new Task[poolSize];
+            for(int i = 0; i < poolSize; ++i)
             {
-                IEnumerable<CFAggregation> aggrigationSublist = aggrigations.Skip(taskIndex * bucketSize).Take(bucketSize).ToArray();
+                tasks[i] = Task.CompletedTask;
+            }
 
-                actions[actionIndex] = () =>
+            while(continueLoop)
+            {
+                // Get the sublist.
+                // This method was done to to efficency issues with EntityFrameworks Skip and Take method.
+                IList<CFAggregation> aggrigationSublist = new List<CFAggregation>(bucketSize);
+                while(aggrigationSublist.Count < bucketSize && aggrigations.MoveNext())
+                {
+                    aggrigationSublist.Add(aggrigations.Current);
+                }
+
+                continueLoop = aggrigationSublist.Count >= bucketSize;
+
+                // Perform the indexing on the sublist
+                tasks[taskIndex] = Task.Factory.StartNew(() =>
                 {
                     if(aggrigationSublist != null && aggrigationSublist.Count() > 0)
                     {
@@ -98,16 +113,23 @@ namespace Catfish.Core.Services
                             result += subResult;
                         }
                     }
-                };
+                });
 
-                ++actionIndex;
+                ++taskIndex;
 
-                if(actionIndex >= poolSize)
+                if(taskIndex >= poolSize)
                 {
-                    Parallel.Invoke(actions);
-                    actionIndex = 0;
+                    Task.WaitAll(tasks);
+                    taskIndex = 0;
+
+                    for(int i = 0; i < poolSize; ++i)
+                    {
+                        tasks[i] = Task.CompletedTask;
+                    }
                 }
             }
+
+            Task.WaitAll(tasks); ; // If there's any tasks left to run, run them.
 
             return result;
         }
