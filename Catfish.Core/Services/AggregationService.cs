@@ -65,6 +65,21 @@ namespace Catfish.Core.Services
             return result;
         }
 
+        public class ReIndexStruct
+        {
+            public int ProcessedCount;
+            public int ReadCount;
+            public int BucketSize;
+            public int PoolSize;
+        }
+
+        private static object ReIndexLock = new object();
+        public static ReIndexStruct ReIndexState
+        {
+            //TODO: Lock reindexing to one process at a time.
+            get; private set;
+        }
+
         /// <summary>
         /// Reindexes the Solr documents.
         /// </summary>
@@ -74,62 +89,74 @@ namespace Catfish.Core.Services
         public int ReIndex(int bucketSize, int poolSize)
         {
             object resultLock = new object();
-
             int result = 0;
-            
-            IEnumerator<CFAggregation> aggrigations = Db.Aggregations.AsNoTracking().AsEnumerable().GetEnumerator();
-            int taskIndex = 0;
-            HttpContext currentContext = HttpContext.Current;
-            bool continueLoop = true;
 
-            Task[] tasks = new Task[poolSize];
-            for(int i = 0; i < poolSize; ++i)
+            lock (ReIndexLock)
             {
-                tasks[i] = Task.CompletedTask;
-            }
-
-            while(continueLoop)
-            {
-                // Get the sublist.
-                // This method was done to to efficency issues with EntityFrameworks Skip and Take method.
-                IList<CFAggregation> aggrigationSublist = new List<CFAggregation>(bucketSize);
-                while(aggrigationSublist.Count < bucketSize && aggrigations.MoveNext())
+                ReIndexState = new ReIndexStruct()
                 {
-                    aggrigationSublist.Add(aggrigations.Current);
+                    ProcessedCount = 0,
+                    ReadCount = 0,
+                    BucketSize = bucketSize,
+                    PoolSize = poolSize
+                };
+
+                IEnumerator<CFAggregation> aggrigations = Db.Aggregations.AsNoTracking().AsEnumerable().GetEnumerator();
+                int taskIndex = 0;
+                HttpContext currentContext = HttpContext.Current;
+                bool continueLoop = true;
+
+                Task[] tasks = new Task[poolSize];
+                for (int i = 0; i < poolSize; ++i)
+                {
+                    tasks[i] = Task.CompletedTask;
                 }
 
-                continueLoop = aggrigationSublist.Count >= bucketSize;
-
-                // Perform the indexing on the sublist
-                tasks[taskIndex] = Task.Factory.StartNew(() =>
+                while (continueLoop)
                 {
-                    if(aggrigationSublist != null && aggrigationSublist.Count() > 0)
+                    // Get the sublist.
+                    // This method was done to to efficency issues with EntityFrameworks Skip and Take method.
+                    IList<CFAggregation> aggrigationSublist = new List<CFAggregation>(bucketSize);
+                    while (aggrigationSublist.Count < bucketSize && aggrigations.MoveNext())
                     {
-                        HttpContext.Current = currentContext; // Done to find the current user later on
+                        aggrigationSublist.Add(aggrigations.Current);
+                        ++ReIndexState.ReadCount;
+                    }
+
+                    continueLoop = aggrigationSublist.Count >= bucketSize;
+
+                    // Perform the indexing on the sublist
+                    tasks[taskIndex] = Task.Factory.StartNew(() =>
+                    {
+                        if (aggrigationSublist != null && aggrigationSublist.Count() > 0)
+                        {
+                            HttpContext.Current = currentContext; // Done to find the current user later on
                         int subResult = ReIndexBucket(aggrigationSublist);
 
-                        lock (resultLock)
+                            lock (resultLock)
+                            {
+                                result += subResult;
+                                ReIndexState.ProcessedCount = result;
+                            }
+                        }
+                    });
+
+                    ++taskIndex;
+
+                    if (taskIndex >= poolSize)
+                    {
+                        Task.WaitAll(tasks);
+                        taskIndex = 0;
+
+                        for (int i = 0; i < poolSize; ++i)
                         {
-                            result += subResult;
+                            tasks[i] = Task.CompletedTask;
                         }
                     }
-                });
-
-                ++taskIndex;
-
-                if(taskIndex >= poolSize)
-                {
-                    Task.WaitAll(tasks);
-                    taskIndex = 0;
-
-                    for(int i = 0; i < poolSize; ++i)
-                    {
-                        tasks[i] = Task.CompletedTask;
-                    }
                 }
-            }
 
-            Task.WaitAll(tasks); ; // If there's any tasks left to run, run them.
+                Task.WaitAll(tasks); ; // If there's any tasks left to run, run them.
+            }
 
             return result;
         }
