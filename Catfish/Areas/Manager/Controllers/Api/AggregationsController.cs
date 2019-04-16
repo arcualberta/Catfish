@@ -314,12 +314,17 @@ namespace Catfish.Controllers.Api
             return Json("");
         }
 
+        public JsonResult GetReIndexState()
+        {
+            return Json(Core.Services.AggregationService.ReIndexState);
+        }
+
         [HttpPost]
         public async Task<JsonResult> ReIndex(int bucketSize = 10000, int poolSize = 3)
         {
             int result = 0;
             HttpContext currentContext = System.Web.HttpContext.Current;
-
+            
             // This is done to prevent Action timeouts.
             await Task.Factory.StartNew(() =>
             {
