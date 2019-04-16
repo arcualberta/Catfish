@@ -9,6 +9,8 @@
     {
         {"class", "metadataset-id" }
     })*@
+    @Html.HiddenFor(model=>model.IsRequired)
+    
     @Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
     {
        {"class", "model-type"}
