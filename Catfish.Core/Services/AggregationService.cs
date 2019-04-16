@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Catfish.Core.Services
 {
@@ -47,18 +48,66 @@ namespace Catfish.Core.Services
             return result;
         }
 
-        public int ReIndex()
+        private int ReIndexBucket(IEnumerable<CFAggregation> bucket)
         {
-            int result = 0;
-            IEnumerable<CFAggregation> aggrigations = Db.Aggregations;
+            CatfishDbContext db = new CatfishDbContext();
 
-            foreach(CFAggregation aggrigation in aggrigations)
+            int result = 0;
+
+            foreach(CFAggregation aggrigation in bucket)
             {
-                Db.Entry(aggrigation).State = System.Data.Entity.EntityState.Modified;
+                db.Entry(aggrigation).State = System.Data.Entity.EntityState.Modified;
                 ++result;
             }
 
-            Db.SaveChanges();
+            db.SaveChanges();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Reindexes the Solr documents.
+        /// </summary>
+        /// <param name="bucketSize">How many to reindex at any one time.</param>
+        /// <param name="poolSize">The amount of indexing operations that can occur at a single time.</param>
+        /// <returns></returns>
+        public int ReIndex(int bucketSize, int poolSize)
+        {
+            object resultLock = new object();
+
+            int result = 0;
+            Action[] actions = new Action[poolSize];
+            IEnumerable<CFAggregation> aggrigations = Db.Aggregations.AsNoTracking();
+            int totalTasks = (int)Math.Ceiling((double)aggrigations.Count() / (double)bucketSize);
+            int actionIndex = 0;
+            HttpContext currentContext = HttpContext.Current;
+
+            for(int taskIndex = 0; taskIndex < totalTasks; ++taskIndex)
+            {
+                IEnumerable<CFAggregation> aggrigationSublist = aggrigations.Skip(taskIndex * bucketSize).Take(bucketSize).ToArray();
+
+                actions[actionIndex] = () =>
+                {
+                    if(aggrigationSublist != null && aggrigationSublist.Count() > 0)
+                    {
+                        HttpContext.Current = currentContext; // Done to find the current user later on
+                        int subResult = ReIndexBucket(aggrigationSublist);
+
+                        lock (resultLock)
+                        {
+                            result += subResult;
+                        }
+                    }
+                };
+
+                ++actionIndex;
+
+                if(actionIndex >= poolSize)
+                {
+                    Parallel.Invoke(actions);
+                    actionIndex = 0;
+                }
+            }
 
             return result;
         }
