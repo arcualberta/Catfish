@@ -7,6 +7,7 @@ using Catfish.Areas.Manager.Models.ViewModels;
 using Catfish.Core.Models;
 using Catfish.Models.ViewModels;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace Catfish.Controllers.Api
 {
@@ -314,9 +315,17 @@ namespace Catfish.Controllers.Api
         }
 
         [HttpPost]
-        public JsonResult ReIndex(int bucketSize = 10000, int poolSize = 3)
+        public async Task<JsonResult> ReIndex(int bucketSize = 10000, int poolSize = 3)
         {
-            int result = AggregationService.ReIndex(bucketSize, poolSize);
+            int result = 0;
+            HttpContext currentContext = System.Web.HttpContext.Current;
+
+            // This is done to prevent Action timeouts.
+            await Task.Factory.StartNew(() =>
+            {
+                System.Web.HttpContext.Current = currentContext; // Done to find the current user on a separate thread.
+                result += AggregationService.ReIndex(bucketSize, poolSize);
+            });
 
             return Json(result);
         }
