@@ -51,19 +51,19 @@ namespace Catfish.Core.Services
         private int ReIndexBucket(IEnumerable<int> bucket)
         {
             CatfishDbContext db = new CatfishDbContext();
-
-            int result = 0;
+            
+            List<Dictionary<string, object>> aggrigations = new List<Dictionary<string, object>>();
 
             foreach(int aggregationId in bucket)
             {
                 CFAggregation aggregation = db.Aggregations.Find(aggregationId);
-                db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
-                ++result;
+                aggrigations.Add(aggregation.ToSolrDictionary());
             }
 
-            db.SaveChanges();
+            SolrService.SolrOperations.AddRange(aggrigations);
+            SolrService.SolrOperations.Commit();
 
-            return result;
+            return aggrigations.Count;
         }
 
         public class ReIndexStruct
