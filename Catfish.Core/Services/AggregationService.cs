@@ -48,15 +48,16 @@ namespace Catfish.Core.Services
             return result;
         }
 
-        private int ReIndexBucket(IEnumerable<CFAggregation> bucket)
+        private int ReIndexBucket(IEnumerable<int> bucket)
         {
             CatfishDbContext db = new CatfishDbContext();
 
             int result = 0;
 
-            foreach(CFAggregation aggrigation in bucket)
+            foreach(int aggregationId in bucket)
             {
-                db.Entry(aggrigation).State = System.Data.Entity.EntityState.Modified;
+                CFAggregation aggregation = db.Aggregations.Find(aggregationId);
+                db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
                 ++result;
             }
 
@@ -70,14 +71,26 @@ namespace Catfish.Core.Services
             public int ProcessedCount;
             public int ReadCount;
             public int BucketSize;
-            public int PoolSize;
+            public int TaskCount;
         }
 
         private static object ReIndexLock = new object();
+        private static ReIndexStruct mReIndexState = null;
         public static ReIndexStruct ReIndexState
         {
-            //TODO: Lock reindexing to one process at a time.
-            get; private set;
+            get {
+                if (mReIndexState == null) {
+                    mReIndexState = new ReIndexStruct()
+                    {
+                        ProcessedCount = 0,
+                        ReadCount = 0,
+                        BucketSize = 0,
+                        TaskCount = 0
+                    };
+                }
+
+                return mReIndexState;
+            }
         }
 
         /// <summary>
@@ -86,76 +99,62 @@ namespace Catfish.Core.Services
         /// <param name="bucketSize">How many to reindex at any one time.</param>
         /// <param name="poolSize">The amount of indexing operations that can occur at a single time.</param>
         /// <returns></returns>
-        public int ReIndex(int bucketSize, int poolSize)
+        public int ReIndex(int bucketSize)
         {
             object resultLock = new object();
             int result = 0;
 
             lock (ReIndexLock)
             {
-                ReIndexState = new ReIndexStruct()
-                {
-                    ProcessedCount = 0,
-                    ReadCount = 0,
-                    BucketSize = bucketSize,
-                    PoolSize = poolSize
-                };
+                ReIndexState.ProcessedCount = 0;
+                ReIndexState.ReadCount = 0;
+                ReIndexState.BucketSize = bucketSize;
+                ReIndexState.TaskCount = 0;
 
-                IEnumerator<CFAggregation> aggrigations = Db.Aggregations.AsNoTracking().AsEnumerable().GetEnumerator();
-                int taskIndex = 0;
+                IEnumerator<int> aggregations = Db.Aggregations.AsNoTracking()
+                    .Select(a => a.Id).ToList().GetEnumerator();
                 HttpContext currentContext = HttpContext.Current;
                 bool continueLoop = true;
 
-                Task[] tasks = new Task[poolSize];
-                for (int i = 0; i < poolSize; ++i)
-                {
-                    tasks[i] = Task.CompletedTask;
-                }
+                List<Task> tasks = new List<Task>();
 
                 while (continueLoop)
                 {
                     // Get the sublist.
                     // This method was done to to efficency issues with EntityFrameworks Skip and Take method.
-                    IList<CFAggregation> aggrigationSublist = new List<CFAggregation>(bucketSize);
-                    while (aggrigationSublist.Count < bucketSize && aggrigations.MoveNext())
+                    IList<int> aggregationSublist = new List<int>(bucketSize);
+                    while (aggregationSublist.Count < bucketSize && aggregations.MoveNext())
                     {
-                        aggrigationSublist.Add(aggrigations.Current);
+                        aggregationSublist.Add(aggregations.Current);
                         ++ReIndexState.ReadCount;
                     }
 
-                    continueLoop = aggrigationSublist.Count >= bucketSize;
+                    continueLoop = aggregationSublist.Count >= bucketSize;
 
                     // Perform the indexing on the sublist
-                    tasks[taskIndex] = Task.Factory.StartNew(() =>
-                    {
-                        if (aggrigationSublist != null && aggrigationSublist.Count() > 0)
+                    tasks.Add(Task.Factory.StartNew(new Action<object>((aggregationIds) =>
                         {
-                            HttpContext.Current = currentContext; // Done to find the current user later on
-                        int subResult = ReIndexBucket(aggrigationSublist);
-
-                            lock (resultLock)
+                            if (aggregationSublist != null && aggregationSublist.Count() > 0)
                             {
-                                result += subResult;
-                                ReIndexState.ProcessedCount = result;
+                                HttpContext.Current = currentContext; // Done to find the current user later on
+                                int subResult = ReIndexBucket((IEnumerable<int>)aggregationIds);
+
+                                lock (resultLock)
+                                {
+                                    result += subResult;
+                                    ReIndexState.ProcessedCount = result;
+                                    --ReIndexState.TaskCount;
+                                }
                             }
-                        }
-                    });
+                        }), aggregationSublist));
 
-                    ++taskIndex;
-
-                    if (taskIndex >= poolSize)
+                    lock (resultLock)
                     {
-                        Task.WaitAll(tasks);
-                        taskIndex = 0;
-
-                        for (int i = 0; i < poolSize; ++i)
-                        {
-                            tasks[i] = Task.CompletedTask;
-                        }
+                        ++ReIndexState.TaskCount;
                     }
                 }
 
-                Task.WaitAll(tasks); ; // If there's any tasks left to run, run them.
+                Task.WaitAll(tasks.ToArray()); // Wait for all tasks to complete before continuing.
             }
 
             return result;
