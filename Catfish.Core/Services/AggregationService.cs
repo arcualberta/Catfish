@@ -48,49 +48,42 @@ namespace Catfish.Core.Services
             return result;
         }
 
-        private int ReIndexBucket(IEnumerable<int> bucket)
+        private int ReIndexBucket(IEnumerable<int> bucket, string taskId)
         {
             CatfishDbContext db = new CatfishDbContext();
-            
-            List<Dictionary<string, object>> aggrigations = new List<Dictionary<string, object>>();
+            var SolrOperations = CommonServiceLocator.ServiceLocator.Current.GetInstance<SolrNet.ISolrOperations<Dictionary<string, object>>>();
+
+            int result = 0;
 
             foreach(int aggregationId in bucket)
             {
                 CFAggregation aggregation = db.Aggregations.Find(aggregationId);
-                aggrigations.Add(aggregation.ToSolrDictionary());
-            }
 
-            SolrService.SolrOperations.AddRange(aggrigations);
-            SolrService.SolrOperations.Commit();
-
-            return aggrigations.Count;
-        }
-
-        public class ReIndexStruct
-        {
-            public int ProcessedCount;
-            public int ReadCount;
-            public int BucketSize;
-            public int TaskCount;
-        }
-
-        private static object ReIndexLock = new object();
-        private static ReIndexStruct mReIndexState = null;
-        public static ReIndexStruct ReIndexState
-        {
-            get {
-                if (mReIndexState == null) {
-                    mReIndexState = new ReIndexStruct()
-                    {
-                        ProcessedCount = 0,
-                        ReadCount = 0,
-                        BucketSize = 0,
-                        TaskCount = 0
-                    };
+                if (aggregation.MappedGuid != aggregation.Guid)
+                {
+                    aggregation.MappedGuid = aggregation.Guid;
+                    db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
+                }
+                else
+                {
+                    // No need to update the entire model.
+                    SolrOperations.Add(aggregation.ToSolrDictionary());
                 }
 
-                return mReIndexState;
+                ++result;
+
+                try
+                {
+                    ReIndexState.TaskProcessedCount[taskId] = result;
+                }catch(KeyNotFoundException ex)
+                {
+                    ReIndexState.TaskProcessedCount.Add(taskId, result);
+                }
             }
+            
+            SolrOperations.Commit();
+
+            return result;
         }
 
         /// <summary>
@@ -99,65 +92,67 @@ namespace Catfish.Core.Services
         /// <param name="bucketSize">How many to reindex at any one time.</param>
         /// <param name="poolSize">The amount of indexing operations that can occur at a single time.</param>
         /// <returns></returns>
-        public int ReIndex(int bucketSize)
+        public void ReIndex(int bucketSize)
         {
-            object resultLock = new object();
-            int result = 0;
-
-            lock (ReIndexLock)
+            if(System.Threading.Monitor.TryEnter(ReIndexState.ReIndexLock, 10))
             {
-                ReIndexState.ProcessedCount = 0;
-                ReIndexState.ReadCount = 0;
-                ReIndexState.BucketSize = bucketSize;
-                ReIndexState.TaskCount = 0;
-
-                IEnumerator<int> aggregations = Db.Aggregations.AsNoTracking()
-                    .Select(a => a.Id).ToList().GetEnumerator();
-                HttpContext currentContext = HttpContext.Current;
-                bool continueLoop = true;
-
-                List<Task> tasks = new List<Task>();
-
-                while (continueLoop)
+                try
                 {
-                    // Get the sublist.
-                    // This method was done to to efficency issues with EntityFrameworks Skip and Take method.
-                    IList<int> aggregationSublist = new List<int>(bucketSize);
-                    while (aggregationSublist.Count < bucketSize && aggregations.MoveNext())
+                    ReIndexState.ProcessedCount = 0;
+                    ReIndexState.ReadCount = 0;
+                    ReIndexState.BucketSize = bucketSize;
+                    ReIndexState.TaskCount = 0;
+                    ReIndexState.TaskProcessedCount.Clear();
+
+                    int[] aggregations = Db.Aggregations.AsNoTracking()
+                        .Select(a => a.Id).ToArray();
+
+                    HttpContext currentContext = HttpContext.Current;
+
+                    List<Task> tasks = new List<Task>();
+                    int aggregationIndex = 0;
+
+                    while (aggregationIndex < aggregations.Length)
                     {
-                        aggregationSublist.Add(aggregations.Current);
-                        ++ReIndexState.ReadCount;
-                    }
+                        // Get the sublist.
+                        int aggregationSize = Math.Min(aggregations.Length - aggregationIndex, bucketSize);
+                        int[] aggregationSublist = new int[aggregationSize];
+                        Array.Copy(aggregations, aggregationIndex, aggregationSublist, 0, aggregationSize);
 
-                    continueLoop = aggregationSublist.Count >= bucketSize;
+                        aggregationIndex += bucketSize;
 
-                    // Perform the indexing on the sublist
-                    tasks.Add(Task.Factory.StartNew(new Action<object>((aggregationIds) =>
-                        {
-                            if (aggregationSublist != null && aggregationSublist.Count() > 0)
+                        // Perform the indexing on the sublist
+                        tasks.Add(Task.Factory.StartNew(new Action<object>((aggregationIds) =>
                             {
-                                HttpContext.Current = currentContext; // Done to find the current user later on
-                                int subResult = ReIndexBucket((IEnumerable<int>)aggregationIds);
-
-                                lock (resultLock)
+                                string taskId = Task.CurrentId.Value.ToString();
+                                lock (ReIndexState.ReIndexLock)
                                 {
-                                    result += subResult;
-                                    ReIndexState.ProcessedCount = result;
-                                    --ReIndexState.TaskCount;
+                                    ReIndexState.TaskProcessedCount.Add(taskId, 0);
                                 }
-                            }
-                        }), aggregationSublist));
 
-                    lock (resultLock)
-                    {
+                                if (aggregationSublist != null && aggregationSublist.Count() > 0)
+                                {
+                                    HttpContext.Current = currentContext; // Done to find the current user later on
+                                int subResult = ReIndexBucket((IEnumerable<int>)aggregationIds, taskId);
+
+                                    lock (ReIndexState.ReIndexLock)
+                                    {
+                                        ReIndexState.ProcessedCount += subResult;
+                                        --ReIndexState.TaskCount;
+
+                                        ReIndexState.TaskProcessedCount.Remove(taskId);
+                                    }
+                                }
+                            }), aggregationSublist, TaskCreationOptions.LongRunning));
+
                         ++ReIndexState.TaskCount;
                     }
                 }
-
-                Task.WaitAll(tasks.ToArray()); // Wait for all tasks to complete before continuing.
+                finally
+                {
+                    System.Threading.Monitor.Exit(ReIndexState.ReIndexLock);
+                }
             }
-
-            return result;
         }
 
         ///// <summary>
@@ -281,8 +276,46 @@ namespace Catfish.Core.Services
 
             return Index(out total, newQuery, page, itemsPerPage);
         }
+    }
+    
+    public static class ReIndexState
+    {
+        public struct ReIndexStruct
+        {
+            public int ProcessedCount;
+            public int ReadCount;
+            public int BucketSize;
+            public int TaskCount;
 
+            public IDictionary<string, int> TaskProcessedCount;
+        }
+
+        public static object ReIndexLock = new object();
         
+        public static int ProcessedCount = 0;
+        public static int ReadCount = 0;
+        public static int BucketSize = 0;
+        public static int TaskCount = 0;
 
+        public static IDictionary<string, int> TaskProcessedCount = new Dictionary<string, int>();
+
+        public static bool IsIndexing {
+            get
+            {
+                return TaskProcessedCount.Count > 0;
+            }
+        }
+
+        public static ReIndexStruct GetAsStruct()
+        {
+            return new ReIndexStruct()
+            {
+                ProcessedCount = ProcessedCount,
+                ReadCount = ReadCount,
+                BucketSize = BucketSize,
+                TaskCount = TaskCount,
+                TaskProcessedCount = TaskProcessedCount
+            };
+        }
     }
 }
