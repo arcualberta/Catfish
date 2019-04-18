@@ -143,7 +143,7 @@ namespace Catfish.Core.Services
                                         ReIndexState.TaskProcessedCount.Remove(taskId);
                                     }
                                 }
-                            }), aggregationSublist, TaskCreationOptions.LongRunning));
+                            }), aggregationSublist, TaskCreationOptions.PreferFairness | TaskCreationOptions.LongRunning));
 
                         ++ReIndexState.TaskCount;
                     }
