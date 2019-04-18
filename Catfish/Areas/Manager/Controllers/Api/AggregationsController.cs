@@ -316,23 +316,18 @@ namespace Catfish.Controllers.Api
         
         public JsonResult GetReIndexState()
         {
-            return Json(Core.Services.AggregationService.ReIndexState, JsonRequestBehavior.AllowGet);
+            return Json(Core.Services.ReIndexState.GetAsStruct(), JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public async Task<JsonResult> ReIndex(int bucketSize = 10000)
+        public JsonResult ReIndex(int bucketSize = 10000)
         {
-            int result = 0;
-            HttpContext currentContext = System.Web.HttpContext.Current;
-            
-            // This is done to prevent Action timeouts.
-            await Task.Factory.StartNew(() =>
+            if (!Core.Services.ReIndexState.IsIndexing)
             {
-                System.Web.HttpContext.Current = currentContext; // Done to find the current user on a separate thread.
-                result += AggregationService.ReIndex(bucketSize);
-            });
+                AggregationService.ReIndex(bucketSize);
+            }
 
-            return Json(result);
+            return Json(Core.Services.ReIndexState.GetAsStruct());
         }
     }
 }
