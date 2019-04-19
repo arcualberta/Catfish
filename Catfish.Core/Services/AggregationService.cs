@@ -80,8 +80,9 @@ namespace Catfish.Core.Services
                     ReIndexState.TaskProcessedCount.Add(taskId, result);
                 }
             }
-            
+
             SolrOperations.Commit();
+            db.SaveChanges();
 
             return result;
         }
