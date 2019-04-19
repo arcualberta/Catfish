@@ -93,7 +93,7 @@ namespace Catfish.Core.Services
         /// <param name="bucketSize">How many to reindex at any one time.</param>
         /// <param name="poolSize">The amount of indexing operations that can occur at a single time.</param>
         /// <returns></returns>
-        public void ReIndex(int bucketSize)
+        public void ReIndex(int bucketSize, int poolSize)
         {
             if(System.Threading.Monitor.TryEnter(ReIndexState.ReIndexLock, 10))
             {
@@ -121,14 +121,31 @@ namespace Catfish.Core.Services
                         Array.Copy(aggregations, aggregationIndex, aggregationSublist, 0, aggregationSize);
 
                         aggregationIndex += bucketSize;
+                        ReIndexState.ReadCount += aggregationSize;
 
                         // Perform the indexing on the sublist
-                        tasks.Add(Task.Factory.StartNew(new Action<object>((aggregationIds) =>
+                        int poolIndex = tasks.Count - poolSize;
+
+                        IDictionary<string, object> aggrigationProperties = new Dictionary<string, object>()
+                        {
+                            { "sublist", aggregationSublist },
+                            { "lastTask", poolIndex < 0 ? null : tasks[poolIndex] }
+                        };
+
+                        Task task = new Task(new Action<object>((aggrProperties) =>
                             {
+                                int[] aggregationIds = (int[])((IDictionary<string, object>)aggrProperties)["sublist"];
+                                Task waitTask = (Task)((IDictionary<string, object>)aggrProperties)["lastTask"];
                                 string taskId = Task.CurrentId.Value.ToString();
+
                                 lock (ReIndexState.ReIndexLock)
                                 {
                                     ReIndexState.TaskProcessedCount.Add(taskId, 0);
+                                }
+
+                                if (waitTask != null)
+                                {
+                                    Task.WaitAll(waitTask);
                                 }
 
                                 if (aggregationSublist != null && aggregationSublist.Count() > 0)
@@ -144,7 +161,8 @@ namespace Catfish.Core.Services
                                         ReIndexState.TaskProcessedCount.Remove(taskId);
                                     }
                                 }
-                            }), aggregationSublist, TaskCreationOptions.PreferFairness | TaskCreationOptions.LongRunning));
+                            }), aggrigationProperties, TaskCreationOptions.PreferFairness | TaskCreationOptions.LongRunning);
+                        tasks.Add(task);
 
                         ++ReIndexState.TaskCount;
                     }
