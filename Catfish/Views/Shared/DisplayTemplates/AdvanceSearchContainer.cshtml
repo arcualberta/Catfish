@@ -208,12 +208,46 @@
             return field.attr("data-searchid") + "en_ss";
         }
 
+        function solrUnescapeValue(input) {
+
+        }
+
         function solrEscapeValue(input) {
-            if (input = null) {
+            if (input == null) {
                 return null;
             }
 
-            return input.replace(/\\/g, "\\").replace(/\(/g, "(").replace(/\)/g, ")");
+            var resultParts = input.replace(/\\/g, "\\").replace(/\(/g, "(").replace(/\)/g, ")").trim().split("\"");
+            var result = "";
+            var inQuotes = false; // Use a boolean instead of looking for even indexes.
+
+            for (var i = 0; i < resultParts.length; ++i) {
+                var part = resultParts[i].trim();
+
+                if (part.length > 0) {
+                    if (inQuotes) {
+                        if (result.length > 0) {
+                            result += " || ";
+                        }
+
+                        result += "\"" + part + "\"";
+                    } else {
+                        part.split(/\s+/).forEach(function (piece) {
+                            if (piece.length > 0) {
+                                if (result.length > 0) {
+                                    result += " || ";
+                                }
+
+                                result += piece;
+                            }
+                        });
+                    }
+                }
+                
+                inQuotes = !inQuotes;
+            }
+            
+            return result;
         }
 
         $("#@cssId form").submit(function (ev) {
@@ -237,7 +271,7 @@
 
                         if (searchValue.length > 0) {
                             searchString = searchString.length > 0 ? searchString + " && " : "";
-                            searchString = searchString + (searchId + 'txts_en:"' + searchValue + '"');
+                            searchString = searchString + (searchId + '(txts_en:' + searchValue + ')');
                         }
                     } else if (entry.hasClass("divNumber")) {
                         var from = entry.find(".search-from").val() == null ? entry.find(".numberDropDownFrom").val() : entry.find(".search-from").val();
@@ -278,16 +312,11 @@
                         }
                     } else if (entry.hasClass("divKeyword")) {
                         var check = entry.children("input").val().trim();
-                        var values = check.split(/\s/g);
 
                         if (check.length > 0 && values.length > 0) {
                             searchString = searchString.length > 0 ? searchString + " && " : "";
                             searchString += '(';
-                            searchString += solrEscapeValue(values[0]);
-
-                            for (var v = 1; v < values.length; ++v) {
-                                searchString += " || " + solrEscapeValue(values[v]);
-                            }
+                            searchString += solrEscapeValue(check);
 
                             searchString += ')';
                         }

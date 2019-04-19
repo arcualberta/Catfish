@@ -50,39 +50,49 @@ namespace Catfish.Core.Services
 
         private int ReIndexBucket(IEnumerable<int> bucket, string taskId)
         {
-            CatfishDbContext db = new CatfishDbContext();
-            var SolrOperations = CommonServiceLocator.ServiceLocator.Current.GetInstance<SolrNet.ISolrOperations<Dictionary<string, object>>>();
-
             int result = 0;
 
-            foreach(int aggregationId in bucket)
+            using (CatfishDbContext db = new CatfishDbContext())
             {
-                CFAggregation aggregation = db.Aggregations.Find(aggregationId);
-
-                if (aggregation.MappedGuid != aggregation.Guid)
+                var SolrOperations = CommonServiceLocator.ServiceLocator.Current.GetInstance<SolrNet.ISolrOperations<Dictionary<string, object>>>();
+                
+                foreach (int aggregationId in bucket)
                 {
-                    aggregation.MappedGuid = aggregation.Guid;
-                    db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
-                }
-                else
-                {
-                    // No need to update the entire model.
-                    SolrOperations.Add(aggregation.ToSolrDictionary());
-                }
+                    CFAggregation aggregation = db.Aggregations.Find(aggregationId);
 
-                ++result;
+                    if (aggregation.MappedGuid != aggregation.Guid)
+                    {
+                        aggregation.MappedGuid = aggregation.Guid;
+                        db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
+                    }
+                    else
+                    {
+                        // No need to update the entire model.
+                        SolrOperations.Add(aggregation.ToSolrDictionary());
+                    }
+
+                    ++result;
+
+                    try
+                    {
+                        ReIndexState.TaskProcessedCount[taskId] = result;
+                    }
+                    catch (KeyNotFoundException ex)
+                    {
+                        ReIndexState.TaskProcessedCount.Add(taskId, result);
+                    }
+                }
 
                 try
                 {
-                    ReIndexState.TaskProcessedCount[taskId] = result;
-                }catch(KeyNotFoundException ex)
+                    SolrOperations.Commit();
+                    db.SaveChanges();
+                }catch(Exception ex)
                 {
-                    ReIndexState.TaskProcessedCount.Add(taskId, result);
+                    ReIndexState.Errors.Add(string.Format("Error occured while saving data on task {2}: {0}\n{1}", ex.Message, ex.StackTrace, taskId));
+                    result = 0;
                 }
             }
-
-            SolrOperations.Commit();
-            db.SaveChanges();
 
             return result;
         }
@@ -106,7 +116,7 @@ namespace Catfish.Core.Services
                     ReIndexState.TaskProcessedCount.Clear();
 
                     int[] aggregations = Db.Aggregations.AsNoTracking()
-                        .Select(a => a.Id).ToArray();
+                        .Select(a => a.Id).OrderByDescending(a => a).ToArray();
 
                     HttpContext currentContext = HttpContext.Current;
 
@@ -138,33 +148,41 @@ namespace Catfish.Core.Services
                                 Task waitTask = (Task)((IDictionary<string, object>)aggrProperties)["lastTask"];
                                 string taskId = Task.CurrentId.Value.ToString();
 
-                                lock (ReIndexState.ReIndexLock)
+                                try
                                 {
-                                    ReIndexState.TaskProcessedCount.Add(taskId, 0);
-                                }
-
-                                if (waitTask != null)
-                                {
-                                    Task.WaitAll(waitTask);
-                                }
-
-                                if (aggregationSublist != null && aggregationSublist.Count() > 0)
-                                {
-                                    HttpContext.Current = currentContext; // Done to find the current user later on
-                                int subResult = ReIndexBucket((IEnumerable<int>)aggregationIds, taskId);
-
                                     lock (ReIndexState.ReIndexLock)
                                     {
-                                        ReIndexState.ProcessedCount += subResult;
-                                        --ReIndexState.TaskCount;
-
-                                        ReIndexState.TaskProcessedCount.Remove(taskId);
+                                        ReIndexState.TaskProcessedCount.Add(taskId, 0);
                                     }
+
+                                    if (waitTask != null)
+                                    {
+                                        Task.WaitAll(waitTask);
+                                    }
+
+                                    if (aggregationSublist != null && aggregationSublist.Count() > 0)
+                                    {
+                                        HttpContext.Current = currentContext; // Done to find the current user later on
+                                        int subResult = ReIndexBucket((IEnumerable<int>)aggregationIds, taskId);
+
+                                        lock (ReIndexState.ReIndexLock)
+                                        {
+                                            ReIndexState.ProcessedCount += subResult;
+                                            --ReIndexState.TaskCount;
+
+                                            ReIndexState.TaskProcessedCount.Remove(taskId);
+                                        }
+                                    }
+                                }catch(Exception ex)
+                                {
+                                    ReIndexState.Errors.Add(string.Format("Error occured while processing data on task {2}: {0}\n{1}", ex.Message, ex.StackTrace, taskId));
                                 }
                             }), aggrigationProperties, TaskCreationOptions.PreferFairness | TaskCreationOptions.LongRunning);
                         tasks.Add(task);
 
                         ++ReIndexState.TaskCount;
+
+                        task.Start();
                     }
                 }
                 finally
@@ -305,6 +323,7 @@ namespace Catfish.Core.Services
             public int ReadCount;
             public int BucketSize;
             public int TaskCount;
+            public IEnumerable<string> Errors;
 
             public IDictionary<string, int> TaskProcessedCount;
         }
@@ -316,6 +335,7 @@ namespace Catfish.Core.Services
         public static int BucketSize = 0;
         public static int TaskCount = 0;
 
+        public static List<string> Errors = new List<string>();
         public static IDictionary<string, int> TaskProcessedCount = new Dictionary<string, int>();
 
         public static bool IsIndexing {
@@ -333,7 +353,8 @@ namespace Catfish.Core.Services
                 ReadCount = ReadCount,
                 BucketSize = BucketSize,
                 TaskCount = TaskCount,
-                TaskProcessedCount = TaskProcessedCount
+                TaskProcessedCount = TaskProcessedCount,
+                Errors = Errors.ToArray()
             };
         }
     }
