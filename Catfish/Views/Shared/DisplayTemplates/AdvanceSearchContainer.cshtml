@@ -209,6 +209,10 @@
         }
 
         function solrEscapeValue(input) {
+            if (input = null) {
+                return null;
+            }
+
             return input.replace(/\\/g, "\\").replace(/\(/g, "(").replace(/\)/g, ")");
         }
 
@@ -228,7 +232,9 @@
 
                     if (entry.hasClass("divText")) {
                         searchValue = entry.children("input").val() == null ? entry.find(".textDropDown").val() : entry.children("input").val();
-                        searchValue = searchValue == null ? entry.children("textarea").val(): searchValue;
+                        searchValue = searchValue == null ? entry.children("textarea").val() : searchValue;
+                        searchValue = solrEscapeValue(searchValue);
+
                         if (searchValue.length > 0) {
                             searchString = searchString.length > 0 ? searchString + " && " : "";
                             searchString = searchString + (searchId + 'txts_en:"' + searchValue + '"');
