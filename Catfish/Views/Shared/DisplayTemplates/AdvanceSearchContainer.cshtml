@@ -209,6 +209,7 @@
         }
 
         function solrUnescapeValue(input) {
+            var orSplit = input.split(" || ");
 
         }
 
@@ -313,9 +314,9 @@
                     } else if (entry.hasClass("divKeyword")) {
                         var check = entry.children("input").val().trim();
 
-                        if (check.length > 0 && values.length > 0) {
+                        if (check.length > 0) {
                             searchString = searchString.length > 0 ? searchString + " && " : "";
-                            searchString += '(';
+                            searchString += '*:(';
                             searchString += solrEscapeValue(check);
 
                             searchString += ')';
