@@ -320,11 +320,11 @@ namespace Catfish.Controllers.Api
         }
 
         [HttpPost]
-        public JsonResult ReIndex(int bucketSize = 10000)
+        public JsonResult ReIndex(int bucketSize = 2048, int poolSize = 10)
         {
             if (!Core.Services.ReIndexState.IsIndexing)
             {
-                AggregationService.ReIndex(bucketSize);
+                AggregationService.ReIndex(bucketSize, poolSize);
             }
 
             return Json(Core.Services.ReIndexState.GetAsStruct());
