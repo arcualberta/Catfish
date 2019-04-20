@@ -177,7 +177,7 @@ namespace Catfish.Core.Services
                                 {
                                     ReIndexState.Errors.Add(string.Format("Error occured while processing data on task {2}: {0}\n{1}", ex.Message, ex.StackTrace, taskId));
                                 }
-                            }), aggrigationProperties, TaskCreationOptions.PreferFairness | TaskCreationOptions.LongRunning);
+                            }), aggrigationProperties, TaskCreationOptions.LongRunning);
                         tasks.Add(task);
 
                         ++ReIndexState.TaskCount;
