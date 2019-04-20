@@ -210,7 +210,15 @@
 
         function solrUnescapeValue(input) {
             var orSplit = input.split(" || ");
+            var result = "";
 
+            orSplit.forEach(function (orValue) {
+                result += orValue;
+
+                result += " ";
+            });
+
+            return result.trim();
         }
 
         function solrEscapeValue(input) {
@@ -218,7 +226,7 @@
                 return null;
             }
 
-            var resultParts = input.replace(/\\/g, "\\").replace(/\(/g, "(").replace(/\)/g, ")").trim().split("\"");
+            var resultParts = input.replace(/\\/g, "\\").replace(/\(/g, "\(").replace(/\)/g, "\)").trim().split("\"");
             var result = "";
             var inQuotes = false; // Use a boolean instead of looking for even indexes.
 
@@ -272,7 +280,7 @@
 
                         if (searchValue.length > 0) {
                             searchString = searchString.length > 0 ? searchString + " && " : "";
-                            searchString = searchString + (searchId + '(txts_en:' + searchValue + ')');
+                            searchString = searchString + (searchId + 'txts_en:(' + searchValue + ')');
                         }
                     } else if (entry.hasClass("divNumber")) {
                         var from = entry.find(".search-from").val() == null ? entry.find(".numberDropDownFrom").val() : entry.find(".search-from").val();
@@ -316,7 +324,7 @@
 
                         if (check.length > 0) {
                             searchString = searchString.length > 0 ? searchString + " && " : "";
-                            searchString += '*:(';
+                            searchString += '(';
                             searchString += solrEscapeValue(check);
 
                             searchString += ')';
@@ -378,14 +386,15 @@
 
                 }
                 else if (c.indexOf("(") == 0) {
-                    var keywords = c.substr(1, c.length - 2).replace(/\s\|\|\s/g, " ");
-                    form.find(".divKeyword input").val(keywords);
+                    var keywords = c.substr(1, c.length - 2);
+                    form.find(".divKeyword input").val(solrUnescapeValue(keywords));
                 }
                 else {
                     c = contents[index].split(":")[0];
-                    var contentValue = (contents[index].split(":")[1]).replace(/[*"]+/g, '')
+                    var contentValue = (contents[index].split(":")[1])
                     if (c.indexOf("option") > -1)  //dropdownlist
                     {
+                        contentValue = contentValue.replace(/[*"]+/g, '');
                         var start = c.indexOf("option");
                         var end = c.indexOf("txt") - start;
                         var idValue = c.substr(start, end);
@@ -403,6 +412,7 @@
 
                     else if (c.indexOf("_is") > -1) //number field
                     {
+                        contentValue = contentValue.replace(/[*"]+/g, '');
                         var start = c.indexOf("value");
                         var end = c.indexOf("is") - start;
                         var idValue = c.substr(start, end);
@@ -426,7 +436,7 @@
                         var idValue = c.substr(start, end);
                         var div = $("div[data-searchid='" + idValue + "']");
                         id = idValue + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
-                        div.find("input").val(contentValue);
+                        div.find("input").val(solrUnescapeValue(contentValue.substr(1, contentValue.length - 2)));
                     }
                 }
 
@@ -478,7 +488,12 @@
 
         $("#@cssId  .autocomplete-text").autocomplete({
             minLength: 1,
-            source: autocompleteCall
+            source: autocompleteCall,
+            select: function (e, ui) {
+                e.preventDefault();
+
+                $(this).val("\"" + ui.item.value + "\"");
+            }
         });
 
         $(function(){
