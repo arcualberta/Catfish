@@ -88,7 +88,14 @@ namespace Catfish.Core.Services
             int start = (page-1) * itemsPerPage;
 
             // The query has been modified to only allow for aggrigations with an entity type to be shown.
-            string modifiedQuery = string.Format("entitytype_s:* AND ({0})", query);
+            //string modifiedQuery = string.Format("entitytype_s:* AND ({0})", query);
+
+            string modifiedQuery = "entitytype_s:*";
+
+            if (!String.IsNullOrEmpty(query))
+            {
+                modifiedQuery += string.Format(" AND ({0})", query);
+            }
 
             List<CFAggregation> data =  new CatfishDbContext().Aggregations.FromSolr(modifiedQuery, 
                 out total, 
