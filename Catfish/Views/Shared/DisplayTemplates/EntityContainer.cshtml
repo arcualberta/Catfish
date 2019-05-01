@@ -15,23 +15,15 @@
     </style>
     @*header*@
     <div class="row ">
-        @foreach(var f in Model.Fields)
-        {
-            string header = Model.Entity.GetAttributeMappingLabel(f);
-            if (!string.IsNullOrEmpty(header))
-            {
-                <div class="col-md-4 panel panel-heading">@header </div>
-            }
-
-        }
-    </div>
-   @*content*@
-    <div class="row">
         @foreach (var f in Model.Fields)
         {
+            string header = Model.Entity.GetAttributeMappingLabel(f);
             string content = Model.Entity.GetAttributeMappingValue(f);
-            
-            <div class="col-md-4">@content</div>
+
+            <dl class="col-xs-12 col-sm-6 col-md-4">
+                <dt>@header</dt>
+                <dd>@content</dd>
+            </dl>
         }
     </div>
 </div>
