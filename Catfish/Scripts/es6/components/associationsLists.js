@@ -203,6 +203,7 @@ export default class AssociationsLists extends React.Component {
                     }
                 })
                 this.setState(newState)
+                console.log(newState)
             })
     }
 

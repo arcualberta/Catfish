@@ -1,0 +1,1 @@
+<Playlist Version="1.0"><Add Test="Catfish.Tests.IntegrationTests.Manager.ItemTests&lt;ChromeDriver&gt;.CanAssociateItemChildren" /><Add Test="Catfish.Tests.IntegrationTests.Manager.CollectionTests&lt;ChromeDriver&gt;.CanAssociateCollectionParents" /><Add Test="Catfish.Tests.IntegrationTests.Manager.CollectionTests&lt;ChromeDriver&gt;.CanAssociateCollectionRelated" /></Playlist>
