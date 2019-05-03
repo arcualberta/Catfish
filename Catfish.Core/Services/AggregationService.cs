@@ -90,12 +90,26 @@ namespace Catfish.Core.Services
             // The query has been modified to only allow for aggrigations with an entity type to be shown.
             //string modifiedQuery = string.Format("entitytype_s:* AND ({0})", query);
 
-            string modifiedQuery = "entitytype_s:*";
+            //string modifiedQuery = "entitytype_s:*";
+
+            //if (!String.IsNullOrEmpty(query))
+            //{
+            //    modifiedQuery += string.Format(" AND ({0})", query);
+            //}
+            //else
+            //{
+            //    modifiedQuery +=" AND (FALSE)";
+            //    modifiedQuery = "";
+            //}
+
+
+            string modifiedQuery = "";
 
             if (!String.IsNullOrEmpty(query))
             {
-                modifiedQuery += string.Format(" AND ({0})", query);
+                modifiedQuery = string.Format("entitytype_s:* AND ({0})", query);
             }
+            
 
             List<CFAggregation> data =  new CatfishDbContext().Aggregations.FromSolr(modifiedQuery, 
                 out total, 
