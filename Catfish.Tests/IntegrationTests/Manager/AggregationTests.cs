@@ -64,10 +64,20 @@ namespace Catfish.Tests.IntegrationTests.Manager
             string parentName1 = Driver.FindElement(By.XPath($@"{parentsDataTable}//tbody//tr[1]//td[2]"), 10).Text;
             string parentName2 = Driver.FindElement(By.XPath($@"{parentsDataTable}//tbody//tr[2]//td[2]"), 10).Text;
 
-            Assert.AreEqual(aggregationName1, parentName1);
-            Assert.AreEqual(aggregationName2, parentName2);
+            List<string> parents = new List<string>
+            {
+                parentName1,
+                parentName2
+            };
+
+            Assert.IsTrue(parents.Contains(aggregationName1));
+            Assert.IsTrue(parents.Contains(aggregationName2));
+            //Assert.AreEqual(aggregationName1, parentName1);
+            //Assert.AreEqual(aggregationName2, parentName2);
         }
 
+        // This test has a problem where the test may fail due to the order of the child names.
+        // To fix this the names were reversed but a better solution is needed.
         protected void AssertAssociateChildren()
         {
             
@@ -88,8 +98,18 @@ namespace Catfish.Tests.IntegrationTests.Manager
             string childName1 = Driver.FindElement(By.XPath($@"{chidlrenDataTable}//tbody//tr[1]//td[2]"), 10).Text;
             string childName2 = Driver.FindElement(By.XPath($@"{chidlrenDataTable}//tbody//tr[2]//td[2]"), 10).Text;
 
-            Assert.AreEqual(aggregationName1, childName1);
-            Assert.AreEqual(aggregationName2, childName2);
+            List<string> children = new List<string>
+            {
+                childName1,
+                childName2
+            };
+
+            Assert.IsTrue(children.Contains(aggregationName1));
+            Assert.IsTrue(children.Contains(aggregationName2));
+
+            // If the test fails childName2 and childName1 may need to be reversed
+            //Assert.AreEqual(aggregationName1, childName1);
+            //Assert.AreEqual(aggregationName2, childName2);
         }
 
         protected void AssertAssociateRelated()
@@ -125,13 +145,12 @@ namespace Catfish.Tests.IntegrationTests.Manager
 
             string aggregationName = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[1]//td[2]"), 10).Text;
             Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[1]"), 10, 1500).Click();
-            //string aggregationName1 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[1]//td[2]"), 10).Text;
 
-            // first aggregation name
+            //// first aggregation name
 
             Driver.FindElement(By.Id("add-" + testName + "-action"), 10, 1500).Click();
-
-
+            //string omar = "add-parents-action";
+            //Driver.FindElement(By.Id(omar)).Click();
 
             string dataTable = "(//div[@id='" + testName + "-actionable-table']//table)[2]";
 
