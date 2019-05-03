@@ -115,7 +115,7 @@ namespace Catfish.Core.Models
 
                 child.ConnectionToParents.Add(member);
 
-                ResetPermissions(child);
+                child.ResetPermissions();
             }
         }
 
@@ -127,7 +127,7 @@ namespace Catfish.Core.Models
 
                 ConnectionToChildren.Remove(connection);
                 child.ConnectionToParents.Remove(connection);
-                ResetPermissions(child);
+                child.ResetPermissions();
 
                 //RefreshChildrenOrdering(connection.Order + 1, -1); // This is currently breaking the system
             }
@@ -192,25 +192,59 @@ namespace Catfish.Core.Models
             return accessMode;
         }
 
-        private void ResetPermissions(CFAggregation agregation)
-        {
-            List<CFAccessGroup> accessGroups = agregation.AccessGroups.ToList();
-            accessGroups.RemoveAll(x => x.IsInherited == true);
-            agregation.AccessGroups = accessGroups;
+        //private void ResetPermissions(CFAggregation agregation)
+        //{
+        //    List<CFAccessGroup> accessGroups = agregation.AccessGroups.ToList();
+        //    accessGroups.RemoveAll(x => x.IsInherited == true);
+        //    agregation.AccessGroups = accessGroups;
 
-            foreach (CFAggregation parent in agregation.ParentMembers)
+        //    foreach (CFAggregation parent in agregation.ParentMembers)
+        //    {
+        //        if (parent != this && parent != agregation)
+        //        {
+        //            foreach (CFAccessGroup accessGroup in parent.AccessGroups)
+        //            {
+        //                agregation.SetAccess(accessGroup.AccessGuid,
+        //                    accessGroup.AccessDefinition.AccessModes,
+        //                    true);
+        //            }
+        //        }
+        //    }
+
+        //    foreach (CFAggregation child in agregation.ChildMembers)
+        //    {
+        //        if (child != this && child != agregation)
+        //        {
+        //            ResetPermissions(child);
+        //        }                
+        //    }
+        //}
+
+        private void ResetPermissions()
+        {
+            List<CFAccessGroup> accessGroups = AccessGroups.ToList();
+            accessGroups.RemoveAll(x => x.IsInherited == true);
+            AccessGroups = accessGroups;
+
+            foreach (CFAggregation parent in ParentMembers)
             {
-                foreach (CFAccessGroup accessGroup in parent.AccessGroups)
+                if (parent != this)
                 {
-                    agregation.SetAccess(accessGroup.AccessGuid,
-                        accessGroup.AccessDefinition.AccessModes,
-                        true);
+                    foreach (CFAccessGroup accessGroup in parent.AccessGroups)
+                    {
+                        SetAccess(accessGroup.AccessGuid,
+                            accessGroup.AccessDefinition.AccessModes,
+                            true);
+                    }
                 }
             }
 
-            foreach (CFAggregation child in agregation.ChildMembers)
+            foreach (CFAggregation child in ChildMembers)
             {
-                ResetPermissions(child);
+                if (child != this)
+                {
+                    child.ResetPermissions();
+                }
             }
         }
 
