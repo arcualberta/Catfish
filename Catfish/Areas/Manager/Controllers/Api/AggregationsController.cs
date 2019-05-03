@@ -202,7 +202,10 @@ namespace Catfish.Controllers.Api
                 {
                     parent.AddChild(aggregation);
                     //Db.Entry(parent).State = System.Data.Entity.EntityState.Modified;
-                    AggregationService.SetHierarchyModified(parent);
+                    if (parent != aggregation)
+                    {
+                        AggregationService.SetHierarchyModified(parent);
+                    }                    
                 }               
             }
             Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;

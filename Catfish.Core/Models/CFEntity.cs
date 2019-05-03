@@ -221,7 +221,9 @@ namespace Catfish.Core.Models
             {
                 {"id", Guid},
                 {"modeltype_s", modelType},
-                {"entitytype_s", this.EntityType == null ? "" : this.EntityType.Name }
+                {"entitytype_s", this.EntityType == null ? "" : this.EntityType.Name },
+                {"created_dt", this.Created.ToUniversalTime() }
+                //{"created_date", this.Created.ToString("yyyy-MM-ddTHH:mm:ssZ") }
             };
 
             // Add access elements for secure searches in solr
