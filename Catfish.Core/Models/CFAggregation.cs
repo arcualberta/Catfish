@@ -15,6 +15,7 @@ namespace Catfish.Core.Models
 
         public override string GetTagName() { return "aggregation"; }
         public override string Label =>"Aggregation";
+        private List<CFAggregation> resetSetAccess = new List<CFAggregation>();
 
         [IgnoreDataMember]
         [InverseProperty("Child")]
@@ -114,9 +115,7 @@ namespace Catfish.Core.Models
 
                 child.ConnectionToParents.Add(member);
 
-                this.AccessGroups.ForEach(x => child.SetAccess(x.AccessGuid,
-                    x.AccessDefinition.AccessModes,
-                    true));
+                child.ResetPermissions();
             }
         }
 
@@ -128,15 +127,7 @@ namespace Catfish.Core.Models
 
                 ConnectionToChildren.Remove(connection);
                 child.ConnectionToParents.Remove(connection);
-                child.AccessGroups.RemoveAll(x => x.IsInherited == true);
-
-                foreach (CFAggregationHasMembers parent in child.ConnectionToParents)
-                {
-                    parent.Parent.AccessGroups.ForEach(x => child.SetAccess(
-                        x.AccessGuid,
-                        x.AccessDefinition.AccessModes,
-                        true));
-                }
+                child.ResetPermissions();
 
                 //RefreshChildrenOrdering(connection.Order + 1, -1); // This is currently breaking the system
             }
@@ -201,6 +192,62 @@ namespace Catfish.Core.Models
             return accessMode;
         }
 
+        //private void ResetPermissions(CFAggregation agregation)
+        //{
+        //    List<CFAccessGroup> accessGroups = agregation.AccessGroups.ToList();
+        //    accessGroups.RemoveAll(x => x.IsInherited == true);
+        //    agregation.AccessGroups = accessGroups;
+
+        //    foreach (CFAggregation parent in agregation.ParentMembers)
+        //    {
+        //        if (parent != this && parent != agregation)
+        //        {
+        //            foreach (CFAccessGroup accessGroup in parent.AccessGroups)
+        //            {
+        //                agregation.SetAccess(accessGroup.AccessGuid,
+        //                    accessGroup.AccessDefinition.AccessModes,
+        //                    true);
+        //            }
+        //        }
+        //    }
+
+        //    foreach (CFAggregation child in agregation.ChildMembers)
+        //    {
+        //        if (child != this && child != agregation)
+        //        {
+        //            ResetPermissions(child);
+        //        }                
+        //    }
+        //}
+
+        private void ResetPermissions()
+        {
+            List<CFAccessGroup> accessGroups = AccessGroups.ToList();
+            accessGroups.RemoveAll(x => x.IsInherited == true);
+            AccessGroups = accessGroups;
+
+            foreach (CFAggregation parent in ParentMembers)
+            {
+                if (parent != this)
+                {
+                    foreach (CFAccessGroup accessGroup in parent.AccessGroups)
+                    {
+                        SetAccess(accessGroup.AccessGuid,
+                            accessGroup.AccessDefinition.AccessModes,
+                            true);
+                    }
+                }
+            }
+
+            foreach (CFAggregation child in ChildMembers)
+            {
+                if (child != this)
+                {
+                    child.ResetPermissions();
+                }
+            }
+        }
+
         public new void SetAccess(Guid guid, AccessMode accessMode, bool isInherited = false)
         {
             //XXX Check control permission
@@ -210,30 +257,32 @@ namespace Catfish.Core.Models
             if (accessGroup == null)
             {
                 base.SetAccess(guid, accessMode, isInherited);
-                return;
-            } else if (accessGroup.IsInherited == false && isInherited == true)
+            }
+            else if (accessGroup.IsInherited == false && isInherited == true)
             {
                 return;
             }
-
-            AccessGroups.Remove(accessGroup);
-            CFAccessGroup newAccessGroup = new CFAccessGroup();
-            newAccessGroup.IsInherited = isInherited;
-            newAccessGroup.Guid = guid.ToString();
-            newAccessGroup.AccessDefinition.AccessModes = accessMode;
-            
-            if (accessGroup.IsInherited == true && isInherited == true)
+            else
             {
-                AccessMode inheritedAccessMode = RecalculateInheritedPermissions(guid);
-                newAccessGroup.AccessDefinition.AccessModes |= inheritedAccessMode;
+                
+
+                List<CFAccessGroup> accessGroups = AccessGroups.ToList() ;
+                accessGroups.Remove(accessGroup);
+                CFAccessGroup newAccessGroup = new CFAccessGroup();
+                newAccessGroup.IsInherited = isInherited;
+                newAccessGroup.Guid = guid.ToString();
+                newAccessGroup.AccessDefinition.AccessModes = accessMode;
+
+                if (accessGroup.IsInherited == true && isInherited == true)
+                {
+                    AccessMode inheritedAccessMode = RecalculateInheritedPermissions(guid);
+                    newAccessGroup.AccessDefinition.AccessModes |= inheritedAccessMode;
+                }
+
+                accessGroups.Add(newAccessGroup);
+                AccessGroups = accessGroups;
             }
 
-            AccessGroups.Add(newAccessGroup);
-            
-            foreach (CFAggregation child in ChildMembers)
-            {
-                child.SetAccess(guid, accessMode, true);
-            }
         }
 
         override public Dictionary<string, object> ToSolrDictionary()
@@ -243,6 +292,40 @@ namespace Catfish.Core.Models
             solrDictionary["parents_ss"] = ParentMembers.Select(x => x.Guid).ToList();
             solrDictionary["related_ss"] = RelatedMembers.Select(x => x.Guid).ToList();
             return solrDictionary;
+        }
+
+        public void VisitHierarchy(Action<CFAggregation> visitor)
+        {
+            List<CFAggregation> toVisit = new List<CFAggregation>
+            {
+                this
+            };
+
+            for (int i = 0; i < toVisit.Count; ++i)
+            {
+                CFAggregation currentAggregation = toVisit[i];
+                visitor(currentAggregation);
+                foreach (CFAggregation child in currentAggregation.ChildMembers)
+                {
+                    //child.Guid
+                    //if (!toVisit.Any(x => x.Guid == child.Guid))
+                    if (!toVisit.Contains(child))
+                    {
+                        toVisit.Add(child);
+                    }
+                }
+            }
+        }
+
+        public bool Equals(CFAggregation other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return Guid == other.Guid &&
+                Id == other.Id;
         }
 
     }

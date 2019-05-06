@@ -201,7 +201,11 @@ namespace Catfish.Controllers.Api
                 if (parent != null)
                 {
                     parent.AddChild(aggregation);
-                    Db.Entry(parent).State = System.Data.Entity.EntityState.Modified;
+                    //Db.Entry(parent).State = System.Data.Entity.EntityState.Modified;
+                    if (parent != aggregation)
+                    {
+                        AggregationService.SetHierarchyModified(parent);
+                    }                    
                 }               
             }
             Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
@@ -221,13 +225,27 @@ namespace Catfish.Controllers.Api
                 if (parent != null)
                 {
                     parent.RemoveChild(aggregation);
-                    Db.Entry(parent).State = System.Data.Entity.EntityState.Modified;
+                    //Db.Entry(parent).State = System.Data.Entity.EntityState.Modified;
+                    AggregationService.SetHierarchyModified(parent);
                 }                
             }
 
-            Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
+            //Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
+            AggregationService.SetHierarchyModified(aggregation);
+
             Db.SaveChanges(User.Identity);
             return Json("");
+        }
+
+        private void SetModifiedChildMembers(CFAggregation aggregation)
+        {
+            aggregation.ChildMembers.Each<CFAggregation>((i, x) =>
+           {
+               Db.Entry(x).State = System.Data.Entity.EntityState.Modified;
+               SetModifiedChildMembers(x);
+           });
+                
+               
         }
 
         [HttpPost]
@@ -241,10 +259,13 @@ namespace Catfish.Controllers.Api
                 if (child != null)
                 {
                     aggregation.AddChild(child);
-                    Db.Entry(child).State = System.Data.Entity.EntityState.Modified;
+                    //Db.Entry(child).State = System.Data.Entity.EntityState.Modified;
+                    //SetModifiedChildMembers(child);
+                    //AggregationService.SetChildrenAsModified(child);
                 }               
             }
-            Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
+            //Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
+            AggregationService.SetHierarchyModified(aggregation);
 
             Db.SaveChanges(User.Identity);
             return Json("");
@@ -261,11 +282,12 @@ namespace Catfish.Controllers.Api
                 if (child != null)
                 {
                     aggregation.RemoveChild(child);
-                    Db.Entry(child).State = System.Data.Entity.EntityState.Modified;
+                    //Db.Entry(child).State = System.Data.Entity.EntityState.Modified;
+                    AggregationService.SetHierarchyModified(child);
                 }                
             }
             Db.Entry(aggregation).State = System.Data.Entity.EntityState.Modified;
-
+            AggregationService.SetHierarchyModified(aggregation);
 
             Db.SaveChanges(User.Identity);
             return Json("");

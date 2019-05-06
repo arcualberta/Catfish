@@ -54,8 +54,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
         [Test]
         public void CanAssociateCollectionChildren()
         {
-
-            SetUpAssociationTest();
+            SetUpAssociationTest();            
             CreateCollections(1);
             CreateItems(1);
             // Create simple entity type
