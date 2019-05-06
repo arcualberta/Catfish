@@ -6,6 +6,7 @@
 })
 @Html.HiddenFor(m => m.Guid)
 @Html.HiddenFor(m => m.IsRichText)
+@Html.HiddenFor(m => m.IsRequired)
 
 <div class="name">
     @Html.Label(string.IsNullOrEmpty(Model.Name) ? "" : Model.Name, new { @name = "label" })

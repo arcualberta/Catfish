@@ -260,7 +260,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             return GetLastButtonByClass("object-accessgroup");
         }
 
-        public void CreateMetadataSet(string name, string description, FormField[] fields, bool isMultiple = false)
+        public void CreateMetadataSet(string name, string description, FormField[] fields, bool isMultiple = false, bool required=false)
         {
             Driver.Navigate().GoToUrl(ManagerUrl);
             Driver.FindElement(By.LinkText(SettingsLinkText)).Click();
@@ -296,6 +296,12 @@ namespace Catfish.Tests.IntegrationTests.Helpers
 
                 // XXX generalize to use all language codes Name_sp, Name_fr
                 lastFieldEntry.FindElement(By.Name("Name_en")).SendKeys(field.Name);
+
+                //make the 1st field mandatory
+                if(i == 1)
+                {
+                    field.IsRequired = required;
+                }
 
                 // XXX need to add options ?
 
@@ -446,11 +452,21 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             // XXX For now fill first input with field name
             for (int i = 0; i < metadatasetValues.Length; ++i)
             {
+                if (metadatasetValues[i].IsRequired)
+                {
+                    //this should fail when click save without entering the req input data
+                    Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
+                    Assert.IsTrue(Driver.FindElement(By.ClassName("sys-message")).Displayed);
+
+                }
+
 
                 IWebElement formField = Driver.FindElements(By.ClassName("form-field"), 10).ElementAt(i);
+               
 
                 if (typeof(TextField).IsAssignableFrom(metadatasetValues[i].GetType()))
                 {
+                   
                     formField.FindElement(By.XPath(".//input[contains(@class, 'text-box single-line')][1]")).SendKeys(metadatasetValues[i].Values[0].Value);
 
                     if (isMultiple)
@@ -522,7 +538,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
         }
 
-        protected void CreateBaseMetadataSet(bool multipleField = false)
+        protected void CreateBaseMetadataSet(bool multipleField = false, bool required = false)
         {
             TextField fieldName = new TextField();
             fieldName.Name = FieldName;
@@ -543,16 +559,16 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             //formFields.Add(fieldName);
             //formFields.Add(fieldDescription);
 
-            CreateMetadataSet(MetadataSetName, MetadataSetDescription, FormFields[0], multipleField);
+            CreateMetadataSet(MetadataSetName, MetadataSetDescription, FormFields[0], multipleField, required);
         }
 
         //XXX Change to be able to specify entity type and metadata set names
-        protected void CreateBaseEntityType(bool multipleField = false)
+        protected void CreateBaseEntityType(bool multipleField = false, bool required = false)
         {
             // Create metadata set
             // create entity type
 
-            CreateBaseMetadataSet(multipleField);
+            CreateBaseMetadataSet(multipleField, required);
 
             CreateEntityType(EntityTypeName, EntityTypeDescription, new[] {
                 MetadataSetName
