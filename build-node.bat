@@ -1,4 +1,4 @@
 pushd %1
-npm install
-npm run build
+call npm install
+call npm run build
 popd
