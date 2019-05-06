@@ -513,7 +513,7 @@ namespace Catfish.Core.Models
             foreach (string val in values)
             {
                 XElement textEelemnt = new XElement("text", new XAttribute(XNamespace.Xml + "lang", lang));
-                textEelemnt.Value = string.IsNullOrEmpty(val.Trim())? "" : val.Trim();
+                textEelemnt.Value = string.IsNullOrEmpty(val) ? "" : val.Trim();
                 parent.Add(textEelemnt);
             }
         }
