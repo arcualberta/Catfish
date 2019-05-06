@@ -509,7 +509,7 @@
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
-    <Compile Include="Controllers\AttachmentController.cs" />
+    <Compile Include="Controllers\Api\AttachmentController.cs" />
     <Compile Include="Controllers\CatfishSinglePageController.cs" />
     <Compile Include="Controllers\EntityController.cs" />
     <Compile Include="Controllers\FormSubmissionController.cs" />
