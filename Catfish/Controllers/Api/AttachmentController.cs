@@ -12,7 +12,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Catfish.Controllers
+namespace Catfish.Controllers.Api
 {
     public class AttachmentController : CatfishController
     {
