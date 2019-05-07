@@ -217,7 +217,28 @@ namespace Catfish.Core.Services
             int start = (page-1) * itemsPerPage;
 
             // The query has been modified to only allow for aggrigations with an entity type to be shown.
-            string modifiedQuery = string.Format("entitytype_s:* AND ({0})", query);
+            //string modifiedQuery = string.Format("entitytype_s:* AND ({0})", query);
+
+            //string modifiedQuery = "entitytype_s:*";
+
+            //if (!String.IsNullOrEmpty(query))
+            //{
+            //    modifiedQuery += string.Format(" AND ({0})", query);
+            //}
+            //else
+            //{
+            //    modifiedQuery +=" AND (FALSE)";
+            //    modifiedQuery = "";
+            //}
+
+
+            string modifiedQuery = "";
+
+            if (!String.IsNullOrEmpty(query))
+            {
+                modifiedQuery = string.Format("entitytype_s:* AND ({0})", query);
+            }
+            
 
             List<CFAggregation> data =  new CatfishDbContext().Aggregations.FromSolr(modifiedQuery, 
                 out total, 
@@ -329,6 +350,17 @@ namespace Catfish.Core.Services
         }
 
         public static object ReIndexLock = new object();
+        public void SetHierarchyModified(CFAggregation aggregation)
+        {
+
+            Action<CFAggregation> setChildModified = (x) =>
+            {
+                Db.Entry(x).State = System.Data.Entity.EntityState.Modified;
+            };
+
+            //VisitHierarchy(aggregation, setChildModified);
+            aggregation.VisitHierarchy(setChildModified);
+        }
         
         public static int ProcessedCount = 0;
         public static int ReadCount = 0;
