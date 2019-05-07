@@ -334,6 +334,18 @@ namespace Catfish.Core.Services
 
             return Index(out total, newQuery, page, itemsPerPage);
         }
+
+        public void SetHierarchyModified(CFAggregation aggregation)
+        {
+
+            Action<CFAggregation> setChildModified = (x) =>
+            {
+                Db.Entry(x).State = System.Data.Entity.EntityState.Modified;
+            };
+
+            //VisitHierarchy(aggregation, setChildModified);
+            aggregation.VisitHierarchy(setChildModified);
+        }
     }
     
     public static class ReIndexState
@@ -350,17 +362,6 @@ namespace Catfish.Core.Services
         }
 
         public static object ReIndexLock = new object();
-        public void SetHierarchyModified(CFAggregation aggregation)
-        {
-
-            Action<CFAggregation> setChildModified = (x) =>
-            {
-                Db.Entry(x).State = System.Data.Entity.EntityState.Modified;
-            };
-
-            //VisitHierarchy(aggregation, setChildModified);
-            aggregation.VisitHierarchy(setChildModified);
-        }
         
         public static int ProcessedCount = 0;
         public static int ReadCount = 0;
