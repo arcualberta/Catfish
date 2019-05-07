@@ -46,19 +46,33 @@ namespace Catfish.Core.Helpers
                     Rows = rows
                 };
 
+                LinkedList<SortOrder> orderBy = new LinkedList<SortOrder>();
+                {
+                    new SortOrder("created_dt", Order.ASC);
+                };
+
+                //orderBy.AddLast(new SortOrder("created_date", Order.ASC));
+
                 if (!string.IsNullOrEmpty(sortRowId))
                 {
-                    options.OrderBy = new List<SortOrder>()
-                    {
-                        new SortOrder(sortRowId, sortAscending ? Order.ASC : Order.DESC)
-                    };
+                    orderBy.AddFirst(new SortOrder(sortRowId, sortAscending ? Order.ASC : Order.DESC));
                 }
 
-                // XXX Add query parameters to filter out by access
+                options.OrderBy = orderBy;
+
+                //if (!string.IsNullOrEmpty(sortRowId))
+                //{
+                //    options.OrderBy = new[]
+                //    {
+                //        new SortOrder(sortRowId, sortAscending ? Order.ASC : Order.DESC),
+                //        //new SortOrder("updated_date", Order.DESC)
+                //        //new SortOrder(sortRowId, sortAscending ? Order.ASC : Order.DESC)
+                //    };
+                //}
+
+                //score desc, updated_date desc
 
                 var solr = ServiceLocator.Current.GetInstance<ISolrOperations<SolrIndex>>();
-
-
 
                 // Create filter query
 
@@ -93,7 +107,7 @@ namespace Catfish.Core.Helpers
                     AbstractSolrQuery entitiTypeFilterQuery = new SolrQueryByField("entitytype_s", entityTypeFilter);
                     filterQuery.Add(entitiTypeFilterQuery);
                 }
-
+                
                 options.FilterQueries = filterQuery;                
 
                 SolrQueryResults<SolrIndex> results = solr.Query(solrQuery, options);
