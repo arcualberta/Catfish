@@ -141,7 +141,7 @@ namespace Catfish.Tests.IntegrationTests.Regions
             //press arraow down key to select the 1st entry on the list
             // autofield.SendKeys(Keys.ArrowDown);
             selectOptionWithText("Item Entry 0");
-            Assert.AreEqual("Item Entry 0", autofield.GetAttribute("value"));
+            Assert.AreEqual("\"Item Entry 0\"", autofield.GetAttribute("value"));
         }
 
         [Test]
