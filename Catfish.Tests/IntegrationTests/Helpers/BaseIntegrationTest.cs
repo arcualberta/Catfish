@@ -455,7 +455,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                 if (metadatasetValues[i].IsRequired)
                 {
                     //this should fail when click save without entering the req input data
-                    Driver.FindElement(By.Id(ToolBarSaveButtonId)).Click();
+                    Driver.FindElement(By.Id(ToolBarSaveButtonId), 5).Click();
                     Assert.IsTrue(Driver.FindElement(By.ClassName("sys-message")).Displayed);
 
                 }
