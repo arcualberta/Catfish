@@ -391,6 +391,7 @@
     <Content Include="Scripts\es6\helpers\index.js" />
     <Content Include="Scripts\es6\components\pagination.js" />
     <Content Include="webpack.config.js" />
+    <Content Include="Areas\Manager\Views\Extensions\GoogleCalendarPanel.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="RazorGenerator.LICENSE.md" />
     <Content Include="Scripts\es6\components\actionButtons.js" />
@@ -455,6 +456,7 @@
     <Compile Include="Models\Regions\CalculatedFieldPanel.cs" />
     <Compile Include="Models\Regions\ListEntitiesPanel.cs" />
     <Compile Include="Models\Regions\QueryFilterPanel.cs" />
+    <Compile Include="Models\Regions\GoogleCalendarPanel.cs" />
     <Compile Include="Models\Regions\TwitterTimelinePanel.cs" />
     <Compile Include="Models\ViewModels\CFAggregationIndexViewModel.cs" />
     <Compile Include="Models\ViewModels\EntityViewModel.cs" />
