@@ -1,0 +1,55 @@
+﻿@model Catfish.Models.Regions.GoogleCalendarPanel
+
+<ul class="form">
+
+    <li>
+        @Html.LabelFor(m => m.CalendarCredentials)
+        <div class="input">
+            @Html.TextAreaFor(m => m.CalendarCredentials, new { placeholder = "Calendar credentials" })
+        </div>
+    </li>
+
+    <li>
+        @Html.LabelFor(m => m.DayRange)
+        <div class="input">
+            @Html.TextBoxFor(m => m.DayRange, new { @type = "number" })
+        </div>
+    </li>
+
+    <li>
+        @Html.LabelFor(m => m.ShowEventName)
+        <div class="input">
+            @Html.CheckBoxFor(m => m.ShowEventName)
+        </div>
+    </li>
+
+    <li>
+        @Html.LabelFor(m => m.ShowEventDescription)
+        <div class="input">
+            @Html.CheckBoxFor(m => m.ShowEventDescription)
+        </div>
+    </li>
+
+    <li>
+        @Html.LabelFor(m => m.ShowEventLocation)
+        <div class="input">
+            @Html.CheckBoxFor(m => m.ShowEventLocation)
+        </div>
+    </li>
+
+    <li>
+        @Html.LabelFor(m => m.ShowEventStart)
+        <div class="input">
+            @Html.CheckBoxFor(m => m.ShowEventStart)
+        </div>
+    </li>
+
+    <li>
+        @Html.LabelFor(m => m.ShowEventEnd)
+        <div class="input">
+            @Html.CheckBoxFor(m => m.ShowEventEnd)
+        </div>
+    </li>
+
+    @Html.Partial("_CatfishRegion", Model)
+</ul>
