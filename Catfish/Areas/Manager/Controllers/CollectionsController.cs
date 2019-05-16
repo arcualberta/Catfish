@@ -9,6 +9,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Catfish.Core.Models.Access;
 using Catfish.Services;
+using Newtonsoft.Json;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -20,7 +21,12 @@ namespace Catfish.Areas.Manager.Controllers
             SecurityService.CreateAccessContext();
             var entities = CollectionService.GetCollections()
                 .Select(e => e as CFEntity);
+            var _eTypes = new SelectList(EntityTypeService.GetEntityTypes(CFEntityType.eTarget.Collections), "Id", "Name");
+
+            ViewBag.EntityTypes = JsonConvert.SerializeObject(_eTypes.ToList());
+
             return View(entities);
+            //return View();
         }
 
         [HttpPost]
