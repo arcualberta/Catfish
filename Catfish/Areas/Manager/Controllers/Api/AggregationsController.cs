@@ -18,6 +18,9 @@ namespace Catfish.Controllers.Api
         public int ItemsPerPage { get; set; } = 10;
         public string Query { get; set; } = "*:*";
         public string SortBy { get; set; } = "";
+
+        public string Type { get; set; } = ""; //CFCollection or CFItem
+        public string EntityType { get; set; } = "";
     }
 
     public class AggregationsController : CatfishController
@@ -25,12 +28,17 @@ namespace Catfish.Controllers.Api
         // GET: apix/Aggregation
         [HttpGet]
         public ContentResult Index([System.Web.Http.FromUri] AggregationRelationParameters parameters)
-        {
+       {
             SecurityService.CreateAccessContext();
 
             if (String.IsNullOrEmpty(parameters.Query))
             {
                 parameters.Query = "*:*";
+            }
+
+            if(!string.IsNullOrEmpty(parameters.Type))
+            {
+                parameters.Query = string.Format("*:* AND modeltype_s: {0}", parameters.Type);
             }
 
             CFAggregationAssociationsViewModel response = new CFAggregationAssociationsViewModel
@@ -47,7 +55,7 @@ namespace Catfish.Controllers.Api
                 out total, 
                 parameters.Query, 
                 response.Page, 
-                parameters.ItemsPerPage).Select(x => new CFAggregationIndexViewModel(x));
+                parameters.ItemsPerPage,parameters.EntityType).Select(x => new CFAggregationIndexViewModel(x));
 
             response.TotalItems = total;
             response.ItemsPerPage = parameters.ItemsPerPage;
@@ -342,5 +350,7 @@ namespace Catfish.Controllers.Api
 
             return Json(result);
         }
+
+        
     }
 }
