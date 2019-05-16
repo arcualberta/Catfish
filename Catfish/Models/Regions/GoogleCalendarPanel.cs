@@ -37,28 +37,12 @@ namespace Catfish.Models.Regions
         [Display(Name = "Show event end")]
         public bool ShowEventEnd { get; set; } = true;
 
-
-        //[Display(Name = "Timeline Url")]
-        //public string TimelineUrl { get; set; }
-
-        //[Display(Name = "Number of Post")]
-        //public int NumOfPosts { get; set; }
-
-        //[Display(Name = "Theme")]
-        //public eTheme Theme { get; set; }
-
-        //public override void InitManager(object model)
-        //{
-        //    base.InitManager(model);
-        //}
-
-        //public override object GetContent(object model)
-        //{
-
-        //    return base.GetContent(model);
-        //}
+        public override object GetContent(object model)
+        {
+            UserCredential credential;
 
 
-    }
-    //public enum eTheme { white, dark }
+            return base.GetContent(model);
+        }
+    }    
 }
