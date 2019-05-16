@@ -150,6 +150,10 @@
     <Compile Include="Migrations\201904021941027_AddedOrderingToAggregationMembers.Designer.cs">
       <DependentUpon>201904021941027_AddedOrderingToAggregationMembers.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904182005057_EmptyMigration.cs" />
+    <Compile Include="Migrations\201904182005057_EmptyMigration.Designer.cs">
+      <DependentUpon>201904182005057_EmptyMigration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Access\CFAccessDefinition.cs" />
     <Compile Include="Models\Access\CFAccessGroup.cs" />
@@ -275,6 +279,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904021941027_AddedOrderingToAggregationMembers.resx">
       <DependentUpon>201904021941027_AddedOrderingToAggregationMembers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904182005057_EmptyMigration.resx">
+      <DependentUpon>201904182005057_EmptyMigration.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Validators.resx">
       <Generator>ResXFileCodeGenerator</Generator>
