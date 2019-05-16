@@ -1,0 +1,19 @@
+﻿@model Catfish.Models.Regions.GoogleCalendarPanel
+
+@{
+    string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
+    string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
+    string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+  
+}
+
+
+<div id="@cssId" class="bs @cssClasses container container-fluid">
+    <style type="text/css" scoped>
+                    @Html.Raw(cssStyles)
+    </style>
+    
+    Google calendar goes here
+
+</div>
+
