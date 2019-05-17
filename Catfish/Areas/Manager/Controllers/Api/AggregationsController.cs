@@ -7,6 +7,7 @@ using Catfish.Areas.Manager.Models.ViewModels;
 using Catfish.Core.Models;
 using Catfish.Models.ViewModels;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace Catfish.Controllers.Api
 {
@@ -342,13 +343,21 @@ namespace Catfish.Controllers.Api
             Db.SaveChanges(User.Identity);
             return Json("");
         }
+        
+        public JsonResult GetReIndexState()
+        {
+            return Json(Core.Services.ReIndexState.GetAsStruct(), JsonRequestBehavior.AllowGet);
+        }
 
         [HttpPost]
-        public JsonResult ReIndex(int bucketSize = 10000, int poolSize = 3)
+        public JsonResult ReIndex(int bucketSize = 2048, int poolSize = 10)
         {
-            int result = AggregationService.ReIndex(bucketSize, poolSize);
+            if (!Core.Services.ReIndexState.IsIndexing)
+            {
+                AggregationService.ReIndex(bucketSize, poolSize);
+            }
 
-            return Json(result);
+            return Json(Core.Services.ReIndexState.GetAsStruct());
         }
 
         

@@ -208,8 +208,55 @@
             return field.attr("data-searchid") + "en_ss";
         }
 
+        function solrUnescapeValue(input) {
+            var orSplit = input.split(" || ");
+            var result = "";
+
+            orSplit.forEach(function (orValue) {
+                result += orValue;
+
+                result += " ";
+            });
+
+            return result.trim();
+        }
+
         function solrEscapeValue(input) {
-            return input.replace(/\\/g, "\\").replace(/\(/g, "(").replace(/\)/g, ")");
+            if (input == null) {
+                return null;
+            }
+
+            var resultParts = input.replace(/\\/g, "\\").replace(/\(/g, "\(").replace(/\)/g, "\)").trim().split("\"");
+            var result = "";
+            var inQuotes = false; // Use a boolean instead of looking for even indexes.
+
+            for (var i = 0; i < resultParts.length; ++i) {
+                var part = resultParts[i].trim();
+
+                if (part.length > 0) {
+                    if (inQuotes) {
+                        if (result.length > 0) {
+                            result += " || ";
+                        }
+
+                        result += "\"" + part + "\"";
+                    } else {
+                        part.split(/\s+/).forEach(function (piece) {
+                            if (piece.length > 0) {
+                                if (result.length > 0) {
+                                    result += " || ";
+                                }
+
+                                result += piece;
+                            }
+                        });
+                    }
+                }
+                
+                inQuotes = !inQuotes;
+            }
+            
+            return result;
         }
 
         $("#@cssId form").submit(function (ev) {
@@ -228,10 +275,12 @@
 
                     if (entry.hasClass("divText")) {
                         searchValue = entry.children("input").val() == null ? entry.find(".textDropDown").val() : entry.children("input").val();
-                        searchValue = searchValue == null ? entry.children("textarea").val(): searchValue;
+                        searchValue = searchValue == null ? entry.children("textarea").val() : searchValue;
+                        searchValue = solrEscapeValue(searchValue);
+
                         if (searchValue.length > 0) {
                             searchString = searchString.length > 0 ? searchString + " && " : "";
-                            searchString = searchString + (searchId + 'txts_en:"' + searchValue + '"');
+                            searchString = searchString + (searchId + 'txts_en:(' + searchValue + ')');
                         }
                     } else if (entry.hasClass("divNumber")) {
                         var from = entry.find(".search-from").val() == null ? entry.find(".numberDropDownFrom").val() : entry.find(".search-from").val();
@@ -272,16 +321,11 @@
                         }
                     } else if (entry.hasClass("divKeyword")) {
                         var check = entry.children("input").val().trim();
-                        var values = check.split(/\s/g);
 
-                        if (check.length > 0 && values.length > 0) {
+                        if (check.length > 0) {
                             searchString = searchString.length > 0 ? searchString + " && " : "";
                             searchString += '(';
-                            searchString += solrEscapeValue(values[0]);
-
-                            for (var v = 1; v < values.length; ++v) {
-                                searchString += " || " + solrEscapeValue(values[v]);
-                            }
+                            searchString += solrEscapeValue(check);
 
                             searchString += ')';
                         }
@@ -342,14 +386,15 @@
 
                 }
                 else if (c.indexOf("(") == 0) {
-                    var keywords = c.substr(1, c.length - 2).replace(/\s\|\|\s/g, " ");
-                    form.find(".divKeyword input").val(keywords);
+                    var keywords = c.substr(1, c.length - 2);
+                    form.find(".divKeyword input").val(solrUnescapeValue(keywords));
                 }
                 else {
                     c = contents[index].split(":")[0];
-                    var contentValue = (contents[index].split(":")[1]).replace(/[*"]+/g, '')
+                    var contentValue = (contents[index].split(":")[1])
                     if (c.indexOf("option") > -1)  //dropdownlist
                     {
+                        contentValue = contentValue.replace(/[*"]+/g, '');
                         var start = c.indexOf("option");
                         var end = c.indexOf("txt") - start;
                         var idValue = c.substr(start, end);
@@ -367,6 +412,7 @@
 
                     else if (c.indexOf("_is") > -1) //number field
                     {
+                        contentValue = contentValue.replace(/[*"]+/g, '');
                         var start = c.indexOf("value");
                         var end = c.indexOf("is") - start;
                         var idValue = c.substr(start, end);
@@ -390,7 +436,7 @@
                         var idValue = c.substr(start, end);
                         var div = $("div[data-searchid='" + idValue + "']");
                         id = idValue + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
-                        div.find("input").val(contentValue);
+                        div.find("input").val(solrUnescapeValue(contentValue.substr(1, contentValue.length - 2)));
                     }
                 }
 
@@ -442,7 +488,12 @@
 
         $("#@cssId  .autocomplete-text").autocomplete({
             minLength: 1,
-            source: autocompleteCall
+            source: autocompleteCall,
+            select: function (e, ui) {
+                e.preventDefault();
+
+                $(this).val("\"" + ui.item.value + "\"");
+            }
         });
 
         $(function(){

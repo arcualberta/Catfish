@@ -372,8 +372,9 @@
     <Content Include="Areas\Manager\Views\FormTemplates\Ingest.cshtml" />
     <Content Include="Areas\Manager\Views\FormTemplates\EditorTemplates\FormIngestionViewModel.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\HtmlField.cshtml" />
-    <Content Include="Scripts\es6\pages\collectionsView.js" />
-    <Content Include="Views\FormSubmission\EditorTemplates\SliderField.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\SliderField.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Areas\Manager\Views\Items\DisplayTemplates\CompositeFormField.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\TwitterTimelinePanel.cshtml" />
     <Content Include="packages.config" />
@@ -510,7 +511,7 @@
     <Compile Include="Areas\Manager\Helpers\ModelMetadataProvider.cs" />
     <Compile Include="Areas\Manager\ModelBinders\MetadataFieldDefinitionBinder.cs" />
     <Compile Include="Areas\Manager\ModelBinders\XmlModelBinder.cs" />
-    <Compile Include="Controllers\AttachmentController.cs" />
+    <Compile Include="Controllers\Api\AttachmentController.cs" />
     <Compile Include="Controllers\CatfishSinglePageController.cs" />
     <Compile Include="Controllers\EntityController.cs" />
     <Compile Include="Controllers\FormSubmissionController.cs" />
@@ -583,16 +584,32 @@
     <Content Include="Views\Shared\_LanguageSwitcher.cshtml" />
     <Content Include="Views\Entity\Index.cshtml" />
     <Content Include="Views\FormSubmission\Index.cshtml" />
-    <Content Include="Views\FormSubmission\EditorTemplates\Form.cshtml" />
-    <Content Include="Views\FormSubmission\EditorTemplates\TextField.cshtml" />
-    <Content Include="Views\FormSubmission\EditorTemplates\TextArea.cshtml" />
-    <Content Include="Views\FormSubmission\EditorTemplates\RadioButtonSet.cshtml" />
-    <Content Include="Views\FormSubmission\EditorTemplates\CheckBoxSet.cshtml" />
-    <Content Include="Views\FormSubmission\EditorTemplates\CheckOption.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\Form.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\FormSubmission\EditorTemplates\TextField.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\FormSubmission\EditorTemplates\TextArea.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\FormSubmission\EditorTemplates\RadioButtonSet.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\FormSubmission\EditorTemplates\CheckBoxSet.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\FormSubmission\EditorTemplates\CheckOption.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Views\FormSubmission\Confirmation.cshtml" />
-    <Content Include="Views\FormSubmission\EditorTemplates\FormViewModel.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\FormViewModel.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Views\Shared\EditorTemplates\Attachment.cshtml" />
-    <Content Include="Views\FormSubmission\EditorTemplates\DataFile.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\DataFile.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Views\Shared\DisplayTemplates\HtmlTag.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Css.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\HtmlRegion.cshtml" />
@@ -605,7 +622,9 @@
     <Content Include="Views\Shared\DisplayTemplates\EntityContainer.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\MembershipContainer.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\RelationshipContainer.cshtml" />
-    <Content Include="Views\FormSubmission\EditorTemplates\ClientInfo.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\ClientInfo.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Views\Shared\DisplayTemplates\GraphPanel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\ListEntitiesPanel.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -623,10 +642,18 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Sidebar.cshtml" />
     <Content Include="Views\Post\Index.cshtml" />
-    <Content Include="Views\FormSubmission\EditorTemplates\HtmlField.cshtml" />
-    <Content Include="Views\FormSubmission\EditorTemplates\CompositeFormField.cshtml" />
-    <Content Include="Views\FormSubmission\EditorTemplates\ExternalMediaField.cshtml" />
-    <Content Include="Views\FormSubmission\EditorTemplates\DropDownMenu.cshtml" />
+    <Content Include="Views\FormSubmission\EditorTemplates\HtmlField.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\FormSubmission\EditorTemplates\CompositeFormField.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\FormSubmission\EditorTemplates\ExternalMediaField.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Views\FormSubmission\EditorTemplates\DropDownMenu.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
