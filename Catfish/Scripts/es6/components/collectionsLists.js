@@ -72,8 +72,7 @@ export default class CollectionsLists extends React.Component {
             //}
             actions: [],
             type:modelType, //CFItem OR CFCollection
-            selectedEntityType:""
-          
+            selectedEntityType:""                
         }
 
         this.state = {
@@ -184,7 +183,7 @@ viewAccessGroup(selectedId){
 
 initActions() {
     this.allActions = [
-        {
+       /* {
             title: "Edit",
             action: this.updateCollection,
             id: "edit-collection-action"
@@ -193,7 +192,7 @@ initActions() {
             title: "Association",
             action: this.addAssociation,
             id: "add-asspciation-action"
-        }
+        }*/
     ]
   
 }
@@ -233,7 +232,7 @@ updatePage(location, payload) {
             query,
             page,
             itemsPerPage: this.state[location].itemsPerPage,
-            type:"CFCollection",
+            type:modelType,
             entityType
             
         }
@@ -242,6 +241,10 @@ updatePage(location, payload) {
             const data = response.data
             const dataData = response.data.data.map(x => {
                 x.actions = [
+                     {
+                         title: "<span class='glyphicon glyphicon-download-alt ' />",
+                         action: this.downloadData     
+                     },
                     {
                         title: "<span class='glyphicon glyphicon-edit object-edit' />",
                         action: this.updateCollection
@@ -251,10 +254,7 @@ updatePage(location, payload) {
                          action: this.addAssociation
                       
                      },
-                     {
-                         title: "<span class='glyphicon glyphicon-download-alt ' />",
-                         action: this.downloadData     
-                     },
+                    
                       {
                           title: "<span class='glyphicon glyphicon-remove object-delete' />",
                           action: this.deleteCollection    
@@ -296,7 +296,7 @@ componentDidMount() {
     axios.get('/apix/Aggregations', {
         params: {
             ItemsPerPage: 10,
-            Type:'CFCollection'
+            Type:modelType
         }
     })
        .then(response => {
@@ -342,9 +342,7 @@ componentDidMount() {
                         totalPages: { $set: data.totalPages },
                         headers: { $set: this.basicHeaders },
                         data: { $set: dataData},
-                        selectedEntityType: {$set: ""}
-                       
-                       
+                        selectedEntityType: {$set: ""}        
                     }
                 });
             this.setState(newState)
@@ -418,11 +416,5 @@ render() {
             
             );
 
-
-
-
     }
-    
-  
-
 }
