@@ -179,8 +179,8 @@
                     @Html.EditorFor(m => Model.Fields[i],
                  new
                  {
-                     UploadApiUrl = @Url.Action("upload", "attachment"),
-                     DeleteApiUrl = @Url.Action("deleteCashedFile", "attachment"),
+                     UploadApiUrl = Url.Action("upload", "attachment"),
+                     DeleteApiUrl = Url.Action("deleteCashedFile", "attachment"),
                      ParentId = Model.Id,
                      Controller = "items",
                      QuestionIndex = ViewData["QuestionIndex"]

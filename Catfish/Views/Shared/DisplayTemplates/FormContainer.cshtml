@@ -3,8 +3,8 @@
 @using Piranha.Mvc;
 @using Piranha.Models;
 
-@{ 
-    string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-','K') : Model.CssId;
+@{
+    string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
 
@@ -16,32 +16,33 @@
 }
 
 <script src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="~/Scripts/attachment.js"></script>
 
-<div id="@cssId" class="bs @cssClasses form loading-form loadable-panel">
-    <style type="text/css" scoped>
+    <div id="@cssId" class="bs @cssClasses form loading-form loadable-panel">
+        <style type="text/css" scoped>
                     @Html.Raw(cssStyles)
-    </style>
-    <form method="post" action="@UI.Permalink()/Edit">
-        @Html.EditorFor(m => m.FormViewModel, new { QuestionIndex = questionIndex })
-        <br />
-        <br />
-        <input class="btn btn-primary" name="submit" type="button" value="@Catfish.Resources.Global.Submit" />
-        <div class="panel panel-default form-submit form-confirm" style="display: none">
-            <div class="panel-body">
-                <p>@Catfish.Resources.Views.Shared.DisplayTemplates.FormContainer.SubmitConfirm</p>
-                <input class="btn btn-primary" name="yes" type="submit" value="@Catfish.Resources.Global.Yes" />
-                <input class="btn btn-primary" name="no" type="button" value="@Catfish.Resources.Global.No" />
+        </style>
+        <form method="post" action="@UI.Permalink()/Edit">
+            @Html.EditorFor(m => m.FormViewModel, new { QuestionIndex = questionIndex })
+            <br />
+            <br />
+            <input class="btn btn-primary" name="submit" type="button" value="@Catfish.Resources.Global.Submit" />
+            <div class="panel panel-default form-submit form-confirm" style="display: none">
+                <div class="panel-body">
+                    <p>@Catfish.Resources.Views.Shared.DisplayTemplates.FormContainer.SubmitConfirm</p>
+                    <input class="btn btn-primary" name="yes" type="submit" value="@Catfish.Resources.Global.Yes" />
+                    <input class="btn btn-primary" name="no" type="button" value="@Catfish.Resources.Global.No" />
+                </div>
             </div>
+
+            <input class="btn btn-primary" name="next" type="button" value="@Catfish.Resources.Global.Next" />
+        </form>
+        <div class="form-success" style="display: none">
+            <p>@Catfish.Resources.Views.Shared.DisplayTemplates.FormContainer.SubmitSuccess</p>
         </div>
-
-        <input class="btn btn-primary" name="next" type="button" value="@Catfish.Resources.Global.Next" />
-    </form>
-    <div class="form-success" style="display: none">
-        <p>@Catfish.Resources.Views.Shared.DisplayTemplates.FormContainer.SubmitSuccess</p>
     </div>
-</div>
 
-<script type="text/javascript">
+    <script type="text/javascript">
     function Setup@(cssId)(){
         var questions = @Html.Raw(Json.Encode(questionIndex));
         var questionIndex = -1;
@@ -161,9 +162,9 @@
         $("#@cssId").addClass("loaded-form");
     };
     Setup@(cssId)();// WE are using this method inorder to keep this comparable with Safari
-</script>
+    </script>
 
-@{ 
-    // Sets the controller back to the original.
-    ViewContext.Controller.ControllerContext.RouteData.Values["controller"] = oldController;
-}
+    @{
+        // Sets the controller back to the original.
+        ViewContext.Controller.ControllerContext.RouteData.Values["controller"] = oldController;
+    }
