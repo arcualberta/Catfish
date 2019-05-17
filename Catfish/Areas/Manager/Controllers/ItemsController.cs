@@ -253,7 +253,11 @@ namespace Catfish.Areas.Manager.Controllers
                 return HttpNotFound("File not found");
 
             string path_name = Path.Combine(file.Path, file.LocalFileName);
-            return new FilePathResult(path_name, file.ContentType);
+
+            FilePathResult result = new FilePathResult(path_name, file.ContentType);
+            result.FileDownloadName = file.FileName;
+
+            return result;
         }
 
         public ActionResult Thumbnail(int id, string name)
