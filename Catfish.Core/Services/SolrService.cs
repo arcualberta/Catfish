@@ -104,7 +104,8 @@ namespace Catfish.Core.Services
                     new KeyValuePair<string, string>("fl", field),
                     new KeyValuePair<string, string>("wt", "json"),
                     new KeyValuePair<string, string>("facet", "on"),
-                    new KeyValuePair<string, string>("facet.field", field)
+                    new KeyValuePair<string, string>("facet.field", field),
+                    new KeyValuePair<string, string>("facet.mincount", "1")
                 };
 
                 var result = SolrService.mSolr.Get("/select", parameters);
