@@ -236,8 +236,8 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         }
 
         public IWebElement GetLastButtonByClass(string cssClass)
-        {
-            return GetLastObjectRow().FindElement(By.XPath($".//button[contains(@class, '{cssClass}')]"));
+        { 
+           return GetLastObjectRow().FindElement(By.XPath($".//button[contains(@class, '{cssClass}')]"));
         }
 
         protected IWebElement GetLastEditButton()
@@ -1014,6 +1014,23 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         {
             Driver.Navigate().GoToUrl(ManagerUrl);
             Driver.FindElement(By.LinkText(ItemsLinkText), 10).Click();
+        }
+
+        protected string FindTestValue(string expectedValue)
+        {
+            string val = "";
+            IWebElement tbody = Driver.FindElement(By.ClassName("object-list"), 10);
+            var cols = tbody.FindElements(By.TagName("td"));
+
+            foreach (var col in cols)
+            {
+                if (!string.IsNullOrEmpty(col.Text) && col.Text.Contains(expectedValue)) //Item's name will display in all 3 lang separated by '/' -- eng is the first one
+                {
+                    val = col.Text.Split('/')[0].Trim();
+                    break;
+                }
+            }
+            return val;
         }
     }
 }

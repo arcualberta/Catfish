@@ -1,6 +1,37 @@
 ﻿@model IQueryable<Catfish.Core.Models.CFEntity>
 
-@{ ViewBag.Title = "Items";
+
+
+@{ ViewBag.Title = "Items"; }
+
+@section Toolbar {
+    @Html.Partial("Partial/IndexToolbar")
+}
+
+@*@Html.Partial("Partial/ObjectList", Model, new ViewDataDictionary() { { "showDeleteButton", true }, { "downloadAction", "DownloadFormData" } })*@
+
+<div class="grid_12">
+
+    <div id="collections"></div>
+
+</div>
+<script>
+    var EntityTypes = @Html.Raw(ViewBag.EntityTypes);
+    //hide checkboxes
+    var modelType="CFItem";
+    var controller="items";
+    $(function() {
+       $("input[type='checkbox']").hide();
+    });
+</script>
+<script src="~/Scripts/dist/collectionsView.js"></script>
+<style>
+    .action-buttons > button {
+        margin-right: 15px;
+    }
+</style>
+
+@*@{ ViewBag.Title = "Items";
     int totalItems = ViewBag.TotalItems != null ? Convert.ToInt32(ViewBag.TotalItems) : 0;
     int Limit = ViewBag.Limit != null ? Convert.ToInt32(ViewBag.Limit) : 25;
     double TotalPage = totalItems > 0 ? Math.Ceiling((float)totalItems / (float)Limit) : 1;
@@ -52,4 +83,4 @@
 
         window.location.search = "?" + decodeURIComponent($.param(search));
     }
-</script>
+</script>*@
