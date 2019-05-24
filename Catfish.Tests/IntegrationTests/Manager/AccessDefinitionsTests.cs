@@ -45,11 +45,21 @@ namespace Catfish.Tests.IntegrationTests.Manager
             Driver.FindElement(By.LinkText(ItemsLinkText)).Click();
 
             // Last item will be Item 2
-            GetLastAccessGroupButton().Click();
-            Driver.FindElement(By.Id(UserNameFieldId)).SendKeys(PublicGroupName);
+            var acessBtns = Driver.FindElements(By.XPath($".//span[contains(@class,'object-accessgroup')]/ancestor::button"), 15);
+            acessBtns[1].Click();
+            //GetLastAccessGroupButton().Click();
+         
             // First element in drop down will be our AccessDefinition previously 
             // created
-            Driver.FindElement(By.ClassName(MenuItemWrapperClass), 10).Click();
+            //test the auto complete
+            IWebElement access = Driver.FindElement(By.Id(UserNameFieldId));
+            access.SendKeys("Pub");
+            //press arrow down key to select the 1st entry on the list
+            access.SendKeys(Keys.ArrowDown);
+            access.SendKeys(Keys.Return);
+
+           // Driver.FindElement(By.ClassName(MenuItemWrapperClass), 10).Click();
+            
             Driver.FindElement(By.Id(AddUserAccessButtonId), 10).Click();
             Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();
         }
@@ -97,6 +107,41 @@ namespace Catfish.Tests.IntegrationTests.Manager
             Assert.AreEqual(1, objectRows.Count);
             firstName = objectRows[0].FindElement(By.XPath("(td)[2]")).Text;                        
             Assert.AreEqual(item2Name, firstName);
+        }
+
+        public void selectOptionWithText(String textToSelect)
+        {
+            try
+            {
+                IWebElement autoOptions = Driver.FindElement(By.Id("ui-id-1"), 20);
+
+                // This is down to wait for the server to populate the list
+                try
+                {
+                    var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(2.0));
+                    wait.Until(d => false);
+                }
+                catch (WebDriverTimeoutException ex)
+                {
+                    // Ignore this exception.
+                }
+
+                List<IWebElement> optionsToSelect = autoOptions.FindElements(By.TagName("li")).ToList();
+                foreach (IWebElement option in optionsToSelect)
+                {
+
+                    if (option.FindElement(By.TagName("div")).Text.Equals(textToSelect))
+                    {
+                        option.Click();
+                        break;
+                    }
+                }
+            }
+            catch (NoSuchElementException e)
+            {
+                throw e;
+            }
+
         }
     }
 }

@@ -17,6 +17,16 @@ import { range } from '../helpers'
 //    height: "50px"
 //}
 
+/*
+    [
+    {
+        title: "some"
+        action: (id) => { do something with id (axios post) }
+    }
+    ]
+
+*/
+
 const ActionableTable = (props) => {
 
     const {
@@ -26,7 +36,8 @@ const ActionableTable = (props) => {
         isEquivalent,
         update,
         location,
-        id
+        id,
+        actionsRow
     } = props
 
 
@@ -78,11 +89,15 @@ ActionableTable.propTypes = {
     update: PropTypes.func.isRequired,
     isEquivalent: PropTypes.func.isRequired,
     maxRows: PropTypes.number,
-    actions: PropTypes.array.isRequired
+    actions: PropTypes.array.isRequired,
+   // isBulkActions: PropTypes.bool
+  
 }
 
 ActionableTable.defaultProps = {
     maxRows: 0
+   // isBulkActions: true
+   
 }
 
 const renderHead = props => {
@@ -135,18 +150,21 @@ const renderBody = props => {
         isEquivalent,
         update,
         location,
-        maxRows = 0
-    } = props
+        maxRows = 0,
+        actions
+        } = props
 
     const restOfTable = getExtraRows(maxRows, data.length, headers)
     
     return (             
-        <tbody>
+        <tbody className="object-list">
             {
                 data.map(datum =>
-                    <tr key={datum.id} className="data-row">
-
+                    
+                    <tr key={datum.id} className="data-row" >
+                      
                         <td className="data-checkbox">
+                            <ConditionalRender condition={actions.length > 0}>
                             <input
                                 type="checkbox"
                                 checked={isChecked({ datum, selected, isEquivalent })}
@@ -154,19 +172,31 @@ const renderBody = props => {
                                     toggle({ datum, selected, isEquivalent, update, location })
                                 }}
                             />
+</ConditionalRender>
                         </td>
-
+                   
 
                         {headers.map(header =>
                             <td key={header.id}>{datum[header.key]}</td>
                         )}
+                         <td>
+                           <ConditionalRender condition={datum.actions!= null && datum.actions.length > 0}>
+                                 <ActionButtons
+                                       actions={datum.actions}
+                                       payload={datum.id}
+                                   />
+                               
+                        </ConditionalRender>
+                                            
+                        </td>
                     </tr>
+
                 )   
-            }
-            { restOfTable }            
+           }
+          { restOfTable }            
         </tbody>
         )
-}
+    }
 
 const isChecked = ({ datum, selected, isEquivalent }) => 
     selected.some(item => isEquivalent(item, datum))
