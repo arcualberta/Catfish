@@ -248,3 +248,22 @@ input[type=range] {
     background-color: #FFF;
     border: 1px solid rgba(106, 175, 230, 0.83);
 }
+
+/*Google calendar panel*/
+
+.calendar-default .calendar-event-dates {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/*.calendar-default .date-time {
+    float: left;
+}
+
+.calendar-default .date-separator {
+    float: left;
+    margin-top: 20px;
+    padding: 10px;
+}*/
