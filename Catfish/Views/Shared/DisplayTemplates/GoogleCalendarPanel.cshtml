@@ -1,19 +1,16 @@
 ﻿@model Catfish.Models.Regions.GoogleCalendarPanel
 
-@{
-    string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
-    string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
-    string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
-  
+
+@switch (Model.RenderMode)
+{
+    case Catfish.Models.Regions.GoogleCalendarPanelRenderMode.Default:
+        @Html.Partial("Partial/GoogleCalendarPanelDefault", Model)
+        break;
+    case Catfish.Models.Regions.GoogleCalendarPanelRenderMode.Flat:
+        @Html.Partial("Partial/GoogleCalendarPanelFlat", Model)
+        break;
+    case Catfish.Models.Regions.GoogleCalendarPanelRenderMode.Json:
+        @Html.Partial("Partial/GoogleCalendarPanelJson", Model)
+        break;
 }
-
-
-<div id="@cssId" class="bs @cssClasses container container-fluid">
-    <style type="text/css" scoped>
-                    @Html.Raw(cssStyles)
-    </style>
-    
-    Google calendar goes here
-
-</div>
 

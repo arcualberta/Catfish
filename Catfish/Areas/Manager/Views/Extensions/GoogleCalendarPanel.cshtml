@@ -3,9 +3,16 @@
 <ul class="form">
 
     <li>
-        @Html.LabelFor(m => m.CalendarCredentials)
+        @Html.LabelFor(m => m.ApiKey)
         <div class="input">
-            @Html.TextAreaFor(m => m.CalendarCredentials, new { placeholder = "Calendar credentials" })
+            @Html.TextBoxFor(m => m.ApiKey, new { placeholder = "Api key" })
+        </div>
+    </li>
+
+    <li>
+        @Html.LabelFor(m => m.CalendarId)
+        <div class="input">
+            @Html.TextBoxFor(m => m.CalendarId, new { placeholder = "Calendar id" })
         </div>
     </li>
 
@@ -17,9 +24,16 @@
     </li>
 
     <li>
-        @Html.LabelFor(m => m.ShowEventName)
+        @Html.LabelFor(m => m.MaxEvents)
         <div class="input">
-            @Html.CheckBoxFor(m => m.ShowEventName)
+            @Html.TextBoxFor(m => m.MaxEvents, new { @type = "number" })
+        </div>
+    </li>
+
+    <li>
+        @Html.LabelFor(m => m.ShowEventSummary)
+        <div class="input">
+            @Html.CheckBoxFor(m => m.ShowEventSummary)
         </div>
     </li>
 
@@ -48,6 +62,15 @@
         @Html.LabelFor(m => m.ShowEventEnd)
         <div class="input">
             @Html.CheckBoxFor(m => m.ShowEventEnd)
+        </div>
+    </li>
+
+    <li>
+        @Html.LabelFor(m => m.RenderMode)
+        <div class="input">
+            <div class="input">
+                @Html.EnumDropDownListFor(model => model.RenderMode)                
+            </div>
         </div>
     </li>
 

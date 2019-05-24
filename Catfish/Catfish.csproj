@@ -410,6 +410,9 @@
     <Content Include="Scripts\es6\components\pagination.js" />
     <Content Include="webpack.config.js" />
     <Content Include="Areas\Manager\Views\Extensions\GoogleCalendarPanel.cshtml" />
+    <Content Include="Views\Shared\Partial\GoogleCalendarPanelJson.cshtml" />
+    <Content Include="Views\Shared\Partial\GoogleCalendarPanelFlat.cshtml" />
+    <Content Include="Views\Shared\Partial\GoogleCalendarPanelDefault.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="RazorGenerator.LICENSE.md" />
     <Content Include="Scripts\es6\components\actionButtons.js" />
