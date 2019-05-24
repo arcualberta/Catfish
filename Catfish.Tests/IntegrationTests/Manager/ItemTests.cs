@@ -28,16 +28,28 @@ namespace Catfish.Tests.IntegrationTests.Manager
            
 
             Driver.FindElement(By.LinkText(ContentLinkText), 10).Click();
-            Driver.FindElement(By.LinkText(ItemsLinkText), 10).Click(); 
-
-            GetLastEditButton().Click();
-            
-            string savedValue = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value")).GetAttribute("value");
-            
+            Driver.FindElement(By.LinkText(ItemsLinkText), 10).Click();
+            string savedValue = FindTestValue(ItemValue);
             Assert.AreEqual(ItemValue, savedValue);
+
+            IWebElement editBtn = Driver.FindElement(By.XPath($".//span[contains(@class,'object-edit')]/ancestor::button"), 15);
+            //GetLastEditButton().Click();
+            editBtn.Click();
+            string EditedValue = "Edited Text";
+            IWebElement inputBox = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value"));
+            inputBox.Clear();
+            inputBox.SendKeys(EditedValue);
+            Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();
+            NavigateToItems();
+            savedValue = FindTestValue(EditedValue);
+            Assert.AreEqual(EditedValue, savedValue);
+           
+            //Assert.AreEqual(ItemValue, savedValue);
             if (multipleField)
             {
-                string secondValue = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_3__Value")).GetAttribute("value");
+                string secondValue = FindTestValue(MultipleField, multipleField);
+               
+                //string secondValue = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_3__Value")).GetAttribute("value");
                 Assert.AreEqual(MultipleField, secondValue);
             }
                    
@@ -140,7 +152,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
             CreateItems(1);
             // Create simple entity type
             NavigateToItems();
-            GetFirstAssociationsButton().Click();
+            Driver.FindElement(By.XPath($".//span[contains(@class,'object-associations')]/ancestor::button"), 15).Click();
+            //GetFirstAssociationsButton().Click();
             AssertAssociateParents();
 
         }
@@ -154,7 +167,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
             CreateItems(1);
             // Create simple entity type
             NavigateToItems();
-            GetFirstAssociationsButton().Click();
+            Driver.FindElement(By.XPath($".//span[contains(@class,'object-associations')]/ancestor::button"), 15).Click();
+            //GetFirstAssociationsButton().Click();
             AssertAssociateChildren();
 
         }
@@ -166,7 +180,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
             CreateItems(1);
             CreateCollections(1);
             NavigateToItems();
-            GetFirstAssociationsButton().Click();
+            Driver.FindElement(By.XPath($".//span[contains(@class,'object-associations')]/ancestor::button"), 15).Click();
+           // GetFirstAssociationsButton().Click();
             AssertAssociateRelated();
 
         }
@@ -178,7 +193,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
             CreateItems(1);
             CreateCollections(1);
             NavigateToItems();
-            GetFirstAssociationsButton().Click();
+            Driver.FindElement(By.XPath($".//span[contains(@class,'object-associations')]/ancestor::button"), 15).Click();
+           // GetFirstAssociationsButton().Click();
             TestForRemoval("parents");
 
         }
@@ -190,7 +206,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
             CreateCollections(1);
             CreateItems(1);
             NavigateToItems();
-            GetFirstAssociationsButton().Click();
+            Driver.FindElement(By.XPath($".//span[contains(@class,'object-associations')]/ancestor::button"), 15).Click();
+           // GetFirstAssociationsButton().Click();
             TestForRemoval("children");
         }
 
@@ -201,7 +218,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
             CreateItems(1);
             CreateCollections(1);                        
             NavigateToItems();
-            GetFirstAssociationsButton().Click();
+            Driver.FindElement(By.XPath($".//span[contains(@class,'object-associations')]/ancestor::button"), 15).Click();
+            //GetFirstAssociationsButton().Click();
             TestForRemoval("related");
         }
 
@@ -212,7 +230,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
             SetUpAssociationTest();
             CreateItems(20);
             NavigateToItems();
-            GetFirstAssociationsButton().Click();
+            Driver.FindElement(By.XPath($".//span[contains(@class,'object-associations')]/ancestor::button"), 15).Click();
+            //GetFirstAssociationsButton().Click();
             AssertPagination();
 
         }
@@ -223,7 +242,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
             SetUpAssociationTest();
             CreateItems(2);
             NavigateToItems();
-            GetFirstAssociationsButton().Click();
+            Driver.FindElement(By.XPath($".//span[contains(@class,'object-associations')]/ancestor::button"), 15).Click();
+            //GetFirstAssociationsButton().Click();
             AssertSearchInActionableTable("1", "Item 1");
         }
 
