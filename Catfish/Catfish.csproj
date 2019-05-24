@@ -247,8 +247,12 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Manager\Views\Metadata\Edit.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataField_REMOVE.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\OptionsField.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataField_REMOVE.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\OptionsField.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Areas\Manager\Views\Metadata\EditTest.cshtml" />
     <Content Include="Areas\Manager\Views\EntityTypes\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\EntityTypes\Index.cshtml" />
@@ -259,22 +263,42 @@
     <Content Include="Areas\Manager\Views\Shared\Partial\DetailsToolbar.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\MetadataField.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\DisplayTemplates\OptionsField.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\EntityViewModel.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\EntityViewModel.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Areas\Manager\Views\Items\Index.cshtml" />
     <Content Include="Areas\Manager\Views\Items\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\Items\EditItem.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataInput.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\TextField.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\TextArea.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\CheckBoxSet.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DateField.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\RadioButtonSet.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DataFile.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\MetadataInput.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\TextField.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\TextArea.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\CheckBoxSet.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DateField.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\RadioButtonSet.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DataFile.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Areas\Manager\Views\Items\UploadTest.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\Entity.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\Entity.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Areas\Manager\Views\Collections\Edit.cshtml" />
     <Content Include="Areas\Manager\Views\Collections\Index.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\EntityAssociationViewModel.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\EntityAssociationViewModel.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\bs-bootstrap\css\bootstrap.css.map" />
     <Content Include="Content\bs-bootstrap\css\bootstrap.min.css.map" />
     <Content Include="Content\bs-bootstrap\fonts\glyphicons-halflings-regular.eot" />
@@ -282,7 +306,9 @@
     <Content Include="Content\bs-bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\bs-bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Areas\Manager\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\CheckOption.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\CheckOption.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Areas\Manager\Views\Shared\Partial\koEditToolbar.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\SelectEntityType.cshtml" />
     <Content Include="Areas\Manager\Views\Shared\Partial\EditEntity.cshtml" />
@@ -293,8 +319,12 @@
     <Content Include="Areas\Manager\Views\Extensions\Carousel.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\TextValue.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\RadioOption.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\TextValue.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\RadioOption.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Areas\Manager\Views\Extensions\MultilingualText.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -369,7 +399,9 @@
     </Content>
     <Content Include="Areas\Manager\Views\FormTemplates\Ingest.cshtml" />
     <Content Include="Areas\Manager\Views\FormTemplates\EditorTemplates\FormIngestionViewModel.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\HtmlField.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\HtmlField.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Views\FormSubmission\EditorTemplates\SliderField.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -630,7 +662,9 @@
     <Content Include="Views\Shared\DisplayTemplates\CalculatedFieldPanel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\QueryFilterPanel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\AdvanceSearchContainer.cshtml" />
-    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DropDownMenu.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\DropDownMenu.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Views\Shared\DisplayTemplates\EntityImagePanel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\CSEntityPanel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Post.cshtml" />
