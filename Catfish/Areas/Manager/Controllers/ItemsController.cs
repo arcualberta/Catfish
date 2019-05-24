@@ -21,7 +21,7 @@ using Catfish.Core.Helpers;
 using Catfish.Areas.Manager.Services;
 using Catfish.Core.Models.Access;
 using Catfish.Services;
-
+using Newtonsoft.Json;
 namespace Catfish.Areas.Manager.Controllers
 {
     public class ItemsController : CatfishController
@@ -49,7 +49,10 @@ namespace Catfish.Areas.Manager.Controllers
             ViewBag.Offset = offset;
             ViewBag.SelectedType = typeId;
 
-            ViewBag.EntityTypes = new SelectList(EntityTypeService.GetEntityTypes(CFEntityType.eTarget.Items), "Id", "Name", typeId);
+            var _eTypes = new SelectList(EntityTypeService.GetEntityTypes(CFEntityType.eTarget.Items), "Id", "Name");
+
+            ViewBag.EntityTypes = JsonConvert.SerializeObject(_eTypes.ToList());
+           // ViewBag.EntityTypes = new SelectList(EntityTypeService.GetEntityTypes(CFEntityType.eTarget.Items), "Id", "Name", typeId);
                        
             if (entities != null)
                 return View(entities);

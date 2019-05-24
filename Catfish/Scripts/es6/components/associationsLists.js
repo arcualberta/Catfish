@@ -65,6 +65,7 @@ export default class AssociationsLists extends React.Component {
             //   action: function to execute on selected data
             //}
             actions: []
+          
         }
 
         this.state = {
@@ -630,5 +631,7 @@ export default class AssociationsLists extends React.Component {
         )
 
     }
+    
+  
 
 }

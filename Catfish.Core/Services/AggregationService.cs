@@ -210,7 +210,8 @@ namespace Catfish.Core.Services
             out int total,
             string query = "*:*",            
             int page = 1,
-            int itemsPerPage = 10            
+            int itemsPerPage = 10,
+            string entityType=""
             ) 
         {
 
@@ -236,7 +237,10 @@ namespace Catfish.Core.Services
 
             if (!String.IsNullOrEmpty(query))
             {
-                modifiedQuery = string.Format("entitytype_s:* AND ({0})", query);
+                if(string.IsNullOrEmpty(entityType))
+                    modifiedQuery = string.Format("entitytype_s:* AND ({0})", query);
+                else
+                    modifiedQuery = string.Format("entitytype_s:{0} AND ({1})",entityType, query);
             }
             
 
