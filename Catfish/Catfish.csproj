@@ -405,6 +405,7 @@
     <Content Include="Areas\Manager\Views\Shared\EditorTemplates\HtmlField.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Scripts\solrQueryParser.js" />
     <Content Include="Views\FormSubmission\EditorTemplates\SliderField.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
