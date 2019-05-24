@@ -151,23 +151,26 @@ searchByEntityType(x, location)
 }
 
 updateCollection(selectedId) { 
-    window.location = "/manager/collections/edit/"+ selectedId;
+   
+    window.location = "/manager/"+ controller + "/edit/"+ selectedId;
+    
 }
 
 addAssociation(selectedId){   
-            
-     window.location= "/manager/collections/associations/"+ selectedId
-
+         
+    window.location= "/manager/"+ controller +"/associations/"+ selectedId;   
 }
 downloadData(selectedId)
 {
-   window.location = "/manager/collections/DownloadFormData/"+ selectedId
+   
+    window.location = "/manager/"+ controller +"/DownloadFormData/"+ selectedId;
+  
   
 }
 
 deleteCollection(selectedId)
 {
-    axios.post('/manager/collections/delete/', {
+    axios.post('/manager/'+ controller +'/delete/', {
         id:selectedId   
         })
         .then(function (response) {             
@@ -177,7 +180,7 @@ deleteCollection(selectedId)
 }
 
 viewAccessGroup(selectedId){
-    window.location = "/manager/collections/accessGroup/" + selectedId
+    window.location = "/manager/"+ controller +"/accessGroup/" + selectedId
 }
 
 
