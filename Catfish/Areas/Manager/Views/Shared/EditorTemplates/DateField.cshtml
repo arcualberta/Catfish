@@ -5,10 +5,11 @@
     {"class", "model-type"}
 })
 @Html.HiddenFor(m => m.Guid)
-@Html.HiddenFor(m => m.Id)
 @Html.HiddenFor(m => m.IsRequired)
+@Html.HiddenFor(m => m.Name)
+
 <div class="form-field-header">
-    @Html.Label(Model.Name)
+    @Html.Label(string.IsNullOrEmpty(Model.Name) ? "" : Model.Name, new { @name = "label" })
 </div>
 <div class="form-field-content">
     @Html.TextBoxFor(m => m.Value, new { @type = "date" })
