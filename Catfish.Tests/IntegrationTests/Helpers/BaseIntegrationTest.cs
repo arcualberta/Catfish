@@ -1016,7 +1016,7 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             Driver.FindElement(By.LinkText(ItemsLinkText), 10).Click();
         }
 
-        protected string FindTestValue(string expectedValue)
+        protected string FindTestValue(string expectedValue, bool multiValue=false)
         {
             string val = "";
             IWebElement tbody = Driver.FindElement(By.ClassName("object-list"), 10);
@@ -1026,7 +1026,10 @@ namespace Catfish.Tests.IntegrationTests.Helpers
             {
                 if (!string.IsNullOrEmpty(col.Text) && col.Text.Contains(expectedValue)) //Item's name will display in all 3 lang separated by '/' -- eng is the first one
                 {
-                    val = col.Text.Split('/')[0].Trim();
+                    if(multiValue)
+                        val = col.Text.Split('/')[1].Trim();
+                    else
+                        val = col.Text.Split('/')[0].Trim();
                     break;
                 }
             }
