@@ -6,6 +6,7 @@
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
     int i = 0;
+    string lang = Catfish.Helpers.ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName;
 }
 <div id="@cssId" class="bs @cssClasses container container-fluid">
     <style type="text/css" scoped>
@@ -190,6 +191,7 @@
 
 <script type="text/javascript">
     {
+        let solrParser = new SolrParser('@lang');
         let isLoaded = false;
         const elmId = "AdvanceSearchContainer-";
 
@@ -260,6 +262,8 @@
         }
 
         $("#@cssId form").submit(function (ev) {
+            var fields = {};
+
             ev.preventDefault();
 
             var searchString = "", searchValue;
@@ -276,6 +280,9 @@
                     if (entry.hasClass("divText")) {
                         searchValue = entry.children("input").val() == null ? entry.find(".textDropDown").val() : entry.children("input").val();
                         searchValue = searchValue == null ? entry.children("textarea").val() : searchValue;
+
+                        fields[searchId] = solrParser.createStringField(searchValue);
+
                         searchValue = solrEscapeValue(searchValue);
 
                         if (searchValue.length > 0) {
@@ -289,6 +296,9 @@
                         if (from.length > 0 || to.length > 0) {
                             from = from ? from : '*';
                             to = to ? to : '*';
+
+                            fields[searchId] = solrParser.createRangeField(from, to);
+
                             searchString = searchString.length > 0 ? searchString + " && " : "";
                             searchString = searchString + (searchId + "is" + ':[' + from + ' TO ' + to + ']');
                         }
@@ -301,6 +311,7 @@
                         }).get()
 
                         if (selectedValues.length > 0) {
+                            fields[searchId] = solrParser.createMultiSelectField(selectedValues);
 
                             var searchOption = "(";
                             for (var i = 0; i < selectedValues.length; i++) {
@@ -315,7 +326,10 @@
                         }
                     } else if (entry.hasClass("divDropDownList")) {
                         selectedValue = entry.find("select option:selected").text();
+                        
                         if (selectedValue.length > 0) {
+                            fields[searchId] = solrParser.createStringField(selectedValue);
+
                             searchString = searchString.length > 0 ? searchString + " && " : "";
                             searchString = searchString + (searchId + 'en_ss:"' + selectedValue + '"');
                         }
@@ -323,6 +337,8 @@
                         var check = entry.children("input").val().trim();
 
                         if (check.length > 0) {
+                            fields["*"] = solrParser.createStringField(check);
+
                             searchString = searchString.length > 0 ? searchString + " && " : "";
                             searchString += '(';
                             searchString += solrEscapeValue(check);
@@ -338,6 +354,7 @@
                 searchString = "*:*";
             }
 
+            var test = solrParser.encode(fields);
             window.updateUrlParameters({ q: searchString, page: 1 });
             return false;
         });
