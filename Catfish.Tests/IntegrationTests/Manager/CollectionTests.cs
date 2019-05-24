@@ -172,22 +172,22 @@ namespace Catfish.Tests.IntegrationTests.Manager
             AssertSearchInActionableTable("1", "Collection 1");            
         }
 
-        private string FindTestValue(string expectedValue)
-        {
-            string val = "";
-            IWebElement tbody = Driver.FindElement(By.ClassName("object-list"), 10);
-            var cols = tbody.FindElements(By.TagName("td"));
+        //private string FindTestValue(string expectedValue)
+        //{
+        //    string val = "";
+        //    IWebElement tbody = Driver.FindElement(By.ClassName("object-list"), 10);
+        //    var cols = tbody.FindElements(By.TagName("td"));
 
-            foreach (var col in cols)
-            {
-                if (!string.IsNullOrEmpty(col.Text) && col.Text.Contains(expectedValue)) //Item's name will display in all 3 lang separated by '/' -- eng is the first one
-                {
-                    val = col.Text.Split('/')[0].Trim();
-                    break;
-                }
-            }
-            return val;
-        }
+        //    foreach (var col in cols)
+        //    {
+        //        if (!string.IsNullOrEmpty(col.Text) && col.Text.Contains(expectedValue)) //Item's name will display in all 3 lang separated by '/' -- eng is the first one
+        //        {
+        //            val = col.Text.Split('/')[0].Trim();
+        //            break;
+        //        }
+        //    }
+        //    return val;
+        //}
 
     }
 }
