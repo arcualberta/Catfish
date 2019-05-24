@@ -20,8 +20,8 @@ namespace Catfish.Tests.IntegrationTests.Manager
         [Test]
         public void CanCreateItem()
         {
-            bool multipleField = false;
-            bool requiredField = false;
+            bool multipleField = true;
+            bool requiredField = true;
             CreateBaseEntityType(multipleField, requiredField);
             // FormFields is instantiated in CreateBaseEntityType
             CreateItem(EntityTypeName, FormFields[0], multipleField);
@@ -47,7 +47,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
             //Assert.AreEqual(ItemValue, savedValue);
             if (multipleField)
             {
-                string secondValue = FindTestValue(MultipleField);
+                string secondValue = FindTestValue(MultipleField, multipleField);
                
                 //string secondValue = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_3__Value")).GetAttribute("value");
                 Assert.AreEqual(MultipleField, secondValue);
