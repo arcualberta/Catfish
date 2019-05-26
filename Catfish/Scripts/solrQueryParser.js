@@ -131,11 +131,19 @@ var SolrParser = function (langCode) {
             }
         }
 
+        if (pieces.length == 0) {
+            return "*:*";
+        }
+
         return pieces.join(" && ");
     }
 
     SolrParser.prototype.decode = function (queryString) {
-        var tokens = tokenize(outputBuffer);
+        if (queryString.trim == "*:*") {
+            return {};
+        }
+
+        var tokens = tokenize(queryString);
     }
 
     SolrParser.prototype.createStringField = function (fieldString) {
