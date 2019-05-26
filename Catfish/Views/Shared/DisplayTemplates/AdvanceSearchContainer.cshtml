@@ -28,7 +28,7 @@
         @foreach (var m in Model.Mappings)
         {
             var fType = m.Field.GetType();
-            var id = "value_" + (m.MetadataSet.Guid.Replace("-", "_")) + "_" + (m.Field.Guid.Replace("-", "_")) + "_";
+            var id = "value_" + (m.MetadataSet.Guid.Replace("-", "_")) + "_" + (m.Field.Guid.Replace("-", "_"));
             var field = Model.Fields[i];
 
             <div class="row advanceSearchContainerInput" data-searchid="@id">
@@ -266,7 +266,7 @@
 
             ev.preventDefault();
 
-            var searchString = "", searchValue;
+            var searchValue;
 
             var rows = $("#@cssId .advanceSearchContainerInput");
 
@@ -280,14 +280,10 @@
                     if (entry.hasClass("divText")) {
                         searchValue = entry.children("input").val() == null ? entry.find(".textDropDown").val() : entry.children("input").val();
                         searchValue = searchValue == null ? entry.children("textarea").val() : searchValue;
-
-                        fields[searchId] = solrParser.createStringField(searchValue);
-
-                        searchValue = solrEscapeValue(searchValue);
+                        searchValue = searchValue.trim;
 
                         if (searchValue.length > 0) {
-                            searchString = searchString.length > 0 ? searchString + " && " : "";
-                            searchString = searchString + (searchId + 'txts_en:(' + searchValue + ')');
+                            fields[searchId] = solrParser.createStringField(searchValue);
                         }
                     } else if (entry.hasClass("divNumber")) {
                         var from = entry.find(".search-from").val() == null ? entry.find(".numberDropDownFrom").val() : entry.find(".search-from").val();
@@ -298,9 +294,6 @@
                             to = to ? to : '*';
 
                             fields[searchId] = solrParser.createRangeField(from, to);
-
-                            searchString = searchString.length > 0 ? searchString + " && " : "";
-                            searchString = searchString + (searchId + "is" + ':[' + from + ' TO ' + to + ']');
                         }
                     } else if (entry.hasClass("divCheckbox")) {
                         var name = elmId + "Chkbox";
@@ -308,53 +301,28 @@
                         var checkboxes = entry.find('input[type="checkbox"]');
                         selectedValues = checkboxes.filter(":checked").map(function () {
                             return this.parentElement.innerText;
-                        }).get()
+                        }).get();
 
                         if (selectedValues.length > 0) {
                             fields[searchId] = solrParser.createMultiSelectField(selectedValues);
-
-                            var searchOption = "(";
-                            for (var i = 0; i < selectedValues.length; i++) {
-                                if (i > 0)
-                                { searchOption += " || "; }
-
-                                searchOption += searchId + 'en_ss:"' + selectedValues[i].trim() + '"';
-                            }
-                            searchOption = searchOption + ")";
-                            searchString = searchString.length > 0 ? searchString + " && " : "";
-                            searchString = searchString + searchOption;
                         }
                     } else if (entry.hasClass("divDropDownList")) {
                         selectedValue = entry.find("select option:selected").text();
                         
                         if (selectedValue.length > 0) {
                             fields[searchId] = solrParser.createStringField(selectedValue);
-
-                            searchString = searchString.length > 0 ? searchString + " && " : "";
-                            searchString = searchString + (searchId + 'en_ss:"' + selectedValue + '"');
                         }
                     } else if (entry.hasClass("divKeyword")) {
                         var check = entry.children("input").val().trim();
 
                         if (check.length > 0) {
                             fields["*"] = solrParser.createStringField(check);
-
-                            searchString = searchString.length > 0 ? searchString + " && " : "";
-                            searchString += '(';
-                            searchString += solrEscapeValue(check);
-
-                            searchString += ')';
                         }
                     }
                 });
             });
 
-            // Search using form
-            if (searchString.trim().length <= 0) {
-                searchString = "*:*";
-            }
-
-            var test = solrParser.encode(fields);
+            var searchString = solrParser.encode(fields);
             window.updateUrlParameters({ q: searchString, page: 1 });
             return false;
         });
