@@ -280,7 +280,7 @@
                     if (entry.hasClass("divText")) {
                         searchValue = entry.children("input").val() == null ? entry.find(".textDropDown").val() : entry.children("input").val();
                         searchValue = searchValue == null ? entry.children("textarea").val() : searchValue;
-                        searchValue = searchValue.trim;
+                        searchValue = searchValue.trim();
 
                         if (searchValue.length > 0) {
                             fields[searchId] = solrParser.createStringField(searchValue);
@@ -327,8 +327,52 @@
             return false;
         });
 
+        function fillStringField(name, field) {
+            var inputField;
+
+            if (name == "*") {
+                inputField = $("[data-searchid='value_*_'] .divKeyword input");
+            } else {
+                inputField = $("[data-searchid='" + name + "'] .divText input");
+            }
+
+            inputField.val(field.data);
+        }
+
+        function fillRangeField(name, field) {
+            $("[data-searchid='" + name + "'] .search-from").val(field.data.min == "*" ? "" : field.data.min);
+            $("[data-searchid='" + name + "'] .search-to").val(field.data.max == "*" ? "" : field.data.max);
+        }
+
+        function fillMultiselectField(name, field) {
+            var parentField = $("[data-searchid='" + name + "']");
+        }
+
         function reloadForm(query)
         {
+            var fields = solrParser.decode(query);
+            var field;
+
+            for (var property in fields) {
+                if (fields.hasOwnProperty(property)) {
+                    field = fields[property];
+
+                    switch (field.type) {
+                        case "string":
+                            fillStringField(property, field);
+                            break;
+
+                        case "range":
+                            fillRangeField(property, field);
+                            break;
+
+                        case "multiselect":
+                            fillMultiselectField(property, field);
+                            break;
+                    }
+                }
+            }
+
             var form = $("#@cssId form");
             var contents = query.split(" && ");
 
@@ -471,7 +515,7 @@
             });
         }
 
-        $("#@cssId  .autocomplete-text").autocomplete({
+        $("#@cssId .autocomplete-text").autocomplete({
             minLength: 1,
             source: autocompleteCall,
             select: function (e, ui) {
