@@ -229,7 +229,7 @@ var SolrParser = function (langCode) {
         var value = null;
         var resultName = name.substring(0, name.length - "_en_ss".length);
 
-        token.next(); // Remove opening bracket.
+        tokens.next(); // Remove opening bracket.
 
         while ((token = tokens.next()) != null) {
             if (token == ")") {
