@@ -3,6 +3,7 @@ using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Catfish.Helpers;
 using Catfish.Models.ViewModels;
+using Piranha;
 using Piranha.Extend;
 using System;
 using System.Collections.Generic;
@@ -69,7 +70,8 @@ namespace Catfish.Models.Regions
                 typeof(RazorGenerator.Mvc.PrecompiledMvcView).Assembly.Location,
                 typeof(System.Linq.Expressions.Expression).Assembly.Location,
                 typeof(CFEntity).Assembly.Location,
-                typeof(ViewHelper).Assembly.Location
+                typeof(ViewHelper).Assembly.Location,
+                typeof(DataContext).Assembly.Location
             };
         }
 
