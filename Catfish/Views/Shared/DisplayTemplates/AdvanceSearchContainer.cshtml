@@ -345,7 +345,18 @@
         }
 
         function fillMultiselectField(name, field) {
-            var parentField = $("[data-searchid='" + name + "']");
+            var parentField = $("[data-searchid='" + name + "'] .search-entry");
+            var selected = field.data;
+
+            if (parentField.hasClass("divCheckbox")) {
+                parentField.find("input[type='checkbox']").each(function (index) {
+                    if (selected.includes($(this.parentElement).find("span").text())) {
+                        this.checked = true;
+                    }
+                });
+            } else if (parentField.hasClass("divDropDownList")) {
+
+            }
         }
 
         function reloadForm(query)
@@ -372,107 +383,6 @@
                     }
                 }
             }
-
-            var form = $("#@cssId form");
-            var contents = query.split(" && ");
-
-            for (var index = 0; index < contents.length; index++) {
-                var c = contents[index].trim();
-                var id = "";
-                if (c.indexOf("(value_") >= 0) {
-                    //options field --checkboxes
-                    var start = c.indexOf("(") + 1;
-                    var end = c.indexOf(")");
-
-                    var orVals = c.substr(start, end).split(" || ");
-                    for (var i = 0; i < orVals.length; i++) {
-                        var v = orVals[i];
-                        var start = v.indexOf("value_");
-
-                        var end = 0;
-                        if (v.indexOf("txts") > 0) {
-                            end = v.indexOf("txts") - start;
-                        } else {
-                            end = v.indexOf("en_ss");
-                        }
-
-                        var idValue = v.substr(start, end);
-                        var div = form.find("div[data-searchid='" + idValue + "']");
-
-
-                        var optText = (orVals[i].split(":")[1]).replace(/[*")]+/g, '')
-
-                        var name = elmId + "Chkbox";
-
-                        var checkboxes = div.find('input[type="checkbox"]');
-                        for (var j = 0; j < checkboxes.length; j++) {
-                            if ((checkboxes[j].nextSibling.parentElement.innerText).trim() === optText.trim()) {
-                                checkboxes[j].checked = true;
-                                break;
-                            }
-                        }
-                    }
-
-                }
-                else if (c.indexOf("(") == 0) {
-                    var keywords = c.substr(1, c.length - 2);
-                    form.find(".divKeyword input").val(solrUnescapeValue(keywords));
-                }
-                else {
-                    c = contents[index].split(":")[0];
-                    var contentValue = (contents[index].split(":")[1])
-                    if (c.indexOf("option") > -1)  //dropdownlist
-                    {
-                        contentValue = contentValue.replace(/[*"]+/g, '');
-                        var start = c.indexOf("option");
-                        var end = c.indexOf("txt") - start;
-                        var idValue = c.substr(start, end);
-                        var div = form.find("div[data-searchid='" + idValue + "']");
-                        var id = "region_Value_" + elmId + "DropdownList";
-
-                        div.find("select option").each(function () {
-                            if ($(this).html() === contentValue) {
-                                $(this).attr("selected", "selected");
-                                return;
-                            }
-                        });
-                        //$("#" + id + " option[text='" + contentValue + "']").attr("selected","selected");
-                    }
-
-                    else if (c.indexOf("_is") > -1) //number field
-                    {
-                        contentValue = contentValue.replace(/[*"]+/g, '');
-                        var start = c.indexOf("value");
-                        var end = c.indexOf("is") - start;
-                        var idValue = c.substr(start, end);
-                        var div = $("div[data-searchid='" + idValue + "']");
-                        var vals = (contentValue.substr(1, (contentValue.length - 2))).split(" ");
-                        var fromVal = vals[0].trim();
-                        var toVal = vals[vals.length - 1];
-
-                        id = idValue + "-From"; //single text box id "AdvanceSearchContainer-{Label}-Text"
-                        fromVal = fromVal ? fromVal : '';
-                        div.find(".search-from").val(fromVal).trigger("change");
-
-                        id = idValue + "-To"; //single text box id "AdvanceSearchContainer-{Label}-Text"
-                        toVal = toVal ? toVal : '';
-                        div.find(".search-to").val(toVal).trigger("change");
-                    }
-                    else if (c.indexOf("txt") > -1) //text field
-                    {
-                        var start = c.indexOf("value");
-                        var end = c.indexOf("txt") - start;
-                        var idValue = c.substr(start, end);
-                        var div = $("div[data-searchid='" + idValue + "']");
-                        id = idValue + "-Text"; //single text box id "AdvanceSearchContainer-{Label}-Text"
-                        div.find("input").val(solrUnescapeValue(contentValue.substr(1, contentValue.length - 2)));
-                    }
-                }
-
-            }
-            //   alert(params);
-
-
         }
 
 
