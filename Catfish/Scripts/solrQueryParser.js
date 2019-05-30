@@ -1,10 +1,11 @@
 ﻿"use strict"
+/*eslint eqeqeq: ["error", "smart"]*/
 
 var SolrParser = function (langCode) {
     this.langCode = langCode;
 }
 {
-    var tokenTypes = ["\\(", "\\)", "\"", "(", ")", ":", "*", "[", "]", "TO", "AND", "and", "OR", "or"];
+    var tokenTypes = ["\\(", "\\)", "\"", "(", ")", ":", "*", "[", "]", "TO", "AND", "OR"];
 
     function tokenizePiece(piece, outputBuffer) {
         if (piece.length == 0) {
