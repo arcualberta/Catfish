@@ -16,6 +16,7 @@ using System.Web;
 using System.Web.Razor;
 using System.Web.Script.Serialization;
 
+
 namespace Catfish.Models.Regions
 {
     [Export(typeof(IExtension))]
@@ -71,7 +72,14 @@ namespace Catfish.Models.Regions
                 typeof(System.Linq.Expressions.Expression).Assembly.Location,
                 typeof(CFEntity).Assembly.Location,
                 typeof(ViewHelper).Assembly.Location,
-                typeof(DataContext).Assembly.Location
+                typeof(Piranha.Entities.Post).Assembly.Location,
+                typeof(Piranha.Entities.PostModel).Assembly.Location,
+                typeof(System.String).Assembly.Location,
+                typeof(Piranha.Areas.Manager.Models.PostListModel).Assembly.Location,
+                typeof(Piranha.DataContext).Assembly.Location,
+                typeof(System.Data.Entity.DbContext).Assembly.Location,
+                typeof(System.Linq.IQueryable<Piranha.Entities.Post>).Assembly.Location
+
             };
         }
 
@@ -90,7 +98,7 @@ namespace Catfish.Models.Regions
 
             try
             {
-                result = ViewHelper.CompileView(string.Join("\n", lines, 1, lines.Length - 1), ClassId, "Catfish.Models.Regions.CSEntityPanel", modelType);
+                result = ViewHelper.CompileView(string.Join("\n", lines, 1, lines.Length - 1), ClassId, "Catfish.Models.Regions.CSEntityPanel", modelType, "Catfish.Helpers.CatfishCompiledView", GetReferencedAssemblies());
             }catch(HttpCompileException ex)
             {
                 throw (ex);
