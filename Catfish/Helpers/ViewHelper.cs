@@ -68,7 +68,7 @@ namespace Catfish.Helpers
 
         }
 
-        public static Assembly CompileView(string viewCode, string defaultClassName, string defaultNamespace, string baseClassGeneric = null, string defaultBaseClass = "Catfish.Helpers.CatfishCompiledView")
+        public static Assembly CompileView(string viewCode, string defaultClassName, string defaultNamespace, string baseClassGeneric = null, string defaultBaseClass = "Catfish.Helpers.CatfishCompiledView", IEnumerable<string> libraries = null)
         {
             string tempFileName = String.Format(@"{0}\{1}.dll",
                     Path.GetTempPath(),
@@ -98,6 +98,17 @@ namespace Catfish.Helpers
             parameters.ReferencedAssemblies.Add(typeof(HtmlString).Assembly.Location);
             parameters.ReferencedAssemblies.Add(typeof(System.Linq.Expressions.Expression).Assembly.Location);
             parameters.ReferencedAssemblies.Add(typeof(System.Web.Helpers.Json).Assembly.Location);
+
+            if(libraries != null)
+            {
+                foreach(string library in libraries)
+                {
+                    if (!parameters.ReferencedAssemblies.Contains(library))
+                    {
+                        parameters.ReferencedAssemblies.Add(library);
+                    }
+                }
+            }
 
 #if DEBUG
             parameters.IncludeDebugInformation = true;
