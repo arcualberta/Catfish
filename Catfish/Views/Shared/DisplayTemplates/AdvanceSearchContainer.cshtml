@@ -327,28 +327,27 @@
             return false;
         });
 
-        function fillStringField(name, field) {
+        function fillStringField(name, searchField, field) {
             var inputField;
-
             if (name == "*") {
-                inputField = $("[data-searchid='value_*_'] .divKeyword input");
+                inputField = searchField.find(".divKeyword input");
             } else {
-                inputField = $("[data-searchid='" + name + "'] .divText input");
+                inputField = searchField.find(".divText input");
             }
-
             inputField.val(field.data);
         }
 
-        function fillRangeField(name, field) {
-            $("[data-searchid='" + name + "'] .search-from").val(field.data.min == "*" ? "" : field.data.min);
-            $("[data-searchid='" + name + "'] .search-to").val(field.data.max == "*" ? "" : field.data.max);
+        function fillRangeField(searchField, field) {
 
-            $("[data-searchid='" + name + "'] .search-from").trigger("change");
-            $("[data-searchid='" + name + "'] .search-to").trigger("change");
+            searchField.find(".search-from").val(field.data.min == "*" ? "" : field.data.min);
+            searchField.find(".search-to").val(field.data.max == "*" ? "" : field.data.max);
+
+            searchField.find(".search-from").trigger("change");
+            searchField.find(".search-to").trigger("change");
         }
 
-        function fillMultiselectField(name, field) {
-            var parentField = $("[data-searchid='" + name + "'] .search-entry");
+        function fillMultiselectField(searchField, field) {
+            var parentField = searchField.find(".search-entry");
             var selected = field.data;
 
             if (parentField.hasClass("divCheckbox")) {
@@ -379,26 +378,33 @@
         {
             var fields = solrParser.decode(query);
             var field;
+            var property;
 
-            for (var property in fields) {
+            $(".advanceSearchContainerInput").each(function (index) {
+                property = $(this).attr("data-searchid");
+
+                if (property == "value_*_") {
+                    property = "*";
+                }
+
                 if (fields.hasOwnProperty(property)) {
                     field = fields[property];
 
                     switch (field.type) {
                         case "string":
-                            fillStringField(property, field);
+                            fillStringField(property, $(this), field);
                             break;
 
                         case "range":
-                            fillRangeField(property, field);
+                            fillRangeField($(this), field);
                             break;
 
                         case "multiselect":
-                            fillMultiselectField(property, field);
+                            fillMultiselectField($(this), field);
                             break;
                     }
                 }
-            }
+            });
         }
 
 
