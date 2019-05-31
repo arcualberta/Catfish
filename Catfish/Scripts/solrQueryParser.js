@@ -1,11 +1,31 @@
 ﻿"use strict"
 /*eslint eqeqeq: ["error", "smart"]*/
 
+var SolrToken = function (value) {
+    this.value = value;
+    SolrToken.tokenMap[value] = this;
+}
+SolrToken.tokenMap = {};
+
 var SolrParser = function (langCode) {
     this.langCode = langCode;
 }
 {
-    var tokenTypes = ["\\(", "\\)", "\"", "(", ")", ":", "*", "[", "]", "TO", "AND", "OR"];
+    var tokenTypes = [
+        new SolrToken("\\("),
+        new SolrToken("\\)"),
+        new SolrToken("\""),
+        new SolrToken("&&"),
+        new SolrToken("||"),
+        new SolrToken("("),
+        new SolrToken(")"),
+        new SolrToken(":"),
+        new SolrToken("*"),
+        new SolrToken("["),
+        new SolrToken("]"),
+        new SolrToken("TO"),
+        new SolrToken("AND"),
+        new SolrToken("OR")];
 
     function tokenizePiece(piece, outputBuffer) {
         if (piece.length == 0) {
@@ -14,21 +34,23 @@ var SolrParser = function (langCode) {
 
         var index;
         var checkType;
+        var wordLength;
 
         for (var i = 0; i < tokenTypes.length; ++i) {
             checkType = tokenTypes[i];
-            index = piece.indexOf(checkType);
+            wordLength = checkType.value.length;
+            index = piece.indexOf(checkType.value);
 
             if (index == 0) {
                 outputBuffer.push(checkType);
-                tokenizePiece(piece.substring(checkType.length), outputBuffer);
+                tokenizePiece(piece.substring(wordLength), outputBuffer);
 
                 return;
             }
             if (index >= 0) {
                 tokenizePiece(piece.substring(0, index), outputBuffer);
                 outputBuffer.push(checkType);
-                tokenizePiece(piece.substring(index + checkType.length), outputBuffer);
+                tokenizePiece(piece.substring(index + wordLength), outputBuffer);
 
                 return;
             }
@@ -59,6 +81,16 @@ var SolrParser = function (langCode) {
         }
 
         TokenEnumerator.prototype.next = function () {
+            var value = this.nextRaw();
+
+            if (value == null) {
+                return null;
+            }
+            
+            return typeof (value) == "string" ? value : value.value;
+        }
+
+        TokenEnumerator.prototype.nextRaw = function () {
             var index = this.index;
             ++index;
 
@@ -72,6 +104,16 @@ var SolrParser = function (langCode) {
         }
 
         TokenEnumerator.prototype.current = function () {
+            var value = this.currentRaw();
+
+            if (value == null) {
+                return null;
+            }
+
+            return typeof(value) == "string" ? value : value.value;
+        }
+
+        TokenEnumerator.prototype.currentRaw = function () {
             var index = this.index;
 
             if (index < 0 || index >= this.data.length) {
