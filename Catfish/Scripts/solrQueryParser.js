@@ -59,21 +59,61 @@ var SolrParser = function (langCode) {
         outputBuffer.push(piece);
     }
 
-    function tokenize(text, outputBuffer) {
+    // Go through each piece and remove quote tokens around keywords
+    function cleanTokenList(result) {
+        var tokenSize = result.length;
+        var token;
+
+        var isInQuote = false;
+        for (var i = tokenSize - 1; i >= 0; --i) {
+            token = result[i];
+
+            if (typeof (token) != "string") {
+                if (token.value == "\"") {
+                    if (isInQuote) {
+                        isInQuote = false;
+                    } else {
+                        // Check the next two elements
+                        var v1, v2;
+
+                        --i;
+                        v1 = i > 0 ? result[i] : "";
+
+                        if (typeof (v1) != "string" || v1.value != "\"") {
+                            --i;
+                            v2 = i >= 0 ? result[i] : "";
+
+                            if (typeof (v2) != "string" && v2.value == "\"") {
+                                // We are in a single token which has been quoted.
+                                result.splice(i, 3, v1);
+                            }
+                        }
+
+                        isInQuote = true;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    function tokenize(text) {
+        var result = [];
         var pieces = text.split(/\s+/g);
 
         pieces.forEach(function (item, index) {
-            tokenizePiece(item, outputBuffer);
+            tokenizePiece(item, result);
         });
 
-        return outputBuffer;
+        result = cleanTokenList(result);
+
+        return result;
     }
 
     var TokenEnumerator = function (inputString) {
-        this.data = [];
         this.index = -1;
-
-        tokenize(inputString, this.data);
+        this.data = tokenize(inputString);
     }
     {
         TokenEnumerator.prototype.push = function (value) {
@@ -154,7 +194,12 @@ var SolrParser = function (langCode) {
                                 result += " || ";
                             }
 
-                            result += piece;
+                            if (SolrToken.tokenMap.hasOwnProperty(piece)) {
+                                // Avoid keywords being used directly in the search.
+                                result += '"' + piece + '"'; 
+                            } else {
+                                result += piece;
+                            }
                         }
                     });
                 }
