@@ -310,7 +310,7 @@
                         selectedValue = entry.find("select option:selected").text();
                         
                         if (selectedValue.length > 0) {
-                            fields[searchId] = solrParser.createStringField(selectedValue);
+                            fields[searchId] = solrParser.createMultiSelectField([selectedValue]);
                         }
                     } else if (entry.hasClass("divKeyword")) {
                         var check = entry.children("input").val().trim();
@@ -342,6 +342,9 @@
         function fillRangeField(name, field) {
             $("[data-searchid='" + name + "'] .search-from").val(field.data.min == "*" ? "" : field.data.min);
             $("[data-searchid='" + name + "'] .search-to").val(field.data.max == "*" ? "" : field.data.max);
+
+            $("[data-searchid='" + name + "'] .search-from").trigger("change");
+            $("[data-searchid='" + name + "'] .search-to").trigger("change");
         }
 
         function fillMultiselectField(name, field) {
@@ -352,10 +355,23 @@
                 parentField.find("input[type='checkbox']").each(function (index) {
                     if (selected.includes($(this.parentElement).find("span").text())) {
                         this.checked = true;
+                    } else {
+                        this.checked = false;
                     }
                 });
             } else if (parentField.hasClass("divDropDownList")) {
+                var options = parentField.find("select option");
+                if (options.length > 0) {
+                    options[0].selected = true;
+                }
 
+                if (selected.length > 0) {
+                    options.each(function (index) {
+                        if ($(this).text() == selected[0]) {
+                            this.selected = true;
+                        }
+                    });
+                }
             }
         }
 
