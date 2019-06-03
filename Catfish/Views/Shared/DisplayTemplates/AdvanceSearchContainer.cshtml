@@ -207,7 +207,7 @@
             var field = divContainer.closest("div[data-searchid]");
             var searchEntries = field.children(".search-entry");
 
-            return field.attr("data-searchid") + "en_ss";
+            return field.attr("data-searchid") + "_en_ss";
         }
 
         function solrUnescapeValue(input) {
@@ -439,7 +439,9 @@
                 },
                 dataType: 'json',
                 success: function (result) {
-                    var result = $.unique(result.response.docs.map(function (m) { return m[field][0]; })).slice(0, 10); // Only use 10 options.
+                    var result = $.unique(result.response.docs.map(function (m) {
+                        return m[field][0];
+                    })).slice(0, 10); // Only use 10 options.
 
                     response(result);
                 },
