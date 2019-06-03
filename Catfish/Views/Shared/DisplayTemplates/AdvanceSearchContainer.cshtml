@@ -381,7 +381,8 @@
             var property;
 
             $(".advanceSearchContainerInput").each(function (index) {
-                property = $(this).attr("data-searchid");
+                var $this = $(this);
+                property = $this.attr("data-searchid");
 
                 if (property == "value_*_") {
                     property = "*";
@@ -392,18 +393,20 @@
 
                     switch (field.type) {
                         case "string":
-                            fillStringField(property, $(this), field);
+                            fillStringField(property, $this, field);
                             break;
 
                         case "range":
-                            fillRangeField($(this), field);
+                            fillRangeField($this, field);
                             break;
 
                         case "multiselect":
-                            fillMultiselectField($(this), field);
+                            fillMultiselectField($this, field);
                             break;
                     }
                 }
+
+                $this.find(".search-to, .search-from").trigger("change");
             });
         }
 
