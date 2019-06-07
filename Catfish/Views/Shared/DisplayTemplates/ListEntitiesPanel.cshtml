@@ -5,7 +5,7 @@
     string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
     string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
     string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
-
+    string lang = Catfish.Helpers.ViewHelper.GetActiveLanguage().TwoLetterISOLanguageName;
 
 }
 
@@ -201,7 +201,8 @@
                     itemPerPage: itemsPerPage,
                     mapIds: mapIds,
                     entityTypeFilter: entityTypeFilter,
-                    q: query
+                    q: query,
+                    lang:'@lang'
                 },
                 success: handleTableResults,
                 error: function (response, ajaxOptions, error) {
