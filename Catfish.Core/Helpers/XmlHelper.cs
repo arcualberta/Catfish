@@ -23,12 +23,12 @@ namespace Catfish.Core.Helpers
             return ((IEnumerable)element.XPathEvaluate(xpath, NamespaceManager)).Cast<XElement>();
         }
 
-        public static IEnumerable<TextValue> GetTextValues(XElement element, bool forceAllLanguages = false, bool excludeBlanks = false)
+        public static IEnumerable<TextValue> GetTextValues(XElement element, bool forceAllLanguages = false, bool excludeBlanks = false, string activeLang=null)
         {
-            return XmlHelper.GetTextValues<TextValue>(element, forceAllLanguages, excludeBlanks);
+            return XmlHelper.GetTextValues<TextValue>(element, forceAllLanguages, excludeBlanks, activeLang);
         }
 
-        public static IEnumerable<T> GetTextValues<T>(XElement element, bool forceAllLanguages = false, bool excludeBlanks = false) where T : TextValue
+        public static IEnumerable<T> GetTextValues<T>(XElement element, bool forceAllLanguages = false, bool excludeBlanks = false, string activeLang = null) where T : TextValue
         {
             List<T> ret = new List<T>();
             List<string> languageCodes = ConfigHelper.LanguagesCodes;
@@ -39,13 +39,27 @@ namespace Catfish.Core.Helpers
             {
                 if (excludeBlanks && string.IsNullOrEmpty(ele.Value))
                     continue;
-
                 XAttribute att = ele.Attribute(XNamespace.Xml + "lang");
                 string lang = att == null ? "" : att.Value.Trim();
-                if (languageCodes.Contains(lang))
+
+                if (string.IsNullOrEmpty(activeLang))
                 {
-                    T txt = (T)cInfo.Invoke(new[] { lang, ConfigHelper.GetLanguageLabel(lang), ele.Value });
-                    ret.Add(txt);
+                   
+                    if (languageCodes.Contains(lang))
+                    {
+                        T txt = (T)cInfo.Invoke(new[] { lang, ConfigHelper.GetLanguageLabel(lang), ele.Value });
+                        ret.Add(txt);
+                    }
+                }
+                else
+                {
+                    
+                    if (lang.Equals(activeLang))
+                    {
+                        T txt = (T)cInfo.Invoke(new[] { activeLang, ConfigHelper.GetLanguageLabel(activeLang), ele.Value });
+                        ret.Add(txt);
+                       
+                    }
                 }
             }
 
