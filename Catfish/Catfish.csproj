@@ -449,6 +449,7 @@
     <Content Include="Views\Shared\Partial\GoogleCalendarPanelJson.cshtml" />
     <Content Include="Views\Shared\Partial\GoogleCalendarPanelFlat.cshtml" />
     <Content Include="Views\Shared\Partial\GoogleCalendarPanelDefault.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\FacebookTimelinePanel.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="RazorGenerator.LICENSE.md" />
     <Content Include="Scripts\es6\components\actionButtons.js" />
@@ -509,6 +510,7 @@
     <Compile Include="Models\Regions\AdvanceSearchContainer.cs" />
     <Compile Include="Models\Regions\CSEntityPanel.cs" />
     <Compile Include="Models\Regions\EntityImagePanel.cs" />
+    <Compile Include="Models\Regions\FacebookTimelinePanel.cs" />
     <Compile Include="Models\Regions\GraphPanel.cs" />
     <Compile Include="Models\Regions\CalculatedFieldPanel.cs" />
     <Compile Include="Models\Regions\ListEntitiesPanel.cs" />
@@ -714,6 +716,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Shared\DisplayTemplates\GoogleCalendarPanel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FacebookTimelinePanel.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
