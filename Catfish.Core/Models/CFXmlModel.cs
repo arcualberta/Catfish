@@ -379,13 +379,13 @@ namespace Catfish.Core.Models
         /// <param name="excludeBlanks"></param>
         /// <param name="optionField"></param>
         /// <returns></returns>
-        public virtual IEnumerable<TextValue> GetValues(bool excludeBlanks = true)
+        public virtual IEnumerable<TextValue> GetValues(bool excludeBlanks = true, string lang=null)
 
         {
            
             XElement wrapper = GetWrapper("value", true, false);
            
-            return XmlHelper.GetTextValues(wrapper, false, excludeBlanks);
+            return XmlHelper.GetTextValues(wrapper, false, excludeBlanks, lang);
         }
 
         public virtual IEnumerable<TextValue> GetOptionValues(bool excludeBlanks = true)
