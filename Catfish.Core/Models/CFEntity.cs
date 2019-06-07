@@ -441,8 +441,9 @@ namespace Catfish.Core.Models
                 {
                     return string.Join(", ", GetAttributeMappingOptionValues(name, lang));
                 }
-
-                return MultilingualHelper.Join(field.GetValues(), " / ", false);
+               
+                return MultilingualHelper.Join(field.GetValues(true, lang), " / ", false);
+               
             }
 
             return null;

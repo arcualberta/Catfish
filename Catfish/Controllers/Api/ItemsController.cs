@@ -31,9 +31,10 @@ namespace Catfish.Controllers.Api
             int page, 
             int itemPerPage, 
             [Bind(Include = "mapIds[]")] int[] mapIds, 
-            bool includeImage = false)
+            bool includeImage = false, string lang=null)
         {
             int total;
+            
             SecurityService.CreateAccessContext();
             var items = ItemService.GetPagedItems(q, entityTypeFilter, sortAttributeMappingId, sortAsc, page, itemPerPage, out total);
 
@@ -51,14 +52,14 @@ namespace Catfish.Controllers.Api
                 List<string> rowContent = new List<string>(mapIds.Length);
                 foreach(string mapping in mappings)
                 {
-                    string content = itm.GetAttributeMappingValue(mapping);
+                    string content = itm.GetAttributeMappingValue(mapping,lang);
 
                     if (content == null)
                     {
                         // Check if the parent has the mapping.
                         foreach (var parent in itm.ParentMembers)
                         {
-                            content = parent.GetAttributeMappingValue(mapping);
+                            content = parent.GetAttributeMappingValue(mapping, lang);
 
                             if(content != null)
                             {
