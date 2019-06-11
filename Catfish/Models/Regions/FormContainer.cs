@@ -161,9 +161,16 @@ namespace Catfish.Models.Regions
             securityService.CreateAccessContext();
 
             Form form = db.FormTemplates.Where(f => f.Id == FormId).FirstOrDefault();
+            List<SelectListItem> listFormFields = new List<SelectListItem>();
             if (form != null)
             {
-                mFormFields = new SelectList(form.Fields, "Name", "Name");
+                GetFormField(form.Fields, "", ref listFormFields);
+
+               // listFormFields.Add(new SelectList(form.Fields, "Name", "Name")); //grab regular fields
+                
+
+                mFormFields = new SelectList(listFormFields, "Value", "Text");// new SelectList(listFormFields, "Name", "Name");
+
             }
 
             if (EntityTypeId > 0)
@@ -205,7 +212,28 @@ namespace Catfish.Models.Regions
 
             return base.GetContent(model);
         }
-       
+        public void GetFormField(IEnumerable<FormField> fd,string parentString,  ref List<SelectListItem> listFields)
+        {
+            
+            foreach (Catfish.Core.Models.Forms.FormField f in fd)
+            {
+                if (typeof(Catfish.Core.Models.Forms.CompositeFormField).IsAssignableFrom(f.GetType()))
+                {
+                    string parent = parentString + f.Guid + " > ";
+                   this.GetFormField(((CompositeFormField)f).Fields,parent,ref listFields);
+                }
+                else
+                {
+                    //listFields = new SelectList(fd.Fields, "Name", "Name");
+                    listFields.Add(new SelectListItem() { Text = parentString + ((FormField)f).Name, Value = parentString + ((FormField)f).Name });
+                  
+                }
+             
+            }
+
+           
+        }
+
     }
     
     [Serializable]
@@ -215,4 +243,7 @@ namespace Catfish.Models.Regions
         public string FieldName { get; set; }
 
     }
+
+
+   
 }
