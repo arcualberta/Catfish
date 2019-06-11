@@ -152,15 +152,16 @@ namespace Catfish.Core.Services
                 var uniqueListIds = result.Values.Select(x => x[listIdCol] as string).Distinct().ToList();
                 foreach (var listId in uniqueListIds.Where(x => x != "*").Select(x => int.Parse(x)))
                 {
-                    listFields.Add(new CompositeFormField() { Page = listId });
+                    listFields.Add(new CompositeFormField() { Name = "Page " + listId, Page = listId });
                     blockFieldSets.Add(listId, new List<CompositeFormField>());
-                    headers.Add(listId, new CompositeFormField());
-                    footers.Add(listId, new CompositeFormField());
+                    headers.Add(listId, new CompositeFormField() { Name = "Footer" });
+                    footers.Add(listId, new CompositeFormField() { Name = "Header" });
                 }
 
                 //Iterating through all the data and creating blocks, headers, footers and questions
-                foreach (var row in result.Values)
+                for (int index = 0; index < result.Values.Count; ++index)
                 {
+                    var row = result.Values[index];
                     List<string> values = row.Select(s => s.ToString().Trim()).ToList();
 
                     //Creating the question
@@ -181,19 +182,19 @@ namespace Catfish.Core.Services
                     ///
                     /// Each precontext and question are represented by a composite field inside the selected block.
                     /// 
-                    CompositeFormField surveyItem = new CompositeFormField();
+                    CompositeFormField surveyItem = new CompositeFormField() { Name = "Question " + (index + 1)};
                     foreach (string pc in preContexts)
                     {
                         if (!string.IsNullOrEmpty(pc.Trim()))
                         {
-                            HtmlField html = new HtmlField();
+                            HtmlField html = new HtmlField() { Name = "Description" };
                             html.SetDescription(pc);
                             surveyItem.InsertChildElement("./fields", html.Data);
                         }
                     }
 
                     //Adding the question text
-                    HtmlField questionTextField = new HtmlField();
+                    HtmlField questionTextField = new HtmlField() { Name = "Text" };
                     questionTextField.SetDescription(questionText);
                     surveyItem.InsertChildElement("./fields", questionTextField.Data);
 
@@ -203,6 +204,7 @@ namespace Catfish.Core.Services
                     {
                         ExternalMediaField mf = new ExternalMediaField()
                         {
+                            Name = "Media",
                             Source = urlBase + mediaFile,
                             MediaType = Models.Data.CFDataFile.MimeType.Audio,
                             PlayOnce = true,
@@ -273,6 +275,7 @@ namespace Catfish.Core.Services
                     else
                         throw new Exception(string.Format("Answer type \"{0}\" is not implemented in survey form ingestion.", answerType));
 
+                    question.Name = "Answer";
                     question.ReferenceLabel = questionId;
                     question.IsRequired = values[isRequiredCol] == "1";
                     question.SetAttribute("question-id", values[questionIdCol].ToString());
@@ -299,7 +302,7 @@ namespace Catfish.Core.Services
                             var block = blockSet.Where(x => x.Page == int.Parse(blockIdStr)).FirstOrDefault();
                             if (block == null)
                             {
-                                block = new CompositeFormField() { Page = int.Parse(blockIdStr) };
+                                block = new CompositeFormField() { Name = "Block " + blockSet.Count, Page = int.Parse(blockIdStr) };
                                 blockSet.Add(block);
                             }
                             block.InsertChildElement("./fields", surveyItem.Data);
