@@ -166,10 +166,7 @@ namespace Catfish.Models.Regions
             {
                 GetFormField(form.Fields, "", ref listFormFields);
 
-               // listFormFields.Add(new SelectList(form.Fields, "Name", "Name")); //grab regular fields
-                
-
-                mFormFields = new SelectList(listFormFields, "Value", "Text");// new SelectList(listFormFields, "Name", "Name");
+                mFormFields = new SelectList(listFormFields, "Value", "Text");
 
             }
 
@@ -219,12 +216,11 @@ namespace Catfish.Models.Regions
             {
                 if (typeof(Catfish.Core.Models.Forms.CompositeFormField).IsAssignableFrom(f.GetType()))
                 {
-                    string parent = parentString + f.Guid + " > ";
+                    string parent = parentString + f.Name + " > ";
                    this.GetFormField(((CompositeFormField)f).Fields,parent,ref listFields);
                 }
                 else
                 {
-                    //listFields = new SelectList(fd.Fields, "Name", "Name");
                     listFields.Add(new SelectListItem() { Text = parentString + ((FormField)f).Name, Value = parentString + ((FormField)f).Name });
                   
                 }
