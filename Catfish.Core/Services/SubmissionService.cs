@@ -292,7 +292,12 @@ namespace Catfish.Core.Services
                 //key: attributeMapping, value Form's Field's Name
                 string attMapping = map.Key;
                 string FieldName = map.Value;
-                FormField formField = storedFormSubmission.FormData.Fields.Where(f => f.Name == FieldName).FirstOrDefault();
+                FormField formField = null;
+                if(FieldName.Contains(" > ")) //composite field
+                    formField = GetFormField(storedFormSubmission.FormData.Fields, FieldName);
+                else
+                    formField =storedFormSubmission.FormData.Fields.Where(f => f.Name == FieldName).FirstOrDefault();
+
                 var FieldValues = formField.GetValues();
 
                 CFEntityTypeAttributeMapping am = entityType.AttributeMappings.Where(a => a.Name == attMapping).FirstOrDefault();
@@ -311,6 +316,47 @@ namespace Catfish.Core.Services
 
             submissionItem.Serialize();
             return submissionItem;
+        }
+
+        public FormField GetFormField(IEnumerable<FormField> fields, string fieldName=null)
+        {
+            string[] fnames = { };
+            FormField field = null;
+            if (fieldName != null & fieldName.Contains(" > "))
+            {
+                fnames = fieldName.Split('>');
+                // fdName = fnames[fnames.Length - 1].Trim();
+            }
+           
+              for (int i = 0; i < fnames.Length; i++)
+                {
+                // IEnumerable<FormField> listFields = fields;
+                foreach (FormField f in fields)
+                {
+                    if (f.Name.Equals(fnames[i].Trim()))
+                    {
+
+                        if (typeof(Catfish.Core.Models.Forms.CompositeFormField).IsAssignableFrom(f.GetType()))
+                        {
+                            fields = ((CompositeFormField)f).Fields;
+                            break;
+                            //this.GetFormField(((CompositeFormField)f).Fields);
+                        }
+                        else
+                        {
+                            if (f.Name.Equals("Answer"))
+                            {
+                                field = f;
+                                break;
+                            }
+
+                        }
+                    }
+                }
+            }
+           
+            
+            return field;
         }
     }
 }
