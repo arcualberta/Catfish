@@ -43,6 +43,9 @@
     </div>
 
     <script type="text/javascript">
+        $(".control-label").hide();
+        $(".name").hide();
+
     function Setup@(cssId)(){
         var questions = @Html.Raw(Json.Encode(questionIndex));
         var questionIndex = -1;
