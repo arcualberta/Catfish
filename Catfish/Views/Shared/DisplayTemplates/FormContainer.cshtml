@@ -43,9 +43,7 @@
     </div>
 
     <script type="text/javascript">
-        $(".control-label").hide();
-        $(".name").hide();
-
+       
     function Setup@(cssId)(){
         var questions = @Html.Raw(Json.Encode(questionIndex));
         var questionIndex = -1;
@@ -171,3 +169,11 @@
         // Sets the controller back to the original.
         ViewContext.Controller.ControllerContext.RouteData.Values["controller"] = oldController;
     }
+<style>
+    .form-field > .name {
+        display: none;
+    }
+    .comp-field > div > div > .control-label {
+        display: none;
+    }
+</style>
