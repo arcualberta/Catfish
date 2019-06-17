@@ -182,7 +182,7 @@ namespace Catfish.Core.Services
                     ///
                     /// Each precontext and question are represented by a composite field inside the selected block.
                     /// 
-                    CompositeFormField surveyItem = new CompositeFormField() { Name = "Question " + (index + 1)};
+                    CompositeFormField surveyItem = new CompositeFormField() { Name = "Question " + questionId };
                     foreach (string pc in preContexts)
                     {
                         if (!string.IsNullOrEmpty(pc.Trim()))
@@ -302,7 +302,7 @@ namespace Catfish.Core.Services
                             var block = blockSet.Where(x => x.Page == int.Parse(blockIdStr)).FirstOrDefault();
                             if (block == null)
                             {
-                                block = new CompositeFormField() { Name = "Block " + blockSet.Count, Page = int.Parse(blockIdStr) };
+                                block = new CompositeFormField() { Name = "Block " + blockIdStr, Page = int.Parse(blockIdStr) };
                                 blockSet.Add(block);
                             }
                             block.InsertChildElement("./fields", surveyItem.Data);

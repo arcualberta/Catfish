@@ -112,6 +112,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
 
                     AttributeMappings.Add(new AttributeMapping
                     {
+                        Id = map.Id,
                         Name = map.Name,
                         Field = map.FieldName,
                         MetadataSetFieldId = map.MetadataSetId,
@@ -122,8 +123,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
             }
             else
             {
-                AttributeMappings.Add(new AttributeMapping { Name = "Name Mapping", Deletable = false });
-                AttributeMappings.Add(new AttributeMapping { Name = "Description Mapping", Deletable = true, ErrorMessage="" });
+                AttributeMappings.Add(new AttributeMapping { Id = 0, Name = "Name Mapping", Deletable = false });
+                AttributeMappings.Add(new AttributeMapping { Id = 0, Name = "Description Mapping", Deletable = true, ErrorMessage="" });
             }
             
         }
@@ -168,20 +169,30 @@ namespace Catfish.Areas.Manager.Models.ViewModels
                 }
             }
 
-            //mr March 20 2018
+            // Remvoe all the missing attribute mappings.
             model.AttributeMappings.Clear();
-            MetadataService mService = new MetadataService(db);
             foreach(var map in AttributeMappings)
             {
-                model.AttributeMappings.Add( new CFEntityTypeAttributeMapping
-                                                    {
-                                                        Name = map.Name,
-                                                        FieldName = map.Field,
-                                                        MetadataSetId = map.MetadataSetFieldId,
-                                                        Label = map.Label,
-                                                        Deletable = map.Deletable
-                                                    }                       
-                                            );
+                CFEntityTypeAttributeMapping attrMapping = new CFEntityTypeAttributeMapping
+                {
+                    Id = map.Id,
+                    Name = map.Name,
+                    FieldName = map.Field,
+                    MetadataSetId = map.MetadataSetFieldId,
+                    Label = map.Label,
+                    Deletable = map.Deletable
+                };
+
+                if (map.Id > 0)
+                {
+                    CFEntityTypeAttributeMapping oldAttrMapping = db.EntityTypeAttributeMappings.Find(map.Id);
+
+                    db.Entry(oldAttrMapping).CurrentValues.SetValues(attrMapping);
+
+                    attrMapping = oldAttrMapping;
+                } 
+
+                model.AttributeMappings.Add(attrMapping);
             }
         }
 
@@ -212,6 +223,7 @@ namespace Catfish.Areas.Manager.Models.ViewModels
     //mr
     public class AttributeMapping
     {
+        public int Id { get; set; }
         [Required]
         public int MetadataSetFieldId { get; set; }
         [Required]
