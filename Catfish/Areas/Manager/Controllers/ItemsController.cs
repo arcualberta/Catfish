@@ -49,7 +49,7 @@ namespace Catfish.Areas.Manager.Controllers
             ViewBag.Offset = offset;
             ViewBag.SelectedType = typeId;
 
-            var _eTypes = new SelectList(EntityTypeService.GetEntityTypes(CFEntityType.eTarget.Items), "Id", "Name");
+            var _eTypes = new SelectList(EntityTypeService.GetEntityTypes(CFEntityType.eTarget.Items).OrderBy(e => e.Name), "Id", "Name");
 
             ViewBag.EntityTypes = JsonConvert.SerializeObject(_eTypes.ToList());
            // ViewBag.EntityTypes = new SelectList(EntityTypeService.GetEntityTypes(CFEntityType.eTarget.Items), "Id", "Name", typeId);
