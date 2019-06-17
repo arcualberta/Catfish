@@ -21,7 +21,7 @@ namespace Catfish.Areas.Manager.Controllers
             SecurityService.CreateAccessContext();
             var entities = CollectionService.GetCollections()
                 .Select(e => e as CFEntity);
-            var _eTypes = new SelectList(EntityTypeService.GetEntityTypes(CFEntityType.eTarget.Collections), "Id", "Name");
+            var _eTypes = new SelectList(EntityTypeService.GetEntityTypes(CFEntityType.eTarget.Collections).OrderBy(e => e.Name), "Id", "Name");
 
             ViewBag.EntityTypes = JsonConvert.SerializeObject(_eTypes.ToList());
 
