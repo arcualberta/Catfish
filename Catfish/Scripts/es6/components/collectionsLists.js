@@ -170,13 +170,14 @@ downloadData(selectedId)
 
 deleteCollection(selectedId)
 {
-    axios.post('/manager/'+ controller +'/delete/', {
-        id:selectedId   
-        })
-        .then(function (response) {             
-            window.location.reload();
-        })
-       .catch(error => console.log(error));
+    if(confirm("This will delete the entity " + selectedId + ". Do you wish to continue?")){
+        axios.post('/manager/' + controller + '/delete/', {
+            id: selectedId
+        }).then(function (response) {
+                window.location.reload();
+            })
+            .catch(error => console.log(error));
+    }
 }
 
 viewAccessGroup(selectedId){
