@@ -39,7 +39,7 @@ namespace Catfish.Controllers.Api
 
             if(!string.IsNullOrEmpty(parameters.Type))
             {
-                parameters.Query = string.Format("*:* AND modeltype_s: {0}", parameters.Type);
+                parameters.Query = string.Format("{1} AND modeltype_s: {0}", parameters.Type, parameters.Query);
             }
 
             CFAggregationAssociationsViewModel response = new CFAggregationAssociationsViewModel
