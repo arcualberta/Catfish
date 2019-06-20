@@ -8,6 +8,8 @@ const ActionableDropDownList = (props) =>
                     onChange={props.handleChange} 
                     className="dropdown-toggle form-control"
                     >
+                    <option key="" value=""></option>
+
                     {props.data.map(x=>
                          <option key={x.Value}  value={x.Text}>{x.Text}</option>
                      )}

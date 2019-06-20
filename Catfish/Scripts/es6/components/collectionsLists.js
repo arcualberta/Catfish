@@ -220,11 +220,15 @@ updatePage(location, payload) {
     const { url, id } = this.getPageParameters(location)
 
     if (page == null) {
-        page = this.state[location].page
+        page = this.state[location].page;
     }
 
     if (query == null) {
-        query = this.state[location].query
+        query = this.state[location].query;
+    }
+
+    if (entityType == null) {
+        entityType = this.state[location].selectedEntityType;
     }
 
   // entityType = "TestEntityType"
