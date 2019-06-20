@@ -236,11 +236,11 @@ updatePage(location, payload) {
     axios.get(url, {
         params: {
             id,
-            query,
-            page,
-            itemsPerPage: this.state[location].itemsPerPage,
-            type:modelType,
-            entityType
+            Query: query,
+            Page: page,
+            ItemsPerPage: this.state[location].itemsPerPage,
+            Type: modelType,
+            EntityType: entityType
             
         }
     })
