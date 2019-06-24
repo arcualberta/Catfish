@@ -60,6 +60,7 @@ namespace Catfish.Core.Services
                 {
                     CFAggregation aggregation = db.Aggregations.Find(aggregationId);
                     aggregation.RecalculateInheritedPermissions();
+                    aggregation.Serialize();
 
                     if (aggregation.MappedGuid != aggregation.Guid)
                     {
