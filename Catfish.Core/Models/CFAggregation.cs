@@ -247,6 +247,25 @@ namespace Catfish.Core.Models
                 }
             }
         }
+        
+        /**
+         * Recalculates the current aggrigation's inherited 
+         **/
+        public void RecalculateInheritedPermissions()
+        {
+            foreach (CFAggregation parent in ParentMembers)
+            {
+                if (parent != this)
+                {
+                    foreach (CFAccessGroup accessGroup in parent.AccessGroups)
+                    {
+                        SetAccess(accessGroup.AccessGuid,
+                            accessGroup.AccessDefinition.AccessModes,
+                            true);
+                    }
+                }
+            }
+        }
 
         public new void SetAccess(Guid guid, AccessMode accessMode, bool isInherited = false)
         {
@@ -264,8 +283,6 @@ namespace Catfish.Core.Models
             }
             else
             {
-                
-
                 List<CFAccessGroup> accessGroups = AccessGroups.ToList() ;
                 accessGroups.Remove(accessGroup);
                 CFAccessGroup newAccessGroup = new CFAccessGroup();
@@ -330,3 +347,4 @@ namespace Catfish.Core.Models
 
     }
 }
+ 
