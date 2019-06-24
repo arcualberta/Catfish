@@ -55,10 +55,11 @@ namespace Catfish.Core.Services
             using (CatfishDbContext db = new CatfishDbContext())
             {
                 var SolrOperations = CommonServiceLocator.ServiceLocator.Current.GetInstance<SolrNet.ISolrOperations<Dictionary<string, object>>>();
-                
+
                 foreach (int aggregationId in bucket)
                 {
                     CFAggregation aggregation = db.Aggregations.Find(aggregationId);
+                    aggregation.RecalculateInheritedPermissions();
 
                     if (aggregation.MappedGuid != aggregation.Guid)
                     {
