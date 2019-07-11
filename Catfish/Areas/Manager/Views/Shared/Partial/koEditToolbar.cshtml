@@ -4,6 +4,11 @@
     string reloadAction = string.IsNullOrEmpty(ViewData["reloadAction"] as string) ? "edit" : ViewData["reloadAction"] as string;
     string saveButtonFunctionCall = ViewData["saveButtonFunctionCall"] as string;
 
+    if (!saveButtonFunctionCall.EndsWith(")"))
+    {
+        saveButtonFunctionCall += "()";
+    }
+
     // Check for additional buttons
     bool hasButtons = true;
     int buttonsIndex = 0;
@@ -15,7 +20,7 @@
             @if (!string.IsNullOrEmpty(saveButtonFunctionCall))
             {
                 <li id="save-btn">
-                    <a id="toolbar_save_button" class="save" onclick="@(saveButtonFunctionCall)(); return false;">
+                    <a id="toolbar_save_button" class="save" onclick="@(saveButtonFunctionCall); return false;">
                         @Piranha.Resources.Global.ToolbarSave
                     </a>
                 </li>
