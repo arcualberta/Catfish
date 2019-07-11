@@ -4,7 +4,7 @@
     string reloadAction = string.IsNullOrEmpty(ViewData["reloadAction"] as string) ? "edit" : ViewData["reloadAction"] as string;
     string saveButtonFunctionCall = ViewData["saveButtonFunctionCall"] as string;
 
-    if (!saveButtonFunctionCall.EndsWith(")"))
+    if (!string.IsNullOrEmpty(saveButtonFunctionCall) && !saveButtonFunctionCall.EndsWith(")"))
     {
         saveButtonFunctionCall += "()";
     }
