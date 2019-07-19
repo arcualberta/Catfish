@@ -22,7 +22,12 @@
 @Html.HiddenFor(m => m.IsRequired)
 <div class="form-field-name">
     @Html.Label(string.IsNullOrEmpty(Model.Name) ? "" : Model.Name, new { @name = "label" })
+    @if (Model.IsRequired)
+    {
+        <span class="requiredFieldSymbol">*</span>
+    }
 </div>
+
 <div class="form-field-value">
     @{ bool showLanguageLabel = Model.Values.Count() > 1;
         int countLangGrp = Model.Values.Count() / Model.MultilingualName.Count(); //number of languages set
