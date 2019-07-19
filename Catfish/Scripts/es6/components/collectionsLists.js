@@ -249,10 +249,10 @@ updatePage(location, payload) {
             const data = response.data
             const dataData = response.data.data.map(x => {
                 x.actions = [
-                     {
-                         title: "<span class='glyphicon glyphicon-download-alt ' />",
-                         action: this.downloadData     
-                     },
+                     //{
+                     //    title: "<span class='glyphicon glyphicon-download-alt ' />",
+                     //    action: this.downloadData     
+                     //},
                     {
                         title: "<span class='glyphicon glyphicon-edit object-edit' />",
                         action: this.updateCollection
@@ -323,10 +323,10 @@ componentDidMount() {
                         action: this.addAssociation
                       
                     },
-                    {
-                        title: "<span class='glyphicon glyphicon-download-alt ' />",
-                        action: this.downloadData     
-                    },
+                    //{
+                    //    title: "<span class='glyphicon glyphicon-download-alt ' />",
+                    //    action: this.downloadData     
+                    //},
                      {
                          title: "<span class='glyphicon glyphicon-remove object-delete' />",
                          action: this.deleteCollection    
