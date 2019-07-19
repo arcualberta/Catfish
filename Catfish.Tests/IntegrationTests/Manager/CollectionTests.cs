@@ -37,7 +37,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
             IWebElement editBtn = Driver.FindElement(By.XPath($".//span[contains(@class,'object-edit')]/ancestor::button"),15);
             editBtn.Click();
             string EditedValue = "Edited Text";
-            IWebElement inputBox = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value"));
+            IWebElement inputBox = Driver.FindElement(By.Id("MetadataSets_0__Fields_0__Values_0__Value"), 15);
             inputBox.Clear();
             inputBox.SendKeys(EditedValue);
             Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();
