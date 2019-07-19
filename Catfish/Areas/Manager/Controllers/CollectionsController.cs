@@ -139,7 +139,7 @@ namespace Catfish.Areas.Manager.Controllers
             }
 
             ErrorMessage(Catfish.Resources.Views.Collections.Edit.SaveInvalid);
-
+            model = CollectionService.CreateCollection(model.EntityTypeId.Value);
             return View(model);
         }
 
