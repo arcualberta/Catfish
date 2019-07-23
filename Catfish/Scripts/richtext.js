@@ -10,7 +10,7 @@
         height: height,
         autoresize_min_height: autoresizeMinHeight,
         autoresize_max_height: height,
-        toolbar: "bold italic underline | bullist numlist hr | formatselect removeformat | cut copy paste | link piranhaimage | superscript subscript | code",
+        toolbar: "bold italic underline | bullist numlist hr | formatselect removeformat | cut copy paste | link piranhaimage | superscript subscript | indent outdent | code",
     };
 
     if (editorCss && editorCss != null) {
