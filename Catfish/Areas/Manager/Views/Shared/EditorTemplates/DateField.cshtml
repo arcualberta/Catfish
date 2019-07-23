@@ -10,6 +10,10 @@
 
 <div class="form-field-header">
     @Html.Label(string.IsNullOrEmpty(Model.Name) ? "" : Model.Name, new { @name = "label" })
+    @if (Model.IsRequired)
+    {
+        <span class="requiredFieldSymbol">*</span>
+    }
 </div>
 <div class="form-field-content">
     @Html.TextBoxFor(m => m.Value, new { @type = "date" })

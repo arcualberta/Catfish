@@ -151,7 +151,8 @@ namespace Catfish.Areas.Manager.Controllers
             }
 
             ErrorMessage(Catfish.Resources.Views.Items.Edit.SaveInvalid);
-
+            model = ItemService.CreateItem(model.EntityTypeId.Value);
+            model.AttachmentField = new Attachment() { FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), model.Files.Select(f => f.Guid)) };
             return View(model);
         }
 
