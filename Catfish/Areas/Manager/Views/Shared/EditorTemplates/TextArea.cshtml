@@ -10,6 +10,10 @@
 
 <div class="name">
     @Html.Label(string.IsNullOrEmpty(Model.Name) ? "" : Model.Name, new { @name = "label" })
+    @if (Model.IsRequired)
+    {
+        <span class="requiredFieldSymbol">*</span>
+    }
 </div>
 <div class="@(Model.IsRichText ? "rich-text-transform" : "")">
     @{ bool showLanguageLabel = Model.Values.Count() > 1; }
