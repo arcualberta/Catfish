@@ -102,7 +102,9 @@ var hideInProgress = function (containerId) {
 }
 
 
-var stateChange = function (data, deleteApiUrl, containerId, fileGuidListFieldId, oReg) {
+var stateChange = function (data, deleteApiUrl, containerId, fileGuidListFieldId, oReg, onSuccess, onError) {
+    var resultFunction = null;
+
     //after successfull execute the function then it will execute what ever inside this if {}
     if (oReg.readyState === 4) {
 
@@ -113,16 +115,28 @@ var stateChange = function (data, deleteApiUrl, containerId, fileGuidListFieldId
             // FileUpload object in the page
             updateFileListView(data, deleteApiUrl, containerId, fileGuidListFieldId);
             $(messageBoxSelector).text("").hide();
+
+            if (onSuccess) {
+                resultFunction = onSuccess;
+            }
         }
         else {
             // Error
             var errorMessage = "File upload failed: " + oReg.statusText;
             $(messageBoxSelector).text(errorMessage).show();
+
+            if (onError) {
+                resultFunction = onError;
+            }
         }
 
         $("#" + containerId + " .uploadField").val("");
 
         hideInProgress(containerId);
+    }
+
+    if (resultFunction != null) {
+        resultFunction();
     }
 };
 
