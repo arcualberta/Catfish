@@ -33,7 +33,7 @@ namespace Catfish.Controllers.Api
                 var ret = files.Select(f => new FileViewModel(f, f.Id, ControllerContext.RequestContext, "attachment"));
                 return Json(ret);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //return 500 or something appropriate to show that an error occured.
                 return Json(string.Empty);
