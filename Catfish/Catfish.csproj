@@ -717,6 +717,7 @@
     </Content>
     <Content Include="Views\Shared\DisplayTemplates\GoogleCalendarPanel.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\FacebookTimelinePanel.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\AudioInput.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
