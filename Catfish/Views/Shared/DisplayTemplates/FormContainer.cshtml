@@ -30,7 +30,7 @@
             <div class="panel panel-default form-submit form-confirm" style="display: none">
                 <div class="panel-body">
                     <p>@Catfish.Resources.Views.Shared.DisplayTemplates.FormContainer.SubmitConfirm</p>
-                    <input class="btn btn-primary" name="yes" type="submit" value="@Catfish.Resources.Global.Yes" />
+                    <input class="btn btn-primary" name="yes" type="button" value="@Catfish.Resources.Global.Yes" />
                     <input class="btn btn-primary" name="no" type="button" value="@Catfish.Resources.Global.No" />
                 </div>
             </div>
@@ -43,7 +43,7 @@
     </div>
 
     <script type="text/javascript">
-       
+
     function Setup@(cssId)(){
         var questions = @Html.Raw(Json.Encode(questionIndex));
         var questionIndex = -1;
@@ -122,6 +122,32 @@
         $("#@cssId form .form-submit.form-confirm input[name='no']").click(function (ev) {
             ev.preventDefault();
             showSubmit();
+        });
+
+        // Yes button promise system.
+        // This will allow us to attach async events to the user clicking the yes button.
+        $("#@cssId form")[0].promiseList = [];
+        $("#@cssId form")[0].submitEvents = []; // If these events return a promise, add them to the promise list.
+
+        $("#@cssId form .form-submit.form-confirm input[name='yes']").click(function (ev) {
+            ev.preventDefault();
+
+            var form = $(this).parents("form")[0];
+
+            form.promiseList.length = 0;
+            form.submitEvents.forEach(function (ev) {
+                var result = ev();
+
+                if (Promise && Promise.resolve && Promise.resolve(result) == result) {
+                    form.promiseList.push(result);
+                }
+            });
+
+            Promise.all(form.promiseList).then(function (values) {
+                $(form).submit();
+            }, function (message) {
+                console.log("An error occured while processing the form. " + message);
+            });
         });
 
         $("#@cssId > form").submit(function (ev) {
