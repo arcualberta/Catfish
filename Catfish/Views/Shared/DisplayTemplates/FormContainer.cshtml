@@ -126,24 +126,23 @@
 
         // Yes button promise system.
         // This will allow us to attach async events to the user clicking the yes button.
-        $("#@cssId form")[0].promiseList = [];
         $("#@cssId form")[0].submitEvents = []; // If these events return a promise, add them to the promise list.
 
         $("#@cssId form .form-submit.form-confirm input[name='yes']").click(function (ev) {
             ev.preventDefault();
 
             var form = $(this).parents("form")[0];
-
-            form.promiseList.length = 0;
+            var promiseList = [];
+            
             form.submitEvents.forEach(function (ev) {
                 var result = ev();
 
                 if (Promise && Promise.resolve && Promise.resolve(result) == result) {
-                    form.promiseList.push(result);
+                    promiseList.push(result);
                 }
             });
 
-            Promise.all(form.promiseList).then(function (values) {
+            Promise.all(promiseList).then(function (values) {
                 $(form).submit();
             }, function (message) {
                 console.log("An error occured while processing the form. " + message);
