@@ -114,7 +114,7 @@ function toggleRecording(e) {
      recordButton.classList.remove("glyphicon-record");
      recordButton.classList.add("glyphicon-stop");
       $("#@pauseBtn").show();
-      $("#@resumeBtn").show();
+
             //
       recorder.onstop = function(e) {
 
@@ -206,12 +206,14 @@ function toggleRecording(e) {
 function pauseRecording(e){
     e.preventDefault();
     recorder.pause();
-
+     $("#@resumeBtn").show();
+     $("#@pauseBtn").hide();
 }
 function resumeRecording(e){
      e.preventDefault();
-    recorder.resume();
-
+     recorder.resume();
+      $("#@pauseBtn").show();
+          $("#@resumeBtn").hide();
  }
 
 
