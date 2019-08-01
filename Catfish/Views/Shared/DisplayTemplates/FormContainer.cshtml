@@ -145,7 +145,8 @@
             Promise.all(promiseList).then(function (values) {
                 $(form).submit();
             }, function (message) {
-                console.log("An error occured while processing the form. " + message);
+                    showSubmit();
+                    console.log("An error occured while processing the form. " + message);
             });
         });
 
