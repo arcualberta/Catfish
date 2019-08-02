@@ -52,6 +52,10 @@
                             <button class="glyphicon glyphicon-remove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@containerId'); return false;"></button>
                         }
                         <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
+                        @if(vm.FileName.Contains(".mp3") || vm.FileName.Contains(".wav") || vm.FileName.Contains(".webm"))
+                        {
+                            <div><audio controls src="@vm.Url"></audio></div>
+                        }
                     </div>
                     }
                 }
