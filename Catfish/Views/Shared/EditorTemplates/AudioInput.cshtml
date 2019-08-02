@@ -221,7 +221,7 @@ $(document).ready(function(){
      $("#@pauseBtn").hide();
      $("#@resumeBtn").hide();
      $("#@containerId").parents("form:first")[0].submitEvents.push(function(){
-          alert("onsubmit");
+         
           var promise = new Promise(function(resolve, reject){
              uploadClipFile('@containerId', '@uploadApiUrl', '@deleteApiUrl','@fileGuidListFieldId', resolve, reject );
         });
