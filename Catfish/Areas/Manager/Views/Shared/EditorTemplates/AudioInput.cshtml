@@ -1,0 +1,9 @@
+﻿
+@model Catfish.Core.Models.Forms.AudioInput
+
+@using Catfish.Core.Models.Data;
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+{
+    {"class", "model-type"}
+})
+
