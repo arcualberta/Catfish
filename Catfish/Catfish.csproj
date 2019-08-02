@@ -450,6 +450,7 @@
     <Content Include="Views\Shared\Partial\GoogleCalendarPanelFlat.cshtml" />
     <Content Include="Views\Shared\Partial\GoogleCalendarPanelDefault.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\FacebookTimelinePanel.cshtml" />
+    <Content Include="Areas\Manager\Views\Shared\EditorTemplates\AudioInput.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="RazorGenerator.LICENSE.md" />
     <Content Include="Scripts\es6\components\actionButtons.js" />
