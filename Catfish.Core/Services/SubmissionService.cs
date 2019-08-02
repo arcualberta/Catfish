@@ -234,6 +234,24 @@ namespace Catfish.Core.Services
             return submission;
         }
 
+        private IEnumerable<Attachment> GetAttachmentFields(IEnumerable<FormField> fields, CFItem submissionItem)
+        {
+            List<Attachment> outList = new List<Attachment>();
+
+            foreach(FormField field in fields)
+            {
+                if (typeof(Attachment).IsAssignableFrom(field.GetType()))
+                {
+                    outList.Add(field as Attachment);
+                }else if (typeof(CompositeFormField).IsAssignableFrom(field.GetType()))
+                {
+                    outList.AddRange(GetAttachmentFields(((CompositeFormField)field).Fields, submissionItem));
+                }
+            }
+
+            return outList;
+        }
+
         public CFItem SaveSubmission(Form form, string formSubmissionRef, int itemId, int entityTypeId, int formTemplateId, int collectionId, IDictionary<string,string> metadataAttributeMapping=null)
         {
             CFItem submissionItem;
@@ -269,9 +287,8 @@ namespace Catfish.Core.Services
 
             //If any attachments have been submitted through the form and they have not yet been included in the 
             //submission item, then include them and remove them from the main XMLModel table
-            var attachmentFields = form.Fields.Where(f => f is Attachment).Select(f => f as Attachment);
-            foreach(var att in attachmentFields)
-                UpdateFiles(att, submissionItem);
+            IEnumerable<Attachment> attachments = GetAttachmentFields(form.Fields, submissionItem);
+            UpdateFiles(attachments, submissionItem);
 
             if(collectionId > 0)
             {
