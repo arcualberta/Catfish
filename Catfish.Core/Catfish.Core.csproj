@@ -178,6 +178,7 @@
     <Compile Include="Models\CFFileDescription.cs" />
     <Compile Include="Models\Forms\AbstractForm.cs" />
     <Compile Include="Models\Forms\Attachment.cs" />
+    <Compile Include="Models\Forms\AudioInput.cs" />
     <Compile Include="Models\Forms\ClientInfo.cs" />
     <Compile Include="Models\Forms\CompositeFormField.cs" />
     <Compile Include="Models\Forms\ExternalMediaField.cs" />
