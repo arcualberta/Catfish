@@ -234,6 +234,24 @@ namespace Catfish.Core.Services
             return submission;
         }
 
+        private IEnumerable<Attachment> GetAttachmentFields(IEnumerable<FormField> fields, CFItem submissionItem)
+        {
+            List<Attachment> outList = new List<Attachment>();
+
+            foreach(FormField field in fields)
+            {
+                if (typeof(Attachment).IsAssignableFrom(field.GetType()))
+                {
+                    outList.Add(field as Attachment);
+                }else if (typeof(CompositeFormField).IsAssignableFrom(field.GetType()))
+                {
+                    outList.AddRange(GetAttachmentFields(((CompositeFormField)field).Fields, submissionItem));
+                }
+            }
+
+            return outList;
+        }
+
         public CFItem SaveSubmission(Form form, string formSubmissionRef, int itemId, int entityTypeId, int formTemplateId, int collectionId, IDictionary<string,string> metadataAttributeMapping=null)
         {
             CFItem submissionItem;
@@ -269,9 +287,8 @@ namespace Catfish.Core.Services
 
             //If any attachments have been submitted through the form and they have not yet been included in the 
             //submission item, then include them and remove them from the main XMLModel table
-            var attachmentFields = form.Fields.Where(f => f is Attachment).Select(f => f as Attachment);
-            foreach(var att in attachmentFields)
-                UpdateFiles(att, submissionItem);
+            IEnumerable<Attachment> attachments = GetAttachmentFields(form.Fields, submissionItem);
+            UpdateFiles(attachments, submissionItem);
 
             if(collectionId > 0)
             {
@@ -281,8 +298,7 @@ namespace Catfish.Core.Services
 
                 collection.AddChild(submissionItem);
             }
-
-            //MR April 10 2018
+            
             //update metadata field's value based on the attribute mapping
             //for example if "Name mapping" mapped to the Form's Title field, grab the value of the form title and set it to Metadata Set "Name Mapping Attribute"
             EntityTypeService entityTypeService = new EntityTypeService(Db);
@@ -292,11 +308,7 @@ namespace Catfish.Core.Services
                 //key: attributeMapping, value Form's Field's Name
                 string attMapping = map.Key;
                 string FieldName = map.Value;
-                FormField formField = null;
-                if(FieldName.Contains(" > ")) //composite field
-                    formField = GetFormField(storedFormSubmission.FormData.Fields, FieldName);
-                else
-                    formField =storedFormSubmission.FormData.Fields.Where(f => f.Name == FieldName).FirstOrDefault();
+                FormField formField = GetFormField(storedFormSubmission.FormData.Fields, FieldName);
 
                 var FieldValues = formField.GetValues();
 
@@ -312,51 +324,39 @@ namespace Catfish.Core.Services
                 foreach (var fVal in FieldValues)
                     ms.SetFieldValue(am.FieldName, fVal.Value, fVal.LanguageCode);
             }
-            //end of MR
 
             submissionItem.Serialize();
             return submissionItem;
         }
 
-        public FormField GetFormField(IEnumerable<FormField> fields, string fieldName=null)
+        private FormField GetFormField(IEnumerable<FormField> fields, string fieldName=null)
         {
-            string[] fnames = { };
-            FormField field = null;
-            if (fieldName != null & fieldName.Contains(" > "))
+            string[] fnames = fieldName.Split('>');
+            IEnumerable<FormField> checkFields = fields;
+            
+            for (int i = 0; i < fnames.Length; i++)
             {
-                fnames = fieldName.Split('>');
-                // fdName = fnames[fnames.Length - 1].Trim();
-            }
-           
-              for (int i = 0; i < fnames.Length; i++)
-                {
                 // IEnumerable<FormField> listFields = fields;
-                foreach (FormField f in fields)
+                foreach (FormField f in checkFields)
                 {
                     if (f.Name.Equals(fnames[i].Trim()))
                     {
-
-                        if (typeof(Catfish.Core.Models.Forms.CompositeFormField).IsAssignableFrom(f.GetType()))
+                        if(i == fnames.Length - 1)
                         {
-                            fields = ((CompositeFormField)f).Fields;
+                            return f;
+                        }else if(typeof(CompositeFormField).IsAssignableFrom(f.GetType()))
+                        {
+                            checkFields = ((CompositeFormField)f).Fields;
                             break;
-                            //this.GetFormField(((CompositeFormField)f).Fields);
-                        }
-                        else
-                        {
-                            if (f.Name.Equals("Answer"))
-                            {
-                                field = f;
-                                break;
-                            }
-
+                        }else{
+                            return f;
                         }
                     }
                 }
             }
            
             
-            return field;
+            return null;
         }
     }
 }
