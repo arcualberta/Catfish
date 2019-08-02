@@ -49,9 +49,11 @@
             }
         }
 
-        // Sotres the value
+        // Stores the value
         if (lastName.length > 0) {
-            currentObject[lastName] = value;
+            if (!currentObject.hasOwnProperty(lastName)) {
+                currentObject[lastName] = value;
+            }
         } else {
             currentObject = value;
         }
