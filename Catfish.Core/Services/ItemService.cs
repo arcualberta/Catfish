@@ -115,12 +115,12 @@ namespace Catfish.Core.Services
 
         protected void UpdateFiles(CFItem srcItem, CFItem dstItem)
         {
-            UpdateFiles(srcItem.AttachmentField, dstItem);
+            UpdateFiles(new List<Attachment>() { srcItem.AttachmentField }, dstItem);
         }
 
-        protected void UpdateFiles(Attachment srcAttachmentField, CFItem dstItem)
+        protected void UpdateFiles(IEnumerable<Attachment> srcAttachmentFields, CFItem dstItem)
         {
-            List<string> keepFileGuids = srcAttachmentField.FileGuids.Split(new char[] { Attachment.FileGuidSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            List<string> keepFileGuids = srcAttachmentFields.SelectMany(a => a.FileGuids.Split(new char[] { Attachment.FileGuidSeparator }, StringSplitOptions.RemoveEmptyEntries)).Distinct().ToList();
 
             //Removing attachments that are in the dbModel but not in attachments to be kept
             foreach (CFDataFile file in dstItem.Files.ToList())
@@ -194,8 +194,6 @@ namespace Catfish.Core.Services
 
                             }
                         }
-
-                       
                       
                         //updating the file path
                         file.Path = dstDir;
