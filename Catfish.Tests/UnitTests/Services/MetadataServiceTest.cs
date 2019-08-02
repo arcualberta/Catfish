@@ -148,7 +148,8 @@ namespace Catfish.Tests.Services
                 typeof(ClientInfo),
                 typeof(CompositeFormField),
                 typeof(HtmlField),
-                typeof(NumberField)
+                typeof(NumberField),
+                 typeof(AudioInput)
             };
 
             List<Type> testTypes = mDh.Ms.GetMetadataFieldTypes();

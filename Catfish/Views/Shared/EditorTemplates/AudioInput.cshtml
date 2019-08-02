@@ -1,0 +1,296 @@
+﻿@model Catfish.Core.Models.Forms.AudioInput
+@using Catfish.Core.Models.Forms;
+@using Catfish.Areas.Manager.Models.ViewModels;
+@using Catfish.Core.Models.Data;
+@Html.Hidden("ModelType", Model.GetType().AssemblyQualifiedName, new Dictionary<string, object>()
+{
+    {"class", "model-type"}
+})
+
+<h2>Audio Input</h2>
+@{
+    string containerId = Guid.NewGuid().ToString();
+    string audioFileId = containerId + "_file";
+    string audioId = containerId + "_audio";
+    string audioButtonId = audioId + "_btn";
+    string pauseBtn = audioButtonId + "_pause";
+    string resumeBtn = audioButtonId + "_resume";
+    string uploadApiUrl = "/apix/attachment/upload";
+    string deleteApiUrl = "/apix/attachment/deleteCashedFile";
+
+    string fileGuidListFieldId = Html.IdFor(m => m.FileGuids).ToString();
+    List<string> crossLinkedFileGuids = ViewBag.CrossLinkedFileGuids != null ?
+        ViewBag.CrossLinkedFileGuids as List<string>
+        : new List<string>();
+}
+
+
+<div id="@containerId">
+    @Html.HiddenFor(m => m.FileGuids)
+    <input id="@audioFileId" class="clipFiles" type="file" multiple="multiple" style="display:none" />
+    <audio id="@audioId" controls  controlslist="download"></audio>
+    <button id="@audioButtonId" onclick="toggleRecording(event);" class="glyphicon glyphicon-record"></button>
+    <button id="@pauseBtn" onclick="pauseRecording(event);" class="glyphicon glyphicon-pause"></button>
+    <button id="@resumeBtn" onclick="resumeRecording(event);" class="glyphicon glyphicon-play"></button>
+    <div class="thumbnailPanel">
+        @{
+            List<CFDataFile> files = ViewBag.Files == null ? new List<CFDataFile>() : ViewBag.Files as List<CFDataFile>;
+            string[] fileGuids = Model.FileGuids.Split(new char[] { Attachment.FileGuidSeparator });
+            int parentId = ViewBag.ParentId != null ? (int)ViewBag.ParentId : 0;
+            string controller = string.IsNullOrEmpty(ViewBag.Controller) ? "attachment" : ViewBag.Controller as string;
+
+            foreach (var fileGuid in fileGuids)
+            {
+                var file = files.Where(f => f.Guid == fileGuid).FirstOrDefault();
+                if (file != null)
+                {
+                    FileViewModel vm = new FileViewModel(file, parentId, Request.RequestContext, controller);
+
+                    bool undeletable = crossLinkedFileGuids.Contains(file.Guid);
+                    string secondaryClass = undeletable ? "undeletable" : "";
+                    var eleId = @vm.Guid.Substring(0, @vm.Guid.Length - 4);
+
+
+                    <div class="fileThumbnail @eleId @secondaryClass">
+
+                        <div class="img" style="background-image:url(@vm.ThumbnailUrl)"></div>
+
+                        @if (!undeletable)
+                       {
+                            <button class="glyphicon glyphicon-remove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@containerId'); return false;"></button>
+                        }
+                        <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
+                    </div>
+                }
+            }
+        }
+        </div>
+
+    </div>
+<section class="sound-clips col-md-8"></section>
+
+<script>
+{
+let recorder, gumStream;
+let recordButton = document.getElementById("@audioButtonId");
+let soundClips = document.querySelector('.sound-clips');
+let attachmentFile = document.querySelector('.clipFiles');
+let pauseButton = document.getElementById("@pauseBtn");
+let resumeButton = document.getElementById("@resumeBtn");
+let chunks = [];
+let form = new FormData();
+
+ let dataTransfer = new ClipboardEvent('').clipboardData || new DataTransfer();
+function toggleRecording(e) {
+     e.preventDefault();
+    if (recorder && recorder.state == "recording") {
+        recorder.stop();
+        gumStream.getAudioTracks()[0].stop();
+      recordButton.classList.remove("glyphicon-stop");
+       recordButton.classList.add("glyphicon-record");
+
+          $("#@pauseBtn").hide();
+          $("#@resumeBtn").hide();
+
+
+    } else {
+        navigator.mediaDevices.getUserMedia({
+            audio: true
+        }).then(function(stream) {
+            gumStream = stream;
+            recorder = new MediaRecorder(stream);
+
+            recorder.ondataavailable = function(e) {
+			    chunks.push(e.data);
+			    var blobMp3 = new Blob(chunks, {type:'audio/webm'});
+                var url = URL.createObjectURL(blobMp3);
+                var preview = document.getElementById("@audioId"); //
+                preview.controls = true;
+				preview.playbackRate = 0.5;
+                preview.src = url;
+            };
+      recorder.start();
+     // recordButton.innerHTML = "Stop Recording";
+     recordButton.classList.remove("glyphicon-record");
+     recordButton.classList.add("glyphicon-stop");
+      $("#@pauseBtn").show();
+
+            //
+      recorder.onstop = function(e) {
+
+      let clipName = prompt('Enter a name for your sound clip?','sampleClip');
+
+      let clipContainer = document.createElement('div');
+      let clipLabel = document.createElement('span');
+      let audio = document.createElement('audio');
+      let deleteButton = document.createElement('button');
+      let downloadButton = document.createElement('button');
+       audio.classList.add("col-md-6");
+      clipLabel.classList.add('clipLabel');
+       clipLabel.classList.add('col-md-4');
+      clipContainer.classList.add('clip');
+      audio.setAttribute('controls', '');
+
+      deleteButton.classList.add('deleteBtn');
+      deleteButton.classList.add('glyphicon');
+      deleteButton.classList.add('glyphicon-remove');
+
+      downloadButton.classList.add('downloadBtn');
+      downloadButton.classList.add('glyphicon');
+      downloadButton.classList.add('glyphicon-save');
+
+      if(clipName === null) {
+        clipLabel.textContent = 'Sample clip';
+      } else {
+        clipLabel.textContent = clipName;
+      }
+
+      clipContainer.appendChild(audio);
+      clipContainer.appendChild(clipLabel);
+      clipContainer.appendChild(downloadButton);
+      clipContainer.appendChild(deleteButton);
+      soundClips.appendChild(clipContainer);
+
+      audio.controls = true;
+      var blob = new Blob(chunks, { 'type' : 'audio/webm' });
+
+      var audioURL = window.URL.createObjectURL(blob);
+      audio.src = audioURL;
+
+      //handle delete individual file
+      deleteButton.onclick = function(e) {
+        evtTgt = e.target;
+        evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
+        e.preventDefault();
+      }
+
+      //handle individual download file
+      downloadButton.onclick=function(e){
+         var a = document.createElement('a');
+         clipContainer.appendChild(a);
+
+         a.href =audioURL;
+         a.download = clipLabel.textContent + ".webm";
+         a.click();
+         window.URL.revokeObjectURL(previewSrc);
+         e.preventDefault();
+      }
+
+      //handle label changes
+      clipLabel.onclick = function() {
+        var existingName = clipLabel.textContent;
+        var newClipName = prompt('Enter a new name for your sound clip?');
+        if(newClipName === null) {
+          clipLabel.textContent = existingName;
+        } else {
+          clipLabel.textContent = newClipName;
+        }
+      }
+
+     //attached file to attachmentFile element
+     let fileName = clipLabel.textContent + ".webm";
+
+     var file = new File([blob], fileName, {type: "audio/webm", lastModified: Date.now()});
+     dataTransfer.items.add(new File([file], fileName));
+     attachmentFile.files = dataTransfer.files;
+
+     chunks = [];
+     }          //
+
+   });
+    }
+}//end of toggle recording
+
+
+
+function pauseRecording(e){
+    e.preventDefault();
+    recorder.pause();
+     $("#@resumeBtn").show();
+     $("#@pauseBtn").hide();
+}
+function resumeRecording(e){
+     e.preventDefault();
+     recorder.resume();
+      $("#@pauseBtn").show();
+          $("#@resumeBtn").hide();
+ }
+
+
+$(document).ready(function(){
+     $("#@pauseBtn").hide();
+     $("#@resumeBtn").hide();
+     $("#@containerId").parents("form:first")[0].submitEvents.push(function(){
+          alert("onsubmit");
+          var promise = new Promise(function(resolve, reject){
+             uploadClipFile('@containerId', '@uploadApiUrl', '@deleteApiUrl','@fileGuidListFieldId', resolve, reject );
+        });
+
+        return promise;
+    });// end of onSubmit
+});
+
+
+function uploadClipFile(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFieldId, onSuccess, onError) {
+
+    let myFrm = new FormData();
+
+    for (var i = 0; i < attachmentFile.files.length; i++){
+        myFrm.append("inputFile" + i, attachmentFile.files[i]);
+    }
+
+    let oReg = new XMLHttpRequest();
+
+    if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+        oReg.onload = function (event) {
+            stateChange(event.target.response,
+                deleteApiUrl,
+                containerId,
+                fileGuidListFieldId,
+                oReg, onSuccess, onError);
+        };
+    } else {
+        oReg.onreadystatechange = function (data) {
+            stateChange(data.srcElement.responseText,
+                deleteApiUrl,
+                containerId,
+                fileGuidListFieldId,
+                oReg, onSuccess, onError);
+        };
+    }
+    oReg.open('POST', uploadApiUrl);
+    oReg.send(myFrm);
+
+  }// END function uploadFile()
+
+}
+</script>
+
+<style>
+    .clip {
+        border: 1px solid #8080805e;
+        margin-top: 20px;
+        height: 75px;
+    }
+   
+    audio{
+        padding-top:20px;
+    }
+    .clipLabel, .downloadBtn, .deleteBtn {
+        font-size: 1.5em;
+        margin-top: 20px !important;
+        text-align:center;
+    }
+
+    .glyphicon {
+        font-size: 1.7em !important;
+        margin-bottom: 30px !important;
+        padding-bottom: 5px !important;    
+        margin-left: 10px !important;
+        border-radius:5px;
+    }
+    .glyphicon-record, .glyphicon-remove {
+        color: #ef0b0b !important;
+     
+    }
+</style>
