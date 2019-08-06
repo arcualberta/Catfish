@@ -10,5 +10,9 @@ namespace Catfish.Core.Models.Forms
     [CFTypeLabel("Html Field")]
     public class HtmlField : FormField
     {
+        public override bool IsHidden()
+        {
+            return true;
+        }
     }
 }
