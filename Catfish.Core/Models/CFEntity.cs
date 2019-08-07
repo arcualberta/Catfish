@@ -230,7 +230,9 @@ namespace Catfish.Core.Models
             Dictionary<string, List<string>> access = GetAccessDictionary();
             access.ToList().ForEach(x => result[x.Key] = x.Value);
 
-            
+            // Add all of the name mapping
+            result["name_mapping_s"] = GetName();
+
 
             //foreach (CFMetadataSet metadataset in MetadataSets)
             //{
