@@ -231,7 +231,7 @@ namespace Catfish.Core.Models
             access.ToList().ForEach(x => result[x.Key] = x.Value);
 
             // Add all of the name mapping
-            result["name_mapping_txt"] = GetName();
+            result["name_mapping_t"] = GetName();
 
 
             //foreach (CFMetadataSet metadataset in MetadataSets)
