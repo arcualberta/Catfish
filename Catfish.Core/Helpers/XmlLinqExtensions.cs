@@ -47,11 +47,9 @@ namespace Catfish.Core.Helpers
                 };
 
                 LinkedList<SortOrder> orderBy = new LinkedList<SortOrder>();
-                {
-                    new SortOrder("created_dt", Order.ASC);
-                };
-
-                //orderBy.AddLast(new SortOrder("created_date", Order.ASC));
+               
+                orderBy.AddLast(new SortOrder("name_mapping_s", Order.ASC));
+               
 
                 if (!string.IsNullOrEmpty(sortRowId))
                 {
