@@ -18,16 +18,18 @@ export default class CollectionsLists extends React.Component {
         super(props)
 
         this.basicHeaders = [
-             {
-                 id: 0,
-                 key: "id",
-                 title: "Id"
-             },
+            
             {
-                id: 1,
+                id: 0,
                 key: "name",
                 title: "Name"
             },
+             {
+                 id: 1,
+                 key: "id",
+                 title: "Id"
+             },
+           
             {
                 id: 2,
                 key: "entityType",
