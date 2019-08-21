@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Catfish.Core.Helpers;
 using Catfish.Core.Contexts;
 using Catfish.Core.Models.Access;
+using System.Xml.Linq;
 
 namespace Catfish.Core.Services
 {
@@ -127,6 +128,14 @@ namespace Catfish.Core.Services
 
             //updating the "value" text elements
             dbModel.UpdateValues(changedCollection);
+
+            //update collection attribute -- issystemCollection -- Aug 21 2019
+            XAttribute isSysColl = changedCollection.Data.Attribute("issystemcollection");
+            if (isSysColl != null)
+            {
+                dbModel.Data.SetAttributeValue("issystemcollection", isSysColl.Value);
+            }
+
             dbModel.Serialize();
 
             if (changedCollection.Id > 0) //update Item
