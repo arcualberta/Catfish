@@ -73,6 +73,23 @@ namespace Catfish.Core.Services
             return result;
         }
 
+        public IQueryable<CFCollection> GetSystemCollections()
+        {
+            List<CFCollection> result = new List<CFCollection>();
+            var collections = Db.Collections.ToList();
+            foreach(CFCollection col in collections)
+            {
+                XAttribute isSysColl = col.Data.Attribute("issystemcollection");
+                if (isSysColl != null &&  Convert.ToBoolean(isSysColl.Value))
+                {
+                    result.Add(col);
+                }
+            }
+
+            return result.AsQueryable();
+        }
+
+
         /// <summary>
         /// Removes a collection from the database.
         /// </summary>
