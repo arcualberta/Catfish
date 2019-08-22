@@ -16,13 +16,12 @@
     <script type="text/javascript" src="~/Scripts/attachment.js"></script>
     <script type="text/javascript" src="~/Scripts/richtext.js"></script>
     <link rel="stylesheet" type="text/css" href="~/Content/Css/catfish.css">
-
     <script type="text/javascript">
         var uploadApiUrl = "@Url.Action("upload", "items", new { id = Model.Id })";
         var deleteApiUrl = "@Url.Action("deleteFile", "items", new { id = Model.Id })";
     </script>
 
-    @* Code used to turn praragraph fields into rich text fields. *@
+        @* Code used to turn praragraph fields into rich text fields. *@
     <script type="text/javascript" src="~/res.ashx/areas/manager/content/js/ext/tiny_mce/tinymce.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
@@ -47,10 +46,40 @@
     else
     {
 
-        @Html.Partial("Partial/EditToolbar", Model, new ViewDataDictionary() { { "entityTypeId", Model.EntityTypeId } })
+        @Html.Partial("Partial/EditToolbar", Model, new ViewDataDictionary() { { "entityTypeId", Model.EntityTypeId },{ "isItem",1} })
+       
     }
 }
 
+@*modal move Item*@
+<!-- The Modal -->
+<div class="bs container">
+    <div class="modal" id="modalMoveItem">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Move Item To...</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    Collection : @Html.DropDownList("systemCollectionId", new SelectList(ViewBag.SystemCollections, "Value", "Text"))
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button id="moveItemOkBtn" type="button" class="btn btn-default btn-primary" onclick="moveItem(@Model.Id); return false;">Ok</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+@*end of modal*@
 
 @if (ViewBag.SelectEntityViewModel != null)
 {
@@ -162,3 +191,30 @@ else
 
 }
 
+<script>
+    function moveItem(itemId)
+    {
+       var collectionId = $("#systemCollectionId").val();
+       var colllectionName = $("#systemCollectionId option:selected").text();
+       var response = confirm("WARNING: This will remove the item from its parents and place it into the collection " + colllectionName);
+       if(response == true)
+       {
+            var url ='@Url.Action("MoveItemToSystemCollection", "items")';
+            
+            $.ajax({
+                type: "POST",
+                url: url,
+                data:{"itemId":itemId, "sysCollectionId": collectionId},
+
+                dataType: "json",
+                success: function(result){
+                  // alert("Item has been successfully move to collection " + result);
+                   window.location.reload();
+                },
+                error: function(error){alert("Error: Can't move Item.");}
+            });
+
+       }
+      return false;
+    }
+</script>
