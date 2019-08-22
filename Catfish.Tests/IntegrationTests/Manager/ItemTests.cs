@@ -21,7 +21,7 @@ namespace Catfish.Tests.IntegrationTests.Manager
         public void CanCreateItem()
         {
             bool multipleField = true;
-            bool requiredField = true;
+            bool requiredField = false;
             CreateBaseEntityType(multipleField, requiredField);
             // FormFields is instantiated in CreateBaseEntityType
             CreateItem(EntityTypeName, FormFields[0], multipleField);
@@ -246,6 +246,42 @@ namespace Catfish.Tests.IntegrationTests.Manager
             //GetFirstAssociationsButton().Click();
             AssertSearchInActionableTable("1", "Item 1");
         }
+        [Test]
+        public void CanMoveItemParentCollection()
+        {
+            SetUpAssociationTest();
+            CreateCollections(3);
+            CreateItems(1);
+            // Create simple entity type
+            NavigateToItems();
+            Driver.FindElement(By.XPath($".//span[contains(@class,'object-associations')]/ancestor::button"), 15).Click();
+            //GetFirstAssociationsButton().Click();
+            AssertAssociateParents();
 
+            //navigate to collection list page -- edit the 3rd collection marked it as system collection
+            NavigateToCollections();
+            var collectionEditButtons = Driver.FindElements(By.XPath($".//span[contains(@class,'object-edit')]/ancestor::button"), 15);
+            collectionEditButtons[2].Click();
+            Driver.FindElement(By.Id("IsSystemCollection")).Click();
+            Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();
+
+            NavigateToItems();
+            IWebElement editBtn = Driver.FindElement(By.XPath($".//span[contains(@class,'object-edit')]/ancestor::button"), 15);
+            //GetLastEditButton().Click();
+            editBtn.Click();
+
+            Driver.FindElement(By.Id("toolbar_moveItem_button"), 15).Click();
+            Driver.FindElement(By.Id("moveItemOkBtn"), 15).Click();//clicking on ok modal pop-up
+            Driver.SwitchTo().Alert().Accept();
+
+            Driver.FindElement(By.Id(ToolBarSaveButtonId), 10).Click();//click on js alert() ok
+
+            NavigateToItems();
+            Driver.FindElement(By.XPath($".//span[contains(@class,'object-associations')]/ancestor::button"), 15).Click();
+            string parentsDataTable = "(//div[@id='parents-actionable-table']//table)[2]";
+            string parentName3 = Driver.FindElement(By.XPath($@"{parentsDataTable}//tbody//tr[1]//td[2]"), 10).Text;
+
+            Assert.AreEqual(parentName3, "Collection 2");
+        }
     }
 }
