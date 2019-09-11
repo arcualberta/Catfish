@@ -59,6 +59,16 @@ window.startLoading = function (containerPath, timeout, timeoutCallback) {
     }
 }
 
+function createGuid() {
+    function S4() {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    }
+
+    guid = (S4() + S4() + "-" + S4() + S4() + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+
+    return guid;
+}
+
 window.stopLoading = function (containerPath) {
     var children = $(containerPath).children(".loading-panel");
 
