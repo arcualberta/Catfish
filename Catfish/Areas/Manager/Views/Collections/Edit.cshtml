@@ -52,6 +52,9 @@
             using (Html.BeginForm("Edit", "Collections", FormMethod.Post))
             {
                 @Html.Partial("Partial/EditEntity")
+                <label>
+                @Html.CheckBoxFor(m=>m.IsSystemCollection)Is System Collection            
+                </label>
             }
         }
     </div>
