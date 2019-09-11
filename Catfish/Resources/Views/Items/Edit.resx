@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="MoveFailed" xml:space="preserve">
+    <value>Fail moving the item.</value>
+  </data>
+  <data name="MoveSuccess" xml:space="preserve">
+    <value>The item is successfully move.</value>
+  </data>
   <data name="SaveInvalid" xml:space="preserve">
     <value>The item is invalid.</value>
   </data>

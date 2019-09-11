@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Catfish.Core.Helpers;
 using Catfish.Core.Contexts;
 using Catfish.Core.Models.Access;
+using System.Xml.Linq;
 
 namespace Catfish.Core.Services
 {
@@ -72,6 +73,23 @@ namespace Catfish.Core.Services
             return result;
         }
 
+        public IQueryable<CFCollection> GetSystemCollections()
+        {
+            List<CFCollection> result = new List<CFCollection>();
+            var collections = Db.Collections.ToList();
+            foreach(CFCollection col in collections)
+            {
+                XAttribute isSysColl = col.Data.Attribute("issystemcollection");
+                if (isSysColl != null &&  Convert.ToBoolean(isSysColl.Value))
+                {
+                    result.Add(col);
+                }
+            }
+
+            return result.AsQueryable();
+        }
+
+
         /// <summary>
         /// Removes a collection from the database.
         /// </summary>
@@ -127,6 +145,14 @@ namespace Catfish.Core.Services
 
             //updating the "value" text elements
             dbModel.UpdateValues(changedCollection);
+
+            //update collection attribute -- issystemCollection -- Aug 21 2019
+            XAttribute isSysColl = changedCollection.Data.Attribute("issystemcollection");
+            if (isSysColl != null)
+            {
+                dbModel.Data.SetAttributeValue("issystemcollection", isSysColl.Value);
+            }
+
             dbModel.Serialize();
 
             if (changedCollection.Id > 0) //update Item

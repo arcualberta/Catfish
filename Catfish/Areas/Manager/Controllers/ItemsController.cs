@@ -124,7 +124,9 @@ namespace Catfish.Areas.Manager.Controllers
                     model = new CFItem();
                 }
             }
-
+            var sytemCollections = CollectionService.GetSystemCollections();
+            var systemCollectionList = new SelectList(sytemCollections.OrderBy(c=>c.Name), "Id", "Name");
+            ViewBag.SystemCollections = systemCollectionList;
             model.AttachmentField = new Attachment() { FileGuids = string.Join(Attachment.FileGuidSeparator.ToString(), model.Files.Select(f => f.Guid)) };
             return View(model);
         }
@@ -310,5 +312,39 @@ namespace Catfish.Areas.Manager.Controllers
 
             return AccessGroup(entityAccessVM.Id);
         }
+
+        [HttpPost]
+        public JsonResult MoveItemToSystemCollection(int itemId, int sysCollectionId)
+        {
+            try
+            {
+                CFItem item = ItemService.GetItem(itemId);
+                //remove all parents from this item
+                if(item.ParentMembers.Count > 1)
+                {
+                    foreach(CFAggregation p in item.ParentMembers)
+                    {
+                        p.RemoveChild(item);
+                    }
+                }
+
+                //add item to systemcollection
+                CFCollection systemCollection = CollectionService.GetCollection(sysCollectionId);
+                systemCollection.AddChild(item);
+
+                Db.Entry(item).State = EntityState.Modified;
+                Db.Entry(systemCollection).State = EntityState.Modified;
+                Db.SaveChanges(User.Identity);
+
+                //SuccessMessage(Catfish.Resources.Views.Items.Edit.MoveSuccess);
+                return Json(systemCollection.Name);
+            }
+            catch (Exception ex)
+            {
+                //ErrorMessage(Catfish.Resources.Views.Items.Edit.MoveFailed);
+                return Json(Catfish.Resources.Views.Items.Edit.MoveFailed);
+            }
+        }
+
     }
 }
