@@ -122,3 +122,58 @@
 
     return submitFormContainer;
 }();
+
+function addTextFieldRow(location, pathId, pathName, indexPath, langCode, isRequired) {
+    var index = location.find("input[type='text']").length;
+    var name = pathName.replace("{0}", index);
+    var id = pathId.replace("{0}", index);
+
+    var div = $("<div></div>");
+
+    var inputIndex = $("<input></input>");
+    inputIndex.attr("type", "hidden");
+    inputIndex.attr(indexPath);
+    inputIndex.val(id);
+    div.append(inputIndex);
+
+    var lang = $("<input></input>");
+    lang.attr("type", "hidden");
+    lang.attr("id", id + "__LanguageCode");
+    lang.attr("name", name + ".LanguageCode");
+    lang.val(langCode);
+    div.append(lang);
+
+    var lang = $("<input></input>");
+    lang.attr("type", "hidden");
+    lang.attr("id", id + "__LanguageCode");
+    lang.attr("name", name + ".LanguageCode");
+    lang.val(langCode);
+    div.append(lang);
+
+    var input = $("<input></input>");
+    input.attr("type", "text");
+    input.attr("id", id + "__Value");
+    input.attr("name", name + ".Value");
+    if (isRequired) {
+        input.attr("required", "required");
+    }
+    div.append(input);
+
+    var removeButton = $("<button></button>");
+    removeButton.addClass("btn btn-secondary");
+    removeButton.text("Remove");
+    removeButton.click(function (ev) {
+        ev.preventDefault();
+
+        $(this).parent().remove();
+    })
+    div.append(removeButton);
+
+    var span = $("<span></span>");
+    span.addClass("field-validation-valid");
+    span.attr("data-valmsg-for", name + ".Value");
+    span.attr("data-valmsg-replace", "true");
+    div.append(span);
+
+    location.append(div);
+}

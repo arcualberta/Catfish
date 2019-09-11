@@ -36,7 +36,7 @@ namespace Catfish.Controllers.Api
             catch (Exception ex)
             {
                 //return 500 or something appropriate to show that an error occured.
-                return Json(string.Empty);
+                return Json(new { error = ex.Message + "/n" + ex.StackTrace });
             }
         }
 
