@@ -231,13 +231,10 @@ namespace Catfish.Core.Models
             access.ToList().ForEach(x => result[x.Key] = x.Value);
 
             // Add all of the name mapping
-            if (result.ContainsKey("name_mapping_s"))
+            result.Add("name_mapping_s", GetName());
+            if (!String.IsNullOrEmpty((string)result["name_mapping_s"]))
             {
-                result["name_mapping_s"] = GetName();
-                if (!String.IsNullOrEmpty((string)result["name_mapping_s"]))
-                {
-                    result["name_mapping_s"] = ((string)result["name_mapping_s"]).ToLowerInvariant();
-                }
+                result["name_mapping_s"] = ((string)result["name_mapping_s"]).ToLowerInvariant();
             }
 
 

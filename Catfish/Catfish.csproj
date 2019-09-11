@@ -175,9 +175,11 @@
     </Content>
     <Content Include="Areas\Manager\Views\Extensions\index.html" />
     <Content Include="Scripts\dist\associationsView.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Scripts\dist\collectionsView.js" />
+    <Content Include="Scripts\dist\collectionsView.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Scripts\es6\components\actionableDropDownList.js" />
     <Content Include="Scripts\es6\components\actionableInputField.js" />
     <Content Include="Scripts\es6\components\collectionsLists.js" />
