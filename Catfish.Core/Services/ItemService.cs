@@ -215,6 +215,11 @@ namespace Catfish.Core.Services
             {
                 //dbModel = Db.XmlModels.Find(changedItem.Id) as CFItem;
                 dbModel = GetItem(changedItem.Id, AccessMode.Write);
+
+                if(dbModel == null)
+                {
+                    throw new UnauthorizedAccessException("User does not have WRITE access to item " + changedItem.Id);
+                }
             }
             else
             {

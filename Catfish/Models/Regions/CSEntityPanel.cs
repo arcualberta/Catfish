@@ -78,8 +78,8 @@ namespace Catfish.Models.Regions
                 typeof(Piranha.Areas.Manager.Models.PostListModel).Assembly.Location,
                 typeof(Piranha.DataContext).Assembly.Location,
                 typeof(System.Data.Entity.DbContext).Assembly.Location,
-                typeof(System.Linq.IQueryable<Piranha.Entities.Post>).Assembly.Location
-
+                typeof(System.Linq.IQueryable<Piranha.Entities.Post>).Assembly.Location,
+                typeof(System.Text.RegularExpressions.Regex).Assembly.Location
             };
         }
 
