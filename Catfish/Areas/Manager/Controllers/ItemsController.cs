@@ -138,6 +138,10 @@ namespace Catfish.Areas.Manager.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(CFItem model)
         {
+            var sytemCollections = CollectionService.GetSystemCollections();
+            var systemCollectionList = new SelectList(sytemCollections.OrderBy(c => c.Name), "Id", "Name");
+            ViewBag.SystemCollections = systemCollectionList;
+
             SecurityService.CreateAccessContext();
             if (ModelState.IsValid)
             {
