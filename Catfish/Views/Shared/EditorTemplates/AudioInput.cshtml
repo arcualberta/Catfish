@@ -25,13 +25,13 @@
 }
 
 
-<div id="@containerId">
+<div id="@containerId audioInput">
     @Html.HiddenFor(m => m.FileGuids)
     <input id="@audioFileId" class="clipFiles" type="file" multiple="multiple" style="display:none" />
     <audio id="@audioId" controls  controlslist="download"></audio>
-    <button id="@audioButtonId" onclick="toggleRecording(event);" class="glyphicon glyphicon-record"></button>
-    <button id="@pauseBtn" onclick="pauseRecording(event);" class="glyphicon glyphicon-pause"></button>
-    <button id="@resumeBtn" onclick="resumeRecording(event);" class="glyphicon glyphicon-play"></button>
+    <button id="@audioButtonId" onclick="toggleRecording(event);" class="glyphicon glyphicon-record audioInputGlyphicon audioInputGlyphiconRecord"></button>
+    <button id="@pauseBtn" onclick="pauseRecording(event);" class="glyphicon glyphicon-pause audioInputGlyphicon "></button>
+    <button id="@resumeBtn" onclick="resumeRecording(event);" class="glyphicon glyphicon-play audioInputGlyphicon"></button>
     <div class="thumbnailPanel">
         @{
             List<CFDataFile> files = ViewBag.Files == null ? new List<CFDataFile>() : ViewBag.Files as List<CFDataFile>;
@@ -57,7 +57,7 @@
 
                         @if (!undeletable)
                        {
-                            <button class="glyphicon glyphicon-remove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@containerId'); return false;"></button>
+                            <button class="glyphicon glyphicon-remove audioInputGlyphicon audioInputGlyphiconremove" onclick="deleteLinkedFile('@vm.Guid', '@fileGuidListFieldId', '@vm.FileName','@containerId'); return false;"></button>
                         }
                         <div class="label"><a href="@vm.Url">@vm.FileName</a></div>
                     </div>
@@ -134,10 +134,12 @@ function toggleRecording(e) {
       deleteButton.classList.add('deleteBtn');
       deleteButton.classList.add('glyphicon');
       deleteButton.classList.add('glyphicon-remove');
-
+     deleteButton.classList.add('audioInputGlyphicon')
+      deleteButton.classList.add('audioInputGlyphiconremove')
       downloadButton.classList.add('downloadBtn');
       downloadButton.classList.add('glyphicon');
       downloadButton.classList.add('glyphicon-save');
+    downloadButton.classList.add('audioInputGlyphicon');
 
       if(clipName === null) {
         clipLabel.textContent = 'Sample clip';
@@ -221,7 +223,7 @@ $(document).ready(function(){
      $("#@pauseBtn").hide();
      $("#@resumeBtn").hide();
      $("#@containerId").parents("form:first")[0].submitEvents.push(function(){
-         
+
           var promise = new Promise(function(resolve, reject){
              uploadClipFile('@containerId', '@uploadApiUrl', '@deleteApiUrl','@fileGuidListFieldId', resolve, reject );
         });
@@ -282,15 +284,14 @@ function uploadClipFile(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFie
         text-align:center;
     }
 
-    .glyphicon {
+    .audioInputGlyphicon{
         font-size: 1.7em !important;
         margin-bottom: 30px !important;
-        padding-bottom: 5px !important;    
+        padding-bottom: 5px !important;
         margin-left: 10px !important;
-        border-radius:5px;
+        border-radius: 5px;
     }
-    .glyphicon-record, .glyphicon-remove {
+    .audioInputGlyphiconRecord, .audioInputGlyphiconremove {
         color: #ef0b0b !important;
-     
     }
 </style>
