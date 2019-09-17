@@ -54,6 +54,10 @@ namespace Catfish.Models.Regions
         [Display(Name = "Question-parts Step Options")]
         public CompositeFormField.eStepState QuestionPartsStepOption { get; set; }
 
+        //Sept 13 2019
+        [Display(Name ="Attach Item To User")]
+        public bool AttachItemToUser { get; set; }
+
         private SelectList mForms;
         [ScriptIgnore]
         public SelectList Forms
