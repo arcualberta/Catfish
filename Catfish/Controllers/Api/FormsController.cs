@@ -35,10 +35,21 @@ namespace Catfish.Controllers.Api
                     formContainer.FormId,
                     formContainer.CollectionId, attributeMappings);
 
+                //Sept 16 2019 -- if formContainer.AttachItemToUser = true, throw exception if current user is not authenticate
+                if(formContainer.AttachItemToUser)
+                {
+                    if (!User.Identity.IsAuthenticated)
+                        throw new HttpException("You have to authenticate to save this page.");
+                }
+               
+                
                 // Set's the audit log value when saving.
                 // TODO: this should be more automated.
                 CFAuditEntry.eAction action = submission.Id == 0 ? CFAuditEntry.eAction.Create : CFAuditEntry.eAction.Update;
                 string actor = User.Identity.IsAuthenticated ? User.Identity.Name : "Annonymous";
+
+               
+
                 Db.SaveChanges(User.Identity);
             }
             else

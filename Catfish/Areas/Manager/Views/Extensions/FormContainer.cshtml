@@ -56,7 +56,11 @@
         <div class="input">@Html.EnumDropDownListFor(model => model.QuestionPartsStepOption)</div>
         @Html.ValidationMessageFor(m => m.QuestionPartsStepOption)
     </li>
-
+    <li>
+        @Html.LabelFor(m => m.AttachItemToUser)
+        <div class="input">@Html.CheckBoxFor(model => model.AttachItemToUser)</div>
+        @Html.ValidationMessageFor(m => m.AttachItemToUser)
+    </li>
     @Html.Partial("_CatfishRegion", Model)
 
     <li>
