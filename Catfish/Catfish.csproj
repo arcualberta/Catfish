@@ -512,6 +512,7 @@
     <Compile Include="Areas\Manager\Services\PageService.cs" />
     <Compile Include="Contexts\UserContext.cs" />
     <Compile Include="Areas\Manager\Controllers\BuildController.cs" />
+    <Compile Include="Controllers\CatfishAccountController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Models\Regions\AdvanceSearchContainer.cs" />
     <Compile Include="Models\Regions\CSEntityPanel.cs" />
@@ -726,6 +727,7 @@
     <Content Include="Views\Shared\DisplayTemplates\FacebookTimelinePanel.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\AudioInput.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\MultilingualHtml.cshtml" />
+    <Content Include="Views\CatfishAccount\Login.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
