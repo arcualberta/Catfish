@@ -166,7 +166,8 @@ function toggleRecording(e) {
       }
 
       //handle individual download file
-      downloadButton.onclick=function(e){
+          downloadButton.onclick = function (e) {
+              e.preventDefault();
          var a = document.createElement('a');
          clipContainer.appendChild(a);
 
