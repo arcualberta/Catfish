@@ -25,7 +25,7 @@
 }
 
 
-<div id="@containerId audioInput">
+<div id="@containerId" class="audioInput">
     @Html.HiddenFor(m => m.FileGuids)
     <input id="@audioFileId" class="clipFiles" type="file" multiple="multiple" style="display:none" />
     <audio id="@audioId" controls  controlslist="download"></audio>
@@ -86,13 +86,11 @@ function toggleRecording(e) {
     if (recorder && recorder.state == "recording") {
         recorder.stop();
         gumStream.getAudioTracks()[0].stop();
-      recordButton.classList.remove("glyphicon-stop");
-       recordButton.classList.add("glyphicon-record");
+        recordButton.classList.remove("glyphicon-stop");
+        recordButton.classList.add("glyphicon-record");
 
-          $("#@pauseBtn").hide();
-          $("#@resumeBtn").hide();
-
-
+        $("#@pauseBtn").hide();
+        $("#@resumeBtn").hide();
     } else {
         navigator.mediaDevices.getUserMedia({
             audio: true
@@ -109,6 +107,7 @@ function toggleRecording(e) {
 				preview.playbackRate = 0.5;
                 preview.src = url;
             };
+
       recorder.start();
      // recordButton.innerHTML = "Stop Recording";
      recordButton.classList.remove("glyphicon-record");
@@ -272,7 +271,6 @@ function uploadClipFile(containerId, uploadApiUrl, deleteApiUrl, fileGuidListFie
     .clip {
         border: 1px solid #8080805e;
         margin-top: 20px;
-        height: 75px;
     }
    
     audio{
