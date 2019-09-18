@@ -28,7 +28,7 @@
 
                     @if (Model.ShowEventDescription && calendarEvent.Description != null)
                     {
-                        <div class="description">@calendarEvent.Description</div>
+                        <div class="description">@Html.Raw(calendarEvent.Description)</div>
                     }
 
                     @if (Model.ShowEventLocation && calendarEvent.Location != null)
