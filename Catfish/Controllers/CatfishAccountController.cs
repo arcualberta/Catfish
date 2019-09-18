@@ -61,6 +61,7 @@ namespace Catfish.Controllers
             return View();
         }
 
+        [HttpGet]
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
