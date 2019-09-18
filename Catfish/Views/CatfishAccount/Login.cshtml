@@ -1,12 +1,13 @@
 ﻿@model Piranha.Models.LoginModel
-
-<link href="/res.ashx/areas/manager/content/img/icon.ico" rel="icon" type="image/x-icon">
+<html>
+<head><title>Login</title>
+    <link href="/res.ashx/areas/manager/content/img/icon.ico" rel="icon" type="image/x-icon">
     <link href="/res.ashx/areas/manager/content/img/icon.ico" rel="shortcut icon" type="image/x-icon">
     <link href="/res.ashx/areas/manager/content/css/style.min.css" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript" src="/res.ashx/areas/manager/content/js/ext/jquery-1.7.2.min.js"></script>
-        <script type="text/javascript" src="/res.ashx/areas/manager/content/js/jquery.manager.js"></script>
-        <script type="text/javascript">
+    <script type="text/javascript" src="/res.ashx/areas/manager/content/js/jquery.manager.js"></script>
+    <script type="text/javascript">
             $(document).ready(function () {
                 $(".message").click(function () { $(this).fadeOut("medium"); });
 
@@ -16,14 +17,15 @@
 
                 $("#login").focus();
             });
-        </script>
-  
+    </script>
+</head>
+<body>
 
     <div class="container_12">
         <div class="grid_4 box login">
             <div class="title"><small>v2.2.6.1</small><h2>Login</h2></div>
             <div class="inner">
-                <form action="@Href("~/CatfishAccount/Login")"  method="post">
+                <form action="@Href("~/CatfishAccount/Login")" method="post">
                     <input id="returnaction" name="returnaction" type="hidden" value="index" />
                     <input id="returncontroller" name="returncontroller" type="hidden" value="page" />
                     <ul class="form">
@@ -42,8 +44,20 @@
             </div>
         </div>
     </div>
+    <div id="boxMessage" class="floatbox">
+        <div class="bg"></div>
+        <div class="box">
+            <div class="title"><h2>Information</h2></div>
+            <div class="inner" style="width: 360px;min-height:60px;text-align:center">
+                <p id="sysMsg">@ViewBag.Message</p>
+            </div>
+        </div>
+    </div>
+</body></html>
 
 
-<script>
-    $(".menu").hide();
-</script>
+<style>
+    header[role="banner"]{
+        display: none;
+    }
+</style>
