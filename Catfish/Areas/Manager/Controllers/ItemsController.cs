@@ -70,6 +70,8 @@ namespace Catfish.Areas.Manager.Controllers
                 model = ItemService.GetItem(id);
                 if (model != null)
                 {
+                    ItemService.DisassociateFromAggregations(model);
+
                     Db.Entry(model).State = EntityState.Deleted;
                     Db.SaveChanges(User.Identity);
                 }

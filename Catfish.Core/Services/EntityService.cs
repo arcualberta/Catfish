@@ -31,6 +31,39 @@ namespace Catfish.Core.Services
 
         //}
 
+        public void DisassociateFromAggregations(CFAggregation aggregation)
+        {
+            // Remove all parent aggregations
+            {
+                CFAggregation[] parents = aggregation.ParentMembers.ToArray();
+                foreach (CFAggregation parent in parents)
+                {
+                    parent.RemoveChild(aggregation);
+                    Db.Entry(parent).State = EntityState.Modified;
+                }
+            }
+
+            // Remove all child aggregations
+            {
+                CFAggregation[] children = aggregation.ChildMembers.ToArray();
+                foreach (CFAggregation child in children)
+                {
+                    aggregation.RemoveChild(child);
+                    Db.Entry(child).State = EntityState.Modified;
+                }
+            }
+
+            // Remove all child relationships
+            {
+                CFItem[] children = aggregation.RelatedMembers.ToArray();
+                foreach (CFItem child in children)
+                {
+                    aggregation.RemoveRelated(child);
+                    Db.Entry(child).State = EntityState.Modified;
+                }
+            }
+        }
+
         public CFEntity GetAnEntity(int id)
         {
             return Db.Entities.Where(e => e.Id == id).FirstOrDefault();

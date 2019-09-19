@@ -102,6 +102,7 @@ namespace Catfish.Core.Services
                 model = GetCollection(id, AccessMode.Control);
                 if (model != null)
                 {
+                    DisassociateFromAggregations(model);
                     Db.Entry(model).State = EntityState.Deleted;
                 }
                 else
