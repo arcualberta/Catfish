@@ -17,33 +17,38 @@
 
 <script src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
 <script type="text/javascript" src="~/Scripts/attachment.js"></script>
+@*error message*@
+<div class="panel panel-default formContainerErrorPanel">
+    <div class="panel-body formContainerErrorPanelMessage alert-danger"></div>
+</div>
 
-    <div id="@cssId" class="bs @cssClasses form loading-form loadable-panel">
-        <style type="text/css" scoped>
+<div id="@cssId" class="bs @cssClasses form loading-form loadable-panel">
+    <style type="text/css" scoped>
                     @Html.Raw(cssStyles)
-        </style>
-        <form method="post" action="@UI.Permalink()/Edit">
-            @Html.EditorFor(m => m.FormViewModel, new { QuestionIndex = questionIndex })
-            <br />
-            <br />
-            <input class="btn btn-primary" name="submit" type="button" value="@Catfish.Resources.Global.Submit" />
-            <div class="panel panel-default form-submit form-confirm" style="display: none">
-                <div class="panel-body">
-                    <p>@Catfish.Resources.Views.Shared.DisplayTemplates.FormContainer.SubmitConfirm</p>
-                    <input class="btn btn-primary" name="yes" type="button" value="@Catfish.Resources.Global.Yes" />
-                    <input class="btn btn-primary" name="no" type="button" value="@Catfish.Resources.Global.No" />
-                </div>
+    </style>
+    <form method="post" action="@UI.Permalink()/Edit">
+        @Html.EditorFor(m => m.FormViewModel, new { QuestionIndex = questionIndex })
+        <br />
+        <br />
+        <input class="btn btn-primary" name="submit" type="button" value="@Catfish.Resources.Global.Submit" />
+        <div class="panel panel-default form-submit form-confirm" style="display: none">
+            <div class="panel-body">
+                <p>@Catfish.Resources.Views.Shared.DisplayTemplates.FormContainer.SubmitConfirm</p>
+                <input class="btn btn-primary" name="yes" type="button" value="@Catfish.Resources.Global.Yes" />
+                <input class="btn btn-primary" name="no" type="button" value="@Catfish.Resources.Global.No" />
             </div>
-
-            <input class="btn btn-primary" name="next" type="button" value="@Catfish.Resources.Global.Next" />
-        </form>
-        <div class="form-success" style="display: none">
-            <p>@Catfish.Resources.Views.Shared.DisplayTemplates.FormContainer.SubmitSuccess</p>
         </div>
+
+        <input class="btn btn-primary" name="next" type="button" value="@Catfish.Resources.Global.Next" />
+    </form>
+    <div class="form-success" style="display: none">
+        <p>@Catfish.Resources.Views.Shared.DisplayTemplates.FormContainer.SubmitSuccess</p>
     </div>
+</div>
 
-    <script type="text/javascript">
 
+<script type="text/javascript">
+     $(".formContainerErrorPanel").hide();
     function Setup@(cssId)(){
         var questions = @Html.Raw(Json.Encode(questionIndex));
         var questionIndex = -1;
@@ -133,7 +138,7 @@
 
             var form = $(this).parents("form")[0];
             var promiseList = [];
-            
+
             form.submitEvents.forEach(function (ev) {
                 var result = ev();
 
@@ -161,6 +166,18 @@
             }, function (error) {
                 showSubmit();
                 window.stopLoading("#@cssId");
+                //Sept 20 2019 -- show error message
+                let errMessage = "";
+                let i =0;
+                for(i=0; i< error.Message.length; i++){
+                    errMessage += error.Message[i] + "\n";
+                }
+                if(errMessage != "")
+                {
+                    let frmErr = $(".formContainerErrorPanelMessage").text(errMessage);
+                    frmErr.html(frmErr.html().replace(/\n/g,'<br/>'));
+                     $(".formContainerErrorPanel").show();
+                 }
             });
         });
 
@@ -189,9 +206,9 @@
         $("#@cssId").addClass("loaded-form");
     };
     Setup@(cssId)();// WE are using this method inorder to keep this comparable with Safari
-    </script>
+</script>
 
-    @{
-        // Sets the controller back to the original.
-        ViewContext.Controller.ControllerContext.RouteData.Values["controller"] = oldController;
-    }
+@{
+    // Sets the controller back to the original.
+    ViewContext.Controller.ControllerContext.RouteData.Values["controller"] = oldController;
+}
