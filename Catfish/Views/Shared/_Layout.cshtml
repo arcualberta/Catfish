@@ -76,7 +76,7 @@
                     @try
                     {
                         var logo = global.Regions.Logo;
-                        @UI.Thumbnail(logo.Id, 150)
+                        <img class="site-logo" src="@UI.Content(logo.Id)" />
                     }
                     catch (Exception)
                     {
