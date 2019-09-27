@@ -44,7 +44,7 @@ namespace Catfish.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("index", "managerstart");
+                        return Redirect(m.ReturnUrl);
                     }
                 }
                 else
