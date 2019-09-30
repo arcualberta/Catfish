@@ -358,3 +358,14 @@ ul.custom-tabs {
 .nav-tabs > li.active > a:focus {
     background-color: #ededed !important;
 }
+
+/* style for disabled link button*/
+a[disabled] {
+    pointer-events: none;
+}
+
+.disabledToolbarButton {
+    opacity: 0.5;
+    filter: alpha(opacity=50); /* msie */
+    background-color: #00000026;
+}
