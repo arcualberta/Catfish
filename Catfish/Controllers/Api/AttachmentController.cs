@@ -18,11 +18,11 @@ namespace Catfish.Controllers.Api
     {
         // GET: Attachment
         [HttpPost]
-        public JsonResult Upload()
+        public JsonResult Upload(int maxPixelSize = 0)
         {
             try
             {
-                List<CFDataFile> files = DataService.UploadTempFiles(Request);
+                List<CFDataFile> files = DataService.UploadTempFiles(Request, maxPixelSize);
                 Db.SaveChanges(User.Identity);
 
                 //Saving ids  of uploaded files in the session because these files and thumbnails

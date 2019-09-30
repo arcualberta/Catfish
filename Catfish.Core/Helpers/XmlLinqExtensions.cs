@@ -122,7 +122,7 @@ namespace Catfish.Core.Helpers
                     string valuesString = "values" + String.Join(",", values);
 
                     query = $@" 
-                    SELECT cf.* FROM [dbo].[CFXmlModels] cf 
+                    SELECT cf.Discriminator as Discriminator, cf.* FROM [dbo].[CFXmlModels] cf 
                     JOIN ({valuesString}) 
                     AS x (ordering, id) 
                     ON cf.MappedGuid = x.id
@@ -133,6 +133,9 @@ namespace Catfish.Core.Helpers
                     // Produce an empty result
                     query = "SELECT * FROM [dbo].[CFXmlModels] WHERE Id < 0";
                 }
+
+                var test = set.Where(c => c.Id != 0);
+                var testQuest = test.AsQueryable();
 
                 return set.SqlQuery(query).AsQueryable();
 
