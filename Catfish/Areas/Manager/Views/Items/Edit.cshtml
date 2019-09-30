@@ -38,6 +38,14 @@
     </script>
 }
 
+@if (ViewBag.ReadOnly != null && ((bool)ViewBag.ReadOnly == true))
+    {
+        <div class="alert alert-warning alert-dismissible grid_12" >
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            You do not have permission to edit this item.
+        </div>
+    }
+
 @section Toolbar {
     @if (ViewBag.SelectEntityViewModel != null)
     {
@@ -192,6 +200,27 @@ else
 }
 
 <script>
+    {
+       let isReadOnly = '@ViewBag.ReadOnly';
+
+       if(isReadOnly === 'True')
+       {
+          $("#toolbar_save_button").attr("disabled", "disabled");
+          //'greyed' out the button
+          $("li#save-btn").addClass("disabledToolbarButton");
+          $('#toolbar_save_button').off('click');
+          $('#toolbar_save_button').on("click", function(event){
+                if ($(this).is("[disabled]")) {
+                            event.preventDefault();
+                    }
+            });
+        }
+        else{
+             $("li#save-btn").removeClass("disabledToolbarButton");
+        }
+   }
+
+
     function moveItem(itemId)
     {
        var collectionId = $("#systemCollectionId").val();
@@ -217,4 +246,6 @@ else
        }
       return false;
     }
+
+
 </script>

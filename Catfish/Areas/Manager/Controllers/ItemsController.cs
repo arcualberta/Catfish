@@ -108,6 +108,24 @@ namespace Catfish.Areas.Manager.Controllers
                 model = ItemService.GetItem(id.Value);
                 if (model == null)
                     return HttpNotFound("Item was not found");
+                //Sept 27 2019 -- set the READ ONLY 
+                if (!Catfish.Core.Contexts.AccessContext.current.IsAdmin)//not admin
+                {
+                    string accessMode = "";
+                    foreach (CFAccessGroup ag in model.AccessGroups)
+                    {
+                        accessMode = ag.AccessDefinition.AccessModes.ToString();
+                        if (accessMode == "Read")
+                        {
+                            ViewBag.ReadOnly = true;
+                        }
+                        else if (accessMode == "Write"){
+                            ViewBag.ReadOnly = false;
+                            break;
+                        }
+                    }
+                    
+                }
             }
             else
             {
