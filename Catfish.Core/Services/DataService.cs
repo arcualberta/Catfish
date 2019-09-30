@@ -53,12 +53,14 @@ namespace Catfish.Core.Services
 
             string imageFileName = string.Empty;
 
-            if(size.Equals(ConfigHelper.eImageSize.Small.ToString()))
+            if (size.Equals(ConfigHelper.eImageSize.Small.ToString()))
                 imageFileName = guid + "_s." + ext;
-            else if(size.Equals(ConfigHelper.eImageSize.Medium.ToString()))
+            else if (size.Equals(ConfigHelper.eImageSize.Medium.ToString()))
                 imageFileName = guid + "_m." + ext;
-            else //large
+            else if (size.Equals(ConfigHelper.eImageSize.Large.ToString()))
                 imageFileName = guid + "_l." + ext;
+            else
+                imageFileName = guid + "_" + size + "." + ext;
 
             return imageFileName;
         }
@@ -106,14 +108,14 @@ namespace Catfish.Core.Services
             return imgFormat;
         }
 
-        public List<CFDataFile> UploadTempFiles(HttpRequestBase request)
+        public List<CFDataFile> UploadTempFiles(HttpRequestBase request, int maxPixelSize = 0)
         {
-            List<CFDataFile> files = UploadFiles(request, "temp-files");
+            List<CFDataFile> files = UploadFiles(request, "temp-files", maxPixelSize);
             Db.XmlModels.AddRange(files);
             return files;
         }
 
-        protected List<CFDataFile> UploadFiles(HttpRequestBase request, string dstPath)
+        protected List<CFDataFile> UploadFiles(HttpRequestBase request, string dstPath, int maxPixelSize)
         {
             dstPath = Path.Combine(ConfigHelper.UploadRoot, dstPath);
             if (!Directory.Exists(dstPath))
@@ -125,7 +127,7 @@ namespace Catfish.Core.Services
 
             List<CFDataFile> newFiles = new List<CFDataFile>();
             for (int i = 0; i < request.Files.Count; ++i)
-                newFiles.Add(InjestFile(request.Files[i].InputStream, request.Files[i].FileName.ToLower(), request.Files[i].ContentType, dstPath));
+                newFiles.Add(InjestFile(request.Files[i].InputStream, request.Files[i].FileName.ToLower(), request.Files[i].ContentType, dstPath, maxPixelSize));
 
             return newFiles;
         }
@@ -154,7 +156,7 @@ namespace Catfish.Core.Services
             return result;
         }
 
-        public CFDataFile InjestFile(Stream srcStream, string inputFileName, string contentType, string dstPath)
+        public CFDataFile InjestFile(Stream srcStream, string inputFileName, string contentType, string dstPath, int maxPixelSize)
         {
             dstPath = Path.Combine(ConfigHelper.UploadRoot, dstPath);
             if (!Directory.Exists(dstPath))
@@ -192,11 +194,16 @@ namespace Catfish.Core.Services
 
                 ImageFormat format = GetImageFormat(file.Extension);
 
-                Action<string, BitmapData, ColorPalette, int> saveImage = (path, image, palette, sizeVal) =>
+                Action<string, BitmapData, ColorPalette, int, bool> saveImage = (path, image, palette, sizeVal, ignoreIfSmaller) =>
                 {
                     int width = image.Width;
                     int height = image.Height;
-
+                    
+                    if (ignoreIfSmaller && width < sizeVal && height < sizeVal)
+                    {
+                        return;
+                    }
+                    
                     Size imgSize = width < height
                         ? new Size() { Height = sizeVal, Width = (width * sizeVal) / height }
                         : new Size() { Width = sizeVal, Height = (height * sizeVal) / width };
@@ -207,18 +214,31 @@ namespace Catfish.Core.Services
                     img.Dispose();
                 };
 
-                //august 1 2018 -- adding different size of image, not just thumbnail
+                // Add different image sizes.
+                string resizedFilePath = null;
                 using (Bitmap image = new Bitmap(file.AbsoluteFilePathName))
                 {
                     var data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, image.PixelFormat);
                     ColorPalette palette = image.Palette;
 
                     Parallel.Invoke(
-                        () => saveImage(Path.Combine(file.Path, file.Thumbnail), data, palette, (int)ConfigHelper.eImageSize.Thumbnail),
-                        () => saveImage(Path.Combine(file.Path, file.Small), data, palette, (int)ConfigHelper.eImageSize.Small),
-                        () => saveImage(Path.Combine(file.Path, file.Medium), data, palette, (int)ConfigHelper.eImageSize.Medium),
-                        () => saveImage(Path.Combine(file.Path, file.Large), data, palette, (int)ConfigHelper.eImageSize.Large)
+                        () => saveImage(Path.Combine(file.Path, file.Thumbnail), data, palette, (int)ConfigHelper.eImageSize.Thumbnail, false),
+                        () => saveImage(Path.Combine(file.Path, file.Small), data, palette, (int)ConfigHelper.eImageSize.Small, false),
+                        () => saveImage(Path.Combine(file.Path, file.Medium), data, palette, (int)ConfigHelper.eImageSize.Medium, false),
+                        () => saveImage(Path.Combine(file.Path, file.Large), data, palette, (int)ConfigHelper.eImageSize.Large, false)
                     );
+
+                    if(maxPixelSize > 0)
+                    {
+                        resizedFilePath = Path.Combine(file.Path, CreateVariatyImageSizeName(file.Guid, file.Extension, "Resize"));
+                        saveImage(resizedFilePath, data, palette, maxPixelSize, true);
+                    }
+                }
+
+                if (resizedFilePath != null && File.Exists(resizedFilePath)) {
+                    string path = Path.Combine(file.Path, file.LocalFileName);
+                    File.Delete(path);
+                    File.Move(resizedFilePath, path);
                 }
             }
             else
