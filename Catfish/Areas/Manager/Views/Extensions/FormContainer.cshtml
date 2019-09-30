@@ -57,6 +57,11 @@
         @Html.ValidationMessageFor(m => m.QuestionPartsStepOption)
     </li>
     <li>
+        @Html.LabelFor(m => m.MaxPixelLength)
+        <div class="input">@Html.EditorFor(model => model.MaxPixelLength)</div>
+        @Html.ValidationMessageFor(m => m.MaxPixelLength)
+    </li>
+    <li>
         @Html.LabelFor(m => m.AttachItemToUser)
         <div class="input">@Html.CheckBoxFor(model => model.AttachItemToUser)</div>
         @Html.ValidationMessageFor(m => m.AttachItemToUser)

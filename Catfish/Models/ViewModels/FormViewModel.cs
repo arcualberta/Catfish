@@ -20,6 +20,13 @@ namespace Catfish.Models.ViewModels
 
         public string FormSubmissionRef { get; set; }
 
+        public int MaxImageSize { get; set; }
+
         public IDictionary<string, string[]> Errors { get; set; }
+
+        public FormViewModel()
+        {
+            MaxImageSize = 0;
+        }
     }
 }
