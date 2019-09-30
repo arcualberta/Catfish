@@ -176,10 +176,16 @@
             <div class="input">
                 @if (typeof(Attachment).IsAssignableFrom(Model.Fields[i].GetType()))
                 {
+                    int maxPixelSize = 0;
+                    if(ViewBag.MaxPixelSize != null)
+                    {
+                        maxPixelSize = (ViewBag.MaxPixelSize as int?).Value;
+                    }
+
                     @Html.EditorFor(m => Model.Fields[i],
                  new
                  {
-                     UploadApiUrl = Url.Action("upload", "attachment"),
+                     UploadApiUrl = Url.Action("upload", "attachment", new { maxPixelSize = maxPixelSize }),
                      DeleteApiUrl = Url.Action("deleteCashedFile", "attachment"),
                      ParentId = Model.Id,
                      Controller = "items",

@@ -58,6 +58,10 @@ namespace Catfish.Models.Regions
         [Display(Name ="Attach Item To User")]
         public bool AttachItemToUser { get; set; }
 
+        // The maximum pixel length for an images longest dimension. If the size is less than or equal to 0, we will use the original size.
+        [Display(Name = "Max Image Upload Length")]
+        public int MaxPixelLength { get; set; }
+
         private SelectList mForms;
         [ScriptIgnore]
         public SelectList Forms
@@ -207,7 +211,8 @@ namespace Catfish.Models.Regions
                 FormViewModel = new FormViewModel()
                 {
                     Form = form,
-                    ItemId = 0
+                    ItemId = 0,
+                    MaxImageSize = MaxPixelLength
                 };
             }
 
