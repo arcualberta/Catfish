@@ -120,11 +120,18 @@ namespace Catfish.Tests.IntegrationTests.Manager
 
             Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[1]"), 10, 3000).Click();
             string aggregationName1 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[1]//td[2]"), 10, 3000).Text;
-
+            if(!aggregationName1.Contains("Item"))
+            {
+                //unchecked it -- can't add a collection as a 'related' item
+                Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[1]"), 10, 3000).Click();
+            }
             // first aggregation name
             Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[2]"), 10).Click();
-            //string aggregationName2 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[2]//td[2]"), 10).Text;
-
+            string aggregationName2 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[2]//td[2]"), 10).Text;
+            if(!aggregationName2.Contains("Item"))
+            {
+                Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[2]"), 10).Click();
+            }
             Driver.FindElement(By.Id("add-related-action"), 10).Click();
 
             string relatedDataTable = "(//div[@id='related-actionable-table']//table)[2]";
@@ -132,8 +139,10 @@ namespace Catfish.Tests.IntegrationTests.Manager
             string relatedName2 = Driver.FindElement(By.XPath($@"{relatedDataTable}//tbody//tr[2]//td[2]"), 10, 3000).Text;
 
             // there should be only one item related, the second value should be blank
-
-            Assert.AreEqual(aggregationName1, relatedName1);
+            if(aggregationName1.Contains("Item"))
+                Assert.AreEqual(aggregationName1, relatedName1);
+            else if(aggregationName2.Contains("Item"))
+                Assert.AreEqual(aggregationName2, relatedName1);
             //Assert.AreEqual(aggregationName2, relatedName2);
             Assert.IsEmpty(relatedName2);
         }
@@ -145,6 +154,21 @@ namespace Catfish.Tests.IntegrationTests.Manager
 
             string aggregationName = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[1]//td[2]"), 10).Text;
             Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[1]"), 10, 1500).Click();
+            if(testName == "related")
+            {
+                //string aggregationName1 = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[1]//td[2]"), 10, 3000).Text;
+                if (!aggregationName.Contains("Item"))
+                {
+                    //unchecked it -- can't add a collection as a 'related' item
+                    Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[1]"), 10, 3000).Click();
+                }
+                Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[2]"), 10).Click();
+                aggregationName = Driver.FindElement(By.XPath($@"{allDataTable}//tbody//tr[2]//td[2]"), 10).Text;
+                if (!aggregationName.Contains("Item"))
+                {
+                    Driver.FindElement(By.XPath($@"({allDataTable}//input[1])[2]"), 10).Click();
+                }
+            }
 
             //// first aggregation name
 
