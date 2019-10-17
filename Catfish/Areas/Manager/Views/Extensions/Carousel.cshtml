@@ -6,6 +6,10 @@
         <div class="input">@Html.TextAreaFor(m => m.ImageUrls, new { placeholder = "Enter one URL per line" })</div>
     </li>
     <li>
+        @Html.LabelFor(m => m.Links)
+        <div class="input">@Html.TextAreaFor(m => m.Links, new { placeholder = "Enter the link text per line in order according to the order of the images. If there is no corespondent link text to one of the image please use '#'." })</div>
+    </li>
+    <li>
         @Html.LabelFor(m => m.Interval)
         @{if (Model.Interval == 0) { Model.Interval = 3000; }}
         <div class="input">@Html.TextBoxFor(m => m.Interval, new { @type = "number" })</div>
