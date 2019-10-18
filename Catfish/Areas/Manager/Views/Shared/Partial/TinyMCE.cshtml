@@ -1,0 +1,20 @@
+﻿<script src="~/Areas/Manager/Content/Js/Ext/tiny_mce/tinymce.min.js"></script>
+    
+    <script type="text/javascript">
+        tinymce.init({
+            mode: 'specific_textareas',
+            editor_selector: "editor",
+            convert_urls: false,
+            plugins: [
+                "autoresize autolink code hr paste piranhaimage link textcolor colorpicker"
+            ],
+            color_picker_callback: function(callback, value){callback('#FF00FF');},
+            width: "100%",
+            height: "340",
+            autoresize_min_height: 340,
+            @if (File.Exists(Server.MapPath("~/areas/manager/content/css/editor.css"))) {
+            <text>content_css: "@Url.Content("~/areas/manager/content/css/editor.css")",</text>
+            }
+            toolbar: "bold italic underline | bullist numlist hr | formatselect removeformat | cut copy paste | link piranhaimage | aligncenter alignright alignjustify | forecolor backcolor | code",
+        });
+    </script>
