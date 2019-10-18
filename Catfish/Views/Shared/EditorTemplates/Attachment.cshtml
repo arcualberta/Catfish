@@ -14,9 +14,16 @@
     string containerId = Guid.NewGuid().ToString();
     string uploadApiUrl = ViewBag.UploadApiUrl as string;
     string deleteApiUrl = ViewBag.DeleteApiUrl as string;
+
+    int maxPixelSize = 0;
+    if (ViewBag.MaxPixelSize != null)
+    {
+        maxPixelSize = (ViewBag.MaxPixelSize as int?).Value;
+    }
+
     List<string> crossLinkedFileGuids = ViewBag.CrossLinkedFileGuids != null ?
         ViewBag.CrossLinkedFileGuids as List<string>
-        : new List<string>();   
+        : new List<string>();
 }
 
 
