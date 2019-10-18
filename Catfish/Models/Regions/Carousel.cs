@@ -17,6 +17,8 @@ namespace Catfish.Models.Regions
     {
         [Display(Name = "Image URLs")]
         public string ImageUrls { get; set; }
+        [Display(Name = "Links")]
+        public string Links { get; set; }
 
         [Display(Name = "Interval (ms)")]
         public int Interval { get; set; }
