@@ -9,6 +9,12 @@
     var cssId = Model.CssId != null ? Model.CssId : "DefaultCarouselId";
     var cssClasses = Model.CssClasses;
 
+    string[] links = null;
+    if (!string.IsNullOrEmpty(Model.Links))
+    {
+        links = Model.Links.Split(Environment.NewLine.ToArray(), StringSplitOptions.RemoveEmptyEntries); 
+    }
+
 }
 
 <style type="text/css" scoped>
@@ -45,8 +51,18 @@
                     var isActive = i == 0 ? "active" : "";
                     var imageUrl = slides[i];
                     var inlineStyles = imageUrl == null ? "background-color:#808080;" : "background-image:url('" + imageUrl + "');";
+                    string link = links != null ? links[i] : null;
+                   
                     <div class="item @isActive" style="@inlineStyles">
+                        @if (!string.IsNullOrEmpty(link))
+                        {
+                            <a href="@link" target="_blank">
+                                <img src="@imageUrl" visibility="hidden" style="opacity:0"/>
+                            </a>
+                        }
                     </div>
+                   
+
                 }
             }
         </div>
