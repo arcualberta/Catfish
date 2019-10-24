@@ -12,7 +12,7 @@
     string[] links = null;
     if (!string.IsNullOrEmpty(Model.Links))
     {
-        links = Model.Links.Split(Environment.NewLine.ToArray(), StringSplitOptions.RemoveEmptyEntries); 
+        links = Model.Links.Split(Environment.NewLine.ToArray(), StringSplitOptions.RemoveEmptyEntries);
     }
 
 }
@@ -44,6 +44,7 @@
                 }
             </ol>
         }
+
         <div class="carousel-inner" role="listbox">
             @{
                 for (var i = 0; i < slides.Length; ++i)
@@ -52,21 +53,19 @@
                     var imageUrl = slides[i];
                     var inlineStyles = imageUrl == null ? "background-color:#808080;" : "background-image:url('" + imageUrl + "');";
                     string link = links != null ? links[i] : null;
-                   
-                    <div class="item @isActive" style="@inlineStyles">
-                        @if (!string.IsNullOrEmpty(link))
-                        {
-                            <a href="@link" target="_blank">
-                                <img src="@imageUrl" visibility="hidden" style="opacity:0"/>
-                            </a>
-                        }
+
+                    string clickEvent = "";
+                    if (!string.IsNullOrEmpty(link))
+                    {
+                        clickEvent = "onclick=\"window.location = '" + link + "';\"";
+                    }
+
+                    <div class="item @isActive" style="@inlineStyles" @Html.Raw(clickEvent)>
                     </div>
-                   
 
                 }
             }
-        </div>
-        @if (slides.Length > 1 && Model.EnableControls)
+        </div>@if (slides.Length > 1 && Model.EnableControls)
         {
             <a class="carousel-control-prev" href="#@cssId" role="button" data-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
