@@ -32,8 +32,10 @@ namespace Catfish.Models.Regions
 
         [Display(Name = "Calendar id")]
         public string CalendarId { get; set; }
+        [Display(Name = "Day range past")]
+        public int DayRangePast { get; set; } = 0;
 
-        [Display(Name = "Day range")]
+        [Display(Name = "Day range future")]
         public int DayRange { get; set; } = 10;
 
         [Display(Name = "Max events")]
@@ -101,7 +103,8 @@ namespace Catfish.Models.Regions
                 });
 
                 EventsResource.ListRequest request = service.Events.List(CalendarId);
-                request.TimeMin = DateTime.Now;
+               
+                request.TimeMin = DateTime.Now.AddDays(DayRangePast);
                 request.TimeMax = DateTime.Now.AddDays(DayRange);
                 request.ShowDeleted = false;
                 request.SingleEvents = true;
