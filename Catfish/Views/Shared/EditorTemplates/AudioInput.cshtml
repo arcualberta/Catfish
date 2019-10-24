@@ -32,7 +32,7 @@
     <button id="@audioButtonId" onclick="toggleRecording(event);" class="glyphicon glyphicon-record audioInputGlyphicon audioInputGlyphiconRecord" data-toggle="tooltip" data-placement="top" title="Record" ></button>
     <button id="@pauseBtn" onclick="pauseRecording(event);" class="glyphicon glyphicon-pause audioInputGlyphicon " data-toggle="tooltip" data-placement="top" title="Pause" ></button>
     <button id="@resumeBtn" onclick="resumeRecording(event);" class="glyphicon glyphicon-play audioInputGlyphicon" data-toggle="tooltip" data-placement="top" title="Resume" ></button>
-    <div id="recordingTimeProgression">00:00:00</div>
+    <div id="recordingTimeProgression"><span id="hr">00</span>:<span id="mm">00</span>:<span id="secs">00</span></div>
     <div class="thumbnailPanel">
         @{
             List<CFDataFile> files = ViewBag.Files == null ? new List<CFDataFile>() : ViewBag.Files as List<CFDataFile>;
@@ -84,27 +84,46 @@ let form = new FormData();
 let timestamp = new Date(new Date().setHours(0,0,0,0)); //set to 0h:0m:0s
 let recordingTimer;
 
- let dataTransfer = new ClipboardEvent('').clipboardData || new DataTransfer();
+let Timer = {
+  totalSeconds: 0,
 
- function setRecordingTimer(){
+  start: function () {
+    var self = this;
 
-    timestamp =new Date(timestamp.getTime() +  1000);
-    let hour = timestamp.getHours();
-    let minute = timestamp.getMinutes();
-    let second = timestamp.getSeconds();
+    this.interval = setInterval(function () {
+      self.totalSeconds += 1;
+
+    let hour = Math.floor(self.totalSeconds / 3600);
+    let minute = Math.floor(self.totalSeconds / 60 % 60);
+    let second = parseInt(self.totalSeconds % 60);
     if (hour < 10) hour = "0" + hour;
     if (minute < 10) minute = "0" + minute;
     if (second < 10) second = "0" + second;
-    document.getElementById('recordingTimeProgression').innerHTML = hour + ':' + minute + ':' + second;
 
-    }
+      $("#recordingTimeProgression > #hr").text(hour);
+      $("#recordingTimeProgression > #mm").text(minute);
+      $("#recordingTimeProgression > #secs").text(second);
+    }, 1000);
+  },
 
-function stopRecordingTimer(){
-    clearInterval(recordingTimer);
-     timestamp =new Date(new Date().setHours(0,0,0,0));
+  pause: function () {
+    clearInterval(this.interval);
+    delete this.interval;
+  },
 
-    document.getElementById('recordingTimeProgression').innerHTML = "00:00:00";//timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds() + '';
- }
+  resume: function () {
+    if (!this.interval) this.start();
+  },
+  stop: function () {
+   clearInterval(this.interval);
+     $("#recordingTimeProgression > #hr").text("00");
+      $("#recordingTimeProgression > #mm").text("00");
+      $("#recordingTimeProgression > #secs").text("00");
+  }
+};
+
+
+ let dataTransfer = new ClipboardEvent('').clipboardData || new DataTransfer();
 
 function toggleRecording(e) {
      e.preventDefault();
@@ -113,12 +132,13 @@ function toggleRecording(e) {
         gumStream.getAudioTracks()[0].stop();
         recordButton.classList.remove("glyphicon-stop");
         recordButton.classList.add("glyphicon-record");
-      
+
      recordButton.setAttribute('data-original-title', 'Record');
         $("#@pauseBtn").hide();
         $("#@resumeBtn").hide();
-        //stop timer
-         stopRecordingTimer();
+
+        //stop timer  
+         Timer.stop();
     } else {
         navigator.mediaDevices.getUserMedia({
             audio: true
@@ -140,12 +160,12 @@ function toggleRecording(e) {
       recorder.start();
 
       //update the time -- show the recording time progression
-      recordingTimer = setInterval(setRecordingTimer, 100);
+       Timer.start();
 
      recordButton.classList.remove("glyphicon-record");
      recordButton.classList.add("glyphicon-stop");
-     //recordButton.title = "Stop";
-  
+   
+
       recordButton.setAttribute('data-original-title', 'Stop');
       $("#@pauseBtn").show();
 
@@ -171,6 +191,7 @@ function toggleRecording(e) {
       deleteButton.classList.add('glyphicon-remove');
      deleteButton.classList.add('audioInputGlyphicon')
       deleteButton.classList.add('audioInputGlyphiconremove')
+
      //set the tooltips
       deleteButton.setAttribute('data-toggle', 'tooltip');
      deleteButton.setAttribute('data-placement', 'top');
@@ -180,6 +201,7 @@ function toggleRecording(e) {
       downloadButton.classList.add('glyphicon');
       downloadButton.classList.add('glyphicon-save');
     downloadButton.classList.add('audioInputGlyphicon');
+
     //set the tooltips
      downloadButton.setAttribute('data-toggle', 'tooltip');
      downloadButton.setAttribute('data-placement', 'top');
@@ -242,7 +264,7 @@ function toggleRecording(e) {
      attachmentFile.files = dataTransfer.files;
 
      chunks = [];
-     }          //
+     }
 
    });
     }
@@ -255,12 +277,16 @@ function pauseRecording(e){
     recorder.pause();
      $("#@resumeBtn").show();
      $("#@pauseBtn").hide();
+    //pause the timer
+    Timer.pause();
 }
 function resumeRecording(e){
      e.preventDefault();
      recorder.resume();
-      $("#@pauseBtn").show();
-          $("#@resumeBtn").hide();
+     $("#@pauseBtn").show();
+     $("#@resumeBtn").hide();
+    //resume Timer
+    Timer.resume();
  }
 
 
