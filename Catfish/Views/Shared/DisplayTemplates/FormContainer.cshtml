@@ -177,8 +177,11 @@
                 //Sept 20 2019 -- show error message
                 let errMessage = "";
                 let i =0;
-                for(i=0; i< error.Message.length; i++){
-                    errMessage += error.Message[i] + "\n";
+                if(error.NotAuthorized != null)
+                {
+                    for(i=0; i< error.NotAuthorized.length; i++){
+                        errMessage += error.NotAuthorized[i] + "\n";
+                    }
                 }
                 if(errMessage != "")
                 {
