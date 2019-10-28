@@ -33,7 +33,8 @@ namespace Catfish.Core.Validators
 
         public override string FormatErrorMessage(string name)
         {
-            return string.Format(Catfish.Core.Resources.Validators.FormFieldRequiredAttribute, name);
+            // return string.Format(Catfish.Core.Resources.Validators.FormFieldRequiredAttribute, name);
+            return Catfish.Core.Resources.Validators.FormFieldRequiredAttribute;
         }
     }
 }
