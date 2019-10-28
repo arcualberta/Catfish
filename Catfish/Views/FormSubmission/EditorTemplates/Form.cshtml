@@ -95,6 +95,7 @@
         string name = Model.Fields[i].GetName(lang, true);
         string description = Model.Fields[i].GetDescription(lang);
         bool isHidden = Model.Fields[i].IsHidden();
+        bool isRequired = Model.Fields[i].IsRequired;
 
         @Html.HiddenFor(m => m.Fields[i].IsRequired)
 
@@ -103,6 +104,10 @@
             {
                 <div class="name">
                     @Html.Label(name)
+                    @if(isRequired)
+                    {
+                        <apan class="error">*</apan>
+                    }
                 </div>
             }
 
