@@ -15,7 +15,12 @@
             @Html.TextBoxFor(m => m.CalendarId, new { placeholder = "Calendar id" })
         </div>
     </li>
-
+    <li>
+        @Html.LabelFor(m => m.DayRangePast)
+        <div class="input">
+            @Html.TextBoxFor(m => m.DayRangePast, new { @type = "number" })
+        </div>
+    </li>
     <li>
         @Html.LabelFor(m => m.DayRange)
         <div class="input">
