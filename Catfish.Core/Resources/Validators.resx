@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FormFieldRequiredAttribute" xml:space="preserve">
-    <value>The field {0} is required.</value>
+    <value>The field is required.</value>
     <comment>The message to display when validation fails on the form field.</comment>
   </data>
 </root>

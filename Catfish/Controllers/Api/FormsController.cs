@@ -42,7 +42,7 @@ namespace Catfish.Controllers.Api
                     {
                         //throw new HttpException("You have to authenticate to save this page.");
                         vm.Errors = new Dictionary<string, string[]>();
-                        vm.Errors.Add("Message", (new string[] { "You are not authorized." }));
+                        vm.Errors.Add("NotAuthorized", (new string[] { "You are not authorized." }));
                         return Json(vm);
                     }
                 }
@@ -65,11 +65,11 @@ namespace Catfish.Controllers.Api
                 List<string> errorList = new List<string>();
                 foreach (var error in errors)
                 {
-                    //vm.Errors.Add(error.Key, error.Value.Errors.Select(e => e.ErrorMessage).ToArray());
-                    errorList.AddRange(error.Value.Errors.Select(e => e.ErrorMessage));
+                    vm.Errors.Add(error.Key, error.Value.Errors.Select(e => e.ErrorMessage).ToArray());
+                   // errorList.AddRange(error.Value.Errors.Select(e => e.ErrorMessage));
                 }
 
-                vm.Errors.Add("Message", errorList.ToArray());
+               // vm.Errors.Add("Message", errorList.ToArray());
             }
 
             return Json(vm);
