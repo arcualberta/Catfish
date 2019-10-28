@@ -259,7 +259,7 @@
                         let fileName = clipLabel.textContent + ".webm";
 
                         var file = new File([blob], fileName, { type: "audio/webm", lastModified: Date.now() });
-                        dataTransfer.items.add(new File([file], fileName))
+                        dataTransfer.items.add(new File([file], fileName));
                         attachmentFile.files = dataTransfer.files;
 
                         chunks = [];
