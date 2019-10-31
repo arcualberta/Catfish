@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,9 @@ namespace Catfish.Models.ViewModels
             Id = aggregation.Id;
             MappedGuid = aggregation.MappedGuid;
             EntityType = aggregation.EntityType.Name;
-            Label = aggregation.Label;
+            string modelType = aggregation.Data.Attribute("model-type").Value;
+            Label = AggregationService.GetModelTypeLabel(modelType);
         }
+
     }
 }
