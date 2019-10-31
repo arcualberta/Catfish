@@ -352,6 +352,26 @@ namespace Catfish.Core.Services
             //VisitHierarchy(aggregation, setChildModified);
             aggregation.VisitHierarchy(setChildModified);
         }
+
+        public static string GetModelTypeLabel(string type)
+        {
+
+            Type currentType = Type.GetType(type);
+            Type collectionType = typeof(CFCollection);
+            Type itemType = typeof(CFItem);
+
+            if (currentType == collectionType)
+            {
+                return "Collection";
+            }
+            else if (currentType == itemType)
+            {
+                return "Item";
+            }
+
+            return "Undefined";
+
+        }
     }
     
     public static class ReIndexState
