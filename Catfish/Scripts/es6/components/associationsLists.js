@@ -64,7 +64,8 @@ export default class AssociationsLists extends React.Component {
             //   title: title on action,
             //   action: function to execute on selected data
             //}
-            actions: []
+            actions: [],
+            disabled: false
           
         }
 
@@ -134,13 +135,13 @@ export default class AssociationsLists extends React.Component {
             this.searchTimers[location] = null;
         }, this.searchTimeDelay)
     }
-
+  
     updateSelected(location, payload) {
         const newState = update(this.state,
             {
-                [location]: { selected: { $set: payload } }
+                [location]: { selected: { $set: payload }}
             })
-
+       
         this.setState(newState)
     }
 
@@ -172,6 +173,7 @@ export default class AssociationsLists extends React.Component {
         return { url, id }
     }
 
+  
     updatePage(location, payload) {
         //const url = '/apix/Aggregations'
         let { page, query } = payload
@@ -405,6 +407,7 @@ export default class AssociationsLists extends React.Component {
     }
 
     initActions() {
+        //const disabled = state.disabled;
         this.allActions = [
             {
                 title: "Add parents",
@@ -419,7 +422,10 @@ export default class AssociationsLists extends React.Component {
             {
                 title: "Add related",
                 action: this.addRelated,
-                id: "add-related-action"
+                id: "add-related-action",
+                //disabled Add Related button if the selected item is a Collection
+                //checking if in the selected[] contains at least 1 Collection item -- array.some(condition/value) will return true if the array contains at least 1 item that match the condition/value
+                disabled: ()=>{ return this.state.all.selected.some(x=>(x.label == "Collection"))}
             },
             {
                 title: "Clear selection",

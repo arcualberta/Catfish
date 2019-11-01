@@ -4,20 +4,31 @@ import PropTypes from 'prop-types';
 
 const ActionButtons = (props) =>
     <div className="action-buttons">
-        {props.actions.map((actionable, index) =>
-            
-            <button
-                key={index}
-                id={actionable.id}
-                onClick={
-                    (event) => {
-                        { actionable.action(props.payload) }
-                    }
-                 } >
-                <div dangerouslySetInnerHTML= {{__html: actionable.title}} />
+        {props.actions.map((actionable, index) =>{
+            const{
+                action,
+                title,
+                id,
+                disabled=()=>false //passing value as function
+            }=actionable
 
-            </button>
-        )}
+            return(
+                     <button key={index}
+                         id={id}  disabled={disabled()} //to disabled the button
+                         onClick={
+                               (event) => {
+                                    { action(props.payload) }
+                                     }
+                               } >
+                           <div dangerouslySetInnerHTML= {{__html: title}} />
+
+                     </button>
+                )
+
+         }
+            
+           
+       )}
     </div>
 
 ActionButtons.propTypes = {
@@ -25,9 +36,11 @@ ActionButtons.propTypes = {
     actions: PropTypes.arrayOf(
     PropTypes.shape({
             title: PropTypes.string.isRequired,
-            action: PropTypes.func.isRequired
+            action: PropTypes.func.isRequired,
+            disabled:PropTypes.boolean
         })
     ).isRequired,
+    
     //payload: PropTypes.object
 }
 
