@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Text;
 using NUnit.Framework;
 using Catfish.Core.Contexts;
+using System.Threading;
 
 namespace Catfish.Tests.Helpers
 {
@@ -688,7 +689,7 @@ namespace Catfish.Tests.Helpers
                 Assert.True(expectations.Contains(p));
             return response;
         }
-        public virtual Task<string> GetAsync(string relativeUrl, IEnumerable<KeyValuePair<string, string>> parameters)
+        public virtual Task<string> GetAsync(string relativeUrl, IEnumerable<KeyValuePair<string, string>> parameters, CancellationToken cancellationToken=default(CancellationToken))
         {
             return Task.FromResult(Get(relativeUrl, parameters));
         }
