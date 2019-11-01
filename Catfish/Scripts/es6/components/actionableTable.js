@@ -31,7 +31,7 @@ const ActionableTable = (props) => {
 
     const {
         selected,
-        actions,
+        actions=[],
         data,
         isEquivalent,
         update,
@@ -60,7 +60,7 @@ const ActionableTable = (props) => {
                                     />
                                 </td>
                                 <td>
-                                    <ConditionalRender condition={selected.length > 0}>
+                                    <ConditionalRender condition={ selected.length > 0}>
                                         <ActionButtons
                                             actions={actions}
                                             payload={selected}
@@ -89,7 +89,7 @@ ActionableTable.propTypes = {
     update: PropTypes.func.isRequired,
     isEquivalent: PropTypes.func.isRequired,
     maxRows: PropTypes.number,
-    actions: PropTypes.array.isRequired,
+    actions: PropTypes.array,
    // isBulkActions: PropTypes.bool
   
 }
@@ -177,7 +177,7 @@ const renderBody = props => {
                    
 
                         {headers.map(header =>
-                            <td key={header.id}>{datum[header.key]}</td>
+                <td key={header.id}>{datum[header.key]}</td>
                         )}
                          <td>
                            <ConditionalRender condition={datum.actions!= null && datum.actions.length > 0}>
