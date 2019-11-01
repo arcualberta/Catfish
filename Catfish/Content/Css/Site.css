@@ -2,7 +2,9 @@
 #lang-switcher{
     float:right;
 }
-
+button[disabled] {
+    opacity: 0.6;
+}
 .loading-form {
     display: none;
 }

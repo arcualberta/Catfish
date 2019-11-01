@@ -234,8 +234,6 @@ updatePage(location, payload) {
         entityType = this.state[location].selectedEntityType;
     }
 
-  // entityType = "TestEntityType"
-
     axios.get(url, {
         params: {
             id,
@@ -249,31 +247,29 @@ updatePage(location, payload) {
     })
         .then(response => {
             const data = response.data
-            const dataData = response.data.data.map(x => {
-                x.actions = [
-                     //{
-                     //    title: "<span class='glyphicon glyphicon-download-alt ' />",
-                     //    action: this.downloadData     
-                     //},
-                    {
-                        title: "<span class='glyphicon glyphicon-edit object-edit' />",
-                        action: this.updateCollection
-                    },
-                     {
-                         title: "<span class='glyphicon glyphicon-link object-associations' />",
-                         action: this.addAssociation
-                      
-                     },
-                    
-                      {
-                          title: "<span class='glyphicon glyphicon-remove object-delete' />",
-                          action: this.deleteCollection    
-                      },
-                      {
-                          title: "<span class='glyphicon glyphicon-eye-close object-accessgroup' />",
-                          action: this.viewAccessGroup   
-                      }
-                ]
+            const links = [
+              {
+                  title: "<span class='glyphicon glyphicon-edit object-edit' />",
+                  action: this.updateCollection        
+              },
+               {
+                   title: "<span class='glyphicon glyphicon-link object-associations' />",
+                   action: this.addAssociation          
+               },
+                {
+                    title: "<span class='glyphicon glyphicon-remove object-delete' />",
+                    action: this.deleteCollection
+                   
+                },
+                {
+                    title: "<span class='glyphicon glyphicon-eye-close object-accessgroup' />",
+                    action: this.viewAccessGroup
+                   
+                }
+            ]
+            const dataData = response.data.data.map(x => {x.links=(
+                <ActionButtons actions={links} payload={x.id} />
+               )
               
                 return x
             })
@@ -311,34 +307,30 @@ componentDidMount() {
     })
        .then(response => {
 
-            // this should be replaced with the incoming data from api call
+           // this should be replaced with the incoming data from api call
            const data = response.data
-
-           const dataData = response.data.data.map(x => {
-               x.actions = [
-                   {
-                       title: "<span class='glyphicon glyphicon-edit object-edit' />",
-                       action: this.updateCollection
-                   },
-                    {
-                        title: "<span class='glyphicon glyphicon-link object-associations' />",
-                        action: this.addAssociation
-                      
-                    },
-                    //{
-                    //    title: "<span class='glyphicon glyphicon-download-alt ' />",
-                    //    action: this.downloadData     
-                    //},
-                     {
-                         title: "<span class='glyphicon glyphicon-remove object-delete' />",
-                         action: this.deleteCollection    
-                     },
-                     {
-                         title: "<span class='glyphicon glyphicon-eye-close object-accessgroup' />",
-                         action: this.viewAccessGroup   
-                     }
-               ]
-              
+           const links = [
+               {
+                   title: "<span class='glyphicon glyphicon-edit object-edit' />",
+                   action: this.updateCollection      
+               },
+                {
+                    title: "<span class='glyphicon glyphicon-link object-associations' />",
+                    action: this.addAssociation        
+                },
+                 {
+                     title: "<span class='glyphicon glyphicon-remove object-delete' />",
+                     action: this.deleteCollection      
+                 },
+                 {
+                     title: "<span class='glyphicon glyphicon-eye-close object-accessgroup' />",
+                     action: this.viewAccessGroup  
+                 }
+           ]
+           const dataData = response.data.data.map(x => {x.links=(
+                 <ActionButtons actions={links} payload={x.id} />
+               )
+                     
                return x
            })
         
