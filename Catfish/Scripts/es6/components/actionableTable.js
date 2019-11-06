@@ -122,6 +122,14 @@ const renderHead = props => {
         )
 }
 
+const RenderHeader =(props) =>{
+    const{header,datum} = props
+    if(header.key == "name")
+    {
+        return  <a href={linkUrl(datum)}>{datum[header.key]}</a>
+    }
+    return datum[header.key]
+}
 
 
 const getExtraRows = (maxRows, dataLength, headers) => {
@@ -140,7 +148,8 @@ const getExtraRows = (maxRows, dataLength, headers) => {
 
     return null
 }
-
+const linkUrl = (datum) => ("/manager/"+ datum["label"] + "s/edit/"+ datum["id"])
+    
 const renderBody = props => {
 
     const {
@@ -155,7 +164,7 @@ const renderBody = props => {
         } = props
 
     const restOfTable = getExtraRows(maxRows, data.length, headers)
-    
+   
     return (             
         <tbody className="object-list">
             {
@@ -165,19 +174,23 @@ const renderBody = props => {
                       
                         <td className="data-checkbox">
                             <ConditionalRender condition={actions.length > 0}>
-                            <input
-                                type="checkbox"
-                                checked={isChecked({ datum, selected, isEquivalent })}
-                                onChange={() => {
-                                    toggle({ datum, selected, isEquivalent, update, location })
-                                }}
-                            />
-</ConditionalRender>
+                                <input
+                                    type="checkbox"
+                                    checked={isChecked({ datum, selected, isEquivalent })}
+                                    onChange={() => {
+                                        toggle({ datum, selected, isEquivalent, update, location })
+                                    }}
+                                />
+                            </ConditionalRender>
                         </td>
                    
-
+                           
                         {headers.map(header =>
-                <td key={header.id}>{datum[header.key]}</td>
+                     <td key={header.id}>
+                  
+                       
+                     <RenderHeader header={header} datum={datum} />
+                      </td>
                         )}
                          <td>
                            <ConditionalRender condition={datum.actions!= null && datum.actions.length > 0}>
