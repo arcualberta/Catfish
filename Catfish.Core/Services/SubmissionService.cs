@@ -310,6 +310,12 @@ namespace Catfish.Core.Services
                 string FieldName = map.Value;
                 FormField formField = GetFormField(storedFormSubmission.FormData.Fields, FieldName);
 
+                if(formField == null)
+                {
+                    // The field currently does not exist
+                    continue;
+                }
+
                 var FieldValues = formField.GetValues();
 
                 CFEntityTypeAttributeMapping am = entityType.AttributeMappings.Where(a => a.Name == attMapping).FirstOrDefault();
