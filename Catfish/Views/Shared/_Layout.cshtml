@@ -60,15 +60,17 @@
     }
 
     @RenderSection("head", required: false)
-    @{ 
+    @{
         //Render javascript section if any  var link1 = global.Regions.Link1;
-        var js = global.Regions.Javascript;
-        if (js != null)
-        {    
-            <script>
-                @Html.Raw(js.Content)
-            </script>
+        try
+        {
+            if (global.Regions.Javascript != null)
+            {
+                var js = global.Regions.Javascript;
+                @Html.DisplayFor(j=> js, "Javascript", null)
+            }
         }
+         catch (Exception) { }
     }
 </head>
 <body>
