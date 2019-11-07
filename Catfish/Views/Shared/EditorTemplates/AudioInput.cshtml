@@ -124,7 +124,13 @@
         };
 
 
-        var dataTransfer = new ClipboardEvent('').clipboardData || new DataTransfer();
+        var dataTransfer = null;
+
+        try {
+            dataTransfer = new ClipboardEvent('').clipboardData || new DataTransfer();
+        } catch (e) {
+            alert("Could not create Audio Input. " + e.message);
+        }
 
         function toggleRecording(e) {
             e.preventDefault();
@@ -259,8 +265,13 @@
                         let fileName = clipLabel.textContent + ".webm";
 
                         var file = new File([blob], fileName, { type: "audio/webm", lastModified: Date.now() });
-                        dataTransfer.items.add(new File([file], fileName));
-                        attachmentFile.files = dataTransfer.files;
+
+                        if (dataTransfer != null) {
+                            dataTransfer.items.add(new File([file], fileName));
+                            attachmentFile.files = dataTransfer.files;
+                        } else {
+                            console.warn("Could not save files due to missing DataTransfer object.");
+                        }
 
                         chunks = [];
                     }
