@@ -76,7 +76,7 @@
         var recorder, gumStream;
         var recordButton = document.getElementById("@audioButtonId");
         var soundClips = document.querySelector('.sound-clips');
-        var attachmentFile = document.querySelector('.clipFiles');
+        var attachmentFile = document.getElementById("@audioFileId");
         var pauseButton = document.getElementById("@pauseBtn");
         var resumeButton = document.getElementById("@resumeBtn");
         var chunks = [];
@@ -127,7 +127,7 @@
         var dataTransfer = null;
 
         try {
-            dataTransfer = new ClipboardEvent('').clipboardData || new DataTransfer();
+            dataTransfer = new ClipboardEvent('').clipboardData || new DataTransfer() || [];
         } catch (e) {
             alert("Could not create Audio Input. " + e.message);
         }
