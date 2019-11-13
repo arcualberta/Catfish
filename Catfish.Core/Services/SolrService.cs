@@ -128,20 +128,20 @@ namespace Catfish.Core.Services
         {
         }
 
-        public string GetGraphData(string query, string xIndexId, string yIndexId, string categoryId)
+        public string GetGraphData(string query, string xIndexId, string yIndexId, string categoryId, int itmLimit=10000)
         {
             const string facetCategoryJson = @"{{
                 xValues:{{
                     sort : index,
                     type : terms,
-                    limit : 10000,
+                    limit : {3},
                     field : {0},
                     facet : {{
                         sumYValues : {1},
                         groups : {{
                             type : terms,
                             field : {2},
-                            limit: 10000,
+                            limit:  {3},
                             facet : {{
                                 sumYValuesArg : {1}
                             }}
@@ -154,7 +154,7 @@ namespace Catfish.Core.Services
                 xValues:{{
                     sort : index,
                     type : terms,
-                    limit : 10000,
+                    limit :  {3},
                     field : {0},
                     facet : {{
                         sumYValues : {1}
@@ -166,7 +166,7 @@ namespace Catfish.Core.Services
             {
                 IEnumerable<KeyValuePair<string, string>> parameters = new KeyValuePair<string, string>[]{
                     new KeyValuePair<string, string>("q", query),
-                    new KeyValuePair<string, string>("json.facet", string.Format(categoryId == null ? facetJson : facetCategoryJson, xIndexId, yIndexId, categoryId)),
+                    new KeyValuePair<string, string>("json.facet", string.Format(categoryId == null ? facetJson : facetCategoryJson, xIndexId, yIndexId, categoryId, itmLimit)),
                     new KeyValuePair<string, string>("rows", "0"),
                     new KeyValuePair<string, string>("sort", "field(" + xIndexId + ",min) asc"),
                     new KeyValuePair<string, string>("wt", "xml")

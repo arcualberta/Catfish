@@ -515,9 +515,10 @@ namespace Catfish.Services
             string yIndexId = GetGraphFieldString(yMetadataSet, yField, languageCode, true);
             string catIndexId = string.IsNullOrEmpty(grpField) ? null : GetGraphFieldString(grpMetadataSet, grpField, languageCode);
            
-            string solrResult = SolrSrv.GetGraphData(q, xIndexId, yIndexId, catIndexId);//xindex == catIndex -- if the catIndex is null sol don't return the 2nd grouping
+            string solrResult = SolrSrv.GetGraphData(q, xIndexId, yIndexId, catIndexId, 50000);//xindex == catIndex -- if the catIndex is null sol don't return the 2nd grouping
                                                                                      //forexample 1st group by "Year", 2nd group by "Recipient"
                                                                                      //yIndexId -- is the field that can be sum() -- number field
+                                                                                     //50000 -- limit item searched returned
                                                                                       
             List<GroupByObject> results = ConvertSolrXml2(solrResult).ToList();
             return results;
