@@ -180,7 +180,7 @@ namespace Catfish.Core.Services
             return null;
         }
 
-        public IDictionary<string, string> GetSolrCategories(string query, string fieldId, int rows = int.MaxValue)
+        public IDictionary<string, string> GetSolrCategories(string query, string fieldId, int rows = int.MaxValue, bool isGraphData=true)
         {
             var dictionary = new Dictionary<string, string>();
 
@@ -204,9 +204,17 @@ namespace Catfish.Core.Services
 
                     if (response.facet_counts != null && response.facet_counts.facet_fields.ContainsKey(fieldId))
                     {
+                       
                         foreach (var g in response.facet_counts.GetFacetsForField(fieldId))
                         {
-                            dictionary.Add(g.Item1, g.Item1);
+                            if (isGraphData)
+                            {
+                                dictionary.Add(g.Item1, g.Item1);
+                            }
+                            else
+                            {
+                                dictionary.Add(g.Item1, g.Item2.ToString()); //MR: Nov12 2019: get the group by and count for each category
+                            }
                         }
                     }
                 }
