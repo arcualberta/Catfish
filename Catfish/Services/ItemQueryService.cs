@@ -8,6 +8,8 @@ using Catfish.Models.Regions;
 using System.IO;
 using System.Text;
 using Catfish.Core.Models.Forms;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Catfish.Services
 {
@@ -51,6 +53,13 @@ namespace Catfish.Services
         public ItemQueryService(CatfishDbContext db)
         {
             Db = db;
+        }
+
+        public struct GroupByObject
+        {
+            public string GroupByName;
+            public int Count;
+            public decimal Total;/* for example Total Amount -- yField that passed as parameter */
         }
 
         public decimal GetCalculatedField(string query, eFunctionMode function, string SelectedFieldMetadataSet, string SelectedField, string SelectedGroupByFieldMetadataSet, string SelectedGroupByField, string languageCode = "en")
@@ -301,11 +310,131 @@ namespace Catfish.Services
                         result = ReadFacet(reader, categories);
                     }
                 }
+               
             }
 
             return result;
         }
 
+        private IEnumerable<GroupByObject> ConvertSolrXml2(string solrXml)
+        {
+            IEnumerable<GroupByObject> results = new List<GroupByObject>();
+            MemoryStream memStream = new MemoryStream();
+            byte[] data = Encoding.Default.GetBytes(solrXml);
+            memStream.Write(data, 0, data.Length);
+            memStream.Position = 0;
+            XmlDocument doc = new XmlDocument();
+            using (System.Xml.XmlReader reader = System.Xml.XmlReader.Create(new StringReader(solrXml)))
+            {
+                while (reader.Read())
+                {
+                    if (reader.IsStartElement() && reader.Name == "lst" && reader.GetAttribute("name") == "facets")
+                    {
+                        results = ReadFacet2(reader);
+                    }//if
+                }
+                return results;
+            }
+
+       
+           // return results;
+        }
+
+        private IEnumerable<GroupByObject> ReadFacet2(System.Xml.XmlReader reader /*, IDictionary<string, string> categories*/)
+        {
+            int level = 1;
+            int xVal = 0;
+            decimal yVal = 0;
+            int count = 0;
+            string category = string.Empty;
+            int totItemCount = 0; //for debug only
+
+            IList<GroupByObject> result = new List<GroupByObject>();
+
+            while (reader.Read())
+            {
+                if (reader.IsStartElement())
+                {
+                    if (reader.Name == "lst")
+                    {
+                        ++level;
+                    }
+                    else if ((reader.Name == "int" || reader.Name == "long" || reader.Name == "double") && level == 3)
+                    {
+                        string name = reader.GetAttribute("name");
+                        reader.Read();
+                        string value = reader.ReadContentAsString();
+
+                       if (name == "count")
+                        {
+                            count = int.Parse(value);
+                        }
+                        else if (name == "sumYValues" )
+                        {
+                            try
+                            {
+                                yVal = Convert.ToDecimal(double.Parse(value));
+                            }
+                            catch (Exception fex)
+                            {
+                                throw new FormatException(string.Format("Unable to parse string \"{0}\" into decimal.", value), fex);
+                            }
+                        }
+                    }
+                    else if (level == 5 && category != null)
+                    {
+                        string name = reader.GetAttribute("name");
+                        reader.Read();
+                        string value = reader.ReadContentAsString();
+
+                        if (!string.IsNullOrWhiteSpace(value))
+                        {
+                            if (name == "val")
+                            {
+                                category = value;
+                            }
+                            else if (name == "count")
+                            {
+                                count = int.Parse(value);
+                            }
+                            else if (name == "sumYValuesArg")
+                            {
+                                yVal = Convert.ToDecimal(double.Parse(value));
+                            }
+                        }
+                    }
+                }
+                else if (reader.NodeType == System.Xml.XmlNodeType.EndElement)
+                {
+                    if (reader.Name == "lst")
+                    {
+                        --level;
+
+                        if (level < 1)
+                        {
+                            break;
+                        }
+                       
+                        else if (level == 4)// && category != null)
+                        {
+                           
+                            result.Add(new GroupByObject()
+                            {
+                                Total = yVal,
+                                GroupByName = category,//categories.ContainsKey(category) ? categories[category] : category,
+                                Count = count
+                            });
+
+                            yVal = 0.0m;
+                            category = string.Empty;
+                            count = 0;
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
         private string GetGraphFieldString(string metadataSetGuid, string fieldGuid, string languageCode = "en", bool wrapInFunction = false)
         {
             string baseSearch = wrapInFunction ? "\"unique(value_{0}_{1}_{2}_ss)\"" : "value_{0}_{1}_{2}_ss";
@@ -377,6 +506,21 @@ namespace Catfish.Services
 
             return result;
 
+        }
+
+
+        public List<GroupByObject> GetGroupData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string grpMetadataSet, string grpField, string languageCode = "en")
+        {
+            string xIndexId = GetGraphFieldString(xMetadataSet, xField, languageCode, false);
+            string yIndexId = GetGraphFieldString(yMetadataSet, yField, languageCode, true);
+            string catIndexId = string.IsNullOrEmpty(grpField) ? null : GetGraphFieldString(grpMetadataSet, grpField, languageCode);
+           
+            string solrResult = SolrSrv.GetGraphData(q, xIndexId, yIndexId, catIndexId);//xindex == catIndex -- if the catIndex is null sol don't return the 2nd grouping
+                                                                                     //forexample 1st group by "Year", 2nd group by "Recipient"
+                                                                                     //yIndexId -- is the field that can be sum() -- number field
+                                                                                      
+            List<GroupByObject> results = ConvertSolrXml2(solrResult).ToList();
+            return results;
         }
     }
 }

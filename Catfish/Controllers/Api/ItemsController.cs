@@ -263,5 +263,14 @@ namespace Catfish.Controllers.Api
             FilePathResult filePathResult = new FilePathResult(path_name, file.ContentType);
             return filePathResult; // Json(filePathResult, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult GetGroupData(string q, string xMetadataSet, string xField, string yMetadataSet, string yField, string catMetadataSet, string catField, bool countResults = false)
+        {
+            ItemQueryService itemQueryService = new ItemQueryService(Db);
+          
+            var result = itemQueryService.GetGroupData(q, xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField);    
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+       
     }
 }
