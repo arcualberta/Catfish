@@ -550,6 +550,7 @@
     <Content Include="Areas\Manager\Content\Js\Ext\tiny_mce\skins\lightgray\fonts\tinymce.eot" />
     <Content Include="Areas\Manager\Content\Js\Ext\tiny_mce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Areas\Manager\Content\Js\Ext\tiny_mce\skins\lightgray\fonts\tinymce.woff" />
+    <Content Include="Areas\Manager\Views\Extensions\VimeoPanel.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="RazorGenerator.LICENSE.md" />
     <Content Include="Scripts\es6\components\actionButtons.js" />
@@ -619,6 +620,7 @@
     <Compile Include="Models\Regions\QueryFilterPanel.cs" />
     <Compile Include="Models\Regions\GoogleCalendarPanel.cs" />
     <Compile Include="Models\Regions\TwitterTimelinePanel.cs" />
+    <Compile Include="Models\Regions\VimeoPanel.cs" />
     <Compile Include="Models\ViewModels\CFAggregationIndexViewModel.cs" />
     <Compile Include="Models\ViewModels\EntityViewModel.cs" />
     <Compile Include="Resources\Global.fr.Designer.cs">
@@ -822,6 +824,7 @@
     <Content Include="Views\Shared\EditorTemplates\AudioInput.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\MultilingualHtml.cshtml" />
     <Content Include="Views\CatfishAccount\Login.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\VimeoPanel.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
