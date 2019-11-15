@@ -1,0 +1,11 @@
+﻿@model Catfish.Models.Regions.VimeoPanel
+
+<ul class="form">
+   
+    <li>
+        @Html.LabelFor(m => m.VimeoEmbedCode)
+        <div class="input">@Html.TextAreaFor(m => m.VimeoEmbedCode, new { placeholder = "Copy the embed code from Vimeo and paste it here." })</div>
+    </li>
+
+    @Html.Partial("_CatfishRegion", Model)
+</ul>
