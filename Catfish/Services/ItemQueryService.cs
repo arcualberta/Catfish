@@ -189,8 +189,6 @@ namespace Catfish.Services
             int count = 0;
             string category = string.Empty;
 
-            IList<GraphQueryObject> result = new List<GraphQueryObject>();
-
             while (reader.Read())
             {
                 if (reader.IsStartElement())
@@ -258,13 +256,13 @@ namespace Catfish.Services
                         {
                             if(categories == null)
                             {
-                                result.Add(new GraphQueryObject()
+                                yield return new GraphQueryObject()
                                 {
                                     XValue = yVal,
                                     YValue = xVal,
                                     Category = null,
                                     Count = count
-                                });
+                                };
 
                                 yVal = 0.0m;
                                 count = 0;
@@ -273,13 +271,13 @@ namespace Catfish.Services
                             xVal = 0;
                         } else if (level == 4 && categories != null)
                         {
-                            result.Add(new GraphQueryObject()
+                            yield return new GraphQueryObject()
                             {
                                 XValue = yVal,
                                 YValue = xVal,
                                 Category = categories.ContainsKey(category) ? categories[category] : category,
                                 Count = count
-                            });
+                            };
 
                             yVal = 0.0m;
                             category = string.Empty;
@@ -288,14 +286,10 @@ namespace Catfish.Services
                     }
                 }
             }
-
-            return result;
         }
 
         private IEnumerable<GraphQueryObject> ConvertSolrXml(string solrXml, IDictionary<string, string> categories)
         {
-            IEnumerable<GraphQueryObject> result = null;
-
             MemoryStream memStream = new MemoryStream();
             byte[] data = Encoding.Default.GetBytes(solrXml);
             memStream.Write(data, 0, data.Length);
@@ -307,13 +301,14 @@ namespace Catfish.Services
                 {
                     if(reader.IsStartElement() && reader.Name == "lst" && reader.GetAttribute("name") == "facets")
                     {
-                        result = ReadFacet(reader, categories);
+                        foreach (GraphQueryObject facet in ReadFacet(reader, categories))
+                        {
+                            // We add another yield here since we are inside a 'using' method. We do not want out reader to close before we are done itterating over the data. 
+                            yield return facet;
+                        }
                     }
                 }
-               
             }
-
-            return result;
         }
 
         private IEnumerable<GroupByObject> ConvertSolrXml2(string solrXml)
