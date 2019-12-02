@@ -26,6 +26,47 @@ namespace Catfish.Controllers.Api
             throw new NotImplementedException("Currently not yet implemented.");
         }
 
+        private IEnumerable<Tuple<int, List<string>>> ConvertPagedItems(IEnumerable<CFItem> items, IEnumerable<string> mappings, int[] mapIds, bool includeImage, string lang)
+        {
+            foreach (var itm in items)
+            {
+                List<string> rowContent = new List<string>(mapIds.Length);
+                foreach (string mapping in mappings)
+                {
+                    string content = itm.GetAttributeMappingValue(mapping, lang);
+
+                    if (content == null)
+                    {
+                        // Check if the parent has the mapping.
+                        foreach (var parent in itm.ParentMembers)
+                        {
+                            content = parent.GetAttributeMappingValue(mapping, lang);
+
+                            if (content != null)
+                            {
+                                break;
+                            }
+                        }
+                    }
+
+                    rowContent.Add(content);
+                }
+
+                if (includeImage)
+                {
+                    foreach (var file in itm.Files)
+                    {
+                        if (file.TopMimeType == CFDataFile.MimeType.Image)
+                        {
+                            rowContent.Add(file.Guid);
+                        }
+                    }
+                }
+
+                yield return new Tuple<int, List<string>>(itm.Id, rowContent);
+            }
+        }
+
         public JsonResult GetPageItems(string q, 
             string entityTypeFilter, 
             int sortAttributeMappingId, 
@@ -39,9 +80,7 @@ namespace Catfish.Controllers.Api
             
             SecurityService.CreateAccessContext();
             var items = ItemService.GetPagedItems(q, entityTypeFilter, sortAttributeMappingId, sortAsc, page, itemPerPage, out total);
-
-            List<Tuple<int, List<string>>> result = new List<Tuple<int, List<string>>>(items.Count());
-
+            
             List<string> mappings = new List<string>(mapIds.Length);
             foreach(int id in mapIds)
             {
@@ -49,43 +88,8 @@ namespace Catfish.Controllers.Api
                 mappings.Add(am.Name);
             }
 
-            foreach (var itm in items)
-            {
-                List<string> rowContent = new List<string>(mapIds.Length);
-                foreach(string mapping in mappings)
-                {
-                    string content = itm.GetAttributeMappingValue(mapping,lang);
+            IEnumerable<Tuple<int, List<string>>> result = ConvertPagedItems(items, mappings, mapIds, includeImage, lang);
 
-                    if (content == null)
-                    {
-                        // Check if the parent has the mapping.
-                        foreach (var parent in itm.ParentMembers)
-                        {
-                            content = parent.GetAttributeMappingValue(mapping, lang);
-
-                            if(content != null)
-                            {
-                                break;
-                            }
-                        }
-                    }
-
-                    rowContent.Add(content);
-                }
-
-                if (includeImage)
-                {
-                    foreach(var file in itm.Files)
-                    {
-                        if(file.TopMimeType == CFDataFile.MimeType.Image)
-                        {
-                            rowContent.Add(file.Guid);
-                        }
-                    }
-                }
-
-                result.Add(new Tuple<int, List<string>>(itm.Id, rowContent));
-            }
 
             return Json(new { total = total, result = result }, JsonRequestBehavior.AllowGet);
         }

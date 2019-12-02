@@ -162,6 +162,8 @@ namespace Catfish.Core.Services
                 }}
             }}";
 
+            
+
             if (SolrService.IsInitialized)
             {
                 IEnumerable<KeyValuePair<string, string>> parameters = new KeyValuePair<string, string>[]{
@@ -169,7 +171,8 @@ namespace Catfish.Core.Services
                     new KeyValuePair<string, string>("json.facet", string.Format(categoryId == null ? facetJson : facetCategoryJson, xIndexId, yIndexId, categoryId, itmLimit)),
                     new KeyValuePair<string, string>("rows", "0"),
                     new KeyValuePair<string, string>("sort", "field(" + xIndexId + ",min) asc"),
-                    new KeyValuePair<string, string>("wt", "xml")
+                    new KeyValuePair<string, string>("wt", "xml"),
+                    new KeyValuePair<string, string>("fl", string.Join(",", xIndexId, yIndexId, categoryId)) // We can limit the search results to just the fields we will need for calculating the graphs.
                 };
 
                 var result = SolrService.mSolr.Get("/select", parameters);
