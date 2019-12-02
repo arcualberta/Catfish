@@ -313,7 +313,6 @@ namespace Catfish.Services
 
         private IEnumerable<GroupByObject> ConvertSolrXml2(string solrXml)
         {
-            IEnumerable<GroupByObject> results = new List<GroupByObject>();
             MemoryStream memStream = new MemoryStream();
             byte[] data = Encoding.Default.GetBytes(solrXml);
             memStream.Write(data, 0, data.Length);
@@ -325,26 +324,22 @@ namespace Catfish.Services
                 {
                     if (reader.IsStartElement() && reader.Name == "lst" && reader.GetAttribute("name") == "facets")
                     {
-                        results = ReadFacet2(reader);
-                    }//if
+                        foreach (GroupByObject facet in ReadFacet2(reader))
+                        {
+                            // We add another yield here since we are inside a 'using' method. We do not want out reader to close before we are done itterating over the data. 
+                            yield return facet;
+                        }
+                    }
                 }
-                return results;
             }
-
-       
-           // return results;
         }
 
         private IEnumerable<GroupByObject> ReadFacet2(System.Xml.XmlReader reader /*, IDictionary<string, string> categories*/)
         {
             int level = 1;
-            int xVal = 0;
             decimal yVal = 0;
             int count = 0;
             string category = string.Empty;
-            int totItemCount = 0; //for debug only
-
-            IList<GroupByObject> result = new List<GroupByObject>();
 
             while (reader.Read())
             {
@@ -413,12 +408,12 @@ namespace Catfish.Services
                         else if (level == 4)// && category != null)
                         {
                            
-                            result.Add(new GroupByObject()
+                            yield return new GroupByObject()
                             {
                                 Total = yVal,
                                 GroupByName = category,//categories.ContainsKey(category) ? categories[category] : category,
                                 Count = count
-                            });
+                            };
 
                             yVal = 0.0m;
                             category = string.Empty;
@@ -427,9 +422,8 @@ namespace Catfish.Services
                     }
                 }
             }
-
-            return result;
         }
+
         private string GetGraphFieldString(string metadataSetGuid, string fieldGuid, string languageCode = "en", bool wrapInFunction = false)
         {
             string baseSearch = wrapInFunction ? "\"unique(value_{0}_{1}_{2}_ss)\"" : "value_{0}_{1}_{2}_ss";
