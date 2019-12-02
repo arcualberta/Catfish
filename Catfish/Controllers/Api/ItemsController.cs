@@ -13,6 +13,8 @@ using System.Web.Mvc;
 using Catfish.Core.Helpers;
 using System.Drawing.Imaging;
 using Catfish.Models.ViewModels;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace Catfish.Controllers.Api
 {
@@ -99,7 +101,6 @@ namespace Catfish.Controllers.Api
         {
             ItemQueryService itemQueryService = new ItemQueryService(Db);
             var result = itemQueryService.GetGraphData(q, xMetadataSet, xField, yMetadataSet, yField, catMetadataSet, catField);
-
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
