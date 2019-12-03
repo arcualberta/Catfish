@@ -455,7 +455,7 @@ namespace Catfish.Services
             IDictionary<string, string> categories = null;
             if (catIndexId != null)
             {
-                categories = SolrSrv.GetSolrCategories(q, catIndexId);
+                categories = SolrSrv.GetSolrCategories(q, catIndexId, 0);
             }
 
             return ConvertSolrXml(result, categories);
