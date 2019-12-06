@@ -1,4 +1,9 @@
 ﻿@model Piranha.Models.LoginModel
+
+ @{ 
+     bool allowGoogleLogin = Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings["AllowGoogleLogin"]);
+    // string googleClientId = System.Configuration.ConfigurationManager.AppSettings["GoogleClientId"];
+ }
 <html>
 <head><title>Login</title>
     <link href="/res.ashx/areas/manager/content/img/icon.ico" rel="icon" type="image/x-icon">
@@ -18,6 +23,7 @@
                 $("#login").focus();
             });
     </script>
+   
 </head>
 <body>
 
@@ -43,6 +49,18 @@
                 <div class="clear"></div>
             </div>
         </div>
+    @if (allowGoogleLogin)
+    {
+        <div class="grid_4 box login">
+            <div id="socialLoginDiv">     
+                    <h2>Login With: </h2>
+                    <hr />
+                    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                    @*<a href="#" onclick="signOut();">Sign out</a>*@
+               
+            </div>
+        </div>
+    }
     </div>
     <div id="boxMessage" class="floatbox">
         <div class="bg"></div>
@@ -53,11 +71,69 @@
             </div>
         </div>
     </div>
-</body></html>
+
+
+
+ </body>
+
+</html>
 
 
 <style>
     header[role="banner"]{
         display: none;
     }
+    #socialLoginDiv{
+        padding:15px;
+    }
 </style>
+
+<script>
+
+ function onSignIn(googleUser) {
+       var profile = googleUser.getBasicProfile();
+
+      // var id_token = googleUser.getAuthResponse().id_token;
+
+      var auth2 = gapi.auth2.getAuthInstance();
+      if(auth2.isSignedIn)
+      {
+         var user = new Object();
+         user.Login = profile.getEmail();
+         user.Password= profile.getId();
+         user.Email =  profile.getEmail();
+         user.Firstname =  profile.getGivenName();
+         user.Surname =  profile.getFamilyName();
+         var url = "../../CatfishAccount/ExternalLogin";
+         $.ajax({
+               type: 'POST',
+               url: url,
+
+               data:{userModel: user},
+               success: function(data){
+                  window.location.href = window.location.origin;
+               },
+               error: function(){ alert("Encounter problems while login")}
+        });
+      }
+}
+
+    /* this logout script only works if the logout button on the same page with login */
+  /*  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      var url = "../../CatfishAccount/Logout";
+         $.ajax({
+               type: 'GET',
+               url: url,
+
+               success: function(data){
+                 
+               window.location.href = window.location.origin;
+               },
+               error: function(){ alert("Encounter problems while logout")}
+        });
+
+    });
+  }*/
+</script>

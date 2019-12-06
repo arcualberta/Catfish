@@ -18,6 +18,10 @@
     {
         global = Piranha.Models.PageModel.GetBySite(Piranha.Config.SiteTreeId);
     }
+
+    bool isLoggedIn = Session[PiranhaApp.USER] != null;
+    bool googleLogin = Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings["AllowGoogleLogin"]);
+    string googleClientId = System.Configuration.ConfigurationManager.AppSettings["GoogleClientId"];
 }
 
 
@@ -47,6 +51,8 @@
     <link type="text/css" rel="stylesheet" href="~/content/css/style.css" />
     <link type="text/css" rel="stylesheet" href="~/content/css/Site.css" />
     <link href="~/Content/bs-bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="@googleClientId">
 
     @UI.Head()
 
@@ -127,3 +133,21 @@
 </body>
 @RenderSection("script", required: false)
 </html>
+@if (isLoggedIn)
+{
+<script>
+      function signOut() {
+      var url = "../../CatfishAccount/Logout";
+         $.ajax({
+               type: 'GET',
+               url: url,
+               success: function(data){
+                 document.location.href = "https://www.google.com/accounts/Logout";
+               window.location.href = window.location.origin;
+               },
+               error: function(){ alert("Encounter problems while logout")}
+        });
+   
+  }
+</script>
+}
