@@ -408,11 +408,21 @@ namespace Catfish.Core.Services
 
     public class SolrIndex
     {
+        private static readonly string[] FIELDS = { "id", "id_s" };
+        
         [SolrUniqueKey("id")]
         public string SolrId { get; set; }
 
         [SolrField("id_s")]
         public int Id { get; set; }
+
+        public static ICollection<string> Fields
+        {
+            get
+            {
+                return FIELDS;
+            }
+        }
     }
 
     public class DocList

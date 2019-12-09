@@ -58,6 +58,8 @@ namespace Catfish.Core.Helpers
 
                 options.OrderBy = orderBy;
 
+                options.Fields = SolrIndex.Fields;
+
                 //if (!string.IsNullOrEmpty(sortRowId))
                 //{
                 //    options.OrderBy = new[]
@@ -111,22 +113,20 @@ namespace Catfish.Core.Helpers
                 SolrQueryResults<SolrIndex> results = solr.Query(solrQuery, options);
                 total = results.NumFound;
 
-                int resultsCount = results.Count();
                 string query;
 
-                if (resultsCount > 0)
+                if (total > 0)
                 {
                     IEnumerable<string> values = results.Select((r, i) => {
                         return "(" + i + ",'" + r.SolrId + "')";
                     });
-                    string valuesString = "values" + String.Join(",", values);
 
                     query = $@" 
-                    SELECT cf.Discriminator as Discriminator, cf.* FROM [dbo].[CFXmlModels] cf 
-                    JOIN ({valuesString}) 
-                    AS x (ordering, id) 
+                    SELECT cf.Discriminator as Discriminator, cf.* 
+                    FROM (values {String.Join(",", values)}) AS x (ordering, id) 
+                    JOIN [dbo].[CFXmlModels] cf 
                     ON cf.MappedGuid = x.id
-                    ORDER BY x.ordering ";
+                    ORDER BY x.ordering ASC";
                 }
                 else
                 {
@@ -134,12 +134,13 @@ namespace Catfish.Core.Helpers
                     query = "SELECT * FROM [dbo].[CFXmlModels] WHERE Id < 0";
                 }
 
-                var test = set.Where(c => c.Id != 0);
-                var testQuest = test.AsQueryable();
+                //var test = set.Where(c => c.Id != 0);
+                //var testQuest = test.AsQueryable();
 
                 return set.SqlQuery(query).AsQueryable();
 
-                //return set.Where(p => results.Contains(p.Id)); // the Contians method is slow because it creates several or expressions. 
+                //IEnumerable<string> ids = results.Select(r => r.SolrId);
+                //return set.Where(p => ids.Contains(p.MappedGuid)); // the Contians method is slow because it creates several or expressions. 
                 // More info can be found here: https://stackoverflow.com/questions/8107439/why-is-contains-slow-most-efficient-way-to-get-multiple-entities-by-primary-ke
             }
 
