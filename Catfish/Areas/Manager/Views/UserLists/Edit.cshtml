@@ -4,6 +4,10 @@
     ViewBag.Title = String.IsNullOrEmpty(Model.CFUserListName) ? "Create User List" : "Edit User List";
     var context = "ctx_" + Guid.NewGuid().ToString("N");
     var ko = Html.CreateKnockoutContext(context);
+    if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        ViewBag.Message = Model.SuccessMessage;
+    }
 }
 
 @section HEAD
@@ -15,6 +19,16 @@
     <link type="text/css" rel="stylesheet" href="~/content/jquery-ui.min.css" />
 }
 
+@*@if (!string.IsNullOrWhiteSpace(ViewBag.Message))
+{
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="@ViewBag.MessageCss">
+                @Html.Raw(ViewBag.Message)
+            </div>
+        </div>
+    </div>
+}*@
 
 
 <div id="@context">
@@ -24,6 +38,13 @@
         var pointer = string.IsNullOrEmpty(Model.ErrorMessage) ? "" : "pointer-events: none;";
         @Html.AntiForgeryToken()
         @ko.Html.Hidden(Model.Id)
+      
+            <div class="bs row">
+                <div class="col-12">
+                        @ko.Html.Span(m => m.SuccessMessage, new {@class="alert alert-success" }).Visible(m => m.SuccessMessage.Length > 0)       
+                </div>
+            </div>
+       
       <ul >
         <li class="form form-custom">
             <label class="control-label col-md-2">User List</label>
@@ -83,6 +104,27 @@
             if(newValue != null)
                 @(context).ErrorMessage(newValue.length > 0 ? "" : "*");
         });
+
+       @(context).SuccessMessage.subscribe(function(val){
+           if(val != null){
+                removeAlert();
+            }
+        });
+
+
     });
 
+    function removeAlert(){
+         //remove alert-success
+      $(".alert-success").fadeTo(2000, 500).slideUp(500, function(){
+                   $(".alert-success").slideUp(500);
+        });
+         @(context).ErrorMessage("");
+    }
 </script>
+<style>
+    .alert-success{
+        display: block;
+        text-align: center;
+    }
+</style>
