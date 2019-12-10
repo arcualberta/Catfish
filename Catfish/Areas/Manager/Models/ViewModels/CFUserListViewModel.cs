@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -26,6 +27,8 @@ namespace Catfish.Areas.Manager.Models.ViewModels
         public List<string> UsersToRemove { get; set; }
 
         public string ErrorMessage { get; set; }
+        [NotMapped]
+        public string SuccessMessage { get; set; }
 
         public CFUserListViewModel()
         {
