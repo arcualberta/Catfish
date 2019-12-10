@@ -65,12 +65,14 @@ namespace Catfish.Areas.Manager.Controllers
                   
                     Db.SaveChanges();
                     entGrpVM.ErrorMessage = string.Empty;
+                    entGrpVM.SuccessMessage = Catfish.Resources.Views.Items.Edit.SaveSuccess;
                 }
                 else
                 {
                     if(string.IsNullOrEmpty(entGrpVM.CFUserListName))
                     {
                         entGrpVM.ErrorMessage = "*";
+                        entGrpVM.SuccessMessage = string.Empty;
                     }
                 }
             }
