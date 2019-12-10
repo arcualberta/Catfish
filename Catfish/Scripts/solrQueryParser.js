@@ -231,6 +231,17 @@ var SolrParser = function (langCode) {
             inQuotes = !inQuotes;
         }
 
+        if (result != null && result.endsWith("(")) {
+            // Prevent the query string from being invalid.
+            result = result.substr(0, result.length - 1).trim();
+
+            if (result.endsWith(" AND")) {
+                result = result.substr(0, result.length - 3) + "|| (\"and\"";
+            } else if (result.endsWith(" OR")) {
+                result = result.substr(0, result.length - 2) + "|| (\"or\"";
+            }
+        }
+
         return "(" + result + ")";
     }
 
@@ -409,16 +420,31 @@ var SolrParser = function (langCode) {
         var value = "";
         var token;
         var resultName = name.substring(0, name.length - "_txts_en".length);
+        var bracketCount = 0;
 
         while ((token = tokens.next()) != null) {
             if (token == ")") {
-                break;
+                if (bracketCount > 0) {
+                    bracketCount--;
+                    continue;
+                } else {
+                    break;
+                }
             }
 
             switch (token) {
                 case "||":
                 case "&&":
                     value += " ";
+                    break;
+
+                case "AND":
+                case "OR":
+                    value += " " + token + " ";
+                    break;
+
+                case "(":
+                    bracketCount++;
                     break;
 
                 case "\"":
