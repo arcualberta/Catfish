@@ -6,6 +6,17 @@ Catfish development setup requres .NET Framework 4.6, Entity Framework 4.6, SQL 
 
 # Development Setup
 ## Solr Installation
-Download and install Apache Solr: https://lucene.apache.org/solr/guide/7_0/installing-solr.html
+Download and install Apache Solr: https://lucene.apache.org/solr/guide/7_0/installing-solr.html. 
+
+The commands in the following steps assume you are in the folder where Solr is installed.
+
+Start the Solr instance
+```
+bin\solr start
+```
+Create a Solr core for the project, where CoreName is the name of the solr core you want to create.
+```
+bin\solr create -c CoreName
+```
 
 
