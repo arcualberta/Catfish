@@ -1,5 +1,5 @@
 # Catfish
-Catfish is an open-source data repository solution developed based on the Portlan Commons Data Model (PCDM). Currently, it is implemented on top of the Pirahna CMS (.NET 4.6 version), thus Catfish can be used as a hybrid solution with CMS and data repository functionality. Catfish is developed by the Arts Resource Centre, University of Alberta.
+Catfish is an open-source, multilingual data repository solution developed based on the Portlan Commons Data Model (PCDM). Currently, it is implemented on top of the Pirahna CMS (.NET 4.6 version), thus Catfish can be used as a hybrid solution with CMS and data repository functionality. Catfish is developed by the Arts Resource Centre, University of Alberta.
 
 ## Prerequisites
 Catfish development setup requres .NET Framework 4.6, Entity Framework 4.6, SQL Server (full or express version 2008 or later), and Apache Solr 7.5 or later. We also recommend Visual Studio 2017 or later as the IDE.
@@ -25,7 +25,17 @@ bin\solr create -c CoreName
    * Catfish.Core - the library project which implement the core functionality of the Catfish repository
    * Catfish.DataHandler - a command-line tool developed for ingesting large batches of data to Catfish
    * Catfish.Tests - a test suite for Catfish
-* 
+* Create an SQL database and a user for it for the project. The database user should have permission to create tables and edit contents in this database.
+* Create configuration files
+   * Copy to the `Web.example.config` file in the `Catfish` application folder and rename it as `Web.config`. 
+   * Go to the `connectionStrings` element in `Web.config` and change its connection string named `piranha` to specify the MS SQL data base and the database user you create for the project.
+   * You may comment other connection strings in this section of the Web.config file.
+   * Go to the `appSettings` element and 
+     - Update the `UploadRoot` value such that it will specify a target folder to store files uploaded by Catish.
+     - Update the `LanguageCodes` value to specify the languages you want to use. Use `|` to separate language codes from each other.
+   
+   
+  
 
 
 
