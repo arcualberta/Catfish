@@ -551,6 +551,7 @@
     <Content Include="Areas\Manager\Content\Js\Ext\tiny_mce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Areas\Manager\Content\Js\Ext\tiny_mce\skins\lightgray\fonts\tinymce.woff" />
     <Content Include="Areas\Manager\Views\Extensions\VimeoPanel.cshtml" />
+    <Content Include="Areas\Manager\Views\Extensions\GridPanel.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="RazorGenerator.LICENSE.md" />
     <Content Include="Scripts\es6\components\actionButtons.js" />
@@ -615,6 +616,7 @@
     <Compile Include="Models\Regions\FacebookTimelinePanel.cs" />
     <Compile Include="Models\Regions\GraphPanel.cs" />
     <Compile Include="Models\Regions\CalculatedFieldPanel.cs" />
+    <Compile Include="Models\Regions\GridPanel.cs" />
     <Compile Include="Models\Regions\ListEntitiesPanel.cs" />
     <Compile Include="Models\Regions\MultilingualHtml.cs" />
     <Compile Include="Models\Regions\QueryFilterPanel.cs" />
@@ -826,6 +828,7 @@
     <Content Include="Views\CatfishAccount\Login.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\VimeoPanel.cshtml" />
     <Content Include="Views\Shared\_CustomHeader.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\GridPanel.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
