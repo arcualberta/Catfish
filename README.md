@@ -19,4 +19,13 @@ Create a Solr core for the project, where CoreName is the name of the solr core 
 bin\solr create -c CoreName
 ```
 
+## Source Code Setup
+* Clone or download the source code from this GitHub repository. This solution contains the following projects:
+   ** Catfish - the primary web application
+   ** Catfish.Core - the library project which implement the core functionality of the Catfish repository
+   ** Catfish.DataHandler - a command-line tool developed for ingesting large batches of data to Catfish
+   ** Catfish.Tests - a test suite for Catfish
+* 
+
+
 
