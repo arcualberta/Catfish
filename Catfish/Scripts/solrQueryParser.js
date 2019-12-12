@@ -176,6 +176,7 @@ var SolrParser = function (langCode) {
         var resultParts = input.replace(/\\/g, "\\").replace(/\(/g, "\(").replace(/\)/g, "\)").trim().split("\"");
         var result = "";
         var inQuotes = false; // Use a boolean instead of looking for even indexes.
+        var showOr = false;
 
         for (var i = 0; i < resultParts.length; ++i) {
             var part = resultParts[i].trim();
@@ -190,15 +191,37 @@ var SolrParser = function (langCode) {
                 } else {
                     part.split(/\s+/).forEach(function (piece) {
                         if (piece.length > 0) {
+                            var addPiece = true;
+
+                            // Check if we need to AND or OR our data
                             if (result.length > 0) {
-                                result += " || ";
+                                switch (piece.toUpperCase()) {
+                                    case "AND":
+                                        addPiece = false;
+                                        result += ") AND (";
+                                        showOr = false;
+                                        break;
+
+                                    case "OR":
+                                        addPiece = false;
+                                        result += ") OR ("
+                                        showOr = false;
+                                        break;
+                                }
                             }
 
-                            if (SolrToken.tokenMap.hasOwnProperty(piece)) {
-                                // Avoid keywords being used directly in the search.
-                                result += '"' + piece + '"'; 
-                            } else {
-                                result += piece;
+                            if (addPiece) {
+                                if (showOr) {
+                                    result += " || ";
+                                }
+
+                                showOr = true;
+                                if (SolrToken.tokenMap.hasOwnProperty(piece.toUpperCase())) {
+                                    // Avoid keywords being used directly in the search.
+                                    result += '"' + piece + '"';
+                                } else {
+                                    result += piece;
+                                }
                             }
                         }
                     });
@@ -208,7 +231,18 @@ var SolrParser = function (langCode) {
             inQuotes = !inQuotes;
         }
 
-        return result;
+        if (result != null && result.endsWith("(")) {
+            // Prevent the query string from being invalid.
+            result = result.substr(0, result.length - 1).trim();
+
+            if (result.endsWith(" AND")) {
+                result = result.substr(0, result.length - 3) + "|| (\"and\"";
+            } else if (result.endsWith(" OR")) {
+                result = result.substr(0, result.length - 2) + "|| (\"or\"";
+            }
+        }
+
+        return "(" + result + ")";
     }
 
     var encoders = {
@@ -268,6 +302,8 @@ var SolrParser = function (langCode) {
     function decodeTopLevelBracket(tokens, result) {
         var name = null;
         var token = null;
+        var bracketLevel = 0;
+
 
         while ((token = tokens.next()) != null) {
             switch (token) {
@@ -290,11 +326,20 @@ var SolrParser = function (langCode) {
                     break;
 
                 case ")":
-                    if (name != null) {
-                        result['*'] = this.createStringField(name);
-                    }
+                    if (bracketLevel > 0) {
+                        bracketLevel--;
+                    } else {
+                        if (name != null) {
+                            result['*'] = this.createStringField(name);
+                        }
 
-                    return;
+                        return;
+                    }
+                    break;
+
+                case "(":
+                    bracketLevel++;
+                    break;
 
                 case "||":
                 case "&&":
@@ -375,16 +420,31 @@ var SolrParser = function (langCode) {
         var value = "";
         var token;
         var resultName = name.substring(0, name.length - "_txts_en".length);
+        var bracketCount = 0;
 
         while ((token = tokens.next()) != null) {
             if (token == ")") {
-                break;
+                if (bracketCount > 0) {
+                    bracketCount--;
+                    continue;
+                } else {
+                    break;
+                }
             }
 
             switch (token) {
                 case "||":
                 case "&&":
                     value += " ";
+                    break;
+
+                case "AND":
+                case "OR":
+                    value += " " + token + " ";
+                    break;
+
+                case "(":
+                    bracketCount++;
                     break;
 
                 case "\"":
