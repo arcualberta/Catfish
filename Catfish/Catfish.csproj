@@ -942,7 +942,7 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.3\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.3\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <PropertyGroup>
-    <PreBuildEvent>call $(SolutionDir)build-node.bat "$(ProjectDir)"
+    <PreBuildEvent>call "$(SolutionDir)build-node.bat" "$(ProjectDir)"
 </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
