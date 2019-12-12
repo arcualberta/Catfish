@@ -33,6 +33,8 @@ bin\solr create -c CoreName
    * Go to the `appSettings` element and 
      - Update the `UploadRoot` value such that it will specify a target folder to store files uploaded by Catish.
      - Update the `LanguageCodes` value to specify the languages you want to use. Use `|` to separate language codes from each other.
+   * Update the `SolrServer` value to specify the Solr core created for this catfish instance.
+   
    
    
   
