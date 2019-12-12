@@ -292,7 +292,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call copy  $(SolutionDir)packages\EntityFramework.6.2.0\tools\migrate.exe $(ProjectDir)$(OutDir)migrate.exe
-call $(ProjectDir)$(OutDir)\migrate.exe "Catfish.Core.dll" /scriptFile:"setup.sql" /sourceMigration:0</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
