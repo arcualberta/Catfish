@@ -20,6 +20,8 @@ bin\solr create -c CoreName
 ```
 Copy schema.xml and currency.xml in the SolrSetup folder of the git repository to the solr core config folder of the newly created Solr core.
 
+In the solr core config folder, delete the file managed-schema.
+
 ## Source Code Setup
 * Clone or download the source code from this GitHub repository. This solution contains the following projects:
    * Catfish - the primary web application
