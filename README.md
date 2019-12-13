@@ -22,6 +22,11 @@ Copy schema.xml and currency.xml in the SolrSetup folder of the git repository t
 
 In the solr core config folder, delete the file managed-schema.
 
+Restart Solr by visiting the following URL on the browser. Please make sure you set the port to the correct solr port displayed on the commandline when you started Solr. Also, use the same Solr core name you selected for your application.
+```
+http://localhost:8983/solr/admin/cores?action=RELOAD&core=CoreName
+```
+
 ## Source Code Setup
 * Clone or download the source code from this GitHub repository. This solution contains the following projects:
    * Catfish - the primary web application
