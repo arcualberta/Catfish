@@ -18,6 +18,7 @@ Create a Solr core for the project, where CoreName is the name of the solr core 
 ```
 bin\solr create -c CoreName
 ```
+Copy schema.xml and currency.xml in the SolrSetup folder of the git repository to the solr core config folder of the newly created Solr core.
 
 ## Source Code Setup
 * Clone or download the source code from this GitHub repository. This solution contains the following projects:
