@@ -42,7 +42,7 @@ http://localhost:8983/solr/admin/cores?action=RELOAD&core=CoreName
      - Update the `UploadRoot` value such that it will specify a target folder to store files uploaded by Catish.
      - Update the `LanguageCodes` value to specify the languages you want to use. Use `|` to separate language codes from each other.
    * Update the `SolrServer` value to specify the Solr core created for this catfish instance.
-* In Visual Studio, open Package Manager Console, select the "Defualt Project" to be Catfish.Core, and run the database migrations. 
+* Open the solution in Visual Studio, open Package Manager Console, select the "Defualt Project" to be Catfish.Core, and run the database migrations. 
 ```
 PM> Update-Database
 ```
