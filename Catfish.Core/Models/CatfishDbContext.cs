@@ -63,7 +63,7 @@ namespace Catfish.Core.Models
 
         private void UpdateSolr()
         {
-            string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
+            //string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
 
             List<Dictionary<string, object>> savedEntities = new List<Dictionary<string, object>>();
             List<string> deletedEntities = new List<string>();
