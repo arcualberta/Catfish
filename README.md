@@ -18,6 +18,14 @@ Create a Solr core for the project, where CoreName is the name of the solr core 
 ```
 bin\solr create -c CoreName
 ```
+Copy schema.xml and currency.xml in the SolrSetup folder of the git repository to the solr core config folder of the newly created Solr core.
+
+In the solr core config folder, delete the file managed-schema.
+
+Restart Solr by visiting the following URL on the browser. Please make sure you set the port to the correct solr port displayed on the commandline when you started Solr. Also, use the same Solr core name you selected for your application.
+```
+http://localhost:8983/solr/admin/cores?action=RELOAD&core=CoreName
+```
 
 ## Source Code Setup
 * Clone or download the source code from this GitHub repository. This solution contains the following projects:
@@ -34,6 +42,11 @@ bin\solr create -c CoreName
      - Update the `UploadRoot` value such that it will specify a target folder to store files uploaded by Catish.
      - Update the `LanguageCodes` value to specify the languages you want to use. Use `|` to separate language codes from each other.
    * Update the `SolrServer` value to specify the Solr core created for this catfish instance.
+* Open the solution in Visual Studio, open Package Manager Console, select the "Defualt Project" to be Catfish.Core, and run the database migrations. 
+```
+PM> Update-Database
+```
+
    
    
    
