@@ -1,6 +1,7 @@
 namespace Catfish.Core.Migrations
 {
     using Catfish.Core.Helpers;
+    using Catfish.Core.Services;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -34,6 +35,9 @@ namespace Catfish.Core.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
+
+            string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
+            SolrService.Init(solrString);
         }
     }
 }
