@@ -44,7 +44,7 @@ http://localhost:8983/solr/admin/cores?action=RELOAD&core=CoreName
    * Update the `SolrServer` value to specify the Solr core created for this catfish instance.
 * In Visual Studio, open Package Manager Console and run the database migrations
 ```
-> Update-Database
+PM> Update-Database
 ```
 
    
