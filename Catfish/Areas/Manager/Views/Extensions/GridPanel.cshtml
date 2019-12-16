@@ -2,7 +2,7 @@
 
 
 <ul class="form">
-
+    @Html.Partial("_CatfishRegion", Model)
    
     <li>
        @Html.LabelFor(m => m.DesktopColNum)
@@ -24,7 +24,8 @@
           foreach (string f in Model.Entries)
           {
               string rowId = "row_" + i;
-            <div id="@rowId" class="bs gridPanelMceView">
+              string row_label = "Entry " + (i + 1);
+            <div id="@rowId" class="bs gridPanelMceView"><b class="gridSectionLabel">@row_label</b>
                 <input type="hidden" name="@(Html.NameFor(m => m.Entries)).Index" value="@(i)" />
                 @Html.TextAreaFor(m => m.Entries[i], new { @class = "editor", @rows = 5 })
                 <div class="gridPanelMceViewDeleteBtn">
@@ -44,7 +45,7 @@
 
 
 
-    @Html.Partial("_CatfishRegion", Model)
+   
 </ul>
 
 <script type="text/javascript" src="~/Scripts/richtext.js"></script>
@@ -57,12 +58,14 @@
        var rowId = "row_" + uniqueId;
        var textAreaId = "Regions_0__Body_Entries_" + uniqueId +"_";
 
-      var t = ` <div id="` + rowId +`" class="bs gridPanelMceView"><input type="hidden" name="Regions[0].Body.Entries.Index" value="` + uniqueId + `">
+      var t = ` <div id="` + rowId +`" class="bs gridPanelMceView"><b class="gridSectionLabel"> Entry ` + uniqueId + `</b><input type="hidden" name="Regions[0].Body.Entries.Index" value="` + uniqueId + `">
               <textarea class="editor" cols="20" id="Regions_0__Body_Entries_` + uniqueId +`_" name="Regions[0].Body.Entries[` + uniqueId +`]" rows="5"></textarea>
-                <span class="glyphicon glyphicon-minus-sign gridPanelMceViewDeleteBtn btn btn-default" onclick="DeleteRow('` + rowId+ `')">Delete</span></div>`;
+                <div class="gridPanelMceViewDeleteBtn">
+                <span class="glyphicon glyphicon-minus-sign gridPanelMceViewDeleteBtn btn-link " onclick="DeleteRow('` + rowId+ `')">Delete</span></div>
+                 <hr class="gridPanelHr" /></div>`;
 
       $(".btnsControlDiv").before(t);
-   
+
       convertToRichTextSwapper("#" + textAreaId, "");//convert textArea to RichTextBox
 }
 
@@ -88,15 +91,18 @@
         width: 100%;
         cursor: pointer;
     }
-    .gridPanelMceView{
-       
-        background-color: white;
+    .gridPanelMceView {
+        background-color: #55a8129e;
     }
     .gridPanelHr {
         color: grey;
         min-height: 3px;
         background-color: grey;
         margin-bottom: 15px;
-      
+    }
+    .gridSectionLabel {
+        padding: 8px;
+        line-height: 30px;
+        color: White;
     }
 </style>
