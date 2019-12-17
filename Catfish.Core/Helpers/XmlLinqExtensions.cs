@@ -164,6 +164,24 @@ namespace Catfish.Core.Helpers
             // publicGroup guid is all 0 and everyone is part of this group
             Guid publicGroup = AccessContext.PublicAccessGuid;
             guids.Add(publicGroup);
+             
+            string strDiscriminator = "";
+            if(typeof(TSource).Name.ToString() == "CFAggregation")
+            {
+                List<string> subClasses = DiscriminatorHelper.GetDiscriminatorWhere<CFAggregation>();
+                strDiscriminator = "";
+                for (int i=0; i < subClasses.ToArray().Length; i++)
+                {  
+                    strDiscriminator += " Discriminator ='" + subClasses[i] + "' ";
+                    if (i < (subClasses.ToArray().Length - 1))
+                        strDiscriminator += " OR ";
+                }
+
+            }
+            else
+            {
+                strDiscriminator = "Discriminator = '" + typeof(TSource).Name.ToString() + "' ";
+            }
 
             string guidList = string.Join(",", Array.ConvertAll(guids.ToArray(), g => "'" + g + "'"));
             string sqlQuery = $@"
@@ -177,7 +195,7 @@ namespace Catfish.Core.Helpers
                 FROM CFXmlModels CROSS APPLY
                 content.nodes('//access/access-group') AS contentCast(pref)
             ) AS Result
-            WHERE Discriminator = '{(string)typeof(TSource).Name.ToString()}' 
+            WHERE {strDiscriminator} 
             AND Mode & {(int)mode} = {(int)mode} 
             AND Guid IN ({(string)guidList})
             ";

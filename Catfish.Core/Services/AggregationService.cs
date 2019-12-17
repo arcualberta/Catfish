@@ -299,7 +299,7 @@ namespace Catfish.Core.Services
             int itemsPerPage = 10)
         {
 
-            CFAggregation aggregation = Db.Aggregations.Where(x => id == x.MappedGuid).FirstOrDefault();
+            CFAggregation aggregation = Db.Aggregations.AsNoTracking().Where(x => id == x.MappedGuid).FirstOrDefault();
             List<string> mappedGuids = aggregation.RelatedMembers.Select(x => x.MappedGuid).ToList();
 
             string newQuery = query;
