@@ -91,6 +91,7 @@
     <Compile Include="Contexts\AccessContext.cs" />
     <Compile Include="Helpers\BigList.cs" />
     <Compile Include="Helpers\ConfigHelper.cs" />
+    <Compile Include="Helpers\DiscriminatorHelper.cs" />
     <Compile Include="Helpers\MultilingualHelper.cs" />
     <Compile Include="Helpers\XmlLinqExtensions.cs" />
     <Compile Include="Helpers\XmlHelper.cs" />
