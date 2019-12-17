@@ -166,10 +166,22 @@ namespace Catfish.Core.Services
             return new SolrQuery(result).Query;
         }
 
+        /// <summary>
+        /// Empty construtor for the service. Used in the static initializer.
+        /// </summary>
         public SolrService()
         {
         }
 
+        /// <summary>
+        /// Obtains numerical data that can be used as two-dimensional graph data.
+        /// </summary>
+        /// <param name="query">The query used to filter the graph data.</param>
+        /// <param name="xIndexId">The index of the field on the x-axis</param>
+        /// <param name="yIndexId">The index of the field on the y-axis. This field will be summed based on all entries matching the same X value.</param>
+        /// <param name="categoryId">The category to group the results by.</param>
+        /// <param name="itmLimit">The maximum amount of items to provide graphical data.</param>
+        /// <returns>A JSON representation of the two-dimensional graph data.</returns>
         public string GetGraphData(string query, string xIndexId, string yIndexId, string categoryId, int itmLimit=10000)
         {
             const string facetCategoryJson = @"{{
@@ -225,6 +237,14 @@ namespace Catfish.Core.Services
             return null;
         }
 
+        /// <summary>
+        /// Obtains a list of categories based on the given query.
+        /// </summary>
+        /// <param name="query">The Solr query used to filter the resulting data.</param>
+        /// <param name="fieldId">The field to obtain the unique categories for.</param>
+        /// <param name="rows">The total number of rows used to display the results. This is reccomended to be 0 if retreiving graph data only.</param>
+        /// <param name="isGraphData">Specifies whether we want the results for the total number of entries in that category.</param>
+        /// <returns>A dictionary containing the category name and either the total count or the name again.</returns>
         public IDictionary<string, string> GetSolrCategories(string query, string fieldId, int rows = int.MaxValue, bool isGraphData=true)
         {
             var dictionary = new Dictionary<string, string>();
@@ -268,6 +288,12 @@ namespace Catfish.Core.Services
             return dictionary;
         }
 
+        /// <summary>
+        /// Obtains a dictionary containing Stat objects incuding total sum, count, max, min, mean, and median.
+        /// </summary>
+        /// <param name="field">The field to obtain the stats for.</param>
+        /// <param name="query">The filter used to limit these stats.</param>
+        /// <returns>The resulting statistic map.</returns>
         public IDictionary<string, StatsResult> GetStats(string field, string query/*, string groupByField= ""*/)
         {
             if (SolrService.IsInitialized)
@@ -288,6 +314,13 @@ namespace Catfish.Core.Services
         }
 
        // public IDictionary<string, ICollection<KeyValuePair<string, int>>> CountGroupBy(string field, string query, string groupByField)
+       /// <summary>
+       /// Counts all results in a grouping field.
+       /// </summary>
+       /// <param name="field">The field to return results from.</param>
+       /// <param name="query">The filter for the results.</param>
+       /// <param name="groupByField">The field to group by.</param>
+       /// <returns>A JSOn string representing the groupby data.</returns>
         public string CountGroupBy(string field, string query, string groupByField)
         {
            
@@ -320,6 +353,12 @@ namespace Catfish.Core.Services
             return null;
         }
 
+        /// <summary>
+        /// Stat function: obtains the median.
+        /// </summary>
+        /// <param name="field">The field to calculate against.</param>
+        /// <param name="query">The filter for the data.</param>
+        /// <returns>The resulting statistical value.</returns>
         public string GetMedian(string field, string query)
         {
             const string facetJson = @"{{Median : ""percentile(field({0},min),50)""}}";
@@ -352,7 +391,12 @@ namespace Catfish.Core.Services
             return null;
         }
 
-
+        /// <summary>
+        /// Stat function: obtains the sum.
+        /// </summary>
+        /// <param name="field">The field to calculate against.</param>
+        /// <param name="query">The filter for the data.</param>
+        /// <returns>The resulting statistical value.</returns>
         public decimal SumField(string field, string query = "*:*")
         {
             var stats = GetStats(field, query);
@@ -365,6 +409,12 @@ namespace Catfish.Core.Services
             return 0m;
         }
 
+        /// <summary>
+        /// Stat function: obtains the count.
+        /// </summary>
+        /// <param name="field">The field to calculate against.</param>
+        /// <param name="query">The filter for the data.</param>
+        /// <returns>The resulting statistical value.</returns>
         public decimal CountField(string field, string query = "*:*", string groupByField=null)
         {
             if (string.IsNullOrEmpty(groupByField))
@@ -386,6 +436,12 @@ namespace Catfish.Core.Services
             return 0m;
         }
 
+        /// <summary>
+        /// Stat function: obtains the mean.
+        /// </summary>
+        /// <param name="field">The field to calculate against.</param>
+        /// <param name="query">The filter for the data.</param>
+        /// <returns>The resulting statistical value.</returns>
         public decimal MeanField(string field, string query = "*:*")
         {
             var stats = GetStats(field, query);
@@ -398,6 +454,12 @@ namespace Catfish.Core.Services
             return 0m;
         }
 
+        /// <summary>
+        /// Stat function: obtains the min.
+        /// </summary>
+        /// <param name="field">The field to calculate against.</param>
+        /// <param name="query">The filter for the data.</param>
+        /// <returns>The resulting statistical value.</returns>
         public decimal MinField(string field, string query = "*:*")
         {
             var stats = GetStats(field, query);
@@ -410,6 +472,12 @@ namespace Catfish.Core.Services
             return 0m;
         }
 
+        /// <summary>
+        /// Stat function: obtains the max.
+        /// </summary>
+        /// <param name="field">The field to calculate against.</param>
+        /// <param name="query">The filter for the data.</param>
+        /// <returns>The resulting statistical value.</returns>
         public decimal MaxField(string field, string query = "*:*")
         {
             var stats = GetStats(field, query);
@@ -422,6 +490,12 @@ namespace Catfish.Core.Services
             return 0m;
         }
 
+        /// <summary>
+        /// Stat function: obtains the standard deviation.
+        /// </summary>
+        /// <param name="field">The field to calculate against.</param>
+        /// <param name="query">The filter for the data.</param>
+        /// <returns>The resulting statistical value.</returns>
         public decimal StandardDeviationField(string field, string query = "*:*")
         {
             var stats = GetStats(field, query);
@@ -434,6 +508,12 @@ namespace Catfish.Core.Services
             return 0m;
         }
 
+        /// <summary>
+        /// Stat function: obtains the median.
+        /// </summary>
+        /// <param name="field">The field to calculate against.</param>
+        /// <param name="query">The filter for the data.</param>
+        /// <returns>The resulting statistical value.</returns>
         public decimal MedianField(string field, string query = "*:*")
         {
             //query = "percentile(50)";
@@ -448,6 +528,9 @@ namespace Catfish.Core.Services
         }
     }
 
+    /// <summary>
+    /// A filter index used to obtain only the id's from a solr query.
+    /// </summary>
     public class SolrIndex
     {
         private static readonly string[] FIELDS = { "id", "id_s" };
