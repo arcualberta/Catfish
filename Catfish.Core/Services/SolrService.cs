@@ -12,14 +12,27 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Services
 {
+    /// <summary>
+    /// Used to interact with a defined Solr instace.
+    /// </summary>
     public class SolrService
     {
+        /// <summary>
+        /// States whether or not the service has been initialized.
+        /// </summary>
         public static bool IsInitialized { get; private set; } = false;
+
+        /// <summary>
+        /// Global solr operations that are waiting to be comitterd for the current transaction.
+        /// </summary>
         public static ISolrOperations<Dictionary<string, object>> SolrOperations { get; set; } = null;
 
         private static ISolrConnection mSolr { get; set; }
         private static bool IsSolrInitialized { get; set; } = false;
 
+        /// <summary>
+        /// The current solr time to wait for a timeout.
+        /// </summary>
         public static int Timeout
         {
             get
@@ -39,17 +52,29 @@ namespace Catfish.Core.Services
             }
         }
         
-
+        /// <summary>
+        /// Initializes the solr server. If one is already initialized, then it's closed and reinitialized.
+        /// </summary>
+        /// <param name="server">The server string to connect to.</param>
         public static void ForceInit(string server)
         {
             Init(server, true);
         }
 
+        /// <summary>
+        /// Initializes the solr server. If one is already initialized, then it's closed and reinitialized.
+        /// </summary>
+        /// <param name="connection">The server connection.</param>
         public static void ForceInit(ISolrConnection connection)
         {
             Init(connection, true);
         }
 
+        /// <summary>
+        /// Initializes the Solr service with a connection to solr.
+        /// </summary>
+        /// <param name="server">The server string to connect to.</param>
+        /// <param name="force">If true, this will reinitialize the server connection if one already exists.</param>
         public static void Init(string server, bool force = false)
         {
             //IsInitialized = false;
@@ -65,6 +90,11 @@ namespace Catfish.Core.Services
             }
         }
 
+        /// <summary>
+        /// Initializes the Solr service with a connection to solr.
+        /// </summary>
+        /// <param name="connection">The solr connection to use.</param>
+        /// <param name="force">If true, this will reinitialize the server connection if one already exists.</param>
         public static void Init(ISolrConnection connection, bool force = false)
         {            
 
@@ -93,6 +123,13 @@ namespace Catfish.Core.Services
             IsInitialized = false;
         }
 
+        /// <summary>
+        /// Obtains all strings that match the desired text in the specified field.
+        /// </summary>
+        /// <param name="field">The field to search.</param>
+        /// <param name="text">The partial text to search on.</param>
+        /// <param name="rows">The max number of rows to return.</param>
+        /// <returns>A JSON result containing all matching strings.</returns>
         public static string GetPartialMatichingText(string field, string text, int rows = 10)
         {
             if (SolrService.IsInitialized)
@@ -116,6 +153,11 @@ namespace Catfish.Core.Services
             return string.Empty;
         }
 
+        /// <summary>
+        /// Escapes the values of a query string so that it will work correctly in solr.
+        /// </summary>
+        /// <param name="searchString">the string to escape.</param>
+        /// <returns>The resulting escaped string.</returns>
         public static string EscapeQueryString(string searchString)
         {
             string result = searchString.Replace("\"", "\\\"")
