@@ -177,8 +177,7 @@ namespace Catfish.Core.Helpers
                 FROM CFXmlModels CROSS APPLY
                 content.nodes('//access/access-group') AS contentCast(pref)
             ) AS Result
-            WHERE Discriminator = '{(string)typeof(TSource).Name.ToString()}' 
-            AND Mode & {(int)mode} = {(int)mode} 
+            WHERE Mode & {(int)mode} = {(int)mode} 
             AND Guid IN ({(string)guidList})
             ";
 
