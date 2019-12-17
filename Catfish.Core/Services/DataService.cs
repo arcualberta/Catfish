@@ -169,6 +169,9 @@ namespace Catfish.Core.Services
             //change the content type to image/png if the content type is image/tif
             contentType = contentType == "image/tiff" ? "image/png" : contentType;
 
+            //Dec 17 2019 -- change the contentType to 'audio/webm' if the file is *.webm
+            contentType = inputFileName.Contains(".webm") ? "audio/webm" : contentType;
+
             CFDataFile file = new CFDataFile()
             {
                 FileName = inputFileName,
