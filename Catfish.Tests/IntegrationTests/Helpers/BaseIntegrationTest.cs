@@ -19,6 +19,7 @@ using Catfish.Core.Models.Access;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Catfish.Services;
+using OpenQA.Selenium.Chrome;
 
 namespace Catfish.Tests.IntegrationTests.Helpers
 
@@ -83,7 +84,19 @@ namespace Catfish.Tests.IntegrationTests.Helpers
         public void SetUp()
         {
             InitializeSolr();
-            Driver = new TWebDriver();
+            Driver = null;
+
+            bool isHeadless = false;
+            bool.TryParse(ConfigurationManager.AppSettings["RunTestHeadless"], out isHeadless);
+            if(typeof(TWebDriver).IsAssignableFrom(typeof(ChromeDriver)) && isHeadless){
+                ChromeOptions options = new ChromeOptions();
+                options.AddArguments(new List<string>() { "no-sandbox", "headless", "disable-gpu" });
+
+                Driver = new ChromeDriver(options);
+            }else{
+                Driver = new TWebDriver();
+            }
+
             //Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
             FrontEndUrl = ConfigurationManager.AppSettings["ServerUrl"];
             ManagerUrl = FrontEndUrl + "manager";
