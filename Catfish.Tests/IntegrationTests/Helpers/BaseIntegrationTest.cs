@@ -97,6 +97,8 @@ namespace Catfish.Tests.IntegrationTests.Helpers
                 Driver = new TWebDriver();
             }
 
+            Driver.Manage().Window.Size = new System.Drawing.Size(1024, 1322);
+
             //Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
             FrontEndUrl = ConfigurationManager.AppSettings["ServerUrl"];
             ManagerUrl = FrontEndUrl + "manager";
