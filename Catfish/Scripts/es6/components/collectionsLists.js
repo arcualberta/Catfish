@@ -74,9 +74,11 @@ export default class CollectionsLists extends React.Component {
             //}
             actions: [],
             type:modelType, //CFItem OR CFCollection
-            selectedEntityType:""                
+            selectedEntityType:""
+           
         }
-
+        //link for each item/collection that to be set on the actinable table
+        this.itemLink =("/manager/" + modelType.substring(2) + "s/associations/") 
         this.state = {
             all: { ...startingState }
                  }
@@ -295,8 +297,6 @@ isEquivalentData(a, b) {
     return false
 }
 
-
-
 componentDidMount() {
     
     axios.get('/apix/Aggregations', {
@@ -344,7 +344,9 @@ componentDidMount() {
                         totalPages: { $set: data.totalPages },
                         headers: { $set: this.basicHeaders },
                         data: { $set: dataData},
-                        selectedEntityType: {$set: ""}        
+                        selectedEntityType: {$set: ""}
+                       
+                       
                     }
                 });
             this.setState(newState)
@@ -403,6 +405,8 @@ render() {
                                     maxRows={all.itemsPerPage}
                                     actions={this.allActions}
                                     id="all-actionable-table"
+                                    itemLink ={this.itemLink}
+
                                 />
                                 
                            <Pagination
