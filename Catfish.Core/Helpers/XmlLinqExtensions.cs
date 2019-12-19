@@ -18,7 +18,19 @@ namespace Catfish.Core.Helpers
     {
 
 
-        //XXX Asses query parameter order
+        /// <summary>
+        /// Obtains a set of Models from the database based on a Solr Query.
+        /// </summary>
+        /// <typeparam name="TSource">The type of model to return.</typeparam>
+        /// <param name="set">The datasaet to perform this query against.</param>
+        /// <param name="solrQuery">The filter used to find matching data using the Solr index.</param>
+        /// <param name="total">The resulting total number of entries matching the input criteria.</param>
+        /// <param name="entityTypeFilter">A filter used to limit the entity types returned.</param>
+        /// <param name="start">If paged, this is the starting result index to use.</param>
+        /// <param name="rows">The total number of rows to return.</param>
+        /// <param name="sortRowId">The row to sort the results by.</param>
+        /// <param name="sortAscending">Whether or not the results should be sorted in ascending order.</param>
+        /// <returns>An IQueryable object representing the search results.</returns>
         public static IQueryable<TSource> FromSolr<TSource>(
         this DbSet<TSource> set,        
         string solrQuery,        
@@ -147,6 +159,14 @@ namespace Catfish.Core.Helpers
             throw new InvalidOperationException("The SolrService has not been initialized.");
         }
 
+        /// <summary>
+        /// Find if an item in the database is accessable given the supplied guid and Access Modes.
+        /// </summary>
+        /// <typeparam name="TSource">The type of object to obtain.</typeparam>
+        /// <param name="set">The set to perform the query against.</param>
+        /// <param name="guid">The User or User List guid to compare against.</param>
+        /// <param name="mode">The AccessModes to validate against.</param>
+        /// <returns>All accessable elements based on the given input.</returns>
         public static IQueryable<TSource> FindAccessibleByGuid<TSource>(
            this DbSet<TSource> set,
            Guid guid,
@@ -155,6 +175,14 @@ namespace Catfish.Core.Helpers
             return FindAccessibleByGuid(set, new List<Guid> { guid }, mode);
         }
 
+        /// <summary>
+        /// Find if an item in the database is accessable given the supplied guids and Access Modes.
+        /// </summary>
+        /// <typeparam name="TSource">The type of object to obtain.</typeparam>
+        /// <param name="set">The set to perform the query against.</param>
+        /// <param name="guids">The list of User or User List guids to compare against.</param>
+        /// <param name="mode">The AccessModes to validate against.</param>
+        /// <returns>All accessable elements based on the given input.</returns>
         public static IQueryable<TSource> FindAccessibleByGuid<TSource>(
         this DbSet<TSource> set,
         ICollection<Guid> guids,
@@ -203,6 +231,15 @@ namespace Catfish.Core.Helpers
             return set.SqlQuery(sqlQuery).AsQueryable().Distinct();
         }
 
+        /// <summary>
+        /// Find if an item in the database is accessable given the supplied guid and Access Modes.
+        /// </summary>
+        /// <typeparam name="TSource">The type of object to obtain.</typeparam>
+        /// <param name="set">The set to perform the query against.</param>
+        /// <param name="isAdmin">Whether or not the current guid is an admin.</param>
+        /// <param name="guid">The User or User List guid to compare against.</param>
+        /// <param name="mode">The AccessModes to validate against.</param>
+        /// <returns>All accessable elements based on the given input.</returns>
         public static IQueryable<TSource> FindAccessible<TSource>(
             this DbSet<TSource> set,
             bool isAdmin,
@@ -212,6 +249,15 @@ namespace Catfish.Core.Helpers
             return FindAccessible(set, isAdmin, new List<Guid> { guid }, mode);
         }
 
+        /// <summary>
+        /// Find if an item in the database is accessable given the supplied guids and Access Modes.
+        /// </summary>
+        /// <typeparam name="TSource">The type of object to obtain.</typeparam>
+        /// <param name="set">The set to perform the query against.</param>
+        /// <param name="isAdmin">Whether or not the current guid is an admin.</param>
+        /// <param name="guids">The list of User or User List guids to compare against.</param>
+        /// <param name="mode">The AccessModes to validate against.</param>
+        /// <returns>All accessable elements based on the given input.</returns>
         public static IQueryable<TSource> FindAccessible<TSource>(
             this DbSet<TSource> set,
             bool isAdmin,
