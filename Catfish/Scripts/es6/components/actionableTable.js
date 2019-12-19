@@ -37,7 +37,8 @@ const ActionableTable = (props) => {
         update,
         location,
         id,
-        actionsRow
+        actionsRow,
+        itemLink
     } = props
 
 
@@ -91,7 +92,7 @@ ActionableTable.propTypes = {
     maxRows: PropTypes.number,
     actions: PropTypes.array,
    // isBulkActions: PropTypes.bool
-  
+    itemLink:PropTypes.string
 }
 
 ActionableTable.defaultProps = {
@@ -123,10 +124,10 @@ const renderHead = props => {
 }
 
 const RenderHeader =(props) =>{
-    const{header,datum} = props
+    const{header,datum, link} = props
     if(header.key == "name")
     {
-        return  <a href={linkUrl(datum)}>{datum[header.key]}</a>
+        return  <a href={linkUrl(datum, link)}>{datum[header.key]}</a>
     }
     return datum[header.key]
 }
@@ -148,7 +149,12 @@ const getExtraRows = (maxRows, dataLength, headers) => {
 
     return null
 }
-const linkUrl = (datum) => ("/manager/"+ datum["label"] + "s/edit/"+ datum["id"])
+
+const linkUrl = (datum, link) => { 
+                             if(link != null){ return(link + datum["id"])}
+                             return ("/manager/"+ datum["label"] + "s/edit/"+ datum["id"])
+                           }
+                           
     
 const renderBody = props => {
 
@@ -160,7 +166,8 @@ const renderBody = props => {
         update,
         location,
         maxRows = 0,
-        actions
+        actions,
+        itemLink
         } = props
 
     const restOfTable = getExtraRows(maxRows, data.length, headers)
@@ -189,7 +196,7 @@ const renderBody = props => {
                      <td key={header.id}>
                   
                        
-                     <RenderHeader header={header} datum={datum} />
+                     <RenderHeader header={header} datum={datum} link = {props.itemLink} />
                       </td>
                         )}
                          <td>
