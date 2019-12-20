@@ -19,6 +19,15 @@ namespace Catfish.Tests.Extensions
             int timeoutInSeconds,
             int threadSleepMicroSeconds = 1500)
         {
+            int overrideTimeout = 0;
+            if (int.TryParse(System.Configuration.ConfigurationManager.AppSettings["OverrideElementTimeout"], out overrideTimeout))
+            {
+                if(overrideTimeout > timeoutInSeconds)
+                {
+                    timeoutInSeconds = overrideTimeout;
+                }
+            }
+
             if (timeoutInSeconds > 0)
             {
                 Thread.Sleep(threadSleepMicroSeconds);
@@ -46,6 +55,15 @@ namespace Catfish.Tests.Extensions
             Action jsTrigger = null,
             int timeoutInSeconds = 5)
         {
+            int overrideTimeout = 0;
+            if (int.TryParse(System.Configuration.ConfigurationManager.AppSettings["OverrideElementTimeout"], out overrideTimeout))
+            {
+                if (overrideTimeout > timeoutInSeconds)
+                {
+                    timeoutInSeconds = overrideTimeout;
+                }
+            }
+
             if (jsTrigger == null)
             {
                 return driver.FindElement(by);
@@ -87,6 +105,15 @@ namespace Catfish.Tests.Extensions
             int timeoutInSeconds, 
             int threadSleepMicroSeconds = 1000)
         {
+            int overrideTimeout = 0;
+            if (int.TryParse(System.Configuration.ConfigurationManager.AppSettings["OverrideElementTimeout"], out overrideTimeout))
+            {
+                if (overrideTimeout > timeoutInSeconds)
+                {
+                    timeoutInSeconds = overrideTimeout;
+                }
+            }
+
             if (timeoutInSeconds > 0)
             {
                 Thread.Sleep(threadSleepMicroSeconds);
