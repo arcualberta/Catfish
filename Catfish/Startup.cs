@@ -44,6 +44,8 @@ namespace Catfish
                 options.UseIdentityWithSeed<IdentitySQLServerDb>(db =>
                     db.UseSqlServer(Configuration.GetConnectionString("piranha")));
             });
+
+            services.AddDbContext<Catfish.Core.Models.CatfishDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
