@@ -1,7 +1,0 @@
-﻿@model Catfish.Core.Models.Forms.TextArea
-@using Catfish.Core.Helpers;
-
-<div class="form-field">
-    <label class="name">@Html.Raw(MultilingualHelper.Join(Model.GetNames(false))): </label>
-    <div class="value">@Html.Raw(MultilingualHelper.Join(Model.GetValues()).Replace("\n", "<br />"))</div>
-</div>

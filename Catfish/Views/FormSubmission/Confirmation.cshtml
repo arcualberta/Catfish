@@ -1,7 +1,0 @@
-﻿@model Piranha.Models.PageModel
-@using Catfish.Models.Regions;
-
-@{ 
-    var confirmation = Model.Region<MultilingualText>("Confirmation");
-    @Html.DisplayFor(m => confirmation, new { raw = true })
-}
