@@ -31,7 +31,7 @@ namespace Catfish
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            // Service setup
+            // Service setup for Piranha CMS
             services.AddPiranha(options =>
             {
                 options.UseFileStorage();
@@ -40,11 +40,14 @@ namespace Catfish
                 options.UseTinyMCE();
                 options.UseMemoryCache();
                 options.UseEF(db =>
-                    db.UseSqlServer(Configuration.GetConnectionString("piranha")));
+                    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
                 options.UseIdentityWithSeed<IdentitySQLServerDb>(db =>
-                    db.UseSqlServer(Configuration.GetConnectionString("piranha")));
+                    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
             });
 
+            // Add CatfishDbContext to the service collection. This will inject the database
+            // configuration options and the application "Configuration" option to CatfishDbContext
+            // instance through dependency injection.
             services.AddDbContext<Catfish.Core.Models.CatfishDbContext>();
         }
 

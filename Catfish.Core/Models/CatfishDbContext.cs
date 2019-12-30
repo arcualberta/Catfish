@@ -24,7 +24,7 @@ namespace Catfish.Core.Models
         {
             if(!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("piranha"));
+                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("catfish"));
             }
         }
     }
