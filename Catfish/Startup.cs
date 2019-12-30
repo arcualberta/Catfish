@@ -25,6 +25,10 @@ namespace Catfish
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            // Initialize the IConfiguration of the ConfigHelper so that it can be used by 
+            // elsewhere in the Catfish.Core project.
+            Catfish.Core.Helpers.ConfigHelper.Configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
