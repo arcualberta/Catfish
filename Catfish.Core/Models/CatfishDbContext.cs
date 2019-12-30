@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 using System.Text;
 
 namespace Catfish.Core.Models
@@ -27,5 +29,20 @@ namespace Catfish.Core.Models
                 optionsBuilder.UseSqlServer(Configuration.GetConnectionString("catfish"));
             }
         }
+
+        public ObjectContext ObjectContext
+        {
+            get
+            {
+                return ((IObjectContextAdapter)this).ObjectContext;
+            }
+        }
+
+        public void Detach(object entity)
+        {
+            ObjectContext.Detach(entity);
+        }
+
+
     }
 }
