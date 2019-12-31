@@ -60,6 +60,8 @@ namespace Catfish.Core.Models
 
         public DbSet<CFEntityTypeAttributeMapping> EntityTypeAttributeMappings { get; set; }
 
+        public DbSet<CFAggregation> Aggregations { get; set; }
+
 
         //        public DbSet<CFAccessDefinition> AccessDefinitions { get; set; }
 
