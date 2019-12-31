@@ -44,5 +44,26 @@ namespace Catfish.Core.Models
         }
 
 
+
+
+
+        public DbSet<CFXmlModel> XmlModels { get; set; }
+
+        public DbSet<CFEntity> Entities { get; set; }
+
+        public DbSet<CFEntityType> EntityTypes { get; set; }
+
+        public DbSet<CFMetadataSet> MetadataSets { get; set; }
+
+        public DbSet<CFUserList> UserLists { get; set; }
+        public DbSet<CFUserListEntry> UserListEntries { get; set; }
+
+        public DbSet<CFEntityTypeAttributeMapping> EntityTypeAttributeMappings { get; set; }
+
+
+        //        public DbSet<CFAccessDefinition> AccessDefinitions { get; set; }
+
+
+
     }
 }
