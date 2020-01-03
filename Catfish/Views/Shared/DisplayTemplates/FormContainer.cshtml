@@ -133,6 +133,7 @@
         // This will allow us to attach async events to the user clicking the yes button.
         $("#@cssId form")[0].submitEvents = []; // If these events return a promise, add them to the promise list.
         $("#@cssId form")[0].onSuccessEvents = []; // Adds function() functions which run on a successful submission.
+         $("#@cssId form")[0].onErrorEvents = []; // Adds function() functions which run on a Error submission.
 
         $("#@cssId form .form-submit.form-confirm input[name='yes']").click(function (ev) {
             ev.preventDefault();
@@ -189,6 +190,15 @@
                     frmErr.html(frmErr.html().replace(/\n/g,'<br/>'));
                      $(".formContainerErrorPanel").show();
                  }
+
+                   //Jan 3 2020 -- onErrorEvent --
+                    var onError = $("#@cssId form")[0].onErrorEvents;
+                    if(onError)
+                    {
+                        onError.forEach(function(ev){
+                            var err = ev();
+                         });
+                    }
             });
         });
 
