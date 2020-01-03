@@ -315,6 +315,18 @@
 
                 return promise;
             });// end of onSubmit
+             //jan 3 2020 -- capture form submit error -- form validation error
+             //if form is invalid on submit, remove the the temp file.
+             $("#@containerId").parents("form:first")[0].onErrorEvents.push(function () {
+                     //automatically click "yes" on the confirm dialog
+                      var realConfirm=window.confirm;
+                      window.confirm=function(){
+                          window.confirm=realConfirm;
+                          return true;
+                      };
+                   //remove the temp file
+                   $(".thumbnailPanel > .fileThumbnail >.glyphicon-remove").click();
+             });
         });
 
 
