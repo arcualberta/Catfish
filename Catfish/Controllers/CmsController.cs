@@ -80,5 +80,18 @@ namespace Catfish.Controllers
 
             return View(model);
         }
+
+        /// <summary>
+        /// Gets the startpage with the given id.
+        /// </summary>
+        /// <param name="id">The unique page id</param>
+        /// <param name="draft">If a draft is requested</param>
+        [Route("main")]
+        public async Task<IActionResult> Main(Guid id, bool draft = false)
+        {
+            var model = await _loader.GetPage<MainPage>(id, HttpContext.User, draft);
+
+            return View(model);
+        }
     }
 }

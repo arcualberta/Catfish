@@ -24,7 +24,7 @@ namespace Catfish.Core.Models
 
         protected override void OnConfiguring(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder optionsBuilder)
         {
-            if(!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer(Configuration.GetConnectionString("catfish"));
             }

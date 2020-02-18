@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Piranha.Manager;
 using System.Linq;
+using Catfish.Models.Fields;
 
 namespace Catfish
 {
@@ -42,7 +43,7 @@ namespace Catfish
         public void ConfigureServices(IServiceCollection services)
         {
             //-- add MVC service
-            services.AddMvc().AddMvcOptions(o=>o.EnableEndpointRouting=false); // to user MVC model
+            services.AddMvc();//.AddXmlSerializerFormatters(); // to user MVC model
 
             // Service setup for Piranha CMS
             services.AddPiranha(options =>
@@ -71,6 +72,10 @@ namespace Catfish
             // instance through dependency injection.
             services.AddDbContext<Catfish.Core.Models.CatfishDbContext>();
 
+           //Feb 12 - 2020 : It's recommended to use AddDbContextPool() over AddDbContext() on .net Core > 2.2
+           // it's better from the performance stand point
+          //  services.AddDbContextPool<Catfish.Core.Models.CatfishDbContext>(options =>
+          //                   options.UseSqlServer(Configuration.GetConnectionString("catfish")));
             //MR: Feb 7 2020 -- from piranha core MVCWeb example
             services.AddControllersWithViews();
             services.AddRazorPages()
@@ -121,6 +126,8 @@ namespace Catfish
             var pageTypeBuilder = new Piranha.AttributeBuilder.PageTypeBuilder(api)
                 .AddType(typeof(Models.BlogArchive))
                 .AddType(typeof(Models.StandardPage))
+                 .AddType(typeof(Models.StartPage))
+                 .AddType(typeof(Models.MainPage))
                 .Build()
                 .DeleteOrphans();
             var postTypeBuilder = new Piranha.AttributeBuilder.PostTypeBuilder(api)
@@ -161,20 +168,26 @@ namespace Catfish
             });
 
 
-            //MVC style of routing -- NOT WORKING
-            app.UseMvc(routes =>
-            {
-                //routes.MapRoute(
-                //    name: "areaRoute",
-                //    template: "{area:exists}/{controller}/{action}/{id?}",
-                //    defaults: new { controller = "Home", action = "Index" });
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=cms}/{action=start}/{id?}");
-            });
-
+          
             //add to manager menu item
             AddManagerMenus();
+
+
+            //Register Piranha Custom Fields
+            Piranha.App.Fields.Register<SimpleStringField>();
+
+            //TODO: Add to manager http://piranhacms.org/docs/extensions/fields
+
+            //Adding custom css/js to piranha module to the Layout of the manager interface
+            //App.Modules.Get<Piranha.Manager.Module>()
+            //    .Styles.Add("~/assets/css/mystyles.css");
+            //App.Modules.Get<Piranha.Manager.Module>()
+            //   .Scripts.Add("~/assets/js/myscripts.js");
+
+            //Adding Partial View to Layout of the manager interface
+            //All custom partials are rendered at the end of the body tag after the built-in modals have been added.
+            //    App.Modules.Get<Piranha.Manager.Module>()
+            //.Partials.Add("Partial/_MyModal");
         }
 
         private void AddManagerMenus()
