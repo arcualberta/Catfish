@@ -1,16 +1,18 @@
 ﻿@model MainPage
 @inject IApi Api;
 @{
-    
+
     ViewBag.Title = Model.Title;
     string ImageUrl()
     {
         if (Model.Map.PrimaryImage.HasValue)
         {
-            return $"url({Url.Content(Model.Map.PrimaryImage)})";
+            return $"{Url.Content(Model.Map.PrimaryImage)}";
         }
         return "";
     }
+
+    string imgUrl = ImageUrl();
 }
 
 <head>
@@ -36,7 +38,8 @@
             position: relative;
             cursor: crosshair;
             z-index: 100;
-            border: 1pc solid Green;
+            border: 1px solid Green;
+            width: 100%
         }
 
         .covered {
@@ -54,13 +57,13 @@
             width: 100%;
             height: 400px; /* same height as parent container */
             z-index: -100;
-            margin-top: -424px; /*position the image under the canvas */
+            margin-top: -443px; /*position the image under the canvas */
         }
     </style>
     @*<script src="https://code.jquery.com/jquery-3.4.1.min.js"
-            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-            crossorigin="anonymous"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/maphilight/1.4.0/jquery.maphilight.min.js"></script>*@
+                integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+                crossorigin="anonymous"></script>*@
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/maphilight/1.4.0/jquery.maphilight.min.js"></script>
 </head>
 
 <h1>Main Page</h1>
@@ -85,6 +88,7 @@
 </div>
 
 <script>
+    jQuery(function ($) { 
     $("#canvas").click(function (e) {
         getPosition(e);
     });
@@ -97,8 +101,8 @@
     var canvas = document.getElementById("canvas");
     var ctx = document.getElementById("canvas").getContext("2d");
 
-    var topMap = new Image();
-    topMap.src = "landscape.jpg";
+   // var topMap = new Image();
+   // topMap.src = window.location.hostname + '/' + '@imgUrl';// "landscape.jpg";
     function resetCoords() {
         polyPos = "";
         count = 0;
@@ -117,9 +121,9 @@
         drawMap();
     }
 
-    topMap.onload = function () {
-        // init();
-    }
+    //topMap.onload = function () {
+    //    // init();
+    //}
     function fitToContainer(canvas) {
         // Make it visually fill the positioned parent
         canvas.style.width = '100%';
@@ -215,6 +219,8 @@
         //var hotSpot=`<area shape="circle" coords="` + pos3 +`,` + pos4 + `,50" href="http://ualberta.ca">`;
         alert(hotSpot);
         $("#" + mapId).append(hotSpot);
-    }
+        }
+
+        });
 </script>
 

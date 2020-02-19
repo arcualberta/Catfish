@@ -7,7 +7,7 @@ using Piranha.Models;
 namespace Catfish.Models
 {
     [PageType(Title = "Main page", UseBlocks=true)]
-    [PageTypeRoute(Route = "/main")]
+    [PageTypeRoute(Title = "Default", Route = "/main")]
     public class MainPage : Page<MainPage>
     {
 
