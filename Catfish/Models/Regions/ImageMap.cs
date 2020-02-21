@@ -1,9 +1,10 @@
-﻿using Piranha.Extend;
+﻿using Catfish.Models.Fields;
+using Piranha.Extend;
 using Piranha.Extend.Fields;
 
 namespace Catfish.Models.Regions
 {
-    public class ImageMap //: Hero
+    public class ImageMap 
     {
         /// <summary>
         /// Gets/sets the optional primary image.
@@ -13,5 +14,8 @@ namespace Catfish.Models.Regions
 
         [Field]
         public TextField Description { get; set; }
+
+        [Field(Title ="Extra Description")]
+        public TextAreaField Description2 { get; set; }
     }
 }

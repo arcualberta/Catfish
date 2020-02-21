@@ -2,14 +2,14 @@
 using Piranha.Extend;
 namespace Catfish.Models.Fields
 {
-    [FieldType(Name = "Simple String", Component = "simple-field")]
-    public class SimpleStringField : IField
+    [FieldType(Name = "TextArea", Component = "textarea-field")]
+    public class TextAreaField : IField
     {
         public string Value { get; set; }
 
         public string GetTitle()
         {
-            throw new System.NotImplementedException();
+            return Value;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Catfish.Models.Regions;
+﻿using Catfish.Models.Fields;
+using Catfish.Models.Regions;
 using Piranha.AttributeBuilder;
 using Piranha.Extend;
 using Piranha.Extend.Fields;
@@ -19,7 +20,8 @@ namespace Catfish.Models
 
         [Region(ListTitle = "Title")]
         public ImageMap Map { get; set; }
-       // public ImageField Map { get; set; }
+      
+        
 
         public MainPage() { }
 

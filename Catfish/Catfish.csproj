@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.0">
       <PrivateAssets>all</PrivateAssets>
@@ -29,6 +25,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\assets\js\textarea-field.js" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">

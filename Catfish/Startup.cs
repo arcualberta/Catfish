@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Piranha.Manager;
 using System.Linq;
 using Catfish.Models.Fields;
+using Catfish.Models.Blocks;
 
 namespace Catfish
 {
@@ -172,24 +173,39 @@ namespace Catfish
             //add to manager menu item
             AddManagerMenus();
 
+            //Register Piranha Custom Components 
+            RegisterCustomFields();
+            RegisterCustomScripts();
+            RegisterCustomBlocks();
 
-            //Register Piranha Custom Fields
-            Piranha.App.Fields.Register<SimpleStringField>();
-
-            //TODO: Add to manager http://piranhacms.org/docs/extensions/fields
-
-            //Adding custom css/js to piranha module to the Layout of the manager interface
+        }
+        private void RegisterCustomFields()
+        {
+            Piranha.App.Fields.Register<TextAreaField>();
+        }
+        private void RegisterCustomScripts()
+        {
+            App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
+        }
+        private void RegisterCustomBlocks()
+        {
+            //Register custom Block
+            App.Blocks.Register<AuthorBlock>();
+        }
+        private void RegisterCustomStyles()
+        {
             //App.Modules.Get<Piranha.Manager.Module>()
             //    .Styles.Add("~/assets/css/mystyles.css");
-            //App.Modules.Get<Piranha.Manager.Module>()
-            //   .Scripts.Add("~/assets/js/myscripts.js");
 
+        }
+        private void RegisterPartialViews()
+        {
             //Adding Partial View to Layout of the manager interface
             //All custom partials are rendered at the end of the body tag after the built-in modals have been added.
             //    App.Modules.Get<Piranha.Manager.Module>()
             //.Partials.Add("Partial/_MyModal");
-        }
 
+        }
         private void AddManagerMenus()
         {
             ///
@@ -210,67 +226,7 @@ namespace Catfish
 
             });
 
-            //menubar.Items.Insert(idx++, new Manager.MenuItem()
-            //{
-            //    Name = "Collections",
-            //    Action = "index",
-            //    Controller = "collections",
-            //    Permission = "ADMIN_CONTENT"
-            //});
-
-            //menubar.Items.Insert(idx++, new Manager.MenuItem()
-            //{
-            //    Name = "Forms",
-            //    Action = "index",
-            //    Controller = "FormTemplates",
-            //    Permission = "ADMIN_CONTENT"
-            //});
-
-            ///
-            /// Settings Menus
-            ///
-            //menubar = Piranha.Manager.Menu.Where(m => m.InternalId == "Settings").FirstOrDefault();
-            //idx = 0;
-
-            //menubar.Items.Insert(idx++, new Manager.MenuItem()
-            //{
-            //    Name = "Metadata Sets",
-            //    Action = "index",
-            //    Controller = "metadata",
-            //    Permission = "ADMIN_CONTENT"
-            //    //,SelectedActions = "productlist,productedit"
-            //});
-
-            //menubar.Items.Insert(idx++, new Manager.MenuItem()
-            //{
-            //    Name = "Entity Types",
-            //    Action = "index",
-            //    Controller = "entitytypes",
-            //    Permission = "ADMIN_CONTENT"
-            //    //,SelectedActions = "productlist,productedit"
-            //});
-
-            //Mr Jan 23 2018 adding tab to manager/system area
-            //var systemMenu = Manager.Menu.Where(m => m.InternalId == "System").FirstOrDefault();
-            //idx = 0;
-
-            //systemMenu.Items.Insert(idx++, new Manager.MenuItem
-            //{
-
-            //    Name = "User List",
-            //    Action = "index",
-            //    Controller = "UserLists",
-            //    Permission = "ADMIN_CONTENT"
-            //});
-
-            //systemMenu.Items.Insert(systemMenu.Items.Count, new Manager.MenuItem
-            //{
-
-            //    Name = "Access Definitions",
-            //    Action = "index",
-            //    Controller = "AccessDefinitions",
-            //    Permission = "ADMIN_CONTENT"
-            //});
+            
         }
     }
 }
