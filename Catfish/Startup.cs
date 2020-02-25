@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Piranha.Manager;
 using System.Linq;
 using Catfish.Models.Fields;
-using Catfish.Models.Blocks;
+//using Catfish.Models.Blocks;
 
 namespace Catfish
 {
@@ -190,7 +190,7 @@ namespace Catfish
         private void RegisterCustomBlocks()
         {
             //Register custom Block
-            App.Blocks.Register<AuthorBlock>();
+            //App.Blocks.Register<AuthorBlock>();
         }
         private void RegisterCustomStyles()
         {
