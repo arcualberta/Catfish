@@ -19,12 +19,12 @@ namespace Catfish.Core.Helpers
             return ((IEnumerable)element.XPathEvaluate(xpath, NamespaceManager)).Cast<XElement>();
         }
 
-        public static IEnumerable<TextValue> GetTextValues(XElement element, bool forceAllLanguages = false, bool excludeBlanks = false, string activeLang=null)
+        public static IEnumerable<TextValue> GetTextValues(XElement element, bool includeAllLanguages = false, bool excludeBlanks = false, string activeLang=null)
         {
-            return XmlHelper.GetTextValues<TextValue>(element, forceAllLanguages, excludeBlanks, activeLang);
+            return GetTextValues<TextValue>(element, includeAllLanguages, excludeBlanks, activeLang);
         }
 
-        public static IEnumerable<T> GetTextValues<T>(XElement element, bool forceAllLanguages = false, bool excludeBlanks = false, string activeLang = null) where T : TextValue
+        public static IEnumerable<T> GetTextValues<T>(XElement element, bool includeAllLanguages = false, bool excludeBlanks = false, string activeLang = null) where T : TextValue
         {
             List<T> ret = new List<T>();
             List<string> languageCodes = ConfigHelper.LanguagesCodes;
@@ -59,7 +59,7 @@ namespace Catfish.Core.Helpers
                 }
             }
 
-            if (forceAllLanguages)
+            if (includeAllLanguages)
             {
                 foreach (var lang in ConfigHelper.Languages)
                 {

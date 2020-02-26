@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Data
 {
-    public class CFDataFile: CFDataObject
+    public class DataFile: DataObject
     {
         public enum MimeType { Text, Image, Audio, Video, Application };
 
@@ -125,7 +125,7 @@ namespace Catfish.Core.Models.Data
             File.Delete(AbsoluteFilePathName);
 
             //If the thumbnail is not a shared one, deleting it as well from the file system
-            if (ThumbnailType != CFDataFile.eThumbnailTypes.Shared)
+            if (ThumbnailType != DataFile.eThumbnailTypes.Shared)
                 File.Delete(System.IO.Path.Combine(ConfigHelper.UploadRoot, Thumbnail));
         }
 

@@ -14,20 +14,21 @@ using System.Text.RegularExpressions;
 
 namespace Catfish.Core.Models
 {
+    [Table("Catfish_Entities")]
     [Serializable]
-    public abstract class CFEntity : CFXmlModel
+    public abstract class Entity : XmlModel
     {
         public int? EntityTypeId { get; set; }
 
         [IgnoreDataMember]
-        public virtual CFEntityType EntityType { get; set; }
+        public virtual EntityType EntityType { get; set; }
         public virtual string Label => "Entity";
 
 
         protected static string AccessGroupXPath = "access/" + CFAccessGroup.TagName;
-        protected static string MetadataSetXPath = "metadata/" + CFMetadataSet.TagName;
+        protected static string MetadataSetXPath = "metadata/" + MetadataSet.TagName;
 
-        public CFEntity()
+        public Entity()
         {
             Data.Add(new XElement("metadata"));
             Data.Add(new XElement("access"));
@@ -35,12 +36,12 @@ namespace Catfish.Core.Models
 
         [NotMapped]
         [IgnoreDataMember]
-        public List<CFMetadataSet> MetadataSets
+        public List<MetadataSet> MetadataSets
         {
             get
             {
                 return GetChildModels(MetadataSetXPath)
-                    .Select(c => c as CFMetadataSet).ToList();
+                    .Select(c => c as MetadataSet).ToList();
             }
 
             set
@@ -371,9 +372,9 @@ namespace Catfish.Core.Models
         private void GetDynamicEntries(ref Dictionary<string, object> result)
         {            
             //Dictionary<string, object> result = new Dictionary<string, object>();
-            foreach (CFMetadataSet metadataset in MetadataSets)
+            foreach (MetadataSet metadataset in MetadataSets)
             {
-                string metadatasetGuid = CleanGuid(metadataset.Guid);
+                string metadatasetGuid = CleanGuid(metadataset.Guid.ToString());
 
                 foreach (FormField field in metadataset.Fields)
                 {
@@ -409,14 +410,14 @@ namespace Catfish.Core.Models
             RemoveAllElements(MetadataSetXPath);
         }
 
-        public void InitMetadataSet(IReadOnlyList<CFMetadataSet> src)
+        public void InitMetadataSet(IReadOnlyList<MetadataSet> src)
         {
             XElement metadata = GetImmediateChild("metadata");
-            foreach (CFMetadataSet ms in src)
+            foreach (MetadataSet ms in src)
                 metadata.Add(ms.Data);
         }
 
-        private void InitModels(string element, IReadOnlyList<CFXmlModel> models)
+        private void InitModels(string element, IReadOnlyList<XmlModel> models)
         {
             XElement access = GetImmediateChild(element);
             foreach (CFAccessGroup model in models)
@@ -427,14 +428,14 @@ namespace Catfish.Core.Models
 
         protected FormField GetMetadataSetField(string metadatasetGuid, string fieldName)
         {
-            CFMetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == metadatasetGuid).FirstOrDefault();
+            MetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid.ToString() == metadatasetGuid).FirstOrDefault();
 
             if (metadataSet == null)
             {
                 return null;
             }
 
-            FormField field = metadataSet.Fields.Where(f => f.Name == fieldName).FirstOrDefault();
+            FormField field = metadataSet.Fields.Where(f => f.GetName() == fieldName).FirstOrDefault();
 
             return field;
         }
@@ -449,7 +450,7 @@ namespace Catfish.Core.Models
             var mapping = EntityType.AttributeMappings.Where(m => m.Name == name).FirstOrDefault();
             if (mapping != null)
             {
-                string msGuid = mapping.MetadataSet.Guid;
+                string msGuid = mapping.MetadataSet.Guid.ToString();
                 string fieldName = mapping.FieldName;
 
                 FormField field = GetMetadataSetField(msGuid, fieldName);
@@ -476,7 +477,7 @@ namespace Catfish.Core.Models
             var mapping = EntityType.AttributeMappings.Where(m => m.Name == name).FirstOrDefault();
             if (mapping != null)
             {
-                string msGuid = mapping.MetadataSet.Guid;
+                string msGuid = mapping.MetadataSet.Guid.ToString();
                 string fieldName = mapping.FieldName;
 
                 FormField field = GetMetadataSetField(msGuid, fieldName);
@@ -505,7 +506,7 @@ namespace Catfish.Core.Models
             var mapping = EntityType.AttributeMappings.Where(m => m.Name == name).FirstOrDefault();
             if (mapping != null)
             {
-                string msGuid = mapping.MetadataSet.Guid;
+                string msGuid = mapping.MetadataSet.Guid.ToString();
                 string fieldName = string.IsNullOrEmpty(mapping.Label) ? mapping.FieldName : mapping.Label;
 
                 return fieldName;
@@ -516,14 +517,14 @@ namespace Catfish.Core.Models
 
         protected void SetAttributeMappingValue(string name, string val, string lang = null, bool removePrevious=false)
         {
-            CFEntityTypeAttributeMapping mapping = EntityType.AttributeMappings.Where(m => m.Name == name).FirstOrDefault();
+            EntityTypeAttributeMapping mapping = EntityType.AttributeMappings.Where(m => m.Name == name).FirstOrDefault();
             if (mapping == null)
                 throw new Exception(string.Format("{0} mapping metadata set is not specified for this entity type", name));
 
             if (string.IsNullOrEmpty(mapping.FieldName))
                 throw new Exception(string.Format("Field is not specified in the {0} Mapping of this entity type", name));
 
-            CFMetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == mapping.MetadataSet.Guid).FirstOrDefault();
+            MetadataSet metadataSet = MetadataSets.Where(ms => ms.Guid == mapping.MetadataSet.Guid).FirstOrDefault();
             metadataSet.SetFieldValue(mapping.FieldName, val, lang, removePrevious);
         }
 
@@ -538,10 +539,10 @@ namespace Catfish.Core.Models
 
             return GetChildText("name", Data, Lang(lang));
         }
-        public override void SetName(string val, string lang = null)
-        {
-            SetAttributeMappingValue("Name Mapping", val, lang, true);
-        }
+        ////public override void SetName(string val, string lang = null)
+        ////{
+        ////    SetAttributeMappingValue("Name Mapping", val, lang, true);
+        ////}
 
         public override string GetDescription(string lang = null)
         {
@@ -559,7 +560,7 @@ namespace Catfish.Core.Models
             SetAttributeMappingValue("Description Mapping", val, lang, true);
         }
 
-        public override void UpdateValues(CFXmlModel src)
+        public override void UpdateValues(XmlModel src)
         {
             if (src == this)
             {
@@ -569,31 +570,31 @@ namespace Catfish.Core.Models
 
             base.UpdateValues(src);
 
-            var src_item = src as CFEntity;
+            var src_item = src as Entity;
 
-            foreach (CFMetadataSet ms in this.MetadataSets)
+            foreach (MetadataSet ms in this.MetadataSets)
             {
                 var src_ms = src_item.MetadataSets.Where(x => x.Guid == ms.Guid).FirstOrDefault();
                 ms.UpdateValues(src_ms);
             }
         }
 
-        [IgnoreDataMember]
-        public override string Name
-        {
-            get
-            {
-                return GetName();
-            }
-        }
+        ////[IgnoreDataMember]
+        ////public override string Name
+        ////{
+        ////    get
+        ////    {
+        ////        return GetName();
+        ////    }
+        ////}
 
-        [IgnoreDataMember]
-        public override string Description
-        {
-            get
-            {
-                return GetDescription();
-            }
-        }
+        ////[IgnoreDataMember]
+        ////public override string Description
+        ////{
+        ////    get
+        ////    {
+        ////        return GetDescription();
+        ////    }
+        ////}
     }
 }

@@ -12,7 +12,7 @@ using System.Xml.Linq;
 namespace Catfish.Core.Models.Forms
 {
     [Serializable]
-    public abstract class AbstractForm : CFXmlModel
+    public abstract class AbstractForm : XmlModel
     {
         public AbstractForm()
         {
@@ -40,13 +40,13 @@ namespace Catfish.Core.Models.Forms
 
        
 
-        [NotMapped]
-        [DataType(DataType.MultilineText)]
-        [IgnoreDataMember]
-        override public string Description { get { return GetDescription(); } set { SetDescription(value); } }
+        ////[NotMapped]
+        ////[DataType(DataType.MultilineText)]
+        ////[IgnoreDataMember]
+        ////override public string Description { get { return GetDescription(); } set { SetDescription(value); } }
 
 
-        public override void UpdateValues(CFXmlModel src)
+        public override void UpdateValues(XmlModel src)
         {
             base.UpdateValues(src);
 
@@ -77,12 +77,12 @@ namespace Catfish.Core.Models.Forms
 
         public void SetFieldValue(string fieldName, IEnumerable<string> fieldValues, string language, bool removePrevious=false)
         {
-            FormField field = Fields.Where(f => f.Name == fieldName).FirstOrDefault();
+            FormField field = Fields.Where(f => f.GetName() == fieldName).FirstOrDefault();
             field.SetValues(fieldValues, language, removePrevious);
         }
 
         [NotMapped]
-        [CFTypeLabel("String")]
+        [TypeLabel("String")]
         [IgnoreDataMember]
         public string ReferenceCode { get { return GetAttribute("reference-code", null); } set { SetAttribute("reference-code", value); } }
 

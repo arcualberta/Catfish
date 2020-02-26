@@ -12,11 +12,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="SolrNet" Version="1.0.19" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Contexts\" />
     <Folder Include="Migrations\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

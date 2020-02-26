@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Forms
 {
-    [CFTypeLabel("Date")]
+    [TypeLabel("Date")]
     public class DateField : NumberField //FormField
     {
         protected TextValue FirstValue

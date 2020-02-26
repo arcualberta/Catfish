@@ -3,7 +3,7 @@
 namespace Catfish.Core.Models.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
-    public class CFIgnoreAttribute : Attribute
+    public class IgnoreAttribute : Attribute
     {
     }
 }

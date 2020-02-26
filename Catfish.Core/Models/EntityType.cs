@@ -10,9 +10,10 @@ using System.Text.Json.Serialization;
 
 namespace Catfish.Core.Models
 {
+    [Table("Catfish_EntityTypes")]
     [Serializable]
-    [CFTypeLabel("Entity Type")]
-    public class CFEntityType
+    [TypeLabel("Entity Type")]
+    public class EntityType
     {
         public enum eTarget { None = 0, Collections, Items, Files, Forms };
 
@@ -49,29 +50,29 @@ namespace Catfish.Core.Models
 
         [JsonIgnore] //Ignore this in JSON serialization to avoid stuck in a continuous loop
         [IgnoreDataMember]
-        public virtual ICollection<CFMetadataSet> MetadataSets { get; set; }
+        public virtual ICollection<MetadataSet> MetadataSets { get; set; }
 
         [JsonIgnore] //Ignore this in JSON serialization to avoid stuck in a continuous loop
         [IgnoreDataMember]
         [InverseProperty("EntityType")]
-        public virtual ICollection<CFEntityTypeAttributeMapping> AttributeMappings { get; set; }
+        public virtual ICollection<EntityTypeAttributeMapping> AttributeMappings { get; set; }
 
         [NotMapped]
         public bool HasAssociations { get { return false; } }
 
-        public CFEntityType()
+        public EntityType()
         {
-            MetadataSets = new List<CFMetadataSet>();
-            AttributeMappings = new List<CFEntityTypeAttributeMapping>();
+            MetadataSets = new List<MetadataSet>();
+            AttributeMappings = new List<EntityTypeAttributeMapping>();
             TargetTypesList = new List<eTarget>();
         }
 
-        public CFEntityTypeAttributeMapping GetNameMapping()
+        public EntityTypeAttributeMapping GetNameMapping()
         {
             return AttributeMappings.Where(mapping => mapping.Name == "Name Mapping").FirstOrDefault();
         }
 
-        public CFEntityTypeAttributeMapping GetDescriptionMapping()
+        public EntityTypeAttributeMapping GetDescriptionMapping()
         {
             return AttributeMappings.Where(mapping => mapping.Name == "Description Mapping").FirstOrDefault();
         }

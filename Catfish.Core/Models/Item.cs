@@ -11,14 +11,14 @@ using System.Xml.Linq;
 namespace Catfish.Core.Models
 {
     [Serializable]
-    public class CFItem : CFAggregation
+    public class Item : Aggregation
     {
         [IgnoreDataMember]
-        public virtual ICollection<CFAggregation> ParentRelations { get; set; }
+        public virtual ICollection<Aggregation> ParentRelations { get; set; }
 
-        public CFItem()
+        public Item()
         {
-            ParentRelations = new List<CFAggregation>();
+            ParentRelations = new List<Aggregation>();
             Data.Add(new XElement("data"));
         }
 
@@ -35,11 +35,11 @@ namespace Catfish.Core.Models
 
         [NotMapped]
         [IgnoreDataMember]
-        public virtual IEnumerable<CFDataObject> DataObjects
+        public virtual IEnumerable<DataObject> DataObjects
         {
             get
             {
-                return GetChildModels("data/*", Data).Select(c => c as CFDataObject);
+                return GetChildModels("data/*", Data).Select(c => c as DataObject);
             }
         }
 
@@ -70,21 +70,21 @@ namespace Catfish.Core.Models
 
         [NotMapped]
         [IgnoreDataMember]
-        public virtual IEnumerable<CFDataFile> Files
+        public virtual IEnumerable<DataFile> Files
         {
             get
             {
-                return GetChildModels("data/" + CFDataFile.TagName, Data).Select(c => c as CFDataFile);
+                return GetChildModels("data/" + DataFile.TagName, Data).Select(c => c as DataFile);
             }
         }
 
         [NotMapped]
         [IgnoreDataMember]
-        public virtual IEnumerable<CFFormSubmission> FormSubmissions
+        public virtual IEnumerable<FormSubmission> FormSubmissions
         {
             get
             {
-                return GetChildModels("data/" + CFFormSubmission.TagName, Data).Select(c => c as CFFormSubmission);
+                return GetChildModels("data/" + FormSubmission.TagName, Data).Select(c => c as FormSubmission);
             }
         }
 
@@ -95,7 +95,7 @@ namespace Catfish.Core.Models
         }
 
         // XXX copy this for files
-        public void AddData(CFDataObject obj)
+        public void AddData(DataObject obj)
         {
             GetDataObjectRoot().Add(obj.Data);
 
@@ -103,15 +103,15 @@ namespace Catfish.Core.Models
                 LogChange(obj.Guid, "Added data object");
         }
 
-        public CFFormSubmission GetFormSubmission(string formSubmissionRef)
+        public FormSubmission GetFormSubmission(string formSubmissionRef)
         {
-            var xpath = "./data/" + CFFormSubmission.TagName + "[@ref='" + formSubmissionRef + "']";
-            return GetChildModels(xpath, Data).FirstOrDefault() as CFFormSubmission;
+            var xpath = "./data/" + FormSubmission.TagName + "[@ref='" + formSubmissionRef + "']";
+            return GetChildModels(xpath, Data).FirstOrDefault() as FormSubmission;
         }
 
-        public void RemoveFile(CFDataFile file)
+        public void RemoveFile(DataFile file)
         {
-            var xpath = "./data/" + CFDataFile.TagName + "[@guid='" + file.Guid + "']";
+            var xpath = "./data/" + DataFile.TagName + "[@guid='" + file.Guid + "']";
             XElement fileElement = GetChildElements(xpath, Data).FirstOrDefault();
             if (fileElement == null)
                 throw new Exception("File does not exist.");

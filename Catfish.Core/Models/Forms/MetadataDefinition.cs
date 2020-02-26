@@ -11,7 +11,7 @@ using System.Xml.Linq;
 namespace Catfish.Core.Models.Forms
 {
     [Obsolete]
-    [CFTypeLabel("Metadata Definition")]
+    [TypeLabel("Metadata Definition")]
     public class MetadataDefinition
     {
         [XmlIgnore]
@@ -24,9 +24,9 @@ namespace Catfish.Core.Models.Forms
             Fields = new List<FormField>();
         }
 
-        private CFXmlModel Data;
+        private XmlModel Data;
 
-        public MetadataDefinition(CFXmlModel data, int id)
+        public MetadataDefinition(XmlModel data, int id)
         {
             Id = id;
             Data = data;

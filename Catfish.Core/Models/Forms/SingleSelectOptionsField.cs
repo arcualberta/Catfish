@@ -29,7 +29,7 @@ namespace Catfish.Core.Models.Forms
                 val.Value = value == null ? "" : value;
             }
         }
-        public override void UpdateValues(CFXmlModel src)
+        public override void UpdateValues(XmlModel src)
         {
             //Unlike multi-select option fields such as check boxes, single select option fields such as radio buttons sends
             //the selected option as a value. Therefore, we need to find the corresponding value from the option set in the 

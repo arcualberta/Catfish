@@ -9,13 +9,13 @@ using System.Xml.Linq;
 namespace Catfish.Core.Models
 {
     [NotMapped]
-    public class CFAuditChangeLog
+    public class AuditChangeLog
     {
         public string Target { get; set; }
 
         public string Description { get; set; }
 
-       public CFAuditChangeLog(string target, string description)
+       public AuditChangeLog(string target, string description)
         {
             Target = target;
             Description = description;

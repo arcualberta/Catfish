@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Forms
 {
-    [CFTypeLabel("Composite form field")]
+    [TypeLabel("Composite form field")]
     public class CompositeFormField : FormField
     {
         public enum eStepState
@@ -114,7 +114,7 @@ namespace Catfish.Core.Models.Forms
             Data.Add(new XElement("footer"));
         }
 
-        public override void UpdateValues(CFXmlModel src)
+        public override void UpdateValues(XmlModel src)
         {
             base.UpdateValues(src);
 

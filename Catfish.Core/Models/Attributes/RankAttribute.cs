@@ -3,11 +3,11 @@
 namespace Catfish.Core.Models.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class CFRankAttribute : Attribute
+    public class RankAttribute : Attribute
     {
         public int Rank { get; set; }
 
-        public CFRankAttribute(int rank)
+        public RankAttribute(int rank)
         {
             Rank = rank;
         }

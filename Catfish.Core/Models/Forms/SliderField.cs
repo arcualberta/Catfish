@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Models.Forms
 {
-    [CFTypeLabel("Slider field")]
+    [TypeLabel("Slider field")]
     public class SliderField : NumberField
     {
         [NotMapped]

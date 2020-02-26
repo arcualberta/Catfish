@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 
 namespace Catfish.Core.Models.Forms
 {
-    [CFTypeLabel("Paragraph")]
+    [TypeLabel("Paragraph")]
     public class TextArea : FormField
     {
         //[ScriptIgnore] KR:.NETCORE

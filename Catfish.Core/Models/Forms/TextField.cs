@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 
 namespace Catfish.Core.Models.Forms
 {
-    [CFTypeLabel("Short text")]
+    [TypeLabel("Short text")]
     public class TextField : FormField
     {
 

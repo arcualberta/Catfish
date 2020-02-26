@@ -9,7 +9,7 @@ using System.Runtime.Serialization;
 namespace Catfish.Core.Models
 {
     [Serializable]
-    public class CFCollection : CFAggregation
+    public class Collection : Aggregation
     {
         public override string GetTagName() { return "collection"; }
         public override string Label => "Collection";
@@ -41,11 +41,11 @@ namespace Catfish.Core.Models
 
         [NotMapped]
         [IgnoreDataMember]
-        public virtual IEnumerable<CFAggregation> ChildCollections
+        public virtual IEnumerable<Aggregation> ChildCollections
         {
             get
             {
-                return ChildMembers.Where(c => typeof(CFCollection).IsAssignableFrom(c.GetType()));
+                return ChildMembers.Where(c => typeof(Collection).IsAssignableFrom(c.GetType()));
             }
         }
     }

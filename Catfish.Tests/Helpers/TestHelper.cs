@@ -1,5 +1,4 @@
 ﻿using Catfish.Core.Models;
-using Catfish.Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -36,8 +35,8 @@ namespace Catfish.Tests.Helpers
                 );
 
             //Registering other services
-            services.AddScoped<EntityService>();
-            services.AddScoped<SolrService>();
+            ////services.AddScoped<EntityService>();
+            ////services.AddScoped<SolrService>();
 
 
             //Creating a service provider and assigning it to the member variable so that it can be used by 

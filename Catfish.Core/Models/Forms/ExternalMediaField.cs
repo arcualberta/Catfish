@@ -9,27 +9,27 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Models.Forms
 {
-    [CFTypeLabel("External Media Field")]
+    [TypeLabel("External Media Field")]
     public class ExternalMediaField : FormField
     {
-        [CFTypeLabel("Media Type")]
+        [TypeLabel("Media Type")]
         [NotMapped]
-        public CFDataFile.MimeType MediaType
+        public DataFile.MimeType MediaType
         {
             get
             {
-                Type eType = typeof(CFDataFile.MimeType);
-                string attr = GetAttribute("media-type", Data) ?? Enum.GetName(typeof(CFDataFile.MimeType), CFDataFile.MimeType.Application);
-                return (CFDataFile.MimeType)Enum.Parse(eType, attr);
+                Type eType = typeof(DataFile.MimeType);
+                string attr = GetAttribute("media-type", Data) ?? Enum.GetName(typeof(DataFile.MimeType), DataFile.MimeType.Application);
+                return (DataFile.MimeType)Enum.Parse(eType, attr);
             }
 
             set
             {
-                SetAttribute("media-type", Enum.GetName(typeof(CFDataFile.MimeType), value));
+                SetAttribute("media-type", Enum.GetName(typeof(DataFile.MimeType), value));
             }
         }
 
-        [CFTypeLabel("Media Location")]
+        [TypeLabel("Media Location")]
         [NotMapped]
         public string Source
         {
@@ -45,7 +45,7 @@ namespace Catfish.Core.Models.Forms
         }
         
         [NotMapped]
-        [MediaType("Play Once", CFDataFile.MimeType.Audio, CFDataFile.MimeType.Video)]
+        [MediaType("Play Once", DataFile.MimeType.Audio, DataFile.MimeType.Video)]
         public bool PlayOnce
         {
             get
@@ -60,7 +60,7 @@ namespace Catfish.Core.Models.Forms
         }
         
         [NotMapped]
-        [MediaType("Play On Show", CFDataFile.MimeType.Audio, CFDataFile.MimeType.Video)]
+        [MediaType("Play On Show", DataFile.MimeType.Audio, DataFile.MimeType.Video)]
         public bool PlayOnShow
         {
             get
@@ -75,7 +75,7 @@ namespace Catfish.Core.Models.Forms
         }
         
         [NotMapped]
-        [MediaType("Show Controls", CFDataFile.MimeType.Audio, CFDataFile.MimeType.Video)]
+        [MediaType("Show Controls", DataFile.MimeType.Audio, DataFile.MimeType.Video)]
         public bool ShowControls
         {
             get
@@ -93,10 +93,10 @@ namespace Catfish.Core.Models.Forms
     [AttributeUsage(AttributeTargets.Property)]
     public class MediaTypeAttribute : Attribute 
     {
-        public IEnumerable<CFDataFile.MimeType> MimeTypes { get; protected set; }
+        public IEnumerable<DataFile.MimeType> MimeTypes { get; protected set; }
         public string Label { get; set; }
 
-        public MediaTypeAttribute(string label, params CFDataFile.MimeType[] mimeTypes)
+        public MediaTypeAttribute(string label, params DataFile.MimeType[] mimeTypes)
         {
             Label = label;
             MimeTypes = mimeTypes;

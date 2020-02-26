@@ -9,7 +9,7 @@ using System.Xml.Linq;
 namespace Catfish.Core.Models
 {
     [NotMapped]
-    public class CFAuditEntry
+    public class AuditEntry
     {
         public enum eAction { Other = 0, Create, Update, Delete, Grant, Revoke };
 
@@ -60,12 +60,12 @@ namespace Catfish.Core.Models
             }
         }
 
-        public CFAuditEntry(XElement data)
+        public AuditEntry(XElement data)
         {
             Data = data;
         }
 
-        public CFAuditEntry(eAction action, string actor, DateTime timestamp, List<CFAuditChangeLog> changes)
+        public AuditEntry(eAction action, string actor, DateTime timestamp, List<AuditChangeLog> changes)
         {
             Data = new XElement("entry");
             Action = action;
@@ -74,7 +74,7 @@ namespace Catfish.Core.Models
             AppendLog(changes);
         }
 
-        public void AppendLog(List<CFAuditChangeLog> changes)
+        public void AppendLog(List<AuditChangeLog> changes)
         {
             foreach (var change in changes)
             {
@@ -85,9 +85,9 @@ namespace Catfish.Core.Models
             }
         }
 
-        public IReadOnlyList<CFAuditChangeLog> GetChangeLog()
+        public IReadOnlyList<AuditChangeLog> GetChangeLog()
         {
-            return Data.Elements("log").Select(e => new CFAuditChangeLog(e.Attribute("target").Value, e.Value)).ToList();
+            return Data.Elements("log").Select(e => new AuditChangeLog(e.Attribute("target").Value, e.Value)).ToList();
         }
     }
 }

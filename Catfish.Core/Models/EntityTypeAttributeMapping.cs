@@ -11,13 +11,14 @@ using System.Text.Json.Serialization;
 
 namespace Catfish.Core.Models
 {
+    [Table("Catfish_EntityTypeAttributeMappings")]
     [Serializable]
-    public class CFEntityTypeAttributeMapping
+    public class EntityTypeAttributeMapping
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public int MetadataSetId { get; set; }
-        public virtual CFMetadataSet MetadataSet { get; set; }
+        public virtual MetadataSet MetadataSet { get; set; }
         public string FieldName { get; set; }
 
         public string Label { get; set; }
@@ -26,12 +27,12 @@ namespace Catfish.Core.Models
         public int? EntityTypeId { get; set; }
         [JsonIgnore]
         [IgnoreDataMember]
-        public CFEntityType EntityType { get; set; }
+        public EntityType EntityType { get; set; }
 
         [NotMapped]
         public bool Deletable { get; set; }
 
-        public CFEntityTypeAttributeMapping() {
+        public EntityTypeAttributeMapping() {
             Deletable = true;
         }
 
@@ -41,7 +42,7 @@ namespace Catfish.Core.Models
         {
             get
             {
-                return MetadataSet.Fields.Where(f => f.Name == FieldName).FirstOrDefault();
+                return MetadataSet.Fields.Where(f => f.GetName() == FieldName).FirstOrDefault();
             }
         }
     }

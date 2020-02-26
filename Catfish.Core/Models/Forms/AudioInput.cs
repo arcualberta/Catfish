@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Forms
 {
-    [CFTypeLabel("Audio Input Field")]
+    [TypeLabel("Audio Input Field")]
     public class AudioInput : Attachment
     {
        

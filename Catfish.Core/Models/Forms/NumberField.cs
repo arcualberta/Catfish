@@ -2,7 +2,7 @@
 
 namespace Catfish.Core.Models.Forms
 {
-    [CFTypeLabel("Number field")]
+    [TypeLabel("Number field")]
     public class NumberField : TextField
     {
     }

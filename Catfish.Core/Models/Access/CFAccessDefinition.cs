@@ -55,7 +55,7 @@ namespace Catfish.Core.Models.Access
 
     }
 
-    public class CFAccessDefinition : CFXmlModel
+    public class CFAccessDefinition : XmlModel
     {
 
         public CFAccessDefinition()
@@ -137,7 +137,7 @@ namespace Catfish.Core.Models.Access
                 if (!string.IsNullOrEmpty(strAccessModes))
                     strAccessModes = strAccessModes.Substring(0, strAccessModes.Length - 1);
 
-                return string.Format("{0} - {1}", Name, strAccessModes);
+                return string.Format("{0} - {1}", GetName(), strAccessModes);
             }
         }
     }

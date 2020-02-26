@@ -18,17 +18,17 @@ using System.Runtime.Serialization;
 namespace Catfish.Core.Models.Forms
 {
     [FormFieldRequired]
-    public class FormField : CFXmlModel
+    public class FormField : XmlModel
     {
         public override string GetTagName() { return "field"; }
         public static char FileGuidSeparator = '|';
 
         [NotMapped]
-        public List<CFFileDescription> Files
+        public List<FileDescription> Files
         {
             get
             {
-                return GetChildModels("files/" + CFFileDescription.TagName).Select(c => c as CFFileDescription).ToList();
+                return GetChildModels("files/" + FileDescription.TagName).Select(c => c as FileDescription).ToList();
             }
 
             set
@@ -39,7 +39,7 @@ namespace Catfish.Core.Models.Forms
                     filesElement = new XElement("files");
                     Data.Add(filesElement);
                 }
-                foreach (CFFileDescription fileDescription in value)
+                foreach (FileDescription fileDescription in value)
                 {
                     filesElement.Add(fileDescription.Data);
                 }
@@ -127,22 +127,22 @@ namespace Catfish.Core.Models.Forms
             }
         }
 
-        [DataType(DataType.MultilineText)]
-        [NotMapped]
-        //[ScriptIgnore] KR:.NETCORE
-        [IgnoreDataMember]
-        override public string Description
-        {
-            get
-            {
-                return GetDescription();
-            }
+        ////[DataType(DataType.MultilineText)]
+        ////[NotMapped]
+        //////[ScriptIgnore] KR:.NETCORE
+        ////[IgnoreDataMember]
+        ////override public string Description
+        ////{
+        ////    get
+        ////    {
+        ////        return GetDescription();
+        ////    }
 
-            set
-            {
-                SetDescription(value);
-            }
-        }
+        ////    set
+        ////    {
+        ////        SetDescription(value);
+        ////    }
+        ////}
 
         //[ScriptIgnore] KR:.NETCORE
         [IgnoreDataMember]
@@ -187,7 +187,7 @@ namespace Catfish.Core.Models.Forms
             set { SetAttribute("reference-label", value); }
         }
 
-        public override void UpdateValues(CFXmlModel src)
+        public override void UpdateValues(XmlModel src)
         {
             XElement srcValueWrapper = src.Data.Element("value");
             if (srcValueWrapper == null)

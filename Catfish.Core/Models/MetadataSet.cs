@@ -13,9 +13,10 @@ using System.Runtime.Serialization;
 
 namespace Catfish.Core.Models
 {
-    [CFTypeLabel("Metadata Set")]
+    [Table("Catfish_MetadataSets")]
+    [TypeLabel("Metadata Set")]
     [Serializable]
-    public class CFMetadataSet : AbstractForm
+    public class MetadataSet : AbstractForm
     {
         public static string TagName
         {
@@ -29,7 +30,7 @@ namespace Catfish.Core.Models
 
         //[ScriptIgnore(ApplyToOverrides = true)] KR:.NETCORE
         [IgnoreDataMember]
-        public virtual ICollection<CFEntityType> EntityTypes { get; set; }
+        public virtual ICollection<EntityType> EntityTypes { get; set; }
 
         [NotMapped]
         public bool HasAssociations { get { return false; } }

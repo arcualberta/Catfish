@@ -4,7 +4,7 @@
 namespace Catfish.Core.Models.Forms
 {
    
-    [CFTypeLabel("Url field")]
+    [TypeLabel("Url field")]
     public class UrlField : TextField
     {
     }

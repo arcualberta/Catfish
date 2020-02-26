@@ -9,32 +9,33 @@ using System.Runtime.Serialization;
 
 namespace Catfish.Core.Models
 {
+    [Table("Catfish_Aggregations")]
     [Serializable]
-    public class CFAggregation : CFEntity
+    public class Aggregation : Entity
     {
 
         public override string GetTagName() { return "aggregation"; }
         public override string Label =>"Aggregation";
-        private List<CFAggregation> resetSetAccess = new List<CFAggregation>();
+        private List<Aggregation> resetSetAccess = new List<Aggregation>();
 
         [IgnoreDataMember]
         [InverseProperty("Child")]
-        public virtual List<CFAggregationHasMembers> ConnectionToParents { get; set; }
+        public virtual List<AggregationHasMembers> ConnectionToParents { get; set; }
 
         [IgnoreDataMember]
         [InverseProperty("Parent")]
-        public virtual List<CFAggregationHasMembers> ConnectionToChildren { get; set; }
+        public virtual List<AggregationHasMembers> ConnectionToChildren { get; set; }
 
         [NotMapped]
         [IgnoreDataMember]
         protected object ChildConnectionLock = new object(); // Used to synchronize addition of child members;
-        
+
         [IgnoreDataMember]
-        public virtual List<CFItem> ManagedRelatedMembers { get; set; }
+        public virtual List<Item> ManagedRelatedMembers { get; set; }
 
         //[JsonIgnore]
         [IgnoreDataMember]
-        public virtual IReadOnlyCollection<CFAggregation> ParentMembers {
+        public virtual IReadOnlyCollection<Aggregation> ParentMembers {
             get {
                 return ConnectionToParents.Select(m => m.Parent).ToList().AsReadOnly();
             }
@@ -42,7 +43,7 @@ namespace Catfish.Core.Models
 
         //[JsonIgnore]
         [IgnoreDataMember]
-        public virtual IReadOnlyCollection<CFAggregation> ChildMembers {
+        public virtual IReadOnlyCollection<Aggregation> ChildMembers {
             get
             {
                 return ConnectionToChildren.OrderBy(m => m.Order).Select(m => m.Child).ToList().AsReadOnly();
@@ -51,7 +52,7 @@ namespace Catfish.Core.Models
 
         //[JsonIgnore]
         [IgnoreDataMember]
-        public virtual IReadOnlyCollection<CFItem> RelatedMembers
+        public virtual IReadOnlyCollection<Item> RelatedMembers
         {
             get
             {
@@ -59,27 +60,27 @@ namespace Catfish.Core.Models
             }
         }
 
-        ////[JsonIgnore]
-        //[IgnoreDataMember]
-        //public virtual ICollection<CFItem> ChildRelations { get; set; }
+        //[JsonIgnore]
+        [IgnoreDataMember]
+        public virtual ICollection<Relation> Relations { get; set; }
 
         [NotMapped]
         [IgnoreDataMember]
         public bool HasAssociations { get { return ParentMembers.Count > 0 || ChildMembers.Count > 0 || RelatedMembers.Count > 0; } }
 
 
-        public CFAggregation()
+        public Aggregation()
         {
-            ConnectionToChildren = new List<CFAggregationHasMembers>();
-            ConnectionToParents = new List<CFAggregationHasMembers>();
-            ManagedRelatedMembers = new List<CFItem>();
+            ConnectionToChildren = new List<AggregationHasMembers>();
+            ConnectionToParents = new List<AggregationHasMembers>();
+            Relations = new List<Relation>();
         }
 
         protected void RefreshChildrenOrdering(int order, int increment)
         {
             lock (ChildConnectionLock)
             {
-                foreach(CFAggregationHasMembers connection in ConnectionToChildren)
+                foreach(AggregationHasMembers connection in ConnectionToChildren)
                 {
                     if(connection.Order >= order)
                     {
@@ -93,11 +94,11 @@ namespace Catfish.Core.Models
         /// WARNING: Check for circular references first!
         /// </summary>
         /// <param name="child"></param>
-        public void AddChild(CFAggregation child, int order = -1)
+        public void AddChild(Aggregation child, int order = -1)
         {
             lock (ChildConnectionLock)
             {
-                CFAggregationHasMembers member = new CFAggregationHasMembers();
+                AggregationHasMembers member = new AggregationHasMembers();
                 member.Parent = this;
                 member.Child = child;
 
@@ -119,11 +120,11 @@ namespace Catfish.Core.Models
             }
         }
 
-        public void RemoveChild(CFAggregationHasMembers connection)
+        public void RemoveChild(AggregationHasMembers connection)
         {
             lock (ChildConnectionLock)
             {
-                CFAggregation child = connection.Child;
+                Aggregation child = connection.Child;
 
                 ConnectionToChildren.Remove(connection);
                 child.ConnectionToParents.Remove(connection);
@@ -133,11 +134,11 @@ namespace Catfish.Core.Models
             }
         }
        
-        public void RemoveChild(CFAggregation child)
+        public void RemoveChild(Aggregation child)
         {
             lock (ChildConnectionLock)
             {
-                CFAggregationHasMembers childConnection = ConnectionToChildren.Where(connection => connection.ChildId == child.Id).FirstOrDefault();
+                AggregationHasMembers childConnection = ConnectionToChildren.Where(connection => connection.ChildId == child.Id).FirstOrDefault();
 
                 if (childConnection != null)
                 {
@@ -146,12 +147,12 @@ namespace Catfish.Core.Models
             }
         }
 
-        public void AddRelated(CFItem related)
+        public void AddRelated(Item related)
         {
             ManagedRelatedMembers.Add(related);
         }
 
-        public void RemoveRelated(CFItem related)
+        public void RemoveRelated(Item related)
         {
             ManagedRelatedMembers.Remove(related);
         }
@@ -167,11 +168,11 @@ namespace Catfish.Core.Models
         //}
 
         [IgnoreDataMember]
-        public virtual IEnumerable<CFAggregation> ChildItems
+        public virtual IEnumerable<Aggregation> ChildItems
         {
             get
             {
-                return ChildMembers.Where(c => typeof(CFItem).IsAssignableFrom(c.GetType()));
+                return ChildMembers.Where(c => typeof(Item).IsAssignableFrom(c.GetType()));
             }
         }
 
@@ -179,10 +180,10 @@ namespace Catfish.Core.Models
         {
             AccessMode accessMode = AccessMode.None;
 
-            foreach (CFAggregation parent in ParentMembers)
+            foreach (Aggregation parent in ParentMembers)
             {
                 CFAccessGroup accessGroup = parent.AccessGroups
-                    .Where(x => x.Guid == guid.ToString()).FirstOrDefault();
+                    .Where(x => x.Guid == guid).FirstOrDefault();
                 if (accessGroup != null)
                 {
                     accessMode = accessMode | accessGroup.AccessDefinition.AccessModes;
@@ -226,7 +227,7 @@ namespace Catfish.Core.Models
             accessGroups.RemoveAll(x => x.IsInherited == true);
             AccessGroups = accessGroups;
 
-            foreach (CFAggregation parent in ParentMembers)
+            foreach (Aggregation parent in ParentMembers)
             {
                 if (parent != this)
                 {
@@ -239,7 +240,7 @@ namespace Catfish.Core.Models
                 }
             }
 
-            foreach (CFAggregation child in ChildMembers)
+            foreach (Aggregation child in ChildMembers)
             {
                 if (child != this)
                 {
@@ -253,7 +254,7 @@ namespace Catfish.Core.Models
          **/
         public void RecalculateInheritedPermissions()
         {
-            foreach (CFAggregation parent in ParentMembers)
+            foreach (Aggregation parent in ParentMembers)
             {
                 if (parent != this)
                 {
@@ -287,7 +288,7 @@ namespace Catfish.Core.Models
                 accessGroups.Remove(accessGroup);
                 CFAccessGroup newAccessGroup = new CFAccessGroup();
                 newAccessGroup.IsInherited = isInherited;
-                newAccessGroup.Guid = guid.ToString();
+                newAccessGroup.Guid = guid;
                 newAccessGroup.AccessDefinition.AccessModes = accessMode;
 
                 if (accessGroup.IsInherited == true && isInherited == true)
@@ -311,18 +312,18 @@ namespace Catfish.Core.Models
             return solrDictionary;
         }
 
-        public void VisitHierarchy(Action<CFAggregation> visitor)
+        public void VisitHierarchy(Action<Aggregation> visitor)
         {
-            List<CFAggregation> toVisit = new List<CFAggregation>
+            List<Aggregation> toVisit = new List<Aggregation>
             {
                 this
             };
 
             for (int i = 0; i < toVisit.Count; ++i)
             {
-                CFAggregation currentAggregation = toVisit[i];
+                Aggregation currentAggregation = toVisit[i];
                 visitor(currentAggregation);
-                foreach (CFAggregation child in currentAggregation.ChildMembers)
+                foreach (Aggregation child in currentAggregation.ChildMembers)
                 {
                     //child.Guid
                     //if (!toVisit.Any(x => x.Guid == child.Guid))
@@ -334,7 +335,7 @@ namespace Catfish.Core.Models
             }
         }
 
-        public bool Equals(CFAggregation other)
+        public bool Equals(Aggregation other)
         {
             if (other == null)
             {

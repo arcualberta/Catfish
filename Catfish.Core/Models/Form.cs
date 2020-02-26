@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Models
 {
-    [CFTypeLabel("Form Template")]
+    [TypeLabel("Form Template")]
     public class Form : AbstractForm
     {
         public static string TagName { get { return "form"; } }
@@ -18,7 +18,7 @@ namespace Catfish.Core.Models
 
         public Form()
         {
-            Guid = System.Guid.NewGuid().ToString();
+            Guid = System.Guid.NewGuid();
         }
 
         public bool CheckFileReference(string guid)

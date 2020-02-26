@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models
 {
-    public class CFFileDescription : CFXmlModel
+    public class FileDescription : XmlModel
     {
         public static string TagName { get { return "file-description"; } }     
         public override string GetTagName() { return TagName; }
@@ -34,11 +34,11 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        public virtual CFFileOptions FileOptions
+        public virtual FileOptions FileOptions
         {
             get
             {
-                return GetChildModels(CFFileOptions.TagName).FirstOrDefault() as CFFileOptions;
+                return GetChildModels(FileOptions.TagName).FirstOrDefault() as FileOptions;
             }
             set
             {
@@ -48,11 +48,11 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        public virtual CFDataFile DataFile
+        public virtual DataFile DataFile
         {
             get
             {
-                return GetChildModels(CFDataFile.TagName).FirstOrDefault() as CFDataFile;
+                return GetChildModels(DataFile.TagName).FirstOrDefault() as DataFile;
             }
 
             set
@@ -62,21 +62,21 @@ namespace Catfish.Core.Models
             }
         }
 
-        private void InitializeDataFile(CFDataFile dataFile)
+        private void InitializeDataFile(DataFile dataFile)
         {
             Data.Add(dataFile.Data);
         }
 
-        private void InitializeFileOptions(CFFileOptions fileOptions)
+        private void InitializeFileOptions(FileOptions fileOptions)
         {
             Data.Add(fileOptions.Data);
         }
 
-        public CFFileDescription()
+        public FileDescription()
         {
-            DataFile = new CFDataFile();
+            DataFile = new DataFile();
             Label = "";
-            FileOptions = new CFFileOptions();
+            FileOptions = new FileOptions();
         }
     }
 }

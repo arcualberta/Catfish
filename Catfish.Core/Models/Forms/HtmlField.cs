@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Models.Forms
 {
-    [CFTypeLabel("Html Field")]
+    [TypeLabel("Html Field")]
     public class HtmlField : FormField
     {
         public override bool IsHidden()

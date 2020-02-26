@@ -3,7 +3,7 @@ using Catfish.Core.Models.Attributes;
 
 namespace Catfish.Core.Models.Forms
 {
-    [CFTypeLabel("Checkboxes")]
+    [TypeLabel("Checkboxes")]
     public class CheckBoxSet: OptionsField
     {
     }

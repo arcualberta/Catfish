@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Access
 {
-    public class CFAccessGroup : CFXmlModel
+    public class CFAccessGroup : XmlModel
     {
         
         public  static string TagName { get; } = "access-group";
