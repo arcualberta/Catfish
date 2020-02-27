@@ -43,9 +43,29 @@ namespace Catfish.Core.Models
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
- //           builder.Entity<AggregationHasMembers>()
- //               .HasKey(c => new { c.ParentId, c.ChildId });
-            
+            #region Defining many-to-many named relationship of Aggregation with other Aggregations
+            // Reference: https://www.learnentityframeworkcore.com/configuration/many-to-many-relationship-configuration
+            builder.Entity<Relationship>()
+                .HasKey(rel => new { rel.SubjectId, rel.ObjctId });
+
+            builder.Entity<Relationship>()
+                .HasOne(rel => rel.Subject)
+                .WithMany(sub => sub.SubjectRelationships)
+                .HasForeignKey(rel => rel.SubjectId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Relationship>()
+                .HasOne(rel => rel.Objct)
+                .WithMany(obj => obj.ObjectRelationships)
+                .HasForeignKey(rel => rel.ObjctId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            #endregion Defining many-to-many named relationship of Aggregation with other Aggregations
+
+
+            //           builder.Entity<AggregationHasMembers>()
+            //               .HasKey(c => new { c.ParentId, c.ChildId });
+
             //builder.Entity<Aggregation>()
             //    .HasMany<Item>(p => p.ManagedRelatedMembers)
             //    .WithMany(c => c.ParentRelations)
@@ -73,7 +93,7 @@ namespace Catfish.Core.Models
         public DbSet<XmlModel> XmlModels { get; set; }
         public DbSet<Collection2> Collections { get; set; }
         public DbSet<Item2> Items { get; set; }
-
+        public DbSet<Relationship> Relationships { get; set; }
 
 /*
         public DbSet<XmlModel> XmlModels { get; set; }

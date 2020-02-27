@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Catfish.Core.Models
 {
+    [Obsolete("Relation is replaced with Relationship model in Catfish 2.0")]
     public class Relation
     {
         public int Id { get; set; }
