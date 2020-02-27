@@ -8,7 +8,7 @@ namespace Catfish.Core.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Catfish_XmlModel",
+                name: "Catfish_XmlModels",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -21,14 +21,14 @@ namespace Catfish.Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Catfish_XmlModel", x => x.Id);
+                    table.PrimaryKey("PK_Catfish_XmlModels", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Catfish_XmlModel");
+                name: "Catfish_XmlModels");
         }
     }
 }

@@ -95,24 +95,24 @@ namespace Catfish.Core.Models
         public DbSet<Item2> Items { get; set; }
         public DbSet<Relationship> Relationships { get; set; }
 
-/*
-        public DbSet<XmlModel> XmlModels { get; set; }
+        /*
+                public DbSet<XmlModel> XmlModels { get; set; }
 
-        public DbSet<Entity> Entities { get; set; }
-        public DbSet<EntityType> EntityTypes { get; set; }
+                public DbSet<Entity> Entities { get; set; }
+                public DbSet<EntityType> EntityTypes { get; set; }
 
-        public DbSet<MetadataSet> MetadataSets { get; set; }
+                public DbSet<MetadataSet> MetadataSets { get; set; }
 
-        public DbSet<EntityTypeAttributeMapping> EntityTypeAttributeMappings { get; set; }
+                public DbSet<EntityTypeAttributeMapping> EntityTypeAttributeMappings { get; set; }
 
-        public DbSet<Aggregation> Aggregations { get; set; }
+                public DbSet<Aggregation> Aggregations { get; set; }
 
-        public DbSet<Collection> Collections { get; set; }
+                public DbSet<Collection> Collections { get; set; }
 
-        public DbSet<Item> Items { get; set; }
+                public DbSet<Item> Items { get; set; }
 
-        public DbSet<Relation> Relations { get; set; }
-*/
+                public DbSet<Relation> Relations { get; set; }
+        */
 
         //        public DbSet<CFAccessDefinition> AccessDefinitions { get; set; }
         /*

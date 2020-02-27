@@ -34,7 +34,7 @@ namespace Catfish.Core.Migrations
 
                     b.HasIndex("ObjctId");
 
-                    b.ToTable("Relationships");
+                    b.ToTable("Catfish_Relationships");
                 });
 
             modelBuilder.Entity("Catfish.Core.Models.XmlModel", b =>
@@ -62,7 +62,7 @@ namespace Catfish.Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Catfish_XmlModel");
+                    b.ToTable("Catfish_XmlModels");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("XmlModel");
                 });
@@ -71,7 +71,7 @@ namespace Catfish.Core.Migrations
                 {
                     b.HasBaseType("Catfish.Core.Models.XmlModel");
 
-                    b.ToTable("Catfish_XmlModel");
+                    b.ToTable("Catfish_XmlModels");
 
                     b.HasDiscriminator().HasValue("Aggregation2");
                 });
@@ -80,7 +80,7 @@ namespace Catfish.Core.Migrations
                 {
                     b.HasBaseType("Catfish.Core.Models.Aggregation2");
 
-                    b.ToTable("Catfish_XmlModel");
+                    b.ToTable("Catfish_XmlModels");
 
                     b.HasDiscriminator().HasValue("Collection2");
                 });
@@ -89,7 +89,7 @@ namespace Catfish.Core.Migrations
                 {
                     b.HasBaseType("Catfish.Core.Models.Aggregation2");
 
-                    b.ToTable("Catfish_XmlModel");
+                    b.ToTable("Catfish_XmlModels");
 
                     b.HasDiscriminator().HasValue("Item2");
                 });

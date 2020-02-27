@@ -7,7 +7,7 @@ namespace Catfish.Core.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Relationships",
+                name: "Catfish_Relationships",
                 columns: table => new
                 {
                     SubjectId = table.Column<int>(nullable: false),
@@ -16,29 +16,29 @@ namespace Catfish.Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Relationships", x => new { x.SubjectId, x.ObjctId });
+                    table.PrimaryKey("PK_Catfish_Relationships", x => new { x.SubjectId, x.ObjctId });
                     table.ForeignKey(
-                        name: "FK_Relationships_Catfish_XmlModel_ObjctId",
+                        name: "FK_Catfish_Relationships_Catfish_XmlModels_ObjctId",
                         column: x => x.ObjctId,
-                        principalTable: "Catfish_XmlModel",
+                        principalTable: "Catfish_XmlModels",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Relationships_Catfish_XmlModel_SubjectId",
+                        name: "FK_Catfish_Relationships_Catfish_XmlModels_SubjectId",
                         column: x => x.SubjectId,
-                        principalTable: "Catfish_XmlModel",
+                        principalTable: "Catfish_XmlModels",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Relationships_ObjctId",
-                table: "Relationships",
+                name: "IX_Catfish_Relationships_ObjctId",
+                table: "Catfish_Relationships",
                 column: "ObjctId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Relationships");
+                name: "Catfish_Relationships");
         }
     }
 }

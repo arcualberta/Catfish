@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models
 {
-    [Table("Catfish_XmlModel")]
+    [Table("Catfish_XmlModels")]
     public abstract partial class XmlModel
     {
         public abstract string GetTagName();
