@@ -14,7 +14,6 @@ using System.Text.RegularExpressions;
 
 namespace Catfish.Core.Models
 {
-    [Table("Catfish_Entities")]
     [Serializable]
     public abstract class Entity : XmlModel
     {

@@ -10,8 +10,8 @@ namespace Catfish.Core.Models
     {
         public string Predicate { get; set; }
         public int SubjectId { get; set; }
-        public Aggregation2 Subject { get; set; }
+        public Entity2 Subject { get; set; }
         public int ObjctId { get; set; }
-        public Aggregation2 Objct { get; set; }
+        public Entity2 Objct { get; set; }
     }
 }

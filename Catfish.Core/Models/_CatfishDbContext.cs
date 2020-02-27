@@ -62,32 +62,6 @@ namespace Catfish.Core.Models
 
             #endregion Defining many-to-many named relationship of Aggregation with other Aggregations
 
-
-            //           builder.Entity<AggregationHasMembers>()
-            //               .HasKey(c => new { c.ParentId, c.ChildId });
-
-            //builder.Entity<Aggregation>()
-            //    .HasMany<Item>(p => p.ManagedRelatedMembers)
-            //    .WithMany(c => c.ParentRelations)
-            //    .Map(t =>
-            //    {
-            //        t.MapLeftKey("ParentId");
-            //        t.MapRightKey("ChildId");
-            //        t.ToTable("AggregationHasRelatedObjects");
-            //    });
-
-            //builder.Entity<EntityType>()
-            //    .HasMany<MetadataSet>(et => et.MetadataSets)
-            //    .WithMany(ms => ms.EntityTypes)
-            //    .Map(t =>
-            //    {
-            //        t.MapLeftKey("EntityTypesId");
-            //        t.MapRightKey("MetadataSetId");
-            //        t.ToTable("EntityTypeHasMetadataSets");
-            //    });
-
-            //define composite primary key for EntityGroupUser -- Jan 24 2018
-            ////builder.Entity<CFUserListEntry>().HasKey(t => new { t.CFUserListId, t.UserId });
         }
 
         public DbSet<XmlModel> XmlModels { get; set; }
