@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Xml;
 using System.Reflection;
+using Catfish.Core.Models.ViewModels;
 
 namespace Catfish.Core.Helpers
 {

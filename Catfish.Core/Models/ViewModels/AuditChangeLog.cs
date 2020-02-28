@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Catfish.Core.Models
+namespace Catfish.Core.Models.ViewModels
 {
     [NotMapped]
     public class AuditChangeLog

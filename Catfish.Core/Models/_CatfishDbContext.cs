@@ -64,10 +64,11 @@ namespace Catfish.Core.Models
 
         }
 
-        public DbSet<XmlModel> XmlModels { get; set; }
-        public DbSet<Collection2> Collections { get; set; }
-        public DbSet<Item2> Items { get; set; }
+        public DbSet<Entity> Entities { get; set; }
+        public DbSet<Collection> Collections { get; set; }
+        public DbSet<Item> Items { get; set; }
         public DbSet<Relationship> Relationships { get; set; }
+        public DbSet<EntityType> EntityTypes { get; set; }
 
         /*
                 public DbSet<XmlModel> XmlModels { get; set; }

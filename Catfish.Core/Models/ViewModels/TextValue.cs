@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 
-namespace Catfish.Core.Models
+namespace Catfish.Core.Models.ViewModels
 {
     /*
     // KR:.NETCORE

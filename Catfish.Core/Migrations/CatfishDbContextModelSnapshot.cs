@@ -19,25 +19,7 @@ namespace Catfish.Core.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Catfish.Core.Models.Relationship", b =>
-                {
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ObjctId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Predicate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("SubjectId", "ObjctId");
-
-                    b.HasIndex("ObjctId");
-
-                    b.ToTable("Catfish_Relationships");
-                });
-
-            modelBuilder.Entity("Catfish.Core.Models.XmlModel", b =>
+            modelBuilder.Entity("Catfish.Core.Models.Entity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -62,47 +44,68 @@ namespace Catfish.Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Catfish_XmlModels");
+                    b.ToTable("Catfish_Entities");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("XmlModel");
-                });
-
-            modelBuilder.Entity("Catfish.Core.Models.Aggregation2", b =>
-                {
-                    b.HasBaseType("Catfish.Core.Models.XmlModel");
-
-                    b.ToTable("Catfish_XmlModels");
-
-                    b.HasDiscriminator().HasValue("Aggregation2");
-                });
-
-            modelBuilder.Entity("Catfish.Core.Models.Collection2", b =>
-                {
-                    b.HasBaseType("Catfish.Core.Models.Aggregation2");
-
-                    b.ToTable("Catfish_XmlModels");
-
-                    b.HasDiscriminator().HasValue("Collection2");
-                });
-
-            modelBuilder.Entity("Catfish.Core.Models.Item2", b =>
-                {
-                    b.HasBaseType("Catfish.Core.Models.Aggregation2");
-
-                    b.ToTable("Catfish_XmlModels");
-
-                    b.HasDiscriminator().HasValue("Item2");
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Entity");
                 });
 
             modelBuilder.Entity("Catfish.Core.Models.Relationship", b =>
                 {
-                    b.HasOne("Catfish.Core.Models.Aggregation2", "Objct")
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ObjctId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Predicate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SubjectId", "ObjctId");
+
+                    b.HasIndex("ObjctId");
+
+                    b.ToTable("Catfish_Relationships");
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.Collection", b =>
+                {
+                    b.HasBaseType("Catfish.Core.Models.Entity");
+
+                    b.ToTable("Catfish_Entities");
+
+                    b.HasDiscriminator().HasValue("Collection");
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.EntityType", b =>
+                {
+                    b.HasBaseType("Catfish.Core.Models.Entity");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("Catfish_Entities");
+
+                    b.HasDiscriminator().HasValue("EntityType");
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.Item", b =>
+                {
+                    b.HasBaseType("Catfish.Core.Models.Entity");
+
+                    b.ToTable("Catfish_Entities");
+
+                    b.HasDiscriminator().HasValue("Item");
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.Relationship", b =>
+                {
+                    b.HasOne("Catfish.Core.Models.Entity", "Objct")
                         .WithMany("ObjectRelationships")
                         .HasForeignKey("ObjctId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Catfish.Core.Models.Aggregation2", "Subject")
+                    b.HasOne("Catfish.Core.Models.Entity", "Subject")
                         .WithMany("SubjectRelationships")
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.NoAction)

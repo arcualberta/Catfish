@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

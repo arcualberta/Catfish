@@ -8,12 +8,10 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
-namespace Catfish.Core.Models
+namespace Catfish.Core.Models.ViewModels
 {
-    public abstract partial class XmlModel
+    public partial class XmlVM
     {
-        [NonSerialized]
-        private List<AuditChangeLog> mChangeLog;
         public void LogChange(object target, string description)
         {
             mChangeLog.Add(new AuditChangeLog(target.ToString(), description));
@@ -51,6 +49,10 @@ namespace Catfish.Core.Models
             return GetAuditRoot().Elements("entry").Select(e => new AuditEntry(e));
         }
 
+        protected IEnumerable<XElement> GetChildElements(string xpath, XElement ele)
+        {
+            return ((IEnumerable)ele.XPathEvaluate(xpath, GetNamespaceManager())).Cast<XElement>();
+        }
         public string GetCreator()
         {
             string xpath = "audit/entry[@action='" + AuditEntry.eAction.Create.ToString() + "']";
