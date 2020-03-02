@@ -175,8 +175,9 @@ namespace Catfish
 
             //Register Piranha Custom Components 
             RegisterCustomFields();
-            RegisterCustomScripts();
             RegisterCustomBlocks();
+            RegisterCustomScripts();
+           // RegisterCustomStyles();
 
         }
         private void RegisterCustomFields()
@@ -186,16 +187,18 @@ namespace Catfish
         private void RegisterCustomScripts()
         {
             App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
         }
         private void RegisterCustomBlocks()
         {
             //Register custom Block
+            App.Blocks.Register<EmbedBlock>();
             App.Blocks.Register<AuthorBlock>();
         }
         private void RegisterCustomStyles()
         {
-            //App.Modules.Get<Piranha.Manager.Module>()
-            //    .Styles.Add("~/assets/css/mystyles.css");
+            App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("~/assets/scss/style.scss");
 
         }
         private void RegisterPartialViews()
