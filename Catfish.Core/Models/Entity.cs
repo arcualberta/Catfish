@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Contents;
+﻿using Catfish.Core.Helpers;
+using Catfish.Core.Models.Contents;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -48,6 +49,11 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
+        public MultilingualElement Name { get; protected set; }
+        [NotMapped]
+        public MultilingualElement Description { get; protected set; }
+
+        [NotMapped]
         public XmlModelList<MetadataSet> MetadataSets { get; protected set; }
 
         public ICollection<Relationship> SubjectRelationships { get; set; }
@@ -66,6 +72,8 @@ namespace Catfish.Core.Models
             Id = Guid.NewGuid();
             Created = DateTime.Now;
             Data.SetAttributeValue("model-type", GetType().AssemblyQualifiedName);
+            Name = new MultilingualElement(XmlHelper.GetElement(Data, "name", true));
+            Description = new MultilingualElement(XmlHelper.GetElement(Data, "description", true));
         }
 
         public T InstantiateViewModel<T>() where T : XmlModel
