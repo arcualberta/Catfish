@@ -6,14 +6,14 @@ using System.Text;
 
 namespace Catfish.Core.Models
 {
-    public class CatfishDbContext : DbContext
+    public class AppDbContext : DbContext
     {
         /// <summary>
         /// The application config.
         /// </summary>
         public IConfiguration Configuration { get; set; }
 
-        public CatfishDbContext(DbContextOptions<CatfishDbContext> options, IConfiguration configuration)
+        public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
             : base(options)
         {
             Configuration = configuration;

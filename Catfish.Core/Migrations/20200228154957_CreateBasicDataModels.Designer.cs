@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Catfish.Core.Migrations
 {
-    [DbContext(typeof(CatfishDbContext))]
-    [Migration("20200228061125_CreateBasicDataModels")]
+    [DbContext(typeof(AppDbContext))]
+    [Migration("20200228154957_CreateBasicDataModels")]
     partial class CreateBasicDataModels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,10 +23,9 @@ namespace Catfish.Core.Migrations
 
             modelBuilder.Entity("Catfish.Core.Models.Entity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
                         .HasColumnType("xml");
@@ -37,9 +36,6 @@ namespace Catfish.Core.Migrations
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("Updated")
                         .HasColumnType("datetime2");
@@ -53,11 +49,11 @@ namespace Catfish.Core.Migrations
 
             modelBuilder.Entity("Catfish.Core.Models.Relationship", b =>
                 {
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("SubjectId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ObjctId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ObjctId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Predicate")
                         .HasColumnType("nvarchar(max)");

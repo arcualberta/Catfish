@@ -11,10 +11,8 @@ namespace Catfish.Core.Migrations
                 name: "Catfish_Entities",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(nullable: false),
                     Content = table.Column<string>(type: "xml", nullable: true),
-                    Guid = table.Column<Guid>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     Updated = table.Column<DateTime>(nullable: true),
                     Discriminator = table.Column<string>(nullable: false),
@@ -29,8 +27,8 @@ namespace Catfish.Core.Migrations
                 name: "Catfish_Relationships",
                 columns: table => new
                 {
-                    SubjectId = table.Column<int>(nullable: false),
-                    ObjctId = table.Column<int>(nullable: false),
+                    SubjectId = table.Column<Guid>(nullable: false),
+                    ObjctId = table.Column<Guid>(nullable: false),
                     Predicate = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

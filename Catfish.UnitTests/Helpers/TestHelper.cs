@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -30,18 +31,23 @@ namespace Catfish.Tests.Helpers
 
             //Registering application DB Context
             string dbConnectionString = configuration.GetConnectionString("catfish");
-            services.AddDbContext<CatfishDbContext>(options => options
+            services.AddDbContext<AppDbContext>(options => options
                 .UseSqlServer(dbConnectionString)
                 );
 
             //Registering other services
-            ////services.AddScoped<EntityService>();
+            services.AddScoped<SeedingService>();
             ////services.AddScoped<SolrService>();
 
 
             //Creating a service provider and assigning it to the member variable so that it can be used by 
             //test methods.
             Seviceprovider = services.BuildServiceProvider();
+        }
+
+        public AppDbContext Db
+        {
+            get => Seviceprovider.GetService<AppDbContext>();
         }
     }
 }

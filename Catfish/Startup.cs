@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Piranha.Manager;
 using System.Linq;
 using Catfish.Models.Fields;
+using Catfish.Core.Models;
 //using Catfish.Models.Blocks;
 
 namespace Catfish
@@ -71,7 +72,7 @@ namespace Catfish
             // Add CatfishDbContext to the service collection. This will inject the database
             // configuration options and the application "Configuration" option to CatfishDbContext
             // instance through dependency injection.
-            services.AddDbContext<Catfish.Core.Models.CatfishDbContext>();
+            services.AddDbContext<AppDbContext>();
 
            //Feb 12 - 2020 : It's recommended to use AddDbContextPool() over AddDbContext() on .net Core > 2.2
            // it's better from the performance stand point

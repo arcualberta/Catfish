@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Catfish.Core.Models.Contents;
+using Catfish.Core.Models.ViewModels;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using System.Xml.Linq;
@@ -9,7 +12,14 @@ namespace Catfish.Core.Models
     [Table("Catfish_Entities")]
     public class Entity
     {
-        public int Id { get; set; }
+        //public Guid Id { get; set; }
+        [Key]
+        public Guid Id
+        {
+            get => Guid.Parse(Data.Attribute("id").Value);
+            set => Data.SetAttributeValue("id", value);
+        }
+
 
         [Column(TypeName = "xml")]
         public string Content
@@ -20,13 +30,6 @@ namespace Catfish.Core.Models
 
         [NotMapped]
         public virtual XElement Data { get; set; }
-
-        ////[Column(TypeName = "uniqueidentifier")]
-        public Guid Guid
-        {
-            get => Guid.Parse(Data.Attribute("guid").Value);
-            set => Data.SetAttributeValue("guid", value);
-        }
 
         public DateTime Created
         {
@@ -45,6 +48,9 @@ namespace Catfish.Core.Models
             get => Data.Attribute("model-type").Value;
         }
 
+        [NotMapped]
+        public XmlModelList<MetadataSet> MetadataSets { get; protected set; }
+
         public ICollection<Relationship> SubjectRelationships { get; set; }
         public ICollection<Relationship> ObjectRelationships { get; set; }
 
@@ -58,9 +64,16 @@ namespace Catfish.Core.Models
         {
             if (Data == null)
                 Data = new XElement("entity");
-            Guid = Guid.NewGuid();
+            Id = Guid.NewGuid();
             Created = DateTime.Now;
             Data.SetAttributeValue("model-type", GetType().AssemblyQualifiedName);
+        }
+
+        public T InstantiateViewModel<T>() where T : XmlModel
+        {
+            var type = typeof(T); 
+            T vm = Activator.CreateInstance(type, Data) as T;
+            return vm;
         }
     }
 }

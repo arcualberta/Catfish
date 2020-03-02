@@ -9,9 +9,9 @@ namespace Catfish.Core.Models
     public class Relationship
     {
         public string Predicate { get; set; }
-        public int SubjectId { get; set; }
+        public Guid SubjectId { get; set; }
         public Entity Subject { get; set; }
-        public int ObjctId { get; set; }
+        public Guid ObjctId { get; set; }
         public Entity Objct { get; set; }
     }
 }
