@@ -7,21 +7,17 @@ namespace Catfish.Core.Models.Contents
 {
     public class Text : XmlModel
     {
+        public const string TagName = "text";
         public enum eFormat { plain, rich, css, javascript }
-        public override string GetTagName() => "text";
 
-        public override void Initialize()
-        {
-        }
-
-        /// <summary>
-        /// Override the default XElement creator method in XmlModel because
-        /// the it does not set the language attribute.
-        /// </summary>
-        /// <param name="tagName"></param>
-        public override void Initialize(string tagName)
-        {
-        }
+        /////// <summary>
+        /////// Override the default XElement creator method in XmlModel because
+        /////// the it does not set the language attribute.
+        /////// </summary>
+        /////// <param name="tagName"></param>
+        ////public override void Initialize(string tagName)
+        ////{
+        ////}
 
         public eFormat Format
         {
@@ -39,16 +35,15 @@ namespace Catfish.Core.Models.Contents
 
         public string Value => Data.Value;
 
-        public Text() { }
+        public Text() : base(TagName) { }
         public Text(XElement data) : base(data) { }
-        public Text(string value, string lang)
+        public Text(string value, string lang) : base(TagName)
         {
-            XName ns = XNamespace.Xml + "lang";
-            if (Data == null)
-            {
-                Data = new XElement(GetTagName(), new XAttribute(XNamespace.Xml + "lang", lang));
-                UpdateModelType();
-            }
+            XAttribute att = Data.Attribute(XNamespace.Xml + "lang");
+            if (att == null)
+                att = new XAttribute(XNamespace.Xml + "lang", lang);
+            else
+                att.Value = lang;
 
             Data.Value = value;
         }

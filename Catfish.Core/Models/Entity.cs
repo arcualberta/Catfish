@@ -1,5 +1,4 @@
 ﻿using Catfish.Core.Models.Contents;
-using Catfish.Core.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

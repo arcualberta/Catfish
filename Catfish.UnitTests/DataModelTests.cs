@@ -1,7 +1,6 @@
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.ViewModels;
-using Catfish.Core.Models.ViewModels;
 using Catfish.Core.Services;
 using Catfish.Tests.Helpers;
 using NUnit.Framework;

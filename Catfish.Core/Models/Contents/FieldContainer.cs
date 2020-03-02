@@ -8,16 +8,14 @@ namespace Catfish.Core.Models.Contents
 {
     public class FieldContainer : XmlModel
     {
-        public XmlModelList<AbstractField> Fields { get; set; }
-        public override string GetTagName() => "fields";
+        public const string FieldContainerTag = "fields";
+        public XmlModelList<BaseField> Fields { get; set; }
 
-        public FieldContainer() { }
-        public FieldContainer(XElement data) : base(data)
+        public FieldContainer(string tagName) : base(tagName) { Initialize(); }
+        public FieldContainer(XElement data) : base(data) { Initialize(); }
+        public void Initialize()
         {
-        }
-        public override void Initialize()
-        {
-            Fields = new XmlModelList<AbstractField>(Data, true, AbstractField.FieldTagName);
+            Fields = new XmlModelList<BaseField>(GetElement(FieldContainerTag, true), true, BaseField.FieldTagName);
         }
     }
 }

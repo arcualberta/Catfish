@@ -17,11 +17,9 @@ namespace Catfish.Core.Services
 
         public MetadataSet NewDublinCoreMetadataSet()
         {
-            MetadataSet ms = new MetadataSet()
-            {
-                Name = "Dublin Core",
-                Description = "Dublin Core Metadata Element Set, Version 1.1"
-            };
+            MetadataSet ms = new MetadataSet();
+            ms.Name.SetContent("Dublin Core");
+            ms.Description.SetContent("Dublin Core Metadata Element Set, Version 1.1");
 
             ms.Fields.Add(new TextField("Contributor", 
                 "An entity responsible for making contributions to the resource."));

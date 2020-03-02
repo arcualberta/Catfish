@@ -9,27 +9,16 @@ namespace Catfish.Core.Models.Contents
 {
     public class MetadataSet : FieldContainer
     {
-        public const string FieldContainerTag = "fields";
+        public MultilingualElement Name { get; protected set; }
+        public MultilingualElement Description { get; protected set; }
 
-        public override string GetTagName() => "metadata-set";
+        public MetadataSet() : base("metadata-set") { Initialize(); }
+        public MetadataSet(XElement data) : base(data) { Initialize(); }
 
-        public string Name
+        public new void Initialize()
         {
-            get => Data.Element("name").Value;
-            set => GetElement("name", true).Value = value;
+            Name = new MultilingualElement(GetElement("name", true));
+            Description = new MultilingualElement(GetElement("description", true));
         }
-
-        public string Description
-        {
-            get => Data.Element("description").Value;
-            set => GetElement("description", true).Value = value;
-        }
-
-        public MetadataSet() 
-        { 
-            Data = new XElement(GetTagName());
-            Fields = new XmlModelList<AbstractField>(GetElement(FieldContainerTag, true));
-        }
-        public MetadataSet(XElement data) : base(data) { }
     }
 }

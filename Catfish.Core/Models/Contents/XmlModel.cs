@@ -7,11 +7,8 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents
 {
-    public abstract class XmlModel
+    public class XmlModel
     {
-        public abstract string GetTagName();
-        public abstract void Initialize();
-
         public XElement Data { get; protected set; }
 
         public static XmlModel InstantiateContentModel(XElement data)
@@ -22,17 +19,14 @@ namespace Catfish.Core.Models.Contents
             return model;
         }
 
-        public XmlModel()
-        {
-            Initialize(GetTagName());
-        }
         public XmlModel(XElement data)
         {
             Data = data;
-            Initialize();
+            if (string.IsNullOrEmpty(ModelType))
+                UpdateModelType();
         }
 
-        public virtual void Initialize(string tagName)
+        public XmlModel(string tagName)
         {
             Data = new XElement(tagName);
             UpdateModelType();
@@ -40,7 +34,7 @@ namespace Catfish.Core.Models.Contents
 
         public string ModelType
         {
-            get => Data.Attribute("model-type").Value;
+            get => Data.Attribute("model-type") == null ? null : Data.Attribute("model-type").Value;
         }
 
         ////protected string Lang(string lang)

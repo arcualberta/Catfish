@@ -9,11 +9,11 @@ namespace Catfish.Core.Models.Contents.ViewModels
     {
         public const string MetadataSetContainerTag = "metadata-set-container";
         public List<MetadataSet> MetadataSets { get; protected set; }
-        public EntityVM() { }
+        public EntityVM(string tagName) : base(tagName) { }
 
         public EntityVM(XElement data) : base(data) { }
 
-        public override void Initialize()
+        public void Initialize()
         {
             InitMetadataSets();
         }
