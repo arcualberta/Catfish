@@ -9,10 +9,11 @@ namespace Catfish.Core.Models.Contents
 {
     public class MetadataSet : FieldContainer
     {
+        public const string TagName = "metadata-set";
         public MultilingualElement Name { get; protected set; }
         public MultilingualElement Description { get; protected set; }
 
-        public MetadataSet() : base("metadata-set") { Initialize(); }
+        public MetadataSet() : base(TagName) { Initialize(); }
         public MetadataSet(XElement data) : base(data) { Initialize(); }
 
         public new void Initialize()

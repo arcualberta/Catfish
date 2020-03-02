@@ -5,6 +5,7 @@ using Catfish.Core.Services;
 using Catfish.Tests.Helpers;
 using NUnit.Framework;
 using System;
+using System.Linq;
 
 namespace Catfish.UnitTests
 {
@@ -31,10 +32,10 @@ namespace Catfish.UnitTests
             EntityVM vm = item.InstantiateViewModel<EntityVM>();
 
             //Creating and adding new metadata sets to the item
-            MetadataSet ms = new MetadataSet();
+            SeedingService srv = _testHelper.Seviceprovider.GetService(typeof(SeedingService)) as SeedingService;
+            MetadataSet ms = srv.NewDublinCoreMetadataSet();
 
-            vm.AppendMetadataSet(ms);
-
+            vm.MetadataSets.Add(ms);
 
             _db.Items.Add(item);
             _db.SaveChanges();
@@ -42,6 +43,14 @@ namespace Catfish.UnitTests
             Assert.AreNotEqual(null, item.Id);
             Assert.AreEqual(true, item.Created > DateTime.MinValue);
             Assert.AreEqual(item.GetType().AssemblyQualifiedName, item.ModelType);
+
+            // Loading back the saved item and verifying
+            Item reloaded = _db.Entities.Where(e => e.Id == item.Id).FirstOrDefault() as Item;
+            Assert.AreNotEqual(null, reloaded);
+            EntityVM reloadedVM = reloaded.InstantiateViewModel<EntityVM>();
+
+            reloadedVM.Data.Save("item.xml");
+
 
             _db.Items.Remove(item);
             _db.SaveChanges();

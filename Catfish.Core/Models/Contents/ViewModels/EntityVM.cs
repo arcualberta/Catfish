@@ -5,36 +5,17 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.ViewModels
 {
-    public abstract class EntityVM : XmlModel
+    public class EntityVM : XmlModel
     {
         public const string MetadataSetContainerTag = "metadata-set-container";
-        public List<MetadataSet> MetadataSets { get; protected set; }
-        public EntityVM(string tagName) : base(tagName) { }
+        public XmlModelList<MetadataSet> MetadataSets { get; protected set; }
+        public EntityVM(string tagName) : base(tagName) { Initialize(); }
 
-        public EntityVM(XElement data) : base(data) { }
+        public EntityVM(XElement data) : base(data) { Initialize(); }
 
         public void Initialize()
         {
-            InitMetadataSets();
-        }
-
-        public void InitMetadataSets()
-        {
-            MetadataSets = new List<MetadataSet>();
-            XElement container = GetElement(MetadataSetContainerTag, true);
-
-            foreach(XElement ele in container.Elements())
-            {
-                MetadataSet ms = InstantiateContentModel(ele) as MetadataSet;
-                MetadataSets.Add(ms);
-            }
-        }
-
-        public void AppendMetadataSet(MetadataSet ms)
-        {
-            XElement container = GetElement(MetadataSetContainerTag, true);
-            MetadataSets.Add(ms);
-            container.Add(ms.Data);
+            MetadataSets = new XmlModelList<MetadataSet>(GetElement(MetadataSetContainerTag, true), true, MetadataSet.TagName);
         }
     }
 }
