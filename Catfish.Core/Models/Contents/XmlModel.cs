@@ -43,40 +43,33 @@ namespace Catfish.Core.Models.Contents
             get => Data.Attribute("model-type").Value;
         }
 
-        protected string Lang(string lang)
-        {
-            if (!string.IsNullOrEmpty(lang))
-                return lang;
+        ////protected string Lang(string lang)
+        ////{
+        ////    if (!string.IsNullOrEmpty(lang))
+        ////        return lang;
 
-            if (System.Threading.Thread.CurrentThread.CurrentCulture != null && !string.IsNullOrEmpty(System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName))
-                return System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+        ////    if (System.Threading.Thread.CurrentThread.CurrentCulture != null && !string.IsNullOrEmpty(System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName))
+        ////        return System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
 
-            return ConfigHelper.Languages[0].TwoLetterISOLanguageName;
-        }
+        ////    return ConfigHelper.Languages[0].TwoLetterISOLanguageName;
+        ////}
 
-        private XmlNamespaceManager mXmlNamespaceManager;
+        ////private XmlNamespaceManager mXmlNamespaceManager;
 
-        protected XmlNamespaceManager GetNamespaceManager()
-        {
-            if (mXmlNamespaceManager == null)
-            {
-                mXmlNamespaceManager = new XmlNamespaceManager(new NameTable());
-                mXmlNamespaceManager.AddNamespace("xml", XNamespace.Xml.NamespaceName);
-            }
+        ////protected XmlNamespaceManager GetNamespaceManager()
+        ////{
+        ////    if (mXmlNamespaceManager == null)
+        ////    {
+        ////        mXmlNamespaceManager = new XmlNamespaceManager(new NameTable());
+        ////        mXmlNamespaceManager.AddNamespace("xml", XNamespace.Xml.NamespaceName);
+        ////    }
 
-            return mXmlNamespaceManager;
-        }
+        ////    return mXmlNamespaceManager;
+        ////}
 
         public XElement GetElement(string tagName, bool createIfNotExist)
         {
-            XElement ele = Data.Element(tagName);
-            if (ele == null && createIfNotExist)
-            {
-                ele = new XElement(tagName);
-                Data.Add(ele);
-            }
-
-            return ele;
+            return XmlHelper.GetElement(Data, tagName, createIfNotExist);
         }
 
         public XmlModel Clone()

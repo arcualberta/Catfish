@@ -75,7 +75,7 @@ namespace Catfish.UnitTests
                 Name = "Defauly Item"
             };
 
-
+            ms.Data.Save("metadata.xml");
         }
 
 

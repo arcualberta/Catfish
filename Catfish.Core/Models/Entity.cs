@@ -75,5 +75,6 @@ namespace Catfish.Core.Models
             T vm = Activator.CreateInstance(type, Data) as T;
             return vm;
         }
+
     }
 }
