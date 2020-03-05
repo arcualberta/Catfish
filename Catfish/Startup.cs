@@ -55,18 +55,25 @@ namespace Catfish
                 options.UseManager();
                 options.UseTinyMCE();
                 options.UseMemoryCache();
-                options.UseEF(db =>
-                    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
-                options.UseIdentityWithSeed<IdentitySQLServerDb>(db =>
-                    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
+                //following sql server configuration (options.UseEF(db =>..) is not working if upgrade to piraha 8.1.2
+                //options.UseEF(db =>
+                //    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
+                //options.UseIdentityWithSeed<IdentitySQLServerDb>(db =>
+                //    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
                 options.AddRazorRuntimeCompilation = true; //MR: Feb 11, 2020  -- Enabled run time compiler for razor, so don't need to recompile when update the view
             });
+
+             /* sql server configuration based on ==> http://piranhacms.org/blog/announcing-80-for-net-core-31    */
+            services.AddPiranhaEF(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("catfish")));
+            services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("catfish")));
 
             services.AddControllersWithViews();
             services.AddRazorPages()
                 .AddPiranhaManagerOptions();
 
-            services.AddPiranhaApplication();
+            
 
             // Add CatfishDbContext to the service collection. This will inject the database
             // configuration options and the application "Configuration" option to CatfishDbContext
@@ -85,8 +92,6 @@ namespace Catfish
             services.AddPiranhaApplication();
             services.AddMemoryCache();
             services.AddPiranhaMemoryCache();
-
-            
 
         }
 
@@ -144,6 +149,7 @@ namespace Catfish
             app.UseStaticFiles();
           
             app.UseRouting();
+            app.UsePiranha();   
             app.UseAuthentication();
             app.UseAuthorization();
             app.UsePiranhaIdentity();
@@ -151,16 +157,9 @@ namespace Catfish
             app.UsePiranhaTinyMCE();
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapControllerRoute(
-                //    name: "areaRoute",
-                //    pattern: "{{area:exists}/{manager:exists}/{controller}/{action=Index}/{id?}"
-                //    );
+               
                 endpoints.MapDefaultControllerRoute();
-                //endpoints.MapAreaControllerRoute(
-                //    name : "areaRoute",
-                //    areaName: "Areas",
-                //    pattern: "{area:exists}/{Manager:exists}/{controller=Home}/{Action=Index}/{id?}"
-                //    );
+               
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -197,8 +196,8 @@ namespace Catfish
         }
         private void RegisterCustomStyles()
         {
-            App.Modules.Get<Piranha.Manager.Module>()
-                .Styles.Add("~/assets/scss/style.scss");
+            //App.Modules.Get<Piranha.Manager.Module>()
+             //   .Styles.Add("~/assets/scss/style.scss");
 
         }
         private void RegisterPartialViews()
