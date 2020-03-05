@@ -46,6 +46,14 @@ namespace Catfish
             //-- add MVC service
             services.AddMvc();//.AddXmlSerializerFormatters(); // to user MVC model
 
+            /*
+                * 
+                * services.AddPiranhaEF(options =>
+       options.UseSqlite(Configuration.GetConnectionString("piranha")));
+   services.AddPiranhaIdentityWithSeed<IdentitySQLiteDb>(options =>
+       options.UseSqlite(Configuration.GetConnectionString("piranha")));
+                */
+
             // Service setup for Piranha CMS
             services.AddPiranha(options =>
             {
