@@ -157,7 +157,8 @@ namespace Catfish
             app.UseStaticFiles();
           
             app.UseRouting();
-            app.UsePiranha();   
+           // app.UsePiranha();
+            app.UseIntegratedPiranha();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UsePiranhaIdentity();
@@ -184,7 +185,7 @@ namespace Catfish
             RegisterCustomFields();
             RegisterCustomBlocks();
             RegisterCustomScripts();
-           // RegisterCustomStyles();
+            RegisterCustomStyles();
 
         }
         private void RegisterCustomFields()
@@ -204,8 +205,8 @@ namespace Catfish
         }
         private void RegisterCustomStyles()
         {
-            //App.Modules.Get<Piranha.Manager.Module>()
-             //   .Styles.Add("~/assets/scss/style.scss");
+            App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("~/assets/css/MyStyle.css");
 
         }
         private void RegisterPartialViews()
