@@ -193,7 +193,7 @@ namespace Catfish
         {
             //Register custom Block
             App.Blocks.Register<EmbedBlock>();
-            App.Blocks.Register<AuthorBlock>();
+           
         }
         private void RegisterCustomStyles()
         {
