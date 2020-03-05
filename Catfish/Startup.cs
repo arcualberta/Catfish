@@ -46,6 +46,14 @@ namespace Catfish
             //-- add MVC service
             services.AddMvc();//.AddXmlSerializerFormatters(); // to user MVC model
 
+            /*
+                * 
+                * services.AddPiranhaEF(options =>
+       options.UseSqlite(Configuration.GetConnectionString("piranha")));
+   services.AddPiranhaIdentityWithSeed<IdentitySQLiteDb>(options =>
+       options.UseSqlite(Configuration.GetConnectionString("piranha")));
+                */
+
             // Service setup for Piranha CMS
             services.AddPiranha(options =>
             {
@@ -55,12 +63,19 @@ namespace Catfish
                 options.UseManager();
                 options.UseTinyMCE();
                 options.UseMemoryCache();
-                options.UseEF(db =>
-                    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
-                options.UseIdentityWithSeed<IdentitySQLServerDb>(db =>
-                    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
+                //following sql server configuration (options.UseEF(db =>..) is not working if upgrade to piraha 8.1.2
+                //options.UseEF(db =>
+                //    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
+                //options.UseIdentityWithSeed<IdentitySQLServerDb>(db =>
+                //    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
                 options.AddRazorRuntimeCompilation = true; //MR: Feb 11, 2020  -- Enabled run time compiler for razor, so don't need to recompile when update the view
             });
+
+             /* sql server configuration based on ==> http://piranhacms.org/blog/announcing-80-for-net-core-31    */
+            services.AddPiranhaEF(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("catfish")));
+            services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("catfish")));
 
             services.AddControllersWithViews();
             services.AddRazorPages()
@@ -197,8 +212,8 @@ namespace Catfish
         }
         private void RegisterCustomStyles()
         {
-            App.Modules.Get<Piranha.Manager.Module>()
-                .Styles.Add("~/assets/scss/style.scss");
+            //App.Modules.Get<Piranha.Manager.Module>()
+             //   .Styles.Add("~/assets/scss/style.scss");
 
         }
         private void RegisterPartialViews()
