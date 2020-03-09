@@ -133,6 +133,18 @@ namespace Catfish
             // Configure Tiny MCE
             EditorConfig.FromFile("editorconfig.json");
 
+            // March 9 2020 -- add Custom middleware that check for status 401 -- that's the error code return when security is applied to a page : 
+            //ie: required login to view the page content
+            app.Use(async(ctx, next) => {
+                await next();
+
+                if(ctx.Response.StatusCode == 401)
+                {
+                    ctx.Response.Redirect("/login");
+                }
+            });
+
+
             // Middleware setup
             app.UsePiranha(options => {
                 options.UseManager();
@@ -164,8 +176,8 @@ namespace Catfish
             app.UseStaticFiles();
           
             app.UseRouting();
-           // app.UsePiranha();
-            app.UseIntegratedPiranha();
+          
+           // app.UseIntegratedPiranha();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UsePiranhaIdentity();
@@ -240,10 +252,19 @@ namespace Catfish
 
         private void AddManagerMenus()
         {
+            if(Piranha.Manager.Menu.Items.Where(m=>m.Name == "Entities").FirstOrDefault() == null)
+            {
+                Piranha.Manager.Menu.Items.Insert(0, new MenuItem {
+                    InternalId = "Entities",
+                    Name = "Entities",
+                    Css="fas fa-object-group"
+
+                });
+            }
             ///
             /// Content Menus
             ///
-            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Content").FirstOrDefault();
+            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Entities").FirstOrDefault(); //Content
             var idx = 0;
 
             menubar.Items.Insert(idx++, new MenuItem
