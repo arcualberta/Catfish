@@ -9,13 +9,11 @@ using Piranha.AspNetCore.Identity.SQLServer;
 using Piranha.AttributeBuilder;
 using Piranha.Manager.Editor;
 
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Piranha.Manager;
 using System.Linq;
 using Catfish.Models.Fields;
 using Catfish.Models.Blocks;
+using Piranha.Data.EF.SQLServer;
 
 namespace Catfish
 {
@@ -46,14 +44,9 @@ namespace Catfish
             //-- add MVC service
             services.AddMvc();//.AddXmlSerializerFormatters(); // to user MVC model
 
-            /*
-                * 
-                * services.AddPiranhaEF(options =>
-       options.UseSqlite(Configuration.GetConnectionString("piranha")));
-   services.AddPiranhaIdentityWithSeed<IdentitySQLiteDb>(options =>
-       options.UseSqlite(Configuration.GetConnectionString("piranha")));
-                */
-
+            services.AddLocalization(options =>
+               options.ResourcesPath = "Resources"
+             );
             // Service setup for Piranha CMS
             services.AddPiranha(options =>
             {
@@ -72,7 +65,7 @@ namespace Catfish
             });
 
              /* sql server configuration based on ==> http://piranhacms.org/blog/announcing-80-for-net-core-31    */
-            services.AddPiranhaEF(options =>
+            services.AddPiranhaEF<SQLServerDb>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("catfish")));
             services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("catfish")));
@@ -98,8 +91,22 @@ namespace Catfish
                 .AddPiranhaManagerOptions();
 
             services.AddPiranhaApplication();
+            services.AddPiranhaFileStorage();
+            services.AddPiranhaImageSharp();
+            services.AddPiranhaManager();
+            services.AddPiranhaTinyMCE();
+            services.AddPiranhaApi();
             services.AddMemoryCache();
             services.AddPiranhaMemoryCache();
+
+            // March 6 2020 -- Add Custom Permissions
+            services.AddAuthorization(o => 
+            { //read secure posts
+                o.AddPolicy("ReadSecurePosts", policy => {
+                    policy.RequireClaim("ReadSecurePosts", "ReadSecurePosts");
+                });
+                
+            });
 
         }
 
@@ -167,7 +174,7 @@ namespace Catfish
             app.UseEndpoints(endpoints =>
             {
                
-                endpoints.MapDefaultControllerRoute();
+               // endpoints.MapDefaultControllerRoute();
                
                 endpoints.MapControllerRoute(
                     name: "default",
@@ -176,8 +183,6 @@ namespace Catfish
                 endpoints.MapPiranhaManager();
             });
 
-
-          
             //add to manager menu item
             AddManagerMenus();
 
@@ -187,7 +192,12 @@ namespace Catfish
             RegisterCustomScripts();
             RegisterCustomStyles();
 
+            // March 6 2020 -- Add Custom Permissions
+            AddCustomPermissions();
+
         }
+
+        #region REGISTER CUSTOM COMPONENT
         private void RegisterCustomFields()
         {
             Piranha.App.Fields.Register<TextAreaField>();
@@ -217,6 +227,17 @@ namespace Catfish
             //.Partials.Add("Partial/_MyModal");
 
         }
+        #endregion
+
+        private void AddCustomPermissions()
+        {
+            App.Permissions["App"].Add(new Piranha.Security.PermissionItem
+            {
+                Title="Read Secure Posts",
+                Name="ReadSecurePosts"
+            });
+        }
+
         private void AddManagerMenus()
         {
             ///
