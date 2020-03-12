@@ -1,0 +1,50 @@
+@*<nav class="navbar navbar-expand-md">
+    <div class="navbar-brand">
+        <a href="https://twitter.com/piranhacms" target="blank"><img src="~/assets/img/twitter.png"></a>
+        <a href="https://github.com/piranhacms/piranha.core" target="blank"><img src="~/assets/img/github.png"></a>
+    </div>
+    <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#mobileNavbar" aria-controls="mobileNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon">&#9776;</span>
+    </button>
+    <div class="navbar-collapse collapse" id="mobileNavbar">
+        <ul class="justify-content-center navbar-nav mr-auto">
+
+            @foreach (var item in WebApp.Site.Sitemap)
+            {
+                if (!item.IsHidden)
+                {
+                    <li class="nav-item @(item.Id == WebApp.PageId || item.HasChild(WebApp.PageId) ? "active" : "")">
+                        <a class="nav-link" href="@item.Permalink">@item.MenuTitle</a>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+</nav>*@
+
+
+<nav class="navbar navbar-toggleable-sm navbar-dark bg-faded d-sm-block d-md-none">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="#"></a>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            @foreach (var item in WebApp.Site.Sitemap)
+            {
+                <a class="nav-item nav-link @(item.Id == WebApp.PageId ? "active" : "")" href="@item.Permalink"><span>@item.MenuTitle</span></a>
+            }
+        </div>
+    </div>
+</nav>
+@*Not the best solution but meanwhile... class =  d-none d-md-block is hiding on sm screen solution*@
+<nav class="navbar d-none d-md-block">
+    <ul class="nav nav-site justify-content-center">
+        @foreach (var item in WebApp.Site.Sitemap)
+        {
+            <li class="nav-item @(item.Id == WebApp.PageId ? "active" : "")">
+                <a class="nav-link" href="@item.Permalink"><span>@item.MenuTitle</span></a>
+            </li>
+        }
+    </ul>
+</nav>

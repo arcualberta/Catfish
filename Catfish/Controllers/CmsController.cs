@@ -55,9 +55,17 @@ namespace Catfish.Controllers
         [Route("page")]
         public async Task<IActionResult> Page(Guid id, bool draft = false)
         {
-           // var model = await _loader.GetPage<StandardPage>(id, HttpContext.User, draft);
-            var model = await _loader.GetPageAsync<Models.StandardPage>(id, HttpContext.User, draft);
-            return View(model);
+            
+            //try
+            //{
+                var model = await _loader.GetPageAsync<Models.StandardPage>(id, HttpContext.User, draft);
+                return View(model);
+            //}
+            //catch (UnauthorizedAccessException ex)
+            //{
+            //    return StatusCode(401);//401 --UnAuthorized
+            //}
+            
         }
 
         /// <summary>
@@ -95,9 +103,29 @@ namespace Catfish.Controllers
         [Route("main")]
         public async Task<IActionResult> Main(Guid id, bool draft = false)
         {
-            var model = await _loader.GetPageAsync<MainPage>(id, HttpContext.User, draft);
+            try
+            {
+                var model = await _loader.GetPageAsync<MainPage>(id, HttpContext.User, draft);
 
-            return View(model);
+                return View(model);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(401);//401 --UnAuthorized
+            }
+
         }
-    }
+            /// <summary>
+            /// Gets the startpage with the given id.
+            /// </summary>
+            /// <param name="id">The unique page id</param>
+            /// <param name="draft">If a draft is requested</param>
+            //[Route("login")]
+            //public async Task<IActionResult> Login(Guid id, bool draft = false)
+            //{
+            //   // var model = await _loader.GetPageAsync<LoginPage>(id, HttpContext.User, draft);
+
+            //    return View(model);
+            //}
+        }
 }
