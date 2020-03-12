@@ -9,14 +9,11 @@ using Piranha.AspNetCore.Identity.SQLServer;
 using Piranha.AttributeBuilder;
 using Piranha.Manager.Editor;
 
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Piranha.Manager;
 using System.Linq;
 using Catfish.Models.Fields;
-using Catfish.Core.Models;
-//using Catfish.Models.Blocks;
+using Catfish.Models.Blocks;
+using Piranha.Data.EF.SQLServer;
 
 namespace Catfish
 {
@@ -47,6 +44,9 @@ namespace Catfish
             //-- add MVC service
             services.AddMvc();//.AddXmlSerializerFormatters(); // to user MVC model
 
+            services.AddLocalization(options =>
+               options.ResourcesPath = "Resources"
+             );
             // Service setup for Piranha CMS
             services.AddPiranha(options =>
             {
@@ -56,23 +56,30 @@ namespace Catfish
                 options.UseManager();
                 options.UseTinyMCE();
                 options.UseMemoryCache();
-                options.UseEF(db =>
-                    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
-                options.UseIdentityWithSeed<IdentitySQLServerDb>(db =>
-                    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
+                //following sql server configuration (options.UseEF(db =>..) is not working if upgrade to piraha 8.1.2
+                //options.UseEF(db =>
+                //    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
+                //options.UseIdentityWithSeed<IdentitySQLServerDb>(db =>
+                //    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
                 options.AddRazorRuntimeCompilation = true; //MR: Feb 11, 2020  -- Enabled run time compiler for razor, so don't need to recompile when update the view
             });
+
+             /* sql server configuration based on ==> http://piranhacms.org/blog/announcing-80-for-net-core-31    */
+            services.AddPiranhaEF<SQLServerDb>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("catfish")));
+            services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("catfish")));
 
             services.AddControllersWithViews();
             services.AddRazorPages()
                 .AddPiranhaManagerOptions();
 
-            services.AddPiranhaApplication();
+            
 
             // Add CatfishDbContext to the service collection. This will inject the database
             // configuration options and the application "Configuration" option to CatfishDbContext
             // instance through dependency injection.
-            services.AddDbContext<AppDbContext>();
+            services.AddDbContext<Catfish.Core.Models.AppDbContext>();
 
            //Feb 12 - 2020 : It's recommended to use AddDbContextPool() over AddDbContext() on .net Core > 2.2
            // it's better from the performance stand point
@@ -84,10 +91,22 @@ namespace Catfish
                 .AddPiranhaManagerOptions();
 
             services.AddPiranhaApplication();
+            services.AddPiranhaFileStorage();
+            services.AddPiranhaImageSharp();
+            services.AddPiranhaManager();
+            services.AddPiranhaTinyMCE();
+            services.AddPiranhaApi();
             services.AddMemoryCache();
             services.AddPiranhaMemoryCache();
 
-            
+            // March 6 2020 -- Add Custom Permissions
+            services.AddAuthorization(o => 
+            { //read secure posts
+                o.AddPolicy("ReadSecurePosts", policy => {
+                    policy.RequireClaim("ReadSecurePosts", "ReadSecurePosts");
+                });
+                
+            });
 
         }
 
@@ -113,6 +132,18 @@ namespace Catfish
 
             // Configure Tiny MCE
             EditorConfig.FromFile("editorconfig.json");
+
+            // March 9 2020 -- add Custom middleware that check for status 401 -- that's the error code return when security is applied to a page : 
+            //ie: required login to view the page content
+            app.Use(async(ctx, next) => {
+                await next();
+
+                if(ctx.Response.StatusCode == 401)
+                {
+                    ctx.Response.Redirect("/login");
+                }
+            });
+
 
             // Middleware setup
             app.UsePiranha(options => {
@@ -145,6 +176,8 @@ namespace Catfish
             app.UseStaticFiles();
           
             app.UseRouting();
+          
+           // app.UseIntegratedPiranha();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UsePiranhaIdentity();
@@ -152,16 +185,9 @@ namespace Catfish
             app.UsePiranhaTinyMCE();
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapControllerRoute(
-                //    name: "areaRoute",
-                //    pattern: "{{area:exists}/{manager:exists}/{controller}/{action=Index}/{id?}"
-                //    );
-                endpoints.MapDefaultControllerRoute();
-                //endpoints.MapAreaControllerRoute(
-                //    name : "areaRoute",
-                //    areaName: "Areas",
-                //    pattern: "{area:exists}/{Manager:exists}/{controller=Home}/{Action=Index}/{id?}"
-                //    );
+               
+               // endpoints.MapDefaultControllerRoute();
+               
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -169,17 +195,21 @@ namespace Catfish
                 endpoints.MapPiranhaManager();
             });
 
-
-          
             //add to manager menu item
             AddManagerMenus();
 
             //Register Piranha Custom Components 
             RegisterCustomFields();
-            RegisterCustomScripts();
             RegisterCustomBlocks();
+            RegisterCustomScripts();
+            RegisterCustomStyles();
+
+            // March 6 2020 -- Add Custom Permissions
+            AddCustomPermissions();
 
         }
+
+        #region REGISTER CUSTOM COMPONENT
         private void RegisterCustomFields()
         {
             Piranha.App.Fields.Register<TextAreaField>();
@@ -187,16 +217,18 @@ namespace Catfish
         private void RegisterCustomScripts()
         {
             App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
         }
         private void RegisterCustomBlocks()
         {
             //Register custom Block
-            //App.Blocks.Register<AuthorBlock>();
+            App.Blocks.Register<EmbedBlock>();
+           
         }
         private void RegisterCustomStyles()
         {
-            //App.Modules.Get<Piranha.Manager.Module>()
-            //    .Styles.Add("~/assets/css/mystyles.css");
+            App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("~/assets/css/MyStyle.css");
 
         }
         private void RegisterPartialViews()
@@ -207,12 +239,32 @@ namespace Catfish
             //.Partials.Add("Partial/_MyModal");
 
         }
+        #endregion
+
+        private void AddCustomPermissions()
+        {
+            App.Permissions["App"].Add(new Piranha.Security.PermissionItem
+            {
+                Title="Read Secure Posts",
+                Name="ReadSecurePosts"
+            });
+        }
+
         private void AddManagerMenus()
         {
+            if(Piranha.Manager.Menu.Items.Where(m=>m.Name == "Entities").FirstOrDefault() == null)
+            {
+                Piranha.Manager.Menu.Items.Insert(0, new MenuItem {
+                    InternalId = "Entities",
+                    Name = "Entities",
+                    Css="fas fa-object-group"
+
+                });
+            }
             ///
             /// Content Menus
             ///
-            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Content").FirstOrDefault();
+            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Entities").FirstOrDefault(); //Content
             var idx = 0;
 
             menubar.Items.Insert(idx++, new MenuItem
