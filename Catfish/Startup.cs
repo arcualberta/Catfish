@@ -14,6 +14,7 @@ using System.Linq;
 using Catfish.Models.Fields;
 using Catfish.Models.Blocks;
 using Piranha.Data.EF.SQLServer;
+using Catfish.Helper;
 
 namespace Catfish
 {
@@ -28,13 +29,18 @@ namespace Catfish
         /// Default constructor.
         /// </summary>
         /// <param name="configuration">The current configuration</param>
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostEnvironment env)
         {
             Configuration = configuration;
 
             // Initialize the IConfiguration of the ConfigHelper so that it can be used by 
             // elsewhere in the Catfish.Core project.
             Catfish.Core.Helpers.ConfigHelper.Configuration = configuration;
+
+            //March 12 -2020
+            var builder = new ConfigurationBuilder().SetBasePath(env.ContentRootPath)
+                                                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            Configuration = builder.Build();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -107,6 +113,9 @@ namespace Catfish
                 });
                 
             });
+
+            //March 12 2020 -- register local services
+            services.AddSingleton<ICatfishAppConfiguration, ReadAppConfiguration>();
 
         }
 

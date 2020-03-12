@@ -1,0 +1,80 @@
+﻿@page
+@model Catfish.Pages.LoginPageModel
+@inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig;
+@{
+
+    ViewBag.Title = "Login";
+    bool allowGoogleLogin =  _catfishAppConfig.IsAllowGoogleLogin();
+}
+
+
+    <div class="container">
+        <article>
+            <h1>@ViewBag.Title</h1>
+            <div class="row">
+                <div class="col-sm-4">
+                    <form method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <label>User name</label>
+                            @*<input type="text" name="Username" class="form-control" />*@
+                            @Html.TextBoxFor(m => m.Username, null, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            @*<input type="password" name="Password" class="form-control" />*@
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        </div>
+                        <button class="btn btn-success">Login</button>
+                    </form>
+
+                </div>
+            </div>
+        </article>
+        @if (allowGoogleLogin)
+        {
+            <div class="grid_4 box login">
+                <div id="socialLoginDiv">
+                    <h2>Login With: </h2>
+                    <hr />
+                    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                    @*<a href="#" onclick="signOut();">Sign out</a>*@
+
+                </div>
+            </div>
+        }
+    </div>
+
+
+<script>
+  
+
+ function onSignIn(googleUser) {
+       var profile = googleUser.getBasicProfile();
+
+      // var id_token = googleUser.getAuthResponse().id_token;
+
+      var auth2 = gapi.auth2.getAuthInstance();
+      if(auth2.isSignedIn)
+      {
+         var user = new Object();
+         user.Login = profile.getEmail();
+         user.Password= profile.getId();
+         user.Email =  profile.getEmail();
+         user.Firstname =  profile.getGivenName();
+         user.Surname =  profile.getFamilyName();
+         var url = "../../CatfishAccount/ExternalLogin";
+         $.ajax({
+               type: 'POST',
+               url: url,
+
+               data:{userModel: user},
+               success: function(data){
+                  window.location.href = window.location.origin;
+               },
+               error: function(){ alert("Encounter problems while login")}
+        });
+      }
+}
+
+</script>

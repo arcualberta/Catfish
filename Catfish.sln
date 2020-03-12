@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish", "Catfish\Catfish.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.Core", "Catfish.Core\Catfish.Core.csproj", "{E019A61A-5286-440A-B9F1-443A4065053C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catfish.Tests", "Catfish.Tests\Catfish.Tests.csproj", "{2C0F5BFA-63F5-43AC-BE30-FDFAAC6CCB8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.Tests", "Catfish.Tests\Catfish.Tests.csproj", "{2C0F5BFA-63F5-43AC-BE30-FDFAAC6CCB8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

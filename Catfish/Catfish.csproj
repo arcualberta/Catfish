@@ -18,6 +18,7 @@
     <PackageReference Include="Piranha" Version="8.1.0" />
     <PackageReference Include="Piranha.AspNetCore" Version="8.1.0" />
     <PackageReference Include="piranha.aspnetcore.identity.sqlserver" Version="8.1.0" />
+    <PackageReference Include="Piranha.AspNetCore.SimpleSecurity" Version="8.1.0" />
     <PackageReference Include="Piranha.AttributeBuilder" Version="8.1.0" />
     <PackageReference Include="Piranha.Data.EF.SQLServer" Version="8.1.2" />
     <PackageReference Include="Piranha.ImageSharp" Version="8.0.0-rc1" />
