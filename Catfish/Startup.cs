@@ -269,8 +269,8 @@ namespace Catfish
 
             menubar.Items.Insert(idx++, new MenuItem
             {
-                InternalId = "MyItem",
-                Name = "My  Item",
+                InternalId = "Items",
+                Name = "Items",
                // Params="{Controller=home}/{Action=index}/{id?}",
                 Route = "/manager/items/",
                 Css = "fas fa-brain",
