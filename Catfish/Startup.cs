@@ -74,6 +74,7 @@ namespace Catfish
             services.AddRazorPages()
                 .AddPiranhaManagerOptions();
 
+
             
 
             // Add CatfishDbContext to the service collection. This will inject the database
@@ -85,8 +86,10 @@ namespace Catfish
            // it's better from the performance stand point
           //  services.AddDbContextPool<Catfish.Core.Models.CatfishDbContext>(options =>
           //                   options.UseSqlServer(Configuration.GetConnectionString("catfish")));
+
             //MR: Feb 7 2020 -- from piranha core MVCWeb example
             services.AddControllersWithViews();
+
             services.AddRazorPages()
                 .AddPiranhaManagerOptions();
 
@@ -149,9 +152,8 @@ namespace Catfish
             app.UsePiranha(options => {
                 options.UseManager();
                 options.UseTinyMCE();
-                options.UseIdentity();
-                
-                
+                options.UseIdentity();                
+              
             });
 
             //MR Feb 7 2020 -- add classic MVC routing
@@ -195,6 +197,8 @@ namespace Catfish
                 endpoints.MapPiranhaManager();
             });
 
+            AddPartialViews();
+
             //add to manager menu item
             AddManagerMenus();
 
@@ -231,14 +235,6 @@ namespace Catfish
                 .Styles.Add("~/assets/css/MyStyle.css");
 
         }
-        private void RegisterPartialViews()
-        {
-            //Adding Partial View to Layout of the manager interface
-            //All custom partials are rendered at the end of the body tag after the built-in modals have been added.
-            //    App.Modules.Get<Piranha.Manager.Module>()
-            //.Partials.Add("Partial/_MyModal");
-
-        }
         #endregion
 
         private void AddCustomPermissions()
@@ -250,22 +246,40 @@ namespace Catfish
             });
         }
 
+        private void AddPartialViews()
+        {
+            //App.Modules.Manager().Partials.Add("Partial/_EntityTypeListAddEntityType");
+        }
+
         private void AddManagerMenus()
         {
-            if(Piranha.Manager.Menu.Items.Where(m=>m.Name == "Entities").FirstOrDefault() == null)
+            if (Piranha.Manager.Menu.Items.Where(m => m.Name == "Entities").FirstOrDefault() == null)
             {
-                Piranha.Manager.Menu.Items.Insert(0, new MenuItem {
+                Piranha.Manager.Menu.Items.Insert(0, new MenuItem
+                {
                     InternalId = "Entities",
                     Name = "Entities",
-                    Css="fas fa-object-group"
+                    Css = "fas fa-object-group"
 
                 });
             }
+
             ///
             /// Content Menus
             ///
-            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Entities").FirstOrDefault(); //Content
+            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Entities").FirstOrDefault();
             var idx = 0;
+
+            menubar.Items.Insert(idx++, new MenuItem
+            {
+                InternalId = "EntityTypes",
+                Name = "EntityTypes",
+                // Params="{Controller=home}/{Action=index}/{id?}",
+                Route = "/manager/entitytypes/",
+                Css = "fas fa-brain",
+                //Policy = "MyCustomPolicy",
+                // Action = ""
+            });
 
             menubar.Items.Insert(idx++, new MenuItem
             {
@@ -276,10 +290,18 @@ namespace Catfish
                 Css = "fas fa-brain",
                 //Policy = "MyCustomPolicy",
                 // Action = ""
-
             });
 
-            
+            menubar.Items.Insert(idx++, new MenuItem
+            {
+                InternalId = "Collections",
+                Name = "Collections",
+                // Params="{Controller=home}/{Action=index}/{id?}",
+                Route = "/manager/collections/",
+                Css = "fas fa-brain",
+                //Policy = "MyCustomPolicy",
+                // Action = ""
+            });
         }
     }
 }

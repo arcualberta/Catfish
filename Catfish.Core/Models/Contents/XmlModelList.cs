@@ -12,7 +12,10 @@ namespace Catfish.Core.Models.Contents
     {
         private XElement mData;
         private List<T> mList = new List<T>();
-        public XmlModelList() { }
+        //public XmlModelList(string tagName)
+        //{ 
+        //    mData = new XElement(tagName);
+        //}
 
         /// <summary>
         /// Instantiate a new XmlModelList object which encapsulates a given XElement

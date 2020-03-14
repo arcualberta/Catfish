@@ -1,0 +1,93 @@
+﻿
+@{
+    ViewData["Title"] = "Items";
+}
+
+    <div id="items">
+        <div class="top">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">Content</li>
+                    <li class="breadcrumb-item active" aria-current="page">Collections</li>
+                </ol>
+            </nav>
+
+            <div v-if="!loading" class="container-fluid">
+                <div class="top-nav">
+                </div>
+            </div>
+        </div>
+
+        @*<div class="app" :class="{ ready: !loading }">
+            <div class="container-fluid">
+                Test
+            </div>
+        </div>*@
+
+
+        <div class="container-fluid app ready">
+            <div class="row">
+                <div class="col">
+                    <div class="sitemap">
+                        <ol>
+                            <li>
+                                <div class="sitemap-item">
+                                    <div class="handle"><i class="fas fa-globe"></i></div>
+                                    <div class="link"><a href="#">Default Site <small style="display: none;">(<code>/</code>)</small></a></div>
+                                    <div>
+                                        <div role="group" class="btn-group">
+                                            <button id="pageGroup" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-sm btn-primary btn-labeled dropdown-toggle">
+                                                <i class="fas fa-plus"></i>
+                                                Add page
+                                            </button>
+                                            <div aria-labelledby="pageGroup" class="dropdown-menu dropdown-menu-right"><a href="/manager/page/add/e8ef472c-0a06-40bf-9d9a-3441c8711efe/BlogArchive" class="dropdown-item">Blog archive</a><a href="/manager/page/add/e8ef472c-0a06-40bf-9d9a-3441c8711efe/StandardPage" class="dropdown-item">Standard page</a><a href="/manager/page/add/e8ef472c-0a06-40bf-9d9a-3441c8711efe/StartPage" class="dropdown-item">Start page</a><a href="/manager/page/add/e8ef472c-0a06-40bf-9d9a-3441c8711efe/MainPage" class="dropdown-item">Main page</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div data-id="{ site.id }" class="sitemap sitemap-container dd">
+                                    <ol class="dd-list">
+                                        <li data-id="526c59ac-8a6c-4740-b7d7-69aee18b42fd" class="dd-item expanded">
+                                            <div class="sitemap-item">
+                                                <div class="handle dd-handle"><i class="fas fa-ellipsis-v"></i></div>
+                                                <div class="link">
+                                                    <span class="actions">
+                                                        <!----> <!---->
+                                                    </span>
+                                                    <a href="/manager/page/edit/526c59ac-8a6c-4740-b7d7-69aee18b42fd">
+                                                        <span>Home</span> <!----> <!---->
+                                                    </a>
+                                                </div>
+                                                <div class="type d-none d-md-block">Start page</div>
+                                                <div class="date d-none d-lg-block">2019-12-29</div>
+                                                <div class="actions"><a href="#"><i class="fas fa-angle-down"></i></a> <a href="#"><i class="fas fa-angle-right"></i></a> <a href="#" class="danger"><i class="fas fa-trash"></i></a></div>
+                                            </div>
+                                            <!---->
+                                        </li>
+                                        <li data-id="f643dd37-afe8-4242-9c28-d8e7236b20da" class="dd-item expanded">
+                                            <div class="sitemap-item">
+                                                <div class="handle dd-handle"><i class="fas fa-ellipsis-v"></i></div>
+                                                <div class="link">
+                                                    <span class="actions">
+                                                        <!----> <!---->
+                                                    </span>
+                                                    <a href="/manager/page/edit/f643dd37-afe8-4242-9c28-d8e7236b20da">
+                                                        <span>Blog</span> <!----> <!---->
+                                                    </a>
+                                                </div>
+                                                <div class="type d-none d-md-block">Blog archive</div>
+                                                <div class="date d-none d-lg-block">2019-12-29</div>
+                                                <div class="actions"><a href="#"><i class="fas fa-angle-down"></i></a> <a href="#"><i class="fas fa-angle-right"></i></a> <a href="#" class="danger"><i class="fas fa-trash"></i></a></div>
+                                            </div>
+                                            <!---->
+                                        </li>
+                                    </ol>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>

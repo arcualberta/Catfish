@@ -5,11 +5,11 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models
 {
-    public class EntityType : Entity
+    public class EntityTemplate : Entity
     {
-        public string Name { get; set; }
+        public string TypeName { get; set; }
 
-        public EntityType()
+        public EntityTemplate()
         {
             Initialize();
         }
@@ -23,4 +23,8 @@ namespace Catfish.Core.Models
             return model;
         }
     }
+
+    public class ItemTemplate : EntityTemplate { }
+    public class CollectionTemplate : EntityTemplate { }
+
 }

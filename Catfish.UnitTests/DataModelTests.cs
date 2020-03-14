@@ -26,7 +26,7 @@ namespace Catfish.UnitTests
         {
             //Crreating an empty item
             Item item = new Item();
-            item.Initialize();
+            ////item.Initialize();
 
             //Creating an entity view model from the item to manipulate the item
             EntityVM vm = item.InstantiateViewModel<EntityVM>();
@@ -59,8 +59,8 @@ namespace Catfish.UnitTests
         [Test]
         public void CloneEntityTypeTest()
         {
-            EntityType template = new EntityType();
-            template.Initialize();
+            EntityTemplate template = new EntityTemplate();
+            ////template.Initialize();
 
             Item item = template.Clone<Item>();
             Assert.AreNotEqual(template.Id, item.Id);
@@ -78,14 +78,40 @@ namespace Catfish.UnitTests
 
             MetadataSet ms = srv.NewDublinCoreMetadataSet();
 
-            EntityType entityType = new EntityType()
+            EntityTemplate entityType = new EntityTemplate()
             {
-                Name = "Defauly Item"
+                TypeName = "Defauly Item"
             };
 
             ms.Data.Save("metadata.xml");
         }
 
+
+        [Test]
+        public void SeedData()
+        {
+            SeedingService srv = _testHelper.Seviceprovider.GetService(typeof(SeedingService)) as SeedingService;
+
+            EntityTemplate template;
+            
+            template = srv.NewDefaultItem();
+            if (!_testHelper.Db.ItemTemplates.Where(et => et.TypeName == template.TypeName).Any())
+                _testHelper.Db.ItemTemplates.Add(template as ItemTemplate);
+
+            template = srv.NewDublinCoreItem();
+            if (!_testHelper.Db.ItemTemplates.Where(et => et.TypeName == template.TypeName).Any())
+                _testHelper.Db.ItemTemplates.Add(template as ItemTemplate);
+
+            template = srv.NewDefaultCollection();
+            if (!_testHelper.Db.CollectionTemplates.Where(et => et.TypeName == template.TypeName).Any())
+                _testHelper.Db.CollectionTemplates.Add(template as CollectionTemplate);
+
+            template = srv.NewDublinCoreCollection();
+            if (!_testHelper.Db.CollectionTemplates.Where(et => et.TypeName == template.TypeName).Any())
+                _testHelper.Db.CollectionTemplates.Add(template as CollectionTemplate);
+
+            _testHelper.Db.SaveChanges();
+        }
 
 
     }

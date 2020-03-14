@@ -63,6 +63,12 @@ namespace Catfish.Core.Models
         {
             SubjectRelationships = new List<Relationship>();
             ObjectRelationships = new List<Relationship>();
+
+            Initialize();
+
+            XmlModel xml = new XmlModel(Data);
+
+            MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement("metadata-sets", true));
         }
 
         public virtual void Initialize()

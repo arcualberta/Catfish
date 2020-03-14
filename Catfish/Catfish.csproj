@@ -8,6 +8,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.0">
       <PrivateAssets>all</PrivateAssets>
@@ -39,6 +40,11 @@
     <Reference Include="Piranha.Data.EF">
       <HintPath>..\..\..\..\..\Users\mruaini\.nuget\packages\piranha.data.ef\8.1.2\lib\netstandard2.0\Piranha.Data.EF.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Manager\Pages\Partial\Actions\" />
+    <Folder Include="Areas\Manager\Views\Shared\" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">

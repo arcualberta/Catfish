@@ -19,7 +19,7 @@ namespace Catfish.Core.Services
         {
             MetadataSet ms = new MetadataSet();
             ms.Name.SetContent("Dublin Core");
-            ms.Description.SetContent("Dublin Core Metadata Element Set, Version 1.1");
+            ms.Description.SetContent("Dublin Core metadata element set, Version 1.1");
 
             ms.Fields.Add(new TextField("Contributor", 
                 "An entity responsible for making contributions to the resource."));
@@ -70,6 +70,72 @@ namespace Catfish.Core.Services
 
 
             return ms;
+        }
+
+        public MetadataSet NewDefaultMetadataSet()
+        {
+            MetadataSet ms = new MetadataSet();
+            ms.Name.SetContent("System Default");
+            ms.Description.SetContent("System default, minimalistic metadata set.");
+
+            ms.Fields.Add(new TextField("Name",
+                "Name of the resourse."));
+
+            ms.Fields.Add(new TextField("Description",
+                "Description of the resourse."));
+
+            return ms;
+        }
+        public ItemTemplate NewDublinCoreItem()
+        {
+            Item item = new Item();
+            item.MetadataSets.Add(NewDublinCoreMetadataSet());
+
+            ItemTemplate et = new ItemTemplate()
+            {
+                TypeName = "Doublin Core Item",
+                Data = item.Data
+            };
+            return et;
+        }
+
+        public ItemTemplate NewDefaultItem()
+        {
+            Item item = new Item();
+            item.MetadataSets.Add(NewDefaultMetadataSet());
+
+            ItemTemplate et = new ItemTemplate()
+            {
+                TypeName = "Default Item",
+                Data = item.Data
+            };
+            return et;
+        }
+
+        public CollectionTemplate NewDublinCoreCollection()
+        {
+            Collection collection = new Collection();
+            collection.MetadataSets.Add(NewDublinCoreMetadataSet());
+
+            CollectionTemplate et = new CollectionTemplate()
+            {
+                TypeName = "Doublin Core Collection",
+                Data = collection.Data
+            };
+            return et;
+        }
+
+        public CollectionTemplate NewDefaultCollection()
+        {
+            Collection collection = new Collection();
+            collection.MetadataSets.Add(NewDefaultMetadataSet());
+
+            CollectionTemplate et = new CollectionTemplate()
+            {
+                TypeName = "Default Collection",
+                Data = collection.Data
+            };
+            return et;
         }
     }
 }
