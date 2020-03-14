@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Contexts\**" />
+    <EmbeddedResource Remove="Contexts\**" />
+    <None Remove="Contexts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Migrations\20200227072206_CreatedBasicCollectionAndItemModels.cs" />
     <Compile Remove="Migrations\20200227072206_CreatedBasicCollectionAndItemModels.Designer.cs" />
     <Compile Remove="Migrations\20200227072418_CreatedRelationshipModel.cs" />
@@ -21,10 +27,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Contexts\" />
   </ItemGroup>
 
 </Project>
