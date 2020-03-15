@@ -69,6 +69,7 @@ namespace Catfish.Core.Models
         public DbSet<Collection> Collections { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Relationship> Relationships { get; set; }
+        public DbSet<EntityTemplate> EntityTemplates { get; set; }
         public DbSet<ItemTemplate> ItemTemplates { get; set; }
         public DbSet<CollectionTemplate> CollectionTemplates { get; set; }
 

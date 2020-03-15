@@ -14,6 +14,7 @@ using System.Linq;
 using Catfish.Models.Fields;
 using Catfish.Models.Blocks;
 using Piranha.Data.EF.SQLServer;
+using Catfish.Core.Services;
 
 namespace Catfish
 {
@@ -81,7 +82,6 @@ namespace Catfish
             // configuration options and the application "Configuration" option to CatfishDbContext
             // instance through dependency injection.
             services.AddDbContext<Catfish.Core.Models.AppDbContext>();
-
            //Feb 12 - 2020 : It's recommended to use AddDbContextPool() over AddDbContext() on .net Core > 2.2
            // it's better from the performance stand point
           //  services.AddDbContextPool<Catfish.Core.Models.CatfishDbContext>(options =>
@@ -110,6 +110,9 @@ namespace Catfish
                 });
                 
             });
+
+            //Catfish services
+            services.AddScoped<EntityTypeService>();
 
         }
 

@@ -43,7 +43,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Manager\Pages\Partial\Actions\" />
     <Folder Include="Areas\Manager\Views\Shared\" />
   </ItemGroup>
 

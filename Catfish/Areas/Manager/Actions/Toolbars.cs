@@ -16,7 +16,7 @@ namespace Catfish.Areas.Manager.Actions
                 new ToolbarAction
                 {
                     InternalId = "AddEntityType",
-                    ActionView = "_EntityTypeListAddEntityType"
+                    ActionView = "Partial/Actions/_EntityTypeListAddEntityType"
 
                 }
             };
