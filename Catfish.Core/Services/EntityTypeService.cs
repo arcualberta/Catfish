@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Catfish.Core.Models.Contents.ViewModels.ListEntries;
 
 namespace Catfish.Core.Services
 {
@@ -14,9 +15,19 @@ namespace Catfish.Core.Services
             Db = db;
         }
 
-        public IList<EntityTemplate> GetEntityTemplates()
+        public IQueryable<EntityTemplate> GetEntityTemplates()
         {
-            return Db.EntityTemplates.ToList();
+            return Db.EntityTemplates.Select(et => et) ;
         }
+
+        public List<EntityTemplateListEntry> GetEntityTemplateListEntries()
+        {
+            return Db.EntityTemplates
+                .Select(et => new EntityTemplateListEntry(et))
+                .ToList()
+                .OrderBy(et => et.ModelType)
+                .ToList();
+        }
+
     }
 }

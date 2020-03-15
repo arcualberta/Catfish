@@ -12,11 +12,10 @@
     <script src="@Url.Content(Piranha.Manager.Editor.EditorScripts.MainScriptUrl)"></script>
     <script src="@Url.Content(Piranha.Manager.Editor.EditorScripts.EditorScriptUrl)"></script>
     <script src="~/manager/assets/js/piranha.contentedit.min.js"></script>
-    <script src="~/manager/assets/js/piranha.pagelist.min.js"></script>
     <script src="~/manager/assets/js/piranha.siteedit.min.js"></script>
 
     <script type="text/javascript">
-        piranha.pagelist.load();
+        //piranha.entitytypelist.load();
     </script>
 }
 @section partials
@@ -30,7 +29,7 @@
         }*@
 }
 
-<div id="pagelist">
+<div id="entityTypelist">
     <div class="top">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -49,10 +48,6 @@
         </div>
     </div>
 
-    @{ 
-        var m = Model;
-        var n = m.Collections.Count;
-    }
 
     @*<div class="container-fluid app" :class="{ ready: !loading }">
             <div class="row">
@@ -77,6 +72,11 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="sitemap sitemap-container dd" data-id="">
+                                    <ol class="dd-list">
+                                        <sitemap-item v-for="item in items" v-bind:key="item.id" v-bind:item="item"></sitemap-item>
+                                    </ol>
                                 </div>
                                 <div class="sitemap sitemap-container dd" data-id="{ site.id }">
                                     <ol class="dd-list">
