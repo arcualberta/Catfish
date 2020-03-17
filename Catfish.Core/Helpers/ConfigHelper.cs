@@ -63,6 +63,18 @@ namespace Catfish.Core.Helpers
             }
         }
 
+        public static string DefaultLanguageCode
+        {
+            get
+            {
+                if (System.Threading.Thread.CurrentThread.CurrentCulture != null && !string.IsNullOrEmpty(System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName))
+                    return System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+
+                return ConfigHelper.Languages[0].TwoLetterISOLanguageName;
+
+            }
+        }
+
         public static string GetLanguageLabel(string languageCode)
         {
             string label = Languages.Where(c => c.TwoLetterISOLanguageName == languageCode).Select(c => c.NativeName).FirstOrDefault();

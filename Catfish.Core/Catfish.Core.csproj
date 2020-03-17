@@ -5,6 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200227072206_CreatedBasicCollectionAndItemModels.cs" />
+    <Compile Remove="Migrations\20200227072206_CreatedBasicCollectionAndItemModels.Designer.cs" />
+    <Compile Remove="Migrations\20200227072418_CreatedRelationshipModel.cs" />
+    <Compile Remove="Migrations\20200227072418_CreatedRelationshipModel.Designer.cs" />
+    <Compile Remove="Migrations\20200228060828_CreateBasicDataModels.cs" />
+    <Compile Remove="Migrations\20200228060828_CreateBasicDataModels.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
@@ -12,11 +21,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="SolrNet" Version="1.0.19" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
+    <Folder Include="Contexts\" />
   </ItemGroup>
 
 </Project>
