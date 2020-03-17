@@ -17,6 +17,10 @@
     <Compile Remove="Migrations\20200227072418_CreatedRelationshipModel.Designer.cs" />
     <Compile Remove="Migrations\20200228060828_CreateBasicDataModels.cs" />
     <Compile Remove="Migrations\20200228060828_CreateBasicDataModels.Designer.cs" />
+    <Compile Remove="Migrations\20200317174606_AddedPrimayCollectionToEntityModel.cs" />
+    <Compile Remove="Migrations\20200317174606_AddedPrimayCollectionToEntityModel.Designer.cs" />
+    <Compile Remove="Migrations\20200317191742_AddedPrimayCollectionToEntityModel.cs" />
+    <Compile Remove="Migrations\20200317191742_AddedPrimayCollectionToEntityModel.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

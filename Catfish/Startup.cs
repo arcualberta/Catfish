@@ -113,6 +113,7 @@ namespace Catfish
 
             //Catfish services
             services.AddScoped<EntityTypeService>();
+            services.AddScoped<DbEntityService>();
 
         }
 
@@ -290,7 +291,7 @@ namespace Catfish
             {
                 InternalId = "Items",
                 Name = "Items",
-               // Params="{Controller=home}/{Action=index}/{id?}",
+                // Params="{Controller=home}/{Action=index}/{id?}",
                 Route = "/manager/items/",
                 Css = "fas fa-brain",
                 //Policy = "MyCustomPolicy",

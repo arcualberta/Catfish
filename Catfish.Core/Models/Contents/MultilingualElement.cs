@@ -13,7 +13,7 @@ namespace Catfish.Core.Models.Contents
 
         public MultilingualElement(string tagName) : base(tagName) { }
 
-        public MultilingualElement(XElement data) : base(data) { }
+        public MultilingualElement(XElement data) : base(data) { Initialize(); }
 
         public void Initialize()
         {
@@ -50,6 +50,16 @@ namespace Catfish.Core.Models.Contents
                 selected = Values.Where(n => !string.IsNullOrEmpty(n.Value)).FirstOrDefault();
 
             return selected != null ? selected.Value : null;
+        }
+
+        public string GetConcatenatedContent(string separator)
+        {
+            var selected = Values
+                .Where(v => !string.IsNullOrEmpty(v.Value))
+                .Select(v => v.Value)
+                .ToList();
+
+            return string.Join(separator, selected);
         }
 
     }

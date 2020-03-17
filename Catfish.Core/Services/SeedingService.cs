@@ -1,9 +1,10 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Fields;
-using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using System;
 
 namespace Catfish.Core.Services
 {
@@ -136,6 +137,78 @@ namespace Catfish.Core.Services
                 Data = collection.Data
             };
             return et;
+        }
+
+        public void SeedDefaults(bool createSampleData)
+        {
+            DbEntityService entityService = new DbEntityService(Db);
+
+            EntityTemplate template;
+
+            template = NewDefaultItem();
+            if (!Db.ItemTemplates.Where(et => et.TypeName == template.TypeName).Any())
+                Db.ItemTemplates.Add(template as ItemTemplate);
+
+            template = NewDublinCoreItem();
+            if (!Db.ItemTemplates.Where(et => et.TypeName == template.TypeName).Any())
+                Db.ItemTemplates.Add(template as ItemTemplate);
+
+            template = NewDefaultCollection();
+            if (!Db.CollectionTemplates.Where(et => et.TypeName == template.TypeName).Any())
+                Db.CollectionTemplates.Add(template as CollectionTemplate);
+
+            template = NewDublinCoreCollection();
+            if (!Db.CollectionTemplates.Where(et => et.TypeName == template.TypeName).Any())
+                Db.CollectionTemplates.Add(template as CollectionTemplate);
+
+            Db.SaveChanges();
+
+            //Using the same seed to generate the same sequence of random numbers.
+            //The seeding parameters may only be effective when seeding an empty database.
+            Random rand = new Random(0);
+            int numTestCollections = 10;
+            int numTestItems = 200;
+
+            List<CollectionTemplate> collectionTemplates = Db.CollectionTemplates.ToList();
+            if (Db.Collections.Count() == 0)
+            {
+                for (int i = 0; i < numTestCollections; ++i)
+                {
+                    int index = rand.Next(0, collectionTemplates.Count);
+                    template = collectionTemplates[index];
+
+                    Collection c = template.Clone<Collection>();
+                    c.Name.SetContent(string.Format("Test Collection {0}", i));
+                    c.Description.SetContent(string.Format("This is the test collection #{0} created by seeding.", i));
+                    Db.Collections.Add(c);
+                }
+                Db.SaveChanges();
+            }
+
+            List<ItemTemplate> itemTemplates = Db.ItemTemplates.ToList();
+            List<Collection> collections = Db.Collections.ToList();
+            if (Db.Items.Count() == 0)
+            {
+                for (int i = 0; i < numTestItems; ++i)
+                {
+                    int index = rand.Next(0, itemTemplates.Count);
+                    template = itemTemplates[index];
+
+                    Item it = template.Clone<Item>();
+                    it.Name.SetContent(string.Format("Test Item {0}", i));
+                    it.Description.SetContent(string.Format("This is the test item #{0} created by seeding.", i));
+
+                    // selecting a default parent collection
+                    index = rand.Next(0, collections.Count + 1);
+                    if (index < collections.Count)
+                        it.PrimaryCollection = collections[index];
+
+                    Db.Items.Add(it);
+                }
+                Db.SaveChanges();
+            }
+
+
         }
     }
 }

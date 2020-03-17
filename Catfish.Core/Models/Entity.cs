@@ -25,7 +25,14 @@ namespace Catfish.Core.Models
         public string Content
         {
             get => Data?.ToString();
-            set => Data = string.IsNullOrEmpty(value) ? null : XElement.Parse(value);
+            set
+            {
+                if(!string.IsNullOrEmpty(value))
+                {
+                    Data = XElement.Parse(value);
+                    Initialize();
+                }
+            }
         }
 
         [NotMapped]
@@ -58,6 +65,10 @@ namespace Catfish.Core.Models
 
         public ICollection<Relationship> SubjectRelationships { get; set; }
         public ICollection<Relationship> ObjectRelationships { get; set; }
+
+        public Collection PrimaryCollection { get; set; }
+        [Column("PrimaryCollectionId")]
+        public int? PrimaryCollectionId { get; set; }
 
         public Entity()
         {

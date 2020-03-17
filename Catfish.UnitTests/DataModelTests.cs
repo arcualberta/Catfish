@@ -92,23 +92,7 @@ namespace Catfish.UnitTests
         {
             SeedingService srv = _testHelper.Seviceprovider.GetService(typeof(SeedingService)) as SeedingService;
 
-            EntityTemplate template;
-            
-            template = srv.NewDefaultItem();
-            if (!_testHelper.Db.ItemTemplates.Where(et => et.TypeName == template.TypeName).Any())
-                _testHelper.Db.ItemTemplates.Add(template as ItemTemplate);
-
-            template = srv.NewDublinCoreItem();
-            if (!_testHelper.Db.ItemTemplates.Where(et => et.TypeName == template.TypeName).Any())
-                _testHelper.Db.ItemTemplates.Add(template as ItemTemplate);
-
-            template = srv.NewDefaultCollection();
-            if (!_testHelper.Db.CollectionTemplates.Where(et => et.TypeName == template.TypeName).Any())
-                _testHelper.Db.CollectionTemplates.Add(template as CollectionTemplate);
-
-            template = srv.NewDublinCoreCollection();
-            if (!_testHelper.Db.CollectionTemplates.Where(et => et.TypeName == template.TypeName).Any())
-                _testHelper.Db.CollectionTemplates.Add(template as CollectionTemplate);
+            srv.SeedDefaults(true);
 
             _testHelper.Db.SaveChanges();
         }
