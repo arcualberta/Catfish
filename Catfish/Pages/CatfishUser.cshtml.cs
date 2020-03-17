@@ -29,11 +29,13 @@ namespace Catfish
             _security = security;
         }
 
-            public void OnGet()
-        {
-
-        }
-
+        /// <summary>
+        /// Handle external login -- i.e Google account --
+        /// Upon successful login, add this user to the databse if this user is not existing yet in our db based on the emailadress
+        /// thelogin name (userName) for local account will be the email address
+        /// </summary>
+        /// <param name="userModel"></param>
+        /// <returns></returns>
         public async Task<IActionResult> OnPostAsync(CatfishUserViewModel userModel)
         {
             if (ModelState.IsValid)

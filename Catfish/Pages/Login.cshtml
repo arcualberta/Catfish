@@ -65,15 +65,10 @@
          user.Email =  profile.getEmail();
          user.Firstname =  profile.getGivenName();
           user.Surname = profile.getFamilyName();
-            @*@Model.catfishUser.Login = profile.getEmail();
-          @Model.catfishUser.Password = profile.getId();
-          @Model.catfishUser.Email = profile.getEmail();
-          @Model.catfishUser.Firstname = profile.getGivenName();
-          @Model.catfishUser.Surname = profile.getFamilyName();*@
-       //  var url = "../CatfishAccount/ExternalLogin";
+          
          $.ajax({
                type: 'POST',
-               url: "/CatfishUser",//'/?handler=SaveUser',
+               url: "/CatfishUser",
 
              data: { userModel: user },
              headers: {
@@ -81,7 +76,7 @@
                  $('input:hidden[name="__RequestVerificationToken"]').val()
                }
          }).done(function (result) {
-             alert('success' + result);
+             window.location.href = "/";
          });
       }
 }
