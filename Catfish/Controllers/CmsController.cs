@@ -103,17 +103,10 @@ namespace Catfish.Controllers
         [Route("main")]
         public async Task<IActionResult> Main(Guid id, bool draft = false)
         {
-            try
-            {
+          
                 var model = await _loader.GetPageAsync<MainPage>(id, HttpContext.User, draft);
 
                 return View(model);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return StatusCode(401);//401 --UnAuthorized
-            }
-
         }
             /// <summary>
             /// Gets the startpage with the given id.

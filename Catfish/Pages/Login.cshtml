@@ -31,6 +31,7 @@
                 </div>
             </div>
         </article>
+        @Html.AntiForgeryToken()
         @if (allowGoogleLogin)
         {
             <div class="grid_4 box login">
@@ -57,23 +58,31 @@
       var auth2 = gapi.auth2.getAuthInstance();
       if(auth2.isSignedIn)
       {
+          @*@Model.catfishUser.Login = profile.getEmail();*@
          var user = new Object();
          user.Login = profile.getEmail();
          user.Password= profile.getId();
          user.Email =  profile.getEmail();
          user.Firstname =  profile.getGivenName();
-         user.Surname =  profile.getFamilyName();
-         var url = "../../CatfishAccount/ExternalLogin";
+          user.Surname = profile.getFamilyName();
+            @*@Model.catfishUser.Login = profile.getEmail();
+          @Model.catfishUser.Password = profile.getId();
+          @Model.catfishUser.Email = profile.getEmail();
+          @Model.catfishUser.Firstname = profile.getGivenName();
+          @Model.catfishUser.Surname = profile.getFamilyName();*@
+       //  var url = "../CatfishAccount/ExternalLogin";
          $.ajax({
                type: 'POST',
-               url: url,
+               url: "/CatfishUser",//'/?handler=SaveUser',
 
-               data:{userModel: user},
-               success: function(data){
-                  window.location.href = window.location.origin;
-               },
-               error: function(){ alert("Encounter problems while login")}
-        });
+             data: { userModel: user },
+             headers: {
+             RequestVerificationToken:
+                 $('input:hidden[name="__RequestVerificationToken"]').val()
+               }
+         }).done(function (result) {
+             alert('success' + result);
+         });
       }
 }
 

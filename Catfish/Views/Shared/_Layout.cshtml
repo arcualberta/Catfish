@@ -24,6 +24,9 @@
 
     @RenderSection("head", required: false)
 </head>
+@{ 
+     //bool isLoggedIn = Session[PiranhaApp.USER] != null;
+}
 <body>
     <header class="site-header @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
         <div class="container">

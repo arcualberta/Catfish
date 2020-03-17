@@ -31,11 +31,11 @@ namespace Catfish
         /// <param name="configuration">The current configuration</param>
         public Startup(IConfiguration configuration, IHostEnvironment env)
         {
-            Configuration = configuration;
+           // Configuration = configuration;
 
             // Initialize the IConfiguration of the ConfigHelper so that it can be used by 
             // elsewhere in the Catfish.Core project.
-            Catfish.Core.Helpers.ConfigHelper.Configuration = configuration;
+          //  Catfish.Core.Helpers.ConfigHelper.Configuration = configuration;
 
             //March 12 -2020
             var builder = new ConfigurationBuilder().SetBasePath(env.ContentRootPath)
@@ -73,6 +73,7 @@ namespace Catfish
              /* sql server configuration based on ==> http://piranhacms.org/blog/announcing-80-for-net-core-31    */
             services.AddPiranhaEF<SQLServerDb>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("catfish")));
+           
             services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("catfish")));
 
@@ -85,7 +86,7 @@ namespace Catfish
             // Add CatfishDbContext to the service collection. This will inject the database
             // configuration options and the application "Configuration" option to CatfishDbContext
             // instance through dependency injection.
-            services.AddDbContext<Catfish.Core.Models.CatfishDbContext>();
+            services.AddDbContext<Catfish.Core.Models.AppDbContext>();
 
            //Feb 12 - 2020 : It's recommended to use AddDbContextPool() over AddDbContext() on .net Core > 2.2
            // it's better from the performance stand point
