@@ -22,9 +22,12 @@
         </div>
     </div>
 
-
-    @foreach (var child in Model.Children)
-    {
-        <partial name="partial/@child.GetType().Name" model="@child" />
-    }
+    <div class="container-fluid">
+        <ol class="dd-list">
+            @foreach (var child in Model.Children)
+            {
+                <partial name="partial/@child.GetType().Name" model="@child" />
+            }
+        </ol>
+    </div>
 </div>

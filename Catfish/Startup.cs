@@ -289,10 +289,10 @@ namespace Catfish
 
             menubar.Items.Insert(idx++, new MenuItem
             {
-                InternalId = "Items",
-                Name = "Items",
+                InternalId = "Collections",
+                Name = "Collections",
                 // Params="{Controller=home}/{Action=index}/{id?}",
-                Route = "/manager/items/",
+                Route = "/manager/collections/",
                 Css = "fas fa-brain",
                 //Policy = "MyCustomPolicy",
                 // Action = ""
@@ -300,10 +300,10 @@ namespace Catfish
 
             menubar.Items.Insert(idx++, new MenuItem
             {
-                InternalId = "Collections",
-                Name = "Collections",
+                InternalId = "Items",
+                Name = "Items",
                 // Params="{Controller=home}/{Action=index}/{id?}",
-                Route = "/manager/collections/",
+                Route = "/manager/items/",
                 Css = "fas fa-brain",
                 //Policy = "MyCustomPolicy",
                 // Action = ""
