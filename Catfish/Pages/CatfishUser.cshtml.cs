@@ -28,7 +28,14 @@ namespace Catfish
             _catfishConfig = catfishConfig;
             _security = security;
         }
-
+        /// <summary>
+        /// Sign out login user from our system
+        /// </summary>
+        /// <returns></returns>
+        public void OnGet()
+        {
+            _security.SignOut(_db);
+        }
         /// <summary>
         /// Handle external login -- i.e Google account --
         /// Upon successful login, add this user to the databse if this user is not existing yet in our db based on the emailadress
@@ -41,8 +48,7 @@ namespace Catfish
             if (ModelState.IsValid)
             {
                 User _user = new Piranha.AspNetCore.Identity.Data.User();
-                //_user.Email = userModel.Email;
-               // _user.UserName = userModel.Login;
+               
                 UserEditModel userEditModel = new UserEditModel();
                 userEditModel.User = _user;
                 userEditModel.Password = userModel.Password;
@@ -56,16 +62,13 @@ namespace Catfish
                     await _userManager.CreateAsync(_user, userEditModel.Password);
                     string roleName = _catfishConfig.GetDefaultUserRole();
                     Role role = _db.Roles.Where(r => r.Name == roleName).FirstOrDefault();
-                   // await _userManager.AddToRoleAsync(_user, roleName);
+                  
                     userEditModel.Roles.Add(role);
                      var result = userEditModel.Save(_userManager);
 
                     if(result.Result.Succeeded)
                     {
-                       // IdentityUserRole userRole = new Piranha.AspNetCore.Identity.Data.Role()
-                      //  userRole.RoleId = role.Id;
-                     //   userRole.UserId = userEditModel.User.Id;
-                      //  _db.UserRoles()
+                       
                         //login user to the system
                         if(await _security.SignIn(HttpContext, userModel.Login, userModel.Password))
                             return new RedirectResult("/");
