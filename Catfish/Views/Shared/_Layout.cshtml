@@ -55,42 +55,36 @@
             window.location.href = "/login";
         });
          function onLoad() {
-      gapi.load('auth2', function() {
-        gapi.auth2.init();
-      });
-    }
+                     gapi.load('auth2', function() {
+                     gapi.auth2.init();
+              });
+         }
         function signOut() {
 
-            // $.ajax({
-            //       type: 'GET',
-            //       url: "/CatfishUser",
-            //       success: function(data){
-            //         document.location.href = "https://www.google.com/accounts/Logout";
-            //       window.location.href = window.location.origin;
-            //       },
-            //       error: function(){ alert("Encounter problems while logout")}
-            //});
+           //signout google login
+            /* var auth2 = gapi.auth2.getAuthInstance();
+                auth2.signOut().then(function () {
+                    //console.log('User signed out.');
+                     auth2.disconnect();    
+                });*/
+            //signout local login
             $.ajax({
                 type: 'GET',
                 url: "/CatfishUser",
-
-
                 headers: {
                     RequestVerificationToken:
                         $('input:hidden[name="__RequestVerificationToken"]').val()
                 }
-            }).done(function (result) {
-                //window.location.href = "https://www.google.com/accounts/Logout";
-                var auth2 = gapi.auth2.getAuthInstance();
+              }).done(function (result) {
+                 var auth2 = gapi.auth2.getAuthInstance();
                 auth2.signOut().then(function () {
-                    console.log('User signed out.');
-                    
+                    //console.log('User signed out.');
+                     auth2.disconnect();    
                 });
-                document.location.href = "https://www.google.com/accounts/Logout";
-                    window.location.href = window.location.origin;
-                window.location.href = "/";
-            });
-
+                   auth2.disconnect();   
+                 window.location.href = window.location.origin;
+            
+              });
         }
 
     </script>
