@@ -1,4 +1,6 @@
-﻿@inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig;
+﻿@using Microsoft.AspNetCore.Mvc.ViewEngines
+@inject ICompositeViewEngine _viewEngine
+@inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
 <!doctype html>
 <html lang="en">
 <head>
@@ -25,10 +27,15 @@
 
     @RenderSection("head", required: false)
 </head>
-@{
-    //bool isLoggedIn = Microsoft.AspNetCore.Http.HttpContext
-}
+
 <body>
+   
+    @if (_viewEngine.GetView(null, "Views/Shared/_CustomHead.cshtml", isMainPage: false).Success)
+    {
+         <partial name="_CustomHead.cshtml" />
+    }
+    else
+    {
     <header class="site-header @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
         <div class="container">
             <div class="row">
@@ -44,7 +51,7 @@
         </div>
 
     </header>
-
+    }
     @RenderBody()
 
 
@@ -54,19 +61,12 @@
 
             window.location.href = "/login";
         });
-         function onLoad() {
-                     gapi.load('auth2', function() {
-                     gapi.auth2.init();
-              });
-         }
+        function onLoad() {
+            gapi.load('auth2', function () {
+                gapi.auth2.init();
+            });
+        }
         function signOut() {
-
-           //signout google login
-            /* var auth2 = gapi.auth2.getAuthInstance();
-                auth2.signOut().then(function () {
-                    //console.log('User signed out.');
-                     auth2.disconnect();    
-                });*/
             //signout local login
             $.ajax({
                 type: 'GET',
@@ -75,16 +75,17 @@
                     RequestVerificationToken:
                         $('input:hidden[name="__RequestVerificationToken"]').val()
                 }
-              }).done(function (result) {
-                 var auth2 = gapi.auth2.getAuthInstance();
+            }).done(function (result) {
+                //sign out google
+                var auth2 = gapi.auth2.getAuthInstance();
                 auth2.signOut().then(function () {
                     //console.log('User signed out.');
-                     auth2.disconnect();    
+                    auth2.disconnect();
                 });
-                   auth2.disconnect();   
-                 window.location.href = window.location.origin;
-            
-              });
+                auth2.disconnect();
+                window.location.href = window.location.origin;
+
+            });
         }
 
     </script>

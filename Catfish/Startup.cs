@@ -238,7 +238,7 @@ namespace Catfish
         private void RegisterCustomStyles()
         {
             App.Modules.Get<Piranha.Manager.Module>()
-                .Styles.Add("~/assets/css/MyStyle.css");
+                .Styles.Add("~/assets/css/CustomStyle.css");
 
         }
         private void RegisterPartialViews()
