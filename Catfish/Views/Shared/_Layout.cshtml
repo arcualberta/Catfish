@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.ViewEngines
+@using Catfish.Models.SiteTypes
 @inject ICompositeViewEngine _viewEngine
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
 <!doctype html>
@@ -29,32 +30,55 @@
 </head>
 
 <body>
-   
+
     @if (_viewEngine.GetView(null, "Views/Shared/_CustomHead.cshtml", isMainPage: false).Success)
     {
-         <partial name="_CustomHead.cshtml" />
+        <partial name="_CustomHead.cshtml" />
     }
     else
     {
-    <header class="site-header @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm">
-                    <partial name="Partial/_Menu.cshtml" />
+        <header class="site-header @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm">
+                        <partial name="Partial/_Menu.cshtml" />
+                    </div>
+                    <div class="signinout">
+                        <button class="btnSignIn">SignIn</button>
+                        <button class="btnSignOut" onclick="signOut(); return false;">SignOut</button>
+                    </div>
                 </div>
-                <div class="signinout">
-                    <button class="btnSignIn">SignIn</button>
-                    <button class="btnSignOut" onclick="signOut(); return false;">SignOut</button>
-                </div>
+
             </div>
 
-        </div>
-
-    </header>
+        </header>
     }
     @RenderBody()
 
+  
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            @{
+                var currentSite = await WebApp.Site.GetContentAsync<CustomSite>();
+            }
+            @if (currentSite != null)
+            {
+                <div class="row">
+                    <div class="col-6">
+                        <img src="@Url.Content(currentSite.FooterContents.Logo)" style="width:100px; height: 100px;" />
+                    </div>
+                    @*<div class="col-4">
+                        @Html.Raw(currentSite.FooterContents.Logo)
+                    </div>*@
+                    <div class="col-6">
+                        @Html.Raw(currentSite.FooterContents.Text)
+                    </div>
+                </div>
+            }
+        </div>
+    </footer>
 
+   
     @RenderSection("script", required: false)
     <script>
         $(".btnSignIn").click(function () {
