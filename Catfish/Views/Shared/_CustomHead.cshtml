@@ -24,11 +24,19 @@
                 <partial name="Partial/_Menu.cshtml" />
             </div>
             <div class="signinout">
-                <button class="btnSignIn">SignIn</button>
-                <button class="btnSignOut" onclick="signOut(); return false;">SignOut</button>
+                <button id="btnSignIn" onclick="window.location.href = '/login'; return false;" >SignIn</button>
+                @{ if (User.Identity.IsAuthenticated)
+                    {
+                         <button id="btnSignOut" onclick="signOut(); return false;">SignOut</button>
+                    }
+                  }
             </div>
         </div>
 
     </div>
 
 </header>
+
+<script>
+
+</script>
