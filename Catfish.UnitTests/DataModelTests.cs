@@ -1,6 +1,7 @@
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.ViewModels;
+using Catfish.Core.Models.Contents.ViewModels.ListEntries;
 using Catfish.Core.Services;
 using Catfish.Tests.Helpers;
 using NUnit.Framework;
@@ -97,6 +98,41 @@ namespace Catfish.UnitTests
             _testHelper.Db.SaveChanges();
         }
 
+
+        [Test]
+        public void EntityListEntryViewModelTest()
+        {
+            Item item = _testHelper.Db.Items.FirstOrDefault();
+            Assert.IsNotNull(item);
+            string idFromXml = item.Data.Attribute("id").Value;
+            Assert.AreEqual(idFromXml, item.Id.ToString());
+
+            EntityListEntry entry = new EntityListEntry(item);
+            Assert.AreEqual(entry.Id.ToString(), item.Id.ToString());
+        }
+
+        [Test]
+        public void ItemListEntryRetieveTest()
+        {
+            DbEntityService srv = _testHelper.Seviceprovider.GetService(typeof(DbEntityService)) as DbEntityService;
+            Assert.IsNotNull(srv);
+
+            var itemListEntries = srv.GetEntityList<Item>();
+            //foreach(var entry in itemListEntries)
+            //{
+            //    Item item = _testHelper.Db.Items.Where(it => it.Id == entry.Id).FirstOrDefault();
+            //    Assert.IsNotNull(item);
+            //    Assert.AreEqual(entry.Id.ToString(), item.Id.ToString());
+            //}
+
+            //Assert.IsNotNull(item);
+            //string idFromXml = item.Data.Attribute("id").Value;
+            //Assert.AreEqual(idFromXml, item.Id.ToString());
+
+            //EntityListEntry entry = new EntityListEntry(item);
+            //Assert.AreEqual(entry.Id.ToString(), item.Id.ToString());
+
+        }
 
     }
 }

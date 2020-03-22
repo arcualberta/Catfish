@@ -15,7 +15,7 @@ namespace Catfish.Core.Services
             Db = db;
         }
 
-        public IQueryable<EntityListEntry> GetEntityList<T>(int offset = 0, int? max = null, int? primaryCollectionId = null)
+        protected IQueryable<Entity> BuildEntityListRetrieveQuery<T>(int offset = 0, int? max = null, int? primaryCollectionId = null)
         {
             var query = Db.Entities.Include(e => e.PrimaryCollection);
             query = primaryCollectionId.HasValue ?
@@ -27,7 +27,27 @@ namespace Catfish.Core.Services
             if (max.HasValue)
                 query.Take(max.Value);
 
-            IQueryable<EntityListEntry> ret = query.Select(e => new EntityListEntry(e));
+            return query;
+        }
+        public IQueryable<Item> GetItems(int offset = 0, int? max = null, int? primaryCollectionId = null)
+        {
+            IQueryable<Entity> query = BuildEntityListRetrieveQuery<Item>(offset, max, primaryCollectionId);
+            IQueryable<Item> ret = query.Select(e => e as Item);
+            return ret;
+        }
+
+        public IQueryable<Collection> GetCollections(int offset = 0, int? max = null, int? primaryCollectionId = null)
+        {
+            IQueryable<Entity> query = BuildEntityListRetrieveQuery<Collection>(offset, max, primaryCollectionId);
+            IQueryable<Collection> ret = query.Select(e => e as Collection);
+            return ret;
+        }
+
+
+        public IQueryable<EntityListEntry> GetEntityList<T>(int offset = 0, int? max = null, int? primaryCollectionId = null)
+        {
+            IQueryable<Entity> entities = BuildEntityListRetrieveQuery<T>(offset, max, primaryCollectionId);
+            IQueryable<EntityListEntry> ret = entities.Select(e => new EntityListEntry(e));
             return ret;
         }
 
@@ -43,6 +63,13 @@ namespace Catfish.Core.Services
             };
 
             return rel;
+        }
+
+        public Item GetItem(Guid id)
+        {
+            return Db.Items
+                .Where(e => e.Id == id)
+                .FirstOrDefault();
         }
     }
 }

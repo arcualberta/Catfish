@@ -148,6 +148,7 @@ namespace Catfish.Core.Services
             template = NewDefaultItem();
             if (!Db.ItemTemplates.Where(et => et.TypeName == template.TypeName).Any())
                 Db.ItemTemplates.Add(template as ItemTemplate);
+            Db.SaveChanges();
 
             template = NewDublinCoreItem();
             if (!Db.ItemTemplates.Where(et => et.TypeName == template.TypeName).Any())

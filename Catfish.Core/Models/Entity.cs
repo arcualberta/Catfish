@@ -86,9 +86,18 @@ namespace Catfish.Core.Models
         {
             if (Data == null)
                 Data = new XElement("entity");
-            Id = Guid.NewGuid();
-            Created = DateTime.Now;
-            Data.SetAttributeValue("model-type", GetType().AssemblyQualifiedName);
+
+            if (Data.Attribute("id") == null)
+                Id = Guid.NewGuid();
+
+            if (Data.Attribute("created") == null)
+                Created = DateTime.Now;
+
+            if (Data.Attribute("model-type") == null)
+                Data.SetAttributeValue("model-type", GetType().AssemblyQualifiedName);
+
+            //Unlike in the cases of xml-attribute-based properties, the Name and Descrition
+            //properties must be initialized every time the model is initialized. 
             Name = new MultilingualElement(XmlHelper.GetElement(Data, "name", true));
             Description = new MultilingualElement(XmlHelper.GetElement(Data, "description", true));
         }
