@@ -9,7 +9,7 @@ namespace Catfish.Core.Models.Contents
 {
     public class MultilingualElement : XmlModel
     {
-        protected List<Text> Values = new List<Text>();
+        public List<Text> Values = new List<Text>();
 
         public MultilingualElement(string tagName) : base(tagName) { }
 
@@ -38,18 +38,6 @@ namespace Catfish.Core.Models.Contents
             }
             else
                 nameInGivenLanguage.Data.Value = value;
-        }
-
-        public string GetContent(string lang)
-        {
-            if (string.IsNullOrEmpty(lang))
-                lang = ConfigHelper.DefaultLanguageCode;
-
-            Text selected = Values.Where(n => n.Language == lang).FirstOrDefault();
-            if (selected == null)
-                selected = Values.Where(n => !string.IsNullOrEmpty(n.Value)).FirstOrDefault();
-
-            return selected != null ? selected.Value : null;
         }
 
         public string GetConcatenatedContent(string separator)

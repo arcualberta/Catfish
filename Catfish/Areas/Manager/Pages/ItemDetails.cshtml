@@ -23,12 +23,23 @@
     </div>
 
     <div class="container-fluid">
-        @Model.Item.Name.GetConcatenatedContent(" | ")
+        <h2>@Model.Item.Name.GetConcatenatedContent(" | ")</h2>
+        @{
+            List<string> languages = Model.Item.Description.Values.Select(v => v.Language).Distinct().ToList();
+            foreach(var lang in languages)
+            {
+                //List<string> values = Model.Item.Description
+            }
+
+        }
+        <div class="entity-desc">
+            @Model.Item.Description.GetConcatenatedContent(" | ")
+        </div>
         @*<ol class="dd-list">
-                @foreach (var child in Model.Children)
-                {
-                    <partial name="partial/@child.GetType().Name" model="@child" />
-                }
-            </ol>*@
+            @foreach (var child in Model.Children)
+            {
+                <partial name="partial/@child.GetType().Name" model="@child" />
+            }
+        </ol>*@
     </div>
 </div>
