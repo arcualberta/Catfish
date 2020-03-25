@@ -11,7 +11,7 @@ namespace Catfish.Core.Models
 
         public EntityTemplate()
         {
-            Initialize();
+            Initialize(false);
         }
 
         public T Clone<T>() where T:Entity
@@ -19,7 +19,7 @@ namespace Catfish.Core.Models
             var type = typeof(T);
             T model = Activator.CreateInstance(type) as T;
             model.Data = new XElement(Data);
-            model.Initialize();
+            model.Initialize(true); //We are cloning an entity. We must force to regenerate a new Id for the clone.
             return model;
         }
     }

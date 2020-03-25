@@ -30,7 +30,7 @@ namespace Catfish.Core.Models
                 if(!string.IsNullOrEmpty(value))
                 {
                     Data = XElement.Parse(value);
-                    Initialize();
+                    Initialize(false);
                 }
             }
         }
@@ -70,24 +70,25 @@ namespace Catfish.Core.Models
         [Column("PrimaryCollectionId")]
         public int? PrimaryCollectionId { get; set; }
 
+        
         public Entity()
         {
             SubjectRelationships = new List<Relationship>();
             ObjectRelationships = new List<Relationship>();
 
-            Initialize();
+            Initialize(false);
 
             XmlModel xml = new XmlModel(Data);
 
             MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement("metadata-sets", true));
         }
 
-        public virtual void Initialize()
+        public virtual void Initialize(bool regenerateId)
         {
             if (Data == null)
                 Data = new XElement("entity");
 
-            if (Data.Attribute("id") == null)
+            if (regenerateId || Data.Attribute("id") == null)
                 Id = Guid.NewGuid();
 
             if (Data.Attribute("created") == null)
