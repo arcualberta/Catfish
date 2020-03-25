@@ -12,6 +12,7 @@ namespace Catfish.Core.Models
     [Table("Catfish_Entities")]
     public class Entity
     {
+
         //public Guid Id { get; set; }
         [Key]
         public Guid Id
@@ -46,7 +47,7 @@ namespace Catfish.Core.Models
 
         public DateTime? Updated
         {
-            get { try { return DateTime.Parse(Data.Attribute("updated").Value); } catch (Exception) { return null as DateTime?; } }
+            get { try { return Data.Attribute("updated") != null ? DateTime.Parse(Data.Attribute("updated").Value) : null as DateTime?; } catch (Exception) { return null as DateTime?; } }
             set => Data.SetAttributeValue("updated", value);
         }
 
