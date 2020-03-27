@@ -15,6 +15,7 @@ using Catfish.Models.Fields;
 using Catfish.Models.Blocks;
 using Piranha.Data.EF.SQLServer;
 using Catfish.Helper;
+using Catfish.Core.Services;
 
 namespace Catfish
 {
@@ -81,19 +82,21 @@ namespace Catfish
             services.AddRazorPages()
                 .AddPiranhaManagerOptions();
 
+
             
 
             // Add CatfishDbContext to the service collection. This will inject the database
             // configuration options and the application "Configuration" option to CatfishDbContext
             // instance through dependency injection.
             services.AddDbContext<Catfish.Core.Models.AppDbContext>();
-
            //Feb 12 - 2020 : It's recommended to use AddDbContextPool() over AddDbContext() on .net Core > 2.2
            // it's better from the performance stand point
           //  services.AddDbContextPool<Catfish.Core.Models.CatfishDbContext>(options =>
           //                   options.UseSqlServer(Configuration.GetConnectionString("catfish")));
+
             //MR: Feb 7 2020 -- from piranha core MVCWeb example
             services.AddControllersWithViews();
+
             services.AddRazorPages()
                 .AddPiranhaManagerOptions();
 
@@ -116,7 +119,11 @@ namespace Catfish
             });
 
             //March 12 2020 -- register local services
+            //Catfish services
             services.AddSingleton<ICatfishAppConfiguration, ReadAppConfiguration>();
+            services.AddScoped<EntityTypeService>();
+            services.AddScoped<DbEntityService>();
+            services.AddScoped<ItemService>();
 
         }
 
@@ -159,8 +166,6 @@ namespace Catfish
             app.UsePiranha(options => {
                 options.UseManager();
                 options.UseTinyMCE();
-                options.UseIdentity();
-                
                 
             });
 
@@ -206,6 +211,8 @@ namespace Catfish
                 endpoints.MapPiranhaManager();
             });
 
+            AddPartialViews();
+
             //add to manager menu item
             AddManagerMenus();
 
@@ -230,6 +237,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/entitytypelist.js");
         }
         private void RegisterCustomBlocks()
         {
@@ -243,14 +251,6 @@ namespace Catfish
                 .Styles.Add("~/assets/css/CustomComponentStyle.css");
 
         }
-        private void RegisterPartialViews()
-        {
-            //Adding Partial View to Layout of the manager interface
-            //All custom partials are rendered at the end of the body tag after the built-in modals have been added.
-            //    App.Modules.Get<Piranha.Manager.Module>()
-            //.Partials.Add("Partial/_MyModal");
-
-        }
         #endregion
 
         private void AddCustomPermissions()
@@ -262,36 +262,62 @@ namespace Catfish
             });
         }
 
+        private void AddPartialViews()
+        {
+            //App.Modules.Manager().Partials.Add("Partial/_EntityTypeListAddEntityType");
+        }
+
         private void AddManagerMenus()
         {
-            if(Piranha.Manager.Menu.Items.Where(m=>m.Name == "Entities").FirstOrDefault() == null)
+            if (Piranha.Manager.Menu.Items.Where(m => m.Name == "Entities").FirstOrDefault() == null)
             {
-                Piranha.Manager.Menu.Items.Insert(0, new MenuItem {
+                Piranha.Manager.Menu.Items.Insert(0, new MenuItem
+                {
                     InternalId = "Entities",
                     Name = "Entities",
-                    Css="fas fa-object-group"
+                    Css = "fas fa-object-group"
 
                 });
             }
+
             ///
             /// Content Menus
             ///
-            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Entities").FirstOrDefault(); //Content
+            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Entities").FirstOrDefault();
             var idx = 0;
 
             menubar.Items.Insert(idx++, new MenuItem
             {
-                InternalId = "MyItem",
-                Name = "My  Item",
+                InternalId = "EntityTypes",
+                Name = "EntityTypes",
                // Params="{Controller=home}/{Action=index}/{id?}",
+                Route = "/manager/entitytypes/",
+                Css = "fas fa-brain",
+                //Policy = "MyCustomPolicy",
+                // Action = ""
+            });
+
+            menubar.Items.Insert(idx++, new MenuItem
+            {
+                InternalId = "Collections",
+                Name = "Collections",
+                // Params="{Controller=home}/{Action=index}/{id?}",
+                Route = "/manager/collections/",
+                Css = "fas fa-brain",
+                //Policy = "MyCustomPolicy",
+                // Action = ""
+            });
+
+            menubar.Items.Insert(idx++, new MenuItem
+            {
+                InternalId = "Items",
+                Name = "Items",
+                // Params="{Controller=home}/{Action=index}/{id?}",
                 Route = "/manager/items/",
                 Css = "fas fa-brain",
                 //Policy = "MyCustomPolicy",
                 // Action = ""
-
             });
-
-            
         }
     }
 }

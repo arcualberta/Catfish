@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Catfish.Core.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -68,7 +69,9 @@ namespace Catfish.Core.Models
         public DbSet<Collection> Collections { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Relationship> Relationships { get; set; }
-        public DbSet<EntityType> EntityTypes { get; set; }
+        public DbSet<EntityTemplate> EntityTemplates { get; set; }
+        public DbSet<ItemTemplate> ItemTemplates { get; set; }
+        public DbSet<CollectionTemplate> CollectionTemplates { get; set; }
 
         /*
                 public DbSet<XmlModel> XmlModels { get; set; }
@@ -104,7 +107,7 @@ namespace Catfish.Core.Models
 
          * 
          */
-
-
     }
+
+
 }

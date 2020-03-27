@@ -4,18 +4,20 @@ using Catfish.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Catfish.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200314221203_ChangedEntityNameToEntityTypeName")]
+    partial class ChangedEntityNameToEntityTypeName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.3")
+                .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -35,16 +37,10 @@ namespace Catfish.Core.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("PrimaryCollectionId")
-                        .HasColumnName("PrimaryCollectionId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("Updated")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PrimaryCollectionId");
 
                     b.ToTable("Catfish_Entities");
 
@@ -78,19 +74,16 @@ namespace Catfish.Core.Migrations
                     b.HasDiscriminator().HasValue("Collection");
                 });
 
-            modelBuilder.Entity("Catfish.Core.Models.EntityTemplate", b =>
+            modelBuilder.Entity("Catfish.Core.Models.EntityType", b =>
                 {
                     b.HasBaseType("Catfish.Core.Models.Entity");
 
-                    b.Property<string>("TargetType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TemplateName")
+                    b.Property<string>("TypeName")
                         .HasColumnType("nvarchar(max)");
 
                     b.ToTable("Catfish_Entities");
 
-                    b.HasDiscriminator().HasValue("EntityTemplate");
+                    b.HasDiscriminator().HasValue("EntityType");
                 });
 
             modelBuilder.Entity("Catfish.Core.Models.Item", b =>
@@ -100,31 +93,6 @@ namespace Catfish.Core.Migrations
                     b.ToTable("Catfish_Entities");
 
                     b.HasDiscriminator().HasValue("Item");
-                });
-
-            modelBuilder.Entity("Catfish.Core.Models.CollectionTemplate", b =>
-                {
-                    b.HasBaseType("Catfish.Core.Models.EntityTemplate");
-
-                    b.ToTable("Catfish_Entities");
-
-                    b.HasDiscriminator().HasValue("CollectionTemplate");
-                });
-
-            modelBuilder.Entity("Catfish.Core.Models.ItemTemplate", b =>
-                {
-                    b.HasBaseType("Catfish.Core.Models.EntityTemplate");
-
-                    b.ToTable("Catfish_Entities");
-
-                    b.HasDiscriminator().HasValue("ItemTemplate");
-                });
-
-            modelBuilder.Entity("Catfish.Core.Models.Entity", b =>
-                {
-                    b.HasOne("Catfish.Core.Models.Collection", "PrimaryCollection")
-                        .WithMany()
-                        .HasForeignKey("PrimaryCollectionId");
                 });
 
             modelBuilder.Entity("Catfish.Core.Models.Relationship", b =>

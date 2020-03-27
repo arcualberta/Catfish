@@ -1,0 +1,31 @@
+﻿@model Catfish.Core.Models.Contents.ViewModels.ListEntries.EntityListEntry
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService Auth
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@using Catfish.Core.Models;
+@{
+    var id = Model.Id;
+    var modelType = Model.ModelType;
+    string detailsPage = null;
+    string editorPage = null;
+    if (Model.ModelType.StartsWith(typeof(Item).FullName))
+    {
+        detailsPage = Model.Id.ToString();
+        editorPage = "~/manager/item/edit/" + Model.Id;
+    }
+    else if (Model.ModelType.StartsWith(typeof(Collection).FullName))
+    {
+        detailsPage = Model.Id.ToString();
+        editorPage = "~/manager/collection/edit/" + Model.Id;
+    }
+
+}
+<li class="dd-item expanded">
+    <div class="sitemap-item">
+        <div class="handle dd-handle">
+            <i class="fas fa-ellipsis-v"></i>
+        </div>
+        <div class="link">
+            <a href="@detailsPage">@Model.Name.GetConcatenatedContent(" | ")</a>
+        </div>
+    </div>
+</li>

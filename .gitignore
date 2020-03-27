@@ -174,3 +174,4 @@ Plugins
 /Catfish/wwwroot/uploads
 
 .vs/
+/Catfish.UnitTests/appsettings.test.json

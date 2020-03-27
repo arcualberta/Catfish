@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Helpers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +8,13 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents
 {
-    public class MultilingualElement : XmlModel
+    public class MultilingualText : XmlModel
     {
-        protected List<Text> Values = new List<Text>();
+        public List<Text> Values = new List<Text>();
 
-        public MultilingualElement(string tagName) : base(tagName) { }
+        public MultilingualText(string tagName) : base(tagName) { }
 
-        public MultilingualElement(XElement data) : base(data) { }
+        public MultilingualText(XElement data) : base(data) { Initialize(); }
 
         public void Initialize()
         {
@@ -40,16 +41,14 @@ namespace Catfish.Core.Models.Contents
                 nameInGivenLanguage.Data.Value = value;
         }
 
-        public string GetContent(string lang)
+        public string GetConcatenatedContent(string separator)
         {
-            if (string.IsNullOrEmpty(lang))
-                lang = ConfigHelper.DefaultLanguageCode;
+            var selected = Values
+                .Where(v => !string.IsNullOrEmpty(v.Value))
+                .Select(v => v.Value)
+                .ToList();
 
-            Text selected = Values.Where(n => n.Language == lang).FirstOrDefault();
-            if (selected == null)
-                selected = Values.Where(n => !string.IsNullOrEmpty(n.Value)).FirstOrDefault();
-
-            return selected != null ? selected.Value : null;
+            return string.Join(separator, selected);
         }
 
     }
