@@ -83,6 +83,13 @@ namespace Catfish.Core.Services
                 .ToList();
             ret.ItemTypes.AddRange(itemTemplates);
 
+            //Adding the Collection type templates
+            var collectionTemplates = Db.CollectionTemplates
+                .Where(t => t.TargetType == new Collection().GetType().FullName)
+                .Select(t => new EntityTemplateListEntry(t))
+                .ToList();
+            ret.CollectionTypes.AddRange(collectionTemplates);
+
             return ret;
         }
     }
