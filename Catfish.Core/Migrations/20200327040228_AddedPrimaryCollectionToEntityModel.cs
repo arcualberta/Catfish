@@ -3,29 +3,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Catfish.Core.Migrations
 {
-    public partial class AddedPrimayCollectionToEntityModel : Migration
+    public partial class AddedPrimaryCollectionToEntityModel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
+            migrationBuilder.AddColumn<Guid>(
                 name: "PrimaryCollectionId",
                 table: "Catfish_Entities",
                 nullable: true);
 
-            migrationBuilder.AddColumn<Guid>(
-                name: "PrimaryCollectionId1",
-                table: "Catfish_Entities",
-                nullable: true);
-
             migrationBuilder.CreateIndex(
-                name: "IX_Catfish_Entities_PrimaryCollectionId1",
+                name: "IX_Catfish_Entities_PrimaryCollectionId",
                 table: "Catfish_Entities",
-                column: "PrimaryCollectionId1");
+                column: "PrimaryCollectionId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Catfish_Entities_Catfish_Entities_PrimaryCollectionId1",
+                name: "FK_Catfish_Entities_Catfish_Entities_PrimaryCollectionId",
                 table: "Catfish_Entities",
-                column: "PrimaryCollectionId1",
+                column: "PrimaryCollectionId",
                 principalTable: "Catfish_Entities",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
@@ -34,19 +29,15 @@ namespace Catfish.Core.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Catfish_Entities_Catfish_Entities_PrimaryCollectionId1",
+                name: "FK_Catfish_Entities_Catfish_Entities_PrimaryCollectionId",
                 table: "Catfish_Entities");
 
             migrationBuilder.DropIndex(
-                name: "IX_Catfish_Entities_PrimaryCollectionId1",
+                name: "IX_Catfish_Entities_PrimaryCollectionId",
                 table: "Catfish_Entities");
 
             migrationBuilder.DropColumn(
                 name: "PrimaryCollectionId",
-                table: "Catfish_Entities");
-
-            migrationBuilder.DropColumn(
-                name: "PrimaryCollectionId1",
                 table: "Catfish_Entities");
         }
     }

@@ -57,9 +57,9 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        public MultilingualElement Name { get; protected set; }
+        public MultilingualText Name { get; protected set; }
         [NotMapped]
-        public MultilingualElement Description { get; protected set; }
+        public MultilingualText Description { get; protected set; }
 
         [NotMapped]
         public XmlModelList<MetadataSet> MetadataSets { get; protected set; }
@@ -69,7 +69,7 @@ namespace Catfish.Core.Models
 
         public Collection PrimaryCollection { get; set; }
         [Column("PrimaryCollectionId")]
-        public int? PrimaryCollectionId { get; set; }
+        public Guid? PrimaryCollectionId { get; set; }
 
         
         public Entity()
@@ -100,8 +100,8 @@ namespace Catfish.Core.Models
 
             //Unlike in the cases of xml-attribute-based properties, the Name and Descrition
             //properties must be initialized every time the model is initialized. 
-            Name = new MultilingualElement(XmlHelper.GetElement(Data, "name", true));
-            Description = new MultilingualElement(XmlHelper.GetElement(Data, "description", true));
+            Name = new MultilingualText(XmlHelper.GetElement(Data, "name", true));
+            Description = new MultilingualText(XmlHelper.GetElement(Data, "description", true));
         }
 
         public T InstantiateViewModel<T>() where T : XmlModel

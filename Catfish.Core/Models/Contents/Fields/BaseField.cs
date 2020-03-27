@@ -11,8 +11,8 @@ namespace Catfish.Core.Models.Contents.Fields
     {
         public const string FieldTagName = "field";
 
-        public MultilingualElement Name { get; protected set; }
-        public MultilingualElement Description { get; protected set; }
+        public MultilingualText Name { get; protected set; }
+        public MultilingualText Description { get; protected set; }
 
         public BaseField() : base(FieldTagName) { }
         public BaseField(XElement data) : base(data) { }
@@ -20,10 +20,10 @@ namespace Catfish.Core.Models.Contents.Fields
         public BaseField(string name, string desc, string lang = null)
             : base(FieldTagName)
         {
-            Name = new MultilingualElement(GetElement("name", true));
+            Name = new MultilingualText(GetElement("name", true));
             Name.SetContent(name, lang);
 
-            Description = new MultilingualElement(GetElement("description", true));
+            Description = new MultilingualText(GetElement("description", true));
             Description.SetContent(desc, lang);
         }
 
