@@ -9,6 +9,7 @@ namespace Catfish.Helper
         bool IsAllowGoogleLogin();
         string GetGoogleClientId();
         string GetDefaultUserRole();
+        string GetGoogleCalendarAPIKey();
         
     }
 
@@ -23,6 +24,11 @@ namespace Catfish.Helper
         public string GetDefaultUserRole()
         {
             return _configuration["GoogleExternalLogin:DefaultUserRole"];
+        }
+
+        public string GetGoogleCalendarAPIKey()
+        {
+            return _configuration["GoogleCalendar:APIKey"];
         }
 
         public string GetGoogleClientId()

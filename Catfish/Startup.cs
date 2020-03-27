@@ -168,6 +168,7 @@ namespace Catfish
             // Build content types -- copied from piranha core mvcWeb example
             var pageTypeBuilder = new Piranha.AttributeBuilder.PageTypeBuilder(api)
                 .AddType(typeof(Models.BlogArchive))
+                
                 .AddType(typeof(Models.StandardPage))
                  .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MainPage))
@@ -228,17 +229,18 @@ namespace Catfish
         {
             App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block.js");
         }
         private void RegisterCustomBlocks()
         {
             //Register custom Block
             App.Blocks.Register<EmbedBlock>();
-           
+            App.Blocks.Register<CalendarBlock>();
         }
         private void RegisterCustomStyles()
         {
             App.Modules.Get<Piranha.Manager.Module>()
-                .Styles.Add("~/assets/css/CustomStyle.css");
+                .Styles.Add("~/assets/css/CustomComponentStyle.css");
 
         }
         private void RegisterPartialViews()
