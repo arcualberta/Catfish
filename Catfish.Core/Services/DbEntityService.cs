@@ -1,9 +1,10 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.ViewModels.ListEntries;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Entity;
+//using System.Data.Entity;
 
 namespace Catfish.Core.Services
 {
@@ -17,10 +18,10 @@ namespace Catfish.Core.Services
 
         protected IQueryable<Entity> BuildEntityListRetrieveQuery<T>(int offset = 0, int? max = null, Guid? primaryCollectionId = null)
         {
-            var query = Db.Entities.Include(e => e.PrimaryCollection);
-            query = primaryCollectionId.HasValue ?
-                query.Where(e => e is T && e.PrimaryCollectionId == primaryCollectionId) :
-                query.Where(e => e is T);
+            //var query = Db.Entities.Include(e => e.PrimaryCollection);
+            var query = primaryCollectionId.HasValue ?
+                Db.Entities.Include(e => e.PrimaryCollection).Where(e => e is T && e.PrimaryCollectionId == primaryCollectionId) :
+                Db.Entities.Include(e => e.PrimaryCollection).Where(e => e is T);
 
             if (offset > 0)
                 query = query.Skip(offset);
