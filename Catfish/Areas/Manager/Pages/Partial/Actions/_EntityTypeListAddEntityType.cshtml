@@ -3,9 +3,12 @@
 
 @*@if ((await Auth.AuthorizeAsync(User, Piranha.Manager.Permission.SitesAdd)).Succeeded)
     {*@
-        <button v-on:click.prevent="piranha.siteedit.create(load)" class="btn btn-primary btn-labeled">
+        <button v-on:click.prevent="piranha.siteedit.create(load)" class="btn btn-primary btn-labeled dropdown-toggle">
             <i class="fas fa-plus"></i>
-            @Localizer.Site["New Type"]
+            @Localizer.Site["New Item"]
         </button>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="pageGroup">
+            <a class="dropdown-item" :href="piranha.baseUrl + type.addUrl + site.id + '/' + type.id" v-for="type in pageTypes">{{ type.title }}</a>
+        </div>
     @*}*@
 

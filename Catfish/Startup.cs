@@ -228,6 +228,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/entitytypelist.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
         }
         private void RegisterCustomBlocks()
         {
