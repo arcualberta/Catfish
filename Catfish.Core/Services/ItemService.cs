@@ -36,17 +36,17 @@ namespace Catfish.Core.Services
                 .ToList();
 
             //List of items that does not have a primary collection
-            CollectionContent nullCollection = null;
+            CollectionContent root = null;
             if (items.Where(it => it.PrimaryCollectionId.HasValue == false).Any())
             {
-                nullCollection = new CollectionContent()
+                root = new CollectionContent()
                 {
                     Name = new MultilingualText(Entity.NameTag),
                     Description = new MultilingualText(Entity.DescriptionTag)
                 };
-                nullCollection.Name.SetContent("Root");
-                nullCollection.Description.SetContent("Items with no primary collection");
-                nullCollection.Items.AddRange(items.Where(it => it.PrimaryCollectionId == null));
+                root.Name.SetContent("Root");
+                root.Description.SetContent("Items with no primary collection");
+                root.Items.AddRange(items.Where(it => it.PrimaryCollectionId == null));
             }
 
 
@@ -70,9 +70,9 @@ namespace Catfish.Core.Services
 
             //TODO: order the collection array by the name of the collections in the default language
 
-            if(nullCollection != null)
+            if(root != null)
             {
-                ret.Collections.Insert(0, nullCollection);
+                ret.Collections.Insert(0, root);
             }
 
 
