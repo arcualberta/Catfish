@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Helpers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +10,7 @@ namespace Catfish.Core.Models.Contents
 {
     public class XmlModel
     {
+        [JsonIgnore]
         public XElement Data { get; protected set; }
 
         public static XmlModel InstantiateContentModel(XElement data)

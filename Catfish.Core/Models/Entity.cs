@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Helpers;
 using Catfish.Core.Models.Contents;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,7 +13,11 @@ namespace Catfish.Core.Models
     [Table("Catfish_Entities")]
     public class Entity
     {
-        //public Guid Id { get; set; }
+        public static readonly string Tag = "entity";
+        public static readonly string NameTag = "name";
+        public static readonly string DescriptionTag = "description";
+
+
         [Key]
         public Guid Id
         {
@@ -35,6 +40,7 @@ namespace Catfish.Core.Models
             }
         }
 
+        [JsonIgnore]
         [NotMapped]
         public virtual XElement Data { get; set; }
 
@@ -46,7 +52,7 @@ namespace Catfish.Core.Models
 
         public DateTime? Updated
         {
-            get { try { return DateTime.Parse(Data.Attribute("updated").Value); } catch (Exception) { return null as DateTime?; } }
+            get { try { return Data.Attribute("updated") != null ? DateTime.Parse(Data.Attribute("updated").Value) : null as DateTime?; } catch (Exception) { return null as DateTime?; } }
             set => Data.SetAttributeValue("updated", value);
         }
 
@@ -56,9 +62,9 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        public MultilingualElement Name { get; protected set; }
+        public MultilingualText Name { get; protected set; }
         [NotMapped]
-        public MultilingualElement Description { get; protected set; }
+        public MultilingualText Description { get; protected set; }
 
         [NotMapped]
         public XmlModelList<MetadataSet> MetadataSets { get; protected set; }
@@ -68,7 +74,7 @@ namespace Catfish.Core.Models
 
         public Collection PrimaryCollection { get; set; }
         [Column("PrimaryCollectionId")]
-        public int? PrimaryCollectionId { get; set; }
+        public Guid? PrimaryCollectionId { get; set; }
 
         
         public Entity()
@@ -86,7 +92,7 @@ namespace Catfish.Core.Models
         public virtual void Initialize(bool regenerateId)
         {
             if (Data == null)
-                Data = new XElement("entity");
+                Data = new XElement(Tag);
 
             if (regenerateId || Data.Attribute("id") == null)
                 Id = Guid.NewGuid();
@@ -99,8 +105,8 @@ namespace Catfish.Core.Models
 
             //Unlike in the cases of xml-attribute-based properties, the Name and Descrition
             //properties must be initialized every time the model is initialized. 
-            Name = new MultilingualElement(XmlHelper.GetElement(Data, "name", true));
-            Description = new MultilingualElement(XmlHelper.GetElement(Data, "description", true));
+            Name = new MultilingualText(XmlHelper.GetElement(Data, Entity.NameTag, true));
+            Description = new MultilingualText(XmlHelper.GetElement(Data, Entity.DescriptionTag, true));
         }
 
         public T InstantiateViewModel<T>() where T : XmlModel

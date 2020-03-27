@@ -2,48 +2,44 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Catfish.Core.Models.Contents.ViewModels;
+using Catfish.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Catfish.Core.Services;
-using Catfish.Core.Models;
-using Catfish.Core.Models.Contents.ViewModels.ListEntries;
 
 namespace Catfish.Areas.Manager.Controllers
 {
     [Route("manager/api/[controller]")]
     [ApiController]
-    public class EntityTypesController : ControllerBase
+    public class ItemsController : ControllerBase
     {
-        protected EntityTypeService Srv { get; set; }
-
-        public EntityTypesController(EntityTypeService srv)
-            :base()
+        private ItemService _srv;
+        public ItemsController(ItemService srv)
         {
-            Srv = srv;
+            _srv = srv;
         }
-
-        // GET: api/EntityTypes
+        // GET: api/Items
         [HttpGet]
-        public IList<EntityTemplateListEntry> Get()
+        public ItemListVM Get(int offset = 0, int max = 0)
         {
-            List<EntityTemplateListEntry> templates = Srv.GetEntityTemplateListEntries().ToList();
-            return templates;
+            ItemListVM vm = _srv.GetItems(offset, max);
+            return vm;
         }
 
-        // GET: api/EntityTypes/5
+        // GET: api/Items/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";
         }
 
-        // POST: api/EntityTypes
+        // POST: api/Items
         [HttpPost]
         public void Post([FromBody] string value)
         {
         }
 
-        // PUT: api/EntityTypes/5
+        // PUT: api/Items/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {

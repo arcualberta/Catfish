@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Catfish.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200317194149_AddedPrimayCollectionToEntityModel")]
-    partial class AddedPrimayCollectionToEntityModel
+    [Migration("20200327062110_AddedTargetTypeToEntityTemplate")]
+    partial class AddedTargetTypeToEntityTemplate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.2")
+                .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -37,11 +37,8 @@ namespace Catfish.Core.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PrimaryCollectionId")
+                    b.Property<Guid?>("PrimaryCollectionId")
                         .HasColumnName("PrimaryCollectionId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("PrimaryCollectionId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("Updated")
@@ -49,7 +46,7 @@ namespace Catfish.Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PrimaryCollectionId1");
+                    b.HasIndex("PrimaryCollectionId");
 
                     b.ToTable("Catfish_Entities");
 
@@ -87,7 +84,10 @@ namespace Catfish.Core.Migrations
                 {
                     b.HasBaseType("Catfish.Core.Models.Entity");
 
-                    b.Property<string>("TypeName")
+                    b.Property<string>("TargetType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TemplateName")
                         .HasColumnType("nvarchar(max)");
 
                     b.ToTable("Catfish_Entities");
@@ -126,7 +126,7 @@ namespace Catfish.Core.Migrations
                 {
                     b.HasOne("Catfish.Core.Models.Collection", "PrimaryCollection")
                         .WithMany()
-                        .HasForeignKey("PrimaryCollectionId1");
+                        .HasForeignKey("PrimaryCollectionId");
                 });
 
             modelBuilder.Entity("Catfish.Core.Models.Relationship", b =>

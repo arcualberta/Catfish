@@ -1,9 +1,10 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.ViewModels.ListEntries;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Entity;
+//using System.Data.Entity;
 
 namespace Catfish.Core.Services
 {
@@ -15,12 +16,12 @@ namespace Catfish.Core.Services
             Db = db;
         }
 
-        protected IQueryable<Entity> BuildEntityListRetrieveQuery<T>(int offset = 0, int? max = null, int? primaryCollectionId = null)
+        protected IQueryable<Entity> BuildEntityListRetrieveQuery<T>(int offset = 0, int? max = null, Guid? primaryCollectionId = null)
         {
-            var query = Db.Entities.Include(e => e.PrimaryCollection);
-            query = primaryCollectionId.HasValue ?
-                query.Where(e => e is T && e.PrimaryCollectionId == primaryCollectionId) :
-                query.Where(e => e is T);
+            //var query = Db.Entities.Include(e => e.PrimaryCollection);
+            var query = primaryCollectionId.HasValue ?
+                Db.Entities.Include(e => e.PrimaryCollection).Where(e => e is T && e.PrimaryCollectionId == primaryCollectionId) :
+                Db.Entities.Include(e => e.PrimaryCollection).Where(e => e is T);
 
             if (offset > 0)
                 query = query.Skip(offset);
@@ -29,14 +30,14 @@ namespace Catfish.Core.Services
 
             return query;
         }
-        public IQueryable<Item> GetItems(int offset = 0, int? max = null, int? primaryCollectionId = null)
+        public IQueryable<Item> GetItems(int offset = 0, int? max = null, Guid? primaryCollectionId = null)
         {
             IQueryable<Entity> query = BuildEntityListRetrieveQuery<Item>(offset, max, primaryCollectionId);
             IQueryable<Item> ret = query.Select(e => e as Item);
             return ret;
         }
 
-        public IQueryable<Collection> GetCollections(int offset = 0, int? max = null, int? primaryCollectionId = null)
+        public IQueryable<Collection> GetCollections(int offset = 0, int? max = null, Guid? primaryCollectionId = null)
         {
             IQueryable<Entity> query = BuildEntityListRetrieveQuery<Collection>(offset, max, primaryCollectionId);
             IQueryable<Collection> ret = query.Select(e => e as Collection);
@@ -44,7 +45,7 @@ namespace Catfish.Core.Services
         }
 
 
-        public IQueryable<EntityListEntry> GetEntityList<T>(int offset = 0, int? max = null, int? primaryCollectionId = null)
+        public IQueryable<EntityListEntry> GetEntityList<T>(int offset = 0, int? max = null, Guid? primaryCollectionId = null)
         {
             IQueryable<Entity> entities = BuildEntityListRetrieveQuery<T>(offset, max, primaryCollectionId);
             IQueryable<EntityListEntry> ret = entities.Select(e => new EntityListEntry(e));

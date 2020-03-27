@@ -12,18 +12,27 @@ namespace Catfish.Core.Models.Contents.ViewModels.ListEntries
 
         public string TypeName { get; set; }
         public string EntityType { get; set; }
+        public string AddURL { get; set; }
         public EntityTemplateListEntry(EntityTemplate et)
             : base(et)
         {
-            TypeName = et.TypeName;
+            TypeName = et.TemplateName;
 
             var t = Type.GetType(ModelType);
             if (typeof(Collection).IsAssignableFrom(t))
+            {
                 EntityType = Enum.GetName(typeof(eEntityType), eEntityType.Collection);
+                AddURL = "manager/api/collections/add";
+            }
             else if (typeof(Item).IsAssignableFrom(t))
+            {
                 EntityType = Enum.GetName(typeof(eEntityType), eEntityType.Item);
+                AddURL = "manager/api/items/add";
+            }
             else
+            {
                 EntityType = Enum.GetName(typeof(eEntityType), eEntityType.Other);
+            }
         }
     }
 }

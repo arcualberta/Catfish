@@ -21,16 +21,20 @@
     <Compile Remove="Migrations\20200317174606_AddedPrimayCollectionToEntityModel.Designer.cs" />
     <Compile Remove="Migrations\20200317191742_AddedPrimayCollectionToEntityModel.cs" />
     <Compile Remove="Migrations\20200317191742_AddedPrimayCollectionToEntityModel.Designer.cs" />
+    <Compile Remove="Migrations\20200317194149_AddedPrimayCollectionToEntityModel.cs" />
+    <Compile Remove="Migrations\20200317194149_AddedPrimayCollectionToEntityModel.Designer.cs" />
+    <Compile Remove="Migrations\20200326211416_ChangedPrimaryCollectionIdToGuid.cs" />
+    <Compile Remove="Migrations\20200326211416_ChangedPrimaryCollectionIdToGuid.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.4.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.0">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
 </Project>

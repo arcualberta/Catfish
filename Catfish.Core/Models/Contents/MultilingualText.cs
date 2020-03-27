@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Helpers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +8,13 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents
 {
-    public class MultilingualElement : XmlModel
+    public class MultilingualText : XmlModel
     {
         public List<Text> Values = new List<Text>();
 
-        public MultilingualElement(string tagName) : base(tagName) { }
+        public MultilingualText(string tagName) : base(tagName) { }
 
-        public MultilingualElement(XElement data) : base(data) { Initialize(); }
+        public MultilingualText(XElement data) : base(data) { Initialize(); }
 
         public void Initialize()
         {
