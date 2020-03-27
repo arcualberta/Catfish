@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Catfish.Core.Models.Contents.ViewModels;
+using Catfish.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +13,17 @@ namespace Catfish.Areas.Manager.Controllers
     [ApiController]
     public class ItemsController : ControllerBase
     {
+        private ItemService _srv;
+        public ItemsController(ItemService srv)
+        {
+            _srv = srv;
+        }
         // GET: api/Items
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ItemListVM Get(int offset = 0, int max = 0)
         {
-            return new string[] { "value1", "value2" };
+            ItemListVM vm = _srv.GetItems(offset, max);
+            return vm;
         }
 
         // GET: api/Items/5

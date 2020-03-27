@@ -94,8 +94,9 @@ namespace Catfish.Core.Services
 
             ItemTemplate et = new ItemTemplate()
             {
-                TypeName = "Doublin Core Item",
-                Data = item.Data
+                TemplateName = "Doublin Core Item",
+                Data = item.Data,
+                TargetType = item.GetType().FullName
             };
             return et;
         }
@@ -107,8 +108,9 @@ namespace Catfish.Core.Services
 
             ItemTemplate et = new ItemTemplate()
             {
-                TypeName = "Default Item",
-                Data = item.Data
+                TemplateName = "Default Item",
+                Data = item.Data,
+                TargetType = item.GetType().FullName
             };
             return et;
         }
@@ -120,8 +122,9 @@ namespace Catfish.Core.Services
 
             CollectionTemplate et = new CollectionTemplate()
             {
-                TypeName = "Doublin Core Collection",
-                Data = collection.Data
+                TemplateName = "Doublin Core Collection",
+                Data = collection.Data,
+                TargetType = collection.GetType().FullName
             };
             return et;
         }
@@ -133,8 +136,9 @@ namespace Catfish.Core.Services
 
             CollectionTemplate et = new CollectionTemplate()
             {
-                TypeName = "Default Collection",
-                Data = collection.Data
+                TemplateName = "Default Collection",
+                Data = collection.Data,
+                TargetType = collection.GetType().FullName
             };
             return et;
         }
@@ -146,20 +150,20 @@ namespace Catfish.Core.Services
             EntityTemplate template;
 
             template = NewDefaultItem();
-            if (!Db.ItemTemplates.Where(et => et.TypeName == template.TypeName).Any())
+            if (!Db.ItemTemplates.Where(et => et.TemplateName == template.TemplateName).Any())
                 Db.ItemTemplates.Add(template as ItemTemplate);
             Db.SaveChanges();
 
             template = NewDublinCoreItem();
-            if (!Db.ItemTemplates.Where(et => et.TypeName == template.TypeName).Any())
+            if (!Db.ItemTemplates.Where(et => et.TemplateName == template.TemplateName).Any())
                 Db.ItemTemplates.Add(template as ItemTemplate);
 
             template = NewDefaultCollection();
-            if (!Db.CollectionTemplates.Where(et => et.TypeName == template.TypeName).Any())
+            if (!Db.CollectionTemplates.Where(et => et.TemplateName == template.TemplateName).Any())
                 Db.CollectionTemplates.Add(template as CollectionTemplate);
 
             template = NewDublinCoreCollection();
-            if (!Db.CollectionTemplates.Where(et => et.TypeName == template.TypeName).Any())
+            if (!Db.CollectionTemplates.Where(et => et.TemplateName == template.TemplateName).Any())
                 Db.CollectionTemplates.Add(template as CollectionTemplate);
 
             Db.SaveChanges();

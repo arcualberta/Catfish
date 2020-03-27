@@ -7,7 +7,8 @@ namespace Catfish.Core.Models
 {
     public class EntityTemplate : Entity
     {
-        public string TypeName { get; set; }
+        public string TargetType { get; set; }
+        public string TemplateName { get; set; }
 
         public EntityTemplate()
         {

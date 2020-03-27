@@ -1,14 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Xml.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Catfish.Core.Models.Contents
 {
     public class Text : XmlModel
     {
         public const string TagName = "text";
-        public enum eFormat { plain, rich, css, javascript }
+        public enum eFormat {
+            [EnumMember(Value = "plain")]
+            plain,
+            [EnumMember(Value = "rich-text")] 
+            rich,
+            [EnumMember(Value = "css")] 
+            css,
+            [EnumMember(Value = "javascript")] 
+            javascript 
+        }
 
         /////// <summary>
         /////// Override the default XElement creator method in XmlModel because
@@ -19,17 +31,18 @@ namespace Catfish.Core.Models.Contents
         ////{
         ////}
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public eFormat Format
         {
-            get => (eFormat)Enum.Parse(typeof(eFormat), Data.Attribute("format").Value);
+            get => Data.Attribute("format") == null ? eFormat.plain : (eFormat)Enum.Parse(typeof(eFormat), Data.Attribute("format").Value);
             set => Data.SetAttributeValue("format", value);
         }
 
-        public string Language => Data.Attribute("lang").Value;
+        public string Language => Data.Attribute("lang") == null ? null : Data.Attribute("lang").Value;
 
         public int Rank
         {
-            get => int.Parse(Data.Attribute("rank").Value);
+            get => Data.Attribute("rank") == null ? 0 : int.Parse(Data.Attribute("rank").Value);
             set => Data.SetAttributeValue("rank", value);
         }
 

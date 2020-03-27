@@ -15,7 +15,7 @@ namespace Catfish.Core.Models.Contents.ViewModels.ListEntries
         public EntityTemplateListEntry(EntityTemplate et)
             : base(et)
         {
-            TypeName = et.TypeName;
+            TypeName = et.TemplateName;
 
             var t = Type.GetType(ModelType);
             if (typeof(Collection).IsAssignableFrom(t))

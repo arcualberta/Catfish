@@ -20,7 +20,7 @@ namespace Catfish.Core.Models.Contents.Fields
         public BaseField(string name, string desc, string lang = null)
             : base(FieldTagName)
         {
-            Name = new MultilingualText(GetElement("name", true));
+            Name = new MultilingualText(GetElement(Entity.NameTag, true));
             Name.SetContent(name, lang);
 
             Description = new MultilingualText(GetElement("description", true));
@@ -41,7 +41,7 @@ namespace Catfish.Core.Models.Contents.Fields
                     if (nameInGivenLanguage == null)
                     {
                         nameInGivenLanguage = new Text(name, lang);
-                        GetElement("name", true).Add(nameInGivenLanguage.Data);
+                        GetElement(Entity.NameTag, true).Add(nameInGivenLanguage.Data);
                         mName.Add(nameInGivenLanguage);
                     }
                     else
@@ -74,7 +74,7 @@ namespace Catfish.Core.Models.Contents.Fields
             if (descInGivenLanguage == null)
             {
                 descInGivenLanguage = new Text(name, lang);
-                GetElement("description", true).Add(descInGivenLanguage.Data);
+                GetElement(Entity.DescriptionTag, true).Add(descInGivenLanguage.Data);
                 mDesc.Add(descInGivenLanguage);
             }
             else

@@ -18,8 +18,8 @@ namespace Catfish.Core.Models.Contents
 
         public new void Initialize()
         {
-            Name = new MultilingualText(GetElement("name", true));
-            Description = new MultilingualText(GetElement("description", true));
+            Name = new MultilingualText(GetElement(Entity.NameTag, true));
+            Description = new MultilingualText(GetElement(Entity.DescriptionTag, true));
         }
     }
 }

@@ -81,7 +81,7 @@ namespace Catfish.UnitTests
 
             EntityTemplate entityType = new EntityTemplate()
             {
-                TypeName = "Defauly Item"
+                TemplateName = "Defauly Item"
             };
 
             ms.Data.Save("metadata.xml");

@@ -114,6 +114,7 @@ namespace Catfish
             //Catfish services
             services.AddScoped<EntityTypeService>();
             services.AddScoped<DbEntityService>();
+            services.AddScoped<ItemService>();
 
         }
 
