@@ -24,10 +24,10 @@
                 <partial name="Partial/_Menu.cshtml" />
             </div>
             <div class="signinout">
-                <button id="btnSignIn" onclick="window.location.href = '/login'; return false;" >SignIn</button>
+                <button id="btnSignIn" onclick="window.location.href = '/login'; return false;" >Sign In</button>
                 @{ if (User.Identity.IsAuthenticated)
                     {
-                         <button id="btnSignOut" onclick="signOut(); return false;">SignOut</button>
+                         <button id="btnSignOut" onclick="signOut(); return false;">Sign Out</button>
                     }
                   }
             </div>
@@ -36,7 +36,3 @@
     </div>
 
 </header>
-
-<script>
-
-</script>
