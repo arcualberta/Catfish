@@ -303,7 +303,7 @@ namespace Catfish
                 Name = "Collections",
                 // Params="{Controller=home}/{Action=index}/{id?}",
                 Route = "/manager/collections/",
-                Css = "fas fa-brain",
+                Css = "fas fa-suitcase",
                 //Policy = "MyCustomPolicy",
                 // Action = ""
             });
@@ -314,7 +314,7 @@ namespace Catfish
                 Name = "Items",
                 // Params="{Controller=home}/{Action=index}/{id?}",
                 Route = "/manager/items/",
-                Css = "fas fa-brain",
+                Css = "fas fa-clipboard-list",
                 //Policy = "MyCustomPolicy",
                 // Action = ""
             });
