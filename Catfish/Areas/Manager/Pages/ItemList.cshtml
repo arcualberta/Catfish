@@ -56,10 +56,20 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="sitemap sitemap-container dd" data-id="{ site.id }">
+                            <div class="sitemap sitemap-container dd" data-id="{ collection.id }">
                                 <ol class="dd-list">
-                                    <!-- TODO need to add this vue component, or put that other partials loop here-->
-                                    <sitemap-item v-for="item in collection.pages" v-bind:key="item.id" v-bind:item="item"></sitemap-item>
+                                    <!-- maybe this can be a partial once you learn about them more? -->
+                                    <li v-for="item in collection.items" class="dd-item expanded">
+                                        <div class="sitemap-item">
+                                            <div class="handle dd-handle">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </div>
+                                            <div class="link"> {{item.name.values[0].value}}
+                                             @*   <a href="@detailsPage">@Model.TypeName</a> *@
+                                            </div>
+                                        </div>
+                                    </li>
+
                                 </ol>
                             </div>
                         </li>
