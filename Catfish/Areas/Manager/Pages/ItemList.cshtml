@@ -3,7 +3,8 @@
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<div id="overalltest">
+
+<div id="itemlist-page">
 	<div class="top">
 		<nav aria-label="breadcrumb">
 			<ol class="breadcrumb">
@@ -21,15 +22,6 @@
 			</div>
 		</div>
 	</div>
-
-
-    <!-- makes the items appear -->
-    @*
-	@foreach (var child in Model.Children)
-	{
-		<partial name="partial/@child.GetType().Name" model="@child" />
-        }
-    *@
 
 
 	<div class="container-fluid app" id="itemlist" :class="{ ready: !loading }"> 
