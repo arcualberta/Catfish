@@ -3,8 +3,7 @@
 @{
     ViewData["Title"] = "Calendar Block";
 }
-@*<script src="https://cdn.jsdelivr.net/npm/moment@2/moment.min.js"></script>
-    <script src="https://apis.google.com/js/api.js"></script>*@
+
 @{
 
     List<Catfish.Models.Blocks.CalendarEvent> CalendarEventList = Model.GetCalendarEvents();
@@ -14,13 +13,9 @@
 
 }
 
-@{
-//string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
-//string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
-//string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
-}
 
-<div  class="bs  container container-fluid google-calendar-panel calendar-events calendar-default">
+
+<div  class="container container-fluid google-calendar-panel calendar-events calendar-default">
     
 
 
