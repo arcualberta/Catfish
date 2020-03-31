@@ -128,7 +128,8 @@ var vm = new Vue({
          * -Only show items not in the collection (directly) already.
          * -Other collections, not including the current collection as well as
          * -Not including any collections with the current collection in it already
-         * (to avoid endless nesting).
+         * (to avoid endless nesting). TODO: this point isnt quite done as fully as it could be,
+         * there are mutiple levels to check for for this...
          * 
          */
         calculateAddItemList(currentCollection, currentItems) {
@@ -170,5 +171,6 @@ var vm = new Vue({
     },
     created(){
         this.load();
+        console.log(piranha);
 	}
 });
