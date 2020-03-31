@@ -20,5 +20,18 @@ namespace Catfish.Areas.Manager.Actions
 
                 }
             };
+
+        /// <summary>
+        /// Gets the actions available for the page list view.
+        /// </summary>
+        public static ActionList<ToolbarAction> CollectionList { get; private set; } = new ActionList<ToolbarAction>
+            {
+                new ToolbarAction
+                {
+                    InternalId = "AddCollection",
+                    ActionView = "Partial/Actions/_ItemListAddCollection"
+
+                }
+            };
     }
 }

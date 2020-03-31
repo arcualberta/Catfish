@@ -14,7 +14,7 @@
 
 		<div class="container-fluid">
 			<div class="top-nav">
-				@foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.EntityTypeList)
+				@foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.CollectionList)
 				{
 					<partial name="@action.ActionView" />
 				}
@@ -48,7 +48,7 @@
                                     <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
                                         <button id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-plus"></i>
-                                            @Localizer.Page["Add page"]
+                                            @Localizer.Page["Add item"]
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="pageGroup">
                                             <a class="dropdown-item" :href="piranha.baseUrl + type.addUrl + collection.id + '/' + type.id" v-for="type in itemTypes">{{ type.typeName }}</a>
