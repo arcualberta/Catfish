@@ -11,7 +11,8 @@ var vm = new Vue({
             addSiteId: null,
             addSiteTitle: null,
             addPageId: null,
-            addAfter: true
+            addAfter: true,
+            currentDropdownOptions: []
 		}
     },
     methods: {
@@ -119,7 +120,45 @@ var vm = new Vue({
                     self.addSiteTitle = e.title;
                 }
             });
-        }
+        },
+        /**
+         * Calculates the items/collections to show to the user upon
+         * clicking the 'Add Item' button.
+         * 
+         * -Only show items not in the collection (directly) already.
+         * -Other collections, not including the current collection as well as
+         * not including any collections with the current collection in it already
+         * (to avoid endless nesting).
+         * 
+         */
+        calculateAddItemList(currentCollection, currentItems) {
+            let otherCollections = [];
+            let otherItems = [];
+
+            for (let collection of this.collections) {
+                if (currentCollection !== collection) {
+                    otherCollections.push(collection);
+                } else {
+                    continue;
+                }
+
+                let difference = collection.items.filter(item => {
+                    return !currentItems.includes(item); 
+                });
+
+                //remove any items that may have appeared in multiple collections
+                //TODO: test that this works dont currently have collections with this occuring
+                let overallDifference = difference.filter(item => {
+                    return !otherItems.includes(item);
+                });
+                
+                otherItems = otherItems.concat(overallDifference);
+                //otherItems = otherItems.concat(difference);
+            }
+
+            this.currentDropdownOptions = otherItems.concat(otherCollections);
+            return this.currentDropdownOptions;
+		}
     },
     updated() {
         if (this.updateBindings) {
