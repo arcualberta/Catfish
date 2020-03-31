@@ -127,7 +127,7 @@ var vm = new Vue({
          * 
          * -Only show items not in the collection (directly) already.
          * -Other collections, not including the current collection as well as
-         * not including any collections with the current collection in it already
+         * -Not including any collections with the current collection in it already
          * (to avoid endless nesting).
          * 
          */
@@ -136,7 +136,7 @@ var vm = new Vue({
             let otherItems = [];
 
             for (let collection of this.collections) {
-                if (currentCollection !== collection) {
+                if (currentCollection !== collection && !collection.items.includes(currentCollection) ) {
                     otherCollections.push(collection);
                 } else {
                     continue;
