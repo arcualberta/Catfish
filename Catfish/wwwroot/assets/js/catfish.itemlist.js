@@ -18,6 +18,7 @@ if (document.getElementById("itemlist-page")) {
                 items: [],
                 collections: [],
                 itemTypes: [],
+                collectionTypes: [],
                 addSiteId: null,
                 addSiteTitle: null,
                 addPageId: null,
@@ -40,6 +41,7 @@ if (document.getElementById("itemlist-page")) {
                         .then(function (result) {
                             self.collections = result.collections;
                             self.itemTypes = result.itemTypes;
+                            self.collectionTypes = result.collectionTypes;
                             self.updateBindings = true;
                         })
                         .catch(function (error) { console.log("error:", error); });
