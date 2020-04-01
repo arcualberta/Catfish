@@ -41,12 +41,12 @@
                                 <div>
                                     <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
                                         <button id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled dropdown-toggle" 
-                                                data-toggle="dropdown" v-on:click="calculateAddItemList(collection, collection.items)" aria-haspopup="true" aria-expanded="false">
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-plus"></i>
                                             @Localizer.Page["Add item"]
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="pageGroup">
-                                            <a class="dropdown-item" :href="piranha.baseUrl + itemToAdd.addUrl + collection.id + '/' + itemToAdd.id" v-for="itemToAdd in currentDropdownOptions">{{ itemToAdd.name.values[0].value }}</a>
+                                            <a class="dropdown-item" :href="piranha.baseUrl + type.addUrl + collection.id + '/' + type.id" v-for="type in itemTypes">{{ type.typeName }}</a>
                                         </div>
                                     </div>
                                 </div>

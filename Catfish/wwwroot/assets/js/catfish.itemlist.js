@@ -145,6 +145,7 @@ if (document.getElementById("itemlist-page")) {
              * (to avoid endless nesting). TODO: this point isnt quite done as fully as it could be,
              * there are mutiple levels to check for for this...
              */
+            /*
             calculateAddItemList(currentCollection, currentItems) {
                 let otherCollections = [];
                 let otherItems = [];
@@ -172,7 +173,7 @@ if (document.getElementById("itemlist-page")) {
 
                 this.currentDropdownOptions = otherItems.concat(otherCollections);
                 return this.currentDropdownOptions;
-            }
+            }*/
         },
         updated() {
             if (this.updateBindings) {
