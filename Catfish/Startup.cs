@@ -177,6 +177,7 @@ namespace Catfish
                 .AddType(typeof(Models.StandardPage))
                  .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MainPage))
+                 .AddType(typeof(Models.ColsPage))
                 .Build()
                 .DeleteOrphans();
             var postTypeBuilder = new Piranha.AttributeBuilder.PostTypeBuilder(api)
@@ -264,7 +265,10 @@ namespace Catfish
 
         private void AddPartialViews()
         {
+            //Add partial View to Manager area
             //App.Modules.Manager().Partials.Add("Partial/_EntityTypeListAddEntityType");
+           //App.Modules.Manager().Partials.Add("~/Partial/ColsPage");
+            
         }
 
         private void AddManagerMenus()

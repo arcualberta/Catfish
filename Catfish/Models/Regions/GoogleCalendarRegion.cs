@@ -1,46 +1,35 @@
-﻿using System;
-using Piranha.Extend;
+﻿using Piranha.Extend;
 using Piranha.Extend.Fields;
-using Piranha.AttributeBuilder;
-using Piranha.Models;
-using static Google.Apis.Calendar.v3.CalendarService;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Calendar.v3;
-using Google.Apis.Calendar.v3.Data;
-using Google.Apis.Services;
-using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
 using Catfish.Helper;
+using System;
+using Google.Apis.Calendar.v3.Data;
+using System.Collections.Generic;
+using Google.Apis.Calendar.v3;
+using Google.Apis.Services;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace Catfish.Models.Blocks
+namespace Catfish.Models.Regions
 {
-
-
-    [BlockType(Name = "Calendar Block", Category = "Content", Component = "calendar-block", Icon = "fas fa-calendar-alt")]
-    public class CalendarBlock : Block
+    public class GoogleCalendarRegion
     {
-       
-        public TextField ApiKey { get; set; }
-        public TextField CalendarId { get; set; }
-        public NumberField DaysRangePast { get; set; }
-        public NumberField DaysRangeFuture { get; set; }
-        public NumberField MaxEvents { get; set; }
-        //public CalendarBlock()
-        //{
-        //}
-        //public CalendarBlock(ICatfishAppConfiguration catfishConfig)
-        //{
-        //    _catfishConfig = catfishConfig;
-        //    ApiKey = _catfishConfig.GetGoogleCalendarAPIKey();
-        //}
-        // Initializes the field
-        public async Task Init(ICatfishAppConfiguration config)
-        {
-            string apiKey = config.GetGoogleCalendarAPIKey();
+        private readonly ICatfishAppConfiguration _catfishConfig;
+        [Field(Placeholder = "Event Title")]
+        public StringField Title { get; set; }
 
-        }
+        [Field(Title ="Api Key", Placeholder ="Google API key")]
+        public StringField ApiKey { get; set; }
+        [Field(Title = "Calendar Id", Placeholder ="Your public Calendar ID")]
+        public StringField CalendarId { get; set; }
+        [Field(Title = "Number of Past Days", Placeholder ="Number of days in past you wish to include, please put 0 if you don't want to include past events")]
+        public NumberField DaysRangePast { get; set; }
+        [Field(Title = "Number of Future Days", Placeholder ="Number of days in future, default is 30")]
+        public NumberField DaysRangeFuture { get; set; }
+        [Field(Title = "Max Number of Events", Placeholder ="Max number of events you want to retrieve")]
+        public NumberField MaxEvents { get; set; }
+
+        public GoogleCalendarRegion() { }
+
+     
         public string GetCalendarId()
         {
             if (CalendarId != null)
@@ -86,7 +75,6 @@ namespace Catfish.Models.Blocks
             }
             return 100; //default value
         }
-
         public List<CalendarEvent> GetCalendarEvents()
         {
             List<CalendarEvent> CalendarEvents = new List<CalendarEvent>();
@@ -119,26 +107,11 @@ namespace Catfish.Models.Blocks
 
             return CalendarEvents;
         }
-
-    }//calendar block
-    public class CatfishAppConfig
-    {
-        private readonly ICatfishAppConfiguration _catfishConfig;
-        private readonly string ApiKey;
-
-        public CatfishAppConfig(ICatfishAppConfiguration config)
-        {
-            _catfishConfig = config;
-            ApiKey = _catfishConfig.GetGoogleCalendarAPIKey();
-        }
-
     }
+
 
     public class CalendarEvent
     {
-        //private readonly ICatfishAppConfiguration _catfishConfig;
-        //private readonly string ApiKey;
-
         public string Summary { get; set; }
         public string Description { get; set; }
         public string Location { get; set; }
@@ -228,13 +201,5 @@ namespace Catfish.Models.Blocks
             }
         }
     }
-
-    public enum GoogleCalendarPanelRenderMode
-    {
-        Default,
-        Flat,
-        Json
-    }
-
 
 }

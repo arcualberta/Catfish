@@ -5,6 +5,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Controllers\SetupController.cs" />
+    <Compile Remove="Models\CalendarPage.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

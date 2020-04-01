@@ -1,0 +1,18 @@
+﻿@model Catfish.Models.ColsPage
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    string apiKey = Model.CalendarRegion.ApiKey;
+    ViewBag.Title = "Testing google calendar region";
+}
+
+<div class="container container-fluid row">
+    <div class="col-md-8">
+        @Html.DisplayFor(m => m.Blocks)
+    </div>
+    <div class="col-md-4">
+        <partial name="Partial/GoogleCalendarRegion.cshtml" model="@Model.CalendarRegion" />
+    </div>
+
+</div>

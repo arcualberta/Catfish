@@ -114,17 +114,27 @@ namespace Catfish.Controllers
                 return StatusCode(401);//401 --UnAuthorized
             }
         }
-            /// <summary>
-            /// Gets the startpage with the given id.
-            /// </summary>
-            /// <param name="id">The unique page id</param>
-            /// <param name="draft">If a draft is requested</param>
-            //[Route("login")]
-            //public async Task<IActionResult> Login(Guid id, bool draft = false)
-            //{
-            //   // var model = await _loader.GetPageAsync<LoginPage>(id, HttpContext.User, draft);
 
-            //    return View(model);
-            //}
+        [Route("colspage")]
+        public async Task<IActionResult> ColsPage(Guid id, bool draft = false)
+        {
+
+            var model = await _loader.GetPageAsync<ColsPage>(id, HttpContext.User, draft);
+
+            return View(model);
+
         }
+        /// <summary>
+        /// Gets the startpage with the given id.
+        /// </summary>
+        /// <param name="id">The unique page id</param>
+        /// <param name="draft">If a draft is requested</param>
+        //[Route("login")]
+        //public async Task<IActionResult> Login(Guid id, bool draft = false)
+        //{
+        //   // var model = await _loader.GetPageAsync<LoginPage>(id, HttpContext.User, draft);
+
+        //    return View(model);
+        //}
+    }
 }
