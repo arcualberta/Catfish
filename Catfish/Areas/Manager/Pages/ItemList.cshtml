@@ -5,23 +5,25 @@
 
 
 <div id="itemlist-page">
-	<div class="top">
-		<nav aria-label="breadcrumb">
-			<ol class="breadcrumb">
-				<li class="breadcrumb-item">@Localizer.Menu["Entities"]</li>
-				<li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Items"]</li>
-			</ol>
-		</nav>
+    <div class="top">
+	    <div class="container-fluid top">
+		    <nav aria-label="breadcrumb">
+			    <ol class="breadcrumb">
+				    <li class="breadcrumb-item">@Localizer.Menu["Entities"]</li>
+				    <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Items"]</li>
+			    </ol>
+		    </nav>
 
-		<div class="container-fluid">
-			<div class="top-nav">
-				@foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.CollectionList)
-				{
-					<partial name="@action.ActionView" />
-				}
-			</div>
-		</div>
-	</div>
+		    <div class="container-fluid">
+			    <div class="top-nav">
+				    @foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.CollectionList)
+				    {
+					    <partial name="@action.ActionView" />
+				    }
+			    </div>
+		    </div>
+	    </div>
+    </div>
 
 
 	<div class="container-fluid app" id="itemlist" :class="{ ready: !loading }"> 
