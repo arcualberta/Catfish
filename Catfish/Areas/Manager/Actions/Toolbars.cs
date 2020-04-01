@@ -22,7 +22,7 @@ namespace Catfish.Areas.Manager.Actions
             };
 
         /// <summary>
-        /// Gets the actions available for the page list view.
+        /// Gets the actions available for the ItemList view.
         /// </summary>
         public static ActionList<ToolbarAction> CollectionList { get; private set; } = new ActionList<ToolbarAction>
             {

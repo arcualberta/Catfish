@@ -1,4 +1,14 @@
-﻿if (document.getElementById("itemlist-page")) {
+﻿/**
+ * Javascript Vue code for creating the item layout in ItemList.cshtml.
+ * It is modelled after the file piranha.pagelist.js in Piranha's source code.
+ */
+
+
+/**
+ * This check makes sure the file is only run on the page with
+ * the element. Not a huge deal, can be removed if it's causing issues.
+ */
+if (document.getElementById("itemlist-page")) {
     piranha.itemlist = new Vue({
         el: '#itemlist-page',
         data() {
@@ -16,6 +26,10 @@
             }
         },
         methods: {
+
+            /**
+             * Fetches and loads the data from an API call
+             * */
             load() {
                 var self = this;
                 console.log("running the code");
@@ -130,7 +144,6 @@
              * -Not including any collections with the current collection in it already
              * (to avoid endless nesting). TODO: this point isnt quite done as fully as it could be,
              * there are mutiple levels to check for for this...
-             * 
              */
             calculateAddItemList(currentCollection, currentItems) {
                 let otherCollections = [];

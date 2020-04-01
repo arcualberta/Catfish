@@ -1,6 +1,10 @@
 ﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService Auth
 @inject Piranha.Manager.ManagerLocalizer Localizer
 
+@* 
+    A 'New Collection' button with a dropdown option for the ItemList page.    
+*@
+
 @*@if ((await Auth.AuthorizeAsync(User, Piranha.Manager.Permission.SitesAdd)).Succeeded)
     {*@ 
     <!-- v-on:click.prevent="piranha.siteedit.create(load)" -->
