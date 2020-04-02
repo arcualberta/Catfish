@@ -24,7 +24,7 @@ if (document.getElementById("itemlist-page")) {
                 addPageId: null,
                 addAfter: true,
                 currentDropdownOptions: [],
-                tmp: false,
+                lastDropdownAction: null,
                 dropdowns: {}
             }
         },
@@ -50,8 +50,6 @@ if (document.getElementById("itemlist-page")) {
                                     this[collection.id] = { collapsed: false }
                                 }
 							}
-                            
-                            console.log("dropdowns:", this.dropdowns);
                         })
                         .catch(function (error) { console.log("error:", error); });
                 });
@@ -173,7 +171,67 @@ if (document.getElementById("itemlist-page")) {
              */
             toggleDropdown(collectionId) {
                 this.dropdowns[collectionId].collapsed === true ? this.dropdowns[collectionId].collapsed = false : this.dropdowns[collectionId].collapsed = true;
-			}
+                this.lastDropdownAction = this.dropdowns[collectionId].collapsed;
+            },
+
+            /**
+             * Will either expand or collapse all collections, depending on:
+             * - Majority open? Will collapse them all
+             * - Majority closed? Will expand them all
+             * - Tie? Do the opposite of the most recent action
+             * - Default action is to close all if others cannot make a clear action
+             **/
+            expandOrCollapseAll() {
+                console.log(Object.values(this.dropdowns));
+
+                let collapseCount = 0;
+                for (let item of Object.values(this.dropdowns)) {
+                    if (item.collapsed) {
+                        collapseCount++;
+					}
+                }
+
+                let expandedCount = Object.values(this.dropdowns).length - collapseCount;
+
+                if (collapseCount < expandedCount) {
+                    //collapse all
+                    this.collapseAll(true);
+                } else if (collapseCount > expandedCount) {
+                    //expand all
+                    this.collapseAll(false);
+                } else {
+                    //equal, check most recent action
+                    switch (this.lastDropdownAction) {
+                        case true:
+                            //expand all
+                            console.log('expand');
+                            this.collapseAll(false);
+                            break;
+                        case false:
+                            //collapse all
+                            console.log('collapse');
+                            this.controleAll(true);
+                            break;
+                        default:
+                            //collapse all
+                            this.collapseAll(true);
+                            break;
+					}
+				}
+
+            },
+            /**
+             * Expands or collapses all the collections
+             * @param isCollapsingAll whether to collapse or expand all,
+             * true to collapse all, false to expand all.
+             **/
+            collapseAll(isCollapsingAll) {
+                for (let key of Object.keys(this.dropdowns) ) {
+                    this.dropdowns[key].collapsed = isCollapsingAll;
+                }
+                $('.collapse').collapse("toggle");
+            },
+
             /**
              * Calculates the items/collections to show to the user upon
              * clicking the 'Add Item' button.

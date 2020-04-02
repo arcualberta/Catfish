@@ -35,7 +35,7 @@
                             <div class="sitemap-item" v-bind:key="collection.id">
                                 <a v-on:click="toggleDropdown(collection.id)" class="testme" data-toggle="collapse" :href="['#collapse-' + index ]">
                                     <div class="handle">
-                                        <i :class="{ 'fas fa-chevron-down': !dropdowns[collection.id].collapsed, 'fas fa-chevron-right': dropdowns[collection.id].collapsed}"></i>
+                                        <i :class="{ 'fas fa-chevron-down': !dropdowns[collection.id].collapsed, 'fas fa-chevron-up': dropdowns[collection.id].collapsed}"></i>
                                     </div>
                                 </a>
                                 <div class="link">

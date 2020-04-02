@@ -8,16 +8,13 @@
 @*@if ((await Auth.AuthorizeAsync(User, Piranha.Manager.Permission.SitesAdd)).Succeeded)
     {*@ 
     <!-- v-on:click.prevent="piranha.siteedit.create(load)" -->
-        <div class="dropdown collapse-expand">
-            <button data-toggle="dropdown" class="btn btn-primary btn-labeled dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-chevron-up"></i>
-                @Localizer.Site["Collapse All"]
-                <!--<i class="fas fa-chevron-down"></i>-->
-                @* @Localizer.Site["Expand All"] *@
+        <div class="collapse-expand">
+            <button v-on:click="expandOrCollapseAll()" class="btn btn-primary btn-labeled" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-chevron-circle-up"></i>
             </button>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="pageGroup">
+            <!--<div class="dropdown-menu dropdown-menu-right" aria-labelledby="pageGroup">-->
                 <!--<a class="dropdown-item" :href="piranha.baseUrl + type.addURL + '/' + type.id" v-for="type in collectionTypes">{{ type.typeName }}</a>--> <!-- + collection.id + -->
-            </div>
+            <!--</div>-->
         </div>
     @*}*@
 
