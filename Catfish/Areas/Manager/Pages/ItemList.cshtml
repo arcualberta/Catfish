@@ -33,9 +33,9 @@
                     <ol>
                         <li v-for="(collection, index) in collections">
                             <div class="sitemap-item" v-bind:key="collection.id">
-                                <a data-toggle="collapse" :href="['#collapse-' + index ]">
+                                <a v-on:click="toggleDropdown(collection.id)" class="testme" data-toggle="collapse" :href="['#collapse-' + index ]">
                                     <div class="handle">
-                                        <i class="fas fa-globe"></i>
+                                        <i :class="{ 'fas fa-chevron-down': !dropdowns[collection.id].collapsed, 'fas fa-chevron-right': dropdowns[collection.id].collapsed}"></i>
                                     </div>
                                 </a>
                                 <div class="link">

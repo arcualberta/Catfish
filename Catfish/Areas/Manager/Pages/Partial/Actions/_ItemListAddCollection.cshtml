@@ -8,7 +8,7 @@
 @*@if ((await Auth.AuthorizeAsync(User, Piranha.Manager.Permission.SitesAdd)).Succeeded)
     {*@ 
     <!-- v-on:click.prevent="piranha.siteedit.create(load)" -->
-        <div class="dropdown">
+        <div class="dropdown add-collection">
             <button data-toggle="dropdown" class="btn btn-primary btn-labeled dropdown-toggle" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-plus"></i>
                 @Localizer.Site["New Collection"]

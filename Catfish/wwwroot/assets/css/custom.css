@@ -1,3 +1,7 @@
-﻿#itemlist-page .container-fluid .top-nav{
+﻿#itemlist-page .container-fluid .top-nav {
 	display: flex;
+}
+
+#itemlist-page .container-fluid .top-nav .collapse-expand {
+	padding-right:10px;
 }

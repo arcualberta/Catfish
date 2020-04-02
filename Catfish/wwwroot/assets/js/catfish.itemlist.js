@@ -23,7 +23,9 @@ if (document.getElementById("itemlist-page")) {
                 addSiteTitle: null,
                 addPageId: null,
                 addAfter: true,
-                currentDropdownOptions: []
+                currentDropdownOptions: [],
+                tmp: false,
+                dropdowns: {}
             }
         },
         methods: {
@@ -33,7 +35,6 @@ if (document.getElementById("itemlist-page")) {
              * */
             load() {
                 var self = this;
-                console.log("running the code");
                 console.log(piranha.baseUrl + "manager/api/items");
                 piranha.permissions.load(function () {
                     fetch(piranha.baseUrl + "manager/api/items")
@@ -43,6 +44,14 @@ if (document.getElementById("itemlist-page")) {
                             self.itemTypes = result.itemTypes;
                             self.collectionTypes = result.collectionTypes;
                             self.updateBindings = true;
+
+                            self.dropdowns = new function () {
+                                for (let collection of self.collections) {
+                                    this[collection.id] = { collapsed: false }
+                                }
+							}
+                            
+                            console.log("dropdowns:", this.dropdowns);
                         })
                         .catch(function (error) { console.log("error:", error); });
                 });
@@ -137,6 +146,34 @@ if (document.getElementById("itemlist-page")) {
                     }
                 });
             },
+
+            /**
+             * For adding the dropdown control to the new collection
+             * */
+            addDropdownCollection(collectionId) {
+                this.dropdowns = new function () {
+                    this[collectionId] = { collapsed: false };
+				}
+            },
+
+            /**
+             * For removing the dropdown control to a deleted collection
+             * */
+            removeDropdownCollection(collectionId) {
+                delete this.dropdown[collectionId];
+            },
+
+            /**
+             * Toggles the collection to either open or closed.
+             * Icon for showing open/closed relies on open/closed state,
+             * hence the necessity for this function. TODO still not working well on fast clicks,
+             * if it can't be fixed then delete this function and just handle in template
+             * 
+             * @param {any} collectionId the collection's id to open/close
+             */
+            toggleDropdown(collectionId) {
+                this.dropdowns[collectionId].collapsed === true ? this.dropdowns[collectionId].collapsed = false : this.dropdowns[collectionId].collapsed = true;
+			}
             /**
              * Calculates the items/collections to show to the user upon
              * clicking the 'Add Item' button.
