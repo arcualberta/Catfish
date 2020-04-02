@@ -25,7 +25,8 @@ if (document.getElementById("itemlist-page")) {
                 addAfter: true,
                 currentDropdownOptions: [],
                 lastDropdownAction: null,
-                dropdowns: {}
+                dropdowns: {},
+                collapseAll: false
             }
         },
         methods: {
@@ -47,7 +48,7 @@ if (document.getElementById("itemlist-page")) {
 
                             self.dropdowns = new function () {
                                 for (let collection of self.collections) {
-                                    this[collection.id] = { collapsed: false }
+                                    this[collection.id] = { isCollapsed: false }
                                 }
 							}
                         })
@@ -170,66 +171,74 @@ if (document.getElementById("itemlist-page")) {
              * @param {any} collectionId the collection's id to open/close
              */
             toggleDropdown(collectionId) {
-                this.dropdowns[collectionId].collapsed === true ? this.dropdowns[collectionId].collapsed = false : this.dropdowns[collectionId].collapsed = true;
-                this.lastDropdownAction = this.dropdowns[collectionId].collapsed;
+                this.dropdowns[collectionId].isCollapsed === true ? this.dropdowns[collectionId].isCollapsed = false : this.dropdowns[collectionId].isCollapsed = true;
+                this.lastDropdownAction = this.dropdowns[collectionId].isCollapsed;
+                this.assessExpandOrCollapseAll();
             },
 
             /**
-             * Will either expand or collapse all collections, depending on:
+             *  Assesses whether the expand/collapse all button should be either showing
+             *  as expand all or collapse all.
+             *  
+             * Will store either expand or collapse all collections, depending on:
              * - Majority open? Will collapse them all
              * - Majority closed? Will expand them all
              * - Tie? Do the opposite of the most recent action
-             * - Default action is to close all if others cannot make a clear action
+             * - Default is to close all if others cannot make a clear action
              **/
-            expandOrCollapseAll() {
-                console.log(Object.values(this.dropdowns));
-
+            assessExpandOrCollapseAll() {
                 let collapseCount = 0;
                 for (let item of Object.values(this.dropdowns)) {
-                    if (item.collapsed) {
+                    if (!item.isCollapsed) {
                         collapseCount++;
-					}
+                    }
                 }
 
                 let expandedCount = Object.values(this.dropdowns).length - collapseCount;
+                console.log("collapseCount: ", collapseCount);
+                console.log("expandedCount: ", expandedCount);
 
                 if (collapseCount < expandedCount) {
                     //collapse all
-                    this.collapseAll(true);
+                    this.collapseAll = true;
                 } else if (collapseCount > expandedCount) {
                     //expand all
-                    this.collapseAll(false);
+                    this.collapseAll = false;
                 } else {
                     //equal, check most recent action
                     switch (this.lastDropdownAction) {
                         case true:
                             //expand all
                             console.log('expand');
-                            this.collapseAll(false);
+                            this.collapseAll = false;
                             break;
                         case false:
                             //collapse all
                             console.log('collapse');
-                            this.controleAll(true);
+                            this.collapseAll = true;
                             break;
                         default:
                             //collapse all
-                            this.collapseAll(true);
+                            this.collapseAll = true;
                             break;
-					}
-				}
+                    }
+                }
+			},
 
-            },
             /**
              * Expands or collapses all the collections
-             * @param isCollapsingAll whether to collapse or expand all,
-             * true to collapse all, false to expand all.
              **/
-            collapseAll(isCollapsingAll) {
+            collapseAllCollections() {
                 for (let key of Object.keys(this.dropdowns) ) {
-                    this.dropdowns[key].collapsed = isCollapsingAll;
+                    this.dropdowns[key].isCollapsed = this.collapseAll;
                 }
-                $('.collapse').collapse("toggle");
+                //toggle makes all dropdowns change to the opposite state, maybe useful later
+                if (this.collapseAll) {
+                    $('.collapse').collapse("show");
+                } else {
+                    $('.collapse').collapse("hide");
+                }
+                this.collapseAll = !this.collapseAll;
             },
 
             /**
