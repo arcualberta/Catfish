@@ -13,8 +13,13 @@ namespace Catfish.Models
        
         [Region(ListTitle = "Title")]
         public GoogleCalendarRegion CalendarRegion { get; set; }
+        [Region(ListTitle = "Title")]
+        public FacebookTimeline FacebookTimeline { get; set; }
 
-       public ColsPage()
+        [Region(ListTitle = "Title")]
+        public TwitterRegion TwitterRegion { get; set; }
+
+        public ColsPage()
         {
 
         }

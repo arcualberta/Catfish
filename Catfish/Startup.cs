@@ -267,7 +267,7 @@ namespace Catfish
         {
             //Add partial View to Manager area
             //App.Modules.Manager().Partials.Add("Partial/_EntityTypeListAddEntityType");
-           //App.Modules.Manager().Partials.Add("~/Partial/ColsPage");
+          
             
         }
 

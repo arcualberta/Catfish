@@ -3,9 +3,7 @@
 
 
 @{
-    //string cssId = string.IsNullOrEmpty(Model.CssId) ? Guid.NewGuid().ToString().Replace('-', 'K') : Model.CssId;
-    //string cssClasses = string.IsNullOrEmpty(Model.CssClasses) ? "" : Model.CssClasses;
-    //string cssStyles = string.IsNullOrEmpty(Model.CssStyles) ? "" : Model.CssStyles;
+  
 
     List<CalendarEvent> CalendarEvents = Model.GetCalendarEvents();
     bool showSummary = true;

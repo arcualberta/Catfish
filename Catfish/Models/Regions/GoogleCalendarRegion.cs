@@ -12,7 +12,7 @@ namespace Catfish.Models.Regions
 {
     public class GoogleCalendarRegion
     {
-        private readonly ICatfishAppConfiguration _catfishConfig;
+       // private readonly ICatfishAppConfiguration _catfishConfig;
         [Field(Placeholder = "Event Title")]
         public StringField Title { get; set; }
 
