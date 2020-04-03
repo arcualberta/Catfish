@@ -50,7 +50,8 @@ if (document.getElementById("itemlist-page")) {
                                 for (let collection of self.collections) {
                                     this[collection.id] = { isCollapsed: false }
                                 }
-							}
+                            }
+
                         })
                         .catch(function (error) { console.log("error:", error); });
                 });
@@ -195,8 +196,6 @@ if (document.getElementById("itemlist-page")) {
                 }
 
                 let expandedCount = Object.values(this.dropdowns).length - collapseCount;
-                console.log("collapseCount: ", collapseCount);
-                console.log("expandedCount: ", expandedCount);
 
                 if (collapseCount < expandedCount) {
                     //collapse all
@@ -292,6 +291,6 @@ if (document.getElementById("itemlist-page")) {
         created() {
             this.load();
             console.log(piranha);
-        }
+        },
     });
 }
