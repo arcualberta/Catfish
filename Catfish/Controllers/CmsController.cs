@@ -115,11 +115,11 @@ namespace Catfish.Controllers
             }
         }
 
-        [Route("colspage")]
-        public async Task<IActionResult> ColsPage(Guid id, bool draft = false)
+        [Route("mediapage")]
+        public async Task<IActionResult> MediaPage(Guid id, bool draft = false)
         {
 
-            var model = await _loader.GetPageAsync<ColsPage>(id, HttpContext.User, draft);
+            var model = await _loader.GetPageAsync<MediaPage>(id, HttpContext.User, draft);
 
             return View(model);
 

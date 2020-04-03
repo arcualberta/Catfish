@@ -14,5 +14,7 @@ namespace Catfish.Models.Regions
         public NumberField Width { get; set; }
         [Field(Title = "Height", Placeholder = "The widget's height")]
         public NumberField Height { get; set; }
+
+        public FacebookTimeline() { }
     }
 }

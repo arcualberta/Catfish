@@ -14,5 +14,7 @@ namespace Catfish.Models.Regions
         public NumberField Width { get; set; }
         [Field]
         public NumberField Height { get; set; }
+
+        public TwitterRegion() { }
     }
 }

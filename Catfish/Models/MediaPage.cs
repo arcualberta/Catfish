@@ -6,9 +6,9 @@ using Piranha.Models;
 
 namespace Catfish.Models
 {
-    [PageType(Title = "Two Cols Page", UseBlocks = true)]
-    [PageTypeRoute(Title = "Default", Route = "/colspage")]
-    public class ColsPage : Page<ColsPage>
+    [PageType(Title = "Social Media Page", UseBlocks = true)]
+    [PageTypeRoute(Title = "Default", Route = "/mediapage")]
+    public class MediaPage : Page<MediaPage>
     {
        
         [Region(ListTitle = "Title")]
@@ -19,7 +19,7 @@ namespace Catfish.Models
         [Region(ListTitle = "Title")]
         public TwitterRegion TwitterRegion { get; set; }
 
-        public ColsPage()
+        public MediaPage()
         {
 
         }

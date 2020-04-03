@@ -1,7 +1,8 @@
 ﻿@model Catfish.Models.Regions.TwitterRegion
 @{
     int width = Model.Width == null ? 300 : Convert.ToInt32(Model.Width.Value);
-     int height = Model.Height == null ? 400 : Convert.ToInt32(Model.Height.Value);
+    int height = Model.Height == null ? 400 : Convert.ToInt32(Model.Height.Value);
+    ViewBag.Title = "Twitter Timeline";
 }
 
     <div class="twitterRegion">
