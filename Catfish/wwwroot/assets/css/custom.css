@@ -2,6 +2,16 @@
 	display: flex;
 }
 
+#itemlist-page .container-fluid.top .left-nav-container{
+	display:flex;
+}
+
+#itemlist-page .container-fluid .top-nav.ce {
+	position: relative;
+	padding-right: 0;
+	padding-left: 0;
+}
+
 #itemlist-page .container-fluid .top-nav .collapse-expand {
-	padding-right:10px;
+	//padding-right:10px;
 }

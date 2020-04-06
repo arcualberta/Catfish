@@ -27,22 +27,24 @@ namespace Catfish.Areas.Manager.Actions
         public static ActionList<ToolbarAction> CollectionList { get; private set; } = new ActionList<ToolbarAction>
             {
 
-            new ToolbarAction
-                {
-                    InternalId = "CollapseExpand",
-                    ActionView = "Partial/Actions/_ItemListCollapseExpand"
-
-                },
-
-
-            new ToolbarAction
+                new ToolbarAction
                 {
                     InternalId = "AddCollection",
                     ActionView = "Partial/Actions/_ItemListAddCollection"
 
                 }
 
-                
             };
+
+        public static ActionList<ToolbarAction> CollapseExpandList { get; private set; } = new ActionList<ToolbarAction>
+        {
+                new ToolbarAction
+                {
+                    InternalId = "CollapseExpand",
+                    ActionView = "Partial/Actions/_ItemListCollapseExpand"
+
+                }
+
+        };
     }
 }

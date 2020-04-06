@@ -26,12 +26,20 @@
 <div id="itemlist-page">
     <div class="top">
 	    <div class="container-fluid top">
-		    <nav aria-label="breadcrumb">
-			    <ol class="breadcrumb">
-				    <li class="breadcrumb-item">@Localizer.Menu["Entities"]</li>
-				    <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Items"]</li>
-			    </ol>
-		    </nav>
+            <div class="left-nav-container">
+                <div class="top-nav ce">
+				    @foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.CollapseExpandList)
+				     {
+			            <partial name="@action.ActionView" />
+				     }
+			    </div>
+		        <nav aria-label="breadcrumb">
+			        <ol class="breadcrumb">
+				        <li class="breadcrumb-item">@Localizer.Menu["Entities"]</li>
+				        <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Items"]</li>
+			        </ol>
+		        </nav>
+            </div>
 
 		    <div class="container-fluid">
 			    <div class="top-nav">
