@@ -12,6 +12,6 @@
 	padding-left: 0;
 }
 
-#itemlist-page .container-fluid .top-nav .collapse-expand {
-	//padding-right:10px;
+#collapse-expand-button{
+	padding-right:0;
 }
