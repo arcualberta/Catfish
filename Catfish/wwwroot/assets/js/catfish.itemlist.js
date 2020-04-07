@@ -279,6 +279,9 @@ if (document.getElementById("itemlist-page")) {
                 this.currentDropdownOptions = otherItems.concat(otherCollections);
                 return this.currentDropdownOptions;
             }*/
+            openEditItem(itemId) {
+                window.location.href = 'edit/' + itemId;
+			}
         },
         updated() {
             if (this.updateBindings) {

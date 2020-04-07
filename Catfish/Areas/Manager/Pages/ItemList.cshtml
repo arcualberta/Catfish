@@ -92,7 +92,7 @@
                                             </div>
 
                                             <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
-                                                <button v-on:click="window.location.href = 'edit/' + item.id;" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
+                                                <button v-on:click="openEditItem(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
                                                     <i class="fas fa-pen"></i>
                                                     @Localizer.Page["Edit"]
                                                 </button>
