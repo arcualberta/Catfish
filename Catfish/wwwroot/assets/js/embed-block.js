@@ -25,8 +25,8 @@ Vue.component("embed-block", {
     },
     template: "<div  class= 'block-body'>" +
       
-        " <p class='lead' " +
+        " <textarea rows='4' cols='120' class='lead' " +
         "    v-html='model.embed.value' contenteditable='true' v-on:blur='onBlur' >Paste the iframe code here" +
-        "</p></div>"
+        "</textarea></div>"
 
 });
