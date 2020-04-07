@@ -14,7 +14,6 @@ using System.Linq;
 using Catfish.Models.Fields;
 using Catfish.Models.Blocks;
 using Piranha.Data.EF.SQLServer;
-using Catfish.Helper;
 using Catfish.Core.Services;
 
 namespace Catfish
@@ -30,18 +29,13 @@ namespace Catfish
         /// Default constructor.
         /// </summary>
         /// <param name="configuration">The current configuration</param>
-        public Startup(IConfiguration configuration, IHostEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-           // Configuration = configuration;
+            Configuration = configuration;
 
             // Initialize the IConfiguration of the ConfigHelper so that it can be used by 
             // elsewhere in the Catfish.Core project.
-          //  Catfish.Core.Helpers.ConfigHelper.Configuration = configuration;
-
-            //March 12 -2020
-            var builder = new ConfigurationBuilder().SetBasePath(env.ContentRootPath)
-                                                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-            Configuration = builder.Build();
+            Catfish.Core.Helpers.ConfigHelper.Configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -74,7 +68,6 @@ namespace Catfish
              /* sql server configuration based on ==> http://piranhacms.org/blog/announcing-80-for-net-core-31    */
             services.AddPiranhaEF<SQLServerDb>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("catfish")));
-           
             services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("catfish")));
 
@@ -118,9 +111,7 @@ namespace Catfish
                 
             });
 
-            //March 12 2020 -- register local services
             //Catfish services
-            services.AddSingleton<ICatfishAppConfiguration, ReadAppConfiguration>();
             services.AddScoped<EntityTypeService>();
             services.AddScoped<DbEntityService>();
             services.AddScoped<ItemService>();
@@ -166,18 +157,17 @@ namespace Catfish
             app.UsePiranha(options => {
                 options.UseManager();
                 options.UseTinyMCE();
-                
+                options.UseIdentity();                
+              
             });
 
             //MR Feb 7 2020 -- add classic MVC routing
             // Build content types -- copied from piranha core mvcWeb example
             var pageTypeBuilder = new Piranha.AttributeBuilder.PageTypeBuilder(api)
                 .AddType(typeof(Models.BlogArchive))
-                
                 .AddType(typeof(Models.StandardPage))
                  .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MainPage))
-                 .AddType(typeof(Models.MediaPage))
                 .Build()
                 .DeleteOrphans();
             var postTypeBuilder = new Piranha.AttributeBuilder.PostTypeBuilder(api)
@@ -238,21 +228,20 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/entitytypelist.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
         }
         private void RegisterCustomBlocks()
         {
             //Register custom Block
             App.Blocks.Register<EmbedBlock>();
-            App.Blocks.Register<CalendarBlock>();
+           
         }
         private void RegisterCustomStyles()
         {
+            
              App.Modules.Get<Piranha.Manager.Module>()
                 .Styles.Add("~/assets/css/custom.css");
-            App.Modules.Get<Piranha.Manager.Module>()
-                .Styles.Add("~/assets/css/CustomComponentStyle.css");
+                
         }
         #endregion
 
@@ -267,10 +256,7 @@ namespace Catfish
 
         private void AddPartialViews()
         {
-            //Add partial View to Manager area
             //App.Modules.Manager().Partials.Add("Partial/_EntityTypeListAddEntityType");
-          
-            
         }
 
         private void AddManagerMenus()
@@ -296,7 +282,7 @@ namespace Catfish
             {
                 InternalId = "EntityTypes",
                 Name = "EntityTypes",
-               // Params="{Controller=home}/{Action=index}/{id?}",
+                // Params="{Controller=home}/{Action=index}/{id?}",
                 Route = "/manager/entitytypes/",
                 Css = "fas fa-brain",
                 //Policy = "MyCustomPolicy",
@@ -309,7 +295,7 @@ namespace Catfish
                 Name = "Collections",
                 // Params="{Controller=home}/{Action=index}/{id?}",
                 Route = "/manager/collections/",
-                Css = "fas fa-suitcase",
+                Css = "fas fa-brain",
                 //Policy = "MyCustomPolicy",
                 // Action = ""
             });
@@ -320,7 +306,7 @@ namespace Catfish
                 Name = "Items",
                 // Params="{Controller=home}/{Action=index}/{id?}",
                 Route = "/manager/items/",
-                Css = "fas fa-clipboard-list",
+                Css = "fas fa-brain",
                 //Policy = "MyCustomPolicy",
                 // Action = ""
             });

@@ -1,1 +1,21 @@
 ﻿@page "~/manager/items/edit/{id:Guid}"
+@inject Piranha.Manager.ManagerLocalizer Localizer
+
+<div id="item-edit-page">
+    <div class="top">
+	    <div class="container-fluid top">
+            <div class="left-nav-container">
+		        <nav aria-label="breadcrumb">
+			        <ol class="breadcrumb">
+				        <li class="breadcrumb-item">@Localizer.Menu["Entities"]</li>
+				        <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Items"]</li>
+						<li class=""> : {{itemId}}</li>
+			        </ol>
+		        </nav>
+            </div>
+	    </div>
+    </div>
+
+
+
+</div>

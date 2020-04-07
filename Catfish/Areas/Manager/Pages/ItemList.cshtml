@@ -1,27 +1,8 @@
 ﻿@page "~/manager/items"
-@*@model Catfish.Areas.Manager.Pages.ItemListModel*@
-@model Catfish.Core.Models.Contents.ViewModels.ListEntries.EntityListEntry 
-@*<-change this*@
+@model Catfish.Areas.Manager.Pages.ItemListModel
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@*@using Catfish.Core.Models;
-@{
-    var id = Model.Id;
-    var modelType = Model.ModelType;
-    string detailsPage = null;
-    string editorPage = null;
-    if (Model.ModelType.StartsWith(typeof(Item).FullName))
-    {
-        detailsPage = Model.Id.ToString();
-        editorPage = "~/manager/item/edit/" + Model.Id; //~/manager/items/
-    }
-    else if (Model.ModelType.StartsWith(typeof(Collection).FullName))
-    {
-        detailsPage = Model.Id.ToString();
-        editorPage = "~/manager/collection/edit/" + Model.Id;
-    }
 
-}*@
 
 <div id="itemlist-page">
     <div class="top">
