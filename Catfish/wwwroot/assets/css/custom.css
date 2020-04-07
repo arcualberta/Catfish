@@ -12,6 +12,10 @@
 	padding-left: 0;
 }
 
-#collapse-expand-button{
-	padding-right:0;
+#itemlist-page .container-fluid.collection-button-holder{
+	min-width:390px;
+}
+
+#collapse-expand-button {
+	padding-right: 0;
 }
