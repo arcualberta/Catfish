@@ -25,7 +25,7 @@ namespace Catfish.Core.Models
             set => Data.SetAttributeValue("id", value);
         }
 
-
+        [JsonIgnore]
         [Column(TypeName = "xml")]
         public string Content
         {
