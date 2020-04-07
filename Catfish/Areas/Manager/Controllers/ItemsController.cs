@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.ViewModels;
 using Catfish.Core.Services;
 using Microsoft.AspNetCore.Http;
@@ -28,9 +29,9 @@ namespace Catfish.Areas.Manager.Controllers
 
         // GET: api/Items/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public Item Get(Guid id)
         {
-            return "value";
+            return _srv.GetItem(id);
         }
 
         // POST: api/Items
