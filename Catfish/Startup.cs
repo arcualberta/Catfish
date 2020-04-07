@@ -237,6 +237,7 @@ namespace Catfish
         {
             App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
@@ -252,9 +253,10 @@ namespace Catfish
         }
         private void RegisterCustomStyles()
         {
+             App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("~/assets/css/custom.css");
             App.Modules.Get<Piranha.Manager.Module>()
                 .Styles.Add("~/assets/css/CustomComponentStyle.css");
-
         }
         #endregion
 

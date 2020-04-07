@@ -20,5 +20,31 @@ namespace Catfish.Areas.Manager.Actions
 
                 }
             };
+
+        /// <summary>
+        /// Gets the actions available for the ItemList view.
+        /// </summary>
+        public static ActionList<ToolbarAction> CollectionList { get; private set; } = new ActionList<ToolbarAction>
+            {
+
+                new ToolbarAction
+                {
+                    InternalId = "AddCollection",
+                    ActionView = "Partial/Actions/_ItemListAddCollection"
+
+                }
+
+            };
+
+        public static ActionList<ToolbarAction> CollapseExpandList { get; private set; } = new ActionList<ToolbarAction>
+        {
+                new ToolbarAction
+                {
+                    InternalId = "CollapseExpand",
+                    ActionView = "Partial/Actions/_ItemListCollapseExpand"
+
+                }
+
+        };
     }
 }

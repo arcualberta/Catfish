@@ -1,0 +1,20 @@
+﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService Auth
+@inject Piranha.Manager.ManagerLocalizer Localizer
+
+@* 
+    A Collapse/Expand All button with a dropdown option for choosing either when the collections are mixed of each.    
+*@
+
+@*@if ((await Auth.AuthorizeAsync(User, Piranha.Manager.Permission.SitesAdd)).Succeeded)
+    {*@ 
+    <!-- v-on:click.prevent="piranha.siteedit.create(load)" -->
+        <div class="collapse-expand">
+            <button v-on:click="collapseAllCollections()" class="btn btn-primary btn-labeled" aria-haspopup="true" aria-expanded="false">
+                <i id="collapse-expand-button" :class="{'fas fa-chevron-circle-up': collapseAll, 'fas fa-chevron-circle-down': !collapseAll}"></i>
+            </button>
+            <!--<div class="dropdown-menu dropdown-menu-right" aria-labelledby="pageGroup">-->
+                <!--<a class="dropdown-item" :href="piranha.baseUrl + type.addURL + '/' + type.id" v-for="type in collectionTypes">{{ type.typeName }}</a>--> <!-- + collection.id + -->
+            <!--</div>-->
+        </div>
+    @*}*@
+

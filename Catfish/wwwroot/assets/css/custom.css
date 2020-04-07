@@ -1,0 +1,21 @@
+﻿#itemlist-page .container-fluid .top-nav {
+	display: flex;
+}
+
+#itemlist-page .container-fluid.top .left-nav-container{
+	display:flex;
+}
+
+#itemlist-page .container-fluid .top-nav.ce {
+	position: relative;
+	padding-right: 0;
+	padding-left: 0;
+}
+
+#itemlist-page .container-fluid.collection-button-holder{
+	min-width:390px;
+}
+
+#collapse-expand-button {
+	padding-right: 0;
+}
