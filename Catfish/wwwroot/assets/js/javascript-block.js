@@ -5,7 +5,7 @@ Vue.component("javascript-block", {
 
     methods: {
         onBlur: function (e) {
-            this.model.javascriptCode.value = e.target.innerHTML;
+            this.model.javascriptCode.value = e.target.value;
 
             var content = this.model.javascriptCode.value;
             if (content.length > 0) {

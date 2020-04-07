@@ -5,7 +5,7 @@ Vue.component("embed-block", {
     
     methods: {
         onBlur: function (e) {
-            this.model.embed.value = e.target.innerHTML;
+            this.model.embed.value = e.target.value;
 
             var content = this.model.embed.value;
             if (content.length > 0) {

@@ -5,13 +5,13 @@ Vue.component("css-block", {
 
     methods: {
         onBlur: function (e) {
-            this.model.css.value = e.target.innerHTML;
+            this.model.cssVal.value = e.target.value;
 
-            var content = this.model.embed.value;
+            var content = this.model.cssVal.value;
             if (content.length > 0) {
                 this.$emit('update-content', {
                     uid: this.uid,
-                    css: content
+                    cssVal: content
                 });
             }
 
@@ -19,14 +19,14 @@ Vue.component("css-block", {
     },
     computed: {
         isEmpty: function () {
-            return piranha.utils.isEmptyText(this.model.css.value);
+            return piranha.utils.isEmptyText(this.model.cssVal.value);
         }
 
     },
     template: "<div  class= 'block-body'>" +
 
         " <textarea rows='4' cols='100' class='lead ' " +
-        "    v-html='model.css.value' contenteditable='true' v-on:blur='onBlur' >" +
+        "    v-html='model.cssVal.value' contenteditable='true' v-on:blur='onBlur' >" +
         "</textarea></div>"
 
 });

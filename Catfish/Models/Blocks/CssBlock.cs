@@ -10,13 +10,13 @@ namespace Catfish.Models.Blocks
     [BlockType(Name = "Css Block", Category = "Content", Component = "css-block", Icon = "fas fa-css3")]
     public class CssBlock : Block
     { 
-        public TextField Css { get; set; }
+        public TextField CssVal { get; set; }
 
         public string GetCss()
         {
-            if(Css != null)
+            if(CssVal != null)
             {
-                return Css.Value;
+                return CssVal.Value;
             }
 
             return "";
