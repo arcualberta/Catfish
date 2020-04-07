@@ -19,7 +19,10 @@ namespace Catfish.Pages
             _security = security;
         }
        
-
+        /// <summary>
+        /// Handle local sign in from public interface (front end)
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> OnPostAsync()
         {
             if (ModelState.IsValid && await _security.SignIn(HttpContext, Username, Password))

@@ -5,9 +5,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Controllers\SetupController.cs" />
+    <Compile Remove="Models\CalendarPage.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="appsettings.example.json" />
+    <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Apis" Version="1.44.1" />
+    <PackageReference Include="Google.Apis.Calendar.v3" Version="1.44.1.1893" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="3.1.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
       <PrivateAssets>all</PrivateAssets>
@@ -18,12 +26,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Piranha" Version="8.1.0" />
     <PackageReference Include="Piranha.AspNetCore" Version="8.1.0" />
     <PackageReference Include="piranha.aspnetcore.identity.sqlserver" Version="8.1.0" />
+    <PackageReference Include="Piranha.AspNetCore.SimpleSecurity" Version="8.1.0" />
     <PackageReference Include="Piranha.AttributeBuilder" Version="8.1.0" />
     <PackageReference Include="Piranha.Data.EF.SQLServer" Version="8.1.2" />
     <PackageReference Include="Piranha.ImageSharp" Version="8.0.0-rc1" />

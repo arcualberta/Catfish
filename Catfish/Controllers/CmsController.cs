@@ -109,23 +109,32 @@ namespace Catfish.Controllers
 
                 return View(model);
             }
-            catch (UnauthorizedAccessException ex)
+            catch(UnauthorizedAccessException ex)
             {
                 return StatusCode(401);//401 --UnAuthorized
             }
+        }
+
+        [Route("mediapage")]
+        public async Task<IActionResult> MediaPage(Guid id, bool draft = false)
+        {
+
+            var model = await _loader.GetPageAsync<MediaPage>(id, HttpContext.User, draft);
+
+            return View(model);
 
         }
-            /// <summary>
-            /// Gets the startpage with the given id.
-            /// </summary>
-            /// <param name="id">The unique page id</param>
-            /// <param name="draft">If a draft is requested</param>
-            //[Route("login")]
-            //public async Task<IActionResult> Login(Guid id, bool draft = false)
-            //{
-            //   // var model = await _loader.GetPageAsync<LoginPage>(id, HttpContext.User, draft);
+        /// <summary>
+        /// Gets the startpage with the given id.
+        /// </summary>
+        /// <param name="id">The unique page id</param>
+        /// <param name="draft">If a draft is requested</param>
+        //[Route("login")]
+        //public async Task<IActionResult> Login(Guid id, bool draft = false)
+        //{
+        //   // var model = await _loader.GetPageAsync<LoginPage>(id, HttpContext.User, draft);
 
-            //    return View(model);
-            //}
-        }
+        //    return View(model);
+        //}
+    }
 }

@@ -14,7 +14,7 @@ namespace Catfish.Core.Services
         public ItemService(AppDbContext db)
             : base(db)
         {
-            
+
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Catfish.Core.Services
                 .Select(it => it.PrimaryCollectionId)
                 .Distinct()
                 .ToList();
-            foreach(var id in primaryCollectionIds)
+            foreach (var id in primaryCollectionIds)
             {
                 var itemSubSet = items.Where(it => it.PrimaryCollectionId == id);
                 CollectionContent c = new CollectionContent()
@@ -70,7 +70,7 @@ namespace Catfish.Core.Services
 
             //TODO: order the collection array by the name of the collections in the default language
 
-            if(root != null)
+            if (root != null)
             {
                 ret.Collections.Insert(0, root);
             }

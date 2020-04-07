@@ -1,0 +1,57 @@
+﻿body {
+}
+
+.requiredField:after {
+    content: " *";
+    color: red;
+}
+
+.required{
+    font-weight: bold;
+}
+
+.required:after {
+        color: #e32;
+        content: ' *';
+        display: inline;
+}
+/*Google calendar panel*/
+
+.calendar-default .calendar-event-dates {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    text-align: center;
+}
+
+.calendar-event {
+    padding: 8px !important;
+}
+
+.date-month {
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+
+.date-day {
+    font-size: 1.8em;
+}
+
+.date-year {
+    font-size: 0.8em;
+}
+
+.date-time {
+    line-height: initial;
+    width: 80px;
+}
+/*.calendar-default .date-time {
+    float: left;
+}
+
+.calendar-default .date-separator {
+    float: left;
+    margin-top: 20px;
+    padding: 10px;
+}*/
+
