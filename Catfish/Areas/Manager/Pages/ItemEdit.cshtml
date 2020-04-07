@@ -8,13 +8,63 @@
 		        <nav aria-label="breadcrumb">
 			        <ol class="breadcrumb">
 				        <li class="breadcrumb-item">@Localizer.Menu["Entities"]</li>
-				        <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Items"]</li>
-						<li class=""> : {{itemId}}</li>
+				        <li class="breadcrumb-item">@Localizer.Menu["Items"]</li>
+						<li v-if="nameAttribute" class="breadcrumb-item active" aria-current="page">{{itemName}}</li>
 			        </ol>
 		        </nav>
             </div>
 	    </div>
     </div>
+
+
+	<div class="container-fluid app" id="itemlist" :class="{ ready: !loading }"> 
+        <div class="row">
+            <div class="col">
+                <div class="sitemap">
+                    <ol v-if="nameAttribute">
+                        <li>
+                            <div class="sitemap-item">
+                                <div class="link">
+                                    <span class="title">Name</span>
+                                </div>
+                                <div>
+                                    <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
+                                        <button id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled dropdown-toggle" 
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-plus"></i>
+                                            @Localizer.Page["Add item"]
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="pageGroup">
+                                            <a class="dropdown-item" :href="piranha.baseUrl + type.addUrl + '/' + type.id" v-for="type in entryTypes">{{ type.name }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div :id="['entry-' + 0 ]" class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
+                               <ol class="dd-list">
+                                    <!-- maybe this can be a partial once you learn about them more? -->
+                                    <li v-for="(entry, index) in nameAttribute.values" class="dd-item expanded">
+                                        <div class="sitemap-item">
+                                            <div class="link">
+                                                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" :value="entry.value">
+                                            </div>
+
+                                            <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
+                                                <button v-on:click="openEditItem(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
 

@@ -12,14 +12,28 @@ if (document.getElementById("item-edit-page")) {
         el: '#item-edit-page',
         data() {
             return {
+                loading: true,
                 item: null,
                 itemId: null,
                 nameAttribute: null,
                 descriptionAttribute: null,
                 metadataSets: null,
+                entryTypes: [
+                    {
+                        id: 0,
+                        name: "Textbox"
+					}
+                ]
 
             }
         },
+        computed: {
+            itemName: {
+                get: function () {
+                    return this.nameAttribute.values[0].value || "";
+				}
+			}
+		},
         methods: {
             /**
              * Fetches the data associated with the item's ID
@@ -40,11 +54,59 @@ if (document.getElementById("item-edit-page")) {
                         })
                         .catch(function (error) { console.log("error:", error); });
                 });
-			}
+            },
+
+            bind() {
+                var self = this;
+
+                $(".sitemap-container").each(function (i, e) {
+                    $(e).nestable({
+                        maxDepth: 100,
+                        group: i,
+                        callback: function (l, e) {
+                            fetch(piranha.baseUrl + "manager/api/page/move", {
+                                method: "post",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    id: $(e).attr("data-id"),
+                                    items: $(l).nestable("serialize")
+                                })
+                            })
+                                .then(function (response) { return response.json(); })
+                                .then(function (result) {
+                                    piranha.notifications.push(result.status);
+
+                                    if (result.status.type === "success") {
+                                        $('.sitemap-container').nestable('destroy');
+                                        self.sites = [];
+                                        Vue.nextTick(function () {
+                                            self.sites = result.sites;
+                                            Vue.nextTick(function () {
+                                                self.bind();
+                                            });
+                                        });
+                                    }
+                                })
+                                .catch(function (error) {
+                                    console.log("error:", error);
+                                });
+                        }
+                    })
+                });
+            },
+        },
+        updated() {
+            if (this.updateBindings) {
+                this.bind();
+                this.updateBindings = false;
+            }
+
+            this.loading = false;
         },
         created() {
             this.itemId = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
-            console.log("youre editing item: ", this.itemId);
             //call api
             this.fetchData();
             
