@@ -8,6 +8,7 @@
     <Compile Remove="Models\CalendarPage.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Remove="appsettings.example.json" />
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
   </ItemGroup>
 
