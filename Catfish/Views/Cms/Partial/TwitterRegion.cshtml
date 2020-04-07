@@ -1,0 +1,19 @@
+﻿@model Catfish.Models.Regions.TwitterRegion
+@{
+    int width = Model.Width == null ? 300 : Convert.ToInt32(Model.Width.Value);
+    int height = Model.Height == null ? 400 : Convert.ToInt32(Model.Height.Value);
+    ViewBag.Title = "Twitter Timeline";
+}
+
+    <div class="twitterRegion">
+       
+
+        <a class="twitter-timeline" data-width="@width" data-height="@height" href="@Model.TwitterUrl.Value?ref_src=twsrc%5Etfw">@Model.Title</a>
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    </div>
+
+<style>
+  .twitterRegion{
+      margin-top:15px;
+  }
+</style>
