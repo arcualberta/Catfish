@@ -1,27 +1,8 @@
 ﻿@page "~/manager/items"
-@*@model Catfish.Areas.Manager.Pages.ItemListModel*@
-@model Catfish.Core.Models.Contents.ViewModels.ListEntries.EntityListEntry 
-@*<-change this*@
+@model Catfish.Areas.Manager.Pages.ItemListModel
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@*@using Catfish.Core.Models;
-@{
-    var id = Model.Id;
-    var modelType = Model.ModelType;
-    string detailsPage = null;
-    string editorPage = null;
-    if (Model.ModelType.StartsWith(typeof(Item).FullName))
-    {
-        detailsPage = Model.Id.ToString();
-        editorPage = "~/manager/item/edit/" + Model.Id; //~/manager/items/
-    }
-    else if (Model.ModelType.StartsWith(typeof(Collection).FullName))
-    {
-        detailsPage = Model.Id.ToString();
-        editorPage = "~/manager/collection/edit/" + Model.Id;
-    }
 
-}*@
 
 <div id="itemlist-page">
     <div class="top">
@@ -87,12 +68,16 @@
                                     <!-- maybe this can be a partial once you learn about them more? -->
                                     <li v-for="item in collection.items" class="dd-item expanded">
                                         <div class="sitemap-item">
-                                            <div v-on:click="openItemEditPage(item.id)" class="link">
-                                                <a :href=" item.id">{{item.name.values[0].value}}</a> <!--@* <a href="@detailsPage">@Model.TypeName</a>*@ -->
+
+                                            <div class="link">
+                                                <a :href="item.id">{{item.name.values[0].value}}</a> <!--@* <a href="@detailsPage">@Model.TypeName</a>*@ -->
+
                                             </div>
 
                                             <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
-                                                <button v-on:click="window.location.href = 'edit/' + item.id;" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
+
+                                                <button v-on:click="openEditItem(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
+
                                                     <i class="fas fa-pen"></i>
                                                     @Localizer.Page["Edit"]
                                                 </button>
