@@ -33,10 +33,24 @@
 	margin-bottom: 2rem;
 }
 
-.dd-item.sitemap-item{
+#item-edit-page .dd-item .sitemap-item{
 	margin-bottom: 0;
 }
 
-ol.dd-list{
+#item-edit-page ol.dd-list {
 	margin-top: 1rem;
+	flex: 2;
+}
+
+#item-edit-page .sitemap.sitemap-container{
+	display: flex;
+}
+
+.trash-button-holder {
+	margin-top: 1rem;
+}
+
+.trash-button {
+	border-bottom-left-radius: 0;
+	border-top-left-radius: 0;
 }

@@ -30,7 +30,7 @@
                             </div>
                             <div :id="['entry-' + 0 ]" class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
                                <ol class="dd-list">
-                                    <!-- maybe this can be a partial once you learn about them more? -->
+                                    
                                     <li v-for="(entry, index) in nameAttribute.values" class="dd-item expanded">
                                         <div class="sitemap-item">
                                             <div class="link">
@@ -39,15 +39,10 @@
                                                 <label class="language-label" v-if="entry.language=='fr'" for="input-0">Français:</label>
                                                 <input type="text" class="form-control" id="input-0" aria-describedby="emailHelp" :value="entry.value">
                                             </div>
-
-                                            <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
-                                                <button v-on:click="openEditItem(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
                                         </div>
                                     </li>
-                                   <li>
+
+                                   <!--<li>
                                        <div class="sitemap-item add-entry-container">
                                             <div>
                                                 <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
@@ -57,9 +52,28 @@
                                                 </div>
                                             </div>
                                        </div>
-                                   </li>
+
+                                   </li>-->
                                 </ol>
+
+                               <div v-if="piranha.permissions.pages.add" class="btn-group trash-button-holder" role="group">
+                                    <button v-on:click="openEditItem(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled trash-button">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                               </div>
+
                             </div>
+
+                            <div class="sitemap-item add-entry-container">
+                                            <div>
+                                                <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
+                                                    <button id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                       </div>
+
                         </li>
                     </ol>
                 </div>
