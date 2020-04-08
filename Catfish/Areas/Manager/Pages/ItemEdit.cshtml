@@ -27,18 +27,6 @@
                                 <div class="link">
                                     <span class="title">Name</span>
                                 </div>
-                                <div>
-                                    <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
-                                        <button id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled dropdown-toggle" 
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-plus"></i>
-                                            @Localizer.Page["Add item"]
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="pageGroup">
-                                            <a class="dropdown-item" :href="piranha.baseUrl + type.addUrl + '/' + type.id" v-for="type in entryTypes">{{ type.name }}</a>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                             <div :id="['entry-' + 0 ]" class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
                                <ol class="dd-list">
@@ -46,7 +34,10 @@
                                     <li v-for="(entry, index) in nameAttribute.values" class="dd-item expanded">
                                         <div class="sitemap-item">
                                             <div class="link">
-                                                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" :value="entry.value">
+                                                <!-- should probably handle this in js or there will be a lot of these... -->
+                                                <label class="language-label" v-if="entry.language=='en'" for="input-0">English:</label>
+                                                <label class="language-label" v-if="entry.language=='fr'" for="input-0">Français:</label>
+                                                <input type="text" class="form-control" id="input-0" aria-describedby="emailHelp" :value="entry.value">
                                             </div>
 
                                             <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
@@ -56,6 +47,17 @@
                                             </div>
                                         </div>
                                     </li>
+                                   <li>
+                                       <div class="sitemap-item add-entry-container">
+                                            <div>
+                                                <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
+                                                    <button id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                       </div>
+                                   </li>
                                 </ol>
                             </div>
                         </li>
@@ -65,6 +67,56 @@
         </div>
     </div>
 
+
+    <div class="container-fluid app" id="itemlist" :class="{ ready: !loading }"> 
+        <div class="row">
+            <div class="col">
+                <div class="sitemap">
+                    <ol v-if="descriptionAttribute">
+                        <li>
+                            <div class="sitemap-item">
+                                <div class="link">
+                                    <span class="title">Description</span>
+                                </div>
+                            </div>
+                            <div :id="['entry-' + 0 ]" class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
+                               <ol class="dd-list">
+                                    <!-- maybe this can be a partial once you learn about them more? -->
+                                    <li v-for="(entry, index) in descriptionAttribute.values" class="dd-item expanded">
+                                        <div class="sitemap-item">
+                                            <div class="link">
+                                                <!-- should probably handle this in js or there will be a lot of these... -->
+                                                <label class="language-label" v-if="entry.language=='en'" for="input-0">English:</label>
+                                                <label class="language-label" v-if="entry.language=='fr'" for="input-0">Français:</label>
+                                                <input type="text" class="form-control" id="input-0" aria-describedby="emailHelp" :value="entry.value">
+                                            </div>
+
+                                            <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
+                                                <button v-on:click="openEditItem(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                   <li>
+                                       <div class="sitemap-item add-entry-container">
+                                            <div>
+                                                <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
+                                                    <button id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                       </div>
+                                   </li>
+                                </ol>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 

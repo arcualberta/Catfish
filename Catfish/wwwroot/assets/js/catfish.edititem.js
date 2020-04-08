@@ -23,6 +23,10 @@ if (document.getElementById("item-edit-page")) {
                         id: 0,
                         name: "Textbox"
 					}
+                ],
+                //bring this in from somewhere else
+                languageLabels: [
+                    "English"
                 ]
 
             }
@@ -50,6 +54,17 @@ if (document.getElementById("item-edit-page")) {
                             self.descriptionAttribute = result.description;
                             self.metadataSets = result.metadataSets;
                             self.updateBindings = true;
+
+                            //for testing purposes, remove after
+                            self.nameAttribute.values.push({
+                                
+                                    "format": "plain",
+                                    "language": "fr",
+                                    "rank": 0,
+                                    "value": "Oui oui bonjour 166",
+                                    "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                                
+                            });
 
                         })
                         .catch(function (error) { console.log("error:", error); });

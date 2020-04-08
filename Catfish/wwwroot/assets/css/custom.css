@@ -16,6 +16,27 @@
 	min-width:390px;
 }
 
-#collapse-expand-button {
+#collapse-expand-button, #item-edit-page .fas {
 	padding-right: 0;
+}
+
+.sitemap-item .link .language-label {
+	align-self: center;
+	padding-right: 10px;
+}
+
+.sitemap-item.add-entry-container {
+	width: 60px;
+	justify-content: center;
+	float: right;
+	margin-top: 1rem;
+	margin-bottom: 2rem;
+}
+
+.dd-item.sitemap-item{
+	margin-bottom: 0;
+}
+
+ol.dd-list{
+	margin-top: 1rem;
 }
