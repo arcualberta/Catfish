@@ -19,5 +19,8 @@ namespace Catfish.Models.SiteTypes
 
         [Field(Title = "Footer text")]
         public HtmlField Text { get; set; }
+
+        [Field(Title = "Javascript")]
+        public TextField Javascript { get; set; }
     }
 }
