@@ -29,21 +29,21 @@
                                 </div>
                                 <div>
                                     <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
-                                        <button id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
+                                        <button id="add-new-name" type="button" v-on:click="addNewEntry('name')" class="btn btn-sm btn-primary btn-labeled">
                                             <i class="fas fa-plus"></i>
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            <div :id="['entry-' + 0 ]" class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
+                            <div class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
                                <ol class="dd-list">
                                     <li v-for="(entry, index) in nameAttribute.values" class="dd-item expanded">
                                         <div class="sitemap-item">
                                             <div class="link">
                                                 <!-- should probably handle this in js or there will be a lot of these... -->
-                                                <label class="language-label" v-if="entry.language=='en'" for="input-0">English:</label>
-                                                <label class="language-label" v-if="entry.language=='fr'" for="input-0">Français:</label>
-                                                <input type="text" class="form-control" id="input-0" aria-describedby="emailHelp" :value="entry.value">
+                                                <label id="entry-label" class="language-label" v-if="entry.language=='en'" for="input-0">English:</label>
+                                                <label id="entry-label" class="language-label" v-if="entry.language=='fr'" for="input-0">Français:</label>
+                                                <input type="text" class="form-control" :id="['input-' + index]" aria-describedby="entry-label" :value="entry.value">
                                             </div>
                                         </div>
                                     </li>
@@ -77,13 +77,13 @@
                                 </div>
                                 <div>
                                     <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
-                                        <button id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
+                                        <button id="add-new-description" type="button" v-on:click="addNewEntry('description')" class="btn btn-sm btn-primary btn-labeled">
                                             <i class="fas fa-plus"></i>
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            <div :id="['entry-' + 0 ]" class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
+                            <div class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
                                <ol class="dd-list">
                                     <li v-for="(entry, index) in nameAttribute.values" class="dd-item expanded">
                                         <div class="sitemap-item">
@@ -91,7 +91,7 @@
                                                 <!-- should probably handle this in js or there will be a lot of these... -->
                                                 <label class="language-label" v-if="entry.language=='en'" for="input-0">English:</label>
                                                 <label class="language-label" v-if="entry.language=='fr'" for="input-0">Français:</label>
-                                                <input type="text" class="form-control" id="input-0" aria-describedby="emailHelp" :value="entry.value">
+                                                <input type="text" class="form-control" :id="['input-' + index]" aria-describedby="entry-label" :value="entry.value">
                                             </div>
                                         </div>
                                     </li>

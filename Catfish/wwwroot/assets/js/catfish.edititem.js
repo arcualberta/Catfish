@@ -111,6 +111,34 @@ if (document.getElementById("item-edit-page")) {
                     })
                 });
             },
+
+            /**
+             * Adds another entry set to the item
+             * @param {any} entryType the type of entry, a string either 'name' or 'description'
+             */
+            addNewEntry(entryType) {
+                let newEntry = {
+                    format: null,
+                    language: null,
+                    rank: 0,
+                    value: null,
+                    modelType: null
+                };
+                if (entryType === 'name') {
+                    newEntry.format = this.nameAttribute.values[0].format;
+                    newEntry.language = this.nameAttribute.values[0].language;
+                    newEntry.modelType = this.nameAttribute.values[0].modelType;
+                    this.nameAttribute.values.push(newEntry);
+                } else {
+                    newEntry.format = this.descriptionAttribute.values[0].format;
+                    newEntry.language = this.descriptionAttribute.values[0].language;
+                    newEntry.modelType = this.descriptionAttribute.values[0].modelType;
+                    this.descriptionAttribute.values.push(newEntry);
+				}
+
+
+
+			}
         },
         updated() {
             if (this.updateBindings) {
