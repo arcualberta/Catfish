@@ -27,6 +27,14 @@ if (document.getElementById("item-edit-page")) {
                 //bring this in from somewhere else
                 languageLabels: [
                     "English"
+                ],
+                sections: [
+                    {
+                        title: "Name"
+                    },
+                    {
+                        title: "Description"
+                    },
                 ]
 
             }
@@ -65,6 +73,9 @@ if (document.getElementById("item-edit-page")) {
                                     "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
                                 
                             });
+
+                            self.sections[0].values = self.nameAttribute.values;
+                            self.sections[1].values = self.descriptionAttribute.values;
 
                         })
                         .catch(function (error) { console.log("error:", error); });
@@ -117,14 +128,17 @@ if (document.getElementById("item-edit-page")) {
              * @param {any} entryType the type of entry, a string either 'name' or 'description'
              */
             addNewEntry(entryType) {
-                let newEntry = {
+                /*let newEntry = {
                     format: null,
                     language: null,
                     rank: 0,
                     value: null,
                     modelType: null
-                };
-                if (entryType === 'name') {
+                };*/
+
+                //let newEntry = 
+
+                if (entryType === 'name' || entryType === 'Name') {
                     newEntry.format = this.nameAttribute.values[0].format;
                     newEntry.language = this.nameAttribute.values[0].language;
                     newEntry.modelType = this.nameAttribute.values[0].modelType;
@@ -137,6 +151,14 @@ if (document.getElementById("item-edit-page")) {
 				}
 
 
+
+            },
+
+            /**
+             * Deletes the set from the item
+             * @param {any} setId
+             */
+            deleteSet(setId) {
 
 			}
         },

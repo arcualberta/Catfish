@@ -1,5 +1,6 @@
 ﻿@page "~/manager/items/edit/{id:Guid}"
 @inject Piranha.Manager.ManagerLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <div id="item-edit-page">
     <div class="top">
@@ -17,40 +18,40 @@
     </div>
 
 
-	<div class="container-fluid app" id="itemlist" :class="{ ready: !loading }"> 
-        <div class="row">
+	<div v-for="section in sections" class="container-fluid app" id="itemlist" :class="{ ready: !loading }"> 
+       <div class="row">
             <div class="col">
                 <div class="sitemap">
-                    <ol v-if="nameAttribute">
+                    <ol v-if="section.values">
                         <li>
                             <div class="sitemap-item">
                                 <div class="link">
-                                    <span class="title">Name</span>
+                                    <span class="title">{{section.title}}</span>
                                 </div>
                                 <div>
                                     <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
-                                        <button id="add-new-name" type="button" v-on:click="addNewEntry('name')" class="btn btn-sm btn-primary btn-labeled">
+                                        <button id="add-new-name" type="button" v-on:click="addNewEntry(section.title)" class="btn btn-sm btn-primary btn-labeled">
                                             <i class="fas fa-plus"></i>
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
+                            <div class="sitemap sitemap-container dd collapse show" data-id="{ 0 }"> <!-- v-for="let set of entrySets" -->
                                <ol class="dd-list">
-                                    <li v-for="(entry, index) in nameAttribute.values" class="dd-item expanded">
+                                    <li v-for="(entry, index) in section.values" class="dd-item expanded">
                                         <div class="sitemap-item">
                                             <div class="link">
                                                 <!-- should probably handle this in js or there will be a lot of these... -->
                                                 <label id="entry-label" class="language-label" v-if="entry.language=='en'" for="input-0">English:</label>
                                                 <label id="entry-label" class="language-label" v-if="entry.language=='fr'" for="input-0">Français:</label>
-                                                <input type="text" class="form-control" :id="['input-' + index]" aria-describedby="entry-label" :value="entry.value">
+                                                <input type="text" class="form-control" :id="[section.title + '-input-' + index]" aria-describedby="entry-label" :value="entry.value">
                                             </div>
                                         </div>
                                     </li>
                                 </ol>
 
                                <div v-if="piranha.permissions.pages.add" class="btn-group trash-button-holder" role="group">
-                                    <button v-on:click="openEditItem(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled trash-button">
+                                    <button v-on:click="deleteSet(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled trash-button">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                </div>
@@ -63,55 +64,6 @@
             </div>
         </div>
     </div>
-
-
-    <div class="container-fluid app" id="itemlist" :class="{ ready: !loading }"> 
-        <div class="row">
-            <div class="col">
-                <div class="sitemap">
-                    <ol v-if="descriptionAttribute">
-                        <li>
-                            <div class="sitemap-item">
-                                <div class="link">
-                                    <span class="title">Description</span>
-                                </div>
-                                <div>
-                                    <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
-                                        <button id="add-new-description" type="button" v-on:click="addNewEntry('description')" class="btn btn-sm btn-primary btn-labeled">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
-                               <ol class="dd-list">
-                                    <li v-for="(entry, index) in nameAttribute.values" class="dd-item expanded">
-                                        <div class="sitemap-item">
-                                            <div class="link">
-                                                <!-- should probably handle this in js or there will be a lot of these... -->
-                                                <label class="language-label" v-if="entry.language=='en'" for="input-0">English:</label>
-                                                <label class="language-label" v-if="entry.language=='fr'" for="input-0">Français:</label>
-                                                <input type="text" class="form-control" :id="['input-' + index]" aria-describedby="entry-label" :value="entry.value">
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ol>
-
-                               <div v-if="piranha.permissions.pages.add" class="btn-group trash-button-holder" role="group">
-                                    <button v-on:click="openEditItem(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled trash-button">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                               </div>
-
-                            </div>
-
-                        </li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
-
 
 
 
