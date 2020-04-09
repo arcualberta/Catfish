@@ -18,16 +18,17 @@ if (document.getElementById("item-edit-page")) {
                 nameAttribute: null,
                 descriptionAttribute: null,
                 metadataSets: null,
-                entryTypes: [
-                    {
-                        id: 0,
-                        name: "Textbox"
-					}
-                ],
-                //bring this in from somewhere else
-                languageLabels: [
-                    "English"
-                ],
+                //bring this in from somewhere else, will have ALL languages in it
+                languages: {
+                    en: "English",
+                    fr: "Français",
+                    sp: "Español"
+                },
+                //array for displaying languages listed in received JSON
+                //im assuming here that both name and description will have the
+                //same languages enabled, as languages are enabled sitewide
+                languageLabels: [],
+
                 sections: [
                     {
                         title: "Name"
@@ -76,6 +77,14 @@ if (document.getElementById("item-edit-page")) {
 
                             self.sections[0].values = self.nameAttribute.values;
                             self.sections[1].values = self.descriptionAttribute.values;
+
+                            //prepare language labels
+                            //for (let section of self.sections) {
+                                for (let item of self.sections[0].values) {
+                                    console.log(self.languages[item.language]);
+                                    self.languageLabels.push(self.languages[item.language]);
+                                }
+                            //}
 
                         })
                         .catch(function (error) { console.log("error:", error); });

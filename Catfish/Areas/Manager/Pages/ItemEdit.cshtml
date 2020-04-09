@@ -41,9 +41,7 @@
                                     <li v-for="(entry, index) in section.values" class="dd-item expanded">
                                         <div class="sitemap-item">
                                             <div class="link">
-                                                <!-- should probably handle this in js or there will be a lot of these... -->
-                                                <label id="entry-label" class="language-label" v-if="entry.language=='en'" for="input-0">English:</label>
-                                                <label id="entry-label" class="language-label" v-if="entry.language=='fr'" for="input-0">Français:</label>
+                                                <label :id="['entry-label-' + section.title + '-' + languageLabels[index]]" class="language-label" for="input-0">{{languageLabels[index]}}:</label>
                                                 <input type="text" class="form-control" :id="[section.title + '-input-' + index]" aria-describedby="entry-label" :value="entry.value">
                                             </div>
                                         </div>
