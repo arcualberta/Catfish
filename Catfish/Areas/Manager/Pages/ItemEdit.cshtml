@@ -1,5 +1,6 @@
 ﻿@page "~/manager/items/edit/{id:Guid}"
 @inject Piranha.Manager.ManagerLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <div id="item-edit-page">
     <div class="top">
@@ -17,54 +18,50 @@
     </div>
 
 
-	<div class="container-fluid app" id="itemlist" :class="{ ready: !loading }"> 
-        <div class="row">
+	<div v-for="section in sections" class="container-fluid app" id="itemlist" :class="{ ready: !loading }"> 
+       <div class="row">
             <div class="col">
                 <div class="sitemap">
-                    <ol v-if="nameAttribute">
+                    <ol v-if="section.values">
                         <li>
                             <div class="sitemap-item">
                                 <div class="link">
-                                    <span class="title">Name</span>
+                                    <span class="title">{{section.title}}</span>
                                 </div>
                                 <div>
                                     <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
-                                        <button id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled dropdown-toggle" 
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <button id="add-new-name" type="button" v-on:click="addNewEntry(section.title)" class="btn btn-sm btn-primary btn-labeled">
                                             <i class="fas fa-plus"></i>
-                                            @Localizer.Page["Add item"]
                                         </button>
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="pageGroup">
-                                            <a class="dropdown-item" :href="piranha.baseUrl + type.addUrl + '/' + type.id" v-for="type in entryTypes">{{ type.name }}</a>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div :id="['entry-' + 0 ]" class="sitemap sitemap-container dd collapse show" data-id="{ 0 }">
+                            <div class="sitemap sitemap-container dd collapse show" data-id="{ 0 }"> <!-- v-for="let set of entrySets" -->
                                <ol class="dd-list">
-                                    <!-- maybe this can be a partial once you learn about them more? -->
-                                    <li v-for="(entry, index) in nameAttribute.values" class="dd-item expanded">
+                                    <li v-for="(entry, index) in section.values" class="dd-item expanded">
                                         <div class="sitemap-item">
                                             <div class="link">
-                                                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" :value="entry.value">
-                                            </div>
-
-                                            <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
-                                                <button v-on:click="openEditItem(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                <label :id="['entry-label-' + section.title + '-' + languageLabels[index]]" class="language-label" for="input-0">{{languageLabels[index]}}:</label>
+                                                <input type="text" class="form-control" :id="[section.title + '-input-' + index]" aria-describedby="entry-label" :value="entry.value">
                                             </div>
                                         </div>
                                     </li>
                                 </ol>
+
+                               <div v-if="piranha.permissions.pages.add" class="btn-group trash-button-holder" role="group">
+                                    <button v-on:click="deleteSet(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled trash-button">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                               </div>
+
                             </div>
+
                         </li>
                     </ol>
                 </div>
             </div>
         </div>
     </div>
-
 
 
 

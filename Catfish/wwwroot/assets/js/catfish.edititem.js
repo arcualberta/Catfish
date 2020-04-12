@@ -18,11 +18,24 @@ if (document.getElementById("item-edit-page")) {
                 nameAttribute: null,
                 descriptionAttribute: null,
                 metadataSets: null,
-                entryTypes: [
+                //bring this in from somewhere else, will have ALL languages in it
+                languages: {
+                    en: "English",
+                    fr: "Français",
+                    sp: "Español"
+                },
+                //array for displaying languages listed in received JSON
+                //im assuming here that both name and description will have the
+                //same languages enabled, as languages are enabled sitewide
+                languageLabels: [],
+
+                sections: [
                     {
-                        id: 0,
-                        name: "Textbox"
-					}
+                        title: "Name"
+                    },
+                    {
+                        title: "Description"
+                    },
                 ]
 
             }
@@ -50,6 +63,28 @@ if (document.getElementById("item-edit-page")) {
                             self.descriptionAttribute = result.description;
                             self.metadataSets = result.metadataSets;
                             self.updateBindings = true;
+
+                            //for testing purposes, remove after
+                            self.nameAttribute.values.push({
+                                
+                                    "format": "plain",
+                                    "language": "fr",
+                                    "rank": 0,
+                                    "value": "Oui oui bonjour 166",
+                                    "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                                
+                            });
+
+                            self.sections[0].values = self.nameAttribute.values;
+                            self.sections[1].values = self.descriptionAttribute.values;
+
+                            //prepare language labels
+                            //for (let section of self.sections) {
+                                for (let item of self.sections[0].values) {
+                                    console.log(self.languages[item.language]);
+                                    self.languageLabels.push(self.languages[item.language]);
+                                }
+                            //}
 
                         })
                         .catch(function (error) { console.log("error:", error); });
@@ -96,6 +131,45 @@ if (document.getElementById("item-edit-page")) {
                     })
                 });
             },
+
+            /**
+             * Adds another entry set to the item
+             * @param {any} entryType the type of entry, a string either 'name' or 'description'
+             */
+            addNewEntry(entryType) {
+                /*let newEntry = {
+                    format: null,
+                    language: null,
+                    rank: 0,
+                    value: null,
+                    modelType: null
+                };*/
+
+                //let newEntry = 
+
+                if (entryType === 'name' || entryType === 'Name') {
+                    newEntry.format = this.nameAttribute.values[0].format;
+                    newEntry.language = this.nameAttribute.values[0].language;
+                    newEntry.modelType = this.nameAttribute.values[0].modelType;
+                    this.nameAttribute.values.push(newEntry);
+                } else {
+                    newEntry.format = this.descriptionAttribute.values[0].format;
+                    newEntry.language = this.descriptionAttribute.values[0].language;
+                    newEntry.modelType = this.descriptionAttribute.values[0].modelType;
+                    this.descriptionAttribute.values.push(newEntry);
+				}
+
+
+
+            },
+
+            /**
+             * Deletes the set from the item
+             * @param {any} setId
+             */
+            deleteSet(setId) {
+
+			}
         },
         updated() {
             if (this.updateBindings) {
