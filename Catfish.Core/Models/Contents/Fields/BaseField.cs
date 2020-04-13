@@ -27,6 +27,11 @@ namespace Catfish.Core.Models.Contents.Fields
             Description.SetContent(desc, lang);
         }
 
+        public override void Initialize()
+        {
+
+        }
+
         /*
                 /// <summary>
                 /// Name in specific languages

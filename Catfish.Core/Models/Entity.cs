@@ -83,10 +83,6 @@ namespace Catfish.Core.Models
             ObjectRelationships = new List<Relationship>();
 
             Initialize(false);
-
-            XmlModel xml = new XmlModel(Data);
-
-            MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement("metadata-sets", true));
         }
 
         public virtual void Initialize(bool regenerateId)
@@ -107,6 +103,10 @@ namespace Catfish.Core.Models
             //properties must be initialized every time the model is initialized. 
             Name = new MultilingualText(XmlHelper.GetElement(Data, Entity.NameTag, true));
             Description = new MultilingualText(XmlHelper.GetElement(Data, Entity.DescriptionTag, true));
+
+            //Building the Metadata Set list
+            XmlModel xml = new XmlModel(Data);
+            MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement("metadata-sets", true));
         }
 
         public T InstantiateViewModel<T>() where T : XmlModel

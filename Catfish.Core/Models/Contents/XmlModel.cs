@@ -39,6 +39,11 @@ namespace Catfish.Core.Models.Contents
             get => Data.Attribute("model-type") == null ? null : Data.Attribute("model-type").Value;
         }
 
+        public virtual void Initialize()
+        {
+
+        }
+
         ////protected string Lang(string lang)
         ////{
         ////    if (!string.IsNullOrEmpty(lang))
