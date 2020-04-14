@@ -15,9 +15,9 @@
         <div class="container-fluid">
             <div class="top-nav">
                 @*@foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.EntityTypeList)
-                {
-                    <partial name="@action.ActionView" />
-                }*@
+                    {
+                        <partial name="@action.ActionView" />
+                    }*@
             </div>
         </div>
     </div>
@@ -26,7 +26,7 @@
         <h2>@Model.Item.Name.GetConcatenatedContent(" | ")</h2>
         @{
             List<string> languages = Model.Item.Description.Values.Select(v => v.Language).Distinct().ToList();
-            foreach(var lang in languages)
+            foreach (var lang in languages)
             {
                 //List<string> values = Model.Item.Description
             }
@@ -35,11 +35,18 @@
         <div class="entity-desc">
             @Model.Item.Description.GetConcatenatedContent(" | ")
         </div>
+
+        @foreach (var ms in Model.Item.MetadataSets)
+        {
+            <partial name="partial/@ms.GetType().Name"  model="@ms"/>
+        }
+
+
         @*<ol class="dd-list">
-            @foreach (var child in Model.Children)
-            {
-                <partial name="partial/@child.GetType().Name" model="@child" />
-            }
-        </ol>*@
+                @foreach (var child in Model.Children)
+                {
+                    <partial name="partial/@child.GetType().Name" model="@child" />
+                }
+            </ol>*@
     </div>
 </div>

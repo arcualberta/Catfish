@@ -17,6 +17,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
     <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <link href="~/assets/css/CustomStyle.css" rel="stylesheet" />
 
     <title>@ViewBag.Title</title>
 
@@ -59,20 +60,24 @@
         <div class="container">
             @{
                 var currentSite = await WebApp.Site.GetContentAsync<CustomSite>();
+                var javascriptCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Javascript == null)
+                    ? "" : currentSite.FooterContents.Javascript.Value;
             }
             @if (currentSite != null)
             {
-                <div class="row">
-                    <div class="col-6">
-                        <img src="@Url.Content(currentSite.FooterContents.Logo)" style="width:100px; height: 100px;" />
-                    </div>
-                    @*<div class="col-4">
-                        @Html.Raw(currentSite.FooterContents.Logo)
-                    </div>*@
-                    <div class="col-6">
-                        @Html.Raw(currentSite.FooterContents.Text)
-                    </div>
+            <div class="row">
+
+                <div class="col-6 footer-arc-text">
+                    @Html.Raw(currentSite.FooterContents.Text)
                 </div>
+                <div class="col-6 footer-arc-logo">
+                   Designed and engineered by  <img src="@Url.Content(currentSite.FooterContents.Logo)"  />
+                </div>
+
+                @Html.Raw(javascriptCode)
+
+
+            </div>
             }
         </div>
     </footer>
