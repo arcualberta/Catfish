@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System;
 using Catfish.Core.Helpers;
+using Catfish.Core.Models.Contents.ViewModels;
 
 namespace Catfish.Core.Services
 {
@@ -26,16 +27,16 @@ namespace Catfish.Core.Services
             ms.Fields.Add(new TextField("Contributor", 
                 "An entity responsible for making contributions to the resource."));
 
-            ms.Fields.Add(new TextField("Coverage",
+            ms.Fields.Add(new TextArea("Coverage",
                 "The spatial or temporal topic of the resource, the spatial applicability of the resource, or the jurisdiction under which the resource is relevant."));
 
             ms.Fields.Add(new TextField("Creator",
                 "An entity primarily responsible for making the resource."));
 
-            ms.Fields.Add(new TextField("Date",
+            ms.Fields.Add(new DateField("Date",
                 "A point or period of time associated with an event in the lifecycle of the resource."));
 
-            ms.Fields.Add(new TextField("Description",
+            ms.Fields.Add(new TextArea("Description",
                 "An account of the resource."));
 
             ms.Fields.Add(new TextField("Format",
@@ -53,7 +54,7 @@ namespace Catfish.Core.Services
             ms.Fields.Add(new TextField("Relation",
                 "A related resource."));
 
-            ms.Fields.Add(new TextField("Rights",
+            ms.Fields.Add(new TextArea("Rights",
                 "Information about rights held in and over the resource."));
 
             ms.Fields.Add(new TextField("Source",
@@ -204,6 +205,36 @@ namespace Catfish.Core.Services
                     it.Name.SetContent(string.Format("Test Item {0}", i));
                     it.Description.SetContent(string.Format("This is the test item #{0} created by seeding.", i));
 
+                    //Filling default values for each metadata set field
+                    foreach(var ms in it.MetadataSets)
+                    {
+                        foreach(var field in ms.Fields)
+                        {
+                            var languages = field.Name.Values.Select(val => val.Language).Distinct();
+                            if(typeof(TextField).IsAssignableFrom(field.GetType()))
+                            {
+                                MultilingualText val = new MultilingualText(TextField.ValueTag);
+                                (field as TextField).Values.Add(val);
+
+                                if (typeof(DateField).IsAssignableFrom(field.GetType()))
+                                {
+                                    foreach(var lang in languages)
+                                        val.SetContent(DateTime.Today.ToShortDateString(), lang);
+                                }
+                                else if (typeof(TextArea).IsAssignableFrom(field.GetType()))
+                                {
+                                    foreach (var lang in languages)
+                                        val.SetContent(LoremIpsum(5, 10, 3, 5), lang);
+                                }
+                                else
+                                {
+                                    foreach (var lang in languages)
+                                        val.SetContent(LoremIpsum(), lang);
+                                }
+                            }
+                        }
+                    }
+
                     // selecting a default parent collection
                     index = rand.Next(0, collections.Count + 1);
                     if (index < collections.Count)
@@ -215,6 +246,40 @@ namespace Catfish.Core.Services
             }
 
 
+        }
+
+        protected string LoremIpsum(int minWords = 2, int maxWords = 5, int minSentences = 1, int maxSentences = 1, int numParagraphs = 1)
+        {
+
+            var words = new[]{"lorem", "ipsum", "dolor", "sit", "amet", "consectetuer",
+            "adipiscing", "elit", "sed", "diam", "nonummy", "nibh", "euismod",
+            "tincidunt", "ut", "laoreet", "dolore", "magna", "aliquam", "erat"};
+
+            var rand = new Random();
+            int numSentences = rand.Next(maxSentences - minSentences)
+                + minSentences + 1;
+            int numWords = rand.Next(maxWords - minWords) + minWords + 1;
+
+            StringBuilder result = new StringBuilder();
+
+            for (int p = 0; p < numParagraphs; p++)
+            {
+                if (numParagraphs > 1)
+                    result.Append("<p>");
+                for (int s = 0; s < numSentences; s++)
+                {
+                    for (int w = 0; w < numWords; w++)
+                    {
+                        if (w > 0) { result.Append(" "); }
+                        result.Append(words[rand.Next(words.Length)]);
+                    }
+                    result.Append(". ");
+                }
+                if (numParagraphs > 1)
+                    result.Append("</p>");
+            }
+
+            return result.ToString();
         }
     }
 }
