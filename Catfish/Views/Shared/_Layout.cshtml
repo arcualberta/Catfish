@@ -60,7 +60,8 @@
         <div class="container">
             @{
                 var currentSite = await WebApp.Site.GetContentAsync<CustomSite>();
-                var javascriptCode = currentSite.FooterContents.Javascript == null ? "" : currentSite.FooterContents.Javascript.Value;
+                var javascriptCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Javascript == null)
+                    ? "" : currentSite.FooterContents.Javascript.Value;
             }
             @if (currentSite != null)
             {

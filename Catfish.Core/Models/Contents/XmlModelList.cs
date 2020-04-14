@@ -39,7 +39,10 @@ namespace Catfish.Core.Models.Contents
                 {
                     T child = XmlModel.InstantiateContentModel(ele) as T;
                     if (child != null)
+                    {
+                        child.Initialize();
                         mList.Add(child);
+                    }
                 }
             }
         }
