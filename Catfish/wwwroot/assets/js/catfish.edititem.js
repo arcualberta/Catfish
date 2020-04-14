@@ -59,6 +59,7 @@ if (document.getElementById("item-edit-page")) {
                         .then(function (response) { return response.json(); })
                         .then(function (result) {
                             self.item = result;
+                            console.log("json received:", self.item);
                             self.nameAttribute = result.name;
                             self.descriptionAttribute = result.description;
                             self.metadataSets = result.metadataSets;
@@ -79,11 +80,12 @@ if (document.getElementById("item-edit-page")) {
                             self.sections[1].values = self.descriptionAttribute.values;
 
                             //prepare language labels
+                            self.setLanguageLabels(self.sections);
                             //for (let section of self.sections) {
-                                for (let item of self.sections[0].values) {
-                                    console.log(self.languages[item.language]);
-                                    self.languageLabels.push(self.languages[item.language]);
-                                }
+                                //for (let item of self.sections[0].values) {
+                                //    console.log(self.languages[item.language]);
+                                //    self.languageLabels.push(self.languages[item.language]);
+                                //}
                             //}
 
                         })
@@ -137,13 +139,13 @@ if (document.getElementById("item-edit-page")) {
              * @param {any} entryType the type of entry, a string either 'name' or 'description'
              */
             addNewEntry(entryType) {
-                /*let newEntry = {
+                let newEntry = {
                     format: null,
                     language: null,
                     rank: 0,
                     value: null,
                     modelType: null
-                };*/
+                };
 
                 //let newEntry = 
 
@@ -151,17 +153,36 @@ if (document.getElementById("item-edit-page")) {
                     newEntry.format = this.nameAttribute.values[0].format;
                     newEntry.language = this.nameAttribute.values[0].language;
                     newEntry.modelType = this.nameAttribute.values[0].modelType;
+                    this.setSingleLanguageLabel(newEntry);
                     this.nameAttribute.values.push(newEntry);
                 } else {
                     newEntry.format = this.descriptionAttribute.values[0].format;
                     newEntry.language = this.descriptionAttribute.values[0].language;
                     newEntry.modelType = this.descriptionAttribute.values[0].modelType;
+                    this.setSingleLanguageLabel(newEntry);
                     this.descriptionAttribute.values.push(newEntry);
 				}
 
 
 
             },
+            /**
+             * Sets the initial language labels youll need for the item.
+             * @param {any} sections
+             */
+            setLanguageLabels(sections) {
+                for (let item of sections[0].values) {
+                    //console.log(this.languages[item.language]);
+                    this.languageLabels.push(this.languages[item.language]);
+                }
+                console.log(this.languageLabels);
+            },
+
+            //temp function, shouldnt need this once sets are grouped as arrays in the json.
+            //just run the setLanguageLabels once, then the set of labels can be reused when new sets are created
+            setSingleLanguageLabel(entry) {
+                this.languageLabels.push(this.languages[entry.language]);
+			},
 
             /**
              * Deletes the set from the item
