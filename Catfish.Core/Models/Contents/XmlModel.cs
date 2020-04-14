@@ -24,14 +24,13 @@ namespace Catfish.Core.Models.Contents
         public XmlModel(XElement data)
         {
             Data = data;
-            if (string.IsNullOrEmpty(ModelType))
-                UpdateModelType();
+            Initialize();
         }
 
         public XmlModel(string tagName)
         {
             Data = new XElement(tagName);
-            UpdateModelType();
+            Initialize();
         }
 
         public string ModelType
@@ -41,7 +40,8 @@ namespace Catfish.Core.Models.Contents
 
         public virtual void Initialize()
         {
-
+            if (string.IsNullOrEmpty(ModelType))
+                Data.SetAttributeValue("model-type", GetType().AssemblyQualifiedName);
         }
 
         ////protected string Lang(string lang)
@@ -79,11 +79,6 @@ namespace Catfish.Core.Models.Contents
             XmlModel model = Activator.CreateInstance(type) as XmlModel;
             model.Data = new XElement(Data);
             return model;
-        }
-
-        public void UpdateModelType()
-        {
-            Data.SetAttributeValue("model-type", GetType().AssemblyQualifiedName);
         }
     }
 }

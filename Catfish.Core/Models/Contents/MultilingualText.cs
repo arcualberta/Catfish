@@ -14,10 +14,12 @@ namespace Catfish.Core.Models.Contents
 
         public MultilingualText(string tagName) : base(tagName) { }
 
-        public MultilingualText(XElement data) : base(data) { Initialize(); }
+        public MultilingualText(XElement data) : base(data) { }
 
-        public void Initialize()
+        public override void Initialize()
         {
+            base.Initialize();
+
             // Creating Text objects for all text elements withing the immediate children
             // and adding them to the Values list.
             Values = new List<Text>();

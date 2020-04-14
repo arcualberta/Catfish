@@ -20,16 +20,18 @@ namespace Catfish.Core.Models.Contents.Fields
         public BaseField(string name, string desc, string lang = null)
             : base(FieldTagName)
         {
-            Name = new MultilingualText(GetElement(Entity.NameTag, true));
+            //Name = new MultilingualText(GetElement(Entity.NameTag, true));
             Name.SetContent(name, lang);
 
-            Description = new MultilingualText(GetElement("description", true));
+            //Description = new MultilingualText(GetElement("description", true));
             Description.SetContent(desc, lang);
         }
 
         public override void Initialize()
         {
-
+            base.Initialize();
+            Name = new MultilingualText(GetElement(Entity.NameTag, true));
+            Description = new MultilingualText(GetElement(Entity.DescriptionTag, true));
         }
 
         /*
