@@ -1,1 +1,9 @@
 ﻿@model Catfish.Core.Models.Contents.MetadataSet
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+@foreach (var field in Model.Fields)
+{
+    <partial name="partial/@field.GetType().Name" model="@field" />
+}
