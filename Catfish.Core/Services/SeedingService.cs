@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System;
+using Catfish.Core.Helpers;
 
 namespace Catfish.Core.Services
 {
