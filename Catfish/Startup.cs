@@ -15,6 +15,7 @@ using Catfish.Models.Fields;
 using Catfish.Models.Blocks;
 using Piranha.Data.EF.SQLServer;
 using Catfish.Core.Services;
+using Catfish.Helper;
 
 namespace Catfish
 {
@@ -115,6 +116,7 @@ namespace Catfish
             services.AddScoped<EntityTypeService>();
             services.AddScoped<DbEntityService>();
             services.AddScoped<ItemService>();
+            services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
 
         }
 
