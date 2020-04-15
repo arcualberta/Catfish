@@ -23,6 +23,7 @@ if (document.getElementById("item-edit-page")) {
                     fr: "Français",
                     sp: "Español"
                 },
+                DEFAULT_LANGUAGE: 'en',
                 //array for displaying language labels listed in received JSON
                 //im assuming here that all fields will have the
                 //same languages enabled, since languages are enabled sitewide
@@ -91,6 +92,20 @@ if (document.getElementById("item-edit-page")) {
                                 "value": "Oui oui bonjour 166",
                                 "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
 
+                            });
+
+                            result.metadataSets.push({
+                                name: {
+                                    values: [
+                                        {
+                                            "format": "plain",
+                                            "language": "en",
+                                            "rank": 0,
+                                            "value": "I am a test",
+                                            "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                                        }
+                                    ]
+                                }
                             });
 
                             self.sections[0].values = self.nameAttribute.values;
@@ -183,8 +198,11 @@ if (document.getElementById("item-edit-page")) {
              */
             setLanguageLabels(sections) {
                 for (let item of sections[0].values) {
-                    //console.log(this.languages[item.language]);
-                    this.languageLabels.push(this.languages[item.language]);
+                    let tmp = this.languages[item.language];
+                    if (typeof tmp === 'undefined') {
+                        tmp = this.languages[this.DEFAULT_LANGUAGE];
+					}
+                    this.languageLabels.push(tmp);
                 }
                 console.log(this.languageLabels);
             },

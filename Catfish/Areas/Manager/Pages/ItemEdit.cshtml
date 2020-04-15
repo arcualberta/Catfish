@@ -80,11 +80,13 @@
             <div class="col">
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a v-for="metadataSet in metadataSets" class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">{{metadataSet.name.values[0].value}}</a> <!--not sure if correct-->
+                        <a v-for="metadataSet in metadataSets" class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">{{metadataSet.name.values[0].value}}</a>
                     </div>
                 </nav>
                 <div v-for="metadataSet in metadataSets" class="tab-content" id="nav-tabContent">
-                    <div v-for="field in metadataSet.fields" class="tab-pane fade show active field-section" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"> <!-- manage the active tab or all will be active... -->
+                    <div v-for="field in metadataSet.fields" :class="{active: true}"
+                         class="tab-pane fade show field-section"
+                         id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"> <!-- manage the active tab or all will be active... -->
                         <div class="flex-row" v-for="(val, index) in field.name.values">
                             <div>{{field.name.values[index].value}}</div>
                             <button type="button" class="btn-sm btn-primary btn-circle" 
