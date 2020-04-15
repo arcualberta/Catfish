@@ -24,8 +24,8 @@ if (document.getElementById("item-edit-page")) {
                     sp: "Español"
                 },
                 //array for displaying language labels listed in received JSON
-                //im assuming here that both name and description will have the
-                //same languages enabled, as languages are enabled sitewide
+                //im assuming here that all fields will have the
+                //same languages enabled, since languages are enabled sitewide
                 languageLabels: [],
 
                 sections: [
@@ -38,7 +38,12 @@ if (document.getElementById("item-edit-page")) {
                 ],
 
                 metadataSets: [],
-                metadataSetLabel: "Metadata Sets"
+                metadataSetLabel: "Metadata Sets",
+                //key-value pairs of input types from the database and their associated
+                //input type
+                inputTypes: {
+                    "Catfish.Core.Models.Contents.Fields.TextField": "text",
+				}
 
             }
         },
@@ -200,7 +205,12 @@ if (document.getElementById("item-edit-page")) {
             this.itemId = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
             //call api
             this.fetchData();
-            
-        }
+        },
+        mounted() {
+
+            $(document).ready(function () {
+                $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+            });
+		}
     })
 }

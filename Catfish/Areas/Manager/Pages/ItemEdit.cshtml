@@ -79,7 +79,12 @@
     <div v-for="metadataSet in metadataSets" class="tab-content" id="nav-tabContent">
         <div v-for="field in metadataSet.fields" class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
             <div>{{field.name.values[0].value}}</div>
-            <div>{{field.description.values[0].value}}</div>
+            <button type="button" class="btn-sm btn-primary btn-circle" 
+                    data-toggle="tooltip" data-placement="top" 
+                    :title="field.description.values[0].value">
+                <i class="fas fa-question"></i>
+            </button>
+
         </div>
     </div>
 
