@@ -17,14 +17,13 @@ if (document.getElementById("item-edit-page")) {
                 itemId: null,
                 nameAttribute: null,
                 descriptionAttribute: null,
-                metadataSets: null,
-                //bring this in from somewhere else, will have ALL languages in it
+                //bring this in from somewhere else, will have ALL language abbreviations in it
                 languages: {
                     en: "English",
                     fr: "Français",
                     sp: "Español"
                 },
-                //array for displaying languages listed in received JSON
+                //array for displaying language labels listed in received JSON
                 //im assuming here that both name and description will have the
                 //same languages enabled, as languages are enabled sitewide
                 languageLabels: [],
@@ -36,7 +35,10 @@ if (document.getElementById("item-edit-page")) {
                     {
                         title: "Description"
                     },
-                ]
+                ],
+
+                metadataSets: [],
+                metadataSetLabel: "Metadata Sets"
 
             }
         },
@@ -81,12 +83,6 @@ if (document.getElementById("item-edit-page")) {
 
                             //prepare language labels
                             self.setLanguageLabels(self.sections);
-                            //for (let section of self.sections) {
-                                //for (let item of self.sections[0].values) {
-                                //    console.log(self.languages[item.language]);
-                                //    self.languageLabels.push(self.languages[item.language]);
-                                //}
-                            //}
 
                         })
                         .catch(function (error) { console.log("error:", error); });
