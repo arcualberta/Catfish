@@ -72,13 +72,15 @@
 
     <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a v-for="metadataSet in metadataSets" class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">{{metadataSet.name}}</a>
+            <a v-for="metadataSet in metadataSets" class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">{{metadataSet.name.values[0].value}}</a> <!--not sure if correct-->
+        
         </div>
     </nav>
-    <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">...</div>
-        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
-        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
+    <div v-for="metadataSet in metadataSets" class="tab-content" id="nav-tabContent">
+        <div v-for="field in metadataSet.fields" class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+            <div>{{field.name.values[0].value}}</div>
+            <div>{{field.description.values[0].value}}</div>
+        </div>
     </div>
 
 </div>
