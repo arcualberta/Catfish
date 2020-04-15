@@ -36,7 +36,7 @@ namespace Catfish.Areas.Manager.Controllers
 
         // POST: api/Items
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Item value)
         {
         }
 
