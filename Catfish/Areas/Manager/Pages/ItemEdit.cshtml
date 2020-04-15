@@ -63,34 +63,42 @@
         </div>
     </div>
 
-    <div class="sitemap-item">
-        <div class="link">
-            <span class="title">{{metadataSetLabel}}</span>
+    <div class="container-fluid app" :class="{ ready: !loading }">
+        <div class="row">
+            <div class="col">
+                <div class="sitemap-item">
+                    <div class="link">
+                        <span class="title">{{metadataSetLabel}}</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
-
-    <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a v-for="metadataSet in metadataSets" class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">{{metadataSet.name.values[0].value}}</a> <!--not sure if correct-->
-        
-        </div>
-    </nav>
-    <div v-for="metadataSet in metadataSets" class="tab-content" id="nav-tabContent">
-        <div v-for="field in metadataSet.fields" class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-            <div class="flex-row">
-                <div>{{field.name.values[0].value}}</div>
-                <button type="button" class="btn-sm btn-primary btn-circle" 
-                        data-toggle="tooltip" data-placement="top" 
-                        :title="field.description.values[0].value">
-                    <i class="fas fa-question"></i>
-                </button>
-                <input type="text" class="form-control" v-if="field.modelType.includes(inputTypes.text)">
-                <div v-else-if="false==true"></div>
-                <div v-else-if="false==true"></div>
+    <div class="container-fluid tab-holder">
+        <div class="row">
+            <div class="col">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a v-for="metadataSet in metadataSets" class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">{{metadataSet.name.values[0].value}}</a> <!--not sure if correct-->
+                    </div>
+                </nav>
+                <div v-for="metadataSet in metadataSets" class="tab-content" id="nav-tabContent">
+                    <div v-for="field in metadataSet.fields" class="tab-pane fade show active field-section" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"> <!-- manage the active tab or all will be active... -->
+                        <div class="flex-row" v-for="(val, index) in field.name.values">
+                            <div>{{field.name.values[index].value}}</div>
+                            <button type="button" class="btn-sm btn-primary btn-circle" 
+                                    data-toggle="tooltip" data-placement="top" 
+                                    :title="field.description.values[index].value">
+                                <i class="fas fa-question"></i>
+                            </button>
+                            <input type="text" class="form-control" v-if="field.modelType.includes(inputTypes.text)">
+                            <!--<div v-else-if="false==true"></div>
+                            <div v-else-if="false==true"></div>-->
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-
         </div>
     </div>
 

@@ -73,7 +73,7 @@ if (document.getElementById("item-edit-page")) {
                             self.updateBindings = true;
 
                             //for testing purposes, remove after
-                            self.nameAttribute.values.push({
+                            result.metadataSets[0].fields[0].name.values.push({
                                 
                                     "format": "plain",
                                     "language": "fr",
@@ -81,6 +81,16 @@ if (document.getElementById("item-edit-page")) {
                                     "value": "Oui oui bonjour 166",
                                     "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
                                 
+                            });
+
+                            result.metadataSets[0].fields[0].description.values.push({
+
+                                "format": "plain",
+                                "language": "fr",
+                                "rank": 0,
+                                "value": "Oui oui bonjour 166",
+                                "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+
                             });
 
                             self.sections[0].values = self.nameAttribute.values;

@@ -60,3 +60,20 @@
 	border-bottom-left-radius: 0;
 	border-top-left-radius: 0;
 }
+
+.container-fluid.tab-holder{
+	padding-top: 10px;
+}
+
+#item-edit-page .tab-content{
+	padding-top: 15px;
+	padding-left:15px;
+}
+
+#item-edit-page .nav-item, #item-edit-page .tab-content {
+	background-color: white;
+}
+
+#item-edit-page .field-section{
+	padding: 15px;
+}
