@@ -68,12 +68,16 @@
                                     <!-- maybe this can be a partial once you learn about them more? -->
                                     <li v-for="item in collection.items" class="dd-item expanded">
                                         <div class="sitemap-item">
+
                                             <div class="link">
                                                 <a :href="item.id">{{item.name.values[0].value}}</a> <!--@* <a href="@detailsPage">@Model.TypeName</a>*@ -->
+
                                             </div>
 
                                             <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
+
                                                 <button v-on:click="openEditItem(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
+
                                                     <i class="fas fa-pen"></i>
                                                     @Localizer.Page["Edit"]
                                                 </button>

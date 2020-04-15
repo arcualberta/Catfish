@@ -7,8 +7,9 @@
     <div class="top">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item">@Localizer.Menu["Items"]</li>
-                <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Item"]</li>
+                <li class="breadcrumb-item">@Localizer.Menu["Entities"]</li>
+                <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Items"]</li>
+                <li class="breadcrumb-item">@Localizer.Menu["Item Details"]</li>
             </ol>
         </nav>
 
@@ -24,17 +25,19 @@
 
     <div class="container-fluid">
         <h2>@Model.Item.Name.GetConcatenatedContent(" | ")</h2>
-        @{
+        @*@{
             List<string> languages = Model.Item.Description.Values.Select(v => v.Language).Distinct().ToList();
             foreach (var lang in languages)
             {
                 //List<string> values = Model.Item.Description
             }
 
-        }
-        <div class="entity-desc">
-            @Model.Item.Description.GetConcatenatedContent(" | ")
-        </div>
+        }*@
+    <div class="entity-desc">
+        @Model.Item.Description.GetConcatenatedContent(" | ")
+        <br />
+        <br />
+    </div>
 
         @foreach (var ms in Model.Item.MetadataSets)
         {
