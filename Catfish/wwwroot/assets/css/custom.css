@@ -1,9 +1,8 @@
-﻿#itemlist-page .container-fluid .top-nav {
+﻿#itemlist-page .container-fluid .top-nav,
+#itemlist-page .container-fluid.top .left-nav-container,
+#item-edit-page .sitemap.sitemap-container,
+#item-edit-page .flex-row{
 	display: flex;
-}
-
-#itemlist-page .container-fluid.top .left-nav-container{
-	display:flex;
 }
 
 #itemlist-page .container-fluid .top-nav.ce {
@@ -42,8 +41,14 @@
 	flex: 2;
 }
 
-#item-edit-page .sitemap.sitemap-container{
-	display: flex;
+#item-edit-page .btn-circle {
+	width: 30px;
+	height: 30px;
+	padding: 6px 0px;
+	border-radius: 15px;
+	text-align: center;
+	font-size: 12px;
+	line-height: 1.42857;
 }
 
 .trash-button-holder {

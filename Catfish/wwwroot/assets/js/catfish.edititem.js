@@ -42,7 +42,7 @@ if (document.getElementById("item-edit-page")) {
                 //key-value pairs of input types from the database and their associated
                 //input type
                 inputTypes: {
-                    "Catfish.Core.Models.Contents.Fields.TextField": "text",
+                    "text": "Catfish.Core.Models.Contents.Fields.TextField",
 				}
 
             }
@@ -208,6 +208,7 @@ if (document.getElementById("item-edit-page")) {
         },
         mounted() {
 
+            //initializes all tooltips
             $(document).ready(function () {
                 $("body").tooltip({ selector: '[data-toggle=tooltip]' });
             });
