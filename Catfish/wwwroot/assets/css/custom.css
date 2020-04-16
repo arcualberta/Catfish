@@ -112,8 +112,9 @@
 }
 
 #item-edit-page .add-value-container {
-	height: 30px;
-	padding-right: 15px;
+	/*height: 30px;
+	padding-right: 15px;*/
+	padding-top: 0;
 }
 
 #item-edit-page .new-value-button {
@@ -123,9 +124,15 @@
 #item-edit-page .flex-row {
 	display: flex;
 	padding-bottom: 15px;
+	padding-top:15px;
 }
 
-#item-edit-page .link {
+#item-edit-page .tab-pane .link {
 	display: flex;
+	flex-direction: column;
+	padding-bottom: 0;
+}
+
+#item-edit-page .tab-pane .sitemap-item {
 	flex-direction: column;
 }

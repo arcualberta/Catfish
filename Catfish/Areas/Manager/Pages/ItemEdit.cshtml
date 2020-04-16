@@ -101,7 +101,6 @@
 							<div class="sitemap-item">
 								<div class="link">
 
-
 									<div class="flex-row" v-for="(val, index) in field.name.values">
 										<div class="label-holder">
 											<div>{{field.name.values[index].value}}</div>
@@ -115,16 +114,17 @@
 									</div>
 
 								</div>
-							</div>
-						</div>
 
-						<div v-if="piranha.permissions.pages.add" class="add-value-container">
+                                						<div v-if="piranha.permissions.pages.add" class="add-value-container">
 							<div class="btn-group new-value-button" role="group">
 								<button id="add-new-value" type="button" v-on:click="addNewEntry(section.title)"
 										class="btn btn-sm btn-primary btn-labeled">
 									<i class="fas fa-plus"></i>
 									Value
 								</button>
+							</div>
+						</div>
+
 							</div>
 						</div>
 
