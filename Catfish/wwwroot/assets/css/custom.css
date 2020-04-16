@@ -136,3 +136,7 @@
 #item-edit-page .tab-pane .sitemap-item {
 	flex-direction: column;
 }
+
+#item-edit-page .tab-holder .col{
+	padding-bottom: 15px;
+}
