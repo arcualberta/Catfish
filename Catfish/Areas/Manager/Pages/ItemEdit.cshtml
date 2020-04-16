@@ -80,28 +80,39 @@
             <div class="col">
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a v-for="metadataSet in metadataSets" class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">{{metadataSet.name.values[0].value}}</a>
+                        <a v-for="(metadataSet, index) in metadataSets" class="nav-item nav-link"
+                           :class="{show: index==0, active: index==0}"
+                           :id="'meta-tab-' + index" data-toggle="tab" :href="'#tab-' + index" role="tab" 
+                           :aria-controls="'tab-' + index" :aria-selected="index==0 ? true : false">
+                            {{metadataSet.name.values[0].value}}
+                        </a>
                     </div>
                 </nav>
-                <div v-for="metadataSet in metadataSets" class="tab-content" id="nav-tabContent">
-                    <div v-for="field in metadataSet.fields" :class="{active: true}"
-                         class="tab-pane fade show field-section"
-                         id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"> <!-- manage the active tab or all will be active... -->
-                        <div class="flex-row" v-for="(val, index) in field.name.values">
-                            <div>{{field.name.values[index].value}}</div>
-                            <button type="button" class="btn-sm btn-primary btn-circle" 
-                                    data-toggle="tooltip" data-placement="top" 
-                                    :title="field.description.values[index].value">
-                                <i class="fas fa-question"></i>
-                            </button>
-                            <input type="text" class="form-control" v-if="field.modelType.includes(inputTypes.text)">
-                            <!--<div v-else-if="false==true"></div>
-                            <div v-else-if="false==true"></div>-->
+                <div class="tab-content" id="metaTabContent">
+                    <div v-for="(metadataSet, indx) in metadataSets" :id="'tab-' + indx" 
+                        role="tabpanel" aria-labelledby="home-tab" class="tab-pane fade"
+                         :class="{active: indx==0, show: indx==0}">
+                        <div v-for="field in metadataSet.fields"
+                             class="tab-pane fade show field-section"
+                             id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"> <!-- manage the active tab or all will be active... -->
+                            <div class="flex-row" v-for="(val, index) in field.name.values">
+                                <div>{{field.name.values[index].value}}</div>
+                                <button type="button" class="btn-sm btn-primary btn-circle" 
+                                        data-toggle="tooltip" data-placement="top" 
+                                        :title="field.description.values[index].value">
+                                    <i class="fas fa-question"></i>
+                                </button>
+                                <input type="text" class="form-control" v-if="field.modelType.includes(inputTypes.text)">
+                                <!--<div v-else-if="false==true"></div>
+                                <div v-else-if="false==true"></div>-->
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+
 
 </div>
