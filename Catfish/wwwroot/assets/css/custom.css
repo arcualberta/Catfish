@@ -49,6 +49,7 @@
 	text-align: center;
 	font-size: 12px;
 	line-height: 1.42857;
+	margin: 0 10px 0 10px;
 }
 
 .trash-button-holder {
@@ -87,4 +88,16 @@
 
 #item-edit-page .field-section {
 	padding: 15px;
+}
+
+#item-edit-page .label-holder{
+	display:flex;
+	flex-grow: 1;
+	max-width: 25%;
+	justify-content: space-between;
+}
+
+#item-edit-page .metadata-input{
+	flex-grow:1;
+	max-width:75%;
 }
