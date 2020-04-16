@@ -254,10 +254,10 @@
                         });
                     }
                 }
-                
+
                 inQuotes = !inQuotes;
             }
-            
+
             return result;
         }
 
@@ -308,7 +308,7 @@
                         }
                     } else if (entry.hasClass("divDropDownList")) {
                         selectedValue = entry.find("select option:selected").text();
-                        
+
                         if (selectedValue.length > 0) {
                             fields[searchId] = solrParser.createMultiSelectField([selectedValue]);
                         }
@@ -323,6 +323,67 @@
             });
 
             var searchString = solrParser.encode(fields);
+             //MR April 17 2020, the following to fix solr search failed to return any result if the searchingString contain more that 1 word, i.e: "Human Rights"
+            // and when search is perform in **_en_ss" field.
+            // the solution is just surround the searchString in quatations
+			// ie: value_84ee4548_236e_42c7_bfac_2e4f41c6185e_fa3a3593_7cbe_4470_9359_0fbe2c2c6159_is:[1960 TO 2014] && (value_84ee4548_236e_42c7_bfac_2e4f41c6185e_ca12ec0e_ca23_4661_86df_8c6abacafeb9_en_ss:( Aboriginal Peoples))
+            var tempSearchParams = searchString.split('&&');
+            let ind;
+			var searchString2="";
+            for(ind=0; ind<tempSearchParams.length; ind++)	{
+		     if(tempSearchParams[ind].indexOf('_en_ss') > 0)
+             {
+                var temp = tempSearchParams[ind].split(new RegExp('[:]', 'g'));
+                 var tempSearchVal = temp[temp.length-1].replace(/[()]/g,'').trim();
+                if(tempSearchVal.indexOf(' ') > 0)
+                {
+                   //check if there're more than 1 options chosen -- "Aboriginal Peoples || Environment
+
+                   if(tempSearchVal.indexOf('||') > 0)
+                   {
+                        var orSearchTerms = tempSearchVal.split('||');
+                        let orIn;
+                        var orStr="";
+                        for(orIn=0; orIn < orSearchTerms.length; orIn++){
+                               orStr += orSearchTerms[orIn].trim().indexOf(' ') > 0 ? JSON.stringify(orSearchTerms[orIn].trim()) : orSearchTerms[orIn].trim();
+
+                                  if(orIn < (orSearchTerms.length-1))
+                                  {orStr +="||";
+                                  }
+
+                        }
+                        searchString2 += temp[0] + ":(" + orStr + "))";
+                   }else{
+                         var tempSearch= temp[0] + ":(" + JSON.stringify(tempSearchVal) + "))";
+				         searchString2 += tempSearch;
+                   }
+
+
+				   if(ind < (tempSearchParams.length -1))
+				   {
+				     searchString2 += "&&";
+				   }
+				 // alert(searchString);
+                }
+				else{
+                  searchString2 += tempSearchParams[ind];
+                   if(ind < (tempSearchParams.length -1))
+				   {
+				     searchString2 += "&&";
+				   }
+                }
+             }else{
+			     searchString2 += tempSearchParams[ind];
+				 if(ind < (tempSearchParams.length -1))
+				   {
+				     searchString2 += "&&";
+				   }
+			 }
+			 if(ind == (tempSearchParams.length-1 )){
+			    searchString =  searchString2;
+				searchString2="";
+			 }
+			}//for
             window.updateUrlParameters({ q: searchString, page: 1 });
             return false;
         });
