@@ -89,34 +89,46 @@
                     </div>
                 </nav>
                 <div class="tab-content" id="metaTabContent">
-                    <div v-for="(metadataSet, indx) in metadataSets" :id="'tab-' + indx" 
-                        role="tabpanel" aria-labelledby="home-tab" class="tab-pane fade"
-                         :class="{active: indx==0, show: indx==0}">
+					<div v-for="(metadataSet, indx) in metadataSets" :id="'tab-' + indx"
+						 role="tabpanel" aria-labelledby="home-tab" class="tab-pane fade"
+						 :class="{active: indx==0, show: indx==0}">
 
-                        <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
-                            <button id="add-new-value" type="button" v-on:click="addNewEntry(section.title)"
-                                    class="btn btn-sm btn-primary btn-labeled">
-                                <i class="fas fa-plus"></i>
-                                Values
-                            </button>
-                       </div>
 
-                        <div v-for="field in metadataSet.fields"
-                             class="tab-pane fade show field-section"
-                             id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                            <div class="flex-row" v-for="(val, index) in field.name.values">
-                                <div class="label-holder">
-                                    <div>{{field.name.values[index].value}}</div>
-                                    <button type="button" class="btn-sm btn-primary btn-circle" 
-                                            data-toggle="tooltip" data-placement="top" 
-                                            :title="field.description.values[index].value">
-                                        <i class="fas fa-question"></i>
-                                    </button>
-                                </div>
-                                <input type="text" class="form-control metadata-input" v-if="field.modelType.includes(inputTypes.text)">
-                            </div>
-                        </div>
-                    </div>
+						<div v-for="field in metadataSet.fields"
+							 class="tab-pane fade show field-section"
+							 id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+
+							<div class="sitemap-item">
+								<div class="link">
+
+
+									<div class="flex-row" v-for="(val, index) in field.name.values">
+										<div class="label-holder">
+											<div>{{field.name.values[index].value}}</div>
+											<button type="button" class="btn-sm btn-primary btn-circle"
+													data-toggle="tooltip" data-placement="top"
+													:title="field.description.values[index].value">
+												<i class="fas fa-question"></i>
+											</button>
+										</div>
+										<input type="text" class="form-control metadata-input" v-if="field.modelType.includes(inputTypes.text)">
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+						<div v-if="piranha.permissions.pages.add" class="add-value-container">
+							<div class="btn-group new-value-button" role="group">
+								<button id="add-new-value" type="button" v-on:click="addNewEntry(section.title)"
+										class="btn btn-sm btn-primary btn-labeled">
+									<i class="fas fa-plus"></i>
+									Value
+								</button>
+							</div>
+						</div>
+
+					</div>
                 </div>
             </div>
         </div>
