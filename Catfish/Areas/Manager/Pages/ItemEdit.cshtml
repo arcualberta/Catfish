@@ -27,124 +27,125 @@
 	    </div>
     </div>
 
-
-	<div v-for="section in sections" class="container-fluid app" id="itemlist" :class="{ ready: !loading }"> 
-       <div class="row">
-            <div class="col">
-                <div class="sitemap">
-                    <ol v-if="section.values">
-                        <li>
-                            <div class="sitemap-item">
-                                <div class="link">
-                                    <span class="title">{{section.title}}</span>
+    <form id="item-edit-form" class="edit-form" novalidate>
+	    <div v-for="section in sections" class="container-fluid app" id="itemlist" :class="{ ready: !loading }"> 
+           <div class="row">
+                <div class="col">
+                    <div class="sitemap">
+                        <ol v-if="section.values">
+                            <li>
+                                <div class="sitemap-item">
+                                    <div class="link">
+                                        <span class="title">{{section.title}}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="sitemap sitemap-container dd collapse show" data-id="{ 0 }"> <!-- v-for="let set of entrySets" -->
-                               <ol class="dd-list">
-                                    <li v-for="(entry, index) in section.values" class="dd-item expanded">
-                                        <div class="sitemap-item">
-                                            <div class="link">
-                                                <label :id="['entry-label-' + section.title + '-' + languageLabels[index]]" class="language-label" for="input-0">{{languageLabels[index]}}:</label>
-                                                <input type="text" class="form-control" :id="[section.title + '-input-' + index]" aria-describedby="entry-label" :value="entry.value">
+                                <div class="sitemap sitemap-container dd collapse show" data-id="{ 0 }"> <!-- v-for="let set of entrySets" -->
+                                   <ol class="dd-list">
+                                        <li v-for="(entry, index) in section.values" class="dd-item expanded">
+                                            <div class="sitemap-item">
+                                                <div class="link">
+                                                    <label :id="['entry-label-' + section.title + '-' + languageLabels[index]]" class="language-label" for="input-0">{{languageLabels[index]}}:</label>
+                                                    <input required type="text" class="form-control" :id="[section.title + '-input-' + index]" aria-describedby="entry-label" :value="entry.value">
+                                                </div>
                                             </div>
-                                        </div>
-                                    </li>
-                                </ol>
+                                        </li>
+                                    </ol>
 
-                            </div>
+                                </div>
 
-                        </li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container-fluid app" :class="{ ready: !loading }">
-        <div class="row">
-            <div class="col">
-                <div class="sitemap-item">
-                    <div class="link">
-                        <span class="title">{{metadataSetLabel}}</span>
+                            </li>
+                        </ol>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        <div class="container-fluid app" :class="{ ready: !loading }">
+            <div class="row">
+                <div class="col">
+                    <div class="sitemap-item">
+                        <div class="link">
+                            <span class="title">{{metadataSetLabel}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     
-    <div class="container-fluid tab-holder">
-        <div class="row">
-            <div class="col">
-                <nav>
-                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a v-for="(metadataSet, index) in metadataSets" class="nav-item nav-link"
-                           :class="{show: index==0, active: index==0}"
-                           :id="'meta-tab-' + index" data-toggle="tab" :href="'#tab-' + index" role="tab" 
-                           :aria-controls="'tab-' + index" :aria-selected="index==0 ? true : false">
-                            {{metadataSet.name.values[0].value}}
-                        </a>
+        <div class="container-fluid tab-holder">
+            <div class="row">
+                <div class="col">
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <a v-for="(metadataSet, index) in metadataSets" class="nav-item nav-link"
+                               :class="{show: index==0, active: index==0}"
+                               :id="'meta-tab-' + index" data-toggle="tab" :href="'#tab-' + index" role="tab" 
+                               :aria-controls="'tab-' + index" :aria-selected="index==0 ? true : false">
+                                {{metadataSet.name.values[0].value}}
+                            </a>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="metaTabContent">
+					    <div v-for="(metadataSet, indx) in metadataSets" :id="'tab-' + indx"
+						     role="tabpanel" aria-labelledby="home-tab" class="tab-pane fade"
+						     :class="{active: indx==0, show: indx==0}">
+
+
+						    <div v-for="field in metadataSet.fields"
+							     class="tab-pane fade show field-section"
+							     id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+
+							    <div class="sitemap-item">
+								    <div class="link">
+                                        <!--<div class="row-holder">-->
+									        <div class="flex-row" v-for="(val, index) in field.name.values">
+										        <div class="label-holder">
+											        <div>{{field.name.values[index].value}}</div>
+											        <button type="button" class="btn-sm btn-primary btn-circle"
+													        data-toggle="tooltip" data-placement="top"
+													        :title="field.description.values[index].value">
+												        <i class="fas fa-question"></i>
+											        </button>
+										        </div>
+										        <input required type="text" class="form-control metadata-input" v-if="field.modelType.includes(inputTypes.text)">
+									        </div>
+                                        <!--</div> -->
+                                        <!--<div v-if="piranha.permissions.pages.add" class="btn-group trash-button-holder" role="group">
+                                            <button v-on:click="deleteSet(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled trash-button">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                       </div>-->
+								    </div>
+
+                                    <div v-if="piranha.permissions.pages.add" class="add-value-container">
+                                        <div class="btn-group new-value-button" role="group">
+								            <button type="button" v-on:click="addNewEntry(section.title)"
+										    class="btn btn-sm btn-primary btn-labeled">
+									            <i class="fas fa-plus"></i>
+									            Value
+								            </button>
+							            </div>
+
+                                        <div class="btn-group new-value-button" role="group">
+								            <button type="button" v-on:click="deleteField(field)"
+										    class="btn btn-sm btn-danger btn-labeled trash-button">
+									            <i class="fas fa-trash"></i>
+									            Delete
+								            </button>
+							            </div>
+
+						            </div>
+
+							    </div>
+						    </div>
+
+					    </div>
                     </div>
-                </nav>
-                <div class="tab-content" id="metaTabContent">
-					<div v-for="(metadataSet, indx) in metadataSets" :id="'tab-' + indx"
-						 role="tabpanel" aria-labelledby="home-tab" class="tab-pane fade"
-						 :class="{active: indx==0, show: indx==0}">
-
-
-						<div v-for="field in metadataSet.fields"
-							 class="tab-pane fade show field-section"
-							 id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-
-							<div class="sitemap-item">
-								<div class="link">
-                                    <!--<div class="row-holder">-->
-									    <div class="flex-row" v-for="(val, index) in field.name.values">
-										    <div class="label-holder">
-											    <div>{{field.name.values[index].value}}</div>
-											    <button type="button" class="btn-sm btn-primary btn-circle"
-													    data-toggle="tooltip" data-placement="top"
-													    :title="field.description.values[index].value">
-												    <i class="fas fa-question"></i>
-											    </button>
-										    </div>
-										    <input type="text" class="form-control metadata-input" v-if="field.modelType.includes(inputTypes.text)">
-									    </div>
-                                    <!--</div> -->
-                                    <!--<div v-if="piranha.permissions.pages.add" class="btn-group trash-button-holder" role="group">
-                                        <button v-on:click="deleteSet(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled trash-button">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                   </div>-->
-								</div>
-
-                                <div v-if="piranha.permissions.pages.add" class="add-value-container">
-                                    <div class="btn-group new-value-button" role="group">
-								        <button type="button" v-on:click="addNewEntry(section.title)"
-										class="btn btn-sm btn-primary btn-labeled">
-									        <i class="fas fa-plus"></i>
-									        Value
-								        </button>
-							        </div>
-
-                                    <div class="btn-group new-value-button" role="group">
-								        <button type="button" v-on:click="deleteField(field)"
-										class="btn btn-sm btn-danger btn-labeled trash-button">
-									        <i class="fas fa-trash"></i>
-									        Delete
-								        </button>
-							        </div>
-
-						        </div>
-
-							</div>
-						</div>
-
-					</div>
                 </div>
             </div>
         </div>
-    </div>
-
+    
+    </form>
 
 
 </div>

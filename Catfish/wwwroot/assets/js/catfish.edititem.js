@@ -125,6 +125,20 @@ if (document.getElementById("item-edit-page")) {
                 });
             },
 
+
+            /**
+			 * Runs whenever a change is made.
+			 * Can be used to prevent the user from previewing without saving
+			 **/
+            detectChanges(event) {
+                this.hasChanges = true;
+                console.log("WHO:", event);
+            },
+
+            saveForm(event) {
+                event.preventDefault();
+			},
+
             bind() {
                 var self = this;
 
@@ -246,6 +260,28 @@ if (document.getElementById("item-edit-page")) {
             $(document).ready(function () {
                 $("body").tooltip({ selector: '[data-toggle=tooltip]' });
             });
+
+            //adds eventlistener to form fields for validation purposes
+            (function () {
+                'use strict';
+                window.addEventListener('load', function () {
+                    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                    var forms = document.getElementsByClassName('edit-form');
+                    console.log("forms", forms);
+                    // Loop over them and prevent submission
+                    var validation = Array.prototype.filter.call(forms, function (form) {
+                        form.addEventListener('submit', function (event) {
+                            console.log("in here?");
+                            if (form.checkValidity() === false) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
+                            console.log("form validated");
+                            form.classList.add('was-validated');
+                        }, false);
+                    });
+                }, false);
+            })();
 		}
     })
 }

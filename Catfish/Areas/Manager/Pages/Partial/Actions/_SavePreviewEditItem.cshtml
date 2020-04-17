@@ -9,7 +9,7 @@
     {*@ 
     <!-- v-on:click.prevent="piranha.siteedit.create(load)" -->
         <div class="btn-group dropdown save-preview-edit-button">
-            <button class="btn btn-primary">           
+            <button type="submit" form="item-edit-form" v-on:submit="saveForm(event)" class="btn btn-primary">
     <!--<i class="fas fa-plus"></i>-->
                 @Localizer.Site["Save"]
             </button>
