@@ -51,16 +51,6 @@
 	margin: 0 10px 0 10px;
 }
 
-.trash-button-holder {
-	margin-top: 1rem;
-	width: 45px;
-}
-
-.trash-button {
-	border-bottom-left-radius: 0;
-	border-top-left-radius: 0;
-}
-
 .container-fluid.tab-holder {
 	padding-top: 10px;
 }
@@ -139,4 +129,8 @@
 
 #item-edit-page .tab-holder .col{
 	padding-bottom: 15px;
+}
+
+#item-edit-page .trash-button{
+	margin-right: 10px;
 }
