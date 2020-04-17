@@ -17,6 +17,12 @@ if (document.getElementById("item-edit-page")) {
                 itemId: null,
                 nameAttribute: null,
                 descriptionAttribute: null,
+                buttonOptions: [
+                    "Save",
+                    "Edit",
+                    "Preview"
+                ],
+
                 //bring this in from somewhere else, will have ALL language abbreviations in it
                 languages: {
                     en: "English",
@@ -214,10 +220,10 @@ if (document.getElementById("item-edit-page")) {
 			},
 
             /**
-             * Deletes the set from the item
+             * Deletes the field from the item
              * @param {any} setId
              */
-            deleteSet(setId) {
+            deleteField(setId) {
 
 			}
         },

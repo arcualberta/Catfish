@@ -1,0 +1,23 @@
+﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService Auth
+@inject Piranha.Manager.ManagerLocalizer Localizer
+
+@* 
+    A dropdown button with the choice to save, preview, or edit.    
+*@
+
+@*@if ((await Auth.AuthorizeAsync(User, Piranha.Manager.Permission.SitesAdd)).Succeeded)
+    {*@ 
+    <!-- v-on:click.prevent="piranha.siteedit.create(load)" -->
+        <div class="btn-group dropdown save-preview-edit-button">
+            <button class="btn btn-primary">           
+    <!--<i class="fas fa-plus"></i>-->
+                @Localizer.Site["Save"]
+            </button>
+             <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+            <div class="dropdown-menu dropdown-menu-left" aria-labelledby="pageGroup">
+                <a class="dropdown-item" :href="piranha.baseUrl + option + '/' " v-for="option in buttonOptions">{{ option }}</a>
+            </div>
+    </div>
+    @*}*@
