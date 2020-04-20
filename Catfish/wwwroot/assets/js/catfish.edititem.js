@@ -81,13 +81,25 @@ if (document.getElementById("item-edit-page")) {
 
                             //for testing purposes, remove after
                             result.metadataSets[0].fields[0].name.values.push({
-                                
+
+                                "format": "plain",
+                                "language": "fr",
+                                "rank": 0,
+                                "value": "Nom",
+                                "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+
+                            });
+
+                            result.metadataSets[0].fields[0].values.push({
+                                "values": [{
                                     "format": "plain",
                                     "language": "fr",
                                     "rank": 0,
-                                    "value": "Oui oui bonjour 166",
+                                    "value": "I am writing in french",
                                     "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+								}]
                                 
+
                             });
 
                             result.metadataSets[0].fields[0].description.values.push({
@@ -95,7 +107,7 @@ if (document.getElementById("item-edit-page")) {
                                 "format": "plain",
                                 "language": "fr",
                                 "rank": 0,
-                                "value": "Oui oui bonjour 166",
+                                "value": "French description goes here",
                                 "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
 
                             });

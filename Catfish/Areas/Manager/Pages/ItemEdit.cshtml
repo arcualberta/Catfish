@@ -76,6 +76,7 @@
             <div class="row">
                 <div class="col">
                     <nav>
+                        <!-- Tab label -->
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
                             <a v-for="(metadataSet, index) in metadataSets" class="nav-item nav-link"
                                :class="{show: index==0, active: index==0}"
@@ -94,27 +95,37 @@
 						    <div v-for="field in metadataSet.fields"
 							     class="tab-pane fade show field-section"
 							     id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-
+                                
 							    <div class="sitemap-item">
 								    <div class="link">
-                                        <!--<div class="row-holder">-->
+                                        <div class="flexer">
+                                            <div class="flexer" v-for="(val, index) in field.name.values">
+                                                <h3 v-if="index >0 && index < field.name.values.length" style="white-space: pre"> | </h3>
+                                                <h3>{{field.name.values[index].value}}</h3>
+                                            </div>
+                                        </div>
 									        <div class="flex-row" v-for="(val, index) in field.name.values">
 										        <div class="label-holder">
-											        <div>{{field.name.values[index].value}}</div>
+											        <div>{{languageLabels[index]}}/{{field.name.values[index].language}}:</div>
 											        <button type="button" class="btn-sm btn-primary btn-circle"
 													        data-toggle="tooltip" data-placement="top"
 													        :title="field.description.values[index].value">
 												        <i class="fas fa-question"></i>
 											        </button>
 										        </div>
-										        <input required type="text" class="form-control metadata-input" v-if="field.modelType.includes(inputTypes.text)">
+                                                <!--
+                                                    Note to self about the value in this element:
+                                                    field.values[index].values[0].value
+                                                   - The first values is an array of objects. Those objects are for
+                                                     each field's language. 
+                                                   - The next values is an array of that field language, but there seems to
+                                                     be no way this would ever increase past 1 item in the array. So therefore,
+                                                     the index is always set to 0.
+                                                -->
+										        <input required type="text" class="form-control metadata-input" 
+                                                       v-if="field.modelType.includes(inputTypes.text)" 
+                                                       :value="field.values[index].values[0].value">
 									        </div>
-                                        <!--</div> -->
-                                        <!--<div v-if="piranha.permissions.pages.add" class="btn-group trash-button-holder" role="group">
-                                            <button v-on:click="deleteSet(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled trash-button">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                       </div>-->
 								    </div>
 
                                     <div v-if="piranha.permissions.pages.add" class="add-value-container">

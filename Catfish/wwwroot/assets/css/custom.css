@@ -1,6 +1,7 @@
 ﻿#itemlist-page .container-fluid .top-nav,
 #itemlist-page .container-fluid.top .left-nav-container,
-#item-edit-page .sitemap.sitemap-container {
+#item-edit-page .sitemap.sitemap-container, 
+#item-edit-page .flexer {
 	display: flex;
 }
 
