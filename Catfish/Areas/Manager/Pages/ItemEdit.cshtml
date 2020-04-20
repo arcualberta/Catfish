@@ -92,7 +92,7 @@
 						     :class="{active: indx==0, show: indx==0}">
 
 
-						    <div v-for="field in metadataSet.fields"
+						    <div v-for="(field, fIndex) in metadataSet.fields"
 							     class="tab-pane fade show field-section"
 							     id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                                 
@@ -138,7 +138,7 @@
 							            </div>
 
                                         <div class="btn-group new-value-button" role="group">
-								            <button type="button" v-on:click="deleteField(field)"
+								            <button type="button" v-on:click="deleteField(indx, fIndex)"
 										    class="btn btn-sm btn-danger btn-labeled trash-button">
 									            <i class="fas fa-trash"></i>
 									            Delete

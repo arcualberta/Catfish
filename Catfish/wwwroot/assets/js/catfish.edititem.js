@@ -247,10 +247,12 @@ if (document.getElementById("item-edit-page")) {
 
             /**
              * Deletes the field from the item
-             * @param {any} setId
+             * @param {any} metadataSetId
+             * @param {any} fieldId
              */
-            deleteField(setId) {
-
+            deleteField(metadataSetId, fieldId) {
+                console.log("field:", this.metadataSets[metadataSetId].fields[fieldId]);
+                this.metadataSets[metadataSetId].fields.splice(fieldId, 1);
 			}
         },
         updated() {
