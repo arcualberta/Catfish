@@ -193,11 +193,21 @@ if (document.getElementById("item-edit-page")) {
             },
 
             /**
-             * Adds another entry set to the item
-             * @param {any} entryType the type of entry, a string either 'name' or 'description'
+             * Adds another entry set to the field
+             * @param {any} metadataSetId metadataset index
+             * @param {any} fieldId field index
              */
-            addNewEntry(entryType) {
-                let newEntry = {
+            addNewEntry(metadataSetId, fieldId) {
+
+                let newEntry = JSON.parse(JSON.stringify(this.metadataSets[metadataSetId].fields[fieldId]));
+
+                for (let item of newEntry.values) {
+                    item.values[0].value = "";
+				}
+
+                this.metadataSets[metadataSetId].fields.splice(fieldId+1, 0, newEntry);
+
+                /*let newEntry = {
                     format: null,
                     language: null,
                     rank: 0,
@@ -219,10 +229,7 @@ if (document.getElementById("item-edit-page")) {
                     newEntry.modelType = this.descriptionAttribute.values[0].modelType;
                     this.setSingleLanguageLabel(newEntry);
                     this.descriptionAttribute.values.push(newEntry);
-				}
-
-
-
+				}*/
             },
             /**
              * Sets the initial language labels youll need for the item.
@@ -251,7 +258,6 @@ if (document.getElementById("item-edit-page")) {
              * @param {any} fieldId
              */
             deleteField(metadataSetId, fieldId) {
-                console.log("field:", this.metadataSets[metadataSetId].fields[fieldId]);
                 this.metadataSets[metadataSetId].fields.splice(fieldId, 1);
 			}
         },
