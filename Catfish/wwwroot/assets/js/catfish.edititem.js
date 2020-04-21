@@ -268,6 +268,7 @@ if (document.getElementById("item-edit-page")) {
              */
             deleteField(metadataSetId, fieldId) {
                 this.metadataSets[metadataSetId].fields.splice(fieldId, 1);
+                this.setOriginalFields();
 			}
         },
         updated() {
