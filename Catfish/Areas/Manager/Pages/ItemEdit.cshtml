@@ -87,9 +87,9 @@
                         </div>
                     </nav>
                     <div class="tab-content" id="metaTabContent">
-					    <div v-for="(metadataSet, indx) in metadataSets" :id="'tab-' + indx"
+					    <div v-for="(metadataSet, metaIndex) in metadataSets" :id="'tab-' + metaIndex"
 						     role="tabpanel" aria-labelledby="home-tab" class="tab-pane fade"
-						     :class="{active: indx==0, show: indx==0}">
+						     :class="{active: metaIndex==0, show: metaIndex==0}">
 
 
 						    <div v-for="(field, fIndex) in metadataSet.fields"
@@ -130,7 +130,7 @@
 
                                     <div v-if="piranha.permissions.pages.add" class="add-value-container">
                                         <div class="btn-group new-value-button" role="group">
-								            <button type="button" v-on:click="addNewEntry(indx, fIndex)"
+								            <button type="button" v-on:click="addNewEntry(metaIndex, fIndex)"
 										    class="btn btn-sm btn-primary btn-labeled">
 									            <i class="fas fa-plus"></i>
 									            Value
@@ -138,7 +138,7 @@
 							            </div>
 
                                         <div class="btn-group new-value-button" role="group">
-								            <button type="button" v-on:click="deleteField(indx, fIndex)"
+								            <button :disabled="originalFieldIndex[metaIndex].includes(fIndex)" type="button" v-on:click="deleteField(metaIndex, fIndex)"
 										    class="btn btn-sm btn-danger btn-labeled trash-button">
 									            <i class="fas fa-trash"></i>
 									            Delete

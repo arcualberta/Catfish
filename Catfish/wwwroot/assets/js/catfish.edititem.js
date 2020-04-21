@@ -50,7 +50,10 @@ if (document.getElementById("item-edit-page")) {
                 //input type
                 inputTypes: {
                     "text": "Catfish.Core.Models.Contents.Fields.TextField",
-				}
+                },
+
+                //stores the first time a field appears in the fields of a metadata set
+                originalFieldIndex: []
 
             }
         },
@@ -112,7 +115,7 @@ if (document.getElementById("item-edit-page")) {
 
                             });
 
-                            result.metadataSets.push({
+                            /*result.metadataSets.push({
                                 name: {
                                     values: [
                                         {
@@ -124,13 +127,16 @@ if (document.getElementById("item-edit-page")) {
                                         }
                                     ]
                                 }
-                            });
+                            });*/
 
                             self.sections[0].values = self.nameAttribute.values;
                             self.sections[1].values = self.descriptionAttribute.values;
 
                             //prepare language labels
                             self.setLanguageLabels(self.sections);
+
+                            //track original field indices
+                            self.setOriginalFields();
 
                         })
                         .catch(function (error) { console.log("error:", error); });
@@ -207,29 +213,6 @@ if (document.getElementById("item-edit-page")) {
 
                 this.metadataSets[metadataSetId].fields.splice(fieldId+1, 0, newEntry);
 
-                /*let newEntry = {
-                    format: null,
-                    language: null,
-                    rank: 0,
-                    value: null,
-                    modelType: null
-                };
-
-                //let newEntry = 
-
-                if (entryType === 'name' || entryType === 'Name') {
-                    newEntry.format = this.nameAttribute.values[0].format;
-                    newEntry.language = this.nameAttribute.values[0].language;
-                    newEntry.modelType = this.nameAttribute.values[0].modelType;
-                    this.setSingleLanguageLabel(newEntry);
-                    this.nameAttribute.values.push(newEntry);
-                } else {
-                    newEntry.format = this.descriptionAttribute.values[0].format;
-                    newEntry.language = this.descriptionAttribute.values[0].language;
-                    newEntry.modelType = this.descriptionAttribute.values[0].modelType;
-                    this.setSingleLanguageLabel(newEntry);
-                    this.descriptionAttribute.values.push(newEntry);
-				}*/
             },
             /**
              * Sets the initial language labels youll need for the item.
@@ -245,6 +228,31 @@ if (document.getElementById("item-edit-page")) {
                 }
                 console.log(this.languageLabels);
             },
+
+            /**
+             * Stores the indices of the first original version of a field.
+             * This is useful for knowing which fields will not be able to be deleted
+             * because they are the original version to be shown to the user.
+             * If they were able to be deleted, there would be no way to show that field again!
+             **/
+            setOriginalFields() {
+                for (let [index, metadataSet] of this.metadataSets.entries()) {
+                    let tmpField = metadataSet.fields[0];
+                    this.originalFieldIndex.push([]);
+                    this.originalFieldIndex[index].push(0);
+                    for (let i = 1; i < metadataSet.fields.length; i++){
+
+                        if (metadataSet.fields[i].name.values !== tmpField.name.values &&
+                            metadataSet.fields[i].description.values !== tmpField.description.values) {
+                            this.originalFieldIndex[index].push(i);
+                            console.log(i);
+                            tmpField = metadataSet.fields[i];
+						}
+                        
+                    }
+                }
+                console.log("originalFields:", this.originalFieldIndex);
+			},
 
             //temp function, shouldnt need this once sets are grouped as arrays in the json.
             //just run the setLanguageLabels once, then the set of labels can be reused when new sets are created
