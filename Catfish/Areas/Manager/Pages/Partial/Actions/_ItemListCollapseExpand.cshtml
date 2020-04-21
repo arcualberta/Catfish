@@ -10,15 +10,12 @@
     <!-- v-on:click.prevent="piranha.siteedit.create(load)" -->
         <div class="collapse-expand">
             <button v-on:click="collapseAllCollections()" class="btn btn-primary btn-labeled" aria-haspopup="true" aria-expanded="false">
-                <img style="width:18px" v-if="collapseAll" src="~/assets/images/egg-svg-05.svg" />
-                <!--<img style="width:18px" v-if="!collapseAll" src="~/assets/images/egg-svg-06.svg" />-->
-                <img style="width:18px" v-if="!collapseAll" src="~/assets/images/egg-svg-07.svg" />
+                <img style="width:18px" v-if="collapseAll==0" src="~/assets/images/egg-svg-05.svg" />
+                <img style="width:18px" v-if="collapseAll==1" src="~/assets/images/egg-svg-06.svg" />
+                <img style="width:18px" v-if="collapseAll==2" src="~/assets/images/egg-svg-07.svg" />
     <!--<i id="collapse-expand-button" 
                    :class="{'fas fa-chevron-circle-up': collapseAll, 'fas fa-chevron-circle-down': !collapseAll}"></i>-->
             </button>
-            <!--<div class="dropdown-menu dropdown-menu-right" aria-labelledby="pageGroup">-->
-                <!--<a class="dropdown-item" :href="piranha.baseUrl + type.addURL + '/' + type.id" v-for="type in collectionTypes">{{ type.typeName }}</a>--> <!-- + collection.id + -->
-            <!--</div>-->
         </div>
     @*}*@
 
