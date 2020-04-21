@@ -136,7 +136,7 @@
 									            Value
 								            </button>
 							            </div>
-
+                                        {{originalFieldIndex[metaIndex].includes(fIndex)}}
                                         <div class="btn-group new-value-button" role="group">
 								            <button :disabled="originalFieldIndex[metaIndex].includes(fIndex)" type="button" v-on:click="deleteField(metaIndex, fIndex)"
 										    class="btn btn-sm btn-danger btn-labeled trash-button">

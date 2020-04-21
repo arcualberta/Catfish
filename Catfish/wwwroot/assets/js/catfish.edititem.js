@@ -211,7 +211,8 @@ if (document.getElementById("item-edit-page")) {
                     item.values[0].value = "";
 				}
 
-                this.metadataSets[metadataSetId].fields.splice(fieldId+1, 0, newEntry);
+                this.metadataSets[metadataSetId].fields.splice(fieldId + 1, 0, newEntry);
+                this.setOriginalFields();
 
             },
             /**
@@ -236,16 +237,16 @@ if (document.getElementById("item-edit-page")) {
              * If they were able to be deleted, there would be no way to show that field again!
              **/
             setOriginalFields() {
+                this.originalFieldIndex = [];
                 for (let [index, metadataSet] of this.metadataSets.entries()) {
                     let tmpField = metadataSet.fields[0];
                     this.originalFieldIndex.push([]);
                     this.originalFieldIndex[index].push(0);
                     for (let i = 1; i < metadataSet.fields.length; i++){
-
-                        if (metadataSet.fields[i].name.values !== tmpField.name.values &&
-                            metadataSet.fields[i].description.values !== tmpField.description.values) {
+                        console.log(JSON.stringify(metadataSet.fields[i].name.values) !== JSON.stringify(tmpField.name.values) );
+                        if (JSON.stringify(metadataSet.fields[i].name.values) !== JSON.stringify(tmpField.name.values) &&
+                            JSON.stringify(metadataSet.fields[i].description.values) !== JSON.stringify(tmpField.description.values) ) {
                             this.originalFieldIndex[index].push(i);
-                            console.log(i);
                             tmpField = metadataSet.fields[i];
 						}
                         
