@@ -196,7 +196,6 @@ if (document.getElementById("itemlist-page")) {
                     }
                 }
 
-
                 if (collapseCount === Object.values(this.dropdowns).length) {
                     this.collapseAll = 2;
                 } else if (collapseCount === 0) {
@@ -243,13 +242,13 @@ if (document.getElementById("itemlist-page")) {
                     this.dropdowns[key].isCollapsed = this.mixedStateLeans;
                 }
                 //toggle makes all dropdowns change to the opposite state, maybe useful later
-                if (this.mixedStateLeans) {
+                if (!this.mixedStateLeans) {
                     $('.collapse').collapse("show");
                 } else {
                     $('.collapse').collapse("hide");
                 }
 
-                if (this.mixedStateLeans) {
+                if (!this.mixedStateLeans) {
                     this.collapseAll = 2;
                 } else {
                     this.collapseAll = 0;
