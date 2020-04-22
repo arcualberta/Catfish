@@ -44,8 +44,14 @@
                                         <li v-for="(entry, index) in section.values" class="dd-item expanded">
                                             <div class="sitemap-item">
                                                 <div class="link">
-                                                    <label :id="['entry-label-' + section.title + '-' + languageLabels[index]]" class="language-label" for="input-0">{{languageLabels[index]}}:</label>
-                                                    <input required type="text" class="form-control" :id="[section.title + '-input-' + index]" aria-describedby="entry-label" :value="entry.value">
+                                                    <label :id="['entry-label-' + section.title + '-' + languageLabels[index]]"
+                                                           class="language-label" for="input-0">
+                                                        {{languageLabels[index]}}:
+                                                    </label>
+                                                    <input required type="text" class="form-control" 
+                                                           :id="[section.title + '-input-' + index]" 
+                                                           aria-describedby="entry-label" 
+                                                           v-model="entry.value">
                                                 </div>
                                             </div>
                                         </li>
@@ -124,7 +130,7 @@
                                                 -->
 										        <input required type="text" class="form-control metadata-input" 
                                                        v-if="field.modelType.includes(inputTypes.text)" 
-                                                       :value="field.values[index].values[0].value">
+                                                       v-model="field.values[index].values[0].value">
 									        </div>
 								    </div>
 

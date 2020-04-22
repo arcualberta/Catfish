@@ -26,7 +26,7 @@ if (document.getElementById("item-edit-page")) {
                     "Edit",
                     "Preview"
                 ],
-                //label for dropdown button (save/edit/preview)
+                //label for multichoice dropdown button (save/edit/preview)
                 mcDropdownButtonLabel: "",
 
                 //bring this in from somewhere else, will have ALL language abbreviations in it
@@ -62,6 +62,7 @@ if (document.getElementById("item-edit-page")) {
 
                 //stores the first time a field appears in the fields of a metadata set
                 originalFieldIndex: [],
+                isInPreviewMode: false
 
             }
         },
@@ -151,16 +152,6 @@ if (document.getElementById("item-edit-page")) {
                 });
             },
 
-
-            /**
-			 * Runs whenever a change is made.
-			 * Can be used to prevent the user from previewing without saving
-			 **/
-            detectChanges(event) {
-                this.hasChanges = true;
-                console.log("WHO:", event);
-            },
-
             /**
              * Perform the action the multichoice button states.
              * @param {any} event
@@ -172,9 +163,11 @@ if (document.getElementById("item-edit-page")) {
                         break;
                     case this.buttonOptions[1]:
                         //edit view
+                        this.isInPreviewMode = false;
                         break;
                     case this.buttonOptions[2]:
                         //preview view
+                        this.isInPreviewMode = true;
                         break;
 				}
 			},
