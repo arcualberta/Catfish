@@ -135,3 +135,16 @@
 #item-edit-page .trash-button{
 	margin-right: 10px;
 }
+
+.collapse-expand .egg-icon{
+	width:1px;
+}
+
+.collapse-expand .show-egg{
+	display: block;
+	width:18px;
+}
+
+.collapse-expand .hide-egg {
+	display:none;
+}
