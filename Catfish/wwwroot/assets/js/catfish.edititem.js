@@ -12,6 +12,10 @@ if (document.getElementById("item-edit-page")) {
         el: '#item-edit-page',
         data() {
             return {
+                //api strings
+                getString: "manager/api/items/",
+                postString: "manager/items/save",
+
                 loading: true,
                 item: null,
                 itemId: null,
@@ -52,6 +56,8 @@ if (document.getElementById("item-edit-page")) {
                 //input type
                 inputTypes: {
                     "text": "Catfish.Core.Models.Contents.Fields.TextField",
+                    "textarea": "ComingSoon",
+                    "richTextArea": "ComingSoon"
                 },
 
                 //stores the first time a field appears in the fields of a metadata set
@@ -72,9 +78,9 @@ if (document.getElementById("item-edit-page")) {
              **/
             fetchData() {
                 var self = this;
-                console.log(piranha.baseUrl + "manager/api/items/" + this.itemId);
+                console.log(piranha.baseUrl + this.getString + this.itemId);
                 piranha.permissions.load(function () {
-                    fetch(piranha.baseUrl + "manager/api/items/" +self.itemId)
+                    fetch(piranha.baseUrl + self.getString + self.itemId)
                         .then(function (response) { return response.json(); })
                         .then(function (result) {
                             self.item = result;
@@ -155,8 +161,37 @@ if (document.getElementById("item-edit-page")) {
                 console.log("WHO:", event);
             },
 
+            /**
+             * Perform the action the multichoice button states.
+             * @param {any} event
+             */
+            performMCButtonAction(event) {
+                switch (this.mcDropdownButtonLabel) {
+                    case this.buttonOptions[0]:
+                        this.saveForm(event);
+                        break;
+                    case this.buttonOptions[1]:
+                        //edit view
+                        break;
+                    case this.buttonOptions[2]:
+                        //preview view
+                        break;
+				}
+			},
+
+            /**
+             * Saves the form, calls the API to send the data to.
+             * @param {any} event
+             */
             saveForm(event) {
                 event.preventDefault();
+
+                this.item.name = this.nameAttribute;
+                this.item.description = this.descriptionAttribute;
+                this.item.metadataSets = this.metadataSets;
+
+                console.log(this.item);
+                
 			},
 
             bind() {

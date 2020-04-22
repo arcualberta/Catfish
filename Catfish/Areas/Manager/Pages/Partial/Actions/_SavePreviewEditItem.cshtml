@@ -9,13 +9,13 @@
     {*@ 
     <!-- v-on:click.prevent="piranha.siteedit.create(load)" -->
         <div class="btn-group dropdown save-preview-edit-button">
-            <button :type="{submit: mcDropdownButtonLabel=='Save'}" form="item-edit-form" v-on:submit="saveForm(event)" class="btn btn-primary">
+            <button form="item-edit-form" v-on:click="performMCButtonAction($event)" class="btn btn-primary"> <!--:type="{submit: mcDropdownButtonLabel==buttonOptions[0]}" -->
                 @* @Localizer.Site["Save"] *@
                 {{mcDropdownButtonLabel}}
             </button>
              <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="sr-only">Toggle Dropdown</span>
-              </button>
+             </button>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="pageGroup">
                 <a v-for="option in buttonOptions"
                    class="dropdown-item" :class="{active: option==mcDropdownButtonLabel}" 
