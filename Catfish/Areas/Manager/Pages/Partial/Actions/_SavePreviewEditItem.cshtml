@@ -8,7 +8,7 @@
 @*@if ((await Auth.AuthorizeAsync(User, Piranha.Manager.Permission.SitesAdd)).Succeeded)
     {*@ 
     <!-- v-on:click.prevent="piranha.siteedit.create(load)" -->
-        <div class="btn-group dropdown save-preview-edit-button">
+        <div v-if="mcDropdownButtonLabel" class="btn-group dropdown save-preview-edit-button">
             <button form="item-edit-form" v-on:click="performMCButtonAction($event)" class="btn btn-primary"> <!--:type="{submit: mcDropdownButtonLabel==buttonOptions[0]}" -->
                 @* @Localizer.Site["Save"] *@
                 {{mcDropdownButtonLabel}}
