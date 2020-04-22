@@ -22,6 +22,8 @@ if (document.getElementById("item-edit-page")) {
                     "Edit",
                     "Preview"
                 ],
+                //label for dropdown button (save/edit/preview)
+                mcDropdownButtonLabel: "",
 
                 //bring this in from somewhere else, will have ALL language abbreviations in it
                 languages: {
@@ -53,7 +55,7 @@ if (document.getElementById("item-edit-page")) {
                 },
 
                 //stores the first time a field appears in the fields of a metadata set
-                originalFieldIndex: []
+                originalFieldIndex: [],
 
             }
         },
@@ -231,6 +233,15 @@ if (document.getElementById("item-edit-page")) {
             },
 
             /**
+             * Changes the multichoice button's title to the
+             * pass parameter (user chose it from the dropdown)
+             * @param {any} newLabel the new label for the button
+             */
+            changeButtonLabel(newLabel) {
+                this.mcDropdownButtonLabel = newLabel;
+			},
+
+            /**
              * Stores the indices of the first original version of a field.
              * This is useful for knowing which fields will not be able to be deleted
              * because they are the original version to be shown to the user.
@@ -285,6 +296,9 @@ if (document.getElementById("item-edit-page")) {
             this.fetchData();
         },
         mounted() {
+
+            //set multichoice button to save option intially
+            this.mcDropdownButtonLabel = this.buttonOptions[0];
 
             //initializes all tooltips
             $(document).ready(function () {
