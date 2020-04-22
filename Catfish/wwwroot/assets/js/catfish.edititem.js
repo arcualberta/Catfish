@@ -190,8 +190,21 @@ if (document.getElementById("item-edit-page")) {
                 this.item.description = this.descriptionAttribute;
                 this.item.metadataSets = this.metadataSets;
 
-                console.log(this.item);
-                
+                console.log("item being posted is here:",this.item);
+
+                fetch(piranha.baseUrl + this.postString,
+                    {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(this.item)
+                    })
+                    .then(function (res) { return res.json(); })
+                    .then(function (data) { alert(JSON.stringify(data)) })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
 			},
 
             bind() {
@@ -264,7 +277,6 @@ if (document.getElementById("item-edit-page")) {
 					}
                     this.languageLabels.push(tmp);
                 }
-                console.log(this.languageLabels);
             },
 
             /**
@@ -289,7 +301,6 @@ if (document.getElementById("item-edit-page")) {
                     this.originalFieldIndex.push([]);
                     this.originalFieldIndex[index].push(0);
                     for (let i = 1; i < metadataSet.fields.length; i++){
-                        console.log(JSON.stringify(metadataSet.fields[i].name.values) !== JSON.stringify(tmpField.name.values) );
                         if (JSON.stringify(metadataSet.fields[i].name.values) !== JSON.stringify(tmpField.name.values) &&
                             JSON.stringify(metadataSet.fields[i].description.values) !== JSON.stringify(tmpField.description.values) ) {
                             this.originalFieldIndex[index].push(i);
@@ -298,7 +309,7 @@ if (document.getElementById("item-edit-page")) {
                         
                     }
                 }
-                console.log("originalFields:", this.originalFieldIndex);
+                //console.log("originalFields:", this.originalFieldIndex);
 			},
 
             //temp function, shouldnt need this once sets are grouped as arrays in the json.
@@ -346,7 +357,6 @@ if (document.getElementById("item-edit-page")) {
                 window.addEventListener('load', function () {
                     // Fetch all the forms we want to apply custom Bootstrap validation styles to
                     var forms = document.getElementsByClassName('edit-form');
-                    console.log("forms", forms);
                     // Loop over them and prevent submission
                     var validation = Array.prototype.filter.call(forms, function (form) {
                         form.addEventListener('submit', function (event) {
