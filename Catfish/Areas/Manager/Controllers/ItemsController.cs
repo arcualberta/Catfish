@@ -38,7 +38,7 @@ namespace Catfish.Areas.Manager.Controllers
 
         // POST: api/Items
         [HttpPost]
-        public AsyncResult EditSave(Item model)
+        public AsyncResult Save(Item model)
         {
             try
             {

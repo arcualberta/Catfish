@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium;
 
 namespace Catfish.UnitTests
 {
@@ -35,9 +37,24 @@ namespace Catfish.UnitTests
                 var srcDataResponse = await client.GetAsync(client.BaseAddress + "manager/api/Items/d6c5dfe4-946d-4f58-972e-00056eb6af1b");
                 string jsonString = await srcDataResponse.Content.ReadAsStringAsync();
 
-                var jsonContentString = new StringContent(jsonString);
-                var viewModel = new Item() { Id = Guid.Parse("d6c5dfe4-946d-4f58-972e-00056eb6af1b"), Updated = DateTime.Now, };
-                var response = await client.PostAsync("manager/items/edit/", jsonContentString);
+               
+                var item = JsonConvert.DeserializeObject<Item>(jsonString);
+                var jsonContentString = new StringContent(JsonConvert.SerializeObject(item));
+                
+                var driver = new ChromeDriver();
+                driver.Navigate().GoToUrl("https://localhost:44385/manager/");
+                var usernameField = driver.FindElement(By.Id("username"));
+                usernameField.SendKeys("admin");
+
+                var passwordField = driver.FindElement(By.Id("password"));
+                passwordField.SendKeys("password");
+
+                var loginButton = driver.FindElement(By.Id("submit"));
+                loginButton.Click();
+
+
+
+                var response = await client.PostAsync("manager/items/edit/{0}", jsonContentString);
                 var responseJson = await response.Content.ReadAsStringAsync();
 
                 var obj = JsonConvert.DeserializeObject<ItemSaveResponseVM>(responseJson);
