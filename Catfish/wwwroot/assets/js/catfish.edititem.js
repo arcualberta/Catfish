@@ -164,6 +164,7 @@ if (document.getElementById("item-edit-page")) {
                     case this.buttonOptions[1]:
                         //edit view
                         this.isInPreviewMode = false;
+                        console.log("edit mode");
                         break;
                     case this.buttonOptions[2]:
                         //preview view
@@ -353,7 +354,6 @@ if (document.getElementById("item-edit-page")) {
                     // Loop over them and prevent submission
                     var validation = Array.prototype.filter.call(forms, function (form) {
                         form.addEventListener('submit', function (event) {
-                            console.log("in here?");
                             if (form.checkValidity() === false) {
                                 event.preventDefault();
                                 event.stopPropagation();

@@ -9,7 +9,7 @@
     {*@ 
     <!-- v-on:click.prevent="piranha.siteedit.create(load)" -->
         <div v-if="mcDropdownButtonLabel" class="btn-group dropdown save-preview-edit-button">
-            <button form="item-edit-form" v-on:click="performMCButtonAction($event)" class="btn btn-primary"> <!--:type="{submit: mcDropdownButtonLabel==buttonOptions[0]}" -->
+            <button :form="{'item-edit-form': mcDropdownButtonLabel==buttonOptions[0]}" v-on:click="performMCButtonAction($event)" class="btn btn-primary"> <!--:type="{submit: mcDropdownButtonLabel==buttonOptions[0]}" -->
                 @* @Localizer.Site["Save"] *@
                 {{mcDropdownButtonLabel}}
             </button>

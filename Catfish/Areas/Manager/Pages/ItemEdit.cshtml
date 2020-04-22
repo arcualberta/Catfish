@@ -48,10 +48,11 @@
                                                            class="language-label" for="input-0">
                                                         {{languageLabels[index]}}:
                                                     </label>
-                                                    <input required type="text" class="form-control" 
+                                                    <input v-if="!isInPreviewMode" required type="text" class="form-control" 
                                                            :id="[section.title + '-input-' + index]" 
                                                            aria-describedby="entry-label" 
                                                            v-model="entry.value">
+                                                    <span v-else>{{entry.value}}</span>
                                                 </div>
                                             </div>
                                         </li>
@@ -113,7 +114,7 @@
 									        <div class="flex-row" v-for="(val, index) in field.name.values">
 										        <div class="label-holder">
 											        <div>{{languageLabels[index]}}/{{field.name.values[index].language}}:</div>
-											        <button type="button" class="btn-sm btn-primary btn-circle"
+											        <button v-if="!isInPreviewMode" type="button" class="btn-sm btn-primary btn-circle"
 													        data-toggle="tooltip" data-placement="top"
 													        :title="field.description.values[index].value">
 												        <i class="fas fa-question"></i>
@@ -128,9 +129,10 @@
                                                      be no way this would ever increase past 1 item in the array. So therefore,
                                                      the index is always set to 0.
                                                 -->
-										        <input required type="text" class="form-control metadata-input" 
+										        <input v-if="!isInPreviewMode" required type="text" class="form-control metadata-input" 
                                                        v-if="field.modelType.includes(inputTypes.text)" 
                                                        v-model="field.values[index].values[0].value">
+                                                <span v-else>{{field.values[index].values[0].value}}</span>
 									        </div>
 								    </div>
 
@@ -142,7 +144,6 @@
 									            Value
 								            </button>
 							            </div>
-                                        {{originalFieldIndex[metaIndex].includes(fIndex)}}
                                         <div class="btn-group new-value-button" role="group">
 								            <button :disabled="originalFieldIndex[metaIndex].includes(fIndex)"
                                                     type="button" v-on:click="deleteField(metaIndex, fIndex)"
