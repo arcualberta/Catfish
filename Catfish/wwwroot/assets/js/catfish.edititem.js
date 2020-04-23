@@ -62,7 +62,8 @@ if (document.getElementById("item-edit-page")) {
 
                 //stores the first time a field appears in the fields of a metadata set
                 originalFieldIndex: [],
-                isInPreviewMode: false
+                isInPreviewMode: false,
+                savePreviewEditButtonType: "submit"
 
             }
         },
@@ -164,7 +165,6 @@ if (document.getElementById("item-edit-page")) {
                     case this.buttonOptions[1]:
                         //edit view
                         this.isInPreviewMode = false;
-                        console.log("edit mode");
                         break;
                     case this.buttonOptions[2]:
                         //preview view
@@ -179,26 +179,43 @@ if (document.getElementById("item-edit-page")) {
              */
             saveForm(event) {
                 event.preventDefault();
+                let validForm = true;
 
-                this.item.name = this.nameAttribute;
-                this.item.description = this.descriptionAttribute;
-                this.item.metadataSets = this.metadataSets;
+                //do form validation here and dont submit if problems
+                var forms = document.getElementsByClassName('edit-form');
+                // Loop over them and prevent submission
+                Array.prototype.filter.call(forms, function (form) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            validForm = false;
+                        }
+                        console.log("form validated");
+                        form.classList.add('was-validated');
+                });
 
-                console.log("item being posted is here:",this.item);
+                if (validForm) {
+                    this.item.name = this.nameAttribute;
+                    this.item.description = this.descriptionAttribute;
+                    this.item.metadataSets = this.metadataSets;
 
-                fetch(piranha.baseUrl + this.postString,
-                    {
-                        method: "POST",
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(this.item)
-                    })
-                    .then(function (res) { return res.json(); })
-                    .then(function (data) { alert(JSON.stringify(data)) })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                    });
+                    console.log("item being posted is here:", this.item);
+
+                    fetch(piranha.baseUrl + this.postString,
+                        {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(this.item)
+                        })
+                        .then(function (res) { return res.json(); })
+                        .then(function (data) { alert(JSON.stringify(data)) })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+				}
+                
 			},
 
             bind() {
@@ -280,6 +297,11 @@ if (document.getElementById("item-edit-page")) {
              */
             changeButtonLabel(newLabel) {
                 this.mcDropdownButtonLabel = newLabel;
+                if (this.mcDropdownButtonLabel === this.buttonOptions[0]) {
+                    this.savePreviewEditButtonType = "submit";
+                } else {
+                    this.savePreviewEditButtonType = "button";
+				}
 			},
 
             /**
@@ -346,7 +368,7 @@ if (document.getElementById("item-edit-page")) {
             });
 
             //adds eventlistener to form fields for validation purposes
-            (function () {
+            /*(function () {
                 'use strict';
                 window.addEventListener('load', function () {
                     // Fetch all the forms we want to apply custom Bootstrap validation styles to
@@ -363,7 +385,7 @@ if (document.getElementById("item-edit-page")) {
                         }, false);
                     });
                 }, false);
-            })();
+            })();*/
 		}
     })
 }

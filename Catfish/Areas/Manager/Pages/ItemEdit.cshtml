@@ -129,8 +129,8 @@
                                                      be no way this would ever increase past 1 item in the array. So therefore,
                                                      the index is always set to 0.
                                                 -->
-										        <input v-if="!isInPreviewMode" required type="text" class="form-control metadata-input" 
-                                                       v-if="field.modelType.includes(inputTypes.text)" 
+										        <input v-if="!isInPreviewMode && field.modelType.includes(inputTypes.text)" 
+                                                       required type="text" class="form-control metadata-input"  
                                                        v-model="field.values[index].values[0].value">
                                                 <span v-else>{{field.values[index].values[0].value}}</span>
 									        </div>
