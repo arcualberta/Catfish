@@ -43,17 +43,23 @@
                                    <ol class="dd-list">
                                         <li v-for="(entry, index) in section.values" class="dd-item expanded">
                                             <div class="sitemap-item">
-                                                <div class="link">
-                                                    <label :id="['entry-label-' + section.title + '-' + languageLabels[index]]"
-                                                           class="language-label" for="input-0">
-                                                        {{languageLabels[index]}}:
-                                                    </label>
-                                                    <input v-if="!isInPreviewMode" required type="text" class="form-control" 
-                                                           :id="[section.title + '-input-' + index]" 
-                                                           aria-describedby="entry-label" 
-                                                           v-model="entry.value">
-                                                    <span v-else>{{entry.value}}</span>
-                                                </div>
+												<div class="link">
+													<label :id="['entry-label-' + section.title + '-' + languageLabels[index]]"
+														   class="language-label" for="input-0">
+														{{languageLabels[index]}}:
+													</label>
+													<!--<div v-if="!isInPreviewMode" class="col-md-4 mb-3">
+														<input
+															   required type="text" class="form-control"
+															   :id="[section.title + '-input-' + index]"
+															   aria-describedby="entry-label"
+															   v-model="entry.value">
+														<div class="invalid-feedback">
+															This field is required.
+														</div>
+													</div>-->
+													<span>{{entry.value}}</span>
+												</div>
                                             </div>
                                         </li>
                                     </ol>
@@ -111,29 +117,37 @@
                                                 <h3>{{field.name.values[index].value}}</h3>
                                             </div>
                                         </div>
-									        <div class="flex-row" v-for="(val, index) in field.name.values">
-										        <div class="label-holder">
-											        <div>{{languageLabels[index]}}/{{field.name.values[index].language}}:</div>
-											        <button v-if="!isInPreviewMode" type="button" class="btn-sm btn-primary btn-circle"
-													        data-toggle="tooltip" data-placement="top"
-													        :title="field.description.values[index].value">
-												        <i class="fas fa-question"></i>
-											        </button>
-										        </div>
-                                                <!--
-                                                    Note to self about the value in this element:
-                                                    field.values[index].values[0].value
-                                                   - The first values is an array of objects. Those objects are for
-                                                     each field's language. 
-                                                   - The next values is an array of that field language, but there seems to
-                                                     be no way this would ever increase past 1 item in the array. So therefore,
-                                                     the index is always set to 0.
-                                                -->
-										        <input v-if="!isInPreviewMode && field.modelType.includes(inputTypes.text)" 
-                                                       required type="text" class="form-control metadata-input"  
-                                                       v-model="field.values[index].values[0].value">
-                                                <span v-else>{{field.values[index].values[0].value}}</span>
-									        </div>
+										<div class="flex-row" v-for="(val, index) in field.name.values">
+											<div class="label-holder">
+												<div>{{languageLabels[index]}}/{{field.name.values[index].language}}:</div>
+												<button v-if="!isInPreviewMode" type="button" class="btn-sm btn-primary btn-circle"
+														data-toggle="tooltip" data-placement="top"
+														:title="field.description.values[index].value">
+													<i class="fas fa-question"></i>
+												</button>
+											</div>
+											<!--
+		Note to self about the value in this element:
+		field.values[index].values[0].value
+	   - The first values is an array of objects. Those objects are for
+		 each field's language.
+	   - The next values is an array of that field language, but there seems to
+		 be no way this would ever increase past 1 item in the array. So therefore,
+		 the index is always set to 0.
+	-->
+											<div v-if="!isInPreviewMode" class="col-md-4 mb-3 metadata-input">
+												<input v-if="field.modelType.includes(inputTypes.text)"
+													   required type="text" class="form-control"
+													   v-model="field.values[index].values[0].value">
+												<textarea v-else-if="field.modelType.includes(inputTypes.textarea)"
+													required class="form-control" rows="3"
+													v-model="field.values[index].values[0].value"></textarea>
+												<div class="invalid-feedback">
+													This field is required.
+												</div>
+											</div>
+											<span v-else>{{field.values[index].values[0].value}}</span>
+										</div>
 								    </div>
 
                                     <div v-if="piranha.permissions.pages.add" class="add-value-container">

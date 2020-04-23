@@ -56,14 +56,13 @@ if (document.getElementById("item-edit-page")) {
                 //input type
                 inputTypes: {
                     "text": "Catfish.Core.Models.Contents.Fields.TextField",
-                    "textarea": "ComingSoon",
-                    "richTextArea": "ComingSoon"
+                    "textarea": "Catfish.Core.Models.Contents.Fields.TextArea",
                 },
 
                 //stores the first time a field appears in the fields of a metadata set
                 originalFieldIndex: [],
                 isInPreviewMode: false,
-                savePreviewEditButtonType: "submit"
+                savePreviewEditButtonType: "submit",
 
             }
         },
@@ -121,6 +120,52 @@ if (document.getElementById("item-edit-page")) {
                                 "language": "fr",
                                 "rank": 0,
                                 "value": "French description goes here",
+                                "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+
+                            });
+
+
+                            //for testing purposes, remove after v2
+                            result.metadataSets[0].fields.push({
+                                "$type": "Catfish.Core.Models.Contents.TextArea",
+                                "values": [],
+                                "name": {
+                                    "values": []
+                                },
+                                "description": {
+                                    "values": []
+                                },
+                                "modelType": "Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                            });
+                            console.log("fields?", result.metadataSets[0].fields);
+                            result.metadataSets[0].fields[2].name.values.push({
+
+                                "format": "plain",
+                                "language": "en",
+                                "rank": 0,
+                                "value": "Some cool textarea stuff",
+                                "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+
+                            });
+
+                            result.metadataSets[0].fields[2].values.push({
+                                "values": [{
+                                    "format": "plain",
+                                    "language": "en",
+                                    "rank": 0,
+                                    "value": "I am some heckin neat text",
+                                    "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                                }]
+
+
+                            });
+
+                            result.metadataSets[0].fields[2].description.values.push({
+
+                                "format": "plain",
+                                "language": "en",
+                                "rank": 0,
+                                "value": "A description to surpass the century",
                                 "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
 
                             });
