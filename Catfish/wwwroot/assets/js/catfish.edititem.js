@@ -1,4 +1,6 @@
-﻿/**
+﻿//import { VueEditor } from "vue2-editor";
+
+/**
  * Javascript Vue code for creating a single item edit layout in ItemEdit.cshtml.
  */
 
@@ -10,6 +12,9 @@
 if (document.getElementById("item-edit-page")) {
     piranha.itemlist = new Vue({
         el: '#item-edit-page',
+        /*components: {
+            VueEditor
+        },*/
         data() {
             return {
                 //api strings
