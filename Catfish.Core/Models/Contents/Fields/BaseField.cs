@@ -11,6 +11,12 @@ namespace Catfish.Core.Models.Contents.Fields
     {
         public const string FieldTagName = "field";
 
+        public Guid Id
+        {
+            get => Guid.Parse(Data.Attribute("id").Value);
+            set => Data.SetAttributeValue("id", value);
+        }
+
         public MultilingualText Name { get; protected set; }
         public MultilingualText Description { get; protected set; }
 
@@ -27,9 +33,11 @@ namespace Catfish.Core.Models.Contents.Fields
             Description.SetContent(desc, lang);
         }
 
-        public override void Initialize()
+        public override void Initialize(eGuidOption guidOption)
         {
-            base.Initialize();
+            //Ensuring that each field has a unique ID
+            base.Initialize(guidOption == eGuidOption.Ignore ? eGuidOption.Ensure : guidOption);
+
             Name = new MultilingualText(GetElement(Entity.NameTag, true));
             Description = new MultilingualText(GetElement(Entity.DescriptionTag, true));
         }

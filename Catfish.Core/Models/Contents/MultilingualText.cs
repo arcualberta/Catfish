@@ -16,9 +16,9 @@ namespace Catfish.Core.Models.Contents
 
         public MultilingualText(XElement data) : base(data) { }
 
-        public override void Initialize()
+        public override void Initialize(eGuidOption guidOption)
         {
-            base.Initialize();
+            base.Initialize(guidOption);
 
             // Creating Text objects for all text elements withing the immediate children
             // and adding them to the Values list.
