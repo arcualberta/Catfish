@@ -375,46 +375,47 @@ if (document.getElementById("item-edit-page")) {
                 };
 
                 for (let [index, metadataSet] of this.metadataSets.entries()) {
-                    this.originalFieldIndexMaster.push([]);
+                    this.originalFieldIndexMaster.push({});
                     this.originalFields.push([]);
 
                     for (let [i, field] of metadataSet.fields.entries()) {
                         //if field differs from fields in originalFieldIndexMaster,
                         //track as a new field
-                        var flattened = [].concat.apply([], this.originalFieldIndexMaster[index]);
+                        var flattened = Object.keys(this.originalFieldIndexMaster[index]);
 
-                        !flattened.some(item => {
-                            console.log(JSON.stringify(item.field.values));
-                            console.log(JSON.stringify(field.name.values));
+                        /*!flattened.forEach(item => {
+                            console.log(item ); 
+                            console.log(field.name.values[0].value );
                             console.log("-------");
-                        });
+                        });*/
 
                         if (this.originalFieldIndexMaster[index].length === 0
-                            || !flattened.some(item => JSON.stringify(item.field.values) === JSON.stringify(field.name.values))) {
+                            || !flattened.some(item => item === field.name.values[0].value) ) {
 
-                            this.originalFieldIndexMaster[index].push({
+                            this.originalFieldIndexMaster[index][field.name.values[0].value] = {
                                 field: field.name,
                                 count: 1,
                                 startingIndex: null
-                            });
-                            this.originalFieldIndexMaster[index][this.originalFieldIndexMaster[index].length-1].startingIndex = i;
+                            }
+                            this.originalFieldIndexMaster[index][field.name.values[0].value].startingIndex = i;
+                            this.originalFields[index].push(i);
                             console.log("added this one to field:", field.name);
                         }else {
                             //add to count of whichever is already in the object
                             //this needs to be checked to see if it works
                             console.log("increased count");
-                            flattened.forEach((item, index) => {
-                                if (JSON.stringify(item.field.values) === JSON.stringify(field.name.values)) {
-                                    item.count++;
+                            var matched = flattened.filter((item, index) => {
+                                console.log(item, field.name.values[0].value)
+                                if (item === field.name.values[0].value) {
+                                    return item;
 								}
                             });
+
+                            this.originalFieldIndexMaster[index][matched[0]].count += 1;
 	                    }
 					}
 
-                    let flattenedFinal = [].concat.apply([], this.originalFieldIndexMaster[index]);
-                    flattenedFinal.forEach((item, idx) => {
-                        this.originalFields[index].push(item.startingIndex);
-                    });
+                    
                     console.log("originalFields:", this.originalFieldIndexMaster);
                     console.log("indices: ", this.originalFields);
 
