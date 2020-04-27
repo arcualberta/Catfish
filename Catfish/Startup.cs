@@ -16,6 +16,7 @@ using Catfish.Models.Blocks;
 using Piranha.Data.EF.SQLServer;
 using Catfish.Core.Services;
 using Catfish.Helper;
+using System;
 
 namespace Catfish
 {
@@ -30,13 +31,19 @@ namespace Catfish
         /// Default constructor.
         /// </summary>
         /// <param name="configuration">The current configuration</param>
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
-            Configuration = configuration;
+            // Configuration = configuration;
 
             // Initialize the IConfiguration of the ConfigHelper so that it can be used by 
             // elsewhere in the Catfish.Core project.
-            Catfish.Core.Helpers.ConfigHelper.Configuration = configuration;
+            //Catfish.Core.Helpers.ConfigHelper.Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(env.ContentRootPath)
+            .AddJsonFile("appsettings.json")
+            .AddEnvironmentVariables();
+            Configuration = builder.Build();
+          
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -58,15 +65,11 @@ namespace Catfish
                 options.UseManager();
                 options.UseTinyMCE();
                 options.UseMemoryCache();
-                //following sql server configuration (options.UseEF(db =>..) is not working if upgrade to piraha 8.1.2
-                //options.UseEF(db =>
-                //    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
-                //options.UseIdentityWithSeed<IdentitySQLServerDb>(db =>
-                //    db.UseSqlServer(Configuration.GetConnectionString("catfish")));
+               
                 options.AddRazorRuntimeCompilation = true; //MR: Feb 11, 2020  -- Enabled run time compiler for razor, so don't need to recompile when update the view
             });
 
-             /* sql server configuration based on ==> http://piranhacms.org/blog/announcing-80-for-net-core-31    */
+            /* sql server configuration based on ==> http://piranhacms.org/blog/announcing-80-for-net-core-31    */
             services.AddPiranhaEF<SQLServerDb>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("catfish")));
             services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
@@ -83,10 +86,11 @@ namespace Catfish
             // configuration options and the application "Configuration" option to CatfishDbContext
             // instance through dependency injection.
             services.AddDbContext<Catfish.Core.Models.AppDbContext>();
+
            //Feb 12 - 2020 : It's recommended to use AddDbContextPool() over AddDbContext() on .net Core > 2.2
            // it's better from the performance stand point
-          //  services.AddDbContextPool<Catfish.Core.Models.CatfishDbContext>(options =>
-          //                   options.UseSqlServer(Configuration.GetConnectionString("catfish")));
+          //  services.AddDbContextPool<Catfish.Core.Models.AppDbContext>(options =>
+           //                 options.UseSqlServer(Configuration.GetConnectionString("catfish")));
 
             //MR: Feb 7 2020 -- from piranha core MVCWeb example
             services.AddControllersWithViews();
@@ -145,24 +149,24 @@ namespace Catfish
 
             // March 9 2020 -- add Custom middleware that check for status 401 -- that's the error code return when security is applied to a page : 
             //ie: required login to view the page content
-            app.Use(async(ctx, next) => {
-                await next();
-
-                if(ctx.Response.StatusCode == 401)
+            app.Use(async (ctx, next) =>
+            {
+                if (next.GetType().GUID != Guid.Empty)
                 {
-                    ctx.Response.Redirect("/login");
+
+                    await next();
+
+                    if (ctx.Response.StatusCode == 401)
+                    {
+                        ctx.Response.Redirect("/login");
+                    }
                 }
             });
 
 
             // Middleware setup
-            app.UsePiranha(options => {
-                options.UseManager();
-                options.UseTinyMCE();
-                options.UseIdentity();                
-              
-            });
 
+            app.UsePiranha();
             //MR Feb 7 2020 -- add classic MVC routing
             // Build content types -- copied from piranha core mvcWeb example
             var pageTypeBuilder = new Piranha.AttributeBuilder.PageTypeBuilder(api)
@@ -195,7 +199,7 @@ namespace Catfish
             app.UseEndpoints(endpoints =>
             {
                
-               // endpoints.MapDefaultControllerRoute();
+                endpoints.MapDefaultControllerRoute();
                
                 endpoints.MapControllerRoute(
                     name: "default",
@@ -221,11 +225,11 @@ namespace Catfish
         }
 
         #region REGISTER CUSTOM COMPONENT
-        private void RegisterCustomFields()
+        private static void RegisterCustomFields()
         {
             Piranha.App.Fields.Register<TextAreaField>();
         }
-        private void RegisterCustomScripts()
+        private static void RegisterCustomScripts()
         {
             App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
@@ -236,7 +240,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/entitytypelist.js");
         }
-        private void RegisterCustomBlocks()
+        private static void RegisterCustomBlocks()
         {
             //Register custom Block
             App.Blocks.Register<EmbedBlock>();
@@ -244,7 +248,7 @@ namespace Catfish
             App.Blocks.Register<JavascriptBlock>();
             App.Blocks.Register<CssBlock>();
         }
-        private void RegisterCustomStyles()
+        private static void RegisterCustomStyles()
         {
             
              App.Modules.Get<Piranha.Manager.Module>()
@@ -253,7 +257,7 @@ namespace Catfish
         }
         #endregion
 
-        private void AddCustomPermissions()
+        private static void AddCustomPermissions()
         {
             App.Permissions["App"].Add(new Piranha.Security.PermissionItem
             {
@@ -262,12 +266,12 @@ namespace Catfish
             });
         }
 
-        private void AddPartialViews()
+        private static void AddPartialViews()
         {
             //App.Modules.Manager().Partials.Add("Partial/_EntityTypeListAddEntityType");
         }
 
-        private void AddManagerMenus()
+        private static void AddManagerMenus()
         {
             if (Piranha.Manager.Menu.Items.Where(m => m.Name == "Entities").FirstOrDefault() == null)
             {
@@ -290,33 +294,27 @@ namespace Catfish
             {
                 InternalId = "EntityTypes",
                 Name = "EntityTypes",
-                // Params="{Controller=home}/{Action=index}/{id?}",
                 Route = "/manager/entitytypes/",
-                Css = "fas fa-brain",
-                //Policy = "MyCustomPolicy",
-                // Action = ""
+                Css = "fas fa-brain"
+              
             });
 
             menubar.Items.Insert(idx++, new MenuItem
             {
                 InternalId = "Collections",
-                Name = "Collections",
-                // Params="{Controller=home}/{Action=index}/{id?}",
+                Name = "Collections", 
                 Route = "/manager/collections/",
-                Css = "fas fa-brain",
-                //Policy = "MyCustomPolicy",
-                // Action = ""
+                Css = "fas fa-object-group"
+               
             });
 
             menubar.Items.Insert(idx++, new MenuItem
             {
                 InternalId = "Items",
                 Name = "Items",
-                // Params="{Controller=home}/{Action=index}/{id?}",
                 Route = "/manager/items/",
-                Css = "fas fa-brain",
-                //Policy = "MyCustomPolicy",
-                // Action = ""
+                Css = "fas fa-object-ungroup"
+               
             });
         }
     }
