@@ -21,6 +21,8 @@ if (document.getElementById("item-edit-page")) {
                 getString: "manager/api/items/",
                 postString: "manager/items/save",
 
+                content: "<h1>Some initial content</h1>",
+
                 loading: true,
                 item: null,
                 itemId: null,
@@ -65,7 +67,10 @@ if (document.getElementById("item-edit-page")) {
                 },
 
                 //stores the first time a field appears in the fields of a metadata set
-                originalFieldIndex: [],
+                //this would be better handled by using child components but 
+                //project structure for Vue stuff is really weird...
+                originalFieldIndexMaster: [],
+                originalFields: [],
                 isInPreviewMode: false,
                 savePreviewEditButtonType: "submit",
 
@@ -142,7 +147,7 @@ if (document.getElementById("item-edit-page")) {
                                 },
                                 "modelType": "Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
                             });
-                            console.log("fields?", result.metadataSets[0].fields);
+
                             result.metadataSets[0].fields[2].name.values.push({
 
                                 "format": "plain",
@@ -160,8 +165,8 @@ if (document.getElementById("item-edit-page")) {
                                     "rank": 0,
                                     "value": "I am some heckin neat text",
                                     "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-                                }]
-
+                                }],
+                                "modelType": "Catfish.Core.Models.Contents.MultilingualText"
 
                             });
 
@@ -361,28 +366,62 @@ if (document.getElementById("item-edit-page")) {
              * If they were able to be deleted, there would be no way to show that field again!
              **/
             setOriginalFields() {
-                this.originalFieldIndex = [];
-                for (let [index, metadataSet] of this.metadataSets.entries()) {
-                    let tmpField = metadataSet.fields[0];
-                    this.originalFieldIndex.push([]);
-                    this.originalFieldIndex[index].push(0);
-                    for (let i = 1; i < metadataSet.fields.length; i++){
-                        if (JSON.stringify(metadataSet.fields[i].name.values) !== JSON.stringify(tmpField.name.values) &&
-                            JSON.stringify(metadataSet.fields[i].description.values) !== JSON.stringify(tmpField.description.values) ) {
-                            this.originalFieldIndex[index].push(i);
-                            tmpField = metadataSet.fields[i];
-						}
-                        
-                    }
-                }
-                //console.log("originalFields:", this.originalFieldIndex);
-			},
+                this.originalFieldIndexMaster = [];
+                this.originalFields = [];
+                let fieldObj = {
+                    field: null,
+                    count: 1,
+                    startingIndex: null
+                };
 
-            //temp function, shouldnt need this once sets are grouped as arrays in the json.
-            //just run the setLanguageLabels once, then the set of labels can be reused when new sets are created
-            setSingleLanguageLabel(entry) {
-                this.languageLabels.push(this.languages[entry.language]);
-			},
+                for (let [index, metadataSet] of this.metadataSets.entries()) {
+                    this.originalFieldIndexMaster.push([]);
+                    this.originalFields.push([]);
+
+                    for (let [i, field] of metadataSet.fields.entries()) {
+                        //if field differs from fields in originalFieldIndexMaster,
+                        //track as a new field
+                        var flattened = [].concat.apply([], this.originalFieldIndexMaster[index]);
+
+                        !flattened.some(item => {
+                            console.log(JSON.stringify(item.field.values));
+                            console.log(JSON.stringify(field.name.values));
+                            console.log("-------");
+                        });
+
+                        if (this.originalFieldIndexMaster[index].length === 0
+                            || !flattened.some(item => JSON.stringify(item.field.values) === JSON.stringify(field.name.values))) {
+
+                            this.originalFieldIndexMaster[index].push({
+                                field: field.name,
+                                count: 1,
+                                startingIndex: null
+                            });
+                            this.originalFieldIndexMaster[index][this.originalFieldIndexMaster[index].length-1].startingIndex = i;
+                            console.log("added this one to field:", field.name);
+                        }else {
+                            //add to count of whichever is already in the object
+                            //this needs to be checked to see if it works
+                            console.log("increased count");
+                            flattened.forEach((item, index) => {
+                                if (JSON.stringify(item.field.values) === JSON.stringify(field.name.values)) {
+                                    item.count++;
+								}
+                            });
+	                    }
+					}
+
+                    let flattenedFinal = [].concat.apply([], this.originalFieldIndexMaster[index]);
+                    flattenedFinal.forEach((item, idx) => {
+                        this.originalFields[index].push(item.startingIndex);
+                    });
+                    console.log("originalFields:", this.originalFieldIndexMaster);
+                    console.log("indices: ", this.originalFields);
+
+                }
+
+            },
+
 
             /**
              * Deletes the field from the item
@@ -391,7 +430,13 @@ if (document.getElementById("item-edit-page")) {
              */
             deleteField(metadataSetId, fieldId) {
                 this.metadataSets[metadataSetId].fields.splice(fieldId, 1);
-                this.setOriginalFields();
+                var flattened = [].concat.apply([], this.originalFieldIndexMaster[index]);
+                if (flattened.filter(item => item.startingIndex === fieldId) != [] ) {
+                    //item is a startingIndex, adjust array? or just recalc...
+                    //also need to reduce count of item regardless of being a startingIndex
+                    //cant really test this until :disabled fixed
+				}
+                //this.setOriginalFields();
 			}
         },
         updated() {

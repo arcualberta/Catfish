@@ -2,15 +2,6 @@
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<script type="module" src="~/assets/js/test.js">
-	
-	$( document ).ready(function() {
-    console.log( "ready!" );
-});
-	let s = new Square();
-	s.testme();
-</script>
-
 <div id="item-edit-page">
     <div class="top">
 	    <div class="container-fluid top">
@@ -171,7 +162,8 @@
 								            </button>
 							            </div>
                                         <div class="btn-group new-value-button" role="group">
-								            <button :disabled="originalFieldIndex[metaIndex].includes(fIndex)"
+											{{originalFields[metaIndex]}} | {{fIndex}}
+								            <button :disabled="originalFields[metaIndex].includes(fIndex)"
                                                     type="button" v-on:click="deleteField(metaIndex, fIndex)"
 										            class="btn btn-sm btn-danger btn-labeled trash-button">
 									            <i class="fas fa-trash"></i>
