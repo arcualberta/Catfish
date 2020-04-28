@@ -162,8 +162,7 @@
 								            </button>
 							            </div>
                                         <div class="btn-group new-value-button" role="group">
-											{{originalFieldIndexMaster[metaIndex][field.id].count}}
-								            <button :disabled="originalFields[metaIndex].includes(fIndex) && originalFieldIndexMaster[metaIndex][field.id].count >=1"
+								            <button :disabled="originalFields[metaIndex].includes(fIndex) && originalFieldIndexMaster[metaIndex][field.id].count <=1"
                                                     type="button" v-on:click="deleteField(metaIndex, fIndex)"
 										            class="btn btn-sm btn-danger btn-labeled trash-button">
 									            <i class="fas fa-trash"></i>

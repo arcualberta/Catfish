@@ -366,17 +366,12 @@ if (document.getElementById("item-edit-page")) {
              * If they were able to be deleted, there would be no way to show that field again!
              **/
             setOriginalFields() {
-                this.originalFieldIndexMaster = [];
-                this.originalFields = [];
-                let fieldObj = {
-                    field: null,
-                    count: 1,
-                    startingIndex: null
-                };
+                this.originalFieldIndexMaster.splice(0);
+                this.originalFields.splice(0);
 
                 for (let [index, metadataSet] of this.metadataSets.entries()) {
-                    this.originalFieldIndexMaster.push({});
-                    this.originalFields.push([]);
+                    this.originalFieldIndexMaster.splice(this.originalFieldIndexMaster.length, 1, {});
+                    this.originalFields.splice(this.originalFields, 1, []); 
 
                     for (let [i, field] of metadataSet.fields.entries()) {
                         //if field differs from fields in originalFieldIndexMaster,
@@ -392,13 +387,13 @@ if (document.getElementById("item-edit-page")) {
                         if (this.originalFieldIndexMaster[index].length === 0
                             || !flattened.some(item => item === field.id) ) {
 
-                            this.originalFieldIndexMaster[index][field.id] = {
+                            this.$set(this.originalFieldIndexMaster[index], field.id, {
                                 field: field.id,
                                 count: 1,
                                 startingIndex: null
-                            }
-                            this.originalFieldIndexMaster[index][field.id].startingIndex = i;
-                            this.originalFields[index].push(i);
+                            });
+                            this.$set(this.originalFieldIndexMaster[index][field.id], 'startingIndex', i);
+                            this.originalFields[index].splice(this.originalFields[index].length, 1, i); 
                             console.log("added this one to field:", field.id);
                         }else {
                             //add to count of whichever is already in the object
@@ -411,7 +406,8 @@ if (document.getElementById("item-edit-page")) {
 								}
                             });
 
-                            this.originalFieldIndexMaster[index][matched[0]].count += 1;
+                            this.$set(this.originalFieldIndexMaster[index][matched[0]], 'count', 
+                                this.originalFieldIndexMaster[index][matched[0]].count + 1);
 	                    }
 					}
 
@@ -431,13 +427,7 @@ if (document.getElementById("item-edit-page")) {
              */
             deleteField(metadataSetId, fieldId) {
                 this.metadataSets[metadataSetId].fields.splice(fieldId, 1);
-                var flattened = [].concat.apply([], this.originalFieldIndexMaster[index]);
-                if (flattened.filter(item => item.startingIndex === fieldId) != [] ) {
-                    //item is a startingIndex, adjust array? or just recalc...
-                    //also need to reduce count of item regardless of being a startingIndex
-                    //cant really test this until :disabled fixed
-				}
-                //this.setOriginalFields();
+                this.setOriginalFields();
 			}
         },
         updated() {
