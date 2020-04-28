@@ -17,9 +17,9 @@ namespace Catfish.Core.Models.Contents.Fields
 
         public static string ValuesTag = "values";
         public static string ValueTag = "value";
-        public override void Initialize()
+        public override void Initialize(eGuidOption guidOption)
         {
-            base.Initialize();
+            base.Initialize(guidOption);
 
             //Building the values
             XmlModel xml = new XmlModel(Data);

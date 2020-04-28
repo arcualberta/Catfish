@@ -40,7 +40,8 @@ namespace Catfish.Core.Models.Contents
                     T child = XmlModel.InstantiateContentModel(ele) as T;
                     if (child != null)
                     {
-                        child.Initialize();
+                        //Initializing the child. We are not changing its GUID, even if it doesn't exit at all.
+                        child.Initialize(XmlModel.eGuidOption.Ignore); 
                         mList.Add(child);
                     }
                 }

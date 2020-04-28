@@ -13,11 +13,14 @@ namespace Catfish.Core.Models.Contents
         public MultilingualText Name { get; protected set; }
         public MultilingualText Description { get; protected set; }
 
-        public MetadataSet() : base(TagName) { Initialize(); }
-        public MetadataSet(XElement data) : base(data) { Initialize(); }
+        public MetadataSet() : base(TagName) { Initialize(eGuidOption.Ensure); }
+        public MetadataSet(XElement data) : base(data) { Initialize(eGuidOption.Ensure); }
 
-        public new void Initialize()
+        public new void Initialize(eGuidOption guidOption)
         {
+            //Ensuring that each metadata set has a unique ID
+            base.Initialize(guidOption == eGuidOption.Ignore ? eGuidOption.Ensure : guidOption);
+
             Name = new MultilingualText(GetElement(Entity.NameTag, true));
             Description = new MultilingualText(GetElement(Entity.DescriptionTag, true));
         }

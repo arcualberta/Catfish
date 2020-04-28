@@ -10,6 +10,8 @@ namespace Catfish.Core.Models.Contents
 {
     public class XmlModel
     {
+        public enum eGuidOption { Ignore, Ensure, Regenerate }
+
         [JsonIgnore]
         public XElement Data { get; protected set; }
 
@@ -24,13 +26,13 @@ namespace Catfish.Core.Models.Contents
         public XmlModel(XElement data)
         {
             Data = data;
-            Initialize();
+            Initialize(eGuidOption.Ignore);
         }
 
         public XmlModel(string tagName)
         {
             Data = new XElement(tagName);
-            Initialize();
+            Initialize(eGuidOption.Ignore);
         }
 
         public string ModelType
@@ -38,10 +40,13 @@ namespace Catfish.Core.Models.Contents
             get => Data.Attribute("model-type") == null ? null : Data.Attribute("model-type").Value;
         }
 
-        public virtual void Initialize()
+        public virtual void Initialize(eGuidOption guidOption)
         {
             if (string.IsNullOrEmpty(ModelType))
                 Data.SetAttributeValue("model-type", GetType().AssemblyQualifiedName);
+
+            if (guidOption == eGuidOption.Regenerate || guidOption == eGuidOption.Ensure && Data.Attribute("id") == null)
+                Data.SetAttributeValue("id", Guid.NewGuid());
         }
 
         ////protected string Lang(string lang)
