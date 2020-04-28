@@ -390,23 +390,23 @@ if (document.getElementById("item-edit-page")) {
                         });*/
 
                         if (this.originalFieldIndexMaster[index].length === 0
-                            || !flattened.some(item => item === field.name.values[0].value) ) {
+                            || !flattened.some(item => item === field.id) ) {
 
-                            this.originalFieldIndexMaster[index][field.name.values[0].value] = {
-                                field: field.name,
+                            this.originalFieldIndexMaster[index][field.id] = {
+                                field: field.id,
                                 count: 1,
                                 startingIndex: null
                             }
-                            this.originalFieldIndexMaster[index][field.name.values[0].value].startingIndex = i;
+                            this.originalFieldIndexMaster[index][field.id].startingIndex = i;
                             this.originalFields[index].push(i);
-                            console.log("added this one to field:", field.name);
+                            console.log("added this one to field:", field.id);
                         }else {
                             //add to count of whichever is already in the object
                             //this needs to be checked to see if it works
                             console.log("increased count");
                             var matched = flattened.filter((item, index) => {
-                                console.log(item, field.name.values[0].value)
-                                if (item === field.name.values[0].value) {
+                                console.log(item, field.id)
+                                if (item === field.id) {
                                     return item;
 								}
                             });
