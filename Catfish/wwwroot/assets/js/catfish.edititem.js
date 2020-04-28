@@ -102,7 +102,7 @@ if (document.getElementById("item-edit-page")) {
                             self.updateBindings = true;
 
                             //for testing purposes, remove after
-                            result.metadataSets[0].fields[0].name.values.push({
+                            /*result.metadataSets[0].fields[0].name.values.push({
 
                                 "format": "plain",
                                 "language": "fr",
@@ -178,7 +178,7 @@ if (document.getElementById("item-edit-page")) {
                                 "value": "A description to surpass the century",
                                 "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
 
-                            });
+                            });*/
 
                             /*result.metadataSets.push({
                                 name: {
@@ -378,12 +378,6 @@ if (document.getElementById("item-edit-page")) {
                         //track as a new field
                         var flattened = Object.keys(this.originalFieldIndexMaster[index]);
 
-                        /*!flattened.forEach(item => {
-                            console.log(item ); 
-                            console.log(field.name.values[0].value );
-                            console.log("-------");
-                        });*/
-
                         if (this.originalFieldIndexMaster[index].length === 0
                             || !flattened.some(item => item === field.id) ) {
 
@@ -394,13 +388,10 @@ if (document.getElementById("item-edit-page")) {
                             });
                             this.$set(this.originalFieldIndexMaster[index][field.id], 'startingIndex', i);
                             this.originalFields[index].splice(this.originalFields[index].length, 1, i); 
-                            console.log("added this one to field:", field.id);
                         }else {
                             //add to count of whichever is already in the object
                             //this needs to be checked to see if it works
-                            console.log("increased count");
                             var matched = flattened.filter((item, index) => {
-                                console.log(item, field.id)
                                 if (item === field.id) {
                                     return item;
 								}
