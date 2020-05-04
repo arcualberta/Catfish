@@ -3,12 +3,13 @@
 #site-logo {
     /*site logo*/
     background-image: url("../../uploads/f27e4c34-78c8-4f71-936c-89c0f396f1c9-UA-COLOUR.png");
-    background-size:contain;
-    background-repeat: no-repeat;
-    padding:20px;
-    margin:20px;
-    width:200px;
-    height:auto;
+    background-size: contain;
+    background-repeat: no-repeat, repeat;
+    background-size:300px;
+    padding: 20px;
+    margin: 20px;
+    width: 200px;
+    height: auto;
 }
 
 footer > .container > .row{
@@ -26,4 +27,15 @@ footer > .container > .row{
 .footer-arc-logo > img{
     width:40px;
     height:40px;
+}
+
+/* Image gallery carousel */
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+.thumb-list-inline {
+    white-space: nowrap;
+    overflow-x: auto;
 }
