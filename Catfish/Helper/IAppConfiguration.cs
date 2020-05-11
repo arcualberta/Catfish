@@ -10,7 +10,7 @@ namespace Catfish.Helper
         string GetGoogleClientId();
         string GetDefaultUserRole();
         string GetGoogleCalendarAPIKey();
-        
+        bool DisplayCarouselThumbnails();
     }
 
     public class ReadAppConfiguration : ICatfishAppConfiguration
@@ -42,6 +42,13 @@ namespace Catfish.Helper
             allowGoogleLogin = Convert.ToBoolean(_configuration["GoogleExternalLogin:AllowGoogleLogin"]);
 
             return allowGoogleLogin;
+        }
+        public bool DisplayCarouselThumbnails()
+        {
+            bool displayThumbnail = false;
+            displayThumbnail = _configuration["Carousel:DisplayThumbnails"] == null ? false : Convert.ToBoolean(_configuration["Carousel:DisplayThumbnails"]);
+
+            return displayThumbnail;
         }
     }
 }

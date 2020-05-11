@@ -174,6 +174,7 @@ namespace Catfish
                 .AddType(typeof(Models.StandardPage))
                  .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MainPage))
+                 .AddType(typeof(Models.MediaPage))
                 .Build()
                 .DeleteOrphans();
             var postTypeBuilder = new Piranha.AttributeBuilder.PostTypeBuilder(api)
@@ -243,10 +244,10 @@ namespace Catfish
         private static void RegisterCustomBlocks()
         {
             //Register custom Block
-            App.Blocks.Register<EmbedBlock>();
-           
+            App.Blocks.Register<EmbedBlock>();  
             App.Blocks.Register<JavascriptBlock>();
             App.Blocks.Register<CssBlock>();
+            App.Blocks.Register<CalendarBlock>();
         }
         private static void RegisterCustomStyles()
         {
