@@ -11,6 +11,8 @@ namespace Catfish.Helper
         string GetDefaultUserRole();
         string GetGoogleCalendarAPIKey();
         bool DisplayCarouselThumbnails();
+        string GetAllowDomain();
+        string GetUnauthorizedLoginMessage();
     }
 
     public class ReadAppConfiguration : ICatfishAppConfiguration
@@ -42,6 +44,14 @@ namespace Catfish.Helper
             allowGoogleLogin = Convert.ToBoolean(_configuration["GoogleExternalLogin:AllowGoogleLogin"]);
 
             return allowGoogleLogin;
+        }
+        public string GetAllowDomain()
+        {
+            return _configuration["GoogleExternalLogin:AuthorizedDomains"];
+        }
+        public string GetUnauthorizedLoginMessage()
+        {
+            return _configuration["GoogleExternalLogin:AuthorizationErrorMessage"];
         }
         public bool DisplayCarouselThumbnails()
         {
