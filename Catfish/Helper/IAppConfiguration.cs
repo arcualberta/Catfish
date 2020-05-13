@@ -13,6 +13,10 @@ namespace Catfish.Helper
         bool DisplayCarouselThumbnails();
         string GetAllowDomain();
         string GetUnauthorizedLoginMessage();
+        string GetSmtpServer();
+        string GetSmtpEmail();
+      
+        string GetRecipientEmail();
     }
 
     public class ReadAppConfiguration : ICatfishAppConfiguration
@@ -59,6 +63,23 @@ namespace Catfish.Helper
             displayThumbnail = _configuration["Carousel:DisplayThumbnails"] == null ? false : Convert.ToBoolean(_configuration["Carousel:DisplayThumbnails"]);
 
             return displayThumbnail;
+        }
+
+        public string GetSmtpServer()
+        {
+            return _configuration["EmailServer:SmtpServer"];
+        }
+
+        public string GetSmtpEmail()
+        {
+            return _configuration["EmailServer:Email"];
+        }
+
+       
+
+        public string GetRecipientEmail()
+        {
+             return _configuration["EmailServer:Recipient"];
         }
     }
 }
