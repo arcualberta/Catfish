@@ -8,10 +8,13 @@
 @*@if ((await Auth.AuthorizeAsync(User, Piranha.Manager.Permission.SitesAdd)).Succeeded)
     {*@ 
     <!-- v-on:click.prevent="piranha.siteedit.create(load)" -->
-        <div v-if="mcDropdownButtonLabel" class="btn-group dropdown save-preview-edit-button">
-            <button form="item-edit-form" 
-                    class="btn btn-primary dropdown-toggle"
-                    data-toggle="dropdown"
+    <h6 class="success-message" v-if="saveStatus==1">{{saveSuccessfulLabel}}</h6>
+    <h6 class="failed-message" v-if="saveStatus==-1">{{saveFailedLabel}}</h6>
+    
+    <div v-if="mcDropdownButtonLabel" class="btn-group dropdown save-preview-edit-button">
+        <button form="item-edit-form" 
+                class="btn btn-primary dropdown-toggle"
+                data-toggle="dropdown"
                     :type="savePreviewEditButtonType"> <!-- v-on:click="performMCButtonAction($event)" -->
                     <span class="caret"></span>
                 {{mcDropdownButtonLabel}}
@@ -22,6 +25,6 @@
                    v-on:click="performMCButtonAction($event, option)" href="#"> <!--v-on:click="changeButtonLabel(option)" :href="piranha.baseUrl + option + '/' "-->
                     {{ option }}
                 </a>
+            </div>
         </div>
-    </div>
     @*}*@

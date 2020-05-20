@@ -75,6 +75,10 @@ if (document.getElementById("item-edit-page")) {
                 isInPreviewMode: false,
                 savePreviewEditButtonType: "submit",
 
+                saveSuccessfulLabel: "Saved!",
+                saveFailedLabel: "Failed to Save",
+                saveStatus: 0
+
             }
         },
         computed: {
@@ -214,7 +218,6 @@ if (document.getElementById("item-edit-page")) {
              * @param {any} event
              */
             performMCButtonAction(event, option) {
-                console.log("!!!", option);
                 switch (option) {
                     case this.buttonOptions[0]:
                         this.saveForm(event);
@@ -267,8 +270,19 @@ if (document.getElementById("item-edit-page")) {
                             },
                             body: JSON.stringify(this.item)
                         })
-                        .then(function (res) { return res.json(); })
-                        .then(function (data) { alert(JSON.stringify(data)) })
+                        .then((res) =>  {
+                            if (res.ok) {
+                                this.saveStatus = 1;
+                                console.log("????");
+                                setTimeout(() => { this.saveStatus = 0; }, 3000);
+                            } else {
+                                this.saveStatus = -1;
+                                console.log("!!!!!");
+                            }
+                            console.log("res",res);
+                            return res;
+                        })
+                        .then(function (data) { /*alert(JSON.stringify(data))*/ })
                         .catch((error) => {
                             console.error('Error:', error);
                         });
