@@ -33,8 +33,9 @@ if (document.getElementById("item-edit-page")) {
                     "Edit",
                     "Preview"
                 ],
-                //label for multichoice dropdown button (save/edit/preview)
-                mcDropdownButtonLabel: "",
+                //label for multichoice dropdown button
+                mcDropdownButtonLabel: "Actions",
+                activeOption: "Edit",
 
                 //bring this in from somewhere else, will have ALL language abbreviations in it
                 languages: {
@@ -212,8 +213,9 @@ if (document.getElementById("item-edit-page")) {
              * Perform the action the multichoice button states.
              * @param {any} event
              */
-            performMCButtonAction(event) {
-                switch (this.mcDropdownButtonLabel) {
+            performMCButtonAction(event, option) {
+                console.log("!!!", option);
+                switch (option) {
                     case this.buttonOptions[0]:
                         this.saveForm(event);
                         break;
@@ -225,7 +227,8 @@ if (document.getElementById("item-edit-page")) {
                         //preview view
                         this.isInPreviewMode = true;
                         break;
-				}
+                }
+                this.activeOption = option;
 			},
 
             /**
@@ -432,9 +435,6 @@ if (document.getElementById("item-edit-page")) {
             this.fetchData();
         },
         mounted() {
-
-            //set multichoice button to save option intially
-            this.mcDropdownButtonLabel = this.buttonOptions[0];
 
             //initializes all tooltips
             $(document).ready(function () {
