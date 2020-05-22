@@ -10,18 +10,23 @@ namespace Catfish.Models
     [PageTypeRoute(Title = "Default", Route = "/mediapage")]
     public class MediaPage : Page<MediaPage>
     {
-       
+        
+
         [Region(ListTitle = "Title")]
         public GoogleCalendarRegion CalendarRegion { get; set; }
+
         [Region(ListTitle = "Title")]
         public FacebookTimeline FacebookTimeline { get; set; }
 
         [Region(ListTitle = "Title")]
         public TwitterRegion TwitterRegion { get; set; }
 
+        //[Region(ListTitle ="Title")]
+        //public StyleRegion Styles { get; set; }
+
         public MediaPage()
         {
-
+           
         }
        
     }

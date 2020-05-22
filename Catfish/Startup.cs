@@ -20,6 +20,8 @@ using System;
 using Catfish.Solr;
 using Catfish.Solr.Models;
 using SolrNet;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace Catfish
 {
@@ -53,12 +55,15 @@ namespace Catfish
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            //localization need to be called before MVC() or other service that need it
+            services.AddLocalization(options =>
+             options.ResourcesPath = "Resources"
+           );
+
             //-- add MVC service
             services.AddMvc();//.AddXmlSerializerFormatters(); // to user MVC model
 
-            services.AddLocalization(options =>
-               options.ResourcesPath = "Resources"
-             );
+          
             // Service setup for Piranha CMS
             services.AddPiranha(options =>
             {
@@ -124,7 +129,7 @@ namespace Catfish
             services.AddScoped<DbEntityService>();
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
-
+            services.AddScoped<IEmail, EmailService>();
             // Solr services
             services.AddSolrNet<SolrItemModel>($"http://localhost:8983/solr/my_posts");
             services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
@@ -172,6 +177,23 @@ namespace Catfish
 
 
             // Middleware setup
+            //use localization
+           // var supportedCulture = new[]
+           //{
+           //     new CultureInfo("en"),
+           //     new CultureInfo("rus")
+
+           // };
+           // var requestLocalizationOptios = new RequestLocalizationOptions
+           // {
+           //     DefaultRequestCulture = new RequestCulture("en"),
+           //     //for formating like date, currency,etc
+           //     SupportedCultures = supportedCulture,
+           //     //UI string -- resources that we provided
+           //     SupportedUICultures = supportedCulture
+
+           // };
+           // app.UseRequestLocalization(requestLocalizationOptios);
 
             app.UsePiranha();
             //MR Feb 7 2020 -- add classic MVC routing
@@ -181,6 +203,7 @@ namespace Catfish
                 .AddType(typeof(Models.StandardPage))
                  .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MainPage))
+                 .AddType(typeof(Models.MediaPage))
                 .Build()
                 .DeleteOrphans();
             var postTypeBuilder = new Piranha.AttributeBuilder.PostTypeBuilder(api)
@@ -203,6 +226,7 @@ namespace Catfish
             app.UsePiranhaIdentity();
             app.UsePiranhaManager();
             app.UsePiranhaTinyMCE();
+
             app.UseEndpoints(endpoints =>
             {
                
@@ -246,14 +270,20 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/entitytypelist.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
         }
         private static void RegisterCustomBlocks()
         {
             //Register custom Block
             App.Blocks.Register<EmbedBlock>();
             App.Blocks.Register<CalendarBlock>();
+            App.Blocks.Register<EmbedBlock>();  
+
+
             App.Blocks.Register<JavascriptBlock>();
             App.Blocks.Register<CssBlock>();
+            App.Blocks.Register<CalendarBlock>();
+            App.Blocks.Register<ContactFormBlock>();
         }
         private static void RegisterCustomStyles()
         {

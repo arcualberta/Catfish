@@ -45,7 +45,12 @@
                     </div>
                     <div class="signinout">
                         <button id="btnSignIn" onclick="window.location.href = '/login'; return false;">SignIn</button>
-                        <button class="btnSignOut" onclick="signOut(); return false;">SignOut</button>
+                        @{ if (User.Identity.IsAuthenticated)
+                            {
+                                <button id="btnSignOut" onclick="signOut(); return false;">Sign Out</button>
+                            }
+                        }
+                      
                     </div>
                 </div>
 
@@ -101,14 +106,19 @@
                         $('input:hidden[name="__RequestVerificationToken"]').val()
                 }
             }).done(function (result) {
-                //sign out google
-                var auth2 = gapi.auth2.getAuthInstance();
-                auth2.signOut().then(function () {
-                    //console.log('User signed out.');
+                //sign out google gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
+                try {
+                    var auth2 = gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
+                    auth2.signOut().then(function () {
+                        //console.log('User signed out.');
+                        auth2.disconnect();
+                        window.location.href = "/";
+                    });
                     auth2.disconnect();
-                });
-                auth2.disconnect();
-                window.location.href = window.location.origin;
+                } catch(ex){
+                window.location.href = "/";
+            }
+               // window.location.href =  "/";
 
             });
         }

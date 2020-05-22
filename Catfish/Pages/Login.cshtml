@@ -5,6 +5,8 @@
 
     ViewBag.Title = "Login";
     bool allowGoogleLogin =  _catfishAppConfig.IsAllowGoogleLogin();
+    string AllowDomains = _catfishAppConfig.GetAllowDomain();
+    string DeniedMessage = _catfishAppConfig.GetUnauthorizedLoginMessage();
 }
 
 
@@ -39,46 +41,73 @@
                     <h2>Login With: </h2>
                     <hr />
                     <div class="g-signin2" data-onsuccess="onSignIn"></div>
-                    @*<a href="#" onclick="signOut();">Sign out</a>*@
+                  
 
                 </div>
+            </div>
+            <div class="alert alert-warning alert-dismissible allowDomain" style="visibility: hidden; text-align:center;">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Warning!</strong> @DeniedMessage
             </div>
         }
     </div>
 
 
-<script>
-  
+    <script>
+   var allowDomains = ('@AllowDomains').split(',');
+     var allowed = true;
+    
 
  function onSignIn(googleUser) {
        var profile = googleUser.getBasicProfile();
 
-      // var id_token = googleUser.getAuthResponse().id_token;
+     //May 11 2020 --check if user's email is allow -- for example -- restricted to uofa user only --
+     for (let i = 0; i < allowDomains.length; i++) {
+         let _domain = allowDomains[i].trim();
+         if (profile.getEmail().includes(_domain)) {
+             allowed = true;
+             break;
+         }
+         else { allowed = false;}
+     }
 
-      var auth2 = gapi.auth2.getAuthInstance();
-      if(auth2.isSignedIn)
-      {
-          @*@Model.catfishUser.Login = profile.getEmail();*@
-         var user = new Object();
-         user.Login = profile.getEmail();
-         user.Password= profile.getId();
-         user.Email =  profile.getEmail();
-         user.Firstname =  profile.getGivenName();
-          user.Surname = profile.getFamilyName();
-          
-         $.ajax({
-               type: 'POST',
-               url: "/CatfishUser",
 
-             data: { userModel: user },
-             headers: {
-             RequestVerificationToken:
-                 $('input:hidden[name="__RequestVerificationToken"]').val()
-               }
-         }).done(function (result) {
-             window.location.href = "/";
+     if (!allowed) {
+         //.css("visibility", "visible");
+         $(".allowDomain").css("visibility", "visible");
+         var auth2 = gapi.auth2.getAuthInstance();
+         auth2.signOut().then(function () {
+             //console.log('User signed out.');
+             auth2.disconnect();
          });
-      }
+         auth2.disconnect();
+         return;
+     } else {
+         $(".allowDomain").css("visibility", "hidden");
+         var auth2 = gapi.auth2.getAuthInstance();
+         if (auth2.isSignedIn) {
+          @*@Model.catfishUser.Login = profile.getEmail();*@
+             var user = new Object();
+             user.Login = profile.getEmail();
+             user.Password = profile.getId();
+             user.Email = profile.getEmail();
+             user.Firstname = profile.getGivenName();
+             user.Surname = profile.getFamilyName();
+
+             $.ajax({
+                 type: 'POST',
+                 url: "/CatfishUser",
+
+                 data: { userModel: user },
+                 headers: {
+                     RequestVerificationToken:
+                         $('input:hidden[name="__RequestVerificationToken"]').val()
+                 }
+             }).done(function (result) {
+                 window.location.href = "/";
+             });
+         }
+     }
 }
 
-</script>
+    </script>

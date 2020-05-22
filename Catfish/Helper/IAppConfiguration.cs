@@ -10,7 +10,13 @@ namespace Catfish.Helper
         string GetGoogleClientId();
         string GetDefaultUserRole();
         string GetGoogleCalendarAPIKey();
-        
+        bool DisplayCarouselThumbnails();
+        string GetAllowDomain();
+        string GetUnauthorizedLoginMessage();
+        string GetSmtpServer();
+        string GetSmtpEmail();
+      
+        string GetRecipientEmail();
     }
 
     public class ReadAppConfiguration : ICatfishAppConfiguration
@@ -42,6 +48,38 @@ namespace Catfish.Helper
             allowGoogleLogin = Convert.ToBoolean(_configuration["GoogleExternalLogin:AllowGoogleLogin"]);
 
             return allowGoogleLogin;
+        }
+        public string GetAllowDomain()
+        {
+            return _configuration["GoogleExternalLogin:AuthorizedDomains"];
+        }
+        public string GetUnauthorizedLoginMessage()
+        {
+            return _configuration["GoogleExternalLogin:AuthorizationErrorMessage"];
+        }
+        public bool DisplayCarouselThumbnails()
+        {
+            bool displayThumbnail = false;
+            displayThumbnail = _configuration["Carousel:DisplayThumbnails"] == null ? false : Convert.ToBoolean(_configuration["Carousel:DisplayThumbnails"]);
+
+            return displayThumbnail;
+        }
+
+        public string GetSmtpServer()
+        {
+            return _configuration["EmailServer:SmtpServer"];
+        }
+
+        public string GetSmtpEmail()
+        {
+            return _configuration["EmailServer:Email"];
+        }
+
+       
+
+        public string GetRecipientEmail()
+        {
+             return _configuration["EmailServer:Recipient"];
         }
     }
 }
