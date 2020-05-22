@@ -8,23 +8,23 @@
 @*@if ((await Auth.AuthorizeAsync(User, Piranha.Manager.Permission.SitesAdd)).Succeeded)
     {*@ 
     <!-- v-on:click.prevent="piranha.siteedit.create(load)" -->
-        <div v-if="mcDropdownButtonLabel" class="btn-group dropdown save-preview-edit-button">
-            <button form="item-edit-form" 
-                    v-on:click="performMCButtonAction($event)"
-                    class="btn btn-primary"
-                    :type="savePreviewEditButtonType">
-                @* @Localizer.Site["Save"] *@
+    <h6 class="success-message" v-if="saveStatus==1">{{saveSuccessfulLabel}}</h6>
+    <h6 class="failed-message" v-if="saveStatus==-1">{{saveFailedLabel}}</h6>
+    
+    <div v-if="mcDropdownButtonLabel" class="btn-group dropdown save-preview-edit-button">
+        <button form="item-edit-form" 
+                class="btn btn-primary dropdown-toggle"
+                data-toggle="dropdown"
+                    :type="savePreviewEditButtonType"> <!-- v-on:click="performMCButtonAction($event)" -->
+                    <span class="caret"></span>
                 {{mcDropdownButtonLabel}}
-            </button>
-            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="sr-only">Toggle Dropdown</span>
             </button>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="pageGroup">
                 <a v-for="option in buttonOptions"
-                   class="dropdown-item" :class="{active: option==mcDropdownButtonLabel}" 
-                   v-on:click="changeButtonLabel(option)" href="#"> <!--:href="piranha.baseUrl + option + '/' "-->
+                   class="dropdown-item" :class="{active: option==activeOption}" 
+                   v-on:click="performMCButtonAction($event, option)" href="#"> <!--v-on:click="changeButtonLabel(option)" :href="piranha.baseUrl + option + '/' "-->
                     {{ option }}
                 </a>
+            </div>
         </div>
-    </div>
     @*}*@

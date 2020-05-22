@@ -33,8 +33,9 @@ if (document.getElementById("item-edit-page")) {
                     "Edit",
                     "Preview"
                 ],
-                //label for multichoice dropdown button (save/edit/preview)
-                mcDropdownButtonLabel: "",
+                //label for multichoice dropdown button
+                mcDropdownButtonLabel: "Actions",
+                activeOption: "Edit",
 
                 //bring this in from somewhere else, will have ALL language abbreviations in it
                 languages: {
@@ -73,6 +74,10 @@ if (document.getElementById("item-edit-page")) {
                 originalFields: [],
                 isInPreviewMode: false,
                 savePreviewEditButtonType: "submit",
+
+                saveSuccessfulLabel: "Saved!",
+                saveFailedLabel: "Failed to Save",
+                saveStatus: 0
 
             }
         },
@@ -212,8 +217,8 @@ if (document.getElementById("item-edit-page")) {
              * Perform the action the multichoice button states.
              * @param {any} event
              */
-            performMCButtonAction(event) {
-                switch (this.mcDropdownButtonLabel) {
+            performMCButtonAction(event, option) {
+                switch (option) {
                     case this.buttonOptions[0]:
                         this.saveForm(event);
                         break;
@@ -225,7 +230,8 @@ if (document.getElementById("item-edit-page")) {
                         //preview view
                         this.isInPreviewMode = true;
                         break;
-				}
+                }
+                this.activeOption = option;
 			},
 
             /**
@@ -264,8 +270,19 @@ if (document.getElementById("item-edit-page")) {
                             },
                             body: JSON.stringify(this.item)
                         })
-                        .then(function (res) { return res.json(); })
-                        .then(function (data) { alert(JSON.stringify(data)) })
+                        .then((res) =>  {
+                            if (res.ok) {
+                                this.saveStatus = 1;
+                                console.log("????");
+                                setTimeout(() => { this.saveStatus = 0; }, 3000);
+                            } else {
+                                this.saveStatus = -1;
+                                console.log("!!!!!");
+                            }
+                            console.log("res",res);
+                            return res;
+                        })
+                        .then(function (data) { /*alert(JSON.stringify(data))*/ })
                         .catch((error) => {
                             console.error('Error:', error);
                         });
@@ -401,11 +418,8 @@ if (document.getElementById("item-edit-page")) {
                                 this.originalFieldIndexMaster[index][matched[0]].count + 1);
 	                    }
 					}
-
-                    
                     console.log("originalFields:", this.originalFieldIndexMaster);
                     console.log("indices: ", this.originalFields);
-
                 }
 
             },
@@ -436,33 +450,10 @@ if (document.getElementById("item-edit-page")) {
         },
         mounted() {
 
-            //set multichoice button to save option intially
-            this.mcDropdownButtonLabel = this.buttonOptions[0];
-
             //initializes all tooltips
             $(document).ready(function () {
                 $("body").tooltip({ selector: '[data-toggle=tooltip]' });
             });
-
-            //adds eventlistener to form fields for validation purposes
-            /*(function () {
-                'use strict';
-                window.addEventListener('load', function () {
-                    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                    var forms = document.getElementsByClassName('edit-form');
-                    // Loop over them and prevent submission
-                    var validation = Array.prototype.filter.call(forms, function (form) {
-                        form.addEventListener('submit', function (event) {
-                            if (form.checkValidity() === false) {
-                                event.preventDefault();
-                                event.stopPropagation();
-                            }
-                            console.log("form validated");
-                            form.classList.add('was-validated');
-                        }, false);
-                    });
-                }, false);
-            })();*/
 		}
     })
 }

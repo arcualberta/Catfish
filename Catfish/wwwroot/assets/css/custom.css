@@ -32,6 +32,23 @@
 	margin-bottom: 2rem;
 }
 
+#item-edit-page .top-nav{
+	display:flex;
+	align-items: baseline;
+}
+
+#item-edit-page .success-message {
+	padding-left: 10px;
+	color: green;
+	padding-right: 10px;
+}
+
+#item-edit-page .failed-message {
+	padding-left: 10px;
+	color: red;
+	padding-right: 10px;
+}
+
 #item-edit-page .dd-item .sitemap-item {
 	margin-bottom: 0;
 }
