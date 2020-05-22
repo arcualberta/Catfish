@@ -17,6 +17,9 @@ using Piranha.Data.EF.SQLServer;
 using Catfish.Core.Services;
 using Catfish.Helper;
 using System;
+using Catfish.Solr;
+using Catfish.Solr.Models;
+using SolrNet;
 
 namespace Catfish
 {
@@ -121,6 +124,10 @@ namespace Catfish
             services.AddScoped<DbEntityService>();
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
+
+            // Solr services
+            services.AddSolrNet<SolrItemModel>($"http://localhost:8983/solr/my_posts");
+            services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
 
         }
 

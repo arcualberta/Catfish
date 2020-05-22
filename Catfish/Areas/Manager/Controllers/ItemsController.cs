@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.ViewModels;
 using Catfish.Core.Services;
-using Microsoft.AspNetCore.Http;
+using Catfish.Solr;
+using Catfish.Solr.Models;
 using Microsoft.AspNetCore.Mvc;
 using Piranha.Manager.Models;
 using AsyncResult = Piranha.Manager.Models.AsyncResult;
@@ -17,6 +15,7 @@ namespace Catfish.Areas.Manager.Controllers
     public class ItemsController : ControllerBase
     {
         private ItemService _srv;
+        private ISolrIndexService<SolrItemModel> solrIndexService;
         public ItemsController(ItemService srv)
         {
             _srv = srv;
@@ -43,6 +42,7 @@ namespace Catfish.Areas.Manager.Controllers
             try
             {
                 _srv.UpdateItemlDataModel(model);
+                solrIndexService.AddUpdate(new SolrItemModel(model));
             }
             catch
             {
