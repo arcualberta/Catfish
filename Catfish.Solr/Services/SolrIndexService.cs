@@ -19,6 +19,7 @@ namespace Catfish.Solr
 				// If the id already exists, the record is updated, otherwise added                         
 				_solr.Add(document);
 				_solr.Commit();
+				_solr.Optimize();
 				return true;
 			}
 			catch (SolrNetException ex)
@@ -37,6 +38,7 @@ namespace Catfish.Solr
 				//Can also delete by id                
 				_solr.Delete(document);
 				_solr.Commit();
+				_solr.Optimize();
 				return true;
 			}
 			catch (SolrNetException ex)
