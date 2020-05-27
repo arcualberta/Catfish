@@ -6,8 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Catfish.Solr;
-using Catfish.Solr.Models;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
@@ -106,7 +104,7 @@ namespace Catfish.Core.Services
             itemData.Updated = DateTime.Now;
             itemData.PrimaryCollectionId = model.PrimaryCollectionId;
 
-            solrIndexService.AddUpdate(new SolrItemModel(model));
+            //solrIndexService.AddUpdate(new SolrItemModel(model));
         }
     }
 }
