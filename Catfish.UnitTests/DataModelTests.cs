@@ -4,6 +4,7 @@ using Catfish.Core.Models.Contents.ViewModels;
 using Catfish.Core.Models.Contents.ViewModels.ListEntries;
 using Catfish.Core.Services;
 using Catfish.Tests.Helpers;
+using Microsoft.Data.SqlClient;
 using NUnit.Framework;
 using System;
 using System.Linq;
@@ -95,6 +96,26 @@ namespace Catfish.UnitTests
 
             srv.SeedDefaults(true);
 
+            _testHelper.Db.SaveChanges();
+        }
+
+        [Test]
+        public void SolrNewItemTest()
+        {
+            SeedingService srv = _testHelper.Seviceprovider.GetService(typeof(SeedingService)) as SeedingService;
+
+            ItemTemplate template = srv.NewDublinCoreItem();
+            Item item = template.Clone<Item>();
+            item.MetadataSets[0].SetFieldValue("Subject", "en", "With tourists gone, Amsterdam locals reclaim their city", "en");
+            string desc = @"A couple of weeks after the first coronavirus case arrived in the Netherlands, we were told to stay inside. Bars and schools closed down and my hometown of Amsterdam came to a halt.
+After the first feelings of confusion and uncertainty, I slowly got used to the idea. There was a calmness in the streets I hadn't experienced in years.
+In the past decade, Amsterdam has become a hasty and chaotic place, its occupants increasingly short-tempered. The city's population of 863,000 was annually swollen by nine million tourists.
+The shops in the city center were given over to cater to them, selling waffles, souvenirs and cannabis seeds. Stores catering to residents closed down because of extreme hikes in rent and the lack of customers.
+More and more, locals have started to avoid the most beautiful part of their city, as its houses were rented out to tourists and expats.";
+
+            item.MetadataSets[0].SetFieldValue("Description", "en", desc, "en");
+
+            _testHelper.Db.Items.Add(item);
             _testHelper.Db.SaveChanges();
         }
 

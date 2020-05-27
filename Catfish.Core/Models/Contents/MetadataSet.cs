@@ -24,14 +24,5 @@ namespace Catfish.Core.Models.Contents
             Name = new MultilingualText(GetElement(Entity.NameTag, true));
             Description = new MultilingualText(GetElement(Entity.DescriptionTag, true));
         }
-        public BaseField GetFieldByName(string fieldName, string lang)
-        {
-            foreach (var field in Fields)
-            {
-                if (field.Name.Values.Where(v => v.Language == lang && v.Value == fieldName) != null)
-                    return field;
-            }
-            return null;
-        }
     }
 }

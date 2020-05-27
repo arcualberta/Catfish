@@ -37,5 +37,16 @@ namespace Catfish.Core.Models.Contents.Fields
             ////}
 
         }
+
+        public override int SetValue(string val, string lang, int valueIndex = 0)
+        {
+            if(Values.Count <= valueIndex)
+            {
+                Values.Add(new MultilingualText(ValueTag));
+                valueIndex = Values.Count - 1;
+            }
+            Values[valueIndex].SetContent(val, lang);
+            return valueIndex;
+        }
     }
 }
