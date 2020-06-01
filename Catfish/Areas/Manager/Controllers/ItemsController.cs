@@ -42,7 +42,9 @@ namespace Catfish.Areas.Manager.Controllers
             try
             {
                 _srv.UpdateItemlDataModel(model);
-                solrIndexService.AddUpdate(new SolrItemModel(model));
+                
+                //TODO:SOLR update
+                //solrIndexService.AddUpdate(new SolrItemModel(model));
             }
             catch
             {

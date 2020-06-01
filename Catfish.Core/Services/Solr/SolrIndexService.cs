@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using Catfish.Core.Models;
+using Catfish.Core.Models.Solr;
 using SolrNet;
 using SolrNet.Exceptions;
 
@@ -12,6 +15,7 @@ namespace Catfish.Core.Services.Solr
 		{
 			_solr = (TSolrOperations)solr;
 		}
+
 		public bool AddUpdate(T document)
 		{
 			try
@@ -47,5 +51,21 @@ namespace Catfish.Core.Services.Solr
 				throw ex;
 			}
 		}
+
+		////public bool AddUpdate(Entity entity)
+		////{
+		////	List<SolrItemModel> entries = ExtractSolrEntries(entity);
+		////	//foreach (var entry in entries)
+		////	//	AddUpdate(entry as Item);
+		////	return true;
+		////}
+
+		////public List<SolrItemModel> ExtractSolrEntries(Entity entity)
+		////{
+		////	List<SolrItemModel> entries = new List<SolrItemModel>();
+
+
+		////	return entries;
+		////}
 	}
 }

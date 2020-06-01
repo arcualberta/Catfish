@@ -9,6 +9,7 @@ using Catfish.Tests.Helpers;
 using Microsoft.Data.SqlClient;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Catfish.UnitTests
@@ -18,10 +19,13 @@ namespace Catfish.UnitTests
         protected AppDbContext _db;
         protected TestHelper _testHelper;
         private ISolrIndexService<SolrItemModel> solrIndexService;
+        private IEntityService entityService;
         [SetUp]
         public void Setup()
         {
             _testHelper = new TestHelper();
+            solrIndexService = _testHelper.Seviceprovider.GetService(typeof(ISolrIndexService<SolrItemModel>)) as ISolrIndexService<SolrItemModel>;
+            entityService = _testHelper.Seviceprovider.GetService(typeof(IEntityService)) as IEntityService;
             _db = _testHelper.Db;
         }
 
@@ -120,8 +124,28 @@ More and more, locals have started to avoid the most beautiful part of their cit
             item.Name.SetContent("Test Name");
             item.Description.SetContent("Test Description");
             _testHelper.Db.Items.Add(item);
-            //solrIndexService.AddUpdate(new SolrItemModel(item));
             _testHelper.Db.SaveChanges();
+
+            entityService.AddUpdateEntity(item);
+
+        }
+
+
+        public bool AddUpdate(Entity entity)
+        {
+            List<SolrItemModel> entries = ExtractSolrEntries(entity);
+            foreach (var entry in entries)
+                solrIndexService.AddUpdate(entry);
+
+            return true;
+        }
+
+        public List<SolrItemModel> ExtractSolrEntries(Entity entity)
+        {
+            List<SolrItemModel> entries = new List<SolrItemModel>();
+            entries.Add(new SolrItemModel());
+
+            return entries;
         }
 
 

@@ -41,6 +41,9 @@ namespace Catfish.Tests.Helpers
             //Registering other services
             services.AddScoped<SeedingService>();
             services.AddScoped<DbEntityService>();
+            services.AddScoped<IEntityService, EntityService>();
+
+
             ////services.AddScoped<SolrService>();
             // Solr services
             string solrString = configuration.GetSection("SolarConfiguration:solrItemURL").Value;
