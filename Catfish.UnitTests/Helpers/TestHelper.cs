@@ -1,10 +1,13 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
+using Catfish.Core.Services.Solr;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
+using SolrNet;
 using System;
 
 namespace Catfish.Tests.Helpers
@@ -39,7 +42,10 @@ namespace Catfish.Tests.Helpers
             services.AddScoped<SeedingService>();
             services.AddScoped<DbEntityService>();
             ////services.AddScoped<SolrService>();
-
+            // Solr services
+            string solrString = configuration.GetSection("SolarConfiguration:solrItemURL").Value;
+            services.AddSolrNet<SolrItemModel>(solrString);
+            services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
 
             //Creating a service provider and assigning it to the member variable so that it can be used by 
             //test methods.

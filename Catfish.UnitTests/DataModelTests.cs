@@ -2,7 +2,9 @@ using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.ViewModels;
 using Catfish.Core.Models.Contents.ViewModels.ListEntries;
+using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
+using Catfish.Core.Services.Solr;
 using Catfish.Tests.Helpers;
 using Microsoft.Data.SqlClient;
 using NUnit.Framework;
@@ -15,7 +17,7 @@ namespace Catfish.UnitTests
     {
         protected AppDbContext _db;
         protected TestHelper _testHelper;
-
+        private ISolrIndexService<SolrItemModel> solrIndexService;
         [SetUp]
         public void Setup()
         {
@@ -102,6 +104,7 @@ namespace Catfish.UnitTests
         [Test]
         public void SolrNewItemTest()
         {
+            //private ISolrIndexService<SolrItemModel> solrIndexService;
             SeedingService srv = _testHelper.Seviceprovider.GetService(typeof(SeedingService)) as SeedingService;
 
             ItemTemplate template = srv.NewDublinCoreItem();
@@ -114,8 +117,10 @@ The shops in the city center were given over to cater to them, selling waffles, 
 More and more, locals have started to avoid the most beautiful part of their city, as its houses were rented out to tourists and expats.";
 
             item.MetadataSets[0].SetFieldValue("Description", "en", desc, "en");
-
+            item.Name.SetContent("Test Name");
+            item.Description.SetContent("Test Description");
             _testHelper.Db.Items.Add(item);
+            //solrIndexService.AddUpdate(new SolrItemModel(item));
             _testHelper.Db.SaveChanges();
         }
 

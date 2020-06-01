@@ -1,9 +1,9 @@
 ﻿using System;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.ViewModels;
+using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
-using Catfish.Solr;
-using Catfish.Solr.Models;
+using Catfish.Core.Services.Solr;
 using Microsoft.AspNetCore.Mvc;
 using Piranha.Manager.Models;
 using AsyncResult = Piranha.Manager.Models.AsyncResult;

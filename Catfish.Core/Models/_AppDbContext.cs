@@ -1,4 +1,6 @@
-﻿using Catfish.Core.Services;
+﻿using Catfish.Core.Models.Solr;
+using Catfish.Core.Services;
+using Catfish.Core.Services.Solr;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -30,32 +32,39 @@ namespace Catfish.Core.Models
 
         private void UpdateSolr()
         {
-            //////////string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
+            //string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
 
-            ////////List<Dictionary<string, object>> savedEntities = new List<Dictionary<string, object>>();
-            ////////List<string> deletedEntities = new List<string>();
+            List<Dictionary<string, object>> savedEntities = new List<Dictionary<string, object>>();
+            List<string> deletedEntities = new List<string>();
 
-            ////////foreach (DbEntityEntry entry in ChangeTracker.Entries<CFEntity>())
-            ////////{
+            //SolrIndexService.AddUpdate(new SolrItemModel(savedEntities));
 
-            ////////    //entry.GetType().InvokeMember("ToSolrDictionary")
-            ////////    if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
-            ////////    {
-            ////////        savedEntities.Add(((CFEntity)entry.Entity).ToSolrDictionary());
-            ////////    }
-            ////////    else if (entry.State == EntityState.Deleted)
-            ////////    {
-            ////////        deletedEntities.Add(((CFEntity)entry.Entity).Guid);
-            ////////    }
-            ////////}
+            //foreach (DbEntityEntry entry in ChangeTracker.Entries<CFEntity>())
+            //{
 
-            ////////SolrService.SolrOperations.AddRange(savedEntities);
-            ////////SolrService.SolrOperations.Delete(deletedEntities);
+            //    //entry.GetType().InvokeMember("ToSolrDictionary")
+            //    if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
+            //    {
+            //        savedEntities.Add(((CFEntity)entry.Entity).ToSolrDictionary());
+            //    }
+            //    else if (entry.State == EntityState.Deleted)
+            //    {
+            //        deletedEntities.Add(((CFEntity)entry.Entity).Guid);
+            //    }
+            //}
+
+            //SolrService.SolrOperations.AddRange(savedEntities);
+            //SolrService.SolrOperations.Delete(deletedEntities);
+
+
+
+
         }
 
 
         public override int SaveChanges()
         {
+            UpdateSolr();
             return base.SaveChanges();
 
             ////////using (DbContextTransaction dbContextTransaction = Database.BeginTransaction())

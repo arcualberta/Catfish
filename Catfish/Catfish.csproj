@@ -46,11 +46,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj" />
-    <ProjectReference Include="..\Catfish.Solr\Catfish.Solr.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\assets\js\entitytypelist.js" />
     <None Include="wwwroot\assets\js\textarea-field.js" />
   </ItemGroup>
@@ -63,6 +58,10 @@
 
   <ItemGroup>
     <Folder Include="Areas\Manager\Pages\Partial\DisplayTemplates\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
