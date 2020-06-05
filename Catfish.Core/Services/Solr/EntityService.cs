@@ -33,6 +33,7 @@ namespace Catfish.Core.Services.Solr
 								SolrItemModel solrText = new SolrItemModel()
 								{
 									EntityGuid = entity.Id,
+									EntityType = entity.ModelType,
 									MetadataSetGuid = ms.Id,
 									FieldGuid = field.Id,
 									//TODO: Assign ValueGuid = val.Id,

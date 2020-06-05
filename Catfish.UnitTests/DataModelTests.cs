@@ -8,6 +8,7 @@ using Catfish.Core.Services.Solr;
 using Catfish.Tests.Helpers;
 using Microsoft.Data.SqlClient;
 using NUnit.Framework;
+using SolrNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace Catfish.UnitTests
         protected TestHelper _testHelper;
         private ISolrIndexService<SolrItemModel> solrIndexService;
         private IEntityService entityService;
+
         [SetUp]
         public void Setup()
         {
@@ -113,16 +115,17 @@ namespace Catfish.UnitTests
 
             ItemTemplate template = srv.NewDublinCoreItem();
             Item item = template.Clone<Item>();
-            item.MetadataSets[0].SetFieldValue("Subject", "en", "With tourists gone, Amsterdam locals reclaim their city", "en");
-            string desc = @"A couple of weeks after the first coronavirus case arrived in the Netherlands, we were told to stay inside. Bars and schools closed down and my hometown of Amsterdam came to a halt.
-After the first feelings of confusion and uncertainty, I slowly got used to the idea. There was a calmness in the streets I hadn't experienced in years.
-In the past decade, Amsterdam has become a hasty and chaotic place, its occupants increasingly short-tempered. The city's population of 863,000 was annually swollen by nine million tourists.
-The shops in the city center were given over to cater to them, selling waffles, souvenirs and cannabis seeds. Stores catering to residents closed down because of extreme hikes in rent and the lack of customers.
-More and more, locals have started to avoid the most beautiful part of their city, as its houses were rented out to tourists and expats.";
+            item.MetadataSets[0].SetFieldValue("Subject", "en", "Is Covid-19 changing our relationships?", "en");
+            string desc = @"The Covid-19 pandemic has reshaped our personal relationships in unprecedented ways, forcing us to live closer together with some people and further apart from others. Life in lockdown has necessitated close, constant contact with our families and partners, but social distancing measures have isolated us from our friends and wider communities.
+
+                    Both in China, which was the first country in the world to go into full lockdown when the virus emerged there, and in Hong Kong – where schools closed, shops were shuttered, and employees sent home – the virus has been brought under control and life has returned to some semblance of normality. But the pandemic has left some cracks in family relationships.
+
+                    Most notably the high-pressure environment of confinement, combined with the financial stress brought about by a Covid-19 burdened economy, has led to a rise in marital conflict, according to Susanne Choi, a sociologist at the Chinese University of Hong Kong.
+                            ";
 
             item.MetadataSets[0].SetFieldValue("Description", "en", desc, "en");
-            item.Name.SetContent("Test Name");
-            item.Description.SetContent("Test Description");
+            item.Name.SetContent("BBC News");
+            item.Description.SetContent("BBC News Content");
             _testHelper.Db.Items.Add(item);
             _testHelper.Db.SaveChanges();
 
@@ -147,6 +150,15 @@ More and more, locals have started to avoid the most beautiful part of their cit
 
             return entries;
         }
+
+        //[Test]
+        //public void Query()
+        //{
+        //    var solr = ServiceLocator.current.getinstance<ISolrOperations<SolrItemModel>>();
+        //    var results = solrIndexService.Query(New Solrquerybyfield("id", "sp2514n"));
+        //    Assert.AreEqual(1, results.Count);
+        //    Console.WriteLine(Results[0].manufacturer);
+        //}
 
 
         //[Test]
