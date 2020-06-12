@@ -6,7 +6,7 @@ namespace Catfish.Core.Models.Solr
 {
     public class SearchParameters
     {
-        public const int DefaultPageSize = 5;
+        public const int DefaultPageSize = 10;
 
         public SearchParameters()
         {

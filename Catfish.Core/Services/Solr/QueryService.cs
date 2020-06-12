@@ -2,6 +2,7 @@
 using Catfish.Core.Models.Solr;
 using SolrNet;
 using SolrNet.Commands.Parameters;
+using SolrNet.DSL;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,30 +31,40 @@ namespace Catfish.Core.Services.Solr
             return data;
         }
 
-
         //public ISolrQuery BuildQuery(SearchParameters parameters)
         //{
         //    if (!string.IsNullOrEmpty(parameters.FreeSearch))
         //        return new SolrQuery(parameters.FreeSearch);
         //    return SolrQuery.All;
         //}
+        public ISolrQuery BuildQuery(SearchParameters parameters)
+        {
+            var queryList = new List<ISolrQuery>();
 
-        //public SolrQueryResults<SolrItemModel> Search(SearchParameters parameters)
-        //{
+            //Search for a given keyword in all configured Solr fields.
+            queryList.Add(new SolrQueryByField("content", parameters.FreeSearch));
 
-        //    var solrQueryResults = _solr.Query(BuildQuery(parameters), new QueryOptions
-        //    {
-        //        FilterQueries = new Collection<ISolrQuery> { Query.Field("Type").Is(parameters.Filter) },
-        //        Rows = parameters.PageSize,
-        //        Start = parameters.PageIndex,
-        //        OrderBy = new Collection<SortOrder> { SortOrder.Parse("Name asc") },
-        //        Facet = new FacetParameters
-        //        {
-        //            Queries = new Collection<ISolrFacetQuery> { new SolrFacetFieldQuery("Type") { MinCount = 1 } }
-        //        }
-        //    });
-        //    return solrQueryResults;
-        //}
+            //Search for a given string in a specific field
+            //queryList.Add(new SolrQueryByField("Name", parameters.Name));
+
+            return new SolrMultipleCriteriaQuery(queryList, "OR");
+        }
+        public SolrQueryResults<SolrItemModel> Search(SearchParameters parameters)
+        {
+
+            var solrQueryResults = _solr.Query(BuildQuery(parameters), new QueryOptions
+            {
+                FilterQueries = new Collection<ISolrQuery> { Query.Field("Content").Is(parameters.FreeSearch) },
+                Rows = parameters.PageSize,
+                Start = parameters.PageIndex,
+                OrderBy = new Collection<SortOrder> { SortOrder.Parse("EntityGuid asc") },
+                Facet = new FacetParameters
+                {
+                    Queries = new Collection<ISolrFacetQuery> { new SolrFacetFieldQuery("EntityGuid") { MinCount = 1 } }
+                }
+            });
+            return solrQueryResults;
+        }
 
     }
 }
