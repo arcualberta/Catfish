@@ -136,6 +136,7 @@ namespace Catfish
             string solrString = Configuration.GetSection("SolarConfiguration:solrItemURL").Value;
             services.AddSolrNet<SolrItemModel>(solrString);
             services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
+            services.AddScoped<IQueryService, QueryService>();
 
         }
 

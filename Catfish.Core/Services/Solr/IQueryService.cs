@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Catfish.Core.Services.Solr
 {
-    interface IQueryService
+    public interface IQueryService
     {
         List<SolrItemModel> SimpleQueryByField(string fieldname, string matchword);
         ISolrQuery BuildQuery(SearchParameters parameters);

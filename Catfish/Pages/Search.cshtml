@@ -1,0 +1,16 @@
+﻿@page
+@model Catfish.Pages.SearchModel
+
+<h1>Search</h1>
+
+<!-- TODO: Make the following a search form -->
+@Html.TextBoxFor(m => m.SearchTerm)
+
+<ul>
+    @{
+        foreach (var entry in Model.Results)
+        {
+            <li>@entry.EntityGuid</li>
+        }
+    }
+</ul>
