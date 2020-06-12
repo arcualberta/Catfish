@@ -21,7 +21,7 @@ namespace Catfish.UnitTests
         protected TestHelper _testHelper;
         private ISolrIndexService<SolrItemModel> solrIndexService;
         private IEntityService entityService;
-
+        private readonly ISolrReadOnlyOperations<SolrItemModel> _solr;
         [SetUp]
         public void Setup()
         {
@@ -152,13 +152,13 @@ namespace Catfish.UnitTests
         }
 
         //[Test]
-        //public void Query()
-        //{
-        //    var solr = ServiceLocator.current.getinstance<ISolrOperations<SolrItemModel>>();
-        //    var results = solrIndexService.Query(New Solrquerybyfield("id", "sp2514n"));
-        //    Assert.AreEqual(1, results.Count);
-        //    Console.WriteLine(Results[0].manufacturer);
-        //}
+        ////public void Query()
+        ////{
+        ////   // var solr = ServiceLocator.current.getinstance<ISolrOperations<SolrItemModel>>();
+        ////    var results = _solr.Query(new SimpleQueryByField("id", "sp2514n"));
+        ////    Assert.AreEqual(1, results.Count);
+        ////    Console.WriteLine(Results[0].manufacturer);
+        ////}
 
 
         //[Test]
