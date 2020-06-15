@@ -1,0 +1,93 @@
+<entity id="696a1fc2-929a-4d82-898b-0eeac587cf30"
+        created="2020-04-27T17:54:01.3918235-06:00"
+        model-type="Catfish.Core.Models.Item, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+	<name model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+	<description model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+	<metadata-sets>
+		<metadata-set model-type="Catfish.Core.Models.Contents.MetadataSet, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                  id="cc252561-b957-4141-970b-fdb101a96ed2">
+			<fields>
+				<field model-type="Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+               id="0e176ef5-a235-470f-bf95-6c8aa99921b2">
+					<name model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+						<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                  xml:lang="en">Name</text>
+					</name>
+					<description model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+						<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                  xml:lang="en">Name of the resourse.</text>
+					</description>
+					<values />
+				</field>
+				<field model-type="Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+               id="224f20b8-5152-499d-a872-6b1a04499e34">
+					<name model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+						<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                  xml:lang="en">Description</text>
+					</name>
+					<description model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+						<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                  xml:lang="en">Description of the resourse.</text>
+					</description>
+					<values />
+				</field>
+			</fields>
+			<name model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+				<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+              xml:lang="en">System Default</text>
+			</name>
+			<description model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+				<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+              xml:lang="en">System default, minimalistic metadata set.</text>
+			</description>
+		</metadata-set>
+	</metadata-sets>
+	<data-container>
+		<data-item id="71d30fb4-9f49-4055-abee-d321735203c8"  type="Catfish.Core.Models.Contents.Form, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+			<name model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+			<description model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+			<fields>
+				<field model-type="Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+               id="0e176ef5-a235-470f-bf95-6c8aa99921b2">
+					<name model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+						<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                  xml:lang="en">Course Name</text>
+					</name>
+					<description model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+						<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                  xml:lang="en">Name of the cource.</text>
+					</description>
+					<values />
+				</field>
+			</fields>
+		</data-item>
+	</data-container>
+	<definition-states>
+		<state applied-time="" applied-by="">Active</state>
+	</definition-states>
+	<instance-states>
+		<state applied-time="" applied-by=""></state>
+	</instance-states>
+	<authorizations>
+		<action name="Create" >
+			<users>
+				<user id="37170bbc-5796-43ab-8baf-a3d082643902" />
+				<user id="dce252f0-0144-4e14-8ce9-25ec0acdd65e" />
+			</users>
+			<roles>
+				<role role-id="99b02a11-8e10-40aa-80f4-ab2a04625c80" />
+			</roles>
+			<targets>
+				<reference taget-type="data-item" ref-id="71d30fb4-9f49-4055-abee-d321735203c8" />
+			</targets>
+		</action>
+		<action name="Read" >
+			
+			<targets>
+				<reference taget-type="data" ref-id="71d30fb4-9f49-4055-abee-d321735203c8" />
+				<reference taget-type="metadata" ref-id="" />
+			</targets>
+		</action>
+	</authorizations>
+
+</entity>
