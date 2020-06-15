@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Catfish.Core.Services.Solr;
 using Catfish.Core.Models.Solr;
+using SolrNet;
 
 namespace Catfish.Pages
 {
@@ -16,7 +17,7 @@ namespace Catfish.Pages
         public string SearchTerm { get; set; }
         public string SolrUrl { get; set; }
 
-        public List<SolrItemModel> Results { get; set; }
+        public SolrQueryResults<SolrItemModel> Results { get; set; }
 
         private readonly IQueryService QueryService;
         public SearchModel(ICatfishAppConfiguration config, IQueryService queryService)
@@ -27,13 +28,16 @@ namespace Catfish.Pages
 
         public void OnGet()
         {
-            Results = new List<SolrItemModel>();
+            Results = new SolrQueryResults<SolrItemModel>();
         }
 
         public void OnPost()
         {
             //var result = QueryService.Search(SearchTerm);
-            Results = new List<SolrItemModel>(); //TODO: Run the query and get this list.
+            Results = new SolrQueryResults<SolrItemModel>(); //TODO: Run the query and get this list.
+            var parameters = new SearchParameters();
+            parameters.FreeSearch = "summer";//SearchTerm;
+            Results = QueryService.Search(parameters);
         }
     }
 }

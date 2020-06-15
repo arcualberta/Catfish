@@ -11,5 +11,6 @@ namespace Catfish.Core.Services.Solr
         List<SolrItemModel> SimpleQueryByField(string fieldname, string matchword);
         ISolrQuery BuildQuery(SearchParameters parameters);
         SolrQueryResults<SolrItemModel> Search(SearchParameters parameters);
+        //List<SolrItemModel> Search(string searchTerm);
     }
 }
