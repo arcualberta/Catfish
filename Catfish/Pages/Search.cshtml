@@ -4,8 +4,11 @@
 <h1>Search</h1>
 
 <!-- TODO: Make the following a search form -->
-@Html.TextBoxFor(m => m.SearchTerm)
+<form method="post">
+    @Html.TextBoxFor(m => m.SearchTerm)
+    <input type="submit" value="Submit" />
 
+</form>
 <ul>
     @{
         foreach (var entry in Model.Results)

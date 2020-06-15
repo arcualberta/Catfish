@@ -33,11 +33,11 @@ namespace Catfish.Pages
 
         public void OnPost()
         {
-            //var result = QueryService.Search(SearchTerm);
             Results = new SolrQueryResults<SolrItemModel>(); //TODO: Run the query and get this list.
             var parameters = new SearchParameters();
             parameters.FreeSearch = "summer";//SearchTerm;
             Results = QueryService.Search(parameters);
         }
+
     }
 }
