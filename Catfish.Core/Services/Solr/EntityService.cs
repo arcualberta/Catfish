@@ -22,6 +22,7 @@ namespace Catfish.Core.Services.Solr
 
 			SolrItemModel solrText = new SolrItemModel();
 			solrText.EntityGuid.Add(entity.Id);
+			solrText.EntityType.Add(entity.ModelType);
 
 			foreach (MetadataSet ms in entity.MetadataSets)
 			{
@@ -33,21 +34,13 @@ namespace Catfish.Core.Services.Solr
 						{
 							foreach (Text txt in val.Values)
 							{
+								solrText.MetadataSetGuid.Add(ms.Id);
+
+								solrText.FieldGuid.Add(field.Id);
+								//solrText.ValueGuid.Add();
+								//solrText.TextGuid.Add();
+								solrText.Lang.Add(txt.Language);
 								solrText.Content.Add(txt.Value);
-
-								////////SolrItemModel solrText = new SolrItemModel()
-								////////{
-								////////	EntityGuid = entity.Id,
-								////////	EntityType = entity.ModelType,
-								////////	MetadataSetGuid = ms.Id,
-								////////	FieldGuid = field.Id,
-								////////	//TODO: Assign ValueGuid = val.Id,
-								////////	//TODO: Assign  TextGuid = txt.Id,
-								////////	Lang = txt.Language,
-								////////	Content = txt.Value
-								////////};
-
-								////////status &= _solrIndexService.AddUpdate(solrText);
 							}
 						}
 					}

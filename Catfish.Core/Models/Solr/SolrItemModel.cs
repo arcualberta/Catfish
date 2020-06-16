@@ -17,23 +17,23 @@ namespace Catfish.Core.Models.Solr
         public List<Guid> EntityGuid { get; set; } = new List<Guid>();
         ////////public Guid EntityGuid { get; set; }
 
-        ////[SolrField("entityType")]
-        ////public string EntityType { get; set; }
+        [SolrField("entityType")]
+        public List<string> EntityType { get; set; } = new List<string>();
 
-        //////[SolrField("metadataSetGuid")]
-        //////public Guid MetadataSetGuid { get; set; }
+        [SolrField("metadataSetGuid")]
+        public List<Guid> MetadataSetGuid { get; set; } = new List<Guid>();
 
-        //////[SolrField("fieldGuid")]
-        //////public Guid FieldGuid { get; set; }
+        [SolrField("fieldGuid")]
+        public List<Guid> FieldGuid { get; set; } = new List<Guid>();
 
-        //////[SolrField("valueGuid")]
-        //////public Guid ValueGuid { get; set; }
+        [SolrField("valueGuid")]
+        public List<Guid> ValueGuid { get; set; } = new List<Guid>();
 
-        //////[SolrUniqueKey("textGuid")]
-        //////public Guid TextGuid { get; set; }
+        [SolrUniqueKey("textGuid")]
+        public List<Guid> TextGuid { get; set; } = new List<Guid>();
 
-        //////[SolrField("lang")]
-        //////public string Lang { get; set; }
+        [SolrField("lang")]
+        public List<string> Lang { get; set; } = new List<string>();
 
         [SolrField("content")]
         public List<string> Content { get; set; } = new List<string>();

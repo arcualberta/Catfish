@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Solr;
+﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Solr;
 using SolrNet;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,7 @@ namespace Catfish.Core.Services.Solr
         SolrQueryResults<SolrItemModel> Search(SearchParameters parameters);
         SolrQueryResults<SolrItemModel> Results(SearchParameters parameters);
         //List<SolrItemModel> Search(string searchTerm);
+        public IList<Entity> GetEntities(SearchParameters parameters);
+
     }
 }

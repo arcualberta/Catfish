@@ -3,9 +3,11 @@ using Catfish.Core.Models.Solr;
 using SolrNet;
 using SolrNet.Commands.Parameters;
 using SolrNet.DSL;
+using SolrNet.Mapping.Validation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 
 namespace Catfish.Core.Services.Solr
@@ -13,9 +15,11 @@ namespace Catfish.Core.Services.Solr
     public class QueryService : IQueryService
     {
         private readonly ISolrReadOnlyOperations<SolrItemModel> _solr;
-        public QueryService(ISolrReadOnlyOperations<SolrItemModel> qrv)
+        private readonly AppDbContext _db;
+        public QueryService(ISolrReadOnlyOperations<SolrItemModel> qrv, AppDbContext db)
         {
             _solr = qrv;
+            _db = db;
         }
 
         public SolrQueryResults<SolrItemModel> SimpleQueryByField1(string fieldname, string matchword)
@@ -92,7 +96,16 @@ namespace Catfish.Core.Services.Solr
 
             return products2;
         }
-        
+
+        public IList<Entity> GetEntities(SearchParameters parameters)
+        {
+            SolrQueryResults<SolrItemModel> result = Results(parameters);
+            var result_ids = result.Select(s => s.EntityGuid.FirstOrDefault()).ToList();
+            var entities = _db.Entities.Where(e => result_ids.Contains(e.Id)).ToList();
+
+            return entities;
+        }
+
 
     }
 }
