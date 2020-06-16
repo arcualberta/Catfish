@@ -18,9 +18,9 @@ namespace Catfish.Core.Services.Solr
             _solr = qrv;
         }
 
-        public List<SolrItemModel> SimpleQueryByField(string fieldname, string matchword)
+        public SolrQueryResults<SolrItemModel> SimpleQueryByField1(string fieldname, string matchword)
         {
-            List<SolrItemModel> data = new List<SolrItemModel>();
+            SolrQueryResults<SolrItemModel> data = new SolrQueryResults<SolrItemModel>();
             var result = _solr.Query(new SolrQuery(fieldname + ":" + matchword)); // search for "matchword" in the "fieldname" field
 
             foreach (var item in result)
@@ -44,27 +44,50 @@ namespace Catfish.Core.Services.Solr
             //Search for a given keyword in all configured Solr fields.
             queryList.Add(new SolrQueryByField("content", parameters.FreeSearch));
 
-            //Search for a given string in a specific field
-            //queryList.Add(new SolrQueryByField("Name", parameters.Name));
-
+            
             return new SolrMultipleCriteriaQuery(queryList, "OR");
         }
+
         public SolrQueryResults<SolrItemModel> Search(SearchParameters parameters)
         {
 
-            var solrQueryResults = _solr.Query(BuildQuery(parameters), new QueryOptions
+            var solrQueryResults = _solr.Query(SolrQuery.All, new QueryOptions
             {
-                FilterQueries = new Collection<ISolrQuery> { Query.Field("Content").Is(parameters.FreeSearch) },
+                FilterQueries = new Collection<ISolrQuery> { Query.Field("content").Is(parameters.FreeSearch) },
                 Rows = parameters.PageSize,
                 Start = parameters.PageIndex,
-                OrderBy = new Collection<SortOrder> { SortOrder.Parse("EntityGuid asc") },
-                Facet = new FacetParameters
-                {
-                    Queries = new Collection<ISolrFacetQuery> { new SolrFacetFieldQuery("EntityGuid") { MinCount = 1 } }
-                }
+                //OrderBy = new Collection<SortOrder> { SortOrder.Parse("entityGuid asc") },
+                //Facet = new FacetParameters
+                //{
+                //    Queries = new Collection<ISolrFacetQuery> { new SolrFacetFieldQuery("entityGuid") { MinCount = 1 } }
+                //}
             });
             return solrQueryResults;
         }
+        public SolrQueryResults<SolrItemModel> Results(SearchParameters parameters)
+        {
+            //QueryOptions query_options = new QueryOptions
+            //{
+            //    Rows = 10,
+            //    StartOrCursor = new StartOrCursor.Start(0),
+            //    FilterQueries = new ISolrQuery[] {
+            //    new SolrQueryByField("content","provides"),
+            //    }
+            //};
+            //// Construct the query
+            //SolrQuery query = new SolrQuery("provides");
+            //// Run a basic keyword search, filtering for questions only
+            //var posts = _solr.Query(query, query_options);
+            //SolrQueryResults<SolrItemModel> data = new SolrQueryResults<SolrItemModel>();
+            //foreach (var item in posts)
+            //{
+            //    data.Add(item);
+            //}
+            SolrQueryResults<SolrItemModel> products2 = _solr.Query(new SolrQuery("content:provides"));
+
+            return products2;
+        }
+        
 
     }
 }

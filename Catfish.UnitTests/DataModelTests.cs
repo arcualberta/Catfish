@@ -115,17 +115,16 @@ namespace Catfish.UnitTests
 
             ItemTemplate template = srv.NewDublinCoreItem();
             Item item = template.Clone<Item>();
-            item.MetadataSets[0].SetFieldValue("Subject", "en", "Is Covid-19 changing our relationships?", "en");
-            string desc = @"The Covid-19 pandemic has reshaped our personal relationships in unprecedented ways, forcing us to live closer together with some people and further apart from others. Life in lockdown has necessitated close, constant contact with our families and partners, but social distancing measures have isolated us from our friends and wider communities.
+            item.MetadataSets[0].SetFieldValue("Subject", "en", "Add Documents", "en");
+            string desc = @"Solr is built to find documents that match queries. Solr’s schema provides an idea of how content is structured (more on the schema later), but without documents there is nothing to find. Solr needs input before it can do much.
 
-                    Both in China, which was the first country in the world to go into full lockdown when the virus emerged there, and in Hong Kong – where schools closed, shops were shuttered, and employees sent home – the virus has been brought under control and life has returned to some semblance of normality. But the pandemic has left some cracks in family relationships.
+You may want to add a few sample documents before trying to index your own content. The Solr installation comes with different types of example documents located under the sub-directories of the example/ directory of your installation.
 
-                    Most notably the high-pressure environment of confinement, combined with the financial stress brought about by a Covid-19 burdened economy, has led to a rise in marital conflict, according to Susanne Choi, a sociologist at the Chinese University of Hong Kong.
-                            ";
+In the bin/ directory is the post script, a command line tool which can be used to index different types of documents. Do not worry too much about the details for now. The Indexing and Basic Data Operations section has all the details on indexing.";
 
             item.MetadataSets[0].SetFieldValue("Description", "en", desc, "en");
-            item.Name.SetContent("BBC News");
-            item.Description.SetContent("BBC News Content");
+            item.Name.SetContent("Solr documents");
+            item.Description.SetContent("Solr documents Content");
             _testHelper.Db.Items.Add(item);
             _testHelper.Db.SaveChanges();
 

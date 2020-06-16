@@ -15,14 +15,14 @@ namespace Catfish.Pages
     public class SearchModel : PageModel
     {
         public string SearchTerm { get; set; }
-        public string SolrUrl { get; set; }
+        //public string SolrUrl { get; set; }
 
         public SolrQueryResults<SolrItemModel> Results { get; set; }
 
         private readonly IQueryService QueryService;
-        public SearchModel(ICatfishAppConfiguration config, IQueryService queryService)
+        public SearchModel(IQueryService queryService)
         {
-            SolrUrl = config.GetSolrUrl();
+           // SolrUrl = config.GetSolrUrl();
             QueryService = queryService;
         }
 
@@ -35,8 +35,8 @@ namespace Catfish.Pages
         {
             Results = new SolrQueryResults<SolrItemModel>(); //TODO: Run the query and get this list.
             var parameters = new SearchParameters();
-            parameters.FreeSearch = "summer";//SearchTerm;
-            Results = QueryService.Search(parameters);
+            parameters.FreeSearch = "from";//SearchTerm;
+            Results = QueryService.Results(parameters);
         }
 
     }
