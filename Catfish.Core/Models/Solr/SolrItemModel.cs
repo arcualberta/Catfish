@@ -13,7 +13,7 @@ namespace Catfish.Core.Models.Solr
         public SolrItemModel() { }
         public SolrItemModel(Item entity) { }
 
-        [SolrUniqueKey("entityGuid")]
+        [SolrField("entityGuid")]
         public List<Guid> EntityGuid { get; set; } = new List<Guid>();
         ////////public Guid EntityGuid { get; set; }
 
