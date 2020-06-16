@@ -83,7 +83,12 @@ namespace Catfish.Core.Services.Solr
             //{
             //    data.Add(item);
             //}
-            SolrQueryResults<SolrItemModel> products2 = _solr.Query(new SolrQuery("content:provides"));
+
+            var q = new SolrQuery("content:" + parameters.FreeSearch);
+
+            var res = _solr.Query(q);
+
+            SolrQueryResults<SolrItemModel> products2 = _solr.Query(q);
 
             return products2;
         }

@@ -13,29 +13,30 @@ namespace Catfish.Core.Models.Solr
         public SolrItemModel() { }
         public SolrItemModel(Item entity) { }
 
-        [SolrField("entityGuid")]
-        public Guid EntityGuid { get; set; }
+        [SolrUniqueKey("entityGuid")]
+        public List<Guid> EntityGuid { get; set; } = new List<Guid>();
+        ////////public Guid EntityGuid { get; set; }
 
-        [SolrField("entityType")]
-        public string EntityType { get; set; }
+        ////[SolrField("entityType")]
+        ////public string EntityType { get; set; }
 
-        [SolrField("metadataSetGuid")]
-        public Guid MetadataSetGuid { get; set; }
+        //////[SolrField("metadataSetGuid")]
+        //////public Guid MetadataSetGuid { get; set; }
 
-        [SolrField("fieldGuid")]
-        public Guid FieldGuid { get; set; }
+        //////[SolrField("fieldGuid")]
+        //////public Guid FieldGuid { get; set; }
 
-        [SolrField("valueGuid")]
-        public Guid ValueGuid { get; set; }
+        //////[SolrField("valueGuid")]
+        //////public Guid ValueGuid { get; set; }
 
-        [SolrField("textGuid")]
-        public Guid TextGuid { get; set; }
+        //////[SolrUniqueKey("textGuid")]
+        //////public Guid TextGuid { get; set; }
 
-        [SolrField("lang")]
-        public string Lang { get; set; }
+        //////[SolrField("lang")]
+        //////public string Lang { get; set; }
 
-        [SolrUniqueKey("content")]
-        public string Content { get; set; }
+        [SolrField("content")]
+        public List<string> Content { get; set; } = new List<string>();
 
 
         ////public SolrItemModel(Item model)

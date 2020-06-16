@@ -20,7 +20,10 @@ namespace Catfish.Core.Services.Solr
 		{
 			bool status = true;
 
-			foreach(MetadataSet ms in entity.MetadataSets)
+			SolrItemModel solrText = new SolrItemModel();
+			solrText.EntityGuid.Add(entity.Id);
+
+			foreach (MetadataSet ms in entity.MetadataSets)
 			{
 				foreach(BaseField field in ms.Fields)
 				{
@@ -30,24 +33,28 @@ namespace Catfish.Core.Services.Solr
 						{
 							foreach (Text txt in val.Values)
 							{
-								SolrItemModel solrText = new SolrItemModel()
-								{
-									EntityGuid = entity.Id,
-									EntityType = entity.ModelType,
-									MetadataSetGuid = ms.Id,
-									FieldGuid = field.Id,
-									//TODO: Assign ValueGuid = val.Id,
-									//TODO: Assign  TextGuid = txt.Id,
-									Lang = txt.Language,
-									Content = txt.Value
-								};
+								solrText.Content.Add(txt.Value);
 
-								status &= _solrIndexService.AddUpdate(solrText);
+								////////SolrItemModel solrText = new SolrItemModel()
+								////////{
+								////////	EntityGuid = entity.Id,
+								////////	EntityType = entity.ModelType,
+								////////	MetadataSetGuid = ms.Id,
+								////////	FieldGuid = field.Id,
+								////////	//TODO: Assign ValueGuid = val.Id,
+								////////	//TODO: Assign  TextGuid = txt.Id,
+								////////	Lang = txt.Language,
+								////////	Content = txt.Value
+								////////};
+
+								////////status &= _solrIndexService.AddUpdate(solrText);
 							}
 						}
 					}
 				}
 			}
+
+			status &= _solrIndexService.AddUpdate(solrText);
 
 			return status;
 		}

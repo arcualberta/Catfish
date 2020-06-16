@@ -35,7 +35,7 @@ namespace Catfish.Pages
         {
             Results = new SolrQueryResults<SolrItemModel>(); //TODO: Run the query and get this list.
             var parameters = new SearchParameters();
-            parameters.FreeSearch = "from";//SearchTerm;
+            parameters.FreeSearch = "schema";//SearchTerm;
             Results = QueryService.Results(parameters);
         }
 
