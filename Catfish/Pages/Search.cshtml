@@ -13,7 +13,27 @@
     @{
         foreach (var entry in Model.Results)
         {
-            <li>@entry.Id</li>
+            <li>Entity GUID : @entry.Id</li>
+            foreach (var metadataset in entry.MetadataSets)
+            {
+                <li>&nbsp; &nbsp; MetadataSet GUID : @metadataset.Id</li>
+                foreach (var fields in metadataset.Fields)
+                {
+                    <li>&nbsp; &nbsp; &nbsp; &nbsp; Field GUID : @fields.Id</li>
+                    if (typeof(Catfish.Core.Models.Contents.Fields.TextField).IsAssignableFrom(fields.GetType()))
+                    {
+                        foreach (var textfield in (fields as Catfish.Core.Models.Contents.Fields.TextField).Values)
+                        {
+                            foreach (var txt in textfield.Values)
+                            {
+                                <li>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Language : @txt.Language</li>
+                                <li>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Value : @txt.Value</li>
+                            }
+                        }
+                    }
+                }
+            }
+            @Html.Raw("\n")
         }
     }
 </ul>

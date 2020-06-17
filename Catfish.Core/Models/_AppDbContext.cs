@@ -30,64 +30,10 @@ namespace Catfish.Core.Models
             }
         }
 
-        private void UpdateSolr()
-        {
-            //string solrString = System.Configuration.ConfigurationManager.AppSettings["SolrServer"];
-
-            List<Dictionary<string, object>> savedEntities = new List<Dictionary<string, object>>();
-            List<string> deletedEntities = new List<string>();
-
-            //SolrIndexService.AddUpdate(new SolrItemModel(savedEntities));
-
-            //foreach (DbEntityEntry entry in ChangeTracker.Entries<CFEntity>())
-            //{
-
-            //    //entry.GetType().InvokeMember("ToSolrDictionary")
-            //    if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
-            //    {
-            //        savedEntities.Add(((CFEntity)entry.Entity).ToSolrDictionary());
-            //    }
-            //    else if (entry.State == EntityState.Deleted)
-            //    {
-            //        deletedEntities.Add(((CFEntity)entry.Entity).Guid);
-            //    }
-            //}
-
-            //SolrService.SolrOperations.AddRange(savedEntities);
-            //SolrService.SolrOperations.Delete(deletedEntities);
-
-
-
-
-        }
-
-
+        
         public override int SaveChanges()
         {
-            UpdateSolr();
             return base.SaveChanges();
-
-            ////////using (DbContextTransaction dbContextTransaction = Database.BeginTransaction())
-            ////////{
-            ////////    try
-            ////////    {
-            ////////        UpdateSolr();
-            ////////        int result = base.SaveChanges();
-            ////////        dbContextTransaction.Commit();
-            ////////        SolrService.SolrOperations.Commit();
-            ////////        return result;
-            ////////    }
-            ////////    catch (SolrNetException e)
-            ////////    {
-            ////////        // rollback savechanges
-            ////////        dbContextTransaction.Rollback();
-            ////////        throw e;
-            ////////    }
-            ////////    catch (Exception e)
-            ////////    {
-            ////////        throw e;
-            ////////    }
-            ////////}
         }
 
         ////public ObjectContext ObjectContext

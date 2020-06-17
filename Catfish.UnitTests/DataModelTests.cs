@@ -115,12 +115,12 @@ namespace Catfish.UnitTests
 
             ItemTemplate template = srv.NewDublinCoreItem();
             Item item = template.Clone<Item>();
-            item.MetadataSets[0].SetFieldValue("Subject", "en", "Add Documents", "en");
-            string desc = @"Solr is built to find documents that match queries. Solr’s schema provides an idea of how content is structured (more on the schema later), but without documents there is nothing to find. Solr needs input before it can do much.
-
-You may want to add a few sample documents before trying to index your own content. The Solr installation comes with different types of example documents located under the sub-directories of the example/ directory of your installation.
-
-In the bin/ directory is the post script, a command line tool which can be used to index different types of documents. Do not worry too much about the details for now. The Indexing and Basic Data Operations section has all the details on indexing.";
+            item.MetadataSets[0].SetFieldValue("Subject", "en", "New restaurants are mad crazy to be opening right now -- or are they?", "en");
+            string desc = @"On Wednesdays, Palmetto, which opened for the first time on May 11 in Oakland, California, serves a full prime rib dinner -- to go.
+It's 'enough to feed two people, or one really hungry person,' Christ Aivaliotis, one of the new restaurant's owners, tells CNN Travel.
+But this isn't how Palmetto or a smattering of other restaurants around the world expected to be operating in the spring of 2020.
+Modified menus, a bare - bones staff and the seemingly gargantuan task of attracting business in a time of such grave uncertainty are all factors in a new food and beverage operation.
+'It may not be ideal,' says Lilly W.Jan, a lecturer in food and beverage management at Cornell's School of Hotel Administration, but she wouldn't call it 'crazy.'";
 
             item.MetadataSets[0].SetFieldValue("Description", "en", desc, "en");
             item.Name.SetContent("Solr documents");

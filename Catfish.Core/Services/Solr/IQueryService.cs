@@ -8,8 +8,7 @@ using System.Text;
 namespace Catfish.Core.Services.Solr
 {
     public interface IQueryService
-    {
-        SolrQueryResults<SolrItemModel> SimpleQueryByField1(string fieldname, string matchword);
+    {       
         ISolrQuery BuildQuery(SearchParameters parameters);
         SolrQueryResults<SolrItemModel> Search(SearchParameters parameters);
         SolrQueryResults<SolrItemModel> Results(SearchParameters parameters);

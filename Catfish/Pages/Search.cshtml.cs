@@ -15,6 +15,7 @@ namespace Catfish.Pages
 {
     public class SearchModel : PageModel
     {
+        [BindProperty(SupportsGet = true)]
         public string SearchTerm { get; set; }
         //public string SolrUrl { get; set; }
 
@@ -36,7 +37,7 @@ namespace Catfish.Pages
         {
             //Results = new SolrQueryResults<SolrItemModel>(); //TODO: Run the query and get this list.
             var parameters = new SearchParameters();
-            parameters.FreeSearch = "schema";//SearchTerm;
+            parameters.FreeSearch = SearchTerm;
             Results = QueryService.GetEntities(parameters);
         }
 

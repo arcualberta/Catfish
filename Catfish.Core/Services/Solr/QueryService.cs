@@ -22,18 +22,7 @@ namespace Catfish.Core.Services.Solr
             _db = db;
         }
 
-        public SolrQueryResults<SolrItemModel> SimpleQueryByField1(string fieldname, string matchword)
-        {
-            SolrQueryResults<SolrItemModel> data = new SolrQueryResults<SolrItemModel>();
-            var result = _solr.Query(new SolrQuery(fieldname + ":" + matchword)); // search for "matchword" in the "fieldname" field
-
-            foreach (var item in result)
-            {
-                data.Add(item);
-            }
-
-            return data;
-        }
+       
 
         //public ISolrQuery BuildQuery(SearchParameters parameters)
         //{
@@ -88,11 +77,11 @@ namespace Catfish.Core.Services.Solr
             //    data.Add(item);
             //}
 
-            var q = new SolrQuery("content:" + parameters.FreeSearch);
+            //var q = new SolrQuery("content:" + parameters.FreeSearch);
 
-            var res = _solr.Query(q);
+            //var res = _solr.Query(new SolrQuery("content:" + parameters.FreeSearch));
 
-            SolrQueryResults<SolrItemModel> products2 = _solr.Query(q);
+            SolrQueryResults<SolrItemModel> products2 = _solr.Query(new SolrQuery("content:" + parameters.FreeSearch));
 
             return products2;
         }
