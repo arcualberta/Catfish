@@ -1,6 +1,6 @@
 ﻿@page
 @model Catfish.Pages.SearchModel
-
+@using Catfish.Core.Models.Contents.Fields
 <h1>Search</h1>
 
 <!-- TODO: Make the following a search form -->
@@ -16,24 +16,23 @@
             <li>Entity GUID : @entry.Id</li>
             foreach (var metadataset in entry.MetadataSets)
             {
-                <li>&nbsp; &nbsp; MetadataSet GUID : @metadataset.Id</li>
+                <li><span> &nbsp; &nbsp; </span> MetadataSet GUID : @metadataset.Id</li>
                 foreach (var fields in metadataset.Fields)
                 {
-                    <li>&nbsp; &nbsp; &nbsp; &nbsp; Field GUID : @fields.Id</li>
-                    if (typeof(Catfish.Core.Models.Contents.Fields.TextField).IsAssignableFrom(fields.GetType()))
+                    <li><span> &nbsp; &nbsp; &nbsp;  &nbsp; </span> Field GUID : @fields.Id</li>
+                    if (typeof(TextField).IsAssignableFrom(fields.GetType()))
                     {
-                        foreach (var textfield in (fields as Catfish.Core.Models.Contents.Fields.TextField).Values)
+                        foreach (var textfield in (fields as TextField).Values)
                         {
                             foreach (var txt in textfield.Values)
                             {
-                                <li>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Language : @txt.Language</li>
-                                <li>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Value : @txt.Value</li>
+                                <li><span> &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; </span> Language : @txt.Language</li>
+                                <li><span> &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; </span> Value : @txt.Value</li>
                             }
                         }
                     }
                 }
             }
-            @Html.Raw("\n")
         }
     }
 </ul>
