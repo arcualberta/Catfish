@@ -36,6 +36,22 @@ namespace Catfish.Areas.Manager.Actions
 
             };
 
+
+        /// <summary>
+        /// Gets the actions available for the ItemList view.
+        /// </summary>
+        public static ActionList<ToolbarAction> FormList { get; private set; } = new ActionList<ToolbarAction>
+            {
+
+                new ToolbarAction
+                {
+                    InternalId = "AddForm",
+                    ActionView = "Partial/Actions/_FormListAddForm"
+
+                }
+
+            };
+
         /// <summary>
         /// Gets the actions available for collapse all/expand all in ItemList view. 
         /// It is apart from the actions because they are not located in the same section.
