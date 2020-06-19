@@ -2,17 +2,54 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Catfish.Core.Models.Contents
+namespace Catfish.Core.Models
 {
+    [Table("Catfish_XmlModels")]
     public class XmlModel
     {
         public enum eGuidOption { Ignore, Ensure, Regenerate }
 
+        [Key]
+        public Guid Id
+        {
+            get => Guid.Parse(Data.Attribute("id").Value);
+            set => Data.SetAttributeValue("id", value);
+        }
+
+        public DateTime Created
+        {
+            get => DateTime.Parse(Data.Attribute("created").Value);
+            set => Data.SetAttributeValue("created", value);
+        }
+
+        public DateTime? Updated
+        {
+            get { try { return Data.Attribute("updated") != null ? DateTime.Parse(Data.Attribute("updated").Value) : null as DateTime?; } catch (Exception) { return null as DateTime?; } }
+            set => Data.SetAttributeValue("updated", value);
+        }
+
         [JsonIgnore]
+        [Column(TypeName = "xml")]
+        public string Content
+        {
+            get => Data?.ToString();
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    Data = XElement.Parse(value);
+                }
+            }
+        }
+
+        [JsonIgnore]
+        [NotMapped]
         public XElement Data { get; protected set; }
 
         public static XmlModel InstantiateContentModel(XElement data)
@@ -34,6 +71,10 @@ namespace Catfish.Core.Models.Contents
             Data = new XElement(tagName);
             Initialize(eGuidOption.Ignore);
         }
+        public XmlModel()
+        {
+
+        }
 
         public string ModelType
         {
@@ -48,30 +89,6 @@ namespace Catfish.Core.Models.Contents
             if (guidOption == eGuidOption.Regenerate || guidOption == eGuidOption.Ensure && Data.Attribute("id") == null)
                 Data.SetAttributeValue("id", Guid.NewGuid());
         }
-
-        ////protected string Lang(string lang)
-        ////{
-        ////    if (!string.IsNullOrEmpty(lang))
-        ////        return lang;
-
-        ////    if (System.Threading.Thread.CurrentThread.CurrentCulture != null && !string.IsNullOrEmpty(System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName))
-        ////        return System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
-
-        ////    return ConfigHelper.Languages[0].TwoLetterISOLanguageName;
-        ////}
-
-        ////private XmlNamespaceManager mXmlNamespaceManager;
-
-        ////protected XmlNamespaceManager GetNamespaceManager()
-        ////{
-        ////    if (mXmlNamespaceManager == null)
-        ////    {
-        ////        mXmlNamespaceManager = new XmlNamespaceManager(new NameTable());
-        ////        mXmlNamespaceManager.AddNamespace("xml", XNamespace.Xml.NamespaceName);
-        ////    }
-
-        ////    return mXmlNamespaceManager;
-        ////}
 
         public XElement GetElement(string tagName, bool createIfNotExist)
         {
