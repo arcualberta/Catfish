@@ -1,4 +1,4 @@
-﻿@page "~/manager/forms/{id:Guid}"
+﻿@page "~/manager/forms/"
 @model Catfish.Areas.Manager.Pages.FormListModel
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
@@ -15,8 +15,8 @@
 			    </div>
 		        <nav aria-label="breadcrumb">
 			        <ol class="breadcrumb">
-				        <li class="breadcrumb-item">@Localizer.Menu["Entities"]</li>
-				        <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Items"]</li>
+				        <li class="breadcrumb-item">@Localizer.Menu["Templates"]</li>
+				        <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Forms"]</li>
 			        </ol>
 		        </nav>
             </div>
