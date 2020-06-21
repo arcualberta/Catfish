@@ -24,7 +24,7 @@ namespace Catfish.Core.Models
 
         public DateTime Created
         {
-            get => DateTime.Parse(Data.Attribute("created").Value);
+            get { try { return Data.Attribute("created") != null ? DateTime.Parse(Data.Attribute("created").Value) : DateTime.MinValue; } catch (Exception) { return DateTime.MinValue; } }
             set => Data.SetAttributeValue("created", value);
         }
 
@@ -87,9 +87,13 @@ namespace Catfish.Core.Models
                 Data.SetAttributeValue("model-type", GetType().AssemblyQualifiedName);
 
             if (guidOption == eGuidOption.Regenerate || guidOption == eGuidOption.Ensure && Data.Attribute("id") == null)
-                Data.SetAttributeValue("id", Guid.NewGuid());
+                SetNewGuid();
         }
 
+        public void SetNewGuid()
+        {
+            Data.SetAttributeValue("id", Guid.NewGuid());
+        }
         public XElement GetElement(string tagName, bool createIfNotExist)
         {
             return XmlHelper.GetElement(Data, tagName, createIfNotExist);

@@ -7,6 +7,7 @@ using System.Text;
 using System;
 using Catfish.Core.Helpers;
 using Catfish.Core.Models.Contents.ViewModels;
+using System.Security.Cryptography;
 
 namespace Catfish.Core.Services
 {
@@ -18,7 +19,7 @@ namespace Catfish.Core.Services
             Db = db;
         }
 
-        public MetadataSet NewDublinCoreMetadataSet()
+        public static MetadataSet NewDublinCoreMetadataSet()
         {
             MetadataSet ms = new MetadataSet();
             ms.Name.SetContent("Dublin Core");
@@ -68,14 +69,11 @@ namespace Catfish.Core.Services
 
             ms.Fields.Add(new TextField("Type",
                 "The nature or genre of the resource."));
-
-
-
-
+       
             return ms;
         }
 
-        public MetadataSet NewDefaultMetadataSet()
+        public static MetadataSet NewDefaultMetadataSet()
         {
             MetadataSet ms = new MetadataSet();
             ms.Name.SetContent("System Default");
@@ -89,7 +87,36 @@ namespace Catfish.Core.Services
 
             return ms;
         }
-        public ItemTemplate NewDublinCoreItem()
+
+        public static Form NewPersonalInfoForm()
+        {
+            Form form = new Form();
+            form.Name.SetContent("Personal Information");
+            form.Description.SetContent("Default personal information form.");
+
+            form.Fields.Add(new TextField("First Name", "") { Required = true });
+            form.Fields.Add(new TextField("Last Name", "") { Required = true });
+            form.Fields.Add(new TextField("Email", "") { Required = true });
+            form.Fields.Add(new TextField("Phone", ""));
+            form.Fields.Add(new TextField("Street Address", ""));
+            form.Fields.Add(new TextField("Street Address (cont)", ""));
+
+            return form;
+        }
+
+        public static Form NewCommentForm()
+        {
+            Form form = new Form();
+            form.Name.SetContent("Comment");
+            form.Description.SetContent("Default comment form.");
+
+            form.Fields.Add(new TextField("Your Name", "") { Required = true });
+            form.Fields.Add(new TextArea("Comment", "") { Required = true });
+
+            return form;
+        }
+
+        public static ItemTemplate NewDublinCoreItem()
         {
             Item item = new Item();
             item.MetadataSets.Add(NewDublinCoreMetadataSet());
@@ -103,7 +130,7 @@ namespace Catfish.Core.Services
             return et;
         }
 
-        public ItemTemplate NewDefaultItem()
+        public static ItemTemplate NewDefaultItem()
         {
             Item item = new Item();
             item.MetadataSets.Add(NewDefaultMetadataSet());
@@ -117,7 +144,7 @@ namespace Catfish.Core.Services
             return et;
         }
 
-        public CollectionTemplate NewDublinCoreCollection()
+        public static CollectionTemplate NewDublinCoreCollection()
         {
             Collection collection = new Collection();
             collection.MetadataSets.Add(NewDublinCoreMetadataSet());
@@ -131,7 +158,7 @@ namespace Catfish.Core.Services
             return et;
         }
 
-        public CollectionTemplate NewDefaultCollection()
+        public static CollectionTemplate NewDefaultCollection()
         {
             Collection collection = new Collection();
             collection.MetadataSets.Add(NewDefaultMetadataSet());
@@ -151,18 +178,29 @@ namespace Catfish.Core.Services
 
             EntityTemplate template;
 
-            template = NewDefaultItem();
-            if (!Db.ItemTemplates.Where(et => et.TemplateName == template.TemplateName).Any())
-                Db.ItemTemplates.Add(template as ItemTemplate);
-            Db.SaveChanges();
+            if(Db.MetadataSets.Count() == 0)
+            {
+                Db.MetadataSets.Add(NewDublinCoreMetadataSet());
+                Db.MetadataSets.Add(NewDefaultMetadataSet());
+            }
 
-            template = NewDublinCoreItem();
+            if(Db.Forms.Count() == 0)
+            {
+                Db.Forms.Add(NewPersonalInfoForm());
+                Db.Forms.Add(NewCommentForm());
+            }
+
+            template = NewDefaultItem();
             if (!Db.ItemTemplates.Where(et => et.TemplateName == template.TemplateName).Any())
                 Db.ItemTemplates.Add(template as ItemTemplate);
 
             template = NewDefaultCollection();
             if (!Db.CollectionTemplates.Where(et => et.TemplateName == template.TemplateName).Any())
                 Db.CollectionTemplates.Add(template as CollectionTemplate);
+            
+            template = NewDublinCoreItem();
+            if (!Db.ItemTemplates.Where(et => et.TemplateName == template.TemplateName).Any())
+                Db.ItemTemplates.Add(template as ItemTemplate);
 
             template = NewDublinCoreCollection();
             if (!Db.CollectionTemplates.Where(et => et.TemplateName == template.TemplateName).Any())

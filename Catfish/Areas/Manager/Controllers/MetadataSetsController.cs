@@ -11,11 +11,11 @@ namespace Catfish.Areas.Manager.Controllers
 {
     [Route("manager/api/[controller]")]
     [ApiController]
-    public class FormsController : ControllerBase
+    public class MetadataSetsController : ControllerBase
     {
         private readonly IFormsService _formService;
 
-        public FormsController(IFormsService formSrv)
+        public MetadataSetsController(IFormsService formSrv)
         {
             _formService = formSrv;
         }
@@ -23,7 +23,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpGet]
         public FieldContainerListVM Get(int offset = 0, int max = 0)
         {
-            FieldContainerListVM vm = _formService.GetForms(offset, max);
+            FieldContainerListVM vm = _formService.GetMetadataSets(offset, max);
             return vm;
         }
     }

@@ -130,6 +130,8 @@ namespace Catfish
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
             services.AddScoped<IEmail, EmailService>();
+            services.AddScoped<IFormsService, FormService>();
+
             // Solr services
             services.AddSolrNet<SolrItemModel>($"http://localhost:8983/solr/Test");
             services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();

@@ -5,13 +5,13 @@ using System.Text.Json.Serialization;
 
 namespace Catfish.Core.Models.Contents.ViewModels.ListEntries
 {
-    public class FormListEntry
+    public class FieldContainerListEntry
     {
         public Guid Id { get; set; }
         public MultilingualText Name { get; protected set; }
         public MultilingualText Description { get; protected set; }
 
-        public FormListEntry(Form form)
+        public FieldContainerListEntry(FieldContainer form)
         {
             Id = form.Id;
             Name = form.Name;

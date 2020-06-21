@@ -21,8 +21,15 @@ namespace Catfish.Core.Models.Contents
         [NotMapped]
         public XmlModelList<BaseField> Fields { get; set; }
 
-        public FieldContainer(string tagName) : base(tagName) { Initialize(eGuidOption.Ignore); }
-        public FieldContainer(XElement data) : base(data) { Initialize(eGuidOption.Ignore); }
+        public FieldContainer(string tagName) : base(tagName) 
+        { 
+            Initialize(eGuidOption.Ignore); 
+            Created = DateTime.Now; 
+        }
+        public FieldContainer(XElement data) : base(data) 
+        {
+            Initialize(eGuidOption.Ignore); 
+        }
         public override void Initialize(eGuidOption guidOption)
         {
             base.Initialize(guidOption);
