@@ -22,6 +22,7 @@ using Catfish.Solr.Models;
 using SolrNet;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Catfish.Core.Services.FormBuilder;
 
 namespace Catfish
 {
@@ -130,6 +131,9 @@ namespace Catfish
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
             services.AddScoped<IEmail, EmailService>();
+            services.AddScoped<IFormService, FormService>();
+            services.AddScoped<IMetadataSetService, MetadataSetService>();
+
             // Solr services
             services.AddSolrNet<SolrItemModel>($"http://localhost:8983/solr/Test");
             services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
@@ -310,6 +314,51 @@ namespace Catfish
 
         private static void AddManagerMenus()
         {
+            if (Piranha.Manager.Menu.Items.Where(m => m.Name == "Templates").FirstOrDefault() == null)
+            {
+                Piranha.Manager.Menu.Items.Insert(0, new MenuItem
+                {
+                    InternalId = "Templates",
+                    Name = "Templates",
+                    Css = "fas fa-object-group"
+
+                });
+            }
+
+            ///
+            /// Templates Group Content Menus
+            ///
+            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Templates").FirstOrDefault();
+            var idx = 0;
+
+            menubar.Items.Insert(idx++, new MenuItem
+            {
+                InternalId = "MetadataSets",
+                Name = "Metadata Sets",
+                Route = "/manager/metadatasets/",
+                Css = "fas fa-brain"
+
+            });
+
+            menubar.Items.Insert(idx++, new MenuItem
+            {
+                InternalId = "EntityTypes",
+                Name = "Entity Types",
+                Route = "/manager/entitytypes/",
+                Css = "fas fa-brain"
+
+            });
+
+            menubar.Items.Insert(idx++, new MenuItem
+            {
+                InternalId = "Forms",
+                Name = "Forms",
+                Route = "/manager/forms/",
+                Css = "fas fa-brain"
+
+            });
+
+
             if (Piranha.Manager.Menu.Items.Where(m => m.Name == "Entities").FirstOrDefault() == null)
             {
                 Piranha.Manager.Menu.Items.Insert(0, new MenuItem
@@ -322,19 +371,10 @@ namespace Catfish
             }
 
             ///
-            /// Content Menus
+            /// Entities Group Content Menus
             ///
-            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Entities").FirstOrDefault();
-            var idx = 0;
-
-            menubar.Items.Insert(idx++, new MenuItem
-            {
-                InternalId = "EntityTypes",
-                Name = "EntityTypes",
-                Route = "/manager/entitytypes/",
-                Css = "fas fa-brain"
-              
-            });
+            menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Entities").FirstOrDefault();
+            idx = 0;
 
             menubar.Items.Insert(idx++, new MenuItem
             {
