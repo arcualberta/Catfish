@@ -12,8 +12,8 @@ namespace Catfish.Areas.Manager.Pages
         public MetadataSetListModel()
         {
             ApiRoot = "~/manager/api/metadatasets/";
+            DetailsPage = "~/manager/metadatasets/";
             EditPage = "~/manager/metadatasets/edit/";
-            DetailsPage = "~/manager/metadatasets/details/";
         }
         public void OnGet()
         {

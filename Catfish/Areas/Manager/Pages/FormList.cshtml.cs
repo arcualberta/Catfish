@@ -13,8 +13,8 @@ namespace Catfish.Areas.Manager.Pages
         public FormListModel()
         {
             ApiRoot = "~/manager/api/forms/";
+            DetailsPage = "~/manager/forms/";
             EditPage = "~/manager/forms/edit/";
-            DetailsPage = "~/manager/forms/details/";
         }
         public void OnGet()
         {
