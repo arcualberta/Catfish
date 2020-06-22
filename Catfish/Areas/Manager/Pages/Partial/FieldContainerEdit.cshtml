@@ -1,3 +1,37 @@
 ﻿@model Catfish.Areas.Manager.Pages.FieldContainerPageModel
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<h3>Edit field container</h3>
+<div id="edit-page">
+    <div class="top">
+        <div class="container-fluid top">
+            <div class="left-nav-container">
+                <div class="top-nav ce">
+                    @foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.CollapseExpandList)
+                    {
+                        <partial name="@action.ActionView" />
+                    }
+                </div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">@Localizer.Menu["Templates"]</li>
+                        <li class="breadcrumb-item">@Localizer.Menu[Model.ModelLabel]</li>
+                        <li class="breadcrumb-item">@Localizer.Menu["Edit"]</li>
+                        <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu[Model.Model.Id.ToString()]</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <div class="container-fluid collection-button-holder">
+                <div class="top-nav">
+                    @foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.FormList)
+                    {
+                        <partial name="@action.ActionView" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

@@ -12,5 +12,7 @@ namespace Catfish.Areas.Manager.Pages
         public string ApiRoot { get; set; }
         public string EditPage { get; set; }
         public string DetailsPage { get; set; }
+        public string ModelLabel { get; set; }
+
     }
 }
