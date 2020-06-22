@@ -22,6 +22,7 @@ using Catfish.Solr.Models;
 using SolrNet;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Catfish.Core.Services.FormBuilder;
 
 namespace Catfish
 {
@@ -130,7 +131,8 @@ namespace Catfish
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
             services.AddScoped<IEmail, EmailService>();
-            services.AddScoped<IFormsService, FormService>();
+            services.AddScoped<IFormService, FormService>();
+            services.AddScoped<IMetadataSetService, MetadataSetService>();
 
             // Solr services
             services.AddSolrNet<SolrItemModel>($"http://localhost:8983/solr/Test");

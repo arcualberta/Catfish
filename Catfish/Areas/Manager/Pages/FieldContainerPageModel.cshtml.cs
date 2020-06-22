@@ -10,6 +10,7 @@ namespace Catfish.Areas.Manager.Pages
 {
     public class FieldContainerPageModel : PageModel
     {
+        public string ApiRoot { get; set; }
         public string ModelLabel { get; set; }
         public FieldContainer Model { get; set; }
     }

@@ -2,36 +2,38 @@
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<div id="edit-page">
-    <div class="top">
-        <div class="container-fluid top">
-            <div class="left-nav-container">
-                <div class="top-nav ce">
-                    @foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.CollapseExpandList)
-                    {
-                        <partial name="@action.ActionView" />
-                    }
+    <div id="edit-page">
+        <div class="top">
+            <div class="container-fluid top">
+                <div class="left-nav-container">
+                    <div class="top-nav ce">
+                        @foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.CollapseExpandList)
+                        {
+                            <partial name="@action.ActionView" />
+                        }
+                    </div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">@Localizer.Menu["Templates"]</li>
+                            <li class="breadcrumb-item">@Localizer.Menu[Model.ModelLabel]</li>
+                            <li class="breadcrumb-item">@Localizer.Menu["Edit"]</li>
+                            <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu[Model.Model.Id.ToString()]</li>
+                        </ol>
+                    </nav>
                 </div>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">@Localizer.Menu["Templates"]</li>
-                        <li class="breadcrumb-item">@Localizer.Menu[Model.ModelLabel]</li>
-                        <li class="breadcrumb-item">@Localizer.Menu["Edit"]</li>
-                        <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu[Model.Model.Id.ToString()]</li>
-                    </ol>
-                </nav>
-            </div>
 
-            <div class="container-fluid collection-button-holder">
-                <div class="top-nav">
-                    @foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.FormList)
-                    {
-                        <partial name="@action.ActionView" />
-                    }
+                <div class="container-fluid collection-button-holder">
+                    <div class="top-nav">
+                        @foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.FormList)
+                        {
+                            <partial name="@action.ActionView" />
+                        }
+                    </div>
                 </div>
             </div>
         </div>
+
+        @{ var url = Model.ApiRoot + Model.Model.Id.ToString();}
+        <a href="@url" target="_blank">See JSON Object</a>
+
     </div>
-
-
-</div>

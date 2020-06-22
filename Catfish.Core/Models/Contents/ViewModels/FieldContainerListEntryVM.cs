@@ -10,6 +10,6 @@ namespace Catfish.Core.Models.Contents.ViewModels
         public List<FieldContainerListEntry> Entries { get; set; } = new List<FieldContainerListEntry>();
 
         public int OffSet { get; set; }
-        public int Max { get; set; }
+        public int? Max { get; set; }
     }
 }

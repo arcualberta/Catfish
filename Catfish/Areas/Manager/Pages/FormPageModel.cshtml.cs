@@ -12,6 +12,7 @@ namespace Catfish.Areas.Manager.Pages
         public FormPageModel(AppDbContext db)
         {
             _db = db;
+            ApiRoot = "/manager/api/forms/";
             ModelLabel = "Forms";
         }
 

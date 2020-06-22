@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace Catfish.Areas.Manager.Pages
 {
-    public class MetadataSetPageMode : FieldContainerPageModel
+    public class MetadataSetPageModel : FieldContainerPageModel
     {
         private readonly AppDbContext _db;
-        public MetadataSetPageMode(AppDbContext db)
+        public MetadataSetPageModel(AppDbContext db)
         {
             _db = db;
+            ApiRoot = "/manager/api/metadatasets/";
             ModelLabel = "Metadata Sets";
         }
 
