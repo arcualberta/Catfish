@@ -7,6 +7,7 @@ using Catfish.Core.Models.Contents.ViewModels;
 using Catfish.Core.Services.FormBuilder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -32,7 +33,8 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpGet("{id}")]
         public Form Get(Guid id)
         {
-            return _service.Get(id) as Form;
+            Form data = _service.Get(id) as Form;
+            return data;
         }
 
     }

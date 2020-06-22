@@ -19,7 +19,9 @@ namespace Catfish.Core.Services.FormBuilder
 
         public FieldContainer Get(Guid id)
         {
-            return Db.MetadataSets.Where(x => x.Id == id).FirstOrDefault();
+            FieldContainer container = Db.MetadataSets.Where(x => x.Id == id).FirstOrDefault();
+            container.Initialize(XmlModel.eGuidOption.Ignore);
+            return container;
         }
 
         public FieldContainerListVM Get(int offset = 0, int? max = null)

@@ -33,8 +33,7 @@ namespace Catfish.Areas.Manager.Controllers
         [HttpGet("{id}")]
         public MetadataSet Get(Guid id)
         {
-            MetadataSet ms = _service.Get(id) as MetadataSet;
-            return ms;
+            return _service.Get(id) as MetadataSet;
         }
 
     }

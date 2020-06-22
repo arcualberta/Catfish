@@ -23,6 +23,8 @@ using SolrNet;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Catfish.Core.Services.FormBuilder;
+using System.Xml;
+using Newtonsoft.Json.Serialization;
 
 namespace Catfish
 {
@@ -64,7 +66,6 @@ namespace Catfish
             //-- add MVC service
             services.AddMvc();//.AddXmlSerializerFormatters(); // to user MVC model
 
-          
             // Service setup for Piranha CMS
             services.AddPiranha(options =>
             {
@@ -84,25 +85,28 @@ namespace Catfish
             services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("catfish")));
 
-            services.AddControllersWithViews();
             services.AddRazorPages()
                 .AddPiranhaManagerOptions();
 
-
-            
 
             // Add CatfishDbContext to the service collection. This will inject the database
             // configuration options and the application "Configuration" option to CatfishDbContext
             // instance through dependency injection.
             services.AddDbContext<Catfish.Core.Models.AppDbContext>();
 
-           //Feb 12 - 2020 : It's recommended to use AddDbContextPool() over AddDbContext() on .net Core > 2.2
-           // it's better from the performance stand point
-          //  services.AddDbContextPool<Catfish.Core.Models.AppDbContext>(options =>
-           //                 options.UseSqlServer(Configuration.GetConnectionString("catfish")));
+            //Feb 12 - 2020 : It's recommended to use AddDbContextPool() over AddDbContext() on .net Core > 2.2
+            // it's better from the performance stand point
+            //  services.AddDbContextPool<Catfish.Core.Models.AppDbContext>(options =>
+            //                 options.UseSqlServer(Configuration.GetConnectionString("catfish")));
 
             //MR: Feb 7 2020 -- from piranha core MVCWeb example
             services.AddControllersWithViews();
+            
+            ////services.AddControllersWithViews()
+            ////    .AddNewtonsoftJson(options =>
+            ////    {
+            ////        options.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
+            ////    });
 
             services.AddRazorPages()
                 .AddPiranhaManagerOptions();
