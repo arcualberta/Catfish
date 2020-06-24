@@ -22,5 +22,8 @@ namespace Catfish.Models.SiteTypes
 
         [Field(Title = "Javascript")]
         public TextField Javascript { get; set; }
+
+        [Field(Title = "Css")]
+        public TextField Css { get; set; }
     }
 }
