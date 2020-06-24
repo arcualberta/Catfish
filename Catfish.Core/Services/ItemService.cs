@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace Catfish.Core.Services
 {
@@ -91,6 +93,16 @@ namespace Catfish.Core.Services
             ret.CollectionTypes.AddRange(collectionTemplates);
 
             return ret;
+        }
+
+        
+        public void UpdateItemlDataModel(Item model)
+        {
+            Item itemData = Db.Items.Where(i => i.Id == model.Id).FirstOrDefault();
+            itemData.Content = model.Content;
+            itemData.Created = model.Created;
+            itemData.Updated = DateTime.Now;
+            itemData.PrimaryCollectionId = model.PrimaryCollectionId;
         }
     }
 }

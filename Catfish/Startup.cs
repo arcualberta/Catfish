@@ -17,6 +17,9 @@ using Piranha.Data.EF.SQLServer;
 using Catfish.Core.Services;
 using Catfish.Helper;
 using System;
+using Catfish.Solr;
+using Catfish.Solr.Models;
+using SolrNet;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 
@@ -127,6 +130,10 @@ namespace Catfish
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
             services.AddScoped<IEmail, EmailService>();
+            // Solr services
+            services.AddSolrNet<SolrItemModel>($"http://localhost:8983/solr/Test");
+            services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -268,7 +275,11 @@ namespace Catfish
         private static void RegisterCustomBlocks()
         {
             //Register custom Block
+            App.Blocks.Register<EmbedBlock>();
+            App.Blocks.Register<CalendarBlock>();
             App.Blocks.Register<EmbedBlock>();  
+
+
             App.Blocks.Register<JavascriptBlock>();
             App.Blocks.Register<CssBlock>();
             App.Blocks.Register<CalendarBlock>();

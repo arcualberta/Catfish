@@ -47,6 +47,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj" />
+    <ProjectReference Include="..\Catfish.Solr\Catfish.Solr.csproj" />
   </ItemGroup>
 
   <ItemGroup>

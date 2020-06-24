@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.ViewModels;
 using Catfish.Core.Services;
-using Microsoft.AspNetCore.Http;
+using Catfish.Solr;
+using Catfish.Solr.Models;
 using Microsoft.AspNetCore.Mvc;
+using Piranha.Manager.Models;
+using AsyncResult = Piranha.Manager.Models.AsyncResult;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -15,6 +15,7 @@ namespace Catfish.Areas.Manager.Controllers
     public class ItemsController : ControllerBase
     {
         private ItemService _srv;
+        private ISolrIndexService<SolrItemModel> solrIndexService;
         public ItemsController(ItemService srv)
         {
             _srv = srv;
@@ -36,9 +37,41 @@ namespace Catfish.Areas.Manager.Controllers
 
         // POST: api/Items
         [HttpPost]
-        public void Post([FromBody] Item value)
+        public AsyncResult Save(Item model)
         {
+            try
+            {
+                _srv.UpdateItemlDataModel(model);
+                solrIndexService.AddUpdate(new SolrItemModel(model));
+            }
+            catch
+            {
+                return new AsyncResult
+                {
+                    Status = new StatusMessage
+                    {
+                        Type = StatusMessage.Error,
+                        Body = "An error occurred while saving"
+                    }
+                };
+            }
+            return new AsyncResult
+            {
+                Status = new StatusMessage
+                {
+                    Type = StatusMessage.Success,
+                    Body = "The Item was successfully saved"
+                }
+            };
         }
+
+        //public async Task<IActionResult> EditSave(Item model)
+        //{
+
+        //    //await _srv.UpdateItemlDataModel(model);
+
+        //    return Ok(model);
+        //}
 
         // PUT: api/Items/5
         [HttpPut("{id}")]

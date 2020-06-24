@@ -21,8 +21,8 @@ namespace Catfish.Models
         [Region(ListTitle = "Title")]
         public TwitterRegion TwitterRegion { get; set; }
 
-        [Region(ListTitle ="Title")]
-        public StyleRegion Styles { get; set; }
+        //[Region(ListTitle ="Title")]
+        //public StyleRegion Styles { get; set; }
 
         public MediaPage()
         {

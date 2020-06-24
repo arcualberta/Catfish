@@ -36,6 +36,10 @@ namespace Catfish.Areas.Manager.Actions
 
             };
 
+        /// <summary>
+        /// Gets the actions available for collapse all/expand all in ItemList view. 
+        /// It is apart from the actions because they are not located in the same section.
+        /// </summary>
         public static ActionList<ToolbarAction> CollapseExpandList { get; private set; } = new ActionList<ToolbarAction>
         {
                 new ToolbarAction
@@ -43,6 +47,21 @@ namespace Catfish.Areas.Manager.Actions
                     InternalId = "CollapseExpand",
                     ActionView = "Partial/Actions/_ItemListCollapseExpand"
 
+                }
+
+        };
+
+
+        /// <summary>
+        /// Gets the actions available for collapse all/expand all in ItemList view. 
+        /// It is apart from the actions because they are not located in the same section.
+        /// </summary>
+        public static ActionList<ToolbarAction> SavePreviewEditItem { get; private set; } = new ActionList<ToolbarAction>
+        {
+                new ToolbarAction
+                {
+                    InternalId = "SavePreviewEditItem",
+                    ActionView = "Partial/Actions/_SavePreviewEditItem"
                 }
 
         };

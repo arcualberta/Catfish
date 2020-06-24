@@ -26,7 +26,14 @@ if (document.getElementById("itemlist-page")) {
                 currentDropdownOptions: [],
                 lastDropdownAction: null,
                 dropdowns: {},
-                collapseAll: false
+                /*
+                 * collapseAll is tri-state 
+                 * 0 = false, all are open
+                 * 1 = mixed, mixed open/closed
+                 * 2 = true, all are closed
+                */
+                collapseAll: 2,
+                mixedStateLeans: true
             }
         },
         methods: {
@@ -179,13 +186,7 @@ if (document.getElementById("itemlist-page")) {
 
             /**
              *  Assesses whether the expand/collapse all button should be either showing
-             *  as expand all or collapse all.
-             *  
-             * Will store either expand or collapse all collections, depending on:
-             * - Majority open? Will collapse them all
-             * - Majority closed? Will expand them all
-             * - Tie? Do the opposite of the most recent action
-             * - Default is to close all if others cannot make a clear action
+             *  as expand all, mixed state, or collapse all.
              **/
             assessExpandOrCollapseAll() {
                 let collapseCount = 0;
@@ -195,30 +196,39 @@ if (document.getElementById("itemlist-page")) {
                     }
                 }
 
+                if (collapseCount === Object.values(this.dropdowns).length) {
+                    this.collapseAll = 2;
+                } else if (collapseCount === 0) {
+                    this.collapseAll = 0;
+                } else {
+                    this.collapseAll = 1;
+                }
+
+                //this part helps to figure out whether mixed state will open/close all
                 let expandedCount = Object.values(this.dropdowns).length - collapseCount;
 
                 if (collapseCount < expandedCount) {
                     //collapse all
-                    this.collapseAll = true;
+                    this.mixedStateLeans = true;
                 } else if (collapseCount > expandedCount) {
                     //expand all
-                    this.collapseAll = false;
+                    this.mixedStateLeans = false;
                 } else {
                     //equal, check most recent action
                     switch (this.lastDropdownAction) {
                         case true:
                             //expand all
                             console.log('expand');
-                            this.collapseAll = false;
+                            this.mixedStateLeans = false;
                             break;
                         case false:
                             //collapse all
                             console.log('collapse');
-                            this.collapseAll = true;
+                            this.mixedStateLeans = true;
                             break;
                         default:
                             //collapse all
-                            this.collapseAll = true;
+                            this.mixedStateLeans = true;
                             break;
                     }
                 }
@@ -228,16 +238,23 @@ if (document.getElementById("itemlist-page")) {
              * Expands or collapses all the collections
              **/
             collapseAllCollections() {
-                for (let key of Object.keys(this.dropdowns) ) {
-                    this.dropdowns[key].isCollapsed = this.collapseAll;
+                for (let key of Object.keys(this.dropdowns)) {
+                    this.dropdowns[key].isCollapsed = this.mixedStateLeans;
                 }
                 //toggle makes all dropdowns change to the opposite state, maybe useful later
-                if (this.collapseAll) {
+                if (!this.mixedStateLeans) {
                     $('.collapse').collapse("show");
                 } else {
                     $('.collapse').collapse("hide");
                 }
-                this.collapseAll = !this.collapseAll;
+
+                if (!this.mixedStateLeans) {
+                    this.collapseAll = 2;
+                } else {
+                    this.collapseAll = 0;
+				}
+                
+                this.mixedStateLeans = !this.mixedStateLeans;
             },
 
             /**
