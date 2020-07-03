@@ -170,3 +170,4 @@ Plugins
 !/Catfish/Areas/Manager/Views/Build
 /Catfish/Scripts/dist/
 /Catfish/catfish-service.json
+/.vs/Catfish/config
