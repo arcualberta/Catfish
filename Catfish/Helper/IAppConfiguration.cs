@@ -17,6 +17,9 @@ namespace Catfish.Helper
         string GetSmtpEmail();
       
         string GetRecipientEmail();
+        string GetGoogleClientSecret();
+
+        string GetGoogleServiceAccountFileName();
     }
 
     public class ReadAppConfiguration : ICatfishAppConfiguration
@@ -40,6 +43,10 @@ namespace Catfish.Helper
         public string GetGoogleClientId()
         {
             return _configuration["GoogleExternalLogin:ClientId"];
+        }
+        public string GetGoogleClientSecret()
+        {
+            return _configuration["GoogleExternalLogin:ClientSecret"];
         }
 
         public bool IsAllowGoogleLogin()
@@ -80,6 +87,11 @@ namespace Catfish.Helper
         public string GetRecipientEmail()
         {
              return _configuration["EmailServer:Recipient"];
+        }
+
+        public string GetGoogleServiceAccountFileName()
+        {
+            return _configuration["GoogleCalendar:ServiceAccountFileName"];
         }
     }
 }

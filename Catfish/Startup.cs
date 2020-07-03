@@ -30,7 +30,7 @@ namespace Catfish
         /// <summary>
         /// The application config.
         /// </summary>
-        public IConfiguration Configuration { get; set; }
+        public static IConfiguration Configuration { get; set; }
 
         /// <summary>
         /// Default constructor.
@@ -67,7 +67,7 @@ namespace Catfish
             // Service setup for Piranha CMS
             services.AddPiranha(options =>
             {
-                
+                options.AddRazorRuntimeCompilation = true;
                 options.UseFileStorage();
                 options.UseImageSharp();
                 options.UseManager();
@@ -103,8 +103,8 @@ namespace Catfish
             //MR: Feb 7 2020 -- from piranha core MVCWeb example
             services.AddControllersWithViews();
 
-            services.AddRazorPages()
-                .AddPiranhaManagerOptions();
+            //services.AddRazorPages()
+            //    .AddPiranhaManagerOptions();
 
             services.AddPiranhaApplication();
             services.AddPiranhaFileStorage();
@@ -202,7 +202,6 @@ namespace Catfish
                 .AddType(typeof(Models.BlogArchive))
                 .AddType(typeof(Models.StandardPage))
                  .AddType(typeof(Models.StartPage))
-                 .AddType(typeof(Models.MainPage))
                  .AddType(typeof(Models.MediaPage))
                 .Build()
                 .DeleteOrphans();
