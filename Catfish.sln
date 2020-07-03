@@ -1,14 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.15
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catfish", "Catfish\Catfish.csproj", "{3EE219A0-08C9-4DCE-9CB8-7BF16007F6F6}"
-	ProjectSection(ProjectDependencies) = postProject
-		{5D2C027E-76F8-4CF0-8C58-CFD5219E3D18} = {5D2C027E-76F8-4CF0-8C58-CFD5219E3D18}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catfish.Tests", "Catfish.Tests\Catfish.Tests.csproj", "{74E91BB5-3E7F-4B26-B78F-34EBC43E5BEB}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5D2C027E-76F8-4CF0-8C58-CFD5219E3D18} = {5D2C027E-76F8-4CF0-8C58-CFD5219E3D18}
 	EndProjectSection
@@ -29,10 +24,6 @@ Global
 		{3EE219A0-08C9-4DCE-9CB8-7BF16007F6F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EE219A0-08C9-4DCE-9CB8-7BF16007F6F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EE219A0-08C9-4DCE-9CB8-7BF16007F6F6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{74E91BB5-3E7F-4B26-B78F-34EBC43E5BEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{74E91BB5-3E7F-4B26-B78F-34EBC43E5BEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{74E91BB5-3E7F-4B26-B78F-34EBC43E5BEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{74E91BB5-3E7F-4B26-B78F-34EBC43E5BEB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5D2C027E-76F8-4CF0-8C58-CFD5219E3D18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5D2C027E-76F8-4CF0-8C58-CFD5219E3D18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D2C027E-76F8-4CF0-8C58-CFD5219E3D18}.Release|Any CPU.ActiveCfg = Release|Any CPU
