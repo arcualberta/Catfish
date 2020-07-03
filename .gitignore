@@ -171,3 +171,5 @@ Plugins
 /Catfish/Scripts/dist/
 /Catfish/catfish-service.json
 /.vs/Catfish/config
+/Catfish/Catfish.Local.GoogleCredentials.json
+/Catfish/catfish-GoogleCalendarServiceAccount.json
