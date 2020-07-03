@@ -553,7 +553,9 @@
     <Content Include="Areas\Manager\Views\Extensions\VimeoPanel.cshtml" />
     <Content Include="Areas\Manager\Views\Extensions\GridPanel.cshtml" />
     <Content Include="catfish-service.json" />
-    <Content Include="catfish-GoogleCalendarServiceAccount.json" />
+    <Content Include="catfish-GoogleCalendarServiceAccount.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="RazorGenerator.LICENSE.md" />
     <Content Include="Scripts\es6\components\actionButtons.js" />
