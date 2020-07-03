@@ -95,13 +95,31 @@ namespace Catfish.Models.Regions
 
             if (ApiKey != null)
             {
+                
+                string[] Scopes = { CalendarService.Scope.CalendarReadonly };
+                string ApplicationName = "Google Calendar Panel";
+                string credentialFilePath = System.Configuration.ConfigurationManager.AppSettings["GoogleCredentialFilePath"];
+                string jsonFile = Path.Combine(credentialFilePath, System.Configuration.ConfigurationManager.AppSettings["GoogleCredentialFile"]);
+               
+                ServiceAccountCredential credential;
 
+                    using (var stream =
+                        new FileStream(jsonFile, FileMode.Open, FileAccess.Read))
+                    {
+                        var confg = Google.Apis.Json.NewtonsoftJsonSerializer.Instance.Deserialize<JsonCredentialParameters>(stream);
+                        credential = new ServiceAccountCredential(
+                           new ServiceAccountCredential.Initializer(confg.ClientEmail)
+                           {
+                               Scopes = Scopes
+                           }.FromPrivateKey(confg.PrivateKey));
+                    }
 
-                var service = new CalendarService(new BaseClientService.Initializer()
-                {
-                    ApiKey = ApiKey
-                });
-
+                    var service = new CalendarService(new BaseClientService.Initializer()
+                    {
+                        HttpClientInitializer = credential,
+                        ApplicationName = ApplicationName,
+                    });
+                 
                 EventsResource.ListRequest request = service.Events.List(CalendarId);
                
                 request.TimeMin = DateTime.Now.AddDays(DayRangePast);
