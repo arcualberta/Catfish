@@ -120,10 +120,12 @@
 	<workflow>
 		<action name="StartSubmission">
 			<params>
-				<document ref-id="71d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application -->
-				<on-save new-status = "Saved"></on-save>
-				<on-submit new-status = "Submitted"></on-submit>
+				<document ref-id="88d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application template ID-->
 			</params>
+			<post-actions>
+				<action name="Save"   function="Save"  new-state="Saved"></action>
+				<action name="Submit" function="Save"  new-state="Submitted"></action>
+			</post-actions>
 			<authorizations>
 				<role>DeptAdmin</role>
 			</authorizations>
@@ -131,10 +133,12 @@
 
 		<action name="EditSubmission">
 			<params>
-				<document ref-id="71d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application -->
-				<on-save new-status = "Saved"></on-save>
-				<on-submit new-status = "Submitted"></on-submit>
+				<!-- main application document ID to be passed programatically -->
 			</params>
+			<post-actions>
+				<action name="Save"   function="Save"  new-state="Saved"></action>
+				<action name="Submit"  function="Save" new-state="Submitted"></action>
+			</post-actions>
 			<valid-states>
 				<state>Saved</state>
 			</valid-states>
@@ -143,11 +147,13 @@
 			</authorizations>
 		</action>
 		
-		<action name="EditSubmission">
+		<action name="DeleteSubmission">
 			<params>
-				<document ref-id="71d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application -->
-				<on-delete new-status = "Deleted"></on-delete>
+				<!-- main application document ID to be passed programatically -->
 			</params>
+			<post-actions>
+				<action name="Delete"   function="Save"  new-state="Deleted"></action>
+			</post-actions>
 			<valid-states>
 				<state>Saved</state>
 			</valid-states>
@@ -156,11 +162,13 @@
 			</authorizations>
 		</action>
 		
-		<action name="EditSubmission">
+		<action name="PurgeSubmission">
 			<params>
-				<document ref-id="71d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application -->
-				<on-purge new-status = "Purged"></on-purge>
+				<!-- main application document ID to be passed programatically -->
 			</params>
+			<post-actions>
+				<action name="Purge"   function="Purge"></action>
+			</post-actions>
 			<valid-states>
 				<state>Deleted</state>
 			</valid-states>
@@ -169,14 +177,14 @@
 			</authorizations>
 		</action>
 		
-		<action name="EditSubmission">
+		<action name="EditSubmission"> <!-- Editing a revision by the Dept Admin -->
 			<params>
-				<document ref-id="71d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application -->
-				<on-save new-status = "SavedRevision"></on-save>
-				<on-submit new-status = "submittedRevision">
-					
-				</on-submit>
+				<!-- main application document ID to be passed programatically -->
 			</params>
+			<post-actions>
+				<action name="Save"   function="Save"  new-state="SavedRevision"></action>
+				<action name="Submit"  function="Save" new-state="submittedRevision"></action>
+			</post-actions>
 			<valid-states>
 				<state>SentForRevision</state>
 				<state>SavedRevision</state>
@@ -186,13 +194,18 @@
 			</authorizations>
 		</action>
 		
-		<action name="ChangeState">
+		<action name="ChangeState"> <!-- Sending a document back to the owner for revisions -->
 			<params>
-				<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
-				<on-change new-status = "SentForRevision">
-				
-				</on-change>
+				<!-- main application document ID to be passed programatically -->
+				<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form Template -->
 			</params>
+			<post-actions>
+				<action name="Send for Revision"   function="Comment"  new-state="SentForRevision">
+					<trigger order="0" function="SendEmail">
+						<to>Owner</to>
+					</trigger>				
+				</action>
+			</post-actions>
 			<valid-states>
 				<state>Submitted</state>
 				<state>ReviewComplete</state>
@@ -205,7 +218,6 @@
 		<action name="ChangeState">
 			<params>
 				<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
-				<on-change new-status = "SentForReview"></on-change>
 			</params>
 			<valid-states>
 				<state>Submitted</state>
@@ -261,7 +273,7 @@
 			<params>
 				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template application -->
 				<on-save new-status = "Saved"></on-save>
-				<on-publish new-status = "Publish"></on-submit>
+				<on-publish new-status = "Publish"></on-publish>
 			</params>
 			<authorizations>
 				<role>CentralAdmin</role>
@@ -272,7 +284,7 @@
 			<params>
 				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template application -->
 				<on-save new-status = "Saved"></on-save>
-				<on-publish new-status = "Publish"></on-submit>
+				<on-publish new-status = "Publish"></on-publish>
 			</params>
 			<valid-states>
 				<state>Saved</state>
@@ -286,7 +298,7 @@
 			<params>
 				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template application -->
 				<on-save new-status = "Saved"></on-save>
-				<on-publish new-status = "Publish"></on-submit>
+				<on-publish new-status = "Publish"></on-publish>
 			</params>
 			<valid-states>
 				<state>Saved</state>
