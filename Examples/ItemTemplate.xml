@@ -79,6 +79,24 @@
 				</field>
 			</fields>
 		</data-item>
+		<data-item id="56d30fb4-9f49-4055-abee-d321735203c8"  type="Catfish.Core.Models.Contents.Form, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+			<name model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+			<description model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+			<fields>
+				<field model-type="Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+               id="0e176ef5-a235-470f-bf95-6c8aa99921b2">
+					<name model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+						<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                  xml:lang="en">Course Name</text>
+					</name>
+					<description model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+						<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                  xml:lang="en">Name of the cource.</text>
+					</description>
+					<values />
+				</field>
+			</fields>
+		</data-item>
 		<data-item id="67d30fb4-9f49-4055-abee-d321735203c8"  type="Catfish.Core.Models.Contents.Form, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
 			<name model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
 			<description model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
@@ -104,9 +122,7 @@
 			<params>
 				<document ref-id="71d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application -->
 				<on-save new-status = "Saved"></on-save>
-				<on-submit new-status = "Submitted">
-					
-				</on-submit>
+				<on-submit new-status = "Submitted"></on-submit>
 			</params>
 			<authorizations>
 				<role>DeptAdmin</role>
@@ -117,9 +133,7 @@
 			<params>
 				<document ref-id="71d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application -->
 				<on-save new-status = "Saved"></on-save>
-				<on-submit new-status = "Submitted">
-					
-				</on-submit>
+				<on-submit new-status = "Submitted"></on-submit>
 			</params>
 			<valid-states>
 				<state>Saved</state>
@@ -132,8 +146,34 @@
 		<action name="EditSubmission">
 			<params>
 				<document ref-id="71d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application -->
+				<on-delete new-status = "Deleted"></on-delete>
+			</params>
+			<valid-states>
+				<state>Saved</state>
+			</valid-states>
+			<authorizations>
+				<role>Owner</role>
+			</authorizations>
+		</action>
+		
+		<action name="EditSubmission">
+			<params>
+				<document ref-id="71d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application -->
+				<on-purge new-status = "Purged"></on-purge>
+			</params>
+			<valid-states>
+				<state>Deleted</state>
+			</valid-states>
+			<authorizations>
+				<role>Owner</role>
+			</authorizations>
+		</action>
+		
+		<action name="EditSubmission">
+			<params>
+				<document ref-id="71d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application -->
 				<on-save new-status = "SavedRevision"></on-save>
-				<on-submit new-status = "Resubmitted">
+				<on-submit new-status = "submittedRevision">
 					
 				</on-submit>
 			</params>
@@ -165,9 +205,7 @@
 		<action name="ChangeState">
 			<params>
 				<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
-				<on-change new-status = "SentForReview">
-				
-				</on-change>
+				<on-change new-status = "SentForReview"></on-change>
 			</params>
 			<valid-states>
 				<state>Submitted</state>
@@ -196,9 +234,7 @@
 		<action name="ChangeState">
 			<params>
 				<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
-				<on-change new-status = "Rejected">
-				
-				</on-change>
+				<on-change new-status = "Rejected"></on-change>
 			</params>
 			<valid-states>
 				<state>ReviewComplete</state>
@@ -208,6 +244,95 @@
 			</authorizations>
 		</action>
 		
+		<action name="StartReview">
+			<params>
+				<document ref-id="34d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Review form -->
+				<on-submit new-status = "ReviewSubmitted"></on-submit>
+			</params>
+			<valid-states>
+				<state>InReview</state>
+			</valid-states>
+			<authorizations>
+				<role>Reviewer</role>
+			</authorizations>
+		</action>
+		
+		<action name="StartTemplate">
+			<params>
+				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template application -->
+				<on-save new-status = "Saved"></on-save>
+				<on-publish new-status = "Publish"></on-submit>
+			</params>
+			<authorizations>
+				<role>CentralAdmin</role>
+			</authorizations>
+		</action>
+		
+		<action name="EditTemplate">
+			<params>
+				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template application -->
+				<on-save new-status = "Saved"></on-save>
+				<on-publish new-status = "Publish"></on-submit>
+			</params>
+			<valid-states>
+				<state>Saved</state>
+			</valid-states>
+			<authorizations>
+				<role>Owner</role>
+			</authorizations>
+		</action>
+		
+		<action name="EditTemplate">
+			<params>
+				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template application -->
+				<on-save new-status = "Saved"></on-save>
+				<on-publish new-status = "Publish"></on-submit>
+			</params>
+			<valid-states>
+				<state>Saved</state>
+			</valid-states>
+			<authorizations>
+				<role>Owner</role>
+			</authorizations>
+		</action>
+		
+		<action name="EditTemplate">
+			<params>
+				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template application -->
+				<on-delete new-status = "Deleted"></on-delete>
+			</params>
+			<valid-states>
+				<state>Saved</state>
+			</valid-states>
+			<authorizations>
+				<role>Owner</role>
+			</authorizations>
+		</action>
+		<action name="EditTemplate">
+			<params>
+				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template application -->
+				<on-purge new-status = "Purged"></on-purge>
+			</params>
+			<valid-states>
+				<state>Deleted</state>
+			</valid-states>
+			<authorizations>
+				<role>Owner</role>
+			</authorizations>
+		</action>
+		
+		<action name="ManageTemplate">
+			<params>
+				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template application -->
+				<on-unpublish new-status = "Unpublish"></on-unpublish>
+			</params>
+			<valid-states>
+				<state>Publish</state>
+			</valid-states>
+			<authorizations>
+				<role>CentralAdmin</role>
+			</authorizations>
+		</action>
 	</workflow>
 	
 
