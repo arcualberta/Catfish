@@ -5,17 +5,20 @@ using Piranha.Models;
 
 namespace Catfish.Models
 {
+    /// <summary>
+    /// Basic blog page.
+    /// </summary>
     [PageType(Title = "Blog archive", UseBlocks = false, IsArchive = true)]
-    public class BlogArchive  : Page<BlogArchive>
+    public class BlogArchive : Page<BlogArchive>
     {
         /// <summary>
-        /// Gets/sets the archive hero.
+        /// Gets/sets the page header.
         /// </summary>
-        [Region(Display = RegionDisplayMode.Setting)]
-        public Hero Hero { get; set; }
+        [Region]
+        public Regions.Hero Hero { get; set; }
 
         /// <summary>
-        /// Gets/sets the post archive.
+        /// View model property for storing the current archive items.
         /// </summary>
         public PostArchive<DynamicPost> Archive { get; set; }
     }
