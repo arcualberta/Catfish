@@ -118,7 +118,7 @@
 		
 	</data-container>
 	<workflow>
-		<action name="StartSubmission">
+		<action name="StartSubmission"> <!-- Starting a new submission by DeptAdmin -->
 			<params>
 				<document ref-id="88d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application template ID-->
 			</params>
@@ -131,7 +131,7 @@
 			</authorizations>
 		</action>
 
-		<action name="EditSubmission">
+		<action name="EditSubmission"> <!-- Editing a submission who started a new application -->
 			<params>
 				<!-- main application document ID to be passed programatically -->
 			</params>
@@ -163,7 +163,7 @@
 			</authorizations>
 		</action>-->
 		
-		<action name="PurgeSubmission">
+		<action name="PurgeSubmission"><!-- Permanently delete a submission who started a new application -->
 			<params>
 				<!-- main application document ID to be passed programatically -->
 			</params>
@@ -216,7 +216,7 @@
 			</authorizations>
 		</action>
 		
-		<action name="ChangeState">
+		<action name="ChangeState"><!-- Sending a document to the reviewer for review -->
 			<params>
 				<!-- main application document ID to be passed programatically -->
 				<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
@@ -237,7 +237,7 @@
 			</authorizations>
 		</action>
 
-		<action name="ChangeState">
+		<action name="ChangeState"><!-- Approving a document by CentralAdmin-->
 			<params>
 				<!-- main application document ID to be passed programatically -->
 			</params>
@@ -256,7 +256,7 @@
 			</authorizations>
 		</action>
 
-		<action name="ChangeState">
+		<action name="ChangeState"><!-- Rejecting a document by CentralAdmin-->
 			<params>
 				<!-- main application document ID to be passed programatically -->
 			</params>
@@ -275,7 +275,7 @@
 			</authorizations>
 		</action>
 		
-		<action name="StartReview">
+		<action name="StartReview"><!--review document by reviewer -->
 			<params>
 				<!-- main application document ID to be passed programatically -->
 				<document ref-id="34d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Review form -->
@@ -295,7 +295,7 @@
 			</authorizations>
 		</action>
 		
-		<action name="StartTemplate">
+		<action name="StartTemplate"><!--create a new template-->
 			<params>
 				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template Form ID -->
 			</params>
@@ -309,7 +309,7 @@
 			</authorizations>
 		</action>
 		
-		<action name="EditTemplate">
+		<action name="EditTemplate"><!--Edit template-->
 			<params>
 				<!-- template application number need to pass programatically -->
 			</params>
@@ -326,7 +326,7 @@
 			</authorizations>
 		</action>
 		
-		<action name="PurgeTemplate">
+		<action name="PurgeTemplate"><!--Permanently delete a template-->
 			<params>
 				<!-- template application number need to pass programatically -->
 			</params>
@@ -341,7 +341,7 @@
 			</authorizations>
 		</action>
 		
-		<action name="ManageTemplate">
+		<action name="ManageTemplate"><!--publish/unpublish template-->
 			<params>
 				<!-- template application number need to pass programatically -->
 			<post-actions>
