@@ -1,4 +1,4 @@
-<entity id="696a1fc2-929a-4d82-898b-0eeac587cf30"
++<entity id="696a1fc2-929a-4d82-898b-0eeac587cf30"
         created="2020-04-27T17:54:01.3918235-06:00"
         model-type="Catfish.Core.Models.Item, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
 	<name model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
@@ -138,20 +138,6 @@
 			<post-actions>
 				<action name="Save"   function="Save"  new-state="Saved"></action>
 				<action name="Submit"  function="Save" new-state="Submitted"></action>
-			</post-actions>
-			<valid-states>
-				<state>Saved</state>
-			</valid-states>
-			<authorizations>
-				<role>Owner</role>
-			</authorizations>
-		</action>
-		
-		<action name="DeleteSubmission">
-			<params>
-				<!-- main application document ID to be passed programatically -->
-			</params>
-			<post-actions>
 				<action name="Delete"   function="Save"  new-state="Deleted"></action>
 			</post-actions>
 			<valid-states>
@@ -161,6 +147,21 @@
 				<role>Owner</role>
 			</authorizations>
 		</action>
+		
+		<!--<action name="DeleteSubmission">
+			<params> -->
+				<!-- main application document ID to be passed programatically -->
+			<!--</params>
+			<post-actions>
+				<action name="Delete"   function="Save"  new-state="Deleted"></action>
+			</post-actions>
+			<valid-states>
+				<state>Saved</state>
+			</valid-states>
+			<authorizations>
+				<role>Owner</role>
+			</authorizations>
+		</action>-->
 		
 		<action name="PurgeSubmission">
 			<params>
@@ -217,8 +218,16 @@
 		
 		<action name="ChangeState">
 			<params>
+				<!-- main application document ID to be passed programatically -->
 				<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
 			</params>
+			<post-actions>
+				<action name="Send for Review"   function="Comment"  new-state="InReview">
+					<trigger order="0" function="SendEmail">
+						<to>Reviewer</to>
+					</trigger>				
+				</action>
+			</post-actions>
 			<valid-states>
 				<state>Submitted</state>
 				<state>ReSubmitted</state>
@@ -230,11 +239,15 @@
 
 		<action name="ChangeState">
 			<params>
-				<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
-				<on-change new-status = "Approved">
-				
-				</on-change>
+				<!-- main application document ID to be passed programatically -->
 			</params>
+			<post-actions>
+				<action name="Approve"   function="Save"  new-state="Approved">
+					<trigger order="0" function="SendEmail">
+						<to>Owner</to>
+					</trigger>				
+				</action>
+			</post-actions>
 			<valid-states>
 				<state>ReviewComplete</state>
 			</valid-states>
@@ -245,9 +258,15 @@
 
 		<action name="ChangeState">
 			<params>
-				<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
-				<on-change new-status = "Rejected"></on-change>
+				<!-- main application document ID to be passed programatically -->
 			</params>
+			<post-actions>
+				<action name="Reject"   function="Save"  new-state="Rejected">
+					<trigger order="0" function="SendEmail">
+						<to>Owner</to>
+					</trigger>				
+				</action>
+			</post-actions>
 			<valid-states>
 				<state>ReviewComplete</state>
 			</valid-states>
@@ -258,9 +277,16 @@
 		
 		<action name="StartReview">
 			<params>
+				<!-- main application document ID to be passed programatically -->
 				<document ref-id="34d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Review form -->
-				<on-submit new-status = "ReviewSubmitted"></on-submit>
 			</params>
+			<post-actions>
+				<action name="ReviewSubmit"   function="Comment"  new-state="ReviewSubmitted">
+					<trigger order="0" function="SendEmail">
+						<to>CentralAdmin</to>
+					</trigger>				
+				</action>
+			</post-actions>
 			<valid-states>
 				<state>InReview</state>
 			</valid-states>
@@ -271,10 +297,13 @@
 		
 		<action name="StartTemplate">
 			<params>
-				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template application -->
-				<on-save new-status = "Saved"></on-save>
-				<on-publish new-status = "Publish"></on-publish>
+				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template Form ID -->
 			</params>
+			
+			<post-actions>
+				<action name="SaveTemplate" function="Save" new-state="Saved"></action>
+				<action name="PublishTemplate" function="Save" new-state="Publish"></action>
+			</post-actions>
 			<authorizations>
 				<role>CentralAdmin</role>
 			</authorizations>
@@ -282,10 +311,13 @@
 		
 		<action name="EditTemplate">
 			<params>
-				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template application -->
-				<on-save new-status = "Saved"></on-save>
-				<on-publish new-status = "Publish"></on-publish>
+				<!-- template application number need to pass programatically -->
 			</params>
+			<post-actions>
+				<action name="SaveTemplate" function="Save" new-state="Saved"></action>
+				<action name="PublishTemplate" function="Save" new-state="Publish"></action>
+				<action name="DeleteTemplate" function="Save" new-state="Deleted"></action>
+			</post-actions>
 			<valid-states>
 				<state>Saved</state>
 			</valid-states>
@@ -294,37 +326,13 @@
 			</authorizations>
 		</action>
 		
-		<action name="EditTemplate">
+		<action name="PurgeTemplate">
 			<params>
-				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template application -->
-				<on-save new-status = "Saved"></on-save>
-				<on-publish new-status = "Publish"></on-publish>
+				<!-- template application number need to pass programatically -->
 			</params>
-			<valid-states>
-				<state>Saved</state>
-			</valid-states>
-			<authorizations>
-				<role>Owner</role>
-			</authorizations>
-		</action>
-		
-		<action name="EditTemplate">
-			<params>
-				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template application -->
-				<on-delete new-status = "Deleted"></on-delete>
-			</params>
-			<valid-states>
-				<state>Saved</state>
-			</valid-states>
-			<authorizations>
-				<role>Owner</role>
-			</authorizations>
-		</action>
-		<action name="EditTemplate">
-			<params>
-				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template application -->
-				<on-purge new-status = "Purged"></on-purge>
-			</params>
+			<post-actions>
+				<action name="PurgeTemplate" function="Save" new-state="Purged"></action>
+			</post-actions>
 			<valid-states>
 				<state>Deleted</state>
 			</valid-states>
@@ -335,11 +343,14 @@
 		
 		<action name="ManageTemplate">
 			<params>
-				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template application -->
-				<on-unpublish new-status = "Unpublish"></on-unpublish>
-			</params>
+				<!-- template application number need to pass programatically -->
+			<post-actions>
+				<action name="Unpublish" function="Save" new-state="Unpublish"></action>
+				<action name="Publish" function="Save" new-state="Publish"></action>
+			</post-actions>
 			<valid-states>
 				<state>Publish</state>
+				<state>Unpublishublish</state>
 			</valid-states>
 			<authorizations>
 				<role>CentralAdmin</role>
