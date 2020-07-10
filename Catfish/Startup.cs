@@ -95,17 +95,12 @@ namespace Catfish
             // instance through dependency injection.
             services.AddDbContext<Catfish.Core.Models.AppDbContext>();
 
-           //Feb 12 - 2020 : It's recommended to use AddDbContextPool() over AddDbContext() on .net Core > 2.2
-           // it's better from the performance stand point
-          //  services.AddDbContextPool<Catfish.Core.Models.AppDbContext>(options =>
-           //                 options.UseSqlServer(Configuration.GetConnectionString("catfish")));
+          
 
             //MR: Feb 7 2020 -- from piranha core MVCWeb example
             services.AddControllersWithViews();
 
-            //services.AddRazorPages()
-            //    .AddPiranhaManagerOptions();
-
+          
             services.AddPiranhaApplication();
             services.AddPiranhaFileStorage();
             services.AddPiranhaImageSharp();
@@ -199,14 +194,16 @@ namespace Catfish
             //MR Feb 7 2020 -- add classic MVC routing
             // Build content types -- copied from piranha core mvcWeb example
             var pageTypeBuilder = new Piranha.AttributeBuilder.PageTypeBuilder(api)
-                .AddType(typeof(Models.BlogArchive))
+               // .AddType(typeof(Models.BlogArchive))
+                .AddType(typeof(Models.StandardArchive))
                 .AddType(typeof(Models.StandardPage))
                  .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MediaPage))
                 .Build()
                 .DeleteOrphans();
             var postTypeBuilder = new Piranha.AttributeBuilder.PostTypeBuilder(api)
-                .AddType(typeof(Models.BlogPost))
+               // .AddType(typeof(Models.BlogPost))
+                .AddType(typeof(Models.StandardPost))
                 .Build()
                 .DeleteOrphans();
             //var siteTypeBuilder = new Piranha.AttributeBuilder.SiteTypeBuilder(api)
