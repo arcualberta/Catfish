@@ -5,13 +5,16 @@ using Piranha.Models;
 
 namespace Catfish.Models
 {
+    /// <summary>
+    /// Basic post with main content in markdown.
+    /// </summary>
     [PostType(Title = "Blog post")]
-    public class BlogPost  : Post<BlogPost>
+    public class BlogPost : Post<BlogPost>
     {
         /// <summary>
-        /// Gets/sets the post hero.
+        /// Gets/sets the heading.
         /// </summary>
-        [Region(Display = RegionDisplayMode.Setting)]
-        public Hero Hero { get; set; }
+        [Region()]
+        public Regions.Hero Hero { get; set; }
     }
 }

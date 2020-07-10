@@ -175,3 +175,4 @@ Plugins
 
 .vs/
 /Catfish.UnitTests/appsettings.test.json
+/Catfish/catfish2-0-GoogleCalendarServiceAccount.json

@@ -33,7 +33,7 @@ namespace Catfish
         /// <summary>
         /// The application config.
         /// </summary>
-        public IConfiguration Configuration { get; set; }
+        public static IConfiguration Configuration { get; set; }
 
         /// <summary>
         /// Default constructor.
@@ -69,7 +69,7 @@ namespace Catfish
             // Service setup for Piranha CMS
             services.AddPiranha(options =>
             {
-                
+                options.AddRazorRuntimeCompilation = true;
                 options.UseFileStorage();
                 options.UseImageSharp();
                 options.UseManager();
@@ -108,9 +108,7 @@ namespace Catfish
             ////        options.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
             ////    });
 
-            services.AddRazorPages()
-                .AddPiranhaManagerOptions();
-
+          
             services.AddPiranhaApplication();
             services.AddPiranhaFileStorage();
             services.AddPiranhaImageSharp();
@@ -207,15 +205,16 @@ namespace Catfish
             //MR Feb 7 2020 -- add classic MVC routing
             // Build content types -- copied from piranha core mvcWeb example
             var pageTypeBuilder = new Piranha.AttributeBuilder.PageTypeBuilder(api)
-                .AddType(typeof(Models.BlogArchive))
+               // .AddType(typeof(Models.BlogArchive))
+                .AddType(typeof(Models.StandardArchive))
                 .AddType(typeof(Models.StandardPage))
                  .AddType(typeof(Models.StartPage))
-                 .AddType(typeof(Models.MainPage))
                  .AddType(typeof(Models.MediaPage))
                 .Build()
                 .DeleteOrphans();
             var postTypeBuilder = new Piranha.AttributeBuilder.PostTypeBuilder(api)
-                .AddType(typeof(Models.BlogPost))
+               // .AddType(typeof(Models.BlogPost))
+                .AddType(typeof(Models.StandardPost))
                 .Build()
                 .DeleteOrphans();
             //var siteTypeBuilder = new Piranha.AttributeBuilder.SiteTypeBuilder(api)

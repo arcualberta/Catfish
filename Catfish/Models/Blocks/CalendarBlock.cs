@@ -13,6 +13,9 @@ using System.Collections.Generic;
 using Catfish.Helper;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
+using System.Threading;
+using Google.Apis.Util.Store;
 
 namespace Catfish.Models.Blocks
 {
@@ -27,18 +30,14 @@ namespace Catfish.Models.Blocks
         public NumberField DaysRangePast { get; set; }
         public NumberField DaysRangeFuture { get; set; }
         public NumberField MaxEvents { get; set; }
-        //public CalendarBlock()
-        //{
-        //}
-        //public CalendarBlock(ICatfishAppConfiguration catfishConfig)
-        //{
-        //    _catfishConfig = catfishConfig;
-        //    ApiKey = _catfishConfig.GetGoogleCalendarAPIKey();
-        //}
+        public CalendarBlock()
+        {
+        }
+
         // Initializes the field
         public async Task Init(ICatfishAppConfiguration config)
         {
-            string apiKey = config.GetGoogleCalendarAPIKey();
+           // string apiKey = config.GetGoogleCalendarAPIKey();
 
         }
         public string GetCalendarId()
@@ -90,33 +89,46 @@ namespace Catfish.Models.Blocks
         public List<CalendarEvent> GetCalendarEvents()
         {
             List<CalendarEvent> CalendarEvents = new List<CalendarEvent>();
-            //private ICatfishAppConfiguration _config;
-            //string ApiKey = _config.GetGoogleCalendarAPIKey();
-            if (ApiKey != null)
+            string[] Scopes = { CalendarService.Scope.CalendarReadonly };
+            string ApplicationName = "Google Calendar Block";
+            
+            string jsonFile = Startup.Configuration["GoogleCalendar:ServiceAccountFileName"]; //"catfish2-0-GoogleCalendarServiceAccount.json";
+            string calendarId = GetCalendarId();
+
+           
+
+            ServiceAccountCredential credential;
+
+            using (var stream =
+                new FileStream(jsonFile, FileMode.Open, FileAccess.Read))
             {
-
-
-                var service = new CalendarService(new BaseClientService.Initializer()
-                {
-                    ApiKey = GetApiKey()
-                });
-
-                EventsResource.ListRequest request = service.Events.List(GetCalendarId());
-                int pastDays = Convert.ToInt32(GetDayRangePast()) * -1;
-                int futureDays = Convert.ToInt32(GetDayRangeFuture());
-                request.TimeMin = DateTime.Now.AddDays(pastDays);
-                request.TimeMax = DateTime.Now.AddDays(futureDays);
-                request.ShowDeleted = false;
-                request.SingleEvents = true;
-                request.MaxResults = GetMaxEvents();
-                request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
-
-                Events events = request.Execute();
-                CalendarEvents = events.Items.Select(m => new CalendarEvent(m)).ToList();
-                // CalendarEventsJson = JsonConvert.SerializeObject(CalendarEvents);
-                //EventsJson = JsonConvert.SerializeObject(Events);
+                var confg = Google.Apis.Json.NewtonsoftJsonSerializer.Instance.Deserialize<JsonCredentialParameters>(stream);
+                credential = new ServiceAccountCredential(
+                   new ServiceAccountCredential.Initializer(confg.ClientEmail)
+                   {
+                       Scopes = Scopes
+                   }.FromPrivateKey(confg.PrivateKey));
             }
 
+            var service = new CalendarService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = ApplicationName,
+            });
+
+            EventsResource.ListRequest request = service.Events.List(GetCalendarId());
+            int pastDays = Convert.ToInt32(GetDayRangePast()) * -1;
+            int futureDays = Convert.ToInt32(GetDayRangeFuture());
+            request.TimeMin = DateTime.Now.AddDays(pastDays);
+            request.TimeMax = DateTime.Now.AddDays(futureDays);
+            request.ShowDeleted = false;
+            request.SingleEvents = true;
+            request.MaxResults = GetMaxEvents();
+            request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
+
+            Events events = request.Execute();
+            CalendarEvents = events.Items.Select(m => new CalendarEvent(m)).ToList();
+             
             return CalendarEvents;
         }
 
