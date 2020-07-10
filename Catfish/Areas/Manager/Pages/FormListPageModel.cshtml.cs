@@ -17,7 +17,7 @@ namespace Catfish.Areas.Manager.Pages
         {
             ApiRoot = "/manager/api/forms/";
             DetailsPage = "";
-            EditPage = "edit/";
+            EditPage = "forms/edit/";
             ModelLabel = "Forms";
             _db = db;
         }
