@@ -7,10 +7,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Controllers\SetupController.cs" />
+    <Compile Remove="Models\BlogArchive.cs" />
+    <Compile Remove="Models\BlogPost.cs" />
     <Compile Remove="Models\CalendarPage.cs" />
+    <Compile Remove="Models\MainPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="appsettings.example.json" />
+    <Content Remove="Views\Cms\Main.cshtml" />
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
   </ItemGroup>
 
@@ -30,19 +34,19 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Piranha" Version="8.1.0" />
-    <PackageReference Include="Piranha.AspNetCore" Version="8.1.0" />
-    <PackageReference Include="piranha.aspnetcore.identity.sqlserver" Version="8.1.0" />
-    <PackageReference Include="Piranha.AspNetCore.SimpleSecurity" Version="8.1.0" />
-    <PackageReference Include="Piranha.AttributeBuilder" Version="8.1.0" />
-    <PackageReference Include="Piranha.Data.EF.SQLServer" Version="8.1.2" />
+    <PackageReference Include="Piranha" Version="8.3.0" />
+    <PackageReference Include="Piranha.AspNetCore" Version="8.3.0" />
+    <PackageReference Include="piranha.aspnetcore.identity.sqlserver" Version="8.3.0" />
+    <PackageReference Include="Piranha.AspNetCore.SimpleSecurity" Version="8.3.0" />
+    <PackageReference Include="Piranha.AttributeBuilder" Version="8.3.0" />
+    <PackageReference Include="Piranha.Data.EF.SQLServer" Version="8.3.0" />
     <PackageReference Include="Piranha.ImageSharp" Version="8.0.0-rc1" />
-    <PackageReference Include="Piranha.Local.FileStorage" Version="8.1.0" />
-    <PackageReference Include="Piranha.Manager" Version="8.1.0" />
-    <PackageReference Include="Piranha.Manager.TinyMCE" Version="8.1.0" />
-    <PackageReference Include="Piranha.WebApi" Version="8.1.0" />
+    <PackageReference Include="Piranha.Local.FileStorage" Version="8.3.0" />
+    <PackageReference Include="Piranha.Manager" Version="8.3.1" />
+    <PackageReference Include="Piranha.Manager.TinyMCE" Version="8.3.0" />
+    <PackageReference Include="Piranha.WebApi" Version="8.3.0" />
   </ItemGroup>
 
   <ItemGroup>
