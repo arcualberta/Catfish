@@ -27,15 +27,15 @@
                   xml:lang="en">List the email addresses of all reviewers.</text>
 					</description>
 					<values>
-						<value model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+						<value order="0" model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
 							<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
 						  xml:lang="en">reviewer1@ualberta.ca</text>
 						</value>						
-						<value model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+						<value order="1" model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
 							<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
 						  xml:lang="en">reviewer2@ualberta.ca</text>
 						</value>						
-						<value model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+						<value order="2" model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
 							<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
 						  xml:lang="en">reviewer2@ualberta.ca</text>
 						</value>						
