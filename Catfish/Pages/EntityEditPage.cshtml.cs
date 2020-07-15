@@ -8,12 +8,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Catfish.Pages
 {
-    public class StartPageModel : CatfishPageModelModel
+    public class EntityEditPageModel : CatfishPageModelModel
     {
-        public StartPageModel(IAuthorizationService auth, ISubmissionService serv, IEntityTemplateService temp) : base(auth, serv, temp)
+        public EntityEditPageModel(IAuthorizationService auth, ISubmissionService serv, IEntityTemplateService temp) : base(auth, serv, temp)
         {
         }
-
         public void OnGet()
         {
 

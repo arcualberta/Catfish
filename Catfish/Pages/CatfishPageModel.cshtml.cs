@@ -11,9 +11,13 @@ namespace Catfish.Pages
     public class CatfishPageModelModel : PageModel
     {
         protected IAuthorizationService AuthorizationSertvice { get; set; }
-        public CatfishPageModelModel(IAuthorizationService auth)
+        protected ISubmissionService SubmissionService { get; set; }
+        protected IEntityTemplateService EntityTemplateService { get; set; }
+        public CatfishPageModelModel(IAuthorizationService auth, ISubmissionService serv, IEntityTemplateService temp)
         {
             AuthorizationSertvice = auth;
+            SubmissionService = serv;
+            EntityTemplateService = temp;
         }
     }
 }
