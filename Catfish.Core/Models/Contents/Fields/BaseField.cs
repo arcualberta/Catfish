@@ -7,10 +7,11 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public class BaseField : XmlModel
+    public abstract class BaseField : XmlModel
     {
         public const string FieldTagName = "field";
 
+        public abstract int SetValue(string val, string valLanguage, int valueIndex = 0);
         public Guid Id
         {
             get => Guid.Parse(Data.Attribute("id").Value);

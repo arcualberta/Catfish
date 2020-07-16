@@ -2,10 +2,15 @@ using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.ViewModels;
 using Catfish.Core.Models.Contents.ViewModels.ListEntries;
+using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
+using Catfish.Core.Services.Solr;
 using Catfish.Tests.Helpers;
+using Microsoft.Data.SqlClient;
 using NUnit.Framework;
+using SolrNet;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Catfish.UnitTests
@@ -14,11 +19,15 @@ namespace Catfish.UnitTests
     {
         protected AppDbContext _db;
         protected TestHelper _testHelper;
-
+        private ISolrIndexService<SolrItemModel> solrIndexService;
+        private IEntityService entityService;
+        private readonly ISolrReadOnlyOperations<SolrItemModel> _solr;
         [SetUp]
         public void Setup()
         {
             _testHelper = new TestHelper();
+            solrIndexService = _testHelper.Seviceprovider.GetService(typeof(ISolrIndexService<SolrItemModel>)) as ISolrIndexService<SolrItemModel>;
+            entityService = _testHelper.Seviceprovider.GetService(typeof(IEntityService)) as IEntityService;
             _db = _testHelper.Db;
         }
 
@@ -97,6 +106,58 @@ namespace Catfish.UnitTests
 
             _testHelper.Db.SaveChanges();
         }
+
+        [Test]
+        public void SolrNewItemTest()
+        {
+            //private ISolrIndexService<SolrItemModel> solrIndexService;
+            SeedingService srv = _testHelper.Seviceprovider.GetService(typeof(SeedingService)) as SeedingService;
+
+            ItemTemplate template = srv.NewDublinCoreItem();
+            Item item = template.Clone<Item>();
+            item.MetadataSets[0].SetFieldValue("Subject", "en", "New restaurants are mad crazy to be opening right now -- or are they?", "en");
+            string desc = @"On Wednesdays, Palmetto, which opened for the first time on May 11 in Oakland, California, serves a full prime rib dinner -- to go.
+It's 'enough to feed two people, or one really hungry person,' Christ Aivaliotis, one of the new restaurant's owners, tells CNN Travel.
+But this isn't how Palmetto or a smattering of other restaurants around the world expected to be operating in the spring of 2020.
+Modified menus, a bare - bones staff and the seemingly gargantuan task of attracting business in a time of such grave uncertainty are all factors in a new food and beverage operation.
+'It may not be ideal,' says Lilly W.Jan, a lecturer in food and beverage management at Cornell's School of Hotel Administration, but she wouldn't call it 'crazy.'";
+
+            item.MetadataSets[0].SetFieldValue("Description", "en", desc, "en");
+            item.Name.SetContent("Solr documents");
+            item.Description.SetContent("Solr documents Content");
+            _testHelper.Db.Items.Add(item);
+            _testHelper.Db.SaveChanges();
+
+            entityService.AddUpdateEntity(item);
+
+        }
+
+
+        public bool AddUpdate(Entity entity)
+        {
+            List<SolrItemModel> entries = ExtractSolrEntries(entity);
+            foreach (var entry in entries)
+                solrIndexService.AddUpdate(entry);
+
+            return true;
+        }
+
+        public List<SolrItemModel> ExtractSolrEntries(Entity entity)
+        {
+            List<SolrItemModel> entries = new List<SolrItemModel>();
+            entries.Add(new SolrItemModel());
+
+            return entries;
+        }
+
+        //[Test]
+        ////public void Query()
+        ////{
+        ////   // var solr = ServiceLocator.current.getinstance<ISolrOperations<SolrItemModel>>();
+        ////    var results = _solr.Query(new SimpleQueryByField("id", "sp2514n"));
+        ////    Assert.AreEqual(1, results.Count);
+        ////    Console.WriteLine(Results[0].manufacturer);
+        ////}
 
 
         //[Test]

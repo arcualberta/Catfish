@@ -103,6 +103,8 @@ namespace Catfish.Core.Services
             itemData.Created = model.Created;
             itemData.Updated = DateTime.Now;
             itemData.PrimaryCollectionId = model.PrimaryCollectionId;
+
+            //solrIndexService.AddUpdate(new SolrItemModel(model));
         }
     }
 }

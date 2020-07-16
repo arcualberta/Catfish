@@ -17,11 +17,12 @@ using Piranha.Data.EF.SQLServer;
 using Catfish.Core.Services;
 using Catfish.Helper;
 using System;
-using Catfish.Solr;
-using Catfish.Solr.Models;
 using SolrNet;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Catfish.Core.Models.Solr;
+using Catfish.Core.Services.Solr;
+using Catfish.Services;
 
 namespace Catfish
 {
@@ -129,11 +130,21 @@ namespace Catfish
             services.AddScoped<DbEntityService>();
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
-            services.AddScoped<IEmail, EmailService>();
-            // Solr services
-            services.AddSolrNet<SolrItemModel>($"http://localhost:8983/solr/Test");
-            services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
+            //services.AddScoped<IEmail, EmailService>();
 
+
+            // Solr services
+            string solrString = Configuration.GetSection("SolarConfiguration:solrItemURL").Value;
+            services.AddSolrNet<SolrItemModel>(solrString);
+            services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
+            services.AddScoped<IQueryService, QueryService>();
+
+
+            // Entity services
+            services.AddScoped<IAuthorizationService, AuthorizationService>();
+            services.AddScoped<ISubmissionService, SubmissionService>();
+            services.AddScoped<IEntityTemplateService, EntityTemplateService>();
+            services.AddScoped<IEmailService, EmailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

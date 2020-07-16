@@ -1,4 +1,6 @@
-﻿using Catfish.Core.Services;
+﻿using Catfish.Core.Models.Solr;
+using Catfish.Core.Services;
+using Catfish.Core.Services.Solr;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -26,6 +28,12 @@ namespace Catfish.Core.Models
             {
                 optionsBuilder.UseSqlServer(Configuration.GetConnectionString("catfish"));
             }
+        }
+
+        
+        public override int SaveChanges()
+        {
+            return base.SaveChanges();
         }
 
         ////public ObjectContext ObjectContext

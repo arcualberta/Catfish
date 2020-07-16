@@ -10,6 +10,9 @@ namespace Catfish.Helper
         string GetGoogleClientId();
         string GetDefaultUserRole();
         string GetGoogleCalendarAPIKey();
+#pragma warning disable CA1055 // Uri return values should not be strings
+        string GetSolrUrl();
+#pragma warning restore CA1055 // Uri return values should not be strings
         bool DisplayCarouselThumbnails();
         string GetAllowDomain();
         string GetUnauthorizedLoginMessage();
@@ -80,6 +83,13 @@ namespace Catfish.Helper
         public string GetRecipientEmail()
         {
              return _configuration["EmailServer:Recipient"];
+        }
+
+#pragma warning disable CA1055 // Uri return values should not be strings
+        public string GetSolrUrl()
+#pragma warning restore CA1055 // Uri return values should not be strings
+        {
+            return _configuration["SolarConfiguration:solrItemURL"];
         }
     }
 }
