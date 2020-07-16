@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Workflow
 {
-    class WorkflowAction : XmlModel
+    public class WorkflowAction : XmlModel
     {
         public WorkflowAction(XElement data)
             : base(data)
