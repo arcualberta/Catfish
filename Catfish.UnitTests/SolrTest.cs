@@ -1,6 +1,6 @@
 ﻿using Catfish.Core.Models;
-using Catfish.Solr;
-using Catfish.Solr.Models;
+using Catfish.Core.Models.Solr;
+using Catfish.Core.Services.Solr;
 using NUnit.Framework;
 using SolrNet;
 using System;

@@ -13,19 +13,19 @@ namespace Catfish.Controllers
         private readonly IApi _api;
         private readonly IModelLoader _loader;
         private readonly IDb _db;
-        private readonly IEmail _email;
+        //private readonly IEmail _email;
       
 
         /// <summary>
         /// Default constructor.
         /// </summary>
         /// <param name="api">The current api</param>
-        public CmsController(IApi api,IDb db,  IModelLoader loader, IEmail email)
+        public CmsController(IApi api,IDb db,  IModelLoader loader/*, IEmail email*/)
         {
             _api = api;
             _loader = loader;
             _db = db;
-            _email = email;
+            //_email = email;
         }
 
         /// <summary>
@@ -139,18 +139,18 @@ namespace Catfish.Controllers
         //    return View(model);
         //}
 
-        public JsonResult SendEmail(Email email)
-        {
-            try
-            {
-                _email.SendEmail(email);
-            }
-            catch(Exception ex)
-            {
-                throw;
-            }
+        //public JsonResult SendEmail(Email email)
+        //{
+        //    try
+        //    {
+        //        _email.SendEmail(email);
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        throw;
+        //    }
 
-            return Json(true);
-        }
+        //    return Json(true);
+        //}
     }
 }

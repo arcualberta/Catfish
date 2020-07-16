@@ -7,5 +7,7 @@ namespace Catfish.Services
 {
     public interface IAuthorizationService
     {
+        bool IsAuthorize();
+        List<string> GetAccessibleActions();
     }
 }
