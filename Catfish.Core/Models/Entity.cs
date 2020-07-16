@@ -17,7 +17,6 @@ namespace Catfish.Core.Models
         public static readonly string NameTag = "name";
         public static readonly string DescriptionTag = "description";
 
-
         [Key]
         public Guid Id
         {
@@ -46,14 +45,26 @@ namespace Catfish.Core.Models
 
         public DateTime Created
         {
-            get => DateTime.Parse(Data.Attribute("created").Value);
+            get => GetDateTimeAttribute("created").Value;
             set => Data.SetAttributeValue("created", value);
         }
 
         public DateTime? Updated
         {
-            get { try { return Data.Attribute("updated") != null ? DateTime.Parse(Data.Attribute("updated").Value) : null as DateTime?; } catch (Exception) { return null as DateTime?; } }
+            get => GetDateTimeAttribute("updated");
             set => Data.SetAttributeValue("updated", value);
+        }
+
+        public Guid? TemplateId
+        {
+            get => GetGuidAttribute("template-id"); 
+            set => Data.SetAttributeValue("template-id", value);
+        }
+
+        public Guid? StateId
+        {
+            get => GetGuidAttribute("state-id");
+            set => Data.SetAttributeValue("state-id", value);
         }
 
         public string ModelType
@@ -84,6 +95,25 @@ namespace Catfish.Core.Models
 
             Initialize(false);
         }
+
+        public string GetAttribute(string key)
+        {
+            var att = Data.Attribute(key);
+            return (att == null) ? null : att.Value;
+        }
+
+        public Guid? GetGuidAttribute(string key)
+        {
+            var att = Data.Attribute(key);
+            return (att == null || string.IsNullOrEmpty(att.Value)) ? null as Guid? : Guid.Parse(att.Value);
+        }
+
+        public DateTime? GetDateTimeAttribute(string key)
+        {
+            var att = Data.Attribute(key);
+            return (att == null || string.IsNullOrEmpty(att.Value)) ? null as DateTime? : DateTime.Parse(att.Value);
+        }
+
 
         public virtual void Initialize(bool regenerateId)
         {

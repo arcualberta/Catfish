@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Catfish.Core.Models.Contents;
+using Catfish.Core.Models.Contents.Workflow;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
@@ -9,10 +11,22 @@ namespace Catfish.Core.Models
     {
         public string TargetType { get; set; }
         public string TemplateName { get; set; }
+        public Workflow Workflow { get; set; }
 
         public EntityTemplate()
         {
             Initialize(false);
+        }
+
+        public override void Initialize(bool regenerateId)
+        {
+            base.Initialize(regenerateId);
+
+            XElement workflowDef = Data.Element("workflow");
+            if(workflowDef != null)
+            {
+                Workflow = new Workflow(workflowDef);
+            }
         }
 
         public T Clone<T>() where T:Entity

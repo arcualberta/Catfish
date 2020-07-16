@@ -1,6 +1,9 @@
 <entity id="696a1fc2-929a-4d82-898b-0eeac587cf30"
         created="2020-04-27T17:54:01.3918235-06:00"
-        model-type="Catfish.Core.Models.Item, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        model-type="Catfish.Core.Models.Item, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+		state-id="40249fb4-9f49-4055-abee-d321735203c8"
+		template-id=""
+		>
 	<name model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
 	<description model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
 	<metadata-sets>
@@ -154,278 +157,283 @@
 	<audit-trail>
 		<audit-entry timestamp="2020-07-07T12:45 PM" />
 	</audit-trail>
-	<workflow>
-		<action name="StartSubmission"> <!-- Starting a new submission by DeptAdmin -->
-			<params>
-				<document ref-id="88d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application template ID-->
-			</params>
-			<post-actions>
-				<action name="Save"   function="Save"  new-state="Saved"></action>
-				<action name="Submit" function="Save"  new-state="Submitted"></action>
-			</post-actions>
-			<authorizations>
-				<role>DeptAdmin</role>
-			</authorizations>
-		</action>
+	<workflow id="86eb0fb4-9f49-4055-abee-d321735203c8">
+		<states>
+			<state id="40249fb4-9f49-4055-abee-d321735203c8">Saved</state>
+		</states>
+		<actions>
+			<action name="StartSubmission"> <!-- Starting a new submission by DeptAdmin -->
+				<params>
+					<document ref-id="88d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application template ID-->
+				</params>
+				<post-actions>
+					<action name="Save"   function="Save"  new-state="Saved"></action>
+					<action name="Submit" function="Save"  new-state="Submitted"></action>
+				</post-actions>
+				<authorizations>
+					<role>DeptAdmin</role>
+				</authorizations>
+			</action>
 
-		<action name="EditSubmission"> <!-- Editing a submission who started a new application -->
-			<params>
-				<!-- main application document ID to be passed programatically -->
-			</params>
-			<post-actions>
-				<action name="Save"   function="Save"  new-state="Saved"></action>
-				<action name="Submit"  function="Save" new-state="Submitted">
-					<pop-up title="WARNING: Submitting Document" mesage="Once submitted, you cannot update the document.">
-						<button text="Yes, submit" return="true" />
-						<button text="Cancel" return="false" />
-					</pop-up>				
-				</action>
-			</post-actions>
-			<valid-states>
-				<state>Saved</state>
-			</valid-states>
-			<authorizations>
-				<role>Owner</role>
-			</authorizations>
-		</action>
-		
-		<action name="DeleteSubmission">
-			<params>
-				<!-- main application document ID to be passed programatically -->
-			</params>
-			<post-actions>
-				<action name="Delete"   function="Save"  new-state="Deleted">
-					<pop-up title="WARNING: Delete" mesage="Deleting the submission. Please confirm.">
-						<button text="Yes, delete" return="true" />
-						<button text="Cancel" return="false" />
-					</pop-up>
-				</action>
-			</post-actions>
-			<valid-states>
-				<state>Saved</state>
-			</valid-states>
-			<authorizations>
-				<role>Owner</role>
-			</authorizations>
-		</action>
-		
-		<action name="PurgeSubmission"><!-- Permanently delete a submission who started a new application -->
-			<params>
-				<!-- main application document ID to be passed programatically -->
-			</params>
-			<post-actions>
-				<action name="Purge"   function="Purge">
-					<pop-up title="WARNING: Deleting Permanently" mesage="When purged, the document cannot be recovered. Please confirm">
-						<button text="Yes, purge" return="true" />
-						<button text="Cancel" return="false" />
-					</pop-up>
-				</action>
-			</post-actions>
-			<valid-states>
-				<state>Deleted</state>
-			</valid-states>
-			<authorizations>
-				<role>Owner</role>
-			</authorizations>
-		</action>
-		
-		<action name="EditSubmission"> <!-- Editing a revision by the Dept Admin -->
-			<params>
-				<!-- main application document ID to be passed programatically -->
-			</params>
-			<post-actions>
-				<action name="Save"   function="Save"  new-state="SavedRevision"></action>
-				<action name="Submit"  function="Save" new-state="submittedRevision"></action> <!-- add the pop-up -->
-			</post-actions>
-			<valid-states>
-				<state>SentForRevision</state>
-				<state>SavedRevision</state>
-			</valid-states>
-			<authorizations>
-				<role>Owner</role>
-			</authorizations>
-		</action>
-		
-		<action name="ChangeState"> <!-- Sending a document back to the owner for revisions -->
-			<params>
-				<!-- main application document ID to be passed programatically -->
-				<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form Template -->
-			</params>
-			<post-actions>
-				<action name="Send for Revision"   function="Comment"  new-state="SentForRevision">
-					<trigger order="0" function="SendEmail">
-						<to>Owner</to>
-					</trigger>				
-				</action>
-			</post-actions>
-			<valid-states>
-				<state>Submitted</state>
-				<state>ReviewComplete</state>
-			</valid-states>
-			<authorizations>
-				<role>CentralAdmin</role>
-			</authorizations>
-		</action>
-		
-		<action name="ChangeState"><!-- Sending a document to the reviewer(s) for review -->
-			<params>
-				<!-- main application document ID to be passed programatically -->
-				<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
-			</params>
-			<post-actions>
-				<action name="Send for Review"   function="Comment"  new-state="InReview">
-					<trigger order="0" function="SendEmail">
-						<!-- Email address(s) of the reviewers of this package -->
-						<to metadata-set-id="cc252561-b957-4141-970b-fdb101a96ed2" field-id="0e176ef5-a235-470f-bf95-6c8aa99921b2" />
-					</trigger>				
-					<trigger order="1" function="AddAuditEntry" type="ReviewRequest" />
-				</action>
-			</post-actions>
-			<valid-states>
-				<state>Submitted</state>
-				<state>ReSubmitted</state>
-			</valid-states>
-			<authorizations>
-				<role>CentralAdmin</role>
-			</authorizations>
-		</action>
-
-		<action name="ChangeState"><!-- Approving a document by CentralAdmin-->
-			<params>
-				<!-- main application document ID to be passed programatically -->
-			</params>
-			<post-actions>
-				<action name="Approve"   function="Save"  new-state="Approved">
-					<trigger order="0" function="SendEmail">
-						<to>Owner</to>
-					</trigger>				
-				</action>
-			</post-actions>
-			<valid-states>
-				<state>ReviewComplete</state>
-			</valid-states>
-			<authorizations>
-				<role>CentralAdmin</role>
-			</authorizations>
-		</action>
-
-		<action name="ChangeState"><!-- Rejecting a document by CentralAdmin-->
-			<params>
-				<!-- main application document ID to be passed programatically -->
-			</params>
-			<post-actions>
-				<action name="Reject"   function="Save"  new-state="Rejected">
-					<trigger order="0" function="SendEmail">
-						<to>Owner</to>
-					</trigger>				
-				</action>
-			</post-actions>
-			<valid-states>
-				<state>ReviewComplete</state>
-			</valid-states>
-			<authorizations>
-				<role>CentralAdmin</role>
-			</authorizations>
-		</action>
-		
-		<action name="StartReview"><!--review document by reviewer -->
-			<params>
-				<!-- main application document ID to be passed programatically -->
-				<document ref-id="34d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Review form -->
-			</params>
-			<post-actions>
-				<action name="Submit Review"   function="Comment"  new-state="ReviewSubmitted">
-					<trigger order="0" function="SendEmail">
-						<!-- Email address(es) of the central admin(s) of this package -->
-						<to metadata-set-id="cc252561-b957-4141-970b-fdb101a96ed2" field-id="22176ef5-a235-470f-bf95-6c8aa99921b2" /> 
-					</trigger>				
-					<trigger order="1" function="CheckDocumentReceiveStatus" new-state="ReviewComplete">
-						<!-- Email address(s) of the reviewers of this package -->
-						<document-sender metadata-set-id="cc252561-b957-4141-970b-fdb101a96ed2" field-id="0e176ef5-a235-470f-bf95-6c8aa99921b2" />
-						
-						<!-- The sender should submit a completed document out of this review template -->
-						<document-template ref-id="34d30fb4-9f49-4055-abee-d321735203c8" />
-						
-						<!-- The type of the audit entry to be checked to determine when the request was sent for the documents. 
-							 We should obtain the latest audit entry of this type and use it's timestamp as the reference time.
-							 We expects the documents to be received after this timestamp and if we have received documents from
-							 all requested parties, then the method should update the state of the main submission accordingly.
-							 Otherwise, the state should remain unchanged. -->
-						<request-audit-entry type="ReviewRequest" />
-						
-					</trigger>				
-				</action>
-			</post-actions>
-			<valid-states>
-				<state>InReview</state>
-			</valid-states>
-			<authorizations>
-				<role>Reviewer</role>
-			</authorizations>
-		</action>
-		
-		<action name="StartTemplate"><!--create a new template-->
-			<params>
-				<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template Form ID -->
-			</params>
+			<action name="EditSubmission"> <!-- Editing a submission who started a new application -->
+				<params>
+					<!-- main application document ID to be passed programatically -->
+				</params>
+				<post-actions>
+					<action name="Save"   function="Save"  new-state="Saved"></action>
+					<action name="Submit"  function="Save" new-state="Submitted">
+						<pop-up title="WARNING: Submitting Document" mesage="Once submitted, you cannot update the document.">
+							<button text="Yes, submit" return="true" />
+							<button text="Cancel" return="false" />
+						</pop-up>				
+					</action>
+				</post-actions>
+				<valid-states>
+					<state>Saved</state>
+				</valid-states>
+				<authorizations>
+					<role>Owner</role>
+				</authorizations>
+			</action>
 			
-			<post-actions>
-				<action name="SaveTemplate" function="Save" new-state="Saved"></action>
-				<action name="PublishTemplate" function="Save" new-state="Publish"></action>
-			</post-actions>
-			<authorizations>
-				<role>CentralAdmin</role>
-			</authorizations>
-		</action>
-		
-		<action name="EditTemplate"><!--Edit template-->
-			<params>
-				<!-- template application number need to pass programatically -->
-			</params>
-			<post-actions>
-				<action name="SaveTemplate" function="Save" new-state="Saved"></action>
-				<action name="PublishTemplate" function="Save" new-state="Publish"></action>
-				<action name="DeleteTemplate" function="Save" new-state="Deleted"></action>
-			</post-actions>
-			<valid-states>
-				<state>Saved</state>
-			</valid-states>
-			<authorizations>
-				<role>Owner</role>
-			</authorizations>
-		</action>
-		
-		<action name="PurgeTemplate"><!--Permanently delete a template-->
-			<params>
-				<!-- template application number need to pass programatically -->
-			</params>
-			<post-actions>
-				<action name="PurgeTemplate" function="Save" new-state="Purged"></action>
-			</post-actions>
-			<valid-states>
-				<state>Deleted</state>
-			</valid-states>
-			<authorizations>
-				<role>Owner</role>
-			</authorizations>
-		</action>
-		
-		<action name="ManageTemplate"><!--publish/unpublish template-->
-			<params>
-				<!-- template application number need to pass programatically -->
-			</params>
-			<post-actions>
-				<action name="Unpublish" function="Save" new-state="Unpublish"></action>
-				<action name="Publish" function="Save" new-state="Publish"></action>
-			</post-actions>
-			<valid-states>
-				<state>Publish</state>
-				<state>Unpublishublish</state>
-			</valid-states>
-			<authorizations>
-				<role>CentralAdmin</role>
-			</authorizations>
-		</action>
+			<action name="DeleteSubmission">
+				<params>
+					<!-- main application document ID to be passed programatically -->
+				</params>
+				<post-actions>
+					<action name="Delete"   function="Save"  new-state="Deleted">
+						<pop-up title="WARNING: Delete" mesage="Deleting the submission. Please confirm.">
+							<button text="Yes, delete" return="true" />
+							<button text="Cancel" return="false" />
+						</pop-up>
+					</action>
+				</post-actions>
+				<valid-states>
+					<state>Saved</state>
+				</valid-states>
+				<authorizations>
+					<role>Owner</role>
+				</authorizations>
+			</action>
+			
+			<action name="PurgeSubmission"><!-- Permanently delete a submission who started a new application -->
+				<params>
+					<!-- main application document ID to be passed programatically -->
+				</params>
+				<post-actions>
+					<action name="Purge"   function="Purge">
+						<pop-up title="WARNING: Deleting Permanently" mesage="When purged, the document cannot be recovered. Please confirm">
+							<button text="Yes, purge" return="true" />
+							<button text="Cancel" return="false" />
+						</pop-up>
+					</action>
+				</post-actions>
+				<valid-states>
+					<state>Deleted</state>
+				</valid-states>
+				<authorizations>
+					<role>Owner</role>
+				</authorizations>
+			</action>
+			
+			<action name="EditSubmission"> <!-- Editing a revision by the Dept Admin -->
+				<params>
+					<!-- main application document ID to be passed programatically -->
+				</params>
+				<post-actions>
+					<action name="Save"   function="Save"  new-state="SavedRevision"></action>
+					<action name="Submit"  function="Save" new-state="submittedRevision"></action> <!-- add the pop-up -->
+				</post-actions>
+				<valid-states>
+					<state>SentForRevision</state>
+					<state>SavedRevision</state>
+				</valid-states>
+				<authorizations>
+					<role>Owner</role>
+				</authorizations>
+			</action>
+			
+			<action name="ChangeState"> <!-- Sending a document back to the owner for revisions -->
+				<params>
+					<!-- main application document ID to be passed programatically -->
+					<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form Template -->
+				</params>
+				<post-actions>
+					<action name="Send for Revision"   function="Comment"  new-state="SentForRevision">
+						<trigger order="0" function="SendEmail">
+							<to>Owner</to>
+						</trigger>				
+					</action>
+				</post-actions>
+				<valid-states>
+					<state>Submitted</state>
+					<state>ReviewComplete</state>
+				</valid-states>
+				<authorizations>
+					<role>CentralAdmin</role>
+				</authorizations>
+			</action>
+			
+			<action name="ChangeState"><!-- Sending a document to the reviewer(s) for review -->
+				<params>
+					<!-- main application document ID to be passed programatically -->
+					<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
+				</params>
+				<post-actions>
+					<action name="Send for Review"   function="Comment"  new-state="InReview">
+						<trigger order="0" function="SendEmail">
+							<!-- Email address(s) of the reviewers of this package -->
+							<to metadata-set-id="cc252561-b957-4141-970b-fdb101a96ed2" field-id="0e176ef5-a235-470f-bf95-6c8aa99921b2" />
+						</trigger>				
+						<trigger order="1" function="AddAuditEntry" type="ReviewRequest" />
+					</action>
+				</post-actions>
+				<valid-states>
+					<state>Submitted</state>
+					<state>ReSubmitted</state>
+				</valid-states>
+				<authorizations>
+					<role>CentralAdmin</role>
+				</authorizations>
+			</action>
+
+			<action name="ChangeState"><!-- Approving a document by CentralAdmin-->
+				<params>
+					<!-- main application document ID to be passed programatically -->
+				</params>
+				<post-actions>
+					<action name="Approve"   function="Save"  new-state="Approved">
+						<trigger order="0" function="SendEmail">
+							<to>Owner</to>
+						</trigger>				
+					</action>
+				</post-actions>
+				<valid-states>
+					<state>ReviewComplete</state>
+				</valid-states>
+				<authorizations>
+					<role>CentralAdmin</role>
+				</authorizations>
+			</action>
+
+			<action name="ChangeState"><!-- Rejecting a document by CentralAdmin-->
+				<params>
+					<!-- main application document ID to be passed programatically -->
+				</params>
+				<post-actions>
+					<action name="Reject"   function="Save"  new-state="Rejected">
+						<trigger order="0" function="SendEmail">
+							<to>Owner</to>
+						</trigger>				
+					</action>
+				</post-actions>
+				<valid-states>
+					<state>ReviewComplete</state>
+				</valid-states>
+				<authorizations>
+					<role>CentralAdmin</role>
+				</authorizations>
+			</action>
+			
+			<action name="StartReview"><!--review document by reviewer -->
+				<params>
+					<!-- main application document ID to be passed programatically -->
+					<document ref-id="34d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Review form -->
+				</params>
+				<post-actions>
+					<action name="Submit Review"   function="Comment"  new-state="ReviewSubmitted">
+						<trigger order="0" function="SendEmail">
+							<!-- Email address(es) of the central admin(s) of this package -->
+							<to metadata-set-id="cc252561-b957-4141-970b-fdb101a96ed2" field-id="22176ef5-a235-470f-bf95-6c8aa99921b2" /> 
+						</trigger>				
+						<trigger order="1" function="CheckDocumentReceiveStatus" new-state="ReviewComplete">
+							<!-- Email address(s) of the reviewers of this package -->
+							<document-sender metadata-set-id="cc252561-b957-4141-970b-fdb101a96ed2" field-id="0e176ef5-a235-470f-bf95-6c8aa99921b2" />
+							
+							<!-- The sender should submit a completed document out of this review template -->
+							<document-template ref-id="34d30fb4-9f49-4055-abee-d321735203c8" />
+							
+							<!-- The type of the audit entry to be checked to determine when the request was sent for the documents. 
+								 We should obtain the latest audit entry of this type and use it's timestamp as the reference time.
+								 We expects the documents to be received after this timestamp and if we have received documents from
+								 all requested parties, then the method should update the state of the main submission accordingly.
+								 Otherwise, the state should remain unchanged. -->
+							<request-audit-entry type="ReviewRequest" />
+							
+						</trigger>				
+					</action>
+				</post-actions>
+				<valid-states>
+					<state>InReview</state>
+				</valid-states>
+				<authorizations>
+					<role>Reviewer</role>
+				</authorizations>
+			</action>
+			
+			<action name="StartTemplate"><!--create a new template-->
+				<params>
+					<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template Form ID -->
+				</params>
+				
+				<post-actions>
+					<action name="SaveTemplate" function="Save" new-state="Saved"></action>
+					<action name="PublishTemplate" function="Save" new-state="Publish"></action>
+				</post-actions>
+				<authorizations>
+					<role>CentralAdmin</role>
+				</authorizations>
+			</action>
+			
+			<action name="EditTemplate"><!--Edit template-->
+				<params>
+					<!-- template application number need to pass programatically -->
+				</params>
+				<post-actions>
+					<action name="SaveTemplate" function="Save" new-state="Saved"></action>
+					<action name="PublishTemplate" function="Save" new-state="Publish"></action>
+					<action name="DeleteTemplate" function="Save" new-state="Deleted"></action>
+				</post-actions>
+				<valid-states>
+					<state>Saved</state>
+				</valid-states>
+				<authorizations>
+					<role>Owner</role>
+				</authorizations>
+			</action>
+			
+			<action name="PurgeTemplate"><!--Permanently delete a template-->
+				<params>
+					<!-- template application number need to pass programatically -->
+				</params>
+				<post-actions>
+					<action name="PurgeTemplate" function="Save" new-state="Purged"></action>
+				</post-actions>
+				<valid-states>
+					<state>Deleted</state>
+				</valid-states>
+				<authorizations>
+					<role>Owner</role>
+				</authorizations>
+			</action>
+			
+			<action name="ManageTemplate"><!--publish/unpublish template-->
+				<params>
+					<!-- template application number need to pass programatically -->
+				</params>
+				<post-actions>
+					<action name="Unpublish" function="Save" new-state="Unpublish"></action>
+					<action name="Publish" function="Save" new-state="Publish"></action>
+				</post-actions>
+				<valid-states>
+					<state>Publish</state>
+					<state>Unpublishublish</state>
+				</valid-states>
+				<authorizations>
+					<role>CentralAdmin</role>
+				</authorizations>
+			</action>
+		</actions>
 	</workflow>
 	
 

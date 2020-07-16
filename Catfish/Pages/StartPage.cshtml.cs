@@ -10,8 +10,11 @@ namespace Catfish.Pages
 {
     public class StartPageModel : CatfishPageModelModel
     {
-        public StartPageModel(IAuthorizationService auth, ISubmissionService serv, IEntityTemplateService temp) : base(auth, serv, temp)
+        protected readonly IEntityTemplateService _entityTemplateService;
+        public StartPageModel(IAuthorizationService auth, ISubmissionService serv, IEntityTemplateService temp)
+            : base(auth, serv)
         {
+            _entityTemplateService = temp;
         }
 
         public void OnGet()

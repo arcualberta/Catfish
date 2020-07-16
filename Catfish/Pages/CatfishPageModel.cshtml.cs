@@ -10,14 +10,12 @@ namespace Catfish.Pages
 {
     public class CatfishPageModelModel : PageModel
     {
-        protected IAuthorizationService AuthorizationSertvice { get; set; }
-        protected ISubmissionService SubmissionService { get; set; }
-        protected IEntityTemplateService EntityTemplateService { get; set; }
-        public CatfishPageModelModel(IAuthorizationService auth, ISubmissionService serv, IEntityTemplateService temp)
+        protected readonly IAuthorizationService _authorizationSertvice;
+        protected readonly ISubmissionService _submissionService;
+        public CatfishPageModelModel(IAuthorizationService auth, ISubmissionService serv)
         {
-            AuthorizationSertvice = auth;
-            SubmissionService = serv;
-            EntityTemplateService = temp;
+            _authorizationSertvice = auth;
+            _submissionService = serv;
         }
     }
 }
