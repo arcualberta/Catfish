@@ -121,8 +121,15 @@ namespace Catfish
                 o.AddPolicy("ReadSecurePosts", policy => {
                     policy.RequireClaim("ReadSecurePosts", "ReadSecurePosts");
                 });
-                
             });
+
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy("CreateSubmission", policy => {
+                    policy.RequireClaim("CreateSubmission", "CreateSubmission");
+                });
+            });
+
 
             //Catfish services
             services.AddScoped<EntityTypeService>();
@@ -252,6 +259,7 @@ namespace Catfish
 
             // March 6 2020 -- Add Custom Permissions
             AddCustomPermissions();
+            AddWorkflowPermissions();
 
         }
 
@@ -302,6 +310,19 @@ namespace Catfish
                 Name="ReadSecurePosts"
             });
         }
+
+        private static void AddWorkflowPermissions()
+        {
+            App.Permissions["Workflow"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "Create Submission",
+                Name = "CreateSubmission",
+                Category = "Group Title"
+            });
+
+        }
+
+
 
         private static void AddPartialViews()
         {
