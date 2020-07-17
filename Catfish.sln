@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.Core", "Catfish.Cor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.UnitTests", "Catfish.UnitTests\Catfish.UnitTests.csproj", "{C166EACD-49C8-4AC8-8E7F-7C84ADBBDD6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catfish.Solr", "Catfish.Solr\Catfish.Solr.csproj", "{0C9A468E-9C6C-47AA-83F7-E3B17E8CC63F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.Solr", "Catfish.Solr\Catfish.Solr.csproj", "{0C9A468E-9C6C-47AA-83F7-E3B17E8CC63F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

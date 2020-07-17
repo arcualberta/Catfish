@@ -12,7 +12,10 @@
         <div class="navbar-nav">
             @foreach (var item in sitemap)
             {
+                if (!item.IsHidden)
+                {
                 <a class="nav-item nav-link @(item.Id == WebApp.PageId ? "active" : "")" href="@item.Permalink"><span>@item.MenuTitle</span></a>
+                }
             }
         </div>
     </div>
@@ -22,9 +25,12 @@
     <ul class="nav nav-site justify-content-center">
         @foreach (var item in sitemap)
         {
+            if (!item.IsHidden)
+            {
             <li class="nav-item @(item.Id == WebApp.PageId ? "active" : "")">
                 <a class="nav-link" href="@item.Permalink"><span>@item.MenuTitle</span></a>
             </li>
+            }
         }
     </ul>
 </nav>

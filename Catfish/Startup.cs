@@ -22,6 +22,9 @@ using Catfish.Solr.Models;
 using SolrNet;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Catfish.Core.Services.FormBuilder;
+using System.Xml;
+using Newtonsoft.Json.Serialization;
 
 namespace Catfish
 {
@@ -30,7 +33,7 @@ namespace Catfish
         /// <summary>
         /// The application config.
         /// </summary>
-        public IConfiguration Configuration { get; set; }
+        public static IConfiguration Configuration { get; set; }
 
         /// <summary>
         /// Default constructor.
@@ -63,11 +66,10 @@ namespace Catfish
             //-- add MVC service
             services.AddMvc();//.AddXmlSerializerFormatters(); // to user MVC model
 
-          
             // Service setup for Piranha CMS
             services.AddPiranha(options =>
             {
-                
+                options.AddRazorRuntimeCompilation = true;
                 options.UseFileStorage();
                 options.UseImageSharp();
                 options.UseManager();
@@ -83,29 +85,30 @@ namespace Catfish
             services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("catfish")));
 
-            services.AddControllersWithViews();
             services.AddRazorPages()
                 .AddPiranhaManagerOptions();
 
-
-            
 
             // Add CatfishDbContext to the service collection. This will inject the database
             // configuration options and the application "Configuration" option to CatfishDbContext
             // instance through dependency injection.
             services.AddDbContext<Catfish.Core.Models.AppDbContext>();
 
-           //Feb 12 - 2020 : It's recommended to use AddDbContextPool() over AddDbContext() on .net Core > 2.2
-           // it's better from the performance stand point
-          //  services.AddDbContextPool<Catfish.Core.Models.AppDbContext>(options =>
-           //                 options.UseSqlServer(Configuration.GetConnectionString("catfish")));
+            //Feb 12 - 2020 : It's recommended to use AddDbContextPool() over AddDbContext() on .net Core > 2.2
+            // it's better from the performance stand point
+            //  services.AddDbContextPool<Catfish.Core.Models.AppDbContext>(options =>
+            //                 options.UseSqlServer(Configuration.GetConnectionString("catfish")));
 
             //MR: Feb 7 2020 -- from piranha core MVCWeb example
             services.AddControllersWithViews();
+            
+            ////services.AddControllersWithViews()
+            ////    .AddNewtonsoftJson(options =>
+            ////    {
+            ////        options.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
+            ////    });
 
-            services.AddRazorPages()
-                .AddPiranhaManagerOptions();
-
+          
             services.AddPiranhaApplication();
             services.AddPiranhaFileStorage();
             services.AddPiranhaImageSharp();
@@ -137,6 +140,9 @@ namespace Catfish
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
             services.AddScoped<IEmail, EmailService>();
+            services.AddScoped<IFormService, FormService>();
+            services.AddScoped<IMetadataSetService, MetadataSetService>();
+
             // Solr services
             services.AddSolrNet<SolrItemModel>($"http://localhost:8983/solr/Test");
             services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
@@ -206,15 +212,16 @@ namespace Catfish
             //MR Feb 7 2020 -- add classic MVC routing
             // Build content types -- copied from piranha core mvcWeb example
             var pageTypeBuilder = new Piranha.AttributeBuilder.PageTypeBuilder(api)
-                .AddType(typeof(Models.BlogArchive))
+               // .AddType(typeof(Models.BlogArchive))
+                .AddType(typeof(Models.StandardArchive))
                 .AddType(typeof(Models.StandardPage))
                  .AddType(typeof(Models.StartPage))
-                 .AddType(typeof(Models.MainPage))
                  .AddType(typeof(Models.MediaPage))
                 .Build()
                 .DeleteOrphans();
             var postTypeBuilder = new Piranha.AttributeBuilder.PostTypeBuilder(api)
-                .AddType(typeof(Models.BlogPost))
+               // .AddType(typeof(Models.BlogPost))
+                .AddType(typeof(Models.StandardPost))
                 .Build()
                 .DeleteOrphans();
             //var siteTypeBuilder = new Piranha.AttributeBuilder.SiteTypeBuilder(api)
@@ -279,6 +286,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/entitytypelist.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/test.js");
         }
         private static void RegisterCustomBlocks()
         {
@@ -331,6 +339,51 @@ namespace Catfish
 
         private static void AddManagerMenus()
         {
+            if (Piranha.Manager.Menu.Items.Where(m => m.Name == "Templates").FirstOrDefault() == null)
+            {
+                Piranha.Manager.Menu.Items.Insert(0, new MenuItem
+                {
+                    InternalId = "Templates",
+                    Name = "Templates",
+                    Css = "fas fa-object-group"
+
+                });
+            }
+
+            ///
+            /// Templates Group Content Menus
+            ///
+            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Templates").FirstOrDefault();
+            var idx = 0;
+
+            menubar.Items.Insert(idx++, new MenuItem
+            {
+                InternalId = "MetadataSets",
+                Name = "Metadata Sets",
+                Route = "/manager/metadatasets/",
+                Css = "fas fa-brain"
+
+            });
+
+            menubar.Items.Insert(idx++, new MenuItem
+            {
+                InternalId = "EntityTypes",
+                Name = "Entity Types",
+                Route = "/manager/entitytypes/",
+                Css = "fas fa-brain"
+
+            });
+
+            menubar.Items.Insert(idx++, new MenuItem
+            {
+                InternalId = "Forms",
+                Name = "Forms",
+                Route = "/manager/forms/",
+                Css = "fas fa-brain"
+
+            });
+
+
             if (Piranha.Manager.Menu.Items.Where(m => m.Name == "Entities").FirstOrDefault() == null)
             {
                 Piranha.Manager.Menu.Items.Insert(0, new MenuItem
@@ -343,19 +396,10 @@ namespace Catfish
             }
 
             ///
-            /// Content Menus
+            /// Entities Group Content Menus
             ///
-            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Entities").FirstOrDefault();
-            var idx = 0;
-
-            menubar.Items.Insert(idx++, new MenuItem
-            {
-                InternalId = "EntityTypes",
-                Name = "EntityTypes",
-                Route = "/manager/entitytypes/",
-                Css = "fas fa-brain"
-              
-            });
+            menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Entities").FirstOrDefault();
+            idx = 0;
 
             menubar.Items.Insert(idx++, new MenuItem
             {
