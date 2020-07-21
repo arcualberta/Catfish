@@ -10,15 +10,17 @@ namespace Catfish.Core.Models.Contents.Fields
     public class BaseField : XmlModel
     {
         public const string FieldTagName = "field";
-
-        public Guid Id
-        {
-            get => Guid.Parse(Data.Attribute("id").Value);
-            set => Data.SetAttributeValue("id", value);
-        }
-
         public MultilingualText Name { get; protected set; }
         public MultilingualText Description { get; protected set; }
+
+        public bool Required
+        {
+            get => (Data.Attribute("required") == null || Data.Attribute("required").Value == null)
+                    ? false
+                    : Data.Attribute("required").Value.ToLower() == "true";
+
+            set => Data.SetAttributeValue("required", value ? "true" : "false");
+        }
 
         public BaseField() : base(FieldTagName) { }
         public BaseField(XElement data) : base(data) { }

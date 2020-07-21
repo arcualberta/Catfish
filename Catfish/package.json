@@ -11,5 +11,7 @@
         "gulp-rename": "^1.2.2",
         "gulp-sass": "^3.1.0"
     },
-    "dependencies": {}
+    "dependencies": {
+        "vuedraggable": "^2.23.2"
+    }
 }

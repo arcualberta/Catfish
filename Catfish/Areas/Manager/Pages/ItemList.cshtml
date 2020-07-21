@@ -48,7 +48,7 @@
                                 </a>
                                 <div class="link">
                                     <a v-if="piranha.permissions.sites.edit" v-on:click.prevent="piranha.siteedit.open(collection.id, load)" href="#">{{ collection.name.values[0].value }} <small style="display:none">(<code>{{ collection.id + collection.name.values[0].value }}</code>)</small></a>
-                                    <span v-else class="title">{{ collection.name.values[0].value }} <small style="display:none">(<code>{{ collection.id + collection.name.values[0].value }}</code>)</small></span>
+                                    <span v-else class="title">{{ collection.name.values[0].value }}<small style="display:none">(<code>{{ collection.id + collection.name.values[0].value }}</code>)</small></span>
                                 </div>
                                 <div>
                                     <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
