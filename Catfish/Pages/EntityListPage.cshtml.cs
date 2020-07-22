@@ -10,7 +10,7 @@ namespace Catfish.Pages
 {
     public class EntityListPageModel : CatfishPageModelModel
     {
-        public EntityListPageModel(IAuthorizationService auth, ISubmissionService serv, IEntityTemplateService temp) : base(auth, serv, temp)
+        public EntityListPageModel(IAuthorizationService auth, ISubmissionService serv) : base(auth, serv)
         {
         }
         public void OnGet()

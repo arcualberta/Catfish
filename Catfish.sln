@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.Core", "Catfish.Cor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catfish.UnitTests", "Catfish.UnitTests\Catfish.UnitTests.csproj", "{C166EACD-49C8-4AC8-8E7F-7C84ADBBDD6E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{09BB05F2-1C86-410C-9340-EA00B10F6459}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8AB8C1F0-AFC6-4C1B-A2CA-51BD90B5AEAD}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection

@@ -5,9 +5,9 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Workflow
 {
-    public class WorkflowAction : XmlModel
+    public class Authorizations : XmlModel
     {
-        public WorkflowAction(XElement data)
+        public Authorizations(XElement data)
             : base(data)
         {
 

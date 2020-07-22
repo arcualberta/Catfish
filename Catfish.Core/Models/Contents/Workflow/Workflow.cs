@@ -9,6 +9,7 @@ namespace Catfish.Core.Models.Contents.Workflow
     {
         public XmlModelList<State> States { get; set; }
         public XmlModelList<WorkflowAction> Actions { get; set; }
+        public XmlModelList<Authorizations> Authorizations { get; set; }
 
         public Workflow(XElement data)
             : base(data)
@@ -27,6 +28,10 @@ namespace Catfish.Core.Models.Contents.Workflow
             //Initializing the actions list
             XElement actionListDefinition = Data.Element("actions");
             Actions = new XmlModelList<WorkflowAction>(actionListDefinition, true, "action");
+
+            //Initializing the authorizations list
+            XElement authorizationsListDefinition = Data.Element("authorizations");
+            Authorizations = new XmlModelList<Authorizations>(authorizationsListDefinition, true, "role");
 
         }
 
