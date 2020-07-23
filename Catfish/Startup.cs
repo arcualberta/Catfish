@@ -277,16 +277,17 @@ namespace Catfish
         }
         private static void RegisterCustomScripts()
         {
-            App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
+            //App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/entitytypelist.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/navigation-block.js");
+          //  App.Modules.Manager().Scripts.Add("~/assets/js/entitytypelist.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/test.js");
+           // App.Modules.Manager().Scripts.Add("~/assets/js/test.js");
         }
         private static void RegisterCustomBlocks()
         {
@@ -300,6 +301,7 @@ namespace Catfish
             App.Blocks.Register<CssBlock>();
             App.Blocks.Register<CalendarBlock>();
             App.Blocks.Register<ContactFormBlock>();
+            App.Blocks.Register<NavigationBlock>();
         }
         private static void RegisterCustomStyles()
         {
