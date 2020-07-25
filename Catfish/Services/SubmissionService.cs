@@ -32,14 +32,25 @@ namespace Catfish.Services
         /// <returns></returns>
         public List<Entity> GetEntityList(Guid? templateId, Guid? stateGuid)
         {
+            //var ev = _db.Entities.Where(e => e.TemplateId == templateId && StateId == stateGuid ?).FirstOrDefault();
             List<Entity> authorizeList = new List<Entity>();
             return authorizeList;
         }
+
+        /// <summary>
+        /// Get the submission details which passing from the parameter.  
+        /// </summary>
+        /// <returns></returns>
         public Entity GetSubmissionDetails(Guid id)
         {
-            Entity submissionData = new Entity();
-            return submissionData;
+            Entity ev = _db.Entities.Where(e => e.Id == id).FirstOrDefault();
+            return ev;
         }
+
+        /// <summary>
+        /// Save submission details which passing from the parameter.   
+        /// </summary>
+        /// <returns></returns>
         public string SaveSubmission(Entity submission)
         {
             string statusMessege="Submission Saved Sucessfully";

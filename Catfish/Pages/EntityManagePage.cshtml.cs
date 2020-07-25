@@ -10,8 +10,12 @@ namespace Catfish.Pages
 {
     public class EntityManagePageModel : CatfishPageModelModel
     {
+        private readonly IAuthorizationService _authorizationService;
+        private readonly ISubmissionService _submissionService;
         public EntityManagePageModel(IAuthorizationService auth, ISubmissionService serv) : base(auth, serv)
         {
+            _authorizationService = auth;
+            _submissionService = serv;
         }
         public void OnGet()
         {
