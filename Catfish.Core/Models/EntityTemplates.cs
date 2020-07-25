@@ -2,6 +2,7 @@
 using Catfish.Core.Models.Contents.Workflow;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using System.Xml.Linq;
 
@@ -11,6 +12,8 @@ namespace Catfish.Core.Models
     {
         public string TargetType { get; set; }
         public string TemplateName { get; set; }
+
+        [NotMapped]
         public Workflow Workflow { get; set; }
 
         public EntityTemplate()

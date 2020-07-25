@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
@@ -12,6 +13,7 @@ namespace Catfish.Core.Models.Contents
     {
         public enum eGuidOption { Ignore, Ensure, Regenerate }
 
+        [NotMapped]
         [JsonIgnore]
         public XElement Data { get; protected set; }
 
@@ -26,13 +28,13 @@ namespace Catfish.Core.Models.Contents
         public XmlModel(XElement data)
         {
             Data = data;
-            Initialize(eGuidOption.Ignore);
+            Initialize(eGuidOption.Ensure);
         }
 
         public XmlModel(string tagName)
         {
             Data = new XElement(tagName);
-            Initialize(eGuidOption.Ignore);
+            Initialize(eGuidOption.Ensure);
         }
 
         public string ModelType
