@@ -213,8 +213,15 @@
 					<!-- main application document ID to be passed programatically -->
 				</params>
 				<post-actions>
-					<action button-label="Save"  function="Save"  new-state="Saved" />
-					<action button-label="Submit" function="Save" new-state="Submitted">
+					<action button-label="Save"  function="Save" >
+						<state-mappings>
+							<map current="Saved"  next="Saved"/>
+						</state-mappings>
+					</action>
+					<action button-label="Submit" function="Save" >
+						<state-mappings>
+							<map current="Saved"  next="Submitted"/>
+						</state-mappings>
 						<pop-up title="WARNING: Submitting Document" mesage="Once submitted, you cannot update the document.">
 							<button text="Yes, submit" return="true" />
 							<button text="Cancel" return="false" />
@@ -238,7 +245,10 @@
 					<!-- main application document ID to be passed programatically -->
 				</params>
 				<post-actions>
-					<action button-label="Delete"   function="Save"  new-state="Deleted">
+					<action button-label="Delete"   function="Save" >
+						<state-mappings>
+							<map current="Saved"  next="Deleted"/>
+						</state-mappings>
 						<pop-up title="WARNING: Delete" mesage="Deleting the submission. Please confirm.">
 							<button text="Yes, delete" return="true" />
 							<button text="Cancel" return="false" />
@@ -282,9 +292,24 @@
 						<state-mappings>
 							<map current="DeanOfficeRevision"  next="SavedDeanOfficeRevision"/>
 							<map current="AACRevision"  next="SavedAACRevision"/>
+							<map current="AECRevision"  next="SavedAECRevision"/>
+							<map current="AFCRevision"  next="SavedAFCRevision"/>
+							<map current="GFCRevision"  next="SavedGFCRevision"/>
 						</state-mappings>
 					</action>
-					<action button-label="Submit"  function="Save" new-state="DeanOfficeRevision>DeanOfficeRevisionCompleted;SavedDeanOfficeRevision>DeanOfficeRevisionCompleted">
+					<action button-label="Submit"  function="Save" >
+						<state-mappings>
+							<map current="DeanOfficeRevision"  next="DeanOfficeRevisionCompleted"/>
+							<map current="AACRevision"  next="AACRevisionCompleted"/>
+							<map current="AECRevision"  next="AECRevisionCompleted"/>
+							<map current="AFCRevision"  next="AFCRevisionCompleted"/>
+							<map current="GFCRevision"  next="GFCRevisionCompleted"/>
+							<map current="SavedDeanOfficeRevision"  next="DeanOfficeRevisionCompleted"/>
+							<map current="SavedAACRevision"  next="AACRevisionCompleted"/>
+							<map current="SavedAECRevision"  next="AECRevisionCompleted"/>
+							<map current="SavedAFCRevision"  next="AFCRevisionCompleted"/>
+							<map current="SavedGFCRevision"  next="GFCRevisionCompleted"/>
+						</state-mappings>
 						<pop-up title="WARNING: Submitting Document" mesage="Once submitted, you cannot update the document.">
 							<button text="Yes, submit" return="true" />
 							<button text="Cancel" return="false" />
@@ -298,111 +323,14 @@
 				<valid-states>
 					<state>DeanOfficeRevision</state>
 					<state>SavedDeanOfficeRevision</state>
-					<state>AAC Revision</state>
-				</valid-states>
-				<authorizations>
-					<role>Owner</role>
-				</authorizations>
-			</action>
-			
-			<action link-label="Edit Submission" function="Edit"> <!-- Editing a revision by the Dept Admin -->
-				<params>
-					<!-- main application document ID to be passed programatically -->
-				</params>
-				<post-actions>
-					<action button-label="Save"   function="Save"  new-state="SavedAACRevision"></action>
-					<action button-label="Submit"  function="Save" new-state="AACRevisionCompleted">
-						<pop-up title="WARNING: Submitting Document" mesage="Once submitted, you cannot update the document.">
-							<button text="Yes, submit" return="true" />
-							<button text="Cancel" return="false" />
-						</pop-up>
-						<triggers>
-							<trigger-ref order="0" ref-id="bb8u7t61-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
-							<trigger-ref order="1" ref-id="bppl8561-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
-						</triggers>	
-					</action> <!-- add the pop-up -->
-				</post-actions>
-				<valid-states>
 					<state>AACRevision</state>
 					<state>SavedAACRevision</state>
-				</valid-states>
-				<authorizations>
-					<role>Owner</role>
-				</authorizations>
-			</action>
-			
-			<action link-label="Edit Submission" function="Edit"> <!-- Editing a revision by the Dept Admin -->
-				<params>
-					<!-- main application document ID to be passed programatically -->
-				</params>
-				<post-actions>
-					<action button-label="Save"   function="Save"  new-state="SavedAECRevision"></action>
-					<action button-label="Submit"  function="Save" new-state="AECRevisionCompleted">
-						<pop-up title="WARNING: Submitting Document" mesage="Once submitted, you cannot update the document.">
-							<button text="Yes, submit" return="true" />
-							<button text="Cancel" return="false" />
-						</pop-up>
-						<triggers>
-							<trigger-ref order="0" ref-id="b6t7j561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
-							<trigger-ref order="1" ref-id="bd1o2561-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
-						</triggers>	
-					</action> <!-- add the pop-up -->
-				</post-actions>
-				<valid-states>
 					<state>AECRevision</state>
-					<state>SavedAACRevision</state>
-				</valid-states>
-				<authorizations>
-					<role>Owner</role>
-				</authorizations>
-			</action>
-			
-			<action link-label="Edit Submission" function="Edit"> <!-- Editing a revision by the Dept Admin -->
-				<params>
-					<!-- main application document ID to be passed programatically -->
-				</params>
-				<post-actions>
-					<action button-label="Save"   function="Save"  new-state="SavedGFCRevision"></action>
-					<action button-label="Submit"  function="Save" new-state="GFCRevisionCompleted">
-						<pop-up title="WARNING: Submitting Document" mesage="Once submitted, you cannot update the document.">
-							<button text="Yes, submit" return="true" />
-							<button text="Cancel" return="false" />
-						</pop-up>
-						<triggers>
-							<trigger-ref order="0" ref-id="yg87j561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
-							<trigger-ref order="1" ref-id="8u0o2561-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
-						</triggers>	
-					</action> <!-- add the pop-up -->
-				</post-actions>
-				<valid-states>
-					<state>GFCRevision</state>
-					<state>SavedGFCRevision</state>
-				</valid-states>
-				<authorizations>
-					<role>Owner</role>
-				</authorizations>
-			</action>
-			
-			<action link-label="Edit Submission" function="Edit"> <!-- Editing a revision by the Dept Admin -->
-				<params>
-					<!-- main application document ID to be passed programatically -->
-				</params>
-				<post-actions>
-					<action button-label="Save"   function="Save"  new-state="SavedAFCRevision"></action>
-					<action button-label="Submit"  function="Save" new-state="AFCRevisionCompleted">
-						<pop-up title="WARNING: Submitting Document" mesage="Once submitted, you cannot update the document.">
-							<button text="Yes, submit" return="true" />
-							<button text="Cancel" return="false" />
-						</pop-up>
-						<triggers>
-							<trigger-ref order="0" ref-id="bp09j561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
-							<trigger-ref order="1" ref-id="b5ro2561-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
-						</triggers>	
-					</action> <!-- add the pop-up -->
-				</post-actions>
-				<valid-states>
+					<state>SavedAECRevision</state>
 					<state>AFCRevision</state>
 					<state>SavedAFCRevision</state>
+					<state>GFCRevision</state>
+					<state>SavedGFCRevision</state>
 				</valid-states>
 				<authorizations>
 					<role>Owner</role>
@@ -423,8 +351,12 @@
 							<map current="WithAEC"  next="AECRevision"/>
 							<map current="WithAFC"  next="AFCRevision"/>
 							<map current="WithGFC"  next="GFCRevision"/>
-						</state-mappings>
-					
+							<map current="DeanOfficeRevisionCompleted"  next="DeanOfficeRevision"/>
+							<map current="AACRevisionCompleted"  next="AACRevision"/>
+							<map current="AECRevisionCompleted"  next="AECRevision"/>
+							<map current="AFCRevisionCompleted"  next="AFCRevision"/>
+							<map current="GFCRevisionCompleted"  next="GFCRevision"/>
+						</state-mappings>					
 						<pop-up title="WARNING: Revision Document" mesage="Do you really want to revise this document?.">
 							<button text="Yes" return="true" />
 							<button text="Cancel" return="false" />
@@ -436,203 +368,111 @@
 				</post-actions>
 				<valid-states>
 					<state>Submitted</state>
-				</valid-states>
-				<authorizations>
-					<role>CentralAdmin</role>
-				</authorizations>
-			</action>
-			
-			<action link-label="Send for Revision"  function="ChangeState"> <!-- Sending a document back to the owner for revisions -->
-				<params>
-					<!-- main application document ID to be passed programatically -->
-					<document ref-id="6ifg0fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form Template -->
-				</params>
-				<post-actions>
-					<action button-label="AAC Revision"   function="Comment"  new-state="AACRevision">
-						<pop-up title="WARNING: Revision Document" mesage="Do you really want to revise this document?.">
-							<button text="Yes" return="true" />
-							<button text="Cancel" return="false" />
-						</pop-up>
-						<triggers>
-							<trigger-ref order="0" ref-id="lkj92561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the document owner, requesting a revision -->
-						</triggers>						
-					</action>
-				</post-actions>
-				<valid-states>
 					<state>WithAAC</state>
-				</valid-states>
-				<authorizations>
-					<role>CentralAdmin</role>
-				</authorizations>
-			</action>
-			
-			<action link-label="Send for Revision"  function="ChangeState"> <!-- Sending a document back to the owner for revisions -->
-				<params>
-					<!-- main application document ID to be passed programatically -->
-					<document ref-id="6ifg0fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form Template -->
-				</params>
-				<post-actions>
-					<action button-label="AEC Revision"   function="Comment"  new-state="AECRevision">
-						<pop-up title="WARNING: Revision Document" mesage="Do you really want to revise this document?.">
-							<button text="Yes" return="true" />
-							<button text="Cancel" return="false" />
-						</pop-up>
-						<triggers>
-							<trigger-ref order="0" ref-id="lio22561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the document owner, requesting a revision -->
-						</triggers>						
-					</action>
-				</post-actions>
-				<valid-states>
 					<state>WithAEC</state>
-				</valid-states>
-				<authorizations>
-					<role>CentralAdmin</role>
-				</authorizations>
-			</action>
-			
-			<action link-label="Send for Revision"  function="ChangeState"> <!-- Sending a document back to the owner for revisions -->
-				<params>
-					<!-- main application document ID to be passed programatically -->
-					<document ref-id="p9yg0fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form Template -->
-				</params>
-				<post-actions>
-					<action button-label="GFC Revision"   function="Comment"  new-state="GFCRevision">
-						<pop-up title="WARNING: Revision Document" mesage="Do you really want to revise this document?.">
-							<button text="Yes" return="true" />
-							<button text="Cancel" return="false" />
-						</pop-up>
-						<triggers>
-							<trigger-ref order="0" ref-id="jr522561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the document owner, requesting a revision -->
-						</triggers>						
-					</action>
-				</post-actions>
-				<valid-states>
-					<state>WithGFC</state>
-				</valid-states>
-				<authorizations>
-					<role>CentralAdmin</role>
-				</authorizations>
-			</action>
-			
-			<action link-label="Send for Revision"  function="ChangeState"> <!-- Sending a document back to the owner for revisions -->
-				<params>
-					<!-- main application document ID to be passed programatically -->
-					<document ref-id="9iyg0fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form Template -->
-				</params>
-				<post-actions>
-					<action button-label="AFC Revision"   function="Comment"  new-state="AFCRevision">
-						<pop-up title="WARNING: Revision Document" mesage="Do you really want to revise this document?.">
-							<button text="Yes" return="true" />
-							<button text="Cancel" return="false" />
-						</pop-up>
-						<triggers>
-							<trigger-ref order="0" ref-id="ne122561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the document owner, requesting a revision -->
-						</triggers>						
-					</action>
-				</post-actions>
-				<valid-states>
 					<state>WithAFC</state>
+					<state>WithGFC</state>
+					<state>DeanOfficeRevisionCompleted</state>
+					<state>AACRevisionCompleted</state>
+					<state>AECRevisionCompleted</state>
+					<state>AFCRevisionCompleted</state>
+					<state>GFCRevisionCompleted</state>
 				</valid-states>
 				<authorizations>
 					<role>CentralAdmin</role>
 				</authorizations>
 			</action>
 			
-			<action name="ChangeState"><!-- Sending a document to the reviewer(s) for review -->
+			<action link-label="Change State" function="ChangeState"><!-- Sending a document to the reviewer(s) for review -->
 				<params>
 					<!-- main application document ID to be passed programatically -->
-					<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
+					<document ref-id="9ot60fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
 				</params>
 				<post-actions>
-					<action button-label="Send for Review"   function="Comment"  new-state="InReview">
+					<action button-label="Change State" function="Comment" >
+						<state-mappings>
+							<map current="DeanOfficeRevisionCompleted"  next="WithAAC"/>
+							<map current="AACRevisionCompleted"  next="WithAEC"/>
+							<map current="AECRevisionCompleted"  next="WithAFC"/>
+							<map current="AFCRevisionCompleted"  next="WithGFC"/>
+							<map current="WithAAC"  next="AACApproved"/>
+							<map current="WithAEC"  next="AECApproved"/>
+							<map current="WithAFC"  next="AFCApproved"/>
+							<map current="WithGFC"  next="GFCApproved"/>
+							<map current="AACApproved"  next="WithAEC"/>
+							<map current="AECApproved"  next="WithAFC"/>
+							<map current="AFCApproved"  next="WithGFC"/>
+						</state-mappings>
+						<pop-up title="WARNING: Change State" mesage="Do you really want to change the document state?.">
+							<button text="Yes" return="true" />
+							<button text="Cancel" return="false" />
+						</pop-up>
+					</action>
+				</post-actions>
+				<valid-states>
+					<state>DeanOfficeRevisionCompleted</state>
+					<state>AACRevisionCompleted</state>
+					<state>AECRevisionCompleted</state>
+					<state>AFCRevisionCompleted</state>
+					<state>WithAAC</state>
+					<state>WithAEC</state>
+					<state>WithAFC</state>
+					<state>WithGFC</state>
+					<state>AACApproved</state>
+					<state>AECApproved</state>
+					<state>AFCApproved</state>
+				</valid-states>
+				<authorizations>
+					<role>CentralAdmin</role>
+				</authorizations>
+			</action>
+			
+			<action link-label="Move to Draft Calendar" function="ChangeState"><!-- Sending a document to the reviewer(s) for review -->
+				<params>
+					<!-- main application document ID to be passed programatically -->
+					<document ref-id="99yt0fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
+				</params>
+				<post-actions>
+					<action button-label="Correct" function="Comment" >
+						<state-mappings>
+							<map current="GFCApproved"  next="MoveToDraftCorrect"/>
+							<map current="MoveToDraftError"  next="MoveToDraftCorrect"/>
+						</state-mappings>
+						<pop-up title="WARNING: In the Draft Calendar -  Correct" mesage="Do you really want to change the document state?.">
+							<button text="Yes" return="true" />
+							<button text="Cancel" return="false" />
+						</pop-up>
 						<triggers>
-							<trigger-ref order="0" ref-id="ed252561-b957-4141-970b-fdb101a96ed2" />
-							<trigger-ref order="1" ref-id="ed252561-b957-4141-970b-fdb101a96cc2"/>
-						</triggers>
+							<trigger-ref order="0" ref-id="p0igj561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
+							<trigger-ref order="1" ref-id="76rd4jk9-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
+						</triggers>	
+					</action>
+					<action button-label="With Error" function="Comment" >
+						<state-mappings>
+							<map current="GFCApproved"  next="MoveToDraftError"/>
+						</state-mappings>
+						<pop-up title="WARNING: In the Draft Calendar -  With Error" mesage="Do you really want to change the document state?.">
+							<button text="Yes" return="true" />
+							<button text="Cancel" return="false" />
+						</pop-up>
+						<triggers>
+							<trigger-ref order="0" ref-id="hg67j561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
+							<trigger-ref order="1" ref-id="9j5u4jk9-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
+						</triggers>	
 					</action>
 				</post-actions>
 				<valid-states>
-					<state>Submitted</state>
-					<state>ReSubmitted</state>
+					<state>GFCApproved</state>
+					<state>MoveToDraftError</state>
 				</valid-states>
 				<authorizations>
 					<role>CentralAdmin</role>
 				</authorizations>
 			</action>
 
-			<action name="ChangeState"><!-- Approving a document by CentralAdmin-->
-				<params>
-					<!-- main application document ID to be passed programatically -->
-				</params>
-				<post-actions>
-					<action name="Approve"   function="Save"  new-state="Approved">
-						<trigger order="0" function="SendEmail">
-							<to>Owner</to>
-						</trigger>				
-					</action>
-				</post-actions>
-				<valid-states>
-					<state>ReviewComplete</state>
-				</valid-states>
-				<authorizations>
-					<role>CentralAdmin</role>
-				</authorizations>
-			</action>
+<!-- Template workflow need to be complete -->
 
-			<action name="ChangeState"><!-- Rejecting a document by CentralAdmin-->
-				<params>
-					<!-- main application document ID to be passed programatically -->
-				</params>
-				<post-actions>
-					<action name="Reject"   function="Save"  new-state="Rejected">
-						<trigger order="0" function="SendEmail">
-							<to>Owner</to>
-						</trigger>				
-					</action>
-				</post-actions>
-				<valid-states>
-					<state>ReviewComplete</state>
-				</valid-states>
-				<authorizations>
-					<role>CentralAdmin</role>
-				</authorizations>
-			</action>
-			
-			<action name="StartReview"><!--review document by reviewer -->
-				<params>
-					<!-- main application document ID to be passed programatically -->
-					<document ref-id="34d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Review form -->
-				</params>
-				<post-actions>
-					<action name="Submit Review"   function="Comment"  new-state="ReviewSubmitted">
-						<trigger order="0" function="SendEmail">
-							<!-- Email address(es) of the central admin(s) of this package -->
-							<to metadata-set-id="cc252561-b957-4141-970b-fdb101a96ed2" field-id="22176ef5-a235-470f-bf95-6c8aa99921b2" /> 
-						</trigger>				
-						<trigger order="1" function="CheckDocumentReceiveStatus" new-state="ReviewComplete">
-							<!-- Email address(s) of the reviewers of this package -->
-							<document-sender metadata-set-id="cc252561-b957-4141-970b-fdb101a96ed2" field-id="0e176ef5-a235-470f-bf95-6c8aa99921b2" />
-							
-							<!-- The sender should submit a completed document out of this review template -->
-							<document-template ref-id="34d30fb4-9f49-4055-abee-d321735203c8" />
-							
-							<!-- The type of the audit entry to be checked to determine when the request was sent for the documents. 
-								 We should obtain the latest audit entry of this type and use it's timestamp as the reference time.
-								 We expects the documents to be received after this timestamp and if we have received documents from
-								 all requested parties, then the method should update the state of the main submission accordingly.
-								 Otherwise, the state should remain unchanged. -->
-							<request-audit-entry type="ReviewRequest" />
-							
-						</trigger>				
-					</action>
-				</post-actions>
-				<valid-states>
-					<state>InReview</state>
-				</valid-states>
-				<authorizations>
-					<role>Reviewer</role>
-				</authorizations>
-			</action>
+
 			
 			<action name="StartTemplate"><!--create a new template-->
 				<params>
