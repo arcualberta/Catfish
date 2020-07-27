@@ -179,7 +179,7 @@
 			<trigger function="AddAuditEntry" type="ReviewRequest" id="ed252561-b957-4141-970b-fdb101a96cc2"/>
 		</triggers>
 		<actions>
-			<action link-label="Start Submission" function="Create"> <!-- Starting a new submission by DeptAdmin -->
+			<action link-label="Start Submission" function="Create" group="Home"> <!-- Starting a new submission by DeptAdmin -->
 				<params>
 					<template ref-id="88d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application template ID-->
 				</params>
@@ -208,7 +208,7 @@
 				</authorizations>
 			</action>
 
-			<action link-label="Edit Submission"  function="Edit"> <!-- Editing a submission who started a new application -->
+			<action link-label="Edit Submission"  function="Edit" group="Details"> <!-- Editing a submission who started a new application -->
 				<params>
 					<!-- main application document ID to be passed programatically -->
 				</params>
@@ -283,6 +283,7 @@
 				</authorizations>
 			</action>
 			
+			<!-- TODO: Merge with the previous Edit Submission block -->
 			<action link-label="Edit Submission" function="Edit"> <!-- Editing a revision by the Dept Admin -->
 				<params>
 					<!-- main application document ID to be passed programatically -->
@@ -344,18 +345,18 @@
 					<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form Template -->
 				</params>
 				<post-actions>
-					<action button-label="Send for Revision"   function="Comment">
+					<action function="Comment">
 						<state-mappings>
-							<map current="Submitted"  next="DeanOfficeRevision"/>
-							<map current="WithAAC"  next="AACRevision"/>
-							<map current="WithAEC"  next="AECRevision"/>
-							<map current="WithAFC"  next="AFCRevision"/>
-							<map current="WithGFC"  next="GFCRevision"/>
-							<map current="DeanOfficeRevisionCompleted"  next="DeanOfficeRevision"/>
-							<map current="AACRevisionCompleted"  next="AACRevision"/>
-							<map current="AECRevisionCompleted"  next="AECRevision"/>
-							<map current="AFCRevisionCompleted"  next="AFCRevision"/>
-							<map current="GFCRevisionCompleted"  next="GFCRevision"/>
+							<map current="Submitted"  next="DeanOfficeRevision" button-label="Send for Revision"/>
+							<map current="WithAAC"  next="AACRevision" button-label="Send for Revision"/>
+							<map current="WithAEC"  next="AECRevision" button-label="Send for Revision"/>
+							<map current="WithAFC"  next="AFCRevision" button-label="Send for Revision"/>
+							<map current="WithGFC"  next="GFCRevision" button-label="Send for Revision"/>
+							<map current="DeanOfficeRevisionCompleted"  next="DeanOfficeRevision" button-label="Send for Revision"/>
+							<map current="AACRevisionCompleted"  next="AACRevision" button-label="Send for Revision"/>
+							<map current="AECRevisionCompleted"  next="AECRevision" button-label="Send for Revision"/>
+							<map current="AFCRevisionCompleted"  next="AFCRevision" button-label="Send for Revision"/>
+							<map current="GFCRevisionCompleted"  next="GFCRevision" button-label="Send for Revision"/>
 						</state-mappings>					
 						<pop-up title="WARNING: Revision Document" mesage="Do you really want to revise this document?.">
 							<button text="Yes" return="true" />
@@ -383,33 +384,65 @@
 				</authorizations>
 			</action>
 			
-			<action link-label="Change State" function="ChangeState"><!-- Sending a document to the reviewer(s) for review -->
+			
+			<!-- 
+				Changing the state by the central admin without requiring to send an email notifications.
+				Therefore, activities such as sending for revisions, moving to calendar, etc. are excluded here. They are
+				defined in a separate sections.
+			-->
+			<action link-label="Update Document State" function="ChangeState">
 				<params>
 					<!-- main application document ID to be passed programatically -->
 					<document ref-id="9ot60fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
 				</params>
 				<post-actions>
-					<action button-label="Change State" function="Comment" >
+					<action function="Comment">
 						<state-mappings>
-							<map current="DeanOfficeRevisionCompleted"  next="WithAAC"/>
-							<map current="AACRevisionCompleted"  next="WithAEC"/>
-							<map current="AECRevisionCompleted"  next="WithAFC"/>
-							<map current="AFCRevisionCompleted"  next="WithGFC"/>
-							<map current="WithAAC"  next="AACApproved"/>
-							<map current="WithAEC"  next="AECApproved"/>
-							<map current="WithAFC"  next="AFCApproved"/>
-							<map current="WithGFC"  next="GFCApproved"/>
-							<map current="AACApproved"  next="WithAEC"/>
-							<map current="AECApproved"  next="WithAFC"/>
-							<map current="AFCApproved"  next="WithGFC"/>
+							
+						
+							<map current="Submitted"  next="WithAAC" button-label="With AAC"/>
+							<map current="DeanOfficeRevisionCompleted"  next="WithAAC" button-label="With AAC"/>
+							<map current="WithAAC"  next="AACApproved" button-label="AAC Approved"/> 
+
+							<map current="AACApproved"  next="WithAEC" button-label="With AEC"/>
+							<map current="WithAEC"  next="AECApproved" button-label="AEC Approved"/>
+
+
+							<map current="AACRevisionCompleted"  next="WithAAC" button-label="With AAC"/>
+							<map current="AACRevisionCompleted"  next="WithAEC" button-label="With AEC"/>
+
+							<map current="AECRevisionCompleted"  next="WithAA" button-label="With AA"/>
+							<map current="AECRevisionCompleted"  next="WithAEC" button-label="With AEC"/>
+
+							
+							<!-- The following set of mappings are applied if this workflow is for courses and minor program changes. If this workflow is for a major 
+							     a major program change, we should comment it -->
+							<map current="AECApproved"  next="WithAFC" button-label="With AFC"/>
+							<map current="WithAFC"  next="AFCApproved" button-label="AFC Approved"/>
+							<map current="AECRevisionCompleted"  next="WithAFC" button-label="With AFC"/>
+							<map current="AFCRevisionCompleted"  next="WithAFC" button-label="With AFC"/>
+							<map current="AFCRevisionCompleted"  next="WithAEC" button-label="With AEC"/>
+							<map current="AFCRevisionCompleted"  next="WithAAC" button-label="With AAC"/>
+							<map current="AFCRevisionCompleted"  next="AFCApproved" button-label="AFC Approved"/>
+							
+							
+							<!-- The following set of mappings are applied if this workflow is for major program changes. For course changes and minor program changes, we should comment it -->
+							<map current="AECApproved"  next="WithGFC" button-label="With GFC"/>
+							<map current="WithGFC"  next="GFCApproved" button-label="GFC Approved"/>
+							<map current="WithGFC"  next="WithAAC" button-label="With AAC"/>
+							<map current="WithGFC"  next="WithAEC" button-label="With AEC"/>
+							<map current="WithGFC"  next="WithAFC" button-label="With AFC"/>
+							<map current="AECRevisionCompleted"  next="WithGFC" button-label="With GFC"/>								
 						</state-mappings>
-						<pop-up title="WARNING: Change State" mesage="Do you really want to change the document state?.">
+					
+						<pop-up title="WARNING: Change State" mesage="Do you really want to change the document state?">
 							<button text="Yes" return="true" />
 							<button text="Cancel" return="false" />
 						</pop-up>
 					</action>
 				</post-actions>
 				<valid-states>
+					<state>Submitted</state>
 					<state>DeanOfficeRevisionCompleted</state>
 					<state>AACRevisionCompleted</state>
 					<state>AECRevisionCompleted</state>
