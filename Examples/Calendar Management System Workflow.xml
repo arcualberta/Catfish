@@ -164,12 +164,12 @@
 		<triggers>
 			<trigger function="SendEmail" id="bbcc2561-b957-4141-970b-fdb101a96ed2"> <!-- Document submission notifican email sent to the central admin -->
 				<to metadata-set-id="cae52561-b957-4141-970b-fdb101a96ed2" field-id="0e176ef5-a235-470f-bf95-6c8aa99921b2" />
-				<email-template metadata-set-id="bbd52561-b957-4141-970b-fdb101a96ed2" field-id="ab176ef5-a235-470f-bf95-6c8aa99921b2" >
+				<email-template metadata-set-id="bbd52561-b957-4141-970b-fdb101a96ed2" field-id="ab176ef5-a235-470f-bf95-6c8aa99921b2" />
 			</trigger>
 
 			<trigger function="SendEmail" id="bbcc2561-b957-4141-970b-fdb101a96eee"> <!-- Document submission confirmation email sent to the document owner -->
-				<to>Owner</end>
-				<email-template metadata-set-id="cdd52561-b957-4141-970b-fdb101a96ed2" field-id="ef176ef5-a235-470f-bf95-6c8aa99921b2" >
+				<to>Owner</to>
+				<email-template metadata-set-id="cdd52561-b957-4141-970b-fdb101a96ed2" field-id="ef176ef5-a235-470f-bf95-6c8aa99921b2" />
 			</trigger>
 
 			<trigger function="SendEmail" id="ed252561-b957-4141-970b-fdb101a96ed2">
@@ -177,15 +177,22 @@
 				<to metadata-set-id="cc252561-b957-4141-970b-fdb101a96ed2" field-id="0e176ef5-a235-470f-bf95-6c8aa99921b2" />
 			</trigger>				
 			<trigger function="AddAuditEntry" type="ReviewRequest" id="ed252561-b957-4141-970b-fdb101a96cc2"/>
-		<triggers>
+		</triggers>
 		<actions>
 			<action link-label="Start Submission" function="Create"> <!-- Starting a new submission by DeptAdmin -->
 				<params>
 					<template ref-id="88d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application template ID-->
 				</params>
 				<post-actions>
-					<action button-label="Save"   function="Save"  new-state="Saved" />
-					<action button-label="Submit" function="Save"  new-state="Submitted">
+					<action button-label="Save"   function="Save">
+						<state-mappings>
+							<map current="*"  next="Saved"/>
+						</state-mappings>
+					</action>
+					<action button-label="Submit" function="Save">
+						<new-state>
+							<map current="*"  next="Submitted"/>
+						</new-state>
 						<pop-up title="WARNING: Submitting Document" mesage="Once submitted, you cannot update the document.">
 							<button text="Yes, submit" return="true" />
 							<button text="Cancel" return="false" />
@@ -271,8 +278,13 @@
 					<!-- main application document ID to be passed programatically -->
 				</params>
 				<post-actions>
-					<action button-label="Save"   function="Save"  new-state="SavedDeanOfficeRevision"></action>
-					<action button-label="Submit"  function="Save" new-state="DeanOfficeRevisionCompleted">
+					<action button-label="Save"   function="Save">
+						<state-mappings>
+							<map current="DeanOfficeRevision"  next="SavedDeanOfficeRevision"/>
+							<map current="AACRevision"  next="SavedAACRevision"/>
+						</state-mappings>
+					</action>
+					<action button-label="Submit"  function="Save" new-state="DeanOfficeRevision>DeanOfficeRevisionCompleted;SavedDeanOfficeRevision>DeanOfficeRevisionCompleted">
 						<pop-up title="WARNING: Submitting Document" mesage="Once submitted, you cannot update the document.">
 							<button text="Yes, submit" return="true" />
 							<button text="Cancel" return="false" />
@@ -286,6 +298,7 @@
 				<valid-states>
 					<state>DeanOfficeRevision</state>
 					<state>SavedDeanOfficeRevision</state>
+					<state>AAC Revision</state>
 				</valid-states>
 				<authorizations>
 					<role>Owner</role>
@@ -403,7 +416,15 @@
 					<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form Template -->
 				</params>
 				<post-actions>
-					<action button-label="Dean's Office Revision"   function="Comment"  new-state="DeanOfficeRevision">
+					<action button-label="Send for Revision"   function="Comment">
+						<state-mappings>
+							<map current="Submitted"  next="DeanOfficeRevision"/>
+							<map current="WithAAC"  next="AACRevision"/>
+							<map current="WithAEC"  next="AECRevision"/>
+							<map current="WithAFC"  next="AFCRevision"/>
+							<map current="WithGFC"  next="GFCRevision"/>
+						</state-mappings>
+					
 						<pop-up title="WARNING: Revision Document" mesage="Do you really want to revise this document?.">
 							<button text="Yes" return="true" />
 							<button text="Cancel" return="false" />
