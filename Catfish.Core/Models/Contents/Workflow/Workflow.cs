@@ -10,6 +10,7 @@ namespace Catfish.Core.Models.Contents.Workflow
     {
         public XmlModelList<State> States { get; set; }
         public XmlModelList<WorkflowAction> Actions { get; set; }
+        public XmlModelList<Trigger> Triggers { get; set; }
 
         public Workflow(XElement data)
             : base(data)
@@ -23,6 +24,10 @@ namespace Catfish.Core.Models.Contents.Workflow
             //Initializing the States list
             XElement stateListDefinition = GetElement("states", true);
             States = new XmlModelList<State>(stateListDefinition, true, "state");
+
+            //Initializing the Triggers list
+            XElement triggerListDefinition = GetElement("triggers", true);
+            Triggers = new XmlModelList<Trigger>(triggerListDefinition, true, "trigger");
 
             //Initializing the actions list
             XElement actionListDefinition = GetElement("actions", true);
