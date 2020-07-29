@@ -48,5 +48,11 @@ namespace Catfish.Core.Models.Contents.Fields
             Values[valueIndex].SetContent(val, lang);
             return valueIndex;
         }
+
+        public override string GetValue(string lang, int valueIndex = 0)
+        {
+            return (Values.Count <= valueIndex) ? null : Values[valueIndex].GetContent(lang);
+        }
+
     }
 }

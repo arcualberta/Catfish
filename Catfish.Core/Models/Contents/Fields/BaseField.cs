@@ -12,6 +12,7 @@ namespace Catfish.Core.Models.Contents.Fields
         public const string FieldTagName = "field";
 
         public abstract int SetValue(string val, string valLanguage, int valueIndex = 0);
+        public abstract string GetValue(string valLanguage, int valueIndex = 0);
         public Guid Id
         {
             get => Guid.Parse(Data.Attribute("id").Value);

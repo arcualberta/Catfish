@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Fields;
+using Catfish.Core.Models.Contents.Workflow;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,8 @@ namespace Catfish.Services
 {
     public class WorkflowService : IWorkflowService
     {
-        public static readonly string ReferenceNameLanguage = "en";
-        
+        public readonly string DefaultLanguage = "en";
+
         private EntityTemplate mEntityTemplate;
 
         public WorkflowService()
@@ -29,33 +30,22 @@ namespace Catfish.Services
             mEntityTemplate = entityTemplate;
         }
 
-        public void SetEmailTemplate(
-            string templateName,
-            string emailSubject,
-            string emailBody,
-            string[] recipients,
-            string contentLanguage = "en")
+        public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists)
         {
-            MetadataSet ms = GetMetadataSet(templateName);
-
-            ms.SetFieldValue<TextField>("Subject", ReferenceNameLanguage, emailSubject, contentLanguage, true);
-            ms.SetFieldValue<TextField>("Body", ReferenceNameLanguage, emailBody, contentLanguage, true);
-            ms.SetFieldValue<TextField>("Recipients", ReferenceNameLanguage, recipients, contentLanguage, true);
+            MetadataSet ms = GetMetadataSet(templateName, createIfNotExists);
+            return ms == null ? null : new EmailTemplate(ms.Data);
         }
 
-        protected MetadataSet GetMetadataSet(
-            string metadataSetName,
-            string metadataSetNameLanguage = "en",
-            bool createIfNotExist = true)
+        protected MetadataSet GetMetadataSet(string metadataSetName, bool createIfNotExist)
         {
             MetadataSet ms = mEntityTemplate.MetadataSets
-                .Where(ms => ms.GetName(metadataSetNameLanguage) == metadataSetName)
+                .Where(ms => ms.GetName(DefaultLanguage) == metadataSetName)
                 .FirstOrDefault();
 
             if(ms == null && createIfNotExist)
             {
                 ms = new MetadataSet();
-                ms.SetName(metadataSetName, metadataSetNameLanguage);
+                ms.SetName(metadataSetName, DefaultLanguage);
                 mEntityTemplate.MetadataSets.Add(ms);
             }
             return ms;

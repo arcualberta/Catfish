@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Contents.Workflow;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,7 @@ namespace Catfish.Services
     {
         public void SetModel(EntityTemplate entityTemplate);
         public EntityTemplate GetModel();
-        public void SetEmailTemplate(
-            string templateName,
-            string emailSubject,
-            string emailBody,
-            string[] recipients,
-            string contentLanguage = "en");
+        public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists);
 
     }
 }
