@@ -155,7 +155,7 @@
 					<values>
 						<value order="0" model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
 							<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-						  xml:lang="en">The status of the attached @Link[trust-funcded contract letter|@DocLink] was changed to @DocState.</text>
+						  xml:lang="en">The status of the attached @Link[trust-funcded contract letter|@Model] was changed to @Model.State.</text>
 						</value>						
 					</values>
 				</field>
