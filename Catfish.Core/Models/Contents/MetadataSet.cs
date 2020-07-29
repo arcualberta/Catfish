@@ -24,5 +24,16 @@ namespace Catfish.Core.Models.Contents
             Name = new MultilingualText(GetElement(Entity.NameTag, true));
             Description = new MultilingualText(GetElement(Entity.DescriptionTag, true));
         }
+
+        public string GetName(string lang)
+        {
+            Text val = Name.Values.Where(val => val.Language == lang).FirstOrDefault();
+            return val != null ? val.Value : null;
+        }
+
+        public void SetName(string metadataSetName, string lang)
+        {
+            Name.SetContent(metadataSetName, lang);
+        }
     }
 }

@@ -263,7 +263,7 @@
 				</authorizations>
 			</action>
 			
-			<action link-label="Purge Submission"  function="Purge"><!-- Permanently delete a submission who started a new application -->
+			<get-action link-label="Purge Submission"  function="Purge"><!-- Permanently delete a submission who started a new application -->
 				<params>
 					<!-- main application document ID to be passed programatically -->
 				</params>
@@ -289,7 +289,7 @@
 					<!-- main application document ID to be passed programatically -->
 				</params>
 				<post-actions>
-					<action button-label="Save"   function="Save">
+					<post-action button-label="Save"   function="Save">
 						<state-mappings>
 							<map current="DeanOfficeRevision"  next="SavedDeanOfficeRevision"/>
 							<map current="AACRevision"  next="SavedAACRevision"/>

@@ -248,7 +248,7 @@ After the first feelings of confusion and uncertainty, I slowly got used to the 
 In the past decade, Amsterdam has become a hasty and chaotic place, its occupants increasingly short-tempered. The city's population of 863,000 was annually swollen by nine million tourists.
 The shops in the city center were given over to cater to them, selling waffles, souvenirs and cannabis seeds. Stores catering to residents closed down because of extreme hikes in rent and the lack of customers.
 More and more, locals have started to avoid the most beautiful part of their city, as its houses were rented out to tourists and expats.";
-                                MultilingualText des = new MultilingualText(ms.GetFieldByName("Description", lang).ToString());
+                                MultilingualText des = new MultilingualText(ms.GetFieldByName<TextArea>("Description", lang).ToString());
                                 (field as TextField).Values.Add(des);
                                 des.SetContent(desc);
                             }

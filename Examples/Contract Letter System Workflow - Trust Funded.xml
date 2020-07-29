@@ -72,6 +72,31 @@
               xml:lang="en">This metadata set defines the email template to be sent for the department chair.</text>
 			</description>
 			<fields>
+			
+				<field model-type="Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+               id="0e176ef5-a235-470f-bf95-6c8aa99921b2">
+					<name model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+						<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                  xml:lang="en">Recipients</text>
+					</name>
+					<description model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+						<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+                  xml:lang="en"></text>
+					</description>
+					<values>
+						<value order="0" model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+							<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+						  xml:lang="en">user@ualberta.ca</text>
+						</value>
+						<value order="0" model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+							<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+						  xml:lang="en">data/71d30fb4-9f49-4055-abee-d321735203c8/0e176ef5-a235-470f-bf95-6c8aa99921b2</text>
+						</value>
+						
+					</values>
+				</field>
+			
+			
 				<field model-type="Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
                id="0e176ef5-a235-470f-bf95-6c8aa99921b2">
 					<name model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
@@ -90,7 +115,7 @@
 					</values>
 				</field>
 
-\				<field model-type="Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+				<field model-type="Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
                id="11176ef5-a235-470f-bf95-6c8aa99921b2">
 					<name model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
 						<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
@@ -142,7 +167,7 @@
 					</values>
 				</field>
 
-\				<field model-type="Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+				<field model-type="Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
                id="11176ef5-a235-470f-bf95-6c8aa99921b2">
 					<name model-type="Catfish.Core.Models.Contents.MultilingualText, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
 						<text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
