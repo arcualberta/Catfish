@@ -159,6 +159,23 @@ namespace Catfish.Core.Models.Contents
             return field;
         }
 
+        public T CreateField<T>(string content, string lang, string cssClass = null, string fieldName = null)
+            where T : InfoSection
+        {
+            T field = Activator.CreateInstance(typeof(T)) as T;
+
+            Fields.Add(field);
+
+            field.SetContent(content, lang);
+
+            if (!string.IsNullOrEmpty(fieldName))
+                field.SetName(fieldName, lang);
+
+            if (!string.IsNullOrEmpty(cssClass))
+                field.CssClass = cssClass;
+
+            return field;
+        }
 
     }
 }

@@ -17,6 +17,12 @@ namespace Catfish.Core.Models.Contents
         [JsonIgnore]
         public XElement Data { get; protected set; }
 
+        public string CssClass
+        {
+            get => GetAttribute("css-class", null);
+            set => SetAttribute("css-class", value);
+        }
+
         public static XmlModel InstantiateContentModel(XElement data)
         {
             string typeString = data.Attribute("model-type").Value;
