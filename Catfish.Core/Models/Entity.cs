@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Helpers;
 using Catfish.Core.Models.Contents;
+using Catfish.Core.Models.Contents.Data;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace Catfish.Core.Models
         public static readonly string Tag = "entity";
         public static readonly string NameTag = "name";
         public static readonly string DescriptionTag = "description";
+        public static readonly string MetadataSetsRootTag = "metadata-sets";
+        public static readonly string DataContainerRootTag = "data-container";
 
         [Key]
         public Guid Id
@@ -80,6 +83,9 @@ namespace Catfish.Core.Models
         [NotMapped]
         public XmlModelList<MetadataSet> MetadataSets { get; protected set; }
 
+        [NotMapped]
+        public XmlModelList<DataItem> DataContainer { get; protected set; }
+
         public ICollection<Relationship> SubjectRelationships { get; set; }
         public ICollection<Relationship> ObjectRelationships { get; set; }
 
@@ -134,9 +140,15 @@ namespace Catfish.Core.Models
             Name = new MultilingualText(XmlHelper.GetElement(Data, Entity.NameTag, true));
             Description = new MultilingualText(XmlHelper.GetElement(Data, Entity.DescriptionTag, true));
 
-            //Building the Metadata Set list
+            //Wrapping the XElement "Data" in an XmlModel wrapper so that it can be used by the
+            //rest of this initialization routine.
             XmlModel xml = new XmlModel(Data);
-            MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement("metadata-sets", true));
+
+            //Building the Metadata Set list
+            MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement(MetadataSetsRootTag, true), true);
+
+            //Building the DataContainer
+            DataContainer = new XmlModelList<DataItem>(xml.GetElement(DataContainerRootTag, true), true);
         }
 
         public T InstantiateViewModel<T>() where T : XmlModel

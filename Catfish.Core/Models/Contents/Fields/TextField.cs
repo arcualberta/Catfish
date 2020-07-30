@@ -9,14 +9,13 @@ namespace Catfish.Core.Models.Contents.Fields
 {
     public class TextField : BaseField
     {
+        public static readonly string ValuesTag = "values";
+        public static readonly string ValueTag = "value";
         public TextField() { }
         public TextField(XElement data) : base(data) { }
-
-        public XmlModelList<MultilingualText> Values { get; set; }
         public TextField(string name, string desc, string lang = null) : base(name, desc, lang) { }
 
-        public static string ValuesTag = "values";
-        public static string ValueTag = "value";
+        public XmlModelList<MultilingualText> Values { get; set; }
         public override void Initialize(eGuidOption guidOption)
         {
             base.Initialize(guidOption);
@@ -24,21 +23,9 @@ namespace Catfish.Core.Models.Contents.Fields
             //Building the values
             XmlModel xml = new XmlModel(Data);
             Values = new XmlModelList<MultilingualText>(xml.GetElement(ValuesTag, true), true, ValueTag);
-
-            ////if(Values.Count == 0)
-            ////{
-            ////    //TODO: get the list of languages from the configuration file.
-            ////    List<string> languages = Name.Values.Select(v => v.Language).Distinct().ToList();
-
-            ////    MultilingualText value = new MultilingualText("value");
-            ////    Values.Add(value);
-            ////    foreach(var lang in languages)
-            ////        value.SetContent("", lang);
-            ////}
-
         }
 
-        public override int SetValue(string val, string lang, int valueIndex = 0)
+        public int SetValue(string val, string lang, int valueIndex = 0)
         {
             if(Values.Count <= valueIndex)
             {
@@ -49,7 +36,7 @@ namespace Catfish.Core.Models.Contents.Fields
             return valueIndex;
         }
 
-        public override string GetValue(string lang, int valueIndex = 0)
+        public string GetValue(string lang, int valueIndex = 0)
         {
             return (Values.Count <= valueIndex) ? null : Values[valueIndex].GetContent(lang);
         }

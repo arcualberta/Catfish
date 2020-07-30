@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
+using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using System;
@@ -36,19 +37,34 @@ namespace Catfish.Services
             return ms == null ? null : new EmailTemplate(ms.Data);
         }
 
-        protected MetadataSet GetMetadataSet(string metadataSetName, bool createIfNotExist)
+        protected MetadataSet GetMetadataSet(string metadataSetName, bool createIfNotExists)
         {
             MetadataSet ms = mEntityTemplate.MetadataSets
                 .Where(ms => ms.GetName(DefaultLanguage) == metadataSetName)
                 .FirstOrDefault();
 
-            if(ms == null && createIfNotExist)
+            if(ms == null && createIfNotExists)
             {
                 ms = new MetadataSet();
                 ms.SetName(metadataSetName, DefaultLanguage);
                 mEntityTemplate.MetadataSets.Add(ms);
             }
             return ms;
+        }
+
+        public DataItem GetDataItem(string dataItemName, bool createIfNotExists)
+        {
+            DataItem dataItem = mEntityTemplate.DataContainer
+                .Where(di => di.GetName(DefaultLanguage) == dataItemName)
+                .FirstOrDefault();
+
+            if (dataItem == null && createIfNotExists)
+            {
+                dataItem = new DataItem();
+                dataItem.SetName(dataItemName, DefaultLanguage);
+                mEntityTemplate.DataContainer.Add(dataItem);
+            }
+            return dataItem;
         }
     }
 }

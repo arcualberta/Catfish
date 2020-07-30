@@ -90,15 +90,22 @@ namespace Catfish.Core.Models.Contents
             return field;
         }
 
-        ////public int SetFieldValue<T>(string fieldName, string fieldNameLang, string val, string valLanguage, int valueIndex = 0)
-        ////    where T : BaseField
-        ////{
-        ////    //Select the field of which the name is given in the fieldNameLanguage
-        ////    BaseField field = GetFieldByName<T>(fieldName, fieldNameLang);
+        public T CreateField<T>(string fieldName, string lang, bool? isRequired = null, string defaultValue = null)
+            where T : TextField
+        {
+            T field = Activator.CreateInstance(typeof(T)) as T;
 
-        ////    //Set the value of the selected field in the language given by valLanguage
-        ////    return field.SetValue(val, valLanguage, valueIndex);
-        ////}
+            Fields.Add(field);
+            field.SetName(fieldName, lang);
+
+            if (isRequired.HasValue)
+                field.Required = isRequired.Value;
+
+            if (defaultValue != null)
+                field.SetValue(defaultValue, lang);
+
+            return field;
+        }
 
         public void SetFieldValue<T>(string fieldName, string fieldNameLang, string fieldValue, string fieldValueLang, bool createIfNotExists = true, int valueIndex = 0) 
             where T : TextField
@@ -136,6 +143,22 @@ namespace Catfish.Core.Models.Contents
 
             return values;
         }
+
+        public T CreateField<T>(string fieldName, string lang, string[] options, bool? isRequired = null, int? defaultValueIndex = null)
+            where T : OptionsField
+        {
+            T field = Activator.CreateInstance(typeof(T)) as T;
+
+            Fields.Add(field);
+            field.SetName(fieldName, lang);
+            field.AddOptions(options, lang, defaultValueIndex);
+
+            if (isRequired.HasValue)
+                field.Required = isRequired.Value;
+
+            return field;
+        }
+
 
     }
 }

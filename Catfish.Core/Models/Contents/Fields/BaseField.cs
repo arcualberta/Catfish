@@ -11,12 +11,15 @@ namespace Catfish.Core.Models.Contents.Fields
     {
         public const string FieldTagName = "field";
 
-        public abstract int SetValue(string val, string valLanguage, int valueIndex = 0);
-        public abstract string GetValue(string valLanguage, int valueIndex = 0);
         public Guid Id
         {
             get => Guid.Parse(Data.Attribute("id").Value);
             set => Data.SetAttributeValue("id", value);
+        }
+        public bool Required
+        {
+            get => GetAttribute("required", false); 
+            set => SetAttribute("required", value);
         }
 
         public MultilingualText Name { get; protected set; }
@@ -44,70 +47,26 @@ namespace Catfish.Core.Models.Contents.Fields
             Description = new MultilingualText(GetElement(Entity.DescriptionTag, true));
         }
 
-        /*
-                /// <summary>
-                /// Name in specific languages
-                /// </summary>
-                protected List<Text> mName = new List<Text>();
-                public void SetName(string name, string lang = null)
-                {
-                    if (string.IsNullOrEmpty(lang))
-                        lang = ConfigHelper.DefaultLanguageCode;
-
-                    Text nameInGivenLanguage = mName.Where(n => n.Language == lang).FirstOrDefault();
-                    if (nameInGivenLanguage == null)
-                    {
-                        nameInGivenLanguage = new Text(name, lang);
-                        GetElement(Entity.NameTag, true).Add(nameInGivenLanguage.Data);
-                        mName.Add(nameInGivenLanguage);
-                    }
-                    else
-                        nameInGivenLanguage.Data.Value = name;
-                }
-
-                public string GetName(string lang)
-                {
-                    if (string.IsNullOrEmpty(lang))
-                        lang = ConfigHelper.DefaultLanguageCode;
-
-                    Text selected = mName.Where(n => n.Language == lang).FirstOrDefault();
-                    if (selected == null)
-                        selected = mName.Where(n => !string.IsNullOrEmpty(n.Value)).FirstOrDefault();
-
-                    return selected != null ? selected.Value : null;
-                }
-        */
-
-        /// <summary>
-        /// Description in specific languages
-        /// </summary>
-        protected List<Text> mDesc = new List<Text>();
-        public void SetDescription(string name, string lang = null)
+        public string GetName(string lang)
         {
-            if (string.IsNullOrEmpty(lang))
-                lang = ConfigHelper.DefaultLanguageCode;
+            Text val = Name.Values.Where(val => val.Language == lang).FirstOrDefault();
+            return val != null ? val.Value : null;
+        }
 
-            Text descInGivenLanguage = mDesc.Where(n => n.Language == lang).FirstOrDefault();
-            if (descInGivenLanguage == null)
-            {
-                descInGivenLanguage = new Text(name, lang);
-                GetElement(Entity.DescriptionTag, true).Add(descInGivenLanguage.Data);
-                mDesc.Add(descInGivenLanguage);
-            }
-            else
-                descInGivenLanguage.Data.Value = name;
+        public void SetName(string containerName, string lang)
+        {
+            Name.SetContent(containerName, lang);
         }
 
         public string GetDescription(string lang)
         {
-            if (string.IsNullOrEmpty(lang))
-                lang = ConfigHelper.DefaultLanguageCode;
+            Text val = Description.Values.Where(val => val.Language == lang).FirstOrDefault();
+            return val != null ? val.Value : null;
+        }
 
-            Text selected = mDesc.Where(n => n.Language == lang).FirstOrDefault();
-            if (selected == null)
-                selected = mDesc.Where(n => !string.IsNullOrEmpty(n.Value)).FirstOrDefault();
-
-            return selected != null ? selected.Value : null;
+        public void SetDescription(string containerDescription, string lang)
+        {
+            Description.SetContent(containerDescription, lang);
         }
     }
 }

@@ -87,5 +87,46 @@ namespace Catfish.Core.Models.Contents
             model.Data = new XElement(Data);
             return model;
         }
+
+        public bool GetAttribute(string attName, bool defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            return (att == null || string.IsNullOrEmpty(att.Value)) ? defaultValue : bool.Parse(att.Value);
+        }
+        public void SetAttribute(string attName, bool attValue)
+        {
+            Data.SetAttributeValue(attName, attValue);
+        }
+
+        public int GetAttribute(string attName, int defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            return (att == null || string.IsNullOrEmpty(att.Value)) ? defaultValue : int.Parse(att.Value);
+        }
+        public void SetAttribute(string attName, int attValue)
+        {
+            Data.SetAttributeValue(attName, attValue);
+        }
+
+        public string GetAttribute(string attName, string defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            return att == null ? defaultValue : att.Value;
+        }
+        public void SetAttribute(string attName, string attValue)
+        {
+            Data.SetAttributeValue(attName, attValue);
+        }
+
+        public Guid GetAttribute(string attName, Guid defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            return (att == null || string.IsNullOrEmpty(att.Value)) ? defaultValue : Guid.Parse(att.Value);
+        }
+        public void SetAttribute(string attName, Guid attValue)
+        {
+            Data.SetAttributeValue(attName, attValue);
+        }
+
     }
 }
