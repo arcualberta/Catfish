@@ -11,7 +11,7 @@ namespace Catfish.Services
 {
     public class WorkflowService : IWorkflowService
     {
-        public readonly string DefaultLanguage = "en";
+        public static readonly string DefaultLanguage = "en";
 
         private EntityTemplate mEntityTemplate;
 

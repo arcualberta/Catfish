@@ -32,8 +32,14 @@ namespace Catfish.UnitTests
             ws.SetModel(template);
             
             EmailTemplate trustAccountHolderNotification = ws.GetEmailTemplate("Trust Account Holder Notification", true);
+            trustAccountHolderNotification.SetDescription("This metadata set defines the email template to be sent for the trust-account holder when a new contract is created.", WorkflowService.DefaultLanguage);
             trustAccountHolderNotification.SetSubject("Trust-funded Contract Review");
-            trustAccountHolderNotification.SetBody("Please review the contract letter below and provide your approval decision. Thanks you.");
+            trustAccountHolderNotification.SetBody("Please review @Link[this contract letter|@Model] to be funded by one of your trust accounts and provide your decision within 2 weeks.\n\nThank you");
+
+            EmailTemplate deptChairNotification = ws.GetEmailTemplate("Associate Chair Notification", true);
+            deptChairNotification.SetDescription("This metadata set defines the email template to be sent for the associate chair when a new contract is created.", WorkflowService.DefaultLanguage);
+            deptChairNotification.SetSubject("Graduate Contract Review (Trust Funded)");
+            deptChairNotification.SetBody("Please review @Link[this contract letter|@Model] to be funded by a trust accounts and provide your decision within 2 weeks.\n\nThank you");
 
             template.Data.Save("entityTemplate.xml");
         }
