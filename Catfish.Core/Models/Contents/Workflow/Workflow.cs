@@ -9,7 +9,7 @@ namespace Catfish.Core.Models.Contents.Workflow
     public class Workflow : XmlModel
     {
         public XmlModelList<State> States { get; set; }
-        public XmlModelList<WorkflowAction> Actions { get; set; }
+        public XmlModelList<GetAction> Actions { get; set; }
         public XmlModelList<Trigger> Triggers { get; set; }
 
         public Workflow(XElement data)
@@ -31,7 +31,7 @@ namespace Catfish.Core.Models.Contents.Workflow
 
             //Initializing the actions list
             XElement actionListDefinition = GetElement("actions", true);
-            Actions = new XmlModelList<WorkflowAction>(actionListDefinition, true, "action");
+            Actions = new XmlModelList<GetAction>(actionListDefinition, true, "action");
 
         }
 
