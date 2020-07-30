@@ -179,17 +179,17 @@
 			<trigger function="AddAuditEntry" type="ReviewRequest" id="ed252561-b957-4141-970b-fdb101a96cc2"/>
 		</triggers>
 		<actions>
-			<action link-label="Start Submission" function="Create" group="Home"> <!-- Starting a new submission by DeptAdmin -->
+			<get-action link-label="Start Submission" function="Create" group="Home"> <!-- Starting a new submission by DeptAdmin -->
 				<params>
 					<template ref-id="88d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application template ID-->
 				</params>
 				<post-actions>
-					<action button-label="Save"   function="Save">
+					<post-action button-label="Save"   function="Save">
 						<state-mappings>
 							<map current="*"  next="Saved"/>
 						</state-mappings>
-					</action>
-					<action button-label="Submit" function="Save">
+					</post-action>
+					<post-action button-label="Submit" function="Save">
 						<new-state>
 							<map current="*"  next="Submitted"/>
 						</new-state>
@@ -201,24 +201,24 @@
 							<trigger-ref order="0" ref-id="bbcc2561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
 							<trigger-ref order="1" ref-id="bbcc2561-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
 						</triggers>						
-					</action>
+					</post-action>
 				</post-actions>
 				<authorizations>
 					<role>DeptAdmin</role>
 				</authorizations>
-			</action>
+			</get-action>
 
-			<action link-label="Edit Submission"  function="Edit" group="Details"> <!-- Editing a submission who started a new application -->
+			<get-action link-label="Edit Submission"  function="Edit" group="Details"> <!-- Editing a submission who started a new application -->
 				<params>
 					<!-- main application document ID to be passed programatically -->
 				</params>
 				<post-actions>
-					<action button-label="Save"  function="Save" >
+					<post-action button-label="Save"  function="Save" >
 						<state-mappings>
 							<map current="Saved"  next="Saved"/>
 						</state-mappings>
-					</action>
-					<action button-label="Submit" function="Save" >
+					</post-action>
+					<post-action button-label="Submit" function="Save" >
 						<state-mappings>
 							<map current="Saved"  next="Submitted"/>
 						</state-mappings>
@@ -230,7 +230,7 @@
 							<trigger-ref order="0" ref-id="bbcc2561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
 							<trigger-ref order="1" ref-id="bbcc2561-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
 						</triggers>						
-					</action>
+					</post-action>
 				</post-actions>
 				<valid-states>
 					<state>Saved</state>
@@ -238,14 +238,14 @@
 				<authorizations>
 					<role>Owner</role>
 				</authorizations>
-			</action>
+			</get-action>
 			
-			<action link-label="Delete Submission"  function="Delete">
+			<get-action link-label="Delete Submission"  function="Delete">
 				<params>
 					<!-- main application document ID to be passed programatically -->
 				</params>
 				<post-actions>
-					<action button-label="Delete"   function="Save" >
+					<post-action button-label="Delete"   function="Save" >
 						<state-mappings>
 							<map current="Saved"  next="Deleted"/>
 						</state-mappings>
@@ -253,7 +253,7 @@
 							<button text="Yes, delete" return="true" />
 							<button text="Cancel" return="false" />
 						</pop-up>
-					</action>
+					</post-action>
 				</post-actions>
 				<valid-states>
 					<state>Saved</state>
@@ -261,19 +261,19 @@
 				<authorizations>
 					<role>Owner</role>
 				</authorizations>
-			</action>
+			</get-action>
 			
-			<action link-label="Purge Submission"  function="Purge"><!-- Permanently delete a submission who started a new application -->
+			<get-action link-label="Purge Submission"  function="Purge"><!-- Permanently delete a submission who started a new application -->
 				<params>
 					<!-- main application document ID to be passed programatically -->
 				</params>
 				<post-actions>
-					<action button-label="Purge"   function="Purge">
+					<post-action button-label="Purge"   function="Purge">
 						<pop-up title="WARNING: Deleting Permanently" mesage="When purged, the document cannot be recovered. Please confirm">
 							<button text="Yes, purge" return="true" />
 							<button text="Cancel" return="false" />
 						</pop-up>
-					</action>
+					</post-action>
 				</post-actions>
 				<valid-states>
 					<state>Deleted</state>
@@ -281,15 +281,15 @@
 				<authorizations>
 					<role>Owner</role>
 				</authorizations>
-			</action>
+			</get-action>
 			
 			<!-- TODO: Merge with the previous Edit Submission block -->
-			<action link-label="Edit Submission" function="Edit"> <!-- Editing a revision by the Dept Admin -->
+			<get-action link-label="Edit Submission" function="Edit"> <!-- Editing a revision by the Dept Admin -->
 				<params>
 					<!-- main application document ID to be passed programatically -->
 				</params>
 				<post-actions>
-					<action button-label="Save"   function="Save">
+					<post-action button-label="Save"   function="Save">
 						<state-mappings>
 							<map current="DeanOfficeRevision"  next="SavedDeanOfficeRevision"/>
 							<map current="AACRevision"  next="SavedAACRevision"/>
@@ -297,8 +297,8 @@
 							<map current="AFCRevision"  next="SavedAFCRevision"/>
 							<map current="GFCRevision"  next="SavedGFCRevision"/>
 						</state-mappings>
-					</action>
-					<action button-label="Submit"  function="Save" >
+					</post-action>
+					<post-action button-label="Submit"  function="Save" >
 						<state-mappings>
 							<map current="DeanOfficeRevision"  next="DeanOfficeRevisionCompleted"/>
 							<map current="AACRevision"  next="AACRevisionCompleted"/>
@@ -319,7 +319,7 @@
 							<trigger-ref order="0" ref-id="bv67j561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
 							<trigger-ref order="1" ref-id="9giu4jk9-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
 						</triggers>	
-					</action> <!-- add the pop-up -->
+					</post-action> <!-- add the pop-up -->
 				</post-actions>
 				<valid-states>
 					<state>DeanOfficeRevision</state>
@@ -336,16 +336,16 @@
 				<authorizations>
 					<role>Owner</role>
 				</authorizations>
-			</action>
+			</get-action>
 			
 			
-			<action link-label="Send for Revision"  function="ChangeState"> <!-- Sending a document back to the owner for revisions -->
+			<get-action link-label="Send for Revision"  function="ChangeState"> <!-- Sending a document back to the owner for revisions -->
 				<params>
 					<!-- main application document ID to be passed programatically -->
 					<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form Template -->
 				</params>
 				<post-actions>
-					<action function="Comment">
+					<post-action function="Comment">
 						<state-mappings>
 							<map current="Submitted"  next="DeanOfficeRevision" button-label="Send for Revision"/>
 							<map current="WithAAC"  next="AACRevision" button-label="Send for Revision"/>
@@ -365,7 +365,7 @@
 						<triggers>
 							<trigger-ref order="0" ref-id="jh8c2561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the document owner, requesting a revision -->
 						</triggers>						
-					</action>
+					</post-action>
 				</post-actions>
 				<valid-states>
 					<state>Submitted</state>
@@ -382,7 +382,7 @@
 				<authorizations>
 					<role>CentralAdmin</role>
 				</authorizations>
-			</action>
+			</get-action>
 			
 			
 			<!-- 
@@ -390,13 +390,13 @@
 				Therefore, activities such as sending for revisions, moving to calendar, etc. are excluded here. They are
 				defined in a separate sections.
 			-->
-			<action link-label="Update Document State" function="ChangeState">
+			<get-action link-label="Update Document State" function="ChangeState">
 				<params>
 					<!-- main application document ID to be passed programatically -->
 					<document ref-id="9ot60fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
 				</params>
 				<post-actions>
-					<action function="Comment">
+					<post-action function="Comment">
 						<state-mappings>
 							
 						
@@ -439,7 +439,7 @@
 							<button text="Yes" return="true" />
 							<button text="Cancel" return="false" />
 						</pop-up>
-					</action>
+					</post-action>
 				</post-actions>
 				<valid-states>
 					<state>Submitted</state>
@@ -458,15 +458,15 @@
 				<authorizations>
 					<role>CentralAdmin</role>
 				</authorizations>
-			</action>
+			</get-action>
 			
-			<action link-label="Move to Draft Calendar" function="ChangeState"><!-- Sending a document to the reviewer(s) for review -->
+			<get-action link-label="Move to Draft Calendar" function="ChangeState"><!-- Sending a document to the reviewer(s) for review -->
 				<params>
 					<!-- main application document ID to be passed programatically -->
 					<document ref-id="99yt0fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
 				</params>
 				<post-actions>
-					<action button-label="Correct" function="Comment" >
+					<post-action button-label="Correct" function="Comment" >
 						<state-mappings>
 							<map current="GFCApproved"  next="MoveToDraftCorrect"/>
 							<map current="MoveToDraftError"  next="MoveToDraftCorrect"/>
@@ -479,8 +479,8 @@
 							<trigger-ref order="0" ref-id="p0igj561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
 							<trigger-ref order="1" ref-id="76rd4jk9-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
 						</triggers>	
-					</action>
-					<action button-label="With Error" function="Comment" >
+					</post-action>
+					<post-action button-label="With Error" function="Comment" >
 						<state-mappings>
 							<map current="GFCApproved"  next="MoveToDraftError"/>
 						</state-mappings>
@@ -492,7 +492,7 @@
 							<trigger-ref order="0" ref-id="hg67j561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
 							<trigger-ref order="1" ref-id="9j5u4jk9-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
 						</triggers>	
-					</action>
+					</post-action>
 				</post-actions>
 				<valid-states>
 					<state>GFCApproved</state>
@@ -501,7 +501,7 @@
 				<authorizations>
 					<role>CentralAdmin</role>
 				</authorizations>
-			</action>
+			</get-action>
 
 <!-- Template workflow need to be complete -->
 

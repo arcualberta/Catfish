@@ -6,11 +6,12 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Workflow
 {
-    public class WorkflowAction : XmlModel
+    public class GetAction : XmlModel
     {
         public XmlModelList<Authorization> Authorizations { get; set; }
         public XmlModelList<PostAction> PostActions { get; set; }
-        public WorkflowAction(XElement data)
+        public XmlModelList<Param> Params { get; set; }
+        public GetAction(XElement data)
             : base(data)
         {
 
@@ -20,9 +21,13 @@ namespace Catfish.Core.Models.Contents.Workflow
         {
             base.Initialize(guidOption);
 
-            //Initializing the authorizations list
+            //Initializing the params list
+            XElement paramsListDefinition = GetElement("params", true);
+            Params = new XmlModelList<Param>(paramsListDefinition, true, "param");
+
+            //Initializing the postaction list
             XElement postactionsListDefinition = GetElement("post-actions", true);
-            PostActions = new XmlModelList<PostAction>(postactionsListDefinition, true, "action");
+            PostActions = new XmlModelList<PostAction>(postactionsListDefinition, true, "post-action");
 
             //Initializing the authorizations list
             XElement authorizationsListDefinition = GetElement("authorizations", true);
