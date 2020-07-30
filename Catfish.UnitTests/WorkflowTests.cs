@@ -25,7 +25,7 @@ namespace Catfish.UnitTests
 
 
         [Test]
-        public void WorkflowBuildTest()
+        public void ContractLetterWorkflowBuildTest()
         {
             string lang = "en";
             EntityTemplate template = new EntityTemplate();
@@ -52,11 +52,9 @@ namespace Catfish.UnitTests
             deptAdminNotification.SetSubject("Cnotract Status Update (Trust Funded)");
             deptAdminNotification.SetBody("The status of @Link[this contract letter|@Model] has been updated.\n\nThank you");
 
-            //We use this variable when creating various forms.
-
             //Contract letter
             DataItem contract = ws.GetDataItem("Contract Letter", true);
-            contract.SetDescription("This is the template for the contract letter.", WorkflowService.DefaultLanguage);
+            contract.SetDescription("This is the template for the contract letter.", lang);
             contract.CreateField<TextField>("First Name", lang, true);
             contract.CreateField<TextField>("Last Name", lang, true);
             contract.CreateField<TextField>("Student ID", lang, true);
@@ -70,12 +68,29 @@ namespace Catfish.UnitTests
             contract.CreateField<DateField>("Appointment End", lang, true);
 
             contract.CreateField<InfoSection>("Stipend", lang, "alert alert-info");
+            contract.CreateField<NumberField>("Rate", lang, true);
+            contract.CreateField<NumberField>("Award", lang, true);
+            contract.CreateField<NumberField>("Salary", lang, true);
 
 
 
             //Save the template
-            template.Data.Save("entityTemplate.xml");
+            template.Data.Save("..\\..\\..\\..\\Examples\\ContractLetterWorkflow.xml");
         }
 
+        public void CalendarManagementSystemWorkflowBuildTest()
+        {
+            string lang = "en";
+            EntityTemplate template = new EntityTemplate();
+            template.Name.SetContent("Calendar management System Workflow");
+
+            IWorkflowService ws = _testHelper.WorkflowService;
+            ws.SetModel(template);
+
+
+
+            template.Data.Save("..\\..\\..\\..\\Examples\\CalendarManagementWorkflow.xml");
+
+        }
     }
 }

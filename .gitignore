@@ -176,3 +176,4 @@ Plugins
 .vs/
 /Catfish.UnitTests/appsettings.test.json
 /*.tgitconfig
+/Examples/ContractLetterWorkflow.xml
