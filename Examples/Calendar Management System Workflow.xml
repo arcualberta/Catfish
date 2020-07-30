@@ -181,7 +181,7 @@
 		<actions>
 			<get-action link-label="Start Submission" function="Create" group="Home"> <!-- Starting a new submission by DeptAdmin -->
 				<params>
-					<template ref-id="88d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application template ID-->
+					<param template-id="88d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application template ID-->
 				</params>
 				<post-actions>
 					<post-action button-label="Save"   function="Save">
@@ -342,7 +342,7 @@
 			<get-action link-label="Send for Revision"  function="ChangeState"> <!-- Sending a document back to the owner for revisions -->
 				<params>
 					<!-- main application document ID to be passed programatically -->
-					<document ref-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form Template -->
+					<param template-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form Template -->
 				</params>
 				<post-actions>
 					<post-action function="Comment">
@@ -393,7 +393,7 @@
 			<get-action link-label="Update Document State" function="ChangeState">
 				<params>
 					<!-- main application document ID to be passed programatically -->
-					<document ref-id="9ot60fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
+					<param template-id="9ot60fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
 				</params>
 				<post-actions>
 					<post-action function="Comment">
@@ -463,7 +463,7 @@
 			<get-action link-label="Move to Draft Calendar" function="ChangeState"><!-- Sending a document to the reviewer(s) for review -->
 				<params>
 					<!-- main application document ID to be passed programatically -->
-					<document ref-id="99yt0fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
+					<param template-id="99yt0fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
 				</params>
 				<post-actions>
 					<post-action button-label="Correct" function="Comment" >
@@ -509,7 +509,7 @@
 			
 			<action name="StartTemplate"><!--create a new template-->
 				<params>
-					<document ref-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template Form ID -->
+					<param template-id="56d30fb4-9f49-4055-abee-d321735203c8" /> <!-- Template Form ID -->
 				</params>
 				
 				<post-actions>
