@@ -8,6 +8,9 @@ namespace Catfish.Core.Models.Contents.Workflow
 {
     public class GetAction : XmlModel
     {
+        public string LinkLabel { get; set; }
+        public string Function { get; set; }
+        public string Group { get; set; }
         public XmlModelList<Authorization> Authorizations { get; set; }
         public XmlModelList<PostAction> PostActions { get; set; }
         public XmlModelList<Param> Params { get; set; }

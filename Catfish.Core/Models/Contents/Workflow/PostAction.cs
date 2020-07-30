@@ -7,6 +7,8 @@ namespace Catfish.Core.Models.Contents.Workflow
 {
     public class PostAction : XmlModel
     {
+        public string Function { get; set; }
+        public string ButtonLabel { get; set; }
         public XmlModelList<StateMapping> StateMappings { get; set; }
         public XmlModelList<PopUp> PopUps { get; set; }
         public XmlModelList<Trigger> Triggers { get; set; }

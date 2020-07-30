@@ -5,11 +5,11 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Workflow
 {
-    public class PopUp : XmlModel
+    public class Button : XmlModel
     {
-        public string Title { get; set; }
-        public string Message { get; set; }
-        public PopUp(XElement data)
+        public string Text { get; set; }
+        public string Return { get; set; }
+        public Button(XElement data)
             : base(data)
         {
 
