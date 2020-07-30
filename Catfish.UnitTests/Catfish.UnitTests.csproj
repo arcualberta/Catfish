@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj" />
+    <ProjectReference Include="..\Catfish\Catfish.csproj" />
   </ItemGroup>
 
   <ItemGroup>
