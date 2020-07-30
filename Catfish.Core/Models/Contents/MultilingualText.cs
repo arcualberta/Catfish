@@ -10,7 +10,7 @@ namespace Catfish.Core.Models.Contents
 {
     public class MultilingualText : XmlModel
     {
-        public List<Text> Values = new List<Text>();
+        public XmlModelList<Text> Values { get; protected set; }
 
         public MultilingualText(string tagName) : base(tagName) { }
 
@@ -20,11 +20,8 @@ namespace Catfish.Core.Models.Contents
         {
             base.Initialize(guidOption);
 
-            // Creating Text objects for all text elements withing the immediate children
-            // and adding them to the Values list.
-            Values = new List<Text>();
-            foreach (var ele in Data.Elements(Text.TagName))
-                Values.Add(XmlModel.InstantiateContentModel(ele) as Text);
+            // Populating the value list.
+            Values = new XmlModelList<Text>(Data, true, Text.TagName);
         }
 
         public void SetContent(string value, string lang = null)
@@ -32,15 +29,20 @@ namespace Catfish.Core.Models.Contents
             if (string.IsNullOrEmpty(lang))
                 lang = ConfigHelper.DefaultLanguageCode;
 
-            Text nameInGivenLanguage = Values.Where(n => n.Language == lang).FirstOrDefault();
-            if (nameInGivenLanguage == null)
-            {
-                nameInGivenLanguage = new Text(value, lang);
-                Data.Add(nameInGivenLanguage.Data);
-                Values.Add(nameInGivenLanguage);
-            }
+            Text elementInGivenLanguage = Values.Where(n => n.Language == lang).FirstOrDefault();
+            if (elementInGivenLanguage == null)
+                Values.Add(new Text(value, lang));
             else
-                nameInGivenLanguage.Data.Value = value;
+                elementInGivenLanguage.Data.Value = value;
+        }
+
+        public String GetContent(string lang = null)
+        {
+            if (string.IsNullOrEmpty(lang))
+                lang = ConfigHelper.DefaultLanguageCode;
+
+            Text elementInGivenLanguage = Values.Where(n => n.Language == lang).FirstOrDefault();
+            return elementInGivenLanguage != null ? elementInGivenLanguage.Value : null;
         }
 
         public string GetConcatenatedContent(string separator)

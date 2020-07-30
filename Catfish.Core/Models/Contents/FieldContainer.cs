@@ -15,7 +15,7 @@ namespace Catfish.Core.Models.Contents
             get => Guid.Parse(Data.Attribute("id").Value);
             set => Data.SetAttributeValue("id", value);
         }
-        public XmlModelList<BaseField> Fields { get; set; }
+        public XmlModelList<BaseField> Fields { get; protected set; }
 
         public FieldContainer(string tagName) : base(tagName) { Initialize(eGuidOption.Ignore); }
         public FieldContainer(XElement data) : base(data) { Initialize(eGuidOption.Ignore); }
@@ -33,9 +33,11 @@ namespace Catfish.Core.Models.Contents
         /// <param name="fieldName"></param>
         /// <param name="lang"></param>
         /// <returns></returns>
-        public BaseField GetFieldByName(string fieldName, string lang)
+        public BaseField GetFieldByName<T>(string fieldName, string lang)
+            where T : BaseField
         {
-            foreach (var field in Fields)
+            var fieldsOfGivenType = Fields.Where(f => f is T);
+            foreach (var field in fieldsOfGivenType)
             {
                 if (field.Name.Values.Where(v => v.Language == lang && v.Value == fieldName).FirstOrDefault() != null)
                     return field;
@@ -43,13 +45,71 @@ namespace Catfish.Core.Models.Contents
             return null;
         }
 
-        public int SetFieldValue(string filedName, string fieldNameLanguage, string val, string valLanguage, int valueIndex = 0)
+        public T GetField<T>(string fieldName, string fieldNameLang, bool createIfNotExists = true)
+            where T : TextField
         {
-            //Select the field of which the name is given in the fieldNameLanguage
-            BaseField field = GetFieldByName(filedName, fieldNameLanguage);
+            T field = GetFieldByName<T>(fieldName, fieldNameLang) as T;
 
-            //Set the value of the selected field in the language given by valLanguage
-            return field.SetValue(val, valLanguage, valueIndex);
+            if (field == null && createIfNotExists)
+            {
+                if (typeof(TextArea).IsAssignableFrom(typeof(T)))
+                    field = new TextArea() as T;
+                else
+                    field = new TextField() as T;
+
+                field.Name.SetContent(fieldName, fieldNameLang);
+                Fields.Add(field);
+            }
+
+            return field;
         }
+
+        ////public int SetFieldValue<T>(string fieldName, string fieldNameLang, string val, string valLanguage, int valueIndex = 0)
+        ////    where T : BaseField
+        ////{
+        ////    //Select the field of which the name is given in the fieldNameLanguage
+        ////    BaseField field = GetFieldByName<T>(fieldName, fieldNameLang);
+
+        ////    //Set the value of the selected field in the language given by valLanguage
+        ////    return field.SetValue(val, valLanguage, valueIndex);
+        ////}
+
+        public void SetFieldValue<T>(string fieldName, string fieldNameLang, string fieldValue, string fieldValueLang, bool createIfNotExists = true, int valueIndex = 0) 
+            where T : TextField
+        {
+            T field = GetField<T>(fieldName, fieldNameLang, createIfNotExists);
+            field.SetValue(fieldValue, fieldValueLang, valueIndex);
+        }
+        public void SetFieldValue<T>(string fieldName, string fieldNameLang, string[] fieldValues, string fieldValueLang, bool createIfNotExists = true, int startValueIndex = 0)
+            where T : TextField
+        {
+            T field = GetField<T>(fieldName, fieldNameLang, createIfNotExists);
+            int valueIndex = startValueIndex;
+            foreach (string val in fieldValues)
+                field.SetValue(val, fieldValueLang, valueIndex);
+        }
+
+        public string GetValue<T>(string fieldName, string fieldNameLanguage, string fieldValueLanguage)
+            where T : TextField
+        {
+            TextField field = GetField<T>(fieldName, fieldNameLanguage, false);
+            return field != null ? field.GetValue(fieldValueLanguage) : null;
+        }
+
+        public List<string> GetValues<T>(string fieldName, string fieldNameLanguage, string fieldValueLanguage)
+            where T : TextField
+        {
+            TextField field = GetField<T>(fieldName, fieldNameLanguage, false);
+            List<string> values = new List<string>();
+            foreach(var val in field.Values)
+            {
+                string v = val.Values.Where(txt => txt.Language == fieldValueLanguage).Select(txt => txt.Value).FirstOrDefault();
+                if (!string.IsNullOrEmpty(v))
+                    values.Add(v);
+            }
+
+            return values;
+        }
+
     }
 }
