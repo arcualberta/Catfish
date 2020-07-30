@@ -2,6 +2,7 @@
 using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Core.Services.Solr;
+using Catfish.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -42,6 +43,7 @@ namespace Catfish.Tests.Helpers
             services.AddScoped<SeedingService>();
             services.AddScoped<DbEntityService>();
             services.AddScoped<IEntityService, EntityService>();
+            services.AddTransient<IWorkflowService, WorkflowService>();
 
 
             ////services.AddScoped<SolrService>();
@@ -58,6 +60,11 @@ namespace Catfish.Tests.Helpers
         public AppDbContext Db
         {
             get => Seviceprovider.GetService<AppDbContext>();
+        }
+
+        public IWorkflowService WorkflowService
+        {
+            get => Seviceprovider.GetService<IWorkflowService>();
         }
     }
 }
