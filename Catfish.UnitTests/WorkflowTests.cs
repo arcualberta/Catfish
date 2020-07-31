@@ -58,10 +58,10 @@ namespace Catfish.UnitTests
             contract.CreateField<TextField>("First Name", lang, true);
             contract.CreateField<TextField>("Last Name", lang, true);
             contract.CreateField<TextField>("Student ID", lang, true);
-            contract.CreateField<TextField>("Student Email", lang, true);
-            contract.CreateField<TextField>("Department", lang, true, "East Asian Studies");
+            contract.CreateField<TextField>("Student Email", lang, true, true);
+            contract.CreateField<TextField>("Department", lang, true, false, "East Asian Studies");
             contract.CreateField<SelectField>("Type of Appointment", lang, new string[] { "Graduate Research Assistant", "Graduate Research Assistantship Fellowship" }, true, 0);
-            contract.CreateField<TextField>("TextField", lang, true);
+            contract.CreateField<TextField>("Assignment", lang, true);
 
             contract.CreateField<InfoSection>("Period of Appointment", lang, "alert alert-info");
             contract.CreateField<DateField>("Appointment Start", lang, true);
