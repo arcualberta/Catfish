@@ -11,6 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Remove="appsettings.example.json" />
+    <Content Remove="Pages\Shared\EditorTemplates\Catfish.Core.Models.Contents.Fields.InfoSection.cshtml" />
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
   </ItemGroup>
 
@@ -47,6 +48,7 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="Pages\Shared\EditorTemplates\Catfish.Core.Models.Contents.Fields.InfoSection.cshtml" />
     <None Include="wwwroot\assets\js\entitytypelist.js" />
     <None Include="wwwroot\assets\js\textarea-field.js" />
   </ItemGroup>

@@ -106,6 +106,8 @@ namespace Catfish.Core.Models.Contents
 
             if (defaultValue != null)
                 field.SetValue(defaultValue, lang);
+            else
+                field.SetValue("", lang);
 
             return field;
         }

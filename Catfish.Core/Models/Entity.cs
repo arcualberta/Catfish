@@ -52,24 +52,28 @@ namespace Catfish.Core.Models
             set => Data.SetAttributeValue("created", value);
         }
 
+        [NotMapped]
         public DateTime? Updated
         {
             get => GetDateTimeAttribute("updated");
             set => Data.SetAttributeValue("updated", value);
         }
 
+        [NotMapped]
         public Guid? TemplateId
         {
             get => GetGuidAttribute("template-id"); 
             set => Data.SetAttributeValue("template-id", value);
         }
 
+        [NotMapped]
         public Guid? StateId
         {
             get => GetGuidAttribute("state-id");
             set => Data.SetAttributeValue("state-id", value);
         }
 
+        [NotMapped]
         public string ModelType
         {
             get => Data.Attribute("model-type").Value;

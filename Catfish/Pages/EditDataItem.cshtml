@@ -1,0 +1,34 @@
+﻿@page "~/data/edit/{id:Guid?}"
+@model Catfish.Pages.EditDataItemModel
+@using Catfish.Core.Models.Contents.Fields;
+
+@{
+    ViewData["Title"] = "EditDataItem";
+}
+
+<h1>Edit Data Item</h1>
+
+<form method="post">
+    <div class="container">
+        @for (int i = 0; i < Model.Item.Fields.Count; ++i)
+        {
+            @if (typeof(InfoSection).IsAssignableFrom(Model.Item.Fields[i].GetType()))
+            {
+                @Html.EditorFor(model => model.Item.Fields[i], Model.Item.Fields[i].GetType().ToString(), null, null)
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-3 control">
+                        @Html.DisplayFor(model => Model.Item.Fields[i].Name, Model.Item.Fields[i].Name.GetType().ToString())
+                    </div>
+
+                    <div class="col-md-9 @Model.Item.Fields[i].CssClass">
+                        @Html.EditorFor(model => model.Item.Fields[i], Model.Item.Fields[i].GetType().ToString(), null, null)
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</form>
+
