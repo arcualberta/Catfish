@@ -1,11 +1,4 @@
-﻿function test() {
-    alert("Hello");
-}
-
 ﻿function addValue(fieldId) {
-    alert(fieldId);
+    var childIdPrefix = fieldId + "_Value_";
+    alert(fieldId + ":" + childIdPrefix);
 }
-
-$(document).ready(function () {
-    console.log("ready!");
-});
