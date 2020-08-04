@@ -2,7 +2,10 @@
 @model Catfish.Pages.EditDataItemModel
 @using Catfish.Core.Models.Contents.Fields;
 
-
+@section head
+{
+    <script type="text/javascript" src="@Url.Content("~/assets/js/form.js")"></script>
+}
 
 @{
     ViewData["Title"] = "EditDataItem";
@@ -24,6 +27,7 @@
                 {
                     string multiple = @Model.Item.Fields[i].AllowMultipleValues ? "multiple" : "";
 
+
                     <div class="col-md-3 control field-label">
                         @Html.DisplayFor(model => Model.Item.Fields[i].Name, Model.Item.Fields[i].Name.GetType().ToString())
                     </div>
@@ -34,7 +38,7 @@
 
                     if (Model.Item.Fields[i].AllowMultipleValues)
                     {
-                        <div>TODO: ADD_BUTTON</div>
+                        <div><button onclick="addValue('@Html.IdFor(model => Model.Item.Fields[i])'); return false;">Click me</button></div>
                     }
                 }
             </div>

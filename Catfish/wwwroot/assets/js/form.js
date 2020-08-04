@@ -1,3 +1,3 @@
-﻿function test() {
-    alert("Hello");
+﻿function addValue(fieldId) {
+    alert(fieldId);
 }
