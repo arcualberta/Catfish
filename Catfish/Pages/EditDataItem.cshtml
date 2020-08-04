@@ -25,24 +25,23 @@
                 }
                 else
                 {
-                    string multiple = @Model.Item.Fields[i].AllowMultipleValues ? "multiple" : "";
-
+                    string fieldId = Html.IdFor(model => Model.Item.Fields[i]);
 
                     <div class="col-md-3 control field-label">
                         @Html.DisplayFor(model => Model.Item.Fields[i].Name, Model.Item.Fields[i].Name.GetType().ToString())
                     </div>
 
-                    <div class="col-md-9 @Model.Item.Fields[i].CssClass field-value @multiple">
+                    <div id="@fieldId" class="col-md-9 @Model.Item.Fields[i].CssClass field-value">
                         @Html.EditorFor(model => Model.Item.Fields[i], Model.Item.Fields[i].GetType().ToString())
                     </div>
 
                     if (Model.Item.Fields[i].AllowMultipleValues)
                     {
-                        <div><button onclick="addValue('@Html.IdFor(model => Model.Item.Fields[i])'); return false;">Click me</button></div>
+                        <div><button onclick="addValue('@fieldId'); return false;">+ Value</button></div>
                     }
                 }
             </div>
         }
-    </div>
+    </div>s
 </form>
 
