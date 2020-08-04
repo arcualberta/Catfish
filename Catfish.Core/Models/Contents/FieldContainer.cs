@@ -90,7 +90,7 @@ namespace Catfish.Core.Models.Contents
             return field;
         }
 
-        public T CreateField<T>(string fieldName, string lang, bool? isRequired = null, string defaultValue = null)
+        public T CreateField<T>(string fieldName, string lang, bool? isRequired = null, bool? allowMultiple = null, string defaultValue = null)
             where T : TextField
         {
             T field = Activator.CreateInstance(typeof(T)) as T;
@@ -100,6 +100,9 @@ namespace Catfish.Core.Models.Contents
 
             if (isRequired.HasValue)
                 field.Required = isRequired.Value;
+
+            if (allowMultiple.HasValue)
+                field.AllowMultipleValues = allowMultiple.Value;
 
             if (defaultValue != null)
                 field.SetValue(defaultValue, lang);

@@ -130,7 +130,10 @@ namespace Catfish
             services.AddScoped<DbEntityService>();
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
-            //services.AddScoped<IEmail, EmailService>();
+            services.AddScoped<IAuthorizationService, AuthorizationService>();
+            services.AddScoped<ISubmissionService, SubmissionService>();
+            services.AddTransient<IWorkflowService, WorkflowService>();
+
 
 
             // Solr services
