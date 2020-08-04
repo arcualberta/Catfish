@@ -117,5 +117,12 @@ namespace Catfish.Core.Models.Contents
         {
             return ((IList<T>)mList).GetEnumerator();
         }
+
+        public T Find(Guid id)
+        {
+            return ((IList<T>)mList)
+                .Where(item => item.Data.Attribute("id").Value == id.ToString())
+                .FirstOrDefault();
+        }
     }
 }

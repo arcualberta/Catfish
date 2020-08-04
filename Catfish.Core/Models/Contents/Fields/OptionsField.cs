@@ -24,31 +24,38 @@ namespace Catfish.Core.Models.Contents.Fields
             Options = new XmlModelList<Option>(xml.GetElement(OptionContainerTag, true), true, OptionTag);
         }
 
-        public void AddOption(string optionText, string lang, bool? selectByDefault)
-        {
-            Option opt = new Option();
-            opt.SetOptionText(optionText, lang);
-            Options.Add(opt);
+        ////public Option SetOptionText(string optionText, string lang, Guid? optionId = null, bool? selectByDefault = null)
+        ////{
+        ////    Option opt = optionId.HasValue ? Options.Find(optionId.Value) : new Option();
+        ////    opt.SetOptionText(optionText, lang);
+        ////    Options.Add(opt);
 
-            if (selectByDefault.HasValue)
-                opt.Selected = selectByDefault.Value;
+        ////    if (selectByDefault.HasValue)
+        ////        opt.Selected = selectByDefault.Value;
 
-
-        }
+        ////    return opt;
+        ////}
 
         public void AddOptions(string[] optionText, string lang, int? selectedOptionIndex = null)
         {
-            int idx = 0;
-            foreach(string text in optionText)
+            for (int i = 0; i < optionText.Length; ++i)
             {
                 Option opt = new Option();
-                opt.SetOptionText(text, lang);
+                opt.SetOptionText(optionText[i], lang);
                 Options.Add(opt);
 
-                if (selectedOptionIndex.HasValue && idx == selectedOptionIndex)
+                if (selectedOptionIndex.HasValue && i == selectedOptionIndex.Value)
                     opt.Selected = true;
+            }
+        }
 
-                ++idx;
+        public void UpdateOptions(string[] optionText, string lang)
+        {
+            for (int i = 0; i < optionText.Length; ++i)
+            {
+                Option opt = Options[i];
+                opt.SetOptionText(optionText[i], lang);
+                Options.Add(opt);
             }
         }
 

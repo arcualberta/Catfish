@@ -38,7 +38,10 @@ namespace Catfish.Pages
             Item.CreateField<TextField>("Student ID", lang, true);
             Item.CreateField<TextField>("Student Email", lang, true, true);
             Item.CreateField<TextField>("Department", lang, true, false, "East Asian Studies");
-            Item.CreateField<SelectField>("Type of Appointment", lang, new string[] { "Graduate Research Assistant", "Graduate Research Assistantship Fellowship" }, true, 0);
+            
+            SelectField typeOfAppointment = Item.CreateField<SelectField>("Type of Appointment", lang, new string[] { "Graduate Research Assistant", "Graduate Research Assistantship Fellowship" }, true, 0);
+            typeOfAppointment.UpdateOptions(new string[] { "Assistant de recherche diplômé", "Bourse d'assistanat de recherche aux cycles supérieurs" }, "fr");
+
             Item.CreateField<TextField>("Assignment", lang, true);
 
             Item.CreateField<InfoSection>("Period of Appointment", lang, "alert alert-info");

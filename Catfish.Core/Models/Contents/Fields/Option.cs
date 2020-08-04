@@ -10,6 +10,11 @@ namespace Catfish.Core.Models.Contents.Fields
         public const string FieldTagName = "option";
 
         public MultilingualText OptionText { get; set; }
+        public Guid Id
+        {
+            get => Guid.Parse(Data.Attribute("id").Value);
+            set => Data.SetAttributeValue("id", value);
+        }
         public bool Selected
         {
             get => GetAttribute("selected", false);
