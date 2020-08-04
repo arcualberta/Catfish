@@ -2,6 +2,8 @@
 @model Catfish.Pages.EditDataItemModel
 @using Catfish.Core.Models.Contents.Fields;
 
+
+
 @{
     ViewData["Title"] = "EditDataItem";
 }
@@ -12,22 +14,30 @@
     <div class="container">
         @for (int i = 0; i < Model.Item.Fields.Count; ++i)
         {
-            @if (typeof(InfoSection).IsAssignableFrom(Model.Item.Fields[i].GetType()))
-            {
-                @Html.EditorFor(model => model.Item.Fields[i], Model.Item.Fields[i].GetType().ToString(), null, null)
-            }
-            else
-            {
-                <div class="row">
-                    <div class="col-md-3 control">
+            <div class="row">
+
+                @if (typeof(InfoSection).IsAssignableFrom(Model.Item.Fields[i].GetType()))
+                {
+                    @Html.EditorFor(model => model.Item.Fields[i], Model.Item.Fields[i].GetType().ToString(), null, null)
+                }
+                else
+                {
+                    string multiple = @Model.Item.Fields[i].AllowMultipleValues ? "multiple" : "";
+
+                    <div class="col-md-3 control field-label">
                         @Html.DisplayFor(model => Model.Item.Fields[i].Name, Model.Item.Fields[i].Name.GetType().ToString())
                     </div>
 
-                    <div class="col-md-9 @Model.Item.Fields[i].CssClass">
-                        @Html.EditorFor(model => model.Item.Fields[i], Model.Item.Fields[i].GetType().ToString(), null, null)
+                    <div class="col-md-9 @Model.Item.Fields[i].CssClass field-value @multiple">
+                        @Html.EditorFor(model => Model.Item.Fields[i], Model.Item.Fields[i].GetType().ToString())
                     </div>
-                </div>
-            }
+
+                    if (Model.Item.Fields[i].AllowMultipleValues)
+                    {
+                        <div>TODO: ADD_BUTTON</div>
+                    }
+                }
+            </div>
         }
     </div>
 </form>

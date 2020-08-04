@@ -22,6 +22,13 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("required", value);
         }
 
+        public bool AllowMultipleValues
+        {
+            get => GetAttribute("multiple", false);
+            set => SetAttribute("multiple", value);
+        }
+
+
         public MultilingualText Name { get; protected set; }
         public MultilingualText Description { get; protected set; }
 
