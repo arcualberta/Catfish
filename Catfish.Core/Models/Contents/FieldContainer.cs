@@ -149,14 +149,14 @@ namespace Catfish.Core.Models.Contents
             return values;
         }
 
-        public T CreateField<T>(string fieldName, string lang, string[] options, bool? isRequired = null, int? defaultValueIndex = null)
+        public T CreateField<T>(string fieldName, string lang, string[] optionTexts, bool? isRequired = null, int? defaultValueIndex = null)
             where T : OptionsField
         {
             T field = Activator.CreateInstance(typeof(T)) as T;
 
             Fields.Add(field);
             field.SetName(fieldName, lang);
-            field.AddOptions(options, lang, defaultValueIndex);
+            field.AddOptions(optionTexts, lang, defaultValueIndex);
 
             if (isRequired.HasValue)
                 field.Required = isRequired.Value;
