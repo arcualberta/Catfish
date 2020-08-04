@@ -48,6 +48,24 @@ namespace Catfish.Core.Models.Contents
 
         public string Value => Data.Value;
 
+        public DateTime DateValue
+        {
+            get => DateTime.Parse(Data.Value);
+            set => Data.Value = value.ToString();
+        }
+
+        public int IntValue
+        {
+            get => int.Parse(Data.Value);
+            set => Data.Value = value.ToString();
+        }
+
+        public decimal DecimalValue
+        {
+            get => decimal.Parse(Data.Value);
+            set => Data.Value = value.ToString();
+        }
+
         public Text() : base(TagName) { }
         public Text(XElement data) : base(data) { }
         public Text(string value, string lang) : base(TagName)

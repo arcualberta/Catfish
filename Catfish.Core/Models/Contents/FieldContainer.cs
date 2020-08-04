@@ -90,6 +90,27 @@ namespace Catfish.Core.Models.Contents
             return field;
         }
 
+        public T CreateField<T>(string fieldName, string lang, bool? isRequired = null, bool? allowMultiple = null, DateTime? defaultValue = null)
+            where T : DateField
+        {
+            T field = Activator.CreateInstance(typeof(T)) as T;
+
+            Fields.Add(field);
+            field.SetName(fieldName, lang);
+
+            if (isRequired.HasValue)
+                field.Required = isRequired.Value;
+
+            if (allowMultiple.HasValue)
+                field.AllowMultipleValues = allowMultiple.Value;
+
+            if (defaultValue != null)
+                field.SetValue(defaultValue.Value);
+            else
+                field.SetValue(new DateTime());
+
+            return field;
+        }
         public T CreateField<T>(string fieldName, string lang, bool? isRequired = null, bool? allowMultiple = null, string defaultValue = null)
             where T : TextField
         {
