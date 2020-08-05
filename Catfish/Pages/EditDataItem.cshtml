@@ -36,11 +36,15 @@
                     string fieldId = Html.IdFor(model => Model.DataItem.Fields[i]);
 
                     <div class="col-md-3 control field-label">
-                        @Html.DisplayFor(model => Model.DataItem.Fields[i].Name, Model.DataItem.Fields[i].Name.GetType().ToString())
+                        @Html.DisplayFor(model => Model.DataItem.Fields[i].Name, "Catfish.Core.Models.Contents.MultilingualText")
                     </div>
 
                     <div id="@fieldId" class="col-md-9 @Model.DataItem.Fields[i].CssClass field-value">
-                        @Html.EditorFor(model => Model.DataItem.Fields[i], Model.DataItem.Fields[i].GetType().ToString())
+
+                        @if (typeof(Catfish.Core.Models.Contents.MultilingualText).IsAssignableFrom(Model.DataItem.Fields[i].GetType()))
+                            @Html.EditorFor(model => Model.DataItem.Fields[i], "Catfish.Core.Models.Contents.MultilingualText")
+                        else
+                            @Html.EditorFor(model => Model.DataItem.Fields[i], Model.DataItem.Fields[i].GetType().ToString())
 
                         @if (Model.DataItem.Fields[i].AllowMultipleValues)
                         {

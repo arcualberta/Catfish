@@ -15,8 +15,8 @@ namespace Catfish.Core.Models.Contents
             get => Guid.Parse(Data.Attribute("id").Value);
             set => Data.SetAttributeValue("id", value);
         }
-        public MultilingualText Name { get; protected set; }
-        public MultilingualText Description { get; protected set; }
+        public MultilingualName Name { get; protected set; }
+        public MultilingualDescription Description { get; protected set; }
         public XmlModelList<BaseField> Fields { get; protected set; }
 
         public FieldContainer(string tagName) : base(tagName) { Initialize(eGuidOption.Ignore); }
@@ -25,8 +25,8 @@ namespace Catfish.Core.Models.Contents
         {
             base.Initialize(guidOption);
 
-            Name = new MultilingualText(GetElement(Entity.NameTag, true));
-            Description = new MultilingualText(GetElement(Entity.DescriptionTag, true));
+            Name = new MultilingualName(GetElement(MultilingualName.TagName, true));
+            Description = new MultilingualDescription(GetElement(MultilingualDescription.TagName, true));
             Fields = new XmlModelList<BaseField>(GetElement(FieldContainerTag, true), true, BaseField.FieldTagName);
         }
 

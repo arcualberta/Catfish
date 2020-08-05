@@ -222,15 +222,10 @@ namespace Catfish.Core.Services
                             
                             if (typeof(TextField).IsAssignableFrom(field.GetType()))
                             {
-                                MultilingualText val = new MultilingualText(TextField.ValueTag);
+                                MultilingualValue val = new MultilingualValue();
                                 (field as TextField).Values.Add(val);
 
-                                if (typeof(DateField).IsAssignableFrom(field.GetType()))
-                                {
-                                    foreach (var lang in languages)
-                                        val.SetContent(DateTime.Today.ToShortDateString(), lang);
-                                }
-                                else if (typeof(TextArea).IsAssignableFrom(field.GetType()))
+                                if (typeof(TextArea).IsAssignableFrom(field.GetType()))
                                 {
                                     foreach (var lang in languages)
                                         val.SetContent(LoremIpsum(5, 10, 3, 5), lang);
@@ -241,6 +236,11 @@ namespace Catfish.Core.Services
                                         val.SetContent(LoremIpsum(), lang);
                                 }
                             }
+                            else if (typeof(DateField).IsAssignableFrom(field.GetType()))
+                            {
+                                (field as DateField).SetValue(DateTime.Today.ToShortDateString());
+                            }
+
                             foreach (var lang in languages)
                             {
                                 string desc = @"A couple of weeks after the first coronavirus case arrived in the Netherlands, we were told to stay inside. Bars and schools closed down and my hometown of Amsterdam came to a halt.
@@ -248,9 +248,7 @@ After the first feelings of confusion and uncertainty, I slowly got used to the 
 In the past decade, Amsterdam has become a hasty and chaotic place, its occupants increasingly short-tempered. The city's population of 863,000 was annually swollen by nine million tourists.
 The shops in the city center were given over to cater to them, selling waffles, souvenirs and cannabis seeds. Stores catering to residents closed down because of extreme hikes in rent and the lack of customers.
 More and more, locals have started to avoid the most beautiful part of their city, as its houses were rented out to tourists and expats.";
-                                MultilingualText des = new MultilingualText(ms.GetFieldByName<TextArea>("Description", lang).ToString());
-                                (field as TextField).Values.Add(des);
-                                des.SetContent(desc);
+                                field.Description.SetContent(desc);
                             }
                         }
                     }

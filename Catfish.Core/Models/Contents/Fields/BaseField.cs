@@ -29,7 +29,7 @@ namespace Catfish.Core.Models.Contents.Fields
         }
 
 
-        public MultilingualText Name { get; protected set; }
+        public MultilingualName Name { get; protected set; }
         public MultilingualText Description { get; protected set; }
 
         public BaseField() : base(FieldTagName) { }
@@ -50,8 +50,8 @@ namespace Catfish.Core.Models.Contents.Fields
             //Ensuring that each field has a unique ID
             base.Initialize(guidOption == eGuidOption.Ignore ? eGuidOption.Ensure : guidOption);
 
-            Name = new MultilingualText(GetElement(Entity.NameTag, true));
-            Description = new MultilingualText(GetElement(Entity.DescriptionTag, true));
+            Name = new MultilingualName(GetElement(MultilingualName.TagName, true));
+            Description = new MultilingualDescription(GetElement(MultilingualDescription.TagName, true));
         }
 
         public string GetName(string lang)

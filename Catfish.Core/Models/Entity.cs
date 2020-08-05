@@ -15,8 +15,6 @@ namespace Catfish.Core.Models
     public class Entity
     {
         public static readonly string Tag = "entity";
-        public static readonly string NameTag = "name";
-        public static readonly string DescriptionTag = "description";
         public static readonly string MetadataSetsRootTag = "metadata-sets";
         public static readonly string DataContainerRootTag = "data-container";
 
@@ -80,9 +78,9 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        public MultilingualText Name { get; protected set; }
+        public MultilingualName Name { get; protected set; }
         [NotMapped]
-        public MultilingualText Description { get; protected set; }
+        public MultilingualDescription Description { get; protected set; }
 
         [NotMapped]
         public XmlModelList<MetadataSet> MetadataSets { get; protected set; }
@@ -141,8 +139,8 @@ namespace Catfish.Core.Models
 
             //Unlike in the cases of xml-attribute-based properties, the Name and Descrition
             //properties must be initialized every time the model is initialized. 
-            Name = new MultilingualText(XmlHelper.GetElement(Data, Entity.NameTag, true));
-            Description = new MultilingualText(XmlHelper.GetElement(Data, Entity.DescriptionTag, true));
+            Name = new MultilingualName(XmlHelper.GetElement(Data, MultilingualName.TagName, true));
+            Description = new MultilingualDescription(XmlHelper.GetElement(Data, MultilingualDescription.TagName, true));
 
             //Wrapping the XElement "Data" in an XmlModel wrapper so that it can be used by the
             //rest of this initialization routine.

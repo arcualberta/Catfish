@@ -213,15 +213,10 @@ namespace Catfish.Core.Services
                             var languages = field.Name.Values.Select(val => val.Language).Distinct();
                             if(typeof(TextField).IsAssignableFrom(field.GetType()))
                             {
-                                MultilingualText val = new MultilingualText(TextField.ValueTag);
+                                MultilingualValue val = new MultilingualValue();
                                 (field as TextField).Values.Add(val);
 
-                                if (typeof(DateField).IsAssignableFrom(field.GetType()))
-                                {
-                                    foreach(var lang in languages)
-                                        val.SetContent(DateTime.Today.ToShortDateString(), lang);
-                                }
-                                else if (typeof(TextArea).IsAssignableFrom(field.GetType()))
+                                if (typeof(TextArea).IsAssignableFrom(field.GetType()))
                                 {
                                     foreach (var lang in languages)
                                         val.SetContent(LoremIpsum(5, 10, 3, 5), lang);
@@ -232,6 +227,11 @@ namespace Catfish.Core.Services
                                         val.SetContent(LoremIpsum(), lang);
                                 }
                             }
+                            else if (typeof(DateField).IsAssignableFrom(field.GetType()))
+                            {
+                                (field as DateField).SetValue(DateTime.Today.ToShortDateString());
+                            }
+
                         }
                     }
 
