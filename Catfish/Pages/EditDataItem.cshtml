@@ -33,12 +33,11 @@
 
                     <div id="@fieldId" class="col-md-9 @Model.DataItem.Fields[i].CssClass field-value">
                         @Html.EditorFor(model => Model.DataItem.Fields[i], Model.DataItem.Fields[i].GetType().ToString())
-
-                        @if (Model.DataItem.Fields[i].AllowMultipleValues)
+                    </div>
+                    @if (Model.DataItem.Fields[i].AllowMultipleValues)
                         {
                             <button type="button" class="btn btn-success btn-xs btn-add-value" onclick="addValue('@fieldId'); return false;">+</button>
                         }
-                    </div>
                 }
             </div>
         }
