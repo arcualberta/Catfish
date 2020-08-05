@@ -1,87 +1,8 @@
 ﻿@page
 @model Catfish.Pages.EntityEditPageModel
-@using Catfish.Core.Models.Contents.Fields;
 
 @{
     ViewData["Title"] = "EntityEditPage";
 }
 
 <h1>EntityEditPage</h1>
-
-@{
-    string lang = "en";
-}
-
-@Model.Item.GetName(lang)
-
-@{
-    foreach (var field in Model.Item.Fields)
-    {
-        <div class="@field.CssClass">
-            @{ 
-                var fieldName = field.GetName(lang);
-
-                //Dealing with differnt types of inputs
-                if (typeof(TextArea).IsAssignableFrom(field.GetType()))
-                {
-                    //This is a text area
-                    <div>Text Area: @field.GetName(lang)</div>
-
-                }
-                else if (typeof(DateField).IsAssignableFrom(field.GetType()))
-                {
-                    //This is a Date Field
-
-                    <div>Date Field: @field.GetName(lang)</div>
-                }
-                else if (typeof(NumberField).IsAssignableFrom(field.GetType()))
-                {
-                    //This is a Number Field
-                    <div>Number Field: @field.GetName(lang)</div>
-
-                }
-                else if (typeof(TextField).IsAssignableFrom(field.GetType()))
-                {
-                    var txtField = field as TextField;
-
-                    //This is a Text Field
-                    <div>Text Field: @field.GetName(lang)</div>
-
-                    //Value
-                    //txtField.Values
-
-
-
-                }
-                else if (typeof(CheckboxField).IsAssignableFrom(field.GetType()))
-                {
-                    //This is a Checkbox Field
-                    <div>Check boxes: @field.GetName(lang)</div>
-
-                }
-                else if (typeof(SelectField).IsAssignableFrom(field.GetType()))
-                {
-                    //This is a Drop-down Field
-                    <div>Drop Down: @field.GetName(lang)</div>
-
-                }
-                else if (typeof(RadioField).IsAssignableFrom(field.GetType()))
-                {
-                    //This is a Radio Button Field
-                    <div>Radio Button Set: @field.GetName(lang)</div>
-
-                }
-                else if (typeof(InfoSection).IsAssignableFrom(field.GetType()))
-                {
-                    //This is an information secrtion
-                    var info = field as InfoSection;
-                    foreach (var txt in info.Content.Values)
-                    {
-                        <div>@txt.Value</div>
-                   
-                    }
-                }
-            }
-        </div>
-    }
-}

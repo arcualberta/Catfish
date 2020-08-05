@@ -90,8 +90,9 @@ namespace Catfish.Core.Models.Contents
             return field;
         }
 
-        public T CreateField<T>(string fieldName, string lang, bool? isRequired = null, bool? allowMultiple = null, DateTime? defaultValue = null)
-            where T : DateField
+
+        public T CreateField<T>(string fieldName, string lang, bool? isRequired = null, bool? allowMultiple = null, object defaultValue = null)
+            where T : MonolingualTextFIeld
         {
             T field = Activator.CreateInstance(typeof(T)) as T;
 
@@ -105,9 +106,14 @@ namespace Catfish.Core.Models.Contents
                 field.AllowMultipleValues = allowMultiple.Value;
 
             if (defaultValue != null)
-                field.SetValue(defaultValue.Value);
+                field.SetValue(defaultValue);
             else
-                field.SetValue(new DateTime());
+            {
+                if (typeof(DateField).IsAssignableFrom(typeof(T)))
+                    field.SetValue(new DateTime());
+                else
+                    field.SetValue(0);
+            }
 
             return field;
         }

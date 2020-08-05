@@ -46,23 +46,27 @@ namespace Catfish.Core.Models.Contents
             set => Data.SetAttributeValue("rank", value);
         }
 
-        public string Value => Data.Value;
+        public string Value
+        {
+            get => Data.Value;
+            set => Data.Value = value;
+        }
 
         public DateTime DateValue
         {
-            get => DateTime.Parse(Data.Value);
+            get => string.IsNullOrEmpty(Data.Value) ? new DateTime() : DateTime.Parse(Data.Value);
             set => Data.Value = value.ToString();
         }
 
         public int IntValue
         {
-            get => int.Parse(Data.Value);
+            get => string.IsNullOrEmpty(Data.Value) ? 0 : int.Parse(Data.Value);
             set => Data.Value = value.ToString();
         }
 
         public decimal DecimalValue
         {
-            get => decimal.Parse(Data.Value);
+            get => string.IsNullOrEmpty(Data.Value) ? 0 : decimal.Parse(Data.Value);
             set => Data.Value = value.ToString();
         }
 
