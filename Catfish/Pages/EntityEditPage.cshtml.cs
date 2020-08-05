@@ -49,9 +49,9 @@ namespace Catfish.Pages
             Item.CreateField<DateField>("Appointment End", lang, true);
 
             Item.CreateField<InfoSection>("Stipend", lang, "alert alert-info");
-            Item.CreateField<NumberField>("Rate", lang, true);
-            Item.CreateField<NumberField>("Award", lang, true);
-            Item.CreateField<NumberField>("Salary", lang, true);
+            Item.CreateField<IntegerField>("Rate", lang, true);
+            Item.CreateField<IntegerField>("Award", lang, true);
+            Item.CreateField<IntegerField>("Salary", lang, true);
 
 
         }

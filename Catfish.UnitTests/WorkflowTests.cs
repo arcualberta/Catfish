@@ -68,9 +68,9 @@ namespace Catfish.UnitTests
             contract.CreateField<DateField>("Appointment End", lang, true);
 
             contract.CreateField<InfoSection>("Stipend", lang, "alert alert-info");
-            contract.CreateField<NumberField>("Rate", lang, true);
-            contract.CreateField<NumberField>("Award", lang, true);
-            contract.CreateField<NumberField>("Salary", lang, true);
+            contract.CreateField<IntegerField>("Rate", lang, true);
+            contract.CreateField<IntegerField>("Award", lang, true);
+            contract.CreateField<IntegerField>("Salary", lang, true);
 
 
 

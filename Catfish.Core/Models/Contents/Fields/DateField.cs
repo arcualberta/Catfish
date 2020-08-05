@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public class DateField : TextField
+    public class DateField : MonolingualTextFIeld
     {
         public DateField() : base() { }
         public DateField(XElement data) : base(data) { }
