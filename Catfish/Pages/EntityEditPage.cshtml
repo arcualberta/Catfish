@@ -5,4 +5,14 @@
     ViewData["Title"] = "EntityEditPage";
 }
 
-<h1>EntityEditPage</h1>
+<h1>Entity Edit Page</h1>
+
+<form method="post">
+    @Html.EditorFor(model => model.Data)
+    @for (int i = 0; i < Model.Data.Children.Count; ++i)
+    {
+        @Html.EditorFor(model => model.Data.Children[i])
+    }
+    <input type="submit" value="Submit" />
+    <input type="submit" value="Submit" />
+</form>

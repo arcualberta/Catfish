@@ -16,6 +16,9 @@ namespace Catfish.Pages
         private readonly IWorkflowService _workflowService;
 
         public DataItem Item { get; set; }
+        
+        [BindProperty]
+        public TestData Data { get; set; }
         public EntityEditPageModel(IWorkflowService workflow) : base(null, null)
         {
             _workflowService = workflow;
@@ -53,7 +56,36 @@ namespace Catfish.Pages
             Item.CreateField<IntegerField>("Award", lang, true);
             Item.CreateField<IntegerField>("Salary", lang, true);
 
+            Data = new TestData();
+            Data.Children.Add(new TestChild() { Id = Guid.NewGuid(), ChildName = "Child 1" });
+            Data.Children.Add(new TestChild() { Id = Guid.NewGuid(), ChildName = "Child 2" });
 
         }
+
+        public void OnPost()
+        {
+            var data = Data;
+        }
     }
+}
+
+public class TestData
+{
+    public Guid Id { get; set; }
+
+    public string Name { get; set; }
+
+    public List<TestChild> Children { get; set; }
+
+    public TestData()
+    {
+        Children = new List<TestChild>();
+    }
+}
+
+public class TestChild
+{
+    public Guid Id { get; set; }
+
+    public string ChildName { get; set; }
 }

@@ -9,6 +9,8 @@ namespace Catfish.Core.Models.Contents.Data
     {
         public const string TagName = "data-item";
 
+        public string TestField { get; set; }
+
         public DataItem() : base(TagName) { Initialize(eGuidOption.Ensure); }
         public DataItem(XElement data) : base(data) { Initialize(eGuidOption.Ensure); }
 

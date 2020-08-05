@@ -15,6 +15,7 @@ namespace Catfish.Pages
     {
         private readonly IWorkflowService _workflowService;
 
+        [BindProperty]
         public DataItem DataItem { get; set; }
         public EditDataItemModel(IWorkflowService workflow) : base(null, null)
         {
@@ -33,27 +34,30 @@ namespace Catfish.Pages
             DataItem = ws.GetDataItem("Contract Letter", true);
 
             DataItem.SetDescription("This is the template for the contract letter.", lang);
+
             DataItem.CreateField<TextField>("First Name", lang, true);
             DataItem.CreateField<TextField>("Last Name", lang, true);
             DataItem.CreateField<TextField>("Student ID", lang, true);
             DataItem.CreateField<TextField>("Student Email", lang, true, true);
             DataItem.CreateField<TextField>("Department", lang, true, false, "East Asian Studies");
-            DataItem.CreateField<SelectField>("Type of Appointment", lang, new string[] { "Graduate Research Assistant", "Graduate Research Assistantship Fellowship" }, true, 0);
-            DataItem.CreateField<TextField>("Assignment", lang, true);
+            ////DataItem.CreateField<SelectField>("Type of Appointment", lang, new string[] { "Graduate Research Assistant", "Graduate Research Assistantship Fellowship" }, true, 0);
+            ////DataItem.CreateField<TextField>("Assignment", lang, true);
 
-            DataItem.CreateField<InfoSection>("Period of Appointment", lang, "alert alert-info");
-            DataItem.CreateField<DateField>("Appointment Start", lang, true);
-            DataItem.CreateField<DateField>("Appointment End", lang, true);
+            ////DataItem.CreateField<InfoSection>("Period of Appointment", lang, "alert alert-info");
+            ////DataItem.CreateField<DateField>("Appointment Start", lang, true);
+            ////DataItem.CreateField<DateField>("Appointment End", lang, true);
 
-            DataItem.CreateField<InfoSection>("Stipend", lang, "alert alert-info");
-            DataItem.CreateField<DecimalField>("Rate", lang, true);
-            DataItem.CreateField<DecimalField>("Award", lang, true);
-            DataItem.CreateField<DecimalField>("Salary", lang, true);
+            ////DataItem.CreateField<InfoSection>("Stipend", lang, "alert alert-info");
+            ////DataItem.CreateField<DecimalField>("Rate", lang, true);
+            ////DataItem.CreateField<DecimalField>("Award", lang, true);
+            ////DataItem.CreateField<DecimalField>("Salary", lang, true);
         }
 
-        public void OnPost(DataItem item)
+        public void OnPost()
         {
-            DataItem = item;
+            DataItem item = DataItem;
+            var val_1 = Request.Form["DataItem.Fields[0].Values[0].Values[0].Value"];
+            var val_2 = Request.Form["DataItem.Fields[1].Values[0].Values[0].Value"];
         }
     }
 }

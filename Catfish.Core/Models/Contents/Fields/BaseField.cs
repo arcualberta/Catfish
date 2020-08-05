@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public abstract class BaseField : XmlModel
+    public class BaseField : XmlModel
     {
         public const string FieldTagName = "field";
 
