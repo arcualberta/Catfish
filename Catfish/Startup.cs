@@ -278,7 +278,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/entitytypelist.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/test.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/catfish.editFieldForm.js");
         }
         private static void RegisterCustomBlocks()
         {
