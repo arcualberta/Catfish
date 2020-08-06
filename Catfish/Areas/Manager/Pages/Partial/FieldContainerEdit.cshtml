@@ -30,9 +30,25 @@
     @{ var url = Model.ApiRoot + Model.Model.Id.ToString();}
     <a href="@url" target="_blank">See JSON Object</a>
 
-    <form>
-        <input type="text" class="" id="form-title" placeholder="Title Your Form Here" />
+    <form v-if="finishedGET">
+        <label for="form-title">Title</label>
+        <div v-for="(name, index) of names.values">
+        <input type="text" class="form-title" :value="name.value" 
+            :id="'form-title-' + index" placeholder="Title Your Form Here" />
+        </div>
+        
+        <button>+</button>
+
+        <label for="form-description">Description</label>
+        <div v-for="(description, index) of descriptions.values">
+            <textarea type="text" class="form-description" :id="'form-description-' + index"
+            placeholder="Description goes here">
+            {{description.value}}
+            </textarea>
+        </div>
+        <button>+</button>
 
     </form>
+    <div v-else>Put loading something or other here</div>
 
 </div>

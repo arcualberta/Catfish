@@ -16,10 +16,17 @@ if (document.getElementById("edit-field-form-page")) {
         data() {
             return {
                 itemId: null,
+                finishedGET: false,
 
                 //api strings
                 getString: "manager/api/forms/",
                 //postString: "manager/items/save",
+
+                names: null,
+                descriptions: null,
+                fields: null,
+                id: null,
+                modelType: null,
             }
         },
         methods: {
@@ -33,8 +40,15 @@ if (document.getElementById("edit-field-form-page")) {
                     fetch(piranha.baseUrl + self.getString + self.itemId)
                         .then(function (response) { return response.json(); })
                         .then(function (result) {
+                            self.names = result.name;
+                            self.descriptions = result.description;
+                            self.fields = result.fields;
+                            self.id = result.id;
+                            self.modelType = result.modelType;
+
+                            self.finishedGET = true;
                             //self.collections = result.collections;
-                            self.updateBindings = true;
+                            //self.updateBindings = true;
                             console.log(result);
 
                         })
