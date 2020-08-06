@@ -275,7 +275,7 @@ namespace Catfish.Core.Services
 
                 if (typeof(NumberField).IsAssignableFrom(field.GetType()))
                 {
-                    resultType = "i";
+                    resultType = "is";
                     sortField = string.Format("field(value_{0}_{1}_{2}, min)", attrMap.MetadataSet.Guid.Replace('-', '_'), field.Guid.Replace('-', '_'), resultType);
                 }
                 else
