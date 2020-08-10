@@ -8,6 +8,7 @@ namespace Catfish.Services
 {
     public interface IEntityTemplateService
     {
-        EntityTemplate GetAvailableTemplates();
+        IList<EntityTemplate> GetTemplates();
+        EntityTemplate GetTemplate(Guid templateId);
     }
 }

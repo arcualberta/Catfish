@@ -7,6 +7,7 @@ using Catfish.Tests.Helpers;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Catfish.UnitTests
@@ -29,7 +30,8 @@ namespace Catfish.UnitTests
         {
             string lang = "en";
             EntityTemplate template = new EntityTemplate();
-            template.Name.SetContent("Trust Funded GRA/GRAF Contract");
+            template.TemplateName = "Trust Funded GRA/GRAF Contract";
+            template.Name.SetContent(template.TemplateName);
             
             IWorkflowService ws = _testHelper.WorkflowService;
             ws.SetModel(template);
@@ -72,9 +74,16 @@ namespace Catfish.UnitTests
             contract.CreateField<IntegerField>("Award", lang, true);
             contract.CreateField<IntegerField>("Salary", lang, true);
 
+            //Save the template to the database
+            AppDbContext db = _testHelper.Db;
+            EntityTemplate oldTemplate = db.EntityTemplates.Where(et => et.TemplateName == template.TemplateName).FirstOrDefault();
+            if (oldTemplate == null)
+                db.EntityTemplates.Add(template);
+            else
+                oldTemplate.Content = template.Content;
+            db.SaveChanges();
 
-
-            //Save the template
+            //Save the template to a file
             template.Data.Save("..\\..\\..\\..\\Examples\\ContractLetterWorkflow.xml");
         }
 

@@ -5,13 +5,13 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public class MonolingualTextFIeld : BaseField
+    public class MonolingualTextField : BaseField
     {
         public XmlModelList<Text> Values { get; protected set; }
 
-        public MonolingualTextFIeld() : base() { }
-        public MonolingualTextFIeld(XElement data) : base(data) { }
-        public MonolingualTextFIeld(string name, string desc, string lang = null) : base(name, desc, lang) { }
+        public MonolingualTextField() : base() { }
+        public MonolingualTextField(XElement data) : base(data) { }
+        public MonolingualTextField(string name, string desc, string lang = null) : base(name, desc, lang) { }
 
         public override void Initialize(eGuidOption guidOption)
         {

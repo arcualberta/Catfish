@@ -23,6 +23,8 @@ using Microsoft.AspNetCore.Localization;
 using Catfish.Core.Models.Solr;
 using Catfish.Core.Services.Solr;
 using Catfish.Services;
+using Catfish.ModelBinders;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Catfish
 {
@@ -105,7 +107,8 @@ namespace Catfish
             services.AddControllersWithViews();
 
             services.AddRazorPages()
-                .AddPiranhaManagerOptions();
+                .AddPiranhaManagerOptions()
+                .AddMvcOptions(options => options.ModelBinderProviders.Insert(0, new FormFieldModelBinderProvider()));
 
             services.AddPiranhaApplication();
             services.AddPiranhaFileStorage();
@@ -124,6 +127,7 @@ namespace Catfish
                 });
                 
             });
+
 
             //Catfish services
             services.AddScoped<EntityTypeService>();

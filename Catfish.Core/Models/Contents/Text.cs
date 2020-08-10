@@ -49,7 +49,7 @@ namespace Catfish.Core.Models.Contents
         public string Value
         {
             get => Data.Value;
-            set => Data.Value = value;
+            set => Data.Value = value == null ? "" : value;
         }
 
         public DateTime DateValue

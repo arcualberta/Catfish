@@ -8,5 +8,6 @@
                 Text = a.OptionText.GetConcatenatedContent(" | ")
             }).ToList();
 
+    @Html.HiddenFor(model => model.ModelType)
     @Html.DropDownListFor(model => model, options)
 }

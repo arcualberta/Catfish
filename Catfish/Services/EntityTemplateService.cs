@@ -8,10 +8,23 @@ namespace Catfish.Services
 {
     public class EntityTemplateService : IEntityTemplateService
     {
-        public EntityTemplate GetAvailableTemplates()
+        private readonly AppDbContext _db;
+        public EntityTemplateService(AppDbContext db)
         {
-            EntityTemplate availableTemplates = new EntityTemplate();
-            return availableTemplates;
+            _db = db;
         }
+
+        public IList<EntityTemplate> GetTemplates()
+        {
+            //TODO: Limit the returning list of templates to the accessible, active templates for the current user
+            return _db.EntityTemplates.ToList();
+        }
+
+        public EntityTemplate GetTemplate(Guid templateId)
+        {
+            return _db.EntityTemplates.Where(et => et.Id == templateId).FirstOrDefault();
+        }
+
+
     }
 }

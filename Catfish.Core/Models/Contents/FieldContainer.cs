@@ -17,7 +17,7 @@ namespace Catfish.Core.Models.Contents
         }
         public MultilingualName Name { get; protected set; }
         public MultilingualDescription Description { get; protected set; }
-        public XmlModelList<BaseField> Fields { get; protected set; }
+        public FieldList Fields { get; protected set; }
 
         public FieldContainer(string tagName) : base(tagName) { Initialize(eGuidOption.Ignore); }
         public FieldContainer(XElement data) : base(data) { Initialize(eGuidOption.Ignore); }
@@ -27,7 +27,7 @@ namespace Catfish.Core.Models.Contents
 
             Name = new MultilingualName(GetElement(MultilingualName.TagName, true));
             Description = new MultilingualDescription(GetElement(MultilingualDescription.TagName, true));
-            Fields = new XmlModelList<BaseField>(GetElement(FieldContainerTag, true), true, BaseField.FieldTagName);
+            Fields = new FieldList(GetElement(FieldContainerTag, true));
         }
 
         public string GetName(string lang)
@@ -92,7 +92,7 @@ namespace Catfish.Core.Models.Contents
 
 
         public T CreateField<T>(string fieldName, string lang, bool? isRequired = null, bool? allowMultiple = null, object defaultValue = null)
-            where T : MonolingualTextFIeld
+            where T : MonolingualTextField
         {
             T field = Activator.CreateInstance(typeof(T)) as T;
 

@@ -1,0 +1,73 @@
+﻿@page "~/entity/new/{templateId:Guid}"
+@model Catfish.Pages.CreateEntity
+@using Catfish.Core.Models.Contents.Fields;
+
+@section head
+{
+    <script type="text/javascript" src="@Url.Content("~/assets/js/form.js")"></script>
+}
+
+@{
+    ViewData["Title"] = "EditDataItem";
+}
+
+<h1>Edit Data Item</h1>
+<h3>@Model.Item.Id</h3>
+<h3>@Model.Item.Name.GetConcatenatedContent("")</h3>
+
+@*<form method="post">
+        @Html.HiddenFor(model => model.DataItem.Id)
+
+        <div class="container">
+            @for (int i = 0; i < Model.DataItem.Fields.Count; ++i)
+            {
+                <div class="row field-row">
+
+                    @if (typeof(InfoSection).IsAssignableFrom(Model.DataItem.Fields[i].GetType()))
+                    {
+                        @Html.EditorFor(model => model.DataItem.Fields[i], Model.DataItem.Fields[i].GetType().ToString(), null, null)
+                    }
+                    else
+                    {
+                        string fieldId = Html.IdFor(model => Model.DataItem.Fields[i]);
+
+                        <div class="col-md-3 control field-label">
+                            @Html.DisplayFor(model => Model.DataItem.Fields[i].Name, "Catfish.Core.Models.Contents.MultilingualText")
+                        </div>
+
+                        <div id="@fieldId" class="col-md-9 @Model.DataItem.Fields[i].CssClass field-value">
+
+                            @if (typeof(Catfish.Core.Models.Contents.MultilingualText).IsAssignableFrom(Model.DataItem.Fields[i].GetType()))
+                                @Html.EditorFor(model => Model.DataItem.Fields[i], "Catfish.Core.Models.Contents.MultilingualText")
+                            else
+                                @Html.EditorFor(model => Model.DataItem.Fields[i], Model.DataItem.Fields[i].GetType().ToString())
+
+                            @if (Model.DataItem.Fields[i].AllowMultipleValues)
+                            {
+                                <button type="button" class="btn btn-success btn-xs btn-add-value" onclick="addValue('@fieldId'); return false;">+</button>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
+            <div class="row field-row">
+                <input type="submit" value="Submit" />
+            </div>
+        </div>
+    </form>*@
+
+
+<form method="post">
+    @Html.HiddenFor(model => model.TemplateId)
+
+    <div class="container">
+
+        @for (int i = 0; i < Model.Item.Fields.Count; ++i)
+        {
+            @Html.EditorFor(model => model.Item.Fields[i], Model.Item.Fields[i].GetType().ToString())
+        }
+        <input name="Save" type="submit" value="Save" />
+        <input name="Subit" type="submit" value="Submit" />
+    </div>
+</form>

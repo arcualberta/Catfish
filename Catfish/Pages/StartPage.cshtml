@@ -1,8 +1,19 @@
-﻿@page
+﻿@page "~/new"
 @model Catfish.Pages.StartPageModel
+
 @{
-    ViewData["Title"] = "StartPage";
+    ViewData["Title"] = "Start Page";
 }
 
-<h1>StartPage</h1>
+<h1>Start Page</h1>
+
+<div class="container">
+    @foreach (var template in Model.EntityTemplates)
+    {
+        var url = "/entity/new/" + template.Id;
+        <div>
+            <a href="@url">@template.TemplateName</a>
+        </div>
+    }
+</div>
 

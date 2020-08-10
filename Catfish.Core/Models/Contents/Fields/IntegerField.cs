@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public class IntegerField : MonolingualTextFIeld
+    public class IntegerField : MonolingualTextField
     {
         public IntegerField() : base() { }
         public IntegerField(XElement data) : base(data) { }
