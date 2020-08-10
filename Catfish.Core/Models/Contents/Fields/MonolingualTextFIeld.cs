@@ -21,6 +21,12 @@ namespace Catfish.Core.Models.Contents.Fields
             Values = new XmlModelList<Text>(Data, true, Text.TagName);
         }
 
+        /// <summary>
+        /// Sets the value at the given index
+        /// </summary>
+        /// <param name="val"></param>
+        /// <param name="valueIndex"></param>
+        /// <returns></returns>
         public int SetValue(object val, int valueIndex = 0)
         {
             if (Values.Count <= valueIndex)
@@ -32,6 +38,11 @@ namespace Catfish.Core.Models.Contents.Fields
             return valueIndex;
         }
 
+        /// <summary>
+        /// Get the value at the given index
+        /// </summary>
+        /// <param name="valueIndex"></param>
+        /// <returns></returns>
         public string GetValue(int valueIndex = 0)
         {
             return Values[valueIndex].Value;
