@@ -37,7 +37,6 @@
             <input type="text" class="form-title form-control" :value="name.value" 
                 :id="'form-title-' + titleIndex" placeholder="Title Your Form Here" />
             </div>
-            <button>+</button>
 
             <label for="form-description">Description</label>
             <div v-for="(description, descriptionIndex) of descriptions.values">
@@ -47,10 +46,11 @@
                 {{description.value}}
                 </textarea>
             </div>
-            <button>+</button>
+
+            <hr />
 
             <label for="">Fields</label>
-            <div v-for="(field, fieldIndex) of fields">
+            <div v-for="(field, fieldIndex) of fields" class="card">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" :value="field.required" 
                     :id="'required-checkbox-' + fieldIndex">
@@ -65,7 +65,7 @@
                     :id="'field-title-' + fieldIndex + '-' + nameValue" 
                     placeholder="Title Your Field Here" />
                 </div>
-                <button>+</button>
+
 
                 <div v-for="descriptionValue of field.description.values">
                     <label>{{descriptionValue.language}}</label>
@@ -75,7 +75,14 @@
                     {{descriptionValue.value}}
                     </textarea>
                 </div>
-                <button>+</button>
+
+                <input v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' "
+                    class="form-control" readonly placeholder="Short answer"/>
+                <textarea v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' "
+                    class="form-control" placeholder="Long answer" readonly>
+                </textarea> 
+
+                <hr />
             </div>
         </div>
     </form>
