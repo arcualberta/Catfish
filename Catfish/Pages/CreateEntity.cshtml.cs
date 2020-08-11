@@ -43,7 +43,12 @@ namespace Catfish.Pages
         {
             //Creating a clone of the entity
             EntityTemplate template = _entityTemplateService.GetTemplate(TemplateId);
-            Entity entity = template.Clone<Entity>();
+            Item entity = template.Instantiate<Item>();
+
+            //TODO: dynamically figure out the start-up item
+            DataItem item = _workflowService.GetDataItem("Contract Letter", false);
+            item.UpdateFieldValues(this.Item);
+
 
             //updating the data item of the entity
 

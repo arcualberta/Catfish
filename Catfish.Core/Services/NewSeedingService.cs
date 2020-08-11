@@ -192,7 +192,7 @@ namespace Catfish.Core.Services
                     int index = rand.Next(0, collectionTemplates.Count);
                     template = collectionTemplates[index];
 
-                    Collection c = template.Clone<Collection>();
+                    Collection c = template.Instantiate<Collection>();
                     c.Name.SetContent(string.Format("Test Collection {0}", i));
                     c.Description.SetContent(string.Format("This is the test collection #{0} created by seeding.", i));
                     Db.Collections.Add(c);
@@ -209,7 +209,7 @@ namespace Catfish.Core.Services
                     int index = rand.Next(0, itemTemplates.Count);
                     template = itemTemplates[index];
 
-                    Item it = template.Clone<Item>();
+                    Item it = template.Instantiate<Item>();
                     it.Name.SetContent(string.Format("Test Item {0}", i));
                     it.Description.SetContent(string.Format("This is the test item #{0} created by seeding.", i));
 

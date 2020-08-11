@@ -160,5 +160,23 @@ namespace Catfish.Core.Models
             return vm;
         }
 
+        public void ReplaceMetadataSetContainer(XElement newMetadataSetContainer, bool populateChildren = false)
+        {
+            XmlModel xml = new XmlModel(Data);
+            xml.ReplaceOrInsert(newMetadataSetContainer);
+
+            if (populateChildren)
+                MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement(MetadataSetsRootTag, true), true);
+        }
+
+        public void ReplaceDataSetContainer(XElement newDataSetContainer, bool populateChildren = false)
+        {
+            XmlModel xml = new XmlModel(Data);
+            xml.ReplaceOrInsert(newDataSetContainer);
+
+            if (populateChildren)
+                DataContainer = new XmlModelList<DataItem>(xml.GetElement(DataContainerRootTag, true), true);
+        }
+
     }
 }

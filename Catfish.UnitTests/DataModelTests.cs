@@ -115,7 +115,7 @@ namespace Catfish.UnitTests
             SeedingService srv = _testHelper.Seviceprovider.GetService(typeof(SeedingService)) as SeedingService;
 
             ItemTemplate template = srv.NewDublinCoreItem();
-            Item item = template.Clone<Item>();
+            Item item = template.Instantiate<Item>();
             item.MetadataSets[0].SetFieldValue<TextField>("Subject", "en", "New restaurants are mad crazy to be opening right now -- or are they?", "en");
             string desc = @"On Wednesdays, Palmetto, which opened for the first time on May 11 in Oakland, California, serves a full prime rib dinner -- to go.
 It's 'enough to feed two people, or one really hungry person,' Christ Aivaliotis, one of the new restaurant's owners, tells CNN Travel.

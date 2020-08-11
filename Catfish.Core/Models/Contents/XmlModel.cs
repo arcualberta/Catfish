@@ -57,6 +57,14 @@ namespace Catfish.Core.Models.Contents
                 Data.SetAttributeValue("id", Guid.NewGuid());
         }
 
+        public void ReplaceOrInsert(XElement replacement)
+        {
+            if (Data.Element(replacement.Name) != null)
+                Data.Element(replacement.Name).Remove();
+
+            Data.Add(replacement);
+        }
+
         ////protected string Lang(string lang)
         ////{
         ////    if (!string.IsNullOrEmpty(lang))

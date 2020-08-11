@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public class BaseField : XmlModel
+    public abstract class BaseField : XmlModel
     {
         public const string FieldTagName = "field";
 
@@ -31,6 +31,8 @@ namespace Catfish.Core.Models.Contents.Fields
 
         public MultilingualName Name { get; protected set; }
         public MultilingualText Description { get; protected set; }
+
+        public abstract bool UpdateValues(BaseField srcField);
 
         public BaseField() : base(FieldTagName) { }
         public BaseField(XElement data) : base(data) { }

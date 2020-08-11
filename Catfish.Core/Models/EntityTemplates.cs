@@ -32,12 +32,29 @@ namespace Catfish.Core.Models
             }
         }
 
-        public T Clone<T>() where T:Entity
+        public EntityTemplate Clone()
+        {
+            Type type = GetType();
+            EntityTemplate model = Activator.CreateInstance(type) as EntityTemplate;
+            model.Data = new XElement(Data);
+            model.Initialize(true); //We are cloning an entity. We must force to regenerate a new Id for the clone.
+            return model;
+        }
+
+        public T Instantiate<T>() where T:Entity
         {
             var type = typeof(T);
             T model = Activator.CreateInstance(type) as T;
-            model.Data = new XElement(Data);
+
+            XElement metadataSetContainer = Data.Element(Entity.MetadataSetsRootTag);
+            model.ReplaceMetadataSetContainer(new XElement(metadataSetContainer));
+
+            XElement dataSetContainer = Data.Element(Entity.DataContainerRootTag);
+            model.ReplaceDataSetContainer(new XElement(dataSetContainer));
+
             model.Initialize(true); //We are cloning an entity. We must force to regenerate a new Id for the clone.
+            model.TemplateId = Id;
+
             return model;
         }
     }

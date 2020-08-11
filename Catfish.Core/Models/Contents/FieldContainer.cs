@@ -209,5 +209,14 @@ namespace Catfish.Core.Models.Contents
             return field;
         }
 
+        public void UpdateFieldValues(FieldContainer dataSrc)
+        {
+            foreach(var dst in Fields)
+            {
+                var srcField = dataSrc.Fields.Where(f => f.Id == dst.Id).FirstOrDefault();
+                if (srcField != null)
+                    dst.UpdateValues(srcField);
+            }
+        }
     }
 }
