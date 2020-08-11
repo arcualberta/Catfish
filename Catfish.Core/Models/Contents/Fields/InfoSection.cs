@@ -31,5 +31,11 @@ namespace Catfish.Core.Models.Contents.Fields
             return Content.GetContent(lang);
         }
 
+        public override void UpdateValues(BaseField srcField)
+        {
+            //InforSection represents only display text and it does not 
+            //accept any data through form submissions. Therefore, this method
+            //does not need any implementation.
+        }
     }
 }

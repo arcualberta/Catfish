@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
@@ -59,5 +60,18 @@ namespace Catfish.Core.Models.Contents.Fields
             }
         }
 
+        public override void UpdateValues(BaseField srcField)
+        {
+            OptionsField src = srcField as OptionsField;
+            if (src == null)
+                throw new Exception("The source field is null or is not an OptionsField");
+
+            foreach (var dstOption in Options)
+            {
+                var srcOption = src.Options.Where(opt => opt.Id == dstOption.Id).FirstOrDefault();
+                if (srcOption != null)
+                    dstOption.Selected = srcOption.Selected;
+            }
+        }
     }
 }

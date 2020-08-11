@@ -17,6 +17,11 @@ namespace Catfish.Core.Models.Contents
         [JsonIgnore]
         public XElement Data { get; protected set; }
 
+        public Guid Id
+        {
+            get => Guid.Parse(Data.Attribute("id").Value);
+            set => Data.SetAttributeValue("id", value);
+        }
         public string CssClass
         {
             get => GetAttribute("css-class", null);

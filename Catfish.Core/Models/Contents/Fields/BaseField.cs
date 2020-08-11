@@ -11,11 +11,8 @@ namespace Catfish.Core.Models.Contents.Fields
     {
         public const string FieldTagName = "field";
 
-        public Guid Id
-        {
-            get => Guid.Parse(Data.Attribute("id").Value);
-            set => Data.SetAttributeValue("id", value);
-        }
+        public abstract void UpdateValues(BaseField srcField);
+
         public bool Required
         {
             get => GetAttribute("required", false); 
@@ -31,8 +28,6 @@ namespace Catfish.Core.Models.Contents.Fields
 
         public MultilingualName Name { get; protected set; }
         public MultilingualText Description { get; protected set; }
-
-        public abstract bool UpdateValues(BaseField srcField);
 
         public BaseField() : base(FieldTagName) { }
         public BaseField(XElement data) : base(data) { }
