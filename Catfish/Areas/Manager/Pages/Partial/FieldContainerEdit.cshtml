@@ -83,7 +83,7 @@
                             </div>
 
                             <div :id="['collapse-' + fieldIndex ]" class="collapse-expand show border-top">
-                                <div class="card-header" style="text-transform:none;">
+                                <div class="card-header" style="text-transform:none;padding-bottom: 0;">
                                     <h4>
                                         Title
                                     </h4>
@@ -104,7 +104,7 @@
                                     </li>
                                 </ul>
 
-                                <div class="card-header" style="text-transform:none;">
+                                <div class="card-header" style="text-transform:none;padding-bottom: 0;">
                                     <h4>
                                         Description
                                     </h4>
@@ -126,17 +126,20 @@
                                     </li>
                                 </ul>
 
-                                <div style="padding: .75rem 1.25rem;">
+                                <div>
                                     <div class="card-header" style="text-transform:none;">
                                         <h4>
                                             Appearance
                                         </h4>
+                                        <div style="padding: .75rem 1.25rem;">
+                                        <input v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' "
+                                            class="form-control" readonly placeholder="Short answer"/>
+                                        <textarea v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' "
+                                            class="form-control" placeholder="Long answer" readonly>
+                                        </textarea>
+                                        </div>
                                     </div>
-                                    <input v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' "
-                                        class="form-control" readonly placeholder="Short answer"/>
-                                    <textarea v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' "
-                                        class="form-control" placeholder="Long answer" readonly>
-                                    </textarea> 
+                                     
                                 </div>
 
                             </div>
