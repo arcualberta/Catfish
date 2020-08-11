@@ -14,6 +14,7 @@ namespace Catfish.Services
         public EntityTemplate GetModel();
         public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists);
         public DataItem GetDataItem(string dataItemName, bool createIfNotExists);
+        
 
 
     }

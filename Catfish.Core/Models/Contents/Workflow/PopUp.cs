@@ -7,8 +7,18 @@ namespace Catfish.Core.Models.Contents.Workflow
 {
     public class PopUp : XmlModel
     {
-        public string Title { get; set; }
-        public string Message { get; set; }
+        public string Title
+        {
+            get => GetAttribute("title", null);
+            set => SetAttribute("title", value);
+        }
+
+        public string Message
+        {
+            get => GetAttribute("message", null);
+            set => SetAttribute("message", value);
+        }
+        
         public PopUp(XElement data)
             : base(data)
         {
