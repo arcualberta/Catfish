@@ -55,7 +55,7 @@ namespace Catfish.UnitTests
             deptAdminNotification.SetBody("The status of @Link[this contract letter|@Model] has been updated.\n\nThank you");
 
             //Contract letter
-            DataItem contract = ws.GetDataItem("Contract Letter", true);
+            DataItem contract = template.GetDataItem("Contract Letter", true, lang);
             contract.SetDescription("This is the template for the contract letter.", lang);
             contract.CreateField<TextField>("First Name", lang, true);
             contract.CreateField<TextField>("Last Name", lang, true);
