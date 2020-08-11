@@ -48,7 +48,7 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
-    <None Include="Pages\Shared\EditorTemplates\Catfish.Core.Models.Contents.Fields.InfoSection.cshtml" />
+    <None Include="Pages\Shared\DisplayTemplates\Catfish.Core.Models.Contents.Fields.InfoSection.cshtml" />
     <None Include="wwwroot\assets\js\entitytypelist.js" />
     <None Include="wwwroot\assets\js\textarea-field.js" />
   </ItemGroup>
