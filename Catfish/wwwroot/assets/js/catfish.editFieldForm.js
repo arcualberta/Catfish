@@ -30,9 +30,26 @@ if (document.getElementById("edit-field-form-page")) {
                 fields: null,
                 id: null,
                 modelType: null,
+
+                dropdowns: null
             }
         },
         methods: {
+
+            /**
+             * Toggles the field to either open or closed.
+             * Icon for showing open/closed relies on open/closed state,
+             * hence the necessity for this function. TODO still not working well on fast clicks,
+             * if it can't be fixed then delete this function and just handle in template
+             * 
+             * @param {any} fieldId the field's index to open/close
+             */
+            toggleDropdown(fieldId) {
+                this.dropdowns[fieldId].isCollapsed === true ? this.dropdowns[fieldId].isCollapsed = false : this.dropdowns[fieldId].isCollapsed = true;
+                //this.lastDropdownAction = this.dropdowns[fieldId].isCollapsed;
+                //this.assessExpandOrCollapseAll();
+            },
+
             /**
               * Fetches and loads the data from an API call
               * */
@@ -54,6 +71,12 @@ if (document.getElementById("edit-field-form-page")) {
                                 //self.collections = result.collections;
                                 //self.updateBindings = true;
                                 console.log(result);
+
+                                self.dropdowns = new function () {
+                                    for (let field of self.fields) {
+                                        this[field.id] = { isCollapsed: false }
+                                    }
+                                }
 
                                 resolve();
 

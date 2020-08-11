@@ -45,18 +45,11 @@
 #edit-field-form-page .handle-drag,
 #edit-field-form-page .handle-holder {
 	flex: 1;
-	/*align-self: center;
-	display: flex;
-	flex-direction: column;
-	align-items: center;*/
 	width: 100%;
 	min-height: inherit;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	/*flex: 0;
-	padding-left: 10px;
-	padding-right: 10px;*/
 }
 
 #edit-field-form-page .handle-drag:hover{
@@ -76,8 +69,11 @@
 }
 
 #edit-field-form-page .sitemap-item {
-	border-bottom: 1px solid rgba(0,0,0,.125);
 	margin-bottom: unset;
+}
+
+#edit-field-form-page .border-top {
+	border-bottom: 1px solid rgba(0,0,0,.125);
 }
 
 #edit-field-form-page .handle{
