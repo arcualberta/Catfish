@@ -40,3 +40,32 @@
 	padding-left: 15px;
 	padding-right: 15px;
 }
+
+#edit-field-form-page .handle-drag,
+#edit-field-form-page .handle-holder{
+	flex: 1;
+	align-self: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#edit-field-form-page .field-card-contents,
+#edit-field-form-page .title-header{
+	display: flex;
+	flex-direction: column;
+	flex: 10;
+}
+
+#edit-field-form-page .field-card-contents {
+	border-left: 1px solid rgba(0,0,0,.125);
+}
+
+#edit-field-form-page .sitemap-item {
+	border-bottom: 1px solid rgba(0,0,0,.125);
+	margin-bottom: unset;
+}
+
+#edit-field-form-page .handle{
+	border-right:none;
+}
