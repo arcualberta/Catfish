@@ -7,10 +7,11 @@
 	margin-bottom: 10px;
 }
 
-#edit-field-form-page .form-group {
+#edit-field-form-page .flex-full{
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	width:100%;
 }
 
 /*
@@ -42,16 +43,29 @@
 }
 
 #edit-field-form-page .handle-drag,
-#edit-field-form-page .handle-holder{
+#edit-field-form-page .handle-holder {
 	flex: 1;
-	align-self: center;
+	/*align-self: center;
 	display: flex;
 	flex-direction: column;
+	align-items: center;*/
+	width: 100%;
+	min-height: inherit;
+	display: flex;
 	align-items: center;
+	justify-content: center;
+	/*flex: 0;
+	padding-left: 10px;
+	padding-right: 10px;*/
 }
 
+#edit-field-form-page .handle-drag:hover{
+	cursor: pointer;
+}
+
+
 #edit-field-form-page .field-card-contents,
-#edit-field-form-page .title-header{
+#edit-field-form-page .title-header {
 	display: flex;
 	flex-direction: column;
 	flex: 10;

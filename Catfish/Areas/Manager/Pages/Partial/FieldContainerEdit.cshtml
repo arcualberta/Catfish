@@ -31,7 +31,7 @@
     <a href="@url" target="_blank">See JSON Object</a>
 
     <form v-if="finishedGET">
-        <div class="form-group">
+        <div class="form-group flex-full">
             <label for="form-title">Title</label>
             <div v-for="(name, titleIndex) of names.values">
             <input type="text" class="form-title form-control" :value="name.value" 
@@ -50,7 +50,7 @@
             <hr />
 
             <label for="">Fields</label>
-            <draggable v-model="fields" group="sharedItems" handle=".handle-drag">
+            <draggable class="flex-full" v-model="fields" group="sharedItems" handle=".handle-drag">
                 <div v-for="(field, fieldIndex) of fields" class="card">
 
                     <div class="sitemap-item">
