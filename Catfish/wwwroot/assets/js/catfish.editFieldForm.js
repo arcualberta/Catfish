@@ -36,31 +36,43 @@ if (document.getElementById("edit-field-form-page")) {
             load() {
                 var self = this;
                 console.log(piranha.baseUrl + this.getString + this.itemId);
-                piranha.permissions.load(function () {
-                    fetch(piranha.baseUrl + self.getString + self.itemId)
-                        .then(function (response) { return response.json(); })
-                        .then(function (result) {
-                            self.names = result.name;
-                            self.descriptions = result.description;
-                            self.fields = result.fields;
-                            self.id = result.id;
-                            self.modelType = result.modelType;
+                return new Promise((resolve, reject) => {
+                    piranha.permissions.load(function () {
+                        fetch(piranha.baseUrl + self.getString + self.itemId)
+                            .then(function (response) { return response.json(); })
+                            .then(function (result) {
+                                self.names = result.name;
+                                self.descriptions = result.description;
+                                self.fields = result.fields;
+                                self.id = result.id;
+                                self.modelType = result.modelType;
 
-                            self.finishedGET = true;
-                            //self.collections = result.collections;
-                            //self.updateBindings = true;
-                            console.log(result);
+                                self.finishedGET = true;
+                                //self.collections = result.collections;
+                                //self.updateBindings = true;
+                                console.log(result);
 
-                        })
-                        .catch(function (error) { console.log("error:", error); });
+                                resolve();
+
+                            })
+                            .catch(function (error) { console.log("error:", error); });
+                    });
+
                 });
+                
             },
         },
         created() {
             this.itemId = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
             console.log(this.itemId);
-            this.load();
-            console.log(piranha);
-        },
+            this.load()
+                .then(() => {
+                    //for popovers
+                    $(document).ready(function () {
+                        $('[data-toggle="popover"]').popover();
+                        console.log("ran popover");
+                    });
+                });
+        }
     });
 }

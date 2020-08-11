@@ -298,7 +298,9 @@ namespace Catfish
             
              App.Modules.Get<Piranha.Manager.Module>()
                 .Styles.Add("~/assets/css/custom.css");
-                
+            App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("~/assets/css/formEditPage.css");
+
         }
         #endregion
 

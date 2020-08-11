@@ -1,0 +1,42 @@
+﻿#edit-field-form-page .card {
+	background-color: white;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	width: 80%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#edit-field-form-page .form-group {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+/*
+	Don't know why this isn't working properly in Bootstrap,
+	the border's width is set as 0 for some reason.
+	Remove if resolved later
+*/
+#edit-field-form-page .card-footer {
+	border-top: 1px solid rgba(0,0,0,.125);
+}
+
+#edit-field-form-page .flex-li{
+	display:flex;
+	align-items: baseline;
+}
+
+#edit-field-form-page .field-item-label{
+	flex: 0.25;
+}
+
+#edit-field-form-page .field-input{
+	flex: 2;
+}
+
+#edit-field-form-page .rounded {
+	border-radius: 25px !important;
+	padding-left: 15px;
+	padding-right: 15px;
+}

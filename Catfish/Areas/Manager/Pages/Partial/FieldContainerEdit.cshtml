@@ -51,30 +51,47 @@
 
             <label for="">Fields</label>
             <div v-for="(field, fieldIndex) of fields" class="card">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" :value="field.required" 
-                    :id="'required-checkbox-' + fieldIndex">
-                    <label class="form-check-label" :for="'required-checkbox-' + fieldIndex">
-                        Required
-                    </label>
+
+                <div class="card-header">
+                    <i class="fas fa-chevron-circle-up"></i>
                 </div>
 
-                <div v-for="nameValue of field.name.values">
-                    <label>{{nameValue.language}}</label>
-                    <input type="text" class="field-title form-control" :value="nameValue.value" 
-                    :id="'field-title-' + fieldIndex + '-' + nameValue" 
-                    placeholder="Title Your Field Here" />
+                <div class="card-header">
+                Title
+                <button type="button" class="btn btn-secondary rounded" data-toggle="popover"
+                    data-content="This is the title of the question you want to ask.">
+                    <i class="fas fa-info"></i>
+                </button>
+                </div>
+                
+
+                <ul v-for="nameValue of field.name.values" class="list-group list-group-flush">
+                    <li class="list-group-item flex-li">
+                        <label class="field-item-label">{{nameValue.language}}</label>
+                        <input type="text" class="field-input form-control" :value="nameValue.value" 
+                        :id="'field-title-' + fieldIndex + '-' + nameValue" 
+                        placeholder="Title Your Field Here" />
+                    </li>
+                </ul>
+
+                <div class="card-header">
+                Description
+                <button type="button" class="btn btn-secondary rounded" data-toggle="popover"
+                    data-content="This should provide more detail about what you want to ask. Optional.">
+                    <i class="fas fa-info"></i>
+                </button>
                 </div>
 
-
-                <div v-for="descriptionValue of field.description.values">
-                    <label>{{descriptionValue.language}}</label>
-                    <textarea type="text" class="field-description form-control" 
-                    :id="'field-description-' + fieldIndex + '-' + descriptionValue" 
-                    placeholder="Describe the purpose of this field...">
-                    {{descriptionValue.value}}
-                    </textarea>
-                </div>
+                <ul v-for="descriptionValue of field.description.values" class="list-group list-group-flush">
+                    <li class="list-group-item flex-li">
+                        <label class="field-item-label">{{descriptionValue.language}}</label>
+                        <textarea type="text" class="field-input form-control" 
+                        :id="'field-description-' + fieldIndex + '-' + descriptionValue" 
+                        placeholder="Describe the purpose of this field...">
+                        {{descriptionValue.value}}
+                        </textarea>
+                    </li>
+                </ul>
 
                 <input v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' "
                     class="form-control" readonly placeholder="Short answer"/>
@@ -82,7 +99,13 @@
                     class="form-control" placeholder="Long answer" readonly>
                 </textarea> 
 
-                <hr />
+                <div class="form-check card-footer">
+                    <input class="form-check-input" type="checkbox" :value="field.required" 
+                    :id="'required-checkbox-' + fieldIndex">
+                    <label class="form-check-label" :for="'required-checkbox-' + fieldIndex">
+                        Required
+                    </label>
+                </div>
             </div>
         </div>
     </form>
