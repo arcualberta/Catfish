@@ -1,4 +1,4 @@
-﻿//import draggable from 'vuedraggable'
+﻿import draggable from 'vuedraggable'
 
 /**
  * Javascript Vue code for creating the editable form from existing data in FieldContainerEdit.cshtml.
@@ -13,6 +13,9 @@
 if (document.getElementById("edit-field-form-page")) {
     piranha.editFieldForm = new Vue({
         el: '#edit-field-form-page',
+        components: {
+            draggable
+		},
         data() {
             return {
                 itemId: null,
