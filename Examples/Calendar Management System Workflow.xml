@@ -186,21 +186,21 @@
 				<post-actions>
 					<post-action button-label="Save"   function="Save">
 						<state-mappings>
-							<map current="*"  next="Saved"/>
+							<mapping current="*"  next="Saved"/>
 						</state-mappings>
 					</post-action>
 					<post-action button-label="Submit" function="Save">
-						<new-state>
-							<map current="*"  next="Submitted"/>
-						</new-state>
-						<pop-up title="WARNING: Submitting Document" mesage="Once submitted, you cannot update the document.">
+						<state-mappings>
+							<mapping current="*"  next="Submitted"/>
+						</state-mappings>
+						<pop-up title="WARNING: Submitting Document" message="Once submitted, you cannot update the document.">
 							<button text="Yes, submit" return="true" />
 							<button text="Cancel" return="false" />
 						</pop-up>
-						<triggers>
+						<trigger-refs>
 							<trigger-ref order="0" ref-id="bbcc2561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
 							<trigger-ref order="1" ref-id="bbcc2561-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
-						</triggers>						
+						</trigger-refs>						
 					</post-action>
 				</post-actions>
 				<authorizations>
@@ -215,21 +215,21 @@
 				<post-actions>
 					<post-action button-label="Save"  function="Save" >
 						<state-mappings>
-							<map current="Saved"  next="Saved"/>
+							<mapping current="Saved"  next="Saved"/>
 						</state-mappings>
 					</post-action>
 					<post-action button-label="Submit" function="Save" >
 						<state-mappings>
-							<map current="Saved"  next="Submitted"/>
+							<mapping current="Saved"  next="Submitted"/>
 						</state-mappings>
-						<pop-up title="WARNING: Submitting Document" mesage="Once submitted, you cannot update the document.">
+						<pop-up title="WARNING: Submitting Document" message="Once submitted, you cannot update the document.">
 							<button text="Yes, submit" return="true" />
 							<button text="Cancel" return="false" />
 						</pop-up>
-						<triggers>
+						<trigger-refs>
 							<trigger-ref order="0" ref-id="bbcc2561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
 							<trigger-ref order="1" ref-id="bbcc2561-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
-						</triggers>						
+						</trigger-refs>						
 					</post-action>
 				</post-actions>
 				<valid-states>
@@ -247,9 +247,9 @@
 				<post-actions>
 					<post-action button-label="Delete"   function="Save" >
 						<state-mappings>
-							<map current="Saved"  next="Deleted"/>
+							<mapping current="Saved"  next="Deleted"/>
 						</state-mappings>
-						<pop-up title="WARNING: Delete" mesage="Deleting the submission. Please confirm.">
+						<pop-up title="WARNING: Delete" message="Deleting the submission. Please confirm.">
 							<button text="Yes, delete" return="true" />
 							<button text="Cancel" return="false" />
 						</pop-up>
@@ -269,7 +269,7 @@
 				</params>
 				<post-actions>
 					<post-action button-label="Purge"   function="Purge">
-						<pop-up title="WARNING: Deleting Permanently" mesage="When purged, the document cannot be recovered. Please confirm">
+						<pop-up title="WARNING: Deleting Permanently" message="When purged, the document cannot be recovered. Please confirm">
 							<button text="Yes, purge" return="true" />
 							<button text="Cancel" return="false" />
 						</pop-up>
@@ -291,34 +291,34 @@
 				<post-actions>
 					<post-action button-label="Save"   function="Save">
 						<state-mappings>
-							<map current="DeanOfficeRevision"  next="SavedDeanOfficeRevision"/>
-							<map current="AACRevision"  next="SavedAACRevision"/>
-							<map current="AECRevision"  next="SavedAECRevision"/>
-							<map current="AFCRevision"  next="SavedAFCRevision"/>
-							<map current="GFCRevision"  next="SavedGFCRevision"/>
+							<mapping current="DeanOfficeRevision"  next="SavedDeanOfficeRevision"/>
+							<mapping current="AACRevision"  next="SavedAACRevision"/>
+							<mapping current="AECRevision"  next="SavedAECRevision"/>
+							<mapping current="AFCRevision"  next="SavedAFCRevision"/>
+							<mapping current="GFCRevision"  next="SavedGFCRevision"/>
 						</state-mappings>
 					</post-action>
 					<post-action button-label="Submit"  function="Save" >
 						<state-mappings>
-							<map current="DeanOfficeRevision"  next="DeanOfficeRevisionCompleted"/>
-							<map current="AACRevision"  next="AACRevisionCompleted"/>
-							<map current="AECRevision"  next="AECRevisionCompleted"/>
-							<map current="AFCRevision"  next="AFCRevisionCompleted"/>
-							<map current="GFCRevision"  next="GFCRevisionCompleted"/>
-							<map current="SavedDeanOfficeRevision"  next="DeanOfficeRevisionCompleted"/>
-							<map current="SavedAACRevision"  next="AACRevisionCompleted"/>
-							<map current="SavedAECRevision"  next="AECRevisionCompleted"/>
-							<map current="SavedAFCRevision"  next="AFCRevisionCompleted"/>
-							<map current="SavedGFCRevision"  next="GFCRevisionCompleted"/>
+							<mapping current="DeanOfficeRevision"  next="DeanOfficeRevisionCompleted"/>
+							<mapping current="AACRevision"  next="AACRevisionCompleted"/>
+							<mapping current="AECRevision"  next="AECRevisionCompleted"/>
+							<mapping current="AFCRevision"  next="AFCRevisionCompleted"/>
+							<mapping current="GFCRevision"  next="GFCRevisionCompleted"/>
+							<mapping current="SavedDeanOfficeRevision"  next="DeanOfficeRevisionCompleted"/>
+							<mapping current="SavedAACRevision"  next="AACRevisionCompleted"/>
+							<mapping current="SavedAECRevision"  next="AECRevisionCompleted"/>
+							<mapping current="SavedAFCRevision"  next="AFCRevisionCompleted"/>
+							<mapping current="SavedGFCRevision"  next="GFCRevisionCompleted"/>
 						</state-mappings>
-						<pop-up title="WARNING: Submitting Document" mesage="Once submitted, you cannot update the document.">
+						<pop-up title="WARNING: Submitting Document" message="Once submitted, you cannot update the document.">
 							<button text="Yes, submit" return="true" />
 							<button text="Cancel" return="false" />
 						</pop-up>
-						<triggers>
+						<trigger-refs>
 							<trigger-ref order="0" ref-id="bv67j561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
 							<trigger-ref order="1" ref-id="9giu4jk9-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
-						</triggers>	
+						</trigger-refs>	
 					</post-action> <!-- add the pop-up -->
 				</post-actions>
 				<valid-states>
@@ -347,24 +347,24 @@
 				<post-actions>
 					<post-action function="Comment">
 						<state-mappings>
-							<map current="Submitted"  next="DeanOfficeRevision" button-label="Send for Revision"/>
-							<map current="WithAAC"  next="AACRevision" button-label="Send for Revision"/>
-							<map current="WithAEC"  next="AECRevision" button-label="Send for Revision"/>
-							<map current="WithAFC"  next="AFCRevision" button-label="Send for Revision"/>
-							<map current="WithGFC"  next="GFCRevision" button-label="Send for Revision"/>
-							<map current="DeanOfficeRevisionCompleted"  next="DeanOfficeRevision" button-label="Send for Revision"/>
-							<map current="AACRevisionCompleted"  next="AACRevision" button-label="Send for Revision"/>
-							<map current="AECRevisionCompleted"  next="AECRevision" button-label="Send for Revision"/>
-							<map current="AFCRevisionCompleted"  next="AFCRevision" button-label="Send for Revision"/>
-							<map current="GFCRevisionCompleted"  next="GFCRevision" button-label="Send for Revision"/>
+							<mapping current="Submitted"  next="DeanOfficeRevision" button-label="Send for Revision"/>
+							<mapping current="WithAAC"  next="AACRevision" button-label="Send for Revision"/>
+							<mapping current="WithAEC"  next="AECRevision" button-label="Send for Revision"/>
+							<mapping current="WithAFC"  next="AFCRevision" button-label="Send for Revision"/>
+							<mapping current="WithGFC"  next="GFCRevision" button-label="Send for Revision"/>
+							<mapping current="DeanOfficeRevisionCompleted"  next="DeanOfficeRevision" button-label="Send for Revision"/>
+							<mapping current="AACRevisionCompleted"  next="AACRevision" button-label="Send for Revision"/>
+							<mapping current="AECRevisionCompleted"  next="AECRevision" button-label="Send for Revision"/>
+							<mapping current="AFCRevisionCompleted"  next="AFCRevision" button-label="Send for Revision"/>
+							<mapping current="GFCRevisionCompleted"  next="GFCRevision" button-label="Send for Revision"/>
 						</state-mappings>					
-						<pop-up title="WARNING: Revision Document" mesage="Do you really want to revise this document?.">
+						<pop-up title="WARNING: Revision Document" message="Do you really want to revise this document?.">
 							<button text="Yes" return="true" />
 							<button text="Cancel" return="false" />
 						</pop-up>
-						<triggers>
+						<trigger-refs>
 							<trigger-ref order="0" ref-id="jh8c2561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the document owner, requesting a revision -->
-						</triggers>						
+						</trigger-refs>						
 					</post-action>
 				</post-actions>
 				<valid-states>
@@ -400,42 +400,42 @@
 						<state-mappings>
 							
 						
-							<map current="Submitted"  next="WithAAC" button-label="With AAC"/>
-							<map current="DeanOfficeRevisionCompleted"  next="WithAAC" button-label="With AAC"/>
-							<map current="WithAAC"  next="AACApproved" button-label="AAC Approved"/> 
+							<mapping current="Submitted"  next="WithAAC" button-label="With AAC"/>
+							<mapping current="DeanOfficeRevisionCompleted"  next="WithAAC" button-label="With AAC"/>
+							<mapping current="WithAAC"  next="AACApproved" button-label="AAC Approved"/> 
 
-							<map current="AACApproved"  next="WithAEC" button-label="With AEC"/>
-							<map current="WithAEC"  next="AECApproved" button-label="AEC Approved"/>
+							<mapping current="AACApproved"  next="WithAEC" button-label="With AEC"/>
+							<mapping current="WithAEC"  next="AECApproved" button-label="AEC Approved"/>
 
 
-							<map current="AACRevisionCompleted"  next="WithAAC" button-label="With AAC"/>
-							<map current="AACRevisionCompleted"  next="WithAEC" button-label="With AEC"/>
+							<mapping current="AACRevisionCompleted"  next="WithAAC" button-label="With AAC"/>
+							<mapping current="AACRevisionCompleted"  next="WithAEC" button-label="With AEC"/>
 
-							<map current="AECRevisionCompleted"  next="WithAA" button-label="With AA"/>
-							<map current="AECRevisionCompleted"  next="WithAEC" button-label="With AEC"/>
+							<mapping current="AECRevisionCompleted"  next="WithAA" button-label="With AA"/>
+							<mapping current="AECRevisionCompleted"  next="WithAEC" button-label="With AEC"/>
 
 							
 							<!-- The following set of mappings are applied if this workflow is for courses and minor program changes. If this workflow is for a major 
 							     a major program change, we should comment it -->
-							<map current="AECApproved"  next="WithAFC" button-label="With AFC"/>
-							<map current="WithAFC"  next="AFCApproved" button-label="AFC Approved"/>
-							<map current="AECRevisionCompleted"  next="WithAFC" button-label="With AFC"/>
-							<map current="AFCRevisionCompleted"  next="WithAFC" button-label="With AFC"/>
-							<map current="AFCRevisionCompleted"  next="WithAEC" button-label="With AEC"/>
-							<map current="AFCRevisionCompleted"  next="WithAAC" button-label="With AAC"/>
-							<map current="AFCRevisionCompleted"  next="AFCApproved" button-label="AFC Approved"/>
+							<mapping current="AECApproved"  next="WithAFC" button-label="With AFC"/>
+							<mapping current="WithAFC"  next="AFCApproved" button-label="AFC Approved"/>
+							<mapping current="AECRevisionCompleted"  next="WithAFC" button-label="With AFC"/>
+							<mapping current="AFCRevisionCompleted"  next="WithAFC" button-label="With AFC"/>
+							<mapping current="AFCRevisionCompleted"  next="WithAEC" button-label="With AEC"/>
+							<mapping current="AFCRevisionCompleted"  next="WithAAC" button-label="With AAC"/>
+							<mapping current="AFCRevisionCompleted"  next="AFCApproved" button-label="AFC Approved"/>
 							
 							
 							<!-- The following set of mappings are applied if this workflow is for major program changes. For course changes and minor program changes, we should comment it -->
-							<map current="AECApproved"  next="WithGFC" button-label="With GFC"/>
-							<map current="WithGFC"  next="GFCApproved" button-label="GFC Approved"/>
-							<map current="WithGFC"  next="WithAAC" button-label="With AAC"/>
-							<map current="WithGFC"  next="WithAEC" button-label="With AEC"/>
-							<map current="WithGFC"  next="WithAFC" button-label="With AFC"/>
-							<map current="AECRevisionCompleted"  next="WithGFC" button-label="With GFC"/>								
+							<mapping current="AECApproved"  next="WithGFC" button-label="With GFC"/>
+							<mapping current="WithGFC"  next="GFCApproved" button-label="GFC Approved"/>
+							<mapping current="WithGFC"  next="WithAAC" button-label="With AAC"/>
+							<mapping current="WithGFC"  next="WithAEC" button-label="With AEC"/>
+							<mapping current="WithGFC"  next="WithAFC" button-label="With AFC"/>
+							<mapping current="AECRevisionCompleted"  next="WithGFC" button-label="With GFC"/>								
 						</state-mappings>
 					
-						<pop-up title="WARNING: Change State" mesage="Do you really want to change the document state?">
+						<pop-up title="WARNING: Change State" message="Do you really want to change the document state?">
 							<button text="Yes" return="true" />
 							<button text="Cancel" return="false" />
 						</pop-up>
@@ -468,30 +468,30 @@
 				<post-actions>
 					<post-action button-label="Correct" function="Comment" >
 						<state-mappings>
-							<map current="GFCApproved"  next="MoveToDraftCorrect"/>
-							<map current="MoveToDraftError"  next="MoveToDraftCorrect"/>
+							<mapping current="GFCApproved"  next="MoveToDraftCorrect"/>
+							<mapping current="MoveToDraftError"  next="MoveToDraftCorrect"/>
 						</state-mappings>
-						<pop-up title="WARNING: In the Draft Calendar -  Correct" mesage="Do you really want to change the document state?.">
+						<pop-up title="WARNING: In the Draft Calendar -  Correct" message="Do you really want to change the document state?.">
 							<button text="Yes" return="true" />
 							<button text="Cancel" return="false" />
 						</pop-up>
-						<triggers>
+						<trigger-refs>
 							<trigger-ref order="0" ref-id="p0igj561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
 							<trigger-ref order="1" ref-id="76rd4jk9-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
-						</triggers>	
+						</trigger-refs>	
 					</post-action>
 					<post-action button-label="With Error" function="Comment" >
 						<state-mappings>
-							<map current="GFCApproved"  next="MoveToDraftError"/>
+							<mapping current="GFCApproved"  next="MoveToDraftError"/>
 						</state-mappings>
-						<pop-up title="WARNING: In the Draft Calendar -  With Error" mesage="Do you really want to change the document state?.">
+						<pop-up title="WARNING: In the Draft Calendar -  With Error" message="Do you really want to change the document state?.">
 							<button text="Yes" return="true" />
 							<button text="Cancel" return="false" />
 						</pop-up>
-						<triggers>
+						<trigger-refs>
 							<trigger-ref order="0" ref-id="hg67j561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
 							<trigger-ref order="1" ref-id="9j5u4jk9-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
-						</triggers>	
+						</trigger-refs>	
 					</post-action>
 				</post-actions>
 				<valid-states>

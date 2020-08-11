@@ -96,7 +96,7 @@ namespace Catfish.UnitTests
             IWorkflowService ws = _testHelper.WorkflowService;
             ws.SetModel(template);
 
-
+            //Workflow workflow = ws.GetWorkflowItem("Contract Letter", true);
 
             template.Data.Save("..\\..\\..\\..\\Examples\\CalendarManagementWorkflow.xml");
 

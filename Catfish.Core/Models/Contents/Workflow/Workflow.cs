@@ -8,6 +8,12 @@ namespace Catfish.Core.Models.Contents.Workflow
 {
     public class Workflow : XmlModel
     {
+        public Guid Id
+        {
+            get => Guid.Parse(Data.Attribute("id").Value);
+            set => Data.SetAttributeValue("id", value);
+        }
+
         public XmlModelList<State> States { get; set; }
         public XmlModelList<GetAction> Actions { get; set; }
         public XmlModelList<Trigger> Triggers { get; set; }
@@ -16,6 +22,7 @@ namespace Catfish.Core.Models.Contents.Workflow
             : base(data)
         {
         }
+        
 
         public override void Initialize(eGuidOption guidOption)
         {
