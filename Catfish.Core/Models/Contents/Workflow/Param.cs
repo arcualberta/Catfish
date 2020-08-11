@@ -10,7 +10,7 @@ namespace Catfish.Core.Models.Contents.Workflow
         
         public string TemplateId
         {
-            get => GetAttribute("template-id", null);
+            get => GetAttribute("template-id", null as string);
             set => SetAttribute("template-id", value);
         }
         public Param(XElement data)

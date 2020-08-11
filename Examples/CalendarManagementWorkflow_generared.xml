@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<entity id="6e01c6f0-01e0-4d43-a0b4-74db70677e51" created="2020-08-11T12:14:13.5206541-06:00" model-type="Catfish.Core.Models.EntityTemplate, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+  <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="783c8d5d-3ff7-4c92-8e32-44c1b7280f26">
+    <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="aaddaecc-ef5b-48f8-a394-b50e43647420" xml:lang="en">Calendar management System Workflow</text>
+  </name>
+  <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="bfa9a237-2d6d-4355-aec5-9c07fc5ab800" />
+  <metadata-sets />
+  <data-container />
+  <workflow model-type="Catfish.Core.Models.Contents.Workflow.Workflow, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ab1f6479-09b9-44c4-ab23-13c186b6ab59">
+    <states>
+      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="226b32cd-8c2d-4f50-950b-be3862af530e">Saved</state>
+      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="350fcdae-953e-48f8-bf8a-a3c121c3f0e1">Submitted</state>
+      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ccd191d5-e3a9-4d98-87dd-6a9ca8b90c8f">With AEC</state>
+    </states>
+    <roles>
+      <role model-type="Catfish.Core.Models.Contents.Workflow.WorkflowRole, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c370cebf-e277-4f24-b8a3-90b3362a9963">CentralAdmin</role>
+    </roles>
+    <users>
+      <user model-type="Catfish.Core.Models.Contents.Workflow.WorkflowUser, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="992df330-db25-45b4-ba8f-b8b3e9583d78" email="centraladmin@ualberta.ca">
+        <roles>
+          <role-ref model-type="Catfish.Core.Models.Contents.Workflow.RoleReference, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="19324f4e-472e-4b5f-b079-4479107c49ea" ref-id="c370cebf-e277-4f24-b8a3-90b3362a9963" />
+        </roles>
+      </user>
+    </users>
+    <triggers />
+    <actions />
+  </workflow>
+</entity>

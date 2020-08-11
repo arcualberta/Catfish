@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Catfish.Services
 {
@@ -66,6 +67,18 @@ namespace Catfish.Services
             }
             return dataItem;
         }
-        
+
+        public Workflow GetWorkflow(bool createIfNotExists)
+        {
+            XmlModel xml = new XmlModel(mEntityTemplate.Data);
+            XElement element = xml.GetElement(Workflow.TagName, createIfNotExists);
+            Workflow workflow = new Workflow(element);
+            return workflow;
+        }
+
+        public List<string> GetEmailAddresses(EmailTrigger trigger)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

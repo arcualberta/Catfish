@@ -87,6 +87,7 @@ namespace Catfish.UnitTests
             template.Data.Save("..\\..\\..\\..\\Examples\\ContractLetterWorkflow.xml");
         }
 
+        [Test]
         public void CalendarManagementSystemWorkflowBuildTest()
         {
             string lang = "en";
@@ -96,9 +97,24 @@ namespace Catfish.UnitTests
             IWorkflowService ws = _testHelper.WorkflowService;
             ws.SetModel(template);
 
-            //Workflow workflow = ws.GetWorkflowItem("Contract Letter", true);
+            //Get the Workflow object using the workflow service
+            Workflow workflow = ws.GetWorkflow(true);
 
-            template.Data.Save("..\\..\\..\\..\\Examples\\CalendarManagementWorkflow.xml");
+            //Defininig states
+            workflow.AddState("Saved");
+            workflow.AddState("Submitted");
+            workflow.AddState("With AEC");
+
+
+            //Defininig roles
+            WorkflowRole centralAdminRole = workflow.AddRole("CentralAdmin");
+
+            //Defining users
+            WorkflowUser user = workflow.AddUser("centraladmin@ualberta.ca");
+            user.AddRoleReference(centralAdminRole);
+
+
+            template.Data.Save("..\\..\\..\\..\\Examples\\CalendarManagementWorkflow_generared.xml");
 
         }
     }

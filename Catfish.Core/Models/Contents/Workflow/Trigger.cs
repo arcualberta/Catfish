@@ -9,7 +9,7 @@ namespace Catfish.Core.Models.Contents.Workflow
     {
         public string Order
         {
-            get => GetAttribute("function", null);
+            get => GetAttribute("function", null as string);
             set => SetAttribute("function", value);
         }
         public Guid Id

@@ -24,7 +24,7 @@ namespace Catfish.Core.Models.Contents
         }
         public string CssClass
         {
-            get => GetAttribute("css-class", null);
+            get => GetAttribute("css-class", null as string);
             set => SetAttribute("css-class", value);
         }
 
@@ -137,7 +137,7 @@ namespace Catfish.Core.Models.Contents
             Data.SetAttributeValue(attName, attValue);
         }
 
-        public Guid GetAttribute(string attName, Guid defaultValue)
+        public Guid? GetAttribute(string attName, Guid? defaultValue)
         {
             var att = Data.Attribute(attName);
             return (att == null || string.IsNullOrEmpty(att.Value)) ? defaultValue : Guid.Parse(att.Value);

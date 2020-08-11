@@ -161,6 +161,16 @@
 		<states>
 			<state id="40249fb4-9f49-4055-abee-d321735203c8">Saved</state>
 		</states>
+		<roles>
+			<role>CentralAdmin</role>
+		</roles>
+		<users>
+			<user email="admin@example.com">
+				<roles>
+					<role>CentralAdmin</role>
+				</roles>
+			</user>
+		</users>
 		<triggers>
 			<trigger function="SendEmail" id="bbcc2561-b957-4141-970b-fdb101a96ed2"> <!-- Document submission notifican email sent to the central admin -->
 				<to metadata-set-id="cae52561-b957-4141-970b-fdb101a96ed2" field-id="0e176ef5-a235-470f-bf95-6c8aa99921b2" />

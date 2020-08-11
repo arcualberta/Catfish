@@ -9,13 +9,13 @@ namespace Catfish.Core.Models.Contents.Workflow
     {
         public string Title
         {
-            get => GetAttribute("title", null);
+            get => GetAttribute("title", null as string);
             set => SetAttribute("title", value);
         }
 
         public string Message
         {
-            get => GetAttribute("message", null);
+            get => GetAttribute("message", null as string);
             set => SetAttribute("message", value);
         }
         

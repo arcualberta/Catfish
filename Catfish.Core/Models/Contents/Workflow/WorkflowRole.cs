@@ -5,22 +5,22 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Workflow
 {
-    public class State : XmlModel
+    public class WorkflowRole : XmlModel
     {
-        public static readonly string TagName = "state";
+        public static readonly string TagName = "role";
         public string Value
         {
             get => Data.Value;
             set => Data.Value = string.IsNullOrEmpty(value) ? "" : value;
         }
 
-        public State(XElement data)
+        public WorkflowRole(XElement data)
             : base(data)
         {
 
         }
 
-        public State()
+        public WorkflowRole()
             : base(new XElement(TagName))
         {
 
