@@ -50,106 +50,113 @@
             <hr />
 
             <label for="">Fields</label>
-            <draggable class="flex-full" v-model="fields" group="sharedItems" handle=".handle-drag">
-                <div v-for="(field, fieldIndex) of fields" class="card">
+            <div class="container-fluid" style="display:flex; flex-direction:row;">
+                <draggable class="flex-full col-9" v-model="fields" group="sharedItems" handle=".handle-drag">
+                    <div v-for="(field, fieldIndex) of fields" class="card field-card-width">
 
-                    <div style="display:flex;">
+                        <div style="display:flex;">
 
-                        <div class="handle-drag draggable">
-                            <i class="fas fa-grip-vertical"></i>
-                        </div>
-
-                        <div class="field-card-contents">
-                            <div class="sitemap-item">
-                                <a v-on:click="toggleDropdown(field.id)" class="handle-holder" data-toggle="collapse" :href="['#collapse-' + fieldIndex ]">
-                                    <div class="handle">
-                                        <i :class="{ 'fas fa-chevron-down': !dropdowns[field.id].isCollapsed, 'fas fa-chevron-right': dropdowns[field.id].isCollapsed}"></i>
-                                    </div>
-                                </a>
-                                <div v-if="field.$type" class="title-header">
-                                    <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' ">Short Answer</h2>
-                                    <h5>{{field.name.values[0].value}}</h5>
-                                </div>
-                                <div v-else class="title-header">
-                                    <h5>Default Item - Fix Me</h5>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" :value="field.required" 
-                                    :id="'required-checkbox-' + fieldIndex">
-                                    <label class="form-check-label" :for="'required-checkbox-' + fieldIndex">
-                                        Required
-                                    </label>
-                                </div>
+                            <div class="handle-drag draggable">
+                                <i class="fas fa-grip-vertical"></i>
                             </div>
 
-                            <div :id="['collapse-' + fieldIndex ]" class="collapse-expand show border-top">
-                                <div class="card-header" style="text-transform:none;padding-bottom: 0;">
-                                    <h4>
-                                        Title
-                                    </h4>
-                            
-                                    <!--<button type="button" class="btn btn-secondary rounded" data-toggle="popover"
-                                        data-content="This is the title of the question you want to ask.">
-                                        <i class="fas fa-info"></i>
-                                    </button>-->
+                            <div class="field-card-contents">
+                                <div class="sitemap-item">
+                                    <a v-on:click="toggleDropdown(field.id)" class="handle-holder" data-toggle="collapse" :href="['#collapse-' + fieldIndex ]">
+                                        <div class="handle">
+                                            <i :class="{ 'fas fa-chevron-down': !dropdowns[field.id].isCollapsed, 'fas fa-chevron-right': dropdowns[field.id].isCollapsed}"></i>
+                                        </div>
+                                    </a>
+                                    <div v-if="field.$type" class="title-header">
+                                        <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' ">Short Answer</h2>
+                                        <h5>{{field.name.values[0].value}}</h5>
+                                    </div>
+                                    <div v-else class="title-header">
+                                        <h5>Default Item - Fix Me</h5>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" :value="field.required" 
+                                        :id="'required-checkbox-' + fieldIndex">
+                                        <label class="form-check-label" :for="'required-checkbox-' + fieldIndex">
+                                            Required
+                                        </label>
+                                    </div>
                                 </div>
+
+                                <div :id="['collapse-' + fieldIndex ]" class="collapse-expand show border-top">
+                                    <div class="card-header" style="text-transform:none;padding-bottom: 0;">
+                                        <h4>
+                                            Title
+                                        </h4>
+                            
+                                        <!--<button type="button" class="btn btn-secondary rounded" data-toggle="popover"
+                                            data-content="This is the title of the question you want to ask.">
+                                            <i class="fas fa-info"></i>
+                                        </button>-->
+                                    </div>
                 
 
-                                <ul v-for="nameValue of field.name.values" class="list-group list-group-flush">
-                                    <li class="list-group-item flex-li">
-                                        <label class="field-item-label">{{nameValue.language}}</label>
-                                        <input type="text" class="field-input form-control" v-model="nameValue.value" 
-                                        :id="'field-title-' + fieldIndex + '-' + nameValue" 
-                                        placeholder="Title Your Field Here" />
-                                    </li>
-                                </ul>
+                                    <ul v-for="nameValue of field.name.values" class="list-group list-group-flush">
+                                        <li class="list-group-item flex-li">
+                                            <label class="field-item-label">{{nameValue.language}}</label>
+                                            <input type="text" class="field-input form-control" v-model="nameValue.value" 
+                                            :id="'field-title-' + fieldIndex + '-' + nameValue" 
+                                            placeholder="Title Your Field Here" />
+                                        </li>
+                                    </ul>
 
-                                <div class="card-header" style="text-transform:none;padding-bottom: 0;">
-                                    <h4>
-                                        Description
-                                    </h4>
-                            
-                                    <!--<button type="button" class="btn btn-secondary rounded" data-toggle="popover"
-                                        data-content="This should provide more detail about what you want to ask. Optional.">
-                                        <i class="fas fa-info"></i>
-                                    </button>-->
-                                </div>
-
-                                <ul v-for="descriptionValue of field.description.values" class="list-group list-group-flush">
-                                    <li class="list-group-item flex-li">
-                                        <label class="field-item-label">{{descriptionValue.language}}</label>
-                                        <textarea type="text" class="field-input form-control" 
-                                        :id="'field-description-' + fieldIndex + '-' + descriptionValue" 
-                                        placeholder="Describe the purpose of this field..."
-                                        v-model="descriptionValue.value">
-                                        </textarea>
-                                    </li>
-                                </ul>
-
-                                <div>
-                                    <div class="card-header" style="text-transform:none;">
+                                    <div class="card-header" style="text-transform:none;padding-bottom: 0;">
                                         <h4>
-                                            Appearance
+                                            Description
                                         </h4>
-                                        <div style="padding: .75rem 1.25rem;">
-                                        <input v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' "
-                                            class="form-control" readonly placeholder="Short answer"/>
-                                        <textarea v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' "
-                                            class="form-control" placeholder="Long answer" readonly>
-                                        </textarea>
-                                        </div>
+                            
+                                        <!--<button type="button" class="btn btn-secondary rounded" data-toggle="popover"
+                                            data-content="This should provide more detail about what you want to ask. Optional.">
+                                            <i class="fas fa-info"></i>
+                                        </button>-->
                                     </div>
+
+                                    <ul v-for="descriptionValue of field.description.values" class="list-group list-group-flush">
+                                        <li class="list-group-item flex-li">
+                                            <label class="field-item-label">{{descriptionValue.language}}</label>
+                                            <textarea type="text" class="field-input form-control" 
+                                            :id="'field-description-' + fieldIndex + '-' + descriptionValue" 
+                                            placeholder="Describe the purpose of this field..."
+                                            v-model="descriptionValue.value">
+                                            </textarea>
+                                        </li>
+                                    </ul>
+
+                                    <div>
+                                        <div class="card-header" style="text-transform:none;">
+                                            <h4>
+                                                Appearance
+                                            </h4>
+                                            <div style="padding: .75rem 1.25rem;">
+                                            <input v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' "
+                                                class="form-control" readonly placeholder="Short answer"/>
+                                            <textarea v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' "
+                                                class="form-control" placeholder="Long answer" readonly>
+                                            </textarea>
+                                            </div>
+                                        </div>
                                      
+                                    </div>
+
                                 </div>
-
                             </div>
-                        </div>
                     
-                    </div>
+                        </div>
 
-                </div>
-            </draggable>
-            
+                    </div>
+                </draggable>
+
+                    <draggable v-model="fieldTypes" group="sharedItems" class="col-3 fieldtypes-holder">
+                        <div v-for="(fieldType, fTIndex) of fieldTypes" class="card fieldtype-draggable">
+                            <div class="card-header" style="text-transform:none;">{{fieldType.name}}</div>
+                        </div>
+                    </draggable>
+            </div>
         </div>
     </form>
     <div v-else>Put loading something or other here</div>

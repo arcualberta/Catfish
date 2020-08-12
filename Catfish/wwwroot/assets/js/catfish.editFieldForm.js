@@ -31,7 +31,45 @@ if (document.getElementById("edit-field-form-page")) {
                 id: null,
                 modelType: null,
 
-                dropdowns: null
+                dropdowns: null,
+                //temp, need to call an api for these
+                fieldTypes: [
+                    {
+                        id: 0,
+                        name: 'Short Answer',
+                        modelType: 'TextField'
+                    },
+                    {
+                        id: 1,
+                        name: 'Long Answer',
+                        modelType: 'TextArea'
+                    },
+                    {
+                        id: 2,
+                        name: 'Multiple Choice',
+                        modelType: 'Radio'
+                    },
+                    {
+                        id: 3,
+                        name: 'Check Box',
+                        modelType: 'Checkbox'
+                    },
+                    {
+                        id: 4,
+                        name: 'Dropdown List',
+                        modelType: 'Dropdown'
+                    },
+                    {
+                        id: 5,
+                        name: 'User Upload',
+                        modelType: 'FileAttachment'
+                    },
+                    {
+                        id: 6,
+                        name: 'Rich Text',
+                        modelType: 'DisplayField'
+                    }
+                ]
             }
         },
         methods: {
