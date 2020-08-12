@@ -52,7 +52,7 @@
             <label for="">Fields</label>
             <div class="container-fluid" style="display:flex; flex-direction:row;">
                 <draggable class="flex-full col-9" v-model="fields" group="sharedItems" handle=".handle-drag">
-                    <div v-for="(field, fieldIndex) of fields" class="card field-card-width">
+                    <div v-for="(field, fieldIndex) of fields" class="card field-card-width" :key='fieldIndex'>
 
                         <div style="display:flex;">
 
@@ -94,7 +94,7 @@
                                             <i class="fas fa-info"></i>
                                         </button>-->
                                     </div>
-                
+
 
                                     <ul v-for="nameValue of field.name.values" class="list-group list-group-flush">
                                         <li class="list-group-item flex-li">
@@ -151,11 +151,12 @@
                     </div>
                 </draggable>
 
-                    <draggable v-model="fieldTypes" group="sharedItems" class="col-3 fieldtypes-holder">
-                        <div v-for="(fieldType, fTIndex) of fieldTypes" class="card fieldtype-draggable">
-                            <div class="card-header" style="text-transform:none;">{{fieldType.name}}</div>
-                        </div>
-                    </draggable>
+                <draggable :clone="cloneItem" v-model="fieldTypes" :group="{ name: 'sharedItems', put: false, pull: 'clone' }" 
+                    class="col-3 fieldtypes-holder">
+                    <div v-for="(fieldType, fTIndex) of fieldTypes" class="card fieldtype-draggable" :key='fieldType.id'>
+                        <div class="card-header" style="text-transform:none;">{{fieldType.name}}</div>
+                    </div>
+                </draggable>
             </div>
         </div>
     </form>

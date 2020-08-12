@@ -1,5 +1,5 @@
-﻿import draggable from 'vuedraggable'
-
+﻿import draggable from 'vuedraggable';
+import { v1 as uuidv1 } from 'uuid';
 /**
  * Javascript Vue code for creating the editable form from existing data in FieldContainerEdit.cshtml.
  * It is modelled after the file piranha.pagelist.js in Piranha's source code.
@@ -69,10 +69,26 @@ if (document.getElementById("edit-field-form-page")) {
                         name: 'Rich Text',
                         modelType: 'DisplayField'
                     }
-                ]
+                ],
+                //temp until templates sent
+                tmpTextfieldTemplate: null
             }
         },
         methods: {
+
+            /**
+             * Returns a custom clone
+             * @param event
+             */
+            cloneItem(event) {
+                console.log(event);
+                //hardcodedish until templates are provided
+                let newItem = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate)); //event.Template
+                newItem.id = uuidv1();
+                this.dropdowns[newItem.id] = { isCollapsed: false };
+                //newItem.Guid = uuidv1();
+                return newItem;
+            },
 
             /**
              * Toggles the field to either open or closed.
@@ -93,7 +109,6 @@ if (document.getElementById("edit-field-form-page")) {
               * */
             load() {
                 var self = this;
-                console.log(piranha.baseUrl + this.getString + this.itemId);
                 return new Promise((resolve, reject) => {
                     piranha.permissions.load(function () {
                         fetch(piranha.baseUrl + self.getString + self.itemId)
@@ -116,6 +131,20 @@ if (document.getElementById("edit-field-form-page")) {
                                     }
                                 }
 
+                                //temporary until templates sent, remove afterwards
+                                for (let field of result.fields) {
+                                    if (field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core') {
+                                        let defaultTextfieldTemplate = JSON.parse(JSON.stringify(field));
+                                        defaultTextfieldTemplate.name.values[0].value = '';
+
+                                        self.tmpTextfieldTemplate = defaultTextfieldTemplate;
+                                        //breaking for now bc my sample data only has 1 type
+                                        break;
+									}
+
+								}
+
+
                                 resolve();
 
                             })
@@ -128,13 +157,11 @@ if (document.getElementById("edit-field-form-page")) {
         },
         created() {
             this.itemId = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
-            console.log(this.itemId);
             this.load()
                 .then(() => {
                     //for popovers
                     $(document).ready(function () {
                         $('[data-toggle="popover"]').popover();
-                        console.log("ran popover");
                     });
                 });
         }
