@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
@@ -176,6 +177,21 @@ namespace Catfish.Core.Models
 
             if (populateChildren)
                 DataContainer = new XmlModelList<DataItem>(xml.GetElement(DataContainerRootTag, true), true);
+        }
+
+        public DataItem GetDataItem(string dataItemName, bool createIfNotExists, string nameLang = "en")
+        {
+            DataItem dataItem = this.DataContainer
+                .Where(di => di.GetName(nameLang) == dataItemName)
+                .FirstOrDefault();
+
+            if (dataItem == null && createIfNotExists)
+            {
+                dataItem = new DataItem();
+                dataItem.SetName(dataItemName, nameLang);
+                DataContainer.Add(dataItem);
+            }
+            return dataItem;
         }
 
     }

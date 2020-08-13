@@ -53,20 +53,20 @@ namespace Catfish.Services
             return ms;
         }
 
-        public DataItem GetDataItem(string dataItemName, bool createIfNotExists)
-        {
-            DataItem dataItem = mEntityTemplate.DataContainer
-                .Where(di => di.GetName(DefaultLanguage) == dataItemName)
-                .FirstOrDefault();
+        //public DataItem GetDataItem(string dataItemName, bool createIfNotExists)
+        //{
+        //    DataItem dataItem = mEntityTemplate.DataContainer
+        //        .Where(di => di.GetName(DefaultLanguage) == dataItemName)
+        //        .FirstOrDefault();
 
-            if (dataItem == null && createIfNotExists)
-            {
-                dataItem = new DataItem();
-                dataItem.SetName(dataItemName, DefaultLanguage);
-                mEntityTemplate.DataContainer.Add(dataItem);
-            }
-            return dataItem;
-        }
+        //    if (dataItem == null && createIfNotExists)
+        //    {
+        //        dataItem = new DataItem();
+        //        dataItem.SetName(dataItemName, DefaultLanguage);
+        //        mEntityTemplate.DataContainer.Add(dataItem);
+        //    }
+        //    return dataItem;
+        //}
 
         public Workflow GetWorkflow(bool createIfNotExists)
         {

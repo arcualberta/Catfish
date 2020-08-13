@@ -38,17 +38,20 @@ namespace Catfish.Pages
             _workflowService.SetModel(template);
 
             //TODO: dynamically figure out the start-up item
-            Item = _workflowService.GetDataItem("Contract Letter", false);
+            Item = template.GetDataItem("Contract Letter", false);
         }
 
         public IActionResult OnPost()
         {
             //Creating a clone of the entity
             EntityTemplate template = _entityTemplateService.GetTemplate(TemplateId);
+
             Item entity = template.Instantiate<Item>();
 
+            _workflowService.SetModel(template);
+
             //TODO: dynamically figure out the start-up item
-            DataItem item = _workflowService.GetDataItem("Contract Letter", false);
+            DataItem item = entity.GetDataItem("Contract Letter", false);
             item.UpdateFieldValues(this.Item);
 
             //Adding the new entity to the database
