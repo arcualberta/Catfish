@@ -1,28 +1,80 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<entity id="6e01c6f0-01e0-4d43-a0b4-74db70677e51" created="2020-08-11T12:14:13.5206541-06:00" model-type="Catfish.Core.Models.EntityTemplate, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-  <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="783c8d5d-3ff7-4c92-8e32-44c1b7280f26">
-    <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="aaddaecc-ef5b-48f8-a394-b50e43647420" xml:lang="en">Calendar management System Workflow</text>
+<entity id="52a8ab56-f3f4-4c4a-84f1-936221903a50" created="2020-08-13T08:40:51.5253334-06:00" model-type="Catfish.Core.Models.EntityTemplate, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+  <name model-type="Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="7b1c72c3-956c-4f9b-b7af-6f9a80ded1a8">
+    <text model-type="Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="110b6db4-9d12-419c-9fc6-097941a3d559" xml:lang="en">Calendar management System Workflow</text>
   </name>
-  <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="bfa9a237-2d6d-4355-aec5-9c07fc5ab800" />
+  <description model-type="Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="234f5865-52b0-42e4-85e0-0c0538aa38ef" />
   <metadata-sets />
   <data-container />
-  <workflow model-type="Catfish.Core.Models.Contents.Workflow.Workflow, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ab1f6479-09b9-44c4-ab23-13c186b6ab59">
+  <workflow model-type="Catfish.Core.Models.Contents.Workflow.Workflow, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="fc5c3e93-614e-49a1-a41d-437fe72dcc62">
     <states>
-      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="226b32cd-8c2d-4f50-950b-be3862af530e">Saved</state>
-      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="350fcdae-953e-48f8-bf8a-a3c121c3f0e1">Submitted</state>
-      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ccd191d5-e3a9-4d98-87dd-6a9ca8b90c8f">With AEC</state>
+      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="f3dd0891-dbfb-49b5-b132-ed3f95a7f31b">Saved</state>
+      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="08417a0c-ad30-4be5-88f1-63ea5fcc6108">Submitted</state>
+      <state model-type="Catfish.Core.Models.Contents.Workflow.State, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="5829b1b0-1522-4be8-a0d3-bbf9b4604057">With AEC</state>
     </states>
     <roles>
-      <role model-type="Catfish.Core.Models.Contents.Workflow.WorkflowRole, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="c370cebf-e277-4f24-b8a3-90b3362a9963">CentralAdmin</role>
+      <role model-type="Catfish.Core.Models.Contents.Workflow.WorkflowRole, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="07de5199-2a00-4578-ad66-b4bbc9dcaa59">CentralAdmin</role>
+      <role model-type="Catfish.Core.Models.Contents.Workflow.WorkflowRole, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="9a7d99d8-b4b6-462c-a11f-caab03ceb3b9">DepartmentlAdmin</role>
     </roles>
     <users>
-      <user model-type="Catfish.Core.Models.Contents.Workflow.WorkflowUser, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="992df330-db25-45b4-ba8f-b8b3e9583d78" email="centraladmin@ualberta.ca">
+      <user model-type="Catfish.Core.Models.Contents.Workflow.WorkflowUser, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="97a71918-0498-4e70-ac84-9c4eabc93a4a" email="centraladmin@ualberta.ca">
         <roles>
-          <role-ref model-type="Catfish.Core.Models.Contents.Workflow.RoleReference, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="19324f4e-472e-4b5f-b079-4479107c49ea" ref-id="c370cebf-e277-4f24-b8a3-90b3362a9963" />
+          <role-ref model-type="Catfish.Core.Models.Contents.Workflow.RoleReference, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="8ba749f9-3f36-4756-91d8-71962e363758" ref-id="07de5199-2a00-4578-ad66-b4bbc9dcaa59" />
+        </roles>
+      </user>
+      <user model-type="Catfish.Core.Models.Contents.Workflow.WorkflowUser, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ec7798d0-b77e-40c4-ace2-cbaf330c2202" email="departmentadmin@ualberta.ca">
+        <roles>
+          <role-ref model-type="Catfish.Core.Models.Contents.Workflow.RoleReference, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="b05c7a1d-5364-4293-9fd6-75d8ed0e75d7" ref-id="9a7d99d8-b4b6-462c-a11f-caab03ceb3b9" />
         </roles>
       </user>
     </users>
-    <triggers />
-    <actions />
+    <triggers>
+      <trigger model-type="Catfish.Core.Models.Contents.Workflow.EmailTrigger, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="40ae1266-e1c2-44ff-8426-63c6ebc3e56e" name="ToCentralAdmin" function="SendEmail">
+        <recipients>
+          <recipient model-type="Catfish.Core.Models.Contents.Workflow.EmailRecipient, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="bf896826-e5df-4c78-926a-3d17fa52cc0c" email="centraladmin@ualberta.ca" />
+        </recipients>
+      </trigger>
+      <trigger model-type="Catfish.Core.Models.Contents.Workflow.EmailTrigger, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="630d1aca-03e3-4e7a-9edb-5bedb88dfdbd" name="ToDepartmentAdmin" function="SendEmail">
+        <recipients>
+          <recipient model-type="Catfish.Core.Models.Contents.Workflow.EmailRecipient, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="cc7ee4b0-556c-4d81-b96a-48d481e08033">DepartmentlAdmin</recipient>
+        </recipients>
+      </trigger>
+    </triggers>
+    <actions>
+      <get-action model-type="Catfish.Core.Models.Contents.Workflow.GetAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="4bad0afc-aece-47e1-977a-0942cf97ced4" link-lable="Start Submission" function="Create" group="Home">
+        <params>
+          <param model-type="Catfish.Core.Models.Contents.Workflow.Param, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="3b94522c-e6f1-4ce7-a2a9-72434363710c" template-id="57ed6d6c-5bad-469f-b2ce-638dd0c9e68e" />
+        </params>
+        <post-actions>
+          <post-action model-type="Catfish.Core.Models.Contents.Workflow.PostAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="a1536b83-564f-4bfd-bbde-3a7244da032d" button-lable="Save" function="Save">
+            <state-mappings>
+              <mapping model-type="Catfish.Core.Models.Contents.Workflow.Mapping, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="6d9562a9-7d4c-41ee-9b60-0aa71cd95d8d" current="*" next="Saved" />
+            </state-mappings>
+            <pop-ups />
+            <trigger-refs />
+          </post-action>
+          <post-action model-type="Catfish.Core.Models.Contents.Workflow.PostAction, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="022ee70a-c2ad-40fa-9046-7b2a24d2ef9b" button-lable="Submit" function="Save">
+            <state-mappings>
+              <mapping model-type="Catfish.Core.Models.Contents.Workflow.Mapping, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ec89fbcf-8c07-42fb-a44d-ac100e9e2b6a" current="*" next="Submitted" />
+            </state-mappings>
+            <pop-ups>
+              <pop-up model-type="Catfish.Core.Models.Contents.Workflow.PopUp, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="ad12f516-eb2b-4010-a5f6-a334ff5ce42f" title="WARNING: Submitting Document" message="Once submitted, you cannot update the document.">
+                <buttons>
+                  <button model-type="Catfish.Core.Models.Contents.Workflow.Button, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="a76193c1-87ed-4755-9d4d-bfa354e5d8d9" text="Yes, submit" return="true" />
+                  <button model-type="Catfish.Core.Models.Contents.Workflow.Button, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="56ea91fd-856d-4026-8a6a-efcb2abacc00" text="Cancel" return="false" />
+                </buttons>
+              </pop-up>
+            </pop-ups>
+            <trigger-refs>
+              <trigger-ref model-type="Catfish.Core.Models.Contents.Workflow.TriggerRef, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="34705374-5135-4969-86a0-2dd70f309bde" order="0" ref-id="40ae1266-e1c2-44ff-8426-63c6ebc3e56e" />
+              <trigger-ref model-type="Catfish.Core.Models.Contents.Workflow.TriggerRef, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="6cff8ca8-e197-4caf-ae24-700e961ba817" order="1" ref-id="630d1aca-03e3-4e7a-9edb-5bedb88dfdbd" />
+            </trigger-refs>
+          </post-action>
+        </post-actions>
+        <authorizations>
+          <role-ref model-type="Catfish.Core.Models.Contents.Workflow.RoleReference, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" id="6103015f-49e8-44f2-b1b1-e2cb787a4143" ref-id="9a7d99d8-b4b6-462c-a11f-caab03ceb3b9" />
+        </authorizations>
+      </get-action>
+    </actions>
   </workflow>
 </entity>

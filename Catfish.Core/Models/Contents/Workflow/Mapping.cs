@@ -7,22 +7,26 @@ namespace Catfish.Core.Models.Contents.Workflow
 {
     public class Mapping : XmlModel
     {
+        public static readonly string TagName = "mapping";
+        public static readonly string CurrentAtt = "current";
+        public static readonly string NextAtt = "next";
+        public static readonly string LableAtt = "button-label";
         public string Current
         {
-            get => GetAttribute("current", null as string);
-            set => SetAttribute("current", value);
+            get => GetAttribute(CurrentAtt, null as string);
+            set => SetAttribute(CurrentAtt, value);
         }
 
         public string Next
         {
-            get => GetAttribute("next", null as string);
-            set => SetAttribute("next", value);
+            get => GetAttribute(NextAtt, null as string);
+            set => SetAttribute(NextAtt, value);
         }
 
         public string ButtonLabel
         {
-            get => GetAttribute("button-label", null as string);
-            set => SetAttribute("button-label", value);
+            get => GetAttribute(LableAtt, null as string);
+            set => SetAttribute(LableAtt, value);
         }
 
         public Mapping(XElement data)
@@ -30,6 +34,12 @@ namespace Catfish.Core.Models.Contents.Workflow
         {
 
         }
-        
+        public Mapping()
+            : base(new XElement(TagName))
+        {
+
+        }
+
+
     }
 }

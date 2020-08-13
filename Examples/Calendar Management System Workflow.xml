@@ -172,21 +172,21 @@
 			</user>
 		</users>
 		<triggers>
-			<trigger function="SendEmail" id="bbcc2561-b957-4141-970b-fdb101a96ed2"> <!-- Document submission notifican email sent to the central admin -->
+			<trigger name="ToCentralAdmin" function="SendEmail" id="bbcc2561-b957-4141-970b-fdb101a96ed2"> <!-- Document submission notifican email sent to the central admin -->
 				<to metadata-set-id="cae52561-b957-4141-970b-fdb101a96ed2" field-id="0e176ef5-a235-470f-bf95-6c8aa99921b2" />
 				<email-template metadata-set-id="bbd52561-b957-4141-970b-fdb101a96ed2" field-id="ab176ef5-a235-470f-bf95-6c8aa99921b2" />
 			</trigger>
 
-			<trigger function="SendEmail" id="bbcc2561-b957-4141-970b-fdb101a96eee"> <!-- Document submission confirmation email sent to the document owner -->
+			<trigger name="ConfirmationEmail" function="SendEmail" id="bbcc2561-b957-4141-970b-fdb101a96eee"> <!-- Document submission confirmation email sent to the document owner -->
 				<to>Owner</to>
 				<email-template metadata-set-id="cdd52561-b957-4141-970b-fdb101a96ed2" field-id="ef176ef5-a235-470f-bf95-6c8aa99921b2" />
 			</trigger>
 
-			<trigger function="SendEmail" id="ed252561-b957-4141-970b-fdb101a96ed2">
+			<trigger name="ToReviewrs" function="SendEmail" id="ed252561-b957-4141-970b-fdb101a96ed2">
 				<!-- Email address(s) of the reviewers of this package -->
-				<to metadata-set-id="cc252561-b957-4141-970b-fdb101a96ed2" field-id="0e176ef5-a235-470f-bf95-6c8aa99921b2" />
+				<email-template metadata-set-id="cc252561-b957-4141-970b-fdb101a96ed2" field-id="0e176ef5-a235-470f-bf95-6c8aa99921b2" />
 			</trigger>				
-			<trigger function="AddAuditEntry" type="ReviewRequest" id="ed252561-b957-4141-970b-fdb101a96cc2"/>
+			<trigger name="ReviewRequest" function="AddAuditEntry" type="ReviewRequest" id="ed252561-b957-4141-970b-fdb101a96cc2"/>
 		</triggers>
 		<actions>
 			<get-action link-label="Start Submission" function="Create" group="Home"> <!-- Starting a new submission by DeptAdmin -->

@@ -10,11 +10,6 @@ namespace Catfish.Core.Models.Contents.Workflow
     public class Workflow : XmlModel
     {
         public static readonly string TagName = "workflow";
-        public Guid Id
-        {
-            get => Guid.Parse(Data.Attribute("id").Value);
-            set => Data.SetAttributeValue("id", value);
-        }
 
         public XmlModelList<State> States { get; set; }
         public XmlModelList<WorkflowRole> Roles { get; set; }
@@ -80,9 +75,25 @@ namespace Catfish.Core.Models.Contents.Workflow
             return newUser;
         }
 
-        public Trigger AddTrigger(string function)
+        public EmailTrigger AddTrigger(string name, string function)
         {
-            throw new NotImplementedException();
+            if (Triggers.Where(x => x.Name== name).Any())
+                throw new Exception(string.Format("Trigger {0} already exists.", name));
+
+            EmailTrigger newTrigger = new EmailTrigger() { Name = name, Function=function };
+            Triggers.Add(newTrigger);
+            return newTrigger;
+        }
+        
+
+        public GetAction AddAction(string lable, string function, string group)
+        {
+            if (Actions.Where(x => x.LinkLabel == lable).Any())
+                throw new Exception(string.Format("Action {0} already exists.", lable));
+
+            GetAction newAction = new GetAction() { LinkLabel = lable, Function = function , Group = group};
+            Actions.Add(newAction);
+            return newAction;
         }
 
     }

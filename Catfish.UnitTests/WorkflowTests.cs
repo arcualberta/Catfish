@@ -109,11 +109,43 @@ namespace Catfish.UnitTests
 
             //Defininig roles
             WorkflowRole centralAdminRole = workflow.AddRole("CentralAdmin");
+            WorkflowRole departmentAdmin = workflow.AddRole("DepartmentlAdmin");
 
             //Defining users
             WorkflowUser user = workflow.AddUser("centraladmin@ualberta.ca");
             user.AddRoleReference(centralAdminRole);
+            WorkflowUser deptUser = workflow.AddUser("departmentadmin@ualberta.ca");
+            deptUser.AddRoleReference(departmentAdmin);
 
+            //Defining triggers
+            EmailTrigger emailTrigger = workflow.AddTrigger("ToCentralAdmin", "SendEmail");
+            emailTrigger.AddRecipientByEmail(user.Email);
+            //emailTrigger.AddTemplate(Guid.Parse("57ed6d6c-5bad-469f-b2ce-638dd0c9e68e"), Guid.Parse("e12fd686-7d89-4610-92e2-601b219e5925"));
+            EmailTrigger deptAdminEmailTrigger = workflow.AddTrigger("ToDepartmentAdmin", "SendEmail");
+            deptAdminEmailTrigger.AddRecipientByRole("DepartmentlAdmin");
+
+            //Defining actions
+            GetAction action = workflow.AddAction("Start Submission", "Create", "Home");
+            action.AddTemplate(Guid.Parse("57ed6d6c-5bad-469f-b2ce-638dd0c9e68e"));
+
+            //Defining post actions
+            PostAction postActionSave = action.AddPostAction("Save", "Save");
+            postActionSave.AddStateMapping("*", "Saved");
+            PostAction postActionSubmit = action.AddPostAction("Submit", "Save");
+            postActionSubmit.AddStateMapping("*", "Submitted");
+
+            //Defining pop-ups
+            PopUp popUp = postActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
+            popUp.AddButtons("Yes, submit", "true");
+            popUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs
+            postActionSubmit.AddTriggerRefs("0", emailTrigger.Id);
+            postActionSubmit.AddTriggerRefs("1", deptAdminEmailTrigger.Id);
+
+
+            //Defining authorizatios
+            action.AddAuthorization(departmentAdmin.Id);
 
             template.Data.Save("..\\..\\..\\..\\Examples\\CalendarManagementWorkflow_generared.xml");
 
