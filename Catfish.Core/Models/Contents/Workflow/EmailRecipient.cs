@@ -16,7 +16,11 @@ namespace Catfish.Core.Models.Contents.Workflow
             get => Data.Attribute(EmailAtt).Value;
             set => Data.SetAttributeValue(EmailAtt, value);
         }
-
+        public string Value
+        {
+            get => Data.Value;
+            set => Data.Value = string.IsNullOrEmpty(value) ? "" : value;
+        }
         public Guid? MetadataSetId
         {
             get => GetAttribute("metadata-set-id", null as Guid?);
