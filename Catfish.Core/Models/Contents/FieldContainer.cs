@@ -32,8 +32,13 @@ namespace Catfish.Core.Models.Contents
 
         public string GetName(string lang)
         {
-            Text val = Name.Values.Where(val => val.Language == lang).FirstOrDefault();
-            return val != null ? val.Value : null;
+            if (string.IsNullOrEmpty(lang))
+                return string.Join(" + ", Name.Values.Where(val => val.Value != null).Select(val => val.Value));
+            else
+            {
+                Text val = Name.Values.Where(val => val.Language == lang).FirstOrDefault();
+                return val != null ? val.Value : null;
+            }
         }
 
         public void SetName(string containerName, string lang)

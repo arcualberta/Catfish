@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Catfish.Core.Models.Contents.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -64,12 +65,12 @@ namespace Catfish.Core.Models.Contents.Workflow
             Authorizations = new XmlModelList<RoleReference>(authorizationsListDefinition, true, "role-refs");
 
         }
-        public Param AddTemplate(Guid template)
+        public Param AddTemplate(Guid dataItemFormTemplateId, string exceptionMessage)
         {
-            if (Params.Find(template) != null)
-                throw new Exception(string.Format("Email Template {0} already exists.", template));
+            if (Params.Where(p => p.TemplateId == dataItemFormTemplateId).Any())
+                throw new Exception(string.Format("Form Template {0} already exists.", exceptionMessage));
 
-            Param newTemplate = new Param() { TemplateId = template };
+            Param newTemplate = new Param() { TemplateId = dataItemFormTemplateId };
             Params.Add(newTemplate);
             return newTemplate;
         }

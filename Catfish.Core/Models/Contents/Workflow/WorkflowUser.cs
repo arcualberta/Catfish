@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace Catfish.Core.Models.Contents.Workflow
 {
@@ -37,12 +38,12 @@ namespace Catfish.Core.Models.Contents.Workflow
             Roles = new XmlModelList<RoleReference>(GetElement("roles", true));
         }
 
-        public RoleReference AddRoleReference(WorkflowRole role)
+        public RoleReference AddRoleReference(Guid roleId, string exceptionMessage)
         {
-            if (Roles.FindByAttribute(WorkflowReferrence.RefIdAtt, role.Id.ToString()) != null)
-                throw new Exception(string.Format("Reference to role {0} already exists.", role.Value));
+            if (Roles.Where(r => r.RefId == roleId).Any())
+                throw new Exception(string.Format("Reference to role {0}: {1} already exists.", roleId, exceptionMessage));
 
-            RoleReference newRef = new RoleReference() { RefId = role.Id };
+            RoleReference newRef = new RoleReference() { RefId = roleId };
             Roles.Add(newRef);
             return newRef;
         }

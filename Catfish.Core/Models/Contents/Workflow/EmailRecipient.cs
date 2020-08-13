@@ -16,11 +16,6 @@ namespace Catfish.Core.Models.Contents.Workflow
             get => Data.Attribute(EmailAtt).Value;
             set => Data.SetAttributeValue(EmailAtt, value);
         }
-        public string Value
-        {
-            get => Data.Value;
-            set => Data.Value = string.IsNullOrEmpty(value) ? "" : value;
-        }
         public Guid? MetadataSetId
         {
             get => GetAttribute("metadata-set-id", null as Guid?);
@@ -33,7 +28,11 @@ namespace Catfish.Core.Models.Contents.Workflow
             set => Data.SetAttributeValue("data-container", value);
         }
 
-
+        public bool Owner
+        {
+            get => GetAttribute("owner", false);
+            set => Data.SetAttributeValue("owner", value);
+        }
         public Guid? FieldId
         {
             get => GetAttribute("field-id", null as Guid?);

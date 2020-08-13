@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
@@ -52,10 +53,15 @@ namespace Catfish.Core.Models.Contents.Workflow
             TriggerRefs = new XmlModelList<TriggerRef>(triggerRefListDefinition, true, "trigger-ref");
 
         }
+
+        public Mapping GetMapping(string current, string next)
+        {
+            return StateMappings.Where(m => m.Current == current && m.Next == next).FirstOrDefault();
+        }
         public Mapping AddStateMapping(string current, string next)
         {
-            if (StateMappings.FindByAttribute(Mapping.CurrentAtt, current) != null)
-                throw new Exception(string.Format("Post action {0} already exists.", current));
+            if (GetMapping(current, next) != null)
+                throw new Exception(string.Format("Post action {0}=>{1} already exists.", current, next));
 
             Mapping newStateMaiipng = new Mapping() { Current = current, Next = next };
             StateMappings.Add(newStateMaiipng);
@@ -70,10 +76,10 @@ namespace Catfish.Core.Models.Contents.Workflow
             PopUps.Add(newPopUp);
             return newPopUp;
         }
-        public TriggerRef AddTriggerRefs(string order, Guid refId)
+        public TriggerRef AddTriggerRefs(string order, Guid refId, string exceptionMessage)
         {
             if (TriggerRefs.FindByAttribute(TriggerRef.RefIdAtt, refId.ToString()) != null)
-                throw new Exception(string.Format("Trigger-Ref {0} already exists.", refId));
+                throw new Exception(string.Format("Trigger-Ref {0}: {1} already exists.", refId.ToString(), exceptionMessage));
 
             TriggerRef newTriggerRef = new TriggerRef() { Order = order, RefId = refId };
             TriggerRefs.Add(newTriggerRef);

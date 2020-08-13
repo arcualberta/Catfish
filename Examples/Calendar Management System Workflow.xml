@@ -196,7 +196,7 @@
 				<post-actions>
 					<post-action button-label="Save"   function="Save">
 						<state-mappings>
-							<mapping current="*"  next="Saved"/>
+							<mapping current=""  next="Saved"/>
 						</state-mappings>
 					</post-action>
 					<post-action button-label="Submit" function="Save">

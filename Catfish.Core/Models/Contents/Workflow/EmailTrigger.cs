@@ -10,7 +10,7 @@ namespace Catfish.Core.Models.Contents.Workflow
     {
         
         public XmlModelList<EmailRecipient> Recipients { get; set; }
-        public XmlModelList<WorkflowEmailTemplate> Templates { get; set; }
+        public XmlModelList<EmailTemplateReference> Templates { get; set; }
         public EmailTrigger(XElement data)
             : base(data)
         {
@@ -27,6 +27,7 @@ namespace Catfish.Core.Models.Contents.Workflow
             base.Initialize(guidOption);
 
             Recipients = new XmlModelList<EmailRecipient>(GetElement("recipients", true));
+            Templates = new XmlModelList<EmailTemplateReference>(GetElement("email-templates", true));
         }
 
 
@@ -40,10 +41,10 @@ namespace Catfish.Core.Models.Contents.Workflow
 
         public void AddRecipientByRole(string role)
         {
-            if (Recipients.Where(x => x.Value == role).Any())
-                throw new Exception(string.Format("Email recipient {0} already exists.", role));
+            if (Recipients.Where(x => x.Role == role).Any())
+                throw new Exception(string.Format("Email recipient role {0} already exists.", role));
 
-            EmailRecipient newRecipient = new EmailRecipient() { Value = role };
+            EmailRecipient newRecipient = new EmailRecipient() { Role = role };
             Recipients.Add(newRecipient);
         }
 
@@ -57,14 +58,23 @@ namespace Catfish.Core.Models.Contents.Workflow
 
         }
 
-        //public WorkflowEmailTemplate AddTemplate(Guid feild, Guid metadataset)
-        //{
-        //    if (Templates.Find(feild) != null)
-        //        throw new Exception(string.Format("Email Template {0} already exists.", feild));
+        public void AddOwnerAsRecipient()
+        {
+            if (Recipients.Where(x => x.Owner).Any())
+                throw new Exception(string.Format("Owner is already a recipient."));
 
-        //    WorkflowEmailTemplate newRef = new WorkflowEmailTemplate() { MetadataSetId = metadataset, FeildId = feild };
-        //    Templates.Add(newRef);
-        //    return newRef;
-        //}
+            EmailRecipient newRecipient = new EmailRecipient() { Owner = true };
+            Recipients.Add(newRecipient);
+        }
+
+        public EmailTemplateReference AddTemplate(Guid emailTemplateId, string exceptionMessage)
+        {
+            if (Templates.Where(t => t.RefId == emailTemplateId).Any())
+                throw new Exception(string.Format("Email Template {0}: {1} already exists.", emailTemplateId.ToString(), exceptionMessage));
+
+            EmailTemplateReference newRef = new EmailTemplateReference() { RefId = emailTemplateId };
+            Templates.Add(newRef);
+            return newRef;
+        }
     }
 }

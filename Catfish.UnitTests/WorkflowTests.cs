@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
@@ -7,8 +8,10 @@ using Catfish.Tests.Helpers;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace Catfish.UnitTests
 {
@@ -106,6 +109,26 @@ namespace Catfish.UnitTests
             workflow.AddState("Submitted");
             workflow.AddState("With AEC");
 
+            //Defining email templates
+            EmailTemplate centralAdminNotification = ws.GetEmailTemplate("Central Admin Notification", true);
+            centralAdminNotification.SetDescription("This metadata set defines the email template to be sent to the central admin when a dept admin makes a submission.", lang);
+            centralAdminNotification.SetSubject("Calendar Change Submission");
+            centralAdminNotification.SetBody("A @Link[calendar chane|@Model] was submitted.\n\nThank you");
+
+            EmailTemplate deptAdminSubmissionNotification = ws.GetEmailTemplate("Dept. Admin Submission Admin Notification", true);
+            deptAdminSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when he/she submits a new or revised calendar change.", lang);
+            deptAdminSubmissionNotification.SetSubject("Calendar Change Submission");
+            deptAdminSubmissionNotification.SetBody("A @Link[calendar chane|@Model] was submitted.\n\nThank you");
+
+            //Defininig the Calendar Change Request form
+            //Contract letter
+            DataItem calendarChangeForm = template.GetDataItem("Calendar Change Request", true, lang);
+            calendarChangeForm.IsRoot = true;
+            calendarChangeForm.SetDescription("This is the form to be filled by the department admin when a calndar change is requested.", lang);
+            calendarChangeForm.CreateField<TextField>("Course Name", lang, true);
+            calendarChangeForm.CreateField<TextField>("Course Number", lang, true);
+            calendarChangeForm.CreateField<TextArea>("Change Description", lang, true);
+
 
             //Defininig roles
             WorkflowRole centralAdminRole = workflow.AddRole("CentralAdmin");
@@ -113,42 +136,56 @@ namespace Catfish.UnitTests
 
             //Defining users
             WorkflowUser user = workflow.AddUser("centraladmin@ualberta.ca");
-            user.AddRoleReference(centralAdminRole);
-            WorkflowUser deptUser = workflow.AddUser("departmentadmin@ualberta.ca");
-            deptUser.AddRoleReference(departmentAdmin);
+            user.AddRoleReference(centralAdminRole.Id, "Central Admin User");
+            WorkflowUser deptUser = workflow.AddUser("departmentadmin1@ualberta.ca");
+            deptUser.AddRoleReference(departmentAdmin.Id, "Dept. Admin User");
+            deptUser = workflow.AddUser("departmentadmin2@ualberta.ca");
+            deptUser.AddRoleReference(departmentAdmin.Id, "Dept. Admin User");
 
             //Defining triggers
-            EmailTrigger emailTrigger = workflow.AddTrigger("ToCentralAdmin", "SendEmail");
-            emailTrigger.AddRecipientByEmail(user.Email);
-            //emailTrigger.AddTemplate(Guid.Parse("57ed6d6c-5bad-469f-b2ce-638dd0c9e68e"), Guid.Parse("e12fd686-7d89-4610-92e2-601b219e5925"));
-            EmailTrigger deptAdminEmailTrigger = workflow.AddTrigger("ToDepartmentAdmin", "SendEmail");
-            deptAdminEmailTrigger.AddRecipientByRole("DepartmentlAdmin");
+            EmailTrigger centralAdminNotificationEmailTrigger = workflow.AddTrigger("ToCentralAdmin", "SendEmail");
+            centralAdminNotificationEmailTrigger.AddRecipientByEmail(user.Email);
+            centralAdminNotificationEmailTrigger.AddTemplate(centralAdminNotification.Id, "Central Admin Notification");
+            EmailTrigger ownerSubmissionNotificationEmailTrigger = workflow.AddTrigger("ToOwnerOnDocumentSubmission", "SendEmail");
+            ownerSubmissionNotificationEmailTrigger.AddOwnerAsRecipient();
+            ownerSubmissionNotificationEmailTrigger.AddTemplate(deptAdminSubmissionNotification.Id, "Owner's submission-notification");
 
             //Defining actions
             GetAction action = workflow.AddAction("Start Submission", "Create", "Home");
-            action.AddTemplate(Guid.Parse("57ed6d6c-5bad-469f-b2ce-638dd0c9e68e"));
+            action.AddTemplate(calendarChangeForm.Id, "Start Submission Template");
 
             //Defining post actions
             PostAction postActionSave = action.AddPostAction("Save", "Save");
-            postActionSave.AddStateMapping("*", "Saved");
+            postActionSave.AddStateMapping("", "Saved");
             PostAction postActionSubmit = action.AddPostAction("Submit", "Save");
-            postActionSubmit.AddStateMapping("*", "Submitted");
+            postActionSubmit.AddStateMapping("", "Submitted");
 
-            //Defining pop-ups
+            //Defining the pop-up for the above postActionSubmit action
             PopUp popUp = postActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
             popUp.AddButtons("Yes, submit", "true");
             popUp.AddButtons("Cancel", "false");
 
             //Defining trigger refs
-            postActionSubmit.AddTriggerRefs("0", emailTrigger.Id);
-            postActionSubmit.AddTriggerRefs("1", deptAdminEmailTrigger.Id);
-
+            postActionSubmit.AddTriggerRefs("0", centralAdminNotificationEmailTrigger.Id, "Central Admin Notification Email Trigger");
+            postActionSubmit.AddTriggerRefs("1", ownerSubmissionNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
             //Defining authorizatios
             action.AddAuthorization(departmentAdmin.Id);
 
             template.Data.Save("..\\..\\..\\..\\Examples\\CalendarManagementWorkflow_generared.xml");
 
+        }
+
+        [Test]
+        public void TestEntityTemplateLoad()
+        {
+            string filename = "..\\..\\..\\..\\Examples\\CalendarManagementWorkflow_generared.xml";
+            string content = File.ReadAllText(filename);
+            EntityTemplate template = new EntityTemplate();
+            template.Content = content;
+
+            _db.EntityTemplates.Add(template);
+            _db.SaveChanges();
         }
     }
 }
