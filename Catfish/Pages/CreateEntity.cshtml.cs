@@ -38,7 +38,7 @@ namespace Catfish.Pages
             _workflowService.SetModel(template);
 
             //TODO: dynamically figure out the start-up item
-            Item = template.GetDataItem("Contract Letter", false);
+            Item = template.GetRootDataItem(false);
         }
 
         public IActionResult OnPost()
@@ -51,7 +51,7 @@ namespace Catfish.Pages
             _workflowService.SetModel(template);
 
             //TODO: dynamically figure out the start-up item
-            DataItem item = entity.GetDataItem("Contract Letter", false);
+            DataItem item = entity.GetRootDataItem(false);
             item.UpdateFieldValues(this.Item);
 
             //Adding the new entity to the database

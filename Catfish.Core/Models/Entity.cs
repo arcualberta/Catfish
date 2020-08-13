@@ -194,5 +194,19 @@ namespace Catfish.Core.Models
             return dataItem;
         }
 
+        public DataItem GetRootDataItem(bool createIfNotExists)
+        {
+            DataItem dataItem = this.DataContainer
+                .Where(di => di.IsRoot)
+                .FirstOrDefault();
+
+            if (dataItem == null && createIfNotExists)
+            {
+                dataItem = new DataItem() { IsRoot = true };
+                DataContainer.Add(dataItem);
+            }
+            return dataItem;
+        }
+
     }
 }

@@ -56,6 +56,7 @@ namespace Catfish.UnitTests
 
             //Contract letter
             DataItem contract = template.GetDataItem("Contract Letter", true, lang);
+            contract.IsRoot = true;
             contract.SetDescription("This is the template for the contract letter.", lang);
             contract.CreateField<TextField>("First Name", lang, true);
             contract.CreateField<TextField>("Last Name", lang, true);

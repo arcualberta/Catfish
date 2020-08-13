@@ -10,6 +10,18 @@ namespace Catfish.Core.Models.Contents.Data
     {
         public const string TagName = "data-item";
 
+        public bool IsRoot
+        {
+            get => GetAttribute("is-root", false);
+            set => SetAttribute("is-root", value);
+        }
+
+        public Guid? EntityId
+        {
+            get => GetAttribute("entity-id", null as Guid?);
+            set => SetAttribute("entity-id", value.ToString());
+        }
+
         public string TestField { get; set; }
 
         public DataItem() : base(TagName) { Initialize(eGuidOption.Ensure); }

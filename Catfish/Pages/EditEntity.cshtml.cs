@@ -14,14 +14,18 @@ namespace Catfish.Pages
     public class EntityEditPageModel : CatfishPageModelModel
     {
         private readonly IWorkflowService _workflowService;
+        private readonly AppDbContext _db;
 
-        public EntityEditPageModel(IAuthorizationService auth, ISubmissionService serv, IWorkflowService workflow) : base(auth, serv)
+        [BindProperty]
+        public DataItem Item { get; set; }
+        public EntityEditPageModel(IAuthorizationService auth, ISubmissionService serv, IWorkflowService workflow, AppDbContext db) : base(auth, serv)
         {
             _workflowService = workflow;
+            _db = db;
         }
-        public void OnGet()
+        public void OnGet(Guid id)
         {
-
+            Entity Item = _db.Items.Where(it => it.Id == id).FirstOrDefault();
 
         }
 
