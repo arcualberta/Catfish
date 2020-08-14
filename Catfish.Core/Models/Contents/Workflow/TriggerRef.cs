@@ -8,10 +8,11 @@ namespace Catfish.Core.Models.Contents.Workflow
     public class TriggerRef : WorkflowReferrence
     {
         public static readonly string TagName = "trigger-ref";
+        public static readonly string OrderAtt = "order";
         public string Order
         {
-            get => GetAttribute("order", null as string);
-            set => SetAttribute("order", value);
+            get => GetAttribute(OrderAtt, null as string);
+            set => SetAttribute(OrderAtt, value);
         }
         public TriggerRef(XElement data)
             : base(data)

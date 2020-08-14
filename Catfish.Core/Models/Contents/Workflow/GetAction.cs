@@ -36,7 +36,8 @@ namespace Catfish.Core.Models.Contents.Workflow
         public XmlModelList<RoleReference> Authorizations { get; set; }
         public XmlModelList<PostAction> PostActions { get; set; }
         public XmlModelList<Param> Params { get; set; }
-        
+        public XmlModelList<StateRef> States { get; set; }
+
         public GetAction(XElement data)
             : base(data)
         {
@@ -59,6 +60,10 @@ namespace Catfish.Core.Models.Contents.Workflow
             //Initializing the postaction list
             XElement postactionsListDefinition = GetElement("post-actions", true);
             PostActions = new XmlModelList<PostAction>(postactionsListDefinition, true, "post-action");
+
+            //Initializing the state list
+            XElement stateListDefinition = GetElement("states", true);
+            States = new XmlModelList<StateRef>(stateListDefinition, true, "state-refs");
 
             //Initializing the authorizations list
             XElement authorizationsListDefinition = GetElement("authorizations", true);
@@ -87,11 +92,21 @@ namespace Catfish.Core.Models.Contents.Workflow
         public RoleReference AddAuthorization(Guid refId)
         {
             if (Authorizations.Where(st => st.Id == refId).Any())
-                throw new Exception(string.Format("Authorization {0} already exists.", refId));
+                throw new Exception(string.Format("Authorization already exists."));
 
             RoleReference newAuthorization = new RoleReference() { RefId = refId };
             Authorizations.Add(newAuthorization);
             return newAuthorization;
+        }
+
+        public StateRef AddStateReferances(Guid refId)
+        {
+            if (States.Where(st => st.Id == refId).Any())
+                throw new Exception(string.Format("State already exists."));
+
+            StateRef newState = new StateRef() { RefId = refId };
+            States.Add(newState);
+            return newState;
         }
 
     }

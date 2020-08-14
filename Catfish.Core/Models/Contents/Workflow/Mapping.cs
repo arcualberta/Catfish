@@ -11,15 +11,15 @@ namespace Catfish.Core.Models.Contents.Workflow
         public static readonly string CurrentAtt = "current";
         public static readonly string NextAtt = "next";
         public static readonly string LableAtt = "button-label";
-        public string Current
+        public Guid Current
         {
-            get => GetAttribute(CurrentAtt, null as string);
+            get => Guid.Parse(Data.Attribute(CurrentAtt).Value);
             set => SetAttribute(CurrentAtt, value);
         }
 
-        public string Next
+        public Guid Next
         {
-            get => GetAttribute(NextAtt, null as string);
+            get => Guid.Parse(Data.Attribute(NextAtt).Value);
             set => SetAttribute(NextAtt, value);
         }
 

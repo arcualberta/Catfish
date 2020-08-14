@@ -31,21 +31,24 @@ namespace Catfish.Core.Models.Contents.Workflow
         }
 
 
-        public void AddRecipientByEmail(string email)
+        public EmailRecipient AddRecipientByEmail(string email)
         {
             if (Recipients.FindByAttribute(EmailRecipient.EmailAtt, email) != null)
                 throw new Exception(string.Format("Email recipient {0} already exists.", email));
 
-            Recipients.Add(new EmailRecipient() { Email = email });
+            EmailRecipient newRecipient = new EmailRecipient() { Email = email };
+            Recipients.Add(newRecipient);
+            return newRecipient;
         }
 
-        public void AddRecipientByRole(string role)
+        public EmailRecipient AddRecipientByRole(string role)
         {
             if (Recipients.Where(x => x.Role == role).Any())
                 throw new Exception(string.Format("Email recipient role {0} already exists.", role));
 
             EmailRecipient newRecipient = new EmailRecipient() { Role = role };
             Recipients.Add(newRecipient);
+            return newRecipient;
         }
 
         public void AddRecipientByDataField(Guid dataItemId, Guid fieldId)
@@ -58,13 +61,14 @@ namespace Catfish.Core.Models.Contents.Workflow
 
         }
 
-        public void AddOwnerAsRecipient()
+        public EmailRecipient AddOwnerAsRecipient()
         {
             if (Recipients.Where(x => x.Owner).Any())
                 throw new Exception(string.Format("Owner is already a recipient."));
 
             EmailRecipient newRecipient = new EmailRecipient() { Owner = true };
             Recipients.Add(newRecipient);
+            return newRecipient;
         }
 
         public EmailTemplateReference AddTemplate(Guid emailTemplateId, string exceptionMessage)

@@ -194,14 +194,14 @@
 					<param template-id="88d30fb4-9f49-4055-abee-d321735203c8" /> <!-- main application template ID-->
 				</params>
 				<post-actions>
-					<post-action button-label="Save"   function="Save">
+					<post-action button-label="Save" function="Save">
 						<state-mappings>
-							<mapping current=""  next="Saved"/>
+							<mapping current=""  next="Saved" button-label="Save" />
 						</state-mappings>
 					</post-action>
 					<post-action button-label="Submit" function="Save">
 						<state-mappings>
-							<mapping current="*"  next="Submitted"/>
+							<mapping current="*"  next="Submitted" button-label="Submit" />
 						</state-mappings>
 						<pop-up title="WARNING: Submitting Document" message="Once submitted, you cannot update the document.">
 							<button text="Yes, submit" return="true" />
@@ -226,11 +226,26 @@
 					<post-action button-label="Save"  function="Save" >
 						<state-mappings>
 							<mapping current="Saved"  next="Saved"/>
+							<mapping current="DeanOfficeRevision"  next="SavedDeanOfficeRevision" button-label="Save"/>
+							<mapping current="AACRevision"  next="SavedAACRevision" button-label="Save"/>
+							<mapping current="AECRevision"  next="SavedAECRevision" button-label="Save"/>
+							<mapping current="AFCRevision"  next="SavedAFCRevision" button-label="Save"/>
+							<mapping current="GFCRevision"  next="SavedGFCRevision" button-label="Save"/>
 						</state-mappings>
 					</post-action>
 					<post-action button-label="Submit" function="Save" >
 						<state-mappings>
 							<mapping current="Saved"  next="Submitted"/>
+							<mapping current="DeanOfficeRevision"  next="DeanOfficeRevisionCompleted" button-label="Submit"/>
+							<mapping current="AACRevision"  next="AACRevisionCompleted" button-label="Submit"/>
+							<mapping current="AECRevision"  next="AECRevisionCompleted" button-label="Submit"/>
+							<mapping current="AFCRevision"  next="AFCRevisionCompleted" button-label="Submit"/>
+							<mapping current="GFCRevision"  next="GFCRevisionCompleted" button-label="Submit"/>
+							<mapping current="SavedDeanOfficeRevision"  next="DeanOfficeRevisionCompleted" button-label="Submit"/>
+							<mapping current="SavedAACRevision"  next="AACRevisionCompleted" button-label="Submit"/>
+							<mapping current="SavedAECRevision"  next="AECRevisionCompleted" button-label="Submit"/>
+							<mapping current="SavedAFCRevision"  next="AFCRevisionCompleted" button-label="Submit"/>
+							<mapping current="SavedGFCRevision"  next="GFCRevisionCompleted" button-label="Submit"/>
 						</state-mappings>
 						<pop-up title="WARNING: Submitting Document" message="Once submitted, you cannot update the document.">
 							<button text="Yes, submit" return="true" />
@@ -244,20 +259,30 @@
 				</post-actions>
 				<valid-states>
 					<state>Saved</state>
+					<state>DeanOfficeRevision</state>
+					<state>SavedDeanOfficeRevision</state>
+					<state>AACRevision</state>
+					<state>SavedAACRevision</state>
+					<state>AECRevision</state>
+					<state>SavedAECRevision</state>
+					<state>AFCRevision</state>
+					<state>SavedAFCRevision</state>
+					<state>GFCRevision</state>
+					<state>SavedGFCRevision</state>
 				</valid-states>
 				<authorizations>
 					<role>Owner</role>
 				</authorizations>
 			</get-action>
 			
-			<get-action link-label="Delete Submission"  function="Delete">
+			<get-action link-label="Delete Submission"  function="Delete" group="Details">
 				<params>
 					<!-- main application document ID to be passed programatically -->
 				</params>
 				<post-actions>
-					<post-action button-label="Delete"   function="Save" >
+					<post-action button-label="Delete" function="Save" >
 						<state-mappings>
-							<mapping current="Saved"  next="Deleted"/>
+							<mapping current="Saved"  next="Deleted" button-label="Delete"/>
 						</state-mappings>
 						<pop-up title="WARNING: Delete" message="Deleting the submission. Please confirm.">
 							<button text="Yes, delete" return="true" />
@@ -273,12 +298,15 @@
 				</authorizations>
 			</get-action>
 			
-			<get-action link-label="Purge Submission"  function="Purge"><!-- Permanently delete a submission who started a new application -->
+			<get-action link-label="Purge Submission"  function="Purge" group="Details"><!-- Permanently delete a submission who started a new application -->
 				<params>
 					<!-- main application document ID to be passed programatically -->
 				</params>
 				<post-actions>
 					<post-action button-label="Purge"   function="Purge">
+					<state-mappings>
+							<mapping current="Deleted"  next="" button-label="Purge"/>
+						</state-mappings>
 						<pop-up title="WARNING: Deleting Permanently" message="When purged, the document cannot be recovered. Please confirm">
 							<button text="Yes, purge" return="true" />
 							<button text="Cancel" return="false" />
@@ -293,10 +321,10 @@
 				</authorizations>
 			</get-action>
 			
-			<!-- TODO: Merge with the previous Edit Submission block -->
-			<get-action link-label="Edit Submission" function="Edit"> <!-- Editing a revision by the Dept Admin -->
+			<!-- TODO: Merge with the previous Edit Submission block 
+			<get-action link-label="Edit Submission" function="Edit"> 
 				<params>
-					<!-- main application document ID to be passed programatically -->
+					
 				</params>
 				<post-actions>
 					<post-action button-label="Save"   function="Save">
@@ -326,10 +354,10 @@
 							<button text="Cancel" return="false" />
 						</pop-up>
 						<trigger-refs>
-							<trigger-ref order="0" ref-id="bv67j561-b957-4141-970b-fdb101a96ed2" /> <!-- send email to the central admin(s) -->
-							<trigger-ref order="1" ref-id="9giu4jk9-b957-4141-970b-fdb101a96eee" /> <!-- send email to the document owner -->
+							<trigger-ref order="0" ref-id="bv67j561-b957-4141-970b-fdb101a96ed2" /> 
+							<trigger-ref order="1" ref-id="9giu4jk9-b957-4141-970b-fdb101a96eee" /> 
 						</trigger-refs>	
-					</post-action> <!-- add the pop-up -->
+					</post-action> 
 				</post-actions>
 				<valid-states>
 					<state>DeanOfficeRevision</state>
@@ -346,7 +374,7 @@
 				<authorizations>
 					<role>Owner</role>
 				</authorizations>
-			</get-action>
+			</get-action> -->
 			
 			
 			<get-action link-label="Send for Revision"  function="ChangeState"> <!-- Sending a document back to the owner for revisions -->
@@ -355,18 +383,18 @@
 					<param template-id="67d30fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form Template -->
 				</params>
 				<post-actions>
-					<post-action function="Comment">
+					<post-action button-label="Send for Revision" function="Comment">
 						<state-mappings>
-							<mapping current="Submitted"  next="DeanOfficeRevision" button-label="Send for Revision"/>
-							<mapping current="WithAAC"  next="AACRevision" button-label="Send for Revision"/>
-							<mapping current="WithAEC"  next="AECRevision" button-label="Send for Revision"/>
-							<mapping current="WithAFC"  next="AFCRevision" button-label="Send for Revision"/>
-							<mapping current="WithGFC"  next="GFCRevision" button-label="Send for Revision"/>
-							<mapping current="DeanOfficeRevisionCompleted"  next="DeanOfficeRevision" button-label="Send for Revision"/>
-							<mapping current="AACRevisionCompleted"  next="AACRevision" button-label="Send for Revision"/>
-							<mapping current="AECRevisionCompleted"  next="AECRevision" button-label="Send for Revision"/>
-							<mapping current="AFCRevisionCompleted"  next="AFCRevision" button-label="Send for Revision"/>
-							<mapping current="GFCRevisionCompleted"  next="GFCRevision" button-label="Send for Revision"/>
+							<mapping current="Submitted"  next="DeanOfficeRevision" button-label="Send for Revision" />
+							<mapping current="WithAAC"  next="AACRevision" button-label="Send for Revision" />
+							<mapping current="WithAEC"  next="AECRevision" button-label="Send for Revision" />
+							<mapping current="WithAFC"  next="AFCRevision" button-label="Send for Revision" />
+							<mapping current="WithGFC"  next="GFCRevision" button-label="Send for Revision" />
+							<mapping current="DeanOfficeRevisionCompleted"  next="DeanOfficeRevision" button-label="Send for Revision" />
+							<mapping current="AACRevisionCompleted"  next="AACRevision" button-label="Send for Revision" />
+							<mapping current="AECRevisionCompleted"  next="AECRevision" button-label="Send for Revision" />
+							<mapping current="AFCRevisionCompleted"  next="AFCRevision" button-label="Send for Revision" />
+							<mapping current="GFCRevisionCompleted"  next="GFCRevision" button-label="Send for Revision" />
 						</state-mappings>					
 						<pop-up title="WARNING: Revision Document" message="Do you really want to revise this document?.">
 							<button text="Yes" return="true" />
@@ -400,16 +428,14 @@
 				Therefore, activities such as sending for revisions, moving to calendar, etc. are excluded here. They are
 				defined in a separate sections.
 			-->
-			<get-action link-label="Update Document State" function="ChangeState">
+			<get-action link-label="Update Document State" function="ChangeState" >
 				<params>
 					<!-- main application document ID to be passed programatically -->
 					<param template-id="9ot60fb4-9f49-4055-abee-d321735203c8" /> <!-- comment form -->
 				</params>
 				<post-actions>
-					<post-action function="Comment">
+					<post-action button-label="Change State" function="Comment">
 						<state-mappings>
-							
-						
 							<mapping current="Submitted"  next="WithAAC" button-label="With AAC"/>
 							<mapping current="DeanOfficeRevisionCompleted"  next="WithAAC" button-label="With AAC"/>
 							<mapping current="WithAAC"  next="AACApproved" button-label="AAC Approved"/> 
@@ -421,7 +447,7 @@
 							<mapping current="AACRevisionCompleted"  next="WithAAC" button-label="With AAC"/>
 							<mapping current="AACRevisionCompleted"  next="WithAEC" button-label="With AEC"/>
 
-							<mapping current="AECRevisionCompleted"  next="WithAA" button-label="With AA"/>
+							<mapping current="AECRevisionCompleted"  next="WithAAC" button-labC="With AAC"/>
 							<mapping current="AECRevisionCompleted"  next="WithAEC" button-label="With AEC"/>
 
 							
@@ -437,12 +463,12 @@
 							
 							
 							<!-- The following set of mappings are applied if this workflow is for major program changes. For course changes and minor program changes, we should comment it -->
-							<mapping current="AECApproved"  next="WithGFC" button-label="With GFC"/>
+							<mapping current="AFCApproved"  next="WithGFC" button-label="With GFC"/>
 							<mapping current="WithGFC"  next="GFCApproved" button-label="GFC Approved"/>
-							<mapping current="WithGFC"  next="WithAAC" button-label="With AAC"/>
-							<mapping current="WithGFC"  next="WithAEC" button-label="With AEC"/>
-							<mapping current="WithGFC"  next="WithAFC" button-label="With AFC"/>
-							<mapping current="AECRevisionCompleted"  next="WithGFC" button-label="With GFC"/>								
+							<mapping current="GFCRevisionCompleted"  next="WithAAC" button-label="With AAC"/>
+							<mapping current="GFCRevisionCompleted"  next="WithAEC" button-label="With AEC"/>
+							<mapping current="GFCRevisionCompleted"  next="WithAFC" button-label="With AFC"/>
+							<mapping current="GFCRevisionCompleted"  next="WithGFC" button-label="With GFC"/>								
 						</state-mappings>
 					
 						<pop-up title="WARNING: Change State" message="Do you really want to change the document state?">

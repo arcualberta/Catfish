@@ -105,9 +105,47 @@ namespace Catfish.UnitTests
             Workflow workflow = ws.GetWorkflow(true);
 
             //Defininig states
-            workflow.AddState("Saved");
-            workflow.AddState("Submitted");
-            workflow.AddState("With AEC");
+            State emptyState = workflow.AddState("");
+            State savedState = workflow.AddState("Saved");
+            State submittedState = workflow.AddState("Submitted");
+            State deleteState = workflow.AddState("Deleted");
+
+            State deanOfficeRevisionState = workflow.AddState("DeanOfficeRevision");
+            State deanOfficeRevisionCompletedState = workflow.AddState("DeanOfficeRevisionCompleted");
+            State deanOfficeRevisionSaveState = workflow.AddState("SavedDeanOfficeRevision");
+
+            State aacWithState = workflow.AddState("WithAAC");
+            State aacRevisionState = workflow.AddState("AACRevision");
+            State aacRevisionSaveState = workflow.AddState("SavedAACRevision");
+            State aacRevisionCompletedState = workflow.AddState("AACRevisionCompleted");
+            State aacApprovedState = workflow.AddState("AACApproved");
+
+            State aecWithState = workflow.AddState("WithAEC");
+            State aecRevisionState = workflow.AddState("AECRevision");
+            State aecRevisionSaveState = workflow.AddState("SavedAECRevision");
+            State aecRevisionCompletedState = workflow.AddState("AECRevisionCompleted");
+            State aecApprovedState = workflow.AddState("AECApproved");
+
+
+            State afcWithState = workflow.AddState("WithAFC");
+            State afcRevisionState = workflow.AddState("AFCRevision");
+            State afcRevisionSaveState = workflow.AddState("SavedAFCRevision");
+            State afcRevisionCompletedState = workflow.AddState("AFCRevisionCompleted");
+            State afcApprovedState = workflow.AddState("AFCApproved");
+
+
+            State gfcWithState = workflow.AddState("WithGFC");
+            State gfcRevisionState = workflow.AddState("GFCRevision");
+            State gfcRevisionSaveState = workflow.AddState("SavedGFCRevision");
+            State gfcRevisionCompletedState = workflow.AddState("GFCRevisionCompleted");
+            State gfcApprovedState = workflow.AddState("GFCApproved");
+
+            State moveToDraftErrorState = workflow.AddState("MoveToDraftError");
+            State moveToDraftCorrectState = workflow.AddState("MoveToDraftCorrect");
+
+
+
+
 
             //Defining email templates
             EmailTemplate centralAdminNotification = ws.GetEmailTemplate("Central Admin Notification", true);
@@ -118,7 +156,17 @@ namespace Catfish.UnitTests
             EmailTemplate deptAdminSubmissionNotification = ws.GetEmailTemplate("Dept. Admin Submission Admin Notification", true);
             deptAdminSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when he/she submits a new or revised calendar change.", lang);
             deptAdminSubmissionNotification.SetSubject("Calendar Change Submission");
-            deptAdminSubmissionNotification.SetBody("A @Link[calendar chane|@Model] was submitted.\n\nThank you");
+            deptAdminSubmissionNotification.SetBody("A @Link[calendar change|@Model] was submitted.\n\nThank you");
+
+            EmailTemplate revisionNotification = ws.GetEmailTemplate("Central Admin Revision Notification", true);
+            revisionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when central admin make a revision request.", lang);
+            revisionNotification.SetSubject("Calendar Change Submission Need to Revise");
+            revisionNotification.SetBody("A @Link[calendar change|@Model] need to revise.\n\nThank you");
+
+            EmailTemplate moveToDraftCalendarNotification = ws.GetEmailTemplate("Move to Draft Calendar Notification", true);
+            moveToDraftCalendarNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when the submission request move to the draft calendar.", lang);
+            moveToDraftCalendarNotification.SetSubject("Calendar Change Submission moved to the draft calendar");
+            moveToDraftCalendarNotification.SetBody("A @Link[calendar change|@Model] moved to the draft calendar.\n\nThank you");
 
             //Defininig the Calendar Change Request form
             //Contract letter
@@ -128,15 +176,26 @@ namespace Catfish.UnitTests
             calendarChangeForm.CreateField<TextField>("Course Name", lang, true);
             calendarChangeForm.CreateField<TextField>("Course Number", lang, true);
             calendarChangeForm.CreateField<TextArea>("Change Description", lang, true);
+            
+            //Defininig the Submission revise Request form
+            //Contract letter
+            DataItem commentsForm = template.GetDataItem("Submission Revise Request", true, lang);
+            commentsForm.IsRoot = true;
+            commentsForm.SetDescription("This is the form to be filled by the central admin when a submission revision is requested.", lang);
+            commentsForm.CreateField<TextField>("Course Name", lang, true);
+            commentsForm.CreateField<TextField>("Course Number", lang, true);
+            commentsForm.CreateField<TextArea>("Comments", lang, true);
 
 
             //Defininig roles
             WorkflowRole centralAdminRole = workflow.AddRole("CentralAdmin");
             WorkflowRole departmentAdmin = workflow.AddRole("DepartmentlAdmin");
+            WorkflowRole ownerRole = workflow.AddRole("Owner");
+
 
             //Defining users
-            WorkflowUser user = workflow.AddUser("centraladmin@ualberta.ca");
-            user.AddRoleReference(centralAdminRole.Id, "Central Admin User");
+            WorkflowUser centralAdminUser = workflow.AddUser("centraladmin@ualberta.ca");
+            centralAdminUser.AddRoleReference(centralAdminRole.Id, "Central Admin User");
             WorkflowUser deptUser = workflow.AddUser("departmentadmin1@ualberta.ca");
             deptUser.AddRoleReference(departmentAdmin.Id, "Dept. Admin User");
             deptUser = workflow.AddUser("departmentadmin2@ualberta.ca");
@@ -144,33 +203,293 @@ namespace Catfish.UnitTests
 
             //Defining triggers
             EmailTrigger centralAdminNotificationEmailTrigger = workflow.AddTrigger("ToCentralAdmin", "SendEmail");
-            centralAdminNotificationEmailTrigger.AddRecipientByEmail(user.Email);
+            centralAdminNotificationEmailTrigger.AddRecipientByEmail(centralAdminUser.Email);
             centralAdminNotificationEmailTrigger.AddTemplate(centralAdminNotification.Id, "Central Admin Notification");
+
             EmailTrigger ownerSubmissionNotificationEmailTrigger = workflow.AddTrigger("ToOwnerOnDocumentSubmission", "SendEmail");
             ownerSubmissionNotificationEmailTrigger.AddOwnerAsRecipient();
             ownerSubmissionNotificationEmailTrigger.AddTemplate(deptAdminSubmissionNotification.Id, "Owner's submission-notification");
 
+            EmailTrigger RevisionNotificationEmailTrigger = workflow.AddTrigger("ToOwnerOnDocumentRevision", "SendEmail");
+            RevisionNotificationEmailTrigger.AddOwnerAsRecipient();
+            RevisionNotificationEmailTrigger.AddTemplate(revisionNotification.Id, "Owner's revision-notification");
+
+            EmailTrigger MovedToDraftCalendarEmailTrigger = workflow.AddTrigger("ToOwnerOnMovedToDraftCalendar", "SendEmail");
+            MovedToDraftCalendarEmailTrigger.AddOwnerAsRecipient();
+            MovedToDraftCalendarEmailTrigger.AddTemplate(moveToDraftCalendarNotification.Id, "Owner's moved to calendar notification");
+
+            // start submission related workflow items
             //Defining actions
-            GetAction action = workflow.AddAction("Start Submission", "Create", "Home");
-            action.AddTemplate(calendarChangeForm.Id, "Start Submission Template");
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", "Create", "Home");
+
+            //Defining form template
+            startSubmissionAction.AddTemplate(calendarChangeForm.Id, "Start Submission Template");
 
             //Defining post actions
-            PostAction postActionSave = action.AddPostAction("Save", "Save");
-            postActionSave.AddStateMapping("", "Saved");
-            PostAction postActionSubmit = action.AddPostAction("Submit", "Save");
-            postActionSubmit.AddStateMapping("", "Submitted");
+            PostAction postActionSave = startSubmissionAction.AddPostAction("Save", "Save");
+            postActionSave.AddStateMapping(emptyState.Id, savedState.Id, "Save");
+            PostAction postActionSubmit = startSubmissionAction.AddPostAction("Submit", "Save");
+            postActionSubmit.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp popUp = postActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
-            popUp.AddButtons("Yes, submit", "true");
-            popUp.AddButtons("Cancel", "false");
+            PopUp startSubmissionActionPopUp = postActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
+            startSubmissionActionPopUp.AddButtons("Yes, submit", "true");
+            startSubmissionActionPopUp.AddButtons("Cancel", "false");
 
             //Defining trigger refs
             postActionSubmit.AddTriggerRefs("0", centralAdminNotificationEmailTrigger.Id, "Central Admin Notification Email Trigger");
             postActionSubmit.AddTriggerRefs("1", ownerSubmissionNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
             //Defining authorizatios
-            action.AddAuthorization(departmentAdmin.Id);
+            startSubmissionAction.AddAuthorization(departmentAdmin.Id);
+
+            // Edit submission related workflow items
+            //Defining actions
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+
+            //Defining post actions
+            PostAction editSubmissionPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            PostAction editSubmissionPostActionSubmit = editSubmissionAction.AddPostAction("Submit", "Save");
+
+            //Defining state mappings
+            editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
+            editSubmissionPostActionSave.AddStateMapping(deanOfficeRevisionState.Id, deanOfficeRevisionSaveState.Id, "Save");
+            editSubmissionPostActionSave.AddStateMapping(aacRevisionState.Id, aacRevisionSaveState.Id, "Save");
+            editSubmissionPostActionSave.AddStateMapping(aecRevisionState.Id, aecRevisionSaveState.Id, "Save");
+            editSubmissionPostActionSave.AddStateMapping(afcRevisionState.Id, afcRevisionSaveState.Id, "Save");
+            editSubmissionPostActionSave.AddStateMapping(gfcRevisionState.Id, gfcRevisionSaveState.Id, "Save");
+
+
+            editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, submittedState.Id, "Submit");
+            editSubmissionPostActionSubmit.AddStateMapping(deanOfficeRevisionState.Id, deanOfficeRevisionCompletedState.Id, "Submit");
+            editSubmissionPostActionSubmit.AddStateMapping(deanOfficeRevisionSaveState.Id, deanOfficeRevisionCompletedState.Id, "Submit");
+            editSubmissionPostActionSubmit.AddStateMapping(aacRevisionState.Id, aacRevisionCompletedState.Id, "Submit");
+            editSubmissionPostActionSubmit.AddStateMapping(aacRevisionSaveState.Id, aacRevisionCompletedState.Id, "Submit");
+            editSubmissionPostActionSubmit.AddStateMapping(aecRevisionState.Id, aecRevisionCompletedState.Id, "Submit");
+            editSubmissionPostActionSubmit.AddStateMapping(aecRevisionSaveState.Id, aecRevisionCompletedState.Id, "Submit");
+            editSubmissionPostActionSubmit.AddStateMapping(afcRevisionState.Id, afcRevisionCompletedState.Id, "Submit");
+            editSubmissionPostActionSubmit.AddStateMapping(afcRevisionSaveState.Id, afcRevisionCompletedState.Id, "Submit");
+            editSubmissionPostActionSubmit.AddStateMapping(gfcRevisionState.Id, gfcRevisionCompletedState.Id, "Submit");
+            editSubmissionPostActionSubmit.AddStateMapping(gfcRevisionSaveState.Id, gfcRevisionCompletedState.Id, "Submit");
+
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
+            EditSubmissionActionPopUpopUp.AddButtons("Yes, submit", "true");
+            EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs
+            editSubmissionPostActionSubmit.AddTriggerRefs("0", centralAdminNotificationEmailTrigger.Id, "Central Admin Notification Email Trigger");
+            editSubmissionPostActionSubmit.AddTriggerRefs("1", ownerSubmissionNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+
+            //Defining state referances
+            editSubmissionAction.AddStateReferances(savedState.Id);
+            editSubmissionAction.AddStateReferances(deanOfficeRevisionState.Id);
+            editSubmissionAction.AddStateReferances(deanOfficeRevisionSaveState.Id);
+            editSubmissionAction.AddStateReferances(aacRevisionState.Id);
+            editSubmissionAction.AddStateReferances(aacRevisionSaveState.Id);
+            editSubmissionAction.AddStateReferances(aecRevisionState.Id);
+            editSubmissionAction.AddStateReferances(aecRevisionSaveState.Id);
+            editSubmissionAction.AddStateReferances(afcRevisionState.Id);
+            editSubmissionAction.AddStateReferances(afcRevisionSaveState.Id);
+            editSubmissionAction.AddStateReferances(gfcRevisionState.Id);
+            editSubmissionAction.AddStateReferances(gfcRevisionSaveState.Id);
+
+
+
+            //Defining authorizatios
+            editSubmissionAction.AddAuthorization(departmentAdmin.Id);
+
+
+            // Delete submission related workflow items
+            //Defining actions
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
+
+            //Defining post actions
+            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.");
+            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining state referances
+            deleteSubmissionAction.AddStateReferances(savedState.Id);
+
+            //Defining authorizatios
+            deleteSubmissionAction.AddAuthorization(ownerRole.Id);
+
+
+            // Purge submission related workflow items
+            //Defining actions
+            GetAction purgeSubmissionAction = workflow.AddAction("Purge Submission", "Purge", "Details");
+
+            //Defining post actions
+            PostAction purgeSubmissionPostAction = purgeSubmissionAction.AddPostAction("Purge", "Purge");
+            deleteSubmissionPostAction.AddStateMapping(deleteState.Id, emptyState.Id, "Purge");
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp purgeSubmissionActionPopUpopUp = purgeSubmissionPostAction.AddPopUp("WARNING: Deleting Permanently", "When purged, the document cannot be recovered. Please confirm.");
+            purgeSubmissionActionPopUpopUp.AddButtons("Yes, purge", "true");
+            purgeSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining state referances
+            purgeSubmissionAction.AddStateReferances(deleteState.Id);
+
+            //Defining authorizatios
+            purgeSubmissionAction.AddAuthorization(ownerRole.Id);
+
+
+            // Revision request related workflow items
+            //Defining actions
+            GetAction sendForRevisionSubmissionAction = workflow.AddAction("Send for Revision", "ChangeState", "Details");
+
+            //Define Revision Template
+            sendForRevisionSubmissionAction.AddTemplate(commentsForm.Id, "Submission Revision Template");
+
+            //Defining post actions
+            PostAction sendForRevisionSubmissionPostAction = sendForRevisionSubmissionAction.AddPostAction("Send for Revision", "ChangeState");
+
+            //Defining state mappings
+            sendForRevisionSubmissionPostAction.AddStateMapping(submittedState.Id, deanOfficeRevisionState.Id, "Send for Revision");
+            sendForRevisionSubmissionPostAction.AddStateMapping(aacWithState.Id, aacRevisionState.Id, "Send for Revision");
+            sendForRevisionSubmissionPostAction.AddStateMapping(aecWithState.Id, aecRevisionState.Id, "Send for Revision");
+            sendForRevisionSubmissionPostAction.AddStateMapping(afcWithState.Id, afcRevisionState.Id, "Send for Revision");
+            sendForRevisionSubmissionPostAction.AddStateMapping(gfcWithState.Id, gfcRevisionState.Id, "Send for Revision");
+            sendForRevisionSubmissionPostAction.AddStateMapping(deanOfficeRevisionCompletedState.Id, deanOfficeRevisionState.Id, "Send for Revision");
+            sendForRevisionSubmissionPostAction.AddStateMapping(aacRevisionCompletedState.Id, aacRevisionState.Id, "Send for Revision");
+            sendForRevisionSubmissionPostAction.AddStateMapping(aecRevisionCompletedState.Id, aecRevisionState.Id, "Send for Revision");
+            sendForRevisionSubmissionPostAction.AddStateMapping(afcRevisionCompletedState.Id, afcRevisionState.Id, "Send for Revision");
+            sendForRevisionSubmissionPostAction.AddStateMapping(gfcRevisionCompletedState.Id, gfcRevisionState.Id, "Send for Revision");
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp sendForRevisionSubmissionActionPopUpopUp = sendForRevisionSubmissionPostAction.AddPopUp("WARNING: Revision Document", "Do you really want to revise this document?.");
+            sendForRevisionSubmissionActionPopUpopUp.AddButtons("Yes", "true");
+            sendForRevisionSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs
+            sendForRevisionSubmissionPostAction.AddTriggerRefs("0", RevisionNotificationEmailTrigger.Id, "Send for Revision Notification Email Trigger");
+
+            //Defining state referances
+            sendForRevisionSubmissionAction.AddStateReferances(submittedState.Id);
+            sendForRevisionSubmissionAction.AddStateReferances(deanOfficeRevisionCompletedState.Id);
+            sendForRevisionSubmissionAction.AddStateReferances(aacWithState.Id);
+            sendForRevisionSubmissionAction.AddStateReferances(aacRevisionCompletedState.Id);
+            sendForRevisionSubmissionAction.AddStateReferances(aecWithState.Id);
+            sendForRevisionSubmissionAction.AddStateReferances(aecRevisionCompletedState.Id);
+            sendForRevisionSubmissionAction.AddStateReferances(afcWithState.Id);
+            sendForRevisionSubmissionAction.AddStateReferances(afcRevisionCompletedState.Id);
+            sendForRevisionSubmissionAction.AddStateReferances(gfcWithState.Id);
+            sendForRevisionSubmissionAction.AddStateReferances(gfcRevisionCompletedState.Id);
+
+            //Defining authorizatios
+            sendForRevisionSubmissionAction.AddAuthorization(centralAdminRole.Id);
+
+            // Revision request related workflow items
+            //Defining actions
+            GetAction changeStateAction = workflow.AddAction("Update Document State", "ChangeState", "Details");
+
+            //Define Revision Template
+            changeStateAction.AddTemplate(commentsForm.Id, "Submission Change State");
+
+            //Defining post actions
+            PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", "Comment");
+
+            //Defining state mappings
+            changeStatePostAction.AddStateMapping(submittedState.Id, aacWithState.Id, "With AAC");
+            changeStatePostAction.AddStateMapping(deanOfficeRevisionCompletedState.Id, aacWithState.Id, "With AAC");
+            changeStatePostAction.AddStateMapping(aacWithState.Id, aacApprovedState.Id, "AAC Approved");
+
+            changeStatePostAction.AddStateMapping(aacApprovedState.Id, aecWithState.Id, "With AEC");
+            changeStatePostAction.AddStateMapping(aecWithState.Id, aecApprovedState.Id, "AEC Approved");
+
+            changeStatePostAction.AddStateMapping(aacRevisionCompletedState.Id, aacWithState.Id, "With AAC");
+            changeStatePostAction.AddStateMapping(aacRevisionCompletedState.Id, aecWithState.Id, "With AEC");
+
+            changeStatePostAction.AddStateMapping(aecRevisionCompletedState.Id, aacWithState.Id, "With AAC");
+            changeStatePostAction.AddStateMapping(aecRevisionCompletedState.Id, aecWithState.Id, "With AEC");
+
+            changeStatePostAction.AddStateMapping(aecApprovedState.Id, afcWithState.Id, "With AFC");
+            changeStatePostAction.AddStateMapping(afcWithState.Id, afcApprovedState.Id, "AFC Approved");
+            changeStatePostAction.AddStateMapping(aecRevisionCompletedState.Id, afcWithState.Id, "With AFC");
+            changeStatePostAction.AddStateMapping(afcRevisionCompletedState.Id, afcWithState.Id, "With AFC");
+            changeStatePostAction.AddStateMapping(afcRevisionCompletedState.Id, aecWithState.Id, "With AEC");
+            changeStatePostAction.AddStateMapping(afcRevisionCompletedState.Id, aacWithState.Id, "With AAC");
+            changeStatePostAction.AddStateMapping(afcRevisionCompletedState.Id, afcApprovedState.Id, "AFC Approved");
+
+            changeStatePostAction.AddStateMapping(afcApprovedState.Id, gfcWithState.Id, "With GFC");
+            changeStatePostAction.AddStateMapping(gfcWithState.Id, gfcApprovedState.Id, "GFC Approved");
+            changeStatePostAction.AddStateMapping(gfcRevisionCompletedState.Id, aacWithState.Id, "With AAC");
+            changeStatePostAction.AddStateMapping(gfcRevisionCompletedState.Id, aecWithState.Id, "With AEC");
+            changeStatePostAction.AddStateMapping(gfcRevisionCompletedState.Id, afcWithState.Id, "With AFC");
+            changeStatePostAction.AddStateMapping(gfcRevisionCompletedState.Id, gfcWithState.Id, "With GFC");
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("WARNING: Change State", "Do you really want to change the document state?.");
+            changeStateActionPopUpopUp.AddButtons("Yes", "true");
+            changeStateActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining state referances
+            changeStateAction.AddStateReferances(submittedState.Id);
+            changeStateAction.AddStateReferances(deanOfficeRevisionCompletedState.Id);
+            changeStateAction.AddStateReferances(aacWithState.Id);
+            changeStateAction.AddStateReferances(aacRevisionCompletedState.Id);
+            changeStateAction.AddStateReferances(aecWithState.Id);
+            changeStateAction.AddStateReferances(aecRevisionCompletedState.Id);
+            changeStateAction.AddStateReferances(afcWithState.Id);
+            changeStateAction.AddStateReferances(afcRevisionCompletedState.Id);
+            changeStateAction.AddStateReferances(gfcWithState.Id);
+            changeStateAction.AddStateReferances(gfcRevisionCompletedState.Id);
+            changeStateAction.AddStateReferances(aacApprovedState.Id);
+            changeStateAction.AddStateReferances(aecApprovedState.Id);
+            changeStateAction.AddStateReferances(afcApprovedState.Id);
+            changeStateAction.AddStateReferances(gfcApprovedState.Id);
+
+            //Defining authorizatios
+            changeStateAction.AddAuthorization(centralAdminRole.Id);
+
+            // Calender request move to draft related workflow items
+            //Defining actions
+            GetAction moveToDraftAction = workflow.AddAction("Move to Draft Calendar", "ChangeState", "Details");
+
+            //Define Revision Template
+            moveToDraftAction.AddTemplate(commentsForm.Id, "Move to draft State");
+
+            //Defining post actions
+            PostAction moveToDraftCorrectPostAction = moveToDraftAction.AddPostAction("Correct", "Comment");
+
+            //Defining state mappings
+            moveToDraftCorrectPostAction.AddStateMapping(gfcApprovedState.Id, moveToDraftCorrectState.Id, "Move To Draft Correct");
+            moveToDraftCorrectPostAction.AddStateMapping(moveToDraftErrorState.Id, moveToDraftCorrectState.Id, "Move To Draft Correct");
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp moveToDraftCorrctActionPopUpopUp = moveToDraftCorrectPostAction.AddPopUp("WARNING: In the Draft Calendar -  Correct", "Do you really want to change the document state?.");
+            moveToDraftCorrctActionPopUpopUp.AddButtons("Yes", "true");
+            moveToDraftCorrctActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs
+            moveToDraftCorrectPostAction.AddTriggerRefs("0", MovedToDraftCalendarEmailTrigger.Id, "Moved to Draft Notification Email Trigger");
+            
+            //Defining post actions
+            PostAction moveToDraftErrorPostAction = moveToDraftAction.AddPostAction("With Error", "Comment");
+
+            //Defining state mappings
+            moveToDraftErrorPostAction.AddStateMapping(moveToDraftErrorState.Id, moveToDraftCorrectState.Id, "Move To Draft Correct");
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp moveToDraftErrorActionPopUpopUp = moveToDraftErrorPostAction.AddPopUp("WARNING: In the Draft Calendar -  Error", "Do you really want to change the document state?.");
+            moveToDraftErrorActionPopUpopUp.AddButtons("Yes", "true");
+            moveToDraftErrorActionPopUpopUp.AddButtons("Cancel", "false");
+            
+            //Defining trigger refs
+            moveToDraftErrorPostAction.AddTriggerRefs("0", MovedToDraftCalendarEmailTrigger.Id, "Moved to Draft Notification Email Trigger");
+
+            //Defining state referances
+            moveToDraftAction.AddStateReferances(gfcApprovedState.Id);
+            moveToDraftAction.AddStateReferances(moveToDraftErrorState.Id);
+
+            //Defining authorizatios
+            moveToDraftAction.AddAuthorization(centralAdminRole.Id);
 
             template.Data.Save("..\\..\\..\\..\\Examples\\CalendarManagementWorkflow_generared.xml");
 

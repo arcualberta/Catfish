@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Xml.Linq;
 
@@ -54,16 +55,16 @@ namespace Catfish.Core.Models.Contents.Workflow
 
         }
 
-        public Mapping GetMapping(string current, string next)
+        public Mapping GetMapping(Guid current, Guid next)
         {
             return StateMappings.Where(m => m.Current == current && m.Next == next).FirstOrDefault();
         }
-        public Mapping AddStateMapping(string current, string next)
+        public Mapping AddStateMapping(Guid current, Guid next, string button)
         {
             if (GetMapping(current, next) != null)
                 throw new Exception(string.Format("Post action {0}=>{1} already exists.", current, next));
 
-            Mapping newStateMaiipng = new Mapping() { Current = current, Next = next };
+            Mapping newStateMaiipng = new Mapping() { Current = current, Next = next, ButtonLabel = button };
             StateMappings.Add(newStateMaiipng);
             return newStateMaiipng;
         }
