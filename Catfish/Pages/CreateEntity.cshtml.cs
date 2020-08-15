@@ -46,19 +46,17 @@ namespace Catfish.Pages
             //Creating a clone of the entity
             EntityTemplate template = _entityTemplateService.GetTemplate(TemplateId);
 
-            Item entity = template.Instantiate<Item>();
-
-            _workflowService.SetModel(template);
+            Item newItem = template.Instantiate<Item>();
 
             //TODO: dynamically figure out the start-up item
-            DataItem item = entity.GetRootDataItem(false);
-            item.UpdateFieldValues(this.Item);
+            DataItem rootDataObject = newItem.GetRootDataItem(false);
+            rootDataObject.UpdateFieldValues(this.Item);
 
             //Adding the new entity to the database
-            _db.Items.Add(entity);
+            _db.Items.Add(newItem);
             _db.SaveChanges();
 
-            return RedirectToPage("~/entity/edit/{0}" + entity.Id.ToString());
+            return RedirectToPage("~/entity/edit/{0}" + newItem.Id.ToString());
         }
     }
 }

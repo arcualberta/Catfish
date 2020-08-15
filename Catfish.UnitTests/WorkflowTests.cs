@@ -32,7 +32,7 @@ namespace Catfish.UnitTests
         public void ContractLetterWorkflowBuildTest()
         {
             string lang = "en";
-            EntityTemplate template = new EntityTemplate();
+            ItemTemplate template = new ItemTemplate();
             template.TemplateName = "Trust Funded GRA/GRAF Contract";
             template.Name.SetContent(template.TemplateName);
             
@@ -95,8 +95,9 @@ namespace Catfish.UnitTests
         public void CalendarManagementSystemWorkflowBuildTest()
         {
             string lang = "en";
-            EntityTemplate template = new EntityTemplate();
-            template.Name.SetContent("Calendar management System Workflow");
+            ItemTemplate template = new ItemTemplate();
+            template.TemplateName = "Calendar Management System Workflow";
+            template.Name.SetContent("Calendar Management System Workflow");
 
             IWorkflowService ws = _testHelper.WorkflowService;
             ws.SetModel(template);
@@ -490,6 +491,17 @@ namespace Catfish.UnitTests
 
             //Defining authorizatios
             moveToDraftAction.AddAuthorization(centralAdminRole.Id);
+
+
+            //Save the template to the database
+            AppDbContext db = _testHelper.Db;
+            EntityTemplate oldTemplate = db.EntityTemplates.Where(et => et.TemplateName == template.TemplateName).FirstOrDefault();
+            if (oldTemplate == null)
+                db.EntityTemplates.Add(template);
+            else
+                oldTemplate.Content = template.Content;
+            db.SaveChanges();
+
 
             template.Data.Save("..\\..\\..\\..\\Examples\\CalendarManagementWorkflow_generared.xml");
 

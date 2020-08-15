@@ -14,10 +14,10 @@ namespace Catfish.Services
             _db = db;
         }
 
-        public IList<EntityTemplate> GetTemplates()
+        public IList<ItemTemplate> GetItemTemplates()
         {
             //TODO: Limit the returning list of templates to the accessible, active templates for the current user
-            return _db.EntityTemplates.ToList();
+            return _db.ItemTemplates.ToList();
         }
 
         public EntityTemplate GetTemplate(Guid templateId)

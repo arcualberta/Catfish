@@ -8,9 +8,9 @@
 <h1>Start Page</h1>
 
 <div class="container">
-    @foreach (var template in Model.EntityTemplates)
+    @foreach (var template in Model.ItemTemplates)
     {
-        var url = "/entity/new/" + template.Id;
+        var url = "/entity/create/" + template.Id;
         <div>
             <a href="@url">@template.TemplateName</a>
         </div>
