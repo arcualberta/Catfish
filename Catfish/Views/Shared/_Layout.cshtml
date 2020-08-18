@@ -2,6 +2,8 @@
 @using Catfish.Models.SiteTypes
 @inject ICompositeViewEngine _viewEngine
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
+@inject Piranha.IApi _piranhaApi;
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -12,6 +14,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500">
     <link rel="stylesheet" href="~/css/style.min.css">
+
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     @*<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>*@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -30,37 +33,50 @@
 </head>
 
 <body>
+    @{
+        var site = await _piranhaApi.Sites.GetByInternalIdAsync("Default");//"Default" is InternalId of the site
+        var logoUrl = _catfishAppConfig.GetLogoUrl();
 
-    @if (_viewEngine.GetView(null, "Views/Shared/_CustomHead.cshtml", isMainPage: false).Success)
-    {
-        <partial name="_CustomHead.cshtml" />
-    }
-    else
-    {
-        <header class="site-header @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
+        <div class="container">
+            <div class="row">
+                @if(!string.IsNullOrEmpty(logoUrl))
+                {
+                    <div id="site-logo"><img src="@logoUrl" /></div>
+                }
+                <div class="header-brand">
+                    <h1>Catfish: @site.Title</h1>
+                    <h3>@site.Description</h3>
+                </div>
+            </div>
+        </div>
+        <header class="site-header  @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
             <div class="container">
+
                 <div class="row">
                     <div class="col-sm">
                         <partial name="Partial/_Menu.cshtml" />
                     </div>
                     <div class="signinout">
-                        <button id="btnSignIn" onclick="window.location.href = '/login'; return false;">SignIn</button>
+                        <button id="btnSignIn" onclick="window.location.href = '/login'; return false;">Sign In</button>
                         @{ if (User.Identity.IsAuthenticated)
                             {
                                 <button id="btnSignOut" onclick="signOut(); return false;">Sign Out</button>
                             }
                         }
-                      
                     </div>
                 </div>
 
             </div>
 
         </header>
-    }
-    @RenderBody()
 
-  
+    }
+
+    <div class="container">
+        @RenderBody()
+    </div>
+
+
     <footer class="border-top footer text-muted">
         <div class="container">
             @{
@@ -70,27 +86,27 @@
             }
             @if (currentSite != null)
             {
-            <div class="row">
+                <div class="row">
 
-                <div class="col-6 footer-arc-text">
-                    @Html.Raw(currentSite.FooterContents.Text)
+                    <div class="col-6 footer-arc-text">
+                        @Html.Raw(currentSite.FooterContents.Text)
+                    </div>
+                    <div class="col-6 footer-arc-logo">
+                        Designed and engineered by  <img src="@Url.Content(currentSite.FooterContents.Logo)" />
+                    </div>
+
+                    @Html.Raw(javascriptCode)
+
+
                 </div>
-                <div class="col-6 footer-arc-logo">
-                   Designed and engineered by  <img src="@Url.Content(currentSite.FooterContents.Logo)"  />
-                </div>
-
-                @Html.Raw(javascriptCode)
-
-
-            </div>
             }
         </div>
     </footer>
 
-   
+
     @RenderSection("script", required: false)
     <script>
-        
+
         function onLoad() {
             gapi.load('auth2', function () {
                 gapi.auth2.init();
@@ -115,10 +131,10 @@
                         window.location.href = "/";
                     });
                     auth2.disconnect();
-                } catch(ex){
-                window.location.href = "/";
-            }
-               // window.location.href =  "/";
+                } catch (ex) {
+                    window.location.href = "/";
+                }
+                // window.location.href =  "/";
 
             });
         }

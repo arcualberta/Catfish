@@ -11,8 +11,13 @@
     @foreach (var template in Model.ItemTemplates)
     {
         var url = "/entity/create/" + template.Id;
-        <div>
-            <a href="@url">@template.TemplateName</a>
+        var startupDataItem = template.GetRootDataItem(false);
+        <div class="row">
+            <div class="form-title">@startupDataItem.Name.GetConcatenatedContent("<br />")</div>
+            <div class="form-description">@startupDataItem.Description.GetConcatenatedContent("<br />")</div>
+            <div class="form-link">
+                <a href="@url">Start now</a>
+            </div>
         </div>
     }
 </div>

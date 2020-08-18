@@ -1,3 +1,5 @@
+@inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
+
 @{
     var sitemap = WebApp.Site.Sitemap;
 }
@@ -25,6 +27,19 @@
             <li class="nav-item @(item.Id == WebApp.PageId ? "active" : "")">
                 <a class="nav-link" href="@item.Permalink"><span>@item.MenuTitle</span></a>
             </li>
+        }
+
+        @if (_catfishAppConfig.EnableWorkflows())
+        {
+            //Displaying the Workflow page menus
+            <li class="nav-item">
+                <a class="nav-link" href="/new"><span>@_catfishAppConfig.GetWorkflowHomePageTitle()</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="/list"><span>@_catfishAppConfig.GetWorkflowListPageTitle()</span></a>
+            </li>
+
         }
     </ul>
 </nav>
