@@ -13,7 +13,7 @@
         var url = "/entity/create/" + template.Id;
         var startupDataItem = template.GetRootDataItem(false);
         <div class="row">
-            <div class="form-title">@startupDataItem.Name.GetConcatenatedContent("<br />")</div>
+            <div class="form-title col-lg-12">@startupDataItem.Name.GetConcatenatedContent("<br />")</div>
             <div class="form-description">@startupDataItem.Description.GetConcatenatedContent("<br />")</div>
             <div class="form-link">
                 <a href="@url">Start now</a>
