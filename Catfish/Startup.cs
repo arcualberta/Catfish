@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Piranha;
@@ -18,16 +19,14 @@ using Catfish.Core.Services;
 using Catfish.Helper;
 using System;
 using SolrNet;
-using System.Globalization;
-using Microsoft.AspNetCore.Localization;
+
 using Catfish.Core.Models.Solr;
 using Catfish.Core.Services.Solr;
 using Catfish.Services;
 using Catfish.ModelBinders;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 using Catfish.Core.Services.FormBuilder;
-using System.Xml;
-using Newtonsoft.Json.Serialization;
+
 
 namespace Catfish
 {
@@ -146,9 +145,12 @@ namespace Catfish
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
             services.AddScoped<IAuthorizationService, AuthorizationService>();
+            services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
             services.AddTransient<IWorkflowService, WorkflowService>();
-
+            services.AddScoped<IFormService, FormService>();
+            services.AddScoped<IMetadataSetService, MetadataSetService>();
+            services.AddScoped<IEntityTemplateService, EntityTemplateService>();
 
             // Solr services
             string solrString = Configuration.GetSection("SolarConfiguration:solrItemURL").Value;
@@ -156,12 +158,6 @@ namespace Catfish
             services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
             services.AddScoped<IQueryService, QueryService>();
 
-
-            // Entity services
-            services.AddScoped<IAuthorizationService, AuthorizationService>();
-            services.AddScoped<ISubmissionService, SubmissionService>();
-            services.AddScoped<IEntityTemplateService, EntityTemplateService>();
-            services.AddScoped<IEmailService, EmailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -227,15 +223,13 @@ namespace Catfish
             //MR Feb 7 2020 -- add classic MVC routing
             // Build content types -- copied from piranha core mvcWeb example
             var pageTypeBuilder = new Piranha.AttributeBuilder.PageTypeBuilder(api)
-               // .AddType(typeof(Models.BlogArchive))
-                .AddType(typeof(Models.StandardArchive))
+                 .AddType(typeof(Models.StandardArchive))
                 .AddType(typeof(Models.StandardPage))
                  .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MediaPage))
                 .Build()
                 .DeleteOrphans();
             var postTypeBuilder = new Piranha.AttributeBuilder.PostTypeBuilder(api)
-                //.AddType(typeof(Models.BlogPost))
                 .AddType(typeof(Models.StandardPost))
                 .Build()
                 .DeleteOrphans();
@@ -309,12 +303,8 @@ namespace Catfish
             //Register custom Block
             App.Blocks.Register<EmbedBlock>();
             App.Blocks.Register<CalendarBlock>();
-            App.Blocks.Register<EmbedBlock>();  
-
-
             App.Blocks.Register<JavascriptBlock>();
             App.Blocks.Register<CssBlock>();
-            App.Blocks.Register<CalendarBlock>();
             App.Blocks.Register<ContactFormBlock>();
             App.Blocks.Register<NavigationBlock>();
         }
@@ -378,7 +368,7 @@ namespace Catfish
                 InternalId = "MetadataSets",
                 Name = "Metadata Sets",
                 Route = "/manager/metadatasets/",
-                Css = "fas fa-brain"
+                Css = "fas fa-object-group"
 
             });
 
@@ -387,7 +377,7 @@ namespace Catfish
                 InternalId = "EntityTypes",
                 Name = "Entity Types",
                 Route = "/manager/entitytypes/",
-                Css = "fas fa-brain"
+                Css = "fas fa-elementor"
 
             });
 
@@ -396,7 +386,7 @@ namespace Catfish
                 InternalId = "Forms",
                 Name = "Forms",
                 Route = "/manager/forms/",
-                Css = "fas fa-brain"
+                Css = "fas fa-wpforms"
 
             });
 

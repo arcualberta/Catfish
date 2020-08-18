@@ -15,7 +15,7 @@ namespace Catfish.Core.Models
     {
         public enum eGuidOption { Ignore, Ensure, Regenerate }
 
-        [NotMapped]
+       
         [Key]
         public Guid Id
         {
