@@ -187,6 +187,14 @@ namespace Catfish.UnitTests
             commentsForm.CreateField<TextField>("Course Number", lang, true);
             commentsForm.CreateField<TextArea>("Comments", lang, true);
 
+            //Defining name mappings
+            //TODO: Add functionality for EntityTemplate to allow us define a sequence of metadata set fields
+            //      to be used as table headings in the list view. Use this functionality to specify the
+            //      Course Name and Course Number as the list-view table headings for this schema.
+            //      In the actual listing page, we should show the values of these set of fields and the "owner"
+            //      of the root data object, the created time-stamp of the root data object, and the satust of the
+            //      entity.
+
 
             //Defininig roles
             WorkflowRole centralAdminRole = workflow.AddRole("CentralAdmin");
