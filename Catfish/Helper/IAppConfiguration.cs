@@ -20,6 +20,8 @@ namespace Catfish.Helper
         string GetGoogleClientSecret();
 
         string GetGoogleServiceAccountFileName();
+
+        bool GetEnabledLocalLogin();
     }
 
     public class ReadAppConfiguration : ICatfishAppConfiguration
@@ -82,8 +84,6 @@ namespace Catfish.Helper
             return _configuration["EmailServer:Email"];
         }
 
-       
-
         public string GetRecipientEmail()
         {
              return _configuration["EmailServer:Recipient"];
@@ -92,6 +92,10 @@ namespace Catfish.Helper
         public string GetGoogleServiceAccountFileName()
         {
             return _configuration["GoogleCalendar:ServiceAccountFileName"];
+        }
+        public bool GetEnabledLocalLogin()
+        {
+            return _configuration["LocalLogin:Enabled"] != null && Convert.ToBoolean(_configuration["LocalLogin:Enabled"]);
         }
     }
 }
