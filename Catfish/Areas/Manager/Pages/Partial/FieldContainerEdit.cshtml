@@ -53,7 +53,7 @@
             <div class="container-fluid" style="display:flex; flex-direction:row;">
                 <draggable class="flex-full col-9" v-model="fields" group="sharedItems" handle=".handle-drag">
                     <div v-for="(field, fieldIndex) of fields" class="card field-card-width" :key='fieldIndex'>
-
+                    <!-- Editable fields -->
                         <div style="display:flex;">
 
                             <div class="handle-drag draggable">
@@ -68,7 +68,11 @@
                                         </div>
                                     </a>
                                     <div v-if="field.$type" class="title-header">
+                                        <!-- Remove the hardcodiness of this when api data is used -->
                                         <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' ">Short Answer</h2>
+                                        <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' ">Long Answer</h2>
+                                        <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">Multiple Choice</h2>
+                                        <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core' ">Checkbox</h2>
                                         <h5>{{field.name.values[0].value}}</h5>
                                     </div>
                                     <div v-else class="title-header">
@@ -133,11 +137,34 @@
                                                 Appearance
                                             </h4>
                                             <div style="padding: .75rem 1.25rem;">
-                                            <input v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' "
-                                                class="form-control" readonly placeholder="Short answer"/>
-                                            <textarea v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' "
-                                                class="form-control" placeholder="Long answer" readonly>
-                                            </textarea>
+                                                <input v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' "
+                                                    class="form-control" readonly placeholder="Short answer"/>
+                                                <textarea v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' "
+                                                    class="form-control" placeholder="Long answer" readonly>
+                                                </textarea>
+                                                <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">
+                                                    <div v-for="(radioValue, radioIndex) of field.values" class="form-check">
+                                                        <input disabled class="form-check-input" type="radio" :name="'radio-' + radioIndex" :id="'radio-button-' + radioIndex" value="test1">
+                                                        <label class="form-check-label" :for="'radio-button-' + radioIndex">
+                                                            Default radio
+                                                        </label>
+                                                    </div>
+                                                    <button v-on:click="addNewOption(field.$type)" type="button" class="btn btn-secondary rounded">+</button>
+                                                </div>
+                                                <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core'">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                                        <label class="form-check-label" for="defaultCheck1">
+                                                            Default checkbox
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck2" disabled>
+                                                        <label class="form-check-label" for="defaultCheck2">
+                                                            Disabled checkbox
+                                                        </label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                      

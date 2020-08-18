@@ -71,7 +71,13 @@ if (document.getElementById("edit-field-form-page")) {
                     }
                 ],
                 //temp until templates sent
-                tmpTextfieldTemplate: null
+                tmpTextfieldTemplate: null,
+                tmpTextAreaTemplate: null,
+                tmpRadioTemplate: null,
+                tmpCheckboxTemplate: null,
+                tmpDropdownTemplate: null,
+                tmpFileAttachmentTemplate: null,
+                tmpDisplayFieldTemplate: null
             }
         },
         methods: {
@@ -82,8 +88,38 @@ if (document.getElementById("edit-field-form-page")) {
              */
             cloneItem(event) {
                 console.log(event);
-                //hardcodedish until templates are provided
-                let newItem = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate)); //event.Template
+                let newItem = {};
+                //this is temporary
+                console.log(event.modelType);
+                switch (event.modelType) {
+                    case 'TextField':
+                        //hardcoded until templates are provided
+                        newItem = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate)); //event.Template
+                        break;
+                    case 'TextArea':
+                        //hardcoded until templates are provided
+                        newItem = JSON.parse(JSON.stringify(this.tmpTextAreaTemplate)); //event.Template
+                        break;
+                    case 'Radio':
+                        //hardcoded until templates are provided
+                        newItem = JSON.parse(JSON.stringify(this.tmpRadioTemplate)); //event.Template
+                        break;
+                    case 'Checkbox':
+                        //hardcoded until templates are provided
+                        newItem = JSON.parse(JSON.stringify(this.tmpCheckboxTemplate)); //event.Template
+                        break;
+                    case 'Dropdown':
+                        break;
+                    case 'FileAttachment':
+                        break;
+                    case 'DisplayField':
+                        break;
+                    default:
+                        //hardcoded until templates are provided
+                        newItem = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate)); //event.Template
+                        break;
+				}
+                
                 newItem.id = uuidv1();
                 this.dropdowns[newItem.id] = { isCollapsed: false };
                 //newItem.Guid = uuidv1();
@@ -103,6 +139,29 @@ if (document.getElementById("edit-field-form-page")) {
                 //this.lastDropdownAction = this.dropdowns[fieldId].isCollapsed;
                 //this.assessExpandOrCollapseAll();
             },
+
+            /**
+             * Adds new option to either multiple choice or checkbox
+             * @param {any} type the modelType (radio or checkbox)
+             */
+            addNewOption(type) {
+                switch (type) {
+                    case 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core':
+                        //hardcoded for now, use template provided item instead
+                        this.tmpRadioTemplate.values.push( {
+                            text: '',
+                            id: -1,
+                        } );
+                        break;
+                    case 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core':
+                        //hardcoded for now, use template provided item instead
+                        this.tmpCheckboxTemplate.values.push({
+                            text: '',
+                            id: -1,
+                        });
+                        break;
+				}
+			},
 
             /**
               * Fetches and loads the data from an API call
@@ -142,8 +201,22 @@ if (document.getElementById("edit-field-form-page")) {
                                         break;
 									}
 
-								}
+                                }
 
+                                //temp set other values that i dont have sample data for
+                                //guessing for what will be needed, adjust when dummy data given
+                                self.tmpTextAreaTemplate = JSON.parse(JSON.stringify(self.tmpTextfieldTemplate));
+                                self.tmpTextAreaTemplate.$type = 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core';
+
+                                self.tmpRadioTemplate = JSON.parse(JSON.stringify(self.tmpTextfieldTemplate));
+                                self.tmpRadioTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core';
+                                //not sure if this would be right, will likely need to adjust this
+                                self.tmpRadioTemplate.values = [];
+
+                                self.tmpCheckboxTemplate = JSON.parse(JSON.stringify(self.tmpTextfieldTemplate));
+                                self.tmpCheckboxTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core';
+                                //not sure if this would be right, will likely need to adjust this
+                                self.tmpCheckboxTemplate.values = [];
 
                                 resolve();
 
