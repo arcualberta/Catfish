@@ -21,6 +21,7 @@ namespace Catfish.Helper
         bool EnableWorkflows();
         string GetWorkflowHomePageTitle();
         string GetWorkflowListPageTitle();
+        string GetDefaultLanguage();
     }
 
     public class ReadAppConfiguration : ICatfishAppConfiguration
@@ -38,6 +39,13 @@ namespace Catfish.Helper
                 ? val
                 : defaultValue;
         }
+        protected string GetValue(string key, string defaultValue)
+        {
+            string val = _configuration[key];
+            return string.IsNullOrEmpty(val) ? defaultValue : val;
+        }
+
+
         public string GetDefaultUserRole()
         {
             return _configuration["GoogleExternalLogin:DefaultUserRole"];
@@ -110,5 +118,10 @@ namespace Catfish.Helper
             return _configuration["Workflow:ListPageTitle"];
         }
 
+        public string GetDefaultLanguage()
+        {
+            return GetValue("SiteConfig:DefaultLanguage", "en");
+
+        }
     }
 }
