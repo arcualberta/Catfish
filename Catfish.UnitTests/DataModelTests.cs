@@ -114,7 +114,7 @@ namespace Catfish.UnitTests
             //private ISolrIndexService<SolrItemModel> solrIndexService;
             SeedingService srv = _testHelper.Seviceprovider.GetService(typeof(SeedingService)) as SeedingService;
 
-            ItemTemplate template = srv.NewDublinCoreItem();
+            ItemTemplate template = SeedingService.NewDublinCoreItem();
             Item item = template.Instantiate<Item>();
             item.MetadataSets[0].SetFieldValue<TextField>("Subject", "en", "New restaurants are mad crazy to be opening right now -- or are they?", "en");
             string desc = @"On Wednesdays, Palmetto, which opened for the first time on May 11 in Oakland, California, serves a full prime rib dinner -- to go.

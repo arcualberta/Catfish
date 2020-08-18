@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Models.Contents.Fields;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
@@ -19,8 +20,15 @@ namespace Catfish.Core.Models.Contents
         public MultilingualDescription Description { get; protected set; }
         public FieldList Fields { get; protected set; }
 
-        public FieldContainer(string tagName) : base(tagName) { Initialize(eGuidOption.Ignore); }
-        public FieldContainer(XElement data) : base(data) { Initialize(eGuidOption.Ignore); }
+        public FieldContainer(string tagName) : base(tagName) 
+        { 
+            Initialize(eGuidOption.Ignore); 
+            Created = DateTime.Now; 
+        }
+        public FieldContainer(XElement data) : base(data) 
+        {
+            Initialize(eGuidOption.Ignore); 
+        }
         public override void Initialize(eGuidOption guidOption)
         {
             base.Initialize(guidOption);
@@ -222,6 +230,16 @@ namespace Catfish.Core.Models.Contents
                 if (srcField != null)
                     dst.UpdateValues(srcField);
             }
+        }
+
+        public BaseField GetFieldByName(string fieldName, string lang)
+        {
+            foreach (var field in Fields)
+            {
+                if (field.Name.Values.Where(v => v.Language == lang && v.Value == fieldName) != null)
+                    return field;
+            }
+            return null;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Catfish.Models.Regions;
+﻿using Catfish.Helper;
+using Catfish.Models.Regions;
+using Microsoft.AspNetCore.Mvc;
 using Piranha.AttributeBuilder;
 using Piranha.Extend;
 using Piranha.Extend.Fields;
@@ -10,8 +12,7 @@ namespace Catfish.Models
     [PageTypeRoute(Title = "Default", Route = "/mediapage")]
     public class MediaPage : Page<MediaPage>
     {
-        
-
+      
         [Region(ListTitle = "Title")]
         public GoogleCalendarRegion CalendarRegion { get; set; }
 
@@ -21,13 +22,14 @@ namespace Catfish.Models
         [Region(ListTitle = "Title")]
         public TwitterRegion TwitterRegion { get; set; }
 
-        //[Region(ListTitle ="Title")]
-        //public StyleRegion Styles { get; set; }
-
+        [Region(ListTitle = "Title")]
+        public StyleRegion Styles { get; set; }
+       
         public MediaPage()
         {
-           
+          
         }
+
        
     }
 }

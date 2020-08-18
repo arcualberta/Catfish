@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using Google.Apis.Calendar.v3;
 using Google.Apis.Services;
 using System.Linq;
+using Google.Apis.Auth.OAuth2;
+using System.IO;
+using AutoMapper.Configuration;
 
 namespace Catfish.Models.Regions
 {
@@ -27,9 +30,11 @@ namespace Catfish.Models.Regions
         [Field(Title = "Max Number of Events", Placeholder ="Max number of events you want to retrieve")]
         public NumberField MaxEvents { get; set; }
 
-        public GoogleCalendarRegion() { }
-
-     
+        //public string JsonFileName { get; set; }
+        public GoogleCalendarRegion() {
+           
+        }
+       
         public string GetCalendarId()
         {
             if (CalendarId != null)
@@ -75,34 +80,56 @@ namespace Catfish.Models.Regions
             }
             return 100; //default value
         }
+
+       
         public List<CalendarEvent> GetCalendarEvents()
         {
             List<CalendarEvent> CalendarEvents = new List<CalendarEvent>();
-            //private ICatfishAppConfiguration _config;
-            //string ApiKey = _config.GetGoogleCalendarAPIKey();
-            if (ApiKey != null)
+            string[] Scopes = { CalendarService.Scope.CalendarReadonly};
+            string ApplicationName = "Google Calendar Region";
+            string jsonFile = Startup.Configuration["GoogleCalendar:ServiceAccountFileName"];//"catfish2-0-GoogleCalendarServiceAccount.json";
+            string calendarId = GetCalendarId();
+
+            try
             {
 
+                ServiceAccountCredential credential;
+
+                using (var stream =
+                    new FileStream(jsonFile, FileMode.Open, FileAccess.Read))
+                {
+                    var confg = Google.Apis.Json.NewtonsoftJsonSerializer.Instance.Deserialize<JsonCredentialParameters>(stream);
+                    credential = new ServiceAccountCredential(
+                       new ServiceAccountCredential.Initializer(confg.ClientEmail)
+                       {
+                           Scopes = Scopes
+                       }.FromPrivateKey(confg.PrivateKey));
+                }
 
                 var service = new CalendarService(new BaseClientService.Initializer()
                 {
-                    ApiKey = GetApiKey()
+                    HttpClientInitializer = credential,
+                    ApplicationName = ApplicationName,
                 });
 
-                EventsResource.ListRequest request = service.Events.List(GetCalendarId());
-                int pastDays = Convert.ToInt32(GetDayRangePast()) * -1;
-                int futureDays = Convert.ToInt32(GetDayRangeFuture());
-                request.TimeMin = DateTime.Now.AddDays(pastDays);
-                request.TimeMax = DateTime.Now.AddDays(futureDays);
-                request.ShowDeleted = false;
-                request.SingleEvents = true;
-                request.MaxResults = GetMaxEvents();
-                request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
 
-                Events events = request.Execute();
-                CalendarEvents = events.Items.Select(m => new CalendarEvent(m)).ToList();
-                // CalendarEventsJson = JsonConvert.SerializeObject(CalendarEvents);
-                //EventsJson = JsonConvert.SerializeObject(Events);
+
+             EventsResource.ListRequest request = service.Events.List(GetCalendarId());
+             int pastDays = Convert.ToInt32(GetDayRangePast()) * -1;
+             int futureDays = Convert.ToInt32(GetDayRangeFuture());
+             request.TimeMin = DateTime.Now.AddDays(pastDays);
+             request.TimeMax = DateTime.Now.AddDays(futureDays);
+             request.ShowDeleted = false;
+             request.SingleEvents = true;
+             request.MaxResults = GetMaxEvents();
+             request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
+
+             Events events = request.Execute();
+             CalendarEvents = events.Items.Select(m => new CalendarEvent(m)).ToList();
+                   
+            }catch(Exception ex)
+            {
+                throw ex;
             }
 
             return CalendarEvents;

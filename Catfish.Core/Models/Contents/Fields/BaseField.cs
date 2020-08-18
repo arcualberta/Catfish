@@ -10,7 +10,6 @@ namespace Catfish.Core.Models.Contents.Fields
     public abstract class BaseField : XmlModel
     {
         public const string FieldTagName = "field";
-
         public abstract void UpdateValues(BaseField srcField);
 
         public bool Required
@@ -27,8 +26,7 @@ namespace Catfish.Core.Models.Contents.Fields
 
 
         public MultilingualName Name { get; protected set; }
-        public MultilingualText Description { get; protected set; }
-
+        public MultilingualDescription Description { get; protected set; }
         public BaseField() : base(FieldTagName) { }
         public BaseField(XElement data) : base(data) { }
 

@@ -69,6 +69,32 @@ namespace Catfish.Core.Migrations
                     b.ToTable("Catfish_Relationships");
                 });
 
+            modelBuilder.Entity("Catfish.Core.Models.XmlModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("xml");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Updated")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Catfish_XmlModels");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("XmlModel");
+                });
+
             modelBuilder.Entity("Catfish.Core.Models.Collection", b =>
                 {
                     b.HasBaseType("Catfish.Core.Models.Entity");
@@ -100,6 +126,24 @@ namespace Catfish.Core.Migrations
                     b.ToTable("Catfish_Entities");
 
                     b.HasDiscriminator().HasValue("Item");
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.Contents.Form", b =>
+                {
+                    b.HasBaseType("Catfish.Core.Models.XmlModel");
+
+                    b.ToTable("Catfish_XmlModels");
+
+                    b.HasDiscriminator().HasValue("Form");
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.Contents.MetadataSet", b =>
+                {
+                    b.HasBaseType("Catfish.Core.Models.XmlModel");
+
+                    b.ToTable("Catfish_XmlModels");
+
+                    b.HasDiscriminator().HasValue("MetadataSet");
                 });
 
             modelBuilder.Entity("Catfish.Core.Models.CollectionTemplate", b =>

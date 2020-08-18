@@ -18,9 +18,9 @@ namespace Catfish.Core.Models.Contents
 
         public XmlModelList<Text> Values { get; protected set; }
 
-        public MultilingualText(string tagName) : base(tagName) { }
+        public MultilingualText(string tagName) : base(tagName) { Initialize(eGuidOption.Ensure); }
 
-        public MultilingualText(XElement data) : base(data) { }
+        public MultilingualText(XElement data) : base(data) { Initialize(eGuidOption.Ensure); }
 
         public override void Initialize(eGuidOption guidOption)
         {

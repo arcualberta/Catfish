@@ -22,6 +22,9 @@ namespace Catfish.Helper
         string GetWorkflowHomePageTitle();
         string GetWorkflowListPageTitle();
         string GetDefaultLanguage();
+        string GetGoogleClientSecret();
+        string GetGoogleServiceAccountFileName();
+        bool GetEnabledLocalLogin();
     }
 
     public class ReadAppConfiguration : ICatfishAppConfiguration
@@ -59,6 +62,10 @@ namespace Catfish.Helper
         public string GetGoogleClientId()
         {
             return _configuration["GoogleExternalLogin:ClientId"];
+        }
+        public string GetGoogleClientSecret()
+        {
+            return _configuration["GoogleExternalLogin:ClientSecret"];
         }
 
         public bool IsAllowGoogleLogin()
@@ -121,7 +128,15 @@ namespace Catfish.Helper
         public string GetDefaultLanguage()
         {
             return GetValue("SiteConfig:DefaultLanguage", "en");
+        }
 
+        public string GetGoogleServiceAccountFileName()
+        {
+            return _configuration["GoogleCalendar:ServiceAccountFileName"];
+        }
+        public bool GetEnabledLocalLogin()
+        {
+            return GetValue("LocalLogin:Enabled", false);
         }
     }
 }

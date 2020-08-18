@@ -1,11 +1,11 @@
 ﻿body {
 }
 #site-logo {
-    /*site logo*/
+    /*site logo
     background-image: url("../../uploads/f27e4c34-78c8-4f71-936c-89c0f396f1c9-UA-COLOUR.png");
     background-size: contain;
     background-repeat: no-repeat, repeat;
-    background-size:300px;
+    background-size:300px;*/
     padding: 20px;
     margin: 20px;
     width: 200px;

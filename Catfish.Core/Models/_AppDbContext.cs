@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Core.Services.Solr;
+﻿using Catfish.Core.Models.Contents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -80,6 +81,9 @@ namespace Catfish.Core.Models
         public DbSet<EntityTemplate> EntityTemplates { get; set; }
         public DbSet<ItemTemplate> ItemTemplates { get; set; }
         public DbSet<CollectionTemplate> CollectionTemplates { get; set; }
+        public DbSet<XmlModel> XmlModels { get; set; }
+        public DbSet<MetadataSet> MetadataSets { get; set; }
+        public DbSet<Form> Forms { get; set; }
 
         /*
                 public DbSet<XmlModel> XmlModels { get; set; }

@@ -177,3 +177,5 @@ Plugins
 /Catfish.UnitTests/appsettings.test.json
 /*.tgitconfig
 /Examples/ContractLetterWorkflow.xml
+/Catfish/catfish2-0-GoogleCalendarServiceAccount.json
+
