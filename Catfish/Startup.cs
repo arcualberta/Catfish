@@ -348,7 +348,7 @@ namespace Catfish
                 {
                     InternalId = "Templates",
                     Name = "Templates",
-                    Css = "fas fa-object-group"
+                    Css = "fas fa-clone"
 
                 });
             }
@@ -364,7 +364,7 @@ namespace Catfish
                 InternalId = "MetadataSets",
                 Name = "Metadata Sets",
                 Route = "/manager/metadatasets/",
-                Css = "fas fa-object-group"
+                Css = "fas fa-table"
 
             });
 
@@ -373,7 +373,7 @@ namespace Catfish
                 InternalId = "EntityTypes",
                 Name = "Entity Types",
                 Route = "/manager/entitytypes/",
-                Css = "fas fa-elementor"
+                Css = "fab fa-elementor"
 
             });
 
@@ -382,7 +382,7 @@ namespace Catfish
                 InternalId = "Forms",
                 Name = "Forms",
                 Route = "/manager/forms/",
-                Css = "fas fa-wpforms"
+                Css = "fab fa-wpforms"
 
             });
 
