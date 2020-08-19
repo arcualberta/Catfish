@@ -143,27 +143,32 @@
                                                     class="form-control" placeholder="Long answer" readonly>
                                                 </textarea>
                                                 <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">
-                                                    <div v-for="(radioValue, radioIndex) of field.values" class="form-check">
-                                                        <input disabled class="form-check-input" type="radio" :name="'radio-' + radioIndex" :id="'radio-button-' + radioIndex" value="test1">
-                                                        <label class="form-check-label" :for="'radio-button-' + radioIndex">
-                                                            Default radio
-                                                        </label>
+                                                    <div v-for="(radioValue, radioIndex) of field.values" class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <div class="input-group-text">
+                                                                <input :id="'radio-' + radioIndex" :name="'radio-field-' + fieldIndex" type="radio" aria-label="Radio button for following text input">
+                                                            </div>
+                                                        </div>
+                                                        <input type="text" class="form-control" aria-label="Text input with radio button" v-model="radioValue.text">
+                                                        <div class="input-group-append">
+                                                            <button class="btn btn-outline-secondary" type="button">Remove</button>
+                                                        </div>
                                                     </div>
-                                                    <button v-on:click="addNewOption(field.$type)" type="button" class="btn btn-secondary rounded">+</button>
+                                                    <button v-on:click="addNewOption(field)" type="button" class="btn btn-secondary rounded">+</button>
                                                 </div>
                                                 <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core'">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                                        <label class="form-check-label" for="defaultCheck1">
-                                                            Default checkbox
-                                                        </label>
+                                                    <div v-for="(checkValue, checkIndex) of field.values" class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <div class="input-group-text">
+                                                                <input :id="'checkbox-' + checkIndex" :name="'check-field-' + fieldIndex" type="checkbox" aria-label="Checkbox for following text input">
+                                                            </div>
+                                                        </div>
+                                                        <input type="text" class="form-control" aria-label="Text input with checkbox" v-model="checkValue.text">
+                                                        <div class="input-group-append">
+                                                            <button class="btn btn-outline-secondary" type="button">Remove</button>
+                                                        </div>
                                                     </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck2" disabled>
-                                                        <label class="form-check-label" for="defaultCheck2">
-                                                            Disabled checkbox
-                                                        </label>
-                                                    </div>
+                                                    <button v-on:click="addNewOption(field)" type="button" class="btn btn-secondary rounded">+</button>
                                                 </div>
                                             </div>
                                         </div>

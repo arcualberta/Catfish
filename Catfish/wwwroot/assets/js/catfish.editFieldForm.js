@@ -142,10 +142,15 @@ if (document.getElementById("edit-field-form-page")) {
 
             /**
              * Adds new option to either multiple choice or checkbox
-             * @param {any} type the modelType (radio or checkbox)
+             * @param {any} field the field to push multiple choice or checkbox objects onto
              */
-            addNewOption(type) {
-                switch (type) {
+            addNewOption(field) {
+                field.values.push({
+                    text: '',
+                    id: -1,
+                });
+
+                /*switch (field.$type) {
                     case 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core':
                         //hardcoded for now, use template provided item instead
                         this.tmpRadioTemplate.values.push( {
@@ -160,7 +165,7 @@ if (document.getElementById("edit-field-form-page")) {
                             id: -1,
                         });
                         break;
-				}
+				}*/
 			},
 
             /**

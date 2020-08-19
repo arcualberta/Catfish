@@ -91,3 +91,8 @@
 #edit-field-form-page .handle{
 	border-right:none;
 }
+
+/* again, unsure why this is doing this */
+#edit-field-form-page .input-group .form-control {
+	border-right: 1px solid #ced4da;
+}
