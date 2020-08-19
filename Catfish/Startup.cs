@@ -25,8 +25,6 @@ using Catfish.Core.Services.Solr;
 using Catfish.Services;
 using Catfish.ModelBinders;
 
-using Catfish.Core.Services.FormBuilder;
-
 
 namespace Catfish
 {
@@ -148,8 +146,6 @@ namespace Catfish
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
             services.AddTransient<IWorkflowService, WorkflowService>();
-            services.AddScoped<IFormService, FormService>();
-            services.AddScoped<IMetadataSetService, MetadataSetService>();
             services.AddScoped<IEntityTemplateService, EntityTemplateService>();
 
             // Solr services

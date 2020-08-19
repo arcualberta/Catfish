@@ -81,15 +81,15 @@ namespace Catfish.Core.Models
         public DbSet<EntityTemplate> EntityTemplates { get; set; }
         public DbSet<ItemTemplate> ItemTemplates { get; set; }
         public DbSet<CollectionTemplate> CollectionTemplates { get; set; }
-        public DbSet<XmlModel> XmlModels { get; set; }
-        public DbSet<MetadataSet> MetadataSets { get; set; }
-        public DbSet<Form> Forms { get; set; }
 
         /*
+                public DbSet<XmlModel> XmlModels { get; set; }
                 public DbSet<XmlModel> XmlModels { get; set; }
 
                 public DbSet<Entity> Entities { get; set; }
                 public DbSet<EntityType> EntityTypes { get; set; }
+                public DbSet<MetadataSet> MetadataSets { get; set; }
+                public DbSet<Form> Forms { get; set; }
 
                 public DbSet<MetadataSet> MetadataSets { get; set; }
 

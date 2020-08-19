@@ -15,8 +15,6 @@ namespace Catfish.Core.Models
     {
         public enum eGuidOption { Ignore, Ensure, Regenerate }
 
-       
-        [Key]
         public Guid Id
         {
             get => Guid.Parse(Data.Attribute("id").Value);
