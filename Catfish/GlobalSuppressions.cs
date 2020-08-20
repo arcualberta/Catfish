@@ -9,3 +9,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Design", "CA1055:Uri return values should not be strings", Justification = "<Pending>", Scope = "member", Target = "~M:Catfish.Helper.ICatfishAppConfiguration.GetLogoUrl~System.String")]
 [assembly: SuppressMessage("Design", "CA1055:Uri return values should not be strings", Justification = "<Pending>", Scope = "member", Target = "~M:Catfish.Helper.ReadAppConfiguration.GetLogoUrl~System.String")]
 [assembly: SuppressMessage("Design", "CA1055:Uri return values should not be strings", Justification = "<Pending>", Scope = "member", Target = "~M:Catfish.Helper.ReadAppConfiguration.GetSolrUrl~System.String")]
+[assembly: SuppressMessage("Design", "CA1055:Uri return values should not be strings", Justification = "<Pending>", Scope = "member", Target = "~M:Catfish.Helper.ICatfishAppConfiguration.GetSolrUrl~System.String")]
