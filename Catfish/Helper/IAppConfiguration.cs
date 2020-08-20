@@ -136,7 +136,7 @@ namespace Catfish.Helper
         }
         public bool GetEnabledLocalLogin()
         {
-            return GetValue("LocalLogin:Enabled", false);
+            return GetValue("SiteConfig:EnabledLocalLogin", false);
         }
     }
 }
