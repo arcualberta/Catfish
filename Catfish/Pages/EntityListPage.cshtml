@@ -9,9 +9,10 @@
 <div class="container">
     @foreach (var items in Model.ItemList)
     {
-        var url = "/entity/edit/" + items.Id;
-        <div>
-            <a href="@url">@items.Id</a>
-        </div>
+        var edit = "/entity/edit/" + items.Id;
+        var view = "/entity/detail/" + items.Id;
+    <div>
+        @items.Id | <a href="@view">View</a> |  <a href="@edit">Edit</a>
+    </div>
     }
 </div>

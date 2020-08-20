@@ -1,15 +1,11 @@
 ﻿@model Catfish.Core.Models.Contents.MultilingualValue
 
 <div class="multilingual-input-block">
-    @Html.HiddenFor(model => model.ModelType)
-    @Html.HiddenFor(model => model.Id)
-    @{ 
+    @{
         var isMultiline = ViewData["multiline"] != null && (bool)ViewData["multiline"];
     }
     @for (int i = 0; i < Model.Values.Count; ++i)
     {
-        @Html.HiddenFor(model => model.Values[i].Language)
-        @Html.HiddenFor(model => model.Values[i].Id)
         if (Model.Values.Count > 1)
         {
             @Html.Label(Model.Values[i].Language)<span>: </span>
@@ -17,11 +13,15 @@
 
         if (isMultiline)
         {
-            @Html.TextAreaFor(model => model.Values[i].Value)
+            string[] paragraphs = Model.Values[i].Value.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach(var para in paragraphs)
+            {
+                <p>@Html.Raw(para)</p>
+            }
         }
         else
         {
-            @Html.EditorFor(model => model.Values[i].Value)
+            <p>@Html.Raw(Model.Values[i].Value)</p>
         }
     }
 </div>

@@ -12,18 +12,7 @@
     ViewData["Title"] = "DetailDataItem";
 }
 
-<h1>Detail Data Item</h1>
-<h3>@Model.Item.Name.GetConcatenatedContent("")</h3>
-
-
-<form method="post">
-    @Html.HiddenFor(model => model.ItemId)
-
-    <div class="container">
-        @Html.DisplayFor(model => model.Item, Model.Item.GetType().ToString())
-
-        <input name="Save" type="submit" value="Save" />
-        <input name="Subit" type="submit" value="Submit" />
-    </div>
-</form>
+<div class="container">
+    @Html.DisplayFor(model => model.Item, Model.Item.GetType().ToString())
+</div>
 

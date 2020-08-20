@@ -6,7 +6,7 @@
         @foreach (var val in Model.Values)
         {
             <div class="description-entry">
-                DESC: @Html.Raw(val)
+                @Html.Raw(val.Value)
             </div>
         }
     </div>
