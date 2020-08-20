@@ -39,11 +39,11 @@
 	flex: 2;
 }
 
-#edit-field-form-page .rounded {
+/*#edit-field-form-page .rounded {
 	border-radius: 25px !important;
 	padding-left: 15px;
 	padding-right: 15px;
-}
+}*/
 
 #edit-field-form-page .handle-drag,
 #edit-field-form-page .handle-holder {
@@ -95,4 +95,13 @@
 /* again, unsure why this is doing this */
 #edit-field-form-page .input-group .form-control {
 	border-right: 1px solid #ced4da;
+}
+
+#edit-field-form-page .add-button-holder{
+	display: flex;
+	justify-content: flex-end;
+}
+
+#edit-field-form-page .add-button-holder button{
+	margin-left:10px;
 }

@@ -67,12 +67,12 @@ if (document.getElementById("edit-field-form-page")) {
                     },
                     {
                         id: 5,
-                        name: 'User Upload',
+                        name: 'File Upload',
                         modelType: 'FileAttachment'
                     },
                     {
                         id: 6,
-                        name: 'Rich Text',
+                        name: 'Display Text',
                         modelType: 'DisplayField'
                     }
                 ],
@@ -119,8 +119,12 @@ if (document.getElementById("edit-field-form-page")) {
                         newItem = JSON.parse(JSON.stringify(this.tmpDropdownTemplate)); //event.Template
                         break;
                     case 'FileAttachment':
+                        //hardcoded until templates are provided
+                        newItem = JSON.parse(JSON.stringify(this.tmpFileAttachmentTemplate)); //event.Template
                         break;
                     case 'DisplayField':
+                        //hardcoded until templates are provided
+                        newItem = JSON.parse(JSON.stringify(this.tmpDisplayFieldTemplate)); //event.Template
                         break;
                     default:
                         //hardcoded until templates are provided
@@ -155,6 +159,7 @@ if (document.getElementById("edit-field-form-page")) {
             addNewOption(field) {
                 field.values.push({
                     text: '',
+                    isDisabled: false,
                     id: -1,
                 });
 
@@ -174,6 +179,18 @@ if (document.getElementById("edit-field-form-page")) {
                         });
                         break;
 				}*/
+            },
+
+            /**
+             * Adds 'Other' option to set for user to fill
+             * @param {any} field
+             */
+            addOtherOption(field) {
+                field.values.push({
+                    text: 'Other...',
+                    isDisabled: true,
+                    id: -1,
+                });
             },
 
             /**
@@ -244,6 +261,12 @@ if (document.getElementById("edit-field-form-page")) {
                                 self.tmpDropdownTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core';
                                 //not sure if this would be right, will likely need to adjust this
                                 self.tmpDropdownTemplate.values = [];
+
+                                self.tmpFileAttachmentTemplate = JSON.parse(JSON.stringify(self.tmpTextfieldTemplate));
+                                self.tmpFileAttachmentTemplate.$type = 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core';
+
+                                self.tmpDisplayFieldTemplate = JSON.parse(JSON.stringify(self.tmpTextfieldTemplate));
+                                self.tmpDisplayFieldTemplate.$type = 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core';
 
                                 resolve();
 
