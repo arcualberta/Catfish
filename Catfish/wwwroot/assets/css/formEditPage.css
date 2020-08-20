@@ -105,3 +105,15 @@
 #edit-field-form-page .add-button-holder button{
 	margin-left:10px;
 }
+
+#edit-field-form-page .file-attachment-box {
+	display: flex;
+	padding: 30px;
+	justify-content: center;
+	border: 2px dashed #ced4da;
+	background-color: whitesmoke;
+}
+
+#edit-field-form-page .file-attachment-box button {
+	cursor:default;
+}
