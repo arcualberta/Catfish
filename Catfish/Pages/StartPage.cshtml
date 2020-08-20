@@ -5,20 +5,30 @@
     ViewData["Title"] = "Start Page";
 }
 
+<div  class="page-box">
 <h1>Start Page</h1>
 
-<div class="container">
-    @foreach (var template in Model.ItemTemplates)
-    {
-        var url = "/entity/create/" + template.Id;
-        var startupDataItem = template.GetRootDataItem(false);
-        <div class="row">
-            <div class="form-title col-lg-12">@startupDataItem.Name.GetConcatenatedContent("<br />")</div>
-            <div class="form-description">@startupDataItem.Description.GetConcatenatedContent("<br />")</div>
-            <div class="form-link">
-                <a href="@url">Start now</a>
+    <div class="container">
+        @foreach (var template in Model.ItemTemplates)
+        {
+            var url = "/entity/create/" + template.Id;
+            var startupDataItem = template.GetRootDataItem(false);
+
+
+            <div class="row item-box">
+
+                <div class="form-title col-lg-12">@startupDataItem.Name.GetConcatenatedContent("<br />")</div>
+
+
+                <div class="form-description col-lg-10">@startupDataItem.Description.GetConcatenatedContent("<br />")</div>
+
+
+                <div class="form-link col-lg-2">
+                    <a href="@url" class="btn btn-secondary" role="button">Start now</a>
+                </div>
+
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
 

@@ -147,6 +147,38 @@ header {
 }
 
 /* Submission Listing Page Styles */
-.form-title{
-    font-size:24px;
+.form-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.form-description {
+    
+}
+
+.form-link {
+    
+}
+
+.page-part2 {
+    background-color: lightgrey;
+}
+
+.page-box {
+    padding: 20px;
+    padding-bottom: 30px;
+    background-color: #8c8c8c;
+    border-width: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.item-box {
+    padding : 20px;
+    padding-bottom : 30px;
+    background-color: white;
+    border-color: black;
+    border-width: 10px;  
+    margin-right: 10px;
+    margin-top:10px;
 }
