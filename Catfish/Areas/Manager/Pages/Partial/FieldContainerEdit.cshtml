@@ -69,14 +69,14 @@
                                     </a>
                                     <div v-if="field.$type" class="title-header">
                                         <!-- Remove the hardcodiness of this when api data is used -->
-                                        <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' ">Short Answer</h2>
-                                        <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' ">Long Answer</h2>
-                                        <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">Multiple Choice</h2>
-                                        <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core' ">Checkbox</h2>
-                                        <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core' ">Dropdown</h2>
-                                        <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core' ">File Upload</h2>
-                                        <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core' ">Display Text</h2>
-                                        <h5>{{field.name.values[0].value}}</h5>
+                                        <h2>{{field.name.values[0].value}}:</h2>
+                                        <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' ">Short Answer</h5>
+                                        <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' ">Long Answer</h5>
+                                        <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">Multiple Choice</h5>
+                                        <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core' ">Checkbox</h5>
+                                        <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core' ">Dropdown</h5>
+                                        <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core' ">File Upload</h5>
+                                        <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core' ">Display Text</h5>
                                     </div>
                                     <div v-else class="title-header">
                                         <h5>Default Item - Fix Me</h5>
@@ -93,7 +93,7 @@
                                 <div :id="['collapse-' + fieldIndex ]" class="collapse-expand show border-top">
                                     <div class="card-header" style="text-transform:none;padding-bottom: 0;">
                                         <h4>
-                                            Title
+                                            Field Title
                                         </h4>
                             
                                         <!--<button type="button" class="btn btn-secondary rounded" data-toggle="popover"
