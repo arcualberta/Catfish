@@ -109,6 +109,8 @@ if (document.getElementById("edit-field-form-page")) {
                         newItem = JSON.parse(JSON.stringify(this.tmpCheckboxTemplate)); //event.Template
                         break;
                     case 'Dropdown':
+                        //hardcoded until templates are provided
+                        newItem = JSON.parse(JSON.stringify(this.tmpDropdownTemplate)); //event.Template
                         break;
                     case 'FileAttachment':
                         break;
@@ -166,7 +168,16 @@ if (document.getElementById("edit-field-form-page")) {
                         });
                         break;
 				}*/
-			},
+            },
+
+            /**
+             * Removes an option item
+             * @param {any} fieldIndex
+             * @param {any} optionIndex
+             */
+            removeOption(fieldIndex, optionIndex) {
+                this.fields[fieldIndex].values.splice(optionIndex, 1);
+            },
 
             /**
               * Fetches and loads the data from an API call
@@ -222,6 +233,11 @@ if (document.getElementById("edit-field-form-page")) {
                                 self.tmpCheckboxTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core';
                                 //not sure if this would be right, will likely need to adjust this
                                 self.tmpCheckboxTemplate.values = [];
+
+                                self.tmpDropdownTemplate = JSON.parse(JSON.stringify(self.tmpTextfieldTemplate));
+                                self.tmpDropdownTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core';
+                                //not sure if this would be right, will likely need to adjust this
+                                self.tmpDropdownTemplate.values = [];
 
                                 resolve();
 

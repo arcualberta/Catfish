@@ -73,6 +73,7 @@
                                         <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' ">Long Answer</h2>
                                         <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">Multiple Choice</h2>
                                         <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core' ">Checkbox</h2>
+                                        <h2 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core' ">Dropdown</h2>
                                         <h5>{{field.name.values[0].value}}</h5>
                                     </div>
                                     <div v-else class="title-header">
@@ -139,9 +140,11 @@
                                             <div style="padding: .75rem 1.25rem;">
                                                 <input v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' "
                                                     class="form-control" readonly placeholder="Short answer"/>
+                                                
                                                 <textarea v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' "
                                                     class="form-control" placeholder="Long answer" readonly>
                                                 </textarea>
+
                                                 <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">
                                                     <div v-for="(radioValue, radioIndex) of field.values" class="input-group mb-3">
                                                         <div class="input-group-prepend">
@@ -149,13 +152,14 @@
                                                                 <input :id="'radio-' + radioIndex" :name="'radio-field-' + fieldIndex" type="radio" aria-label="Radio button for following text input">
                                                             </div>
                                                         </div>
-                                                        <input type="text" class="form-control" aria-label="Text input with radio button" v-model="radioValue.text">
+                                                        <input type="text" class="form-control" aria-label="Text input with radio button and remove button" v-model="radioValue.text">
                                                         <div class="input-group-append">
-                                                            <button class="btn btn-outline-secondary" type="button">Remove</button>
+                                                            <button class="btn btn-outline-secondary" type="button">-</button>
                                                         </div>
                                                     </div>
                                                     <button v-on:click="addNewOption(field)" type="button" class="btn btn-secondary rounded">+</button>
                                                 </div>
+
                                                 <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core'">
                                                     <div v-for="(checkValue, checkIndex) of field.values" class="input-group mb-3">
                                                         <div class="input-group-prepend">
@@ -163,13 +167,24 @@
                                                                 <input :id="'checkbox-' + checkIndex" :name="'check-field-' + fieldIndex" type="checkbox" aria-label="Checkbox for following text input">
                                                             </div>
                                                         </div>
-                                                        <input type="text" class="form-control" aria-label="Text input with checkbox" v-model="checkValue.text">
+                                                        <input type="text" class="form-control" aria-label="Text input with checkbox and remove button" v-model="checkValue.text">
                                                         <div class="input-group-append">
-                                                            <button class="btn btn-outline-secondary" type="button">Remove</button>
+                                                            <button class="btn btn-outline-secondary" type="button">-</button>
                                                         </div>
                                                     </div>
                                                     <button v-on:click="addNewOption(field)" type="button" class="btn btn-secondary rounded">+</button>
                                                 </div>
+
+                                                <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core'">
+                                                    <div v-for="(dropdownValue, dropdownIndex) of field.values" class="input-group mb-3">
+                                                        <input type="text" class="form-control" aria-label="Text input with remove button" v-model="dropdownValue.text">
+                                                        <div class="input-group-append">
+                                                            <button class="btn btn-outline-secondary" v-on:click="removeOption(fieldIndex, dropdownIndex)" type="button">-</button>
+                                                        </div>
+                                                    </div>
+                                                    <button v-on:click="addNewOption(field)" type="button" class="btn btn-secondary rounded">+</button>
+                                                </div>
+
                                             </div>
                                         </div>
                                      
