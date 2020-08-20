@@ -11,6 +11,7 @@ namespace Catfish.Services
     public interface IWorkflowService
     {
         public void SetModel(EntityTemplate entityTemplate);
+        public void SetModel(Item item);
         public EntityTemplate GetModel();
         public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists);
         //public DataItem GetDataItem(string dataItemName, bool createIfNotExists);

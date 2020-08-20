@@ -16,6 +16,7 @@ namespace Catfish.Services
         public static readonly string DefaultLanguage = "en";
 
         private EntityTemplate mEntityTemplate;
+        private Item mItem;
 
         public WorkflowService()
         {
@@ -26,10 +27,16 @@ namespace Catfish.Services
         {
             return mEntityTemplate;
         }
+        
 
         public void SetModel(EntityTemplate entityTemplate)
         {
             mEntityTemplate = entityTemplate;
+        }
+
+        public void SetModel(Item item)
+        {
+            mItem = item;
         }
 
         public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists)

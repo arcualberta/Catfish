@@ -1,8 +1,17 @@
-﻿@page
+﻿@page "~/ItemList"
 @model Catfish.Pages.EntityListPageModel
 @{
     ViewData["Title"] = "EntityListPage";
 }
 
-<h1>EntityListPage</h1>
+<h1>Item List</h1>
 
+<div class="container">
+    @foreach (var items in Model.ItemList)
+    {
+        var url = "/edit/" + items.Id;
+        <div>
+            <a href="@url">@items.Id</a>
+        </div>
+    }
+</div>

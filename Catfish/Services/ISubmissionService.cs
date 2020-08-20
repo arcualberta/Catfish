@@ -8,8 +8,10 @@ namespace Catfish.Services
 {
     public interface ISubmissionService
     {
-        List<Entity> GetEntityList(Guid? templateId, Guid? stateGuid);
-        Entity GetSubmissionDetails(Guid id);
-        string SaveSubmission(Entity submission);
+        //List<Entity> GetEntityList(Guid? templateId, Guid? stateGuid);
+        //Entity GetSubmissionDetails(Guid id);
+        //string SaveSubmission(Entity submission);
+        List<Item> GetSubmissionList();
+        Item GetSubmissionDetails(Guid itemId);
     }
 }

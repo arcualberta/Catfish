@@ -56,7 +56,7 @@ namespace Catfish.Pages
             _db.Items.Add(newItem);
             _db.SaveChanges();
 
-            return RedirectToPage("~/entity/edit/{0}" + newItem.Id.ToString());
+            return RedirectToPage("~/ItemList");
         }
     }
 }
