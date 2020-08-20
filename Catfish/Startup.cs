@@ -303,6 +303,18 @@ namespace Catfish
                 .Styles.Add("~/assets/css/custom.css");
             App.Modules.Get<Piranha.Manager.Module>()
                 .Styles.Add("~/assets/css/formEditPage.css");
+            /*
+             These create a warning in Chrome about SameSite cookie use.
+             This is not an issue for you to fix, it is for QuillJS.
+             Issue: https://github.com/quilljs/quill/issues/2869
+             SOF info: https://stackoverflow.com/questions/58830297/a-cookie-associated-with-a-cross-site-resource-was-set-without-the-samesite-at
+             */
+            App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("https://cdn.quilljs.com/1.3.4/quill.core.css");
+            App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("https://cdn.quilljs.com/1.3.4/quill.snow.css");
+            App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("https://cdn.quilljs.com/1.3.4/quill.bubble.css");
 
         }
         #endregion

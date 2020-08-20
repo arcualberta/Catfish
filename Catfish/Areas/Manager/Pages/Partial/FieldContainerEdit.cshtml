@@ -141,9 +141,9 @@
                                                 <input v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' "
                                                     class="form-control" readonly placeholder="Short answer"/>
                                                 
-                                                <textarea v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' "
+                                                <quill-editor v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' "
                                                     class="form-control" placeholder="Long answer" readonly>
-                                                </textarea>
+                                                </quill-editor>
 
                                                 <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">
                                                     <div v-for="(radioValue, radioIndex) of field.values" class="input-group mb-3">

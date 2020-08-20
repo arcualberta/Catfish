@@ -1,4 +1,9 @@
 ﻿import draggable from 'vuedraggable';
+//import 'quill/dist/quill.core.css'
+//import 'quill/dist/quill.snow.css'
+//import 'quill/dist/quill.bubble.css'
+
+import { quillEditor } from 'vue-quill-editor'
 import { v1 as uuidv1 } from 'uuid';
 /**
  * Javascript Vue code for creating the editable form from existing data in FieldContainerEdit.cshtml.
@@ -14,7 +19,8 @@ if (document.getElementById("edit-field-form-page")) {
     piranha.editFieldForm = new Vue({
         el: '#edit-field-form-page',
         components: {
-            draggable
+            draggable,
+            quillEditor
 		},
         data() {
             return {
