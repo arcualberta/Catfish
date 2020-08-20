@@ -149,12 +149,12 @@
                                                     <div v-for="(radioValue, radioIndex) of field.values" class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <div class="input-group-text">
-                                                                <input :id="'radio-' + radioIndex" :name="'radio-field-' + fieldIndex" type="radio" aria-label="Radio button for following text input">
+                                                                <input disabled :id="'radio-' + radioIndex" :name="'radio-field-' + fieldIndex" type="radio" aria-label="Radio button for following text input">
                                                             </div>
                                                         </div>
                                                         <input type="text" class="form-control" aria-label="Text input with radio button and remove button" v-model="radioValue.text">
                                                         <div class="input-group-append">
-                                                            <button class="btn btn-outline-secondary" type="button">-</button>
+                                                            <button class="btn btn-outline-secondary" v-on:click="removeOption(fieldIndex, radioIndex)" type="button">-</button>
                                                         </div>
                                                     </div>
                                                     <button v-on:click="addNewOption(field)" type="button" class="btn btn-secondary rounded">+</button>
@@ -164,12 +164,12 @@
                                                     <div v-for="(checkValue, checkIndex) of field.values" class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <div class="input-group-text">
-                                                                <input :id="'checkbox-' + checkIndex" :name="'check-field-' + fieldIndex" type="checkbox" aria-label="Checkbox for following text input">
+                                                                <input disabled :id="'checkbox-' + checkIndex" :name="'check-field-' + fieldIndex" type="checkbox" aria-label="Checkbox for following text input">
                                                             </div>
                                                         </div>
                                                         <input type="text" class="form-control" aria-label="Text input with checkbox and remove button" v-model="checkValue.text">
                                                         <div class="input-group-append">
-                                                            <button class="btn btn-outline-secondary" type="button">-</button>
+                                                            <button class="btn btn-outline-secondary" v-on:click="removeOption(fieldIndex, checkIndex)" type="button">-</button>
                                                         </div>
                                                     </div>
                                                     <button v-on:click="addNewOption(field)" type="button" class="btn btn-secondary rounded">+</button>
