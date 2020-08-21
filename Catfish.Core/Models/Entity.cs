@@ -22,7 +22,7 @@ namespace Catfish.Core.Models
         [Key]
         public Guid Id
         {
-            get => Guid.Parse(Data.Attribute("id").Value);
+            get =>Guid.Parse(Data.Attribute("id").Value);
             set => Data.SetAttributeValue("id", value);
         }
 

@@ -14,14 +14,16 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500">
     <link rel="stylesheet" href="~/css/style.min.css">
-
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     @*<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>*@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.min.js" integrity="sha384-3ziFidFTgxJXHMDttyPJKDuTlmxJlwbSkojudK/CkRqKDOmeSbN6KLrGdrBQnT2n" crossorigin="anonymous"></script>
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" ></script>*@
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
     <link href="~/assets/css/CustomStyle.css" rel="stylesheet" />
     <link href="~/css/style.css" rel="stylesheet" />
+    <script src="~/assets/js/catfish.js"></script>
 
     <title>@ViewBag.Title</title>
 
@@ -40,7 +42,7 @@
 
         <div class="container">
             <div class="row">
-                @if(!string.IsNullOrEmpty(logoUrl))
+                @if (!string.IsNullOrEmpty(logoUrl))
                 {
                     <div id="site-logo"><img src="@logoUrl" /></div>
                 }
@@ -52,30 +54,29 @@
         </div>
         <header class="site-header  @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
             <div class="container">
-
                 <div class="row">
                     <div class="col-sm">
                         <partial name="Partial/_Menu.cshtml" />
                     </div>
                     <div class="signinout">
-                        <button id="btnSignIn" onclick="window.location.href = '/login'; return false;">Sign In</button>
-                        @{ if (User.Identity.IsAuthenticated)
-                            {
-                                <button id="btnSignOut" onclick="signOut(); return false;">Sign Out</button>
-                            }
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <button id="btnSignIn" onclick="window.location.href = '/login'; return false;">SignIn</button>
                         }
+                        else
+                        {
+                            <button id="btnSignOut" onclick="signOut(); return false;">Sign Out</button>
+                        }
+
+
                     </div>
                 </div>
 
             </div>
 
         </header>
-
     }
-
-    <div class="container">
-        @RenderBody()
-    </div>
+    @RenderBody()
 
 
     <footer class="border-top footer text-muted">
@@ -84,6 +85,8 @@
                 var currentSite = await WebApp.Site.GetContentAsync<CustomSite>();
                 var javascriptCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Javascript == null)
                     ? "" : currentSite.FooterContents.Javascript.Value;
+                var cssCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Css == null)
+                   ? "" : currentSite.FooterContents.Css.Value;
             }
             @if (currentSite != null)
             {
@@ -97,6 +100,8 @@
                     </div>
 
                     @Html.Raw(javascriptCode)
+
+                    @Html.Raw(cssCode)
 
 
                 </div>

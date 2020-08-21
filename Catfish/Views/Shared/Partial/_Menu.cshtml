@@ -14,7 +14,37 @@
         <div class="navbar-nav">
             @foreach (var item in sitemap)
             {
-                <a class="nav-item nav-link @(item.Id == WebApp.PageId ? "active" : "")" href="@item.Permalink"><span>@item.MenuTitle</span></a>
+                if (!item.IsHidden)
+                {
+
+                    @*<a class="nav-item nav-link @(item.Id == WebApp.PageId ? "active" : "")" href="@item.Permalink"><span>@item.MenuTitle</span></a>*@
+                    if (item.Items.Count == 0)
+                    {
+                        @*<li class="nav-item @(item.Id == WebApp.PageId ? "active" : "")">*@
+                            <a  href="@item.Permalink">@item.MenuTitle</a>
+                        @*</li>*@
+                    }
+                    else
+                    {
+                        //showing sub menu
+                        <div class=" nav-item @(item.Id == WebApp.PageId ? "active" : "") dropdown">
+                            <a href="#" class=" dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true"> @item.MenuTitle</a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                @foreach (var subItm in item.Items)
+                                {
+                                    if (!subItm.IsHidden)
+                                    {
+                                       <a class="dropdown-item" href="@subItm.Permalink">@subItm.MenuTitle</a>
+                                    }
+
+                                }
+
+                            </div>
+                        </div>
+
+                    }
+
+                }
             }
         </div>
     </div>
@@ -24,9 +54,33 @@
     <ul class="nav nav-site justify-content-center">
         @foreach (var item in sitemap)
         {
-            <li class="nav-item @(item.Id == WebApp.PageId ? "active" : "")">
-                <a class="nav-link" href="@item.Permalink"><span>@item.MenuTitle</span></a>
-            </li>
+            if (!item.IsHidden)
+            {
+                if (item.Items.Count == 0)
+                {
+                    <li class="nav-item @(item.Id == WebApp.PageId ? "active" : "")">
+                        <a  href="@item.Permalink">@item.MenuTitle</a>
+                    </li>
+                }
+                else
+                {
+                    //showing sub menu
+                   <li class=" nav-item @(item.Id == WebApp.PageId ? "active" : "") dropdown">
+                         <a href="#" class=" dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true"> @item.MenuTitle</a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                       @foreach (var subItm in item.Items)
+                       {
+                           if (!subItm.IsHidden)
+                           {
+                                <a class="dropdown-item" href="@subItm.Permalink">@subItm.MenuTitle</a>
+                           }
+                       }
+
+                        </div>
+                    </li>
+
+                 }
+            }
         }
 
         @if (_catfishAppConfig.EnableWorkflows())
@@ -41,5 +95,5 @@
             </li>
 
         }
-    </ul>
+     </ul>
 </nav>

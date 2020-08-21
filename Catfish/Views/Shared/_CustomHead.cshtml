@@ -1,0 +1,48 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@inject Piranha.IApi _piranhaApi;
+@{
+
+    var site = await _piranhaApi.Sites.GetByInternalIdAsync("Default");//"Default" is InternalId of the site
+
+
+}
+    <div class="main mainHeader">
+        <div class="container headerContainer">
+            <div class="row">
+                <div id="site-logo"></div>
+                <div class="header-brand">
+                    <h1>@site.Title</h1>
+                    <h3>@site.Description</h3>
+                </div>
+            </div>
+            </div>
+        </div>
+            <header class="site-header  @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
+                <div class="container">
+
+                    <div class="row">
+                        <div class="col-sm">
+                            <partial name="Partial/_Menu.cshtml" />
+                        </div>
+                        <div class="signinout">
+                            @{ if (!User.Identity.IsAuthenticated)
+                                {
+                                  <button id="btnSignIn" onclick="window.location.href = '/login'; return false;" class="btn btn-default"><span class="fa fa-sign-in "> Sign In</span></button>
+                                }
+                                else
+                                {
+                                    if (User.IsInRole("SysAdmin"))
+                                    {
+                                    <button class="btn btn-default" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                                    }
+                                    <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-default"><span class="fa fa-sign-out"> Sign Out</span></button>
+                                }
+                            }
+                        </div>
+                    </div>
+
+                </div>
+
+            </header>

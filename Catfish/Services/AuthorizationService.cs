@@ -18,5 +18,15 @@ namespace Catfish.Services
             List<string> authorizeList = new List<string>();
             return authorizeList;
         }
+
+        /// <summary>
+        /// Iterates through the given set of user roles and adds them to the system's user roles if they
+        /// do not already exist in the system.
+        /// </summary>
+        /// <param name="roles"></param>
+        public void EnsureUserRoles(List<string> roles)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -19,5 +19,7 @@ namespace Catfish.Services
         public Workflow GetWorkflow(bool createIfNotExist);
 
         public List<string> GetEmailAddresses(EmailTrigger trigger);
+
+        public List<string> GetUserRoles();
     }
 }

@@ -15,12 +15,14 @@ namespace Catfish.Services
     {
         public static readonly string DefaultLanguage = "en";
 
+        private AppDbContext _db { get; set; }
+
         private EntityTemplate mEntityTemplate;
         private Item mItem;
 
-        public WorkflowService()
+        public WorkflowService(AppDbContext db)
         {
-
+            _db = db;
         }
 
         public EntityTemplate GetModel()
@@ -89,5 +91,16 @@ namespace Catfish.Services
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// This method goes through all entity templates in the database and select all of the roles
+        /// in these templates. The method should return a unique list of roles.
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetUserRoles()
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

@@ -9,5 +9,7 @@ namespace Catfish.Services
     {
         bool IsAuthorize();
         List<string> GetAccessibleActions();
+
+        void EnsureUserRoles(List<string> roles);
     }
 }

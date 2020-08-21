@@ -7,6 +7,7 @@ using System.Text;
 using System;
 using Catfish.Core.Helpers;
 using Catfish.Core.Models.Contents.ViewModels;
+using System.Security.Cryptography;
 
 namespace Catfish.Core.Services
 {
@@ -18,7 +19,7 @@ namespace Catfish.Core.Services
             Db = db;
         }
 
-        public MetadataSet NewDublinCoreMetadataSet()
+        public static MetadataSet NewDublinCoreMetadataSet()
         {
             MetadataSet ms = new MetadataSet();
             ms.Name.SetContent("Dublin Core");
@@ -68,14 +69,11 @@ namespace Catfish.Core.Services
 
             ms.Fields.Add(new TextField("Type",
                 "The nature or genre of the resource."));
-
-
-
-
+       
             return ms;
         }
 
-        public MetadataSet NewDefaultMetadataSet()
+        public static MetadataSet NewDefaultMetadataSet()
         {
             MetadataSet ms = new MetadataSet();
             ms.Name.SetContent("System Default");
@@ -89,7 +87,36 @@ namespace Catfish.Core.Services
 
             return ms;
         }
-        public ItemTemplate NewDublinCoreItem()
+
+        public static Form NewPersonalInfoForm()
+        {
+            Form form = new Form();
+            form.Name.SetContent("Personal Information");
+            form.Description.SetContent("Default personal information form.");
+
+            form.Fields.Add(new TextField("First Name", "") { Required = true });
+            form.Fields.Add(new TextField("Last Name", "") { Required = true });
+            form.Fields.Add(new TextField("Email", "") { Required = true });
+            form.Fields.Add(new TextField("Phone", ""));
+            form.Fields.Add(new TextField("Street Address", ""));
+            form.Fields.Add(new TextField("Street Address (cont)", ""));
+
+            return form;
+        }
+
+        public static Form NewCommentForm()
+        {
+            Form form = new Form();
+            form.Name.SetContent("Comment");
+            form.Description.SetContent("Default comment form.");
+
+            form.Fields.Add(new TextField("Your Name", "") { Required = true });
+            form.Fields.Add(new TextArea("Comment", "") { Required = true });
+
+            return form;
+        }
+
+        public static ItemTemplate NewDublinCoreItem()
         {
             Item item = new Item();
             item.MetadataSets.Add(NewDublinCoreMetadataSet());
@@ -103,7 +130,7 @@ namespace Catfish.Core.Services
             return et;
         }
 
-        public ItemTemplate NewDefaultItem()
+        public static ItemTemplate NewDefaultItem()
         {
             Item item = new Item();
             item.MetadataSets.Add(NewDefaultMetadataSet());
@@ -117,7 +144,7 @@ namespace Catfish.Core.Services
             return et;
         }
 
-        public CollectionTemplate NewDublinCoreCollection()
+        public static CollectionTemplate NewDublinCoreCollection()
         {
             Collection collection = new Collection();
             collection.MetadataSets.Add(NewDublinCoreMetadataSet());
@@ -131,7 +158,7 @@ namespace Catfish.Core.Services
             return et;
         }
 
-        public CollectionTemplate NewDefaultCollection()
+        public static CollectionTemplate NewDefaultCollection()
         {
             Collection collection = new Collection();
             collection.MetadataSets.Add(NewDefaultMetadataSet());
@@ -206,12 +233,12 @@ namespace Catfish.Core.Services
                     it.Description.SetContent(string.Format("This is the test item #{0} created by seeding.", i));
 
                     //Filling default values for each metadata set field
-                    foreach(var ms in it.MetadataSets)
+                    foreach (var ms in it.MetadataSets)
                     {
-                        foreach(var field in ms.Fields)
+                        foreach (var field in ms.Fields)
                         {
                             var languages = field.Name.Values.Select(val => val.Language).Distinct();
-                            if(typeof(TextField).IsAssignableFrom(field.GetType()))
+                            if (typeof(TextField).IsAssignableFrom(field.GetType()))
                             {
                                 MultilingualValue val = new MultilingualValue();
                                 (field as TextField).Values.Add(val);
@@ -247,6 +274,120 @@ namespace Catfish.Core.Services
 
 
         }
+
+        ////public void SeedDefaults(bool createSampleData)
+        ////{
+        ////    DbEntityService entityService = new DbEntityService(Db);
+
+        ////    EntityTemplate template;
+
+        ////    if(Db.MetadataSets.Count() == 0)
+        ////    {
+        ////        Db.MetadataSets.Add(NewDublinCoreMetadataSet());
+        ////        Db.MetadataSets.Add(NewDefaultMetadataSet());
+        ////    }
+
+        ////    if(Db.Forms.Count() == 0)
+        ////    {
+        ////        Db.Forms.Add(NewPersonalInfoForm());
+        ////        Db.Forms.Add(NewCommentForm());
+        ////    }
+
+        ////    template = NewDefaultItem();
+        ////    if (!Db.ItemTemplates.Where(et => et.TemplateName == template.TemplateName).Any())
+        ////        Db.ItemTemplates.Add(template as ItemTemplate);
+
+        ////    template = NewDefaultCollection();
+        ////    if (!Db.CollectionTemplates.Where(et => et.TemplateName == template.TemplateName).Any())
+        ////        Db.CollectionTemplates.Add(template as CollectionTemplate);
+
+        ////    template = NewDublinCoreItem();
+        ////    if (!Db.ItemTemplates.Where(et => et.TemplateName == template.TemplateName).Any())
+        ////        Db.ItemTemplates.Add(template as ItemTemplate);
+
+        ////    template = NewDublinCoreCollection();
+        ////    if (!Db.CollectionTemplates.Where(et => et.TemplateName == template.TemplateName).Any())
+        ////        Db.CollectionTemplates.Add(template as CollectionTemplate);
+
+        ////    Db.SaveChanges();
+
+        ////    //Using the same seed to generate the same sequence of random numbers.
+        ////    //The seeding parameters may only be effective when seeding an empty database.
+        ////    Random rand = new Random(0);
+        ////    int numTestCollections = 10;
+        ////    int numTestItems = 200;
+
+        ////    List<CollectionTemplate> collectionTemplates = Db.CollectionTemplates.ToList();
+        ////    if (Db.Collections.Count() == 0)
+        ////    {
+        ////        for (int i = 0; i < numTestCollections; ++i)
+        ////        {
+        ////            int index = rand.Next(0, collectionTemplates.Count);
+        ////            template = collectionTemplates[index];
+
+        ////            Collection c = template.Instantiate<Collection>();
+        ////            c.Name.SetContent(string.Format("Test Collection {0}", i));
+        ////            c.Description.SetContent(string.Format("This is the test collection #{0} created by seeding.", i));
+        ////            Db.Collections.Add(c);
+        ////        }
+        ////        Db.SaveChanges();
+        ////    }
+
+        ////    List<ItemTemplate> itemTemplates = Db.ItemTemplates.ToList();
+        ////    List<Collection> collections = Db.Collections.ToList();
+        ////    if (Db.Items.Count() == 0)
+        ////    {
+        ////        for (int i = 0; i < numTestItems; ++i)
+        ////        {
+        ////            int index = rand.Next(0, itemTemplates.Count);
+        ////            template = itemTemplates[index];
+
+        ////            Item it = template.Instantiate<Item>();
+        ////            it.Name.SetContent(string.Format("Test Item {0}", i));
+        ////            it.Description.SetContent(string.Format("This is the test item #{0} created by seeding.", i));
+
+        ////            //Filling default values for each metadata set field
+        ////            foreach(var ms in it.MetadataSets)
+        ////            {
+        ////                foreach(var field in ms.Fields)
+        ////                {
+        ////                    var languages = field.Name.Values.Select(val => val.Language).Distinct();
+        ////                    if(typeof(TextField).IsAssignableFrom(field.GetType()))
+        ////                    {
+        ////                        MultilingualValue val = new MultilingualValue();
+        ////                        (field as TextField).Values.Add(val);
+
+        ////                        if (typeof(TextArea).IsAssignableFrom(field.GetType()))
+        ////                        {
+        ////                            foreach (var lang in languages)
+        ////                                val.SetContent(LoremIpsum(5, 10, 3, 5), lang);
+        ////                        }
+        ////                        else
+        ////                        {
+        ////                            foreach (var lang in languages)
+        ////                                val.SetContent(LoremIpsum(), lang);
+        ////                        }
+        ////                    }
+        ////                    else if (typeof(DateField).IsAssignableFrom(field.GetType()))
+        ////                    {
+        ////                        (field as DateField).SetValue(DateTime.Today.ToShortDateString());
+        ////                    }
+
+        ////                }
+        ////            }
+
+        ////            // selecting a default parent collection
+        ////            index = rand.Next(0, collections.Count + 1);
+        ////            if (index < collections.Count)
+        ////                it.PrimaryCollection = collections[index];
+
+        ////            Db.Items.Add(it);
+        ////        }
+        ////        Db.SaveChanges();
+        ////    }
+
+
+        ////}
 
         protected string LoremIpsum(int minWords = 2, int maxWords = 5, int minSentences = 1, int maxSentences = 1, int numParagraphs = 1)
         {

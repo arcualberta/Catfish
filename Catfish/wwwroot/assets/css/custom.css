@@ -165,3 +165,13 @@
 .collapse-expand .hide-egg {
 	display:none;
 }
+
+/* modified login logo : MR aug 19 2020 */
+#login .card-body.card-body-logo .logo {
+	background: url(../images/egg-svg-05.svg) 50% 50% no-repeat !important;
+	
+}
+.banner{
+	display: none;
+}
+	
