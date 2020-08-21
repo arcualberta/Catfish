@@ -20,9 +20,6 @@ namespace Catfish.Pages
         [BindProperty]
         public DataItem Item { get; set; }
 
-        [BindProperty]
-        public Guid EntityId { get; set; }
-
         public EntityEditPageModel(IAuthorizationService auth, ISubmissionService serv, IWorkflowService workflow, AppDbContext db) : base(auth, serv)
         {
             _workflowService = workflow;
@@ -32,7 +29,6 @@ namespace Catfish.Pages
         public void OnGet(Guid id)
         {
             Item item = _submissionService.GetSubmissionDetails(id);
-            EntityId = item.Id;
 
             Item = item.GetRootDataItem(false);
         }
@@ -40,7 +36,7 @@ namespace Catfish.Pages
         public IActionResult OnPost()
         {
             //Loading the entity from the database using the EntityId
-            Item item = _db.Items.Where(it => it.Id == EntityId).FirstOrDefault();
+            Item item = _db.Items.Where(it => it.Id == Item.EntityId).FirstOrDefault();
             if (item == null)
                 return NotFound("Requested item not found.");
 

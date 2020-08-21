@@ -52,6 +52,7 @@ namespace Catfish.Pages
             DataItem newDataItem = template.InstantiateDataItem(this.Item.Id);
             newDataItem.UpdateFieldValues(this.Item);
             newItem.DataContainer.Add(newDataItem);
+            newDataItem.EntityId = newItem.Id;
 
             //Adding the new entity to the database
             _db.Items.Add(newItem);
