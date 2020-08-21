@@ -19,8 +19,10 @@ namespace Catfish.Pages
 
         [BindProperty]
         public DataItem Item { get; set; }
+
         [BindProperty]
-        public Guid ItemId { get; set; }
+        public Guid EntityId { get; set; }
+
         public EntityEditPageModel(IAuthorizationService auth, ISubmissionService serv, IWorkflowService workflow, AppDbContext db) : base(auth, serv)
         {
             _workflowService = workflow;
@@ -29,20 +31,30 @@ namespace Catfish.Pages
         }
         public void OnGet(Guid id)
         {
-            ItemId = id;
-
-
             Item item = _submissionService.GetSubmissionDetails(id);
-            _workflowService.SetModel(item);
+            EntityId = item.Id;
 
-            //TODO: dynamically figure out the start-up item
             Item = item.GetRootDataItem(false);
-
         }
 
-        public void OnPost()
+        public IActionResult OnPost()
         {
+            //Loading the entity from the database using the EntityId
+            Item item = _db.Items.Where(it => it.Id == EntityId).FirstOrDefault();
+            if (item == null)
+                return NotFound("Requested item not found.");
 
+            DataItem dbDataItem = item.DataContainer.Where(it => it.Id == Item.Id).FirstOrDefault();
+            if (dbDataItem == null)
+                return NotFound("Requested data object not found.");
+
+            dbDataItem.UpdateFieldValues(Item);
+            item.Updated = DateTime.Now;
+
+            _db.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _db.SaveChanges();
+
+            return RedirectToPage("EntityDetailsPage", new { id = item.Id });
         }
     }
 }

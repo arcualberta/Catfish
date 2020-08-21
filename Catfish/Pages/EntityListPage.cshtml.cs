@@ -23,6 +23,7 @@ namespace Catfish.Pages
         public void OnGet()
         {
             ItemList = _submissionService.GetSubmissionList();
+            ItemList = ItemList.OrderByDescending(it => it.Created).ToList();
         }
     }
 }

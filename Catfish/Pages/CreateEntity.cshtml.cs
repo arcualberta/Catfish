@@ -21,6 +21,7 @@ namespace Catfish.Pages
 
         [BindProperty]
         public DataItem Item { get; set; }
+
         [BindProperty]
         public Guid TemplateId { get; set; }
              
@@ -35,9 +36,6 @@ namespace Catfish.Pages
             TemplateId = templateId;
             EntityTemplate template = _entityTemplateService.GetTemplate(TemplateId);
 
-            _workflowService.SetModel(template);
-
-            //TODO: dynamically figure out the start-up item
             Item = template.GetRootDataItem(false);
         }
 
@@ -59,7 +57,7 @@ namespace Catfish.Pages
             _db.Items.Add(newItem);
             _db.SaveChanges();
 
-            return RedirectToPage("~/entity/ItemList");
+            return RedirectToPage("EntityDetailsPage", new { id = newItem.Id });
         }
     }
 }
