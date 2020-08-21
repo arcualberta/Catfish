@@ -1,7 +1,7 @@
 ﻿#edit-field-form-page .card {
 	background-color: white;
-	padding-top: 15px;
-	padding-bottom: 15px;
+	/*padding-top: 15px;
+	padding-bottom: 15px;*/
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
@@ -84,6 +84,27 @@
 	border-left: 1px solid rgba(0,0,0,.125);
 }
 
+#edit-field-form-page .field-card-contents .card-header {
+	background-color: #222;
+	color: white;
+	font-weight: unset;
+	text-transform: unset;
+}
+
+#edit-field-form-page .card-header input[type='checkbox'] {
+	-webkit-appearance: none;
+	width: 30px;
+	height: 30px;
+	background: white;
+	opacity: 0.5;
+	border-radius: 5px;
+	border: 2px solid #555;
+}
+
+#edit-field-form-page .card-header input[type='checkbox']:checked {
+	background: #abd;
+}
+
 #edit-field-form-page .sitemap-item {
 	margin-bottom: unset;
 }
@@ -93,7 +114,7 @@
 }
 
 /* again, unsure why this is doing this */
-#edit-field-form-page .input-group .form-control {
+		#edit-field-form-page .input-group .form-control {
 	border-right: 1px solid #ced4da;
 }
 

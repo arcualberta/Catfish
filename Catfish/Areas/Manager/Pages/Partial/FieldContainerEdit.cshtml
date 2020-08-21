@@ -51,7 +51,7 @@
 
             <label for="">Fields</label>
             <div class="container-fluid" style="display:flex; flex-direction:row;">
-                <draggable class="flex-full col-9" v-model="fields" group="sharedItems" handle=".handle-drag">
+                <draggable class="flex-full col-10" v-model="fields" group="sharedItems" handle=".handle-drag">
                     <div v-for="(field, fieldIndex) of fields" class="card field-card-width" :key='fieldIndex'>
                     <!-- Editable fields -->
                         <div style="display:flex;">
@@ -61,15 +61,18 @@
                             </div>
 
                             <div class="field-card-contents">
-                                <div class="sitemap-item">
+                                <div class="sitemap-item card-header">
                                     <a v-on:click="toggleDropdown(field.id)" class="handle-holder" data-toggle="collapse" :href="['#collapse-' + fieldIndex ]">
                                         <div class="handle">
                                             <i :class="{ 'fas fa-chevron-down': !dropdowns[field.id].isCollapsed, 'fas fa-chevron-right': dropdowns[field.id].isCollapsed}"></i>
                                         </div>
                                     </a>
                                     <div v-if="field.$type" class="title-header">
+                                        <div v-if="field.name.values[0].value.length == 0">
+                                            <h2><i>Field Title</i></h2>
+                                        </div>
+                                        <h2 v-else>{{field.name.values[0].value}}</h2>
                                         <!-- Remove the hardcodiness of this when api data is used -->
-                                        <h2>{{field.name.values[0].value}}:</h2>
                                         <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' ">Short Answer</h5>
                                         <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' ">Long Answer</h5>
                                         <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">Multiple Choice</h5>
@@ -85,7 +88,7 @@
                                         <input class="form-check-input" type="checkbox" :value="field.required" 
                                         :id="'required-checkbox-' + fieldIndex">
                                         <label class="form-check-label" :for="'required-checkbox-' + fieldIndex">
-                                            Required
+                                            <h2 style="color:red;"><b>*</b></h2>
                                         </label>
                                     </div>
                                 </div>
@@ -134,22 +137,22 @@
                                         </li>
                                     </ul>
 
-                                    <div>
+                                    <div v-if="(field.$type != 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core') && field.$type != 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core'" >
                                         <div class="card-header" style="text-transform:none;">
                                             <h4>
                                                 Appearance
                                             </h4>
                                             <div style="padding: .75rem 1.25rem;">
-                                                <!-- Short Answer -->
+                                                <!-- Short Answer 
                                                 <input v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' "
-                                                    class="form-control" readonly placeholder="Short answer"/>
-                                                <!-- Long Answer -->
+                                                    class="form-control" readonly placeholder="Short answer"/>-->
+                                                <!-- Long Answer 
                                                 <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' ">
                                                     <quill-editor disabled :ref="'richtext' + fieldIndex">
                                                     </quill-editor>
-                                                </div>
+                                                </div>-->
                                                 <!-- Radio -->
-                                                <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">
+                                                <div v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">
                                                     <div v-for="(radioValue, radioIndex) of field.values" class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <div class="input-group-text">
@@ -210,7 +213,16 @@
                                         </div>
                                      
                                     </div>
+                                    <div class="card-footer">
+                                        <select v-for="fieldType of fieldTypes" class="form-control">
+                                            <option>{{fieldType.text}}</option>
+                                        </select>
 
+                                        <b-form-group :id="'fieldset-3' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex"> <!-- :invalid-feedback="invalidPublishFeedback" :class="{ 'form-group--error': $v.publishedStatus.$error }" -->
+			                                <b-form-select :id="'field-dropdown-' + fieldIndex" :options='fieldTypes'> <!-- v-model.trim="$v.publishedStatus.$model" :state="validateState('publishedStatus')" -->
+                                            </b-form-select>
+                                        </b-form-group>
+                                    </div>
                                 </div>
                             </div>
                     
@@ -219,12 +231,12 @@
                     </div>
                 </draggable>
 
-                <draggable :clone="cloneItem" v-model="fieldTypes" :group="{ name: 'sharedItems', put: false, pull: 'clone' }" 
-                    class="col-3 fieldtypes-holder">
-                    <div v-for="(fieldType, fTIndex) of fieldTypes" class="card fieldtype-draggable" :key='fieldType.id'>
-                        <div class="card-header" style="text-transform:none;">{{fieldType.name}}</div>
+                <div class="col-2 fieldtypes-holder">
+                    <div class="card fieldtype-draggable">
+                        <div class="card-header" style="text-transform:none;">Add Question</div>
+                        <div class="card-header" style="text-transform:none;">Add Section(TBA)</div>
                     </div>
-                </draggable>
+                </div>
             </div>
         </div>
     </form>
