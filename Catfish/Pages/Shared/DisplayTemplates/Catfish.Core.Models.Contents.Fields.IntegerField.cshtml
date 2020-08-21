@@ -1,0 +1,8 @@
+﻿@model Catfish.Core.Models.Contents.Fields.IntegerField
+
+<div class="control">@Html.DisplayFor(model => model.Name, Model.Name.GetType().ToString())</div>
+
+<div class="multilingual-input-block">
+        @Model.Values.Select(sd => sd.Value).FirstOrDefault()
+   
+</div>
