@@ -138,3 +138,14 @@
 #edit-field-form-page .file-attachment-box button {
 	cursor:default;
 }
+
+#edit-field-form-page .field-bottom {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+#edit-field-form-page .field-bottom .field-dropdown{
+	margin-bottom:unset;
+	margin-right: 10px;
+}

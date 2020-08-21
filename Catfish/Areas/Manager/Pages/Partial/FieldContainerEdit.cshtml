@@ -213,15 +213,15 @@
                                         </div>
                                      
                                     </div>
-                                    <div class="card-footer">
-                                        <select v-for="fieldType of fieldTypes" class="form-control">
-                                            <option>{{fieldType.text}}</option>
-                                        </select>
-
-                                        <b-form-group :id="'fieldset-3' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex"> <!-- :invalid-feedback="invalidPublishFeedback" :class="{ 'form-group--error': $v.publishedStatus.$error }" -->
-			                                <b-form-select :id="'field-dropdown-' + fieldIndex" :options='fieldTypes'> <!-- v-model.trim="$v.publishedStatus.$model" :state="validateState('publishedStatus')" -->
+                                    <div class="card-footer field-bottom">
+                                        <b-form-group class="field-dropdown" :id="'fieldset-' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex"> <!-- :invalid-feedback="invalidPublishFeedback" :class="{ 'form-group--error': $v.publishedStatus.$error }" -->
+			                                <b-form-select :id="'field-dropdown-' + fieldIndex" :options='fieldTypes' v-model="field.selected"> <!-- v-model.trim="$v.publishedStatus.$model" :state="validateState('publishedStatus')" -->
                                             </b-form-select>
                                         </b-form-group>
+                                        
+                                        <b-button variant="danger">
+                                            <i class="fas fa-trash"></i>
+                                        </b-button>
                                     </div>
                                 </div>
                             </div>

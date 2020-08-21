@@ -45,39 +45,40 @@ if (document.getElementById("edit-field-form-page")) {
                 dropdowns: null,
                 //temp, need to call an api for these
                 fieldTypes: [
+                    { text: 'Select One', value: null },
                     {
-                        id: 0,
-                        name: 'Short Answer',
+                        value: 0,
+                        text: 'Short Answer',
                         modelType: 'TextField'
                     },
                     {
-                        id: 1,
-                        name: 'Long Answer',
+                        value: 1,
+                        text: 'Long Answer',
                         modelType: 'TextArea'
                     },
                     {
-                        id: 2,
-                        name: 'Multiple Choice',
+                        value: 2,
+                        text: 'Multiple Choice',
                         modelType: 'Radio'
                     },
                     {
-                        id: 3,
-                        name: 'Check Box',
+                        value: 3,
+                        text: 'Check Box',
                         modelType: 'Checkbox'
                     },
                     {
-                        id: 4,
-                        name: 'Dropdown List',
+                        value: 4,
+                        text: 'Dropdown List',
                         modelType: 'Dropdown'
                     },
                     {
-                        id: 5,
-                        name: 'File Upload',
+                        value: 5,
+                        text: 'File Upload',
                         modelType: 'FileAttachment'
                     },
                     {
-                        id: 6,
-                        name: 'Display Text',
+                        value: 6,
+                        text: 'Display Text',
                         modelType: 'DisplayField'
                     }
                 ],
@@ -237,12 +238,12 @@ if (document.getElementById("edit-field-form-page")) {
                                 //temporary until templates sent, remove afterwards
                                 for (let field of result.fields) {
                                     if (field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core') {
+                                        field.selected = 0;
                                         let defaultTextfieldTemplate = JSON.parse(JSON.stringify(field));
                                         defaultTextfieldTemplate.name.values[0].value = '';
+                                        defaultTextfieldTemplate.selected = null;
 
                                         self.tmpTextfieldTemplate = defaultTextfieldTemplate;
-                                        //breaking for now bc my sample data only has 1 type
-                                        break;
 									}
 
                                 }
