@@ -27,6 +27,16 @@ namespace Catfish.UnitTests
             _db = _testHelper.Db;
         }
 
+        [Test]
+        public void SelectFieldInitTest()
+        {
+            string file = "..\\..\\..\\..\\Examples\\selectfield.xml";
+            XDocument doc = XDocument.Load(file);
+            XmlModel model = XmlModel.InstantiateContentModel(doc.Root);
+            SelectField field = model as SelectField;
+            var options = field.Options;
+        }
+
 
         [Test]
         public void ContractLetterWorkflowBuildTest()
