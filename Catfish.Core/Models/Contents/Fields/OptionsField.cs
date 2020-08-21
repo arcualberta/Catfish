@@ -21,8 +21,7 @@ namespace Catfish.Core.Models.Contents.Fields
             base.Initialize(guidOption);
 
             //Building the values
-            XmlModel xml = new XmlModel(Data);
-            Options = new XmlModelList<Option>(xml.GetElement(OptionContainerTag, true), true, OptionTag);
+            Options = new XmlModelList<Option>(GetElement(OptionContainerTag, true), true, OptionTag);
         }
 
         ////public Option SetOptionText(string optionText, string lang, Guid? optionId = null, bool? selectByDefault = null)
