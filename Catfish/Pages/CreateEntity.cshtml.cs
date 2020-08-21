@@ -45,12 +45,15 @@ namespace Catfish.Pages
         {
             //Creating a clone of the entity
             EntityTemplate template = _entityTemplateService.GetTemplate(TemplateId);
+            if (template == null)
+                throw new Exception("Entity template with ID = " + TemplateId + " not found.");
 
+            //When we instantantiate an instance from the template, we do not need to clone metadata sets
             Item newItem = template.Instantiate<Item>();
 
-            //TODO: dynamically figure out the start-up item
-            DataItem rootDataObject = newItem.GetRootDataItem(false);
-            rootDataObject.UpdateFieldValues(this.Item);
+            DataItem newDataItem = template.InstantiateDataItem(this.Item.Id);
+            newDataItem.UpdateFieldValues(this.Item);
+            newItem.DataContainer.Add(newDataItem);
 
             //Adding the new entity to the database
             _db.Items.Add(newItem);

@@ -207,6 +207,5 @@ namespace Catfish.Core.Models
             }
             return dataItem;
         }
-
     }
 }

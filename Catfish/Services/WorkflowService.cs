@@ -41,11 +41,11 @@ namespace Catfish.Services
 
         public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists)
         {
-            MetadataSet ms = GetMetadataSet(templateName, createIfNotExists);
+            MetadataSet ms = GetMetadataSet(templateName, createIfNotExists, true);
             return ms == null ? null : new EmailTemplate(ms.Data);
         }
 
-        protected MetadataSet GetMetadataSet(string metadataSetName, bool createIfNotExists)
+        protected MetadataSet GetMetadataSet(string metadataSetName, bool createIfNotExists, bool markAsTemplateMetadataSetIfCreated)
         {
             MetadataSet ms = mEntityTemplate.MetadataSets
                 .Where(ms => ms.GetName(DefaultLanguage) == metadataSetName)
@@ -56,6 +56,8 @@ namespace Catfish.Services
                 ms = new MetadataSet();
                 ms.SetName(metadataSetName, DefaultLanguage);
                 mEntityTemplate.MetadataSets.Add(ms);
+                if (markAsTemplateMetadataSetIfCreated)
+                    ms.IsTemplate = true;
             }
             return ms;
         }
