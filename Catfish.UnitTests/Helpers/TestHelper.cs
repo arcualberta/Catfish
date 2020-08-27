@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Piranha.AspNetCore.Identity.SQLServer;
+using Piranha.Data.EF.SQLServer;
 using SolrNet;
 using System;
 
@@ -32,6 +34,11 @@ namespace Catfish.Tests.Helpers
                 .Add(new JsonConfigurationSource() { Path = "appsettings.test.json" })
                 .Build();
             services.AddSingleton(typeof(IConfiguration), configuration);
+
+            services.AddPiranhaEF<SQLServerDb>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("catfish")));
+            services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("catfish")));
 
             //Registering application DB Context
             string dbConnectionString = configuration.GetConnectionString("catfish");
