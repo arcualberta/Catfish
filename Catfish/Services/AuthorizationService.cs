@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Catfish.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,12 @@ namespace Catfish.Services
 {
     public class AuthorizationService : IAuthorizationService
     {
+        public readonly AppDbContext _db;
+        public AuthorizationService(AppDbContext db)
+        {
+            _db = db;
+        }
+
         public bool IsAuthorize()
         {
 

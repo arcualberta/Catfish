@@ -7,17 +7,19 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using Piranha.AspNetCore.Identity.SQLServer;
+   
 namespace Catfish.Core.Models
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentitySQLServerDb
     {
         /// <summary>
         /// The application config.
         /// </summary>
         public IConfiguration Configuration { get; set; }
 
-        public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
+        //public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
+        public AppDbContext(DbContextOptions<IdentitySQLServerDb> options, IConfiguration configuration)
             : base(options)
         {
             Configuration = configuration;
@@ -53,6 +55,8 @@ namespace Catfish.Core.Models
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
             #region Defining many-to-many named relationship of Aggregation with other Aggregations
             // Reference: https://www.learnentityframeworkcore.com/configuration/many-to-many-relationship-configuration
             builder.Entity<Relationship>()
