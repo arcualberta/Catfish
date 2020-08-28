@@ -31,9 +31,15 @@ namespace Catfish.Services
         /// do not already exist in the system.
         /// </summary>
         /// <param name="roles"></param>
-        public void EnsureUserRoles(List<string> roles)
+        public void EnsureUserRoles(List<string> workflowRoles)
         {
-            throw new NotImplementedException();
+            List<string> databaseRoles = new List<string>();
+            var oldRoles = _db.Roles.ToList();
+
+            foreach (var role in oldRoles)
+                databaseRoles.Add(role.Name);
+
+            List<string> NewRoles = workflowRoles.Except(databaseRoles).ToList();
         }
     }
 }

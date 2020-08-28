@@ -47,6 +47,7 @@ namespace Catfish.UnitTests
             template.Name.SetContent(template.TemplateName);
             
             IWorkflowService ws = _testHelper.WorkflowService;
+            IAuthorizationService auth = _testHelper.AuthorizationService;
             ws.SetModel(template);
             
             //Email template for trust account hoder
@@ -88,6 +89,7 @@ namespace Catfish.UnitTests
             contract.CreateField<IntegerField>("Award", lang, true);
             contract.CreateField<IntegerField>("Salary", lang, true);
 
+            
             //Save the template to the database
             AppDbContext db = _testHelper.Db;
             EntityTemplate oldTemplate = db.EntityTemplates.Where(et => et.TemplateName == template.TemplateName).FirstOrDefault();
@@ -110,6 +112,7 @@ namespace Catfish.UnitTests
             template.Name.SetContent("Calendar Management System Workflow");
 
             IWorkflowService ws = _testHelper.WorkflowService;
+            IAuthorizationService auth = _testHelper.AuthorizationService;
             ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
@@ -510,7 +513,7 @@ namespace Catfish.UnitTests
             //Defining authorizatios
             moveToDraftAction.AddAuthorization(centralAdminRole.Id);
 
-
+            auth.EnsureUserRoles(workflow.GetWorkflowRoles());
             //Save the template to the database
             AppDbContext db = _testHelper.Db;
             EntityTemplate oldTemplate = db.EntityTemplates.Where(et => et.TemplateName == template.TemplateName).FirstOrDefault();

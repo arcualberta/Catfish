@@ -96,5 +96,14 @@ namespace Catfish.Core.Models.Contents.Workflow
             return newAction;
         }
 
+        public List<string> GetWorkflowRoles()
+        {
+            List<string> roles = new List<string>();
+            var roleList = Roles.ToList();
+
+            foreach (var role in roleList)
+                roles.Add(role.Value);
+            return roles;
+        }
     }
 }

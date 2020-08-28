@@ -51,6 +51,7 @@ namespace Catfish.Tests.Helpers
             services.AddScoped<DbEntityService>();
             services.AddScoped<IEntityService, EntityService>();
             services.AddTransient<IWorkflowService, WorkflowService>();
+            services.AddTransient<IAuthorizationService, AuthorizationService>();
 
 
             ////services.AddScoped<SolrService>();
@@ -72,6 +73,11 @@ namespace Catfish.Tests.Helpers
         public IWorkflowService WorkflowService
         {
             get => Seviceprovider.GetService<IWorkflowService>();
+        }
+
+        public IAuthorizationService AuthorizationService
+        {
+            get => Seviceprovider.GetService<IAuthorizationService>();
         }
     }
 }
