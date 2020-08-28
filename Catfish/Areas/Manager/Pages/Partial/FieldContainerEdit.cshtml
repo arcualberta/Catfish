@@ -168,12 +168,13 @@
                                                         </div>
                                                         <input type="text" class="form-control" :disabled="radioValue.isDisabled" aria-label="Text input with radio button and remove button" v-model="radioValue.text">
                                                         <div class="input-group-append">
-                                                            <button class="btn btn-outline-secondary" v-on:click="removeOption(fieldIndex, radioIndex)" type="button">-</button>
+                                                            <button class="btn btn-outline-secondary" v-on:click="removeOption(field, fieldIndex, radioValue, radioIndex)" type="button">-</button>
                                                         </div>
                                                     </div>
                                                     <div class="add-button-holder">
-                                                        <button v-on:click="addOtherOption(field)" type="button" class="btn btn-secondary rounded">Add Blank</button>
-                                                        <button v-on:click="addNewOption(field)" type="button" class="btn btn-secondary rounded">Add</button>
+                                                        <b-dropdown v-on:click="addNewOption(field)" split text="Add" class="m-2">
+                                                            <b-dropdown-item :disabled="dropdowns[field.id].hasOtherOption" v-on:click="addOtherOption(field)" href="#">Add Blank Option</b-dropdown-item>
+                                                        </b-dropdown>
                                                     </div>
                                                 </div>
                                                  @*Checkbox*@ 
@@ -181,17 +182,18 @@
                                                     <div v-for="(checkValue, checkIndex) of field.values" class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <div class="input-group-text">
-                                                                <input :id="'checkbox-' + checkIndex" :disabled="checkValue.isDisabled" :name="'check-field-' + fieldIndex" type="checkbox" aria-label="Checkbox for following text input">
+                                                                <input :id="'checkbox-' + checkIndex" disabled :name="'check-field-' + fieldIndex" type="checkbox" aria-label="Checkbox for following text input">
                                                             </div>
                                                         </div>
-                                                        <input type="text" class="form-control" aria-label="Text input with checkbox and remove button" v-model="checkValue.text">
+                                                        <input type="text" class="form-control" :disabled="checkValue.isDisabled" aria-label="Text input with checkbox and remove button" v-model="checkValue.text">
                                                         <div class="input-group-append">
-                                                            <button class="btn btn-outline-secondary" v-on:click="removeOption(fieldIndex, checkIndex)" type="button">-</button>
+                                                            <button class="btn btn-outline-secondary" v-on:click="removeOption(field, fieldIndex, checkValue, checkIndex)" type="button">-</button>
                                                         </div>
                                                     </div>
                                                     <div class="add-button-holder">
-                                                        <button v-on:click="addOtherOption(field)" type="button" class="btn btn-secondary rounded">Add Blank</button>
-                                                        <button v-on:click="addNewOption(field)" type="button" class="btn btn-secondary rounded">Add</button>
+                                                        <b-dropdown v-on:click="addNewOption(field)" split text="Add" class="m-2">
+                                                            <b-dropdown-item :disabled="dropdowns[field.id].hasOtherOption" v-on:click="addOtherOption(field)" href="#">Add Blank Option</b-dropdown-item>
+                                                        </b-dropdown>
                                                     </div>                                               
                                                 </div>
                                                  @*Dropdown*@ 
@@ -221,7 +223,7 @@
                                      
                                     </div>
                                     <div class="card-footer field-bottom">
-                                        <div class="form-check" style="display: flex; flex-direction: row-reverse; align-items: flex-end;">
+                                        <div class="form-check" style="padding-right:10px; display: flex; flex-direction: row-reverse; align-items: flex-end;">
                                             <input class="form-check-input" type="checkbox" :value="field.required" 
                                             :id="'required-checkbox-' + fieldIndex">
                                             <label class="form-check-label" :for="'required-checkbox-' + fieldIndex">

@@ -160,7 +160,8 @@ if (document.getElementById("edit-field-form-page")) {
                 newItem.id = uuidv1();
                 this.dropdowns[newItem.id] = {
                     isCollapsed: false,
-                    showDescription: false
+                    showDescription: false,
+                    hasOtherOption: false
                 };
                 //newItem.Guid = uuidv1();
                 return newItem;
@@ -185,11 +186,27 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} field the field to push multiple choice or checkbox objects onto
              */
             addNewOption(field) {
+                //if theres a disabled other option, push into index before it
+                //the disabled item will always be the last item
+                if (field.values.length > 0) {
+                    if (field.values[field.values.length - 1].isDisabled) {
+                        field.values.splice(field.values.length - 1, 0, {
+                            text: '',
+                            isDisabled: false,
+                            id: -1,
+                        });
+                        return;
+                    }
+                    
+				}
+                 
                 field.values.push({
                     text: '',
                     isDisabled: false,
                     id: -1,
                 });
+				
+
 
                 /*switch (field.$type) {
                     case 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core':
@@ -219,6 +236,7 @@ if (document.getElementById("edit-field-form-page")) {
                     isDisabled: true,
                     id: -1,
                 });
+                this.dropdowns[field.id].hasOtherOption = true;
             },
 
             /**
@@ -226,7 +244,10 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} fieldIndex
              * @param {any} optionIndex
              */
-            removeOption(fieldIndex, optionIndex) {
+            removeOption(field, fieldIndex, itemValue, optionIndex) {
+                if (itemValue.isDisabled) {
+                    this.dropdowns[field.id].hasOtherOption = false;
+				}
                 this.fields[fieldIndex].values.splice(optionIndex, 1);
             },
 
@@ -282,7 +303,8 @@ if (document.getElementById("edit-field-form-page")) {
                                     for (let field of self.fields) {
                                         this[field.id] = {
                                             isCollapsed: true,
-                                            showDescription: false
+                                            showDescription: false,
+                                            hasOtherOption: false
                                         }
                                     }
                                 }
