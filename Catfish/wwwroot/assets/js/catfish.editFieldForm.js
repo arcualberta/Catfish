@@ -249,6 +249,33 @@ if (document.getElementById("edit-field-form-page")) {
             },
 
             /**
+             * Deletes a given field
+             * @param {any} fieldIndex
+             */
+            deleteField(fieldIndex) {
+                this.fields.splice(fieldIndex, 1);
+                delete this.dropdowns[fieldIndex];
+            },
+
+            /**
+             * Adds the description field to the field.
+             * @param {any} fieldId
+             */
+            addDescription(fieldId) {
+                this.dropdowns[fieldId].showDescription = true;
+            },
+
+            /**
+             * Removes the description field from the field.
+             * Not sure if this should delete the info in it, if any.
+             * CURRENTLY it does not.
+             * @param {any} fieldId
+             */
+            removeDescription(fieldId) {
+                this.dropdowns[fieldId].showDescription = false;
+            },
+
+            /**
               * Fetches and loads the data from an API call
               * */
             load() {
@@ -271,7 +298,10 @@ if (document.getElementById("edit-field-form-page")) {
 
                                 self.dropdowns = new function () {
                                     for (let field of self.fields) {
-                                        this[field.id] = { isCollapsed: true }
+                                        this[field.id] = {
+                                            isCollapsed: true,
+                                            showDescription: false
+                                        }
                                     }
                                 }
 

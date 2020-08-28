@@ -154,3 +154,8 @@
 	position:relative;
 	margin-left: 0.5rem;
 }
+
+#edit-field-form-page .header-tools-holder {
+	display: flex;
+	align-items: end;
+}

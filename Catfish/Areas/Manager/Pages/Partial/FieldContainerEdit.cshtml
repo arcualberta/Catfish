@@ -85,14 +85,17 @@
                                     <div v-else class="title-header">
                                         <h5>Default Item - Fix Me</h5>
                                     </div>
-                                    <b-form-group class="field-dropdown" :id="'fieldset-' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex"> <!-- :invalid-feedback="invalidPublishFeedback" :class="{ 'form-group--error': $v.publishedStatus.$error }" -->
-			                            <b-form-select :id="'field-dropdown-' + fieldIndex" :options='fieldTypes' v-model="field.selected" v-on:change="onDropdownChange(fieldIndex, $event)"> <!-- v-model.trim="$v.publishedStatus.$model" :state="validateState('publishedStatus')" -->
-                                        </b-form-select>
-                                    </b-form-group>
+                                    <div class="header-tools-holder">
+                                        <b-form-group style="padding-right: 10px;" class="field-dropdown" :id="'fieldset-' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex"> <!-- :invalid-feedback="invalidPublishFeedback" :class="{ 'form-group--error': $v.publishedStatus.$error }" -->
+			                                <b-form-select :id="'field-dropdown-' + fieldIndex" :options='fieldTypes' v-model="field.selected" v-on:change="onDropdownChange(fieldIndex, $event)"> <!-- v-model.trim="$v.publishedStatus.$model" :state="validateState('publishedStatus')" -->
+                                            </b-form-select>
+                                        </b-form-group>
                                         
-                                    <b-button variant="danger">
-                                        <i class="fas fa-trash"></i>
-                                    </b-button>
+                                        <b-button variant="danger" v-on:click="deleteField(fieldIndex)">
+                                            <i class="fas fa-trash"></i>
+                                        </b-button>
+                                    </div>
+                                    
                                 </div>
 
                                 <div :id="'collapse-' + fieldIndex " class="collapse in border-top">
@@ -117,27 +120,29 @@
                                         </li>
                                     </ul>
 
-                                    <div class="card-header" style="text-transform:none;padding-bottom: 0;">
-                                        <h4>
-                                            Description
-                                        </h4>
+                                    <div v-if="dropdowns[field.id].showDescription">
+                                        <div class="card-header" style="text-transform:none;padding-bottom: 0;">
+                                            <h4>
+                                                Description
+                                            </h4>
                             
-                                        @*<button type="button" class="btn btn-secondary rounded" data-toggle="popover"
-                                            data-content="This should provide more detail about what you want to ask. Optional.">
-                                            <i class="fas fa-info"></i>
-                                        </button>*@
-                                    </div>
+                                            @*<button type="button" class="btn btn-secondary rounded" data-toggle="popover"
+                                                data-content="This should provide more detail about what you want to ask. Optional.">
+                                                <i class="fas fa-info"></i>
+                                            </button>*@
+                                        </div>
 
-                                    <ul v-for="descriptionValue of field.description.values" class="list-group list-group-flush">
-                                        <li class="list-group-item flex-li">
-                                            <label class="field-item-label">{{descriptionValue.language}}</label>
-                                            <textarea type="text" class="field-input form-control" 
-                                            :id="'field-description-' + fieldIndex + '-' + descriptionValue" 
-                                            placeholder="Describe the purpose of this field..."
-                                            v-model="descriptionValue.value">
-                                            </textarea>
-                                        </li>
-                                    </ul>
+                                        <ul v-for="descriptionValue of field.description.values" class="list-group list-group-flush">
+                                            <li class="list-group-item flex-li">
+                                                <label class="field-item-label">{{descriptionValue.language}}</label>
+                                                <textarea type="text" class="field-input form-control" 
+                                                :id="'field-description-' + fieldIndex + '-' + descriptionValue" 
+                                                placeholder="Describe the purpose of this field..."
+                                                v-model="descriptionValue.value">
+                                                </textarea>
+                                            </li>
+                                        </ul>
+                                    </div>
 
                                     <div v-if="(field.$type != 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core') && field.$type != 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core'" >
                                         <div class="card-header" style="text-transform:none;">
@@ -223,6 +228,13 @@
                                                 <h6 style="margin-bottom:0;"><b>Required</b></h6>
                                             </label>
                                         </div>
+                                        <b-dropdown toggle-class="text-decoration-none" no-caret>
+                                            <template v-slot:button-content>
+                                              <i class="fas fa-ellipsis-h"></i>
+                                            </template>
+                                            <b-dropdown-item v-if="!dropdowns[field.id].showDescription" href="#" v-on:click="addDescription(field.id)">Add Description</b-dropdown-item>
+                                            <b-dropdown-item v-if="dropdowns[field.id].showDescription" href="#" v-on:click="removeDescription(field.id)">Remove Description</b-dropdown-item>
+                                        </b-dropdown>
                                         
                                     </div>
                                 </div>
