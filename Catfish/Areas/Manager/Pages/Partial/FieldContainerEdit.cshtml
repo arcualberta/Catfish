@@ -72,8 +72,8 @@
                                             <h2><i>Field Title</i></h2>
                                         </div>
                                         <h2 v-else>{{field.name.values[0].value}}</h2>
-                                         <!--Remove the hardcodiness of this when api data is used 
-                                        {{field}}-->
+                                         <!--Remove the hardcodiness of this when api data is used
+                                        {{fields}}-->
                                         <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' ">Short Answer</h5>
                                         <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' ">Long Answer</h5>
                                         <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">Multiple Choice</h5>
@@ -245,12 +245,11 @@
                     </div>
                 </draggable>
 
-                <div class="col-2 fieldtypes-holder">
-                    <div class="card fieldtype-draggable">
-                        <div class="card-header" style="text-transform:none;">Add Question</div>
-                        <div class="card-header" style="text-transform:none;">Add Section(TBA)</div>
+                <draggable :clone="cloneItem" v-model="rightColumnOptions" :group="{ name: 'sharedItems', pull: 'clone', put: false }" class="col-2 fieldtypes-holder">
+                    <div v-for="option of rightColumnOptions" class="card fieldtype-draggable">
+                        <div class="card-header" style="text-transform:none;">{{option.text}}</div>
                     </div>
-                </div>
+                </draggable>
             </div>
         </div>
     </form>

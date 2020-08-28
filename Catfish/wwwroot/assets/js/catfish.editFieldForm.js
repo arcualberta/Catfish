@@ -82,6 +82,18 @@ if (document.getElementById("edit-field-form-page")) {
                         modelType: 'DisplayField'
                     }
                 ],
+
+                rightColumnOptions: [
+                    {
+                        value: 0,
+                        text: "Add Question"
+                    },
+                    {
+                        value: 1,
+                        text: "Add Section (TBA)"
+                    }
+                ],
+
                 //temp until templates sent
                 tmpTextfieldTemplate: null,
                 tmpTextAreaTemplate: null,
@@ -138,51 +150,21 @@ if (document.getElementById("edit-field-form-page")) {
              * Returns a custom clone
              * @param event
              */
-            /*cloneItem(event) {
+            cloneItem(event) {
                 console.log(event);
                 let newItem = {};
-                //this is temporary
-                console.log(event.modelType);
-                switch (event.modelType) {
-                    case 'TextField':
-                        //hardcoded until templates are provided
-                        newItem = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate)); //event.Template
-                        break;
-                    case 'TextArea':
-                        //hardcoded until templates are provided
-                        newItem = JSON.parse(JSON.stringify(this.tmpTextAreaTemplate)); //event.Template
-                        break;
-                    case 'Radio':
-                        //hardcoded until templates are provided
-                        newItem = JSON.parse(JSON.stringify(this.tmpRadioTemplate)); //event.Template
-                        break;
-                    case 'Checkbox':
-                        //hardcoded until templates are provided
-                        newItem = JSON.parse(JSON.stringify(this.tmpCheckboxTemplate)); //event.Template
-                        break;
-                    case 'Dropdown':
-                        //hardcoded until templates are provided
-                        newItem = JSON.parse(JSON.stringify(this.tmpDropdownTemplate)); //event.Template
-                        break;
-                    case 'FileAttachment':
-                        //hardcoded until templates are provided
-                        newItem = JSON.parse(JSON.stringify(this.tmpFileAttachmentTemplate)); //event.Template
-                        break;
-                    case 'DisplayField':
-                        //hardcoded until templates are provided
-                        newItem = JSON.parse(JSON.stringify(this.tmpDisplayFieldTemplate)); //event.Template
-                        break;
-                    default:
-                        //hardcoded until templates are provided
-                        newItem = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate)); //event.Template
-                        break;
-				}
+
+                //hardcoded until templates are provided
+                newItem = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate)); //event.Template
                 
                 newItem.id = uuidv1();
-                this.dropdowns[newItem.id] = { isCollapsed: false };
+                this.dropdowns[newItem.id] = {
+                    isCollapsed: false,
+                    showDescription: false
+                };
                 //newItem.Guid = uuidv1();
                 return newItem;
-            },*/
+            },
 
             /**
              * Toggles the field to either open or closed.
