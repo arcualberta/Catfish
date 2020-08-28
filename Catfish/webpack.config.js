@@ -17,6 +17,18 @@ module.exports = {
         filename: "bundle.js", // string
         // the filename template for entry chunks
     },
+
+    //because piranha is using their own version of vue, we need to alias it here
+    //note that this... doesnt work :(
+    resolve: {
+        alias: {
+            // If using the runtime only build
+            vue$: 'vue/dist/vue.runtime.esm.js'
+            // Or if using full build of Vue (runtime + compiler)
+            // vue$: 'vue/dist/vue.esm.js'
+        }
+    },
+
     module: {
         // configuration regarding modules
         rules: [

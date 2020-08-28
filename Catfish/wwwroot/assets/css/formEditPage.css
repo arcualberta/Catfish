@@ -84,7 +84,7 @@
 	border-left: 1px solid rgba(0,0,0,.125);
 }
 
-#edit-field-form-page .field-card-contents .card-header {
+#edit-field-form-page .field-card-contents .sitemap-item.card-header {
 	background-color: #222;
 	color: white;
 	font-weight: unset;
@@ -148,4 +148,9 @@
 #edit-field-form-page .field-bottom .field-dropdown{
 	margin-bottom:unset;
 	margin-right: 10px;
+}
+
+#edit-field-form-page .form-check-input {
+	position:relative;
+	margin-left: 0.5rem;
 }

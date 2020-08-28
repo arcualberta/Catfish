@@ -89,16 +89,56 @@ if (document.getElementById("edit-field-form-page")) {
                 tmpCheckboxTemplate: null,
                 tmpDropdownTemplate: null,
                 tmpFileAttachmentTemplate: null,
-                tmpDisplayFieldTemplate: null
+                tmpDisplayFieldTemplate: null,
             }
         },
         methods: {
+            /**
+             * Changes the type of field via choice from the dropdown
+             * @param {any} fieldIndex the fieldIndex being changed
+             * @param {any} event the index value of the dropdown
+             */
+            onDropdownChange(fieldIndex, event) {
+                console.log("fieldIndex", fieldIndex);
+                //cant change $type directly... could work something with the templates?
+                //dont want to lose any values that are not originally a part of the template tho...
+                switch (event) {
+                    case 0:
+                        //textfield
+                        this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core';
+                        break;
+                    case 1:
+                        //textarea
+                        this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core';
+                        break;
+                    case 2:
+                        //radio/mc
+                        this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core';
+                        break;
+                    case 3:
+                        //checkbox
+                        this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core';
+                        break;
+                    case 4:
+                        //dropdown
+                        this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core';
+                        break;
+                    case 5:
+                        //fileattachment
+                        this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core';
+                        break;
+                    case 6:
+                        //displayfield
+                        this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core';
+                        break;
+				}
+            },
 
             /**
              * Returns a custom clone
              * @param event
              */
-            cloneItem(event) {
+            /*cloneItem(event) {
                 console.log(event);
                 let newItem = {};
                 //this is temporary
@@ -142,7 +182,7 @@ if (document.getElementById("edit-field-form-page")) {
                 this.dropdowns[newItem.id] = { isCollapsed: false };
                 //newItem.Guid = uuidv1();
                 return newItem;
-            },
+            },*/
 
             /**
              * Toggles the field to either open or closed.
@@ -231,7 +271,7 @@ if (document.getElementById("edit-field-form-page")) {
 
                                 self.dropdowns = new function () {
                                     for (let field of self.fields) {
-                                        this[field.id] = { isCollapsed: false }
+                                        this[field.id] = { isCollapsed: true }
                                     }
                                 }
 

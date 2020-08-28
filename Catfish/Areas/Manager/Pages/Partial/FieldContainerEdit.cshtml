@@ -51,7 +51,7 @@
 
             <label for="">Fields</label>
             <div class="container-fluid" style="display:flex; flex-direction:row;">
-                <draggable class="flex-full col-10" v-model="fields" group="sharedItems" handle=".handle-drag">
+                <draggable class="flex-full col-10" id="accordion" v-model="fields" group="sharedItems" handle=".handle-drag">
                     <div v-for="(field, fieldIndex) of fields" class="card field-card-width" :key='fieldIndex'>
                     <!-- Editable fields -->
                         <div style="display:flex;">
@@ -62,7 +62,7 @@
 
                             <div class="field-card-contents">
                                 <div class="sitemap-item card-header">
-                                    <a v-on:click="toggleDropdown(field.id)" class="handle-holder" data-toggle="collapse" :href="['#collapse-' + fieldIndex ]">
+                                    <a v-on:click="toggleDropdown(field.id)" class="handle-holder" data-parent="#accordion" data-toggle="collapse" :href="'#collapse-' + fieldIndex ">
                                         <div class="handle">
                                             <i :class="{ 'fas fa-chevron-down': !dropdowns[field.id].isCollapsed, 'fas fa-chevron-right': dropdowns[field.id].isCollapsed}"></i>
                                         </div>
@@ -72,7 +72,8 @@
                                             <h2><i>Field Title</i></h2>
                                         </div>
                                         <h2 v-else>{{field.name.values[0].value}}</h2>
-                                        <!-- Remove the hardcodiness of this when api data is used -->
+                                         <!--Remove the hardcodiness of this when api data is used 
+                                        {{field}}-->
                                         <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' ">Short Answer</h5>
                                         <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' ">Long Answer</h5>
                                         <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">Multiple Choice</h5>
@@ -84,25 +85,26 @@
                                     <div v-else class="title-header">
                                         <h5>Default Item - Fix Me</h5>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" :value="field.required" 
-                                        :id="'required-checkbox-' + fieldIndex">
-                                        <label class="form-check-label" :for="'required-checkbox-' + fieldIndex">
-                                            <h2 style="color:red;"><b>*</b></h2>
-                                        </label>
-                                    </div>
+                                    <b-form-group class="field-dropdown" :id="'fieldset-' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex"> <!-- :invalid-feedback="invalidPublishFeedback" :class="{ 'form-group--error': $v.publishedStatus.$error }" -->
+			                            <b-form-select :id="'field-dropdown-' + fieldIndex" :options='fieldTypes' v-model="field.selected" v-on:change="onDropdownChange(fieldIndex, $event)"> <!-- v-model.trim="$v.publishedStatus.$model" :state="validateState('publishedStatus')" -->
+                                        </b-form-select>
+                                    </b-form-group>
+                                        
+                                    <b-button variant="danger">
+                                        <i class="fas fa-trash"></i>
+                                    </b-button>
                                 </div>
 
-                                <div :id="['collapse-' + fieldIndex ]" class="collapse-expand show border-top">
+                                <div :id="'collapse-' + fieldIndex " class="collapse in border-top">
                                     <div class="card-header" style="text-transform:none;padding-bottom: 0;">
                                         <h4>
                                             Field Title
                                         </h4>
                             
-                                        <!--<button type="button" class="btn btn-secondary rounded" data-toggle="popover"
+                                        @*<button type="button" class="btn btn-secondary rounded" data-toggle="popover"
                                             data-content="This is the title of the question you want to ask.">
                                             <i class="fas fa-info"></i>
-                                        </button>-->
+                                        </button>*@
                                     </div>
 
 
@@ -120,10 +122,10 @@
                                             Description
                                         </h4>
                             
-                                        <!--<button type="button" class="btn btn-secondary rounded" data-toggle="popover"
+                                        @*<button type="button" class="btn btn-secondary rounded" data-toggle="popover"
                                             data-content="This should provide more detail about what you want to ask. Optional.">
                                             <i class="fas fa-info"></i>
-                                        </button>-->
+                                        </button>*@
                                     </div>
 
                                     <ul v-for="descriptionValue of field.description.values" class="list-group list-group-flush">
@@ -143,15 +145,15 @@
                                                 Appearance
                                             </h4>
                                             <div style="padding: .75rem 1.25rem;">
-                                                <!-- Short Answer 
+                                                 @*Short Answer*@ 
                                                 <input v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' "
-                                                    class="form-control" readonly placeholder="Short answer"/>-->
-                                                <!-- Long Answer 
+                                                    class="form-control" readonly placeholder="Short answer"/>
+                                                 @*Long Answer*@
                                                 <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' ">
                                                     <quill-editor disabled :ref="'richtext' + fieldIndex">
                                                     </quill-editor>
-                                                </div>-->
-                                                <!-- Radio -->
+                                                </div>
+                                                 @*Radio*@ 
                                                 <div v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">
                                                     <div v-for="(radioValue, radioIndex) of field.values" class="input-group mb-3">
                                                         <div class="input-group-prepend">
@@ -169,7 +171,7 @@
                                                         <button v-on:click="addNewOption(field)" type="button" class="btn btn-secondary rounded">Add</button>
                                                     </div>
                                                 </div>
-                                                <!-- Checkbox -->
+                                                 @*Checkbox*@ 
                                                 <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core'">
                                                     <div v-for="(checkValue, checkIndex) of field.values" class="input-group mb-3">
                                                         <div class="input-group-prepend">
@@ -187,7 +189,7 @@
                                                         <button v-on:click="addNewOption(field)" type="button" class="btn btn-secondary rounded">Add</button>
                                                     </div>                                               
                                                 </div>
-                                                <!-- Dropdown -->
+                                                 @*Dropdown*@ 
                                                 <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core'">
                                                     <div v-for="(dropdownValue, dropdownIndex) of field.values" class="input-group mb-3">
                                                         <input type="text" class="form-control" aria-label="Text input with remove button" v-model="dropdownValue.text">
@@ -197,31 +199,31 @@
                                                     </div>
                                                     <button v-on:click="addNewOption(field)" type="button" class="btn btn-secondary rounded">+</button>
                                                 </div>
-                                                <!-- File attachment -->
+                                                 @*File attachment*@ 
                                                 <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core'">
                                                     <div class="file-attachment-box">
                                                         <button disabled class="btn btn-outline-secondary">Upload Your Files Here</button>
                                                     </div>
                                                 </div>
-                                                <!--Display text -->
+                                                @*Display text*@ 
                                                 <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core' ">
                                                     <quill-editor :ref="'richtext' + fieldIndex">
                                                     </quill-editor>
                                                 </div>
-
+                                                
                                             </div>
                                         </div>
                                      
                                     </div>
                                     <div class="card-footer field-bottom">
-                                        <b-form-group class="field-dropdown" :id="'fieldset-' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex"> <!-- :invalid-feedback="invalidPublishFeedback" :class="{ 'form-group--error': $v.publishedStatus.$error }" -->
-			                                <b-form-select :id="'field-dropdown-' + fieldIndex" :options='fieldTypes' v-model="field.selected"> <!-- v-model.trim="$v.publishedStatus.$model" :state="validateState('publishedStatus')" -->
-                                            </b-form-select>
-                                        </b-form-group>
+                                        <div class="form-check" style="display: flex; flex-direction: row-reverse; align-items: flex-end;">
+                                            <input class="form-check-input" type="checkbox" :value="field.required" 
+                                            :id="'required-checkbox-' + fieldIndex">
+                                            <label class="form-check-label" :for="'required-checkbox-' + fieldIndex">
+                                                <h6 style="margin-bottom:0;"><b>Required</b></h6>
+                                            </label>
+                                        </div>
                                         
-                                        <b-button variant="danger">
-                                            <i class="fas fa-trash"></i>
-                                        </b-button>
                                     </div>
                                 </div>
                             </div>
