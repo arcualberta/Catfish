@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,17 @@ namespace Catfish.Services
             foreach (var role in oldRoles)
                 databaseRoles.Add(role.Name);
 
-            List<string> NewRoles = workflowRoles.Except(databaseRoles).ToList();
+            List<string> newRoles = workflowRoles.Except(databaseRoles).ToList();
+
+            foreach (var newRole in newRoles)
+            {
+                Role role = new Role();
+                role.Id = Guid.NewGuid();
+                role.Name = newRole;
+                role.NormalizedName = newRole.ToUpper();
+                _db.Roles.Add(role);
+            }
+                
         }
     }
 }
