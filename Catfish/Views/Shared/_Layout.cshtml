@@ -61,11 +61,15 @@
                     <div class="signinout">
                         @if (!User.Identity.IsAuthenticated)
                         {
-                            <button id="btnSignIn" onclick="window.location.href = '/login'; return false;">SignIn</button>
+                            <button id="btnSignIn" class="btn btn-default" onclick="window.location.href = '/login'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
                         }
                         else
                         {
-                            <button id="btnSignOut" onclick="signOut(); return false;">Sign Out</button>
+                            if (User.IsInRole("SysAdmin"))
+                            {
+                                <button class="btn btn-default" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                            }
+                            <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-default"><span class="fa fa-sign-out"> Sign Out</span></button>
                         }
 
 
