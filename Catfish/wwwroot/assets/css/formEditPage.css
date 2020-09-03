@@ -113,10 +113,6 @@
 	justify-content: flex-end;
 }
 
-#edit-field-form-page .add-button-holder button{
-	margin-left:10px;
-}
-
 #edit-field-form-page .file-attachment-box {
 	display: flex;
 	padding: 30px;

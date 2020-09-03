@@ -87,7 +87,7 @@
                                     </div>
                                     <div class="header-tools-holder">
                                         <div style="padding-right: 10px;" class="form-group field-dropdown" :id="'fieldset-' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex"> <!-- :invalid-feedback="invalidPublishFeedback" :class="{ 'form-group--error': $v.publishedStatus.$error }" -->
-			                                <select :id="'field-dropdown-' + fieldIndex" v-model="field.selected" v-on:change="onDropdownChange(fieldIndex, field.selected)"> <!-- v-model.trim="$v.publishedStatus.$model" :state="validateState('publishedStatus')" -->
+			                                <select class="form-control" :id="'field-dropdown-' + fieldIndex" v-model="field.selected" v-on:change="onDropdownChange(fieldIndex, field.selected)"> <!-- v-model.trim="$v.publishedStatus.$model" :state="validateState('publishedStatus')" -->
                                                 <option :disabled="fieldType.value==null" v-for="fieldType of fieldTypes" :value="fieldType.value">{{fieldType.text}}</option>
                                             </select>
                                         </div>
@@ -173,14 +173,16 @@
                                                         </div>
                                                     </div>
                                                     <div class="add-button-holder">
-                                                        <div v-on:click="addNewOption(field)" class="dropdown m-2">
-                                                            <button class="btn btn-secondary dropdown-toggle" type="button" :id="'add-item-button-' + fieldIndex" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                Add
+                                                        <div class="btn-group">
+                                                            <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-danger">Add</button>
+                                                            <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <span class="sr-only">Toggle Dropdown</span>
                                                             </button>
                                                             <div class="dropdown-menu" :aria-labelledby="'add-item-button-' + fieldIndex">
-                                                                <a class="dropdown-item" :disabled="dropdowns[field.id].hasOtherOption" v-on:click="addOtherOption(field)" href="#">Add Blank Option</a>
+                                                                <a class="dropdown-item" v-bind:class="{'disabled' : dropdowns[field.id].hasOtherOption}" v-on:click="addOtherOption(field)" href="javascript:void(0)">Add Blank Option</a>
                                                             </div>
                                                         </div>
+
                                                     </div>
                                                 </div>
                                                  @*Checkbox*@ 
@@ -197,12 +199,13 @@
                                                         </div>
                                                     </div>
                                                     <div class="add-button-holder">
-                                                        <div v-on:click="addNewOption(field)" class="dropdown m-2">
-                                                            <button class="btn btn-secondary dropdown-toggle" type="button" :id="'add-item-button-' + fieldIndex" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                Add
+                                                        <div class="btn-group" class="dropdown m-2">
+                                                            <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-danger">Add</button>
+                                                            <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <span class="sr-only">Toggle Dropdown</span>
                                                             </button>
                                                             <div class="dropdown-menu" :aria-labelledby="'add-item-button-' + fieldIndex">
-                                                                <a class="dropdown-item" :disabled="dropdowns[field.id].hasOtherOption" v-on:click="addOtherOption(field)" href="#">Add Blank Option</a>
+                                                                <a class="dropdown-item" v-bind:class="{'disabled': dropdowns[field.id].hasOtherOption}" v-on:click="addOtherOption(field)" href="javascript:void(0)">Add Blank Option</a>
                                                             </div>
                                                         </div>
                                                     </div>                                               
@@ -249,8 +252,8 @@
                                             <!--</template>-->
                                             </button>
                                             <div class="dropdown-menu" :aria-labelledby="'ellipsis-button-' + fieldIndex">
-                                                <a class="dropdown-item" v-if="!dropdowns[field.id].showDescription" href="#" v-on:click="addDescription(field.id)">Add Description</a>
-                                                <a class="dropdown-item" v-if="dropdowns[field.id].showDescription" href="#" v-on:click="removeDescription(field.id)">Remove Description</a>
+                                                <a class="dropdown-item" v-if="!dropdowns[field.id].showDescription" href="javascript:void(0)" v-on:click="addDescription(field.id)">Add Description</a>
+                                                <a class="dropdown-item" v-if="dropdowns[field.id].showDescription" href="javascript:void(0)" v-on:click="removeDescription(field.id)">Remove Description</a>
                                             </div>
                                         </div>
 
