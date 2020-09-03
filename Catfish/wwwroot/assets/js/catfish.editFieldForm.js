@@ -3,11 +3,6 @@
 //import 'quill/dist/quill.snow.css'
 //import 'quill/dist/quill.bubble.css'
 
-import { BootstrapVue } from 'bootstrap-vue'
-
-// Install BootstrapVue
-Vue.use(BootstrapVue)
-
 import { quillEditor } from 'vue-quill-editor'
 import { v1 as uuidv1 } from 'uuid';
 /**

@@ -86,14 +86,15 @@
                                         <h5>Default Item - Fix Me</h5>
                                     </div>
                                     <div class="header-tools-holder">
-                                        <b-form-group style="padding-right: 10px;" class="field-dropdown" :id="'fieldset-' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex"> <!-- :invalid-feedback="invalidPublishFeedback" :class="{ 'form-group--error': $v.publishedStatus.$error }" -->
-			                                <b-form-select :id="'field-dropdown-' + fieldIndex" :options='fieldTypes' v-model="field.selected" v-on:change="onDropdownChange(fieldIndex, $event)"> <!-- v-model.trim="$v.publishedStatus.$model" :state="validateState('publishedStatus')" -->
-                                            </b-form-select>
-                                        </b-form-group>
+                                        <div style="padding-right: 10px;" class="form-group field-dropdown" :id="'fieldset-' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex"> <!-- :invalid-feedback="invalidPublishFeedback" :class="{ 'form-group--error': $v.publishedStatus.$error }" -->
+			                                <select :id="'field-dropdown-' + fieldIndex" v-model="field.selected" v-on:change="onDropdownChange(fieldIndex, field.selected)"> <!-- v-model.trim="$v.publishedStatus.$model" :state="validateState('publishedStatus')" -->
+                                                <option :disabled="fieldType.value==null" v-for="fieldType of fieldTypes" :value="fieldType.value">{{fieldType.text}}</option>
+                                            </select>
+                                        </div>
                                         
-                                        <b-button variant="danger" v-on:click="deleteField(fieldIndex)">
+                                        <button class="btn btn-danger" v-on:click="deleteField(fieldIndex)">
                                             <i class="fas fa-trash"></i>
-                                        </b-button>
+                                        </button>
                                     </div>
                                     
                                 </div>
@@ -172,9 +173,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="add-button-holder">
-                                                        <b-dropdown v-on:click="addNewOption(field)" split text="Add" class="m-2">
-                                                            <b-dropdown-item :disabled="dropdowns[field.id].hasOtherOption" v-on:click="addOtherOption(field)" href="#">Add Blank Option</b-dropdown-item>
-                                                        </b-dropdown>
+                                                        <div v-on:click="addNewOption(field)" class="dropdown m-2">
+                                                            <button class="btn btn-secondary dropdown-toggle" type="button" :id="'add-item-button-' + fieldIndex" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                Add
+                                                            </button>
+                                                            <div class="dropdown-menu" :aria-labelledby="'add-item-button-' + fieldIndex">
+                                                                <a class="dropdown-item" :disabled="dropdowns[field.id].hasOtherOption" v-on:click="addOtherOption(field)" href="#">Add Blank Option</a>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                  @*Checkbox*@ 
@@ -191,9 +197,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="add-button-holder">
-                                                        <b-dropdown v-on:click="addNewOption(field)" split text="Add" class="m-2">
-                                                            <b-dropdown-item :disabled="dropdowns[field.id].hasOtherOption" v-on:click="addOtherOption(field)" href="#">Add Blank Option</b-dropdown-item>
-                                                        </b-dropdown>
+                                                        <div v-on:click="addNewOption(field)" class="dropdown m-2">
+                                                            <button class="btn btn-secondary dropdown-toggle" type="button" :id="'add-item-button-' + fieldIndex" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                Add
+                                                            </button>
+                                                            <div class="dropdown-menu" :aria-labelledby="'add-item-button-' + fieldIndex">
+                                                                <a class="dropdown-item" :disabled="dropdowns[field.id].hasOtherOption" v-on:click="addOtherOption(field)" href="#">Add Blank Option</a>
+                                                            </div>
+                                                        </div>
                                                     </div>                                               
                                                 </div>
                                                  @*Dropdown*@ 
@@ -230,14 +241,19 @@
                                                 <h6 style="margin-bottom:0;"><b>Required</b></h6>
                                             </label>
                                         </div>
-                                        <b-dropdown toggle-class="text-decoration-none" no-caret>
-                                            <template v-slot:button-content>
-                                              <i class="fas fa-ellipsis-h"></i>
-                                            </template>
-                                            <b-dropdown-item v-if="!dropdowns[field.id].showDescription" href="#" v-on:click="addDescription(field.id)">Add Description</b-dropdown-item>
-                                            <b-dropdown-item v-if="dropdowns[field.id].showDescription" href="#" v-on:click="removeDescription(field.id)">Remove Description</b-dropdown-item>
-                                        </b-dropdown>
-                                        
+
+                                        <div toggle-class="text-decoration-none" class="dropdown m-2">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" :id="'ellipsis-button-' + fieldIndex" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <!--<template v-slot:button-content>-->
+                                                <i class="fas fa-ellipsis-h"></i>
+                                            <!--</template>-->
+                                            </button>
+                                            <div class="dropdown-menu" :aria-labelledby="'ellipsis-button-' + fieldIndex">
+                                                <a class="dropdown-item" v-if="!dropdowns[field.id].showDescription" href="#" v-on:click="addDescription(field.id)">Add Description</a>
+                                                <a class="dropdown-item" v-if="dropdowns[field.id].showDescription" href="#" v-on:click="removeDescription(field.id)">Remove Description</a>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
