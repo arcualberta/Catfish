@@ -21,5 +21,7 @@ namespace Catfish.Services
         public List<string> GetEmailAddresses(EmailTrigger trigger);
 
         public List<string> GetUserRoles();
+
+        public EntityTemplate GetTemplate();
     }
 }

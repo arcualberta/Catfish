@@ -183,7 +183,6 @@ namespace Catfish.UnitTests
             moveToDraftCalendarNotification.SetBody("A @Link[calendar change|@Model] moved to the draft calendar.\n\nThank you");
 
             //Defininig the Calendar Change Request form
-            //Contract letter
             DataItem calendarChangeForm = template.GetDataItem("Calendar Change Request", true, lang);
             calendarChangeForm.IsRoot = true;
             calendarChangeForm.SetDescription("This is the form to be filled by the department admin when a calndar change is requested.", lang);
@@ -192,9 +191,8 @@ namespace Catfish.UnitTests
             calendarChangeForm.CreateField<TextArea>("Change Description", lang, true);
             
             //Defininig the Submission revise Request form
-            //Contract letter
             DataItem commentsForm = template.GetDataItem("Submission Revise Request", true, lang);
-            commentsForm.IsRoot = true;
+            commentsForm.IsRoot = false;
             commentsForm.SetDescription("This is the form to be filled by the central admin when a submission revision is requested.", lang);
             commentsForm.CreateField<TextField>("Course Name", lang, true);
             commentsForm.CreateField<TextField>("Course Number", lang, true);
@@ -520,7 +518,11 @@ namespace Catfish.UnitTests
             if (oldTemplate == null)
                 db.EntityTemplates.Add(template);
             else
+            {
+                template.Id = oldTemplate.Id;
                 oldTemplate.Content = template.Content;
+            }
+
             db.SaveChanges();
 
 

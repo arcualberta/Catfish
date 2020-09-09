@@ -194,6 +194,13 @@ namespace Catfish.Core.Models
             return dataItem;
         }
 
+        public DataItem GetDataItem(Guid dataItemId)
+        {
+            return DataContainer
+                .Where(di => di.Id == dataItemId)
+                .FirstOrDefault();
+        }
+
         public DataItem GetRootDataItem(bool createIfNotExists)
         {
             DataItem dataItem = this.DataContainer

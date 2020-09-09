@@ -18,6 +18,7 @@ namespace Catfish.Services
         private AppDbContext _db { get; set; }
 
         private EntityTemplate mEntityTemplate;
+
         private Item mItem;
 
         public WorkflowService(AppDbContext db)
@@ -30,6 +31,10 @@ namespace Catfish.Services
             return mEntityTemplate;
         }
         
+        public EntityTemplate GetTemplate()
+        {
+            return mEntityTemplate;
+        }
 
         public void SetModel(EntityTemplate entityTemplate)
         {
@@ -39,6 +44,7 @@ namespace Catfish.Services
         public void SetModel(Item item)
         {
             mItem = item;
+            mEntityTemplate = _db.EntityTemplates.Where(et => et.Id == item.TemplateId).FirstOrDefault();
         }
 
         public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists)

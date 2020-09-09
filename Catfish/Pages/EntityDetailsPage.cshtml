@@ -1,6 +1,4 @@
-﻿
-
-@page "~/entity/{id:Guid}"
+﻿@page "~/entity/{id:Guid}"
 @model Catfish.Pages.EntityDetailsPageModel
 
 @section head
@@ -14,5 +12,14 @@
 
 <div class="container">
     @Html.DisplayFor(model => model.Item, Model.Item.GetType().ToString())
+</div>
+
+@if(Model.ChildTemplateId.HasValue)
+{
+    var objectId = Model.ItemId;
+    var childTemplateId = Model.ChildTemplateId;
+    <a href="~/entity/@objectId/addchild/@childTemplateId">Add Comment</a>
+}
+<div>
 </div>
 
