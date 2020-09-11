@@ -209,17 +209,17 @@ namespace Catfish.UnitTests
 
             //Defininig roles
             WorkflowRole centralAdminRole = workflow.AddRole("Admin");
-            //WorkflowRole departmentAdmin = workflow.AddRole("DepartmentlAdmin");
-            //WorkflowRole ownerRole = workflow.AddRole("Owner");
+            WorkflowRole departmentAdmin = workflow.AddRole("DepartmentlAdmin");
+            WorkflowRole ownerRole = workflow.AddRole("Owner");
 
 
             //Defining users
             WorkflowUser centralAdminUser = workflow.AddUser("centraladmin@ualberta.ca");
             centralAdminUser.AddRoleReference(centralAdminRole.Id, "Central Admin User");
-            //WorkflowUser deptUser = workflow.AddUser("departmentadmin1@ualberta.ca");
-            //deptUser.AddRoleReference(departmentAdmin.Id, "Dept. Admin User");
-            //deptUser = workflow.AddUser("departmentadmin2@ualberta.ca");
-            //deptUser.AddRoleReference(departmentAdmin.Id, "Dept. Admin User");
+            WorkflowUser deptUser = workflow.AddUser("departmentadmin1@ualberta.ca");
+            deptUser.AddRoleReference(departmentAdmin.Id, "Dept. Admin User");
+            deptUser = workflow.AddUser("departmentadmin2@ualberta.ca");
+            deptUser.AddRoleReference(departmentAdmin.Id, "Dept. Admin User");
 
             //Defining triggers
             EmailTrigger centralAdminNotificationEmailTrigger = workflow.AddTrigger("ToCentralAdmin", "SendEmail");
@@ -260,8 +260,8 @@ namespace Catfish.UnitTests
             postActionSubmit.AddTriggerRefs("0", centralAdminNotificationEmailTrigger.Id, "Central Admin Notification Email Trigger");
             postActionSubmit.AddTriggerRefs("1", ownerSubmissionNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
-            ////Defining authorizatios
-            //startSubmissionAction.AddAuthorization(departmentAdmin.Id);
+            //Defining authorizatios
+            startSubmissionAction.AddAuthorization(departmentAdmin.Id);
 
             // Edit submission related workflow items
             //Defining actions
@@ -317,8 +317,8 @@ namespace Catfish.UnitTests
 
 
 
-            ////Defining authorizatios
-            //editSubmissionAction.AddAuthorization(departmentAdmin.Id);
+            //Defining authorizatios
+            editSubmissionAction.AddAuthorization(departmentAdmin.Id);
 
 
             // Delete submission related workflow items
@@ -338,7 +338,7 @@ namespace Catfish.UnitTests
             deleteSubmissionAction.AddStateReferances(savedState.Id);
 
             //Defining authorizatios
-            //deleteSubmissionAction.AddAuthorization(ownerRole.Id);
+            deleteSubmissionAction.AddAuthorization(ownerRole.Id);
 
 
             // Purge submission related workflow items
@@ -357,7 +357,7 @@ namespace Catfish.UnitTests
             purgeSubmissionAction.AddStateReferances(deleteState.Id);
 
             //Defining authorizatios
-            //purgeSubmissionAction.AddAuthorization(ownerRole.Id);
+            purgeSubmissionAction.AddAuthorization(ownerRole.Id);
 
 
             // Revision request related workflow items

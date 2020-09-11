@@ -155,10 +155,12 @@ namespace Catfish
             services.AddScoped<IQueryService, QueryService>();
 
 
-            //Ensure the system has all user roles.
-            //TODO: Use workflow service to get the unique list of roles used in all entity templates.
-            //      And then, use Authorization service's EnsureUserRoles() method to create any new roles 
-            //      that does not exist in the system. 
+            //Configure claims
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CreateEntityPolicy",
+                  policy => policy.RequireClaim("Create Submission"));
+            });
 
         }
 

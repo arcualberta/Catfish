@@ -52,5 +52,39 @@ namespace Catfish.Services
             }
                 
         }
+
+        public List<ItemTemplate> GetSubmissionTemplateList()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Returns the entity template identified by the argument "id" provided
+        /// if that templates can be used by the currently logged in user to create
+        /// a new submission. If the public is allowed to create a new submission beased
+        /// on this template, the template should be returned irrespective of who is logged in.
+        /// If the user is not permitted, this should throw an AuthorizationFailed exception. 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ItemTemplate GetSubmissionTemplate(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Item GetItem(Guid item, AuthorizationPurpose purpose)
+        {
+            if (typeof(View).IsAssignableFrom(purpose.GetType()))
+            {
+                //Validate the user against the read permission
+            }
+            else if (typeof(View).IsAssignableFrom(purpose.GetType()))
+            {
+                //Validate the user against the edit permission
+            }
+
+
+            throw new NotImplementedException();
+        }
     }
 }

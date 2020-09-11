@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Catfish.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,5 +12,32 @@ namespace Catfish.Services
         List<string> GetAccessibleActions();
 
         void EnsureUserRoles(List<string> roles);
+
+        /// <summary>
+        /// Returns the list of entity templates that can be used by the 
+        /// current user to create a new submission. This must include list of
+        /// entity template sthat can be used by the public to submit new 
+        /// submissions, for example in cases of public surveys.
+        /// </summary>
+        /// <returns></returns>
+        List<ItemTemplate> GetSubmissionTemplateList();
+
+        /// <summary>
+        /// Returns the entity template identified by the argument "id" provided
+        /// if that templates can be used by the currently logged in user to create
+        /// a new submission. If the public is allowed to create a new submission beased
+        /// on this template, the template should be returned irrespective of who is logged in.
+        /// If the user is not permitted, this should throw an AuthorizationFailed exception. 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        ItemTemplate GetSubmissionTemplate(Guid id);
+
+        /// <summary>
+        /// Returns an item specified by "id" for the given purpose.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        Item GetItem(Guid item, AuthorizationPurpose purpose);
     }
 }

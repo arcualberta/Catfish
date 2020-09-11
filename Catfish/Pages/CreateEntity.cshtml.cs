@@ -8,11 +8,13 @@ using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.ModelBinders;
 using Catfish.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Catfish.Pages
 {
+    //[Authorize(Policy = "CreateEntityPolicy")]
     public class CreateEntity : CatfishPageModelModel
     {
         private readonly IWorkflowService _workflowService;
@@ -31,6 +33,7 @@ namespace Catfish.Pages
             _entityTemplateService = temp;
             _db = db;
         }
+        
         public void OnGet(Guid templateId)
         {
             TemplateId = templateId;
