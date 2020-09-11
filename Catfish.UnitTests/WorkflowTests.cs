@@ -337,7 +337,7 @@ namespace Catfish.UnitTests
             //Defining state referances
             deleteSubmissionAction.AddStateReferances(savedState.Id);
 
-            Defining authorizatios
+            //Defining authorizatios
             deleteSubmissionAction.AddAuthorization(ownerRole.Id);
 
 
@@ -356,7 +356,7 @@ namespace Catfish.UnitTests
             //Defining state referances
             purgeSubmissionAction.AddStateReferances(deleteState.Id);
 
-            Defining authorizatios
+            //Defining authorizatios
             purgeSubmissionAction.AddAuthorization(ownerRole.Id);
 
 

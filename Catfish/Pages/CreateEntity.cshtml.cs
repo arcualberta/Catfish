@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Catfish.Pages
 {
-    [Authorize(Policy = "CreateEntityPolicy")]
+    //[Authorize(Policy = "CreateEntityPolicy")]
     public class CreateEntity : CatfishPageModelModel
     {
         private readonly IWorkflowService _workflowService;
