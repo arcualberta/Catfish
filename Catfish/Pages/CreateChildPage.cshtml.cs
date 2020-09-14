@@ -81,10 +81,12 @@ namespace Catfish.Pages
 
 
 
-            //parentItem.DataContainer.Append(newChildItem);
+            //parentItem.DataContainer.Append(newChildItem); 
 
             //parentItem.DataContainer.Add(newChildItem);
             parentItem.DataContainer.Add(newChildItem);
+
+            //parentItem.DataContainer.Insert(newChildItem);
 
 
             // ?newDataItem.EntityId = newItem.Id;
