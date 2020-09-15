@@ -15,7 +15,7 @@ namespace Catfish.Pages
         public IList<ItemTemplate> ItemTemplates { get; set; }
         //public StartPageModel(IAuthorizationService auth, ISubmissionService serv, IEntityTemplateService temp)
         //    : base(auth, serv)
-        public StartPageModel(IEntityTemplateService temp)
+        public StartPageModel(IEntityTemplateService temp, IAuthorizationService auth)
             : base(null, null)
         {
             _entityTemplateService = temp;

@@ -25,7 +25,6 @@ using Catfish.Core.Services.Solr;
 using Catfish.Services;
 using Catfish.ModelBinders;
 
-
 namespace Catfish
 {
     public class Startup
@@ -231,6 +230,7 @@ namespace Catfish
                 .AddType(typeof(Models.StandardPage))
                  .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MediaPage))
+                 .AddType(typeof(Pages.Workflow.SubmissionEntryListModel))
                 .Build()
                 .DeleteOrphans();
             var postTypeBuilder = new Piranha.AttributeBuilder.PostTypeBuilder(api)
@@ -280,7 +280,6 @@ namespace Catfish
             // March 6 2020 -- Add Custom Permissions
             AddCustomPermissions();
             AddWorkflowPermissions();
-
         }
 
         #region REGISTER CUSTOM COMPONENT
@@ -300,7 +299,8 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/navigation-block.js");
           //  App.Modules.Manager().Scripts.Add("~/assets/js/entitytypelist.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/form.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/form.js"); 
+            App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-list.js");
         }
         private static void RegisterCustomBlocks()
         {
@@ -311,6 +311,7 @@ namespace Catfish
             App.Blocks.Register<CssBlock>();
             App.Blocks.Register<ContactFormBlock>();
             App.Blocks.Register<NavigationBlock>();
+            App.Blocks.Register<SubmissionEntryList>();
         }
         private static void RegisterCustomStyles()
         {

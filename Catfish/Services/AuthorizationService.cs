@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Microsoft.AspNetCore.Http;
 using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
