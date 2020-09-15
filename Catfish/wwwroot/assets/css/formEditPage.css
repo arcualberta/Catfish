@@ -1,4 +1,25 @@
-﻿#edit-field-form-page .card {
+﻿#edit-field-form-page .form-container {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+#edit-field-form-page #accordion {
+	padding-right: 15px;
+	padding-left: 0;
+}
+
+#edit-field-form-page .section-container .container{
+	padding-left: 0;
+	padding-right: 0;
+}
+
+#edit-field-form-page .section-container {
+	background-color: white;
+	margin-bottom: 2px;
+	padding: .75rem 1rem;
+}
+
+#edit-field-form-page .card {
 	background-color: white;
 	/*padding-top: 15px;
 	padding-bottom: 15px;*/
@@ -55,15 +76,37 @@
 	justify-content: center;
 }
 
-	#edit-field-form-page .handle-drag:hover,
-	#edit-field-form-page .fieldtype-draggable {
-		cursor: move;
-	}
+#edit-field-form-page .handle-drag {
+	min-width: 60px;
+	border-top: solid 2px #f2f2f2;
+	border-left: solid 2px #f2f2f2;
+	border-bottom: solid 2px #f2f2f2;
+	border-bottom-left-radius: 8px;
+	border-top-left-radius: 8px;
+}
+
+#edit-field-form-page .collapsing-items {
+	border-right: solid 2px #f2f2f2;
+	border-bottom: solid 2px #f2f2f2;
+	border-bottom-right-radius: 8px;
+}
+
+#edit-field-form-page .handle-holder {
+	text-decoration: none;
+	color: white;
+	max-width: 430px;
+}
+
+#edit-field-form-page .handle-drag:hover,
+#edit-field-form-page .fieldtype-draggable {
+	cursor: move;
+}
 
 #edit-field-form-page .fieldtype-draggable {
-	text-align:center;
+	text-align: center;
 	padding-top: 0;
 	padding-bottom: 0;
+	border: solid 2px #f2f2f2;
 }
 
 #edit-field-form-page .fieldtypes-holder {
@@ -79,6 +122,20 @@
 	flex-direction: column;
 	flex: 10;
 }
+
+#edit-field-form-page .title-header {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	min-width: 0;
+}
+
+	#edit-field-form-page .title-header h2,
+	#edit-field-form-page .title-header h5 {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 
 #edit-field-form-page .field-card-contents {
 	border-left: 1px solid rgba(0,0,0,.125);
@@ -144,4 +201,6 @@
 #edit-field-form-page .header-tools-holder {
 	display: flex;
 	align-items: end;
+	flex: 1;
+	min-width:200px;
 }
