@@ -58,10 +58,27 @@ namespace Catfish.Services
         }
 
         public IList<ItemTemplate> GetSubmissionTemplateList()
-        {
+        {  
+            //get current logged user
             string loggedUserRole = GetLoggedUserRole();
+            
+            
+            IList<ItemTemplate> itemTemplates = null;
 
-            return _db.ItemTemplates.ToList();
+            //get all templates
+            var templateList = _db.ItemTemplates.ToList();
+
+            foreach (ItemTemplate template in templateList) 
+            { 
+                if (ValidateItemTemplate(template, loggedUserRole))
+                    itemTemplates.Add(template);
+            }
+            return itemTemplates;
+        }
+
+        public bool ValidateItemTemplate(ItemTemplate template, string loggedUserRole)
+        {
+            return true;
         }
 
         public string GetLoggedUserRole()
