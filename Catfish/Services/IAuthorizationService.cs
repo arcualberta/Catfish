@@ -20,7 +20,7 @@ namespace Catfish.Services
         /// submissions, for example in cases of public surveys.
         /// </summary>
         /// <returns></returns>
-        List<ItemTemplate> GetSubmissionTemplateList();
+        IList<ItemTemplate> GetSubmissionTemplateList();
 
         /// <summary>
         /// Returns the entity template identified by the argument "id" provided

@@ -4,16 +4,22 @@ using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Catfish.Services
 {
     public class AuthorizationService : IAuthorizationService
     {
-        public readonly PiranhaDbContext _db;
-        public AuthorizationService(PiranhaDbContext db)
+        public readonly PiranhaDbContext _piranhaDb;
+        public readonly AppDbContext _appDb;
+
+        public readonly IHttpContextAccessor _httpContextAccessor;
+        public AuthorizationService(AppDbContext adb, PiranhaDbContext pdb, IHttpContextAccessor httpContextAccessor)
         {
-            _db = db;
+            _appDb = adb;
+            _piranhaDb = pdb;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public bool IsAuthorize()
@@ -36,7 +42,7 @@ namespace Catfish.Services
         public void EnsureUserRoles(List<string> workflowRoles)
         {
             List<string> databaseRoles = new List<string>();
-            var oldRoles = _db.Roles.ToList();
+            var oldRoles = _piranhaDb.Roles.ToList();
 
             foreach (var role in oldRoles)
                 databaseRoles.Add(role.Name);
@@ -49,14 +55,38 @@ namespace Catfish.Services
                 role.Id = Guid.NewGuid();
                 role.Name = newRole;
                 role.NormalizedName = newRole.ToUpper();
-                _db.Roles.Add(role);
+                _piranhaDb.Roles.Add(role);
             }
                 
         }
 
-        public List<ItemTemplate> GetSubmissionTemplateList()
+        public IList<ItemTemplate> GetSubmissionTemplateList()
+        {  
+            //get current logged user
+            string loggedUserRole = GetLoggedUserRole();
+            
+            
+            IList<ItemTemplate> itemTemplates = null;
+
+            //get all templates
+            var templateList = _appDb.ItemTemplates.ToList();
+
+            foreach (ItemTemplate template in templateList) 
+            { 
+                if (ValidateItemTemplate(template, loggedUserRole))
+                    itemTemplates.Add(template);
+            }
+            return itemTemplates;
+        }
+
+        public bool ValidateItemTemplate(ItemTemplate template, string loggedUserRole)
         {
-            throw new NotImplementedException();
+            return true;
+        }
+
+        public string GetLoggedUserRole()
+        {
+            return _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
         }
 
         /// <summary>

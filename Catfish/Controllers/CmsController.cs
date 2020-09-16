@@ -23,7 +23,7 @@ namespace Catfish.Controllers
         /// Default constructor.
         /// </summary>
         /// <param name="api">The current api</param>
-        public CmsController(IApi api,IDb db,  IModelLoader loader, IEmailService email)
+        public CmsController(IApi api,IDb db,  IModelLoader loader, IEmailService email, IHttpContextAccessor httpContextAccessor)
         {
             _api = api;
             _loader = loader;
