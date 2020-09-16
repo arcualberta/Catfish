@@ -143,6 +143,13 @@ namespace Catfish
                 });
             });
 
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy("CreateSubmission", policy => {
+                    policy.RequireClaim("CreateSubmission", "CreateSubmission");
+                });
+            });
+
             //Additiona Piranha Services
             services.AddScoped<ISiteService, Piranha.Services.SiteService>();
             services.AddScoped<IPageService, Piranha.Services.PageService>();
