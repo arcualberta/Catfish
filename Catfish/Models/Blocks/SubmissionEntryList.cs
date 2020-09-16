@@ -14,6 +14,10 @@ namespace Catfish.Models.Blocks
     {
         public  TextField CssVal { get; set; }
 
+        public SubmissionEntryList()
+        {
+            CssVal = new TextField();
+        }
         public string GetCss()
         {
             if (CssVal != null)

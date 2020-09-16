@@ -10,8 +10,8 @@ namespace Catfish.Services
 {
     public class AuthorizationService : IAuthorizationService
     {
-        public readonly AppDbContext _db;
-        public AuthorizationService(AppDbContext db)
+        public readonly PiranhaDbContext _db;
+        public AuthorizationService(PiranhaDbContext db)
         {
             _db = db;
         }

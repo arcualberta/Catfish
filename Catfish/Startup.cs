@@ -30,6 +30,7 @@ using System.Net.Sockets;
 using Piranha.Services;
 using Piranha.Manager.Services;
 using Piranha.Models;
+using System.Threading.Tasks;
 
 namespace Catfish
 {
@@ -97,7 +98,8 @@ namespace Catfish
             // Add CatfishDbContext to the service collection. This will inject the database
             // configuration options and the application "Configuration" option to CatfishDbContext
             // instance through dependency injection.
-            services.AddDbContext<Catfish.Core.Models.AppDbContext>();
+            services.AddDbContext<AppDbContext>();
+            services.AddDbContext<PiranhaDbContext>();
 
             //Feb 12 - 2020 : It's recommended to use AddDbContextPool() over AddDbContext() on .net Core > 2.2
             // it's better from the performance stand point
@@ -141,7 +143,12 @@ namespace Catfish
                 });
             });
 
-
+            //Additiona Piranha Services
+            services.AddScoped<ISiteService, Piranha.Services.SiteService>();
+            services.AddScoped<IPageService, Piranha.Services.PageService>();
+            services.AddScoped<IParamService, ParamService>();
+            services.AddScoped<IMediaService, Piranha.Services.MediaService>();
+            
             //Catfish services
             services.AddScoped<EntityTypeService>();
             services.AddScoped<DbEntityService>();
@@ -253,7 +260,7 @@ namespace Catfish
             App.Hooks.SiteContent.RegisterOnAfterSave((siteContent) => {
                 var scope = app.ApplicationServices.CreateScope();
                 var service = scope.ServiceProvider.GetService<IWorkflowService>();
-                service.InitSiteStructure(siteContent.Id, siteContent.TypeId);
+                service.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
             });
 
             // /Register middleware

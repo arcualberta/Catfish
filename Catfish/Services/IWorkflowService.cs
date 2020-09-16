@@ -24,7 +24,7 @@ namespace Catfish.Services
 
         public EntityTemplate GetTemplate();
 
-        public void InitSiteStructure(Guid siteId, string siteTypeId);
+        public Task InitSiteStructureAsync(Guid siteId, string siteTypeId);
 
     }
 }
