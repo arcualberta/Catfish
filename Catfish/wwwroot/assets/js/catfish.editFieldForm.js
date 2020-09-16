@@ -89,6 +89,11 @@ if (document.getElementById("edit-field-form-page")) {
                     }
                 ],
 
+                //will be sent through API, temp
+                fileTypes: [
+                    "PDF", "DOC", "DOCX", "PS", "EPS", "JPG", "PNG"
+                ],
+
                 //temp until templates sent
                 tmpTextfieldTemplate: null,
                 tmpTextAreaTemplate: null,
@@ -97,9 +102,27 @@ if (document.getElementById("edit-field-form-page")) {
                 tmpDropdownTemplate: null,
                 tmpFileAttachmentTemplate: null,
                 tmpDisplayFieldTemplate: null,
+
+                saveStatus: 0,
+                //TODO: make a file of constant strings
+                saveSuccessfulLabel: "Save Successful",
+                saveFailedLabel: "Failed to Save",
+                saveFieldFormButtonLabel: "Save"
             }
         },
         methods: {
+
+            /**
+             * Saves the field form
+             * @param {any} event
+             */
+            saveFieldForm(event) {
+                console.log("saving goes here", event);
+                event.preventDefault();
+
+                console.log(this.names, this.descriptions, this.fields);
+            },
+
             /**
              * Changes the type of field via choice from the dropdown
              * @param {any} fieldIndex the fieldIndex being changed
@@ -160,6 +183,16 @@ if (document.getElementById("edit-field-form-page")) {
                 };
                 //newItem.Guid = uuidv1();
                 return newItem;
+            },
+
+            /**
+             * Checks all options - ie user has checked 'Any' option in File Upload
+             * @param {any} field
+             */
+            checkAllFileTypes(field) {
+                field.values = [];
+                field.values = this.fileTypes;
+                //need to not add value 'any'!
             },
 
             /**

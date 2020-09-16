@@ -81,5 +81,19 @@ namespace Catfish.Areas.Manager.Actions
                 }
 
         };
+
+
+        /// <summary>
+        /// Saves the field form in the FieldContainerEdit view. 
+        /// </summary>
+        public static ActionList<ToolbarAction> SaveFieldForm { get; private set; } = new ActionList<ToolbarAction>
+        {
+                new ToolbarAction
+                {
+                    InternalId = "SaveFieldForm",
+                    ActionView = "Partial/Actions/_SaveFieldForm"
+                }
+
+        };
     }
 }

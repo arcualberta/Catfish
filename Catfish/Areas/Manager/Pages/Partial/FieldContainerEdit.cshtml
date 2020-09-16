@@ -17,11 +17,11 @@
             </div>
 
             <div class="container-fluid collection-button-holder">
-                <div class="top-nav"> SOME BUTTON
-                    @*@foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.FormList)
+                <div class="top-nav">
+                    @foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.SaveFieldForm)
                     {
                         <partial name="@action.ActionView" />
-                    }*@
+                    }
                 </div>
             </div>
         </div>
@@ -30,7 +30,7 @@
     @{ var url = Model.ApiRoot + Model.Model.Id.ToString();}
     <a href="@url" target="_blank">See JSON Object</a>
 
-    <form class="form-container" v-if="finishedGET">
+    <form id="field-container-edit-form" class="form-container" v-if="finishedGET">
         <div class="form-group flex-full">
             <div class="section-container">
                 <label for="form-title"><h3>Title</h3></label>
@@ -96,7 +96,7 @@
                                                 </select>
                                             </div>
                                         
-                                            <button class="btn btn-danger" v-on:click="deleteField(fieldIndex)">
+                                            <button type="button" class="btn btn-danger" v-on:click="deleteField(fieldIndex)">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
@@ -219,16 +219,29 @@
                                                         <div v-for="(dropdownValue, dropdownIndex) of field.values" class="input-group mb-3">
                                                             <input type="text" class="form-control" aria-label="Text input with remove button" v-model="dropdownValue.text">
                                                             <div class="input-group-append">
-                                                                <button class="btn btn-outline-secondary" v-on:click="removeOption(fieldIndex, dropdownIndex)" type="button">-</button>
+                                                                <button class="btn btn-outline-secondary" v-on:click="removeOption(field, fieldIndex, dropdownValue, dropdownIndex)" type="button">-</button>
                                                             </div>
                                                         </div>
                                                         <button v-on:click="addNewOption(field)" type="button" class="btn btn-secondary rounded">+</button>
                                                     </div>
                                                      @*File attachment*@ 
                                                     <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core'">
-                                                        <div class="file-attachment-box">
-                                                            <button disabled class="btn btn-outline-secondary">Upload Your Files Here</button>
+                                                        <input class="form-check-input" type="checkbox" v-model="field.values" value="any"
+                                                        :id="'filetype-checkbox-' + fieldIndex + '-' + 'any'" v-on:click="checkAllFileTypes(field)" >
+                                                        <label class="form-check-label" :for="'filetype-checkbox-' + fieldIndex + '-' + 'any'">
+                                                            <h6 style="margin-bottom:0;">Any</h6>
+                                                        </label>
+                                                        <div v-for="(fileType, fileTypeIndex) of fileTypes">
+                                                            <input class="form-check-input" type="checkbox" v-model="field.values" :value="fileType"
+                                                            :id="'filetype-checkbox-' + fieldIndex + '-' + fileTypeIndex" >
+                                                            <label class="form-check-label" :for="'filetype-checkbox-' + fieldIndex + '-' + fileTypeIndex">
+                                                                <h6 style="margin-bottom:0;">{{fileType}}</h6>
+                                                            </label>
                                                         </div>
+                                                        Here:{{field.values}}
+                                                        <!--<div class="file-attachment-box">
+                                                            <button disabled class="btn btn-outline-secondary">Upload Your Files Here</button>
+                                                        </div>-->
                                                     </div>
                                                     @*Display text*@ 
                                                     <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core' ">
@@ -242,7 +255,7 @@
                                         </div>
                                         <div class="card-footer field-bottom">
                                             <div class="form-check" style="padding-right:10px; display: flex; flex-direction: row-reverse; align-items: flex-end;">
-                                                <input class="form-check-input" type="checkbox" :value="field.required" 
+                                                <input class="form-check-input" type="checkbox" v-model="field.required" 
                                                 :id="'required-checkbox-' + fieldIndex">
                                                 <label class="form-check-label" :for="'required-checkbox-' + fieldIndex">
                                                     <h6 style="margin-bottom:0;"><b>Required</b></h6>
@@ -250,10 +263,8 @@
                                             </div>
 
                                             <div toggle-class="text-decoration-none" class="dropdown m-2">
-                                                <button class="btn btn-secondary dropdown-toggle" type="button" :id="'ellipsis-button-' + fieldIndex" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <!--<template v-slot:button-content>-->
+                                                <button class="btn btn-secondary" type="button" :id="'ellipsis-button-' + fieldIndex" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="fas fa-ellipsis-h"></i>
-                                                <!--</template>-->
                                                 </button>
                                                 <div class="dropdown-menu" :aria-labelledby="'ellipsis-button-' + fieldIndex">
                                                     <a class="dropdown-item" v-if="!dropdowns[field.id].showDescription" href="javascript:void(0)" v-on:click="addDescription(field.id)">Add Description</a>
