@@ -117,8 +117,10 @@
 
 
                                         <ul v-for="nameValue of field.name.values" class="list-group list-group-flush">
-                                            <li class="list-group-item flex-li">
-                                                <label class="field-item-label">{{nameValue.language}}</label>
+                                            <li class="list-group-item input-group flex-li">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" :id="'language' + nameValue.language">{{nameValue.language}}</span>
+                                                </div>
                                                 <input type="text" class="field-input form-control" v-model="nameValue.value" 
                                                 :id="'field-title-' + fieldIndex + '-' + nameValue" 
                                                 placeholder="Title Your Field Here" />
@@ -130,20 +132,21 @@
                                                 <h4>
                                                     Description
                                                 </h4>
-                            
+                                                
                                                 @*<button type="button" class="btn btn-secondary rounded" data-toggle="popover"
                                                     data-content="This should provide more detail about what you want to ask. Optional.">
                                                     <i class="fas fa-info"></i>
                                                 </button>*@
                                             </div>
-
-                                            <ul v-for="descriptionValue of field.description.values" class="list-group list-group-flush">
-                                                <li class="list-group-item flex-li">
-                                                    <label class="field-item-label">{{descriptionValue.language}}</label>
+                                            <ul class="list-group list-group-flush" v-for="descriptionValue of field.description.values">
+                                                <li class="list-group-item input-group" style="display:flex;">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text" :id="'language' + descriptionValue.language">{{descriptionValue.language}}</span>
+                                                    </div>
                                                     <textarea type="text" class="field-input form-control" 
-                                                    :id="'field-description-' + fieldIndex + '-' + descriptionValue" 
-                                                    placeholder="Describe the purpose of this field..."
-                                                    v-model="descriptionValue.value">
+                                                        :id="'field-description-' + fieldIndex + '-' + descriptionValue" 
+                                                        placeholder="Describe the purpose of this field..."
+                                                        v-model="descriptionValue.value">
                                                     </textarea>
                                                 </li>
                                             </ul>
@@ -154,7 +157,7 @@
                                                 <h4>
                                                     Appearance
                                                 </h4>
-                                                <div style="padding: .75rem 1.25rem;">
+                                                <div style="padding: .75rem 0rem;">
                                                      @*Short Answer*@ 
                                                     <input v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' "
                                                         class="form-control" readonly placeholder="Short answer"/>
@@ -173,13 +176,17 @@
                                                             </div>
                                                             <input type="text" class="form-control" :disabled="radioValue.isDisabled" aria-label="Text input with radio button and remove button" v-model="radioValue.text">
                                                             <div class="input-group-append">
-                                                                <button class="btn btn-outline-secondary" v-on:click="removeOption(field, fieldIndex, radioValue, radioIndex)" type="button">-</button>
+                                                                <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, radioValue, radioIndex)" type="button">
+                                                                    <i class="fas fa-minus"></i>
+                                                                </button>
                                                             </div>
                                                         </div>
                                                         <div class="add-button-holder">
                                                             <div class="btn-group">
-                                                                <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-danger">Add</button>
-                                                                <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-success">
+                                                                    <i class="fas fa-plus"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                     <span class="sr-only">Toggle Dropdown</span>
                                                                 </button>
                                                                 <div class="dropdown-menu" :aria-labelledby="'add-item-button-' + fieldIndex">
@@ -199,13 +206,17 @@
                                                             </div>
                                                             <input type="text" class="form-control" :disabled="checkValue.isDisabled" aria-label="Text input with checkbox and remove button" v-model="checkValue.text">
                                                             <div class="input-group-append">
-                                                                <button class="btn btn-outline-secondary" v-on:click="removeOption(field, fieldIndex, checkValue, checkIndex)" type="button">-</button>
+                                                                <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, checkValue, checkIndex)" type="button">
+                                                                    <i class="fas fa-minus"></i>
+                                                                </button>
                                                             </div>
                                                         </div>
                                                         <div class="add-button-holder">
                                                             <div class="btn-group" class="dropdown m-2">
-                                                                <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-danger">Add</button>
-                                                                <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-success">
+                                                                    <i class="fas fa-plus"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                     <span class="sr-only">Toggle Dropdown</span>
                                                                 </button>
                                                                 <div class="dropdown-menu" :aria-labelledby="'add-item-button-' + fieldIndex">
@@ -219,10 +230,16 @@
                                                         <div v-for="(dropdownValue, dropdownIndex) of field.values" class="input-group mb-3">
                                                             <input type="text" class="form-control" aria-label="Text input with remove button" v-model="dropdownValue.text">
                                                             <div class="input-group-append">
-                                                                <button class="btn btn-outline-secondary" v-on:click="removeOption(field, fieldIndex, dropdownValue, dropdownIndex)" type="button">-</button>
+                                                                <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, dropdownValue, dropdownIndex)" type="button">
+                                                                    <i class="fas fa-minus"></i>
+                                                                </button>
                                                             </div>
                                                         </div>
-                                                        <button v-on:click="addNewOption(field)" type="button" class="btn btn-secondary rounded">+</button>
+                                                        <div class="add-button-holder">
+                                                            <button v-on:click="addNewOption(field)" type="button" class="btn btn-success rounded">
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                      @*File attachment*@ 
                                                     <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core'"
@@ -274,7 +291,7 @@
                                                 </label>
                                             </div>
 
-                                            <div toggle-class="text-decoration-none" class="dropdown m-2">
+                                            <div toggle-class="text-decoration-none" class="dropdown">
                                                 <button class="btn btn-secondary" type="button" :id="'ellipsis-button-' + fieldIndex" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="fas fa-ellipsis-h"></i>
                                                 </button>

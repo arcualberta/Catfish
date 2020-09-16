@@ -1,4 +1,8 @@
-﻿#edit-field-form-page .form-container {
+﻿#edit-field-form-page .input-group textarea {
+	resize: vertical;
+}
+
+#edit-field-form-page .form-container {
 	padding-left: 15px;
 	padding-right: 15px;
 }
@@ -47,9 +51,14 @@
 	border-top: 1px solid rgba(0,0,0,.125);
 }
 
+/*Same with this one */
+#edit-field-form-page .input-group .input-group-text {
+	background-color: #e9ecef;
+	border: 1px solid #ced4da;
+}
+
 #edit-field-form-page .flex-li{
 	display:flex;
-	align-items: baseline;
 }
 
 #edit-field-form-page .field-item-label{
@@ -147,7 +156,9 @@
 	color: white;
 	font-weight: unset;
 	text-transform: unset;
-	display:flex;
+	display: flex;
+	border: solid 1px #222;
+	border-top-left-radius: 0;
 }
 
 #edit-field-form-page .card-header input[type='checkbox']:checked {
@@ -209,6 +220,7 @@
 	align-items: end;
 	flex: 1;
 	min-width: 200px;
+	padding: 0.75rem 0rem;
 }
 
 #edit-field-form-page .filetype-checkbox-holder {
