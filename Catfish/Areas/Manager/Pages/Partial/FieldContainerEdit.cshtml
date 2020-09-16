@@ -65,7 +65,7 @@
 
                                 <div class="field-card-contents">
                                     <div class="sitemap-item card-header">
-                                        <a v-on:click="toggleDropdown(field.id)" class="handle-holder" data-parent="#accordion" data-toggle="collapse" :href="'#collapse-' + fieldIndex ">
+                                        <a v-on:click="toggleDropdown(field.id)" class="handle-holder" :data-target="'#collapse-' + fieldIndex " data-toggle="collapse" >
                                             <div class="handle">
                                                 <i :class="{ 'fas fa-chevron-down': !dropdowns[field.id].isCollapsed, 'fas fa-chevron-right': dropdowns[field.id].isCollapsed}"></i>
                                             </div>
@@ -103,7 +103,7 @@
                                     
                                     </div>
 
-                                    <div :id="'collapse-' + fieldIndex " class="collapse in collapsing-items">
+                                    <div :id="'collapse-' + fieldIndex " data-parent="#accordion" class="collapse in collapsing-items">
                                         <div class="card-header" style="text-transform:none;padding-bottom: 0;">
                                             <h4>
                                                 Field Title
@@ -152,10 +152,10 @@
                                             </ul>
                                         </div>
 
-                                        <div v-if="(field.$type != 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core') && field.$type != 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core'" >
+                                        <div v-if="(field.$type != 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core')" > <!-- && field.$type != 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' -->
                                             <div class="card-header" style="text-transform:none;">
                                                 <h4>
-                                                    Appearance
+                                                    Settings
                                                 </h4>
                                                 <div style="padding: .75rem 0rem;">
                                                      @*Short Answer*@ 
@@ -163,8 +163,15 @@
                                                         class="form-control" readonly placeholder="Short answer"/>
                                                      @*Long Answer*@
                                                     <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' ">
-                                                        <quill-editor disabled :ref="'richtext' + fieldIndex">
-                                                        </quill-editor>
+                                                        <div class="richtext-checkbox">
+                                                            <input class="form-check-input" type="checkbox" v-model="field.isRichTextArea" :value="field.isRichTextArea"
+                                                            :id="'richtext-checkbox-' + fieldIndex">
+                                                            <label class="form-check-label" :for="'richtext-checkbox-' + fieldIndex">
+                                                                <h6 style="margin-bottom:0;">Allow formatted text</h6>
+                                                            </label>
+                                                        </div>
+                                                        <!--<quill-editor disabled :ref="'richtext' + fieldIndex">
+                                                        </quill-editor>-->
                                                     </div>
                                                      @*Radio*@ 
                                                     <div v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">
