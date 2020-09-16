@@ -186,13 +186,40 @@ if (document.getElementById("edit-field-form-page")) {
             },
 
             /**
-             * Checks all options - ie user has checked 'Any' option in File Upload
+             * Checks all options - ie user has checked 'Any' option in File Upload.
+             * If all already checked, uncheck them all
              * @param {any} field
              */
             checkAllFileTypes(field) {
-                field.values = [];
-                field.values = this.fileTypes;
-                //need to not add value 'any'!
+                if (field.values.indexOf("any") > -1) {
+                    let index = field.values.indexOf("any");
+                    field.values.splice(index, 1);
+				}
+
+                if (field.values.length == this.fileTypes.length) {
+                    //uncheck all
+                    field.values = [];
+                } else {
+                    //check all
+                    field.values = [];
+                    field.values = this.fileTypes;
+				}
+
+            },
+
+            /**
+             * Checks if the checkboxes are all checked and will check 'any',
+             * or if 'any' is checked and the user unchecks a checkbox, uncheck 'any'
+             * @param {any} field
+             */
+            checkCheckboxState(field, fieldIndex) {
+                if (field.values.length == this.fileTypes.length) {
+                    //check the 'any' box
+                    document.getElementById("filetype-checkbox-" + fieldIndex + "-" + "any").checked = true;
+                } else {
+                    //uncheck the 'any' box
+                    document.getElementById("filetype-checkbox-" + fieldIndex + "-" + "any").checked = false;
+				}
             },
 
             /**
