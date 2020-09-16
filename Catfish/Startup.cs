@@ -162,6 +162,8 @@ namespace Catfish
                   policy => policy.RequireClaim("Create Submission"));
             });
 
+            services.AddHttpContextAccessor();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

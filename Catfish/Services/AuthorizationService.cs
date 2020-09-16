@@ -1,8 +1,10 @@
 ﻿using Catfish.Core.Models;
+using Microsoft.AspNetCore.Http;
 using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Catfish.Services
@@ -10,9 +12,11 @@ namespace Catfish.Services
     public class AuthorizationService : IAuthorizationService
     {
         public readonly AppDbContext _db;
-        public AuthorizationService(AppDbContext db)
+        public readonly IHttpContextAccessor _httpContextAccessor;
+        public AuthorizationService(AppDbContext db, IHttpContextAccessor httpContextAccessor)
         {
             _db = db;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public bool IsAuthorize()
@@ -53,9 +57,16 @@ namespace Catfish.Services
                 
         }
 
-        public List<ItemTemplate> GetSubmissionTemplateList()
+        public IList<ItemTemplate> GetSubmissionTemplateList()
         {
-            throw new NotImplementedException();
+            string loggedUserRole = GetLoggedUserRole();
+
+            return _db.ItemTemplates.ToList();
+        }
+
+        public string GetLoggedUserRole()
+        {
+            return _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
         }
 
         /// <summary>

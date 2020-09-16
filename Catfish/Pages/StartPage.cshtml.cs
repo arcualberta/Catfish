@@ -11,19 +11,19 @@ namespace Catfish.Pages
 {
     public class StartPageModel : CatfishPageModelModel
     {
-        protected readonly IEntityTemplateService _entityTemplateService;
+        //protected readonly IAuthorizationService _authorizationService;
         public IList<ItemTemplate> ItemTemplates { get; set; }
         //public StartPageModel(IAuthorizationService auth, ISubmissionService serv, IEntityTemplateService temp)
         //    : base(auth, serv)
-        public StartPageModel(IEntityTemplateService temp)
-            : base(null, null)
+        public StartPageModel(IAuthorizationService authorizationService)
+            : base(authorizationService,null)
         {
-            _entityTemplateService = temp;
+            
         }
 
         public void OnGet()
         {
-            ItemTemplates = _entityTemplateService.GetItemTemplates();
+            ItemTemplates = _authorizationSertvice.GetSubmissionTemplateList();
         }
     }
 }
