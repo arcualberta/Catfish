@@ -126,7 +126,7 @@ namespace Catfish.Services
 
                 var siteContent = await _siteService.GetContentByIdAsync(siteId).ConfigureAwait(false);
                 var workflowPageSettings = siteContent.Regions.WorkflowPagesContent;
-                if(workflowPageSettings.CreateSubmissionEntryPage == true)
+                if (workflowPageSettings.CreateSubmissionEntryPage == true)
                 {
                     //Making sure the submission-entry page exists
                     Guid? submissionEntryPageId = GetSystemPageId(siteId, "SubmissionEntryPage", true,
@@ -134,42 +134,11 @@ namespace Catfish.Services
 
                     //Making sure this page has at least one block of SubmissionEntryList
                     var page = await _pageService.GetByIdAsync(submissionEntryPageId.Value).ConfigureAwait(false);
-                    if(page.Blocks.Where(b => typeof(SubmissionEntryList).IsAssignableFrom(Type.GetType(b.Type))).Any() == false)
+                    if (page.Blocks.Where(b => typeof(SubmissionTemplateList).IsAssignableFrom(Type.GetType(b.Type))).Any() == false)
                     {
-                        page.Blocks.Add(new SubmissionEntryList());
+                        page.Blocks.Add(new SubmissionTemplateList());
                         await _pageService.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
                     }
-
-                    ////SystemPage pageInfo = _db.SystemPages
-                    ////    .Where(pg => pg.PageKey == "SubmissionEntryPage" && pg.SiteId == siteId)
-                    ////    .FirstOrDefault();
-
-                    ////bool createPage = false;
-                    ////if (pageInfo == null)
-                    ////{
-                    ////    pageInfo = new SystemPage() { PageKey = "SubmissionEntryPage", SiteId = siteId };
-                    ////    _db.SystemPages.Add(pageInfo);
-                    ////    createPage = true;
-                    ////}
-                    ////else
-                    ////{
-                    ////    var page = await _pageService.GetByIdAsync(pageInfo.PageId).ConfigureAwait(false);
-                    ////    if (page == null)
-                    ////        createPage = true;
-                    ////}
-
-                    ////if (createPage)
-                    ////{
-                    ////    var page = await _pageService.CreateAsync<StandardPage>().ConfigureAwait(false);
-                    ////    page.SiteId = siteId;
-                    ////    page.Published = DateTime.Now;
-                    ////    page.Title = workflowPageSettings.SubmissionEntryPage;
-                    ////    if (string.IsNullOrEmpty(page.Title))
-                    ////        page.Title = "Start a Submission";
-                    ////    await _pageService.SaveAsync<StandardPage>(page).ConfigureAwait(false);
-                    ////    pageInfo.PageId = page.Id;
-                    ////    _db.SaveChanges();
-                    ////}
                 }
             }
         }

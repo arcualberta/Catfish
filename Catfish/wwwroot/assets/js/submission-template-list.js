@@ -1,6 +1,6 @@
 ﻿/* global piranha component registration */
 /* 1st parameter is the component name */
-Vue.component("submission-entry-list", {
+Vue.component("submission-template-list", {
     props: ["uid", "toolbar", "model"],
 
     methods: {
