@@ -104,6 +104,7 @@
 	text-decoration: none;
 	color: white;
 	min-width: 0px;
+	cursor: pointer;
 }
 
 #edit-field-form-page .handle-drag:hover,
