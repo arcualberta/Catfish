@@ -94,7 +94,7 @@
 #edit-field-form-page .handle-holder {
 	text-decoration: none;
 	color: white;
-	max-width: 430px;
+	min-width: 0px;
 }
 
 #edit-field-form-page .handle-drag:hover,
@@ -139,6 +139,7 @@
 
 #edit-field-form-page .field-card-contents {
 	border-left: 1px solid rgba(0,0,0,.125);
+	min-width: 0px;
 }
 
 #edit-field-form-page .field-card-contents .sitemap-item.card-header {
@@ -146,6 +147,7 @@
 	color: white;
 	font-weight: unset;
 	text-transform: unset;
+	display:flex;
 }
 
 #edit-field-form-page .card-header input[type='checkbox']:checked {
