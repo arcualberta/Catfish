@@ -23,5 +23,8 @@ namespace Catfish.Services
         public List<string> GetUserRoles();
 
         public EntityTemplate GetTemplate();
+
+        public void InitSiteStructure(Guid siteId, string siteTypeId);
+
     }
 }

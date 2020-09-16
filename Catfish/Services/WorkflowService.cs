@@ -3,6 +3,7 @@ using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
+using Catfish.Models.SiteTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,5 +109,12 @@ namespace Catfish.Services
             throw new NotImplementedException();
         }
 
+        public void InitSiteStructure(Guid siteId, string siteTypeId)
+        {
+            if(siteTypeId == typeof(WorkflowPortal).Name)
+            {
+                var site = "test";
+            }
+        }
     }
 }

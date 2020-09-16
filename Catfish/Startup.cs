@@ -24,6 +24,12 @@ using Catfish.Core.Models.Solr;
 using Catfish.Core.Services.Solr;
 using Catfish.Services;
 using Catfish.ModelBinders;
+using Catfish.Models.SiteTypes;
+using Catfish.Core.Models;
+using System.Net.Sockets;
+using Piranha.Services;
+using Piranha.Manager.Services;
+using Piranha.Models;
 
 namespace Catfish
 {
@@ -230,17 +236,25 @@ namespace Catfish
                 .AddType(typeof(Models.StandardPage))
                  .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MediaPage))
-                 .AddType(typeof(Pages.Workflow.SubmissionEntryListModel))
                 .Build()
                 .DeleteOrphans();
+
             var postTypeBuilder = new Piranha.AttributeBuilder.PostTypeBuilder(api)
                 .AddType(typeof(Models.StandardPost))
                 .Build()
                 .DeleteOrphans();
-            //var siteTypeBuilder = new Piranha.AttributeBuilder.SiteTypeBuilder(api)
-            //    .AddType(typeof(Models.StandardSite))
-            //    .Build()
-            //    .DeleteOrphans();
+
+            var siteTypeBuilder = new Piranha.AttributeBuilder.SiteTypeBuilder(api)
+                .AddType(typeof(CatfishWebsite))
+                .AddType(typeof(WorkflowPortal))
+                .Build()
+                .DeleteOrphans();
+
+            App.Hooks.SiteContent.RegisterOnAfterSave((siteContent) => {
+                var scope = app.ApplicationServices.CreateScope();
+                var service = scope.ServiceProvider.GetService<IWorkflowService>();
+                service.InitSiteStructure(siteContent.Id, siteContent.TypeId);
+            });
 
             // /Register middleware
             app.UseStaticFiles();

@@ -86,7 +86,7 @@
     <footer class="border-top footer text-muted">
         <div class="container">
             @{
-                var currentSite = await WebApp.Site.GetContentAsync<CustomSite>();
+                var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
                 var javascriptCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Javascript == null)
                     ? "" : currentSite.FooterContents.Javascript.Value;
                 var cssCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Css == null)
