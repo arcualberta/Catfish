@@ -57,7 +57,8 @@ namespace Catfish.Services
                 role.NormalizedName = newRole.ToUpper();
                 _piranhaDb.Roles.Add(role);
             }
-                
+
+            _piranhaDb.SaveChanges();
         }
 
         public IList<ItemTemplate> GetSubmissionTemplateList()
