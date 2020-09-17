@@ -6,6 +6,7 @@ using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Models;
 using Catfish.Models.Blocks;
 using Catfish.Models.SiteTypes;
+using Piranha;
 using Piranha.AspNetCore.Services;
 using Piranha.Models;
 using Piranha.Services;
@@ -22,18 +23,16 @@ namespace Catfish.Services
         public static readonly string DefaultLanguage = "en";
 
         private AppDbContext _db { get; set; }
-        private ISiteService _siteService { get; set; }
-        private IPageService _pageService { get; set; }
+        private IApi _api;
 
         private EntityTemplate mEntityTemplate;
 
         private Item mItem;
 
-        public WorkflowService(AppDbContext db, ISiteService siteService, IPageService pageService)
+        public WorkflowService(AppDbContext db, ISiteService siteService, IPageService pageService, IApi api)
         {
             _db = db;
-            _siteService = siteService;
-            _pageService = pageService;
+            _api = api;
         }
 
         public EntityTemplate GetModel()
@@ -122,9 +121,9 @@ namespace Catfish.Services
         {
             if(siteTypeId == typeof(WorkflowPortal).Name)
             {
-                var site = await _siteService.GetByIdAsync(siteId).ConfigureAwait(false);
+                var site = await _api.Sites.GetByIdAsync(siteId).ConfigureAwait(false);
 
-                var siteContent = await _siteService.GetContentByIdAsync(siteId).ConfigureAwait(false);
+                var siteContent = await _api.Sites.GetContentByIdAsync(siteId).ConfigureAwait(false);
                 var workflowPageSettings = siteContent.Regions.WorkflowPagesContent;
                 if (workflowPageSettings.CreateSubmissionEntryPage == true)
                 {
@@ -133,11 +132,11 @@ namespace Catfish.Services
                         string.IsNullOrEmpty(workflowPageSettings.SubmissionEntryPage) ? "Start a Submission" : workflowPageSettings.SubmissionEntryPage);
 
                     //Making sure this page has at least one block of SubmissionEntryList
-                    var page = await _pageService.GetByIdAsync(submissionEntryPageId.Value).ConfigureAwait(false);
-                    if (page.Blocks.Where(b => typeof(SubmissionTemplateList).IsAssignableFrom(Type.GetType(b.Type))).Any() == false)
+                    var page = await _api.Pages.GetByIdAsync(submissionEntryPageId.Value).ConfigureAwait(false);
+                    if (page.Blocks.Where(b => typeof(SubmissionEntryPointList).IsAssignableFrom(Type.GetType(b.Type))).Any() == false)
                     {
-                        page.Blocks.Add(new SubmissionTemplateList());
-                        await _pageService.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
+                        page.Blocks.Add(new SubmissionEntryPointList());
+                        await _api.Pages.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
                     }
                 }
             }
@@ -148,14 +147,14 @@ namespace Catfish.Services
             SystemPage pageInfo = _db.SystemPages
                 .Where(pg => pg.PageKey == "SubmissionEntryPage" && pg.SiteId == siteId)
                 .FirstOrDefault();
-
+            
             if (createIfNotExist == false)
             {
                 if (pageInfo == null)
                     return null;
                 else
                 {
-                    var t = _pageService.GetByIdAsync(pageInfo.PageId);
+                    var t = _api.Pages.GetByIdAsync(pageInfo.PageId);
                     t.Wait();
                     return t.Result.Id;
                 }
@@ -166,7 +165,7 @@ namespace Catfish.Services
                     pageInfo = new SystemPage() { PageKey = pageKey, SiteId = siteId };
                 else
                 {
-                    var t = _pageService.GetByIdAsync(pageInfo.PageId);
+                    var t = _api.Pages.GetByIdAsync(pageInfo.PageId);
                     t.Wait();
                     var loadedPage = t.Result;
 
@@ -175,7 +174,7 @@ namespace Catfish.Services
                 }
 
                 //If the execution comes here, then we need to create a new page and update the page info entry
-                var task = _pageService.CreateAsync<StandardPage>();
+                var task = _api.Pages.CreateAsync<StandardPage>();
                 task.Wait();
 
                 StandardPage newPage = task.Result;
@@ -183,7 +182,7 @@ namespace Catfish.Services
                 newPage.Published = DateTime.Now;
                 newPage.Title = pageTitleIfShouldCreate;
 
-                Task savePageTask = _pageService.SaveAsync<StandardPage>(newPage);
+                Task savePageTask = _api.Pages.SaveAsync<StandardPage>(newPage);
                 savePageTask.Wait();
 
                 pageInfo.PageId = newPage.Id;
