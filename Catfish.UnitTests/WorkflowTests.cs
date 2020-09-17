@@ -206,24 +206,29 @@ namespace Catfish.UnitTests
             //      of the root data object, the created time-stamp of the root data object, and the satust of the
             //      entity.
 
-
+            //Defininig groups
+            WorkflowGroup musicGroup = workflow.AddGroup("Music");
+            WorkflowGroup dancingGroup = workflow.AddGroup("Dancing");
+            WorkflowGroup arcGroup = workflow.AddGroup("ARC");
+            
+            
             //Defininig roles
             WorkflowRole centralAdminRole = workflow.AddRole("Admin");
             WorkflowRole departmentAdmin = workflow.AddRole("DepartmentlAdmin");
             WorkflowRole ownerRole = workflow.AddRole("Owner");
 
 
-            //Defining users
-            WorkflowUser centralAdminUser = workflow.AddUser("centraladmin@ualberta.ca");
-            centralAdminUser.AddRoleReference(centralAdminRole.Id, "Central Admin User");
-            WorkflowUser deptUser = workflow.AddUser("departmentadmin1@ualberta.ca");
-            deptUser.AddRoleReference(departmentAdmin.Id, "Dept. Admin User");
-            deptUser = workflow.AddUser("departmentadmin2@ualberta.ca");
-            deptUser.AddRoleReference(departmentAdmin.Id, "Dept. Admin User");
+            ////Defining users
+            //WorkflowUser centralAdminUser = workflow.AddUser("centraladmin@ualberta.ca");
+            //centralAdminUser.AddRoleReference(centralAdminRole.Id, "Central Admin User");
+            //WorkflowUser deptUser = workflow.AddUser("departmentadmin1@ualberta.ca");
+            //deptUser.AddRoleReference(departmentAdmin.Id, "Dept. Admin User");
+            //deptUser = workflow.AddUser("departmentadmin2@ualberta.ca");
+            //deptUser.AddRoleReference(departmentAdmin.Id, "Dept. Admin User");
 
             //Defining triggers
             EmailTrigger centralAdminNotificationEmailTrigger = workflow.AddTrigger("ToCentralAdmin", "SendEmail");
-            centralAdminNotificationEmailTrigger.AddRecipientByEmail(centralAdminUser.Email);
+            centralAdminNotificationEmailTrigger.AddRecipientByEmail("centraladmin@ualberta.ca");
             centralAdminNotificationEmailTrigger.AddTemplate(centralAdminNotification.Id, "Central Admin Notification");
 
             EmailTrigger ownerSubmissionNotificationEmailTrigger = workflow.AddTrigger("ToOwnerOnDocumentSubmission", "SendEmail");
@@ -512,6 +517,7 @@ namespace Catfish.UnitTests
             moveToDraftAction.AddAuthorization(centralAdminRole.Id);
 
             auth.EnsureUserRoles(workflow.GetWorkflowRoles());
+            auth.EnsureGroups(workflow.GetWorkflowGroups(), template.Id);
             //Save the template to the database
             AppDbContext db = _testHelper.Db;
             EntityTemplate oldTemplate = db.EntityTemplates.Where(et => et.TemplateName == template.TemplateName).FirstOrDefault();

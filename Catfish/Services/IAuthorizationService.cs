@@ -11,6 +11,8 @@ namespace Catfish.Services
         bool IsAuthorize();
         List<string> GetAccessibleActions();
 
+        void EnsureGroups(List<string> workflowGroups, Guid templateId);
+
         void EnsureUserRoles(List<string> roles);
 
         /// <summary>

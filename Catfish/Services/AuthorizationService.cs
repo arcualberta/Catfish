@@ -45,7 +45,7 @@ namespace Catfish.Services
             var oldRoles = _piranhaDb.Roles.ToList();
 
             foreach (var role in oldRoles)
-                databaseRoles.Add(role.Name);
+                databaseRoles.Add(role.NormalizedName);
 
             List<string> newRoles = workflowRoles.Except(databaseRoles).ToList();
 
@@ -59,6 +59,31 @@ namespace Catfish.Services
             }
 
             _piranhaDb.SaveChanges();
+        }
+
+        /// <summary>
+        /// Iterates through the given set of groups and adds them to the system's groups if they
+        /// do not already exist in the system.
+        /// </summary>
+        /// <param name="groups"></param>
+        public void EnsureGroups(List<string> workflowGroups, Guid templateId)
+        {
+            List<string> databaseGroups = new List<string>();
+            var oldGroups = _appDb.Groups.ToList();
+
+            foreach (var group in oldGroups)
+                databaseGroups.Add(group.Name);
+
+            List<string> newGroups = workflowGroups.Except(databaseGroups).ToList();
+
+            foreach (var newGroup in newGroups)
+            {
+                Group group = new Group();
+                group.Id = Guid.NewGuid();
+                group.Name = newGroup;
+                group.EntityTemplateId = templateId;
+                _appDb.Groups.Add(group);
+            }
         }
 
         public IList<ItemTemplate> GetSubmissionTemplateList()
