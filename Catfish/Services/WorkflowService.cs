@@ -134,9 +134,9 @@ namespace Catfish.Services
 
                     //Making sure this page has at least one block of SubmissionEntryList
                     var page = await _pageService.GetByIdAsync(submissionEntryPageId.Value).ConfigureAwait(false);
-                    if (page.Blocks.Where(b => typeof(SubmissionTemplateList).IsAssignableFrom(Type.GetType(b.Type))).Any() == false)
+                    if (page.Blocks.Where(b => typeof(SubmissionEntryPointList).IsAssignableFrom(Type.GetType(b.Type))).Any() == false)
                     {
-                        page.Blocks.Add(new SubmissionTemplateList());
+                        page.Blocks.Add(new SubmissionEntryPointList());
                         await _pageService.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
                     }
                 }

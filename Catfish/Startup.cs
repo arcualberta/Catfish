@@ -341,7 +341,7 @@ namespace Catfish
             App.Blocks.Register<CssBlock>();
             App.Blocks.Register<ContactFormBlock>();
             App.Blocks.Register<NavigationBlock>();
-            App.Blocks.Register<SubmissionTemplateList>();
+            App.Blocks.Register<SubmissionEntryPointList>();
         }
         private static void RegisterCustomStyles()
         {
