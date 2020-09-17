@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Models.Blocks
 {
-    [BlockType(Name = "Submission Template List", Category = "Workflow", Component = "submission-template-list", Icon = "fas fa-th-list")]
+    [BlockType(Name = "Submission Entry Point List", Category = "Workflow", Component = "submission-entry-point-list", Icon = "fas fa-th-list")]
     public class SubmissionEntryPointList : Block
     {
         public  TextField CssVal { get; set; }
