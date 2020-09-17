@@ -65,8 +65,8 @@
 
                                 <div class="field-card-contents">
                                     <div class="sitemap-item card-header">
-                                        <a v-on:click="toggleDropdown(field.id)" class="handle-holder" :data-target="'#collapse-' + fieldIndex " data-toggle="collapse" >
-                                            <div class="handle">
+                                        <a v-on:click="toggleDropdown(field.id)" class="handle-holder" :data-target="'#collapse-' + field.id " data-toggle="collapse" >
+                                            <div class="handle">{{dropdowns[field.id].isCollapsed}}
                                                 <i :class="{ 'fas fa-chevron-down': !dropdowns[field.id].isCollapsed, 'fas fa-chevron-right': dropdowns[field.id].isCollapsed}"></i>
                                             </div>
                                             <div v-if="field.$type" class="title-header">
@@ -103,7 +103,7 @@
                                     
                                     </div>
 
-                                    <div :id="'collapse-' + fieldIndex " data-parent="#accordion" class="collapse in collapsing-items">
+                                    <div :id="'collapse-' + field.id " data-parent="#accordion" class="collapse collapsing-items">
                                         <div class="card-header" style="text-transform:none;padding-bottom: 0;">
                                             <h4>
                                                 Field Title

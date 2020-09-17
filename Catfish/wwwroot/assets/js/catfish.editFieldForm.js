@@ -37,7 +37,7 @@ if (document.getElementById("edit-field-form-page")) {
                 id: null,
                 modelType: null,
 
-                dropdowns: null,
+                dropdowns: {},
                 //temp, need to call an api for these
                 fieldTypes: [
                     { text: 'Select One', value: null },
@@ -169,19 +169,20 @@ if (document.getElementById("edit-field-form-page")) {
              * @param event
              */
             cloneItem(event) {
-                console.log(event);
                 let newItem = {};
 
                 //hardcoded until templates are provided
                 newItem = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate)); //event.Template
                 
                 newItem.id = uuidv1();
-                this.dropdowns[newItem.id] = {
-                    isCollapsed: false,
+                this.$set(this.dropdowns, newItem.id, {
+                    isCollapsed: true,
                     showDescription: false,
                     hasOtherOption: false
-                };
+                });
                 //newItem.Guid = uuidv1();
+                console.log(newItem);
+                console.log(this.dropdowns);
                 return newItem;
             },
 
@@ -231,6 +232,7 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} fieldId the field's index to open/close
              */
             toggleDropdown(fieldId) {
+                console.log(this.dropdowns[fieldId]);
                 this.dropdowns[fieldId].isCollapsed === true ? this.dropdowns[fieldId].isCollapsed = false : this.dropdowns[fieldId].isCollapsed = true;
                 //this.lastDropdownAction = this.dropdowns[fieldId].isCollapsed;
                 //this.assessExpandOrCollapseAll();
@@ -337,32 +339,30 @@ if (document.getElementById("edit-field-form-page")) {
               * Fetches and loads the data from an API call
               * */
             load() {
-                var self = this;
+                //var self = this;
                 return new Promise((resolve, reject) => {
-                    piranha.permissions.load(function () {
-                        fetch(piranha.baseUrl + self.getString + self.itemId)
-                            .then(function (response) { return response.json(); })
-                            .then(function (result) {
-                                self.names = result.name;
-                                self.descriptions = result.description;
-                                self.fields = result.fields;
-                                self.id = result.id;
-                                self.modelType = result.modelType;
+                    piranha.permissions.load(() => {
+                        fetch(piranha.baseUrl + this.getString + this.itemId)
+                            .then((response) => { return response.json(); })
+                            .then((result) => {
+                                this.names = result.name;
+                                this.descriptions = result.description;
+                                this.fields = result.fields;
+                                this.id = result.id;
+                                this.modelType = result.modelType;
 
-                                self.finishedGET = true;
-                                //self.collections = result.collections;
-                                //self.updateBindings = true;
+                                this.finishedGET = true;
+                                //this.collections = result.collections;
+                                //this.updateBindings = true;
                                 console.log(result);
 
-                                self.dropdowns = new function () {
-                                    for (let field of self.fields) {
-                                        this[field.id] = {
-                                            isCollapsed: true,
-                                            showDescription: false,
-                                            hasOtherOption: false
-                                        }
+                                for (let field of this.fields) {
+                                    this.$set(this.dropdowns, field.id, {
+                                        isCollapsed: true,
+                                        showDescription: false,
+                                        hasOtherOption: false
+                                    });
                                     }
-                                }
 
                                 //temporary until templates sent, remove afterwards
                                 for (let field of result.fields) {
@@ -372,36 +372,36 @@ if (document.getElementById("edit-field-form-page")) {
                                         defaultTextfieldTemplate.name.values[0].value = '';
                                         defaultTextfieldTemplate.selected = null;
 
-                                        self.tmpTextfieldTemplate = defaultTextfieldTemplate;
+                                        this.tmpTextfieldTemplate = defaultTextfieldTemplate;
 									}
 
                                 }
 
                                 //temp set other values that i dont have sample data for
                                 //guessing for what will be needed, adjust when dummy data given
-                                self.tmpTextAreaTemplate = JSON.parse(JSON.stringify(self.tmpTextfieldTemplate));
-                                self.tmpTextAreaTemplate.$type = 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core';
+                                this.tmpTextAreaTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
+                                this.tmpTextAreaTemplate.$type = 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core';
 
-                                self.tmpRadioTemplate = JSON.parse(JSON.stringify(self.tmpTextfieldTemplate));
-                                self.tmpRadioTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core';
+                                this.tmpRadioTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
+                                this.tmpRadioTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core';
                                 //not sure if this would be right, will likely need to adjust this
-                                self.tmpRadioTemplate.values = [];
+                                this.tmpRadioTemplate.values = [];
 
-                                self.tmpCheckboxTemplate = JSON.parse(JSON.stringify(self.tmpTextfieldTemplate));
-                                self.tmpCheckboxTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core';
+                                this.tmpCheckboxTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
+                                this.tmpCheckboxTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core';
                                 //not sure if this would be right, will likely need to adjust this
-                                self.tmpCheckboxTemplate.values = [];
+                                this.tmpCheckboxTemplate.values = [];
 
-                                self.tmpDropdownTemplate = JSON.parse(JSON.stringify(self.tmpTextfieldTemplate));
-                                self.tmpDropdownTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core';
+                                this.tmpDropdownTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
+                                this.tmpDropdownTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core';
                                 //not sure if this would be right, will likely need to adjust this
-                                self.tmpDropdownTemplate.values = [];
+                                this.tmpDropdownTemplate.values = [];
 
-                                self.tmpFileAttachmentTemplate = JSON.parse(JSON.stringify(self.tmpTextfieldTemplate));
-                                self.tmpFileAttachmentTemplate.$type = 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core';
+                                this.tmpFileAttachmentTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
+                                this.tmpFileAttachmentTemplate.$type = 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core';
 
-                                self.tmpDisplayFieldTemplate = JSON.parse(JSON.stringify(self.tmpTextfieldTemplate));
-                                self.tmpDisplayFieldTemplate.$type = 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core';
+                                this.tmpDisplayFieldTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
+                                this.tmpDisplayFieldTemplate.$type = 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core';
 
                                 resolve();
 
@@ -421,6 +421,7 @@ if (document.getElementById("edit-field-form-page")) {
                     $(document).ready(function () {
                         $('[data-toggle="popover"]').popover();
                     });
+                    console.log("check on dropdowns:", this.dropdowns); //why are these only ids? how is this workign at all???
                 });
         }
     });
