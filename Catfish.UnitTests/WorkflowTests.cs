@@ -107,12 +107,25 @@ namespace Catfish.UnitTests
         public void CalendarManagementSystemWorkflowBuildTest()
         {
             string lang = "en";
-            ItemTemplate template = new ItemTemplate();
-            template.TemplateName = "Calendar Management System Workflow";
-            template.Name.SetContent("Calendar Management System Workflow");
+            string templateName = "Calendar Management System Workflow";
 
             IWorkflowService ws = _testHelper.WorkflowService;
+            AppDbContext db = _testHelper.Db;
             IAuthorizationService auth = _testHelper.AuthorizationService;
+
+
+            ItemTemplate template = db.ItemTemplates
+                .Where(et => et.TemplateName == templateName)
+                .FirstOrDefault();
+
+            if (template == null)
+            {
+                template = new ItemTemplate();
+                db.ItemTemplates.Add(template);
+                template.TemplateName = templateName;
+                template.Name.SetContent(templateName);
+            }
+
             ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
@@ -190,13 +203,11 @@ namespace Catfish.UnitTests
             calendarChangeForm.CreateField<TextField>("Course Number", lang, true);
             calendarChangeForm.CreateField<TextArea>("Change Description", lang, true);
             
-            //Defininig the Submission revise Request form
-            DataItem commentsForm = template.GetDataItem("Submission Revise Request", true, lang);
+            //Defininig the Submission revision Request form
+            DataItem commentsForm = template.GetDataItem("Submission Revision Request", true, lang);
             commentsForm.IsRoot = false;
             commentsForm.SetDescription("This is the form to be filled by the central admin when a submission revision is requested.", lang);
-            commentsForm.CreateField<TextField>("Course Name", lang, true);
-            commentsForm.CreateField<TextField>("Course Number", lang, true);
-            commentsForm.CreateField<TextArea>("Comments", lang, true);
+            commentsForm.CreateField<TextArea>("Request Details", lang, true);
 
             //Defining name mappings
             //TODO: Add functionality for EntityTemplate to allow us define a sequence of metadata set fields
@@ -518,16 +529,17 @@ namespace Catfish.UnitTests
 
             auth.EnsureUserRoles(workflow.GetWorkflowRoles());
             auth.EnsureGroups(workflow.GetWorkflowGroups(), template.Id);
+
             //Save the template to the database
-            AppDbContext db = _testHelper.Db;
-            EntityTemplate oldTemplate = db.EntityTemplates.Where(et => et.TemplateName == template.TemplateName).FirstOrDefault();
-            if (oldTemplate == null)
-                db.EntityTemplates.Add(template);
-            else
-            {
-                template.Id = oldTemplate.Id;
-                oldTemplate.Content = template.Content;
-            }
+            ////AppDbContext db = _testHelper.Db;
+            ////EntityTemplate oldTemplate = db.EntityTemplates.Where(et => et.TemplateName == template.TemplateName).FirstOrDefault();
+            ////if (oldTemplate == null)
+            ////    db.EntityTemplates.Add(template);
+            ////else
+            ////{
+            ////    template.Id = oldTemplate.Id;
+            ////    oldTemplate.Content = template.Content;
+            ////}
 
             db.SaveChanges();
 

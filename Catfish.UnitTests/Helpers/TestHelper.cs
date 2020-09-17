@@ -52,6 +52,7 @@ namespace Catfish.Tests.Helpers
                 );
 
             //Additiona Piranha Services
+            services.AddScoped<IApi, Piranha.Api>();
             services.AddScoped<ISiteService, Piranha.Services.SiteService>();
             services.AddScoped<IPageService, Piranha.Services.PageService>();
             services.AddScoped<IParamService, ParamService>();
