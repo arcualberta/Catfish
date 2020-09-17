@@ -92,28 +92,27 @@ namespace Catfish.Services
             string loggedUserRole = GetLoggedUserRole();
             
             
-            IList<ItemTemplate> itemTemplates = null;
+            IList<ItemTemplate> itemTemplates = _appDb.ItemTemplates.ToList();
 
-            //get all templates
-            var templateList = _appDb.ItemTemplates.ToList();
-
-            foreach (ItemTemplate template in templateList) 
-            { 
-                if (ValidateItemTemplate(template, loggedUserRole))
-                    itemTemplates.Add(template);
-            }
             return itemTemplates;
         }
 
-        public bool ValidateItemTemplate(ItemTemplate template, string loggedUserRole)
+        
+        public Guid GetLoggedUserId()
         {
-            return true;
+            string userName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var userDetails = _piranhaDb.Users.Where(ud => ud.UserName == userName).FirstOrDefault();
+
+            return userDetails.Id;
         }
 
         public string GetLoggedUserRole()
         {
             return _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
         }
+
+        
 
         /// <summary>
         /// Returns the entity template identified by the argument "id" provided
