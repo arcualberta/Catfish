@@ -1,0 +1,10 @@
+﻿@page "~/manager/groups"
+@model Catfish.Areas.Manager.Pages.GroupListModel
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewBag.Title = Localizer.Page["Groups"];
+    ViewBag.MenuItem = "Groups";
+}
+

@@ -461,6 +461,23 @@ namespace Catfish
                 Css = "fas fa-object-ungroup"
                
             });
+
+
+            ///
+            ///  Group List Content Menus
+            ///
+
+            menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "System").FirstOrDefault();
+            idx = 0;
+
+            menubar.Items.Insert(idx++, new MenuItem
+            {
+                InternalId = "Groups",
+                Name = "Groups",
+                Route = "/manager/groups/",
+                Css = "fas fa-object-group"
+
+            });
         }
     }
 }

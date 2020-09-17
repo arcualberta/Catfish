@@ -225,7 +225,7 @@ namespace Catfish.UnitTests
             
             //Defininig roles
             WorkflowRole centralAdminRole = workflow.AddRole("Admin");
-            WorkflowRole departmentAdmin = workflow.AddRole("DepartmentlAdmin");
+            WorkflowRole departmentAdmin = workflow.AddRole("DepartmentAdmin");
             WorkflowRole ownerRole = workflow.AddRole("Owner");
 
 

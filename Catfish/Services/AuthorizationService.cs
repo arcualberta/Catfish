@@ -45,7 +45,7 @@ namespace Catfish.Services
             var oldRoles = _piranhaDb.Roles.ToList();
 
             foreach (var role in oldRoles)
-                databaseRoles.Add(role.NormalizedName);
+                databaseRoles.Add(role.Name);
 
             List<string> newRoles = workflowRoles.Except(databaseRoles).ToList();
 

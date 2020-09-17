@@ -146,7 +146,7 @@ namespace Catfish.Core.Models.Contents.Workflow
             var roleList = Roles.ToList();
 
             foreach (var role in roleList)
-                roles.Add(role.Value.ToUpper());
+                roles.Add(role.Value);
             return roles;
         }
 
