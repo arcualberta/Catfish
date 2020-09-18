@@ -25,6 +25,7 @@ namespace Catfish.Helper
         string GetGoogleClientSecret();
         string GetGoogleServiceAccountFileName();
         bool GetEnabledLocalLogin();
+        bool GetEnabledBreadcrumb();
     }
 
     public class ReadAppConfiguration : ICatfishAppConfiguration
@@ -137,6 +138,11 @@ namespace Catfish.Helper
         public bool GetEnabledLocalLogin()
         {
             return GetValue("SiteConfig:EnabledLocalLogin", false);
+        }
+
+        public bool GetEnabledBreadcrumb()
+        {
+            return GetValue("SiteConfig:EnabledBreadcrumb", false);
         }
     }
 }
