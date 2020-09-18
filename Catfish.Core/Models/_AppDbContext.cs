@@ -11,7 +11,7 @@ using Piranha.AspNetCore.Identity.SQLServer;
    
 namespace Catfish.Core.Models
 {
-    public class AppDbContext : IdentitySQLServerDb
+    public class AppDbContext : DbContext
     {
         /// <summary>
         /// The application config.
@@ -19,7 +19,7 @@ namespace Catfish.Core.Models
         public IConfiguration Configuration { get; set; }
 
         //public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
-        public AppDbContext(DbContextOptions<IdentitySQLServerDb> options, IConfiguration configuration)
+        public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
             : base(options)
         {
             Configuration = configuration;
@@ -85,6 +85,9 @@ namespace Catfish.Core.Models
         public DbSet<EntityTemplate> EntityTemplates { get; set; }
         public DbSet<ItemTemplate> ItemTemplates { get; set; }
         public DbSet<CollectionTemplate> CollectionTemplates { get; set; }
+        public DbSet<SystemPage> SystemPages { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<UserGroup> UserGroups { get; set; }
 
         /*
                 public DbSet<XmlModel> XmlModels { get; set; }

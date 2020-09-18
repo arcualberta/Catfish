@@ -5,8 +5,8 @@ using Piranha.Extend.Fields;
 
 namespace Catfish.Models.SiteTypes
 {
-    [SiteType(Title ="Custom Site")]
-    public class CustomSite : SiteContent<CustomSite>
+    [SiteType(Title = "Basic Site")]
+    public class CatfishWebsite : SiteContent<CatfishWebsite>
     {
         [Region(Title = "Footer", Display = RegionDisplayMode.Setting)]
         public Footer FooterContents { get; set; }

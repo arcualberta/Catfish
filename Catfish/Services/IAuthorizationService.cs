@@ -11,6 +11,8 @@ namespace Catfish.Services
         bool IsAuthorize();
         List<string> GetAccessibleActions();
 
+        void EnsureGroups(List<string> workflowGroups, Guid templateId);
+
         void EnsureUserRoles(List<string> roles);
 
         /// <summary>
@@ -20,7 +22,7 @@ namespace Catfish.Services
         /// submissions, for example in cases of public surveys.
         /// </summary>
         /// <returns></returns>
-        List<ItemTemplate> GetSubmissionTemplateList();
+        IList<ItemTemplate> GetSubmissionTemplateList();
 
         /// <summary>
         /// Returns the entity template identified by the argument "id" provided

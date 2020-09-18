@@ -1,18 +1,25 @@
 ﻿using Catfish.Core.Models;
+using Microsoft.AspNetCore.Http;
 using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Catfish.Services
 {
     public class AuthorizationService : IAuthorizationService
     {
-        public readonly AppDbContext _db;
-        public AuthorizationService(AppDbContext db)
+        public readonly PiranhaDbContext _piranhaDb;
+        public readonly AppDbContext _appDb;
+
+        public readonly IHttpContextAccessor _httpContextAccessor;
+        public AuthorizationService(AppDbContext adb, PiranhaDbContext pdb, IHttpContextAccessor httpContextAccessor)
         {
-            _db = db;
+            _appDb = adb;
+            _piranhaDb = pdb;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public bool IsAuthorize()
@@ -35,7 +42,7 @@ namespace Catfish.Services
         public void EnsureUserRoles(List<string> workflowRoles)
         {
             List<string> databaseRoles = new List<string>();
-            var oldRoles = _db.Roles.ToList();
+            var oldRoles = _piranhaDb.Roles.ToList();
 
             foreach (var role in oldRoles)
                 databaseRoles.Add(role.Name);
@@ -48,15 +55,64 @@ namespace Catfish.Services
                 role.Id = Guid.NewGuid();
                 role.Name = newRole;
                 role.NormalizedName = newRole.ToUpper();
-                _db.Roles.Add(role);
+                _piranhaDb.Roles.Add(role);
             }
-                
+
+            _piranhaDb.SaveChanges();
         }
 
-        public List<ItemTemplate> GetSubmissionTemplateList()
+        /// <summary>
+        /// Iterates through the given set of groups and adds them to the system's groups if they
+        /// do not already exist in the system.
+        /// </summary>
+        /// <param name="groups"></param>
+        public void EnsureGroups(List<string> workflowGroups, Guid templateId)
         {
-            throw new NotImplementedException();
+            List<string> databaseGroups = new List<string>();
+            var oldGroups = _appDb.Groups.ToList();
+
+            foreach (var group in oldGroups)
+                databaseGroups.Add(group.Name);
+
+            List<string> newGroups = workflowGroups.Except(databaseGroups).ToList();
+
+            foreach (var newGroup in newGroups)
+            {
+                Group group = new Group();
+                group.Id = Guid.NewGuid();
+                group.Name = newGroup;
+                group.EntityTemplateId = templateId;
+                _appDb.Groups.Add(group);
+            }
         }
+
+        public IList<ItemTemplate> GetSubmissionTemplateList()
+        {  
+            //get current logged user
+            string loggedUserRole = GetLoggedUserRole();
+            
+            
+            IList<ItemTemplate> itemTemplates = _appDb.ItemTemplates.ToList();
+
+            return itemTemplates;
+        }
+
+        
+        public Guid GetLoggedUserId()
+        {
+            string userName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var userDetails = _piranhaDb.Users.Where(ud => ud.UserName == userName).FirstOrDefault();
+
+            return userDetails.Id;
+        }
+
+        public string GetLoggedUserRole()
+        {
+            return _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
+        }
+
+        
 
         /// <summary>
         /// Returns the entity template identified by the argument "id" provided
