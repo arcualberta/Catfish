@@ -158,6 +158,7 @@ namespace Catfish
             
             //Catfish services
             services.AddScoped<EntityTypeService>();
+            services.AddScoped<UserGroupService>();
             services.AddScoped<DbEntityService>();
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
