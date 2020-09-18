@@ -9,8 +9,7 @@ namespace Catfish.Core.Models
     public class Group
     {
         public Guid Id { get; set; }
-        public Guid EntityTemplateId { get; set; }
-        public EntityTemplate EntityTemplate { get; set; }
+        public string Status { get; set; }
         public string Name { get; set; }
     }
 }

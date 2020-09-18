@@ -88,6 +88,7 @@ namespace Catfish.Core.Models
         public DbSet<SystemPage> SystemPages { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
+        public DbSet<GroupTemplate> GroupTemplates { get; set; }
 
         /*
                 public DbSet<XmlModel> XmlModels { get; set; }
