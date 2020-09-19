@@ -107,12 +107,25 @@ namespace Catfish.UnitTests
         public void CalendarManagementSystemWorkflowBuildTest()
         {
             string lang = "en";
-            ItemTemplate template = new ItemTemplate();
-            template.TemplateName = "Calendar Management System Workflow";
-            template.Name.SetContent("Calendar Management System Workflow");
+            string templateName = "Calendar Management System Workflow";
 
             IWorkflowService ws = _testHelper.WorkflowService;
+            AppDbContext db = _testHelper.Db;
             IAuthorizationService auth = _testHelper.AuthorizationService;
+
+
+            ItemTemplate template = db.ItemTemplates
+                .Where(et => et.TemplateName == templateName)
+                .FirstOrDefault();
+
+            if (template == null)
+            {
+                template = new ItemTemplate();
+                db.ItemTemplates.Add(template);
+                template.TemplateName = templateName;
+                template.Name.SetContent(templateName);
+            }
+
             ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
@@ -190,13 +203,11 @@ namespace Catfish.UnitTests
             calendarChangeForm.CreateField<TextField>("Course Number", lang, true);
             calendarChangeForm.CreateField<TextArea>("Change Description", lang, true);
             
-            //Defininig the Submission revise Request form
-            DataItem commentsForm = template.GetDataItem("Submission Revise Request", true, lang);
+            //Defininig the Submission revision Request form
+            DataItem commentsForm = template.GetDataItem("Submission Revision Request", true, lang);
             commentsForm.IsRoot = false;
             commentsForm.SetDescription("This is the form to be filled by the central admin when a submission revision is requested.", lang);
-            commentsForm.CreateField<TextField>("Course Name", lang, true);
-            commentsForm.CreateField<TextField>("Course Number", lang, true);
-            commentsForm.CreateField<TextArea>("Comments", lang, true);
+            commentsForm.CreateField<TextArea>("Request Details", lang, true);
 
             //Defining name mappings
             //TODO: Add functionality for EntityTemplate to allow us define a sequence of metadata set fields
@@ -206,16 +217,21 @@ namespace Catfish.UnitTests
             //      of the root data object, the created time-stamp of the root data object, and the satust of the
             //      entity.
 
-
+            //Defininig groups
+            WorkflowGroup musicGroup = workflow.AddGroup("Music");
+            WorkflowGroup dancingGroup = workflow.AddGroup("Dancing");
+            WorkflowGroup arcGroup = workflow.AddGroup("ARC");
+            
+            
             //Defininig roles
             WorkflowRole centralAdminRole = workflow.AddRole("Admin");
-            //WorkflowRole departmentAdmin = workflow.AddRole("DepartmentlAdmin");
-            //WorkflowRole ownerRole = workflow.AddRole("Owner");
+            WorkflowRole departmentAdmin = workflow.AddRole("DepartmentAdmin");
+            WorkflowRole ownerRole = workflow.AddRole("Owner");
 
 
-            //Defining users
-            WorkflowUser centralAdminUser = workflow.AddUser("centraladmin@ualberta.ca");
-            centralAdminUser.AddRoleReference(centralAdminRole.Id, "Central Admin User");
+            ////Defining users
+            //WorkflowUser centralAdminUser = workflow.AddUser("centraladmin@ualberta.ca");
+            //centralAdminUser.AddRoleReference(centralAdminRole.Id, "Central Admin User");
             //WorkflowUser deptUser = workflow.AddUser("departmentadmin1@ualberta.ca");
             //deptUser.AddRoleReference(departmentAdmin.Id, "Dept. Admin User");
             //deptUser = workflow.AddUser("departmentadmin2@ualberta.ca");
@@ -223,7 +239,7 @@ namespace Catfish.UnitTests
 
             //Defining triggers
             EmailTrigger centralAdminNotificationEmailTrigger = workflow.AddTrigger("ToCentralAdmin", "SendEmail");
-            centralAdminNotificationEmailTrigger.AddRecipientByEmail(centralAdminUser.Email);
+            centralAdminNotificationEmailTrigger.AddRecipientByEmail("centraladmin@ualberta.ca");
             centralAdminNotificationEmailTrigger.AddTemplate(centralAdminNotification.Id, "Central Admin Notification");
 
             EmailTrigger ownerSubmissionNotificationEmailTrigger = workflow.AddTrigger("ToOwnerOnDocumentSubmission", "SendEmail");
@@ -260,8 +276,8 @@ namespace Catfish.UnitTests
             postActionSubmit.AddTriggerRefs("0", centralAdminNotificationEmailTrigger.Id, "Central Admin Notification Email Trigger");
             postActionSubmit.AddTriggerRefs("1", ownerSubmissionNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
-            ////Defining authorizatios
-            //startSubmissionAction.AddAuthorization(departmentAdmin.Id);
+            //Defining authorizatios
+            startSubmissionAction.AddAuthorization(departmentAdmin.Id);
 
             // Edit submission related workflow items
             //Defining actions
@@ -317,8 +333,8 @@ namespace Catfish.UnitTests
 
 
 
-            ////Defining authorizatios
-            //editSubmissionAction.AddAuthorization(departmentAdmin.Id);
+            //Defining authorizatios
+            editSubmissionAction.AddAuthorization(departmentAdmin.Id);
 
 
             // Delete submission related workflow items
@@ -338,7 +354,7 @@ namespace Catfish.UnitTests
             deleteSubmissionAction.AddStateReferances(savedState.Id);
 
             //Defining authorizatios
-            //deleteSubmissionAction.AddAuthorization(ownerRole.Id);
+            deleteSubmissionAction.AddAuthorization(ownerRole.Id);
 
 
             // Purge submission related workflow items
@@ -357,7 +373,7 @@ namespace Catfish.UnitTests
             purgeSubmissionAction.AddStateReferances(deleteState.Id);
 
             //Defining authorizatios
-            //purgeSubmissionAction.AddAuthorization(ownerRole.Id);
+            purgeSubmissionAction.AddAuthorization(ownerRole.Id);
 
 
             // Revision request related workflow items
@@ -512,16 +528,18 @@ namespace Catfish.UnitTests
             moveToDraftAction.AddAuthorization(centralAdminRole.Id);
 
             auth.EnsureUserRoles(workflow.GetWorkflowRoles());
+            auth.EnsureGroups(workflow.GetWorkflowGroups(), template.Id);
+
             //Save the template to the database
-            AppDbContext db = _testHelper.Db;
-            EntityTemplate oldTemplate = db.EntityTemplates.Where(et => et.TemplateName == template.TemplateName).FirstOrDefault();
-            if (oldTemplate == null)
-                db.EntityTemplates.Add(template);
-            else
-            {
-                template.Id = oldTemplate.Id;
-                oldTemplate.Content = template.Content;
-            }
+            ////AppDbContext db = _testHelper.Db;
+            ////EntityTemplate oldTemplate = db.EntityTemplates.Where(et => et.TemplateName == template.TemplateName).FirstOrDefault();
+            ////if (oldTemplate == null)
+            ////    db.EntityTemplates.Add(template);
+            ////else
+            ////{
+            ////    template.Id = oldTemplate.Id;
+            ////    oldTemplate.Content = template.Content;
+            ////}
 
             db.SaveChanges();
 
@@ -529,6 +547,8 @@ namespace Catfish.UnitTests
             template.Data.Save("..\\..\\..\\..\\Examples\\CalendarManagementWorkflow_generared.xml");
 
         }
+
+
 
         [Test]
         public void TestEntityTemplateLoad()

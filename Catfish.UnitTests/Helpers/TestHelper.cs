@@ -8,8 +8,10 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Piranha;
 using Piranha.AspNetCore.Identity.SQLServer;
 using Piranha.Data.EF.SQLServer;
+using Piranha.Services;
 using SolrNet;
 using System;
 
@@ -45,6 +47,19 @@ namespace Catfish.Tests.Helpers
             services.AddDbContext<AppDbContext>(options => options
                 .UseSqlServer(dbConnectionString)
                 );
+            services.AddDbContext<PiranhaDbContext>(options => options
+                .UseSqlServer(dbConnectionString)
+                );
+
+            //Additiona Piranha Services
+            services.AddScoped<IApi, Piranha.Api>();
+            services.AddScoped<ISiteService, Piranha.Services.SiteService>();
+            services.AddScoped<IPageService, Piranha.Services.PageService>();
+            services.AddScoped<IParamService, ParamService>();
+            services.AddScoped<IMediaService, Piranha.Services.MediaService>();
+            services.AddScoped<IStorage, Piranha.Local.FileStorage>();
+            services.AddScoped<ISiteService, SiteService>();
+
 
             //Registering other services
             services.AddScoped<SeedingService>();

@@ -4,14 +4,16 @@ using Catfish.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Catfish.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200916230956_CreatedUserGrouping")]
+    partial class CreatedUserGrouping
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,36 +56,17 @@ namespace Catfish.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Catfish_Groups");
-                });
-
-            modelBuilder.Entity("Catfish.Core.Models.GroupTemplate", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("EntityTemplateId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("GroupId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EntityTemplateId");
 
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("Catfish_GroupTemplates");
+                    b.ToTable("Catfish_Groups");
                 });
 
             modelBuilder.Entity("Catfish.Core.Models.Relationship", b =>
@@ -134,9 +117,6 @@ namespace Catfish.Core.Migrations
                     b.Property<Guid>("GroupId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -144,7 +124,7 @@ namespace Catfish.Core.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Catfish_UserGroupRoles");
+                    b.ToTable("Catfish_UserGroups");
                 });
 
             modelBuilder.Entity("Catfish.Core.Models.Collection", b =>
@@ -205,17 +185,11 @@ namespace Catfish.Core.Migrations
                         .HasForeignKey("PrimaryCollectionId");
                 });
 
-            modelBuilder.Entity("Catfish.Core.Models.GroupTemplate", b =>
+            modelBuilder.Entity("Catfish.Core.Models.Group", b =>
                 {
                     b.HasOne("Catfish.Core.Models.EntityTemplate", "EntityTemplate")
                         .WithMany()
                         .HasForeignKey("EntityTemplateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Catfish.Core.Models.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
