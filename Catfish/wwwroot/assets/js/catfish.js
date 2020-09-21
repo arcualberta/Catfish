@@ -18,3 +18,52 @@ function switchLang(lang,  supportLang){
      let newUrl = origin + "/" + lang + pathname;
      window.location.replace(newUrl);
 }
+
+function getBreadcrumbTrail(menuTitle, callback) {
+    let bc = [];
+    sitemap.forEach(function (item) {
+        if (item.items.length > 0) {
+            item.items.forEach(function (subItem) {
+                //str1.toUpperCase() === str2.toUpperCase(); 
+                if (subItem.title.toUpperCase() == menuTitle.toUpperCase()) {
+                    bc = [{ label: item.title, link: item.permalink }, { label: subItem.title, link: subItem.permalink }];
+                    callback(bc);
+                }
+            });
+        } else {
+            if (item.title.toUpperCase() == menuTitle.toUpperCase()) {
+
+                bc = [{ label: item.title, link: item.permalink }]
+               
+                callback(bc);
+            }
+        }
+    });
+}
+
+function updateBreadcrumb(){
+    let _href = window.location.href;
+    let urls = _href.split("/");
+    let $thisText = (urls[urls.length - 1]).replace(/-/g, " ");//replace "-" with " "
+    let $bc = `<li class="breadcrumb-item"><a href="/" class="fa fa-home"></a></li>`;
+
+    if ($thisText !== "") {
+        getBreadcrumbTrail($thisText, function (bTrail) { //using callback func
+
+
+            bTrail.forEach(function (itm) {
+
+                if (itm.link === "/") {// home page
+                    $bc = `<li class="breadcrumb-item"><a href="/" class="fa fa-home"></a></li>`;
+
+                } else {
+                    $bc += "<li class='breadcrumb-item'><a href='" + itm.link + "'>" + itm.label + "</a></li>";
+                }
+            });
+        });
+    }
+    $('.breadcrumb').empty().append($bc)
+
+    return false;
+
+}
