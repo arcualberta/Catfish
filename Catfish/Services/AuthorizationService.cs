@@ -81,7 +81,6 @@ namespace Catfish.Services
                 Group group = new Group();
                 group.Id = Guid.NewGuid();
                 group.Name = newGroup;
-                group.EntityTemplateId = templateId;
                 _appDb.Groups.Add(group);
             }
         }

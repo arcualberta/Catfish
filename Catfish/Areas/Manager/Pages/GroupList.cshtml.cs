@@ -6,6 +6,7 @@ using Catfish.Core.Models;
 using Catfish.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Catfish.Areas.Manager.Pages
 {

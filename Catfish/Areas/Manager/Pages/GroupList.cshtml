@@ -1,6 +1,6 @@
 ﻿@page "~/manager/groups"
 @model Catfish.Areas.Manager.Pages.GroupListModel
-@*@inject IAuthorizationService Auth*@
+@using Microsoft.AspNetCore.Authorization Auth
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
@@ -25,6 +25,16 @@
                 <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Groups"]</li>
             </ol>
         </nav>
+        <div class="container-fluid">
+            <div class="top-nav">
+                @*@if ((await Auth.AuthorizeAsync(User, Piranha.AspNetCore.Identity.Permissions.RolesAdd)).Succeeded)
+        {*@
+                <a href="@Url.Action("Add")" class="btn btn-labeled btn-primary pull-right">
+                    <i class="fas fa-plus"></i>@Localizer.General["Add"]
+                </a>
+                @* } *@
+            </div>
+        </div>
     </div>
 </div>
 <div class="container-fluid">

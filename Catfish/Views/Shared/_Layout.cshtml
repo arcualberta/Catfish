@@ -74,10 +74,17 @@
 
 
                     </div>
-                </div>
+                </div> @* row*@
 
-            </div>
+                @* Bread crumb *@
+                @if (_catfishAppConfig.GetEnabledBreadcrumb())
+                {
+                    <div class="breadcrumb-container col-sm">
+                        <partial name="Partial/_Breadcrumb.cshtml" />
+                    </div>
 
+                }
+            </div> @*container*@
         </header>
     }
     @RenderBody()
