@@ -31,6 +31,7 @@ using Piranha.Services;
 using Piranha.Manager.Services;
 using Piranha.Models;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace Catfish
 {
@@ -173,6 +174,7 @@ namespace Catfish
             services.AddSolrNet<SolrItemModel>(solrString);
             services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
             services.AddScoped<IQueryService, QueryService>();
+            services.AddScoped<IPageIndexingService, PageIndexingService>();
 
 
             //Configure claims
@@ -267,11 +269,7 @@ namespace Catfish
                 .Build()
                 .DeleteOrphans();
 
-            App.Hooks.SiteContent.RegisterOnAfterSave((siteContent) => {
-                var scope = app.ApplicationServices.CreateScope();
-                var service = scope.ServiceProvider.GetService<IWorkflowService>();
-                service.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
-            });
+            AddHooks(app);
 
             // /Register middleware
             app.UseStaticFiles();
@@ -479,6 +477,31 @@ namespace Catfish
                 Css = "fas fa-object-group"
 
             });
+        }
+
+        private void AddHooks(IApplicationBuilder app)
+        {
+            //Hook for generating pages required by a certain type of site
+            App.Hooks.SiteContent.RegisterOnAfterSave((siteContent) => {
+                var scope = app.ApplicationServices.CreateScope();
+                var service = scope.ServiceProvider.GetService<IWorkflowService>();
+                service.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
+            });
+
+            //Hook for indexing contents of a page right after the page is saved.
+            App.Hooks.Pages.RegisterOnAfterSave((page) => {
+                var scope = app.ApplicationServices.CreateScope();
+                var service = scope.ServiceProvider.GetService<IPageIndexingService>();
+                service.IndexPage(page);
+            });
+
+            //Hook for indexing contents of a page right after the page is saved.
+            App.Hooks.Posts.RegisterOnAfterSave((post) => {
+                var scope = app.ApplicationServices.CreateScope();
+                var service = scope.ServiceProvider.GetService<IPageIndexingService>();
+                service.IndexPost(post);
+            });
+
         }
     }
 }
