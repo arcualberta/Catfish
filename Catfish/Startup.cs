@@ -33,6 +33,7 @@ using Piranha.Models;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using Catfish.Authorization;
+using Catfish.Areas.Manager.Access;
 
 namespace Catfish
 {
@@ -186,6 +187,16 @@ namespace Catfish
             {
                 options.AddPolicy("CreateEntityPolicy",
                   policy => policy.RequireClaim("Create Submission"));
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsAdd", x => x.RequireClaim("GroupsAdd"));
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsList", x => x.RequireClaim("GroupsList"));
             });
 
             services.AddHttpContextAccessor();
@@ -384,32 +395,32 @@ namespace Catfish
             {
                 Title = "Add Groups",
                 Name = "GroupsAdd",
-                Category = "Group"
+                Category = "Groups"
             });
 
             App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
             {
                 Title = "Edit Groups",
                 Name = "GroupsEdit",
-                Category = "Group"
+                Category = "Groups"
             });
             App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
             {
                 Title = "Save Groups",
                 Name = "GroupsSave",
-                Category = "Group"
+                Category = "Groups"
             });
             App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
             {
                 Title = "Delete Groups",
                 Name = "GroupsDelete",
-                Category = "Group"
+                Category = "Groups"
             });
             App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
             {
                 Title = "List Group",
                 Name = "GroupsList",
-                Category = "Group"
+                Category = "Groups"
             });
 
         }
@@ -516,7 +527,7 @@ namespace Catfish
                 InternalId = "Groups",
                 Name = "Groups",
                 Route = "/manager/groups/",
-                Policy = Permission.Sites,
+                Policy = CatfishPermission.GroupsList,
                 Css = "fas fa-object-group"
 
             });

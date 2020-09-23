@@ -1,6 +1,8 @@
 ﻿@page "~/manager/groups"
 @model Catfish.Areas.Manager.Pages.GroupListModel
 @inject Piranha.Manager.ManagerLocalizer Localizer
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
@@ -26,9 +28,10 @@
         </nav>
         <div class="container-fluid">
             <div class="top-nav">
-                @if (User.IsInRole(Catfish.Areas.Manager.Access.CatfishPermission.GroupsAdd))
+                @if ((AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.CatfishPermission.GroupsAdd)).Result.Succeeded)
+                //await Auth.AuthorizeAsync(User, Piranha.Manager.Permission.SitesAdd)).Succeeded
                 {
-                    
+
                     <a href="@Url.Action("Add")" class="btn btn-labeled btn-primary pull-right">
                         <i class="fas fa-plus"></i>@Localizer.General["Add"]
                     </a>
