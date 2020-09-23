@@ -131,28 +131,6 @@ namespace Catfish
             services.AddMemoryCache();
             services.AddPiranhaMemoryCache();
 
-            // March 6 2020 -- Add Custom Permissions
-            services.AddAuthorization(o => 
-            { //read secure posts
-                o.AddPolicy("ReadSecurePosts", policy => {
-                    policy.RequireClaim("ReadSecurePosts", "ReadSecurePosts");
-                });
-            });
-
-            services.AddAuthorization(o =>
-            {
-                o.AddPolicy("CreateSubmission", policy => {
-                    policy.RequireClaim("CreateSubmission", "CreateSubmission");
-                });
-            });
-
-            services.AddAuthorization(o =>
-            {
-                o.AddPolicy("CreateSubmission", policy => {
-                    policy.RequireClaim("CreateSubmission", "CreateSubmission");
-                });
-            });
-
             //Additiona Piranha Services
             services.AddScoped<ISiteService, Piranha.Services.SiteService>();
             services.AddScoped<IPageService, Piranha.Services.PageService>();
@@ -183,21 +161,8 @@ namespace Catfish
 
 
             //Configure claims
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("CreateEntityPolicy",
-                  policy => policy.RequireClaim("Create Submission"));
-            });
+            AddManagerClaims(services);
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("GroupsAdd", x => x.RequireClaim("GroupsAdd"));
-            });
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("GroupsList", x => x.RequireClaim("GroupsList"));
-            });
 
             services.AddHttpContextAccessor();
 
@@ -389,6 +354,15 @@ namespace Catfish
             });
 
         }
+
+        /// <summary>
+        /// This method defines the custom permissions for manager pages. These are added
+        /// as checkboxes for each role, which we can use to select in order to grant the 
+        /// respective permissions. Simultaneously, these permissions are also added to the 
+        /// Piranha User Claims table. Then these claims can be tied into policies (see 
+        /// AddManagerClaims() method).
+        /// Reference: https://stackoverflow.com/questions/39125347/how-to-get-claim-inside-asp-net-core-razor-view
+        /// </summary>
         private static void AddManagerPermissions()
         {
             App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
@@ -425,6 +399,53 @@ namespace Catfish
 
         }
 
+        /// <summary>
+        /// Defining a series of policies. Each policy includes the permissions each
+        /// user need to possess in order to grant access to a claim through the policy.
+        /// These policies are used in views to authorize access using claim-based authorization appriach.
+        /// Reference: https://stackoverflow.com/questions/39125347/how-to-get-claim-inside-asp-net-core-razor-view
+        /// </summary>
+        /// <param name="services"></param>
+        private static void AddManagerClaims(IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CreateEntityPolicy",
+                  policy => policy.RequireClaim("Create Submission"));
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsAdd", x => x.RequireClaim("GroupsAdd"));
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsList", x => x.RequireClaim("GroupsList"));
+            });
+
+            services.AddAuthorization(o =>
+            { //read secure posts
+                o.AddPolicy("ReadSecurePosts", policy => {
+                    policy.RequireClaim("ReadSecurePosts", "ReadSecurePosts");
+                });
+            });
+
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy("CreateSubmission", policy => {
+                    policy.RequireClaim("CreateSubmission", "CreateSubmission");
+                });
+            });
+
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy("CreateSubmission", policy => {
+                    policy.RequireClaim("CreateSubmission", "CreateSubmission");
+                });
+            });
+
+        }
 
 
         private static void AddPartialViews()
