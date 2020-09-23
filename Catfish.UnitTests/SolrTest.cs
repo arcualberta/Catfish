@@ -11,7 +11,7 @@ namespace Catfish.UnitTests
 {   
     public class SolrTest
     {
-        private ISolrIndexService<SolrItemModel> solrIndexService;
+        private ISolrIndexService<SolrItemModel> solrItemIndexService;
 
         [Test]
         public void SolrAdd()
@@ -26,7 +26,7 @@ namespace Catfish.UnitTests
                 Updated = DateTime.Now,
                 PrimaryCollectionId = null,
             };
-            solrIndexService.AddUpdate(new SolrItemModel(model));
+            solrItemIndexService.AddUpdate(new SolrItemModel(model));
         }
 
     }

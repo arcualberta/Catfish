@@ -26,7 +26,7 @@
         </nav>
         <div class="container-fluid">
             <div class="top-nav">
-                @if (User.IsInRole(Piranha.AspNetCore.Identity.Permissions.RolesAdd))
+                @if (User.IsInRole(Catfish.Areas.Manager.Access.CatfishPermission.GroupsAdd))
                 {
                     
                     <a href="@Url.Action("Add")" class="btn btn-labeled btn-primary pull-right">

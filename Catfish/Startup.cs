@@ -32,6 +32,7 @@ using Piranha.Manager.Services;
 using Piranha.Models;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using Catfish.Authorization;
 
 namespace Catfish
 {
@@ -170,9 +171,12 @@ namespace Catfish
             services.AddScoped<IEntityTemplateService, EntityTemplateService>();
 
             // Solr services
-            string solrString = Configuration.GetSection("SolarConfiguration:solrItemURL").Value;
-            services.AddSolrNet<SolrItemModel>(solrString);
+            string solrItemString = Configuration.GetSection("SolarConfiguration:solrItemURL").Value;
+            string solrPagesString = Configuration.GetSection("SolarConfiguration:solrPageURL").Value;
+            services.AddSolrNet<SolrItemModel>(solrItemString);
+            services.AddSolrNet<SolrPageContentModel>(solrPagesString);
             services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
+            services.AddScoped<ISolrIndexService<SolrPageContentModel>, SolrIndexService<SolrPageContentModel, ISolrOperations<SolrPageContentModel>>>();
             services.AddScoped<IQueryService, QueryService>();
             services.AddScoped<IPageIndexingService, PageIndexingService>();
 
@@ -309,6 +313,9 @@ namespace Catfish
             // March 6 2020 -- Add Custom Permissions
             AddCustomPermissions();
             AddWorkflowPermissions();
+
+            // September 23 2020 -- Add Group Permissions
+            AddManagerPermissions();
         }
 
         #region REGISTER CUSTOM COMPONENT
@@ -368,6 +375,41 @@ namespace Catfish
                 Title = "Create Submission",
                 Name = "CreateSubmission",
                 Category = "Group Title"
+            });
+
+        }
+        private static void AddManagerPermissions()
+        {
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "Add Groups",
+                Name = "GroupsAdd",
+                Category = "Group"
+            });
+
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "Edit Groups",
+                Name = "GroupsEdit",
+                Category = "Group"
+            });
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "Save Groups",
+                Name = "GroupsSave",
+                Category = "Group"
+            });
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "Delete Groups",
+                Name = "GroupsDelete",
+                Category = "Group"
+            });
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "List Group",
+                Name = "GroupsList",
+                Category = "Group"
             });
 
         }
@@ -474,6 +516,7 @@ namespace Catfish
                 InternalId = "Groups",
                 Name = "Groups",
                 Route = "/manager/groups/",
+                Policy = Permission.Sites,
                 Css = "fas fa-object-group"
 
             });

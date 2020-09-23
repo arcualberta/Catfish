@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models.Solr;
+using Catfish.Core.Services.Solr;
 using Piranha;
 using Piranha.Models;
 using System;
@@ -11,9 +12,11 @@ namespace Catfish.Services
     public class PageIndexingService : IPageIndexingService
     {
         private readonly IApi _api;
-        public PageIndexingService(IApi api)
+        protected ISolrIndexService<SolrPageContentModel> _solrIndexService;
+        public PageIndexingService(ISolrIndexService<SolrPageContentModel> srv, IApi api)
         {
             _api = api;
+            _solrIndexService = srv;
         }
 
         private IList<SolrPageContentModel> GetContents(Guid pageId)
