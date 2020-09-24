@@ -26,65 +26,86 @@ namespace Catfish.Services
 
         public void IndexPage(PageBase page)
         {
+            if (page == null || !page.IsPublished)
+                return;
 
-            //TODO after completing the following. Check whether the page save
-            //represents whether the save was related to just "saved" or "published".
-            //We should not call the following indexing code if the page was not actually
-            //published.
-
-            //Create an index entry for the page tile
-
-            // test both title for page is there and if the page is published
-            if (!string.IsNullOrWhiteSpace(page.Title) && page.IsPublished)
+            //Indexing the page title
+            if (!string.IsNullOrWhiteSpace(page.Title))
             {
-                SolrPageContentModel pagecontent = new SolrPageContentModel()
+                IndexInSolr(new SolrPageContentModel()
                 {
                     ContenType = SolrPageContentModel.eContentType.Page,
                     PageId = page.Id,
                     Title = page.Title,
-                    ParentId = page.ParentId,
-                    Excerpt = page.Excerpt
-                };
+                    ParentId = page.ParentId
+                });
+            }
 
-                //TODO: call the solr indexing service to index this entry.
-                IndexInSolr(pagecontent);
-
-                // go through blocks and submit content for indexing
-                // check for type of block to use  
-                if (true)
+            //Indexing the page excerpt
+            if (!string.IsNullOrWhiteSpace(page.Excerpt))
+            {
+                IndexInSolr(new SolrPageContentModel()
                 {
-                    var  i = 0;
-                    foreach (var blockpiece in page.Blocks)
-                    {
-                        string blocktype = blockpiece.Type;
-                        var blockcontent = new SolrPageContentModel()
-                        {
-                            ContenType = SolrPageContentModel.eContentType.Block,
-                            BlockId = blockpiece.Id,
-                            Title = "block  " + i + " from " + page.Title,
-                            ParentId = page.Id
+                    ContenType = SolrPageContentModel.eContentType.Page,
+                    PageId = page.Id,
+                    Excerpt = page.Excerpt,
+                    ParentId = page.ParentId
+                });
+            }
+
+            //Indexing all content blocks
+            foreach (var block in page.Blocks)
+                IndexBlock(block, page.Id);
+        }
+
+        public void IndexBlock(Block block, Guid ParentId)
+        {
+            if (block == null)
+                return;
+
+            //If the given block is an HtmlBlock or any specialization of it,
+            //then we index its body content
+            if (typeof(HtmlBlock).IsAssignableFrom(block.GetType()))
+            {
+                string text = (block as HtmlBlock).Body.Value;
+                IndexInSolr(new SolrPageContentModel()
+                {
+                    ContenType = SolrPageContentModel.eContentType.Block,
+                    BlockId = block.Id,
+                    ParentId = ParentId,
+                    Content = text
+                });
+            }
+
+            //If the given block is an TextBlock or any specialization of it,
+            //then we index its body content
+            if (typeof(TextBlock).IsAssignableFrom(block.GetType()))
+            {
+                string text = (block as TextBlock).Body.Value;
+                IndexInSolr(new SolrPageContentModel()
+                {
+                    ContenType = SolrPageContentModel.eContentType.Block,
+                    BlockId = block.Id,
+                    ParentId = ParentId,
+                    Content = text
+                });
+            }
+            //If the given block is an ColumnBlock or any specialization of it,
+            //then we index each block inside it
+
+            if (typeof(ColumnBlock).IsAssignableFrom(block.GetType()))
+            {
+                var children = (block as ColumnBlock).Items;
+                foreach (var child in children)
+                    IndexBlock(child, block.Id);
+            }
+
+        }
 
 
 
-                        };
-                        //blockcontent.Content = page.Blocks[i].ToString();
-                        //blockcontent.Content = page.Blocks[i].GetTitle();
-                        blockcontent.Content = blockpiece.ToString();
-                        IndexInSolr(blockcontent);
-                        i++;
-                    }
-                }
-             }
-                    
 
 
-                
-                
-         }
-
-
-
- 
 
         public void IndexPost(PostBase post)
         {
@@ -94,7 +115,7 @@ namespace Catfish.Services
 
         private void IndexInSolr(SolrPageContentModel data)
         {
-            Console.WriteLine(data.Content);
+            
 
         }
     }
