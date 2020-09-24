@@ -54,13 +54,23 @@
             {
                 <tr>
                     <td>
-                        <a href="@Url.Action("Edit", new {id = group.Id})">@group.Name</a>
+                        @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.CatfishPermission.GroupsEdit)).Succeeded)
+                        {
+                            <a href = "@Url.Action("Edit", new {id = group.Id})" > @group.Name</a>
+                        }
+                        else
+                        {
+                            <span class="title">@group.Name</span>
+                        }
                     </td>
                     <td class="actions one">
-                        <a class="danger" href="@Url.Action("Delete", new {id = group.Id})">
-                            <span class="fas fa-trash"></span>
-                        </a>
-                    </td>
+                        @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.CatfishPermission.GroupsDelete)).Succeeded)
+                        {
+                            <a class="danger" href="@Url.Action("Delete", new { id = group.Id })">
+                                <span class="fas fa-trash"></span>
+                            </a>
+                        }
+                        </td>
                 </tr>
             }
         </tbody>

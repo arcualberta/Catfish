@@ -423,6 +423,18 @@ namespace Catfish
             {
                 options.AddPolicy("GroupsList", x => x.RequireClaim("GroupsList"));
             });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsEdit", x => x.RequireClaim("GroupsEdit"));
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsSave", x => x.RequireClaim("GroupsSave"));
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsDelete", x => x.RequireClaim("GroupsDelete"));
+            });
 
             services.AddAuthorization(o =>
             { //read secure posts
