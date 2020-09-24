@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
   <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+
+  <UserSecretsId>fb287c84-b0b6-46e0-893a-86f23d79c05e</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Controllers\SetupController.cs" />

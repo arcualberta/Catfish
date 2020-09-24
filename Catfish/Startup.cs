@@ -32,6 +32,8 @@ using Piranha.Manager.Services;
 using Piranha.Models;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using Catfish.Authorization;
+using Catfish.Areas.Manager.Access;
 
 namespace Catfish
 {
@@ -129,28 +131,6 @@ namespace Catfish
             services.AddMemoryCache();
             services.AddPiranhaMemoryCache();
 
-            // March 6 2020 -- Add Custom Permissions
-            services.AddAuthorization(o => 
-            { //read secure posts
-                o.AddPolicy("ReadSecurePosts", policy => {
-                    policy.RequireClaim("ReadSecurePosts", "ReadSecurePosts");
-                });
-            });
-
-            services.AddAuthorization(o =>
-            {
-                o.AddPolicy("CreateSubmission", policy => {
-                    policy.RequireClaim("CreateSubmission", "CreateSubmission");
-                });
-            });
-
-            services.AddAuthorization(o =>
-            {
-                o.AddPolicy("CreateSubmission", policy => {
-                    policy.RequireClaim("CreateSubmission", "CreateSubmission");
-                });
-            });
-
             //Additiona Piranha Services
             services.AddScoped<ISiteService, Piranha.Services.SiteService>();
             services.AddScoped<IPageService, Piranha.Services.PageService>();
@@ -170,19 +150,19 @@ namespace Catfish
             services.AddScoped<IEntityTemplateService, EntityTemplateService>();
 
             // Solr services
-            string solrString = Configuration.GetSection("SolarConfiguration:solrItemURL").Value;
-            services.AddSolrNet<SolrItemModel>(solrString);
+            string solrItemString = Configuration.GetSection("SolarConfiguration:solrItemURL").Value;
+            string solrPagesString = Configuration.GetSection("SolarConfiguration:solrPageURL").Value;
+            services.AddSolrNet<SolrItemModel>(solrItemString);
+            services.AddSolrNet<SolrPageContentModel>(solrPagesString);
             services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
+            services.AddScoped<ISolrIndexService<SolrPageContentModel>, SolrIndexService<SolrPageContentModel, ISolrOperations<SolrPageContentModel>>>();
             services.AddScoped<IQueryService, QueryService>();
             services.AddScoped<IPageIndexingService, PageIndexingService>();
 
 
             //Configure claims
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("CreateEntityPolicy",
-                  policy => policy.RequireClaim("Create Submission"));
-            });
+            AddManagerClaims(services);
+
 
             services.AddHttpContextAccessor();
 
@@ -309,6 +289,9 @@ namespace Catfish
             // March 6 2020 -- Add Custom Permissions
             AddCustomPermissions();
             AddWorkflowPermissions();
+
+            // September 23 2020 -- Add Group Permissions
+            AddManagerPermissions();
         }
 
         #region REGISTER CUSTOM COMPONENT
@@ -372,6 +355,109 @@ namespace Catfish
 
         }
 
+        /// <summary>
+        /// This method defines the custom permissions for manager pages. These are added
+        /// as checkboxes for each role, which we can use to select in order to grant the 
+        /// respective permissions. Simultaneously, these permissions are also added to the 
+        /// Piranha User Claims table. Then these claims can be tied into policies (see 
+        /// AddManagerClaims() method).
+        /// Reference: https://stackoverflow.com/questions/39125347/how-to-get-claim-inside-asp-net-core-razor-view
+        /// </summary>
+        private static void AddManagerPermissions()
+        {
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "Add Groups",
+                Name = "GroupsAdd",
+                Category = "Groups"
+            });
+
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "Edit Groups",
+                Name = "GroupsEdit",
+                Category = "Groups"
+            });
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "Save Groups",
+                Name = "GroupsSave",
+                Category = "Groups"
+            });
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "Delete Groups",
+                Name = "GroupsDelete",
+                Category = "Groups"
+            });
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "List Group",
+                Name = "GroupsList",
+                Category = "Groups"
+            });
+
+        }
+
+        /// <summary>
+        /// Defining a series of policies. Each policy includes the permissions each
+        /// user need to possess in order to grant access to a claim through the policy.
+        /// These policies are used in views to authorize access using claim-based authorization appriach.
+        /// Reference: https://stackoverflow.com/questions/39125347/how-to-get-claim-inside-asp-net-core-razor-view
+        /// </summary>
+        /// <param name="services"></param>
+        private static void AddManagerClaims(IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CreateEntityPolicy",
+                  policy => policy.RequireClaim("Create Submission"));
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsAdd", x => x.RequireClaim("GroupsAdd"));
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsList", x => x.RequireClaim("GroupsList"));
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsEdit", x => x.RequireClaim("GroupsEdit"));
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsSave", x => x.RequireClaim("GroupsSave"));
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsDelete", x => x.RequireClaim("GroupsDelete"));
+            });
+
+            services.AddAuthorization(o =>
+            { //read secure posts
+                o.AddPolicy("ReadSecurePosts", policy => {
+                    policy.RequireClaim("ReadSecurePosts", "ReadSecurePosts");
+                });
+            });
+
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy("CreateSubmission", policy => {
+                    policy.RequireClaim("CreateSubmission", "CreateSubmission");
+                });
+            });
+
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy("CreateSubmission", policy => {
+                    policy.RequireClaim("CreateSubmission", "CreateSubmission");
+                });
+            });
+
+        }
 
 
         private static void AddPartialViews()
@@ -474,6 +560,7 @@ namespace Catfish
                 InternalId = "Groups",
                 Name = "Groups",
                 Route = "/manager/groups/",
+                Policy = CatfishPermission.GroupsList,
                 Css = "fas fa-object-group"
 
             });
