@@ -56,7 +56,7 @@
                     <td>
                         @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.CatfishPermission.GroupsEdit)).Succeeded)
                         {
-                            <a href="@Url.Action("GroupEdit", new {id = group.Id})"> @group.Name</a>
+                            <a href="@Url.Action("GroupEdit", "manager", new {id = group.Id})"> @group.Name</a>
                         }
                         else
                         {

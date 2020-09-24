@@ -4,3 +4,32 @@
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@using (var form = Html.BeginForm("Save", "Role", FormMethod.Post, new { @class = "form validate", role = "form", novalidate = "" }))
+{
+    @Html.HiddenFor(m => m.Group.Id)
+
+    <div class="top">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">@Localizer.General["Settings"]</li>
+                <li class="breadcrumb-item" aria-current="page"><a href="@Url.Action("Groups","manager")">@Localizer.General["Groups"]</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@Localizer.General["Edit"]</li>
+            </ol>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="top-nav">
+                @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.CatfishPermission.GroupsSave)).Succeeded)
+                {
+                    <button type="submit" class="btn btn-labeled btn-success pull-right">
+                        <span class="btn-label">
+                            <i class="fas fa-check"></i>
+                        </span>
+                        @Localizer.General["Save"]
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+}
