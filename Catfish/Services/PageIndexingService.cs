@@ -1,6 +1,9 @@
 ﻿using Catfish.Core.Models.Solr;
 using Piranha;
 using Piranha.Models;
+using Piranha.Extend;
+using Piranha.Extend.Blocks;
+using Piranha.Extend.Fields;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,26 +33,58 @@ namespace Catfish.Services
             //published.
 
             //Create an index entry for the page tile
-            if (!string.IsNullOrWhiteSpace(page.Title))
+
+            // test both title for page is there and if the page is published
+            if (!string.IsNullOrWhiteSpace(page.Title) && page.IsPublished)
             {
-                SolrPageContentModel content = new SolrPageContentModel()
+                SolrPageContentModel pagecontent = new SolrPageContentModel()
                 {
                     ContenType = SolrPageContentModel.eContentType.Page,
                     PageId = page.Id,
                     Title = page.Title,
-                    ParentId = page.ParentId
+                    ParentId = page.ParentId,
+                    Excerpt = page.Excerpt
                 };
 
                 //TODO: call the solr indexing service to index this entry.
-            }
+                IndexInSolr(pagecontent);
 
-            //Add the page exerpt to the solr index
+                // go through blocks and submit content for indexing
+                // check for type of block to use  
+                if (true)
+                {
+                    var  i = 0;
+                    foreach (var blockpiece in page.Blocks)
+                    {
+                        string blocktype = blockpiece.Type;
+                        var blockcontent = new SolrPageContentModel()
+                        {
+                            ContenType = SolrPageContentModel.eContentType.Block,
+                            BlockId = blockpiece.Id,
+                            Title = "block  " + i + " from " + page.Title,
+                            ParentId = page.Id
 
 
-            //iterate through all blocks. If a block is of type ContentBlock, then
-            //add the content of that block to the solr index.
 
-        }
+                        };
+                        //blockcontent.Content = page.Blocks[i].ToString();
+                        //blockcontent.Content = page.Blocks[i].GetTitle();
+                        blockcontent.Content = blockpiece.ToString();
+                        IndexInSolr(blockcontent);
+                        i++;
+                    }
+                }
+             }
+                    
+
+
+                
+                
+         }
+
+
+
+ 
 
         public void IndexPost(PostBase post)
         {
@@ -59,6 +94,7 @@ namespace Catfish.Services
 
         private void IndexInSolr(SolrPageContentModel data)
         {
+            Console.WriteLine(data.Content);
 
         }
     }
