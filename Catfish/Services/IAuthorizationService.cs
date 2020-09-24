@@ -41,5 +41,7 @@ namespace Catfish.Services
         /// <param name="item"></param>
         /// <returns></returns>
         Item GetItem(Guid item, AuthorizationPurpose purpose);
+
+        Group GetGroupDetails(Guid id);
     }
 }

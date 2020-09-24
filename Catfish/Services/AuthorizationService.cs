@@ -141,5 +141,11 @@ namespace Catfish.Services
 
             throw new NotImplementedException();
         }
+
+        public Group GetGroupDetails(Guid id)
+        {
+
+            return _appDb.Groups.Where(gr => gr.Id == id).FirstOrDefault();
+        }
     }
 }
