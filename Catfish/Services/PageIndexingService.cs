@@ -27,6 +27,50 @@ namespace Catfish.Services
             throw new NotImplementedException();
         }
 
+        public void IndexBlock(Block block, Guid ParentId)
+        {
+            if (block == null)
+                return;
+
+            //If the given block is an HtmlBlock or any specialization of it,
+            //then we index its body content
+            if (typeof(HtmlBlock).IsAssignableFrom(block.GetType()))
+            {
+                string text = (block as HtmlBlock).Body.Value;
+                IndexInSolr(new SolrPageContentModel()
+                {
+                    ContenType = SolrPageContentModel.eContentType.Block,
+                    BlockId = block.Id,
+                    ParentId = ParentId,
+                    Content = text
+                });
+            }
+
+            //If the given block is an TextBlock or any specialization of it,
+            //then we index its body content
+            if (typeof(TextBlock).IsAssignableFrom(block.GetType()))
+            {
+                string text = (block as TextBlock).Body.Value;
+                IndexInSolr(new SolrPageContentModel()
+                {
+                    ContenType = SolrPageContentModel.eContentType.Block,
+                    BlockId = block.Id,
+                    ParentId = ParentId,
+                    Content = text
+                });
+            }
+
+            //If the given block is an ColumnBlock or any specialization of it,
+            //then we index each block inside it
+            if (typeof(ColumnBlock).IsAssignableFrom(block.GetType()))
+            {
+                var children = (block as ColumnBlock).Items;
+                foreach (var child in children)
+                    IndexBlock(child, block.Id);
+            }
+
+        }
+
         public void IndexPage(PageBase page)
         {
             if (page == null || !page.IsPublished)
@@ -61,65 +105,43 @@ namespace Catfish.Services
                 IndexBlock(block, page.Id);
         }
 
-        public void IndexBlock(Block block, Guid ParentId)
-        {
-            if (block == null)
-                return;
-
-            //If the given block is an HtmlBlock or any specialization of it,
-            //then we index its body content
-            if (typeof(HtmlBlock).IsAssignableFrom(block.GetType()))
-            {
-                string text = (block as HtmlBlock).Body.Value;
-                IndexInSolr(new SolrPageContentModel()
-                {
-                    ContenType = SolrPageContentModel.eContentType.Block,
-                    BlockId = block.Id,
-                    ParentId = ParentId,
-                    Content = text
-                });
-            }
-
-            //If the given block is an TextBlock or any specialization of it,
-            //then we index its body content
-            if (typeof(TextBlock).IsAssignableFrom(block.GetType()))
-            {
-                string text = (block as TextBlock).Body.Value;
-                IndexInSolr(new SolrPageContentModel()
-                {
-                    ContenType = SolrPageContentModel.eContentType.Block,
-                    BlockId = block.Id,
-                    ParentId = ParentId,
-                    Content = text
-                });
-            }
-            //If the given block is an ColumnBlock or any specialization of it,
-            //then we index each block inside it
-
-            if (typeof(ColumnBlock).IsAssignableFrom(block.GetType()))
-            {
-                var children = (block as ColumnBlock).Items;
-                foreach (var child in children)
-                    IndexBlock(child, block.Id);
-            }
-
-        }
-
-
-
-
-
-
         public void IndexPost(PostBase post)
         {
-            //Implement this method similar to the IndexPage method to add the post
-            //title, exerpt and contents of all "Content" type blocks to the solr index.
+            if (post == null || !post.IsPublished)
+                return;
+
+            //Indexing the page title
+            if (!string.IsNullOrWhiteSpace(post.Title))
+            {
+                IndexInSolr(new SolrPageContentModel()
+                {
+                    ContenType = SolrPageContentModel.eContentType.Post,
+                    PageId = post.Id,
+                    Title = post.Title,
+                    ParentId = post.BlogId
+                });
+            }
+
+            //Indexing the page excerpt
+            if (!string.IsNullOrWhiteSpace(post.Excerpt))
+            {
+                IndexInSolr(new SolrPageContentModel()
+                {
+                    ContenType = SolrPageContentModel.eContentType.Post,
+                    PageId = post.Id,
+                    Excerpt = post.Excerpt,
+                    ParentId = post.BlogId
+                });
+            }
+
+            //Indexing all content blocks
+            foreach (var block in post.Blocks)
+                IndexBlock(block, post.Id);
         }
 
-        private void IndexInSolr(SolrPageContentModel data)
+        private void IndexInSolr(SolrPageContentModel model)
         {
-            
-
+            _solrIndexService.AddUpdate(model);
         }
     }
 }
