@@ -150,10 +150,14 @@ namespace Catfish
             services.AddScoped<IEntityTemplateService, EntityTemplateService>();
 
             // Solr services
-            string solrItemString = Configuration.GetSection("SolarConfiguration:solrItemURL").Value;
-            string solrPagesString = Configuration.GetSection("SolarConfiguration:solrPageURL").Value;
-            services.AddSolrNet<SolrItemModel>(solrItemString);
-            services.AddSolrNet<SolrPageContentModel>(solrPagesString);
+            var configSection = Configuration.GetSection("SolarConfiguration:solrItemURL");
+            if(configSection != null && !string.IsNullOrEmpty(configSection.Value))
+                services.AddSolrNet<SolrItemModel>(configSection.Value);
+
+            configSection = Configuration.GetSection("SolarConfiguration:solrPageURL");
+            if (configSection != null && !string.IsNullOrEmpty(configSection.Value))
+                services.AddSolrNet<SolrPageContentModel>(configSection.Value);
+
             services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
             services.AddScoped<ISolrIndexService<SolrPageContentModel>, SolrIndexService<SolrPageContentModel, ISolrOperations<SolrPageContentModel>>>();
             services.AddScoped<IQueryService, QueryService>();

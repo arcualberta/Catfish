@@ -83,7 +83,7 @@
             }
         }
 
-        @if (_catfishAppConfig.EnableWorkflows())
+        @*@if (_catfishAppConfig.EnableWorkflows())
         {
             //Displaying the Workflow page menus
             <li class="nav-item">
@@ -93,7 +93,6 @@
             <li class="nav-item">
                 <a class="nav-link" href="/entity/ItemList"><span>@_catfishAppConfig.GetWorkflowListPageTitle()</span></a>
             </li>
-
-        }
+        }*@
      </ul>
 </nav>
