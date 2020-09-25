@@ -168,22 +168,29 @@ if (document.getElementById("edit-field-form-page")) {
             test(event) {
                 let collapsingSections = document.getElementsByClassName('collapsing-items');
                 console.log("TESTING 123", event);
-                let shownSection = '';
+                let shownSectionIndex = '';
                 let previousSection = null;
-                //NOTE: the reassigning should only happen if the items shifted are AT or BELOW the open value
+                let nextSection = null;
+
                 for (let i = 0; i < collapsingSections.length; i++) {
                     if (collapsingSections[i].classList.contains('show')) {
-                        collapsingSections[i].classList.remove('show');
-                        shownSection = collapsingSections[i];
+                        shownSectionIndex = i; //collapsingSections[i];
                         previousSection = (i - 1 >= 0) ? collapsingSections[i - 1] : null;
+                        nextSection = (i + 1 < collapsingSections.length) ? collapsingSections[i + 1] : null;
 					}
                 }
 
-                //move show class to the index above it
-                if (shownSection != '' && previousSection != null) {
-                    console.log(previousSection);
+                //move show class to the index below open item
+                if (event.oldIndex <= shownSectionIndex && shownSectionIndex <= event.newIndex) {
+                    console.log("moved item DOWN over shown");
+                    collapsingSections[shownSectionIndex].classList.remove('show');
                     previousSection.classList.add('show');
-				}
+                    //move item above open item
+                } else if (event.oldIndex >= shownSectionIndex && shownSectionIndex >= event.newIndex) {
+                    console.log("moved item UP over shown");
+                    collapsingSections[shownSectionIndex].classList.remove('show');
+                    nextSection.classList.add('show');
+                }
 			},
 
             /**
