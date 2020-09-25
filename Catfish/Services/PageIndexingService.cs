@@ -60,6 +60,23 @@ namespace Catfish.Services
                 });
             }
 
+            //If the given block is an QuoteBlock or any specialization of it,
+            //then we index its body content
+            if (typeof(QuoteBlock).IsAssignableFrom(block.GetType()))
+            {
+                string text = (block as QuoteBlock).Body.Value;
+                IndexInSolr(new SolrPageContentModel()
+                {
+                    ContenType = SolrPageContentModel.eContentType.Block,
+                    BlockId = block.Id,
+                    ParentId = ParentId,
+                    Content = text
+                });
+            }
+
+
+
+
             //If the given block is an ColumnBlock or any specialization of it,
             //then we index each block inside it
             if (typeof(ColumnBlock).IsAssignableFrom(block.GetType()))
@@ -141,7 +158,7 @@ namespace Catfish.Services
 
         private void IndexInSolr(SolrPageContentModel model)
         {
-            _solrIndexService.AddUpdate(model);
+             _solrIndexService.AddUpdate(model);
         }
     }
 }
