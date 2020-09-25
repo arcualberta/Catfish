@@ -165,6 +165,71 @@ if (document.getElementById("edit-field-form-page")) {
             },
 
             /**
+             * Handles the cloned item (see cloneItem function)
+             * Controls the 'show' class for collapse to open the new item on creation and
+             * close any other items
+             * @param {any} event
+             */
+            addNewItem(event) {
+                console.log(event);
+
+                let newIdArray = event.srcElement.children[event.newIndex].children[0].children[1].children[1].id.split('-');
+                let newId = '';
+                let iterations = newIdArray.length;
+                console.log(newIdArray);
+                for (let item of newIdArray) {
+                    if (item == 'collapse') {
+                        --iterations;
+                        continue;
+                    }
+                    newId += item;
+                    if (--iterations) {
+                        newId += '-';
+                    }
+                }
+                console.log(newId);
+                //attempt at always having the newest item open first, remove the 'show' class
+                //from other items and assign to the new item - already can see this will be an issue
+                //because the newest item doesnt exist yet. Can remove the show class though to reduce confusion
+                let collapsingSections = document.getElementsByClassName('collapsing-items');
+                for (let section of collapsingSections) {
+                    if (section.classList.contains('show')) {
+                        section.classList.remove('show');
+
+                        //need to hunt down the new item's id via the id number i believe
+                        for (let item of Object.keys(this.dropdowns)) {
+                            if (item != newId) {
+                                this.dropdowns[item].isCollapsed = true;
+                            }
+						}
+
+                        /*let sectionIdArray = section.id.split('-'); //PROBLEM! This id is of the previous position before new item shifted it...
+                        let sectionId = '';
+                        let iterations = sectionIdArray.length;
+                        console.log(sectionIdArray);
+                        for (let item of sectionIdArray) {
+                            if (item == 'collapse') {
+                                --iterations;
+                                continue;
+                            }
+                            sectionId += item;
+                            if (--iterations) {
+                                sectionId += '-';
+                            }
+                            
+                            
+                        }*/
+                        //console.log(sectionId, this.dropdowns);
+                        //this.$set(this.dropdowns[sectionId], 'isCollapsed', true);
+                    }
+                }
+                //TODO: reset the isCollapsed for the one with 'show' class
+
+                //what u want is 3 children deep                
+                event.srcElement.children[event.newIndex].children[0].children[1].children[1].classList.add('show');
+			},
+
+            /**
              * Returns a custom clone
              * @param event
              */
@@ -176,13 +241,13 @@ if (document.getElementById("edit-field-form-page")) {
                 
                 newItem.id = uuidv1();
                 this.$set(this.dropdowns, newItem.id, {
-                    isCollapsed: true,
+                    isCollapsed: false,
                     showDescription: false,
                     hasOtherOption: false
                 });
                 //newItem.Guid = uuidv1();
                 console.log(newItem);
-                console.log(this.dropdowns);
+
                 return newItem;
             },
 
