@@ -180,6 +180,14 @@ if (document.getElementById("edit-field-form-page")) {
 					}
                 }
 
+                //if the user is dragging the showing item around
+                if (shownSectionIndex == event.oldIndex) {
+                    console.log("dragging showing item");
+                    $('#' + collapsingSections[event.newIndex].id).collapse('show');
+
+                    return;
+				}
+
                 //move show class to the index below open item
                 if (event.oldIndex <= shownSectionIndex && shownSectionIndex <= event.newIndex) {
                     console.log("moved item DOWN over shown");
