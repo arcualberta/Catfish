@@ -32,4 +32,31 @@
             </div>
         </div>
     </div>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <span class="title">@Localizer.General["General"]</span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>@Localizer.General["Name"]</label>
+                            @Html.TextBoxFor(m => m.Group.Name, new { @class = "form-control small", maxlength = 128, required = "" })
+                            <div class="invalid-feedback">
+                                @Localizer.General["Name is mandatory."]
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>@Localizer.General["Status"]</label>
+                             @*@Html.DropDownListFor(m => m.Group.GroupStatus, new SelectList(Enum.GetValues(typeof(eGroupStatus))),"Select Status")*@
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 }

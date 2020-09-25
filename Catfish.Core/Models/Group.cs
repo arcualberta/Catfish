@@ -11,7 +11,6 @@ namespace Catfish.Core.Models
     {
         public enum eGroupStatus
         {
-            //The UNKNOWN status is simply used for certain functionality in the Workflow engine
             UNKNOWN = 0,
 
             [Display(Name = "Active")]
@@ -24,8 +23,10 @@ namespace Catfish.Core.Models
             Deleted
 
         }
+
         public Guid Id { get; set; }
         public eGroupStatus GroupStatus { get; set; }
         public string Name { get; set; }
     }
+    
 }
