@@ -27,7 +27,7 @@ namespace Catfish.Services
             throw new NotImplementedException();
         }
 
-        public void IndexBlock(Block block, Guid ParentId)
+        public void IndexBlock(Block block, Guid ParentId, SolrPageContentModel model)
         {
             if (block == null)
                 return;
@@ -37,13 +37,8 @@ namespace Catfish.Services
             if (typeof(HtmlBlock).IsAssignableFrom(block.GetType()))
             {
                 string text = (block as HtmlBlock).Body.Value;
-                IndexInSolr(new SolrPageContentModel()
-                {
-                    ContenType = SolrPageContentModel.eContentType.Block,
-                    BlockId = block.Id,
-                    ParentId = ParentId,
-                    Content = text
-                });
+                if (!string.IsNullOrWhiteSpace(text))
+                    model.AddBlockContent(block.Id, ParentId, text);
             }
 
             //If the given block is an TextBlock or any specialization of it,
@@ -51,13 +46,8 @@ namespace Catfish.Services
             if (typeof(TextBlock).IsAssignableFrom(block.GetType()))
             {
                 string text = (block as TextBlock).Body.Value;
-                IndexInSolr(new SolrPageContentModel()
-                {
-                    ContenType = SolrPageContentModel.eContentType.Block,
-                    BlockId = block.Id,
-                    ParentId = ParentId,
-                    Content = text
-                });
+                if (!string.IsNullOrWhiteSpace(text))
+                    model.AddBlockContent(block.Id, ParentId, text);
             }
 
             //If the given block is an QuoteBlock or any specialization of it,
@@ -65,17 +55,9 @@ namespace Catfish.Services
             if (typeof(QuoteBlock).IsAssignableFrom(block.GetType()))
             {
                 string text = (block as QuoteBlock).Body.Value;
-                IndexInSolr(new SolrPageContentModel()
-                {
-                    ContenType = SolrPageContentModel.eContentType.Block,
-                    BlockId = block.Id,
-                    ParentId = ParentId,
-                    Content = text
-                });
+                if (!string.IsNullOrWhiteSpace(text))
+                    model.AddBlockContent(block.Id, ParentId, text);
             }
-
-
-
 
             //If the given block is an ColumnBlock or any specialization of it,
             //then we index each block inside it
@@ -83,9 +65,8 @@ namespace Catfish.Services
             {
                 var children = (block as ColumnBlock).Items;
                 foreach (var child in children)
-                    IndexBlock(child, block.Id);
+                    IndexBlock(child, block.Id, model);
             }
-
         }
 
         public void IndexPage(PageBase page)
@@ -93,33 +74,26 @@ namespace Catfish.Services
             if (page == null || !page.IsPublished)
                 return;
 
+            SolrPageContentModel model = new SolrPageContentModel()
+            {
+                Id = page.Id,
+                ParentId = page.ParentId,
+                ContenType = SolrPageContentModel.eContentType.Page
+            };
+
             //Indexing the page title
             if (!string.IsNullOrWhiteSpace(page.Title))
-            {
-                IndexInSolr(new SolrPageContentModel()
-                {
-                    ContenType = SolrPageContentModel.eContentType.Page,
-                    PageId = page.Id,
-                    Title = page.Title,
-                    ParentId = page.ParentId
-                });
-            }
+                model.Title = page.Title;
 
             //Indexing the page excerpt
             if (!string.IsNullOrWhiteSpace(page.Excerpt))
-            {
-                IndexInSolr(new SolrPageContentModel()
-                {
-                    ContenType = SolrPageContentModel.eContentType.Page,
-                    PageId = page.Id,
-                    Excerpt = page.Excerpt,
-                    ParentId = page.ParentId
-                });
-            }
+                model.Excerpt = page.Excerpt;
 
             //Indexing all content blocks
             foreach (var block in page.Blocks)
-                IndexBlock(block, page.Id);
+                IndexBlock(block, page.Id, model);
+
+            IndexInSolr(model);
         }
 
         public void IndexPost(PostBase post)
@@ -127,33 +101,26 @@ namespace Catfish.Services
             if (post == null || !post.IsPublished)
                 return;
 
+            SolrPageContentModel model = new SolrPageContentModel()
+            {
+                Id = post.Id,
+                ParentId = post.BlogId,
+                ContenType = SolrPageContentModel.eContentType.Post
+            };
+
             //Indexing the page title
             if (!string.IsNullOrWhiteSpace(post.Title))
-            {
-                IndexInSolr(new SolrPageContentModel()
-                {
-                    ContenType = SolrPageContentModel.eContentType.Post,
-                    PageId = post.Id,
-                    Title = post.Title,
-                    ParentId = post.BlogId
-                });
-            }
+                model.Title = post.Title;
 
             //Indexing the page excerpt
             if (!string.IsNullOrWhiteSpace(post.Excerpt))
-            {
-                IndexInSolr(new SolrPageContentModel()
-                {
-                    ContenType = SolrPageContentModel.eContentType.Post,
-                    PageId = post.Id,
-                    Excerpt = post.Excerpt,
-                    ParentId = post.BlogId
-                });
-            }
+                model.Excerpt = post.Excerpt;
 
             //Indexing all content blocks
             foreach (var block in post.Blocks)
-                IndexBlock(block, post.Id);
+                IndexBlock(block, post.Id, model);
+
+            IndexInSolr(model);
         }
 
         private void IndexInSolr(SolrPageContentModel model)
