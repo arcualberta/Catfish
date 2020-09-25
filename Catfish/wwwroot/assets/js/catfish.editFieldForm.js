@@ -164,15 +164,38 @@ if (document.getElementById("edit-field-form-page")) {
 				}
             },
 
+
+            test(event) {
+                let collapsingSections = document.getElementsByClassName('collapsing-items');
+                console.log("TESTING 123", event);
+                let shownSection = '';
+                let previousSection = null;
+                //NOTE: the reassigning should only happen if the items shifted are AT or BELOW the open value
+                for (let i = 0; i < collapsingSections.length; i++) {
+                    if (collapsingSections[i].classList.contains('show')) {
+                        collapsingSections[i].classList.remove('show');
+                        shownSection = collapsingSections[i];
+                        previousSection = (i - 1 >= 0) ? collapsingSections[i - 1] : null;
+					}
+                }
+
+                //move show class to the index above it
+                if (shownSection != '' && previousSection != null) {
+                    console.log(previousSection);
+                    previousSection.classList.add('show');
+				}
+			},
+
             /**
              * Handles the cloned item (see cloneItem function)
              * Controls the 'show' class for collapse to open the new item on creation and
-             * close any other items
+             * close any other items. Controls caret on new item added
              * @param {any} event
              */
             addNewItem(event) {
                 console.log(event);
 
+                //get new item id
                 let newIdArray = event.srcElement.children[event.newIndex].children[0].children[1].children[1].id.split('-');
                 let newId = '';
                 let iterations = newIdArray.length;
@@ -187,43 +210,20 @@ if (document.getElementById("edit-field-form-page")) {
                         newId += '-';
                     }
                 }
-                console.log(newId);
-                //attempt at always having the newest item open first, remove the 'show' class
-                //from other items and assign to the new item - already can see this will be an issue
-                //because the newest item doesnt exist yet. Can remove the show class though to reduce confusion
+
                 let collapsingSections = document.getElementsByClassName('collapsing-items');
                 for (let section of collapsingSections) {
                     if (section.classList.contains('show')) {
                         section.classList.remove('show');
 
-                        //need to hunt down the new item's id via the id number i believe
+                        //use new item id to position all carets as shut except new item's caret
                         for (let item of Object.keys(this.dropdowns)) {
                             if (item != newId) {
                                 this.dropdowns[item].isCollapsed = true;
                             }
 						}
-
-                        /*let sectionIdArray = section.id.split('-'); //PROBLEM! This id is of the previous position before new item shifted it...
-                        let sectionId = '';
-                        let iterations = sectionIdArray.length;
-                        console.log(sectionIdArray);
-                        for (let item of sectionIdArray) {
-                            if (item == 'collapse') {
-                                --iterations;
-                                continue;
-                            }
-                            sectionId += item;
-                            if (--iterations) {
-                                sectionId += '-';
-                            }
-                            
-                            
-                        }*/
-                        //console.log(sectionId, this.dropdowns);
-                        //this.$set(this.dropdowns[sectionId], 'isCollapsed', true);
                     }
                 }
-                //TODO: reset the isCollapsed for the one with 'show' class
 
                 //what u want is 3 children deep                
                 event.srcElement.children[event.newIndex].children[0].children[1].children[1].classList.add('show');

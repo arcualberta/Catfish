@@ -54,7 +54,7 @@
             <div class="section-container">
                 <h3>Fields</h3>
                 <div class="container" style="display:flex; flex-direction:row;">
-                    <draggable @@add="addNewItem" class="flex-full col-10" id="accordion" v-model="fields" group="sharedItems" handle=".handle-drag">
+                    <draggable @@add="addNewItem"  @@sort="test" class="flex-full col-10" id="accordion" v-model="fields" group="sharedItems" handle=".handle-drag">
                         <div v-for="(field, fieldIndex) of fields" class="card field-card-width" :key='fieldIndex'>
                         <!-- Editable fields -->
                             <div style="display:flex;">
