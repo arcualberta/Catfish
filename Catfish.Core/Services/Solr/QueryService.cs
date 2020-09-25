@@ -14,11 +14,13 @@ namespace Catfish.Core.Services.Solr
 {
     public class QueryService : IQueryService
     {
-        private readonly ISolrReadOnlyOperations<SolrItemModel> _solr;
+        private readonly ISolrReadOnlyOperations<SolrItemModel> _solrItemQuery;
+        private readonly ISolrReadOnlyOperations<SolrPageContentModel> _solrPageQuery;
         private readonly AppDbContext _db;
-        public QueryService(ISolrReadOnlyOperations<SolrItemModel> qrv, AppDbContext db)
+        public QueryService(ISolrReadOnlyOperations<SolrItemModel> qrvItem, ISolrReadOnlyOperations<SolrPageContentModel> qrvPage, AppDbContext db)
         {
-            _solr = qrv;
+            _solrItemQuery = qrvItem;
+            _solrPageQuery = qrvPage;
             _db = db;
         }
 
@@ -44,7 +46,7 @@ namespace Catfish.Core.Services.Solr
         public SolrQueryResults<SolrItemModel> Search(SearchParameters parameters)
         {
 
-            var solrQueryResults = _solr.Query(SolrQuery.All, new QueryOptions
+            var solrQueryResults = _solrItemQuery.Query(SolrQuery.All, new QueryOptions
             {
                 FilterQueries = new Collection<ISolrQuery> { Query.Field("content").Is(parameters.FreeSearch) },
                 Rows = parameters.PageSize,
@@ -81,7 +83,7 @@ namespace Catfish.Core.Services.Solr
 
             //var res = _solr.Query(new SolrQuery("content:" + parameters.FreeSearch));
 
-            SolrQueryResults<SolrItemModel> products2 = _solr.Query(new SolrQuery("content:" + parameters.FreeSearch));
+            SolrQueryResults<SolrItemModel> products2 = _solrItemQuery.Query(new SolrQuery("content:" + parameters.FreeSearch));
 
             return products2;
         }
@@ -93,6 +95,12 @@ namespace Catfish.Core.Services.Solr
             var entities = _db.Entities.Where(e => result_ids.Contains(e.Id)).ToList();
 
             return entities;
+        }
+
+        public IList<SolrPageContentModel> GetPages(SearchParameters parameters)
+        {
+            var result = _solrPageQuery.Query(new SolrQuery("blockContent:" + parameters.FreeSearch));
+            return result.ToList();
         }
 
 

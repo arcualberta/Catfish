@@ -10,22 +10,22 @@ namespace Catfish.Core.Models.Solr
     {
         public enum eContentType { Page, Post }
         [SolrField("contenType")]
-        public eContentType ContenType { get; set; }
+        public List<eContentType> ContenType { get; set; } = new List<eContentType>();
 
         [SolrField("id")]
         public Guid Id { get; set; }
 
         [SolrField("parentId")]
-        public Guid? ParentId { get; set; }
+        public List<Guid?> ParentId { get; set; } = new List<Guid?>();
 
         [SolrField("title")]
-        public string Title { get; set; }
+        public List<string> Title { get; set; } = new List<string>();
 
         [SolrField("excerpt")]
-        public string Excerpt { get; set; }
+        public List<string> Excerpt { get; set; } = new List<string>();
 
         [SolrField("permalink")]
-        public string Permalink { get; set; }
+        public List<string> Permalink { get; set; } = new List<string>();
 
 
         [SolrField("blockGuid")]

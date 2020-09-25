@@ -15,11 +15,13 @@ namespace Catfish.Services
     public class PageIndexingService : IPageIndexingService
     {
         private readonly IApi _api;
-        protected ISolrIndexService<SolrPageContentModel> _solrIndexService;
-        public PageIndexingService(ISolrIndexService<SolrPageContentModel> srv, IApi api)
+        private readonly ISolrIndexService<SolrPageContentModel> _solrIndexService;
+        private readonly IQueryService _solrQueryService;
+        public PageIndexingService(ISolrIndexService<SolrPageContentModel> iSrv, IQueryService qSrv, IApi api)
         {
             _api = api;
-            _solrIndexService = srv;
+            _solrIndexService = iSrv;
+            _solrQueryService = qSrv;
         }
 
         private IList<SolrPageContentModel> GetContents(Guid pageId)
@@ -76,18 +78,22 @@ namespace Catfish.Services
 
             SolrPageContentModel model = new SolrPageContentModel()
             {
-                Id = page.Id,
-                ParentId = page.ParentId,
-                ContenType = SolrPageContentModel.eContentType.Page
+                Id = page.Id
             };
+            model.ContenType.Add(SolrPageContentModel.eContentType.Page);
+            model.ParentId.Add(page.ParentId);
 
             //Indexing the page title
             if (!string.IsNullOrWhiteSpace(page.Title))
-                model.Title = page.Title;
+                model.Title.Add(page.Title);
 
             //Indexing the page excerpt
             if (!string.IsNullOrWhiteSpace(page.Excerpt))
-                model.Excerpt = page.Excerpt;
+                model.Excerpt.Add(page.Excerpt);
+
+            //Indexing the page permalink
+            if (!string.IsNullOrWhiteSpace(page.Permalink))
+                model.Excerpt.Add(page.Permalink);
 
             //Indexing all content blocks
             foreach (var block in page.Blocks)
@@ -103,18 +109,22 @@ namespace Catfish.Services
 
             SolrPageContentModel model = new SolrPageContentModel()
             {
-                Id = post.Id,
-                ParentId = post.BlogId,
-                ContenType = SolrPageContentModel.eContentType.Post
+                Id = post.Id
             };
+            model.ContenType.Add(SolrPageContentModel.eContentType.Post);
+            model.ParentId.Add(post.BlogId);
 
             //Indexing the page title
             if (!string.IsNullOrWhiteSpace(post.Title))
-                model.Title = post.Title;
+                model.Title.Add(post.Title);
 
             //Indexing the page excerpt
             if (!string.IsNullOrWhiteSpace(post.Excerpt))
-                model.Excerpt = post.Excerpt;
+                model.Excerpt.Add(post.Excerpt);
+
+            //Indexing the page permalink
+            if (!string.IsNullOrWhiteSpace(post.Permalink))
+                model.Excerpt.Add(post.Permalink);
 
             //Indexing all content blocks
             foreach (var block in post.Blocks)

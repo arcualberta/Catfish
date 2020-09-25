@@ -14,6 +14,7 @@ namespace Catfish.Core.Services.Solr
         SolrQueryResults<SolrItemModel> Results(SearchParameters parameters);
         //List<SolrItemModel> Search(string searchTerm);
         public IList<Entity> GetEntities(SearchParameters parameters);
+        public IList<SolrPageContentModel> GetPages(SearchParameters parameters);
 
     }
 }
