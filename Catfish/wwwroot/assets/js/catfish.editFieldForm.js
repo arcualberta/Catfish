@@ -183,13 +183,17 @@ if (document.getElementById("edit-field-form-page")) {
                 //move show class to the index below open item
                 if (event.oldIndex <= shownSectionIndex && shownSectionIndex <= event.newIndex) {
                     console.log("moved item DOWN over shown");
-                    collapsingSections[shownSectionIndex].classList.remove('show');
-                    previousSection.classList.add('show');
+                    //collapsingSections[shownSectionIndex].classList.remove('show'); //replace w bootstrap call
+                    //$('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
+                    //previousSection.classList.add('show');
+                    $('#' + previousSection.id).collapse('show');
                     //move item above open item
                 } else if (event.oldIndex >= shownSectionIndex && shownSectionIndex >= event.newIndex) {
                     console.log("moved item UP over shown");
-                    collapsingSections[shownSectionIndex].classList.remove('show');
-                    nextSection.classList.add('show');
+                    //collapsingSections[shownSectionIndex].classList.remove('show'); //replace w bootstrap call
+                    //$('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
+                    //nextSection.classList.add('show');
+                    $('#' + nextSection.id).collapse('show');
                 }
 			},
 
