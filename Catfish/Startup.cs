@@ -565,7 +565,7 @@ namespace Catfish
                 Name = "Groups",
                 Route = "/manager/groups/",
                 Policy = CatfishPermission.GroupsList,
-                Css = "fas fa-object-group"
+                Css = "fas  fa-layer-group"
 
             });
         }
