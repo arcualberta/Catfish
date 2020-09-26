@@ -1,5 +1,6 @@
 ﻿using Markdig.Extensions.Tables;
 using SolrNet.Attributes;
+using SolrNet.Impl;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,9 +9,8 @@ namespace Catfish.Core.Models.Solr
 {
     public class SolrPageContentModel
     {
-        public enum eContentType { Page, Post }
         [SolrField("contenType")]
-        public List<eContentType> ContenType { get; set; } = new List<eContentType>();
+        public List<SolrEntry.eEntryType> ContenType { get; set; } = new List<SolrEntry.eEntryType>();
 
         [SolrField("id")]
         public Guid Id { get; set; }
@@ -37,12 +37,38 @@ namespace Catfish.Core.Models.Solr
         [SolrField("blockContent")]
         public List<string> BlockContents { get; set; } = new List<string>();
 
+        public SolrPageContentModel()
+        {
+
+        }
+
+        public SolrPageContentModel(KeyValuePair<string, HighlightedSnippets> highlights)
+        {
+            InitFromSolrSearchResultHighlights(highlights);
+        }
 
         public void AddBlockContent(Guid blockId, Guid blockParentId, string content)
         {
             BlockGuids.Add(blockId);
             BlockParentGuids.Add(blockParentId);
             BlockContents.Add(content);
+        }
+
+        public void InitFromSolrSearchResultHighlights(KeyValuePair<string, HighlightedSnippets> highlights)
+        {
+            Id = Guid.Parse(highlights.Key);
+            foreach(var hl in highlights.Value)
+            {
+                if(hl.Value.Count > 0)
+                {
+                    if (hl.Key == "title")
+                        Title.AddRange(hl.Value);
+                    else if (hl.Key == "excerpt")
+                        Excerpt.AddRange(hl.Value);
+                    else if (hl.Key == "blockContent")
+                        BlockContents.AddRange(hl.Value);
+                }
+            }
         }
     }
 }

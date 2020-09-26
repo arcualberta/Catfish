@@ -80,7 +80,7 @@ namespace Catfish.Services
             {
                 Id = page.Id
             };
-            model.ContenType.Add(SolrPageContentModel.eContentType.Page);
+            model.ContenType.Add(SolrEntry.eEntryType.Page);
             model.ParentId.Add(page.ParentId);
 
             //Indexing the page title
@@ -111,7 +111,7 @@ namespace Catfish.Services
             {
                 Id = post.Id
             };
-            model.ContenType.Add(SolrPageContentModel.eContentType.Post);
+            model.ContenType.Add(SolrEntry.eEntryType.Post);
             model.ParentId.Add(post.BlogId);
 
             //Indexing the page title

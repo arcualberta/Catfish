@@ -97,30 +97,54 @@ namespace Catfish.Core.Services.Solr
             return entities;
         }
 
-        public IList<SolrPageContentModel> GetPages(SearchParameters parameters, int start = 0, int limit = 100)
+        public IList<SolrEntry> GetPages(SearchParameters parameters, int start = 0, int limit = 100)
         {
             var query = new SolrQuery("title:" + parameters.FreeSearch).Boost(2) +
                         new SolrQuery("excerpt:" + parameters.FreeSearch) +
                         new SolrQuery("blockContent:" + parameters.FreeSearch);
 
             //Result hilighting: https://lucene.apache.org/solr/guide/8_5/highlighting.html
-            var result = _solrPageQuery.Query(query,
+            var queryResult = _solrPageQuery.Query(query,
                 new QueryOptions
                 {
-                    Fields = new[] { "id" },
+                    Fields = new[] { "id", "contenType" },
                     StartOrCursor = new StartOrCursor.Start(start),
                     Rows = limit,
                     ExtraParams = new Dictionary<string, string> {
                         {"hl.method", "unified" }, //Unified highligher, which is said to be new and fast
                         {"hl", "true" }, //Enable snippet highlighting
                         {"hl.fl", "*" }, //Hilight matching snippets in all fields
-                        {"hl.snippets", "10" }, //Highlight up to 10 snippets. TODO: pass this as an optional config parameter
-                        {"hl.tag.pre", "<em class='match-snippet'>" }, //Start tag for hilighting matching snippets
+                        {"hl.snippets", "1" }, //Highlight up to 10 snippets. TODO: pass this as an optional config parameter
+                        {"hl.tag.pre", "<em class='bg-warning'>" }, //Start tag for hilighting matching snippets
                         {"hl.tag.post", "</em>" } //End tag for hilighting matching snippets
                     }
                 });
 
-            return result.ToList();
+            var highlights = queryResult.Highlights.ToList();
+
+            //List<SolrEntry> result = queryResult.Select(qr => new SolrEntry()
+            //{
+            //    ObjectId = qr.Id,
+            //    ObjectType = qr.ContenType.FirstOrDefault()
+            //}).ToList();
+
+            List<SolrEntry> result = new List<SolrEntry>();
+            for (int i = 0; i < queryResult.Count; ++i)
+            {
+                var qr = queryResult[i];
+                var hl = highlights[i];
+
+                SolrEntry entry = new SolrEntry()
+                {
+                    ObjectId = qr.Id,
+                    ObjectType = qr.ContenType.FirstOrDefault(),
+                    PageContent = new SolrPageContentModel(hl)
+                };
+
+                result.Add(entry);
+            }
+
+            return result;
         }
 
 

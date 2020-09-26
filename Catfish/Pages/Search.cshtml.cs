@@ -19,7 +19,7 @@ namespace Catfish.Pages
         public string SearchTerm { get; set; }
         //public string SolrUrl { get; set; }
 
-        public IList<Entity> Results { get; set; }
+        public IList<SolrEntry> Results { get; set; }
 
         private readonly IQueryService QueryService;
         public SearchModel(IQueryService queryService)
@@ -30,7 +30,7 @@ namespace Catfish.Pages
 
         public void OnGet()
         {
-            Results = new List<Entity>();
+            Results = new List<SolrEntry>();
         }
 
         public void OnPost()
@@ -39,8 +39,7 @@ namespace Catfish.Pages
             var parameters = new SearchParameters();
             parameters.FreeSearch = SearchTerm;
             //Results = QueryService.GetEntities(parameters);
-            var results = QueryService.GetPages(parameters);
-            int count = results.Count;
+            Results = QueryService.GetPages(parameters);
         }
 
     }
