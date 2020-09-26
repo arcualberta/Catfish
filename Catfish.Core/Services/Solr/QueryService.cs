@@ -97,9 +97,29 @@ namespace Catfish.Core.Services.Solr
             return entities;
         }
 
-        public IList<SolrPageContentModel> GetPages(SearchParameters parameters)
+        public IList<SolrPageContentModel> GetPages(SearchParameters parameters, int start = 0, int limit = 100)
         {
-            var result = _solrPageQuery.Query(new SolrQuery("blockContent:" + parameters.FreeSearch));
+            var query = new SolrQuery("title:" + parameters.FreeSearch).Boost(2) +
+                        new SolrQuery("excerpt:" + parameters.FreeSearch) +
+                        new SolrQuery("blockContent:" + parameters.FreeSearch);
+
+            //Result hilighting: https://lucene.apache.org/solr/guide/8_5/highlighting.html
+            var result = _solrPageQuery.Query(query,
+                new QueryOptions
+                {
+                    Fields = new[] { "id" },
+                    StartOrCursor = new StartOrCursor.Start(start),
+                    Rows = limit,
+                    ExtraParams = new Dictionary<string, string> {
+                        {"hl.method", "unified" }, //Unified highligher, which is said to be new and fast
+                        {"hl", "true" }, //Enable snippet highlighting
+                        {"hl.fl", "*" }, //Hilight matching snippets in all fields
+                        {"hl.snippets", "10" }, //Highlight up to 10 snippets. TODO: pass this as an optional config parameter
+                        {"hl.tag.pre", "<em class='match-snippet'>" }, //Start tag for hilighting matching snippets
+                        {"hl.tag.post", "</em>" } //End tag for hilighting matching snippets
+                    }
+                });
+
             return result.ToList();
         }
 
