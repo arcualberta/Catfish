@@ -1,19 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Catfish.Core.Models;
 using Catfish.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Piranha.Extend.Fields;
 
 namespace Catfish.Areas.Manager.Pages
 {
     public class GroupModel : PageModel
     {
         private IAuthorizationService _srv;
-        public Group Group { get; set; }
 
+        [BindProperty]
+        public Group Group { get; set; }
 
         public GroupModel(IAuthorizationService srv)
         {
@@ -23,5 +26,11 @@ namespace Catfish.Areas.Manager.Pages
         {
             Group = _srv.GetGroupDetails(id);
         }
+
+        public void OnPost()
+        {
+            var dbGroup = _srv.GetGroupDetails(Group.Id);
+        }
+
     }
 }

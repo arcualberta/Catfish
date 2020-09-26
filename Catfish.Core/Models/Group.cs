@@ -11,8 +11,6 @@ namespace Catfish.Core.Models
     {
         public enum eGroupStatus
         {
-            UNKNOWN = 0,
-
             [Display(Name = "Active")]
             Active = 1,
 
