@@ -107,7 +107,7 @@ namespace Catfish.Core.Services.Solr
             var queryResult = _solrPageQuery.Query(query,
                 new QueryOptions
                 {
-                    Fields = new[] { "id", "title", "cf_object_type" },
+                    Fields = new[] { "id", "title", "object_type_i" },
                     StartOrCursor = new StartOrCursor.Start(start),
                     Rows = limit,
                     ExtraParams = new Dictionary<string, string> {

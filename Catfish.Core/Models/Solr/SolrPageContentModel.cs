@@ -12,8 +12,14 @@ namespace Catfish.Core.Models.Solr
         //[SolrField("contenType")]
         //public List<SolrEntry.eEntryType> ContenType { get; set; } = new List<SolrEntry.eEntryType>();
 
-        [SolrField("cf_object_type")]
-        public SolrEntry.eEntryType ContenType { get; set; }
+        public SolrEntry.eEntryType ContenType
+        {
+            get { return (SolrEntry.eEntryType)Enum.ToObject(typeof(SolrEntry.eEntryType), object_type_i); }
+            set { object_type_i = (int)value; }
+        }
+
+        [SolrField("object_type_i")]
+        public int object_type_i { get; set; }
 
         [SolrField("id")]
         public Guid Id { get; set; }
