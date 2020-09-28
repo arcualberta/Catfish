@@ -5,6 +5,11 @@
 
 import { quillEditor } from 'vue-quill-editor'
 import { v1 as uuidv1 } from 'uuid';
+
+import { required, minLength } from 'vuelidate/lib/validators'
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
+
 /**
  * Javascript Vue code for creating the editable form from existing data in FieldContainerEdit.cshtml.
  * It is modelled after the file piranha.pagelist.js in Piranha's source code.
@@ -107,10 +112,89 @@ if (document.getElementById("edit-field-form-page")) {
                 //TODO: make a file of constant strings
                 saveSuccessfulLabel: "Save Successful",
                 saveFailedLabel: "Failed to Save",
-                saveFieldFormButtonLabel: "Save"
+                saveFieldFormButtonLabel: "Save",
+            }
+        },
+        validations: {
+            names: {
+                required,
+                values: {
+                    $each: {
+                        value: {
+                            required,
+                        }
+                    }
+				}
+            },
+            descriptions: {
+                values: {
+                    $each: {
+                        value: {
+                        }
+                    }
+                }
+            },
+            fields: {
+                $each: {
+                    name: {
+                        values: {
+                            $each: {
+                                value: {
+                                    required
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         methods: {
+
+            /**
+			 * Checks that the value matches its requirements from Vuelidate
+			  * (ie required, is a string, etc)
+			 * @param name the name of the v-model binded to.
+			 */
+            validateState(name, indexOrGuid = null, attribute = null) {
+                console.log(this.$v);
+                if (indexOrGuid != null) {
+                    //this is a $each situation - array
+                    const { $dirty, $invalid } = this.$v[name][attribute].$each[indexOrGuid].value;
+                    return $dirty ? !$invalid : null;
+                } else {
+                    const { $dirty, $error } = this.$v[name];
+                    return $dirty ? !$error : null;
+                }
+            },
+
+            /**
+             * TODO: work this one and above into a generic function
+             * This one is for fields only, very hardcody bc it has so many embedded attributes
+             * @param {any} fieldIndex
+             * @param {any} name
+             * @param {any} secondIndex
+             */
+            validateFieldState(fieldIndex, name, secondIndex) {
+                const { $dirty, $invalid } = this.$v.fields.$each[fieldIndex][name].values.$each[secondIndex].value;
+                return $dirty ? !$invalid : null;
+			},
+
+
+            /**
+			 * Touches nested items from Vuex so validation works properly.
+			 */
+            touchNestedItem(name, indexOrGuid = null, attribute = null, event = null) {
+                if (indexOrGuid != null) {
+                    if (isNaN(indexOrGuid)) {
+                        this.$v[name][indexOrGuid][attribute].$touch();
+                        this.pcs[indexOrGuid][attribute] = event;
+                    } else {
+                        this.$v[name][attribute].$each[indexOrGuid].value.$touch();
+                    }
+
+                }
+            },
+
 
             /**
              * Saves the field form
