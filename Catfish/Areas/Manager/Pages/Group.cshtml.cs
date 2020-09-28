@@ -14,22 +14,32 @@ namespace Catfish.Areas.Manager.Pages
     public class GroupModel : PageModel
     {
         private IAuthorizationService _srv;
+        public readonly AppDbContext _appDb;
 
         [BindProperty]
         public Group Group { get; set; }
 
-        public GroupModel(IAuthorizationService srv)
+        public GroupModel(IAuthorizationService srv, AppDbContext appDb)
         {
             _srv = srv;
+            _appDb = appDb;
         }
         public void OnGet(Guid id)
         {
             Group = _srv.GetGroupDetails(id);
         }
 
-        public void OnPost()
+        public IActionResult OnPost()
         {
-            var dbGroup = _srv.GetGroupDetails(Group.Id);
+            Group dbGroup = _srv.GetGroupDetails(Group.Id);
+            if (dbGroup == null)
+                throw new Exception("Group Details with ID = " + Group.Id + " not found.");
+
+            dbGroup.Name = Group.Name;
+            dbGroup.GroupStatus = Group.GroupStatus;
+            _appDb.SaveChanges();
+
+            return RedirectToPage("GroupEdit","Manager");
         }
 
     }
