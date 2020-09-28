@@ -28,7 +28,7 @@
         </nav>
         <div class="container-fluid">
             <div class="top-nav">
-                @if ((AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.CatfishPermission.GroupsAdd)).Result.Succeeded)
+                @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.CatfishPermission.GroupsAdd)).Succeeded)
                 //await Auth.AuthorizeAsync(User, Piranha.Manager.Permission.SitesAdd)).Succeeded
                 {
 
