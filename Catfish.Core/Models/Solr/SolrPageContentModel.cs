@@ -9,8 +9,11 @@ namespace Catfish.Core.Models.Solr
 {
     public class SolrPageContentModel
     {
-        [SolrField("contenType")]
-        public List<SolrEntry.eEntryType> ContenType { get; set; } = new List<SolrEntry.eEntryType>();
+        //[SolrField("contenType")]
+        //public List<SolrEntry.eEntryType> ContenType { get; set; } = new List<SolrEntry.eEntryType>();
+
+        [SolrField("cf_object_type")]
+        public SolrEntry.eEntryType ContenType { get; set; }
 
         [SolrField("id")]
         public Guid Id { get; set; }

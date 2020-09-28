@@ -107,7 +107,7 @@ namespace Catfish.Core.Services.Solr
             var queryResult = _solrPageQuery.Query(query,
                 new QueryOptions
                 {
-                    Fields = new[] { "id", "title", "contenType" },
+                    Fields = new[] { "id", "title", "cf_object_type" },
                     StartOrCursor = new StartOrCursor.Start(start),
                     Rows = limit,
                     ExtraParams = new Dictionary<string, string> {
@@ -136,8 +136,8 @@ namespace Catfish.Core.Services.Solr
 
                 SolrEntry entry = new SolrEntry()
                 {
-                    ObjectId = qr.Id,
-                    ObjectType = qr.ContenType.FirstOrDefault(),
+                    Id = qr.Id,
+                    ObjectType = qr.ContenType,
                     PageContent = new SolrPageContentModel(hl)
                 };
 

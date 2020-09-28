@@ -15,7 +15,7 @@
             <li>
                 @if (entry.ObjectType == Core.Models.Solr.SolrEntry.eEntryType.Page || entry.ObjectType == Core.Models.Solr.SolrEntry.eEntryType.Post)
                 {
-                    <div>@entry.ObjectId</div>
+                    <div>@entry.Id</div>
 
                     if (entry.PageContent.Title.Count > 0)
                     {
