@@ -136,6 +136,11 @@ if (document.getElementById("edit-field-form-page")) {
             },
             fields: {
                 $each: {
+                    values: {
+                        required //may need to be array > 0 or something
+                    }
+                },
+                $each: {
                     name: {
                         values: {
                             $each: {
@@ -151,12 +156,28 @@ if (document.getElementById("edit-field-form-page")) {
         methods: {
 
             /**
+			 * Checks all the inputs to make sure the data is valid
+			 * @returns true is valid, false is invalid.
+			 **/
+            checkValidity(event) {
+                event.preventDefault();
+
+                if (this.$v.$invalid) {
+                    console.log("something is invalid", this.$v);
+                } else {
+                    console.log("all good!");
+                    this.saveFieldForm(event);
+				}
+
+            },
+
+            /**
 			 * Checks that the value matches its requirements from Vuelidate
 			  * (ie required, is a string, etc)
 			 * @param name the name of the v-model binded to.
 			 */
             validateState(name, indexOrGuid = null, attribute = null) {
-                console.log(this.$v);
+                console.log("why", this.$v);
                 if (indexOrGuid != null) {
                     //this is a $each situation - array
                     const { $dirty, $invalid } = this.$v[name][attribute].$each[indexOrGuid].value;
@@ -174,9 +195,16 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} name
              * @param {any} secondIndex
              */
-            validateFieldState(fieldIndex, name, secondIndex) {
-                const { $dirty, $invalid } = this.$v.fields.$each[fieldIndex][name].values.$each[secondIndex].value;
-                return $dirty ? !$invalid : null;
+            validateFieldState(fieldIndex, name, secondIndex = null) {
+                if (secondIndex == null) {
+                    console.log("?", this.$v.fields.$each[fieldIndex][name]); //values doesnt exist yet, it was not passed in with initial data
+                    const { $dirty, $invalid } = this.$v.fields.$each[fieldIndex][name];
+                    return $dirty ? !$invalid : null;
+                } else {
+                    const { $dirty, $invalid } = this.$v.fields.$each[fieldIndex][name].values.$each[secondIndex].value;
+                    return $dirty ? !$invalid : null;
+				}
+
 			},
 
 
@@ -186,9 +214,10 @@ if (document.getElementById("edit-field-form-page")) {
             touchNestedItem(name, indexOrGuid = null, attribute = null, event = null) {
                 if (indexOrGuid != null) {
                     if (isNaN(indexOrGuid)) {
+                        console.log("a", name, indexOrGuid, attribute);
                         this.$v[name][indexOrGuid][attribute].$touch();
-                        this.pcs[indexOrGuid][attribute] = event;
                     } else {
+                        console.log("b", name, attribute, indexOrGuid);
                         this.$v[name][attribute].$each[indexOrGuid].value.$touch();
                     }
 
@@ -202,7 +231,6 @@ if (document.getElementById("edit-field-form-page")) {
              */
             saveFieldForm(event) {
                 console.log("saving goes here", event);
-                event.preventDefault();
 
                 console.log(this.names, this.descriptions, this.fields);
             },
@@ -400,7 +428,6 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} fieldId the field's index to open/close
              */
             toggleDropdown(fieldId) {
-                console.log(this.dropdowns[fieldId]);
                 this.dropdowns[fieldId].isCollapsed === true ? this.dropdowns[fieldId].isCollapsed = false : this.dropdowns[fieldId].isCollapsed = true;
                 //this.lastDropdownAction = this.dropdowns[fieldId].isCollapsed;
                 //this.assessExpandOrCollapseAll();

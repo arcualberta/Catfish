@@ -36,10 +36,11 @@
                 <label for="form-title"><h3>Title</h3></label>
                 <div v-for="(name, titleIndex) of names.values" class="form-group" 
                     :class="{ 'form-group--error': $v.names.values.$each[titleIndex].value.$error }">
+                    {{$v.names.values.$each[titleIndex].value}}
                     <input type="text" class="form-title form-control" v-model="name.value" 
                     :id="'form-title-' + titleIndex" placeholder="Title Your Form Here" 
                     @@input="touchNestedItem('names', titleIndex, 'values')"
-                    :state="validateState('names', titleIndex, 'values')" />
+                    state="validateState('names', titleIndex, 'values')" />
                 </div>
             </div>
 
@@ -47,9 +48,10 @@
                 <label for="form-description"><h3>Description</h3></label>
                 <div v-for="(description, descriptionIndex) of descriptions.values" class="form-group"
                 :class="{ 'form-group--error': $v.descriptions.values.$each[descriptionIndex].value.$error }">
+                {{$v.descriptions.values.$each[descriptionIndex].value}}
                     <textarea type="text" class="form-description form-control" 
                     :id="'form-description-' + descriptionIndex" placeholder="Description goes here" 
-                    :state="validateState('descriptions', descriptionIndex, 'values')"
+                    state="validateState('descriptions', descriptionIndex, 'values')"
                     @@input="touchNestedItem('descriptions', descriptionIndex, 'values')">
                     {{description.value}}
                     </textarea>
@@ -128,9 +130,9 @@
                                                 </div> 
                                                 <input type="text" class="field-input form-control" v-model="nameValue.value" 
                                                 :id="'field-title-' + fieldIndex + '-' + nameValue" 
-                                                placeholder="Title Your Field Here" 
-                                                :state="validateFieldState(fieldIndex, 'name', nameIndex)"
-                                                @@input="$v.fields.$each[fieldIndex].name.values.$each[nameIndex].value.$touch()"/>
+                                                placeholder="Title Your Field Here" :state="validateFieldState(fieldIndex, 'name', nameIndex)"
+                                                /> <!-- 
+                                                @@input="$v.fields.$each[fieldIndex].name.values.$each[nameIndex].value.$touch()" -->
                                             </li>
                                             <li>{{$v.fields.$each[fieldIndex].name.values.$each[nameIndex].value}}</li>
                                         </ul>
@@ -184,12 +186,17 @@
                                                      @*Radio*@ 
                                                     <div v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">
                                                         <div v-for="(radioValue, radioIndex) of field.values" class="input-group mb-3">
+                                                            "{{$v.fields.$each[fieldIndex].values}}"
                                                             <div class="input-group-prepend">
                                                                 <div class="input-group-text">
                                                                     <input disabled :id="'radio-' + radioIndex" :name="'radio-field-' + fieldIndex" type="radio" aria-label="Radio button for following text input">
                                                                 </div>
                                                             </div>
-                                                            <input type="text" class="form-control" :disabled="radioValue.isDisabled" aria-label="Text input with radio button and remove button" v-model="radioValue.text">
+                                                            <input type="text" class="form-control" :disabled="radioValue.isDisabled" 
+                                                                aria-label="Text input with radio button and remove button" 
+                                                                v-model="radioValue.text" :state="validateFieldState(fieldIndex, 'values')"
+                                                                > <!-- 
+                                                                @@input="$v.fields.$each[fieldIndex].values.$touch()" -->
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, radioValue, radioIndex)" type="button">
                                                                     <i class="fas fa-minus"></i>
