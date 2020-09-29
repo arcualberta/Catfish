@@ -147,9 +147,12 @@ if (document.getElementById("edit-field-form-page")) {
                                 || fieldModel.modelType ==
                                 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
                             )
-
-
-                        }) 
+                        }), 
+                        $each: {
+                            text: {
+                                required
+							}
+						}
                     },
                     name: {
                         values: {
