@@ -97,7 +97,7 @@ namespace Catfish.Core.Services.Solr
             return entities;
         }
 
-        public IList<SolrEntry> GetPages(SearchParameters parameters, int start = 0, int limit = 100)
+        public IList<SolrEntry> FreeSearch(SearchParameters parameters, int start = 0, int limit = 100)
         {
             var query = new SolrQuery("title_s:" + parameters.FreeSearch) +
                         new SolrQuery("excerpt_s:" + parameters.FreeSearch) +
