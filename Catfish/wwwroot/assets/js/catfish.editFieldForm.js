@@ -6,7 +6,7 @@
 import { quillEditor } from 'vue-quill-editor'
 import { v1 as uuidv1 } from 'uuid';
 
-import { required, minLength } from 'vuelidate/lib/validators'
+import { required, requiredIf } from 'vuelidate/lib/validators'
 import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate)
 
@@ -137,10 +137,20 @@ if (document.getElementById("edit-field-form-page")) {
             fields: {
                 $each: {
                     values: {
-                        required //may need to be array > 0 or something
-                    }
-                },
-                $each: {
+                        //all start with this value at Array(0). Need to somehow indicate if it's 
+                        //a mc/radio/dropdown option to assign the req(?) or minlength
+                        required: requiredIf(function (fieldModel) {
+                            return (fieldModel.modelType ==
+                                'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
+                                || fieldModel.modelType ==
+                                'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
+                                || fieldModel.modelType ==
+                                'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
+                            )
+
+
+                        }) 
+                    },
                     name: {
                         values: {
                             $each: {
@@ -197,7 +207,7 @@ if (document.getElementById("edit-field-form-page")) {
              */
             validateFieldState(fieldIndex, name, secondIndex = null) {
                 if (secondIndex == null) {
-                    console.log("?", this.$v.fields.$each[fieldIndex][name]); //values doesnt exist yet, it was not passed in with initial data
+                    console.log("?", this.$v.fields.$each[fieldIndex]); 
                     const { $dirty, $invalid } = this.$v.fields.$each[fieldIndex][name];
                     return $dirty ? !$invalid : null;
                 } else {
@@ -248,30 +258,37 @@ if (document.getElementById("edit-field-form-page")) {
                     case 0:
                         //textfield
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core';
+                        this.fields[fieldIndex].modelType = 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
                     case 1:
                         //textarea
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core';
+                        this.fields[fieldIndex].modelType = 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
                     case 2:
                         //radio/mc
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core';
+                        this.fields[fieldIndex].modelType = 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
                     case 3:
                         //checkbox
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core';
+                        this.fields[fieldIndex].modelType = 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
                     case 4:
                         //dropdown
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core';
+                        this.fields[fieldIndex].modelType = 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
                     case 5:
                         //fileattachment
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core';
+                        this.fields[fieldIndex].modelType = 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
                     case 6:
                         //displayfield
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core';
+                        this.fields[fieldIndex].modelType = 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
 				}
             },
