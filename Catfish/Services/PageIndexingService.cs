@@ -15,9 +15,9 @@ namespace Catfish.Services
     public class PageIndexingService : IPageIndexingService
     {
         private readonly IApi _api;
-        private readonly ISolrIndexService<SolrPageContentModel> _solrIndexService;
+        private readonly ISolrIndexService<SolrEntry> _solrIndexService;
         private readonly IQueryService _solrQueryService;
-        public PageIndexingService(ISolrIndexService<SolrPageContentModel> iSrv, IQueryService qSrv, IApi api)
+        public PageIndexingService(ISolrIndexService<SolrEntry> iSrv, IQueryService qSrv, IApi api)
         {
             _api = api;
             _solrIndexService = iSrv;
@@ -29,9 +29,113 @@ namespace Catfish.Services
             throw new NotImplementedException();
         }
 
-        public void IndexBlock(Block block, Guid ParentId, SolrPageContentModel model)
+        ////public void IndexBlock(Block block, Guid ParentId, SolrPageContentModel model)
+        ////{
+        ////    if (block == null)
+        ////        return;
+
+        ////    //If the given block is an HtmlBlock or any specialization of it,
+        ////    //then we index its body content
+        ////    if (typeof(HtmlBlock).IsAssignableFrom(block.GetType()))
+        ////    {
+        ////        string text = (block as HtmlBlock).Body.Value;
+        ////        if (!string.IsNullOrWhiteSpace(text))
+        ////            model.AddBlockContent(block.Id, ParentId, text);
+        ////    }
+
+        ////    //If the given block is an TextBlock or any specialization of it,
+        ////    //then we index its body content
+        ////    if (typeof(TextBlock).IsAssignableFrom(block.GetType()))
+        ////    {
+        ////        string text = (block as TextBlock).Body.Value;
+        ////        if (!string.IsNullOrWhiteSpace(text))
+        ////            model.AddBlockContent(block.Id, ParentId, text);
+        ////    }
+
+        ////    //If the given block is an QuoteBlock or any specialization of it,
+        ////    //then we index its body content
+        ////    if (typeof(QuoteBlock).IsAssignableFrom(block.GetType()))
+        ////    {
+        ////        string text = (block as QuoteBlock).Body.Value;
+        ////        if (!string.IsNullOrWhiteSpace(text))
+        ////            model.AddBlockContent(block.Id, ParentId, text);
+        ////    }
+
+        ////    //If the given block is an ColumnBlock or any specialization of it,
+        ////    //then we index each block inside it
+        ////    if (typeof(ColumnBlock).IsAssignableFrom(block.GetType()))
+        ////    {
+        ////        var children = (block as ColumnBlock).Items;
+        ////        foreach (var child in children)
+        ////            IndexBlock(child, block.Id, model);
+        ////    }
+        ////}
+
+        ////public void IndexPagex(PageBase page)
+        ////{
+        ////    if (page == null || !page.IsPublished)
+        ////        return;
+
+        ////    SolrPageContentModel model = new SolrPageContentModel()
+        ////    {
+        ////        Id = page.Id,
+        ////        ContenType = SolrEntry.eEntryType.Page
+        ////    };
+        ////    model.ParentId.Add(page.ParentId);
+
+        ////    //Indexing the page title
+        ////    if (!string.IsNullOrWhiteSpace(page.Title))
+        ////        model.Title.Add(page.Title);
+
+        ////    //Indexing the page excerpt
+        ////    if (!string.IsNullOrWhiteSpace(page.Excerpt))
+        ////        model.Excerpt.Add(page.Excerpt);
+
+        ////    //Indexing the page permalink
+        ////    if (!string.IsNullOrWhiteSpace(page.Permalink))
+        ////        model.Excerpt.Add(page.Permalink);
+
+        ////    //Indexing all content blocks
+        ////    foreach (var block in page.Blocks)
+        ////        IndexBlock(block, page.Id, model);
+
+        ////    IndexInSolr(model);
+        ////}
+
+        ////public void IndexPost(PostBase post)
+        ////{
+        ////    if (post == null || !post.IsPublished)
+        ////        return;
+
+        ////    SolrPageContentModel model = new SolrPageContentModel()
+        ////    {
+        ////        Id = post.Id,
+        ////        ContenType = SolrEntry.eEntryType.Post
+        ////    };
+        ////    model.ParentId.Add(post.BlogId);
+
+        ////    //Indexing the page title
+        ////    if (!string.IsNullOrWhiteSpace(post.Title))
+        ////        model.Title.Add(post.Title);
+
+        ////    //Indexing the page excerpt
+        ////    if (!string.IsNullOrWhiteSpace(post.Excerpt))
+        ////        model.Excerpt.Add(post.Excerpt);
+
+        ////    //Indexing the page permalink
+        ////    if (!string.IsNullOrWhiteSpace(post.Permalink))
+        ////        model.Excerpt.Add(post.Permalink);
+
+        ////    //Indexing all content blocks
+        ////    foreach (var block in post.Blocks)
+        ////        IndexBlock(block, post.Id, model);
+
+        ////    IndexInSolr(model);
+        ////}
+
+        public void IndexBlock(Block block, SolrEntry entry)
         {
-            if (block == null)
+            if (block == null || entry == null)
                 return;
 
             //If the given block is an HtmlBlock or any specialization of it,
@@ -40,7 +144,7 @@ namespace Catfish.Services
             {
                 string text = (block as HtmlBlock).Body.Value;
                 if (!string.IsNullOrWhiteSpace(text))
-                    model.AddBlockContent(block.Id, ParentId, text);
+                    entry.AddContent(block.Id, text);
             }
 
             //If the given block is an TextBlock or any specialization of it,
@@ -49,7 +153,7 @@ namespace Catfish.Services
             {
                 string text = (block as TextBlock).Body.Value;
                 if (!string.IsNullOrWhiteSpace(text))
-                    model.AddBlockContent(block.Id, ParentId, text);
+                    entry.AddContent(block.Id, text);
             }
 
             //If the given block is an QuoteBlock or any specialization of it,
@@ -58,7 +162,7 @@ namespace Catfish.Services
             {
                 string text = (block as QuoteBlock).Body.Value;
                 if (!string.IsNullOrWhiteSpace(text))
-                    model.AddBlockContent(block.Id, ParentId, text);
+                    entry.AddContent(block.Id, text);
             }
 
             //If the given block is an ColumnBlock or any specialization of it,
@@ -67,75 +171,54 @@ namespace Catfish.Services
             {
                 var children = (block as ColumnBlock).Items;
                 foreach (var child in children)
-                    IndexBlock(child, block.Id, model);
+                    IndexBlock(child, entry);
             }
         }
 
-        public void IndexPage(PageBase page)
+        public void IndexPage(PageBase doc)
         {
-            if (page == null || !page.IsPublished)
+            if (doc == null || !doc.IsPublished)
                 return;
 
-            SolrPageContentModel model = new SolrPageContentModel()
+            SolrEntry entry = new SolrEntry()
             {
-                Id = page.Id,
-                ContenType = SolrEntry.eEntryType.Page
+                Id = doc.Id,
+                ObjectType = SolrEntry.eEntryType.Page,
+                Title = string.IsNullOrWhiteSpace(doc.Title) ? null : doc.Title,
+                Excerpt = string.IsNullOrWhiteSpace(doc.Excerpt) ? null : doc.Excerpt,
+                Permalink = string.IsNullOrWhiteSpace(doc.Permalink) ? null : doc.Permalink,
             };
-            model.ParentId.Add(page.ParentId);
-
-            //Indexing the page title
-            if (!string.IsNullOrWhiteSpace(page.Title))
-                model.Title.Add(page.Title);
-
-            //Indexing the page excerpt
-            if (!string.IsNullOrWhiteSpace(page.Excerpt))
-                model.Excerpt.Add(page.Excerpt);
-
-            //Indexing the page permalink
-            if (!string.IsNullOrWhiteSpace(page.Permalink))
-                model.Excerpt.Add(page.Permalink);
 
             //Indexing all content blocks
-            foreach (var block in page.Blocks)
-                IndexBlock(block, page.Id, model);
+            foreach (var block in doc.Blocks)
+                IndexBlock(block, entry);
 
-            IndexInSolr(model);
+            IndexInSolr(entry);
         }
 
-        public void IndexPost(PostBase post)
+        public void IndexPost(PostBase doc)
         {
-            if (post == null || !post.IsPublished)
+            if (doc == null || !doc.IsPublished)
                 return;
 
-            SolrPageContentModel model = new SolrPageContentModel()
+            SolrEntry entry = new SolrEntry()
             {
-                Id = post.Id,
-                ContenType = SolrEntry.eEntryType.Post
+                Id = doc.Id,
+                ObjectType = SolrEntry.eEntryType.Post,
+                Title = string.IsNullOrWhiteSpace(doc.Title) ? null : doc.Title,
+                Excerpt = string.IsNullOrWhiteSpace(doc.Excerpt) ? null : doc.Excerpt,
+                Permalink = string.IsNullOrWhiteSpace(doc.Permalink) ? null : doc.Permalink,
             };
-            model.ParentId.Add(post.BlogId);
-
-            //Indexing the page title
-            if (!string.IsNullOrWhiteSpace(post.Title))
-                model.Title.Add(post.Title);
-
-            //Indexing the page excerpt
-            if (!string.IsNullOrWhiteSpace(post.Excerpt))
-                model.Excerpt.Add(post.Excerpt);
-
-            //Indexing the page permalink
-            if (!string.IsNullOrWhiteSpace(post.Permalink))
-                model.Excerpt.Add(post.Permalink);
 
             //Indexing all content blocks
-            foreach (var block in post.Blocks)
-                IndexBlock(block, post.Id, model);
+            foreach (var block in doc.Blocks)
+                IndexBlock(block, entry);
 
-            IndexInSolr(model);
+            IndexInSolr(entry);
         }
-
-        private void IndexInSolr(SolrPageContentModel model)
+        private void IndexInSolr(SolrEntry entry)
         {
-             _solrIndexService.AddUpdate(model);
+             _solrIndexService.AddUpdate(entry);
         }
     }
 }

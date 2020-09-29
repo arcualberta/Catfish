@@ -156,10 +156,10 @@ namespace Catfish
 
             configSection = Configuration.GetSection("SolarConfiguration:solrPageURL");
             if (configSection != null && !string.IsNullOrEmpty(configSection.Value))
-                services.AddSolrNet<SolrPageContentModel>(configSection.Value);
+                services.AddSolrNet<SolrEntry>(configSection.Value);
 
             services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
-            services.AddScoped<ISolrIndexService<SolrPageContentModel>, SolrIndexService<SolrPageContentModel, ISolrOperations<SolrPageContentModel>>>();
+            services.AddScoped<ISolrIndexService<SolrEntry>, SolrIndexService<SolrEntry, ISolrOperations<SolrEntry>>>();
             services.AddScoped<IQueryService, QueryService>();
             services.AddScoped<IPageIndexingService, PageIndexingService>();
 

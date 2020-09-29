@@ -15,9 +15,9 @@ namespace Catfish.Core.Services.Solr
     public class QueryService : IQueryService
     {
         private readonly ISolrReadOnlyOperations<SolrItemModel> _solrItemQuery;
-        private readonly ISolrReadOnlyOperations<SolrPageContentModel> _solrPageQuery;
+        private readonly ISolrReadOnlyOperations<SolrEntry> _solrPageQuery;
         private readonly AppDbContext _db;
-        public QueryService(ISolrReadOnlyOperations<SolrItemModel> qrvItem, ISolrReadOnlyOperations<SolrPageContentModel> qrvPage, AppDbContext db)
+        public QueryService(ISolrReadOnlyOperations<SolrItemModel> qrvItem, ISolrReadOnlyOperations<SolrEntry> qrvPage, AppDbContext db)
         {
             _solrItemQuery = qrvItem;
             _solrPageQuery = qrvPage;
@@ -99,24 +99,27 @@ namespace Catfish.Core.Services.Solr
 
         public IList<SolrEntry> GetPages(SearchParameters parameters, int start = 0, int limit = 100)
         {
-            var query = new SolrQuery("title:" + parameters.FreeSearch).Boost(2) +
-                        new SolrQuery("excerpt:" + parameters.FreeSearch) +
-                        new SolrQuery("blockContent:" + parameters.FreeSearch);
+            var query = new SolrQuery("title_s:" + parameters.FreeSearch) +
+                        new SolrQuery("excerpt_s:" + parameters.FreeSearch) +
+                        new SolrQuery("content:" + parameters.FreeSearch);
 
             //Result hilighting: https://lucene.apache.org/solr/guide/8_5/highlighting.html
+            string highlightStartTag = "<em class='bg-warning'>";
+            string highlightEndTag = "</em>";
+
             var queryResult = _solrPageQuery.Query(query,
                 new QueryOptions
                 {
-                    Fields = new[] { "id", "title", "object_type_i" },
+                    Fields = new[] { "id", "title_s", "object_type_i", "language_s", "permalink_s", "containerId" },
                     StartOrCursor = new StartOrCursor.Start(start),
                     Rows = limit,
                     ExtraParams = new Dictionary<string, string> {
                         {"hl.method", "unified" }, //Unified highligher, which is said to be new and fast
                         {"hl", "true" }, //Enable snippet highlighting
                         {"hl.fl", "*" }, //Hilight matching snippets in all fields
-                        {"hl.snippets", "1" }, //Highlight up to 10 snippets. TODO: pass this as an optional config parameter
-                        {"hl.tag.pre", "<em class='bg-warning'>" }, //Start tag for hilighting matching snippets
-                        {"hl.tag.post", "</em>" } //End tag for hilighting matching snippets
+                        {"hl.snippets", "5" }, //Highlight up to 10 snippets. TODO: pass this as an optional config parameter
+                        {"hl.tag.pre", highlightStartTag }, //Start tag for hilighting matching snippets
+                        {"hl.tag.post", highlightEndTag } //End tag for hilighting matching snippets
                     }
                 });
 
@@ -132,19 +135,55 @@ namespace Catfish.Core.Services.Solr
             for (int i = 0; i < queryResult.Count; ++i)
             {
                 var qr = queryResult[i];
-                var hl = highlights[i];
-
-                SolrEntry entry = new SolrEntry()
+                var hkeys = highlights[i].Value.Keys.ToList();
+                var hvals = highlights[i].Value.Values.ToList();
+                for(int k =0; k<hkeys.Count; ++k)
                 {
-                    Id = qr.Id,
-                    ObjectType = qr.ContenType,
-                    PageContent = new SolrPageContentModel(hl)
-                };
+                    var snippets = hvals[k];
+                    if (hkeys[k] == "title_s")
+                    {
+                        //The title filed matches the search criteria. In this
+                        //case, we find the highlighted portion in the highlight
+                        //and highlight the correcponding section in the actual title.
 
-                result.Add(entry);
+                        foreach(var snippet in snippets)
+                            qr.Title = HighlightSections(snippet, highlightStartTag, highlightEndTag, qr.Title);
+                    }
+                    else
+                    {
+                        foreach (var snippet in snippets)
+                            qr.Highlights.Add(snippet);
+                    }
+                }
+
+                result.Add(qr);
             }
 
             return result;
+        }
+
+        private string HighlightSections(string snippetWithHighlights, string highlightStartTag, string highlightEndTag, string stringToBeHighlighted)
+        {
+            while(true)
+            {
+                int start = snippetWithHighlights.IndexOf(highlightStartTag);
+                int end = snippetWithHighlights.IndexOf(highlightEndTag, Math.Min(snippetWithHighlights.Length, highlightStartTag.Length));
+                if (start < 0 || end < 0)
+                    return stringToBeHighlighted;
+
+                start = start + highlightStartTag.Length;
+                string highlightedFragmentWithoutMarkers = snippetWithHighlights.Substring(start, end - start);
+                string highlightedFragmentWithMarkers = highlightStartTag + highlightedFragmentWithoutMarkers + highlightEndTag;
+
+                //replacing all occurrances of the highlighted fragment within the stringToBeHighlighted
+                stringToBeHighlighted = stringToBeHighlighted.Replace(highlightedFragmentWithoutMarkers, highlightedFragmentWithMarkers);
+
+                //removing all occurances of the highlightedFragmentWithMarkers from the snippet
+                snippetWithHighlights = snippetWithHighlights.Replace(highlightedFragmentWithMarkers, "");
+
+                //Recursively calling the HighlightSections method to process other highlighted sections
+                return HighlightSections(snippetWithHighlights, highlightStartTag, highlightEndTag, stringToBeHighlighted);
+            }
         }
 
 
