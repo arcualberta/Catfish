@@ -7,6 +7,7 @@ using SolrNet.Mapping.Validation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Linq;
 using System.Text;
 
@@ -99,6 +100,9 @@ namespace Catfish.Core.Services.Solr
 
         public IList<SolrEntry> FreeSearch(SearchParameters parameters, int start = 0, int limit = 100)
         {
+            if (string.IsNullOrWhiteSpace(parameters.FreeSearch))
+                return new List<SolrEntry>();
+
             var query = new SolrQuery("title:" + parameters.FreeSearch) +
                         new SolrQuery("content:" + parameters.FreeSearch);
 
