@@ -13,8 +13,6 @@
         foreach (var entry in Model.Results)
         {
         <li>
-            @*@if (entry.ObjectType == Core.Models.Solr.SolrEntry.eEntryType.Page || entry.ObjectType == Core.Models.Solr.SolrEntry.eEntryType.Post)
-        {*@
             @foreach (var title in entry.Title)
             {
                 <div><b>@Html.Raw(title)</b></div>
@@ -27,28 +25,7 @@
             {
                 <div>@Html.Raw(snippet)</div>
             }
-            @*}*@
         </li>
-            @*<li>Entity GUID : @entry.Id</li>
-                foreach (var metadataset in entry.MetadataSets)
-                {
-                    <li><span> &nbsp; &nbsp; </span> MetadataSet GUID : @metadataset.Id</li>
-                    foreach (var fields in metadataset.Fields)
-                    {
-                        <li><span> &nbsp; &nbsp; &nbsp;  &nbsp; </span> Field GUID : @fields.Id</li>
-                        if (typeof(TextField).IsAssignableFrom(fields.GetType()))
-                        {
-                            foreach (var textfield in (fields as TextField).Values)
-                            {
-                                foreach (var txt in textfield.Values)
-                                {
-                                    <li><span> &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; </span> Language : @txt.Language</li>
-                                    <li><span> &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; </span> Value : @txt.Value</li>
-                                }
-                            }
-                        }
-                    }
-                }*@
         }
     }
 </ul>
