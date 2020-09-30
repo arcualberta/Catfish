@@ -228,3 +228,8 @@
 	display: flex;
 	flex-wrap: wrap;
 }
+
+#edit-field-form-page .red-color {
+	border: solid red 3px;
+	border-radius: 5.25px;
+}

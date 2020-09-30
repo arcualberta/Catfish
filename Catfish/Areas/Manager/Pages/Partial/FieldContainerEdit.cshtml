@@ -274,20 +274,22 @@
                                                     </div>
                                                      @*File attachment*@ 
                                                     <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core'"
-                                                        class="filetype-checkbox-holder">
-                                                        <div class="filetype-checkbox">
-                                                            <input class="form-check-input" type="checkbox" v-model="field.values" value="any"
-                                                            :id="'filetype-checkbox-' + fieldIndex + '-' + 'any'" v-on:change="checkAllFileTypes(field)" >
-                                                            <label class="form-check-label" :for="'filetype-checkbox-' + fieldIndex + '-' + 'any'">
-                                                                <h6 style="margin-bottom:0;">Any</h6>
-                                                            </label>
-                                                        </div>
-                                                        <div class="filetype-checkbox" v-for="(fileType, fileTypeIndex) of fileTypes">
-                                                            <input class="form-check-input" type="checkbox" v-model="field.values" :value="fileType"
-                                                            :id="'filetype-checkbox-' + fieldIndex + '-' + fileTypeIndex" v-on:change="checkCheckboxState(field, fieldIndex)" >
-                                                            <label class="form-check-label" :for="'filetype-checkbox-' + fieldIndex + '-' + fileTypeIndex">
-                                                                <h6 style="margin-bottom:0;">{{fileType}}</h6>
-                                                            </label>
+                                                        >
+                                                        <div class="filetype-checkbox-holder" :class="{ 'red-color': $v.fields.$each[fieldIndex].values.$invalid }">
+                                                            <div class="filetype-checkbox">
+                                                                <input class="form-check-input" type="checkbox" v-model="field.values" value="any"
+                                                                :id="'filetype-checkbox-' + fieldIndex + '-' + 'any'" v-on:change="checkAllFileTypes(field)" >
+                                                                <label class="form-check-label" :for="'filetype-checkbox-' + fieldIndex + '-' + 'any'">
+                                                                    <h6 style="margin-bottom:0;">Any</h6>
+                                                                </label>
+                                                            </div>
+                                                            <div class="filetype-checkbox" v-for="(fileType, fileTypeIndex) of fileTypes">
+                                                                <input class="form-check-input" type="checkbox" v-model="field.values" :value="fileType"
+                                                                :id="'filetype-checkbox-' + fieldIndex + '-' + fileTypeIndex" v-on:change="checkCheckboxState(field, fieldIndex)" >
+                                                                <label class="form-check-label" :for="'filetype-checkbox-' + fieldIndex + '-' + fileTypeIndex">
+                                                                    <h6 style="margin-bottom:0;">{{fileType}}</h6>
+                                                                </label>
+                                                            </div>
                                                         </div>
                                                         @*{{$v.fields.$each[fieldIndex].values}}*@
 
