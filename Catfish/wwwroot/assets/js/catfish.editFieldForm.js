@@ -137,6 +137,9 @@ if (document.getElementById("edit-field-form-page")) {
             fields: {
                 $each: {
                     values: {
+                        //currently the display text option can be submitted regardless of any text or not
+                        //it errors on reading an array instead of an empty string on creation, need different place to store it
+
                         //all start with this value at Array(0). Need to somehow indicate if it's 
                         //a mc/radio/dropdown/fileattachment option to assign the req(?) or minlength
                         required: requiredIf(function (fieldModel) {
@@ -150,6 +153,7 @@ if (document.getElementById("edit-field-form-page")) {
                                 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
                             )
                         }), 
+                        //only need the object for radio/checkbox/dropdown's inner content
                         $each: {
                             text: {
                                 required: requiredIf(function (textModel) {
@@ -195,7 +199,7 @@ if (document.getElementById("edit-field-form-page")) {
 			 * @param name the name of the v-model binded to.
 			 */
             validateState(name, indexOrGuid = null, attribute = null) {
-                console.log("why", this.$v);
+                //console.log("why", this.$v);
                 if (indexOrGuid != null) {
                     //this is a $each situation - array
                     const { $dirty, $invalid } = this.$v[name][attribute].$each[indexOrGuid].value;
@@ -248,9 +252,9 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} event
              */
             saveFieldForm(event) {
-                console.log("saving goes here", event);
+                //console.log("saving goes here", event);
 
-                console.log(this.names, this.descriptions, this.fields);
+                console.log("the name, description, and fields saved TBA", this.names, this.descriptions, this.fields);
             },
 
             /**
@@ -582,7 +586,7 @@ if (document.getElementById("edit-field-form-page")) {
                                         showDescription: false,
                                         hasOtherOption: false
                                     });
-                                    }
+                                }
 
                                 //temporary until templates sent, remove afterwards
                                 for (let field of result.fields) {

@@ -186,7 +186,7 @@
                                                      @*Radio aka Multiple Choice*@ 
                                                     <div v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">
                                                         <div v-for="(radioValue, radioIndex) of field.values" class="input-group mb-3">
-                                                            {{$v.fields.$each[fieldIndex].values}}
+                                                            @*{{$v.fields.$each[fieldIndex].values}}*@
                                                             <div class="input-group-prepend">
                                                                 <div class="input-group-text">
                                                                     <input disabled :id="'radio-' + radioIndex" :name="'radio-field-' + fieldIndex" type="radio" aria-label="Radio button for following text input">
@@ -223,10 +223,13 @@
                                                         <div v-for="(checkValue, checkIndex) of field.values" class="input-group mb-3">
                                                             <div class="input-group-prepend">
                                                                 <div class="input-group-text">
-                                                                    <input :id="'checkbox-' + checkIndex" disabled :name="'check-field-' + fieldIndex" type="checkbox" aria-label="Checkbox for following text input">
+                                                                    <input :id="'checkbox-' + checkIndex" disabled :name="'check-field-' + fieldIndex" 
+                                                                        type="checkbox" aria-label="Checkbox for following text input">
                                                                 </div>
                                                             </div>
-                                                            <input type="text" class="form-control" :disabled="checkValue.isDisabled" aria-label="Text input with checkbox and remove button" v-model="checkValue.text">
+                                                            <input type="text" class="form-control" :disabled="checkValue.isDisabled" 
+                                                                aria-label="Text input with checkbox and remove button" v-model="checkValue.text"
+                                                                :state="validateFieldState(fieldIndex, 'values')">
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, checkValue, checkIndex)" type="button">
                                                                     <i class="fas fa-minus"></i>
@@ -250,7 +253,8 @@
                                                      @*Dropdown*@ 
                                                     <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core'">
                                                         <div v-for="(dropdownValue, dropdownIndex) of field.values" class="input-group mb-3">
-                                                            <input type="text" class="form-control" aria-label="Text input with remove button" v-model="dropdownValue.text">
+                                                            <input type="text" class="form-control" aria-label="Text input with remove button" 
+                                                                v-model="dropdownValue.text" :state="validateFieldState(fieldIndex, 'values')">
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, dropdownValue, dropdownIndex)" type="button">
                                                                     <i class="fas fa-minus"></i>
@@ -280,7 +284,7 @@
                                                                 <h6 style="margin-bottom:0;">{{fileType}}</h6>
                                                             </label>
                                                         </div>
-                                                        {{$v.fields.$each[fieldIndex].values}}
+                                                        @*{{$v.fields.$each[fieldIndex].values}}*@
 
                                                         <hr />
 
@@ -297,7 +301,8 @@
                                                     </div>
                                                     @*Display text*@ 
                                                     <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core' ">
-                                                        <quill-editor :ref="'richtext' + fieldIndex">
+                                                        <quill-editor :ref="'richtext' + fieldIndex" v-model="field.values"
+                                                            :state="validateFieldState(fieldIndex, 'values')">
                                                         </quill-editor>
                                                     </div>
                                                 
