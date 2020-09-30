@@ -10,8 +10,8 @@ namespace Catfish.Core.Services.Solr
 {
     public class EntityIndexService : IEntityIndexService
 	{
-		protected ISolrIndexService<SolrItemModel> _solrIndexService;
-		public EntityIndexService(ISolrIndexService<SolrItemModel> srv)
+		protected ISolrIndexService<SolrEntry> _solrIndexService;
+		public EntityIndexService(ISolrIndexService<SolrEntry> srv)
 		{
 			_solrIndexService = srv;
 		}
@@ -25,43 +25,41 @@ namespace Catfish.Core.Services.Solr
 				: typeof(Collection).IsAssignableFrom(entity.GetType()) ? SolrEntry.eEntryType.Collection
 				: SolrEntry.eEntryType.Other;
 
+			//TODO: implement the perma link for entities.
+			string permaLink = null;
+
 			SolrEntry entry = new SolrEntry()
 			{
 				Id = entity.Id,
 				ObjectType = type,
-				//Title = string.IsNullOrWhiteSpace(entity.Title) ? null : doc.Title,
-				//Excerpt = string.IsNullOrWhiteSpace(doc.Excerpt) ? null : doc.Excerpt,
-				//Permalink = string.IsNullOrWhiteSpace(doc.Permalink) ? null : doc.Permalink,
+				Permalink = permaLink
 			};
-			//entry.EntityGuid.Add(entity.Id);
-			//entry.EntityType.Add(entity.ModelType);
+			foreach (var txt in entity.Name.Values)
+            {
+				entry.TitleId.Add(txt.Id);
+				entry.Title.Add(txt.Value);
+            }
 
-			//foreach (MetadataSet ms in entity.MetadataSets)
-			//{
-			//	foreach (BaseField field in ms.Fields)
-			//	{
-			//		if (typeof(TextField).IsAssignableFrom(field.GetType()))
-			//		{
-			//			foreach (MultilingualText val in (field as TextField).Values)
-			//			{
-			//				foreach (Text txt in val.Values)
-			//				{
-			//					solrText.MetadataSetGuid.Add(ms.Id);
+            foreach (MetadataSet ms in entity.MetadataSets)
+            {
+                foreach (BaseField field in ms.Fields)
+                {
+                    if (typeof(TextField).IsAssignableFrom(field.GetType()))
+                    {
+                        foreach (MultilingualText val in (field as TextField).Values)
+                        {
+                            foreach (Text txt in val.Values)
+                            {
+								entry.AddContent(txt.Id, txt.Value);
+                            }
+                        }
+                    }
+                }
+            }
 
-			//					solrText.FieldGuid.Add(field.Id);
-			//					//solrText.ValueGuid.Add();
-			//					//solrText.TextGuid.Add();
-			//					solrText.Lang.Add(txt.Language);
-			//					solrText.Content.Add(txt.Value);
-			//				}
-			//			}
-			//		}
-			//	}
-			//}
+            status &= _solrIndexService.AddUpdate(entry);
 
-			//status &= _solrIndexService.AddUpdate(solrText);
-
-			return status;
+            return status;
 		}
 
 		//public bool AddUpdateEntity(Entity entity)
