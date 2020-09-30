@@ -138,7 +138,7 @@ if (document.getElementById("edit-field-form-page")) {
                 $each: {
                     values: {
                         //all start with this value at Array(0). Need to somehow indicate if it's 
-                        //a mc/radio/dropdown option to assign the req(?) or minlength
+                        //a mc/radio/dropdown/fileattachment option to assign the req(?) or minlength
                         required: requiredIf(function (fieldModel) {
                             return (fieldModel.modelType ==
                                 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
@@ -146,11 +146,16 @@ if (document.getElementById("edit-field-form-page")) {
                                 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
                                 || fieldModel.modelType ==
                                 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
+                                || fieldModel.modelType ==
+                                'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
                             )
                         }), 
                         $each: {
                             text: {
-                                required
+                                required: requiredIf(function (textModel) {
+                                    //this might not work with api update, hoping to store mc/radio/dropdown in different section from file attachment
+                                    return (typeof (textModel) == 'object');
+                                })
 							}
 						}
                     },

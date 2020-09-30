@@ -186,7 +186,7 @@
                                                      @*Radio aka Multiple Choice*@ 
                                                     <div v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">
                                                         <div v-for="(radioValue, radioIndex) of field.values" class="input-group mb-3">
-                                                            "{{$v.fields.$each[fieldIndex].values}}"
+                                                            {{$v.fields.$each[fieldIndex].values}}
                                                             <div class="input-group-prepend">
                                                                 <div class="input-group-text">
                                                                     <input disabled :id="'radio-' + radioIndex" :name="'radio-field-' + fieldIndex" type="radio" aria-label="Radio button for following text input">
@@ -280,6 +280,7 @@
                                                                 <h6 style="margin-bottom:0;">{{fileType}}</h6>
                                                             </label>
                                                         </div>
+                                                        {{$v.fields.$each[fieldIndex].values}}
 
                                                         <hr />
 
