@@ -19,11 +19,6 @@ namespace Catfish.Core.Models.Solr
         [SolrField("title_id")]
         public List<Guid?> TitleId { get; set; } = new List<Guid?>();
 
-
-        [SolrField("description_id")]
-        public List<Guid?> DescriptionId { get; set; } = new List<Guid?>();
-
-
         [SolrField("permalink_s")]
         public string Permalink { get; set; }
 
@@ -40,6 +35,11 @@ namespace Catfish.Core.Models.Solr
 
         public List<string> Highlights { get; set; } = new List<string>();
 
+        public void SetTitle(Guid titleId, string titleValue)
+        {
+            TitleId.Add(titleId);
+            Title.Add(titleValue);
+        }
         public void AddContent(Guid containerId, string content)
         {
             ContainerIds.Add(containerId);
