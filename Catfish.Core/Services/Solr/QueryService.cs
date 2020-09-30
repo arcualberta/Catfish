@@ -99,8 +99,7 @@ namespace Catfish.Core.Services.Solr
 
         public IList<SolrEntry> FreeSearch(SearchParameters parameters, int start = 0, int limit = 100)
         {
-            var query = new SolrQuery("title_s:" + parameters.FreeSearch) +
-                        new SolrQuery("excerpt_s:" + parameters.FreeSearch) +
+            var query = new SolrQuery("title:" + parameters.FreeSearch) +
                         new SolrQuery("content:" + parameters.FreeSearch);
 
             //Result hilighting: https://lucene.apache.org/solr/guide/8_5/highlighting.html
@@ -110,7 +109,7 @@ namespace Catfish.Core.Services.Solr
             var queryResult = _solrPageQuery.Query(query,
                 new QueryOptions
                 {
-                    Fields = new[] { "id", "title_s", "object_type_i", "language_s", "permalink_s", "containerId" },
+                    Fields = new[] { "id", "title", "object_type_i", "permalink_s", "containerId" },
                     StartOrCursor = new StartOrCursor.Start(start),
                     Rows = limit,
                     ExtraParams = new Dictionary<string, string> {
@@ -140,14 +139,15 @@ namespace Catfish.Core.Services.Solr
                 for(int k =0; k<hkeys.Count; ++k)
                 {
                     var snippets = hvals[k];
-                    if (hkeys[k] == "title_s")
+                    if (hkeys[k] == "title")
                     {
                         //The title filed matches the search criteria. In this
                         //case, we find the highlighted portion in the highlight
                         //and highlight the correcponding section in the actual title.
 
-                        foreach(var snippet in snippets)
-                            qr.Title = HighlightSections(snippet, highlightStartTag, highlightEndTag, qr.Title);
+                        foreach (var snippet in snippets)
+                            for (int t = 0; t < qr.Title.Count; ++t)
+                                qr.Title[t] = HighlightSections(snippet, highlightStartTag, highlightEndTag, qr.Title[t]);
                     }
                     else
                     {

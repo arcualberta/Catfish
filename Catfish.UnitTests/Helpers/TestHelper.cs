@@ -64,7 +64,7 @@ namespace Catfish.Tests.Helpers
             //Registering other services
             services.AddScoped<SeedingService>();
             services.AddScoped<DbEntityService>();
-            services.AddScoped<IEntityService, EntityService>();
+            services.AddScoped<IEntityIndexService, EntityIndexService>();
             services.AddTransient<IWorkflowService, WorkflowService>();
             services.AddTransient<IAuthorizationService, AuthorizationService>();
 

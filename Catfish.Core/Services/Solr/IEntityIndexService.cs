@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Catfish.Core.Services.Solr
 {
-    public interface IEntityService
+    public interface IEntityIndexService
     {
         public bool AddUpdateEntity(Entity entity);
     }

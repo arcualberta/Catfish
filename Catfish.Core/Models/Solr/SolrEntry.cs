@@ -8,19 +8,21 @@ namespace Catfish.Core.Models.Solr
 {
     public class SolrEntry
     {
-        public enum eEntryType { Item = 1, Collection, Page, Post }
+        public enum eEntryType { Page = 1, Post, ItemTemplate, Item, CollectionTemplate, Collection, Other }
 
         [SolrField("id")]
         public Guid Id { get; set; }
 
-        [SolrField("language_s")]
-        public string Language { get; set; }
+        [SolrField("title")]
+        public List<string> Title { get; set; } = new List<string>();
 
-        [SolrField("title_s")]
-        public string Title { get; set; }
+        [SolrField("title_id")]
+        public List<Guid?> TitleId { get; set; } = new List<Guid?>();
 
-        [SolrField("excerpt_s")]
-        public string Excerpt { get; set; }
+
+        [SolrField("description_id")]
+        public List<Guid?> DescriptionId { get; set; } = new List<Guid?>();
+
 
         [SolrField("permalink_s")]
         public string Permalink { get; set; }
@@ -36,7 +38,6 @@ namespace Catfish.Core.Models.Solr
         [SolrField("content")]
         public List<string> Contents { get; set; } = new List<string>();
 
-        public SolrPageContentModel PageContent { get; set; }
         public List<string> Highlights { get; set; } = new List<string>();
 
         public void AddContent(Guid containerId, string content)

@@ -21,14 +21,14 @@ namespace Catfish.UnitTests
         protected AppDbContext _db;
         protected TestHelper _testHelper;
         private ISolrIndexService<SolrItemModel> solrIndexService;
-        private IEntityService entityService;
+        private IEntityIndexService entityService;
         private readonly ISolrReadOnlyOperations<SolrItemModel> _solr;
         [SetUp]
         public void Setup()
         {
             _testHelper = new TestHelper();
             solrIndexService = _testHelper.Seviceprovider.GetService(typeof(ISolrIndexService<SolrItemModel>)) as ISolrIndexService<SolrItemModel>;
-            entityService = _testHelper.Seviceprovider.GetService(typeof(IEntityService)) as IEntityService;
+            entityService = _testHelper.Seviceprovider.GetService(typeof(IEntityIndexService)) as IEntityIndexService;
             _db = _testHelper.Db;
         }
 

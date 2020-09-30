@@ -15,9 +15,11 @@
         <li>
             @if (entry.ObjectType == Core.Models.Solr.SolrEntry.eEntryType.Page || entry.ObjectType == Core.Models.Solr.SolrEntry.eEntryType.Post)
             {
-                string title = entry.Title;
+                foreach(var title in entry.Title)
+                {
+                    <div><b>@Html.Raw(title)</b></div>
+                }
 
-                <b>@Html.Raw(entry.Title)</b>
                 <div>@entry.Id</div>
 
                 foreach(var snippet in entry.Highlights)
