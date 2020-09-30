@@ -34,21 +34,22 @@
         <div class="form-group flex-full">
             <div class="section-container">
                 <label for="form-title"><h3>Title</h3></label>
-                <div v-for="(name, titleIndex) of names.values" class="form-group" 
-                    :class="{ 'form-group--error': $v.names.values.$each[titleIndex].value.$error }">
-                    {{$v.names.values.$each[titleIndex].value}}
-                    <input type="text" class="form-title form-control" v-model="name.value" 
+                <div v-for="(name, titleIndex) of names.values" class="form-group">
+                    <input type="text" class="form-title form-control" 
+                    v-model.trim="$v.names.values.$each[titleIndex].value.$model"
                     :id="'form-title-' + titleIndex" placeholder="Title Your Form Here" 
                     @@input="touchNestedItem('names', titleIndex, 'values')"
-                    state="validateState('names', titleIndex, 'values')" />
+                    :state="validateState('names', titleIndex, 'values')"
+                    :class="{ 'is-invalid': $v.names.values.$each[titleIndex].value.$error }"/> 
+                    <!--showing validity not working as id expect, so manually controlling it with class binding ^
+                    :class="{ 'is-invalid': $v.names.values.$each[titleIndex].value.$error,
+                    'is-valid': !$v.names.values.$each[titleIndex].value.$error}" -->
                 </div>
             </div>
 
             <div class="section-container">
                 <label for="form-description"><h3>Description</h3></label>
-                <div v-for="(description, descriptionIndex) of descriptions.values" class="form-group"
-                :class="{ 'form-group--error': $v.descriptions.values.$each[descriptionIndex].value.$error }">
-                {{$v.descriptions.values.$each[descriptionIndex].value}}
+                <div v-for="(description, descriptionIndex) of descriptions.values" class="form-group">
                     <textarea type="text" class="form-description form-control" 
                     :id="'form-description-' + descriptionIndex" placeholder="Description goes here" 
                     state="validateState('descriptions', descriptionIndex, 'values')"
@@ -131,6 +132,7 @@
                                                 <input type="text" class="field-input form-control" v-model="nameValue.value" 
                                                 :id="'field-title-' + fieldIndex + '-' + nameValue" 
                                                 placeholder="Title Your Field Here" :state="validateFieldState(fieldIndex, 'name', nameIndex)"
+                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].name.values.$each[nameIndex].value.$invalid }"
                                                 /> <!-- 
                                                 @@input="$v.fields.$each[fieldIndex].name.values.$each[nameIndex].value.$touch()" -->
                                             </li>
@@ -195,7 +197,8 @@
                                                             <input type="text" class="form-control" :disabled="radioValue.isDisabled" 
                                                                 aria-label="Text input with radio button and remove button" 
                                                                 v-model="radioValue.text" :state="validateFieldState(fieldIndex, 'values')"
-                                                                > <!-- 
+                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$invalid }" > 
+                                                                <!-- 
                                                                 @@input="$v.fields.$each[fieldIndex].values.$touch()" -->
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, radioValue, radioIndex)" type="button">
@@ -229,7 +232,8 @@
                                                             </div>
                                                             <input type="text" class="form-control" :disabled="checkValue.isDisabled" 
                                                                 aria-label="Text input with checkbox and remove button" v-model="checkValue.text"
-                                                                :state="validateFieldState(fieldIndex, 'values')">
+                                                                :state="validateFieldState(fieldIndex, 'values')"
+                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$invalid }">
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, checkValue, checkIndex)" type="button">
                                                                     <i class="fas fa-minus"></i>
@@ -254,7 +258,8 @@
                                                     <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core'">
                                                         <div v-for="(dropdownValue, dropdownIndex) of field.values" class="input-group mb-3">
                                                             <input type="text" class="form-control" aria-label="Text input with remove button" 
-                                                                v-model="dropdownValue.text" :state="validateFieldState(fieldIndex, 'values')">
+                                                                v-model="dropdownValue.text" :state="validateFieldState(fieldIndex, 'values')"
+                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$invalid }">
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, dropdownValue, dropdownIndex)" type="button">
                                                                     <i class="fas fa-minus"></i>
@@ -347,6 +352,12 @@
             </div>
         </div>
     </form>
-    <div v-else>Put loading something or other here</div>
+    <div v-else>
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div>
 
 </div>

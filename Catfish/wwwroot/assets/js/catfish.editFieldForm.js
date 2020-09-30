@@ -308,7 +308,7 @@ if (document.getElementById("edit-field-form-page")) {
 
             test(event) {
                 let collapsingSections = document.getElementsByClassName('collapsing-items');
-                console.log("TESTING 123", event);
+                //console.log("TESTING 123", event);
                 let shownSectionIndex = '';
                 let previousSection = null;
                 let nextSection = null;
