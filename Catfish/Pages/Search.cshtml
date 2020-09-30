@@ -13,20 +13,21 @@
         foreach (var entry in Model.Results)
         {
         <li>
-            @if (entry.ObjectType == Core.Models.Solr.SolrEntry.eEntryType.Page || entry.ObjectType == Core.Models.Solr.SolrEntry.eEntryType.Post)
+            @*@if (entry.ObjectType == Core.Models.Solr.SolrEntry.eEntryType.Page || entry.ObjectType == Core.Models.Solr.SolrEntry.eEntryType.Post)
+        {*@
+            @foreach (var title in entry.Title)
             {
-                foreach(var title in entry.Title)
-                {
-                    <div><b>@Html.Raw(title)</b></div>
-                }
-
-                <div>@entry.Id</div>
-
-                foreach(var snippet in entry.Highlights)
-                {
-                    <div>@Html.Raw(snippet)</div>
-                }
+                <div><b>@Html.Raw(title)</b></div>
             }
+
+            <div>Object ID: @entry.Id</div>
+            <div>Object Type: @entry.ObjectType</div>
+
+            @foreach (var snippet in entry.Highlights)
+            {
+                <div>@Html.Raw(snippet)</div>
+            }
+            @*}*@
         </li>
             @*<li>Entity GUID : @entry.Id</li>
                 foreach (var metadataset in entry.MetadataSets)

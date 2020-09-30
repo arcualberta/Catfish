@@ -127,6 +127,7 @@ namespace Catfish.Core.Services
                 Data = item.Data,
                 TargetType = item.GetType().FullName
             };
+            et.Initialize(false);
             return et;
         }
 
