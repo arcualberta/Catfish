@@ -75,28 +75,40 @@
                     <label>@Localizer.General["Roles"]</label>
                     <ul class="list-group">
 
-                        <li class="list-group-item">
-                            @foreach (var role in Model.Roles)
+                        @{
+                            int cnt = 0;
+                            foreach (var role in Model.Roles)
                             {
-                                
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                    
+                                cnt += 1;
+                                if (cnt % 3 == 0)
+                                {
+                                                <li class="list-group-item">
+                                                    <div class="row">
+                                                        <div class="col-sm-4">
+                                                            <div class="checkbox">
+                                                                <label class="mb-0">
+                                                                    <input id="roleCheck" type="checkbox" value="@role.RoleId" checked="@role.Assigned"> @role.RoleName
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                        }
+                                        else
+                                        {
+                                        <div class="col-sm-4">
                                             <div class="checkbox">
                                                 <label class="mb-0">
-                                                    @*@Html.CheckBoxFor(m => m.Roles)*@
-                                                    <input id="roleCheck" type="checkbox" checked="@role.Assigned"> @role.RoleName
-                                                    
+                                                    <input id="roleCheck" type="checkbox" value="@role.RoleId" checked="@role.Assigned"> @role.RoleName
                                                 </label>
                                             </div>
-                                    
+                                        </div>
+                                        }
 
-                                    </div>
-                                </div>
-                            }
-                            
-                        </li>
-                    </ul> 
+                                        }
+                                        }
+                                    
+                                </ul> 
                 </div>
             </div>
         </div>

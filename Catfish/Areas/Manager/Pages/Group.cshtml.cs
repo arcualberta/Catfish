@@ -21,6 +21,8 @@ namespace Catfish.Areas.Manager.Pages
 
         [BindProperty]
         public Group Group { get; set; }
+
+        [BindProperty]
         public List<AssignedRoleDataViewModel> Roles { get; set; }
         
 
@@ -32,10 +34,7 @@ namespace Catfish.Areas.Manager.Pages
         }
         public void OnGet(Guid id)
         {
-            //Group = _srv.GetGroupDetails(id);
-            //Roles = _srv.GetGroupRolesDetails();
-            //SelectedRoles = _srv.GetSelectedGroupRoles(id);
-            var group = _appDb.Groups.FirstOrDefault(u => u.Id == id);
+            var group = _appDb.Groups.FirstOrDefault(g => g.Id == id);
             
             if (group != null)
             {
@@ -68,6 +67,9 @@ namespace Catfish.Areas.Manager.Pages
         public IActionResult OnPost()
         {
             Group dbGroup = _srv.GetGroupDetails(Group.Id);
+            List<GroupRole> dbGroupRoles = _appDb.GroupRoles.Where(r => r.GroupId == Group.Id).ToList();
+            List<AssignedRoleDataViewModel> newList = Roles;
+
             if (dbGroup == null)
                 throw new Exception("Group Details with ID = " + Group.Id + " not found.");
 
