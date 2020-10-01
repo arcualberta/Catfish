@@ -21,7 +21,7 @@ namespace Catfish.Areas.Manager.Pages
 
         [BindProperty]
         public Group Group { get; set; }
-        public IList<GroupRoleViewModel> Roles { get; set; }
+        public List<AssignedRoleDataViewModel> Roles { get; set; }
         
 
         public GroupModel(IAuthorizationService srv, AppDbContext appDb, PiranhaDbContext pdb)
@@ -44,12 +44,11 @@ namespace Catfish.Areas.Manager.Pages
                 var roles = _piranhaDb.Roles.Where(r => r.NormalizedName != "SYSADMIN").OrderBy(r => r.Name).ToList();
                 
                 var groupRoles = _appDb.GroupRoles.Where(r => r.GroupId == id).ToList();
-                
+                Roles = new List<AssignedRoleDataViewModel>();
                 foreach (var role in roles)
                 {
-                    var groupRoleVM = new GroupRoleViewModel
+                    var groupRoleVM = new AssignedRoleDataViewModel
                     {
-                        GroupId = group.Id,
                         RoleId = role.Id,
                         RoleName = role.Name
                     };
@@ -57,7 +56,7 @@ namespace Catfish.Areas.Manager.Pages
                     {
                         if(role.Id== groupRole.RoleId)
                         {
-                            groupRoleVM.Checked = true;
+                            groupRoleVM.Assigned = true;
                         }
                     }
                     Roles.Add(groupRoleVM);

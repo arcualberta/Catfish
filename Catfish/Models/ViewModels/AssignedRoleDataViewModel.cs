@@ -5,13 +5,10 @@ using System.Threading.Tasks;
 
 namespace Catfish.Models.ViewModels
 {
-    public class GroupRoleViewModel
+    public class AssignedRoleDataViewModel
     {
         public Guid RoleId { get; set; }
-        public string ConcurrencyStamp { get; set; }
         public string RoleName { get; set; }
-        public string NormalizedName { get; set; }
-        public Guid GroupId { get; set; }
-        public bool Checked { get; set; }
+        public bool Assigned { get; set; }
     }
 }
