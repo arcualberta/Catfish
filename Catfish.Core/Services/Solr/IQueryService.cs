@@ -10,11 +10,7 @@ namespace Catfish.Core.Services.Solr
     public interface IQueryService
     {       
         ISolrQuery BuildQuery(SearchParameters parameters);
-        SolrQueryResults<SolrItemModel> Search(SearchParameters parameters);
-        SolrQueryResults<SolrItemModel> Results(SearchParameters parameters);
-        //List<SolrItemModel> Search(string searchTerm);
-        public IList<Entity> GetEntities(SearchParameters parameters);
-        public IList<SolrEntry> GetPages(SearchParameters parameters, int start = 0, int limit = 100);
+        public IList<SolrEntry> FreeSearch(SearchParameters parameters, int start = 0, int limit = 100);
 
     }
 }

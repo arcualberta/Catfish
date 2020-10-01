@@ -39,7 +39,7 @@ namespace Catfish.Pages
             var parameters = new SearchParameters();
             parameters.FreeSearch = SearchTerm;
             //Results = QueryService.GetEntities(parameters);
-            Results = QueryService.GetPages(parameters);
+            Results = QueryService.FreeSearch(parameters);
         }
 
     }

@@ -12,42 +12,20 @@
     @{
         foreach (var entry in Model.Results)
         {
-            <li>
-                @if (entry.ObjectType == Core.Models.Solr.SolrEntry.eEntryType.Page || entry.ObjectType == Core.Models.Solr.SolrEntry.eEntryType.Post)
-                {
-                    <div>@entry.ObjectId</div>
+        <li>
+            @foreach (var title in entry.Title)
+            {
+                <div><b>@Html.Raw(title)</b></div>
+            }
 
-                    if (entry.PageContent.Title.Count > 0)
-                    {
-                        <b>@Html.Raw(string.Join(" ", entry.PageContent.Title))</b>
-                    }
+            <div>Object ID: @entry.Id</div>
+            <div>Object Type: @entry.ObjectType</div>
 
-                    foreach (var cont in entry.PageContent.BlockContents)
-                    {
-                        <div>@Html.Raw(cont)</div>
-                    }
-                }
-            </li>
-            @*<li>Entity GUID : @entry.Id</li>
-                foreach (var metadataset in entry.MetadataSets)
-                {
-                    <li><span> &nbsp; &nbsp; </span> MetadataSet GUID : @metadataset.Id</li>
-                    foreach (var fields in metadataset.Fields)
-                    {
-                        <li><span> &nbsp; &nbsp; &nbsp;  &nbsp; </span> Field GUID : @fields.Id</li>
-                        if (typeof(TextField).IsAssignableFrom(fields.GetType()))
-                        {
-                            foreach (var textfield in (fields as TextField).Values)
-                            {
-                                foreach (var txt in textfield.Values)
-                                {
-                                    <li><span> &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; </span> Language : @txt.Language</li>
-                                    <li><span> &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; </span> Value : @txt.Value</li>
-                                }
-                            }
-                        }
-                    }
-                }*@
+            @foreach (var snippet in entry.Highlights)
+            {
+                <div>@Html.Raw(snippet)</div>
+            }
+        </li>
         }
     }
 </ul>

@@ -64,7 +64,7 @@ namespace Catfish.Tests.Helpers
             //Registering other services
             services.AddScoped<SeedingService>();
             services.AddScoped<DbEntityService>();
-            services.AddScoped<IEntityService, EntityService>();
+            services.AddScoped<IEntityIndexService, EntityIndexService>();
             services.AddTransient<IWorkflowService, WorkflowService>();
             services.AddTransient<IAuthorizationService, AuthorizationService>();
 
@@ -72,8 +72,9 @@ namespace Catfish.Tests.Helpers
             ////services.AddScoped<SolrService>();
             // Solr services
             string solrString = configuration.GetSection("SolarConfiguration:solrItemURL").Value;
-            services.AddSolrNet<SolrItemModel>(solrString);
-            services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
+
+            services.AddSolrNet<SolrEntry>(solrString);
+            services.AddScoped<ISolrIndexService<SolrEntry>, SolrIndexService<SolrEntry, ISolrOperations<SolrEntry>>>();
 
             //Creating a service provider and assigning it to the member variable so that it can be used by 
             //test methods.

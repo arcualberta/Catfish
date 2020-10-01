@@ -26,7 +26,10 @@ namespace Catfish.Pages
 
         [BindProperty]
         public Guid TemplateId { get; set; }
-             
+
+        [BindProperty]
+        public Guid CollectionId { get; set; }
+
         public CreateEntity(IWorkflowService workflow, IEntityTemplateService temp, AppDbContext db) : base(null, null)
         {
             _workflowService = workflow;
@@ -34,12 +37,14 @@ namespace Catfish.Pages
             _db = db;
         }
         
-        public void OnGet(Guid templateId)
+        public void OnGet(Guid templateId, Guid collectionId)
         {
             TemplateId = templateId;
             EntityTemplate template = _entityTemplateService.GetTemplate(TemplateId);
 
             Item = template.GetRootDataItem(false);
+
+            CollectionId = collectionId;
         }
 
         public IActionResult OnPost()
@@ -56,6 +61,8 @@ namespace Catfish.Pages
             newDataItem.UpdateFieldValues(this.Item);
             newItem.DataContainer.Add(newDataItem);
             newDataItem.EntityId = newItem.Id;
+
+            //TODO: associated the newly createditem with the collection specified by CollectionId.
 
             //Adding the new entity to the database
             _db.Items.Add(newItem);

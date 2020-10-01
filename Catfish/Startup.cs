@@ -150,16 +150,11 @@ namespace Catfish
             services.AddScoped<IEntityTemplateService, EntityTemplateService>();
 
             // Solr services
-            var configSection = Configuration.GetSection("SolarConfiguration:solrItemURL");
-            if(configSection != null && !string.IsNullOrEmpty(configSection.Value))
-                services.AddSolrNet<SolrItemModel>(configSection.Value);
-
-            configSection = Configuration.GetSection("SolarConfiguration:solrPageURL");
+            var configSection = Configuration.GetSection("SolarConfiguration:solrPageURL");
             if (configSection != null && !string.IsNullOrEmpty(configSection.Value))
-                services.AddSolrNet<SolrPageContentModel>(configSection.Value);
+                services.AddSolrNet<SolrEntry>(configSection.Value);
 
-            services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
-            services.AddScoped<ISolrIndexService<SolrPageContentModel>, SolrIndexService<SolrPageContentModel, ISolrOperations<SolrPageContentModel>>>();
+            services.AddScoped<ISolrIndexService<SolrEntry>, SolrIndexService<SolrEntry, ISolrOperations<SolrEntry>>>();
             services.AddScoped<IQueryService, QueryService>();
             services.AddScoped<IPageIndexingService, PageIndexingService>();
 
@@ -317,6 +312,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/form.js"); 
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point.js");
             //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
         }
         private static void RegisterCustomBlocks()
@@ -329,6 +325,7 @@ namespace Catfish
             App.Blocks.Register<ContactFormBlock>();
             App.Blocks.Register<NavigationBlock>();
             App.Blocks.Register<SubmissionEntryPointList>();
+            App.Blocks.Register<SubmissionEntryPoint>();
         }
         private static void RegisterCustomStyles()
         {
