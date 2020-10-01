@@ -4,9 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Catfish.Core.Models;
+using Catfish.Models.ViewModels;
 using Catfish.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Piranha.AspNetCore.Identity.Data;
 using Piranha.Extend.Fields;
 
 namespace Catfish.Areas.Manager.Pages
@@ -15,18 +17,53 @@ namespace Catfish.Areas.Manager.Pages
     {
         private IAuthorizationService _srv;
         public readonly AppDbContext _appDb;
+        public readonly PiranhaDbContext _piranhaDb;
 
         [BindProperty]
         public Group Group { get; set; }
+        public IList<GroupRoleViewModel> Roles { get; set; }
+        
 
-        public GroupModel(IAuthorizationService srv, AppDbContext appDb)
+        public GroupModel(IAuthorizationService srv, AppDbContext appDb, PiranhaDbContext pdb)
         {
             _srv = srv;
             _appDb = appDb;
+            _piranhaDb = pdb;
         }
         public void OnGet(Guid id)
         {
-            Group = _srv.GetGroupDetails(id);
+            //Group = _srv.GetGroupDetails(id);
+            //Roles = _srv.GetGroupRolesDetails();
+            //SelectedRoles = _srv.GetSelectedGroupRoles(id);
+            var group = _appDb.Groups.FirstOrDefault(u => u.Id == id);
+            
+            if (group != null)
+            {
+                Group = group;
+                
+                var roles = _piranhaDb.Roles.Where(r => r.NormalizedName != "SYSADMIN").OrderBy(r => r.Name).ToList();
+                
+                var groupRoles = _appDb.GroupRoles.Where(r => r.GroupId == id).ToList();
+                
+                foreach (var role in roles)
+                {
+                    var groupRoleVM = new GroupRoleViewModel
+                    {
+                        GroupId = group.Id,
+                        RoleId = role.Id,
+                        RoleName = role.Name
+                    };
+                    foreach (var groupRole in groupRoles)
+                    {
+                        if(role.Id== groupRole.RoleId)
+                        {
+                            groupRoleVM.Checked = true;
+                        }
+                    }
+                    Roles.Add(groupRoleVM);
+                    //SelectedRoles.Add(Roles.Single(r => r.Id == role.RoleId).Name);
+                }              
+            }
         }
 
         public IActionResult OnPost()
@@ -39,7 +76,7 @@ namespace Catfish.Areas.Manager.Pages
             dbGroup.GroupStatus = Group.GroupStatus;
             _appDb.SaveChanges();
 
-            return RedirectToPage("GroupEdit","Manager");
+            return RedirectToPage("GroupList","Manager");
         }
 
     }

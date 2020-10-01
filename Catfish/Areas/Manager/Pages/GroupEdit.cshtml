@@ -6,6 +6,13 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @using Catfish.Core.Models
 
+@section script {
+    <script src="~/manager/identity/piranha.useredit.js"></script>
+    <script type="text/javascript">
+        piranha.groupedit.currentGroupName = Group.Name;
+        
+    </script>
+}
 @*@using (var form = Html.BeginForm("Save", "Role", FormMethod.Post, new { @class = "form validate", role = "form", novalidate = "" }))
     {*@
 <form id="item-edit-form" class="edit-form" method="post" novalidate>
@@ -52,10 +59,44 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>@Localizer.General["Status"]</label>
-                            @Html.DropDownListFor(m => m.Group.GroupStatus, new SelectList(Enum.GetValues(typeof(Group.eGroupStatus))),"Select Status")
+                            @Html.DropDownListFor(m => m.Group.GroupStatus, new SelectList(Enum.GetValues(typeof(Group.eGroupStatus))), "Select Status", new { @class = "form-control small" })
 
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="title">@Localizer.General["Configaration"]</span>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>@Localizer.General["Roles"]</label>
+                    <ul class="list-group">
+
+                        <li class="list-group-item">
+                            @foreach (var role in Model.Roles)
+                            {
+                                
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                    
+                                            <div class="checkbox">
+                                                <label class="mb-0">
+                                                    @*@Html.CheckBoxFor(m => m.Roles)*@
+                                                    <input id="roleCheck" type="checkbox" checked="@role.Checked"> @role.RoleName
+                                                    
+                                                </label>
+                                            </div>
+                                    
+
+                                    </div>
+                                </div>
+                            }
+                            
+                        </li>
+                    </ul> 
                 </div>
             </div>
         </div>

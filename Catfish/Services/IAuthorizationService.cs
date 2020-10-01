@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,5 +44,8 @@ namespace Catfish.Services
         Item GetItem(Guid item, AuthorizationPurpose purpose);
 
         Group GetGroupDetails(Guid id);
+
+        IList<Role> GetGroupRolesDetails();
+        IList<string> GetSelectedGroupRoles(Guid id);
     }
 }
