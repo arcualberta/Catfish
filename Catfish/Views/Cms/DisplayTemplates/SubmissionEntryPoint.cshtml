@@ -5,8 +5,9 @@
 
 @{
     Guid templateId = Guid.Parse(Model.EntityTemplateId.Value);
+    string collectionId = Model.CollectionId.Value;
     var template = _entityTemplateService.GetTemplate(templateId);
-    var url = "/entity/create/" + templateId;
+    var url = "/entity/create/" + templateId + "?collectionId=" + collectionId;
     var startupDataItem = template.GetRootDataItem(false);
 
 }
