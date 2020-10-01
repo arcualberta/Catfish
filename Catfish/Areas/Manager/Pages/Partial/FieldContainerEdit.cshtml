@@ -198,7 +198,7 @@
                                                             <input type="text" class="form-control" :disabled="radioValue.isDisabled" 
                                                                 aria-label="Text input with radio button and remove button" 
                                                                 v-model="radioValue.text" :state="validateFieldState(fieldIndex, 'values')"
-                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$invalid }" > 
+                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$each[radioIndex].text.$invalid }" > 
                                                                 <!-- 
                                                                 @@input="$v.fields.$each[fieldIndex].values.$touch()" -->
                                                             <div class="input-group-append">
@@ -234,7 +234,7 @@
                                                             <input type="text" class="form-control" :disabled="checkValue.isDisabled" 
                                                                 aria-label="Text input with checkbox and remove button" v-model="checkValue.text"
                                                                 :state="validateFieldState(fieldIndex, 'values')"
-                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$invalid }">
+                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$each[checkIndex].text.$invalid }">
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, checkValue, checkIndex)" type="button">
                                                                     <i class="fas fa-minus"></i>
@@ -260,7 +260,7 @@
                                                         <div v-for="(dropdownValue, dropdownIndex) of field.values" class="input-group mb-3">
                                                             <input type="text" class="form-control" aria-label="Text input with remove button" 
                                                                 v-model="dropdownValue.text" :state="validateFieldState(fieldIndex, 'values')"
-                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$invalid }">
+                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$each[dropdownIndex].text.$invalid }">
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, dropdownValue, dropdownIndex)" type="button">
                                                                     <i class="fas fa-minus"></i>
