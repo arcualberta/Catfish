@@ -312,6 +312,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/form.js"); 
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point.js");
             //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
         }
         private static void RegisterCustomBlocks()
@@ -324,6 +325,7 @@ namespace Catfish
             App.Blocks.Register<ContactFormBlock>();
             App.Blocks.Register<NavigationBlock>();
             App.Blocks.Register<SubmissionEntryPointList>();
+            App.Blocks.Register<SubmissionEntryPoint>();
         }
         private static void RegisterCustomStyles()
         {
