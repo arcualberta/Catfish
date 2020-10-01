@@ -23,7 +23,7 @@ namespace Catfish.Areas.Manager.Pages
         public Group Group { get; set; }
 
         [BindProperty]
-        public List<AssignedRoleDataViewModel> Roles { get; set; }
+        public List<GroupRoleAssignmentVM> Roles { get; set; }
         
 
         public GroupModel(IAuthorizationService srv, AppDbContext appDb, PiranhaDbContext pdb)
@@ -43,10 +43,10 @@ namespace Catfish.Areas.Manager.Pages
                 var roles = _piranhaDb.Roles.Where(r => r.NormalizedName != "SYSADMIN").OrderBy(r => r.Name).ToList();
                 
                 var groupRoles = _appDb.GroupRoles.Where(r => r.GroupId == id).ToList();
-                Roles = new List<AssignedRoleDataViewModel>();
+                Roles = new List<GroupRoleAssignmentVM>();
                 foreach (var role in roles)
                 {
-                    var groupRoleVM = new AssignedRoleDataViewModel
+                    var groupRoleVM = new GroupRoleAssignmentVM
                     {
                         RoleId = role.Id,
                         RoleName = role.Name
@@ -68,7 +68,7 @@ namespace Catfish.Areas.Manager.Pages
         {
             Group dbGroup = _srv.GetGroupDetails(Group.Id);
             List<GroupRole> dbGroupRoles = _appDb.GroupRoles.Where(r => r.GroupId == Group.Id).ToList();
-            List<AssignedRoleDataViewModel> newList = Roles;
+            List<GroupRoleAssignmentVM> newList = Roles;
 
             if (dbGroup == null)
                 throw new Exception("Group Details with ID = " + Group.Id + " not found.");

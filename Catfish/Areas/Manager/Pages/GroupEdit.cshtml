@@ -77,40 +77,33 @@
 
                         @{
 
-                            for(int cnt = 0; cnt<Model.Roles.Count; ++cnt)
+                            for (int cnt = 0; cnt < Model.Roles.Count; ++cnt)
                             {
-                                var role = Model.Roles[cnt];
-                                var id = Html.IdFor(model => model.Roles[cnt]);
-
-                                if (cnt % 3 == 0)
-                                {
-                                                <li class="list-group-item">
-                                                    <div class="row">
-                                                        <div class="col-sm-4">
-                                                            <div class="checkbox">
-                                                                <label class="mb-0">
-                                                                    <input id="@id" name="@Model.Roles[cnt]" type="checkbox" value="@role.RoleId" checked="@role.Assigned"> @role.RoleName
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                        }
-                                        else
-                                        {
+                                //if (cnt % 3 == 0)
+                                //{
+                                <li class="list-group-item">
+                                    <div class="row">
                                         <div class="col-sm-4">
-                                            <div class="checkbox">
-                                                <label class="mb-0">
-                                                    <input id="roleCheck" type="checkbox" value="@role.RoleId" checked="@role.Assigned"> @role.RoleName
-                                                </label>
-                                            </div>
+                                            @Html.EditorFor(model => model.Roles[cnt])
                                         </div>
-                                        }
+                                    </div>
+                                </li>
+                                //}
+                                @*else
+                {
+                <div class="col-sm-4">
+                    <div class="checkbox">
+                        <label class="mb-0">
+                            <input id="roleCheck" type="checkbox" value="@role.RoleId" checked="@role.Assigned"> @role.RoleName
+                        </label>
+                    </div>
+                </div>
+                }*@
 
-                                        }
-                                        }
-                                    
-                                </ul> 
+                            }
+                        }
+
+                    </ul> 
                 </div>
             </div>
         </div>

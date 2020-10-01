@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Models.ViewModels
 {
-    public class AssignedRoleDataViewModel
+    public class GroupRoleAssignmentVM
     {
         public Guid RoleId { get; set; }
         public string RoleName { get; set; }
