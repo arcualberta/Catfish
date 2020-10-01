@@ -304,14 +304,18 @@ if (document.getElementById("edit-field-form-page")) {
 				}
             },
 
-
-            test(event) {
+            /**
+             * Fire when any item sorted/moved (includes adding new item to list)
+             * @param {any} event
+             */
+            sortItem(event) {
                 let collapsingSections = document.getElementsByClassName('collapsing-items');
-                //console.log("TESTING 123", event);
+                console.log("event on sort:", event);
                 let shownSectionIndex = '';
                 let previousSection = null;
                 let nextSection = null;
 
+                //track sections above and below current item
                 for (let i = 0; i < collapsingSections.length; i++) {
                     if (collapsingSections[i].classList.contains('show')) {
                         shownSectionIndex = i; //collapsingSections[i];
@@ -320,73 +324,35 @@ if (document.getElementById("edit-field-form-page")) {
 					}
                 }
 
+
+                //if item is new, open that one
+                if (event.from.id != event.to.id) {
+                    console.log("added new item", collapsingSections[event.newIndex].id);
+                    $('#' + collapsingSections[event.newIndex].id).collapse('show');
+                    $('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
+                    return;
+                }
+
                 //if the user is dragging the showing item around
                 if (shownSectionIndex == event.oldIndex) {
                     console.log("dragging showing item");
                     $('#' + collapsingSections[event.newIndex].id).collapse('show');
-
+                    $('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
                     return;
 				}
 
                 //move show class to the index below open item
                 if (event.oldIndex <= shownSectionIndex && shownSectionIndex <= event.newIndex) {
                     console.log("moved item DOWN over shown");
-                    //collapsingSections[shownSectionIndex].classList.remove('show'); //replace w bootstrap call
-                    //$('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
-                    //previousSection.classList.add('show');
                     $('#' + previousSection.id).collapse('show');
                     //move item above open item
                 } else if (event.oldIndex >= shownSectionIndex && shownSectionIndex >= event.newIndex) {
                     console.log("moved item UP over shown");
-                    //collapsingSections[shownSectionIndex].classList.remove('show'); //replace w bootstrap call
-                    //$('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
-                    //nextSection.classList.add('show');
                     $('#' + nextSection.id).collapse('show');
                 }
+                $('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
 			},
 
-            /**
-             * Handles the cloned item (see cloneItem function)
-             * Controls the 'show' class for collapse to open the new item on creation and
-             * close any other items. Controls caret on new item added
-             * @param {any} event
-             */
-            addNewItem(event) {
-                console.log(event);
-
-                //get new item id
-                let newIdArray = event.srcElement.children[event.newIndex].children[0].children[1].children[1].id.split('-');
-                let newId = '';
-                let iterations = newIdArray.length;
-                console.log(newIdArray);
-                for (let item of newIdArray) {
-                    if (item == 'collapse') {
-                        --iterations;
-                        continue;
-                    }
-                    newId += item;
-                    if (--iterations) {
-                        newId += '-';
-                    }
-                }
-
-                let collapsingSections = document.getElementsByClassName('collapsing-items');
-                for (let section of collapsingSections) {
-                    if (section.classList.contains('show')) {
-                        section.classList.remove('show');
-
-                        //use new item id to position all carets as shut except new item's caret
-                        for (let item of Object.keys(this.dropdowns)) {
-                            if (item != newId) {
-                                this.dropdowns[item].isCollapsed = true;
-                            }
-						}
-                    }
-                }
-
-                //what u want is 3 children deep                
-                event.srcElement.children[event.newIndex].children[0].children[1].children[1].classList.add('show');
-			},
 
             /**
              * Returns a custom clone
