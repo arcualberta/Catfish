@@ -62,6 +62,8 @@ namespace Catfish.Pages
             newItem.DataContainer.Add(newDataItem);
             newDataItem.EntityId = newItem.Id;
 
+            //TODO: associated the newly createditem with the collection specified by CollectionId.
+
             //Adding the new entity to the database
             _db.Items.Add(newItem);
             _db.SaveChanges();
