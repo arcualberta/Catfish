@@ -140,8 +140,7 @@ if (document.getElementById("edit-field-form-page")) {
                         //currently the display text option can be submitted regardless of any text or not
                         //it errors on reading an array instead of an empty string on creation, need different place to store it
 
-                        //all start with this value at Array(0). Need to somehow indicate if it's 
-                        //a mc/radio/dropdown/fileattachment option to assign the req(?) or minlength
+                        //all start with this value at Array(0)
                         required: requiredIf(function (fieldModel) {
                             return (fieldModel.modelType ==
                                 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
@@ -623,9 +622,11 @@ if (document.getElementById("edit-field-form-page")) {
 
                                 this.tmpFileAttachmentTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
                                 this.tmpFileAttachmentTemplate.$type = 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core';
+                                this.tmpFileAttachmentTemplate.values = [];
 
                                 this.tmpDisplayFieldTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
                                 this.tmpDisplayFieldTemplate.$type = 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core';
+                                this.tmpDisplayFieldTemplate.values = "";
 
                                 resolve();
 

@@ -53,7 +53,8 @@
                     <textarea type="text" class="form-description form-control" 
                     :id="'form-description-' + descriptionIndex" placeholder="Description goes here" 
                     state="validateState('descriptions', descriptionIndex, 'values')"
-                    @@input="touchNestedItem('descriptions', descriptionIndex, 'values')">
+                    @@input="touchNestedItem('descriptions', descriptionIndex, 'values')"
+                    :class="{ 'red-color': $v.descriptions.values.$each[descriptionIndex].value.$error }">
                     {{description.value}}
                     </textarea>
                 </div>
@@ -308,8 +309,10 @@
                                                     </div>
                                                     @*Display text*@ 
                                                     <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core' ">
-                                                        <quill-editor :ref="'richtext' + fieldIndex" v-model="field.values"
-                                                            :state="validateFieldState(fieldIndex, 'values')">
+                                                        {{$v.fields.$each[fieldIndex].values}}
+                                                        <quill-editor rows="3" :ref="'richtext' + fieldIndex" v-model="$v.fields.$each[fieldIndex].values"
+                                                            :state="validateFieldState(fieldIndex, 'values')"
+                                                            :class="{ 'red-color': $v.fields.$each[fieldIndex].values.$invalid }">
                                                         </quill-editor>
                                                     </div>
                                                 
