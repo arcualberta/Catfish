@@ -1,3 +1,5 @@
+@inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
+
 @{
     var sitemap = WebApp.Site.Sitemap;
 }
@@ -14,7 +16,34 @@
             {
                 if (!item.IsHidden)
                 {
-                <a class="nav-item nav-link @(item.Id == WebApp.PageId ? "active" : "")" href="@item.Permalink"><span>@item.MenuTitle</span></a>
+
+                    @*<a class="nav-item nav-link @(item.Id == WebApp.PageId ? "active" : "")" href="@item.Permalink"><span>@item.MenuTitle</span></a>*@
+                    if (item.Items.Count == 0)
+                    {
+                        @*<li class="nav-item @(item.Id == WebApp.PageId ? "active" : "")">*@
+                            <a  href="@item.Permalink">@item.MenuTitle</a>
+                        @*</li>*@
+                    }
+                    else
+                    {
+                        //showing sub menu
+                        <div class=" nav-item @(item.Id == WebApp.PageId ? "active" : "") dropdown">
+                            <a href="#" class=" dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true"> @item.MenuTitle</a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                @foreach (var subItm in item.Items)
+                                {
+                                    if (!subItm.IsHidden)
+                                    {
+                                       <a class="dropdown-item" href="@subItm.Permalink">@subItm.MenuTitle</a>
+                                    }
+
+                                }
+
+                            </div>
+                        </div>
+
+                    }
+
                 }
             }
         </div>
@@ -27,10 +56,43 @@
         {
             if (!item.IsHidden)
             {
-            <li class="nav-item @(item.Id == WebApp.PageId ? "active" : "")">
-                <a class="nav-link" href="@item.Permalink"><span>@item.MenuTitle</span></a>
-            </li>
+                if (item.Items.Count == 0)
+                {
+                    <li class="nav-item @(item.Id == WebApp.PageId ? "active" : "")">
+                        <a  href="@item.Permalink">@item.MenuTitle</a>
+                    </li>
+                }
+                else
+                {
+                    //showing sub menu
+                   <li class=" nav-item @(item.Id == WebApp.PageId ? "active" : "") dropdown">
+                         <a href="#" class=" dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true"> @item.MenuTitle</a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                       @foreach (var subItm in item.Items)
+                       {
+                           if (!subItm.IsHidden)
+                           {
+                                <a class="dropdown-item" href="@subItm.Permalink">@subItm.MenuTitle</a>
+                           }
+                       }
+
+                        </div>
+                    </li>
+
+                 }
             }
         }
-    </ul>
+
+        @*@if (_catfishAppConfig.EnableWorkflows())
+        {
+            //Displaying the Workflow page menus
+            <li class="nav-item">
+                <a class="nav-link" href="/new"><span>@_catfishAppConfig.GetWorkflowHomePageTitle()</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="/entity/ItemList"><span>@_catfishAppConfig.GetWorkflowListPageTitle()</span></a>
+            </li>
+        }*@
+     </ul>
 </nav>

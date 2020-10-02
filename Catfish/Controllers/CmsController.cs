@@ -1,5 +1,7 @@
 ﻿using Catfish.Helper;
 using Catfish.Models;
+using Catfish.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Piranha;
 using Piranha.AspNetCore.Services;
@@ -14,14 +16,14 @@ namespace Catfish.Controllers
         private readonly IApi _api;
         private readonly IModelLoader _loader;
         private readonly IDb _db;
-        private readonly IEmail _email;
+        private readonly IEmailService _email;
       
 
         /// <summary>
         /// Default constructor.
         /// </summary>
         /// <param name="api">The current api</param>
-        public CmsController(IApi api,IDb db,  IModelLoader loader, IEmail email)
+        public CmsController(IApi api,IDb db,  IModelLoader loader, IEmailService email, IHttpContextAccessor httpContextAccessor)
         {
             _api = api;
             _loader = loader;
@@ -162,7 +164,7 @@ namespace Catfish.Controllers
             {
                 _email.SendEmail(email);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -184,16 +186,16 @@ namespace Catfish.Controllers
                 var model = await _loader.GetPostAsync<StandardPost>(commentModel.Id, HttpContext.User);
 
                 // Create the comment
-                var comment = new Comment
-                {
-                    IpAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString(),
-                    UserAgent = Request.Headers.ContainsKey("User-Agent") ? Request.Headers["User-Agent"].ToString() : "",
-                    Author = commentModel.CommentAuthor,
-                    Email = commentModel.CommentEmail,
-                    Url = commentModel.CommentUrl,
-                    Body = commentModel.CommentBody
-                };
-                await _api.Posts.SaveCommentAndVerifyAsync(commentModel.Id, comment);
+                //var comment = new Comment
+                //{
+                //    IpAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString(),
+                //    UserAgent = Request.Headers.ContainsKey("User-Agent") ? Request.Headers["User-Agent"].ToString() : "",
+                //    Author = commentModel.CommentAuthor,
+                //    Email = commentModel.CommentEmail,
+                //    Url = commentModel.CommentUrl,
+                //    Body = commentModel.CommentBody
+                //};
+                //await _api.Posts.SaveCommentAndVerifyAsync(commentModel.Id, comment);
 
                 return Redirect(model.Permalink + "#comments");
             }

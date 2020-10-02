@@ -2,6 +2,8 @@
 @using Catfish.Models.SiteTypes
 @inject ICompositeViewEngine _viewEngine
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
+@inject Piranha.IApi _piranhaApi;
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -17,8 +19,11 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.min.js" integrity="sha384-3ziFidFTgxJXHMDttyPJKDuTlmxJlwbSkojudK/CkRqKDOmeSbN6KLrGdrBQnT2n" crossorigin="anonymous"></script>
     @*<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" ></script>*@
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
     <link href="~/assets/css/CustomStyle.css" rel="stylesheet" />
+    <link href="~/css/style.css" rel="stylesheet" />
+    <script src="~/assets/js/catfish.js"></script>
 
     <title>@ViewBag.Title</title>
 
@@ -31,41 +36,64 @@
 </head>
 
 <body>
+    @{
+        var site = await _piranhaApi.Sites.GetByInternalIdAsync("Default");//"Default" is InternalId of the site
+        var logoUrl = _catfishAppConfig.GetLogoUrl();
 
-    @if (_viewEngine.GetView(null, "Views/Shared/_CustomHead.cshtml", isMainPage: false).Success)
-    {
-        <partial name="_CustomHead.cshtml" />
-    }
-    else
-    {
-        <header class="site-header @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
+        <div class="container">
+            <div class="row">
+                @if (!string.IsNullOrEmpty(logoUrl))
+                {
+                    <div id="site-logo"><img src="@logoUrl" /></div>
+                }
+                <div class="header-brand">
+                    <h1>@site.Title</h1>
+                    <h3>@site.Description</h3>
+                </div>
+            </div>
+        </div>
+        <header class="site-header  @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
             <div class="container">
                 <div class="row">
                     <div class="col-sm">
                         <partial name="Partial/_Menu.cshtml" />
                     </div>
                     <div class="signinout">
-                        <button id="btnSignIn" onclick="window.location.href = '/login'; return false;">SignIn</button>
-                        @{ if (User.Identity.IsAuthenticated)
-                            {
-                                <button id="btnSignOut" onclick="signOut(); return false;">Sign Out</button>
-                            }
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <button id="btnSignIn" class="btn btn-default" onclick="window.location.href = '/login'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
                         }
-                      
+                        else
+                        {
+                            if (User.IsInRole("SysAdmin"))
+                            {
+                                <button class="btn btn-default" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                            }
+                            <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-default"><span class="fa fa-sign-out"> Sign Out</span></button>
+                        }
+
+
                     </div>
-                </div>
+                </div> @* row*@
 
-            </div>
+                @* Bread crumb *@
+                @if (_catfishAppConfig.GetEnabledBreadcrumb())
+                {
+                    <div class="breadcrumb-container col-sm">
+                        <partial name="Partial/_Breadcrumb.cshtml" />
+                    </div>
 
+                }
+            </div> @*container*@
         </header>
     }
     @RenderBody()
 
-  
+
     <footer class="border-top footer text-muted">
         <div class="container">
             @{
-                var currentSite = await WebApp.Site.GetContentAsync<CustomSite>();
+                var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
                 var javascriptCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Javascript == null)
                     ? "" : currentSite.FooterContents.Javascript.Value;
                 var cssCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Css == null)
@@ -73,29 +101,29 @@
             }
             @if (currentSite != null)
             {
-            <div class="row">
+                <div class="row">
 
-                <div class="col-6 footer-arc-text">
-                    @Html.Raw(currentSite.FooterContents.Text)
+                    <div class="col-6 footer-arc-text">
+                        @Html.Raw(currentSite.FooterContents.Text)
+                    </div>
+                    <div class="col-6 footer-arc-logo">
+                        Designed and engineered by  <img src="@Url.Content(currentSite.FooterContents.Logo)" />
+                    </div>
+
+                    @Html.Raw(javascriptCode)
+
+                    @Html.Raw(cssCode)
+
+
                 </div>
-                <div class="col-6 footer-arc-logo">
-                   Designed and engineered by  <img src="@Url.Content(currentSite.FooterContents.Logo)"  />
-                </div>
-                
-                @Html.Raw(javascriptCode)
-
-                @Html.Raw(cssCode)
-
-
-            </div>
             }
         </div>
     </footer>
 
-   
+
     @RenderSection("script", required: false)
     <script>
-        
+
         function onLoad() {
             gapi.load('auth2', function () {
                 gapi.auth2.init();
@@ -120,10 +148,10 @@
                         window.location.href = "/";
                     });
                     auth2.disconnect();
-                } catch(ex){
-                window.location.href = "/";
-            }
-               // window.location.href =  "/";
+                } catch (ex) {
+                    window.location.href = "/";
+                }
+                // window.location.href =  "/";
 
             });
         }

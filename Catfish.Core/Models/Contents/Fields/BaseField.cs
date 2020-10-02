@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Helpers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
@@ -10,18 +11,27 @@ namespace Catfish.Core.Models.Contents.Fields
     public class BaseField : XmlModel
     {
         public const string FieldTagName = "field";
-        public MultilingualText Name { get; protected set; }
-        public MultilingualText Description { get; protected set; }
+        public virtual void UpdateValues(BaseField srcField) 
+        {
+            throw new Exception("This method must be overridden by sub classes");
+        }
 
         public bool Required
         {
-            get => (Data.Attribute("required") == null || Data.Attribute("required").Value == null)
-                    ? false
-                    : Data.Attribute("required").Value.ToLower() == "true";
-
-            set => Data.SetAttributeValue("required", value ? "true" : "false");
+            get => GetAttribute("required", false); 
+            set => SetAttribute("required", value);
         }
 
+        public bool AllowMultipleValues
+        {
+            get => GetAttribute("multiple", false);
+            set => SetAttribute("multiple", value);
+        }
+
+        public MultilingualName Name { get; protected set; }
+
+        public MultilingualDescription Description { get; protected set; }
+       
         public BaseField() : base(FieldTagName) { }
         public BaseField(XElement data) : base(data) { }
 
@@ -40,74 +50,30 @@ namespace Catfish.Core.Models.Contents.Fields
             //Ensuring that each field has a unique ID
             base.Initialize(guidOption == eGuidOption.Ignore ? eGuidOption.Ensure : guidOption);
 
-            Name = new MultilingualText(GetElement(Entity.NameTag, true));
-            Description = new MultilingualText(GetElement(Entity.DescriptionTag, true));
+            Name = new MultilingualName(GetElement(MultilingualName.TagName, true));
+            Description = new MultilingualDescription(GetElement(MultilingualDescription.TagName, true));
         }
 
-        /*
-                /// <summary>
-                /// Name in specific languages
-                /// </summary>
-                protected List<Text> mName = new List<Text>();
-                public void SetName(string name, string lang = null)
-                {
-                    if (string.IsNullOrEmpty(lang))
-                        lang = ConfigHelper.DefaultLanguageCode;
-
-                    Text nameInGivenLanguage = mName.Where(n => n.Language == lang).FirstOrDefault();
-                    if (nameInGivenLanguage == null)
-                    {
-                        nameInGivenLanguage = new Text(name, lang);
-                        GetElement(Entity.NameTag, true).Add(nameInGivenLanguage.Data);
-                        mName.Add(nameInGivenLanguage);
-                    }
-                    else
-                        nameInGivenLanguage.Data.Value = name;
-                }
-
-                public string GetName(string lang)
-                {
-                    if (string.IsNullOrEmpty(lang))
-                        lang = ConfigHelper.DefaultLanguageCode;
-
-                    Text selected = mName.Where(n => n.Language == lang).FirstOrDefault();
-                    if (selected == null)
-                        selected = mName.Where(n => !string.IsNullOrEmpty(n.Value)).FirstOrDefault();
-
-                    return selected != null ? selected.Value : null;
-                }
-        */
-
-        /// <summary>
-        /// Description in specific languages
-        /// </summary>
-        protected List<Text> mDesc = new List<Text>();
-        public void SetDescription(string name, string lang = null)
+        public string GetName(string lang)
         {
-            if (string.IsNullOrEmpty(lang))
-                lang = ConfigHelper.DefaultLanguageCode;
+            Text val = Name.Values.Where(val => val.Language == lang).FirstOrDefault();
+            return val != null ? val.Value : null;
+        }
 
-            Text descInGivenLanguage = mDesc.Where(n => n.Language == lang).FirstOrDefault();
-            if (descInGivenLanguage == null)
-            {
-                descInGivenLanguage = new Text(name, lang);
-                GetElement(Entity.DescriptionTag, true).Add(descInGivenLanguage.Data);
-                mDesc.Add(descInGivenLanguage);
-            }
-            else
-                descInGivenLanguage.Data.Value = name;
+        public void SetName(string containerName, string lang)
+        {
+            Name.SetContent(containerName, lang);
         }
 
         public string GetDescription(string lang)
         {
-            if (string.IsNullOrEmpty(lang))
-                lang = ConfigHelper.DefaultLanguageCode;
+            Text val = Description.Values.Where(val => val.Language == lang).FirstOrDefault();
+            return val != null ? val.Value : null;
+        }
 
-            Text selected = mDesc.Where(n => n.Language == lang).FirstOrDefault();
-            if (selected == null)
-                selected = mDesc.Where(n => !string.IsNullOrEmpty(n.Value)).FirstOrDefault();
-
-            return selected != null ? selected.Value : null;
+        public void SetDescription(string containerDescription, string lang)
+        {
+            Description.SetContent(containerDescription, lang);
         }
     }
 }

@@ -1,0 +1,35 @@
+﻿@page "~/entity/ItemList"
+@model Catfish.Pages.EntityListPageModel
+@{
+    ViewData["Title"] = "EntityListPage";
+}
+
+<h1>Item List</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">ID</th>
+            <th scope="col">Created</th>
+            <th scope="col">Updated</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var items in Model.ItemList)
+        {
+            var edit = "/entity/edit/" + items.Id;
+            var view = "/entity/" + items.Id;
+            ++i;
+            <tr>
+                <td scope="row">@i</td>
+                <td>@items.Id</td>
+                <td>@items.Created</td>
+                <td>@items.Updated</td>
+                <td><a href="@view">View</a> |  <a href="@edit">Edit</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

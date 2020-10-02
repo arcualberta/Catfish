@@ -1,4 +1,16 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Catfish.Areas.Manager.Access;
+using Catfish.Core.Models;
+using Catfish.Core.Models.Solr;
+using Catfish.Core.Services;
+using Catfish.Core.Services.FormBuilder;
+using Catfish.Core.Services.Solr;
+using Catfish.Helper;
+using Catfish.ModelBinders;
+using Catfish.Models.Blocks;
+using Catfish.Models.Fields;
+using Catfish.Models.SiteTypes;
+using Catfish.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,24 +19,13 @@ using Microsoft.Extensions.Hosting;
 using Piranha;
 using Piranha.AspNetCore.Identity.SQLServer;
 using Piranha.AttributeBuilder;
-using Piranha.Manager.Editor;
-
-using Piranha.Manager;
-using System.Linq;
-using Catfish.Models.Fields;
-using Catfish.Models.Blocks;
 using Piranha.Data.EF.SQLServer;
-using Catfish.Core.Services;
-using Catfish.Helper;
-using System;
-using Catfish.Solr;
-using Catfish.Solr.Models;
+using Piranha.Manager;
+using Piranha.Manager.Editor;
+using Piranha.Services;
 using SolrNet;
-using System.Globalization;
-using Microsoft.AspNetCore.Localization;
-using Catfish.Core.Services.FormBuilder;
-using System.Xml;
-using Newtonsoft.Json.Serialization;
+using System;
+using System.Linq;
 
 namespace Catfish
 {
@@ -92,7 +93,8 @@ namespace Catfish
             // Add CatfishDbContext to the service collection. This will inject the database
             // configuration options and the application "Configuration" option to CatfishDbContext
             // instance through dependency injection.
-            services.AddDbContext<Catfish.Core.Models.AppDbContext>();
+            services.AddDbContext<AppDbContext>();
+            services.AddDbContext<PiranhaDbContext>();
 
             //Feb 12 - 2020 : It's recommended to use AddDbContextPool() over AddDbContext() on .net Core > 2.2
             // it's better from the performance stand point
@@ -108,7 +110,10 @@ namespace Catfish
             ////        options.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
             ////    });
 
-          
+            services.AddRazorPages()
+                .AddPiranhaManagerOptions()
+                .AddMvcOptions(options => options.ModelBinderProviders.Insert(0, new FormFieldModelBinderProvider()));
+
             services.AddPiranhaApplication();
             services.AddPiranhaFileStorage();
             services.AddPiranhaImageSharp();
@@ -118,27 +123,41 @@ namespace Catfish
             services.AddMemoryCache();
             services.AddPiranhaMemoryCache();
 
-            // March 6 2020 -- Add Custom Permissions
-            services.AddAuthorization(o => 
-            { //read secure posts
-                o.AddPolicy("ReadSecurePosts", policy => {
-                    policy.RequireClaim("ReadSecurePosts", "ReadSecurePosts");
-                });
-                
-            });
-
+            //Additiona Piranha Services
+            services.AddScoped<ISiteService, Piranha.Services.SiteService>();
+            services.AddScoped<IPageService, Piranha.Services.PageService>();
+            services.AddScoped<IParamService, ParamService>();
+            services.AddScoped<IMediaService, Piranha.Services.MediaService>();
+            
             //Catfish services
             services.AddScoped<EntityTypeService>();
+            services.AddScoped<UserGroupService>();
             services.AddScoped<DbEntityService>();
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
-            services.AddScoped<IEmail, EmailService>();
+            services.AddScoped<IAuthorizationService, AuthorizationService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ISubmissionService, SubmissionService>();
+            services.AddTransient<IWorkflowService, WorkflowService>();
+            services.AddScoped<IEntityTemplateService, EntityTemplateService>();
             services.AddScoped<IFormService, FormService>();
-            services.AddScoped<IMetadataSetService, MetadataSetService>();
+            services.AddScoped<ICatfishInitializationService, CatfishInitializationService>();
 
             // Solr services
-            services.AddSolrNet<SolrItemModel>($"http://localhost:8983/solr/Test");
-            services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
+            var configSection = Configuration.GetSection("SolarConfiguration:solrPageURL");
+            if (configSection != null && !string.IsNullOrEmpty(configSection.Value))
+                services.AddSolrNet<SolrEntry>(configSection.Value);
+
+            services.AddScoped<ISolrIndexService<SolrEntry>, SolrIndexService<SolrEntry, ISolrOperations<SolrEntry>>>();
+            services.AddScoped<IQueryService, QueryService>();
+            services.AddScoped<IPageIndexingService, PageIndexingService>();
+
+
+            //Configure claims
+            AddManagerClaims(services);
+
+
+            services.AddHttpContextAccessor();
 
         }
 
@@ -205,22 +224,25 @@ namespace Catfish
             //MR Feb 7 2020 -- add classic MVC routing
             // Build content types -- copied from piranha core mvcWeb example
             var pageTypeBuilder = new Piranha.AttributeBuilder.PageTypeBuilder(api)
-               // .AddType(typeof(Models.BlogArchive))
-                .AddType(typeof(Models.StandardArchive))
+                 .AddType(typeof(Models.StandardArchive))
                 .AddType(typeof(Models.StandardPage))
                  .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MediaPage))
                 .Build()
                 .DeleteOrphans();
+
             var postTypeBuilder = new Piranha.AttributeBuilder.PostTypeBuilder(api)
-               // .AddType(typeof(Models.BlogPost))
                 .AddType(typeof(Models.StandardPost))
                 .Build()
                 .DeleteOrphans();
-            //var siteTypeBuilder = new Piranha.AttributeBuilder.SiteTypeBuilder(api)
-            //    .AddType(typeof(Models.StandardSite))
-            //    .Build()
-            //    .DeleteOrphans();
+
+            var siteTypeBuilder = new Piranha.AttributeBuilder.SiteTypeBuilder(api)
+                .AddType(typeof(CatfishWebsite))
+                .AddType(typeof(WorkflowPortal))
+                .Build()
+                .DeleteOrphans();
+
+            AddHooks(app);
 
             // /Register middleware
             app.UseStaticFiles();
@@ -257,9 +279,22 @@ namespace Catfish
             RegisterCustomScripts();
             RegisterCustomStyles();
 
+            //Performing Catfish system initialization
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                scope.ServiceProvider.GetService<ICatfishInitializationService>().EnsureSystemRoles();
+            }
+            //var scope = app.ApplicationServices.CreateScope();
+            //var service = scope.ServiceProvider.GetService<IWorkflowService>();
+            //service.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
+
+
             // March 6 2020 -- Add Custom Permissions
             AddCustomPermissions();
+            AddWorkflowPermissions();
 
+            // September 23 2020 -- Add Group Permissions
+            AddManagerPermissions();
         }
 
         #region REGISTER CUSTOM COMPONENT
@@ -269,38 +304,41 @@ namespace Catfish
         }
         private static void RegisterCustomScripts()
         {
-            App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
+            //App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/entitytypelist.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/navigation-block.js");
+          //  App.Modules.Manager().Scripts.Add("~/assets/js/entitytypelist.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
-            // App.Modules.Manager().Scripts.Add("~/assets/js/catfish.editFieldForm.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/form.js"); 
+            App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point.js");
+            //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/bundle.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/vendors.bundle.js");
-
         }
         private static void RegisterCustomBlocks()
         {
             //Register custom Block
             App.Blocks.Register<EmbedBlock>();
             App.Blocks.Register<CalendarBlock>();
-            App.Blocks.Register<EmbedBlock>();  
-
-
             App.Blocks.Register<JavascriptBlock>();
             App.Blocks.Register<CssBlock>();
-            App.Blocks.Register<CalendarBlock>();
             App.Blocks.Register<ContactFormBlock>();
+            App.Blocks.Register<NavigationBlock>();
+            App.Blocks.Register<SubmissionEntryPointList>();
+            App.Blocks.Register<SubmissionEntryPoint>();
         }
         private static void RegisterCustomStyles()
         {
             
              App.Modules.Get<Piranha.Manager.Module>()
                 .Styles.Add("~/assets/css/custom.css");
+
             App.Modules.Get<Piranha.Manager.Module>()
                 .Styles.Add("~/assets/css/formEditPage.css");
             /*
@@ -328,6 +366,122 @@ namespace Catfish
             });
         }
 
+        private static void AddWorkflowPermissions()
+        {
+            App.Permissions["Workflow"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "Create Submission",
+                Name = "CreateSubmission",
+                Category = "Group Title"
+            });
+
+        }
+
+        /// <summary>
+        /// This method defines the custom permissions for manager pages. These are added
+        /// as checkboxes for each role, which we can use to select in order to grant the 
+        /// respective permissions. Simultaneously, these permissions are also added to the 
+        /// Piranha User Claims table. Then these claims can be tied into policies (see 
+        /// AddManagerClaims() method).
+        /// Reference: https://stackoverflow.com/questions/39125347/how-to-get-claim-inside-asp-net-core-razor-view
+        /// </summary>
+        private static void AddManagerPermissions()
+        {
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "Add Groups",
+                Name = "GroupsAdd",
+                Category = "Groups"
+            });
+
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "Edit Groups",
+                Name = "GroupsEdit",
+                Category = "Groups"
+            });
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "Save Groups",
+                Name = "GroupsSave",
+                Category = "Groups"
+            });
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "Delete Groups",
+                Name = "GroupsDelete",
+                Category = "Groups"
+            });
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "List Group",
+                Name = "GroupsList",
+                Category = "Groups"
+            });
+
+        }
+
+        /// <summary>
+        /// Defining a series of policies. Each policy includes the permissions each
+        /// user need to possess in order to grant access to a claim through the policy.
+        /// These policies are used in views to authorize access using claim-based authorization appriach.
+        /// Reference: https://stackoverflow.com/questions/39125347/how-to-get-claim-inside-asp-net-core-razor-view
+        /// </summary>
+        /// <param name="services"></param>
+        private static void AddManagerClaims(IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CreateEntityPolicy",
+                  policy => policy.RequireClaim("Create Submission"));
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsAdd", x => x.RequireClaim("GroupsAdd"));
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsList", x => x.RequireClaim("GroupsList"));
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsEdit", x => x.RequireClaim("GroupsEdit"));
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsSave", x => x.RequireClaim("GroupsSave"));
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("GroupsDelete", x => x.RequireClaim("GroupsDelete"));
+            });
+
+            services.AddAuthorization(o =>
+            { //read secure posts
+                o.AddPolicy("ReadSecurePosts", policy => {
+                    policy.RequireClaim("ReadSecurePosts", "ReadSecurePosts");
+                });
+            });
+
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy("CreateSubmission", policy => {
+                    policy.RequireClaim("CreateSubmission", "CreateSubmission");
+                });
+            });
+
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy("CreateSubmission", policy => {
+                    policy.RequireClaim("CreateSubmission", "CreateSubmission");
+                });
+            });
+
+        }
+
+
         private static void AddPartialViews()
         {
             //App.Modules.Manager().Partials.Add("Partial/_EntityTypeListAddEntityType");
@@ -341,7 +495,7 @@ namespace Catfish
                 {
                     InternalId = "Templates",
                     Name = "Templates",
-                    Css = "fas fa-object-group"
+                    Css = "fas fa-clone"
 
                 });
             }
@@ -357,7 +511,7 @@ namespace Catfish
                 InternalId = "MetadataSets",
                 Name = "Metadata Sets",
                 Route = "/manager/metadatasets/",
-                Css = "fas fa-brain"
+                Css = "fas fa-table"
 
             });
 
@@ -366,7 +520,7 @@ namespace Catfish
                 InternalId = "EntityTypes",
                 Name = "Entity Types",
                 Route = "/manager/entitytypes/",
-                Css = "fas fa-brain"
+                Css = "fab fa-elementor"
 
             });
 
@@ -375,7 +529,7 @@ namespace Catfish
                 InternalId = "Forms",
                 Name = "Forms",
                 Route = "/manager/forms/",
-                Css = "fas fa-brain"
+                Css = "fab fa-wpforms"
 
             });
 
@@ -414,6 +568,49 @@ namespace Catfish
                 Css = "fas fa-object-ungroup"
                
             });
+
+
+            ///
+            ///  Group List Content Menus
+            ///
+
+            menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "System").FirstOrDefault();
+            idx = 0;
+
+            menubar.Items.Insert(idx++, new MenuItem
+            {
+                InternalId = "Groups",
+                Name = "Groups",
+                Route = "/manager/groups/",
+                Policy = CatfishPermission.GroupsList,
+                Css = "fas  fa-layer-group"
+
+            });
+        }
+
+        private void AddHooks(IApplicationBuilder app)
+        {
+            //Hook for generating pages required by a certain type of site
+            App.Hooks.SiteContent.RegisterOnAfterSave((siteContent) => {
+                var scope = app.ApplicationServices.CreateScope();
+                var service = scope.ServiceProvider.GetService<IWorkflowService>();
+                service.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
+            });
+
+            //Hook for indexing contents of a page right after the page is saved.
+            App.Hooks.Pages.RegisterOnAfterSave((page) => {
+                var scope = app.ApplicationServices.CreateScope();
+                var service = scope.ServiceProvider.GetService<IPageIndexingService>();
+                service.IndexPage(page);
+            });
+
+            //Hook for indexing contents of a page right after the page is saved.
+            App.Hooks.Posts.RegisterOnAfterSave((post) => {
+                var scope = app.ApplicationServices.CreateScope();
+                var service = scope.ServiceProvider.GetService<IPageIndexingService>();
+                service.IndexPost(post);
+            });
+
         }
     }
 }

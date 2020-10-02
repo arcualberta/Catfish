@@ -10,12 +10,11 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models
 {
-    [Table("Catfish_XmlModels")]
+    //[Table("Catfish_XmlModels")]
     public class XmlModel
     {
         public enum eGuidOption { Ignore, Ensure, Regenerate }
 
-        [Key]
         public Guid Id
         {
             get => Guid.Parse(Data.Attribute("id").Value);
@@ -52,6 +51,13 @@ namespace Catfish.Core.Models
         [NotMapped]
         public XElement Data { get; protected set; }
 
+        [NotMapped]
+        public string CssClass
+        {
+            get => GetAttribute("css-class", null as string);
+            set => SetAttribute("css-class", value);
+        }
+
         public static XmlModel InstantiateContentModel(XElement data)
         {
             string typeString = data.Attribute("model-type").Value;
@@ -63,13 +69,13 @@ namespace Catfish.Core.Models
         public XmlModel(XElement data)
         {
             Data = data;
-            Initialize(eGuidOption.Ignore);
+            Initialize(eGuidOption.Ensure);
         }
 
         public XmlModel(string tagName)
         {
             Data = new XElement(tagName);
-            Initialize(eGuidOption.Ignore);
+            Initialize(eGuidOption.Ensure);
         }
         public XmlModel()
         {
@@ -90,6 +96,38 @@ namespace Catfish.Core.Models
                 SetNewGuid();
         }
 
+        public void ReplaceOrInsert(XElement replacement)
+        {
+            if (Data.Element(replacement.Name) != null)
+                Data.Element(replacement.Name).Remove();
+
+            Data.Add(replacement);
+        }
+
+        ////protected string Lang(string lang)
+        ////{
+        ////    if (!string.IsNullOrEmpty(lang))
+        ////        return lang;
+
+        ////    if (System.Threading.Thread.CurrentThread.CurrentCulture != null && !string.IsNullOrEmpty(System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName))
+        ////        return System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+
+        ////    return ConfigHelper.Languages[0].TwoLetterISOLanguageName;
+        ////}
+
+        ////private XmlNamespaceManager mXmlNamespaceManager;
+
+        ////protected XmlNamespaceManager GetNamespaceManager()
+        ////{
+        ////    if (mXmlNamespaceManager == null)
+        ////    {
+        ////        mXmlNamespaceManager = new XmlNamespaceManager(new NameTable());
+        ////        mXmlNamespaceManager.AddNamespace("xml", XNamespace.Xml.NamespaceName);
+        ////    }
+
+        ////    return mXmlNamespaceManager;
+        ////}
+
         public void SetNewGuid()
         {
             Data.SetAttributeValue("id", Guid.NewGuid());
@@ -106,5 +144,46 @@ namespace Catfish.Core.Models
             model.Data = new XElement(Data);
             return model;
         }
+
+        public bool GetAttribute(string attName, bool defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            return (att == null || string.IsNullOrEmpty(att.Value)) ? defaultValue : bool.Parse(att.Value);
+        }
+        public void SetAttribute(string attName, bool attValue)
+        {
+            Data.SetAttributeValue(attName, attValue);
+        }
+
+        public int GetAttribute(string attName, int defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            return (att == null || string.IsNullOrEmpty(att.Value)) ? defaultValue : int.Parse(att.Value);
+        }
+        public void SetAttribute(string attName, int attValue)
+        {
+            Data.SetAttributeValue(attName, attValue);
+        }
+
+        public string GetAttribute(string attName, string defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            return att == null ? defaultValue : att.Value;
+        }
+        public void SetAttribute(string attName, string attValue)
+        {
+            Data.SetAttributeValue(attName, attValue);
+        }
+
+        public Guid? GetAttribute(string attName, Guid? defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            return (att == null || string.IsNullOrEmpty(att.Value)) ? defaultValue : Guid.Parse(att.Value);
+        }
+        public void SetAttribute(string attName, Guid attValue)
+        {
+            Data.SetAttributeValue(attName, attValue);
+        }
+
     }
 }

@@ -40,21 +40,21 @@ namespace Catfish.Core.Services.FormBuilder
             return result;
         }
 
-        public FieldContainerListVM GetMetadataSets(int offset = 0, int max = 0)
-        {
-            IQueryable<MetadataSet> query = Db.MetadataSets.Skip(offset);
-            if (max > 0)
-                query = query.Take(max);
+        ////public FieldContainerListVM GetMetadataSets(int offset = 0, int max = 0)
+        ////{
+        ////    IQueryable<MetadataSet> query = Db.MetadataSets.Skip(offset);
+        ////    if (max > 0)
+        ////        query = query.Take(max);
 
-            var forms = query.ToList();
-            FieldContainerListVM result = new FieldContainerListVM()
-            {
-                OffSet = offset,
-                Max = max,
-                Entries = forms.Select(x => new FieldContainerListEntry(x)).ToList()
-            };
-            return result;
+        ////    var forms = query.ToList();
+        ////    FieldContainerListVM result = new FieldContainerListVM()
+        ////    {
+        ////        OffSet = offset,
+        ////        Max = max,
+        ////        Entries = forms.Select(x => new FieldContainerListEntry(x)).ToList()
+        ////    };
+        ////    return result;
 
-        }
+        ////}
     }
 }

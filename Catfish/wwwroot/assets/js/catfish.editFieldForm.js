@@ -338,7 +338,6 @@ if (document.getElementById("edit-field-form-page")) {
                 //the field id of the sorted section
                 let tmpId = collapsingSections[event.newIndex].id.split('collapse-')[1];
 
-
                 //if item is new, open that one
                 if (event.from.id != event.to.id) {
                     console.log("added new item", collapsingSections[event.newIndex].id);
@@ -369,6 +368,7 @@ if (document.getElementById("edit-field-form-page")) {
                     console.log("moved item DOWN over shown");
                     $('#' + previousSection.id).collapse('show');
                     this.dropdowns[previousSection.id].isCollapsed = false;
+
                     //move item above open item
                 } else if (event.oldIndex >= shownSectionIndex && shownSectionIndex >= event.newIndex) {
                     console.log("moved item UP over shown");

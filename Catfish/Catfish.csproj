@@ -4,15 +4,19 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
   <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+
+  <UserSecretsId>fb287c84-b0b6-46e0-893a-86f23d79c05e</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Controllers\SetupController.cs" />
     <Compile Remove="Models\BlogArchive.cs" />
+    <Compile Remove="Models\BlogPost.cs" />
     <Compile Remove="Models\CalendarPage.cs" />
     <Compile Remove="Models\MainPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="appsettings.example.json" />
+    <Content Remove="Pages\Shared\EditorTemplates\Catfish.Core.Models.Contents.Fields.InfoSection.cshtml" />
     <Content Remove="Views\Cms\Main.cshtml" />
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />
   </ItemGroup>
@@ -33,7 +37,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Piranha" Version="8.3.0" />
     <PackageReference Include="Piranha.AspNetCore" Version="8.3.0" />
@@ -46,14 +50,12 @@
     <PackageReference Include="Piranha.Manager" Version="8.3.1" />
     <PackageReference Include="Piranha.Manager.TinyMCE" Version="8.3.0" />
     <PackageReference Include="Piranha.WebApi" Version="8.3.0" />
+    <PackageReference Include="System-Web-Helpers.dll" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj" />
-    <ProjectReference Include="..\Catfish.Solr\Catfish.Solr.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="Pages\Shared\DisplayTemplates\Catfish.Core.Models.Contents.Fields.InfoSection.cshtml" />
     <None Include="wwwroot\assets\js\entitytypelist.js" />
     <None Include="wwwroot\assets\js\textarea-field.js" />
   </ItemGroup>
@@ -65,7 +67,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Manager\assets\img\" />
     <Folder Include="Areas\Manager\Pages\Partial\DisplayTemplates\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">

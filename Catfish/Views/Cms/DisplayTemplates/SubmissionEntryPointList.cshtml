@@ -1,0 +1,45 @@
+﻿@model Catfish.Models.Blocks.SubmissionEntryPointList
+@using Catfish.Services;
+
+@inject IEntityTemplateService _entityTemplateService;
+
+@{
+    
+    var templates = _entityTemplateService.GetItemTemplates();
+}
+
+<div class="page-box">
+    <h1>Start Page</h1>
+
+    <div class="container">
+        @foreach (var template in templates)
+        {
+            var url = "/entity/create/" + template.Id;
+            var startupDataItem = template.GetRootDataItem(false);
+
+            @if (startupDataItem != null)
+            {
+                <div class="row item-box">
+
+                    <div class="form-title col-lg-12">@startupDataItem.Name.GetConcatenatedContent("<br />")</div>
+
+
+                    <div class="form-description col-lg-10">@startupDataItem.Description.GetConcatenatedContent("<br />")</div>
+
+
+                    <div class="form-link col-lg-2">
+                        <a href="@url" class="btn btn-secondary" role="button">Start now</a>
+                    </div>
+
+                </div>
+            }
+            else
+            {
+                <div class="row item-box">
+                    startupDataItem returned is NULL ( for ItemTemplate: @template.Id)
+                </div>
+            }
+        }
+    </div>
+
+</div>

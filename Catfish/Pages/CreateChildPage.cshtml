@@ -1,0 +1,32 @@
+﻿@page "~/entity/{id:Guid}/addchild/{childTemplateId:Guid}"
+
+@model Catfish.Pages.CreateChildPageModel
+@{
+    ViewData["Title"] = "CreateChildPage";
+}
+
+<h1>CreateChildPage</h1>
+
+
+
+
+<h3>-------------------add child item---------------</h3>
+
+<h3>@Model.Child.Name.GetConcatenatedContent("")</h3>
+
+
+<form method="post">
+   
+    @Html.HiddenFor(model => model.ChildTemplateId)
+    @Html.HiddenFor(model => model.ParentId)
+   
+
+    <div class="container">
+        @Html.EditorFor(model => model.Child, Model.Child.GetType().ToString())
+
+        <input name="Save" type="submit" value="Save" />
+        <input name="Subit" type="submit" value="Submit" />
+    </div>
+</form>
+
+

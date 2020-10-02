@@ -1,10 +1,12 @@
 ﻿using Catfish.Core.Helpers;
 using Catfish.Core.Models.Contents;
+using Catfish.Core.Models.Contents.Data;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
@@ -14,9 +16,8 @@ namespace Catfish.Core.Models
     public class Entity
     {
         public static readonly string Tag = "entity";
-        public static readonly string NameTag = "name";
-        public static readonly string DescriptionTag = "description";
-
+        public static readonly string MetadataSetsRootTag = "metadata-sets";
+        public static readonly string DataContainerRootTag = "data-container";
 
         [Key]
         public Guid Id
@@ -46,28 +47,47 @@ namespace Catfish.Core.Models
 
         public DateTime Created
         {
-            get => DateTime.Parse(Data.Attribute("created").Value);
+            get => GetDateTimeAttribute("created").Value;
             set => Data.SetAttributeValue("created", value);
         }
 
+        [NotMapped]
         public DateTime? Updated
         {
-            get { try { return Data.Attribute("updated") != null ? DateTime.Parse(Data.Attribute("updated").Value) : null as DateTime?; } catch (Exception) { return null as DateTime?; } }
+            get => GetDateTimeAttribute("updated");
             set => Data.SetAttributeValue("updated", value);
         }
 
+        [NotMapped]
+        public Guid? TemplateId
+        {
+            get => GetGuidAttribute("template-id"); 
+            set => Data.SetAttributeValue("template-id", value);
+        }
+
+        [NotMapped]
+        public Guid? StateId
+        {
+            get => GetGuidAttribute("state-id");
+            set => Data.SetAttributeValue("state-id", value);
+        }
+
+        [NotMapped]
         public string ModelType
         {
             get => Data.Attribute("model-type").Value;
         }
 
         [NotMapped]
-        public MultilingualText Name { get; protected set; }
+        public MultilingualName Name { get; protected set; }
         [NotMapped]
-        public MultilingualText Description { get; protected set; }
+        public MultilingualDescription Description { get; protected set; }
 
         [NotMapped]
         public XmlModelList<MetadataSet> MetadataSets { get; protected set; }
+
+        [NotMapped]
+        public XmlModelList<DataItem> DataContainer { get; protected set; }
 
         public ICollection<Relationship> SubjectRelationships { get; set; }
         public ICollection<Relationship> ObjectRelationships { get; set; }
@@ -85,6 +105,25 @@ namespace Catfish.Core.Models
             Initialize(false);
         }
 
+        public string GetAttribute(string key)
+        {
+            var att = Data.Attribute(key);
+            return (att == null) ? null : att.Value;
+        }
+
+        public Guid? GetGuidAttribute(string key)
+        {
+            var att = Data.Attribute(key);
+            return (att == null || string.IsNullOrEmpty(att.Value)) ? null as Guid? : Guid.Parse(att.Value);
+        }
+
+        public DateTime? GetDateTimeAttribute(string key)
+        {
+            var att = Data.Attribute(key);
+            return (att == null || string.IsNullOrEmpty(att.Value)) ? null as DateTime? : DateTime.Parse(att.Value);
+        }
+
+
         public virtual void Initialize(bool regenerateId)
         {
             if (Data == null)
@@ -101,12 +140,18 @@ namespace Catfish.Core.Models
 
             //Unlike in the cases of xml-attribute-based properties, the Name and Descrition
             //properties must be initialized every time the model is initialized. 
-            Name = new MultilingualText(XmlHelper.GetElement(Data, Entity.NameTag, true));
-            Description = new MultilingualText(XmlHelper.GetElement(Data, Entity.DescriptionTag, true));
+            Name = new MultilingualName(XmlHelper.GetElement(Data, MultilingualName.TagName, true));
+            Description = new MultilingualDescription(XmlHelper.GetElement(Data, MultilingualDescription.TagName, true));
+
+            //Wrapping the XElement "Data" in an XmlModel wrapper so that it can be used by the
+            //rest of this initialization routine.
+            XmlModel xml = new XmlModel(Data);
 
             //Building the Metadata Set list
-            XmlModel xml = new XmlModel(Data);
-            MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement("metadata-sets", true));
+            MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement(MetadataSetsRootTag, true), true);
+
+            //Building the DataContainer
+            DataContainer = new XmlModelList<DataItem>(xml.GetElement(DataContainerRootTag, true), true);
         }
 
         public T InstantiateViewModel<T>() where T : XmlModel
@@ -116,5 +161,58 @@ namespace Catfish.Core.Models
             return vm;
         }
 
+        public void ReplaceMetadataSetContainer(XElement newMetadataSetContainer, bool populateChildren = false)
+        {
+            XmlModel xml = new XmlModel(Data);
+            xml.ReplaceOrInsert(newMetadataSetContainer);
+
+            if (populateChildren)
+                MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement(MetadataSetsRootTag, true), true);
+        }
+
+        public void ReplaceDataSetContainer(XElement newDataSetContainer, bool populateChildren = false)
+        {
+            XmlModel xml = new XmlModel(Data);
+            xml.ReplaceOrInsert(newDataSetContainer);
+
+            if (populateChildren)
+                DataContainer = new XmlModelList<DataItem>(xml.GetElement(DataContainerRootTag, true), true);
+        }
+
+        public DataItem GetDataItem(string dataItemName, bool createIfNotExists, string nameLang = "en")
+        {
+            DataItem dataItem = this.DataContainer
+                .Where(di => di.GetName(nameLang) == dataItemName)
+                .FirstOrDefault();
+
+            if (dataItem == null && createIfNotExists)
+            {
+                dataItem = new DataItem();
+                dataItem.SetName(dataItemName, nameLang);
+                DataContainer.Add(dataItem);
+            }
+            return dataItem;
+        }
+
+        public DataItem GetDataItem(Guid dataItemId)
+        {
+            return DataContainer
+                .Where(di => di.Id == dataItemId)
+                .FirstOrDefault();
+        }
+
+        public DataItem GetRootDataItem(bool createIfNotExists)
+        {
+            DataItem dataItem = this.DataContainer
+                .Where(di => di.IsRoot)
+                .FirstOrDefault();
+
+            if (dataItem == null && createIfNotExists)
+            {
+                dataItem = new DataItem() { IsRoot = true };
+                DataContainer.Add(dataItem);
+            }
+            return dataItem;
+        }
     }
 }

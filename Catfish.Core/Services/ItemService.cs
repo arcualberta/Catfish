@@ -43,8 +43,8 @@ namespace Catfish.Core.Services
             {
                 root = new CollectionContent()
                 {
-                    Name = new MultilingualText(Entity.NameTag),
-                    Description = new MultilingualText(Entity.DescriptionTag)
+                    Name = new MultilingualName(),
+                    Description = new MultilingualDescription()
                 };
                 root.Name.SetContent("Root");
                 root.Description.SetContent("Items with no primary collection");
@@ -103,6 +103,8 @@ namespace Catfish.Core.Services
             itemData.Created = model.Created;
             itemData.Updated = DateTime.Now;
             itemData.PrimaryCollectionId = model.PrimaryCollectionId;
+
+            //solrIndexService.AddUpdate(new SolrItemModel(model));
         }
     }
 }

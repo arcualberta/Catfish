@@ -1,0 +1,14 @@
+﻿@model Catfish.Core.Models.Contents.Fields.SelectField
+
+@{
+    var options = Model.Options.Select(a =>
+            new SelectListItem
+            {
+                Value = a.Id.ToString(),
+                Text = a.OptionText.GetConcatenatedContent(" | ")
+            }).ToList();
+
+    @Html.HiddenFor(model => model.ModelType)
+    @Html.HiddenFor(model => model.Id)
+    @Html.DropDownListFor(model => model, options)
+}

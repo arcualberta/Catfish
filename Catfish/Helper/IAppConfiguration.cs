@@ -10,25 +10,45 @@ namespace Catfish.Helper
         string GetGoogleClientId();
         string GetDefaultUserRole();
         string GetGoogleCalendarAPIKey();
+        string GetSolrUrl();
         bool DisplayCarouselThumbnails();
         string GetAllowDomain();
         string GetUnauthorizedLoginMessage();
         string GetSmtpServer();
         string GetSmtpEmail();
-      
         string GetRecipientEmail();
+        string GetLogoUrl();
+        bool EnableWorkflows();
+        string GetWorkflowHomePageTitle();
+        string GetWorkflowListPageTitle();
+        string GetDefaultLanguage();
         string GetGoogleClientSecret();
-
         string GetGoogleServiceAccountFileName();
+        bool GetEnabledLocalLogin();
+        bool GetEnabledBreadcrumb();
     }
 
     public class ReadAppConfiguration : ICatfishAppConfiguration
     {
         private readonly IConfiguration _configuration;
-       public ReadAppConfiguration(IConfiguration configuration)
+        public ReadAppConfiguration(IConfiguration configuration)
         {
             _configuration = configuration;
         }
+
+        protected bool GetValue(string key, bool defaultValue)
+        {
+            bool val;
+            return bool.TryParse(_configuration[key], out val)
+                ? val
+                : defaultValue;
+        }
+        protected string GetValue(string key, string defaultValue)
+        {
+            string val = _configuration[key];
+            return string.IsNullOrEmpty(val) ? defaultValue : val;
+        }
+
 
         public string GetDefaultUserRole()
         {
@@ -51,10 +71,7 @@ namespace Catfish.Helper
 
         public bool IsAllowGoogleLogin()
         {
-            bool allowGoogleLogin = false;
-            allowGoogleLogin = Convert.ToBoolean(_configuration["GoogleExternalLogin:AllowGoogleLogin"]);
-
-            return allowGoogleLogin;
+            return GetValue("GoogleExternalLogin:AllowGoogleLogin", false);
         }
         public string GetAllowDomain()
         {
@@ -66,10 +83,7 @@ namespace Catfish.Helper
         }
         public bool DisplayCarouselThumbnails()
         {
-            bool displayThumbnail = false;
-            displayThumbnail = _configuration["Carousel:DisplayThumbnails"] == null ? false : Convert.ToBoolean(_configuration["Carousel:DisplayThumbnails"]);
-
-            return displayThumbnail;
+            return GetValue("SiteConfig:ShowCarouselThumbnails", false);
         }
 
         public string GetSmtpServer()
@@ -82,16 +96,53 @@ namespace Catfish.Helper
             return _configuration["EmailServer:Email"];
         }
 
-       
-
         public string GetRecipientEmail()
         {
              return _configuration["EmailServer:Recipient"];
         }
 
+        public string GetSolrUrl()
+        {
+            return _configuration["SolarConfiguration:solrItemURL"];
+        }
+
+        public string GetLogoUrl()
+        {
+            return _configuration["SiteConfig:LogoUrl"];
+        }
+
+        public bool EnableWorkflows()
+        {
+            return GetValue("Workflow:Enable", false);
+        }
+
+        public string GetWorkflowHomePageTitle()
+        {
+            return _configuration["Workflow:StartPageTitle"];
+        }
+
+        public string GetWorkflowListPageTitle()
+        {
+            return _configuration["Workflow:ListPageTitle"];
+        }
+
+        public string GetDefaultLanguage()
+        {
+            return GetValue("SiteConfig:DefaultLanguage", "en");
+        }
+
         public string GetGoogleServiceAccountFileName()
         {
             return _configuration["GoogleCalendar:ServiceAccountFileName"];
+        }
+        public bool GetEnabledLocalLogin()
+        {
+            return GetValue("SiteConfig:EnabledLocalLogin", false);
+        }
+
+        public bool GetEnabledBreadcrumb()
+        {
+            return GetValue("SiteConfig:EnabledBreadcrumb", false);
         }
     }
 }

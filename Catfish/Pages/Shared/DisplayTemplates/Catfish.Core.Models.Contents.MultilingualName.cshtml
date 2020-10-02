@@ -1,0 +1,8 @@
+﻿@model Catfish.Core.Models.Contents.MultilingualName
+
+@{
+    var text = string.Join(" | ", Model.Values.Select(txt => txt.Value));
+}
+<div class="ml-name">
+    @Html.Raw(text)
+</div>

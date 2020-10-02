@@ -8,31 +8,41 @@
 
 
 }
-
-<div class="row">
-    <div id="site-logo"></div>
-    <div class="header-brand">
-        <h1>@site.Title</h1>
-        <h3>@site.Description</h3>
-    </div>
-</div>
-<header class="site-header  @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
-    <div class="container">
-
-        <div class="row">
-            <div class="col-sm">
-                <partial name="Partial/_Menu.cshtml" />
+    <div class="main mainHeader">
+        <div class="container headerContainer">
+            <div class="row">
+                <div id="site-logo"></div>
+                <div class="header-brand">
+                    <h1>@site.Title</h1>
+                    <h3>@site.Description</h3>
+                </div>
             </div>
-            <div class="signinout">
-                <button id="btnSignIn" onclick="window.location.href = '/login'; return false;" >Sign In</button>
-                @{ if (User.Identity.IsAuthenticated)
-                    {
-                         <button id="btnSignOut" onclick="signOut(); return false;">Sign Out</button>
-                    }
-                  }
             </div>
         </div>
+            <header class="site-header  @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
+                <div class="container">
 
-    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <partial name="Partial/_Menu.cshtml" />
+                        </div>
+                        <div class="signinout">
+                            @{ if (!User.Identity.IsAuthenticated)
+                                {
+                                  <button id="btnSignIn" onclick="window.location.href = '/login'; return false;" class="btn btn-default"><span class="fa fa-sign-in "> Sign In</span></button>
+                                }
+                                else
+                                {
+                                    if (User.IsInRole("SysAdmin"))
+                                    {
+                                    <button class="btn btn-default" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                                    }
+                                    <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-default"><span class="fa fa-sign-out"> Sign Out</span></button>
+                                }
+                            }
+                        </div>
+                    </div>
 
-</header>
+                </div>
+
+            </header>

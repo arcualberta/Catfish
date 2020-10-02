@@ -20,9 +20,10 @@
         <div class="carousel-inner">
             @foreach (var item in Model.Items)
             {
-                <div class="carousel-item @(item == Model.Items.First() ? "active" : "")">
-                    <img src="@Url.Content(WebApp.Media.ResizeImage(((ImageBlock)item).Body.Media, 890, 482))" class="d-block w-100">
-                </div>
+            <div class="carousel-item @(item == Model.Items.First() ? "active" : "")">
+                <img src="@Url.Content(WebApp.Media.ResizeImage(((ImageBlock)item).Body.Media, 890, 482))" class="d-block w-100">
+                @*<img src="@Url.Content(((ImageBlock)item).Body.Media.PublicUrl)" class="d-block">*@
+            </div>
             }
         </div>
         <a class="carousel-control-prev" href="#@unique" role="button" data-slide="prev">
@@ -43,9 +44,10 @@ else
         <div class="carousel-inner">
             @foreach (var item in Model.Items)
             {
-                <div class="carousel-item @(item == Model.Items.First() ? "active" : "")">
-                    <img src="@Url.Content(WebApp.Media.ResizeImage(((ImageBlock)item).Body.Media, 890, 482))" class="d-block w-100">
-                </div>
+            <div class="carousel-item @(item == Model.Items.First() ? "active" : "")">
+                <img src="@Url.Content(WebApp.Media.ResizeImage(((ImageBlock)item).Body.Media, 890, 482))" class="d-block w-100">
+                @*<img src="@Url.Content(((ImageBlock)item).Body.Media.PublicUrl)" class="d-block">*@
+            </div>
             }
         </div>
         <a class="carousel-control-prev" href="#@unique" role="button" data-slide="prev">

@@ -192,7 +192,7 @@ namespace Catfish.Core.Services
                     int index = rand.Next(0, collectionTemplates.Count);
                     template = collectionTemplates[index];
 
-                    Collection c = template.Clone<Collection>();
+                    Collection c = template.Instantiate<Collection>();
                     c.Name.SetContent(string.Format("Test Collection {0}", i));
                     c.Description.SetContent(string.Format("This is the test collection #{0} created by seeding.", i));
                     Db.Collections.Add(c);
@@ -209,7 +209,7 @@ namespace Catfish.Core.Services
                     int index = rand.Next(0, itemTemplates.Count);
                     template = itemTemplates[index];
 
-                    Item it = template.Clone<Item>();
+                    Item it = template.Instantiate<Item>();
                     it.Name.SetContent(string.Format("Test Item {0}", i));
                     it.Description.SetContent(string.Format("This is the test item #{0} created by seeding.", i));
 
@@ -219,22 +219,13 @@ namespace Catfish.Core.Services
                         foreach (var field in ms.Fields)
                         {
                             var languages = field.Name.Values.Select(val => val.Language).Distinct();
-                            foreach (var lang in languages) { 
-                            MultilingualText des = new MultilingualText(ms.GetFieldByName("Description", lang).ToString());
-                            (field as TextField).Values.Add(des);
-
-                            }
+                            
                             if (typeof(TextField).IsAssignableFrom(field.GetType()))
                             {
-                                MultilingualText val = new MultilingualText(TextField.ValueTag);
+                                MultilingualValue val = new MultilingualValue();
                                 (field as TextField).Values.Add(val);
 
-                                if (typeof(DateField).IsAssignableFrom(field.GetType()))
-                                {
-                                    foreach (var lang in languages)
-                                        val.SetContent(DateTime.Today.ToShortDateString(), lang);
-                                }
-                                else if (typeof(TextArea).IsAssignableFrom(field.GetType()))
+                                if (typeof(TextArea).IsAssignableFrom(field.GetType()))
                                 {
                                     foreach (var lang in languages)
                                         val.SetContent(LoremIpsum(5, 10, 3, 5), lang);
@@ -244,6 +235,20 @@ namespace Catfish.Core.Services
                                     foreach (var lang in languages)
                                         val.SetContent(LoremIpsum(), lang);
                                 }
+                            }
+                            else if (typeof(DateField).IsAssignableFrom(field.GetType()))
+                            {
+                                (field as DateField).SetValue(DateTime.Today.ToShortDateString());
+                            }
+
+                            foreach (var lang in languages)
+                            {
+                                string desc = @"A couple of weeks after the first coronavirus case arrived in the Netherlands, we were told to stay inside. Bars and schools closed down and my hometown of Amsterdam came to a halt.
+After the first feelings of confusion and uncertainty, I slowly got used to the idea. There was a calmness in the streets I hadn't experienced in years.
+In the past decade, Amsterdam has become a hasty and chaotic place, its occupants increasingly short-tempered. The city's population of 863,000 was annually swollen by nine million tourists.
+The shops in the city center were given over to cater to them, selling waffles, souvenirs and cannabis seeds. Stores catering to residents closed down because of extreme hikes in rent and the lack of customers.
+More and more, locals have started to avoid the most beautiful part of their city, as its houses were rented out to tourists and expats.";
+                                field.Description.SetContent(desc);
                             }
                         }
                     }
