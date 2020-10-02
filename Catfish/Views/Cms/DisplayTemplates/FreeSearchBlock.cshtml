@@ -1,0 +1,49 @@
+﻿@model Catfish.Models.Blocks.FreeSearchBlock
+
+@using Catfish.Services;
+
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.RazorPages;
+
+@using Catfish.Core.Models.Contents.Fields
+@using Catfish.Core.Models.Solr;
+@using Catfish.Core.Services.Solr;
+@using Catfish.Pages;
+
+
+    @{
+        var ResultList = Model.Results;
+    }
+ 
+
+    <h1>Free Search Block</h1>
+
+    <!-- TODO: Make the following a search form -->
+    <form method="post">
+        @Html.TextBoxFor(m => m.SearchTerm)
+        
+        <input type="submit" value="Submit" />
+    </form>
+    <ul>
+        @{
+            foreach (var entry in ResultList)
+            {
+                <li>
+                    @foreach (var title in entry.Title)
+                    {
+                        <div><b>@Html.Raw(title)</b></div>
+                    }
+
+
+                    <div>Object ID: @entry.Id</div>
+                    <div>Object Type: @entry.ObjectType</div> 
+
+
+                    @foreach (var snippet in entry.Highlights)
+                    {
+                        <div>@Html.Raw(snippet)</div>
+                    }
+                </li>
+            }
+        }
+    </ul>
