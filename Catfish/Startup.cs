@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using Catfish.Authorization;
 using Catfish.Areas.Manager.Access;
+using Catfish.Core.Services.FormBuilder;
 
 namespace Catfish
 {
@@ -148,6 +149,7 @@ namespace Catfish
             services.AddScoped<ISubmissionService, SubmissionService>();
             services.AddTransient<IWorkflowService, WorkflowService>();
             services.AddScoped<IEntityTemplateService, EntityTemplateService>();
+            services.AddScoped<IFormService, FormService>();
 
             // Solr services
             var configSection = Configuration.GetSection("SolarConfiguration:solrPageURL");
