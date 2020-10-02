@@ -1,16 +1,20 @@
 ﻿using Catfish.Core.Helpers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public abstract class BaseField : XmlModel
+    public class BaseField : XmlModel
     {
         public const string FieldTagName = "field";
-        public abstract void UpdateValues(BaseField srcField);
+        public virtual void UpdateValues(BaseField srcField) 
+        {
+            throw new Exception("This method must be overridden by sub classes");
+        }
 
         public bool Required
         {
@@ -24,9 +28,10 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("multiple", value);
         }
 
-
         public MultilingualName Name { get; protected set; }
+
         public MultilingualDescription Description { get; protected set; }
+       
         public BaseField() : base(FieldTagName) { }
         public BaseField(XElement data) : base(data) { }
 

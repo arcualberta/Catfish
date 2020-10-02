@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models
 {
-    [Table("Catfish_XmlModels")]
+    //[Table("Catfish_XmlModels")]
     public class XmlModel
     {
         public enum eGuidOption { Ignore, Ensure, Regenerate }
@@ -51,6 +51,7 @@ namespace Catfish.Core.Models
         [NotMapped]
         public XElement Data { get; protected set; }
 
+        [NotMapped]
         public string CssClass
         {
             get => GetAttribute("css-class", null as string);

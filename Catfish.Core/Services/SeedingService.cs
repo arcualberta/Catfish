@@ -273,6 +273,12 @@ namespace Catfish.Core.Services
                 Db.SaveChanges();
             }
 
+            if (Db.Forms.Count() == 0)
+            {
+                Db.Forms.Add(NewPersonalInfoForm());
+                Db.Forms.Add(NewCommentForm());
+            }
+
 
         }
 
