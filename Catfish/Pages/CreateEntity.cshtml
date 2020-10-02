@@ -16,6 +16,7 @@
 
 <form method="post">
     @Html.HiddenFor(model => model.TemplateId)
+    @Html.HiddenFor(model => model.CollectionId)
 
     <div class="container">
         @Html.EditorFor(model => model.Item, Model.Item.GetType().ToString())

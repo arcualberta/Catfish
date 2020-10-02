@@ -11,13 +11,14 @@ namespace Catfish.Core.Models.Contents
     public class FieldContainer : XmlModel
     {
         public const string FieldContainerTag = "fields";
-        public Guid Id
-        {
-            get => Guid.Parse(Data.Attribute("id").Value);
-            set => Data.SetAttributeValue("id", value);
-        }
+     
+        [NotMapped]
         public MultilingualName Name { get; protected set; }
+      
+        [NotMapped]
         public MultilingualDescription Description { get; protected set; }
+        
+        [NotMapped]
         public FieldList Fields { get; protected set; }
 
         public FieldContainer(string tagName) : base(tagName) 

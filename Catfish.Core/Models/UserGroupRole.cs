@@ -6,12 +6,11 @@ using System.Text;
 namespace Catfish.Core.Models
 {
     [Table("Catfish_UserGroupRoles")]
-    public class UserGroup
+    public class UserGroupRole
     {
         public Guid Id { get; set; }
-        public Guid GroupId { get; set; }
-        public Group Group { get; set; }
+        public Guid GroupRoleId { get; set; }
+        public GroupRole GroupRole { get; set; }
         public Guid UserId { get; set; }
-        public Guid RoleId { get; set; }
     }
 }

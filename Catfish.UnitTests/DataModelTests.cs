@@ -20,14 +20,14 @@ namespace Catfish.UnitTests
     {
         protected AppDbContext _db;
         protected TestHelper _testHelper;
-        private ISolrIndexService<SolrItemModel> solrIndexService;
+        private ISolrIndexService<SolrEntry> solrIndexService;
         private IEntityIndexService entityService;
-        private readonly ISolrReadOnlyOperations<SolrItemModel> _solr;
+        private readonly ISolrReadOnlyOperations<SolrEntry> _solr;
         [SetUp]
         public void Setup()
         {
             _testHelper = new TestHelper();
-            solrIndexService = _testHelper.Seviceprovider.GetService(typeof(ISolrIndexService<SolrItemModel>)) as ISolrIndexService<SolrItemModel>;
+            solrIndexService = _testHelper.Seviceprovider.GetService(typeof(ISolrIndexService<SolrEntry>)) as ISolrIndexService<SolrEntry>;
             entityService = _testHelper.Seviceprovider.GetService(typeof(IEntityIndexService)) as IEntityIndexService;
             _db = _testHelper.Db;
         }
@@ -133,23 +133,6 @@ Modified menus, a bare - bones staff and the seemingly gargantuan task of attrac
 
         }
 
-
-        public bool AddUpdate(Entity entity)
-        {
-            List<SolrItemModel> entries = ExtractSolrEntries(entity);
-            foreach (var entry in entries)
-                solrIndexService.AddUpdate(entry);
-
-            return true;
-        }
-
-        public List<SolrItemModel> ExtractSolrEntries(Entity entity)
-        {
-            List<SolrItemModel> entries = new List<SolrItemModel>();
-            entries.Add(new SolrItemModel());
-
-            return entries;
-        }
 
         //[Test]
         ////public void Query()

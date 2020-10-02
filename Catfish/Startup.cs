@@ -1,39 +1,31 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Catfish.Areas.Manager.Access;
+using Catfish.Core.Models;
+using Catfish.Core.Models.Solr;
+using Catfish.Core.Services;
+using Catfish.Core.Services.FormBuilder;
+using Catfish.Core.Services.Solr;
+using Catfish.Helper;
+using Catfish.ModelBinders;
+using Catfish.Models.Blocks;
+using Catfish.Models.Fields;
+using Catfish.Models.SiteTypes;
+using Catfish.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Piranha;
 using Piranha.AspNetCore.Identity.SQLServer;
 using Piranha.AttributeBuilder;
-using Piranha.Manager.Editor;
-
-using Piranha.Manager;
-using System.Linq;
-using Catfish.Models.Fields;
-using Catfish.Models.Blocks;
 using Piranha.Data.EF.SQLServer;
-using Catfish.Core.Services;
-using Catfish.Helper;
-using System;
-using SolrNet;
-
-using Catfish.Core.Models.Solr;
-using Catfish.Core.Services.Solr;
-using Catfish.Services;
-using Catfish.ModelBinders;
-using Catfish.Models.SiteTypes;
-using Catfish.Core.Models;
-using System.Net.Sockets;
+using Piranha.Manager;
+using Piranha.Manager.Editor;
 using Piranha.Services;
-using Piranha.Manager.Services;
-using Piranha.Models;
-using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
-using Catfish.Authorization;
-using Catfish.Areas.Manager.Access;
+using SolrNet;
+using System;
+using System.Linq;
 
 namespace Catfish
 {
@@ -148,17 +140,14 @@ namespace Catfish
             services.AddScoped<ISubmissionService, SubmissionService>();
             services.AddTransient<IWorkflowService, WorkflowService>();
             services.AddScoped<IEntityTemplateService, EntityTemplateService>();
+            services.AddScoped<IFormService, FormService>();
+            services.AddScoped<ICatfishInitializationService, CatfishInitializationService>();
 
             // Solr services
-            var configSection = Configuration.GetSection("SolarConfiguration:solrItemURL");
-            if(configSection != null && !string.IsNullOrEmpty(configSection.Value))
-                services.AddSolrNet<SolrItemModel>(configSection.Value);
-
-            configSection = Configuration.GetSection("SolarConfiguration:solrPageURL");
+            var configSection = Configuration.GetSection("SolarConfiguration:solrPageURL");
             if (configSection != null && !string.IsNullOrEmpty(configSection.Value))
                 services.AddSolrNet<SolrEntry>(configSection.Value);
 
-            services.AddScoped<ISolrIndexService<SolrItemModel>, SolrIndexService<SolrItemModel, ISolrOperations<SolrItemModel>>>();
             services.AddScoped<ISolrIndexService<SolrEntry>, SolrIndexService<SolrEntry, ISolrOperations<SolrEntry>>>();
             services.AddScoped<IQueryService, QueryService>();
             services.AddScoped<IPageIndexingService, PageIndexingService>();
@@ -290,6 +279,16 @@ namespace Catfish
             RegisterCustomScripts();
             RegisterCustomStyles();
 
+            //Performing Catfish system initialization
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                scope.ServiceProvider.GetService<ICatfishInitializationService>().EnsureSystemRoles();
+            }
+            //var scope = app.ApplicationServices.CreateScope();
+            //var service = scope.ServiceProvider.GetService<IWorkflowService>();
+            //service.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
+
+
             // March 6 2020 -- Add Custom Permissions
             AddCustomPermissions();
             AddWorkflowPermissions();
@@ -318,7 +317,10 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/form.js"); 
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/free-search.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point.js");
             //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
+            App.Modules.Manager().Scripts.Add("~/assets/dist/bundle.js");
+            App.Modules.Manager().Scripts.Add("~/assets/dist/vendors.bundle.js");
         }
         private static void RegisterCustomBlocks()
         {
@@ -331,13 +333,31 @@ namespace Catfish
             App.Blocks.Register<NavigationBlock>();
             App.Blocks.Register<SubmissionEntryPointList>();
             App.Blocks.Register<FreeSearchBlock>();
+            App.Blocks.Register<SubmissionEntryPoint>();
         }
         private static void RegisterCustomStyles()
         {
             
              App.Modules.Get<Piranha.Manager.Module>()
                 .Styles.Add("~/assets/css/custom.css");
-                
+
+            App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("~/assets/css/formEditPage.css");
+            /*
+             These create a warning in Chrome about SameSite cookie use.
+             This is not an issue for you to fix, it is for QuillJS.
+             Issue: https://github.com/quilljs/quill/issues/2869
+             SOF info: https://stackoverflow.com/questions/58830297/a-cookie-associated-with-a-cross-site-resource-was-set-without-the-samesite-at
+             */
+            App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("https://cdn.quilljs.com/1.3.4/quill.core.css");
+            App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("https://cdn.quilljs.com/1.3.4/quill.snow.css");
+            App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("https://cdn.quilljs.com/1.3.4/quill.bubble.css");
+
+
+
         }
         #endregion
 

@@ -6,6 +6,13 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @using Catfish.Core.Models
 
+@section script {
+    <script src="~/manager/identity/piranha.useredit.js"></script>
+    <script type="text/javascript">
+        piranha.groupedit.currentGroupName = Group.Name;
+        
+    </script>
+}
 @*@using (var form = Html.BeginForm("Save", "Role", FormMethod.Post, new { @class = "form validate", role = "form", novalidate = "" }))
     {*@
 <form id="item-edit-form" class="edit-form" method="post" novalidate>
@@ -52,10 +59,34 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>@Localizer.General["Status"]</label>
-                            @Html.DropDownListFor(m => m.Group.GroupStatus, new SelectList(Enum.GetValues(typeof(Group.eGroupStatus))),"Select Status")
+                            @Html.DropDownListFor(m => m.Group.GroupStatus, new SelectList(Enum.GetValues(typeof(Group.eGroupStatus))), "Select Status", new { @class = "form-control small" })
 
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="title">@Localizer.General["Configaration"]</span>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>@Localizer.General["Roles"]</label>
+                    <ul class="list-group">
+                        @{
+                            for (int cnt = 0; cnt < Model.Roles.Count; ++cnt)
+                            {
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            @Html.EditorFor(model => model.Roles[cnt])
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        }
+                    </ul> 
                 </div>
             </div>
         </div>

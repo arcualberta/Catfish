@@ -19,6 +19,29 @@ namespace Catfish.Core.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Catfish.Core.Models.Contents.Form", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("xml");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FormName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Updated")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Catfish_Forms");
+                });
+
             modelBuilder.Entity("Catfish.Core.Models.Entity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -63,6 +86,25 @@ namespace Catfish.Core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Catfish_Groups");
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.GroupRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("Catfish_GroupRoles");
                 });
 
             modelBuilder.Entity("Catfish.Core.Models.GroupTemplate", b =>
@@ -125,16 +167,13 @@ namespace Catfish.Core.Migrations
                     b.ToTable("Catfish_SystemPages");
                 });
 
-            modelBuilder.Entity("Catfish.Core.Models.UserGroup", b =>
+            modelBuilder.Entity("Catfish.Core.Models.UserGroupRole", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("GroupId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RoleId")
+                    b.Property<Guid>("GroupRoleId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserId")
@@ -142,7 +181,7 @@ namespace Catfish.Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupId");
+                    b.HasIndex("GroupRoleId");
 
                     b.ToTable("Catfish_UserGroupRoles");
                 });
@@ -205,6 +244,15 @@ namespace Catfish.Core.Migrations
                         .HasForeignKey("PrimaryCollectionId");
                 });
 
+            modelBuilder.Entity("Catfish.Core.Models.GroupRole", b =>
+                {
+                    b.HasOne("Catfish.Core.Models.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Catfish.Core.Models.GroupTemplate", b =>
                 {
                     b.HasOne("Catfish.Core.Models.EntityTemplate", "EntityTemplate")
@@ -235,11 +283,11 @@ namespace Catfish.Core.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Catfish.Core.Models.UserGroup", b =>
+            modelBuilder.Entity("Catfish.Core.Models.UserGroupRole", b =>
                 {
-                    b.HasOne("Catfish.Core.Models.Group", "Group")
+                    b.HasOne("Catfish.Core.Models.GroupRole", "GroupRole")
                         .WithMany()
-                        .HasForeignKey("GroupId")
+                        .HasForeignKey("GroupRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

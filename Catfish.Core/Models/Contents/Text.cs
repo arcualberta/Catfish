@@ -52,18 +52,21 @@ namespace Catfish.Core.Models.Contents
             set => Data.Value = value == null ? "" : value;
         }
 
+        [JsonIgnore]
         public DateTime DateValue
         {
             get => string.IsNullOrEmpty(Data.Value) ? new DateTime() : DateTime.Parse(Data.Value);
             set => Data.Value = value.ToString();
         }
 
+        [JsonIgnore]
         public int IntValue
         {
             get => string.IsNullOrEmpty(Data.Value) ? 0 : int.Parse(Data.Value);
             set => Data.Value = value.ToString();
         }
 
+        [JsonIgnore]
         public decimal DecimalValue
         {
             get => string.IsNullOrEmpty(Data.Value) ? 0 : decimal.Parse(Data.Value);

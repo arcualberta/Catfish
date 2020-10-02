@@ -77,7 +77,9 @@ namespace Catfish.Services
                 ObjectType = SolrEntry.eEntryType.Page,
                 Permalink = string.IsNullOrWhiteSpace(doc.Permalink) ? null : doc.Permalink,
             };
+
             entry.Title.Add(doc.Title);
+
             if (!string.IsNullOrEmpty(doc.Excerpt))
                 entry.AddContent(doc.Id, doc.Excerpt);
 
@@ -99,7 +101,9 @@ namespace Catfish.Services
                 ObjectType = SolrEntry.eEntryType.Post,
                 Permalink = string.IsNullOrWhiteSpace(doc.Permalink) ? null : doc.Permalink,
             };
+
             entry.Title.Add(doc.Title);
+
             if (!string.IsNullOrEmpty(doc.Excerpt))
                 entry.AddContent(doc.Id, doc.Excerpt);
 
