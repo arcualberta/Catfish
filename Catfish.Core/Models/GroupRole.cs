@@ -8,6 +8,7 @@ namespace Catfish.Core.Models
     [Table("Catfish_GroupRoles")]
     public class GroupRole
     {
+        public static readonly string GroupAdmin = "GroupAdmin";
         public Guid Id { get; set; }
         public Guid GroupId { get; set; }
         public Group Group { get; set; }

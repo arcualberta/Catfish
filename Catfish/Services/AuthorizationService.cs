@@ -15,6 +15,7 @@ namespace Catfish.Services
         public readonly AppDbContext _appDb;
 
         public readonly IHttpContextAccessor _httpContextAccessor;
+
         public AuthorizationService(AppDbContext adb, PiranhaDbContext pdb, IHttpContextAccessor httpContextAccessor)
         {
             _appDb = adb;

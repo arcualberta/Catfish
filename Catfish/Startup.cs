@@ -1,40 +1,31 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Catfish.Areas.Manager.Access;
+using Catfish.Core.Models;
+using Catfish.Core.Models.Solr;
+using Catfish.Core.Services;
+using Catfish.Core.Services.FormBuilder;
+using Catfish.Core.Services.Solr;
+using Catfish.Helper;
+using Catfish.ModelBinders;
+using Catfish.Models.Blocks;
+using Catfish.Models.Fields;
+using Catfish.Models.SiteTypes;
+using Catfish.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Piranha;
 using Piranha.AspNetCore.Identity.SQLServer;
 using Piranha.AttributeBuilder;
-using Piranha.Manager.Editor;
-
-using Piranha.Manager;
-using System.Linq;
-using Catfish.Models.Fields;
-using Catfish.Models.Blocks;
 using Piranha.Data.EF.SQLServer;
-using Catfish.Core.Services;
-using Catfish.Helper;
-using System;
-using SolrNet;
-
-using Catfish.Core.Models.Solr;
-using Catfish.Core.Services.Solr;
-using Catfish.Services;
-using Catfish.ModelBinders;
-using Catfish.Models.SiteTypes;
-using Catfish.Core.Models;
-using System.Net.Sockets;
+using Piranha.Manager;
+using Piranha.Manager.Editor;
 using Piranha.Services;
-using Piranha.Manager.Services;
-using Piranha.Models;
-using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
-using Catfish.Authorization;
-using Catfish.Areas.Manager.Access;
-using Catfish.Core.Services.FormBuilder;
+using SolrNet;
+using System;
+using System.Linq;
 
 namespace Catfish
 {
@@ -150,6 +141,7 @@ namespace Catfish
             services.AddTransient<IWorkflowService, WorkflowService>();
             services.AddScoped<IEntityTemplateService, EntityTemplateService>();
             services.AddScoped<IFormService, FormService>();
+            services.AddScoped<ICatfishInitializationService, CatfishInitializationService>();
 
             // Solr services
             var configSection = Configuration.GetSection("SolarConfiguration:solrPageURL");
@@ -286,6 +278,16 @@ namespace Catfish
             RegisterCustomBlocks();
             RegisterCustomScripts();
             RegisterCustomStyles();
+
+            //Performing Catfish system initialization
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                scope.ServiceProvider.GetService<ICatfishInitializationService>().EnsureSystemRoles();
+            }
+            //var scope = app.ApplicationServices.CreateScope();
+            //var service = scope.ServiceProvider.GetService<IWorkflowService>();
+            //service.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
+
 
             // March 6 2020 -- Add Custom Permissions
             AddCustomPermissions();
