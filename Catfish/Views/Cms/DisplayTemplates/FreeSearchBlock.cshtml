@@ -11,39 +11,35 @@
 @using Catfish.Pages;
 
 
-    @{
-        var ResultList = Model.Results;
-    }
+@{
+    var Results = new List<SolrEntry>();
+}
  
-
-    <h1>Free Search Block</h1>
-
     <!-- TODO: Make the following a search form -->
-    <form method="post">
-        @Html.TextBoxFor(m => m.SearchTerm)
-        
-        <input type="submit" value="Submit" />
-    </form>
-    <ul>
-        @{
-            foreach (var entry in ResultList)
-            {
-                <li>
-                    @foreach (var title in entry.Title)
-                    {
-                        <div><b>@Html.Raw(title)</b></div>
-                    }
+<form method="post">
+    @Html.TextBoxFor(m => m.SearchTerm)
+    <input type="submit" value="Submit" />
+</form>
+<ul>
+    @{
+        foreach (var entry in Results)
+        {
+            <li>
+                @foreach (var title in entry.Title)
+                {
+                    <div><b>@Html.Raw(title)</b></div>
+                }
 
 
-                    <div>Object ID: @entry.Id</div>
-                    <div>Object Type: @entry.ObjectType</div> 
+                <div>Object ID: @entry.Id</div>
+                <div>Object Type: @entry.ObjectType</div> 
 
 
-                    @foreach (var snippet in entry.Highlights)
-                    {
-                        <div>@Html.Raw(snippet)</div>
-                    }
-                </li>
-            }
+                @foreach (var snippet in entry.Highlights)
+                {
+                    <div>@Html.Raw(snippet)</div>
+                }
+            </li>
         }
-    </ul>
+    }
+</ul>

@@ -23,17 +23,7 @@ Vue.component("free-search", {
         }
 
     },
-    template: "<div  class= 'block-body'>" +
-
-        " <textarea rows='4' cols='100' class='lead ' " +
-        "    v-html='' contenteditable='true' v-on:blur='onBlur' >" +
-        "</textarea></div>"
-
-    //template: "<div  class= 'block-body'>" +
-
-    //    " <textarea rows='4' cols='100' class='lead ' " +
-    //    "    v-html='model.cssVal.value' contenteditable='true' v-on:blur='onBlur' >" +
-    //    "</textarea></div>"
+    template: "<div  class= 'block-body' style='border: solid 1px #888'>Free-text search.</div>"
 
 });
 
