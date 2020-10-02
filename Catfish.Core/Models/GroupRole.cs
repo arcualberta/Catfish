@@ -13,4 +13,21 @@ namespace Catfish.Core.Models
         public Group Group { get; set; }
         public Guid RoleId { get; set; }
     }
+
+
+    public class GroupRoleComparer : IEqualityComparer<GroupRole>
+    {
+        public bool Equals(GroupRole x, GroupRole y)
+        {
+            if (x.RoleId == y.RoleId && x.GroupId == y.GroupId)
+                return true;
+
+            return false;
+        }
+
+        public int GetHashCode(GroupRole obj)
+        {
+            return obj.Id.GetHashCode();
+        }
+    }
 }

@@ -74,13 +74,9 @@
                 <div class="form-group">
                     <label>@Localizer.General["Roles"]</label>
                     <ul class="list-group">
-
                         @{
-
                             for (int cnt = 0; cnt < Model.Roles.Count; ++cnt)
                             {
-                                //if (cnt % 3 == 0)
-                                //{
                                 <li class="list-group-item">
                                     <div class="row">
                                         <div class="col-sm-4">
@@ -88,21 +84,8 @@
                                         </div>
                                     </div>
                                 </li>
-                                //}
-                                @*else
-                {
-                <div class="col-sm-4">
-                    <div class="checkbox">
-                        <label class="mb-0">
-                            <input id="roleCheck" type="checkbox" value="@role.RoleId" checked="@role.Assigned"> @role.RoleName
-                        </label>
-                    </div>
-                </div>
-                }*@
-
                             }
                         }
-
                     </ul> 
                 </div>
             </div>
