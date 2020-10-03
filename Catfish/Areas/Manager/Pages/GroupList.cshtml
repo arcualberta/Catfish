@@ -32,7 +32,7 @@
                 //await Auth.AuthorizeAsync(User, Piranha.Manager.Permission.SitesAdd)).Succeeded
                 {
 
-                    <a href="@Url.Action("Add")" class="btn btn-labeled btn-primary pull-right">
+                    <a href="@Url.Action("GroupEdit", "manager", new {id = Guid.NewGuid()})" class="btn btn-labeled btn-primary pull-right">
                         <i class="fas fa-plus"></i>@Localizer.General["Add"]
                     </a>
                 }
