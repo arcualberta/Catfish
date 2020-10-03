@@ -17,24 +17,6 @@ namespace Catfish.Models.Blocks
     [BlockType(Name = "Free Search", Category = "Control", Component = "free-search", Icon = "fas fa-search")]
     public class FreeSearchBlock : Block
     {
-        [BindProperty(SupportsGet = true)]
-        public string SearchTerm { get; set; }
-
-        public IList<SolrEntry> Results { get; set; }
-
-        private readonly IQueryService QueryService;
-
-        public FreeSearchBlock()
-        {
-        }
-
-        public FreeSearchBlock(IQueryService queryService)
-        {
-            // SolrUrl = config.GetSolrUrl();
-            QueryService = queryService;
-            CssVal = new TextField();
-        }
-
         public TextField CssVal { get; set; }
         public string GetCss()
         {
@@ -45,20 +27,5 @@ namespace Catfish.Models.Blocks
 
             return "";
         }
-
-        public void OnGet()
-        {
-            Results = new List<SolrEntry>();
-        }
-
-        public void OnPost()
-        {
-            //Results = new SolrQueryResults<SolrItemModel>(); //TODO: Run the query and get this list.
-            var parameters = new SearchParameters();
-            parameters.FreeSearch = SearchTerm;
-            //Results = QueryService.GetEntities(parameters);
-            Results = QueryService.FreeSearch(parameters);
-        }
     }
-
 }
