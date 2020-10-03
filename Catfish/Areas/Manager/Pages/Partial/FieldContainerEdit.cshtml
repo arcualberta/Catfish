@@ -53,7 +53,8 @@
                     <textarea type="text" class="form-description form-control" 
                     :id="'form-description-' + descriptionIndex" placeholder="Description goes here" 
                     state="validateState('descriptions', descriptionIndex, 'values')"
-                    @@input="touchNestedItem('descriptions', descriptionIndex, 'values')">
+                    @@input="touchNestedItem('descriptions', descriptionIndex, 'values')"
+                    :class="{ 'red-color': $v.descriptions.values.$each[descriptionIndex].value.$error }">
                     {{description.value}}
                     </textarea>
                 </div>
@@ -62,7 +63,7 @@
             <div class="section-container">
                 <h3>Fields</h3>
                 <div class="container" style="display:flex; flex-direction:row;">
-                    <draggable @@add="addNewItem"  @@sort="test" class="flex-full col-10" id="accordion" v-model="fields" group="sharedItems" handle=".handle-drag">
+                    <draggable  @@sort="sortItem" class="flex-full col-10" id="accordion" v-model="fields" group="sharedItems" handle=".handle-drag">
                         <div v-for="(field, fieldIndex) of fields" class="card field-card-width" :key='fieldIndex'>
                         <!-- Editable fields -->
                             <div style="display:flex;">
@@ -74,7 +75,7 @@
                                 <div class="field-card-contents">
                                     <div class="sitemap-item card-header">
                                         <a v-on:click="toggleDropdown(field.id)" class="handle-holder" :data-target="'#collapse-' + field.id " data-toggle="collapse" >
-                                            <div class="handle">{{dropdowns[field.id].isCollapsed}}
+                                            <div class="handle">
                                                 <i :class="{ 'fas fa-chevron-down': !dropdowns[field.id].isCollapsed, 'fas fa-chevron-right': dropdowns[field.id].isCollapsed}"></i>
                                             </div>
                                             <div v-if="field.$type" class="title-header">
@@ -98,8 +99,8 @@
                                         </a>
                                     
                                         <div class="header-tools-holder">
-                                            <div style="padding-right: 10px; width: 100%;" class="form-group field-dropdown" :id="'fieldset-' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex"> <!-- :invalid-feedback="invalidPublishFeedback" :class="{ 'form-group--error': $v.publishedStatus.$error }" -->
-			                                    <select class="form-control" :id="'field-dropdown-' + fieldIndex" v-model="field.selected" v-on:change="onDropdownChange(fieldIndex, field.selected)"> <!-- v-model.trim="$v.publishedStatus.$model" :state="validateState('publishedStatus')" -->
+                                            <div style="padding-right: 10px; width: 100%;" class="form-group field-dropdown" :id="'fieldset-' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex">
+			                                    <select class="form-control" :id="'field-dropdown-' + fieldIndex" v-model="field.selected" v-on:change="onDropdownChange(fieldIndex, field.selected)">
                                                     <option :disabled="fieldType.value==null" v-for="fieldType of fieldTypes" :value="fieldType.value">{{fieldType.text}}</option>
                                                 </select>
                                             </div>
@@ -136,7 +137,6 @@
                                                 /> <!-- 
                                                 @@input="$v.fields.$each[fieldIndex].name.values.$each[nameIndex].value.$touch()" -->
                                             </li>
-                                            <li>{{$v.fields.$each[fieldIndex].name.values.$each[nameIndex].value}}</li>
                                         </ul>
 
                                         <div v-if="dropdowns[field.id].showDescription">
@@ -197,7 +197,7 @@
                                                             <input type="text" class="form-control" :disabled="radioValue.isDisabled" 
                                                                 aria-label="Text input with radio button and remove button" 
                                                                 v-model="radioValue.text" :state="validateFieldState(fieldIndex, 'values')"
-                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$invalid }" > 
+                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$each[radioIndex].text.$invalid }" > 
                                                                 <!-- 
                                                                 @@input="$v.fields.$each[fieldIndex].values.$touch()" -->
                                                             <div class="input-group-append">
@@ -233,7 +233,7 @@
                                                             <input type="text" class="form-control" :disabled="checkValue.isDisabled" 
                                                                 aria-label="Text input with checkbox and remove button" v-model="checkValue.text"
                                                                 :state="validateFieldState(fieldIndex, 'values')"
-                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$invalid }">
+                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$each[checkIndex].text.$invalid }">
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, checkValue, checkIndex)" type="button">
                                                                     <i class="fas fa-minus"></i>
@@ -259,7 +259,7 @@
                                                         <div v-for="(dropdownValue, dropdownIndex) of field.values" class="input-group mb-3">
                                                             <input type="text" class="form-control" aria-label="Text input with remove button" 
                                                                 v-model="dropdownValue.text" :state="validateFieldState(fieldIndex, 'values')"
-                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$invalid }">
+                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$each[dropdownIndex].text.$invalid }">
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, dropdownValue, dropdownIndex)" type="button">
                                                                     <i class="fas fa-minus"></i>
@@ -308,8 +308,10 @@
                                                     </div>
                                                     @*Display text*@ 
                                                     <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core' ">
-                                                        <quill-editor :ref="'richtext' + fieldIndex" v-model="field.values"
-                                                            :state="validateFieldState(fieldIndex, 'values')">
+                                                        {{$v.fields.$each[fieldIndex].values}}
+                                                        <quill-editor rows="3" :ref="'richtext' + fieldIndex" v-model="$v.fields.$each[fieldIndex].values"
+                                                            :state="validateFieldState(fieldIndex, 'values')"
+                                                            :class="{ 'red-color': $v.fields.$each[fieldIndex].values.$invalid }">
                                                         </quill-editor>
                                                     </div>
                                                 

@@ -1,5 +1,5 @@
-﻿import draggable from 'vuedraggable'
-
+﻿//import draggable from 'vuedraggable'
+/*
 export default {
     components: {
         draggable,
@@ -10,4 +10,4 @@ export default {
     created() {
         console.log("I am a test");
     }
-}
+}*/
