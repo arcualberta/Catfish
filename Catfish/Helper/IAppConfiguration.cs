@@ -26,6 +26,11 @@ namespace Catfish.Helper
         string GetGoogleServiceAccountFileName();
         bool GetEnabledLocalLogin();
         bool GetEnabledBreadcrumb();
+
+        bool GetValue(string key, bool defaultValue);
+        string GetValue(string key, string defaultValue);
+        int GetValue(string key, int defaultValue);
+
     }
 
     public class ReadAppConfiguration : ICatfishAppConfiguration
@@ -36,19 +41,24 @@ namespace Catfish.Helper
             _configuration = configuration;
         }
 
-        protected bool GetValue(string key, bool defaultValue)
+        public bool GetValue(string key, bool defaultValue)
         {
             bool val;
             return bool.TryParse(_configuration[key], out val)
                 ? val
                 : defaultValue;
         }
-        protected string GetValue(string key, string defaultValue)
+        public string GetValue(string key, string defaultValue)
         {
             string val = _configuration[key];
             return string.IsNullOrEmpty(val) ? defaultValue : val;
         }
 
+        public int GetValue(string key, int defaultValue)
+        {
+            string val = _configuration[key];
+            return string.IsNullOrEmpty(val) ? defaultValue : int.Parse(val);
+        }
 
         public string GetDefaultUserRole()
         {

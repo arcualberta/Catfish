@@ -39,6 +39,8 @@
     @{
         var site = await _piranhaApi.Sites.GetByInternalIdAsync("Default");//"Default" is InternalId of the site
         var logoUrl = _catfishAppConfig.GetLogoUrl();
+        string loginButtonLocation = _catfishAppConfig.GetValue("SiteConfig:LoginButtonLocation", null);
+        bool showSearchInBody = _catfishAppConfig.GetValue("SiteConfig:SearchPanelLocation", null) == "body";
 
         <div class="container">
             <div class="row">
@@ -50,6 +52,10 @@
                     <h1>@site.Title</h1>
                     <h3>@site.Description</h3>
                 </div>
+                @if (!showSearchInBody)
+                {
+                    <partial name="Partial/_Search.cshtml" />
+                }
             </div>
         </div>
         <header class="site-header  @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
@@ -87,10 +93,10 @@
             </div> @*container*@
         </header>
     }
-<form method="post" action="/search">
-    <input type="text" name="searchTerm" />
-    <button type="submit"><i class="fa fa-search"></i></button>
-</form>
+    @if (showSearchInBody)
+    {
+        <partial name="Partial/_Search.cshtml" />
+    }
 
     @RenderBody()
 
