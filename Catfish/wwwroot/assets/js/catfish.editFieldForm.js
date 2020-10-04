@@ -26,7 +26,7 @@ if (document.getElementById("edit-field-form-page")) {
         components: {
             draggable,
             quillEditor
-		},
+        },
         data() {
             return {
                 itemId: null,
@@ -235,10 +235,8 @@ if (document.getElementById("edit-field-form-page")) {
             touchNestedItem(name, indexOrGuid = null, attribute = null, event = null) {
                 if (indexOrGuid != null) {
                     if (isNaN(indexOrGuid)) {
-                        console.log("a", name, indexOrGuid, attribute);
                         this.$v[name][indexOrGuid][attribute].$touch();
                     } else {
-                        console.log("b", name, attribute, indexOrGuid);
                         this.$v[name][attribute].$each[indexOrGuid].value.$touch();
                     }
 
@@ -304,6 +302,19 @@ if (document.getElementById("edit-field-form-page")) {
 				}
             },
 
+
+            /*test(fieldId) { //detects the 'show' after transition is complete so this will never work...also only runs once unless computed. computed doesnt allow for parameter except if a setter
+                if (document.getElementById('collapse-' + fieldId) == null) {
+                    return 'fas fa-chevron-right';
+                } else if (document.getElementById('collapse-' + fieldId).classList.contains('show')) {
+                    console.log("item has show:", document.getElementById('collapse-' + fieldId).classList);
+                    return 'fas fa-chevron-right';
+                } else {
+                    console.log("item does not have show:", document.getElementById('collapse-' + fieldId).classList);
+                    return 'fas fa-chevron-down';
+                }
+            },*/
+
             /**
              * Fire when any item sorted/moved (includes adding new item to list)
              * @param {any} event
@@ -311,7 +322,7 @@ if (document.getElementById("edit-field-form-page")) {
             sortItem(event) {
                 let collapsingSections = document.getElementsByClassName('collapsing-items');
                 console.log("event on sort:", event);
-                let shownSectionIndex = '';
+                let shownSectionIndex = null;
                 let previousSection = null;
                 let nextSection = null;
 
@@ -324,12 +335,19 @@ if (document.getElementById("edit-field-form-page")) {
 					}
                 }
 
+                //the field id of the sorted section
+                let tmpId = collapsingSections[event.newIndex].id.split('collapse-')[1];
 
                 //if item is new, open that one
                 if (event.from.id != event.to.id) {
                     console.log("added new item", collapsingSections[event.newIndex].id);
                     $('#' + collapsingSections[event.newIndex].id).collapse('show');
-                    $('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
+                    this.dropdowns[tmpId].isCollapsed = false;
+                    if (shownSectionIndex != null) {
+                        let test = shownSectionIndex == event.newIndex;
+                        $('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
+                        this.dropdowns[tmpId].isCollapsed = true;
+					}
                     return;
                 }
 
@@ -337,7 +355,11 @@ if (document.getElementById("edit-field-form-page")) {
                 if (shownSectionIndex == event.oldIndex) {
                     console.log("dragging showing item");
                     $('#' + collapsingSections[event.newIndex].id).collapse('show');
-                    $('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
+                    this.dropdowns[tmpId].isCollapsed = false;
+                    if (shownSectionIndex != null) {
+                        $('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
+                        this.dropdowns[tmpId].isCollapsed = true;
+					}
                     return;
 				}
 
@@ -345,12 +367,16 @@ if (document.getElementById("edit-field-form-page")) {
                 if (event.oldIndex <= shownSectionIndex && shownSectionIndex <= event.newIndex) {
                     console.log("moved item DOWN over shown");
                     $('#' + previousSection.id).collapse('show');
+                    this.dropdowns[previousSection.id].isCollapsed = false;
+
                     //move item above open item
                 } else if (event.oldIndex >= shownSectionIndex && shownSectionIndex >= event.newIndex) {
                     console.log("moved item UP over shown");
                     $('#' + nextSection.id).collapse('show');
+                    this.dropdowns[nextSection.id].isCollapsed = false;
                 }
                 $('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
+                this.dropdowns[tmpId].isCollapsed = true;
 			},
 
 
@@ -422,9 +448,19 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} fieldId the field's index to open/close
              */
             toggleDropdown(fieldId) {
+                let lastDropdownIdOpened = '';
+                for (let dropdownId of Object.keys(this.dropdowns)) {
+                    if (this.dropdowns[dropdownId].isCollapsed == false) {
+                        lastDropdownIdOpened = dropdownId;
+					}
+                }
+
+                if (fieldId != lastDropdownIdOpened && lastDropdownIdOpened != '') {
+                    //close dropdown that is not the same one previously opened
+                    this.dropdowns[lastDropdownIdOpened].isCollapsed = true;
+				}
+
                 this.dropdowns[fieldId].isCollapsed === true ? this.dropdowns[fieldId].isCollapsed = false : this.dropdowns[fieldId].isCollapsed = true;
-                //this.lastDropdownAction = this.dropdowns[fieldId].isCollapsed;
-                //this.assessExpandOrCollapseAll();
             },
 
             /**
@@ -612,7 +648,6 @@ if (document.getElementById("edit-field-form-page")) {
                     $(document).ready(function () {
                         $('[data-toggle="popover"]').popover();
                     });
-                    console.log("check on dropdowns:", this.dropdowns); //why are these only ids? how is this workign at all???
                 });
         }
     });

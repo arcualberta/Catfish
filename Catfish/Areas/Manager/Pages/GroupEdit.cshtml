@@ -13,8 +13,7 @@
         
     </script>
 }
-@*@using (var form = Html.BeginForm("Save", "Role", FormMethod.Post, new { @class = "form validate", role = "form", novalidate = "" }))
-    {*@
+
 <form id="item-edit-form" class="edit-form" method="post" novalidate>
     @Html.HiddenFor(m => m.Group.Id)
     <div class="top">
@@ -72,6 +71,25 @@
             </div>
             <div class="card-body">
                 <div class="form-group">
+                    <label>@Localizer.General["Templates"]</label>
+                    <ul class="list-group">
+                        @{
+                            for (int cnt = 0; cnt < Model.Templates.Count; ++cnt)
+                            {
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <span class="col-sm-4">
+                                            @Html.EditorFor(model => model.Templates[cnt])
+                                        </span>
+                                    </div>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
                     <label>@Localizer.General["Roles"]</label>
                     <ul class="list-group">
                         @{
@@ -79,17 +97,73 @@
                             {
                                 <li class="list-group-item">
                                     <div class="row">
-                                        <div class="col-sm-4">
+                                        <span class="col-sm-4">
                                             @Html.EditorFor(model => model.Roles[cnt])
-                                        </div>
+                                        </span>
                                     </div>
                                 </li>
                             }
                         }
-                    </ul> 
+                    </ul>
                 </div>
             </div>
         </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="title">@Localizer.General["User Privileges"]</span>
+            </div>
+            @{
+            for (int cnt = 0; cnt < Model.Roles.Count; ++cnt)
+            {
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>@Localizer.General[Model.Roles[cnt].RoleName]</label>
+                        <ul class="list-group">
+                            @*@{
+                                for (int cnt = 0; cnt < Model.Roles.Count; ++cnt)
+                                {
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <span class="col-sm-4">
+                                                @Html.EditorFor(model => model.Roles[cnt])
+                                            </span>
+                                        </div>
+                                    </li>
+                                }
+                            }*@
+                        </ul>
+                        @{if (Model.Roles[cnt].Assigned)
+                            {
+                                <button type="button" class="btn btn-labeled btn-primary pull-right" data-toggle="modal" data-target="#myModal">
+                                    <span class="btn-label">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                    @Localizer.General["Add User"]
+                                </button>
+                                <!-- Modal -->
+                                <div id="myModal" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                                        
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                            
+                            }
+                          }
+
+                    </div>
+                </div>
+            }
+            }
+        </div>
     </div>
 </form>
-@*}*@
+

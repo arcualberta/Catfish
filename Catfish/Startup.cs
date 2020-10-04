@@ -356,8 +356,6 @@ namespace Catfish
             App.Modules.Get<Piranha.Manager.Module>()
                 .Styles.Add("https://cdn.quilljs.com/1.3.4/quill.bubble.css");
 
-
-
         }
         #endregion
 
