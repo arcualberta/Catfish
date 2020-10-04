@@ -14,3 +14,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "<Pending>", Scope = "member", Target = "~P:Catfish.Pages.Workflow.StartPage.ItemTemplates")]
 [assembly: SuppressMessage("Globalization", "CA1304:Specify CultureInfo", Justification = "<Pending>", Scope = "member", Target = "~M:Catfish.Services.AuthorizationService.EnsureSystemRoles")]
 [assembly: SuppressMessage("Globalization", "CA1304:Specify CultureInfo", Justification = "<Pending>", Scope = "member", Target = "~M:Catfish.Services.CatfishInitializationService.EnsureSystemRoles")]
+[assembly: SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>", Scope = "member", Target = "~M:Catfish.Helper.ReadAppConfiguration.GetValue(System.String,System.Int32)~System.Int32")]

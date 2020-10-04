@@ -6,6 +6,8 @@ namespace Catfish.Helper
 {
     public interface ICatfishAppConfiguration
     {
+        public enum ePanelLocation { None, Header, Body }
+
         bool IsAllowGoogleLogin();
         string GetGoogleClientId();
         string GetDefaultUserRole();
@@ -26,6 +28,7 @@ namespace Catfish.Helper
         string GetGoogleServiceAccountFileName();
         bool GetEnabledLocalLogin();
         bool GetEnabledBreadcrumb();
+        ePanelLocation GetDefaultSearchPanelLocation();
 
         bool GetValue(string key, bool defaultValue);
         string GetValue(string key, string defaultValue);
@@ -153,6 +156,14 @@ namespace Catfish.Helper
         public bool GetEnabledBreadcrumb()
         {
             return GetValue("SiteConfig:EnabledBreadcrumb", false);
+        }
+
+        public ICatfishAppConfiguration.ePanelLocation GetDefaultSearchPanelLocation()
+        {
+            string configVal = GetValue("SiteConfig:SearchPanelLocation", null);
+            return string.IsNullOrEmpty(configVal)
+                ? ICatfishAppConfiguration.ePanelLocation.Header
+                : (ICatfishAppConfiguration.ePanelLocation)Enum.Parse(typeof(ICatfishAppConfiguration.ePanelLocation), configVal);
         }
     }
 }
