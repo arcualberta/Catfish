@@ -4,29 +4,94 @@ using System.Linq;
 using System.Threading.Tasks;
 using Catfish.Core.Models.Solr;
 using Catfish.Core.Services.Solr;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Catfish.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class SearchController : ControllerBase
+    public class SearchController : Controller
     {
-        private readonly IQueryService QueryService;
-        public SearchController(IQueryService queryService)
+        private readonly IQueryService _queryService;
+        public SearchController(IQueryService srv)
         {
-            QueryService = queryService;
+            _queryService = srv;
         }
-
-        [Route("freetext")]
-        public IList<SolrEntry> FreeText(string searchTerm)
+        // GET: SearchController
+        public ActionResult Index(string searchTerm)
         {
             var parameters = new SearchParameters();
             parameters.FreeSearch = searchTerm;
-            IList<SolrEntry> result = QueryService.FreeSearch(parameters);
-            return result;
+            var results = _queryService.FreeSearch(parameters);
+            return View("Results", results);
+        }
+
+        // GET: SearchController/Details/5
+        public ActionResult Details(int id)
+        {
+            return View();
+        }
+
+        // GET: SearchController/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: SearchController/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(IFormCollection collection)
+        {
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: SearchController/Edit/5
+        public ActionResult Edit(int id)
+        {
+            return View();
+        }
+
+        // POST: SearchController/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int id, IFormCollection collection)
+        {
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: SearchController/Delete/5
+        public ActionResult Delete(int id)
+        {
+            return View();
+        }
+
+        // POST: SearchController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, IFormCollection collection)
+        {
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
         }
     }
 }

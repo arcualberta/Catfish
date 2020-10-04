@@ -61,15 +61,15 @@
                     <div class="signinout">
                         @if (!User.Identity.IsAuthenticated)
                         {
-                            <button id="btnSignIn" class="btn btn-default" onclick="window.location.href = '/login'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
+                            <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '/login'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
                         }
                         else
                         {
                             if (User.IsInRole("SysAdmin"))
                             {
-                                <button class="btn btn-default" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                                <button class="btn btn-link" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
                             }
-                            <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-default"><span class="fa fa-sign-out"> Sign Out</span></button>
+                            <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-link"><span class="fa fa-sign-out"> Sign Out</span></button>
                         }
 
 
@@ -87,6 +87,11 @@
             </div> @*container*@
         </header>
     }
+<form method="post" action="/search">
+    <input type="text" name="searchTerm" />
+    <button type="submit"><i class="fa fa-search"></i></button>
+</form>
+
     @RenderBody()
 
 
