@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.ViewEngines
 @using Catfish.Models.SiteTypes
+@using Catfish.Helper
 @inject ICompositeViewEngine _viewEngine
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
 @inject Piranha.IApi _piranhaApi;
@@ -39,17 +40,31 @@
     @{
         var site = await _piranhaApi.Sites.GetByInternalIdAsync("Default");//"Default" is InternalId of the site
         var logoUrl = _catfishAppConfig.GetLogoUrl();
+        string loginButtonLocation = _catfishAppConfig.GetValue("SiteConfig:LoginButtonLocation", null);
+        ICatfishAppConfiguration.ePanelLocation searchPanelLocation = _catfishAppConfig.GetDefaultSearchPanelLocation();
+        var homepage = WebApp.Site.Sitemap.FirstOrDefault();
+        string homepageUrlStartTag = "";
+        string homepageUrlEndTag = "";
+        if(homepage != null)
+        {
+            homepageUrlStartTag = string.Format("<a href='{0}'>", homepage.Permalink);
+            homepageUrlEndTag = "</a>";
+        }
 
         <div class="container">
             <div class="row">
                 @if (!string.IsNullOrEmpty(logoUrl))
                 {
-                    <div id="site-logo"><img src="@logoUrl" /></div>
+                    <div id="site-logo">@Html.Raw(homepageUrlStartTag)<img src="@logoUrl" />@Html.Raw(homepageUrlEndTag) </div>
                 }
                 <div class="header-brand">
-                    <h1>@site.Title</h1>
+                    <h1>@Html.Raw(homepageUrlStartTag)@site.Title@Html.Raw(homepageUrlEndTag) </h1>
                     <h3>@site.Description</h3>
                 </div>
+                @if (searchPanelLocation == ICatfishAppConfiguration.ePanelLocation.Header)
+                            {
+                    <partial name="Partial/_Search.cshtml" />
+                }
             </div>
         </div>
         <header class="site-header  @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
@@ -60,16 +75,16 @@
                     </div>
                     <div class="signinout">
                         @if (!User.Identity.IsAuthenticated)
-                        {
-                            <button id="btnSignIn" class="btn btn-default" onclick="window.location.href = '/login'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
+                            {
+                            <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '/login'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
                         }
                         else
                         {
                             if (User.IsInRole("SysAdmin"))
                             {
-                                <button class="btn btn-default" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                                <button class="btn btn-link" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
                             }
-                            <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-default"><span class="fa fa-sign-out"> Sign Out</span></button>
+                            <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-link"><span class="fa fa-sign-out"> Sign Out</span></button>
                         }
 
 
@@ -87,6 +102,11 @@
             </div> @*container*@
         </header>
     }
+    @if (searchPanelLocation == ICatfishAppConfiguration.ePanelLocation.Body)
+    {
+        <partial name="Partial/_Search.cshtml" />
+    }
+
     @RenderBody()
 
 

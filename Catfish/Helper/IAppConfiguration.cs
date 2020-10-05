@@ -6,6 +6,8 @@ namespace Catfish.Helper
 {
     public interface ICatfishAppConfiguration
     {
+        public enum ePanelLocation { None, Header, Body }
+
         bool IsAllowGoogleLogin();
         string GetGoogleClientId();
         string GetDefaultUserRole();
@@ -26,6 +28,12 @@ namespace Catfish.Helper
         string GetGoogleServiceAccountFileName();
         bool GetEnabledLocalLogin();
         bool GetEnabledBreadcrumb();
+        ePanelLocation GetDefaultSearchPanelLocation();
+
+        bool GetValue(string key, bool defaultValue);
+        string GetValue(string key, string defaultValue);
+        int GetValue(string key, int defaultValue);
+
     }
 
     public class ReadAppConfiguration : ICatfishAppConfiguration
@@ -36,19 +44,24 @@ namespace Catfish.Helper
             _configuration = configuration;
         }
 
-        protected bool GetValue(string key, bool defaultValue)
+        public bool GetValue(string key, bool defaultValue)
         {
             bool val;
             return bool.TryParse(_configuration[key], out val)
                 ? val
                 : defaultValue;
         }
-        protected string GetValue(string key, string defaultValue)
+        public string GetValue(string key, string defaultValue)
         {
             string val = _configuration[key];
             return string.IsNullOrEmpty(val) ? defaultValue : val;
         }
 
+        public int GetValue(string key, int defaultValue)
+        {
+            string val = _configuration[key];
+            return string.IsNullOrEmpty(val) ? defaultValue : int.Parse(val);
+        }
 
         public string GetDefaultUserRole()
         {
@@ -143,6 +156,14 @@ namespace Catfish.Helper
         public bool GetEnabledBreadcrumb()
         {
             return GetValue("SiteConfig:EnabledBreadcrumb", false);
+        }
+
+        public ICatfishAppConfiguration.ePanelLocation GetDefaultSearchPanelLocation()
+        {
+            string configVal = GetValue("SiteConfig:SearchPanelLocation", null);
+            return string.IsNullOrEmpty(configVal)
+                ? ICatfishAppConfiguration.ePanelLocation.Header
+                : (ICatfishAppConfiguration.ePanelLocation)Enum.Parse(typeof(ICatfishAppConfiguration.ePanelLocation), configVal);
         }
     }
 }

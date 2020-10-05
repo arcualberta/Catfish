@@ -190,3 +190,7 @@ header{
 .search-match{
     background-color:yellow;
 }
+
+.search-panel{
+    float:right;
+}
