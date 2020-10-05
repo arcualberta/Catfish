@@ -30,6 +30,9 @@ namespace Catfish.Areas.Manager.Pages
         [BindProperty]
         public List<GroupTemplateAssignmentVM> Templates { get; set; }
 
+        [BindProperty]
+        public List<GroupRoleUserAssignmentVM> Users { get; set; }
+
         //public  GroupModel()
         //{
 
@@ -43,20 +46,23 @@ namespace Catfish.Areas.Manager.Pages
         public void OnGet(Guid id)
         {
             var group = _appDb.Groups.FirstOrDefault(g => g.Id == id);
-            var roleNames = _srv.GetGroupRolesDetails();
+            
             if (group != null)
             {
                 Group = group;
-
+                var users = _piranhaDb.Users.ToList();
+                var roleNames = _srv.GetGroupRolesDetails();
                 var roles = _srv.GetGroupRolesDetails();
                 var groupAdmin = _piranhaDb.Roles.Where(r => r.NormalizedName == "GROUPADMIN").FirstOrDefault();
                 var templates = _appDb.ItemTemplates.ToList();
                 var groupRoles = _appDb.GroupRoles.Where(r => r.GroupId == id).ToList();
                 var groupTemplates = _appDb.GroupTemplates.Where(r => r.GroupId == id).ToList();
+                var userGroupRoles = _appDb.UserGroupRoles.Where(ugr => ugr.GroupId == id).ToList();
 
                 Roles = new List<GroupRoleAssignmentVM>();
                 Templates = new List<GroupTemplateAssignmentVM>();
                 RoleList = new List<GroupRoleAssignmentVM>();
+                Users = new List<GroupRoleUserAssignmentVM>();
                 var groupAdminRole = new GroupRoleAssignmentVM
                 {
                     RoleId = groupAdmin.Id,
@@ -101,6 +107,27 @@ namespace Catfish.Areas.Manager.Pages
                     Templates.Add(groupTemplateVM);
                     //SelectedRoles.Add(Roles.Single(r => r.Id == role.RoleId).Name);
                 }
+
+                foreach (var user in users)
+                {
+                    var userGroupRolesVM = new GroupRoleUserAssignmentVM
+                    {
+                        UserId = user.Id,
+                        UserName = user.UserName
+
+                    };
+                    foreach (var userGroupRole in userGroupRoles)
+                    {
+                        if (user.Id == userGroupRole.UserId)
+                        {
+                            userGroupRolesVM.Assigned = true;
+                        }
+                        userGroupRolesVM.RoleGroupId = userGroupRole.GroupRoleId;
+                        userGroupRolesVM.GroupRoleUserId = userGroupRole.Id;
+                    }
+                    Users.Add(userGroupRolesVM);
+                    //SelectedRoles.Add(Roles.Single(r => r.Id == role.RoleId).Name);
+                }
             }
             //else 
             //{
@@ -117,7 +144,7 @@ namespace Catfish.Areas.Manager.Pages
             SaveGroupTemplates();
             _appDb.SaveChanges();
 
-            return RedirectToPage("GroupList","Manager");
+            return RedirectToPage("GroupEdit","Manager", Group.Id);
         }
         //public GroupModel Create()
         //{

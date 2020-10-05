@@ -113,11 +113,11 @@
                 <span class="title">@Localizer.General["User Privileges"]</span>
             </div>
             @{
-            for (int cnt = 0; cnt < Model.Roles.Count; ++cnt)
+            for (int cnt = 0; cnt < Model.RoleList.Count; ++cnt)
             {
                 <div class="card-body">
                     <div class="form-group">
-                        <label>@Localizer.General[Model.Roles[cnt].RoleName]</label>
+                        <label>@Localizer.General[Model.RoleList[cnt].RoleName]</label>
                         <ul class="list-group">
                             @*@{
                                 for (int cnt = 0; cnt < Model.Roles.Count; ++cnt)
@@ -132,7 +132,7 @@
                                 }
                             }*@
                         </ul>
-                        @{if (Model.Roles[cnt].Assigned)
+                        @{if (Model.RoleList[cnt].Assigned)
                             {
                                 <button type="button" class="btn btn-labeled btn-primary pull-right" data-toggle="modal" data-target="#userModal" data-id="@Model.Roles[cnt].RoleGroupId">
                                     <span class="btn-label">
@@ -146,17 +146,36 @@
 
                                         <!-- Modal content-->
                                         <div class="modal-content">
-                                            <input type="hidden" name="GroupRoleId" id="bookId" value="" />           
+                                            <div class="modal-body">
+                                                <input type="text" name="GroupRoleId" id="GroupRoleId" value="" />
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        <label>@Localizer.General["Users"]</label>
+                                                        <ul class="list-group">
+                                                            @{
+                                                                for (int userCount = 0; userCount < Model.Users.Count; ++userCount)
+                                                                {
+                                                                    <li class="list-group-item">
+                                                                        <div class="row">
+                                                                            <span class="col-sm-4">
+                                                                                @Html.EditorFor(model => model.Users[userCount])
+                                                                            </span>
+                                                                        </div>
+                                                                    </li>
+                                                                }
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                 <button id="deleteConfirm" type="button" class="btn btn-primary">Save changes</button>
                                             </div>
+                                            </div>
+
                                         </div>
-
-                                    </div>
-                                </div>
-
-                                            
+                                </div>   
                             }
                           }
 
@@ -168,12 +187,13 @@
     </div>
 </form>
 <script>
-    var Id;
-    $(document).ready(function () {
-        $('.btn.btn-labeled.btn-primary').on('click', function () {
-            Id = $(this).data('id');
-            $('#userModal').modal('show');
-        });
+    $(document).on("click", ".btn.btn-labeled", function () {
+        var myBookId = $(this).data('id');
+        document.write("Group Role Id : " + myBookId);
+        $(".modal-body #GroupRoleId").val(myBookId);
+        // As pointed out in comments, 
+        // it is unnecessary to have to manually call the modal.
+        // $('#addBookDialog').modal('show');
     });
 </script>
 
