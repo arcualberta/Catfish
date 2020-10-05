@@ -155,7 +155,7 @@ namespace Catfish.Helper
 
         public bool GetEnabledBreadcrumb()
         {
-            return GetValue("SiteConfig:EnabledBreadcrumb", false);
+            return GetValue("SiteConfig:EnableBreadcrumb", false);
         }
 
         public ICatfishAppConfiguration.ePanelLocation GetDefaultSearchPanelLocation()

@@ -144,7 +144,7 @@ namespace Catfish
             services.AddScoped<ICatfishInitializationService, CatfishInitializationService>();
 
             // Solr services
-            var configSection = Configuration.GetSection("SolarConfiguration:solrPageURL");
+            var configSection = Configuration.GetSection("SolarConfiguration:solrCore");
             if (configSection != null && !string.IsNullOrEmpty(configSection.Value))
                 services.AddSolrNet<SolrEntry>(configSection.Value);
 
