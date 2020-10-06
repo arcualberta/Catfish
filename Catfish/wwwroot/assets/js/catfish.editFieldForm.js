@@ -218,7 +218,6 @@ if (document.getElementById("edit-field-form-page")) {
              */
             validateFieldState(fieldIndex, name, secondIndex = null) {
                 if (secondIndex == null) {
-                    console.log("?", this.$v.fields.$each[fieldIndex]); 
                     const { $dirty, $invalid } = this.$v.fields.$each[fieldIndex][name];
                     return $dirty ? !$invalid : null;
                 } else {
@@ -335,6 +334,12 @@ if (document.getElementById("edit-field-form-page")) {
 					}
                 }
 
+                //if all items closed and not adding something new, just return
+                if (shownSectionIndex == null && previousSection == null && nextSection == null
+                    && event.from.id == event.to.id) {
+                    return;
+				}
+
                 //the field id of the sorted section
                 let tmpId = collapsingSections[event.newIndex].id.split('collapse-')[1];
 
@@ -344,8 +349,6 @@ if (document.getElementById("edit-field-form-page")) {
                     $('#' + collapsingSections[event.newIndex].id).collapse('show');
                     this.dropdowns[tmpId].isCollapsed = false;
                     if (shownSectionIndex != null) {
-                        let test = shownSectionIndex == event.newIndex;
-                        $('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
                         this.dropdowns[tmpId].isCollapsed = true;
 					}
                     return;
@@ -357,7 +360,6 @@ if (document.getElementById("edit-field-form-page")) {
                     $('#' + collapsingSections[event.newIndex].id).collapse('show');
                     this.dropdowns[tmpId].isCollapsed = false;
                     if (shownSectionIndex != null) {
-                        $('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
                         this.dropdowns[tmpId].isCollapsed = true;
 					}
                     return;
@@ -367,15 +369,20 @@ if (document.getElementById("edit-field-form-page")) {
                 if (event.oldIndex <= shownSectionIndex && shownSectionIndex <= event.newIndex) {
                     console.log("moved item DOWN over shown");
                     $('#' + previousSection.id).collapse('show');
-                    this.dropdowns[previousSection.id].isCollapsed = false;
+                    let prevId = previousSection.id.split('collapse-')[1];
+                    this.dropdowns[prevId].isCollapsed = false;
 
                     //move item above open item
                 } else if (event.oldIndex >= shownSectionIndex && shownSectionIndex >= event.newIndex) {
                     console.log("moved item UP over shown");
                     $('#' + nextSection.id).collapse('show');
-                    this.dropdowns[nextSection.id].isCollapsed = false;
-                }
-                $('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
+                    let nextId = nextSection.id.split('collapse-')[1];
+                    this.dropdowns[nextId].isCollapsed = false;
+                } else {
+                    //just sorting, does not interfere with the open item
+                    return;
+				}
+
                 this.dropdowns[tmpId].isCollapsed = true;
 			},
 
@@ -442,8 +449,7 @@ if (document.getElementById("edit-field-form-page")) {
             /**
              * Toggles the field to either open or closed.
              * Icon for showing open/closed relies on open/closed state,
-             * hence the necessity for this function. TODO still not working well on fast clicks,
-             * if it can't be fixed then delete this function and just handle in template
+             * hence the necessity for this function.
              * 
              * @param {any} fieldId the field's index to open/close
              */
@@ -647,6 +653,14 @@ if (document.getElementById("edit-field-form-page")) {
                     //for popovers
                     $(document).ready(function () {
                         $('[data-toggle="popover"]').popover();
+                    });
+
+                    //for the accordion, if one panel is triggered to open, close any others
+                    $('#accordion').on('show.bs.collapse', function () {
+                        console.log("called to hide");
+                        let test = $('#accordion .show').length;
+                        console.log(test);
+                        $('#accordion .show').collapse('hide');
                     });
                 });
         }
