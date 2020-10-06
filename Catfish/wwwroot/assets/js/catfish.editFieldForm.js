@@ -335,7 +335,8 @@ if (document.getElementById("edit-field-form-page")) {
                 }
 
                 //if all items closed and not adding something new, just return
-                if (shownSectionIndex == null && previousSection == null && nextSection == null) {
+                if (shownSectionIndex == null && previousSection == null && nextSection == null
+                    && event.from.id == event.to.id) {
                     return;
 				}
 
