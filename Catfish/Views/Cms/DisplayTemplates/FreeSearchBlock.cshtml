@@ -16,34 +16,36 @@
 }
 
 <script>
-    $("#freeSearchBlockForm").submit(function (event) {
+    $(function () {
+        $("#freeSearchBlockForm").submit(function (event) {
 
-        /* stop form from submitting normally */
-        event.preventDefault();
+            /* stop form from submitting normally */
+            event.preventDefault();
 
-        /* get the action attribute from the <form action=""> element */
-        var $form = $(this),
-            url = $form.attr('action');
+            /* get the action attribute from the <form action=""> element */
+            var $form = $(this),
+                url = $form.attr('action');
 
-        /* Send the data using post with element id name and name2*/
-        var posting = $.post(url, {
-            searchTerm: $('#freeSearchBlockTem').val()
-        });
+            /* Send the data using post with element id name and name2*/
+            var posting = $.post(url, {
+                searchTerm: $('#freeSearchBlockTem').val()
+            });
 
-        /* Alerts the results */
-        posting.done(function (data) {
-            //TODO: Check the content of the data to understand it.
-            //Iterate throgh the list of results and add them as new elements to the search-result div
+            /* Alerts the results */
+            posting.done(function (data) {
+                //TODO: Check the content of the data to understand it.
+                //Iterate throgh the list of results and add them as new elements to the search-result div
 
-            var reslutEntries = []; //TODO: assign the list retrieved from data here
-            // for each entry in resultEntries
-            // create a div that contains the entry title and the list of highlighted snippets as shown in
-            //the example. Insert it to the following element.
-            //$('#freeSearchBlockResults')
-        });
+                var reslutEntries = []; //TODO: assign the list retrieved from data here
+                // for each entry in resultEntries
+                // create a div that contains the entry title and the list of highlighted snippets as shown in
+                //the example. Insert it to the following element.
+                //$('#freeSearchBlockResults')
+            });
 
-        posting.fail(function () {
-            alert('The search failed!');
+            posting.fail(function () {
+                alert('The search failed!');
+            });
         });
     });
 </script>
