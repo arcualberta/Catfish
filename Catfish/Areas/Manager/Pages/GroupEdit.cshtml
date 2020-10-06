@@ -113,8 +113,19 @@
                 <span class="title">@Localizer.General["User Privileges"]</span>
             </div>
             @{
-            for (int cnt = 0; cnt < Model.RoleList.Count; ++cnt)
-            {
+
+                var selectedRoles = Model.Users.Select(u => u.GroupRole.Role.Name).Distinct().ToList();
+
+                foreach(var grouName in selectedRoles)
+                {
+
+                }
+
+
+
+
+                for (int cnt = 0; cnt < Model.RoleList.Count; ++cnt)
+                {
                 <div class="card-body">
                     <div class="form-group">
                         <label>@Localizer.General[Model.RoleList[cnt].RoleName]</label>
@@ -134,7 +145,7 @@
                         </ul>
                         @{if (Model.RoleList[cnt].Assigned)
                             {
-                                <button type="button" class="btn btn-labeled btn-primary pull-right" data-toggle="modal" data-target="#userModal" data-id="@Model.Roles[cnt].RoleGroupId">
+                                <button type="button" class="btn btn-labeled btn-primary pull-right" data-toggle="modal" data-target="#userModal" data-id="@Model.Roles[cnt].RoleGroupId" onclick="addUser('@Model.Roles[cnt].RoleGroupId'); return false;">
                                     <span class="btn-label">
                                         <i class="fas fa-plus"></i>
                                     </span>
@@ -187,13 +198,12 @@
     </div>
 </form>
 <script>
-    $(document).on("click", ".btn.btn-labeled", function () {
-        var myBookId = $(this).data('id');
-        document.write("Group Role Id : " + myBookId);
-        $(".modal-body #GroupRoleId").val(myBookId);
-        // As pointed out in comments, 
-        // it is unnecessary to have to manually call the modal.
-        // $('#addBookDialog').modal('show');
-    });
+    function addUser(id) {
+        $(".modal-body #GroupRoleId").val(id);
+            // As pointed out in comments,
+            // it is unnecessary to have to manually call the modal.
+            // $('#addBookDialog').modal('show');
+
+    }
 </script>
 
