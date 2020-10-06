@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Catfish.Models.ViewModels
 {
-    public class GroupRoleAssignmentVM
+    public class GroupTemplateAssignmentVM
     {
-        public Guid RoleId { get; set; }
-        public Guid? RoleGroupId { get; set; }
-        public string RoleName { get; set; }
+        public Guid TemplateId { get; set; }
+        public Guid? TemplateGroupId { get; set; }
+        public string TemplateName { get; set; }
         public bool Assigned { get; set; }
     }
 }

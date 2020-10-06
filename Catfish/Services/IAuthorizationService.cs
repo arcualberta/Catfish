@@ -46,6 +46,5 @@ namespace Catfish.Services
         Group GetGroupDetails(Guid id);
 
         IList<Role> GetGroupRolesDetails();
-        IList<string> GetSelectedGroupRoles(Guid id);
     }
 }

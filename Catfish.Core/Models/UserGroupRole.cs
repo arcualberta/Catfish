@@ -9,6 +9,7 @@ namespace Catfish.Core.Models
     public class UserGroupRole
     {
         public Guid Id { get; set; }
+        public Guid GroupId { get; set; }
         public Guid GroupRoleId { get; set; }
         public GroupRole GroupRole { get; set; }
         public Guid UserId { get; set; }

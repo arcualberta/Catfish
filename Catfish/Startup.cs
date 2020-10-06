@@ -144,7 +144,7 @@ namespace Catfish
             services.AddScoped<ICatfishInitializationService, CatfishInitializationService>();
 
             // Solr services
-            var configSection = Configuration.GetSection("SolarConfiguration:solrPageURL");
+            var configSection = Configuration.GetSection("SolarConfiguration:solrCore");
             if (configSection != null && !string.IsNullOrEmpty(configSection.Value))
                 services.AddSolrNet<SolrEntry>(configSection.Value);
 
@@ -316,6 +316,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/form.js"); 
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/free-search.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point.js");
             //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/bundle.js");
@@ -331,6 +332,7 @@ namespace Catfish
             App.Blocks.Register<ContactFormBlock>();
             App.Blocks.Register<NavigationBlock>();
             App.Blocks.Register<SubmissionEntryPointList>();
+            App.Blocks.Register<FreeSearchBlock>();
             App.Blocks.Register<SubmissionEntryPoint>();
         }
         private static void RegisterCustomStyles()

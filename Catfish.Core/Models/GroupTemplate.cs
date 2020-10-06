@@ -14,4 +14,19 @@ namespace Catfish.Core.Models
         public Guid EntityTemplateId { get; set; }
         public EntityTemplate EntityTemplate { get; set; }
     }
+    public class GroupTemplateComparer : IEqualityComparer<GroupTemplate>
+    {
+        public bool Equals(GroupTemplate x, GroupTemplate y)
+        {
+            if (x.EntityTemplateId == y.EntityTemplateId && x.GroupId == y.GroupId)
+                return true;
+
+            return false;
+        }
+
+        public int GetHashCode(GroupTemplate obj)
+        {
+            return obj.Id.GetHashCode();
+        }
+    }
 }

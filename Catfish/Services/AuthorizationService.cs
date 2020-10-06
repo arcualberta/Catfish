@@ -153,17 +153,6 @@ namespace Catfish.Services
         {
             return _piranhaDb.Roles.Where(r=>r.NormalizedName!="SYSADMIN").OrderBy(r => r.Name).ToList();
         }
-        public IList<string> GetSelectedGroupRoles(Guid id)
-        {
-            IList<string> selectedRoles = null;
-            var selectedRoleId = _appDb.GroupRoles.Where(gr => gr.GroupId == id).Select(gr => gr.RoleId).ToList();
-            var allRoles = _piranhaDb.Roles.Where(r => r.NormalizedName != "SYSADMIN").OrderBy(r => r.Name).ToList();
-            
-            foreach ( var role in selectedRoleId)
-            {
-                var matchingvalues = allRoles.Where(ar => ar.Id.ToString().Contains(role.ToString()));
-            }
-            return selectedRoles;
-        }
+        
     }
 }

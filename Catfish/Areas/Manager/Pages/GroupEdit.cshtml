@@ -1,4 +1,4 @@
-﻿@page "~/manager/groupEdit/{id:Guid}"
+﻿@page "~/manager/groups/edit/{id:Guid?}"
 @model Catfish.Areas.Manager.Pages.GroupModel
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @using Microsoft.AspNetCore.Authorization
@@ -13,8 +13,7 @@
         
     </script>
 }
-@*@using (var form = Html.BeginForm("Save", "Role", FormMethod.Post, new { @class = "form validate", role = "form", novalidate = "" }))
-    {*@
+
 <form id="item-edit-form" class="edit-form" method="post" novalidate>
     @Html.HiddenFor(m => m.Group.Id)
     <div class="top">
@@ -72,6 +71,25 @@
             </div>
             <div class="card-body">
                 <div class="form-group">
+                    <label>@Localizer.General["Templates"]</label>
+                    <ul class="list-group">
+                        @{
+                            for (int cnt = 0; cnt < Model.Templates.Count; ++cnt)
+                            {
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <span class="col-sm-4">
+                                            @Html.EditorFor(model => model.Templates[cnt])
+                                        </span>
+                                    </div>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
                     <label>@Localizer.General["Roles"]</label>
                     <ul class="list-group">
                         @{
@@ -79,17 +97,113 @@
                             {
                                 <li class="list-group-item">
                                     <div class="row">
-                                        <div class="col-sm-4">
+                                        <span class="col-sm-4">
                                             @Html.EditorFor(model => model.Roles[cnt])
-                                        </div>
+                                        </span>
                                     </div>
                                 </li>
                             }
                         }
-                    </ul> 
+                    </ul>
                 </div>
             </div>
         </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="title">@Localizer.General["User Privileges"]</span>
+            </div>
+            @{
+
+                var selectedRoles = Model.Users.Select(u => u.GroupRole.Role.Name).Distinct().ToList();
+
+                foreach(var grouName in selectedRoles)
+                {
+
+                }
+
+
+
+
+                for (int cnt = 0; cnt < Model.RoleList.Count; ++cnt)
+                {
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>@Localizer.General[Model.RoleList[cnt].RoleName]</label>
+                        <ul class="list-group">
+                            @*@{
+                                for (int cnt = 0; cnt < Model.Roles.Count; ++cnt)
+                                {
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <span class="col-sm-4">
+                                                @Html.EditorFor(model => model.Roles[cnt])
+                                            </span>
+                                        </div>
+                                    </li>
+                                }
+                            }*@
+                        </ul>
+                        @{if (Model.RoleList[cnt].Assigned)
+                            {
+                                <button type="button" class="btn btn-labeled btn-primary pull-right" data-toggle="modal" data-target="#userModal" data-id="@Model.Roles[cnt].RoleGroupId" onclick="addUser('@Model.Roles[cnt].RoleGroupId'); return false;">
+                                    <span class="btn-label">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                    @Localizer.General["Add User"]
+                                </button>
+                                <!-- Modal -->
+                                <div id="userModal" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <input type="text" name="GroupRoleId" id="GroupRoleId" value="" />
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        <label>@Localizer.General["Users"]</label>
+                                                        <ul class="list-group">
+                                                            @{
+                                                                for (int userCount = 0; userCount < Model.Users.Count; ++userCount)
+                                                                {
+                                                                    <li class="list-group-item">
+                                                                        <div class="row">
+                                                                            <span class="col-sm-4">
+                                                                                @Html.EditorFor(model => model.Users[userCount])
+                                                                            </span>
+                                                                        </div>
+                                                                    </li>
+                                                                }
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button id="deleteConfirm" type="button" class="btn btn-primary">Save changes</button>
+                                            </div>
+                                            </div>
+
+                                        </div>
+                                </div>   
+                            }
+                          }
+
+                    </div>
+                </div>
+            }
+            }
+        </div>
     </div>
 </form>
-@*}*@
+<script>
+    function addUser(id) {
+        $(".modal-body #GroupRoleId").val(id);
+            // As pointed out in comments,
+            // it is unnecessary to have to manually call the modal.
+            // $('#addBookDialog').modal('show');
+
+    }
+</script>
+
