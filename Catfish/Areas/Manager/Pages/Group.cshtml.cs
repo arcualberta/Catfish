@@ -10,11 +10,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Piranha.AspNetCore.Identity.Data;
 using Piranha.Extend.Fields;
+using Microsoft.EntityFrameworkCore;
 
 namespace Catfish.Areas.Manager.Pages
 {
     public class GroupModel : PageModel
     {
+        private const string NotFound = "Group not found.";
+
         private IAuthorizationService _srv;
         public readonly AppDbContext _appDb;
         public readonly PiranhaDbContext _piranhaDb;
@@ -43,99 +46,101 @@ namespace Catfish.Areas.Manager.Pages
             _appDb = appDb;
             _piranhaDb = pdb;
         }
-        public void OnGet(Guid id)
+        public void OnGet(Guid? id)
         {
-            var group = _appDb.Groups.FirstOrDefault(g => g.Id == id);
-            
-            if (group != null)
-            {
-                Group = group;
-                var users = _piranhaDb.Users.ToList();
-                var roleNames = _srv.GetGroupRolesDetails();
-                var roles = _srv.GetGroupRolesDetails();
-                var groupAdmin = _piranhaDb.Roles.Where(r => r.NormalizedName == "GROUPADMIN").FirstOrDefault();
-                var templates = _appDb.ItemTemplates.ToList();
-                var groupRoles = _appDb.GroupRoles.Where(r => r.GroupId == id).ToList();
-                var groupTemplates = _appDb.GroupTemplates.Where(r => r.GroupId == id).ToList();
-                var userGroupRoles = _appDb.UserGroupRoles.Where(ugr => ugr.GroupId == id).ToList();
-
-                Roles = new List<GroupRoleAssignmentVM>();
-                Templates = new List<GroupTemplateAssignmentVM>();
-                RoleList = new List<GroupRoleAssignmentVM>();
-                Users = new List<GroupRoleUserAssignmentVM>();
-                var groupAdminRole = new GroupRoleAssignmentVM
+            //If the id is given, retrieving the group from the database. Otherwise, creating a new one.
+            if (id.HasValue)
+                Group = _appDb.Groups.FirstOrDefault(g => g.Id == id);
+            else
+                Group = new Group()
                 {
-                    RoleId = groupAdmin.Id,
-                    RoleName = groupAdmin.Name,
-                    Assigned = true
+                    GroupStatus = Group.eGroupStatus.Inactive,
+                    Id = Guid.NewGuid()
                 };
-                RoleList.Add(groupAdminRole);
-                foreach (var role in roles)
-                {
-                    var groupRoleVM = new GroupRoleAssignmentVM
-                    {
-                        RoleId = role.Id,
-                        RoleName = role.Name
-                    };
-                    foreach (var groupRole in groupRoles)
-                    {
-                        if (role.Id == groupRole.RoleId)
-                        {
-                            groupRoleVM.Assigned = true;
-                        }
-                        groupRoleVM.RoleGroupId = groupRole.Id;
-                    }
-                    Roles.Add(groupRoleVM);
-                    //SelectedRoles.Add(Roles.Single(r => r.Id == role.RoleId).Name);
-                }
-                RoleList = Roles.OrderByDescending(r => r.Assigned).ToList();
-                foreach (var template in templates)
-                {
-                    var groupTemplateVM = new GroupTemplateAssignmentVM
-                    {
-                        TemplateId = template.Id,
-                        TemplateName = template.TemplateName
-                    };
-                    foreach (var groupTemplate in groupTemplates)
-                    {
-                        if (template.Id == groupTemplate.EntityTemplateId)
-                        {
-                            groupTemplateVM.Assigned = true;
-                        }
-                        groupTemplateVM.TemplateGroupId = groupTemplate.Id;
-                    }
-                    Templates.Add(groupTemplateVM);
-                    //SelectedRoles.Add(Roles.Single(r => r.Id == role.RoleId).Name);
-                }
 
-                foreach (var user in users)
-                {
-                    var userGroupRolesVM = new GroupRoleUserAssignmentVM
-                    {
-                        UserId = user.Id,
-                        UserName = user.UserName
+            if (Group == null)
+                throw new Exception(NotFound);
 
-                    };
-                    foreach (var userGroupRole in userGroupRoles)
+            //Take all users users, templates and roles 
+            var users = _piranhaDb.Users.ToList();
+            var roles = _srv.GetGroupRolesDetails();
+
+            var groupAdmin = _piranhaDb.Roles.Where(r => r.NormalizedName == "GROUPADMIN").FirstOrDefault();
+            var templates = _appDb.ItemTemplates.ToList();
+            var groupRoles = _appDb.GroupRoles.Where(gr => gr.GroupId == id).ToList();
+            var groupTemplates = _appDb.GroupTemplates.Where(r => r.GroupId == id).ToList();
+            var userGroupRoles = _appDb.UserGroupRoles.Where(ugr => ugr.GroupId == id).ToList();
+
+
+            Roles = new List<GroupRoleAssignmentVM>();
+            Templates = new List<GroupTemplateAssignmentVM>();
+            RoleList = new List<GroupRoleAssignmentVM>();
+            Users = new List<GroupRoleUserAssignmentVM>();
+            var groupAdminRole = new GroupRoleAssignmentVM
+            {
+                RoleId = groupAdmin.Id,
+                RoleName = groupAdmin.Name,
+                Assigned = true
+            };
+            RoleList.Add(groupAdminRole);
+            foreach (var role in roles)
+            {
+                var groupRoleVM = new GroupRoleAssignmentVM
+                {
+                    RoleId = role.Id,
+                    RoleName = role.Name
+                };
+                foreach (var groupRole in groupRoles)
+                {
+                    if (role.Id == groupRole.RoleId)
                     {
-                        if (user.Id == userGroupRole.UserId)
-                        {
-                            userGroupRolesVM.Assigned = true;
-                        }
-                        userGroupRolesVM.RoleGroupId = userGroupRole.GroupRoleId;
-                        userGroupRolesVM.GroupRoleUserId = userGroupRole.Id;
+                        groupRoleVM.Assigned = true;
                     }
-                    Users.Add(userGroupRolesVM);
-                    //SelectedRoles.Add(Roles.Single(r => r.Id == role.RoleId).Name);
+                    groupRoleVM.RoleGroupId = groupRole.Id;
                 }
+                Roles.Add(groupRoleVM);
+                //SelectedRoles.Add(Roles.Single(r => r.Id == role.RoleId).Name);
             }
-            //else 
-            //{
-            //    GroupModel groupModel = new GroupModel();
-            //    groupModel.Create();
-            //}
+            RoleList = Roles.OrderByDescending(r => r.Assigned).ToList();
+            foreach (var template in templates)
+            {
+                var groupTemplateVM = new GroupTemplateAssignmentVM
+                {
+                    TemplateId = template.Id,
+                    TemplateName = template.TemplateName
+                };
+                foreach (var groupTemplate in groupTemplates)
+                {
+                    if (template.Id == groupTemplate.EntityTemplateId)
+                    {
+                        groupTemplateVM.Assigned = true;
+                    }
+                    groupTemplateVM.TemplateGroupId = groupTemplate.Id;
+                }
+                Templates.Add(groupTemplateVM);
+                //SelectedRoles.Add(Roles.Single(r => r.Id == role.RoleId).Name);
+            }
 
+            foreach (var user in users)
+            {
+                var userGroupRolesVM = new GroupRoleUserAssignmentVM
+                {
+                    UserId = user.Id,
+                    UserName = user.UserName
 
+                };
+                foreach (var userGroupRole in userGroupRoles)
+                {
+                    if (user.Id == userGroupRole.UserId)
+                    {
+                        userGroupRolesVM.Assigned = true;
+                    }
+                    userGroupRolesVM.RoleGroupId = userGroupRole.GroupRoleId;
+                    userGroupRolesVM.GroupRoleUserId = userGroupRole.Id;
+                }
+                Users.Add(userGroupRolesVM);
+                //SelectedRoles.Add(Roles.Single(r => r.Id == role.RoleId).Name);
+            }
         }
 
         public IActionResult OnPost()
@@ -146,17 +151,6 @@ namespace Catfish.Areas.Manager.Pages
 
             return RedirectToPage("GroupEdit","Manager", Group.Id);
         }
-        //public GroupModel Create()
-        //{
-        //    var roles = _srv.GetGroupRolesDetails();
-
-        //    return new GroupModel
-        //    {
-        //        Group = new Group(),
-        //        Roles = GetGroupRoleList(),
-        //        Templates = GetGroupTemplateList()
-        //    };
-        //}
 
         public List<GroupRoleAssignmentVM> GetGroupRoleList()
         {
