@@ -218,7 +218,6 @@ if (document.getElementById("edit-field-form-page")) {
              */
             validateFieldState(fieldIndex, name, secondIndex = null) {
                 if (secondIndex == null) {
-                    console.log("?", this.$v.fields.$each[fieldIndex]); 
                     const { $dirty, $invalid } = this.$v.fields.$each[fieldIndex][name];
                     return $dirty ? !$invalid : null;
                 } else {
@@ -335,6 +334,11 @@ if (document.getElementById("edit-field-form-page")) {
 					}
                 }
 
+                //if all items closed and not adding something new, just return
+                if (shownSectionIndex == null && previousSection == null && nextSection == null) {
+                    return;
+				}
+
                 //the field id of the sorted section
                 let tmpId = collapsingSections[event.newIndex].id.split('collapse-')[1];
 
@@ -367,14 +371,20 @@ if (document.getElementById("edit-field-form-page")) {
                 if (event.oldIndex <= shownSectionIndex && shownSectionIndex <= event.newIndex) {
                     console.log("moved item DOWN over shown");
                     $('#' + previousSection.id).collapse('show');
-                    this.dropdowns[previousSection.id].isCollapsed = false;
+                    let prevId = previousSection.id.split('collapse-')[1];
+                    this.dropdowns[prevId].isCollapsed = false;
 
                     //move item above open item
                 } else if (event.oldIndex >= shownSectionIndex && shownSectionIndex >= event.newIndex) {
                     console.log("moved item UP over shown");
                     $('#' + nextSection.id).collapse('show');
-                    this.dropdowns[nextSection.id].isCollapsed = false;
-                }
+                    let nextId = nextSection.id.split('collapse-')[1];
+                    this.dropdowns[nextId].isCollapsed = false;
+                } else {
+                    //just sorting, does not interfere with the open item
+                    return;
+				}
+
                 $('#' + collapsingSections[shownSectionIndex].id).collapse('hide');
                 this.dropdowns[tmpId].isCollapsed = true;
 			},
