@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
+using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.ViewModels;
 using Catfish.Core.Models.Contents.ViewModels.ListEntries;
 using System;
@@ -40,6 +41,40 @@ namespace Catfish.Core.Services.FormBuilder
             return result;
         }
 
+        public List<BaseField> GetFieldDefinitions()
+        {
+            List<BaseField> fields = new List<BaseField>();
+
+            TextField txt = new TextField();
+            txt.SetName("Text Field", "en");
+            txt.SetName("Champ de texte", "fr");
+            txt.SetValue("Text Value", "en");
+            txt.SetValue("Valeur du texte", "fr");
+            fields.Add(txt);
+
+
+            return fields;
+        }
+
+        private MultilingualName CreateName(string priVal, string priLang, string altVal = null, string altLang = null)
+        {
+            MultilingualName obj = new MultilingualName();
+            obj.Values.Add(new Text(priVal, priLang));
+            if (!string.IsNullOrEmpty(altVal))
+                obj.Values.Add(new Text(altVal, altLang));
+
+            return obj;
+        }
+
+        private MultilingualDescription CreateDescriptoin(string priVal, string priLang, string altVal = null, string altLang = null)
+        {
+            MultilingualDescription obj = new MultilingualDescription();
+            obj.Values.Add(new Text(priVal, priLang));
+            if (!string.IsNullOrEmpty(altVal))
+                obj.Values.Add(new Text(altVal, altLang));
+
+            return obj;
+        }
         ////public FieldContainerListVM GetMetadataSets(int offset = 0, int max = 0)
         ////{
         ////    IQueryable<MetadataSet> query = Db.MetadataSets.Skip(offset);

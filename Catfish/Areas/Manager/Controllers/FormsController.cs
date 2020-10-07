@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Catfish.Core.Models.Contents;
+using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.ViewModels;
 using Catfish.Core.Services.FormBuilder;
 using Microsoft.AspNetCore.Http;
@@ -38,6 +39,15 @@ namespace Catfish.Areas.Manager.Controllers
             Form data = _service.Get(id) as Form;
             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
             string jsonString = JsonConvert.SerializeObject(data, settings);
+            return Content(jsonString, "application/json");
+        }
+
+        [Route("fielddefs")]
+        public ActionResult FieldDefs()
+        {
+            List<BaseField> fields = _service.GetFieldDefinitions();
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+            string jsonString = JsonConvert.SerializeObject(fields, settings);
             return Content(jsonString, "application/json");
         }
 
