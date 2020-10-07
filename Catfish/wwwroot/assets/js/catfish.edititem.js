@@ -59,6 +59,7 @@ if (document.getElementById("item-edit-page")) {
                 ],
 
                 metadataSets: [],
+                metadataSets_type: null,
                 metadataSetLabel: "Metadata Sets",
                 //key-value pairs of input types from the database and their associated
                 //input type
@@ -84,7 +85,7 @@ if (document.getElementById("item-edit-page")) {
         computed: {
             itemName: {
                 get: function () {
-                    return this.nameAttribute.values[0].value || "";
+                    return this.nameAttribute.Values.$values[0].Value || "";
 				}
 			}
 		},
@@ -101,9 +102,10 @@ if (document.getElementById("item-edit-page")) {
                         .then(function (result) {
                             self.item = result;
                             console.log("json received:", self.item);
-                            self.nameAttribute = result.name;
-                            self.descriptionAttribute = result.description;
-                            self.metadataSets = result.metadataSets;
+                            self.nameAttribute = result.Name;
+                            self.descriptionAttribute = result.Description;
+                            self.metadataSets = result.MetadataSets.$values;
+                            self.metadataSets_type = result.MetadataSets.$type;
                             self.updateBindings = true;
 
                             //for testing purposes, remove after
@@ -199,8 +201,8 @@ if (document.getElementById("item-edit-page")) {
                                 }
                             });*/
 
-                            self.sections[0].values = self.nameAttribute.values;
-                            self.sections[1].values = self.descriptionAttribute.values;
+                            self.sections[0].values = self.nameAttribute.Values.$values;
+                            self.sections[1].values = self.descriptionAttribute.Values.$values;
 
                             //prepare language labels
                             self.setLanguageLabels(self.sections);
@@ -256,9 +258,13 @@ if (document.getElementById("item-edit-page")) {
                 });
 
                 if (validForm) {
-                    this.item.name = this.nameAttribute;
-                    this.item.description = this.descriptionAttribute;
-                    this.item.metadataSets = this.metadataSets;
+                    this.item.Name = this.nameAttribute;
+                    this.item.Description = this.descriptionAttribute;
+                    this.item.MetadataSets = {
+                        $type: this.metadataSets_type,
+                        $values: this.metadataSets,
+
+                    };
 
                     console.log("item being posted is here:", this.item);
 
@@ -338,13 +344,13 @@ if (document.getElementById("item-edit-page")) {
              */
             addNewEntry(metadataSetId, fieldId) {
 
-                let newEntry = JSON.parse(JSON.stringify(this.metadataSets[metadataSetId].fields[fieldId]));
+                let newEntry = JSON.parse(JSON.stringify(this.metadataSets[metadataSetId].Fields.$values[fieldId]));
 
-                for (let item of newEntry.values) {
-                    item.values[0].value = "";
+                for (let item of newEntry.Values.$values) {
+                    item.Values.$values[0].Value = "";
 				}
 
-                this.metadataSets[metadataSetId].fields.splice(fieldId + 1, 0, newEntry);
+                this.metadataSets[metadataSetId].Fields.$values.splice(fieldId + 1, 0, newEntry);
                 this.setOriginalFields();
 
             },
@@ -390,26 +396,26 @@ if (document.getElementById("item-edit-page")) {
                     this.originalFieldIndexMaster.splice(this.originalFieldIndexMaster.length, 1, {});
                     this.originalFields.splice(this.originalFields, 1, []); 
 
-                    for (let [i, field] of metadataSet.fields.entries()) {
+                    for (let [i, field] of metadataSet.Fields.$values.entries()) {
                         //if field differs from fields in originalFieldIndexMaster,
                         //track as a new field
                         var flattened = Object.keys(this.originalFieldIndexMaster[index]);
 
                         if (this.originalFieldIndexMaster[index].length === 0
-                            || !flattened.some(item => item === field.id) ) {
+                            || !flattened.some(item => item === field.Id) ) {
 
-                            this.$set(this.originalFieldIndexMaster[index], field.id, {
-                                field: field.id,
+                            this.$set(this.originalFieldIndexMaster[index], field.Id, {
+                                field: field.Id,
                                 count: 1,
                                 startingIndex: null
                             });
-                            this.$set(this.originalFieldIndexMaster[index][field.id], 'startingIndex', i);
+                            this.$set(this.originalFieldIndexMaster[index][field.Id], 'startingIndex', i);
                             this.originalFields[index].splice(this.originalFields[index].length, 1, i); 
                         }else {
                             //add to count of whichever is already in the object
                             //this needs to be checked to see if it works
                             var matched = flattened.filter((item, index) => {
-                                if (item === field.id) {
+                                if (item === field.Id) {
                                     return item;
 								}
                             });
@@ -431,7 +437,7 @@ if (document.getElementById("item-edit-page")) {
              * @param {any} fieldId
              */
             deleteField(metadataSetId, fieldId) {
-                this.metadataSets[metadataSetId].fields.splice(fieldId, 1);
+                this.metadataSets[metadataSetId].Fields.$values.splice(fieldId, 1);
                 this.setOriginalFields();
 			}
         },
