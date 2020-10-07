@@ -104,11 +104,17 @@ namespace Catfish.Areas.Manager.Pages
                 Roles.Add(groupRoleVM);
             }
 
-            //var groupAdmin = _piranhaDb.Roles.Where(r => r.NormalizedName == "GROUPADMIN").FirstOrDefault();
+
             Users = _appDb.UserGroupRoles
-                .Include(ugr => ugr.GroupRole.Role)
+                .Include(ugr => ugr.GroupRole)
                 .Where(ugr => ugr.GroupId == id)
                 .ToList();
+
+            //Since Roles are in the Piranha DB Context, they cannot be included when UserGroupRoles are retrieved by
+            //the above statement usin the AppDbContext, we need to assign them for each GroupRole.Role of each user 
+            //as folllows.
+            //foreach (var user in Users)
+            //    user.GroupRole.Role = roles.Where(r => r.Id == user.GroupRole.RoleId).FirstOrDefault();
 
 
             

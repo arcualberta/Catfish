@@ -17,7 +17,10 @@ if (document.getElementById("itemlist-page")) {
                 updateBindings: false,
                 items: [],
                 collections: [],
+                //this is the $type value for Collections
+                collections_type: null,
                 itemTypes: [],
+                itemTypes_type: null,
                 collectionTypes: [],
                 addSiteId: null,
                 addSiteTitle: null,
@@ -48,14 +51,16 @@ if (document.getElementById("itemlist-page")) {
                     fetch(piranha.baseUrl + "manager/api/items")
                         .then(function (response) { return response.json(); })
                         .then(function (result) {
-                            self.collections = result.collections;
-                            self.itemTypes = result.itemTypes;
-                            self.collectionTypes = result.collectionTypes;
+                            self.collections = result.Collections.$values;
+                            self.collections_type = result.Collections.$type;
+                            self.itemTypes = result.ItemTypes.$values;
+                            self.itemTypes_type = result.ItemTypes.$type;
+                            self.collectionTypes = result.CollectionTypes;
                             self.updateBindings = true;
 
                             self.dropdowns = new function () {
                                 for (let collection of self.collections) {
-                                    this[collection.id] = { isCollapsed: false }
+                                    this[collection.Id] = { isCollapsed: false }
                                 }
                             }
 

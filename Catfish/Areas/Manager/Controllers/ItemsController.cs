@@ -5,6 +5,7 @@ using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Core.Services.Solr;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Piranha.Manager.Models;
 using AsyncResult = Piranha.Manager.Models.AsyncResult;
 
@@ -22,17 +23,23 @@ namespace Catfish.Areas.Manager.Controllers
         }
         // GET: api/Items
         [HttpGet]
-        public ItemListVM Get(int offset = 0, int max = 0)
+        public ActionResult Get(int offset = 0, int max = 0)
         {
             ItemListVM vm = _srv.GetItems(offset, max);
-            return vm;
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+            string jsonString = JsonConvert.SerializeObject(vm, settings);
+            return Content(jsonString, "application/json");
         }
 
         // GET: api/Items/5
         [HttpGet("{id}")]
-        public Item Get(Guid id)
+        public ActionResult Get(Guid id)
         {
-            return _srv.GetItem(id);
+            var item = _srv.GetItem(id);
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+            string jsonString = JsonConvert.SerializeObject(item, settings);
+            return Content(jsonString, "application/json");
+            //return Json(vm,, JsonRequestBehavior.AllowGet);
         }
 
         // POST: api/Items
