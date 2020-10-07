@@ -24,7 +24,15 @@ namespace Catfish.Api.Controllers
         public IList<SolrEntry> FreeText(string searchTerm)
         {
             var parameters = new SearchParameters();
+          
+            
+
             parameters.FreeSearch = searchTerm;
+            //parameters.FreeSearch = "aldflajdsfjasd";
+            parameters.FreeSearch = "ponyo";
+
+
+
             IList<SolrEntry> result = QueryService.FreeSearch(parameters);
             return result;
         }
