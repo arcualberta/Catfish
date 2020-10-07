@@ -216,7 +216,9 @@ namespace Catfish.Core.Services
             int numTestCollections = 10;
             int numTestItems = 200;
 
-            List<CollectionTemplate> collectionTemplates = Db.CollectionTemplates.ToList();
+            List<CollectionTemplate> collectionTemplates = Db.CollectionTemplates
+                .Where(t => t.TemplateName == "Doublin Core Collection" || t.TemplateName == "Default Collection")
+                .ToList();
             if (Db.Collections.Count() == 0)
             {
                 for (int i = 0; i < numTestCollections; ++i)
@@ -232,7 +234,9 @@ namespace Catfish.Core.Services
                 Db.SaveChanges();
             }
 
-            List<ItemTemplate> itemTemplates = Db.ItemTemplates.ToList();
+            List<ItemTemplate> itemTemplates = Db.ItemTemplates
+                .Where(t => t.TemplateName == "Doublin Core Item" || t.TemplateName == "Default Item")
+                .ToList();
             List<Collection> collections = Db.Collections.ToList();
             if (Db.Items.Count() == 0)
             {
