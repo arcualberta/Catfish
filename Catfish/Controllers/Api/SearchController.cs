@@ -29,7 +29,7 @@ namespace Catfish.Api.Controllers
 
             parameters.FreeSearch = searchTerm;
             //parameters.FreeSearch = "aldflajdsfjasd";
-            parameters.FreeSearch = "ponyo";
+           // parameters.FreeSearch = "ponyo";
 
 
 
