@@ -40,15 +40,15 @@
                 <div class="sitemap">
                     <ol>
                         <li v-for="(collection, index) in collections">
-                            <div class="sitemap-item" v-bind:key="collection.id">
-                                <a v-on:click="toggleDropdown(collection.id)" class="testme" data-toggle="collapse" :href="['#collapse-' + index ]">
+                            <div class="sitemap-item" v-bind:key="collection.Id">
+                                <a v-on:click="toggleDropdown(collection.Id)" class="testme" data-toggle="collapse" :href="['#collapse-' + index ]">
                                     <div class="handle">
-                                        <i :class="{ 'fas fa-chevron-down': !dropdowns[collection.id].isCollapsed, 'fas fa-chevron-right': dropdowns[collection.id].isCollapsed}"></i>
+                                        <i :class="{ 'fas fa-chevron-down': !dropdowns[collection.Id].isCollapsed, 'fas fa-chevron-right': dropdowns[collection.Id].isCollapsed}"></i>
                                     </div>
                                 </a>
                                 <div class="link">
-                                    <a v-if="piranha.permissions.sites.edit" v-on:click.prevent="piranha.siteedit.open(collection.id, load)" href="#">{{ collection.name.values[0].value }} <small style="display:none">(<code>{{ collection.id + collection.name.values[0].value }}</code>)</small></a>
-                                    <span v-else class="title">{{ collection.name.values[0].value }} <small style="display:none">(<code>{{ collection.id + collection.name.values[0].value }}</code>)</small></span>
+                                    <a v-if="piranha.permissions.sites.edit" v-on:click.prevent="piranha.siteedit.open(collection.Id, load)" href="#">{{ collection.Name.Values.$values[0].Value }} <small style="display:none">(<code>{{ collection.Id + collection.Name.Values.$values[0].Value }}</code>)</small></a>
+                                    <span v-else class="title">{{ collection.Name.Values.$values[0].Value }} <small style="display:none">(<code>{{ collection.Id + collection.Name.Values.$values[0].Value }}</code>)</small></span>
                                 </div>
                                 <div>
                                     <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
@@ -58,25 +58,25 @@
                                             @Localizer.Page["Add item"]
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="pageGroup">
-                                            <a class="dropdown-item" :href="piranha.baseUrl + type.addUrl + collection.id + '/' + type.id" v-for="type in itemTypes">{{ type.typeName }}</a>
+                                            <a class="dropdown-item" :href="piranha.baseUrl + type.AddURL + collection.Id + '/' + type.Id" v-for="type in itemTypes">{{ type.typeName }}</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div :id="['collapse-' + index ]" class="sitemap sitemap-container dd collapse show" data-id="{ collection.id }">
+                            <div :id="['collapse-' + index ]" class="sitemap sitemap-container dd collapse show" data-id="{ collection.Id }">
                                 <ol class="dd-list">
                                     <!-- maybe this can be a partial once you learn about them more? -->
-                                    <li v-for="item in collection.items" class="dd-item expanded">
+                                    <li v-for="item in collection.Items.$values" class="dd-item expanded">
                                         <div class="sitemap-item">
 
                                             <div class="link">
-                                                <a :href="item.id">{{item.name.values[0].value}}</a> <!--@* <a href="@detailsPage">@Model.TypeName</a>*@ -->
+                                                <a :href="item.Id">{{item.Name.Values.$values[0].Value}}</a> <!--@* <a href="@detailsPage">@Model.TypeName</a>*@ -->
 
                                             </div>
 
                                             <div v-if="piranha.permissions.pages.add" class="btn-group" role="group">
 
-                                                <button v-on:click="openEditItem(item.id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
+                                                <button v-on:click="openEditItem(item.Id)" id="pageGroup" type="button" class="btn btn-sm btn-primary btn-labeled">
 
                                                     <i class="fas fa-pen"></i>
                                                     @Localizer.Page["Edit"]
