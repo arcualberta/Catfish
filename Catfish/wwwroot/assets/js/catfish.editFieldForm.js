@@ -325,10 +325,10 @@ if (document.getElementById("edit-field-form-page")) {
                 let previousSection = null;
                 let nextSection = null;
 
-                //track sections above and below current item
+                //track sections above and below current open item
                 for (let i = 0; i < collapsingSections.length; i++) {
                     if (collapsingSections[i].classList.contains('show')) {
-                        shownSectionIndex = i; //collapsingSections[i];
+                        shownSectionIndex = i;
                         previousSection = (i - 1 >= 0) ? collapsingSections[i - 1] : null;
                         nextSection = (i + 1 < collapsingSections.length) ? collapsingSections[i + 1] : null;
 					}
@@ -367,6 +367,12 @@ if (document.getElementById("edit-field-form-page")) {
 
                 //move show class to the index below open item
                 if (event.oldIndex <= shownSectionIndex && shownSectionIndex <= event.newIndex) {
+
+                    //test suppressing animation - not sure if it will work, cant 
+                    //remove .collapsing bc it's not applied until the collapse call is made
+                    //previousSection.addClass('suppress-collapsing-animation');
+                    //$('#' + previousSection.id).css({ "transition": "none", "display": "none"}); doesnt work, must override
+
                     console.log("moved item DOWN over shown");
                     $('#' + previousSection.id).collapse('show');
                     let prevId = previousSection.id.split('collapse-')[1];
