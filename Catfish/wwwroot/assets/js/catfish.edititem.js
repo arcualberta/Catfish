@@ -258,9 +258,13 @@ if (document.getElementById("item-edit-page")) {
                 });
 
                 if (validForm) {
-                    this.item.name = this.nameAttribute;
-                    this.item.description = this.descriptionAttribute;
-                    this.item.metadataSets = this.metadataSets;
+                    this.item.Name = this.nameAttribute;
+                    this.item.Description = this.descriptionAttribute;
+                    this.item.MetadataSets = {
+                        $type: this.metadataSets_type,
+                        $values: this.metadataSets,
+
+                    };
 
                     console.log("item being posted is here:", this.item);
 
