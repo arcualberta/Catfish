@@ -45,36 +45,27 @@ namespace Catfish.Core.Services.FormBuilder
         {
             List<BaseField> fields = new List<BaseField>();
 
-            TextField txt = new TextField();
-            txt.SetName("Text Field", "en");
-            txt.SetName("Champ de texte", "fr");
-            txt.SetValue("Text Value", "en");
-            txt.SetValue("Valeur du texte", "fr");
-            fields.Add(txt);
+            TextField txtField = new TextField();
+            txtField.SetName("Enter field name", "en");
+            txtField.SetName("Entrez le nom du champ", "fr");
+            txtField.SetDescription("Enter field description", "en");
+            txtField.SetDescription("Entrez la description du champ", "fr");
+            txtField.SetValue("Enter default field value, if necessary", "en");
+            txtField.SetValue("Entrez la valeur de champ par défaut, si nécessaire", "fr");
+            fields.Add(txtField);
 
+            TextArea textArea = new TextArea();
+            textArea.SetName("Enter field name", "en");
+            textArea.SetName("Entrez le nom du champ", "fr");
+            textArea.SetDescription("Enter field description", "en");
+            textArea.SetDescription("Entrez la description du champ", "fr");
+            textArea.SetValue("Enter default field value, if necessary", "en");
+            textArea.SetValue("Entrez la valeur de champ par défaut, si nécessaire", "fr");
+            fields.Add(textArea);
 
             return fields;
         }
 
-        private MultilingualName CreateName(string priVal, string priLang, string altVal = null, string altLang = null)
-        {
-            MultilingualName obj = new MultilingualName();
-            obj.Values.Add(new Text(priVal, priLang));
-            if (!string.IsNullOrEmpty(altVal))
-                obj.Values.Add(new Text(altVal, altLang));
-
-            return obj;
-        }
-
-        private MultilingualDescription CreateDescriptoin(string priVal, string priLang, string altVal = null, string altLang = null)
-        {
-            MultilingualDescription obj = new MultilingualDescription();
-            obj.Values.Add(new Text(priVal, priLang));
-            if (!string.IsNullOrEmpty(altVal))
-                obj.Values.Add(new Text(altVal, altLang));
-
-            return obj;
-        }
         ////public FieldContainerListVM GetMetadataSets(int offset = 0, int max = 0)
         ////{
         ////    IQueryable<MetadataSet> query = Db.MetadataSets.Skip(offset);
