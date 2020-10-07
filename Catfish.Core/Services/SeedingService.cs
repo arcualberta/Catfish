@@ -173,8 +173,20 @@ namespace Catfish.Core.Services
             return et;
         }
 
-        public void SeedDefaults(bool createSampleData)
+        public void SeedDefaults(bool deleteExistingEntities)
         {
+            if (deleteExistingEntities)
+            {
+                var items = Db.Items.ToList();
+                foreach (var item in items)
+                    Db.Items.Remove(item);
+
+                var current_collections = Db.Collections.ToList();
+                foreach (var collection in current_collections)
+                    Db.Collections.Remove(collection);
+
+                Db.SaveChanges();
+            }
             DbEntityService entityService = new DbEntityService(Db);
 
             EntityTemplate template;
