@@ -1,0 +1,15 @@
+﻿@model Catfish.Core.Models.Contents.Data.DataItem;
+
+<h2>@Html.DisplayFor(model => model.Name, Model.Name.GetType().ToString())</h2>
+<p>@Html.DisplayFor(model => model.Description, Model.Description.GetType().ToString())</p>
+
+<div class="container">
+    @foreach (var field in Model.Fields)
+    {
+        var templateName = field.GetType().ToString();
+        <div class="row">
+            @Html.DisplayFor(model => field, field.GetType().ToString())
+        </div>
+
+    }
+</div>

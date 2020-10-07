@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
@@ -8,7 +9,7 @@ namespace Catfish.Core.Models.Contents.Fields
     public class OptionsField : BaseField
     {
         public static readonly string OptionContainerTag = "options";
-        public static readonly string OptionTag = "options";
+        public static readonly string OptionTag = "option";
         public OptionsField() { }
         public OptionsField(XElement data) : base(data) { }
         public OptionsField(string name, string desc, string lang = null) : base(name, desc, lang) { }
@@ -20,8 +21,7 @@ namespace Catfish.Core.Models.Contents.Fields
             base.Initialize(guidOption);
 
             //Building the values
-            XmlModel xml = new XmlModel(Data);
-            Options = new XmlModelList<Option>(xml.GetElement(OptionContainerTag, true), true, OptionTag);
+            Options = new XmlModelList<Option>(GetElement(OptionContainerTag, true), true, OptionTag);
         }
 
         ////public Option SetOptionText(string optionText, string lang, Guid? optionId = null, bool? selectByDefault = null)
@@ -59,5 +59,18 @@ namespace Catfish.Core.Models.Contents.Fields
             }
         }
 
+        public override void UpdateValues(BaseField srcField)
+        {
+            OptionsField src = srcField as OptionsField;
+            if (src == null)
+                throw new Exception("The source field is null or is not an OptionsField");
+
+            foreach (var dstOption in Options)
+            {
+                var srcOption = src.Options.Where(opt => opt.Id == dstOption.Id).FirstOrDefault();
+                if (srcOption != null)
+                    dstOption.Selected = srcOption.Selected;
+            }
+        }
     }
 }

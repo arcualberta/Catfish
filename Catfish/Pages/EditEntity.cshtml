@@ -1,0 +1,24 @@
+﻿@page "~/entity/edit/{id:Guid}"
+@model Catfish.Pages.EntityEditPageModel
+
+@section head
+{
+    <script type="text/javascript" src="@Url.Content("~/assets/js/form.js")"></script>
+}
+
+@{
+    ViewData["Title"] = "EditDataItem";
+}
+
+<h1>Edit Data Item</h1>
+<h3>@Model.Item.Name.GetConcatenatedContent("")</h3>
+
+
+<form method="post">
+    <div class="container">
+        @Html.EditorFor(model => model.Item, Model.Item.GetType().ToString())
+
+        <input name="Save" type="submit" value="Save" />
+        <input name="Subit" type="submit" value="Submit" />
+    </div>
+</form>

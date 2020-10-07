@@ -15,7 +15,7 @@ namespace Catfish.Areas.Manager.Controllers
     public class ItemsController : ControllerBase
     {
         private ItemService _srv;
-        private ISolrIndexService<SolrItemModel> solrIndexService;
+        private ISolrIndexService<SolrEntry> solrIndexService;
         public ItemsController(ItemService srv)
         {
             _srv = srv;

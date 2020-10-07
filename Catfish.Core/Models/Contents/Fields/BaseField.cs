@@ -1,21 +1,21 @@
 ﻿using Catfish.Core.Helpers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public abstract class BaseField : XmlModel
+    public class BaseField : XmlModel
     {
         public const string FieldTagName = "field";
-
-        public Guid Id
+        public virtual void UpdateValues(BaseField srcField) 
         {
-            get => Guid.Parse(Data.Attribute("id").Value);
-            set => Data.SetAttributeValue("id", value);
+            throw new Exception("This method must be overridden by sub classes");
         }
+
         public bool Required
         {
             get => GetAttribute("required", false); 
@@ -28,10 +28,10 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("multiple", value);
         }
 
+        public MultilingualName Name { get; protected set; }
 
-        public MultilingualText Name { get; protected set; }
-        public MultilingualText Description { get; protected set; }
-
+        public MultilingualDescription Description { get; protected set; }
+       
         public BaseField() : base(FieldTagName) { }
         public BaseField(XElement data) : base(data) { }
 
@@ -50,8 +50,8 @@ namespace Catfish.Core.Models.Contents.Fields
             //Ensuring that each field has a unique ID
             base.Initialize(guidOption == eGuidOption.Ignore ? eGuidOption.Ensure : guidOption);
 
-            Name = new MultilingualText(GetElement(Entity.NameTag, true));
-            Description = new MultilingualText(GetElement(Entity.DescriptionTag, true));
+            Name = new MultilingualName(GetElement(MultilingualName.TagName, true));
+            Description = new MultilingualDescription(GetElement(MultilingualDescription.TagName, true));
         }
 
         public string GetName(string lang)

@@ -1,0 +1,9 @@
+﻿@model Catfish.Core.Models.Contents.Fields.DateField
+
+<div class="control">@Html.DisplayFor(model => model.Name, Model.Name.GetType().ToString())</div>
+
+<div class="multilingual-input-block">
+    @{
+        @Model.Values.Select(sd => sd.DateValue).FirstOrDefault()
+    }
+</div>

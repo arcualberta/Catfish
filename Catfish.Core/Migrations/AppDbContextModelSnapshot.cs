@@ -19,6 +19,29 @@ namespace Catfish.Core.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Catfish.Core.Models.Contents.Form", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("xml");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FormName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Updated")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Catfish_Forms");
+                });
+
             modelBuilder.Entity("Catfish.Core.Models.Entity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -39,9 +62,6 @@ namespace Catfish.Core.Migrations
                         .HasColumnName("PrimaryCollectionId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("Updated")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PrimaryCollectionId");
@@ -49,6 +69,63 @@ namespace Catfish.Core.Migrations
                     b.ToTable("Catfish_Entities");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Entity");
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.Group", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("GroupStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Catfish_Groups");
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.GroupRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("Catfish_GroupRoles");
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.GroupTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EntityTemplateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityTemplateId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("Catfish_GroupTemplates");
                 });
 
             modelBuilder.Entity("Catfish.Core.Models.Relationship", b =>
@@ -67,6 +144,49 @@ namespace Catfish.Core.Migrations
                     b.HasIndex("ObjctId");
 
                     b.ToTable("Catfish_Relationships");
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.SystemPage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<Guid>("PageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PageKey")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("SiteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Catfish_SystemPages");
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.UserGroupRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GroupRoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupRoleId");
+
+                    b.ToTable("Catfish_UserGroupRoles");
                 });
 
             modelBuilder.Entity("Catfish.Core.Models.Collection", b =>
@@ -127,6 +247,30 @@ namespace Catfish.Core.Migrations
                         .HasForeignKey("PrimaryCollectionId");
                 });
 
+            modelBuilder.Entity("Catfish.Core.Models.GroupRole", b =>
+                {
+                    b.HasOne("Catfish.Core.Models.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.GroupTemplate", b =>
+                {
+                    b.HasOne("Catfish.Core.Models.EntityTemplate", "EntityTemplate")
+                        .WithMany()
+                        .HasForeignKey("EntityTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Catfish.Core.Models.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Catfish.Core.Models.Relationship", b =>
                 {
                     b.HasOne("Catfish.Core.Models.Entity", "Objct")
@@ -139,6 +283,15 @@ namespace Catfish.Core.Migrations
                         .WithMany("SubjectRelationships")
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Catfish.Core.Models.UserGroupRole", b =>
+                {
+                    b.HasOne("Catfish.Core.Models.GroupRole", "GroupRole")
+                        .WithMany()
+                        .HasForeignKey("GroupRoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

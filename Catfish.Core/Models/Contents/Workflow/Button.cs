@@ -7,10 +7,28 @@ namespace Catfish.Core.Models.Contents.Workflow
 {
     public class Button : XmlModel
     {
-        public string Text { get; set; }
-        public string Return { get; set; }
+        public static readonly string TagName = "button";
+        public static readonly string TextAtt = "text";
+        public static readonly string ReturnAtt = "return";
+        public string Text
+        {
+            get => GetAttribute("text", null as string);
+            set => SetAttribute("text", value);
+        }
+
+        public string Return
+        {
+            get => GetAttribute("return", null as string);
+            set => SetAttribute("return", value);
+        }
+        
         public Button(XElement data)
             : base(data)
+        {
+
+        }
+        public Button()
+            : base(new XElement(TagName))
         {
 
         }

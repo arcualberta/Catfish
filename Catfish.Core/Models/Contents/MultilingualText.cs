@@ -10,11 +10,17 @@ namespace Catfish.Core.Models.Contents
 {
     public class MultilingualText : XmlModel
     {
+        public Guid Id
+        {
+            get => Guid.Parse(Data.Attribute("id").Value);
+            set => Data.SetAttributeValue("id", value);
+        }
+
         public XmlModelList<Text> Values { get; protected set; }
 
-        public MultilingualText(string tagName) : base(tagName) { }
+        public MultilingualText(string tagName) : base(tagName) { Initialize(eGuidOption.Ensure); }
 
-        public MultilingualText(XElement data) : base(data) { }
+        public MultilingualText(XElement data) : base(data) { Initialize(eGuidOption.Ensure); }
 
         public override void Initialize(eGuidOption guidOption)
         {
@@ -55,5 +61,13 @@ namespace Catfish.Core.Models.Contents
             return string.Join(separator, selected);
         }
 
+        public void UpdateValues(MultilingualValue srcValue)
+        {
+            foreach(var txt in Values)
+            {
+                var srcTxt = srcValue.Values.Where(t => t.Id == txt.Id).FirstOrDefault();
+                txt.Value = srcTxt.Value;
+            }
+        }
     }
 }

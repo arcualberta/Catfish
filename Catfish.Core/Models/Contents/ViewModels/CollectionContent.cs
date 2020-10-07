@@ -8,14 +8,14 @@ namespace Catfish.Core.Models.Contents.ViewModels
     {
         public Guid? Id { get; set; }
         public MultilingualText Name { get; set; }
-        public MultilingualText Description { get; set; }
+        public MultilingualDescription Description { get; set; }
 
         public List<EntityListEntry> Items { get; set; } = new List<EntityListEntry>();
         public List<EntityListEntry> Collections { get; set; } = new List<EntityListEntry>();
         public CollectionContent()
         {
-            Name = new MultilingualText(Entity.NameTag);
-            Description = new MultilingualText(Entity.DescriptionTag);
+            Name = new MultilingualName();
+            Description = new MultilingualDescription();
         }
 
         public CollectionContent(Collection src)

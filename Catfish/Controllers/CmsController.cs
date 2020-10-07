@@ -1,8 +1,11 @@
 ﻿using Catfish.Helper;
 using Catfish.Models;
+using Catfish.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Piranha;
 using Piranha.AspNetCore.Services;
+using Piranha.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -13,19 +16,19 @@ namespace Catfish.Controllers
         private readonly IApi _api;
         private readonly IModelLoader _loader;
         private readonly IDb _db;
-        //private readonly IEmail _email;
+        private readonly IEmailService _email;
       
 
         /// <summary>
         /// Default constructor.
         /// </summary>
         /// <param name="api">The current api</param>
-        public CmsController(IApi api,IDb db,  IModelLoader loader/*, IEmail email*/)
+        public CmsController(IApi api,IDb db,  IModelLoader loader, IEmailService email, IHttpContextAccessor httpContextAccessor)
         {
             _api = api;
             _loader = loader;
             _db = db;
-            //_email = email;
+            _email = email;
         }
 
         /// <summary>
@@ -42,9 +45,11 @@ namespace Catfish.Controllers
         public async Task<IActionResult> Archive(Guid id, int? year = null, int? month = null, int? page = null,
             Guid? category = null, Guid? tag = null, bool draft = false)
         {
-           // var model = await _loader.GetPage<BlogArchive>(id, HttpContext.User, draft);
-            var model = await _api.Pages.GetByIdAsync<Models.BlogArchive>(id);
-            model.Archive = await _api.Archives.GetByIdAsync(id, page, category, tag, year, month);
+            // var model = await _api.Pages.GetByIdAsync<Models.BlogArchive>(id);   
+            //model.Archive = await _api.Archives.GetByIdAsync(id, page, category, tag, year, month);
+
+            var model = await _loader.GetPageAsync<StandardArchive>(id, HttpContext.User, draft);
+            model.Archive = await _api.Archives.GetByIdAsync<PostInfo>(id, page, category, tag, year, month);
 
             return View(model);
         }
@@ -78,10 +83,24 @@ namespace Catfish.Controllers
         [Route("post")]
         public async Task<IActionResult> Post(Guid id, bool draft = false)
         {
-           // var model = await _loader.GetPost<BlogPost>(id, HttpContext.User, draft);
-            var model = await _loader.GetPostAsync<Models.BlogPost>(id, HttpContext.User, draft);
+            //// var model = await _loader.GetPost<BlogPost>(id, HttpContext.User, draft);
+            // var model = await _loader.GetPostAsync<Models.BlogPost>(id, HttpContext.User, draft);
 
-            return View(model);
+            // return View(model);
+            try
+            {
+                var model = await _loader.GetPostAsync<StandardPost>(id, HttpContext.User, draft);
+
+                if (model.IsCommentsOpen)
+                {
+                    model.Comments = await _api.Posts.GetAllCommentsAsync(model.Id, true);
+                }
+                return View(model);
+            }
+            catch
+            {
+                return Unauthorized();
+            }
         }
 
         /// <summary>
@@ -102,20 +121,20 @@ namespace Catfish.Controllers
         /// </summary>
         /// <param name="id">The unique page id</param>
         /// <param name="draft">If a draft is requested</param>
-        [Route("main")]
-        public async Task<IActionResult> Main(Guid id, bool draft = false)
-        {
-            try
-            {
-                var model = await _loader.GetPageAsync<MainPage>(id, HttpContext.User, draft);
+        //[Route("main")]
+        //public async Task<IActionResult> Main(Guid id, bool draft = false)
+        //{
+        //    try
+        //    {
+        //        var model = await _loader.GetPageAsync<MainPage>(id, HttpContext.User, draft);
 
-                return View(model);
-            }
-            catch(UnauthorizedAccessException ex)
-            {
-                return StatusCode(401);//401 --UnAuthorized
-            }
-        }
+        //        return View(model);
+        //    }
+        //    catch(UnauthorizedAccessException ex)
+        //    {
+        //        return StatusCode(401);//401 --UnAuthorized
+        //    }
+        //}
 
         [Route("mediapage")]
         public async Task<IActionResult> MediaPage(Guid id, bool draft = false)
@@ -139,18 +158,51 @@ namespace Catfish.Controllers
         //    return View(model);
         //}
 
-        //public JsonResult SendEmail(Email email)
-        //{
-        //    try
-        //    {
-        //        _email.SendEmail(email);
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        throw;
-        //    }
+        public JsonResult SendEmail(Email email)
+        {
+            try
+            {
+                _email.SendEmail(email);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
 
-        //    return Json(true);
-        //}
+            return Json(true);
+        }
+
+        /// <summary>
+        /// Saves the given comment and then redirects to the post.
+        /// </summary>
+        /// <param name="id">The unique post id</param>
+        /// <param name="commentModel">The comment model</param>
+        [HttpPost]
+        [Route("post/comment")]
+        public async Task<IActionResult> SavePostComment(SaveCommentModel commentModel)
+        {
+            try
+            {
+                var model = await _loader.GetPostAsync<StandardPost>(commentModel.Id, HttpContext.User);
+
+                // Create the comment
+                //var comment = new Comment
+                //{
+                //    IpAddress = Request.HttpContext.Connection.RemoteIpAddress.ToString(),
+                //    UserAgent = Request.Headers.ContainsKey("User-Agent") ? Request.Headers["User-Agent"].ToString() : "",
+                //    Author = commentModel.CommentAuthor,
+                //    Email = commentModel.CommentEmail,
+                //    Url = commentModel.CommentUrl,
+                //    Body = commentModel.CommentBody
+                //};
+                //await _api.Posts.SaveCommentAndVerifyAsync(commentModel.Id, comment);
+
+                return Redirect(model.Permalink + "#comments");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace Catfish.Core.Models.Contents.Fields
     {
         public const string FieldTagName = "option";
 
-        public MultilingualText OptionText { get; set; }
+        public MultilingualName OptionText { get; set; }
         public Guid Id
         {
             get => Guid.Parse(Data.Attribute("id").Value);
@@ -29,7 +29,7 @@ namespace Catfish.Core.Models.Contents.Fields
             //Ensuring that each field has a unique ID
             base.Initialize(guidOption == eGuidOption.Ignore ? eGuidOption.Ensure : guidOption);
 
-            OptionText = new MultilingualText(GetElement(Entity.NameTag, true));
+            OptionText = new MultilingualName(GetElement(MultilingualName.TagName, true));
         }
 
         public void SetOptionText(string text, string lang)

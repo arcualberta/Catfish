@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Models.Contents.Fields;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
@@ -10,30 +11,43 @@ namespace Catfish.Core.Models.Contents
     public class FieldContainer : XmlModel
     {
         public const string FieldContainerTag = "fields";
-        public Guid Id
-        {
-            get => Guid.Parse(Data.Attribute("id").Value);
-            set => Data.SetAttributeValue("id", value);
-        }
-        public MultilingualText Name { get; protected set; }
-        public MultilingualText Description { get; protected set; }
-        public XmlModelList<BaseField> Fields { get; protected set; }
+     
+        [NotMapped]
+        public MultilingualName Name { get; protected set; }
+      
+        [NotMapped]
+        public MultilingualDescription Description { get; protected set; }
+        
+        [NotMapped]
+        public FieldList Fields { get; protected set; }
 
-        public FieldContainer(string tagName) : base(tagName) { Initialize(eGuidOption.Ignore); }
-        public FieldContainer(XElement data) : base(data) { Initialize(eGuidOption.Ignore); }
+        public FieldContainer(string tagName) : base(tagName) 
+        { 
+            Initialize(eGuidOption.Ignore); 
+            Created = DateTime.Now; 
+        }
+        public FieldContainer(XElement data) : base(data) 
+        {
+            Initialize(eGuidOption.Ignore); 
+        }
         public override void Initialize(eGuidOption guidOption)
         {
             base.Initialize(guidOption);
 
-            Name = new MultilingualText(GetElement(Entity.NameTag, true));
-            Description = new MultilingualText(GetElement(Entity.DescriptionTag, true));
-            Fields = new XmlModelList<BaseField>(GetElement(FieldContainerTag, true), true, BaseField.FieldTagName);
+            Name = new MultilingualName(GetElement(MultilingualName.TagName, true));
+            Description = new MultilingualDescription(GetElement(MultilingualDescription.TagName, true));
+            Fields = new FieldList(GetElement(FieldContainerTag, true));
         }
 
         public string GetName(string lang)
         {
-            Text val = Name.Values.Where(val => val.Language == lang).FirstOrDefault();
-            return val != null ? val.Value : null;
+            if (string.IsNullOrEmpty(lang))
+                return string.Join(" + ", Name.Values.Where(val => val.Value != null).Select(val => val.Value));
+            else
+            {
+                Text val = Name.Values.Where(val => val.Language == lang).FirstOrDefault();
+                return val != null ? val.Value : null;
+            }
         }
 
         public void SetName(string containerName, string lang)
@@ -92,7 +106,7 @@ namespace Catfish.Core.Models.Contents
 
 
         public T CreateField<T>(string fieldName, string lang, bool? isRequired = null, bool? allowMultiple = null, object defaultValue = null)
-            where T : MonolingualTextFIeld
+            where T : MonolingualTextField
         {
             T field = Activator.CreateInstance(typeof(T)) as T;
 
@@ -209,5 +223,24 @@ namespace Catfish.Core.Models.Contents
             return field;
         }
 
+        public void UpdateFieldValues(FieldContainer dataSrc)
+        {
+            foreach(var dst in Fields)
+            {
+                var srcField = dataSrc.Fields.Where(f => f.Id == dst.Id).FirstOrDefault();
+                if (srcField != null)
+                    dst.UpdateValues(srcField);
+            }
+        }
+
+        public BaseField GetFieldByName(string fieldName, string lang)
+        {
+            foreach (var field in Fields)
+            {
+                if (field.Name.Values.Where(v => v.Language == lang && v.Value == fieldName) != null)
+                    return field;
+            }
+            return null;
+        }
     }
 }

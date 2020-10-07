@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
@@ -15,15 +16,13 @@ namespace Catfish.Core.Models
     public class Entity
     {
         public static readonly string Tag = "entity";
-        public static readonly string NameTag = "name";
-        public static readonly string DescriptionTag = "description";
         public static readonly string MetadataSetsRootTag = "metadata-sets";
         public static readonly string DataContainerRootTag = "data-container";
 
         [Key]
         public Guid Id
         {
-            get => Guid.Parse(Data.Attribute("id").Value);
+            get =>Guid.Parse(Data.Attribute("id").Value);
             set => Data.SetAttributeValue("id", value);
         }
 
@@ -80,9 +79,9 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        public MultilingualText Name { get; protected set; }
+        public MultilingualName Name { get; protected set; }
         [NotMapped]
-        public MultilingualText Description { get; protected set; }
+        public MultilingualDescription Description { get; protected set; }
 
         [NotMapped]
         public XmlModelList<MetadataSet> MetadataSets { get; protected set; }
@@ -141,8 +140,8 @@ namespace Catfish.Core.Models
 
             //Unlike in the cases of xml-attribute-based properties, the Name and Descrition
             //properties must be initialized every time the model is initialized. 
-            Name = new MultilingualText(XmlHelper.GetElement(Data, Entity.NameTag, true));
-            Description = new MultilingualText(XmlHelper.GetElement(Data, Entity.DescriptionTag, true));
+            Name = new MultilingualName(XmlHelper.GetElement(Data, MultilingualName.TagName, true));
+            Description = new MultilingualDescription(XmlHelper.GetElement(Data, MultilingualDescription.TagName, true));
 
             //Wrapping the XElement "Data" in an XmlModel wrapper so that it can be used by the
             //rest of this initialization routine.
@@ -162,5 +161,58 @@ namespace Catfish.Core.Models
             return vm;
         }
 
+        public void ReplaceMetadataSetContainer(XElement newMetadataSetContainer, bool populateChildren = false)
+        {
+            XmlModel xml = new XmlModel(Data);
+            xml.ReplaceOrInsert(newMetadataSetContainer);
+
+            if (populateChildren)
+                MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement(MetadataSetsRootTag, true), true);
+        }
+
+        public void ReplaceDataSetContainer(XElement newDataSetContainer, bool populateChildren = false)
+        {
+            XmlModel xml = new XmlModel(Data);
+            xml.ReplaceOrInsert(newDataSetContainer);
+
+            if (populateChildren)
+                DataContainer = new XmlModelList<DataItem>(xml.GetElement(DataContainerRootTag, true), true);
+        }
+
+        public DataItem GetDataItem(string dataItemName, bool createIfNotExists, string nameLang = "en")
+        {
+            DataItem dataItem = this.DataContainer
+                .Where(di => di.GetName(nameLang) == dataItemName)
+                .FirstOrDefault();
+
+            if (dataItem == null && createIfNotExists)
+            {
+                dataItem = new DataItem();
+                dataItem.SetName(dataItemName, nameLang);
+                DataContainer.Add(dataItem);
+            }
+            return dataItem;
+        }
+
+        public DataItem GetDataItem(Guid dataItemId)
+        {
+            return DataContainer
+                .Where(di => di.Id == dataItemId)
+                .FirstOrDefault();
+        }
+
+        public DataItem GetRootDataItem(bool createIfNotExists)
+        {
+            DataItem dataItem = this.DataContainer
+                .Where(di => di.IsRoot)
+                .FirstOrDefault();
+
+            if (dataItem == null && createIfNotExists)
+            {
+                dataItem = new DataItem() { IsRoot = true };
+                DataContainer.Add(dataItem);
+            }
+            return dataItem;
+        }
     }
 }

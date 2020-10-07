@@ -7,6 +7,7 @@ using SolrNet.Mapping.Validation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Linq;
 using System.Text;
 
@@ -14,11 +15,11 @@ namespace Catfish.Core.Services.Solr
 {
     public class QueryService : IQueryService
     {
-        private readonly ISolrReadOnlyOperations<SolrItemModel> _solr;
+        private readonly ISolrReadOnlyOperations<SolrEntry> _solrPageQuery;
         private readonly AppDbContext _db;
-        public QueryService(ISolrReadOnlyOperations<SolrItemModel> qrv, AppDbContext db)
+        public QueryService(ISolrReadOnlyOperations<SolrEntry> query, AppDbContext db)
         {
-            _solr = qrv;
+            _solrPageQuery = query;
             _db = db;
         }
 
@@ -41,58 +42,150 @@ namespace Catfish.Core.Services.Solr
             return new SolrMultipleCriteriaQuery(queryList, "OR");
         }
 
-        public SolrQueryResults<SolrItemModel> Search(SearchParameters parameters)
-        {
+        ////public SolrQueryResults<SolrItemModel> Search(SearchParameters parameters)
+        ////{
 
-            var solrQueryResults = _solr.Query(SolrQuery.All, new QueryOptions
+        ////    var solrQueryResults = _solrItemQuery.Query(SolrQuery.All, new QueryOptions
+        ////    {
+        ////        FilterQueries = new Collection<ISolrQuery> { Query.Field("content").Is(parameters.FreeSearch) },
+        ////        Rows = parameters.PageSize,
+        ////        Start = parameters.PageIndex,
+        ////        //OrderBy = new Collection<SortOrder> { SortOrder.Parse("entityGuid asc") },
+        ////        //Facet = new FacetParameters
+        ////        //{
+        ////        //    Queries = new Collection<ISolrFacetQuery> { new SolrFacetFieldQuery("entityGuid") { MinCount = 1 } }
+        ////        //}
+        ////    });
+        ////    return solrQueryResults;
+        ////}
+        ////public SolrQueryResults<SolrItemModel> Results(SearchParameters parameters)
+        ////{
+        ////    //QueryOptions query_options = new QueryOptions
+        ////    //{
+        ////    //    Rows = 10,
+        ////    //    StartOrCursor = new StartOrCursor.Start(0),
+        ////    //    FilterQueries = new ISolrQuery[] {
+        ////    //    new SolrQueryByField("content","provides"),
+        ////    //    }
+        ////    //};
+        ////    //// Construct the query
+        ////    //SolrQuery query = new SolrQuery("provides");
+        ////    //// Run a basic keyword search, filtering for questions only
+        ////    //var posts = _solr.Query(query, query_options);
+        ////    //SolrQueryResults<SolrItemModel> data = new SolrQueryResults<SolrItemModel>();
+        ////    //foreach (var item in posts)
+        ////    //{
+        ////    //    data.Add(item);
+        ////    //}
+
+        ////    //var q = new SolrQuery("content:" + parameters.FreeSearch);
+
+        ////    //var res = _solr.Query(new SolrQuery("content:" + parameters.FreeSearch));
+
+        ////    SolrQueryResults<SolrItemModel> products2 = _solrItemQuery.Query(new SolrQuery("content:" + parameters.FreeSearch));
+
+        ////    return products2;
+        ////}
+
+        ////public IList<Entity> GetEntities(SearchParameters parameters)
+        ////{
+        ////    SolrQueryResults<SolrItemModel> result = Results(parameters);
+        ////    var result_ids = result.Select(s => s.EntityGuid.FirstOrDefault()).ToList();
+        ////    var entities = _db.Entities.Where(e => result_ids.Contains(e.Id)).ToList();
+
+        ////    return entities;
+        ////}
+
+        public IList<SolrEntry> FreeSearch(SearchParameters parameters, int start = 0, int limit = 100)
+        {
+            if (string.IsNullOrWhiteSpace(parameters.FreeSearch))
+                return new List<SolrEntry>();
+
+            var query = new SolrQuery("title:" + parameters.FreeSearch) +
+                        new SolrQuery("content:" + parameters.FreeSearch);
+
+            //Result hilighting: https://lucene.apache.org/solr/guide/8_5/highlighting.html
+            string highlightStartTag = "<em class='bg-warning'>";
+            string highlightEndTag = "</em>";
+
+            var queryResult = _solrPageQuery.Query(query,
+                new QueryOptions
+                {
+                    Fields = new[] { "id", "title", "object_type_i", "permalink_s", "containerId" },
+                    StartOrCursor = new StartOrCursor.Start(start),
+                    Rows = limit,
+                    ExtraParams = new Dictionary<string, string> {
+                        {"hl.method", "unified" }, //Unified highligher, which is said to be new and fast
+                        {"hl", "true" }, //Enable snippet highlighting
+                        {"hl.fl", "*" }, //Hilight matching snippets in all fields
+                        {"hl.snippets", "5" }, //Highlight up to 10 snippets. TODO: pass this as an optional config parameter
+                        {"hl.tag.pre", highlightStartTag }, //Start tag for hilighting matching snippets
+                        {"hl.tag.post", highlightEndTag } //End tag for hilighting matching snippets
+                    }
+                });
+
+            var highlights = queryResult.Highlights.ToList();
+
+            //List<SolrEntry> result = queryResult.Select(qr => new SolrEntry()
+            //{
+            //    ObjectId = qr.Id,
+            //    ObjectType = qr.ContenType.FirstOrDefault()
+            //}).ToList();
+
+            List<SolrEntry> result = new List<SolrEntry>();
+            for (int i = 0; i < queryResult.Count; ++i)
             {
-                FilterQueries = new Collection<ISolrQuery> { Query.Field("content").Is(parameters.FreeSearch) },
-                Rows = parameters.PageSize,
-                Start = parameters.PageIndex,
-                //OrderBy = new Collection<SortOrder> { SortOrder.Parse("entityGuid asc") },
-                //Facet = new FacetParameters
-                //{
-                //    Queries = new Collection<ISolrFacetQuery> { new SolrFacetFieldQuery("entityGuid") { MinCount = 1 } }
-                //}
-            });
-            return solrQueryResults;
-        }
-        public SolrQueryResults<SolrItemModel> Results(SearchParameters parameters)
-        {
-            //QueryOptions query_options = new QueryOptions
-            //{
-            //    Rows = 10,
-            //    StartOrCursor = new StartOrCursor.Start(0),
-            //    FilterQueries = new ISolrQuery[] {
-            //    new SolrQueryByField("content","provides"),
-            //    }
-            //};
-            //// Construct the query
-            //SolrQuery query = new SolrQuery("provides");
-            //// Run a basic keyword search, filtering for questions only
-            //var posts = _solr.Query(query, query_options);
-            //SolrQueryResults<SolrItemModel> data = new SolrQueryResults<SolrItemModel>();
-            //foreach (var item in posts)
-            //{
-            //    data.Add(item);
-            //}
+                var qr = queryResult[i];
+                var hkeys = highlights[i].Value.Keys.ToList();
+                var hvals = highlights[i].Value.Values.ToList();
+                for(int k =0; k<hkeys.Count; ++k)
+                {
+                    var snippets = hvals[k];
+                    if (hkeys[k] == "title")
+                    {
+                        //The title filed matches the search criteria. In this
+                        //case, we find the highlighted portion in the highlight
+                        //and highlight the correcponding section in the actual title.
 
-            //var q = new SolrQuery("content:" + parameters.FreeSearch);
+                        foreach (var snippet in snippets)
+                            for (int t = 0; t < qr.Title.Count; ++t)
+                                qr.Title[t] = HighlightSections(snippet, highlightStartTag, highlightEndTag, qr.Title[t]);
+                    }
+                    else
+                    {
+                        foreach (var snippet in snippets)
+                            qr.Highlights.Add(snippet);
+                    }
+                }
 
-            //var res = _solr.Query(new SolrQuery("content:" + parameters.FreeSearch));
+                result.Add(qr);
+            }
 
-            SolrQueryResults<SolrItemModel> products2 = _solr.Query(new SolrQuery("content:" + parameters.FreeSearch));
-
-            return products2;
+            return result;
         }
 
-        public IList<Entity> GetEntities(SearchParameters parameters)
+        private string HighlightSections(string snippetWithHighlights, string highlightStartTag, string highlightEndTag, string stringToBeHighlighted)
         {
-            SolrQueryResults<SolrItemModel> result = Results(parameters);
-            var result_ids = result.Select(s => s.EntityGuid.FirstOrDefault()).ToList();
-            var entities = _db.Entities.Where(e => result_ids.Contains(e.Id)).ToList();
+            while(true)
+            {
+                int start = snippetWithHighlights.IndexOf(highlightStartTag);
+                int end = snippetWithHighlights.IndexOf(highlightEndTag, Math.Min(snippetWithHighlights.Length, highlightStartTag.Length));
+                if (start < 0 || end < 0)
+                    return stringToBeHighlighted;
 
-            return entities;
+                start = start + highlightStartTag.Length;
+                string highlightedFragmentWithoutMarkers = snippetWithHighlights.Substring(start, end - start);
+                string highlightedFragmentWithMarkers = highlightStartTag + highlightedFragmentWithoutMarkers + highlightEndTag;
+
+                //replacing all occurrances of the highlighted fragment within the stringToBeHighlighted
+                stringToBeHighlighted = stringToBeHighlighted.Replace(highlightedFragmentWithoutMarkers, highlightedFragmentWithMarkers);
+
+                //removing all occurances of the highlightedFragmentWithMarkers from the snippet
+                snippetWithHighlights = snippetWithHighlights.Replace(highlightedFragmentWithMarkers, "");
+
+                //Recursively calling the HighlightSections method to process other highlighted sections
+                return HighlightSections(snippetWithHighlights, highlightStartTag, highlightEndTag, stringToBeHighlighted);
+            }
         }
 
 

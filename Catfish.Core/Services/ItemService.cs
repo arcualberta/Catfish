@@ -43,8 +43,8 @@ namespace Catfish.Core.Services
             {
                 root = new CollectionContent()
                 {
-                    Name = new MultilingualText(Entity.NameTag),
-                    Description = new MultilingualText(Entity.DescriptionTag)
+                    Name = new MultilingualName(),
+                    Description = new MultilingualDescription()
                 };
                 root.Name.SetContent("Root");
                 root.Description.SetContent("Items with no primary collection");

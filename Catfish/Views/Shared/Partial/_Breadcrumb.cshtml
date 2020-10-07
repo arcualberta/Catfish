@@ -1,0 +1,20 @@
+@inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
+
+@{
+    var sitemap = WebApp.Site.Sitemap;
+}
+
+@*Not the best solution but meanwhile... class = d-sm-block d-md-none is hiding on md screen solution*@
+
+<ul class="breadcrumb">
+    @*<div class="breadcrumb-item"><a href="#" class="fa fa-home"></a></div>*@
+</ul>
+
+<script>
+    let sitemap = @Json.Serialize(sitemap);
+
+    $(function () {
+        updateBreadcrumb();
+    });
+    
+</script>

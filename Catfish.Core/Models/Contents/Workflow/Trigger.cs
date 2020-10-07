@@ -7,10 +7,31 @@ namespace Catfish.Core.Models.Contents.Workflow
 {
     public class Trigger : XmlModel
     {
+        public static readonly string TagName = "trigger";
+        public static readonly string FunctionAtt = "function";
+        public static readonly string NameAtt = "name";
+        public string Function
+        {
+            get => GetAttribute(FunctionAtt, null as string);
+            set => SetAttribute(FunctionAtt, value);
+        }
+
+        public string Name
+        {
+            get => GetAttribute(NameAtt, null as string);
+            set => SetAttribute(NameAtt, value);
+        }
+
         public Trigger(XElement data)
             : base(data)
         {
 
         }
+        public Trigger()
+            : base(new XElement(TagName))
+        {
+
+        }
+
     }
 }

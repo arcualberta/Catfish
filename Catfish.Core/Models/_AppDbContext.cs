@@ -1,12 +1,14 @@
 ﻿using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Core.Services.Solr;
+﻿using Catfish.Core.Models.Contents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using Piranha.AspNetCore.Identity.SQLServer;
+   
 namespace Catfish.Core.Models
 {
     public class AppDbContext : DbContext
@@ -16,6 +18,7 @@ namespace Catfish.Core.Models
         /// </summary>
         public IConfiguration Configuration { get; set; }
 
+        //public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
         public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
             : base(options)
         {
@@ -52,6 +55,8 @@ namespace Catfish.Core.Models
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
             #region Defining many-to-many named relationship of Aggregation with other Aggregations
             // Reference: https://www.learnentityframeworkcore.com/configuration/many-to-many-relationship-configuration
             builder.Entity<Relationship>()
@@ -80,12 +85,21 @@ namespace Catfish.Core.Models
         public DbSet<EntityTemplate> EntityTemplates { get; set; }
         public DbSet<ItemTemplate> ItemTemplates { get; set; }
         public DbSet<CollectionTemplate> CollectionTemplates { get; set; }
+        public DbSet<SystemPage> SystemPages { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<UserGroupRole> UserGroupRoles { get; set; }
+        public DbSet<GroupRole> GroupRoles { get; set; }
+        public DbSet<GroupTemplate> GroupTemplates { get; set; }
+        public DbSet<Form> Forms { get; set; }
 
         /*
+                public DbSet<XmlModel> XmlModels { get; set; }
                 public DbSet<XmlModel> XmlModels { get; set; }
 
                 public DbSet<Entity> Entities { get; set; }
                 public DbSet<EntityType> EntityTypes { get; set; }
+                public DbSet<MetadataSet> MetadataSets { get; set; }
+                public DbSet<Form> Forms { get; set; }
 
                 public DbSet<MetadataSet> MetadataSets { get; set; }
 

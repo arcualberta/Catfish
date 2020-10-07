@@ -20,15 +20,15 @@ namespace Catfish.UnitTests
     {
         protected AppDbContext _db;
         protected TestHelper _testHelper;
-        private ISolrIndexService<SolrItemModel> solrIndexService;
-        private IEntityService entityService;
-        private readonly ISolrReadOnlyOperations<SolrItemModel> _solr;
+        private ISolrIndexService<SolrEntry> solrIndexService;
+        private IEntityIndexService entityService;
+        private readonly ISolrReadOnlyOperations<SolrEntry> _solr;
         [SetUp]
         public void Setup()
         {
             _testHelper = new TestHelper();
-            solrIndexService = _testHelper.Seviceprovider.GetService(typeof(ISolrIndexService<SolrItemModel>)) as ISolrIndexService<SolrItemModel>;
-            entityService = _testHelper.Seviceprovider.GetService(typeof(IEntityService)) as IEntityService;
+            solrIndexService = _testHelper.Seviceprovider.GetService(typeof(ISolrIndexService<SolrEntry>)) as ISolrIndexService<SolrEntry>;
+            entityService = _testHelper.Seviceprovider.GetService(typeof(IEntityIndexService)) as IEntityIndexService;
             _db = _testHelper.Db;
         }
 
@@ -114,8 +114,8 @@ namespace Catfish.UnitTests
             //private ISolrIndexService<SolrItemModel> solrIndexService;
             SeedingService srv = _testHelper.Seviceprovider.GetService(typeof(SeedingService)) as SeedingService;
 
-            ItemTemplate template = srv.NewDublinCoreItem();
-            Item item = template.Clone<Item>();
+            ItemTemplate template = SeedingService.NewDublinCoreItem();
+            Item item = template.Instantiate<Item>();
             item.MetadataSets[0].SetFieldValue<TextField>("Subject", "en", "New restaurants are mad crazy to be opening right now -- or are they?", "en");
             string desc = @"On Wednesdays, Palmetto, which opened for the first time on May 11 in Oakland, California, serves a full prime rib dinner -- to go.
 It's 'enough to feed two people, or one really hungry person,' Christ Aivaliotis, one of the new restaurant's owners, tells CNN Travel.
@@ -133,23 +133,6 @@ Modified menus, a bare - bones staff and the seemingly gargantuan task of attrac
 
         }
 
-
-        public bool AddUpdate(Entity entity)
-        {
-            List<SolrItemModel> entries = ExtractSolrEntries(entity);
-            foreach (var entry in entries)
-                solrIndexService.AddUpdate(entry);
-
-            return true;
-        }
-
-        public List<SolrItemModel> ExtractSolrEntries(Entity entity)
-        {
-            List<SolrItemModel> entries = new List<SolrItemModel>();
-            entries.Add(new SolrItemModel());
-
-            return entries;
-        }
 
         //[Test]
         ////public void Query()
