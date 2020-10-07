@@ -23,18 +23,22 @@ namespace Catfish.Areas.Manager.Controllers
         }
 
         [HttpGet]
-        public FieldContainerListVM Get(int offset = 0, int? max = null)
+        public ActionResult Get(int offset = 0, int? max = null)
         {
             FieldContainerListVM vm = _service.Get(offset, max);
-            return vm;
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+            string jsonString = JsonConvert.SerializeObject(vm, settings);
+            return Content(jsonString, "application/json");
         }
 
         // GET: api/Forms/[ID]
         [HttpGet("{id}")]
-        public Form Get(Guid id)
+        public ActionResult Get(Guid id)
         {
             Form data = _service.Get(id) as Form;
-            return data;
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+            string jsonString = JsonConvert.SerializeObject(data, settings);
+            return Content(jsonString, "application/json");
         }
 
     }
