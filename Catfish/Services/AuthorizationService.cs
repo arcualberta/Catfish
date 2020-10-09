@@ -154,6 +154,11 @@ namespace Catfish.Services
         {
             return _piranhaDb.Roles.Where(r=>r.NormalizedName!="SYSADMIN").OrderBy(r => r.Name).ToList();
         }
-        
+
+        public User GetUserDetails(Guid id)
+        {
+            return _piranhaDb.Users.Where(u => u.Id == id).FirstOrDefault();
+        }
+
     }
 }

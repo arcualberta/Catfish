@@ -107,68 +107,11 @@ namespace Catfish.Areas.Manager.Pages
 
 
             Users = _appDb.UserGroupRoles
-                .Include(ugr => ugr.GroupRole)
                 .Where(ugr => ugr.GroupId == id)
                 .ToList();
+            foreach (var user in Users)
+                user.User = _srv.GetUserDetails(user.UserId);
 
-            //Since Roles are in the Piranha DB Context, they cannot be included when UserGroupRoles are retrieved by
-            //the above statement usin the AppDbContext, we need to assign them for each GroupRole.Role of each user 
-            //as folllows.
-            //foreach (var user in Users)
-            //    user.GroupRole.Role = roles.Where(r => r.Id == user.GroupRole.RoleId).FirstOrDefault();
-
-
-            
-            ////RoleList = new List<GroupRoleAssignmentVM>();
-            ////Users = new List<GroupRoleUserAssignmentVM>();
-            //////var groupAdminRole = new GroupRoleAssignmentVM
-            //////{
-            //////    RoleId = groupAdmin.Id,
-            //////    RoleName = groupAdmin.Name,
-            //////    Assigned = true
-            //////};
-            //////RoleList.Add(groupAdminRole);
-            ////foreach (var role in roles)
-            ////{
-            ////    var groupRoleVM = new GroupRoleAssignmentVM
-            ////    {
-            ////        RoleId = role.Id,
-            ////        RoleName = role.Name
-            ////    };
-            ////    foreach (var groupRole in groupRoles)
-            ////    {
-            ////        if (role.Id == groupRole.RoleId)
-            ////        {
-            ////            groupRoleVM.Assigned = true;
-            ////        }
-            ////        groupRoleVM.RoleGroupId = groupRole.Id;
-            ////    }
-            ////    Roles.Add(groupRoleVM);
-            ////    //SelectedRoles.Add(Roles.Single(r => r.Id == role.RoleId).Name);
-            ////}
-            ////RoleList = Roles.OrderByDescending(r => r.Assigned).ToList();
-
-
-            ////foreach (var user in users)
-            ////{
-            ////    var userGroupRolesVM = new GroupRoleUserAssignmentVM
-            ////    {
-            ////        UserId = user.Id,
-            ////        UserName = user.UserName
-
-            ////    };
-            ////    foreach (var userGroupRole in userGroupRoles)
-            ////    {
-            ////        if (user.Id == userGroupRole.UserId)
-            ////        {
-            ////            userGroupRolesVM.Assigned = true;
-            ////        }
-            ////        userGroupRolesVM.RoleGroupId = userGroupRole.GroupRoleId;
-            ////        userGroupRolesVM.GroupRoleUserId = userGroupRole.Id;
-            ////    }
-            ////    Users.Add(userGroupRolesVM);
-            ////    //SelectedRoles.Add(Roles.Single(r => r.Id == role.RoleId).Name);
-            ////}
         }
 
         public IActionResult OnPost()
