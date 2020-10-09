@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Piranha.AspNetCore.Identity.Data;
+using Piranha.AspNetCore.Identity.SQLServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,9 @@ namespace Catfish.Services
 {
     public class CatfishInitializationService : ICatfishInitializationService
     {
-        public readonly PiranhaDbContext _piranhaDb;
+        public readonly IdentitySQLServerDb _piranhaDb;
         public readonly AppDbContext _appDb;
-        public CatfishInitializationService(AppDbContext adb, PiranhaDbContext pdb)
+        public CatfishInitializationService(AppDbContext adb, IdentitySQLServerDb pdb)
         {
             _appDb = adb;
             _piranhaDb = pdb;

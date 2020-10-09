@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
+using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.ViewModels;
 using Catfish.Core.Models.Contents.ViewModels.ListEntries;
 using System;
@@ -38,6 +39,31 @@ namespace Catfish.Core.Services.FormBuilder
                 Entries = forms.Select(x => new FieldContainerListEntry(x)).ToList()
             };
             return result;
+        }
+
+        public List<BaseField> GetFieldDefinitions()
+        {
+            List<BaseField> fields = new List<BaseField>();
+
+            TextField txtField = new TextField();
+            txtField.SetName("Enter field name", "en");
+            txtField.SetName("Entrez le nom du champ", "fr");
+            txtField.SetDescription("Enter field description", "en");
+            txtField.SetDescription("Entrez la description du champ", "fr");
+            txtField.SetValue("Enter default field value, if necessary", "en");
+            txtField.SetValue("Entrez la valeur de champ par défaut, si nécessaire", "fr");
+            fields.Add(txtField);
+
+            TextArea textArea = new TextArea();
+            textArea.SetName("Enter field name", "en");
+            textArea.SetName("Entrez le nom du champ", "fr");
+            textArea.SetDescription("Enter field description", "en");
+            textArea.SetDescription("Entrez la description du champ", "fr");
+            textArea.SetValue("Enter default field value, if necessary", "en");
+            textArea.SetValue("Entrez la valeur de champ par défaut, si nécessaire", "fr");
+            fields.Add(textArea);
+
+            return fields;
         }
 
         ////public FieldContainerListVM GetMetadataSets(int offset = 0, int max = 0)

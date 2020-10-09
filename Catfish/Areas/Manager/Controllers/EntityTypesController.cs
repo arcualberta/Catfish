@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Catfish.Core.Services;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.ViewModels.ListEntries;
+using Newtonsoft.Json;
 
 namespace Catfish.Areas.Manager.Controllers
 {
@@ -24,10 +25,12 @@ namespace Catfish.Areas.Manager.Controllers
 
         // GET: api/EntityTypes
         [HttpGet]
-        public IList<EntityTemplateListEntry> Get()
+        public ActionResult Get()
         {
             List<EntityTemplateListEntry> templates = Srv.GetEntityTemplateListEntries().ToList();
-            return templates;
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+            string jsonString = JsonConvert.SerializeObject(templates, settings);
+            return Content(jsonString, "application/json");
         }
 
         // GET: api/EntityTypes/5

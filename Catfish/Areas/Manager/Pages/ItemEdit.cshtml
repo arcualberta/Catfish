@@ -58,7 +58,7 @@
 															This field is required.
 														</div>
 													</div>-->
-													<span>{{entry.value}}</span>
+													<span>{{entry.Value}}</span>
 												</div>
                                             </div>
                                         </li>
@@ -69,7 +69,7 @@
                             </li>
                         </ol>
                     </div>
-                </div>
+                </div> 
             </div>
         </div>
 
@@ -95,7 +95,7 @@
                                :class="{show: index==0, active: index==0}"
                                :id="'meta-tab-' + index" data-toggle="tab" :href="'#tab-' + index" role="tab" 
                                :aria-controls="'tab-' + index" :aria-selected="index==0 ? true : false">
-                                {{metadataSet.name.values[0].value}}
+                                {{metadataSet.Name.Values.$values[0].Value}}
                             </a>
                         </div>
                     </nav>
@@ -105,24 +105,24 @@
 						     :class="{active: metaIndex==0, show: metaIndex==0}">
 
 
-						    <div v-for="(field, fIndex) in metadataSet.fields"
+						    <div v-for="(field, fIndex) in metadataSet.Fields.$values"
 							     class="tab-pane fade show field-section"
 							     id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                                 
 							    <div class="sitemap-item">
 								    <div class="link">
                                         <div class="flexer">
-                                            <div class="flexer" v-for="(val, index) in field.name.values">
-                                                <h3 v-if="index >0 && index < field.name.values.length" style="white-space: pre"> | </h3>
-                                                <h3>{{field.name.values[index].value}}</h3>
+                                            <div class="flexer" v-for="(val, index) in field.Name.Values.$values">
+                                                <h3 v-if="index >0 && index < field.Name.Values.$values.length" style="white-space: pre"> | </h3>
+                                                <h3>{{field.Name.Values.$values[index].Value}}</h3>
                                             </div>
                                         </div>
-										<div class="flex-row" v-for="(val, index) in field.name.values">
+										<div class="flex-row" v-for="(val, index) in field.Name.Values.$values">
 											<div class="label-holder">
-												<div>{{languageLabels[index]}}/{{field.name.values[index].language}}:</div>
+												<div>{{languageLabels[index]}}/{{field.Name.Values.$values[index].Language}}:</div>
 												<button v-if="!isInPreviewMode" type="button" class="btn-sm btn-primary btn-circle"
 														data-toggle="tooltip" data-placement="top"
-														:title="field.description.values[index].value">
+														:title="field.Description.Values.$values[index].Value">
 													<i class="fas fa-question"></i>
 												</button>
 											</div>
@@ -136,20 +136,20 @@
 		 the index is always set to 0.
 	-->
 											<div v-if="!isInPreviewMode" class="col-md-4 mb-3 metadata-input">
-												<input v-if="field.modelType.includes(inputTypes.text)"
+												<input v-if="field.$type.includes(inputTypes.text)"
 													   required type="text" class="form-control"
-													   v-model="field.values[index].values[0].value">
-												<textarea v-else-if="field.modelType.includes(inputTypes.textarea)"
+													   v-model="field.Values.$values[index].Values.$values[0].Value">
+												<textarea v-else-if="field.$type.includes(inputTypes.textarea)"
 													required class="form-control" rows="3"
-													v-model="field.values[index].values[0].value"></textarea>
-												<!--<vue-editor v-else-if="field.modelType.includes(inputTypes.textarea) 
-															v-model="field.values[index].values[0].value">
+													v-model="field.Values.$values[index].Values.$values[0].Value"></textarea>
+												<!--<vue-editor v-else-if="field.$type.includes(inputTypes.textarea) 
+															v-model="field.Values.$values[index].Values.$values[0].Value">
 												</vue-editor>-->
 												<div class="invalid-feedback">
 													This field is required.
 												</div>
 											</div>
-											<span v-else>{{field.values[index].values[0].value}}</span>
+											<span v-else>{{field.Values.$values[index].Values.$values[0].Value}}</span>
 										</div>
 								    </div>
 
@@ -162,7 +162,7 @@
 								            </button>
 							            </div>
                                         <div class="btn-group new-value-button" role="group">
-								            <button :disabled="originalFields[metaIndex].includes(fIndex) && originalFieldIndexMaster[metaIndex][field.id].count <=1"
+								            <button :disabled="originalFields[metaIndex].includes(fIndex) && originalFieldIndexMaster[metaIndex][field.Id].count <=1"
                                                     type="button" v-on:click="deleteField(metaIndex, fIndex)"
 										            class="btn btn-sm btn-danger btn-labeled trash-button">
 									            <i class="fas fa-trash"></i>

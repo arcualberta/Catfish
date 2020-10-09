@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models.Contents;
+using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.ViewModels;
 using Catfish.Core.Models.Contents.ViewModels.ListEntries;
 using System;
@@ -11,9 +12,14 @@ namespace Catfish.Core.Services.FormBuilder
     {
         public FieldContainerListVM Get(int offset = 0, int? max = null);
         public FieldContainer Get(Guid id);
+        
     }
 
-    public interface IFormService : IFieldContainerService { }
+    public interface IFormService : IFieldContainerService
+    {
+        public List<BaseField> GetFieldDefinitions();
+    }
+
     public interface IMetadataSetService : IFieldContainerService { }
 
 }
