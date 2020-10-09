@@ -47,7 +47,7 @@ namespace Catfish.Tests.Helpers
             services.AddDbContext<AppDbContext>(options => options
                 .UseSqlServer(dbConnectionString)
                 );
-            services.AddDbContext<PiranhaDbContext>(options => options
+            services.AddDbContext<IdentitySQLServerDb>(options => options
                 .UseSqlServer(dbConnectionString)
                 );
 

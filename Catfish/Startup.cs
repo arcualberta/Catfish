@@ -94,7 +94,7 @@ namespace Catfish
             // configuration options and the application "Configuration" option to CatfishDbContext
             // instance through dependency injection.
             services.AddDbContext<AppDbContext>();
-            services.AddDbContext<PiranhaDbContext>();
+            services.AddDbContext<IdentitySQLServerDb>();
 
             //Feb 12 - 2020 : It's recommended to use AddDbContextPool() over AddDbContext() on .net Core > 2.2
             // it's better from the performance stand point

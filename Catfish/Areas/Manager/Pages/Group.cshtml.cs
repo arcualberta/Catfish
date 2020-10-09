@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Piranha.AspNetCore.Identity.Data;
 using Piranha.Extend.Fields;
 using Microsoft.EntityFrameworkCore;
+using Piranha.AspNetCore.Identity.SQLServer;
 
 namespace Catfish.Areas.Manager.Pages
 {
@@ -20,7 +21,7 @@ namespace Catfish.Areas.Manager.Pages
 
         private IAuthorizationService _srv;
         public readonly AppDbContext _appDb;
-        public readonly PiranhaDbContext _piranhaDb;
+        public readonly IdentitySQLServerDb _piranhaDb;
 
         [BindProperty]
         public Group Group { get; set; }
@@ -40,7 +41,7 @@ namespace Catfish.Areas.Manager.Pages
         //{
 
         //}
-        public GroupModel(IAuthorizationService srv, AppDbContext appDb, PiranhaDbContext pdb)
+        public GroupModel(IAuthorizationService srv, AppDbContext appDb, IdentitySQLServerDb pdb)
         {
             _srv = srv;
             _appDb = appDb;

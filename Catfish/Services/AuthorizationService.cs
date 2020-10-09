@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Models;
 using Microsoft.AspNetCore.Http;
 using Piranha.AspNetCore.Identity.Data;
+using Piranha.AspNetCore.Identity.SQLServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +12,12 @@ namespace Catfish.Services
 {
     public class AuthorizationService : IAuthorizationService
     {
-        public readonly PiranhaDbContext _piranhaDb;
+        public readonly IdentitySQLServerDb _piranhaDb;
         public readonly AppDbContext _appDb;
 
         public readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthorizationService(AppDbContext adb, PiranhaDbContext pdb, IHttpContextAccessor httpContextAccessor)
+        public AuthorizationService(AppDbContext adb, IdentitySQLServerDb pdb, IHttpContextAccessor httpContextAccessor)
         {
             _appDb = adb;
             _piranhaDb = pdb;
