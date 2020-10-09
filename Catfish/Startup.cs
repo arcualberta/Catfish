@@ -10,6 +10,7 @@ using Catfish.Models.Blocks;
 using Catfish.Models.Fields;
 using Catfish.Models.SiteTypes;
 using Catfish.Services;
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -159,6 +160,9 @@ namespace Catfish
 
             services.AddHttpContextAccessor();
 
+            //HangFire background processing service
+            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("catfish")));
+            services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -295,6 +299,10 @@ namespace Catfish
 
             // September 23 2020 -- Add Group Permissions
             AddManagerPermissions();
+
+            //HangFire background processing service
+            app.UseHangfireDashboard();
+
         }
 
         #region REGISTER CUSTOM COMPONENT
