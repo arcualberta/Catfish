@@ -13,8 +13,10 @@ namespace Catfish.Core.Models
         public Guid Id { get; set; }
         public Guid GroupId { get; set; }
         public Group Group { get; set; }
-        public Role Role { get; set; }
         public Guid RoleId { get; set; }
+
+        [NotMapped]
+        public Role Role { get; set; }
     }
 
 
