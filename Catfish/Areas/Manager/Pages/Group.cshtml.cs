@@ -71,7 +71,7 @@ namespace Catfish.Areas.Manager.Pages
             Templates = new List<GroupTemplateAssignmentVM>();
             foreach (var template in templates)
             {
-                var groupTemplateVM = new GroupTemplateAssignmentVM
+                var groupTemplateVM = new GroupTemplateAssignmentVM()
                 {
                     TemplateId = template.Id,
                     TemplateName = template.TemplateName
@@ -172,11 +172,11 @@ namespace Catfish.Areas.Manager.Pages
 
         public IActionResult OnPost()
         {
-            SaveGroupRoles();
-            SaveGroupTemplates();
+            Group group = SaveGroupRoles();
+            SaveGroupTemplates(group);
             _appDb.SaveChanges();
-
-            return RedirectToPage("GroupEdit","Manager", Group.Id);
+           
+            return RedirectToPage("GroupEdit","Manager", group.Id);
         }
 
         public List<GroupRoleAssignmentVM> GetGroupRoleList()
@@ -185,7 +185,7 @@ namespace Catfish.Areas.Manager.Pages
 
             foreach (var role in roles)
             {
-                var groupRoleVM = new GroupRoleAssignmentVM
+                var groupRoleVM = new GroupRoleAssignmentVM()
                 {
                     RoleId = role.Id,
                     RoleName = role.Name,
@@ -204,7 +204,7 @@ namespace Catfish.Areas.Manager.Pages
 
             foreach (var template in templates)
             {
-                var groupTemplateVM = new GroupTemplateAssignmentVM
+                var groupTemplateVM = new GroupTemplateAssignmentVM()
                 {
                     TemplateId = template.Id,
                     TemplateName = template.TemplateName,
@@ -217,10 +217,18 @@ namespace Catfish.Areas.Manager.Pages
             return Templates;
         }
 
-        public void SaveGroupRoles()
+        public Group SaveGroupRoles()
         {
             //get group details from Groups table
             Group dbGroup = _srv.GetGroupDetails(Group.Id);
+
+            if (dbGroup == null)
+            {
+                dbGroup = new Group();
+            }
+
+            dbGroup.Name = Group.Name;
+            dbGroup.GroupStatus = Group.GroupStatus;
             //get group roles details from GroupRoles table
             List<GroupRole> dbGroupRoles = _appDb.GroupRoles.Where(r => r.GroupId == Group.Id).ToList();
             //get roles associate data from interface 
@@ -231,7 +239,7 @@ namespace Catfish.Areas.Manager.Pages
             {
                 if (role.Assigned)
                 {
-                    var newGroupRole = new GroupRole
+                    var newGroupRole = new GroupRole()
                     {
                         Id = Guid.NewGuid(),
                         RoleId = role.RoleId,
@@ -246,11 +254,7 @@ namespace Catfish.Areas.Manager.Pages
             //get all deleted roles to a list
             List<GroupRole> deletedRoles = dbGroupRoles.Except(selectedGroupRoles, new GroupRoleComparer()).ToList();
 
-            if (dbGroup == null)
-                throw new Exception("Group Details with ID = " + Group.Id + " not found.");
-
-            dbGroup.Name = Group.Name;
-            dbGroup.GroupStatus = Group.GroupStatus;
+            
             //add newly added roles to GroupRoles table
             if (newlyAddedRoles.Count > 0)
                 foreach (var groupRole in newlyAddedRoles)
@@ -259,12 +263,13 @@ namespace Catfish.Areas.Manager.Pages
             if (deletedRoles.Count > 0)
                 foreach (var groupRole in deletedRoles)
                     _appDb.GroupRoles.Remove(groupRole);
+            
+            return dbGroup;
 
         }
-        public void SaveGroupTemplates()
+        public void SaveGroupTemplates(Group dbGroup)
         {
-            //get group details from Groups table
-            Group dbGroup = _srv.GetGroupDetails(Group.Id);
+            
             //get group template details from GroupTemplates table
             List<GroupTemplate> dbGroupTemplates = _appDb.GroupTemplates.Where(r => r.GroupId == Group.Id).ToList();
             //get templates associate data from interface 
