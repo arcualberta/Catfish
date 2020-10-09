@@ -312,7 +312,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/navigation-block.js");
-          //  App.Modules.Manager().Scripts.Add("~/assets/js/entitytypelist.js");
+             App.Modules.Manager().Scripts.Add("~/assets/js/extended-image-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/form.js"); 
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
@@ -321,6 +321,7 @@ namespace Catfish
             //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/bundle.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/vendors.bundle.js");
+            
         }
         private static void RegisterCustomBlocks()
         {
@@ -334,6 +335,9 @@ namespace Catfish
             App.Blocks.Register<SubmissionEntryPointList>();
             App.Blocks.Register<FreeSearchBlock>();
             App.Blocks.Register<SubmissionEntryPoint>();
+            App.Blocks.Register<ExtendedImageBlock>();
+            App.Blocks.Register<ExtendedGalleryBlock>();
+            
         }
         private static void RegisterCustomStyles()
         {
