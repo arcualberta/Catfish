@@ -154,7 +154,8 @@ namespace Catfish
             services.AddScoped<IPageIndexingService, PageIndexingService>();
 
 
-            //Configure claims
+            //Configure policy claims
+            CatfishPolicyBuilder.InitAll(services);
             AddManagerClaims(services);
 
 
@@ -429,6 +430,13 @@ namespace Catfish
                 Category = "Groups"
             });
 
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Title = "Reindex",
+                Name = "Reindex",
+                Category = "Processes"
+            });
+
         }
 
         /// <summary>
@@ -446,27 +454,36 @@ namespace Catfish
                   policy => policy.RequireClaim("Create Submission"));
             });
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("GroupsAdd", x => x.RequireClaim("GroupsAdd"));
-            });
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("GroupsAdd", x => x.RequireClaim("GroupsAdd"));
+            //});
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("GroupsList", x => x.RequireClaim("GroupsList"));
-            });
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("GroupsEdit", x => x.RequireClaim("GroupsEdit"));
-            });
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("GroupsSave", x => x.RequireClaim("GroupsSave"));
-            });
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("GroupsDelete", x => x.RequireClaim("GroupsDelete"));
-            });
+            ////services.AddAuthorization(options =>
+            ////{
+            ////    options.AddPolicy("GroupsList", x => x
+            ////        .RequireClaim(CatfishPermission.GroupsList)
+            ////        .RequireClaim(CatfishPermission.GroupsAdd)
+            ////        //CatfishPermission.GroupsDelete,
+            ////        //CatfishPermission.GroupsEdit,
+            ////        //CatfishPermission.GroupsList,
+            ////        //CatfishPermission.GroupsSave
+            ////        ) ;
+            ////});
+
+            ////services.AddAuthorization(options =>
+            ////{
+            ////    options.AddPolicy("GroupsEdit", x => x.RequireClaim("GroupsEdit"));
+            ////});
+            ////services.AddAuthorization(options =>
+            ////{
+            ////    options.AddPolicy("GroupsSave", x => x.RequireClaim("GroupsSave"));
+            ////});
+            ////services.AddAuthorization(options =>
+            ////{
+            ////    options.AddPolicy("GroupsDelete", x => x.RequireClaim("GroupsDelete"));
+            ////});
+
 
             services.AddAuthorization(o =>
             { //read secure posts
@@ -489,6 +506,12 @@ namespace Catfish
                 });
             });
 
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(CatfishPermission.ManageProcesses, x => x.RequireClaim("Reindex"));
+            });
+            
         }
 
 
@@ -592,8 +615,19 @@ namespace Catfish
                 InternalId = "Groups",
                 Name = "Groups",
                 Route = "/manager/groups/",
-                Policy = CatfishPermission.GroupsList,
+                Policy = GroupManagement.List,
                 Css = "fas  fa-layer-group"
+
+            });
+
+            //Processes
+            menubar.Items.Insert(menubar.Items.Count, new MenuItem
+            {
+                InternalId = "Processes",
+                Name = "Processes",
+                Route = "/manager/processes/",
+                Policy = CatfishPermission.ManageProcesses,
+                Css = "fas  fa-bezier-curve"
 
             });
         }
