@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Areas.Manager.Access
 {
-    public class GroupManagement : CatfishPolicyBuilder
+    public class GroupPolicy : AbstractCatfishPolicy
     {
         public static readonly string List = "GroupsList";
         public static readonly string Add = "GroupsAdd";
@@ -14,7 +14,7 @@ namespace Catfish.Areas.Manager.Access
         public static readonly string Save = "GroupsSave";
         public static readonly string Delete = "GroupsDelete";
 
-        public override void Initialize(IServiceCollection services)
+        public override void Build(IServiceCollection services)
         {
             services.AddAuthorization(options => {
                 options.AddPolicy(List, x => x.RequireClaim(List)); 

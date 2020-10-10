@@ -155,7 +155,7 @@ namespace Catfish
 
 
             //Configure policy claims
-            CatfishPolicyBuilder.InitAll(services);
+            AbstractCatfishPolicy.BuildAllPolicies(services);
             AddManagerClaims(services);
 
 
@@ -608,7 +608,7 @@ namespace Catfish
                 InternalId = "Groups",
                 Name = "Groups",
                 Route = "/manager/groups/",
-                Policy = GroupManagement.List,
+                Policy = GroupPolicy.List,
                 Css = "fas  fa-layer-group"
 
             });
