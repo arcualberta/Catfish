@@ -28,7 +28,7 @@
         </nav>
         <div class="container-fluid">
             <div class="top-nav">
-                @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupPolicy.Add)).Succeeded)
+                @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Add)).Succeeded)
                 {
 
                     <a href="edit" class="btn btn-labeled btn-primary pull-right">
@@ -53,7 +53,7 @@
             {
                 <tr>
                     <td>
-                        @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupPolicy.Edit)).Succeeded)
+                        @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Edit)).Succeeded)
                         {
                             <a href="@string.Format("edit/{0}", group.Id)"> @group.Name</a>
                         }
@@ -63,7 +63,7 @@
                         }
                     </td>
                     <td class="actions one">
-                        @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupPolicy.Delete)).Succeeded)
+                        @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Delete)).Succeeded)
                         {
                             <a class="danger" href="@Url.Action("Delete", new { id = group.Id })">
                                 <span class="fas fa-trash"></span>

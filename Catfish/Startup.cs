@@ -155,7 +155,7 @@ namespace Catfish
 
 
             //Configure policy claims
-            AbstractCatfishPolicy.BuildAllPolicies(services);
+            CatfishSecurity.BuildAllPolicies(services);
             AddManagerClaims(services);
 
 
@@ -299,7 +299,7 @@ namespace Catfish
             AddWorkflowPermissions();
 
             // September 23 2020 -- Add Group Permissions
-            AddManagerPermissions();
+            CatfishSecurity.AddPermissionEntriesToApp();
 
             //HangFire background processing service
             app.UseHangfireDashboard();
@@ -388,56 +388,6 @@ namespace Catfish
 
         }
 
-        /// <summary>
-        /// This method defines the custom permissions for manager pages. These are added
-        /// as checkboxes for each role, which we can use to select in order to grant the 
-        /// respective permissions. Simultaneously, these permissions are also added to the 
-        /// Piranha User Claims table. Then these claims can be tied into policies (see 
-        /// AddManagerClaims() method).
-        /// Reference: https://stackoverflow.com/questions/39125347/how-to-get-claim-inside-asp-net-core-razor-view
-        /// </summary>
-        private static void AddManagerPermissions()
-        {
-            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
-            {
-                Title = "Add Groups",
-                Name = "GroupsAdd",
-                Category = "Groups"
-            });
-
-            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
-            {
-                Title = "Edit Groups",
-                Name = "GroupsEdit",
-                Category = "Groups"
-            });
-            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
-            {
-                Title = "Save Groups",
-                Name = "GroupsSave",
-                Category = "Groups"
-            });
-            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
-            {
-                Title = "Delete Groups",
-                Name = "GroupsDelete",
-                Category = "Groups"
-            });
-            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
-            {
-                Title = "List Group",
-                Name = "GroupsList",
-                Category = "Groups"
-            });
-
-            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
-            {
-                Title = "Reindex",
-                Name = "Reindex",
-                Category = "Processes"
-            });
-
-        }
 
         /// <summary>
         /// Defining a series of policies. Each policy includes the permissions each
@@ -608,7 +558,7 @@ namespace Catfish
                 InternalId = "Groups",
                 Name = "Groups",
                 Route = "/manager/groups/",
-                Policy = GroupPolicy.List,
+                Policy = GroupSecurity.List,
                 Css = "fas  fa-layer-group"
 
             });
@@ -619,7 +569,7 @@ namespace Catfish
                 InternalId = "Processes",
                 Name = "Processes",
                 Route = "/manager/processes/",
-                //Policy = CatfishPermission.ManageProcesses,
+                Policy = ProcessSecurity.PageAccess,
                 Css = "fas  fa-bezier-curve"
 
             });
