@@ -9,7 +9,7 @@ namespace Catfish.Areas.Manager.Access
 {
     public class GroupSecurity : CatfishSecurity
     {
-        public static readonly string List = "GroupsList";
+        public static readonly string PageAccess = "GroupsPageAccess";
         public static readonly string Add = "GroupsAdd";
         public static readonly string Edit = "GroupsEdit";
         public static readonly string Save = "GroupsSave";
@@ -19,41 +19,41 @@ namespace Catfish.Areas.Manager.Access
         {
             App.Permissions["Workflow"].Add(new Piranha.Security.PermissionItem
             {
+                Category = "Groups",
                 Title = "Add Groups",
-                Name = "GroupsAdd",
-                Category = "Groups"
+                Name = Add
             });
 
             App.Permissions["Workflow"].Add(new Piranha.Security.PermissionItem
             {
+                Category = "Groups",
                 Title = "Edit Groups",
-                Name = "GroupsEdit",
-                Category = "Groups"
+                Name = Edit
             });
             App.Permissions["Workflow"].Add(new Piranha.Security.PermissionItem
             {
+                Category = "Groups",
                 Title = "Save Groups",
-                Name = "GroupsSave",
-                Category = "Groups"
+                Name = Save
             });
             App.Permissions["Workflow"].Add(new Piranha.Security.PermissionItem
             {
+                Category = "Groups",
                 Title = "Delete Groups",
-                Name = "GroupsDelete",
-                Category = "Groups"
+                Name = Delete
             });
             App.Permissions["Workflow"].Add(new Piranha.Security.PermissionItem
             {
-                Title = "List Group",
-                Name = "GroupsList",
-                Category = "Groups"
+                Category = "Groups",
+                Title = "Access Groups Page",
+                Name = PageAccess
             });
         }
 
         public override void BuildPolicies(IServiceCollection services)
         {
             services.AddAuthorization(options => {
-                options.AddPolicy(List, x => x.RequireClaim(List)); 
+                options.AddPolicy(PageAccess, x => x.RequireClaim(PageAccess)); 
             });
             services.AddAuthorization(options => {
                 options.AddPolicy(Add, x => x.RequireClaim(Add));

@@ -16,9 +16,16 @@ namespace Catfish.Areas.Manager.Access
         {
             App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
             {
+                Category = "Processes",
+                Title = "Processes Page Access",
+                Name = PageAccess
+            });
+
+            App.Permissions["Manager"].Add(new Piranha.Security.PermissionItem
+            {
+                Category = "Processes",
                 Title = "Reindex",
-                Name = "Reindex",
-                Category = "Processes"
+                Name = Reindex
             });
         }
 
