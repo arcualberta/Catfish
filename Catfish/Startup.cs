@@ -505,13 +505,6 @@ namespace Catfish
                     policy.RequireClaim("CreateSubmission", "CreateSubmission");
                 });
             });
-
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(CatfishPermission.ManageProcesses, x => x.RequireClaim("Reindex"));
-            });
-            
         }
 
 
@@ -626,7 +619,7 @@ namespace Catfish
                 InternalId = "Processes",
                 Name = "Processes",
                 Route = "/manager/processes/",
-                Policy = CatfishPermission.ManageProcesses,
+                //Policy = CatfishPermission.ManageProcesses,
                 Css = "fas  fa-bezier-curve"
 
             });

@@ -27,7 +27,7 @@
 
         <div class="container-fluid">
             <div class="top-nav">
-                @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.CatfishPermission.GroupsSave)).Succeeded)
+                @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupManagement.Save)).Succeeded)
                 {
                     <button type="submit" class="btn btn-labeled btn-success pull-right">
                         <span class="btn-label">
