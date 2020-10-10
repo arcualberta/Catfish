@@ -29,12 +29,12 @@ namespace Catfish.Areas.Manager.Pages
         [BindProperty]
         public List<GroupRoleAssignmentVM> Roles { get; set; }
 
-        public List<GroupRoleAssignmentVM> RoleList { get; set; }
+        //public List<GroupRoleAssignmentVM> RoleList { get; set; }
 
         [BindProperty]
         public List<GroupTemplateAssignmentVM> Templates { get; set; }
 
-        [BindProperty]
+        //[BindProperty]
         public List<UserGroupRole> Users { get; set; }
 
         //public  GroupModel()
@@ -183,13 +183,15 @@ namespace Catfish.Areas.Manager.Pages
             {
                 if (role.Assigned)
                 {
-                    var newGroupRole = new GroupRole()
-                    {
-                        Id = Guid.NewGuid(),
-                        RoleId = role.RoleId,
-                        Group = dbGroup,
-                        GroupId = dbGroup.Id
-                    };
+                    var newGroupRole = new GroupRole();
+                    if (role.RoleGroupId == null)
+                        newGroupRole.Id = Guid.NewGuid();
+                    else
+                        newGroupRole.Id = (Guid)role.RoleGroupId;
+
+                    newGroupRole.RoleId = role.RoleId;
+                    newGroupRole.Group = dbGroup;
+                    newGroupRole.GroupId = dbGroup.Id;
                     selectedGroupRoles.Add(newGroupRole);
                 }
             }
@@ -224,13 +226,16 @@ namespace Catfish.Areas.Manager.Pages
             {
                 if (template.Assigned)
                 {
-                    var newGroupTemplate = new GroupTemplate
-                    {
-                        Id = Guid.NewGuid(),
-                        EntityTemplateId = template.TemplateId,
-                        Group = dbGroup,
-                        GroupId = dbGroup.Id
-                    };
+                    var newGroupTemplate = new GroupTemplate();
+
+                    if (template.TemplateGroupId == null)
+                        newGroupTemplate.Id = Guid.NewGuid();
+                    else
+                        newGroupTemplate.Id = (Guid)template.TemplateGroupId;
+
+                    newGroupTemplate.EntityTemplateId = template.TemplateId;
+                    newGroupTemplate.Group = dbGroup;
+                    newGroupTemplate.GroupId = dbGroup.Id;
                     selectedGroupTemplates.Add(newGroupTemplate);
                 }
             }

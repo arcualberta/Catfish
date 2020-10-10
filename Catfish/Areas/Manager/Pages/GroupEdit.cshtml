@@ -148,7 +148,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <button type="button" class="btn btn-labeled btn-primary pull-right" data-toggle="modal" data-target="#userModal" data-id="@role.RoleGroupId" onclick="addUser('@role.RoleGroupId'); return false;">
+                            <button type="button" class="btn btn-labeled btn-primary pull-right" data-toggle="modal" data-target="#userModal" data-id="@role.RoleGroupId" onclick="addUser('@role.RoleGroupId', '@role.RoleId'); return false;">
                                 <span class="btn-label">
                                     <i class="fas fa-plus"></i>
                                 </span>
@@ -162,6 +162,7 @@
                                     <div class="modal-content">
                                         <div class="modal-body">
                                             <input type="text" name="GroupRoleId" id="GroupRoleId" value="" />
+                                            <input type="text" name="RoleId" id="RoleId" value="" />
                                             <div class="card-body">
                                                 <div class="form-group">
                                                     <label>@Localizer.General["Users"]</label>
@@ -198,8 +199,9 @@
     </div> @*End: "container-fluid"*@
 </form>
 <script>
-    function addUser(id) {
-        $(".modal-body #GroupRoleId").val(id);
+    function addUser(groupRoleId,roleId) {
+        $(".modal-body #GroupRoleId").val(groupRoleId);
+        $(".modal-body #RoleId").val(roleId);
             // As pointed out in comments,
             // it is unnecessary to have to manually call the modal.
             // $('#addBookDialog').modal('show');
