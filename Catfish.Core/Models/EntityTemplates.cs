@@ -35,6 +35,7 @@ namespace Catfish.Core.Models
             if (workflowDef != null)
             {
                 Workflow = new Workflow(workflowDef);
+                Workflow.Initialize(XmlModel.eGuidOption.Ignore);
             }
         }
 

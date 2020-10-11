@@ -50,7 +50,7 @@ namespace Catfish.Core.Models.Contents.Workflow
         public GetAction(XElement data)
             : base(data)
         {
-
+            Initialize(eGuidOption.Ignore);
         }
         public GetAction()
             : base(new XElement(TagName))

@@ -86,6 +86,11 @@ namespace Catfish.Tests.Helpers
             get => Seviceprovider.GetService<AppDbContext>();
         }
 
+        public IdentitySQLServerDb PiranhaDb
+        {
+            get => Seviceprovider.GetService<IdentitySQLServerDb>();
+        }
+
         public IWorkflowService WorkflowService
         {
             get => Seviceprovider.GetService<IWorkflowService>();

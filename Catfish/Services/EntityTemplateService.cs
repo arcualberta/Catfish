@@ -24,9 +24,10 @@ namespace Catfish.Services
                 var userIdStr = user.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (!string.IsNullOrEmpty(userIdStr))
                 {
+                    var userId = Guid.Parse(userIdStr);
                     var groupIds = _db.UserGroupRoles
-                        .Where(ugr => ugr.UserId == Guid.Parse(userIdStr))
-                        .Select(ugr => ugr.GroupId)
+                        .Where(ugr => ugr.UserId == userId)
+                        .Select(ugr => ugr.GroupRole.GroupId)
                         .Distinct()
                         .ToList();
 

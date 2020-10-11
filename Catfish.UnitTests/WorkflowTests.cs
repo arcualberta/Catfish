@@ -219,7 +219,7 @@ namespace Catfish.UnitTests
 
             //Defininig groups
             WorkflowGroup musicGroup = workflow.AddGroup("Music");
-            WorkflowGroup dancingGroup = workflow.AddGroup("Dancing");
+            WorkflowGroup dramaGroup = workflow.AddGroup("Drama");
             WorkflowGroup arcGroup = workflow.AddGroup("ARC");
             
             

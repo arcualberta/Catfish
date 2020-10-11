@@ -44,7 +44,7 @@ namespace Catfish.Core.Models.Contents.Workflow
 
             //Initializing the actions list
             XElement actionListDefinition = GetElement("actions", true);
-            Actions = new XmlModelList<GetAction>(actionListDefinition, true, "action");
+            Actions = new XmlModelList<GetAction>(actionListDefinition, true, "get-action");
 
         }
 
