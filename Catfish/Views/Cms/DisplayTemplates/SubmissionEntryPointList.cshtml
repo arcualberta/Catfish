@@ -1,12 +1,14 @@
 ﻿@model Catfish.Models.Blocks.SubmissionEntryPointList
 @using Catfish.Services;
+@using Catfish.Areas.Manager.Access.AuthorizationRequirements;
+@using Microsoft.AspNetCore.Authorization;
 
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
 @inject IEntityTemplateService _entityTemplateService;
 
 @{
 
-    var templates = _entityTemplateService.GetItemTemplates();
+    var templates = _entityTemplateService.GetItemTemplates(User);
 }
 
 <div class="page-box">
@@ -15,30 +17,39 @@
     <div class="container">
         @foreach (var template in templates)
         {
-            var url = "/entity/create/" + template.Id;
-            var startupDataItem = template.GetRootDataItem(false);
-
-            @if (startupDataItem != null)
+            if ((await _authorizationService.AuthorizeAsync(User, template
+                    , new List<IAuthorizationRequirement>() { TemplateOperations.Create }))
+                .Succeeded)
             {
-                <div class="row item-box">
+                <p>
+                    <a class="btn btn-default" role="button"
+                       href="@Url.Action("Edit", "Document", new { id = Model.Id })">Edit</a>
+                </p>
+                var url = "/entity/create/" + template.Id;
+                var startupDataItem = template.GetRootDataItem(false);
 
-                    <div class="form-title col-lg-12">@startupDataItem.Name.GetConcatenatedContent("<br />")</div>
+                @if (startupDataItem != null)
+                {
+                    <div class="row item-box">
+
+                        <div class="form-title col-lg-12">@startupDataItem.Name.GetConcatenatedContent("<br />")</div>
 
 
-                    <div class="form-description col-lg-10">@startupDataItem.Description.GetConcatenatedContent("<br />")</div>
+                        <div class="form-description col-lg-10">@startupDataItem.Description.GetConcatenatedContent("<br />")</div>
 
 
-                    <div class="form-link col-lg-2">
-                        <a href="@url" class="btn btn-secondary" role="button">Start now</a>
+                        <div class="form-link col-lg-2">
+                            <a href="@url" class="btn btn-secondary" role="button">Start now</a>
+                        </div>
+
                     </div>
-
-                </div>
-            }
-            else
-            {
-                <div class="row item-box">
-                    startupDataItem returned is NULL ( for ItemTemplate: @template.Id)
-                </div>
+                }
+                else
+                {
+                    <div class="row item-box">
+                        startupDataItem returned is NULL ( for ItemTemplate: @template.Id)
+                    </div>
+                }
             }
         }
     </div>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Catfish.Services
@@ -14,10 +15,37 @@ namespace Catfish.Services
             _db = db;
         }
 
-        public IList<ItemTemplate> GetItemTemplates()
+        public IList<ItemTemplate> GetItemTemplates(ClaimsPrincipal user)
         {
-            //TODO: Limit the returning list of templates to the accessible, active templates for the current user
-            return _db.ItemTemplates.ToList();
+            List<Guid> selectTemplateIds = new List<Guid>();
+            if (user != null)
+            {
+                //Finding all groups where the user possess some role
+                var userIdStr = user.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (!string.IsNullOrEmpty(userIdStr))
+                {
+                    var groupIds = _db.UserGroupRoles
+                        .Where(ugr => ugr.UserId == Guid.Parse(userIdStr))
+                        .Select(ugr => ugr.GroupId)
+                        .Distinct()
+                        .ToList();
+
+                    var templateIds = _db.GroupTemplates
+                        .Where(gt => groupIds.Contains(gt.GroupId))
+                        .Select(gt => gt.EntityTemplateId)
+                        .Distinct();
+                    selectTemplateIds.AddRange(templateIds);
+                }
+            }
+
+            if (selectTemplateIds.Count > 0)
+            {
+                return _db.ItemTemplates
+                    .Where(t => selectTemplateIds.Contains(t.Id))
+                    .ToList();
+            }
+            else
+                return new List<ItemTemplate>();
         }
 
         public EntityTemplate GetTemplate(Guid templateId)

@@ -26,9 +26,13 @@ namespace Catfish.Core.Models
         public override void Initialize(bool regenerateId)
         {
             base.Initialize(regenerateId);
+            InitializeWorkflow();
+        }
 
+        public void InitializeWorkflow()
+        {
             XElement workflowDef = Data.Element("workflow");
-            if(workflowDef != null)
+            if (workflowDef != null)
             {
                 Workflow = new Workflow(workflowDef);
             }

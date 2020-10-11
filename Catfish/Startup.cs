@@ -1,4 +1,5 @@
 ﻿using Catfish.Areas.Manager.Access;
+using Catfish.Areas.Manager.Access.AuthorizationHandlers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
@@ -11,6 +12,7 @@ using Catfish.Models.Fields;
 using Catfish.Models.SiteTypes;
 using Catfish.Services;
 using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -136,7 +138,7 @@ namespace Catfish
             services.AddScoped<DbEntityService>();
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
-            services.AddScoped<IAuthorizationService, AuthorizationService>();
+//            services.AddScoped<IAuthorizationService, AuthorizationService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
             services.AddTransient<IWorkflowService, WorkflowService>();
@@ -156,6 +158,11 @@ namespace Catfish
 
             //Configure policy claims
             CatfishSecurity.BuildAllPolicies(services);
+
+            //Configuring authorization services
+            services.AddScoped<IAuthorizationHelper, AuthorizationHelper>();
+            services.AddScoped<IAuthorizationHandler, EntityTemplateAuthorizationHandler>();
+            //services.AddSingleton<IAuthorizationHandler, DocumentAuthorizationCrudHandler>();
 
 
             services.AddHttpContextAccessor();
