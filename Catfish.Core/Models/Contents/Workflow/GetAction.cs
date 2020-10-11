@@ -14,6 +14,10 @@ namespace Catfish.Core.Models.Contents.Workflow
         public static readonly string LableAtt = "link-lable";
         public static readonly string FunctionAtt = "function";
         public static readonly string GroupAtt = "group";
+        public static readonly string AccessAtt = "access";
+
+        public enum eAccess { Restricted = 0, AnyLoggedIn, Public }
+
         public string LinkLabel
         {
             get => GetAttribute(LableAtt, null as string);
@@ -31,8 +35,13 @@ namespace Catfish.Core.Models.Contents.Workflow
             set => SetAttribute(GroupAtt, value);
         }
 
+        public eAccess Access
+        {
+            get => GetAttribute<eAccess>(AccessAtt, eAccess.Restricted);
+            set => SetAttribute(AccessAtt, value.ToString());
+        }
 
-        
+
         public XmlModelList<RoleReference> Authorizations { get; set; }
         public XmlModelList<PostAction> PostActions { get; set; }
         public XmlModelList<Param> Params { get; set; }

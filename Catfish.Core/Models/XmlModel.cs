@@ -184,6 +184,11 @@ namespace Catfish.Core.Models
         {
             Data.SetAttributeValue(attName, attValue);
         }
+        public T GetAttribute<T>(string attName, T defaultValue) where T : Enum
+        {
+            var att = Data.Attribute(attName);
+            return att == null ? defaultValue : (T) Enum.Parse(typeof(T), att.Value) ;
+        }
 
     }
 }

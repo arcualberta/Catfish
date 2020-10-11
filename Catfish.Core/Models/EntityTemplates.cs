@@ -84,8 +84,4 @@ namespace Catfish.Core.Models
             return dataItem;
         }
     }
-
-    public class ItemTemplate : EntityTemplate { }
-    public class CollectionTemplate : EntityTemplate { }
-
 }
