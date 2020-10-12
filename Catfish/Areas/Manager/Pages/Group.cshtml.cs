@@ -107,7 +107,7 @@ namespace Catfish.Areas.Manager.Pages
 
 
             Users = _appDb.UserGroupRoles
-                .Where(ugr => ugr.GroupId == id)
+                .Where(ugr => ugr.GroupRole.GroupId == id)
                 .ToList();
             foreach (var user in Users)
                 user.User = _srv.GetUserDetails(user.UserId);
