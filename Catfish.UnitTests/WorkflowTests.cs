@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models;
+﻿using Catfish.Areas.Manager.Access.AuthorizationRequirements;
+using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
@@ -122,9 +123,16 @@ namespace Catfish.UnitTests
             {
                 template = new ItemTemplate();
                 db.ItemTemplates.Add(template);
-                template.TemplateName = templateName;
-                template.Name.SetContent(templateName);
             }
+            else
+            {
+                ItemTemplate t = new ItemTemplate();
+                t.Id = template.Id;
+                template.Data = t.Data;
+                template.Initialize(false);
+            }
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
 
             ws.SetModel(template);
 
@@ -255,15 +263,15 @@ namespace Catfish.UnitTests
 
             // start submission related workflow items
             //Defining actions
-            GetAction startSubmissionAction = workflow.AddAction("Start Submission", "Create", "Home");
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
 
             //Defining form template
             startSubmissionAction.AddTemplate(calendarChangeForm.Id, "Start Submission Template");
 
             //Defining post actions
-            PostAction postActionSave = startSubmissionAction.AddPostAction("Save", "Save");
+            PostAction postActionSave = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update));
             postActionSave.AddStateMapping(emptyState.Id, savedState.Id, "Save");
-            PostAction postActionSubmit = startSubmissionAction.AddPostAction("Submit", "Save");
+            PostAction postActionSubmit = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
             postActionSubmit.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
             //Defining the pop-up for the above postActionSubmit action

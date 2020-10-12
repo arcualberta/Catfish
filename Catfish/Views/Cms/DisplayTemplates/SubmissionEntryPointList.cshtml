@@ -18,7 +18,7 @@
         @foreach (var template in templates)
         {
             if ((await _authorizationService.AuthorizeAsync(User, template
-                    , new List<IAuthorizationRequirement>() { TemplateOperations.Create }))
+                    , new List<IAuthorizationRequirement>() { TemplateOperations.Instantiate }))
                 .Succeeded)
             {
                 <p>

@@ -138,7 +138,7 @@ namespace Catfish
             services.AddScoped<DbEntityService>();
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
-//            services.AddScoped<IAuthorizationService, AuthorizationService>();
+            services.AddScoped<Catfish.Services.IAuthorizationService, AuthorizationService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
             services.AddTransient<IWorkflowService, WorkflowService>();
