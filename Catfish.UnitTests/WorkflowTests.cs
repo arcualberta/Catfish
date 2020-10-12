@@ -217,16 +217,15 @@ namespace Catfish.UnitTests
             //      of the root data object, the created time-stamp of the root data object, and the satust of the
             //      entity.
 
-            //Defininig groups
-            WorkflowGroup musicGroup = workflow.AddGroup("Music");
-            WorkflowGroup dramaGroup = workflow.AddGroup("Drama");
-            WorkflowGroup arcGroup = workflow.AddGroup("ARC");
-            
-            
+            ////Defininig groups
+            //WorkflowGroup musicGroup = workflow.AddGroup("Music");
+            //WorkflowGroup dramaGroup = workflow.AddGroup("Drama");
+            //WorkflowGroup arcGroup = workflow.AddGroup("ARC");
+
+
             //Defininig roles
-            WorkflowRole centralAdminRole = workflow.AddRole("Admin");
-            WorkflowRole departmentAdmin = workflow.AddRole("DepartmentAdmin");
-            WorkflowRole ownerRole = workflow.AddRole("Owner");
+            WorkflowRole centralAdminRole = workflow.AddRole(auth.GetRole("Admin", true));
+            WorkflowRole departmentAdmin = workflow.AddRole(auth.GetRole("DepartmentAdmin", true));
 
 
             ////Defining users
@@ -354,7 +353,7 @@ namespace Catfish.UnitTests
             deleteSubmissionAction.AddStateReferances(savedState.Id);
 
             //Defining authorizatios
-            deleteSubmissionAction.AddAuthorization(ownerRole.Id);
+            //deleteSubmissionAction.AddAuthorization(ownerRole.Id);
 
 
             // Purge submission related workflow items
@@ -373,7 +372,7 @@ namespace Catfish.UnitTests
             purgeSubmissionAction.AddStateReferances(deleteState.Id);
 
             //Defining authorizatios
-            purgeSubmissionAction.AddAuthorization(ownerRole.Id);
+            //purgeSubmissionAction.AddAuthorization(ownerRole.Id);
 
 
             // Revision request related workflow items

@@ -63,6 +63,18 @@ namespace Catfish.Services
             _piranhaDb.SaveChanges();
         }
 
+        public Role GetRole(string roleName, bool createIfNotExist)
+        {
+            Role role = _piranhaDb.Roles.Where(r => r.Name == roleName).FirstOrDefault();
+            if(role == null && createIfNotExist)
+            {
+                role = new Role() { Name = roleName, NormalizedName = roleName.ToUpper(), Id = Guid.NewGuid() };
+                _piranhaDb.Roles.Add(role);
+                _piranhaDb.SaveChanges();
+            }
+            return role;
+        }
+
         /// <summary>
         /// Iterates through the given set of groups and adds them to the system's groups if they
         /// do not already exist in the system.

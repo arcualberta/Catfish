@@ -76,9 +76,9 @@ namespace Catfish.Core.Models.Contents.Workflow
 
             //Initializing the authorizations list
             XElement authorizationsListDefinition = GetElement("authorizations", true);
-            Authorizations = new XmlModelList<RoleReference>(authorizationsListDefinition, true, "role-refs");
-
+            Authorizations = new XmlModelList<RoleReference>(authorizationsListDefinition, true, "role-ref");
         }
+
         public Param AddTemplate(Guid dataItemFormTemplateId, string exceptionMessage)
         {
             if (Params.Where(p => p.TemplateId == dataItemFormTemplateId).Any())

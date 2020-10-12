@@ -48,5 +48,7 @@ namespace Catfish.Services
         IList<Role> GetGroupRolesDetails();
 
         User GetUserDetails(Guid id);
+
+        Role GetRole(string roleName, bool createIfNotExist);
     }
 }
