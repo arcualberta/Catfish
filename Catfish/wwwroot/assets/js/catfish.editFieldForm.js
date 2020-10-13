@@ -34,6 +34,8 @@ if (document.getElementById("edit-field-form-page")) {
 
                 //api strings
                 getString: "manager/api/forms/",
+                //this one is for the default templates
+                getFieldDefs: "manager/api/forms/fielddefs",
                 //postString: "manager/items/save",
 
                 names: null,
