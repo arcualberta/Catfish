@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Contents;
+﻿using Catfish.Core.AuthorizationRequirements;
+using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Workflow;
 using System;
@@ -14,29 +15,8 @@ namespace Catfish.Core.Models
     {
         public string TargetType { get; set; }
         public string TemplateName { get; set; }
-        public string Domain
-        {
-            get
-            {
-                if (Workflow == null)
-                    return null;
 
-                //if(Workflow.Actions.Where(a => 
-                //    a.Function == nameof(TemplateOperations.Instantiate))
-                return null;
-            }
-            set
-            {
-                //Nothing to do. This is a read-only proprty which we simply use
-                //to expose the list of domains to a database column so that templates
-                //can be searched more efficiently.
-            }
-        }
-
-        private string nameof(object instantiate)
-        {
-            throw new NotImplementedException();
-        }
+        public string Domain { get; set; }
 
         [NotMapped]
         public Workflow Workflow { get; set; }
@@ -110,6 +90,29 @@ namespace Catfish.Core.Models
             dataItem.TemplateId = itemTemplate.Id;
 
             return dataItem;
+        }
+
+        public void PrepareForDbSave()
+        {
+            if (Workflow != null)
+            {
+                if (Workflow.Actions.Where(a => a.Function == nameof(TemplateOperations.Instantiate)
+                                             && a.Access == GetAction.eAccess.Public).Any())
+                {
+                    Domain = "*";
+                }
+                else
+                {
+                    var domains = Workflow.Actions.Where(a => a.Function == nameof(TemplateOperations.Instantiate))
+                                                  .SelectMany(a => a.AuthorizedDomains)
+                                                  .Select(d => d.Value)
+                                                  .ToList();
+
+                    Domain = (domains.Count > 0)
+                        ? string.Join(";", domains) + ";" //Needs to end by a semicolon beause we will use it when matching domains.
+                        : null;
+                }
+            }
         }
     }
 }

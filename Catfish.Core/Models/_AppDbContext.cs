@@ -36,6 +36,9 @@ namespace Catfish.Core.Models
         
         public override int SaveChanges()
         {
+            foreach (var entry in ChangeTracker.Entries<EntityTemplate>())
+                entry.Entity.PrepareForDbSave();
+
             return base.SaveChanges();
         }
 
