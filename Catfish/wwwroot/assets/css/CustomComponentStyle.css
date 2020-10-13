@@ -55,3 +55,101 @@
     padding: 10px;
 }*/
 
+/* Extended Gallery carousel*/
+.extended-gallery-block .carousel-indicators {
+    position: static;
+    left: initial;
+    width: initial;
+    margin-left: initial;
+}
+
+.extended-gallery-block .carousel-indicators > li {
+        width: initial;
+        height: initial;
+        text-indent: initial;
+        border: 1px solid Green;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        text-align: center;
+ }
+.extended-gallery-block .carousel-indicators > li.active img {
+            opacity: 0.7;
+}
+
+.olOval {
+    border: 1px solid Blue;
+    position: static;
+    left: initial;
+    margin-left: initial;
+    width: initial;
+    height: 30px;
+    /* z-index: 20; */
+    border-radius: 25px;
+    margin-top: 5px;
+    vertical-align: middle;
+    padding-top: 2px;
+    background-color: darkblue;
+    align-content: flex-end;
+}
+
+.carouselPauseBtn, .carouselPlayBtn {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid green;
+    border-radius: 25px;
+    padding-top: 6px;
+    margin-left: -130px;
+    margin-top: 4px;
+}
+.indicatorDiv{
+    background-color: antiquewhite;
+    width:100%;
+    height:40px;
+}
+.EGTitle {
+    font-size: 3em;
+    height: 70px;
+    width: 100%;
+    background: blue; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(top, rgba(10, 176, 242,1) 50%, white 50%); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(top, blue 50%, white 50%); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(top, blue 50%, white 50%); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom, rgba(245, 183, 15,0.5) 50%, rgba(250, 250, 250,0.3) 50%); /* Standard syntax */
+}
+.EGDescription{
+
+}
+.EGLink{
+    width:100%;
+    text-align:center;
+}
+.EGLinkBtn{
+    border-radius:25px;
+}
+/* end of extended Gallery block*/
+
+.box-shadow {
+    box-shadow: 0px 3px 10px rgba(0,0,0,.8);
+}
+
+/* column Block*/
+ .CBflex-container {
+    display: flex;
+    /*flex-direction: row;
+    flex-wrap: wrap;*/
+    justify-content: center;
+}
+
+.CBflex-item {
+    /* display: flex;
+    align-self: center;*/
+    flex: 1 0 25%; /* ==Flex-grow 1 flex-shrink0 flex-basis30% == 3 column + margin */
+    width: 25%;
+    max-width: 25%;
+    /*  align-self: center;
+    align-items: center;*/
+    box-shadow: 0px 3px 10px rgba(0,0,0,.8);
+    margin:30px;
+}
