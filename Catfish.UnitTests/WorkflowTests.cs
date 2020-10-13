@@ -284,7 +284,8 @@ namespace Catfish.UnitTests
             postActionSubmit.AddTriggerRefs("1", ownerSubmissionNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
             //Defining authorizatios
-            startSubmissionAction.AddAuthorization(departmentAdmin.Id);
+            //startSubmissionAction.AddAuthorization(departmentAdmin.Id);
+            startSubmissionAction.AddAuthorizedDomain("@ualberta.ca");
 
             // Edit submission related workflow items
             //Defining actions

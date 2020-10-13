@@ -94,6 +94,7 @@ namespace Catfish.Core.Models.Contents.Workflow
             return newRole;
         }
 
+
         //public WorkflowUser AddUser(string userEmail)
         //{
         //    if (Users.Where(x => x.Email == userEmail).Any())

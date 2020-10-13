@@ -65,12 +65,21 @@ namespace Catfish.Areas.Manager.Access.AuthorizationHandlers
                 return Task.CompletedTask;
             }
 
+            //If the workflow action is authorized for users belong to a certain domains, then
+            //check whether the signed-in user's email belongs to one of those domains
+            string currentUserEmail = context.User.FindFirstValue(ClaimTypes.Email);
+            if (workflowAction.IsAuthorizedByDomain(currentUserEmail))
+            {
+                context.Succeed(requirement);
+                return Task.CompletedTask;
+            }
+
             //At this point, the user is authenticated and the workflow access is restricted to specific user roles.
             //Therefore, we need to check whether the user possesses one of those roles within a group where the
             //entity template is associated with.
 
             List<Guid> groupdsAssociatedWithTemplate = _authHelper.GetGroupsAssociatedWithTemplate(resource.Id).ToList();
-            List<Guid> authorizedRoles = workflowAction.Authorizations.Select(roleRef => roleRef.RefId).ToList();
+            List<Guid> authorizedRoles = workflowAction.AuthorizedRoles.Select(roleRef => roleRef.RefId).ToList();
             string currentUserIdStr = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
             Guid currentUserId = Guid.Parse(currentUserIdStr);
 

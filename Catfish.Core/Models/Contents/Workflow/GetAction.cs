@@ -16,7 +16,7 @@ namespace Catfish.Core.Models.Contents.Workflow
         public static readonly string GroupAtt = "group";
         public static readonly string AccessAtt = "access";
 
-        public enum eAccess { Restricted = 0, AnyLoggedIn, Public }
+        public enum eAccess { Restricted = 0, AnyFromDomain, AnyLoggedIn, Public }
 
         public string LinkLabel
         {
@@ -42,7 +42,8 @@ namespace Catfish.Core.Models.Contents.Workflow
         }
 
 
-        public XmlModelList<RoleReference> Authorizations { get; set; }
+        public XmlModelList<RoleReference> AuthorizedRoles { get; set; }
+        public XmlModelList<EmailDomain> AuthorizedDomains { get; set; }
         public XmlModelList<PostAction> PostActions { get; set; }
         public XmlModelList<Param> Params { get; set; }
         public XmlModelList<StateRef> States { get; set; }
@@ -74,9 +75,11 @@ namespace Catfish.Core.Models.Contents.Workflow
             XElement stateListDefinition = GetElement("states", true);
             States = new XmlModelList<StateRef>(stateListDefinition, true, "state-refs");
 
-            //Initializing the authorizations list
+            //Initializing the authorizations lists
             XElement authorizationsListDefinition = GetElement("authorizations", true);
-            Authorizations = new XmlModelList<RoleReference>(authorizationsListDefinition, true, "role-ref");
+            AuthorizedRoles = new XmlModelList<RoleReference>(authorizationsListDefinition, true, RoleReference.TagName);
+            AuthorizedDomains = new XmlModelList<EmailDomain>(authorizationsListDefinition, true, EmailDomain.TagName);
+            
         }
 
         public Param AddTemplate(Guid dataItemFormTemplateId, string exceptionMessage)
@@ -100,14 +103,21 @@ namespace Catfish.Core.Models.Contents.Workflow
         }
         public RoleReference AddAuthorization(Guid refId)
         {
-            if (Authorizations.Where(st => st.Id == refId).Any())
+            if (AuthorizedRoles.Where(st => st.Id == refId).Any())
                 throw new Exception(string.Format("Authorization already exists."));
 
             RoleReference newAuthorization = new RoleReference() { RefId = refId };
-            Authorizations.Add(newAuthorization);
+            AuthorizedRoles.Add(newAuthorization);
             return newAuthorization;
         }
 
+        public EmailDomain AddAuthorizedDomain(string domain)
+        {
+            EmailDomain d = new EmailDomain() { Value = domain };
+            AuthorizedDomains.Add(d);
+            return d;
+
+        }
         public StateRef AddStateReferances(Guid refId)
         {
             if (States.Where(st => st.Id == refId).Any())
@@ -116,6 +126,16 @@ namespace Catfish.Core.Models.Contents.Workflow
             StateRef newState = new StateRef() { RefId = refId };
             States.Add(newState);
             return newState;
+        }
+
+        public bool IsAuthorizedByDomain(string userEmail)
+        {
+            if (!string.IsNullOrWhiteSpace(userEmail) && AuthorizedDomains.Count > 0)
+            {
+                string emailDomain = userEmail.Substring(userEmail.IndexOf("@"));
+                return AuthorizedDomains.Where(d => d.Value == emailDomain).Any();
+            }
+            return false;
         }
 
     }

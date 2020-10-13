@@ -1,4 +1,6 @@
 ﻿using Catfish.Core.Models;
+using Microsoft.AspNetCore.Identity;
+using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,17 +12,20 @@ namespace Catfish.Services
     public class EntityTemplateService : IEntityTemplateService
     {
         private readonly AppDbContext _db;
-        public EntityTemplateService(AppDbContext db)
+        private readonly UserManager<User> _manager;
+        public EntityTemplateService(AppDbContext db, UserManager<User> manager)
         {
             _db = db;
-        }
+            _manager = manager;
+    }
 
         public IList<ItemTemplate> GetItemTemplates(ClaimsPrincipal user)
         {
             List<Guid> selectTemplateIds = new List<Guid>();
             if (user != null)
             {
-                //Finding all groups where the user possess some role
+                //Finding all groups where the user possess some role and then
+                //getting all templates associated with those groups
                 var userIdStr = user.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (!string.IsNullOrEmpty(userIdStr))
                 {
@@ -37,6 +42,7 @@ namespace Catfish.Services
                         .Distinct();
                     selectTemplateIds.AddRange(templateIds);
                 }
+
             }
 
             if (selectTemplateIds.Count > 0)
