@@ -20,14 +20,14 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">@Localizer.General["Settings"]</li>
-                <li class="breadcrumb-item" aria-current="page"><a href="@Url.Action("Groups", "manager")">@Localizer.General["Groups"]</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a href="..\">@Localizer.General["Groups"]</a></li>
                 <li class="breadcrumb-item active" aria-current="page">@Localizer.General["Edit"]</li>
             </ol>
         </nav>
 
         <div class="container-fluid">
             <div class="top-nav">
-                @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.CatfishPermission.GroupsSave)).Succeeded)
+                @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Save)).Succeeded)
                 {
                     <button type="submit" class="btn btn-labeled btn-success pull-right">
                         <span class="btn-label">
@@ -119,14 +119,36 @@
                         var users = Model.Users.Where(u => u.GroupRole.RoleId == role.RoleId);
                         <div class="form-group">
                             <label>@Localizer.General[role.RoleName]</label>
-
-                            <ul class="list-group">
-                                @foreach (var user in users)
-                                {
-                                    <li>UserId: @user.Id</li>
-                                }
-                            </ul>
-                            <button type="button" class="btn btn-labeled btn-primary pull-right" data-toggle="modal" data-target="#userModal" data-id="@role.RoleGroupId" onclick="addUser('@role.RoleGroupId'); return false;">
+                            <div class="container-fluid">
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th>@Localizer.General["User Name"]</th>
+                                            <th>@Localizer.General["Email"]</th>
+                                            <th class="actions one"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var user in users)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <span class="title">@user.User.UserName</span>
+                                                </td>
+                                                <td>
+                                                    <span class="title">@user.User.Email</span>
+                                                </td>
+                                                <td class="actions one">
+                                                    <a class="danger" href="@Url.Action("Delete", new { id = user.User.Id })">
+                                                        <span class="fas fa-trash"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button type="button" class="btn btn-labeled btn-primary pull-right" data-toggle="modal" data-target="#userModal" data-id="@role.RoleGroupId" onclick="addUser('@role.RoleGroupId', '@role.RoleId'); return false;">
                                 <span class="btn-label">
                                     <i class="fas fa-plus"></i>
                                 </span>
@@ -140,6 +162,7 @@
                                     <div class="modal-content">
                                         <div class="modal-body">
                                             <input type="text" name="GroupRoleId" id="GroupRoleId" value="" />
+                                            <input type="text" name="RoleId" id="RoleId" value="" />
                                             <div class="card-body">
                                                 <div class="form-group">
                                                     <label>@Localizer.General["Users"]</label>
@@ -176,8 +199,9 @@
     </div> @*End: "container-fluid"*@
 </form>
 <script>
-    function addUser(id) {
-        $(".modal-body #GroupRoleId").val(id);
+    function addUser(groupRoleId,roleId) {
+        $(".modal-body #GroupRoleId").val(groupRoleId);
+        $(".modal-body #RoleId").val(roleId);
             // As pointed out in comments,
             // it is unnecessary to have to manually call the modal.
             // $('#addBookDialog').modal('show');

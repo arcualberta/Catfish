@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Contents;
+﻿using Catfish.Core.AuthorizationRequirements;
+using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Workflow;
 using System;
@@ -15,6 +16,8 @@ namespace Catfish.Core.Models
         public string TargetType { get; set; }
         public string TemplateName { get; set; }
 
+        public string Domain { get; set; }
+
         [NotMapped]
         public Workflow Workflow { get; set; }
 
@@ -26,11 +29,16 @@ namespace Catfish.Core.Models
         public override void Initialize(bool regenerateId)
         {
             base.Initialize(regenerateId);
+            InitializeWorkflow();
+        }
 
+        public void InitializeWorkflow()
+        {
             XElement workflowDef = Data.Element("workflow");
-            if(workflowDef != null)
+            if (workflowDef != null)
             {
                 Workflow = new Workflow(workflowDef);
+                //Workflow.Initialize(XmlModel.eGuidOption.Ignore);
             }
         }
 
@@ -83,9 +91,28 @@ namespace Catfish.Core.Models
 
             return dataItem;
         }
+
+        public void PrepareForDbSave()
+        {
+            if (Workflow != null)
+            {
+                if (Workflow.Actions.Where(a => a.Function == nameof(TemplateOperations.Instantiate)
+                                             && a.Access == GetAction.eAccess.Public).Any())
+                {
+                    Domain = "*";
+                }
+                else
+                {
+                    var domains = Workflow.Actions.Where(a => a.Function == nameof(TemplateOperations.Instantiate))
+                                                  .SelectMany(a => a.AuthorizedDomains)
+                                                  .Select(d => d.Value)
+                                                  .ToList();
+
+                    Domain = (domains.Count > 0)
+                        ? string.Join(";", domains) + ";" //Needs to end by a semicolon beause we will use it when matching domains.
+                        : null;
+                }
+            }
+        }
     }
-
-    public class ItemTemplate : EntityTemplate { }
-    public class CollectionTemplate : EntityTemplate { }
-
 }

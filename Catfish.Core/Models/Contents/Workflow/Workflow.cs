@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Piranha.AspNetCore.Identity.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace Catfish.Core.Models.Contents.Workflow
 
             //Initializing the actions list
             XElement actionListDefinition = GetElement("actions", true);
-            Actions = new XmlModelList<GetAction>(actionListDefinition, true, "action");
+            Actions = new XmlModelList<GetAction>(actionListDefinition, true, "get-action");
 
         }
 
@@ -63,35 +64,36 @@ namespace Catfish.Core.Models.Contents.Workflow
             return newState;
         }
 
-        public WorkflowGroup GetGroup(string value)
-        {
-            return Groups.Where(gr => gr.Value == value).FirstOrDefault();
-        }
+        ////public WorkflowGroup GetGroup(string value)
+        ////{
+        ////    return Groups.Where(gr => gr.Value == value).FirstOrDefault();
+        ////}
 
-        public WorkflowGroup AddGroup(string value)
-        {
-            if (Groups.Where(gr => gr.Value == value).Any())
-                throw new Exception(string.Format("Group {0} already exists.", value));
+        ////public WorkflowGroup AddGroup(string value)
+        ////{
+        ////    if (Groups.Where(gr => gr.Value == value).Any())
+        ////        throw new Exception(string.Format("Group {0} already exists.", value));
 
-            WorkflowGroup newGroup = new WorkflowGroup() { Value = value };
-            Groups.Add(newGroup);
-            return newGroup;
-        }
+        ////    WorkflowGroup newGroup = new WorkflowGroup() { Value = value };
+        ////    Groups.Add(newGroup);
+        ////    return newGroup;
+        ////}
 
         public WorkflowRole GetRole(string value)
         {
             return Roles.Where(r => r.Value == value).FirstOrDefault();
         }
 
-        public WorkflowRole AddRole(string value)
+        public WorkflowRole AddRole(Role role)
         {
-            if (Roles.Where(r => r.Value == value).Any())
-                throw new Exception(string.Format("Role {0} already exists.", value));
+            if (Roles.Where(r => r.Value == role.Name).Any())
+                throw new Exception(string.Format("Role {0} already exists.", role.Name));
 
-            WorkflowRole newRole = new WorkflowRole() { Value = value };
+            WorkflowRole newRole = new WorkflowRole() { Value = role.Name, Id = role.Id };
             Roles.Add(newRole);
             return newRole;
         }
+
 
         //public WorkflowUser AddUser(string userEmail)
         //{

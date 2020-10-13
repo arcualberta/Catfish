@@ -21,7 +21,7 @@ namespace Catfish.Api.Controllers
         }
 
         [Route("freetext")]
-        public IList<SolrEntry> FreeText(string searchTerm)
+        public IList<SolrEntry> FreeText([FromForm] string searchTerm)
         {
             var parameters = new SearchParameters();
             parameters.FreeSearch = searchTerm;

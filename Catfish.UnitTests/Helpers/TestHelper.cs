@@ -47,7 +47,7 @@ namespace Catfish.Tests.Helpers
             services.AddDbContext<AppDbContext>(options => options
                 .UseSqlServer(dbConnectionString)
                 );
-            services.AddDbContext<PiranhaDbContext>(options => options
+            services.AddDbContext<IdentitySQLServerDb>(options => options
                 .UseSqlServer(dbConnectionString)
                 );
 
@@ -84,6 +84,11 @@ namespace Catfish.Tests.Helpers
         public AppDbContext Db
         {
             get => Seviceprovider.GetService<AppDbContext>();
+        }
+
+        public IdentitySQLServerDb PiranhaDb
+        {
+            get => Seviceprovider.GetService<IdentitySQLServerDb>();
         }
 
         public IWorkflowService WorkflowService

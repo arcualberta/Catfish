@@ -4,14 +4,16 @@ using Catfish.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Catfish.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201012075804_RemovedGroupIdFromUserGroupRole")]
+    partial class RemovedGroupIdFromUserGroupRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,9 +200,6 @@ namespace Catfish.Core.Migrations
             modelBuilder.Entity("Catfish.Core.Models.EntityTemplate", b =>
                 {
                     b.HasBaseType("Catfish.Core.Models.Entity");
-
-                    b.Property<string>("Domain")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TargetType")
                         .HasColumnType("nvarchar(max)");

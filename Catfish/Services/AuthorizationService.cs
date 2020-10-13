@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Models;
 using Microsoft.AspNetCore.Http;
 using Piranha.AspNetCore.Identity.Data;
+using Piranha.AspNetCore.Identity.SQLServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +12,12 @@ namespace Catfish.Services
 {
     public class AuthorizationService : IAuthorizationService
     {
-        public readonly PiranhaDbContext _piranhaDb;
+        public readonly IdentitySQLServerDb _piranhaDb;
         public readonly AppDbContext _appDb;
 
         public readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthorizationService(AppDbContext adb, PiranhaDbContext pdb, IHttpContextAccessor httpContextAccessor)
+        public AuthorizationService(AppDbContext adb, IdentitySQLServerDb pdb, IHttpContextAccessor httpContextAccessor)
         {
             _appDb = adb;
             _piranhaDb = pdb;
@@ -60,6 +61,18 @@ namespace Catfish.Services
             }
 
             _piranhaDb.SaveChanges();
+        }
+
+        public Role GetRole(string roleName, bool createIfNotExist)
+        {
+            Role role = _piranhaDb.Roles.Where(r => r.Name == roleName).FirstOrDefault();
+            if(role == null && createIfNotExist)
+            {
+                role = new Role() { Name = roleName, NormalizedName = roleName.ToUpper(), Id = Guid.NewGuid() };
+                _piranhaDb.Roles.Add(role);
+                _piranhaDb.SaveChanges();
+            }
+            return role;
         }
 
         /// <summary>
@@ -153,6 +166,11 @@ namespace Catfish.Services
         {
             return _piranhaDb.Roles.Where(r=>r.NormalizedName!="SYSADMIN").OrderBy(r => r.Name).ToList();
         }
-        
+
+        public User GetUserDetails(Guid id)
+        {
+            return _piranhaDb.Users.Where(u => u.Id == id).FirstOrDefault();
+        }
+
     }
 }

@@ -26,9 +26,11 @@
             var $form = $(this),
                 url = $form.attr('action');
 
+            var searchVal = $('#freeSearchBlockTerm').val();
+
             /* Send the data using post with element id name and name2*/
             var posting = $.post(url, {
-                searchTerm: $('#freeSearchBlockTem').val()
+                searchTerm: searchVal
             });
 
             /* Alerts the results */
@@ -36,11 +38,47 @@
                 //TODO: Check the content of the data to understand it.
                 //Iterate throgh the list of results and add them as new elements to the search-result div
 
-                var reslutEntries = []; //TODO: assign the list retrieved from data here
-                // for each entry in resultEntries
-                // create a div that contains the entry title and the list of highlighted snippets as shown in
-                //the example. Insert it to the following element.
-                //$('#freeSearchBlockResults')
+                //Clearing the existing search results, if any
+                $("#freeSearchBlockResults").empty();
+                if (data.length == 0) {
+                    $("#freeSearchBlockResults").append($.parseHTML("<div class='alert alert-warning'>No results found</div>"));
+                    return;
+                }
+
+                $.each(data, function (entryIndex, entry) {
+
+                    @* Creating the wrapper div as a DOM element for the result item *@
+                    var entryWrapper = $.parseHTML("<div class='search-result-entry'>");
+
+                    @* Adding the wrapper to the result - list container *@
+                    $("#freeSearchBlockResults").append(entryWrapper);
+
+                    @*Building a link to the detailed object if there is a permalink associated with the entry*@
+                    var linkStart = "";
+                    var linkEnd = "";
+                    if (entry.permalink != undefined && entry.permalink.length > 0) {
+                        linkStart = "<a href='" + entry.permalink + "'>";
+                        linkEnd = "</a>";
+                    }
+
+                    @* Adding the entry title to the wrapper as a child. We need to this for each
+                        value of the title because the title can take multiple values*@
+                    var entryTitleDiv = $.parseHTML("<div class='entry-title'>");
+                    $(entryWrapper).append(entryTitleDiv);
+                    $.each(entry.title, function (titleIndex, titleVal) {
+                        var str = "<span><b>" + linkStart + titleVal + linkEnd + "</b></span>"
+                        $(entryTitleDiv).append($.parseHTML(str));
+                    });
+
+                    @*Go through each highlight snippet and add them to the entry-body section. We include each them
+                        in separate divs*@
+                    var entryBodyDiv = $.parseHTML("<div class='entry-body'>");
+                    $(entryWrapper).append(entryBodyDiv);
+                    $.each(entry.highlights, function (highlightIndex, highlightVal) {
+                        var str = "<div>" + highlightVal + "</div>";
+                        $(entryBodyDiv).append($.parseHTML(str));
+                    });
+                });
             });
 
             posting.fail(function () {
@@ -53,42 +91,9 @@
 
 <!-- TODO: Make the following a search form -->
 <form id="freeSearchBlockForm" method="post" action="/api/search/freetext">
-    <input type="text" name="freeSearchBlockTem" id="freeSearchBlockTem" />
+    <input type="text" name="searchTerm" id="freeSearchBlockTerm" />
     <input id="freeSearchBlockButton" type="submit" value="Submit" />
 </form>
 
 <div id="freeSearchBlockResults">
-
-    <!-- sample for one of the search result entries. When the code is implemented, remove this and rather
-        populate this section by creating new entries with simialr structure. 
-     -->
-
-    <div class="search-resultoentry">
-        <div class="entry-title">Title of the enrty from the seach reslut</div>
-        <div class="entry-body">Content of the entry body, which is the list of highlight snippets</div>
-    </div>
 </div>
-
-@*<ul>
-    @{
-        foreach (var entry in Results)
-        {
-            <li>
-                @foreach (var title in entry.Title)
-                {
-                    <div><b>@Html.Raw(title)</b></div>
-                }
-
-
-                <div>Object ID: @entry.Id</div>
-                <div>Object Type: @entry.ObjectType</div>
-
-
-                @foreach (var snippet in entry.Highlights)
-                {
-                    <div>@Html.Raw(snippet)</div>
-                }
-            </li>
-        }
-    }
-</ul>*@
