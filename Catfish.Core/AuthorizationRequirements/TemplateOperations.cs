@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Catfish.Areas.Manager.Access.AuthorizationRequirements
+namespace Catfish.Core.AuthorizationRequirements
 {
     public class TemplateOperations : CrudOperations
     {

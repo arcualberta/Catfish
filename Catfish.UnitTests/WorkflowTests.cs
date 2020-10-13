@@ -1,4 +1,4 @@
-﻿using Catfish.Areas.Manager.Access.AuthorizationRequirements;
+﻿using Catfish.Core.AuthorizationRequirements;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;

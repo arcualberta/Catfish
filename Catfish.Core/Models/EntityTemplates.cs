@@ -14,6 +14,29 @@ namespace Catfish.Core.Models
     {
         public string TargetType { get; set; }
         public string TemplateName { get; set; }
+        public string Domain
+        {
+            get
+            {
+                if (Workflow == null)
+                    return null;
+
+                //if(Workflow.Actions.Where(a => 
+                //    a.Function == nameof(TemplateOperations.Instantiate))
+                return null;
+            }
+            set
+            {
+                //Nothing to do. This is a read-only proprty which we simply use
+                //to expose the list of domains to a database column so that templates
+                //can be searched more efficiently.
+            }
+        }
+
+        private string nameof(object instantiate)
+        {
+            throw new NotImplementedException();
+        }
 
         [NotMapped]
         public Workflow Workflow { get; set; }

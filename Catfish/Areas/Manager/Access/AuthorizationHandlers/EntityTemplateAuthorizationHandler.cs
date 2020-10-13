@@ -1,5 +1,4 @@
-﻿using Catfish.Areas.Manager.Access.AuthorizationRequirements;
-using Catfish.Core.Models;
+﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Workflow;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
