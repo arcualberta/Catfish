@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models;
+﻿using Catfish.Core.AuthorizationRequirements;
+using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
@@ -122,9 +123,16 @@ namespace Catfish.UnitTests
             {
                 template = new ItemTemplate();
                 db.ItemTemplates.Add(template);
-                template.TemplateName = templateName;
-                template.Name.SetContent(templateName);
             }
+            else
+            {
+                ItemTemplate t = new ItemTemplate();
+                t.Id = template.Id;
+                template.Data = t.Data;
+                template.Initialize(false);
+            }
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
 
             ws.SetModel(template);
 
@@ -217,16 +225,15 @@ namespace Catfish.UnitTests
             //      of the root data object, the created time-stamp of the root data object, and the satust of the
             //      entity.
 
-            //Defininig groups
-            WorkflowGroup musicGroup = workflow.AddGroup("Music");
-            WorkflowGroup dancingGroup = workflow.AddGroup("Dancing");
-            WorkflowGroup arcGroup = workflow.AddGroup("ARC");
-            
-            
+            ////Defininig groups
+            //WorkflowGroup musicGroup = workflow.AddGroup("Music");
+            //WorkflowGroup dramaGroup = workflow.AddGroup("Drama");
+            //WorkflowGroup arcGroup = workflow.AddGroup("ARC");
+
+
             //Defininig roles
-            WorkflowRole centralAdminRole = workflow.AddRole("Admin");
-            WorkflowRole departmentAdmin = workflow.AddRole("DepartmentAdmin");
-            WorkflowRole ownerRole = workflow.AddRole("Owner");
+            WorkflowRole centralAdminRole = workflow.AddRole(auth.GetRole("Admin", true));
+            WorkflowRole departmentAdmin = workflow.AddRole(auth.GetRole("DepartmentAdmin", true));
 
 
             ////Defining users
@@ -256,15 +263,15 @@ namespace Catfish.UnitTests
 
             // start submission related workflow items
             //Defining actions
-            GetAction startSubmissionAction = workflow.AddAction("Start Submission", "Create", "Home");
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
 
             //Defining form template
             startSubmissionAction.AddTemplate(calendarChangeForm.Id, "Start Submission Template");
 
             //Defining post actions
-            PostAction postActionSave = startSubmissionAction.AddPostAction("Save", "Save");
+            PostAction postActionSave = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update));
             postActionSave.AddStateMapping(emptyState.Id, savedState.Id, "Save");
-            PostAction postActionSubmit = startSubmissionAction.AddPostAction("Submit", "Save");
+            PostAction postActionSubmit = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
             postActionSubmit.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
             //Defining the pop-up for the above postActionSubmit action
@@ -278,6 +285,7 @@ namespace Catfish.UnitTests
 
             //Defining authorizatios
             startSubmissionAction.AddAuthorization(departmentAdmin.Id);
+            startSubmissionAction.AddAuthorizedDomain("@ualberta.ca");
 
             // Edit submission related workflow items
             //Defining actions
@@ -354,7 +362,7 @@ namespace Catfish.UnitTests
             deleteSubmissionAction.AddStateReferances(savedState.Id);
 
             //Defining authorizatios
-            deleteSubmissionAction.AddAuthorization(ownerRole.Id);
+            //deleteSubmissionAction.AddAuthorization(ownerRole.Id);
 
 
             // Purge submission related workflow items
@@ -373,7 +381,7 @@ namespace Catfish.UnitTests
             purgeSubmissionAction.AddStateReferances(deleteState.Id);
 
             //Defining authorizatios
-            purgeSubmissionAction.AddAuthorization(ownerRole.Id);
+            //purgeSubmissionAction.AddAuthorization(ownerRole.Id);
 
 
             // Revision request related workflow items

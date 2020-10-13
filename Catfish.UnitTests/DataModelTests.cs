@@ -1,14 +1,11 @@
 using Catfish.Core.Models;
-using Catfish.Core.Models.Contents;
-using Catfish.Core.Models.Contents.Fields;
-using Catfish.Core.Models.Contents.ViewModels;
-using Catfish.Core.Models.Contents.ViewModels.ListEntries;
 using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Core.Services.Solr;
+using Catfish.Models.ViewModels;
 using Catfish.Tests.Helpers;
-using Microsoft.Data.SqlClient;
 using NUnit.Framework;
+using Piranha.AspNetCore.Identity.SQLServer;
 using SolrNet;
 using System;
 using System.Collections.Generic;
@@ -106,32 +103,82 @@ namespace Catfish.UnitTests
             srv.SeedDefaults(true);
 
             _testHelper.Db.SaveChanges();
+
         }
 
-////        [Test]
-////        public void SolrNewItemTest()
-////        {
-////            //private ISolrIndexService<SolrItemModel> solrIndexService;
-////            SeedingService srv = _testHelper.Seviceprovider.GetService(typeof(SeedingService)) as SeedingService;
+        [Test]
+        public void ConfigureTestGroups()
+        {
+            AppDbContext appdb = _testHelper.Db;
+            IdentitySQLServerDb pirdb = _testHelper.PiranhaDb;
 
-////            ItemTemplate template = SeedingService.NewDublinCoreItem();
-////            Item item = template.Instantiate<Item>();
-////            item.MetadataSets[0].SetFieldValue<TextField>("Subject", "en", "New restaurants are mad crazy to be opening right now -- or are they?", "en");
-////            string desc = @"On Wednesdays, Palmetto, which opened for the first time on May 11 in Oakland, California, serves a full prime rib dinner -- to go.
-////It's 'enough to feed two people, or one really hungry person,' Christ Aivaliotis, one of the new restaurant's owners, tells CNN Travel.
-////But this isn't how Palmetto or a smattering of other restaurants around the world expected to be operating in the spring of 2020.
-////Modified menus, a bare - bones staff and the seemingly gargantuan task of attracting business in a time of such grave uncertainty are all factors in a new food and beverage operation.
-////'It may not be ideal,' says Lilly W.Jan, a lecturer in food and beverage management at Cornell's School of Hotel Administration, but she wouldn't call it 'crazy.'";
+            List<string> testGroupNames = new List<string>() { "ARC", "Music", "Drama", "History and Classics", "English and Film Studies" };
+            foreach (var groupName in testGroupNames)
+                if (!appdb.Groups.Where(gr => gr.Name == groupName).Any())
+                    appdb.Groups.Add(new Group() { Name = groupName, GroupStatus = Group.eGroupStatus.Active, Id = Guid.NewGuid() });
+            //db.SaveChanges();
 
-////            item.MetadataSets[0].SetFieldValue<TextArea>("Description", "en", desc, "en");
-////            item.Name.SetContent("Solr documents");
-////            item.Description.SetContent("Solr documents Content");
-////            _testHelper.Db.Items.Add(item);
-////            _testHelper.Db.SaveChanges();
+            //Adding all roles to all groups
+            var roles = pirdb.Roles.Except(pirdb.Roles.Where(r => r.NormalizedName == "SYSADMIN")).ToList();
+            foreach(var role in roles)
+                foreach (var group in appdb.Groups)
+                    if (appdb.GroupRoles.Where(gr => gr.GroupId == group.Id && gr.RoleId == role.Id).Any() == false)
+                        appdb.GroupRoles.Add(new GroupRole() { RoleId = role.Id, GroupId = group.Id, Id = Guid.NewGuid() });
 
-////            entityService.AddUpdateEntity(item);
 
-////        }
+            //Associating all item templates with a workflow with all test groups
+            var templates = appdb.ItemTemplates.ToList();
+            foreach(var template in templates)
+            {
+                template.InitializeWorkflow();
+                if (template.Workflow != null)
+                {
+                    foreach (var group in appdb.Groups.ToList())
+                    {
+                        if (appdb.GroupTemplates.Where(gt => gt.GroupId == group.Id && gt.EntityTemplateId == template.Id).Any() == false)
+                            appdb.GroupTemplates.Add(new GroupTemplate() { GroupId = group.Id, EntityTemplateId = template.Id, Id = Guid.NewGuid() });
+                        //db.SaveChanges();
+                    }
+                }
+            }
+
+            //Adding the "admin" user to all roles under the each group
+            var adminUserId = pirdb.Users.Where(u => u.NormalizedUserName == "ADMIN").Select(u => u.Id).FirstOrDefault();
+            foreach(var groupRole in appdb.GroupRoles)
+            {
+                var role = pirdb.Roles.Where(r => r.Id == groupRole.RoleId).FirstOrDefault();
+                if (appdb.UserGroupRoles.Where(ugr => ugr.GroupRoleId == groupRole.Id && ugr.UserId == adminUserId).Any() == false)
+                    appdb.UserGroupRoles.Add(new UserGroupRole() { GroupRoleId = groupRole.Id, UserId = adminUserId, Id = Guid.NewGuid() });
+                //db.SaveChanges();
+            }
+
+            appdb.SaveChanges();
+        }
+
+        ////        [Test]
+        ////        public void SolrNewItemTest()
+        ////        {
+        ////            //private ISolrIndexService<SolrItemModel> solrIndexService;
+        ////            SeedingService srv = _testHelper.Seviceprovider.GetService(typeof(SeedingService)) as SeedingService;
+
+        ////            ItemTemplate template = SeedingService.NewDublinCoreItem();
+        ////            Item item = template.Instantiate<Item>();
+        ////            item.MetadataSets[0].SetFieldValue<TextField>("Subject", "en", "New restaurants are mad crazy to be opening right now -- or are they?", "en");
+        ////            string desc = @"On Wednesdays, Palmetto, which opened for the first time on May 11 in Oakland, California, serves a full prime rib dinner -- to go.
+        ////It's 'enough to feed two people, or one really hungry person,' Christ Aivaliotis, one of the new restaurant's owners, tells CNN Travel.
+        ////But this isn't how Palmetto or a smattering of other restaurants around the world expected to be operating in the spring of 2020.
+        ////Modified menus, a bare - bones staff and the seemingly gargantuan task of attracting business in a time of such grave uncertainty are all factors in a new food and beverage operation.
+        ////'It may not be ideal,' says Lilly W.Jan, a lecturer in food and beverage management at Cornell's School of Hotel Administration, but she wouldn't call it 'crazy.'";
+
+        ////            item.MetadataSets[0].SetFieldValue<TextArea>("Description", "en", desc, "en");
+        ////            item.Name.SetContent("Solr documents");
+        ////            item.Description.SetContent("Solr documents Content");
+        ////            _testHelper.Db.Items.Add(item);
+        ////            _testHelper.Db.SaveChanges();
+
+        ////            entityService.AddUpdateEntity(item);
+
+        ////        }
 
 
         //[Test]
