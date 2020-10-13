@@ -286,6 +286,7 @@ namespace Catfish.UnitTests
             //Defining authorizatios
             startSubmissionAction.AddAuthorization(departmentAdmin.Id);
             startSubmissionAction.AddAuthorizedDomain("@ualberta.ca");
+            startSubmissionAction.AddAuthorizedDomain("@ucalgary.ca");
 
             // Edit submission related workflow items
             //Defining actions

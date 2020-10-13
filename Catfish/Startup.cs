@@ -68,7 +68,8 @@ namespace Catfish
            );
 
             //-- add MVC service
-            services.AddMvc();//.AddXmlSerializerFormatters(); // to user MVC model
+            services.AddMvc()
+                .AddRazorOptions(options => options.ViewLocationFormats.Add("/Views/Shared/{0}.cshtml"));
 
             // Service setup for Piranha CMS
             services.AddPiranha(options =>
