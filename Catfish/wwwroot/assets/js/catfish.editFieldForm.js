@@ -589,46 +589,28 @@ if (document.getElementById("edit-field-form-page")) {
                 //var self = this;
                 return new Promise((resolve, reject) => {
                     piranha.permissions.load(() => {
-                        fetch(piranha.baseUrl + this.getString + this.itemId)
-                            .then((response) => { return response.json(); })
-                            .then((result) => {
-                                this.names = result.Name;
-                                this.descriptions = result.Description;
-                                this.fields = result.Fields.$values;
-                                this.fields_type = result.Fields.$type;
-                                this.id = result.Id;
-                                this.modelType = result.ModelType;
-
-                                this.finishedGET = true;
-                                //this.collections = result.collections;
-                                //this.updateBindings = true;
-                                console.log(result);
-
-                                for (let field of this.fields) {
-                                    this.$set(this.dropdowns, field.Id, {
-                                        isCollapsed: true,
-                                        showDescription: false,
-                                        hasOtherOption: false
-                                    });
-                                }
-
-                                //temporary until templates sent, remove afterwards
-                                for (let field of result.Fields.$values) {
-                                    if (field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core') {
-                                        field.selected = 0;
-                                        let defaultTextfieldTemplate = JSON.parse(JSON.stringify(field));
-                                        defaultTextfieldTemplate.Name.Values.$values[0].Value = '';
-                                        defaultTextfieldTemplate.selected = null;
-
-                                        this.tmpTextfieldTemplate = defaultTextfieldTemplate;
+                        fetch(piranha.baseUrl + this.getFieldDefs)
+                            .then((fdResponse) => { return fdResponse.json(); })
+                            .then((fieldDefsResult) => {
+                                //templates handled here
+                                console.log("second res", fieldDefsResult)
+                                for (let defaultFieldIndex in fieldDefsResult.$values) {
+                                    switch (defaultFieldIndex) {
+                                        case '0':
+                                            this.tmpTextfieldTemplate = fieldDefsResult.$values[defaultFieldIndex];
+                                            break;
+                                        case '1':
+                                            this.tmpTextAreaTemplate = fieldDefsResult.$values[defaultFieldIndex];
+                                            break;
+                                        //the rest still need to be added from the backend
 									}
-
+                                    
                                 }
 
                                 //temp set other values that i dont have sample data for
                                 //guessing for what will be needed, adjust when dummy data given
-                                this.tmpTextAreaTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
-                                this.tmpTextAreaTemplate.$type = 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core';
+                                //this.tmpTextAreaTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
+                                //this.tmpTextAreaTemplate.$type = 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core';
 
                                 this.tmpRadioTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
                                 this.tmpRadioTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core';
@@ -652,6 +634,50 @@ if (document.getElementById("edit-field-form-page")) {
                                 this.tmpDisplayFieldTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
                                 this.tmpDisplayFieldTemplate.$type = 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core';
                                 this.tmpDisplayFieldTemplate.Values.$values = "";
+
+                            })
+                            .then(() => {
+                                return fetch(piranha.baseUrl + this.getString + this.itemId);
+                            })
+                            .then((response) => { return response.json(); })
+                            .then((result) => {
+                                //data for this form handled here
+
+                                this.names = result.Name;
+                                this.descriptions = result.Description;
+                                this.fields = result.Fields.$values;
+                                this.fields_type = result.Fields.$type;
+                                this.id = result.Id;
+                                this.modelType = result.ModelType;
+
+                                this.finishedGET = true;
+                                //this.collections = result.collections;
+                                //this.updateBindings = true;
+                                console.log(result);
+
+                                for (let field of this.fields) {
+                                    this.$set(this.dropdowns, field.Id, {
+                                        isCollapsed: true,
+                                        showDescription: false,
+                                        hasOtherOption: false
+                                    });
+                                }
+
+                                //temporary until templates sent, remove afterwards
+                                for (let field of result.Fields.$values) {
+                                    if (field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core') {
+                                        //selected needs to be sent still,
+                                        field.Selected = 0;
+                                        //let defaultTextfieldTemplate = JSON.parse(JSON.stringify(field));
+                                        //defaultTextfieldTemplate.Name.Values.$values[0].Value = '';
+                                        //defaultTextfieldTemplate.selected = null;
+
+                                        //this.tmpTextfieldTemplate = defaultTextfieldTemplate;
+									}
+
+                                }
+
+                                
 
                                 resolve();
 
