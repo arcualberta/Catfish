@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Catfish.Areas.Manager.Access.AuthorizationHandlers
+namespace Catfish.Core.Authorization.Handlers
 {
     public class AuthorizationHelper: IAuthorizationHelper
     {

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Catfish.Areas.Manager.Access.AuthorizationHandlers
+namespace Catfish.Core.Authorization.Handlers
 {
     public class EntityTemplateAuthorizationHandler
         : AuthorizationHandler<OperationAuthorizationRequirement, EntityTemplate>

@@ -8,7 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Piranha.AspNetCore.Identity.SQLServer;
-   
+using System.Linq;
+using Catfish.Core.Models.Attributes;
+
 namespace Catfish.Core.Models
 {
     public class AppDbContext : DbContext
@@ -36,8 +38,18 @@ namespace Catfish.Core.Models
         
         public override int SaveChanges()
         {
-            foreach (var entry in ChangeTracker.Entries<EntityTemplate>())
-                entry.Entity.PrepareForDbSave();
+            foreach(var entry in ChangeTracker.Entries())
+            {
+                foreach (var prop in entry.Entity.GetType().GetProperties().Where(p => p.CustomAttributes.Count() > 0))
+                {
+                    if(prop.GetCustomAttributes(true).Where(att => att is ComputedAttribute).Any())
+                    {
+                        //This is a computed propery that we always need to save to the database irrespective of 
+                        //whether the property was explicitely modified or not.
+                        entry.Property(prop.Name).IsModified = true;
+                    }
+                }
+            }
 
             return base.SaveChanges();
         }

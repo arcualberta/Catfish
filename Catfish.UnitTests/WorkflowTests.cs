@@ -1,4 +1,4 @@
-﻿using Catfish.Core.AuthorizationRequirements;
+﻿using Catfish.Core.Authorization.Requirements;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
@@ -284,8 +284,9 @@ namespace Catfish.UnitTests
             postActionSubmit.AddTriggerRefs("1", ownerSubmissionNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
             //Defining authorizatios
-            startSubmissionAction.AddAuthorization(departmentAdmin.Id);
+            startSubmissionAction.AddAuthorizedRole(departmentAdmin.Id);
             startSubmissionAction.AddAuthorizedDomain("@ualberta.ca");
+            startSubmissionAction.AddAuthorizedDomain("@ucalgary.ca");
 
             // Edit submission related workflow items
             //Defining actions
@@ -342,7 +343,7 @@ namespace Catfish.UnitTests
 
 
             //Defining authorizatios
-            editSubmissionAction.AddAuthorization(departmentAdmin.Id);
+            editSubmissionAction.AddAuthorizedRole(departmentAdmin.Id);
 
 
             // Delete submission related workflow items
@@ -427,7 +428,7 @@ namespace Catfish.UnitTests
             sendForRevisionSubmissionAction.AddStateReferances(gfcRevisionCompletedState.Id);
 
             //Defining authorizatios
-            sendForRevisionSubmissionAction.AddAuthorization(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.AddAuthorizedRole(centralAdminRole.Id);
 
             // Revision request related workflow items
             //Defining actions
@@ -490,7 +491,7 @@ namespace Catfish.UnitTests
             changeStateAction.AddStateReferances(gfcApprovedState.Id);
 
             //Defining authorizatios
-            changeStateAction.AddAuthorization(centralAdminRole.Id);
+            changeStateAction.AddAuthorizedRole(centralAdminRole.Id);
 
             // Calender request move to draft related workflow items
             //Defining actions
@@ -533,7 +534,7 @@ namespace Catfish.UnitTests
             moveToDraftAction.AddStateReferances(moveToDraftErrorState.Id);
 
             //Defining authorizatios
-            moveToDraftAction.AddAuthorization(centralAdminRole.Id);
+            moveToDraftAction.AddAuthorizedRole(centralAdminRole.Id);
 
             auth.EnsureUserRoles(workflow.GetWorkflowRoles());
             auth.EnsureGroups(workflow.GetWorkflowGroups(), template.Id);

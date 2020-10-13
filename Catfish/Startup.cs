@@ -1,5 +1,5 @@
 ﻿using Catfish.Areas.Manager.Access;
-using Catfish.Areas.Manager.Access.AuthorizationHandlers;
+using Catfish.Core.Authorization.Handlers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
@@ -68,7 +68,8 @@ namespace Catfish
            );
 
             //-- add MVC service
-            services.AddMvc();//.AddXmlSerializerFormatters(); // to user MVC model
+            services.AddMvc()
+                .AddRazorOptions(options => options.ViewLocationFormats.Add("/Views/Shared/{0}.cshtml"));
 
             // Service setup for Piranha CMS
             services.AddPiranha(options =>
