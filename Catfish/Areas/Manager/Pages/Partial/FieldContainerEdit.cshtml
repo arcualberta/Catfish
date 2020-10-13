@@ -100,7 +100,7 @@
                                     
                                         <div class="header-tools-holder">
                                             <div style="padding-right: 10px; width: 100%;" class="form-group field-dropdown" :id="'fieldset-' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex">
-			                                    <select class="form-control" :id="'field-dropdown-' + fieldIndex" v-model="field.selected" v-on:change="onDropdownChange(fieldIndex, field.selected)">
+			                                    <select class="form-control" :id="'field-dropdown-' + fieldIndex" v-model="field.Selected" v-on:change="onDropdownChange(fieldIndex, field.Selected)">
                                                     <option :disabled="fieldType.value==null" v-for="fieldType of fieldTypes" :value="fieldType.value">{{fieldType.text}}</option>
                                                 </select>
                                             </div>

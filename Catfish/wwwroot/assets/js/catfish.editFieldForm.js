@@ -598,12 +598,14 @@ if (document.getElementById("edit-field-form-page")) {
                                     switch (defaultFieldIndex) {
                                         case '0':
                                             this.tmpTextfieldTemplate = fieldDefsResult.$values[defaultFieldIndex];
+                                            this.tmpTextfieldTemplate.Selected = 0;
                                             break;
                                         case '1':
                                             this.tmpTextAreaTemplate = fieldDefsResult.$values[defaultFieldIndex];
+                                            this.tmpTextAreaTemplate.Selected = 1;
                                             break;
                                         //the rest still need to be added from the backend
-									}
+                                    }
                                     
                                 }
 
@@ -664,17 +666,31 @@ if (document.getElementById("edit-field-form-page")) {
                                 }
 
                                 //temporary until templates sent, remove afterwards
+                                //Selected needs to be sent still as an attribute
                                 for (let field of result.Fields.$values) {
-                                    if (field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core') {
-                                        //selected needs to be sent still,
-                                        field.Selected = 0;
-                                        //let defaultTextfieldTemplate = JSON.parse(JSON.stringify(field));
-                                        //defaultTextfieldTemplate.Name.Values.$values[0].Value = '';
-                                        //defaultTextfieldTemplate.selected = null;
-
-                                        //this.tmpTextfieldTemplate = defaultTextfieldTemplate;
-									}
-
+                                    switch (field.$type) {
+                                        case 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core':
+                                            field.Selected = 0;
+                                            break;
+                                        case 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core':
+                                            field.Selected = 1;
+                                            break;
+                                        case 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core':
+                                            field.Selected = 2;
+                                            break;
+                                        case 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core':
+                                            field.Selected = 3;
+                                            break;
+                                        case 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core':
+                                            field.Selected = 4;
+                                            break;
+                                        case 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core':
+                                            field.Selected = 5;
+                                            break;
+                                        case 'Catfish.Core.Models.Contents.Fields.DisplayText, Catfish.Core':
+                                            field.Selected = 6;
+                                            break;
+                                    }
                                 }
 
                                 
