@@ -101,7 +101,7 @@ namespace Catfish.Core.Models.Contents.Workflow
             PostActions.Add(newPostAction);
             return newPostAction;
         }
-        public RoleReference AddAuthorization(Guid refId)
+        public RoleReference AddAuthorizedRole(Guid refId)
         {
             if (AuthorizedRoles.Where(st => st.Id == refId).Any())
                 throw new Exception(string.Format("Authorization already exists."));
