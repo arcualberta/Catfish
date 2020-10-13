@@ -1,5 +1,5 @@
 ﻿using Catfish.Areas.Manager.Access;
-using Catfish.Areas.Manager.Access.AuthorizationHandlers;
+using Catfish.Core.Authorization.Handlers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
