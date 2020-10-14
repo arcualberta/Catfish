@@ -267,6 +267,7 @@ if (document.getElementById("edit-field-form-page")) {
              * Changes the type of field via choice from the dropdown
              * @param {any} fieldIndex the fieldIndex being changed
              * @param {any} event the index value of the dropdown
+             * TODO: use templates here, depending on if we are somehow storing the values without overwriting? idk
              */
             onDropdownChange(fieldIndex, event) {
                 console.log("fieldIndex", fieldIndex);
@@ -592,17 +593,27 @@ if (document.getElementById("edit-field-form-page")) {
                         fetch(piranha.baseUrl + this.getFieldDefs)
                             .then((fdResponse) => { return fdResponse.json(); })
                             .then((fieldDefsResult) => {
-                                //templates handled here
+                                //templates handled here, remove any default data and store the structure
                                 console.log("second res", fieldDefsResult)
                                 for (let defaultFieldIndex in fieldDefsResult.$values) {
                                     switch (defaultFieldIndex) {
                                         case '0':
                                             this.tmpTextfieldTemplate = fieldDefsResult.$values[defaultFieldIndex];
-                                            this.tmpTextfieldTemplate.Selected = 0;
+                                            this.tmpTextfieldTemplate.Selected = 0; //temp, remove when passed
+
+                                            for (let languageIndex in this.tmpTextfieldTemplate.Name.Values.$values) {
+                                                this.$set(this.tmpTextfieldTemplate.Name.Values.$values[languageIndex], 'Value', '');
+											}
+
                                             break;
                                         case '1':
                                             this.tmpTextAreaTemplate = fieldDefsResult.$values[defaultFieldIndex];
-                                            this.tmpTextAreaTemplate.Selected = 1;
+                                            this.tmpTextAreaTemplate.Selected = 1; //temp, remove when passed
+
+                                            for (let languageIndex in this.tmpTextAreaTemplate.Name.Values.$values) {
+                                                this.$set(this.tmpTextAreaTemplate.Name.Values.$values[languageIndex], 'Value', '');
+                                            } //look for where the dropdown item changes the template? bc it keeps data the same, maybe not a bad thing
+
                                             break;
                                         //the rest still need to be added from the backend
                                     }
