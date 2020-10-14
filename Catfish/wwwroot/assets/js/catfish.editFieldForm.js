@@ -603,6 +603,7 @@ if (document.getElementById("edit-field-form-page")) {
 
                                             for (let languageIndex in this.tmpTextfieldTemplate.Name.Values.$values) {
                                                 this.$set(this.tmpTextfieldTemplate.Name.Values.$values[languageIndex], 'Value', '');
+                                                this.$set(this.tmpTextfieldTemplate.Description.Values.$values[languageIndex], 'Value', '');
 											}
 
                                             break;
@@ -612,7 +613,8 @@ if (document.getElementById("edit-field-form-page")) {
 
                                             for (let languageIndex in this.tmpTextAreaTemplate.Name.Values.$values) {
                                                 this.$set(this.tmpTextAreaTemplate.Name.Values.$values[languageIndex], 'Value', '');
-                                            } //look for where the dropdown item changes the template? bc it keeps data the same, maybe not a bad thing
+                                                this.$set(this.tmpTextAreaTemplate.Description.Values.$values[languageIndex], 'Value', '');
+                                            }
 
                                             break;
                                         //the rest still need to be added from the backend
