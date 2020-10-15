@@ -99,6 +99,7 @@
                                     <div class="row">
                                         <span class="col-sm-4">
                                             @Html.EditorFor(model => model.Roles[cnt])
+
                                         </span>
                                     </div>
                                 </li>
@@ -117,81 +118,83 @@
                     @foreach (var role in Model.Roles.Where(r => r.Assigned))
                     {
                         var users = Model.Users.Where(u => u.GroupRole.RoleId == role.RoleId);
-                        <div class="form-group">
-                            <label>@Localizer.General[role.RoleName]</label>
-                            <div class="container-fluid">
-                                <table class="table table-borderless">
-                                    <thead>
+                    <div class="form-group">
+                        <label>@Localizer.General[role.RoleName]</label>
+                        <div class="container-fluid">
+                            <table class="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>@Localizer.General["User Name"]</th>
+                                        <th>@Localizer.General["Email"]</th>
+                                        <th class="actions one"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in users)
+                                    {
                                         <tr>
-                                            <th>@Localizer.General["User Name"]</th>
-                                            <th>@Localizer.General["Email"]</th>
-                                            <th class="actions one"></th>
+                                            <td>
+                                                <span class="title">@user.User.UserName</span>
+                                            </td>
+                                            <td>
+                                                <span class="title">@user.User.Email</span>
+                                            </td>
+                                            <td class="actions one">
+                                                <a class="danger" href="@Url.Action("Delete", new { id = user.User.Id })">
+                                                    <span class="fas fa-trash"></span>
+                                                </a>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var user in users)
-                                        {
-                                            <tr>
-                                                <td>
-                                                    <span class="title">@user.User.UserName</span>
-                                                </td>
-                                                <td>
-                                                    <span class="title">@user.User.Email</span>
-                                                </td>
-                                                <td class="actions one">
-                                                    <a class="danger" href="@Url.Action("Delete", new { id = user.User.Id })">
-                                                        <span class="fas fa-trash"></span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                            <button type="button" class="btn btn-labeled btn-primary pull-right" data-toggle="modal" data-target="#userModal" data-id="@role.RoleGroupId" onclick="addUser('@role.RoleGroupId', '@role.RoleId'); return false;">
-                                <span class="btn-label">
-                                    <i class="fas fa-plus"></i>
-                                </span>
-                                @Localizer.General["Add User"]
-                            </button>
-                            <!-- Modal -->
-                            <div id="userModal" class="modal fade" role="dialog">
-                                <div class="modal-dialog">
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @*<button type="button" class="btn btn-labeled btn-primary pull-right" data-toggle="modal" data-target="#userModal" data-id="@role.RoleGroupId" onclick="addUser('@role.RoleGroupId', '@role.RoleId'); return false;">
+            <span class="btn-label">
+                <i class="fas fa-plus"></i>
+            </span>
+            @Localizer.General["Add User"]
+        </button>*@
 
-                                    <!-- Modal content-->
-                                    <div class="modal-content">
-                                        <div class="modal-body">
-                                            <input type="text" name="GroupRoleId" id="GroupRoleId" value="" />
-                                            <input type="text" name="RoleId" id="RoleId" value="" />
-                                            <div class="card-body">
-                                                <div class="form-group">
-                                                    <label>@Localizer.General["Users"]</label>
-                                                    <ul class="list-group">
-                                                        @{
-                                                            for (int userCount = 0; userCount < Model.Users.Count; ++userCount)
-                                                            {
-                                                                <li class="list-group-item">
-                                                                    <div class="row">
-                                                                        <span class="col-sm-4">
-                                                                            @Html.EditorFor(model => model.Users[userCount])
-                                                                        </span>
-                                                                    </div>
-                                                                </li>
-                                                            }
+                    <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("user/{0}", @role.RoleGroupId)">  @Localizer.General["Add User"]</a>
+                        <!-- Modal -->
+                        <div id="userModal" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <input type="text" name="GroupRoleId" id="GroupRoleId" value="" />
+                                        <input type="text" name="RoleId" id="RoleId" value="" />
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label>@Localizer.General["Users"]</label>
+                                                <ul class="list-group">
+                                                    @{
+                                                        for (int userCount = 0; userCount < Model.Users.Count; ++userCount)
+                                                        {
+                                                            <li class="list-group-item">
+                                                                <div class="row">
+                                                                    <span class="col-sm-4">
+                                                                        @Html.EditorFor(model => model.Users[userCount])
+                                                                    </span>
+                                                                </div>
+                                                            </li>
                                                         }
-                                                    </ul>
-                                                </div>
+                                                    }
+                                                </ul>
                                             </div>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                            <button id="deleteConfirm" type="button" class="btn btn-primary">Save changes</button>
-                                        </div>
                                     </div>
-
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button id="deleteConfirm" type="button" class="btn btn-primary">Save changes</button>
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
+                    </div>
                     } @*ENDS foreach (var role in Model.Roles.Where(r => r.Assigned))*@
                 </div> @*Ends "card-body"*@
             }
