@@ -50,37 +50,37 @@ if (document.getElementById("edit-field-form-page")) {
                 fieldTypes: [
                     { text: 'Select One', value: null },
                     {
-                        value: 0,
+                        value: "Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core",
                         text: 'Short Answer',
                         modelType: 'TextField'
                     },
                     {
-                        value: 1,
+                        value: "Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core",
                         text: 'Long Answer',
                         modelType: 'TextArea'
                     },
                     {
-                        value: 2,
+                        value: "Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core",
                         text: 'Multiple Choice',
                         modelType: 'Radio'
                     },
                     {
-                        value: 3,
+                        value: "Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core",
                         text: 'Check Box',
                         modelType: 'Checkbox'
                     },
                     {
-                        value: 4,
+                        value: "Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core",
                         text: 'Dropdown List',
                         modelType: 'Dropdown'
                     },
                     {
-                        value: 5,
+                        value: "Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core",
                         text: 'File Upload',
                         modelType: 'FileAttachment'
                     },
                     {
-                        value: 6,
+                        value: "Catfish.Core.Models.Contents.Fields.DisplayText, Catfish.Core",
                         text: 'Display Text',
                         modelType: 'DisplayField'
                     }
@@ -266,45 +266,45 @@ if (document.getElementById("edit-field-form-page")) {
             /**
              * Changes the type of field via choice from the dropdown
              * @param {any} fieldIndex the fieldIndex being changed
-             * @param {any} event the index value of the dropdown
+             * @param {any} chosenFieldType the chosen field type of the dropdown
              * TODO: use templates here, depending on if we are somehow storing the values without overwriting? idk
              */
-            onDropdownChange(fieldIndex, event) {
+            onDropdownChange(fieldIndex, chosenFieldType) {
                 console.log("fieldIndex", fieldIndex);
                 //cant change $type directly... could work something with the templates?
                 //dont want to lose any values that are not originally a part of the template tho...
-                switch (event) {
-                    case 0:
+                switch (chosenFieldType) {
+                    case "Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core":
                         //textfield
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core';
                         this.fields[fieldIndex].ModelType = 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
-                    case 1:
+                    case "Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core":
                         //textarea
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core';
                         this.fields[fieldIndex].ModelType = 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
-                    case 2:
+                    case "Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core":
                         //radio/mc
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core';
                         this.fields[fieldIndex].ModelType = 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
-                    case 3:
+                    case "Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core":
                         //checkbox
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core';
                         this.fields[fieldIndex].ModelType = 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
-                    case 4:
+                    case "Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core":
                         //dropdown
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core';
                         this.fields[fieldIndex].ModelType = 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
-                    case 5:
+                    case "Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core":
                         //fileattachment
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core';
                         this.fields[fieldIndex].ModelType = 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
-                    case 6:
+                    case "Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core":
                         //displayfield
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core';
                         this.fields[fieldIndex].ModelType = 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
@@ -312,18 +312,6 @@ if (document.getElementById("edit-field-form-page")) {
 				}
             },
 
-
-            /*test(fieldId) { //detects the 'show' after transition is complete so this will never work...also only runs once unless computed. computed doesnt allow for parameter except if a setter
-                if (document.getElementById('collapse-' + fieldId) == null) {
-                    return 'fas fa-chevron-right';
-                } else if (document.getElementById('collapse-' + fieldId).classList.contains('show')) {
-                    console.log("item has show:", document.getElementById('collapse-' + fieldId).classList);
-                    return 'fas fa-chevron-right';
-                } else {
-                    console.log("item does not have show:", document.getElementById('collapse-' + fieldId).classList);
-                    return 'fas fa-chevron-down';
-                }
-            },*/
 
             /**
              * Fire when any item sorted/moved (includes adding new item to list)
@@ -599,7 +587,6 @@ if (document.getElementById("edit-field-form-page")) {
                                     switch (defaultFieldIndex) {
                                         case '0':
                                             this.tmpTextfieldTemplate = fieldDefsResult.$values[defaultFieldIndex];
-                                            this.tmpTextfieldTemplate.Selected = 0; //temp, remove when passed
 
                                             for (let languageIndex in this.tmpTextfieldTemplate.Name.Values.$values) {
                                                 this.$set(this.tmpTextfieldTemplate.Name.Values.$values[languageIndex], 'Value', '');
@@ -609,7 +596,6 @@ if (document.getElementById("edit-field-form-page")) {
                                             break;
                                         case '1':
                                             this.tmpTextAreaTemplate = fieldDefsResult.$values[defaultFieldIndex];
-                                            this.tmpTextAreaTemplate.Selected = 1; //temp, remove when passed
 
                                             for (let languageIndex in this.tmpTextAreaTemplate.Name.Values.$values) {
                                                 this.$set(this.tmpTextAreaTemplate.Name.Values.$values[languageIndex], 'Value', '');
@@ -677,36 +663,6 @@ if (document.getElementById("edit-field-form-page")) {
                                         hasOtherOption: false
                                     });
                                 }
-
-                                //temporary until templates sent, remove afterwards
-                                //Selected needs to be sent still as an attribute
-                                for (let field of result.Fields.$values) {
-                                    switch (field.$type) {
-                                        case 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core':
-                                            field.Selected = 0;
-                                            break;
-                                        case 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core':
-                                            field.Selected = 1;
-                                            break;
-                                        case 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core':
-                                            field.Selected = 2;
-                                            break;
-                                        case 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core':
-                                            field.Selected = 3;
-                                            break;
-                                        case 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core':
-                                            field.Selected = 4;
-                                            break;
-                                        case 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core':
-                                            field.Selected = 5;
-                                            break;
-                                        case 'Catfish.Core.Models.Contents.Fields.DisplayText, Catfish.Core':
-                                            field.Selected = 6;
-                                            break;
-                                    }
-                                }
-
-                                
 
                                 resolve();
 
