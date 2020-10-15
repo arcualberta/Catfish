@@ -11,5 +11,6 @@ namespace Catfish.Models.ViewModels
         public Guid? RoleGroupId { get; set; }
         public string RoleName { get; set; }
         public bool Assigned { get; set; }
+        public bool HasUsers { get; set; }
     }
 }

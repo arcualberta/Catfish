@@ -10,12 +10,6 @@
     var id = Html.IdFor(model => model);
     var name = Html.NameFor(model => model);
 }
-@*<div class="checkbox">
-    <label class="mb-0">
-        @Html.CheckBoxFor(model => model.Assigned) @Model.UserName
-        <input id="@id" name="@name" type="checkbox" value="@Model.Assigned" checked="@Model.Assigned"> @Model.RoleName
-    </label>
-</div>*@
     <tr>
         <td>
             <span  class="title">@Model.UserName</span>
@@ -27,7 +21,6 @@
             <span class="checkbox">
                 <label class="mb-0">
                     @Html.CheckBoxFor(model => model.Assigned)
-                    @*<input id="Model.Users[cnt].UserName" name="Model.Users[cnt].UserName" type="checkbox" value="Model.Users[cnt].Assigned">*@
                 </label>
             </span>
         </td>

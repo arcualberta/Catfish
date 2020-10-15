@@ -29,18 +29,13 @@ namespace Catfish.Areas.Manager.Pages
         [BindProperty]
         public List<GroupRoleAssignmentVM> Roles { get; set; }
 
-        //public List<GroupRoleAssignmentVM> RoleList { get; set; }
-
         [BindProperty]
         public List<GroupTemplateAssignmentVM> Templates { get; set; }
 
-        //[BindProperty]
+        
         public List<UserGroupRole> Users { get; set; }
 
-        //public  GroupModel()
-        //{
-
-        //}
+        
         public GroupModel(IAuthorizationService srv, AppDbContext appDb, IdentitySQLServerDb pdb)
         {
             _srv = srv;
@@ -102,6 +97,7 @@ namespace Catfish.Areas.Manager.Pages
                 var currentAssociation = groupRoles.Where(gr => gr.RoleId == role.Id).FirstOrDefault();
                 groupRoleVM.RoleGroupId = currentAssociation == null ? null as Guid? : currentAssociation.Id;
                 groupRoleVM.Assigned = groupRoleVM.RoleGroupId.HasValue;
+                groupRoleVM.HasUsers = _appDb.UserGroupRoles.Where(ugr => ugr.GroupRoleId == groupRoleVM.RoleGroupId).Any();
                 Roles.Add(groupRoleVM);
             }
 

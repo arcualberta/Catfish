@@ -23,13 +23,17 @@ namespace Catfish.Areas.Manager.Pages
         [BindProperty]
         public List<GroupRoleUserAssignmentVM> Users { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public string Searching { get; set; }
+
         public GroupUserAddModel(IAuthorizationService srv, AppDbContext appDb, IdentitySQLServerDb pdb)
         {
             _srv = srv;
             _appDb = appDb;
             _piranhaDb = pdb;
         }
-        public void OnGet(Guid? id)
+
+        public async Task OnGetAsync(Guid? id)
         {
             //get selected group role details
             GroupRole = _appDb.GroupRoles.Where(gr => gr.Id == id).FirstOrDefault();
@@ -42,7 +46,7 @@ namespace Catfish.Areas.Manager.Pages
             var toBeAddedRoleUsers = allRoleUsers.Except(addedRoleUsers).ToList();
 
             //get all user details
-            var users = _piranhaDb.Users.ToList();
+            var users = _piranhaDb.Users.Where(usr => usr.Email.Contains(Searching) || Searching == null).ToList();
             Users = new List<GroupRoleUserAssignmentVM>();
             foreach (var newUser in toBeAddedRoleUsers)
             {
