@@ -26,7 +26,6 @@ namespace Catfish.Core.Services
         }
 
         public IQueryable<User> GetUsers(int offset = 0, int max = 25)
-
         {
             return _piranhaDb.Users.OrderBy(u => u.UserName).Skip(offset).Take(max);
         }
@@ -41,5 +40,20 @@ namespace Catfish.Core.Services
             return _piranhaDb.Users.Where(u => usersWithGivenRoleInGroup.Contains(u.Id));
         }
 
+        public List<UserGroupRole> GetGroupRoleUser(Guid? id)
+        {
+            List<UserGroupRole> Users = new List<UserGroupRole>();
+            Users = _appDb.UserGroupRoles
+                .Where(ugr => ugr.GroupRoleId == id)
+                .ToList();
+            foreach (var user in Users)
+                user.User = GetUserDetails(user.UserId);
+            return Users;
+        }
+
+        private User GetUserDetails(Guid userId)
+        {
+            return _piranhaDb.Users.Where(u => u.Id == userId).FirstOrDefault();
+        }
     }
 }

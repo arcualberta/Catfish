@@ -74,16 +74,16 @@
                     <label>@Localizer.General["Templates"]</label>
                     <ul class="list-group">
                         @{
-                            for (int cnt = 0; cnt < Model.Templates.Count; ++cnt)
-                            {
-                                <li class="list-group-item">
-                                    <div class="row">
-                                        <span class="col-sm-4">
-                                            @Html.EditorFor(model => model.Templates[cnt])
-                                        </span>
-                                    </div>
-                                </li>
-                            }
+                        for (int cnt = 0; cnt < Model.Templates.Count; ++cnt)
+                        {
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <span class="col-sm-4">
+                                        @Html.EditorFor(model => model.Templates[cnt])
+                                    </span>
+                                </div>
+                            </li>
+                        }
                         }
                     </ul>
                 </div>
@@ -126,14 +126,5 @@
         </div> @*End: "cards"*@
     </div> @*End: "container-fluid"*@
 </form>
-<script>
-    function addUser(groupRoleId,roleId) {
-        $(".modal-body #GroupRoleId").val(groupRoleId);
-        $(".modal-body #RoleId").val(roleId);
-            // As pointed out in comments,
-            // it is unnecessary to have to manually call the modal.
-            // $('#addBookDialog').modal('show');
 
-    }
-</script>
 

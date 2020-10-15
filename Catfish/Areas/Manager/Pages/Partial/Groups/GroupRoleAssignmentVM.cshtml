@@ -20,69 +20,27 @@
                     int offset = 0;
                     int max = 10000;
                 }
-                @foreach (var user in UserGroupService.GetUsers(offset, max))
-                {
+                @foreach (var user in UserGroupService.GetGroupRoleUser(Model.RoleGroupId))
+                 {
                     <tr>
                         <td>
-                            <span class="title">@user.UserName</span>
+                            <span class="title">@user.User.UserName</span>
                         </td>
                         <td>
-                            <span class="title">@user.Email</span>
+                            <span class="title">@user.User.Email</span>
                         </td>
                         <td class="actions one">
-                            <a class="danger" href="@Url.Action("Delete", new { id = user.Id })">
-                                <span class="fas fa-trash"></span>
-                            </a>
+                            <form method="post">
+                                <a class="danger" href="@Url.Action("Delete", new { id = user.Id })">
+                                    <span class="fas fa-trash"></span>
+                                </a>
+                            </form>
+                            
                         </td>
                     </tr>
-                }
+                 }
             </tbody>
         </table>
-    </div>
-    @*<button type="button" class="btn btn-labeled btn-primary pull-right" data-toggle="modal" data-target="#userModal" data-id="@role.RoleGroupId" onclick="addUser('@role.RoleGroupId', '@role.RoleId'); return false;">
-            <span class="btn-label">
-                <i class="fas fa-plus"></i>
-            </span>
-            @Localizer.General["Add User"]
-        </button>*@
-
-    <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("user/{0}", Model.RoleGroupId)">  @Localizer.General["Add User"]</a>
-    <!-- Modal -->
-    <div id="userModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-body">
-                    <input type="text" name="GroupRoleId" id="GroupRoleId" value="" />
-                    <input type="text" name="RoleId" id="RoleId" value="" />
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>@Localizer.General["Users"]</label>
-                            <ul class="list-group">
-                                @{
-                                    var usersInThisRolegroup = UserGroupService.GetUsers(Model.RoleGroupId.Value, offset, max).ToList();
-                                    for (int userCount = 0; userCount < usersInThisRolegroup.Count; ++userCount)
-                                    {
-                                        <li class="list-group-item">
-                                            <div class="row">
-                                                <span class="col-sm-4">
-                                                    @Html.EditorFor(model => usersInThisRolegroup[userCount])
-                                                </span>
-                                            </div>
-                                        </li>
-                                    }
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button id="deleteConfirm" type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
+    </div>   
+    <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("user/{0}", Model.RoleGroupId)">  @Localizer.General["Add User"]</a>    
 </div>
