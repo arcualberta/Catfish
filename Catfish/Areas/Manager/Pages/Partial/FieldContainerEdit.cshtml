@@ -131,7 +131,7 @@
                                                     <span class="input-group-text" :id="'language' + nameValue.Language">{{nameValue.Language}}</span>
                                                 </div> 
                                                 <input type="text" class="field-input form-control" v-model="nameValue.Value" 
-                                                :id="'field-title-' + fieldIndex + '-' + nameValue" 
+                                                :id="'field-title-' + fieldIndex + '-' + nameValue.Language" 
                                                 placeholder="Title Your Field Here" :state="validateFieldState(fieldIndex, 'Name', nameIndex)"
                                                 :class="{ 'is-invalid': $v.fields.$each[fieldIndex].Name.Values.$values.$each[nameIndex].Value.$invalid }"
                                                 /> <!-- 
@@ -156,7 +156,7 @@
                                                         <span class="input-group-text" :id="'language' + descriptionValue.Language">{{descriptionValue.Language}}</span>
                                                     </div>
                                                     <textarea type="text" class="field-input form-control" 
-                                                        :id="'field-description-' + fieldIndex + '-' + descriptionValue" 
+                                                        :id="'field-description-' + fieldIndex + '-' + descriptionValue.Language" 
                                                         placeholder="Describe the purpose of this field..."
                                                         v-model="descriptionValue.Value">
                                                     </textarea>

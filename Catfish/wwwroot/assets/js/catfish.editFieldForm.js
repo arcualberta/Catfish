@@ -144,28 +144,34 @@ if (document.getElementById("edit-field-form-page")) {
             fields: {
                 $each: {
                     Values: {
+
                         //currently the display text option can be submitted regardless of any text or not
                         //it errors on reading an array instead of an empty string on creation, need different place to store it
 
                         //all start with this value at Array(0)
+                        //want Array > 0 when the field type is radio/checkbox/dropdown/fileAttachment
                         required: requiredIf(function (fieldModel) {
-                            return (fieldModel.ModelType ==
+                            return (fieldModel.$type ==
                                 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
-                                || fieldModel.ModelType ==
+                                || fieldModel.$type ==
                                 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
-                                || fieldModel.ModelType ==
+                                || fieldModel.$type ==
                                 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
-                                || fieldModel.ModelType ==
+                                || fieldModel.$type ==
                                 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
                             )
-                        }), 
+                        }),
+
                         $values: {
+
+                            
+
                             //only need the object for radio/checkbox/dropdown's inner content
                             $each: {
                                 text: {
                                     required: requiredIf(function (textModel) {
                                         //this might not work with api update, hoping to store mc/radio/dropdown in different section from file attachment
-                                        return (typeof (textModel) == 'object');
+                                        return (textModel.text != null )  //(typeof (textModel) == 'object');
                                     })
                                 }
                             }
@@ -402,13 +408,12 @@ if (document.getElementById("edit-field-form-page")) {
                 //hardcoded until templates are provided
                 newItem = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate)); //event.Template
                 
-                newItem.id = uuidv1();
+                newItem.Id = uuidv1();
                 this.$set(this.dropdowns, newItem.Id, {
                     isCollapsed: false,
                     showDescription: false,
                     hasOtherOption: false
                 });
-                //newItem.Guid = uuidv1();
                 console.log(newItem);
 
                 return newItem;
@@ -638,6 +643,7 @@ if (document.getElementById("edit-field-form-page")) {
 
                             })
                             .then(() => {
+                                //this.finishedGET = true; test for empty return, remove later (or dont)
                                 return fetch(piranha.baseUrl + this.getString + this.itemId);
                             })
                             .then((response) => { return response.json(); })
