@@ -34,11 +34,14 @@ if (document.getElementById("edit-field-form-page")) {
 
                 //api strings
                 getString: "manager/api/forms/",
+                //this one is for the default templates
+                getFieldDefs: "manager/api/forms/fielddefs",
                 //postString: "manager/items/save",
 
                 names: null,
                 descriptions: null,
                 fields: null,
+                fields_type: null,
                 id: null,
                 modelType: null,
 
@@ -118,55 +121,63 @@ if (document.getElementById("edit-field-form-page")) {
         validations: {
             names: {
                 required,
-                values: {
-                    $each: {
-                        value: {
-                            required,
+                    Values: {
+                        $values: {
+                            $each: {
+                                Value: {
+                                    required,
+                                }
+                            }
                         }
-                    }
-				}
+				    }
             },
             descriptions: {
-                values: {
-                    $each: {
-                        value: {
+                Values: {
+                    $values: {
+                        $each: {
+                            Value: {
+                            }
                         }
                     }
                 }
             },
             fields: {
                 $each: {
-                    values: {
+                    Values: {
                         //currently the display text option can be submitted regardless of any text or not
                         //it errors on reading an array instead of an empty string on creation, need different place to store it
 
                         //all start with this value at Array(0)
                         required: requiredIf(function (fieldModel) {
-                            return (fieldModel.modelType ==
+                            return (fieldModel.ModelType ==
                                 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
-                                || fieldModel.modelType ==
+                                || fieldModel.ModelType ==
                                 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
-                                || fieldModel.modelType ==
+                                || fieldModel.ModelType ==
                                 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
-                                || fieldModel.modelType ==
+                                || fieldModel.ModelType ==
                                 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
                             )
                         }), 
-                        //only need the object for radio/checkbox/dropdown's inner content
-                        $each: {
-                            text: {
-                                required: requiredIf(function (textModel) {
-                                    //this might not work with api update, hoping to store mc/radio/dropdown in different section from file attachment
-                                    return (typeof (textModel) == 'object');
-                                })
-							}
-						}
-                    },
-                    name: {
-                        values: {
+                        $values: {
+                            //only need the object for radio/checkbox/dropdown's inner content
                             $each: {
-                                value: {
-                                    required
+                                text: {
+                                    required: requiredIf(function (textModel) {
+                                        //this might not work with api update, hoping to store mc/radio/dropdown in different section from file attachment
+                                        return (typeof (textModel) == 'object');
+                                    })
+                                }
+                            }
+                        }
+                    },
+                    Name: {
+                        Values: {
+                            $values: {
+                                $each: {
+                                    Value: {
+                                        required
+                                    }
                                 }
                             }
                         }
@@ -198,10 +209,9 @@ if (document.getElementById("edit-field-form-page")) {
 			 * @param name the name of the v-model binded to.
 			 */
             validateState(name, indexOrGuid = null, attribute = null) {
-                //console.log("why", this.$v);
                 if (indexOrGuid != null) {
                     //this is a $each situation - array
-                    const { $dirty, $invalid } = this.$v[name][attribute].$each[indexOrGuid].value;
+                    const { $dirty, $invalid } = this.$v[name][attribute].$values.$each[indexOrGuid].Value;
                     return $dirty ? !$invalid : null;
                 } else {
                     const { $dirty, $error } = this.$v[name];
@@ -221,7 +231,7 @@ if (document.getElementById("edit-field-form-page")) {
                     const { $dirty, $invalid } = this.$v.fields.$each[fieldIndex][name];
                     return $dirty ? !$invalid : null;
                 } else {
-                    const { $dirty, $invalid } = this.$v.fields.$each[fieldIndex][name].values.$each[secondIndex].value;
+                    const { $dirty, $invalid } = this.$v.fields.$each[fieldIndex][name].Values.$values.$each[secondIndex].Value;
                     return $dirty ? !$invalid : null;
 				}
 
@@ -236,7 +246,7 @@ if (document.getElementById("edit-field-form-page")) {
                     if (isNaN(indexOrGuid)) {
                         this.$v[name][indexOrGuid][attribute].$touch();
                     } else {
-                        this.$v[name][attribute].$each[indexOrGuid].value.$touch();
+                        this.$v[name][attribute].$values.$each[indexOrGuid].Value.$touch();
                     }
 
                 }
@@ -257,6 +267,7 @@ if (document.getElementById("edit-field-form-page")) {
              * Changes the type of field via choice from the dropdown
              * @param {any} fieldIndex the fieldIndex being changed
              * @param {any} event the index value of the dropdown
+             * TODO: use templates here, depending on if we are somehow storing the values without overwriting? idk
              */
             onDropdownChange(fieldIndex, event) {
                 console.log("fieldIndex", fieldIndex);
@@ -266,37 +277,37 @@ if (document.getElementById("edit-field-form-page")) {
                     case 0:
                         //textfield
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core';
-                        this.fields[fieldIndex].modelType = 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+                        this.fields[fieldIndex].ModelType = 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
                     case 1:
                         //textarea
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core';
-                        this.fields[fieldIndex].modelType = 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+                        this.fields[fieldIndex].ModelType = 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
                     case 2:
                         //radio/mc
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core';
-                        this.fields[fieldIndex].modelType = 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+                        this.fields[fieldIndex].ModelType = 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
                     case 3:
                         //checkbox
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core';
-                        this.fields[fieldIndex].modelType = 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+                        this.fields[fieldIndex].ModelType = 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
                     case 4:
                         //dropdown
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core';
-                        this.fields[fieldIndex].modelType = 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+                        this.fields[fieldIndex].ModelType = 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
                     case 5:
                         //fileattachment
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core';
-                        this.fields[fieldIndex].modelType = 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+                        this.fields[fieldIndex].ModelType = 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
                     case 6:
                         //displayfield
                         this.fields[fieldIndex].$type = 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core';
-                        this.fields[fieldIndex].modelType = 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
+                        this.fields[fieldIndex].ModelType = 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null';
                         break;
 				}
             },
@@ -325,10 +336,10 @@ if (document.getElementById("edit-field-form-page")) {
                 let previousSection = null;
                 let nextSection = null;
 
-                //track sections above and below current item
+                //track sections above and below current open item
                 for (let i = 0; i < collapsingSections.length; i++) {
                     if (collapsingSections[i].classList.contains('show')) {
-                        shownSectionIndex = i; //collapsingSections[i];
+                        shownSectionIndex = i;
                         previousSection = (i - 1 >= 0) ? collapsingSections[i - 1] : null;
                         nextSection = (i + 1 < collapsingSections.length) ? collapsingSections[i + 1] : null;
 					}
@@ -367,6 +378,12 @@ if (document.getElementById("edit-field-form-page")) {
 
                 //move show class to the index below open item
                 if (event.oldIndex <= shownSectionIndex && shownSectionIndex <= event.newIndex) {
+
+                    //test suppressing animation - not sure if it will work, cant 
+                    //remove .collapsing bc it's not applied until the collapse call is made
+                    //previousSection.addClass('suppress-collapsing-animation');
+                    //$('#' + previousSection.id).css({ "transition": "none", "display": "none"}); doesnt work, must override
+
                     console.log("moved item DOWN over shown");
                     $('#' + previousSection.id).collapse('show');
                     let prevId = previousSection.id.split('collapse-')[1];
@@ -398,7 +415,7 @@ if (document.getElementById("edit-field-form-page")) {
                 newItem = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate)); //event.Template
                 
                 newItem.id = uuidv1();
-                this.$set(this.dropdowns, newItem.id, {
+                this.$set(this.dropdowns, newItem.Id, {
                     isCollapsed: false,
                     showDescription: false,
                     hasOtherOption: false
@@ -415,18 +432,18 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} field
              */
             checkAllFileTypes(field) {
-                if (field.values.indexOf("any") > -1) {
-                    let index = field.values.indexOf("any");
-                    field.values.splice(index, 1);
+                if (field.Values.$values.indexOf("any") > -1) {
+                    let index = field.Values.$values.indexOf("any");
+                    field.Values.$values.splice(index, 1);
 				}
 
-                if (field.values.length == this.fileTypes.length) {
+                if (field.Values.$values.length == this.fileTypes.length) {
                     //uncheck all
-                    field.values = [];
+                    field.Values.$values = [];
                 } else {
                     //check all
-                    field.values = [];
-                    field.values = this.fileTypes;
+                    field.Values.$values = [];
+                    field.Values.$values = this.fileTypes;
 				}
 
             },
@@ -437,7 +454,7 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} field
              */
             checkCheckboxState(field, fieldIndex) {
-                if (field.values.length == this.fileTypes.length) {
+                if (field.Values.$values.length == this.fileTypes.length) {
                     //check the 'any' box
                     document.getElementById("filetype-checkbox-" + fieldIndex + "-" + "any").checked = true;
                 } else {
@@ -476,9 +493,9 @@ if (document.getElementById("edit-field-form-page")) {
             addNewOption(field) {
                 //if theres a disabled other option, push into index before it
                 //the disabled item will always be the last item
-                if (field.values.length > 0) {
-                    if (field.values[field.values.length - 1].isDisabled) {
-                        field.values.splice(field.values.length - 1, 0, {
+                if (field.Values.$values.length > 0) {
+                    if (field.Values.$values[field.Values.$values.length - 1].isDisabled) {
+                        field.Values.$values.splice(field.Values.$values.length - 1, 0, {
                             text: '',
                             isDisabled: false,
                             id: -1,
@@ -488,7 +505,7 @@ if (document.getElementById("edit-field-form-page")) {
                     
 				}
                  
-                field.values.push({
+                field.Values.$values.push({
                     text: '',
                     isDisabled: false,
                     id: -1,
@@ -519,12 +536,12 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} field
              */
             addOtherOption(field) {
-                field.values.push({
+                field.Values.$values.push({
                     text: 'Other...',
                     isDisabled: true,
                     id: -1,
                 });
-                this.dropdowns[field.id].hasOtherOption = true;
+                this.dropdowns[field.Id].hasOtherOption = true;
             },
 
             /**
@@ -534,9 +551,9 @@ if (document.getElementById("edit-field-form-page")) {
              */
             removeOption(field, fieldIndex, itemValue, optionIndex) {
                 if (itemValue.isDisabled) {
-                    this.dropdowns[field.id].hasOtherOption = false;
+                    this.dropdowns[field.Id].hasOtherOption = false;
 				}
-                this.fields[fieldIndex].values.splice(optionIndex, 1);
+                this.fields[fieldIndex].Values.$values.splice(optionIndex, 1);
             },
 
             /**
@@ -573,14 +590,78 @@ if (document.getElementById("edit-field-form-page")) {
                 //var self = this;
                 return new Promise((resolve, reject) => {
                     piranha.permissions.load(() => {
-                        fetch(piranha.baseUrl + this.getString + this.itemId)
+                        fetch(piranha.baseUrl + this.getFieldDefs)
+                            .then((fdResponse) => { return fdResponse.json(); })
+                            .then((fieldDefsResult) => {
+                                //templates handled here, remove any default data and store the structure
+                                console.log("second res", fieldDefsResult)
+                                for (let defaultFieldIndex in fieldDefsResult.$values) {
+                                    switch (defaultFieldIndex) {
+                                        case '0':
+                                            this.tmpTextfieldTemplate = fieldDefsResult.$values[defaultFieldIndex];
+                                            this.tmpTextfieldTemplate.Selected = 0; //temp, remove when passed
+
+                                            for (let languageIndex in this.tmpTextfieldTemplate.Name.Values.$values) {
+                                                this.$set(this.tmpTextfieldTemplate.Name.Values.$values[languageIndex], 'Value', '');
+											}
+
+                                            break;
+                                        case '1':
+                                            this.tmpTextAreaTemplate = fieldDefsResult.$values[defaultFieldIndex];
+                                            this.tmpTextAreaTemplate.Selected = 1; //temp, remove when passed
+
+                                            for (let languageIndex in this.tmpTextAreaTemplate.Name.Values.$values) {
+                                                this.$set(this.tmpTextAreaTemplate.Name.Values.$values[languageIndex], 'Value', '');
+                                            } //look for where the dropdown item changes the template? bc it keeps data the same, maybe not a bad thing
+
+                                            break;
+                                        //the rest still need to be added from the backend
+                                    }
+                                    
+                                }
+
+                                //temp set other values that i dont have sample data for
+                                //guessing for what will be needed, adjust when dummy data given
+                                //this.tmpTextAreaTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
+                                //this.tmpTextAreaTemplate.$type = 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core';
+
+                                this.tmpRadioTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
+                                this.tmpRadioTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core';
+                                //not sure if this would be right, will likely need to adjust this
+                                this.tmpRadioTemplate.Values.$values = [];
+
+                                this.tmpCheckboxTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
+                                this.tmpCheckboxTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core';
+                                //not sure if this would be right, will likely need to adjust this
+                                this.tmpCheckboxTemplate.Values.$values = [];
+
+                                this.tmpDropdownTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
+                                this.tmpDropdownTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core';
+                                //not sure if this would be right, will likely need to adjust this
+                                this.tmpDropdownTemplate.Values.$values = [];
+
+                                this.tmpFileAttachmentTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
+                                this.tmpFileAttachmentTemplate.$type = 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core';
+                                this.tmpFileAttachmentTemplate.Values.$values = [];
+
+                                this.tmpDisplayFieldTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
+                                this.tmpDisplayFieldTemplate.$type = 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core';
+                                this.tmpDisplayFieldTemplate.Values.$values = "";
+
+                            })
+                            .then(() => {
+                                return fetch(piranha.baseUrl + this.getString + this.itemId);
+                            })
                             .then((response) => { return response.json(); })
                             .then((result) => {
-                                this.names = result.name;
-                                this.descriptions = result.description;
-                                this.fields = result.fields;
-                                this.id = result.id;
-                                this.modelType = result.modelType;
+                                //data for this form handled here
+
+                                this.names = result.Name;
+                                this.descriptions = result.Description;
+                                this.fields = result.Fields.$values;
+                                this.fields_type = result.Fields.$type;
+                                this.id = result.Id;
+                                this.modelType = result.ModelType;
 
                                 this.finishedGET = true;
                                 //this.collections = result.collections;
@@ -588,7 +669,7 @@ if (document.getElementById("edit-field-form-page")) {
                                 console.log(result);
 
                                 for (let field of this.fields) {
-                                    this.$set(this.dropdowns, field.id, {
+                                    this.$set(this.dropdowns, field.Id, {
                                         isCollapsed: true,
                                         showDescription: false,
                                         hasOtherOption: false
@@ -596,45 +677,34 @@ if (document.getElementById("edit-field-form-page")) {
                                 }
 
                                 //temporary until templates sent, remove afterwards
-                                for (let field of result.fields) {
-                                    if (field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core') {
-                                        field.selected = 0;
-                                        let defaultTextfieldTemplate = JSON.parse(JSON.stringify(field));
-                                        defaultTextfieldTemplate.name.values[0].value = '';
-                                        defaultTextfieldTemplate.selected = null;
-
-                                        this.tmpTextfieldTemplate = defaultTextfieldTemplate;
-									}
-
+                                //Selected needs to be sent still as an attribute
+                                for (let field of result.Fields.$values) {
+                                    switch (field.$type) {
+                                        case 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core':
+                                            field.Selected = 0;
+                                            break;
+                                        case 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core':
+                                            field.Selected = 1;
+                                            break;
+                                        case 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core':
+                                            field.Selected = 2;
+                                            break;
+                                        case 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core':
+                                            field.Selected = 3;
+                                            break;
+                                        case 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core':
+                                            field.Selected = 4;
+                                            break;
+                                        case 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core':
+                                            field.Selected = 5;
+                                            break;
+                                        case 'Catfish.Core.Models.Contents.Fields.DisplayText, Catfish.Core':
+                                            field.Selected = 6;
+                                            break;
+                                    }
                                 }
 
-                                //temp set other values that i dont have sample data for
-                                //guessing for what will be needed, adjust when dummy data given
-                                this.tmpTextAreaTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
-                                this.tmpTextAreaTemplate.$type = 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core';
-
-                                this.tmpRadioTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
-                                this.tmpRadioTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core';
-                                //not sure if this would be right, will likely need to adjust this
-                                this.tmpRadioTemplate.values = [];
-
-                                this.tmpCheckboxTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
-                                this.tmpCheckboxTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core';
-                                //not sure if this would be right, will likely need to adjust this
-                                this.tmpCheckboxTemplate.values = [];
-
-                                this.tmpDropdownTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
-                                this.tmpDropdownTemplate.$type = 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core';
-                                //not sure if this would be right, will likely need to adjust this
-                                this.tmpDropdownTemplate.values = [];
-
-                                this.tmpFileAttachmentTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
-                                this.tmpFileAttachmentTemplate.$type = 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core';
-                                this.tmpFileAttachmentTemplate.values = [];
-
-                                this.tmpDisplayFieldTemplate = JSON.parse(JSON.stringify(this.tmpTextfieldTemplate));
-                                this.tmpDisplayFieldTemplate.$type = 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core';
-                                this.tmpDisplayFieldTemplate.values = "";
+                                
 
                                 resolve();
 

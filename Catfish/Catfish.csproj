@@ -77,6 +77,12 @@
     <ProjectReference Include="..\Catfish.Core\Catfish.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\css\formEditPage.css">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptTarget>ES5</TypeScriptTarget>
     <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
