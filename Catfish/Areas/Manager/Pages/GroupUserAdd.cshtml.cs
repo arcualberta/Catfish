@@ -38,7 +38,7 @@ namespace Catfish.Areas.Manager.Pages
             //get selected group role details
             GroupRole = _appDb.GroupRoles.Where(gr => gr.Id == id).FirstOrDefault();
             //get all users who have the selected role
-            var allRoleUsers = _piranhaDb.UserRoles.Where(ur => ur.RoleId == GroupRole.RoleId).Select(ur => ur.UserId).ToList();
+            var allRoleUsers = _piranhaDb.Users.Where(usr => usr.Email.Contains(Searching) || Searching == null).Select(ur => ur.Id).ToList();
             //get userId's who already selected for perticular user group
             var addedRoleUsers = _appDb.UserGroupRoles.Where(ugr => ugr.GroupRoleId == GroupRole.Id).Select(ugr => ugr.UserId).ToList();
 
@@ -46,7 +46,7 @@ namespace Catfish.Areas.Manager.Pages
             var toBeAddedRoleUsers = allRoleUsers.Except(addedRoleUsers).ToList();
 
             //get all user details
-            var users = _piranhaDb.Users.Where(usr => usr.Email.Contains(Searching) || Searching == null).ToList();
+            var users = _piranhaDb.Users.ToList();
             Users = new List<GroupRoleUserAssignmentVM>();
             foreach (var newUser in toBeAddedRoleUsers)
             {
