@@ -7,7 +7,7 @@ namespace Catfish.Core.Models.Contents.Fields
 {
     public class SelectField : OptionsField
     {
-        public SelectField() : base() { }
-        public SelectField(XElement data) : base(data) { }
+        public SelectField() : base() { DisplayLabel = "Dropdown"; }
+        public SelectField(XElement data) : base(data) { DisplayLabel = "Dropdown"; }
     }
 }
