@@ -7,7 +7,7 @@ namespace Catfish.Core.Models.Contents.Fields
 {
     public class CheckboxField : OptionsField
     {
-        public CheckboxField() : base() { }
-        public CheckboxField(XElement data) : base(data) { }
+        public CheckboxField() : base() { DisplayLabel = "Checkboxes"; }
+        public CheckboxField(XElement data) : base(data) { DisplayLabel = "Checkboxes"; }
     }
 }
