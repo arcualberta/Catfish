@@ -10,8 +10,8 @@ namespace Catfish.Core.Models.Contents.Fields
         public static readonly string ContentTag = "content";
 
         public MultilingualText Content { get; set; }
-        public InfoSection() { }
-        public InfoSection(XElement data) : base(data) { }
+        public InfoSection() { DisplayLabel = "Info Section"; }
+        public InfoSection(XElement data) : base(data) { DisplayLabel = "Info Section"; }
 
         public override void Initialize(eGuidOption guidOption)
         {

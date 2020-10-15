@@ -11,6 +11,8 @@ namespace Catfish.Core.Models.Contents.Fields
     public class BaseField : XmlModel
     {
         public const string FieldTagName = "field";
+
+        public string DisplayLabel { get; set; }
         public virtual void UpdateValues(BaseField srcField) 
         {
             throw new Exception("This method must be overridden by sub classes");

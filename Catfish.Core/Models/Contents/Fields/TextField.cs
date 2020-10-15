@@ -10,9 +10,9 @@ namespace Catfish.Core.Models.Contents.Fields
     public class TextField : BaseField
     {
         public static readonly string ValuesTag = "values";
-        public TextField() { }
-        public TextField(XElement data) : base(data) { }
-        public TextField(string name, string desc, string lang = null) : base(name, desc, lang) { }
+        public TextField() { DisplayLabel = "Short Text"; }
+        public TextField(XElement data) : base(data) { DisplayLabel = "Short Text"; }
+        public TextField(string name, string desc, string lang = null) : base(name, desc, lang) { DisplayLabel = "Short Text"; }
 
 
         public XmlModelList<MultilingualValue> Values { get; set; }

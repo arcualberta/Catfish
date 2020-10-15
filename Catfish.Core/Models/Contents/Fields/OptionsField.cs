@@ -48,6 +48,14 @@ namespace Catfish.Core.Models.Contents.Fields
                     opt.Selected = true;
             }
         }
+        public void AddOption(string[] optionTexts, string[] langs)
+        {
+            Option opt = new Option();
+            for (int i = 0; i < optionTexts.Length; ++i)
+                opt.SetOptionText(optionTexts[i], langs[i]);
+
+            Options.Add(opt);
+        }
 
         public void UpdateOptions(string[] optionText, string lang)
         {
