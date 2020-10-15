@@ -120,7 +120,7 @@ namespace Catfish.Areas.Manager.Pages
             SaveGroupTemplates(group);
             _appDb.SaveChanges();
            
-            return RedirectToPage("GroupEdit","Manager", group.Id);
+            return RedirectToPage("GroupEdit","Manager", new { id = group.Id });
         }
 
         public List<GroupRoleAssignmentVM> GetGroupRoleList()
@@ -254,7 +254,6 @@ namespace Catfish.Areas.Manager.Pages
             if (deletedTemplates.Count > 0)
                 foreach (var groupTemplate in deletedTemplates)
                     _appDb.GroupTemplates.Remove(groupTemplate);
-
         }
 
     }
