@@ -4,7 +4,7 @@
 @inject Catfish.Core.Services.UserGroupService UserGroupService
     
 <div class="form-group">
-    <label>@Localizer.General[Model.RoleName]</label>
+    <label class="title">@Localizer.General[Model.RoleName]</label>
     <div class="container-fluid">
         <table class="table table-borderless">
             <thead>
@@ -45,6 +45,9 @@
                  }
             </tbody>
         </table>
-    </div>   
-    <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("user/{0}", Model.RoleGroupId)">  @Localizer.General["Add User"]</a>    
+    </div> 
+    <div class="float-right">
+        <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("user/{0}", Model.RoleGroupId)">  @Localizer.General["Add User"]</a>
+    </div>
+    <br>
 </div>

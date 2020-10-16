@@ -17,7 +17,5 @@ namespace Catfish.Core.Services
         IList<Guid> GetAllUserIds(string searching);
         IList<Guid> GetGroupUserIds(Guid id);
         UserGroupRole AddUserGroupRole(Guid userId, Guid groupRoleId);
-
-
     }
 }
