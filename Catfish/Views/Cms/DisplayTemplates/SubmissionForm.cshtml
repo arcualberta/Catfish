@@ -7,9 +7,15 @@
     var templateId = Guid.Parse(Model.EntityTemplateId);
     var collectionId = Guid.Parse(Model.CollectionId);
     var template = _entityTemplateService.GetTemplate(templateId);
-    var item = template.GetRootDataItem(false);
+    var Item = template.GetRootDataItem(false);
 
 }
 <form id="@Model.Id" method="post" action="@formPostUrl">
+    <input data-val="true" data-val-required="The TemplateId field is required." 
+           id="TemplateId" name="TemplateId" type="hidden" 
+           value="@templateId">
+
+    @Html.HiddenFor(model => model.CollectionId)
+
     <input class="btn btn-deault" type="submit" value="submit" />
 </form>
