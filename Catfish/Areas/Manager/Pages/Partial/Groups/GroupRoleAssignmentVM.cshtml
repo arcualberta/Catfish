@@ -30,12 +30,16 @@
                             <span class="title">@user.User.Email</span>
                         </td>
                         <td class="actions one">
-                            <form method="post">
+                            <form method="delete">
                                 <a class="danger" href="@Url.Action("Delete", new { id = user.Id })">
                                     <span class="fas fa-trash"></span>
                                 </a>
+
                             </form>
-                            
+                            @*<form  method="post" asp-route-id="@user.Id" asp-controllr="Group">
+                                <button action="Delete" type ="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                            </form>*@
+
                         </td>
                     </tr>
                  }

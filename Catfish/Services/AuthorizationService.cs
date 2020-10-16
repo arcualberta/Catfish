@@ -54,7 +54,7 @@ namespace Catfish.Services
             foreach (var newRole in newRoles)
             {
                 Role role = new Role();
-                role.Id = Guid.NewGuid();
+                role.Id = Guid.NewGuid(); 
                 role.Name = newRole;
                 role.NormalizedName = newRole.ToUpper();
                 _piranhaDb.Roles.Add(role);
