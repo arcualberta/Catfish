@@ -119,6 +119,13 @@ namespace Catfish.Areas.Manager.Pages
             return RedirectToPage("GroupEdit","Manager", new { id = group.Id });
         }
 
+        public IActionResult Delete()
+        {
+            
+
+            return RedirectToPage("GroupEdit", "Manager", new { id = Group.Id });
+        }
+
         public List<GroupRoleAssignmentVM> GetGroupRoleList()
         {
             var roles = _srv.GetGroupRolesDetails();
