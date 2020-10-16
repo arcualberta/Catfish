@@ -330,7 +330,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/form.js"); 
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/free-search.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/submission-form.js");
             //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/bundle.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/vendors.bundle.js");
@@ -347,7 +347,7 @@ namespace Catfish
             App.Blocks.Register<NavigationBlock>();
             App.Blocks.Register<SubmissionEntryPointList>();
             App.Blocks.Register<FreeSearchBlock>();
-            App.Blocks.Register<SubmissionEntryPoint>();
+            App.Blocks.Register<SubmissionForm>();
             App.Blocks.Register<ExtendedImageBlock>();
             App.Blocks.Register<ExtendedGalleryBlock>();
             

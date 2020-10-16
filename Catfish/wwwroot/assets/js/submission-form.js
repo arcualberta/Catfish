@@ -1,6 +1,6 @@
 ﻿/* global piranha component registration */
 /* 1st parameter is the component name */
-Vue.component("submission-entry-point", {
+Vue.component("submission-form", {
     props: ["uid", "toolbar", "model"],
 
     methods: {
@@ -24,7 +24,7 @@ Vue.component("submission-entry-point", {
 
     },
     template: "<div  class= 'block-body calendar-block'>" +
-        "<div class='lead row'><label class='form-label col-md-3 required'>Entity Template ID: </label><input class='form-control col-md-8' type='text' name='entityTemplateId' v-model='model.entityTemplateId.value' contenteditable='true' v-on:blur='onBlur' value='entityTemplateIdValue'  :class='{ requiredField: isEntityTemplateEmpty }' /></div>" +
+        "<div class='lead row'><label class='form-label col-md-3 required'>Template ID: </label><input class='form-control col-md-8' type='text' name='entityTemplateId' v-model='model.entityTemplateId.value' contenteditable='true' v-on:blur='onBlur' value='entityTemplateIdValue'  :class='{ requiredField: isEntityTemplateEmpty }' /></div>" +
         "<div class='lead row'><label class='form-label col-md-3 required'>Collection ID: </label><input class='form-control col-md-8' type='text' name='collectionId' v-model='model.collectionId.value' contenteditable='true' v-on:blur='onBlur' value='collectionIdValue'  :class='{ requiredField: isCollectionEmpty }' /></div>" +
         "</div>"
 

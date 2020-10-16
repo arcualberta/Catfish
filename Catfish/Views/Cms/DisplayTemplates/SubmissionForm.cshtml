@@ -1,0 +1,15 @@
+﻿@model Catfish.Models.Blocks.SubmissionForm
+
+@inject Catfish.Services.IEntityTemplateService _entityTemplateService;
+
+@{
+    string formPostUrl = "/entity/create/" + Model.EntityTemplateId;
+    var templateId = Guid.Parse(Model.EntityTemplateId);
+    var collectionId = Guid.Parse(Model.CollectionId);
+    var template = _entityTemplateService.GetTemplate(templateId);
+    var item = template.GetRootDataItem(false);
+
+}
+<form id="@Model.Id" method="post" action="@formPostUrl">
+    <input class="btn btn-deault" type="submit" value="submit" />
+</form>
