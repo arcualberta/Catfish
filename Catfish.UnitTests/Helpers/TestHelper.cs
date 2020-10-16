@@ -67,7 +67,8 @@ namespace Catfish.Tests.Helpers
             services.AddScoped<IEntityIndexService, EntityIndexService>();
             services.AddTransient<IWorkflowService, WorkflowService>();
             services.AddTransient<IAuthorizationService, AuthorizationService>();
-
+            services.AddScoped<IUserGroupService, UserGroupService>();
+            
 
             ////services.AddScoped<SolrService>();
             // Solr services

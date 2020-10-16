@@ -65,21 +65,8 @@ namespace Catfish.Areas.Manager.Pages
         }
         public IActionResult OnPost()
         {
-            GroupRole = _srv.GetGroupRoleDetails(GroupRole.Id);
-
-            foreach(var userGroupRole in Users)
-            {
-                UserGroupRole dbUserGroupRole = new UserGroupRole();
-                if (userGroupRole.Assigned)
-                {
-                    dbUserGroupRole.Id = Guid.NewGuid();
-                    dbUserGroupRole.GroupRoleId = GroupRole.Id;
-                    dbUserGroupRole.UserId = userGroupRole.UserId;
-
-
-                    _appDb.UserGroupRoles.Add(dbUserGroupRole);
-                }
-            }
+            foreach (var userGroupRole in Users.Where(ugr => ugr.Assigned))
+                _srv.AddUserGroupRole(userGroupRole.UserId, userGroupRole.RoleGroupId);
 
             _appDb.SaveChanges();
             return RedirectToPage("GroupEdit", "Manager", new { id=GroupRole.GroupId });

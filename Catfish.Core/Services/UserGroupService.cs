@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
@@ -61,18 +62,17 @@ namespace Catfish.Core.Services
             return _appDb.GroupRoles.Where(gr => gr.Id == id).FirstOrDefault();
         }
 
-        public void EnsureUserRoles(Guid userId, Guid roleId)
+        public UserGroupRole AddUserGroupRole(Guid userId, Guid groupRoleId)
         {
-            bool hasValue = _piranhaDb.UserRoles.Where(ur => ur.UserId == userId && ur.RoleId == roleId).Any();
-            
-            if (!hasValue)
+            UserGroupRole ugr = new UserGroupRole()
             {
-                var userRole = new IdentityUserRole<Guid>()
-                {
-                    
-                };
-            }
+                Id = Guid.NewGuid(),
+                GroupRoleId = groupRoleId,
+                UserId = userId,
+            };
+            _appDb.UserGroupRoles.Add(ugr);
 
+            return ugr;
         }
 
         public IList<Guid> GetAllUserIds(string searching)
