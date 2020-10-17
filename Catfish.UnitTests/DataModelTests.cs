@@ -232,7 +232,7 @@ namespace Catfish.UnitTests
             Guid userId = Guid.Parse("40134C7B-0DBC-4A29-9E8B-BB4D74308944");
             Guid groupRoleId = Guid.Parse("4717DF86-AA34-4686-B4F7-C2153C6EFFF2");
 
-            var srv = _testHelper.Seviceprovider.GetService(typeof(IUserGroupService)) as IUserGroupService;
+            var srv = _testHelper.Seviceprovider.GetService(typeof(IGroupService)) as IGroupService;
             srv.AddUserGroupRole(userId, groupRoleId);
        
         }

@@ -13,9 +13,9 @@ namespace Catfish.Areas.Manager.Pages
     public class GroupListModel : PageModel
     {
         public IList<Group> Groups { get; protected set; }
-        public UserGroupService _srv { get; private set; }
+        public GroupService _srv { get; private set; }
 
-        public GroupListModel(UserGroupService srv)
+        public GroupListModel(GroupService srv)
         {
             _srv = srv;
         }

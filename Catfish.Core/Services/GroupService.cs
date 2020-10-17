@@ -11,11 +11,11 @@ using System.Linq;
 
 namespace Catfish.Core.Services
 {
-    public class UserGroupService: IUserGroupService
+    public class GroupService: IGroupService
     {
         private readonly AppDbContext _appDb;
         private readonly IdentitySQLServerDb _piranhaDb;
-        public UserGroupService(AppDbContext db, IdentitySQLServerDb pdb)
+        public GroupService(AppDbContext db, IdentitySQLServerDb pdb)
         {
             _appDb = db;
             _piranhaDb = pdb;

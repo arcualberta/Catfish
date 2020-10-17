@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Catfish.Core.Services
 {
-    public interface IUserGroupService
+    public interface IGroupService
     {
         IList<Group> GetGroupList();
         IQueryable<User> GetUsers(int offset = 0, int max = 25);

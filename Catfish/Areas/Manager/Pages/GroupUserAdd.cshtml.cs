@@ -15,7 +15,7 @@ namespace Catfish.Areas.Manager.Pages
 {
     public class GroupUserAddModel : PageModel
     {
-        private IUserGroupService _srv;
+        private IGroupService _srv;
         public readonly AppDbContext _appDb;
         public readonly IdentitySQLServerDb _piranhaDb;
 
@@ -28,7 +28,7 @@ namespace Catfish.Areas.Manager.Pages
         [BindProperty(SupportsGet = true)]
         public string Searching { get; set; }
 
-        public GroupUserAddModel(IUserGroupService srv, AppDbContext appDb, IdentitySQLServerDb pdb)
+        public GroupUserAddModel(IGroupService srv, AppDbContext appDb, IdentitySQLServerDb pdb)
         {
             _srv = srv;
             _appDb = appDb;
