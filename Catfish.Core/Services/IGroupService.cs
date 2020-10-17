@@ -18,6 +18,13 @@ namespace Catfish.Core.Services
         IList<Guid> GetAllUserIds(string searching);
         IList<Guid> GetGroupUserIds(Guid id);
         UserGroupRole AddUserGroupRole(Guid userId, Guid groupRoleId);
-        List<GroupRoleUserAssignmentVM> GetUserAttributes(Guid groupRoleId, string searching);
+        List<GroupRoleUserAssignmentVM> SetUserAttribute(Guid groupRoleId, string searching);
+        IList<Role> GetGroupRolesDetails();
+        Group GetGroupDetails(Guid id);
+        List<GroupTemplateAssignmentVM> SetTemplateAttribute(Guid groupId);
+        List<GroupRoleAssignmentVM> SetRoleAttribute(Guid groupId);
+        List<UserGroupRole> SetUserAttribute(Guid groupId);
+        Group SaveGroupRoles(Group group, List<GroupRoleAssignmentVM> roles);
+        void SaveGroupTemplates(Group group, List<GroupTemplateAssignmentVM> templates);
     }
 }

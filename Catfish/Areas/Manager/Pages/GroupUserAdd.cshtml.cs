@@ -39,10 +39,11 @@ namespace Catfish.Areas.Manager.Pages
         {
             //get selected group role details
             GroupRole = _srv.GetGroupRoleDetails(id);
-            Users = _srv.GetUserAttributes(GroupRole.Id, Searching);
+            Users = _srv.SetUserAttribute(GroupRole.Id, Searching);
         }
         public IActionResult OnPost()
         {
+            GroupRole = _srv.GetGroupRoleDetails(GroupRole.Id);
             foreach (var userGroupRole in Users.Where(ugr => ugr.Assigned))
                 _srv.AddUserGroupRole(userGroupRole.UserId, userGroupRole.RoleGroupId);
 

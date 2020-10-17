@@ -86,7 +86,7 @@ namespace Catfish.Core.Services
             return _appDb.UserGroupRoles.Where(ugr => ugr.GroupRoleId == id).Select(ugr => ugr.UserId).ToList();
         }
 
-        public List<GroupRoleUserAssignmentVM> GetUserAttributes(Guid groupRoleId, string searching)
+        public List<GroupRoleUserAssignmentVM> SetUserAttribute(Guid groupRoleId, string searching)
         {
             //get all users who have the selected role
             var allRoleUsers = GetAllUserIds(searching);
@@ -114,5 +114,174 @@ namespace Catfish.Core.Services
             }
             return Users;
         }
+
+        public IList<Role> GetGroupRolesDetails()
+        {
+            return _piranhaDb.Roles.Where(r => r.NormalizedName != "SYSADMIN").OrderBy(r => r.Name).ToList();
+        }
+
+        public Group GetGroupDetails(Guid id)
+        {
+
+            return _appDb.Groups.Where(gr => gr.Id == id).FirstOrDefault();
+        }
+
+        public List<GroupTemplateAssignmentVM> SetTemplateAttribute(Guid groupId)
+        {
+            //BEGIN: Handling entity templates
+            //================================
+            //Getting all templates available in the system and then creating a view model that identifies which of them
+            //have been assigned to the current group
+            var templates = _appDb.ItemTemplates.ToList(); //All templates in the system
+            var groupTemplates = _appDb.GroupTemplates.Where(r => r.GroupId == groupId).ToList();
+
+            List<GroupTemplateAssignmentVM> templatesList = new List<GroupTemplateAssignmentVM>();
+            foreach (var template in templates)
+            {
+                var groupTemplateVM = new GroupTemplateAssignmentVM()
+                {
+                    TemplateId = template.Id,
+                    TemplateName = template.TemplateName
+                };
+                var currentAssociation = groupTemplates.Where(gt => gt.EntityTemplateId == template.Id).FirstOrDefault();
+                groupTemplateVM.TemplateGroupId = currentAssociation == null ? null as Guid? : currentAssociation.Id;
+                groupTemplateVM.Assigned = groupTemplateVM.TemplateGroupId.HasValue;
+                templatesList.Add(groupTemplateVM);
+            }
+            //END: Handling entity templates
+            return templatesList;
+        }
+
+        public List<GroupRoleAssignmentVM> SetRoleAttribute(Guid groupId)
+        {
+            //BEGIN: Handling roles
+            //================================
+            //Getting all roles available in the system and then creating a view model that identifies which of them
+            //have been assigned to the current group
+            var roles = GetGroupRolesDetails();
+            var groupRoles = _appDb.GroupRoles.Where(gr => gr.GroupId == groupId).ToList();
+
+            List<GroupRoleAssignmentVM>  roleList = new List<GroupRoleAssignmentVM>();
+            foreach (var role in roles)
+            {
+                var groupRoleVM = new GroupRoleAssignmentVM()
+                {
+                    RoleId = role.Id,
+                    RoleName = role.Name,
+                };
+                var currentAssociation = groupRoles.Where(gr => gr.RoleId == role.Id).FirstOrDefault();
+                groupRoleVM.RoleGroupId = currentAssociation == null ? null as Guid? : currentAssociation.Id;
+                groupRoleVM.Assigned = groupRoleVM.RoleGroupId.HasValue;
+                groupRoleVM.HasUsers = _appDb.UserGroupRoles.Where(ugr => ugr.GroupRoleId == groupRoleVM.RoleGroupId).Any();
+                roleList.Add(groupRoleVM);
+            }
+            return roleList;
+        }
+
+        public List<UserGroupRole> SetUserAttribute(Guid groupId)
+        {
+            List<UserGroupRole> users = _appDb.UserGroupRoles
+                .Where(ugr => ugr.GroupRole.GroupId == groupId)
+                .ToList();
+            foreach (var user in users)
+                user.User = GetUserDetails(user.UserId);
+            return users;
+        }
+
+        public Group SaveGroupRoles(Group group, List<GroupRoleAssignmentVM> roles)
+        {
+            //get group details from Groups table
+            Group dbGroup = GetGroupDetails(group.Id);
+
+            if (dbGroup == null)
+            {
+                dbGroup = new Group();
+            }
+
+            dbGroup.Name = group.Name;
+            dbGroup.GroupStatus = group.GroupStatus;
+            //get group roles details from GroupRoles table
+            List<GroupRole> dbGroupRoles = _appDb.GroupRoles.Where(r => r.GroupId == group.Id).ToList();
+            //get roles associate data from interface 
+            List<GroupRoleAssignmentVM> newList = roles;
+            List<GroupRole> selectedGroupRoles = new List<GroupRole>();
+            //get all selected roles list
+            foreach (var role in newList)
+            {
+                if (role.Assigned)
+                {
+                    var newGroupRole = new GroupRole();
+                    if (role.RoleGroupId == null)
+                        newGroupRole.Id = Guid.NewGuid();
+                    else
+                        newGroupRole.Id = (Guid)role.RoleGroupId;
+
+                    newGroupRole.RoleId = role.RoleId;
+                    newGroupRole.Group = dbGroup;
+                    newGroupRole.GroupId = dbGroup.Id;
+                    selectedGroupRoles.Add(newGroupRole);
+                }
+            }
+            //get all newly added roles to a list
+            List<GroupRole> newlyAddedRoles = selectedGroupRoles.Except(dbGroupRoles, new GroupRoleComparer()).ToList();
+            //get all deleted roles to a list
+            List<GroupRole> deletedRoles = dbGroupRoles.Except(selectedGroupRoles, new GroupRoleComparer()).ToList();
+
+
+            //add newly added roles to GroupRoles table
+            if (newlyAddedRoles.Count > 0)
+                foreach (var groupRole in newlyAddedRoles)
+                    _appDb.GroupRoles.Add(groupRole);
+            //remove deleted roles from GroupRoles table
+            if (deletedRoles.Count > 0)
+                foreach (var groupRole in deletedRoles)
+                    _appDb.GroupRoles.Remove(groupRole);
+
+            return dbGroup;
+        }
+        public void SaveGroupTemplates(Group group, List<GroupTemplateAssignmentVM> templates)
+        {
+
+            //get group template details from GroupTemplates table
+            List<GroupTemplate> dbGroupTemplates = _appDb.GroupTemplates.Where(r => r.GroupId == group.Id).ToList();
+            //get templates associate data from interface 
+            List<GroupTemplateAssignmentVM> newList = templates;
+            List<GroupTemplate> selectedGroupTemplates = new List<GroupTemplate>();
+            //get all selected template list
+            foreach (var template in newList)
+            {
+                if (template.Assigned)
+                {
+                    var newGroupTemplate = new GroupTemplate();
+
+                    if (template.TemplateGroupId == null)
+                        newGroupTemplate.Id = Guid.NewGuid();
+                    else
+                        newGroupTemplate.Id = (Guid)template.TemplateGroupId;
+
+                    newGroupTemplate.EntityTemplateId = template.TemplateId;
+                    newGroupTemplate.Group = group;
+                    newGroupTemplate.GroupId = group.Id;
+                    selectedGroupTemplates.Add(newGroupTemplate);
+                }
+            }
+            //get all newly added templates to a list
+            List<GroupTemplate> newlyAddedTemplates = selectedGroupTemplates.Except(dbGroupTemplates, new GroupTemplateComparer()).ToList();
+            //get all deleted templates to a list
+            List<GroupTemplate> deletedTemplates = dbGroupTemplates.Except(selectedGroupTemplates, new GroupTemplateComparer()).ToList();
+
+            if (group == null)
+                throw new Exception("Group Details with ID = " + group.Id + " not found.");
+            //add newly added templates to GroupTemplates table
+            if (newlyAddedTemplates.Count > 0)
+                foreach (var groupTemplate in newlyAddedTemplates)
+                    _appDb.GroupTemplates.Add(groupTemplate);
+            //remove deleted roles from GroupTemplates table
+            if (deletedTemplates.Count > 0)
+                foreach (var groupTemplate in deletedTemplates)
+                    _appDb.GroupTemplates.Remove(groupTemplate);
+        }
+
+        
     }
 }
