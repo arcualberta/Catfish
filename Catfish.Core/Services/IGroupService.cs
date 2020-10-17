@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.ViewModels;
 using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
@@ -17,5 +18,6 @@ namespace Catfish.Core.Services
         IList<Guid> GetAllUserIds(string searching);
         IList<Guid> GetGroupUserIds(Guid id);
         UserGroupRole AddUserGroupRole(Guid userId, Guid groupRoleId);
+        List<GroupRoleUserAssignmentVM> GetUserAttributes(Guid groupRoleId, string searching);
     }
 }

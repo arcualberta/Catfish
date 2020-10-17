@@ -70,6 +70,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Manager\assets\img\" />
+    <Folder Include="Areas\Manager\Pages\Groups\" />
     <Folder Include="Areas\Manager\Pages\Partial\DisplayTemplates\" />
   </ItemGroup>
 

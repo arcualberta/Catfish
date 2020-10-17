@@ -39,30 +39,7 @@ namespace Catfish.Areas.Manager.Pages
         {
             //get selected group role details
             GroupRole = _srv.GetGroupRoleDetails(id);
-            //get all users who have the selected role
-            var allRoleUsers = _srv.GetAllUserIds(Searching);
-            //get userId's who already selected for perticular user group
-            var addedRoleUsers = _srv.GetGroupUserIds(GroupRole.Id);
-
-            //get userId's who doesn't selected to a perticular role group
-            var toBeAddedRoleUsers = allRoleUsers.Except(addedRoleUsers).ToList();
-
-            //get all user details
-            var users = _srv.GetUsers();
-            Users = new List<GroupRoleUserAssignmentVM>();
-            foreach (var newUser in toBeAddedRoleUsers)
-            {
-                var user = users.Where(u => u.Id == newUser).FirstOrDefault();
-                var groupRoleUserAssignmentVM = new GroupRoleUserAssignmentVM()
-                {
-                    UserId = user.Id,
-                    RoleGroupId = GroupRole.Id,
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    Assigned = false
-                };
-                Users.Add(groupRoleUserAssignmentVM);
-            }
+            Users = _srv.GetUserAttributes(GroupRole.Id, Searching);
         }
         public IActionResult OnPost()
         {

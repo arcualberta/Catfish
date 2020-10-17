@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -85,6 +86,33 @@ namespace Catfish.Core.Services
             return _appDb.UserGroupRoles.Where(ugr => ugr.GroupRoleId == id).Select(ugr => ugr.UserId).ToList();
         }
 
-        
+        public List<GroupRoleUserAssignmentVM> GetUserAttributes(Guid groupRoleId, string searching)
+        {
+            //get all users who have the selected role
+            var allRoleUsers = GetAllUserIds(searching);
+            //get userId's who already selected for perticular user group
+            var addedRoleUsers = GetGroupUserIds(groupRoleId);
+
+            //get userId's who doesn't selected to a perticular role group
+            var toBeAddedRoleUsers = allRoleUsers.Except(addedRoleUsers).ToList();
+
+            //get all user details
+            var users = GetUsers();
+            List<GroupRoleUserAssignmentVM> Users = new List<GroupRoleUserAssignmentVM>();
+            foreach (var newUser in toBeAddedRoleUsers)
+            {
+                var user = users.Where(u => u.Id == newUser).FirstOrDefault();
+                var groupRoleUserAssignmentVM = new GroupRoleUserAssignmentVM()
+                {
+                    UserId = user.Id,
+                    RoleGroupId = groupRoleId,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Assigned = false
+                };
+                Users.Add(groupRoleUserAssignmentVM);
+            }
+            return Users;
+        }
     }
 }
