@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Catfish.Core.Models;
+using Catfish.Core.Models.ViewModels;
 using Catfish.Core.Services;
 using Catfish.Models.ViewModels;
 using Catfish.Services;

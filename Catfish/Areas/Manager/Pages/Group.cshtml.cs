@@ -12,6 +12,7 @@ using Piranha.AspNetCore.Identity.Data;
 using Piranha.Extend.Fields;
 using Microsoft.EntityFrameworkCore;
 using Piranha.AspNetCore.Identity.SQLServer;
+using Catfish.Core.Models.ViewModels;
 
 namespace Catfish.Areas.Manager.Pages
 {
@@ -30,7 +31,7 @@ namespace Catfish.Areas.Manager.Pages
         public List<GroupRoleAssignmentVM> Roles { get; set; }
 
         [BindProperty]
-        public List<GroupTemplateAssignmentVM> Templates { get; set; }
+        public List<Core.Models.ViewModels.GroupTemplateAssignmentVM> Templates { get; set; }
 
         
         public List<UserGroupRole> Users { get; set; }
