@@ -24,7 +24,7 @@ namespace Catfish.Core.Services
 
         public IList<Group> GetGroupList()
         {
-            return _appDb.Groups.ToList();
+            return _appDb.Groups.Where(gr => gr.GroupStatus != Group.eGroupStatus.Deleted).ToList();
         }
 
         public IQueryable<User> GetUsers(int offset = 0, int max = 25)
@@ -282,6 +282,29 @@ namespace Catfish.Core.Services
                     _appDb.GroupTemplates.Remove(groupTemplate);
         }
 
-        
+        public void DeleteGroup(Guid groupId)
+        {
+            Group group = GetGroupDetails(groupId);
+            group.GroupStatus = Group.eGroupStatus.Deleted;
+            _appDb.Groups.Update(group);
+        }
+
+        public bool CheckUserGroupRole(Guid groupId)
+        {
+            var groupRoles = _appDb.GroupRoles.Where(gr => gr.GroupId == groupId);
+            if (groupRoles == null)
+                return false;
+            else
+            {
+                foreach(var groupRole in groupRoles)
+                {
+                    var userGroupRole = _appDb.UserGroupRoles.Where(ugr => ugr.GroupRoleId == groupRole.Id);
+                    if (userGroupRole.Any())
+                        return true;
+                }
+                return false;
+            }
+            
+        }
     }
 }

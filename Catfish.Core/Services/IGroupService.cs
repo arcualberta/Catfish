@@ -26,5 +26,7 @@ namespace Catfish.Core.Services
         List<UserGroupRole> SetUserAttribute(Guid groupId);
         Group SaveGroupRoles(Group group, List<GroupRoleAssignmentVM> roles);
         void SaveGroupTemplates(Group group, List<GroupTemplateAssignmentVM> templates);
+        void DeleteGroup(Guid groupId);
+        bool CheckUserGroupRole(Guid groupId);
     }
 }

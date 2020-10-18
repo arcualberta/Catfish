@@ -22,7 +22,6 @@ namespace Catfish.Areas.Manager.Pages
 
         private IGroupService _srv;
         public readonly AppDbContext _appDb;
-        public readonly IdentitySQLServerDb _piranhaDb;
 
         [BindProperty]
         public Group Group { get; set; }
@@ -37,11 +36,10 @@ namespace Catfish.Areas.Manager.Pages
         public List<UserGroupRole> Users { get; set; }
 
         
-        public GroupModel(IGroupService srv, AppDbContext appDb, IdentitySQLServerDb pdb)
+        public GroupModel(IGroupService srv, AppDbContext appDb)
         {
             _srv = srv;
             _appDb = appDb;
-            _piranhaDb = pdb;
         }
         public void OnGet(Guid? id)
         {
