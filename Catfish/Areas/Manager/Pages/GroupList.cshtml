@@ -68,23 +68,25 @@
                         {
                             if (!GroupService.CheckUserGroupRole(group.Id))
                             {
-                                <a class="danger" onclick="return false;" href="#" data-toggle="modal" data-target="#userModal" data-content="@group.Id" onclick="addUser('@group.Id', '@group.Name'); return false;">
+                                <a class="danger" onclick="return false;" href="#" data-toggle="modal" data-target="#groupModal" data-content="@group.Id" onclick="addUser('@group.Id', '@group.Name'); return false;">
                                     <span class="fas fa-trash"></span>
                                 </a>
                             }
                             <!-- Modal -->
                             <form method="post">
-                                <div id="userModal" class="modal fade" role="dialog">
+                                <div id="groupModal" class="modal fade" role="dialog">
                                     <div class="modal-dialog">
-
                                         <!-- Modal content-->
                                         <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="myModalLabel">Group Delete Confirmation</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            </div>
                                             <div class="modal-body">
                                                 <div class="card-body">
                                                     <div class="form-group">
                                                         <input type="hidden" name="GroupId" id="GroupId" value="" />
-                                                        <h4>Do you Really want to delete</h4>
-                                                        <input type="text" name="GroupName" id="GroupName" value="" />
+                                                        <h5>Do you Really want to delete this Group?</h5>
                                                     </div>
                                                 </div>
                                             </div>
