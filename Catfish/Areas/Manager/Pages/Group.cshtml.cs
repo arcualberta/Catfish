@@ -79,7 +79,7 @@ namespace Catfish.Areas.Manager.Pages
         {
             _srv.DeleteUserGroupRole(userGroupRoleId);
             _appDb.SaveChanges();
-            RedirectToPage("GroupEdit", "Manager", new { id = Group.Id });
+            OnGet(id);
         }
         
 
