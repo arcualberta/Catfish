@@ -28,5 +28,17 @@ namespace Catfish.Api.Controllers
             IList<SolrEntry> result = QueryService.FreeSearch(parameters);
             return result;
         }
+
+        [Route("keywords")]
+        public IList<SolrEntry> Keywords([FromForm] string[] keywords)
+        {
+            //var parameters = new SearchParameters();
+            //parameters.FreeSearch = searchTerm;
+            //IList<SolrEntry> result = QueryService.FreeSearch(parameters);
+
+            IList<SolrEntry> result = new List<SolrEntry>();
+            return result;
+        }
+
     }
 }
