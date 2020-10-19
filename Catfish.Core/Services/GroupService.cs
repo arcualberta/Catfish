@@ -306,5 +306,12 @@ namespace Catfish.Core.Services
             }
             
         }
+
+        public void DeleteUserGroupRole(Guid userGroupRoleId)
+        {
+            UserGroupRole userGroupRole = _appDb.UserGroupRoles.Where(ugr => ugr.Id == userGroupRoleId).FirstOrDefault();
+            if (userGroupRole != null)
+                _appDb.UserGroupRoles.Remove(userGroupRole);
+        }
     }
 }
