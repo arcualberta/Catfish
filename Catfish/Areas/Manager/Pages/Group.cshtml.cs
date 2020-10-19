@@ -32,7 +32,7 @@ namespace Catfish.Areas.Manager.Pages
         [BindProperty]
         public List<GroupTemplateAssignmentVM> Templates { get; set; }
 
-        
+        [BindProperty]
         public List<UserGroupRole> Users { get; set; }
 
         
@@ -74,11 +74,16 @@ namespace Catfish.Areas.Manager.Pages
             return RedirectToPage("GroupEdit","Manager", new { id = group.Id });
         }
 
-        public IActionResult Delete()
-        {
-            return RedirectToPage("GroupEdit", "Manager", new { id = Group.Id });
-        }
 
+        public void OnPostDelete(Guid id)
+        {
+            UserGroupRole userGroupRole = _appDb.UserGroupRoles.Where(ugr => ugr.Id == id).FirstOrDefault();
+            if (userGroupRole != null)
+                _appDb.UserGroupRoles.Remove(userGroupRole);
+            _appDb.SaveChanges();
+            RedirectToPage("GroupEdit", "Manager", new { id = Group.Id });
+        }
         
+
     }
 }
