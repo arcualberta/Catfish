@@ -75,9 +75,9 @@ namespace Catfish.Areas.Manager.Pages
         }
 
 
-        public void OnPostDelete(Guid id)
+        public void OnPostDelete(Guid id, Guid userGroupRoleId)
         {
-            UserGroupRole userGroupRole = _appDb.UserGroupRoles.Where(ugr => ugr.Id == id).FirstOrDefault();
+            UserGroupRole userGroupRole = _appDb.UserGroupRoles.Where(ugr => ugr.Id == userGroupRoleId).FirstOrDefault();
             if (userGroupRole != null)
                 _appDb.UserGroupRoles.Remove(userGroupRole);
             _appDb.SaveChanges();
