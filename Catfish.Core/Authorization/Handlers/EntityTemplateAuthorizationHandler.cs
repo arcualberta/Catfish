@@ -25,7 +25,8 @@ namespace Catfish.Core.Authorization.Handlers
         {
             //The authorization is evaluated using the following criteria.
             //
-            //  1. Find the "get-action" of which the function attribute is set to "Create" in the EntityTemplate
+            //  1. Find the "get-action" of which the function attribute is set to "Mame" attribute 
+            //     of the "requirement"
             //     represented by the input-argument "resourse"
             //  2. Find all "role-ref"s in the "authorizations" section of the above "get-action"
             //  3. If the current user holds at least one of those roles within a group where the

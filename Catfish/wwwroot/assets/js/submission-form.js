@@ -5,15 +5,15 @@ Vue.component("submission-form", {
 
     methods: {
         onBlur: function (e) {
-            this.model.EntityTemplateId.value = e.target.value;
+            ////this.model.EntityTemplateId.value = e.target.value;
 
-            var content = this.model.cssVal.value;
-            if (content.length > 0) {
-                this.$emit('update-content', {
-                    uid: this.uid,
-                    cssVal: content
-                });
-            }
+            ////var content = this.model.cssVal.value;
+            ////if (content.length > 0) {
+            ////    this.$emit('update-content', {
+            ////        uid: this.uid,
+            ////        cssVal: content
+            ////    });
+            ////}
 
         }
     },
