@@ -333,7 +333,8 @@ namespace Catfish
             //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/bundle.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/vendors.bundle.js");
-            
+            App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
+
         }
         private static void RegisterCustomBlocks()
         {
@@ -349,7 +350,8 @@ namespace Catfish
             App.Blocks.Register<SubmissionEntryPoint>();
             App.Blocks.Register<ExtendedImageBlock>();
             App.Blocks.Register<ExtendedGalleryBlock>();
-            
+            App.Blocks.Register<ControlledVocabularySearchBlock>();
+
         }
         private static void RegisterCustomStyles()
         {
