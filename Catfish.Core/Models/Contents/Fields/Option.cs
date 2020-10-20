@@ -21,6 +21,11 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("selected", value);
         }
 
+        public bool ExtendedOption
+        {
+            get => GetAttribute("extended", false);
+            set => SetAttribute("extended", value);
+        }
         public Option() : base(FieldTagName) { }
         public Option(XElement data) : base(data) { }
 
