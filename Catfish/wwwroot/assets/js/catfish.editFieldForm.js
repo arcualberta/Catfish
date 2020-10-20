@@ -71,6 +71,8 @@ if (document.getElementById("edit-field-form-page")) {
                 numberPickerTemplate: null,
                 monolingualTextFieldTemplate: null,
 
+                optionItemTemplate: null,
+
 
                 dropdowns: {},
                 //temp, need to call an api for these
@@ -538,45 +540,22 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} field the field to push multiple choice or checkbox objects onto
              */
             addNewOption(field) {
-                //if theres a disabled other option, push into index before it
-                //the disabled item will always be the last item
-                console.log("problem",field);
+                this.optionItemTemplate.Id = uuidv1();
+
                 if (field.Options.$values.length > 0) {
-                    if (field.Options.$values[field.Options.$values.length - 1].isDisabled) {
-                        field.Options.$values.splice(field.Options.$values.length - 1, 0, {
+                    this.optionItemTemplate.Id = uuidv1();
+                    field.Options.$values.splice(field.Options.$values.length - 1, 0, this.optionItemTemplate );
+                        /*field.Options.$values.splice(field.Options.$values.length - 1, 0, {
                             text: '',
                             isDisabled: false,
                             id: -1,
-                        });
+                        });*/
                         return;
-                    }
                     
 				}
                  
-                field.Options.$values.push({
-                    text: '',
-                    isDisabled: false,
-                    id: -1,
-                });
+                field.Options.$values.push(this.optionItemTemplate.Id);
 				
-
-
-                /*switch (field.$type) {
-                    case 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core':
-                        //hardcoded for now, use template provided item instead
-                        this.radioTemplate.values.push( {
-                            text: '',
-                            id: -1,
-                        } );
-                        break;
-                    case 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core':
-                        //hardcoded for now, use template provided item instead
-                        this.checkboxTemplate.values.push({
-                            text: '',
-                            id: -1,
-                        });
-                        break;
-				}*/
             },
 
             /**
@@ -664,10 +643,18 @@ if (document.getElementById("edit-field-form-page")) {
                                             break;
                                         case this.RADIO_TYPE:
                                             this.radioTemplate = defaultField;
+                                            //stores an option item to be used by all option-item fields (radio/checkbox/dropdown)
+                                            this.optionItemTemplate = defaultField.Options.$values[0];
+                                            //TODO return to this, replace below with removal of second option. NOT second language.
+                                            //if (this.optionItemTemplate.OptionText.Values.$values.length > 1){
+                                            //    this.optionItemTemplate.OptionText.Values.$values.splice(1, this.optionItemTemplate.OptionText.Values.$values.length - 1);
+											//}
+                                            
 
                                             for (let languageIndex in this.radioTemplate.Name.Values.$values) {
                                                 this.$set(this.radioTemplate.Name.Values.$values[languageIndex], 'Value', '');
                                                 this.$set(this.radioTemplate.Description.Values.$values[languageIndex], 'Value', '');
+                                                this.$set(this.optionItemTemplate.OptionText.Values.$values[languageIndex], 'Value', '');
                                             }
                                             break;
                                         case this.CHECKBOX_TYPE:
