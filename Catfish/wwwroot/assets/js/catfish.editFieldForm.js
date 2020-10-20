@@ -205,7 +205,7 @@ if (document.getElementById("edit-field-form-page")) {
                     Options: {
                         $values: {
                             $each: {
-                                OptionsText: {
+                                OptionText: {
                                     Values: {
                                         $values: {
                                             $each: {
@@ -643,21 +643,7 @@ if (document.getElementById("edit-field-form-page")) {
                             .then((fieldDefsResult) => {
                                 //templates handled here, remove any default data and store the structure
                                 console.log("second res", fieldDefsResult)
-                                //TODO: this needs to check the $type, not rely on order
-                                /*
-                                 TEXTFIELD_TYPE: null,
-                                    TEXTAREA_TYPE: null,
-                                    CHECKBOX_TYPE: null,
-                                    RADIO_TYPE: null,
-                                    DROPDOWN_TYPE: null,
-                                    INFOSECTION_TYPE: null,
-
-                                    DATE_TYPE: null,
-                                    DECIMAL_TYPE: null,
-                                    INTEGER_TYPE: null,
-                                    MONOLINGUAL_TEXTFIELD_TYPE: null,
-                                 
-                                 */
+                                
                                 for (let defaultField of fieldDefsResult.$values) {
                                     switch (defaultField.$type) {
                                         case this.TEXTFIELD_TYPE:
