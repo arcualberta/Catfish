@@ -184,8 +184,7 @@
                                                                         <input disabled :id="'radio-' + radioVCIndex + '-' + radioIndex" :name="'radio-field-' + fieldIndex" type="radio" aria-label="Radio button for following text input">
                                                                     </div>
                                                                 </div>
-                                                                <input type="text" class="form-control" :disabled="radioValueCollection.isDisabled" 
-                                                                    aria-label="Text input with radio button and remove button" 
+                                                                <input type="text" class="form-control" aria-label="Text input with radio button and remove button" 
                                                                     v-model="radioOption.Value" :state="validateFieldState(fieldIndex, 'Values')"
                                                                     :class="{ 'is-invalid': $v.fields.$each[fieldIndex].Options.$values.$each[radioVCIndex].OptionText.Values.$values.$each[radioIndex].Value.$invalid }"
                                                                     > 
@@ -200,79 +199,99 @@
                                                             <div class="additional-options-holder">
                                                                 <div class="form-check form-check-inline">
                                                                     <input class="form-check-input" type="radio" name="add-default-option" 
-                                                                        :id="'add-default-option-' + radioVCIndex" value="false">
-                                                                    <label class="form-check-label" style="font-weight:normal;" :for="'add-default-option-' + radioVCIndex">
+                                                                        :id="'add-default-option-' + fieldIndex + '-' + radioVCIndex" value="false">
+                                                                    <label class="form-check-label" style="font-weight:normal;" :for="'add-default-option-' + fieldIndex + '-' + radioVCIndex">
                                                                         Set as Default Option
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="checkbox" :id="'additional-input-' + radioVCIndex" value="false">
-                                                                    <label class="form-check-label" style="font-weight:normal;" for="'additional-input-' + radioVCIndex">
+                                                                    <input class="form-check-input" type="checkbox" :id="'additional-input-' + fieldIndex + '-' + radioVCIndex" value="false">
+                                                                    <label class="form-check-label" style="font-weight:normal;" for="'additional-input-' + fieldIndex + '-' + radioVCIndex">
                                                                         Requires Additional Input
                                                                     </label>
                                                                 </div>
                                                             </div>
                                                             <hr />
                                                         </div>
-                                                        @*<div class="add-button-holder">
-                                                            <div class="btn-group">
-                                                                <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-success">
-                                                                    <i class="fas fa-plus"></i>
-                                                                </button>
-                                                                <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                    <span class="sr-only">Toggle Dropdown</span>
-                                                                </button>
-                                                                <div class="dropdown-menu" :aria-labelledby="'add-item-button-' + fieldIndex">
-                                                                    <a class="dropdown-item" v-bind:class="{'disabled' : dropdowns[field.Id].hasOtherOption}" v-on:click="addOtherOption(field)" href="javascript:void(0)">Add Blank Option</a>
-                                                                </div>
-                                                            </div>
-
-                                                        </div>*@
+                                                        <div class="add-button-holder">
+                                                            <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-success">
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                      @*Checkbox*@ 
                                                     <div v-else-if="field.$type == CHECKBOX_TYPE ">
-                                                        <div v-for="(checkValue, checkIndex) of field.Options.$values" class="input-group mb-3">
-                                                            <div class="input-group-prepend">
-                                                                <div class="input-group-text">
-                                                                    <input :id="'checkbox-' + checkIndex" disabled :name="'check-field-' + fieldIndex" 
-                                                                        type="checkbox" aria-label="Checkbox for following text input">
+                                                        <div v-for="(checkValueCollection, checkVCIndex) of field.Options.$values" class="input-group mb-3">
+                                                            Option {{checkVCIndex + 1}}:
+                                                            <div class="input-group mb-3" v-for="(checkOption, checkIndex) of checkValueCollection.OptionText.Values.$values">
+                                                                <div class="input-group-prepend">
+                                                                    <div class="input-group-text">
+                                                                        <input :id="'checkbox-' + checkVCIndex + '-' + checkIndex" disabled :name="'check-field-' + fieldIndex" 
+                                                                            type="checkbox" aria-label="Checkbox for following text input">
+                                                                    </div>
+                                                                </div>
+                                                                <input type="text" class="form-control" aria-label="Text input with checkbox and remove button" 
+                                                                    v-model="checkOption.Value" :state="validateFieldState(fieldIndex, 'Values')"
+                                                                    :class="{ 'is-invalid': $v.fields.$each[fieldIndex].Options.$values.$each[checkVCIndex].OptionText.Values.$values.$each[checkIndex].Value.$invalid }">
+                                                                <div class="input-group-append">
+                                                                    <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, checkValue, checkIndex)" type="button">
+                                                                        <i class="fas fa-minus"></i>
+                                                                    </button>
                                                                 </div>
                                                             </div>
-                                                            <input type="text" class="form-control" :disabled="checkValue.isDisabled" 
-                                                                aria-label="Text input with checkbox and remove button" v-model="checkValue.text"
-                                                                :state="validateFieldState(fieldIndex, 'Values')"
-                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].Values.$values.$each[checkIndex].text.$invalid }">
-                                                            <div class="input-group-append">
-                                                                <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, checkValue, checkIndex)" type="button">
-                                                                    <i class="fas fa-minus"></i>
-                                                                </button>
+                                                            <div class="additional-options-holder">
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" name="add-default-option" 
+                                                                        :id="'add-default-option-' + fieldIndex + '-' + checkVCIndex" value="false">
+                                                                    <label class="form-check-label" style="font-weight:normal;" :for="'add-default-option-' + fieldIndex + '-' + checkVCIndex">
+                                                                        Set as Default Option
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="checkbox" :id="'additional-input-' + fieldIndex + '-' + checkVCIndex" value="false">
+                                                                    <label class="form-check-label" style="font-weight:normal;" for="'additional-input-' + fieldIndex + '-' + checkVCIndex">
+                                                                        Requires Additional Input
+                                                                    </label>
+                                                                </div>
                                                             </div>
+                                                            <hr />
                                                         </div>
                                                         <div class="add-button-holder">
-                                                            <div class="btn-group" class="dropdown m-2">
-                                                                <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-success">
-                                                                    <i class="fas fa-plus"></i>
-                                                                </button>
-                                                                <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                    <span class="sr-only">Toggle Dropdown</span>
-                                                                </button>
-                                                                <div class="dropdown-menu" :aria-labelledby="'add-item-button-' + fieldIndex">
-                                                                    <a class="dropdown-item" v-bind:class="{'disabled': dropdowns[field.Id].hasOtherOption}" v-on:click="addOtherOption(field)" href="javascript:void(0)">Add Blank Option</a>
-                                                                </div>
-                                                            </div>
+                                                            <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-success">
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>
                                                         </div>                                               
                                                     </div>
                                                      @*Dropdown*@ 
                                                     <div v-else-if="field.$type == DROPDOWN_TYPE ">
-                                                        <div v-for="(dropdownValue, dropdownIndex) of field.Options.$values" class="input-group mb-3">
-                                                            <input type="text" class="form-control" aria-label="Text input with remove button" 
-                                                                v-model="dropdownValue.text" :state="validateFieldState(fieldIndex, 'Values')"
-                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].Values.$values.$each[dropdownIndex].text.$invalid }">
-                                                            <div class="input-group-append">
-                                                                <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, dropdownValue, dropdownIndex)" type="button">
-                                                                    <i class="fas fa-minus"></i>
-                                                                </button>
+                                                        <div v-for="(dropdownValueCollection, dropdownVCIndex) of field.Options.$values" class="input-group mb-3">
+                                                            Option {{dropdownVCIndex + 1}}:
+                                                            <div class="input-group mb-3" v-for="(dropdownOption, dropdownIndex) of dropdownValueCollection.OptionText.Values.$values">
+                                                                <input type="text" class="form-control" aria-label="Text input with remove button" 
+                                                                    v-model="dropdownOption.Value" :state="validateFieldState(fieldIndex, 'Values')"
+                                                                    :class="{ 'is-invalid': $v.fields.$each[fieldIndex].Options.$values.$each[dropdownVCIndex].OptionText.Values.$values.$each[dropdownIndex].Value.$invalid }">
+                                                                <div class="input-group-append">
+                                                                    <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, dropdownValueCollection, dropdownIndex)" type="button">
+                                                                        <i class="fas fa-minus"></i>
+                                                                    </button>
+                                                                </div>
                                                             </div>
+                                                            <div class="additional-options-holder">
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" name="add-default-option" 
+                                                                        :id="'add-default-option-' + fieldIndex + '-' + dropdownVCIndex" value="false">
+                                                                    <label class="form-check-label" style="font-weight:normal;" :for="'add-default-option-' + dropdownVCIndex">
+                                                                        Set as Default Option
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="checkbox" :id="'additional-input-' + dropdownVCIndex" value="false">
+                                                                    <label class="form-check-label" style="font-weight:normal;" for="'additional-input-' + fieldIndex + '-' + dropdownVCIndex">
+                                                                        Requires Additional Input
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
                                                         </div>
                                                         <div class="add-button-holder">
                                                             <button v-on:click="addNewOption(field)" type="button" class="btn btn-success rounded">
