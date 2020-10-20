@@ -201,7 +201,24 @@ if (document.getElementById("edit-field-form-page")) {
                                 }
                             }
                         }
-                    }
+                    },
+                    Options: {
+                        $values: {
+                            $each: {
+                                OptionsText: {
+                                    Values: {
+                                        $values: {
+                                            $each: {
+                                                Value: {
+                                                    required
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
                 }
             }
         },
@@ -523,9 +540,10 @@ if (document.getElementById("edit-field-form-page")) {
             addNewOption(field) {
                 //if theres a disabled other option, push into index before it
                 //the disabled item will always be the last item
-                if (field.Values.$values.length > 0) {
-                    if (field.Values.$values[field.Values.$values.length - 1].isDisabled) {
-                        field.Values.$values.splice(field.Values.$values.length - 1, 0, {
+                console.log("problem",field);
+                if (field.Options.$values.length > 0) {
+                    if (field.Options.$values[field.Options.$values.length - 1].isDisabled) {
+                        field.Options.$values.splice(field.Options.$values.length - 1, 0, {
                             text: '',
                             isDisabled: false,
                             id: -1,
@@ -535,7 +553,7 @@ if (document.getElementById("edit-field-form-page")) {
                     
 				}
                  
-                field.Values.$values.push({
+                field.Options.$values.push({
                     text: '',
                     isDisabled: false,
                     id: -1,

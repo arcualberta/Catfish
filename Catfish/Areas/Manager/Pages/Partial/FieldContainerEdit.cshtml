@@ -176,23 +176,25 @@
                                                     </div>
                                                      @*Radio aka Multiple Choice*@ 
                                                     <div v-if="field.$type == RADIO_TYPE ">
-                                                        <div v-for="(radioValue, radioIndex) of field.Values.$values" class="input-group mb-3">
-                                                            @*{{$v.fields.$each[fieldIndex].Values}}*@
-                                                            <div class="input-group-prepend">
-                                                                <div class="input-group-text">
-                                                                    <input disabled :id="'radio-' + radioIndex" :name="'radio-field-' + fieldIndex" type="radio" aria-label="Radio button for following text input">
+                                                        <div v-for="(radioValueCollection, radioVCIndex) of field.Options.$values" class="input-group mb-3">
+                                                            <div v-for="(radioOption, radioIndex) of radioValueCollection.OptionText.Values.$values">
+                                                                {{$v.fields.$each[fieldIndex].Options.$values.$each[radioVCIndex].OptionsText.Values.$values.$each[radioIndex]}}
+                                                                <div class="input-group-prepend">
+                                                                    <div class="input-group-text">
+                                                                        <input disabled :id="'radio-' + radioVCIndex + '-' + radioIndex" :name="'radio-field-' + fieldIndex" type="radio" aria-label="Radio button for following text input">
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <input type="text" class="form-control" :disabled="radioValue.isDisabled" 
-                                                                aria-label="Text input with radio button and remove button" 
-                                                                v-model="radioValue.text" :state="validateFieldState(fieldIndex, 'Values')"
-                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].Values.$values.$each[radioIndex].text.$invalid }" > 
-                                                                <!-- 
-                                                                @@input="$v.fields.$each[fieldIndex].values.$touch()" -->
-                                                            <div class="input-group-append">
-                                                                <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, radioValue, radioIndex)" type="button">
-                                                                    <i class="fas fa-minus"></i>
-                                                                </button>
+                                                                <input type="text" class="form-control" :disabled="radioValueCollection.isDisabled" 
+                                                                    aria-label="Text input with radio button and remove button" 
+                                                                    v-model="radioOption.Value" :state="validateFieldState(fieldIndex, 'Values')"
+                                                                     > 
+                                                                    <!-- 
+                                                                    @@input="$v.fields.$each[fieldIndex].values.$touch()" -->
+                                                                <div class="input-group-append">
+                                                                    <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, radioValueCollection, radioVCIndex)" type="button">
+                                                                        <i class="fas fa-minus"></i>
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="add-button-holder">
@@ -212,7 +214,7 @@
                                                     </div>
                                                      @*Checkbox*@ 
                                                     <div v-else-if="field.$type == CHECKBOX_TYPE ">
-                                                        <div v-for="(checkValue, checkIndex) of field.Values.$values" class="input-group mb-3">
+                                                        <div v-for="(checkValue, checkIndex) of field.Options.$values" class="input-group mb-3">
                                                             <div class="input-group-prepend">
                                                                 <div class="input-group-text">
                                                                     <input :id="'checkbox-' + checkIndex" disabled :name="'check-field-' + fieldIndex" 
@@ -245,7 +247,7 @@
                                                     </div>
                                                      @*Dropdown*@ 
                                                     <div v-else-if="field.$type == DROPDOWN_TYPE ">
-                                                        <div v-for="(dropdownValue, dropdownIndex) of field.Values.$values" class="input-group mb-3">
+                                                        <div v-for="(dropdownValue, dropdownIndex) of field.Options.$values" class="input-group mb-3">
                                                             <input type="text" class="form-control" aria-label="Text input with remove button" 
                                                                 v-model="dropdownValue.text" :state="validateFieldState(fieldIndex, 'Values')"
                                                                 :class="{ 'is-invalid': $v.fields.$each[fieldIndex].Values.$values.$each[dropdownIndex].text.$invalid }">
