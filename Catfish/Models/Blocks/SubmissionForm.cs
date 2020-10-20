@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Catfish.Models.Blocks
 {
-    [BlockType(Name = "Submission Entry Point", Category = "Workflow", Component = "submission-entry-point", Icon = "fab fa-wpforms")]
-    public class SubmissionEntryPoint : Block
+    [BlockType(Name = "Submission Form", Category = "Workflow", Component = "submission-form", Icon = "fab fa-wpforms")]
+    public class SubmissionForm : Block
     {
         public  TextField EntityTemplateId { get; set; }
         public TextField CollectionId { get; set; }

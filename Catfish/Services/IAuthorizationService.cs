@@ -43,9 +43,8 @@ namespace Catfish.Services
         /// <returns></returns>
         Item GetItem(Guid item, AuthorizationPurpose purpose);
 
-        Group GetGroupDetails(Guid id);
-
-        IList<Role> GetGroupRolesDetails();
+        
+        
 
         User GetUserDetails(Guid id);
 

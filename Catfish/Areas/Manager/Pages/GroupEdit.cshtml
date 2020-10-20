@@ -10,7 +10,7 @@
     <script src="~/manager/identity/piranha.useredit.js"></script>
     <script type="text/javascript">
         piranha.groupedit.currentGroupName = Group.Name;
-        
+
     </script>
 }
 
@@ -29,7 +29,7 @@
             <div class="top-nav">
                 @if ((await AuthorizationService.AuthorizeAsync(User, Catfish.Areas.Manager.Access.GroupSecurity.Save)).Succeeded)
                 {
-                    <button type="submit" class="btn btn-labeled btn-success pull-right">
+                    <button type="submit" class="btn btn-labeled btn-success pull-left">
                         <span class="btn-label">
                             <i class="fas fa-check"></i>
                         </span>
@@ -74,16 +74,16 @@
                     <label>@Localizer.General["Templates"]</label>
                     <ul class="list-group">
                         @{
-                        for (int cnt = 0; cnt < Model.Templates.Count; ++cnt)
-                        {
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <span class="col-sm-4">
-                                        @Html.EditorFor(model => model.Templates[cnt])
-                                    </span>
-                                </div>
-                            </li>
-                        }
+                            for (int cnt = 0; cnt < Model.Templates.Count; ++cnt)
+                            {
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <span class="col-sm-4">
+                                            @Html.EditorFor(model => model.Templates[cnt])
+                                        </span>
+                                    </div>
+                                </li>
+                            }
                         }
                     </ul>
                 </div>
@@ -109,22 +109,26 @@
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-header">
-                <span class="title">@Localizer.General["User Privileges"]</span>
-            </div>
-            @{
-                <div class="card-body">
-                    @foreach (var role in Model.Roles.Where(r => r.Assigned))
-                    {
-                        var users = Model.Users.Where(u => u.GroupRole.RoleId == role.RoleId);
-                        <partial model="@role" name="Partial/Groups/GroupRoleAssignmentVM.cshtml" />
-                    
-                    } @*ENDS foreach (var role in Model.Roles.Where(r => r.Assigned))*@
-                </div> @*Ends "card-body"*@
-            }
-        </div> @*End: "cards"*@
-    </div> @*End: "container-fluid"*@
+    </div>
+
 </form>
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <span class="title">@Localizer.General["User Privileges"]</span>
+        </div>
+        <div class="card-body">
+            <form asp-page-handler="delete" method="post">
+                @foreach (var role in Model.Roles.Where(r => r.Assigned))
+                {
+                    var users = Model.Users.Where(u => u.GroupRole.RoleId == role.RoleId);
+                    <partial model="@role" name="Partial/Groups/GroupRoleAssignmentVM.cshtml" />
+
+                } @*ENDS foreach (var role in Model.Roles.Where(r => r.Assigned))*@
+            </form>
+        </div> @*Ends "card-body"*@
+    </div> @*End: "cards"*@
+
+</div>
 
 

@@ -43,11 +43,31 @@ namespace Catfish.UnitTests
         public void ContractLetterWorkflowBuildTest()
         {
             string lang = "en";
-            ItemTemplate template = new ItemTemplate();
-            template.TemplateName = "Trust Funded GRA/GRAF Contract";
-            template.Name.SetContent(template.TemplateName);
-            
+            string templateName = "Trust Funded GRA/GRAF Contract";
+            AppDbContext db = _testHelper.Db;
+
+            ItemTemplate template = db.ItemTemplates
+                .Where(et => et.TemplateName == templateName)
+                .FirstOrDefault();
+
+            if (template == null)
+            {
+                template = new ItemTemplate();
+                db.ItemTemplates.Add(template);
+            }
+            else
+            {
+                ItemTemplate t = new ItemTemplate();
+                t.Id = template.Id;
+                template.Data = t.Data;
+                template.Initialize(false);
+            }
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
+
             IWorkflowService ws = _testHelper.WorkflowService;
+            ws.SetModel(template);
+
             IAuthorizationService auth = _testHelper.AuthorizationService;
             ws.SetModel(template);
             
@@ -90,14 +110,28 @@ namespace Catfish.UnitTests
             contract.CreateField<IntegerField>("Award", lang, true);
             contract.CreateField<IntegerField>("Salary", lang, true);
 
-            
-            //Save the template to the database
-            AppDbContext db = _testHelper.Db;
-            EntityTemplate oldTemplate = db.EntityTemplates.Where(et => et.TemplateName == template.TemplateName).FirstOrDefault();
-            if (oldTemplate == null)
-                db.EntityTemplates.Add(template);
-            else
-                oldTemplate.Content = template.Content;
+            //Get the Workflow object using the workflow service
+            Workflow workflow = ws.GetWorkflow(true);
+
+
+            //Defininig roles
+            WorkflowRole centralAdminRole = workflow.AddRole(auth.GetRole("Admin", true));
+            WorkflowRole departmentAdmin = workflow.AddRole(auth.GetRole("DepartmentAdmin", true));
+
+            // start submission related workflow items
+            //Defining actions
+            GetAction startSubmissionAction = workflow.AddAction("Start Contract", nameof(TemplateOperations.Instantiate), "Home");
+            startSubmissionAction.AddAuthorizedRole(departmentAdmin.Id);
+
+            //Defining form template
+            startSubmissionAction.AddTemplate(contract.Id, "Contract Letter Template");
+
+
+            //EntityTemplate oldTemplate = db.EntityTemplates.Where(et => et.TemplateName == template.TemplateName).FirstOrDefault();
+            //if (oldTemplate == null)
+            //    db.EntityTemplates.Add(template);
+            //else
+            //    oldTemplate.Content = template.Content;
             db.SaveChanges();
 
             //Save the template to a file
