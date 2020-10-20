@@ -177,7 +177,7 @@
                                                      @*Radio aka Multiple Choice*@ 
                                                     <div v-if="field.$type == RADIO_TYPE ">
                                                         <div v-for="(radioValueCollection, radioVCIndex) of field.Options.$values">
-                                                            Option {{radioVCIndex + 1}}
+                                                            Option {{radioVCIndex + 1}}:
                                                             <div class="input-group mb-3" v-for="(radioOption, radioIndex) of radioValueCollection.OptionText.Values.$values">
                                                                 <div class="input-group-prepend">
                                                                     <div class="input-group-text">
@@ -197,10 +197,24 @@
                                                                     </button>
                                                                 </div>
                                                             </div>
-                                                            (_) Default Option   (_) Requires Additional Input
+                                                            <div class="additional-options-holder">
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" name="add-default-option" 
+                                                                        :id="'add-default-option-' + radioVCIndex" value="false">
+                                                                    <label class="form-check-label" style="font-weight:normal;" :for="'add-default-option-' + radioVCIndex">
+                                                                        Set as Default Option
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="checkbox" :id="'additional-input-' + radioVCIndex" value="false">
+                                                                    <label class="form-check-label" style="font-weight:normal;" for="'additional-input-' + radioVCIndex">
+                                                                        Requires Additional Input
+                                                                    </label>
+                                                                </div>
+                                                            </div>
                                                             <hr />
                                                         </div>
-                                                        <div class="add-button-holder">
+                                                        @*<div class="add-button-holder">
                                                             <div class="btn-group">
                                                                 <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-success">
                                                                     <i class="fas fa-plus"></i>
@@ -213,7 +227,7 @@
                                                                 </div>
                                                             </div>
 
-                                                        </div>
+                                                        </div>*@
                                                     </div>
                                                      @*Checkbox*@ 
                                                     <div v-else-if="field.$type == CHECKBOX_TYPE ">
