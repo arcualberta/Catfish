@@ -540,22 +540,26 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} field the field to push multiple choice or checkbox objects onto
              */
             addNewOption(field) {
-                this.optionItemTemplate.Id = uuidv1();
+                let newOptionItemTemplate = JSON.parse(JSON.stringify(this.optionItemTemplate));
+                newOptionItemTemplate.Id = uuidv1();
+                newOptionItemTemplate.OptionText.Id = uuidv1();
+                for (let languageOptionItem of newOptionItemTemplate.OptionText.Values.$values) {
+                    languageOptionItem.Id = uuidv1();
+				}
 
-                if (field.Options.$values.length > 0) {
-                    this.optionItemTemplate.Id = uuidv1();
-                    field.Options.$values.splice(field.Options.$values.length - 1, 0, this.optionItemTemplate );
+                /*if (field.Options.$values.length > 0) {
+                    newOptionItemTemplate.Id = uuidv1();
+                    field.Options.$values.splice(field.Options.$values.length - 1, 0, newOptionItemTemplate);
+                    console.log("field optionss", field.Options.$values);
                         /*field.Options.$values.splice(field.Options.$values.length - 1, 0, {
                             text: '',
                             isDisabled: false,
                             id: -1,
                         });*/
-                        return;
-                    
-				}
-                 
-                field.Options.$values.push(this.optionItemTemplate.Id);
-				
+                        /*return;
+				}*/
+                field.Options.$values.push(newOptionItemTemplate);
+                console.log("field options", field.Options.$values);
             },
 
             /**
@@ -644,19 +648,22 @@ if (document.getElementById("edit-field-form-page")) {
                                         case this.RADIO_TYPE:
                                             this.radioTemplate = defaultField;
                                             //stores an option item to be used by all option-item fields (radio/checkbox/dropdown)
-                                            this.optionItemTemplate = defaultField.Options.$values[0];
-                                            //TODO return to this, replace below with removal of second option. NOT second language.
-                                            //if (this.optionItemTemplate.OptionText.Values.$values.length > 1){
-                                            //    this.optionItemTemplate.OptionText.Values.$values.splice(1, this.optionItemTemplate.OptionText.Values.$values.length - 1);
-											//}
-                                            
+                                            this.optionItemTemplate = JSON.parse(JSON.stringify(defaultField.Options.$values[0]));
+                                            //if more than one option, remove the other options
+                                            if (defaultField.Options.$values.length > 1){
+                                                //delete all other options except for first one
+                                                this.radioTemplate.Options.$values.splice(1, defaultField.Options.$values.length - 1);
+                                            }
 
                                             for (let languageIndex in this.radioTemplate.Name.Values.$values) {
                                                 this.$set(this.radioTemplate.Name.Values.$values[languageIndex], 'Value', '');
                                                 this.$set(this.radioTemplate.Description.Values.$values[languageIndex], 'Value', '');
+                                                this.$set(this.radioTemplate.Options.$values[0].OptionText.Values.$values[languageIndex], 'Value', '');
+
                                                 this.$set(this.optionItemTemplate.OptionText.Values.$values[languageIndex], 'Value', '');
                                             }
                                             break;
+
                                         case this.CHECKBOX_TYPE:
                                             this.checkboxTemplate = defaultField;
 
