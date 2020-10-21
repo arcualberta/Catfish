@@ -177,7 +177,14 @@
                                                      @*Radio aka Multiple Choice*@ 
                                                     <div v-if="field.$type == RADIO_TYPE ">
                                                         <div v-for="(radioValueCollection, radioVCIndex) of field.Options.$values">
-                                                            Option {{radioVCIndex + 1}}:
+                                                            <div class="option-title-holder">
+                                                                <h5>Option {{radioVCIndex + 1}}:</h5>
+                                                                <button class="btn btn-danger" 
+                                                                    v-on:click="removeOption(field, fieldIndex, radioValueCollection, radioVCIndex)" 
+                                                                    type="button">
+                                                                    <i class="fas fa-minus"></i>
+                                                                </button>
+                                                            </div>
                                                             <div class="input-group mb-3" v-for="(radioOption, radioIndex) of radioValueCollection.OptionText.Values.$values">
                                                                 <div class="input-group-prepend">
                                                                     <span class="input-group-text">{{radioOption.Language}}</span>
@@ -191,11 +198,6 @@
                                                                     > 
                                                                     <!--  
                                                                     @@input="$v.fields.$each[fieldIndex].values.$touch()" -->
-                                                                <div class="input-group-append">
-                                                                    <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, radioValueCollection, radioVCIndex)" type="button">
-                                                                        <i class="fas fa-minus"></i>
-                                                                    </button>
-                                                                </div>
                                                             </div>
                                                             <div class="additional-options-holder">
                                                                 <div class="form-check form-check-inline">
@@ -223,7 +225,14 @@
                                                      @*Checkbox*@ 
                                                     <div v-else-if="field.$type == CHECKBOX_TYPE ">
                                                         <div v-for="(checkValueCollection, checkVCIndex) of field.Options.$values" class="input-group mb-3">
-                                                            Option {{checkVCIndex + 1}}:
+                                                            <div class="option-title-holder">
+                                                                <h5>Option {{checkVCIndex + 1}}:</h5>
+                                                                <button class="btn btn-danger" 
+                                                                    v-on:click="removeOption(field, fieldIndex, checkValueCollection, checkVCIndex)" 
+                                                                    type="button">
+                                                                    <i class="fas fa-minus"></i>
+                                                                </button>
+                                                            </div>
                                                             <div class="input-group mb-3" v-for="(checkOption, checkIndex) of checkValueCollection.OptionText.Values.$values">
                                                                 <div class="input-group-prepend">
                                                                     <span class="input-group-text">{{checkOption.Language}}</span>
@@ -235,11 +244,6 @@
                                                                 <input type="text" class="form-control" aria-label="Text input with checkbox and remove button" 
                                                                     v-model="checkOption.Value" :state="validateFieldState(fieldIndex, 'Values')"
                                                                     :class="{ 'is-invalid': $v.fields.$each[fieldIndex].Options.$values.$each[checkVCIndex].OptionText.Values.$values.$each[checkIndex].Value.$invalid }">
-                                                                <div class="input-group-append">
-                                                                    <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, checkValue, checkIndex)" type="button">
-                                                                        <i class="fas fa-minus"></i>
-                                                                    </button>
-                                                                </div>
                                                             </div>
                                                             <div class="additional-options-holder">
                                                                 <div class="form-check form-check-inline">
@@ -267,20 +271,21 @@
                                                      @*Dropdown*@ 
                                                     <div v-else-if="field.$type == DROPDOWN_TYPE ">
                                                         <div v-for="(dropdownValueCollection, dropdownVCIndex) of field.Options.$values" class="input-group mb-3">
-                                                            Option {{dropdownVCIndex + 1}}:
+                                                            <div class="option-title-holder">
+                                                                <h5>Option {{dropdownVCIndex + 1}}:</h5>
+                                                                <button class="btn btn-danger" 
+                                                                    v-on:click="removeOption(field, fieldIndex, dropdownValueCollection, dropdownVCIndex)" 
+                                                                    type="button">
+                                                                    <i class="fas fa-minus"></i>
+                                                                </button>
+                                                            </div>
                                                             <div class="input-group mb-3" v-for="(dropdownOption, dropdownIndex) of dropdownValueCollection.OptionText.Values.$values">
                                                                 <div class="input-group-prepend">
                                                                     <span class="input-group-text">{{dropdownOption.Language}}</span>
                                                                 </div>
                                                                 <input type="text" class="form-control" aria-label="Text input with remove button" 
-                                                                        v-model="dropdownOption.Value" :state="validateFieldState(fieldIndex, 'Values')"
-                                                                        :class="{ 'is-invalid': $v.fields.$each[fieldIndex].Options.$values.$each[dropdownVCIndex].OptionText.Values.$values.$each[dropdownIndex].Value.$invalid }">
-                                                                    <div class="input-group-append">
-                                                                        <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, dropdownValueCollection, dropdownIndex)" type="button">
-                                                                            <i class="fas fa-minus"></i>
-                                                                        </button>
-                                                                    </div>
-                                                                
+                                                                    v-model="dropdownOption.Value" :state="validateFieldState(fieldIndex, 'Values')"
+                                                                    :class="{ 'is-invalid': $v.fields.$each[fieldIndex].Options.$values.$each[dropdownVCIndex].OptionText.Values.$values.$each[dropdownIndex].Value.$invalid }">
                                                             </div>
                                                             <div class="additional-options-holder">
                                                                 <div class="form-check form-check-inline">

@@ -547,17 +547,6 @@ if (document.getElementById("edit-field-form-page")) {
                     languageOptionItem.Id = uuidv1();
 				}
 
-                /*if (field.Options.$values.length > 0) {
-                    newOptionItemTemplate.Id = uuidv1();
-                    field.Options.$values.splice(field.Options.$values.length - 1, 0, newOptionItemTemplate);
-                    console.log("field optionss", field.Options.$values);
-                        /*field.Options.$values.splice(field.Options.$values.length - 1, 0, {
-                            text: '',
-                            isDisabled: false,
-                            id: -1,
-                        });*/
-                        /*return;
-				}*/
                 field.Options.$values.push(newOptionItemTemplate);
                 console.log("field options", field.Options.$values);
             },
@@ -581,10 +570,7 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} optionIndex
              */
             removeOption(field, fieldIndex, itemValue, optionIndex) {
-                if (itemValue.isDisabled) {
-                    this.dropdowns[field.Id].hasOtherOption = false;
-				}
-                this.fields[fieldIndex].Values.$values.splice(optionIndex, 1);
+                this.fields[fieldIndex].Options.$values.splice(optionIndex, 1);
             },
 
             /**
@@ -667,18 +653,32 @@ if (document.getElementById("edit-field-form-page")) {
                                         case this.CHECKBOX_TYPE:
                                             this.checkboxTemplate = defaultField;
 
+                                            //if more than one option, remove the other options
+                                            if (defaultField.Options.$values.length > 1) {
+                                                //delete all other options except for first one
+                                                this.checkboxTemplate.Options.$values.splice(1, defaultField.Options.$values.length - 1);
+                                            }
+
                                             for (let languageIndex in this.checkboxTemplate.Name.Values.$values) {
                                                 this.$set(this.checkboxTemplate.Name.Values.$values[languageIndex], 'Value', '');
                                                 this.$set(this.checkboxTemplate.Description.Values.$values[languageIndex], 'Value', '');
+                                                this.$set(this.checkboxTemplate.Options.$values[0].OptionText.Values.$values[languageIndex], 'Value', '');
                                             }
                                             break;
 
                                         case this.DROPDOWN_TYPE:
                                             this.dropdownTemplate = defaultField;
 
+                                            //if more than one option, remove the other options
+                                            if (defaultField.Options.$values.length > 1) {
+                                                //delete all other options except for first one
+                                                this.dropdownTemplate.Options.$values.splice(1, defaultField.Options.$values.length - 1);
+                                            }
+
                                             for (let languageIndex in this.dropdownTemplate.Name.Values.$values) {
                                                 this.$set(this.dropdownTemplate.Name.Values.$values[languageIndex], 'Value', '');
                                                 this.$set(this.dropdownTemplate.Description.Values.$values[languageIndex], 'Value', '');
+                                                this.$set(this.dropdownTemplate.Options.$values[0].OptionText.Values.$values[languageIndex], 'Value', '');
                                             }
                                             break;
 
