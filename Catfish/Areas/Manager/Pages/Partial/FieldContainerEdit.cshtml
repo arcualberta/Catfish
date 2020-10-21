@@ -176,6 +176,7 @@
                                                     </div>
                                                      @*Radio aka Multiple Choice*@ 
                                                     <div v-if="field.$type == RADIO_TYPE ">
+                                                        <hr v-if="field.Options.$values.length > 0" />
                                                         <div v-for="(radioValueCollection, radioVCIndex) of field.Options.$values">
                                                             <div class="option-title-holder">
                                                                 <h5>Option {{radioVCIndex + 1}}:</h5>
@@ -214,7 +215,9 @@
                                                                     </label>
                                                                 </div>
                                                             </div>
-                                                            <hr />
+                                                            <div v-if="field.Options.$values.length > 0" style="width:100%;">
+                                                                <hr />
+                                                            </div>
                                                         </div>
                                                         <div class="add-button-holder">
                                                             <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-success">
@@ -224,6 +227,7 @@
                                                     </div>
                                                      @*Checkbox*@ 
                                                     <div v-else-if="field.$type == CHECKBOX_TYPE ">
+                                                        <hr v-if="field.Options.$values.length > 0" />
                                                         <div v-for="(checkValueCollection, checkVCIndex) of field.Options.$values" class="input-group mb-3">
                                                             <div class="option-title-holder">
                                                                 <h5>Option {{checkVCIndex + 1}}:</h5>
@@ -260,7 +264,9 @@
                                                                     </label>
                                                                 </div>
                                                             </div>
-                                                            <hr />
+                                                            <div v-if="field.Options.$values.length > 0" style="width:100%;">
+                                                                <hr />
+                                                            </div>
                                                         </div>
                                                         <div class="add-button-holder">
                                                             <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-success">
@@ -270,6 +276,7 @@
                                                     </div>
                                                      @*Dropdown*@ 
                                                     <div v-else-if="field.$type == DROPDOWN_TYPE ">
+                                                        <hr v-if="field.Options.$values.length > 0" />
                                                         <div v-for="(dropdownValueCollection, dropdownVCIndex) of field.Options.$values" class="input-group mb-3">
                                                             <div class="option-title-holder">
                                                                 <h5>Option {{dropdownVCIndex + 1}}:</h5>
@@ -302,7 +309,9 @@
                                                                     </label>
                                                                 </div>
                                                             </div>
-                                                            <hr />
+                                                            <div v-if="field.Options.$values.length > 0" style="width:100%;">
+                                                                <hr />
+                                                            </div>
                                                         </div>
                                                         <div class="add-button-holder">
                                                             <button v-on:click="addNewOption(field)" type="button" class="btn btn-success rounded">
