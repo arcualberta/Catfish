@@ -203,8 +203,11 @@
                                                             <div class="additional-options-holder">
                                                                 <div class="form-check form-check-inline">
                                                                     <input class="form-check-input" type="radio" name="add-default-option" 
-                                                                        :id="'add-default-option-' + fieldIndex + '-' + radioVCIndex" value="false">
-                                                                    <label class="form-check-label" style="font-weight:normal;" :for="'add-default-option-' + fieldIndex + '-' + radioVCIndex">
+                                                                        :id="'add-default-option-' + fieldIndex + '-' + radioVCIndex" 
+                                                                        v-model="radioValueCollection.Selected"
+                                                                        v-on:click="selectOptionAsDefault(fieldIndex, radioVCIndex)">
+                                                                    <label class="form-check-label" style="font-weight:normal;" 
+                                                                        :for="'add-default-option-' + fieldIndex + '-' + radioVCIndex">
                                                                         Set as Default Option
                                                                     </label>
                                                                 </div>

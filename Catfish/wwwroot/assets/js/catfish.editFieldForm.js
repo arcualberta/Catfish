@@ -306,7 +306,6 @@ if (document.getElementById("edit-field-form-page")) {
              * Changes the type of field via choice from the dropdown
              * @param {any} fieldIndex the fieldIndex being changed
              * @param {any} chosenFieldType the chosen field type of the dropdown
-             * TODO: use templates here, depending on if we are somehow storing the values without overwriting? idk
              */
             onDropdownChange(fieldIndex, chosenFieldType) {
                 //dont want to lose any values that are not originally a part of the template tho...
@@ -314,31 +313,31 @@ if (document.getElementById("edit-field-form-page")) {
                 switch (chosenFieldType) {
                     case this.TEXTFIELD_TYPE:
                         //textfield
-                        this.$set(this.fields, fieldIndex, this.textFieldTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.textfieldTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
                     case this.TEXTAREA_TYPE:
                         //textarea
-                        this.$set(this.fields, fieldIndex, this.textAreaTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.textAreaTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
                     case this.RADIO_TYPE:
                         //radio/mc
-                        this.$set(this.fields, fieldIndex, this.radioTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.radioTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
                     case this.CHECKBOX_TYPE:
                         //checkbox
-                        this.$set(this.fields, fieldIndex, this.checkboxTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.checkboxTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
                     case this.DROPDOWN_TYPE:
                         //dropdown
-                        this.$set(this.fields, fieldIndex, this.dropdownTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.dropdownTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
@@ -349,26 +348,26 @@ if (document.getElementById("edit-field-form-page")) {
 
                     case this.INFOSECTION_TYPE:
                         //displayfield
-                        this.$set(this.fields, fieldIndex, this.displayFieldTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.displayFieldTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
                     case this.DATE_TYPE:
                         //displayfield
-                        this.$set(this.fields, fieldIndex, this.datePickerTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.datePickerTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
                     case this.DECIMAL_TYPE:
                     case this.INTEGER_TYPE:
                         //displayfield
-                        this.$set(this.fields, fieldIndex, this.numberPickerTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.numberPickerTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
                     case this.MONOLINGUAL_TEXTFIELD_TYPE:
                         //displayfield
-                        this.$set(this.fields, fieldIndex, this.monolingualTextFieldTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.monolingualTextFieldTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 				}
@@ -550,6 +549,13 @@ if (document.getElementById("edit-field-form-page")) {
                 field.Options.$values.push(newOptionItemTemplate);
                 console.log("field options", field.Options.$values);
             },
+
+            selectOptionAsDefault(fieldIndex, optionIndex) {
+                //if selected already, deselect it
+                this.fields[fieldIndex].Options.$values[optionIndex].Selected =
+                    this.fields[fieldIndex].Options.$values[optionIndex].Selected ? false : true;
+                console.log(this.fields[fieldIndex]);
+			},
 
             /**
              * Adds 'Other' option to set for user to fill
