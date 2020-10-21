@@ -29,7 +29,7 @@ namespace Catfish.Controllers.Api
 
         // POST api/<ItemController>
         [HttpPost]
-        public void Post(Guid id, [FromBody] Item value)
+        public void Post(Guid id, [FromForm] Item value)
         {
         }
 
