@@ -3,7 +3,7 @@
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
 
 @{
-    string formPostUrl = "/entity/create/" + Model.EntityTemplateId;
+    string formPostUrl = "/api/items/" + Model.EntityTemplateId;
     var templateId = Guid.Parse(Model.EntityTemplateId);
     var collectionId = Guid.Parse(Model.CollectionId);
     var template = _entityTemplateService.GetTemplate(templateId);
