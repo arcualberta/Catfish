@@ -569,7 +569,7 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} fieldIndex
              * @param {any} optionIndex
              */
-            removeOption(field, fieldIndex, itemValue, optionIndex) {
+            removeOption(fieldIndex, optionIndex) {
                 this.fields[fieldIndex].Options.$values.splice(optionIndex, 1);
             },
 
