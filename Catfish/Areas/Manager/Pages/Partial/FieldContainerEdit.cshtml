@@ -212,7 +212,10 @@
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="checkbox" :id="'additional-input-' + fieldIndex + '-' + radioVCIndex" value="false">
+                                                                    <input class="form-check-input" type="checkbox" :name="'additional-input-' + fieldIndex"
+                                                                    :id="'additional-input-' + fieldIndex + '-' + radioVCIndex" 
+                                                                    v-model="radioValueCollection.ExtendedOption"
+                                                                    value="true">
                                                                     <label class="form-check-label" style="font-weight:normal;" for="'additional-input-' + fieldIndex + '-' + radioVCIndex">
                                                                         Requires Additional Input
                                                                     </label>
