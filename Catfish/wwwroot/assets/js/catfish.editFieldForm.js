@@ -550,11 +550,30 @@ if (document.getElementById("edit-field-form-page")) {
                 console.log("field options", field.Options.$values);
             },
 
+            /**
+             * 
+             * @param {any} fieldIndex
+             * @param {any} optionIndex
+             */
             selectOptionAsDefault(fieldIndex, optionIndex) {
                 //if selected already, deselect it
-                this.fields[fieldIndex].Options.$values[optionIndex].Selected =
-                    this.fields[fieldIndex].Options.$values[optionIndex].Selected ? false : true;
-                console.log(this.fields[fieldIndex]);
+
+                if (this.fields[fieldIndex].Options.$values[optionIndex].Selected === null
+                    || !this.fields[fieldIndex].Options.$values[optionIndex].Selected) {
+                    this.fields[fieldIndex].Options.$values[optionIndex].Selected = true;
+                } else {
+                    this.fields[fieldIndex].Options.$values[optionIndex].Selected = false;
+				}
+
+                //desselect any others in the group
+                for (let optionItem of this.fields[fieldIndex].Options.$values) {
+                    if (optionItem.Id == this.fields[fieldIndex].Options.$values[optionIndex].Id) {
+                        continue;
+					}
+                    optionItem.Selected = false;
+				}
+
+                console.log(this.fields[fieldIndex].Options.$values);
 			},
 
             /**
