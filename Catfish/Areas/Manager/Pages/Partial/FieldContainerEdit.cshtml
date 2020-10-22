@@ -202,7 +202,7 @@
                                                             </div>
                                                             <div class="additional-options-holder">
                                                                 <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" name="add-default-option" 
+                                                                    <input class="form-check-input" type="radio" :name="'add-default-option-' + fieldIndex" 
                                                                         :id="'add-default-option-' + fieldIndex + '-' + radioVCIndex" 
                                                                         v-model="radioValueCollection.Selected" value="true"
                                                                         v-on:click="selectOptionAsDefault(fieldIndex, radioVCIndex)">
