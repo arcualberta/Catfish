@@ -208,7 +208,7 @@
                                                                         v-on:click="selectOptionAsDefault(fieldIndex, radioVCIndex)">
                                                                     <label class="form-check-label" style="font-weight:normal;" 
                                                                         :for="'add-default-option-' + fieldIndex + '-' + radioVCIndex">
-                                                                        Set as Default Option {{radioValueCollection.Selected}}
+                                                                        Set as Default Option
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check form-check-inline">
@@ -216,7 +216,8 @@
                                                                     :id="'additional-input-' + fieldIndex + '-' + radioVCIndex" 
                                                                     v-model="radioValueCollection.ExtendedOption"
                                                                     value="true">
-                                                                    <label class="form-check-label" style="font-weight:normal;" for="'additional-input-' + fieldIndex + '-' + radioVCIndex">
+                                                                    <label class="form-check-label" style="font-weight:normal;"
+                                                                    for="'additional-input-' + fieldIndex + '-' + radioVCIndex">
                                                                         Requires Additional Input
                                                                     </label>
                                                                 </div>
@@ -257,15 +258,22 @@
                                                             </div>
                                                             <div class="additional-options-holder">
                                                                 <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" name="add-default-option" 
-                                                                        :id="'add-default-option-' + fieldIndex + '-' + checkVCIndex" value="false">
-                                                                    <label class="form-check-label" style="font-weight:normal;" :for="'add-default-option-' + fieldIndex + '-' + checkVCIndex">
+                                                                    <input class="form-check-input" type="radio" :name="'add-default-option-' + fieldIndex" 
+                                                                        :id="'add-default-option-' + fieldIndex + '-' + checkVCIndex" 
+                                                                        v-model="checkValueCollection.Selected" value="true"
+                                                                        v-on:click="selectOptionAsDefault(fieldIndex, checkVCIndex)">
+                                                                    <label class="form-check-label" style="font-weight:normal;" 
+                                                                        :for="'add-default-option-' + fieldIndex + '-' + checkVCIndex">
                                                                         Set as Default Option
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="checkbox" :id="'additional-input-' + fieldIndex + '-' + checkVCIndex" value="false">
-                                                                    <label class="form-check-label" style="font-weight:normal;" for="'additional-input-' + fieldIndex + '-' + checkVCIndex">
+                                                                    <input class="form-check-input" type="checkbox" :name="'additional-input-' + fieldIndex"
+                                                                    :id="'additional-input-' + fieldIndex + '-' + checkVCIndex" 
+                                                                    v-model="checkValueCollection.ExtendedOption"
+                                                                    value="true">
+                                                                    <label class="form-check-label" style="font-weight:normal;"
+                                                                    for="'additional-input-' + fieldIndex + '-' + checkVCIndex">
                                                                         Requires Additional Input
                                                                     </label>
                                                                 </div>
@@ -302,15 +310,22 @@
                                                             </div>
                                                             <div class="additional-options-holder">
                                                                 <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" name="add-default-option" 
-                                                                        :id="'add-default-option-' + fieldIndex + '-' + dropdownVCIndex" value="false">
-                                                                    <label class="form-check-label" style="font-weight:normal;" :for="'add-default-option-' + dropdownVCIndex">
+                                                                    <input class="form-check-input" type="radio" :name="'add-default-option-' + fieldIndex" 
+                                                                        :id="'add-default-option-' + fieldIndex + '-' + dropdownVCIndex" 
+                                                                        v-model="dropdownValueCollection.Selected" value="true"
+                                                                        v-on:click="selectOptionAsDefault(fieldIndex, dropdownVCIndex)">
+                                                                    <label class="form-check-label" style="font-weight:normal;" 
+                                                                        :for="'add-default-option-' + fieldIndex + '-' + dropdownVCIndex">
                                                                         Set as Default Option
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="checkbox" :id="'additional-input-' + dropdownVCIndex" value="false">
-                                                                    <label class="form-check-label" style="font-weight:normal;" for="'additional-input-' + fieldIndex + '-' + dropdownVCIndex">
+                                                                    <input class="form-check-input" type="checkbox" :name="'additional-input-' + fieldIndex"
+                                                                    :id="'additional-input-' + fieldIndex + '-' + dropdownVCIndex" 
+                                                                    v-model="dropdownValueCollection.ExtendedOption"
+                                                                    value="true">
+                                                                    <label class="form-check-label" style="font-weight:normal;"
+                                                                    for="'additional-input-' + fieldIndex + '-' + dropdownVCIndex">
                                                                         Requires Additional Input
                                                                     </label>
                                                                 </div>
