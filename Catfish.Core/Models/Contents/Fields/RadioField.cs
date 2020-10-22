@@ -7,7 +7,7 @@ namespace Catfish.Core.Models.Contents.Fields
 {
     public class RadioField : OptionsField
     {
-        public RadioField() : base() { }
-        public RadioField(XElement data) : base(data) { }
+        public RadioField() : base() { DisplayLabel = "Choices"; }
+        public RadioField(XElement data) : base(data) { DisplayLabel = "Choices"; }
     }
 }

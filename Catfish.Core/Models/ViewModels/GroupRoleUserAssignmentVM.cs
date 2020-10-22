@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace Catfish.Models.ViewModels
+namespace Catfish.Core.Models.ViewModels
 {
     public class GroupRoleUserAssignmentVM
     {
@@ -11,6 +10,7 @@ namespace Catfish.Models.ViewModels
         public Guid RoleGroupId { get; set; }
         public Guid UserId { get; set; }
         public string UserName { get; set; }
+        public string Email { get; set; }
         public bool Assigned { get; set; }
     }
 }

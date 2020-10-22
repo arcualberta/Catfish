@@ -54,7 +54,7 @@ namespace Catfish.Services
             foreach (var newRole in newRoles)
             {
                 Role role = new Role();
-                role.Id = Guid.NewGuid();
+                role.Id = Guid.NewGuid(); 
                 role.Name = newRole;
                 role.NormalizedName = newRole.ToUpper();
                 _piranhaDb.Roles.Add(role);
@@ -156,16 +156,8 @@ namespace Catfish.Services
             throw new NotImplementedException();
         }
 
-        public Group GetGroupDetails(Guid id)
-        {
-
-            return _appDb.Groups.Where(gr => gr.Id == id).FirstOrDefault();
-        }
-
-        public IList<Role> GetGroupRolesDetails()
-        {
-            return _piranhaDb.Roles.Where(r=>r.NormalizedName!="SYSADMIN").OrderBy(r => r.Name).ToList();
-        }
+        
+        
 
         public User GetUserDetails(Guid id)
         {

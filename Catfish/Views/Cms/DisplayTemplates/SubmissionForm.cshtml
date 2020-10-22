@@ -1,0 +1,26 @@
+﻿@model Catfish.Models.Blocks.SubmissionForm
+
+@inject Catfish.Services.IEntityTemplateService _entityTemplateService;
+
+@{
+    string formPostUrl = "/api/items/" + Model.EntityTemplateId;
+    var templateId = Guid.Parse(Model.EntityTemplateId);
+    var collectionId = Guid.Parse(Model.CollectionId);
+    var template = _entityTemplateService.GetTemplate(templateId);
+    var Item = template.GetRootDataItem(false);
+
+}
+<form id="@Model.Id" method="post" action="@formPostUrl">
+    <input data-val="true" data-val-required="The TemplateId field is required."
+           id="templateId" name="templateId" type="hidden"
+           value="@templateId">
+    <input data-val="true" data-val-required="The ColectionId field is required."
+           id="collectionId" name="collectionId" type="hidden"
+           value="@collectionId">
+
+    @*TODO: To display the name, description, and the list of fields of the
+        form represented in the "Item" here. *@
+
+
+    <input class="btn btn-deault" type="submit" value="submit" />
+</form>
