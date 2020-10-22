@@ -26,27 +26,33 @@
 }
 
 
-
-<h3>  Search Page for:   @searchname</h3>
-
-<div>Searching on <b> @designatedsolrfield </b></div>
-
-
-<div> select terms to search:</div>
-
+<h3>  Search Block: <b>@searchname</b> </h3>
 
 <div>
 
-    <form id="controlledVocabularySearchForm" method="post" action="/api/search/freetext">
+    <form id="controlledVocabularySearchForm" method="post" action="/api/search/keywords">
 
-        @foreach (var word in words)
-        {
-            if (!(String.IsNullOrEmpty(@word)))
-            {
-                <input type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
-            }
+        <div>
+            <fieldset class="checkboxgroup">
+                <div>
+                    <legend class="searchcheckbox">Select terms to search on <b> @designatedsolrfield </b>  field</legend>
+                </div>
+                <ul class="searchcheckbox">
+                    @foreach (var word in words)
+                    {
+                        if (!(String.IsNullOrEmpty(@word)) && ( @word != " "  ))
+                        {
+                            <li>
+                                <div>
+                                    <input type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
+                                </div>
+                            </li>
+                        }
 
-        }
+                    }
+                </ul>
+            </fieldset>
+        </div>
         <input id="ControlledVocabularySearchButton" type="submit" value="Submit" />
 
     </form>
@@ -65,22 +71,23 @@
                 terms.push($(this).val());
             });
 
-            var qstring = "@designatedsolrfield" + ":" + "(" + terms.join(" AND ") +")";
-            alert(qstring);
-
+            var keywordlist = terms.join(" , ");
+            if (keywordlist.length == 0) {
+                alert("choose at least one word");
+            }
+            var solrfield = "@designatedsolrfield";
 
             event.preventDefault();
 
             var $form = $(this),
                 url = $form.attr('action');
 
-            var searchVal = "list(q = '" +qstring + "')";
-            alert(searchVal);
 
-            var posting = $.post(url, {
-                searchTerm: searchVal
-            });
-
+            var posting = $.post(
+                url,
+                { "keySearchWords": keywordlist,"solrFieldName":solrfield}
+            );
+           //var posting = $.post(url, JSON.parse({ keySearchWords: keywordlist, solrFieldName: solrfield  }), "application/json")
 
              posting.done(function (data) {
                  $("#controlledVocabularySearchResults").empty();
@@ -132,3 +139,4 @@
     });
 
 </script>
+
