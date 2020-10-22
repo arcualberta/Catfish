@@ -77,42 +77,42 @@ if (document.getElementById("edit-field-form-page")) {
                 dropdowns: {},
                 //temp, need to call an api for these
                 fieldTypes: [
-                    { text: 'Select One', value: null },
-                    {
-                        value: "Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core",
-                        text: 'Short Answer',
-                        modelType: 'TextField'
-                    },
-                    {
-                        value: "Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core",
-                        text: 'Long Answer',
-                        modelType: 'TextArea'
-                    },
-                    {
-                        value: "Catfish.Core.Models.Contents.Fields.RadioField, Catfish.Core",
-                        text: 'Multiple Choice',
-                        modelType: 'Radio'
-                    },
-                    {
-                        value: "Catfish.Core.Models.Contents.Fields.CheckboxField, Catfish.Core",
-                        text: 'Check Box',
-                        modelType: 'Checkbox'
-                    },
-                    {
-                        value: "Catfish.Core.Models.Contents.Fields.SelectField, Catfish.Core",
-                        text: 'Dropdown List',
-                        modelType: 'Dropdown'
-                    },
-                    {
-                        value: "Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core",
-                        text: 'File Upload',
-                        modelType: 'FileAttachment'
-                    },
-                    {
-                        value: "Catfish.Core.Models.Contents.Fields.InfoSection, Catfish.Core",
-                        text: 'Display Text',
-                        modelType: 'DisplayField'
-                    }
+                    { DisplayLabel: 'Select One', $type: null },
+                    //{
+                    //    value: "Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core",
+                    //    text: 'Short Answer',
+                    //    modelType: 'TextField'
+                    //},
+                    //{
+                    //    value: "Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core",
+                    //    text: 'Long Answer',
+                    //    modelType: 'TextArea'
+                    //},
+                    //{
+                    //    value: "Catfish.Core.Models.Contents.Fields.RadioField, Catfish.Core",
+                    //    text: 'Multiple Choice',
+                    //    modelType: 'Radio'
+                    //},
+                    //{
+                    //    value: "Catfish.Core.Models.Contents.Fields.CheckboxField, Catfish.Core",
+                    //    text: 'Check Box',
+                    //    modelType: 'Checkbox'
+                    //},
+                    //{
+                    //    value: "Catfish.Core.Models.Contents.Fields.SelectField, Catfish.Core",
+                    //    text: 'Dropdown List',
+                    //    modelType: 'Dropdown'
+                    //},
+                    //{
+                    //    value: "Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core",
+                    //    text: 'File Upload',
+                    //    modelType: 'FileAttachment'
+                    //},
+                    //{
+                    //    value: "Catfish.Core.Models.Contents.Fields.InfoSection, Catfish.Core",
+                    //    text: 'Display Text',
+                    //    modelType: 'DisplayField'
+                    //}
                 ],
 
                 rightColumnOptions: [
@@ -635,10 +635,20 @@ if (document.getElementById("edit-field-form-page")) {
                         fetch(piranha.baseUrl + this.getFieldDefs)
                             .then((fdResponse) => { return fdResponse.json(); })
                             .then((fieldDefsResult) => {
-                                //templates handled here, remove any default data and store the structure
                                 console.log("second res", fieldDefsResult)
                                 
                                 for (let defaultField of fieldDefsResult.$values) {
+
+                                    //store fieldType for dropdown
+                                    if (defaultField.$type != this.DECIMAL_TYPE) {
+                                        this.fieldTypes.push({
+                                            $type: defaultField.$type,
+                                            DisplayLabel: defaultField.DisplayLabel
+                                        });
+									}
+                                    
+
+                                    //templates handled here, remove any default data and store the structure
                                     switch (defaultField.$type) {
                                         case this.TEXTFIELD_TYPE:
                                             this.textfieldTemplate = defaultField;

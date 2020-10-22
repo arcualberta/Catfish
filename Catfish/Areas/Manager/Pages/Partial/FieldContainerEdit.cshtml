@@ -92,9 +92,13 @@
                                         </a>
                                     
                                         <div class="header-tools-holder">
-                                            <div style="padding-right: 10px; width: 100%;" class="form-group field-dropdown" :id="'fieldset-' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex">
-			                                    <select class="form-control" :id="'field-dropdown-' + fieldIndex" v-model="field.$type" v-on:change="onDropdownChange(fieldIndex, field.$type)">
-                                                    <option :disabled="fieldType.value==null" v-for="fieldType of fieldTypes" :value="fieldType.value">{{fieldType.text}}</option>
+                                            <div style="padding-right: 10px; width: 100%;" class="form-group field-dropdown" 
+                                            :id="'fieldset-' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex">
+			                                    <select class="form-control" :id="'field-dropdown-' + fieldIndex" 
+                                                    v-model="field.$type" v-on:change="onDropdownChange(fieldIndex, field.$type)">
+                                                    <option :disabled="fieldType.DisplayLabel==null" v-for="fieldType of fieldTypes" 
+                                                        :value="fieldType.$type">{{fieldType.DisplayLabel}}
+                                                    </option>
                                                 </select>
                                             </div>
                                         
