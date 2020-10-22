@@ -152,7 +152,7 @@ Vue.component("extended-image-block", {
                  <label class="form-label">Link Url: </label>{{ model.linkUrl.value }}
           </div>
         </div>
-        <div class="media-picker">
+        <div class="media-picker" style="top:10%;">
             <div class="btn-group float-right">
                 <button :id="uid + '-aspect'" class="btn btn-info btn-aspect text-center" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i v-if="model.aspect.value === 0" class="fas fa-cog"></i>
@@ -192,7 +192,7 @@ Vue.component("extended-image-block", {
                 <div class="card-body" v-else>
                     {{ model.body.media.filename }}
                   <div class='lead row'><label class='form-label col-md-3'>Title: </label><input class='form-control col-md-8' type='text' name='title' v-model='model.title.value' contenteditable='true' v-on:blur='onBlur' value='titleValue'  /></div>
-                  <div class='lead row'><label class='form-label col-md-3'>Description: </label><input  class='form-control col-md-8' type='text' name='description' v-model='model.description.value' contenteditable='true' v-on:blur='onBlur' value='descriptionValue' /></div>
+                  <div class='lead row'><label class='form-label col-md-3'>Description: </label><textarea row='4' cols='100' class='form-control col-md-8'  name='description' v-model='model.description.value' contenteditable='true' v-on:blur='onBlur' value='descriptionValue'></textarea></div>
                   <div class='lead row' ><label class='form-label col-md-3'>Link Text:</label> <input type='text' class='form-control col-md-8' name='linkText' v-model='model.linkText.value' contenteditable='true' v-on:blur='onBlur' value='linkTextValue' /></div>
                    <div class='lead row'><label class='form-label col-md-3'>Link Url:</label> <input type='text' class='form-control col-md-8' name='linkUrl' v-model='model.linkUrl.value' contenteditable='true' v-on:blur='onBlur' value='linkUrlValue'  /></div>
                 </div>
