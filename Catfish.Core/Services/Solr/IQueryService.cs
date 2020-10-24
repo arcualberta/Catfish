@@ -11,6 +11,7 @@ namespace Catfish.Core.Services.Solr
     {       
         ISolrQuery BuildQuery(SearchParameters parameters);
         public IList<SolrEntry> FreeSearch(SearchParameters parameters, int start = 0, int limit = 100);
+        //public IList<SolrEntry> ControlledVocabSearch(SearchParameters parameters, int start = 0, int limit = 100);
 
     }
 }

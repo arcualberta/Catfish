@@ -313,6 +313,7 @@ namespace Catfish
         private static void RegisterCustomFields()
         {
             Piranha.App.Fields.Register<TextAreaField>();
+            Piranha.App.Fields.Register<ControlledKeywordsField>();
         }
         private static void RegisterCustomScripts()
         {
@@ -334,6 +335,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/dist/bundle.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/vendors.bundle.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/controlled-keywords.js");
 
         }
         private static void RegisterCustomBlocks()

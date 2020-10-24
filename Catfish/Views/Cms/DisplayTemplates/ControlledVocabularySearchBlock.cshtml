@@ -40,7 +40,7 @@
                 <ul class="searchcheckbox">
                     @foreach (var word in words)
                     {
-                        if (!(String.IsNullOrEmpty(@word)) && ( @word != " "  ))
+                        if (!String.IsNullOrWhiteSpace(@word))
                         {
                             <li>
                                 <div>
@@ -71,8 +71,7 @@
                 terms.push($(this).val());
             });
 
-            var keywordlist = terms.join(" , ");
-            if (keywordlist.length == 0) {
+            if (terms.length == 0) {
                 alert("choose at least one word");
             }
             var solrfield = "@designatedsolrfield";
@@ -82,12 +81,10 @@
             var $form = $(this),
                 url = $form.attr('action');
 
-
             var posting = $.post(
                 url,
-                { "keySearchWords": keywordlist,"solrFieldName":solrfield}
+                { "keySearchWords": terms,"solrFieldName":solrfield}
             );
-           //var posting = $.post(url, JSON.parse({ keySearchWords: keywordlist, solrFieldName: solrfield  }), "application/json")
 
              posting.done(function (data) {
                  $("#controlledVocabularySearchResults").empty();
