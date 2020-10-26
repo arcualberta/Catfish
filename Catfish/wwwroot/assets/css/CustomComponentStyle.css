@@ -110,13 +110,13 @@
 }
 .EGTitle {
     font-size: 3em;
-    height: 70px;
+    height: auto !important;
     width: 100%;
     background: blue; /* For browsers that do not support gradients */
     background: -webkit-linear-gradient(top, rgba(10, 176, 242,1) 50%, white 50%); /* For Safari 5.1 to 6.0 */
     background: -o-linear-gradient(top, blue 50%, white 50%); /* For Opera 11.1 to 12.0 */
     background: -moz-linear-gradient(top, blue 50%, white 50%); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to bottom, rgba(245, 183, 15,0.5) 50%, rgba(250, 250, 250,0.3) 50%); /* Standard syntax */
+    background: linear-gradient(to bottom, #FABC3C 70%, transparent 30%); /* Standard syntax */
 }
 .EGDescription{
 
