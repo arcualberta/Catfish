@@ -22,6 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ElmahCore" Version="1.2.5" />
+    <PackageReference Include="ElmahCore.Sql" Version="1.2.5" />
     <PackageReference Include="Google.Apis" Version="1.46.0" />
     <PackageReference Include="Google.Apis.Calendar.v3" Version="1.46.0.2001" />
     <PackageReference Include="Hangfire" Version="1.7.15" />

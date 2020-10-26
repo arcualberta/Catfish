@@ -11,6 +11,9 @@ using Catfish.Models.Blocks;
 using Catfish.Models.Fields;
 using Catfish.Models.SiteTypes;
 using Catfish.Services;
+using ElmahCore;
+using ElmahCore.Mvc;
+using ElmahCore.Sql;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -62,6 +65,8 @@ namespace Catfish
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            string sqlConnectionString = Configuration.GetConnectionString("catfish");
+
             //localization need to be called before MVC() or other service that need it
             services.AddLocalization(options =>
              options.ResourcesPath = "Resources"
@@ -86,9 +91,9 @@ namespace Catfish
 
             /* sql server configuration based on ==> http://piranhacms.org/blog/announcing-80-for-net-core-31    */
             services.AddPiranhaEF<SQLServerDb>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("catfish")));
+                options.UseSqlServer(sqlConnectionString));
             services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("catfish")));
+                options.UseSqlServer(sqlConnectionString));
 
             services.AddRazorPages()
                 .AddPiranhaManagerOptions();
@@ -171,6 +176,12 @@ namespace Catfish
             //HangFire background processing service
             services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("catfish")));
             services.AddHangfireServer();
+
+            //ELMAH Error Logger
+            services.AddElmah<XmlFileErrorLog>(options =>
+            {
+                options.LogPath = "~/log";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -307,6 +318,8 @@ namespace Catfish
             //HangFire background processing service
             app.UseHangfireDashboard();
 
+            //Elmah error handler
+            app.UseElmah();
         }
 
         #region REGISTER CUSTOM COMPONENT
