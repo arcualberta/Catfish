@@ -640,7 +640,7 @@ if (document.getElementById("edit-field-form-page")) {
                                 for (let defaultField of fieldDefsResult.$values) {
 
                                     //store fieldType for dropdown
-                                    if (defaultField.$type != this.DECIMAL_TYPE) {
+                                    if (defaultField.$type != this.INTEGER_TYPE) {
                                         this.fieldTypes.push({
                                             $type: defaultField.$type,
                                             DisplayLabel: defaultField.DisplayLabel
