@@ -160,7 +160,7 @@
                                                 </li>
                                             </ul>
                                         </div>
-
+                                        
                                         <div v-if="(field.$type != TEXTFIELD_TYPE) && (field.$type != DATE_TYPE) && (field.$type != MONOLINGUAL_TEXTFIELD_TYPE)" >
                                             <div class="card-header" style="text-transform:none;">
                                                 <h4>
@@ -392,7 +392,8 @@
                                                     </div>
                                                     @*Number - has two types incoming from the back end*@
                                                     <div v-else-if="field.$type == INTEGER_TYPE || field.$type == DECIMAL_TYPE">
-                                                        <input class="form-check-input" type="checkbox" v-model="field.integerOnly" :value="field.integerOnly"
+                                                        <input @@change="onNumberCheckboxChange($event, fieldIndex)" 
+                                                            class="form-check-input" type="checkbox" v-model="field.isIntegerOnly" :value="true"
                                                             :id="'integer-only-checkbox-' + fieldIndex">
                                                         <label class="form-check-label" :for="'multifile-checkbox-' + fieldIndex">
                                                             <h6 style="margin-bottom:0;">Limit to whole numbers only</h6>

@@ -291,6 +291,16 @@ if (document.getElementById("edit-field-form-page")) {
                 }
             },
 
+            /**
+             * 
+             * @param {any} fieldIndex
+             */
+            onNumberCheckboxChange(event, fieldIndex) {
+                console.log("e", event);
+                //this.fields[fieldIndex].$type
+
+            },
+
 
             /**
              * Saves the field form
@@ -298,6 +308,16 @@ if (document.getElementById("edit-field-form-page")) {
              */
             saveFieldForm(event) {
                 //console.log("saving goes here", event);
+
+                //handle integer/decimal field if any - integer and decimal are separate classes in backend
+                let fieldTypesToCheck = this.fields.map((field) => field.$type);
+                fieldTypesToCheck.forEach((fieldType, index) => {
+                    if (fieldType == this.DECIMAL_TYPE && this.fields[index].isIntegerOnly) {
+                        this.fields[index].$type = this.INTEGER_TYPE;
+                    } else if (fieldType == this.INTEGER_TYPE && !this.fields[index].isIntegerOnly) {
+                        this.fields[index].$type = this.DECIMAL_TYPE;
+					}
+				})
 
                 console.log("the name, description, and fields saved TBA", this.names, this.descriptions, this.fields);
             },
@@ -737,6 +757,7 @@ if (document.getElementById("edit-field-form-page")) {
 
                                         case this.DECIMAL_TYPE:
                                             this.numberPickerTemplate = defaultField;
+                                            this.numberPickerTemplate.isIntegerOnly = false;
 
                                             for (let languageIndex in this.numberPickerTemplate.Name.Values.$values) {
                                                 this.$set(this.numberPickerTemplate.Name.Values.$values[languageIndex], 'Value', '');
