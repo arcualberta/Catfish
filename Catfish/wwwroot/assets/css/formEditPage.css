@@ -235,3 +235,9 @@
 	border-radius: 5.25px;
 }
 
+#edit-field-form-page .option-title-holder {
+	display: flex;
+	justify-content: space-between;
+	padding-bottom: 10px;
+	width:100%;
+}

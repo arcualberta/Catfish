@@ -77,42 +77,42 @@ if (document.getElementById("edit-field-form-page")) {
                 dropdowns: {},
                 //temp, need to call an api for these
                 fieldTypes: [
-                    { text: 'Select One', value: null },
-                    {
-                        value: "Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core",
-                        text: 'Short Answer',
-                        modelType: 'TextField'
-                    },
-                    {
-                        value: "Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core",
-                        text: 'Long Answer',
-                        modelType: 'TextArea'
-                    },
-                    {
-                        value: "Catfish.Core.Models.Contents.Fields.RadioField, Catfish.Core",
-                        text: 'Multiple Choice',
-                        modelType: 'Radio'
-                    },
-                    {
-                        value: "Catfish.Core.Models.Contents.Fields.CheckboxField, Catfish.Core",
-                        text: 'Check Box',
-                        modelType: 'Checkbox'
-                    },
-                    {
-                        value: "Catfish.Core.Models.Contents.Fields.SelectField, Catfish.Core",
-                        text: 'Dropdown List',
-                        modelType: 'Dropdown'
-                    },
-                    {
-                        value: "Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core",
-                        text: 'File Upload',
-                        modelType: 'FileAttachment'
-                    },
-                    {
-                        value: "Catfish.Core.Models.Contents.Fields.InfoSection, Catfish.Core",
-                        text: 'Display Text',
-                        modelType: 'DisplayField'
-                    }
+                    { DisplayLabel: 'Select One', $type: null },
+                    //{
+                    //    value: "Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core",
+                    //    text: 'Short Answer',
+                    //    modelType: 'TextField'
+                    //},
+                    //{
+                    //    value: "Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core",
+                    //    text: 'Long Answer',
+                    //    modelType: 'TextArea'
+                    //},
+                    //{
+                    //    value: "Catfish.Core.Models.Contents.Fields.RadioField, Catfish.Core",
+                    //    text: 'Multiple Choice',
+                    //    modelType: 'Radio'
+                    //},
+                    //{
+                    //    value: "Catfish.Core.Models.Contents.Fields.CheckboxField, Catfish.Core",
+                    //    text: 'Check Box',
+                    //    modelType: 'Checkbox'
+                    //},
+                    //{
+                    //    value: "Catfish.Core.Models.Contents.Fields.SelectField, Catfish.Core",
+                    //    text: 'Dropdown List',
+                    //    modelType: 'Dropdown'
+                    //},
+                    //{
+                    //    value: "Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core",
+                    //    text: 'File Upload',
+                    //    modelType: 'FileAttachment'
+                    //},
+                    //{
+                    //    value: "Catfish.Core.Models.Contents.Fields.InfoSection, Catfish.Core",
+                    //    text: 'Display Text',
+                    //    modelType: 'DisplayField'
+                    //}
                 ],
 
                 rightColumnOptions: [
@@ -306,7 +306,6 @@ if (document.getElementById("edit-field-form-page")) {
              * Changes the type of field via choice from the dropdown
              * @param {any} fieldIndex the fieldIndex being changed
              * @param {any} chosenFieldType the chosen field type of the dropdown
-             * TODO: use templates here, depending on if we are somehow storing the values without overwriting? idk
              */
             onDropdownChange(fieldIndex, chosenFieldType) {
                 //dont want to lose any values that are not originally a part of the template tho...
@@ -314,31 +313,31 @@ if (document.getElementById("edit-field-form-page")) {
                 switch (chosenFieldType) {
                     case this.TEXTFIELD_TYPE:
                         //textfield
-                        this.$set(this.fields, fieldIndex, this.textFieldTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.textfieldTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
                     case this.TEXTAREA_TYPE:
                         //textarea
-                        this.$set(this.fields, fieldIndex, this.textAreaTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.textAreaTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
                     case this.RADIO_TYPE:
                         //radio/mc
-                        this.$set(this.fields, fieldIndex, this.radioTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.radioTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
                     case this.CHECKBOX_TYPE:
                         //checkbox
-                        this.$set(this.fields, fieldIndex, this.checkboxTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.checkboxTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
                     case this.DROPDOWN_TYPE:
                         //dropdown
-                        this.$set(this.fields, fieldIndex, this.dropdownTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.dropdownTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
@@ -349,26 +348,26 @@ if (document.getElementById("edit-field-form-page")) {
 
                     case this.INFOSECTION_TYPE:
                         //displayfield
-                        this.$set(this.fields, fieldIndex, this.displayFieldTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.displayFieldTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
                     case this.DATE_TYPE:
                         //displayfield
-                        this.$set(this.fields, fieldIndex, this.datePickerTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.datePickerTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
                     case this.DECIMAL_TYPE:
                     case this.INTEGER_TYPE:
                         //displayfield
-                        this.$set(this.fields, fieldIndex, this.numberPickerTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.numberPickerTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 
                     case this.MONOLINGUAL_TEXTFIELD_TYPE:
                         //displayfield
-                        this.$set(this.fields, fieldIndex, this.monolingualTextFieldTemplate);
+                        this.$set(this.fields, fieldIndex, JSON.parse(JSON.stringify(this.monolingualTextFieldTemplate)) );
                         this.fields[fieldIndex].Id = tmpId;
                         break;
 				}
@@ -540,23 +539,42 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} field the field to push multiple choice or checkbox objects onto
              */
             addNewOption(field) {
-                this.optionItemTemplate.Id = uuidv1();
-
-                if (field.Options.$values.length > 0) {
-                    this.optionItemTemplate.Id = uuidv1();
-                    field.Options.$values.splice(field.Options.$values.length - 1, 0, this.optionItemTemplate );
-                        /*field.Options.$values.splice(field.Options.$values.length - 1, 0, {
-                            text: '',
-                            isDisabled: false,
-                            id: -1,
-                        });*/
-                        return;
-                    
+                let newOptionItemTemplate = JSON.parse(JSON.stringify(this.optionItemTemplate));
+                newOptionItemTemplate.Id = uuidv1();
+                newOptionItemTemplate.OptionText.Id = uuidv1();
+                for (let languageOptionItem of newOptionItemTemplate.OptionText.Values.$values) {
+                    languageOptionItem.Id = uuidv1();
 				}
-                 
-                field.Options.$values.push(this.optionItemTemplate.Id);
-				
+
+                field.Options.$values.push(newOptionItemTemplate);
+                console.log("field options", field.Options.$values);
             },
+
+            /**
+             * 
+             * @param {any} fieldIndex
+             * @param {any} optionIndex
+             */
+            selectOptionAsDefault(fieldIndex, optionIndex) {
+                //if selected already, deselect it
+
+                if (this.fields[fieldIndex].Options.$values[optionIndex].Selected === null
+                    || !this.fields[fieldIndex].Options.$values[optionIndex].Selected) {
+                    this.fields[fieldIndex].Options.$values[optionIndex].Selected = true;
+                } else {
+                    this.fields[fieldIndex].Options.$values[optionIndex].Selected = false;
+				}
+
+                //desselect any others in the group
+                for (let optionItem of this.fields[fieldIndex].Options.$values) {
+                    if (optionItem.Id == this.fields[fieldIndex].Options.$values[optionIndex].Id) {
+                        continue;
+					}
+                    optionItem.Selected = false;
+				}
+
+                console.log(this.fields[fieldIndex].Options.$values);
+			},
 
             /**
              * Adds 'Other' option to set for user to fill
@@ -576,11 +594,8 @@ if (document.getElementById("edit-field-form-page")) {
              * @param {any} fieldIndex
              * @param {any} optionIndex
              */
-            removeOption(field, fieldIndex, itemValue, optionIndex) {
-                if (itemValue.isDisabled) {
-                    this.dropdowns[field.Id].hasOtherOption = false;
-				}
-                this.fields[fieldIndex].Values.$values.splice(optionIndex, 1);
+            removeOption(fieldIndex, optionIndex) {
+                this.fields[fieldIndex].Options.$values.splice(optionIndex, 1);
             },
 
             /**
@@ -620,10 +635,20 @@ if (document.getElementById("edit-field-form-page")) {
                         fetch(piranha.baseUrl + this.getFieldDefs)
                             .then((fdResponse) => { return fdResponse.json(); })
                             .then((fieldDefsResult) => {
-                                //templates handled here, remove any default data and store the structure
                                 console.log("second res", fieldDefsResult)
                                 
                                 for (let defaultField of fieldDefsResult.$values) {
+
+                                    //store fieldType for dropdown
+                                    if (defaultField.$type != this.DECIMAL_TYPE) {
+                                        this.fieldTypes.push({
+                                            $type: defaultField.$type,
+                                            DisplayLabel: defaultField.DisplayLabel
+                                        });
+									}
+                                    
+
+                                    //templates handled here, remove any default data and store the structure
                                     switch (defaultField.$type) {
                                         case this.TEXTFIELD_TYPE:
                                             this.textfieldTemplate = defaultField;
@@ -644,34 +669,51 @@ if (document.getElementById("edit-field-form-page")) {
                                         case this.RADIO_TYPE:
                                             this.radioTemplate = defaultField;
                                             //stores an option item to be used by all option-item fields (radio/checkbox/dropdown)
-                                            this.optionItemTemplate = defaultField.Options.$values[0];
-                                            //TODO return to this, replace below with removal of second option. NOT second language.
-                                            //if (this.optionItemTemplate.OptionText.Values.$values.length > 1){
-                                            //    this.optionItemTemplate.OptionText.Values.$values.splice(1, this.optionItemTemplate.OptionText.Values.$values.length - 1);
-											//}
-                                            
+                                            this.optionItemTemplate = JSON.parse(JSON.stringify(defaultField.Options.$values[0]));
+                                            //if more than one option, remove the other options
+                                            if (defaultField.Options.$values.length > 1){
+                                                //delete all other options except for first one
+                                                this.radioTemplate.Options.$values.splice(1, defaultField.Options.$values.length - 1);
+                                            }
 
                                             for (let languageIndex in this.radioTemplate.Name.Values.$values) {
                                                 this.$set(this.radioTemplate.Name.Values.$values[languageIndex], 'Value', '');
                                                 this.$set(this.radioTemplate.Description.Values.$values[languageIndex], 'Value', '');
+                                                this.$set(this.radioTemplate.Options.$values[0].OptionText.Values.$values[languageIndex], 'Value', '');
+
                                                 this.$set(this.optionItemTemplate.OptionText.Values.$values[languageIndex], 'Value', '');
                                             }
                                             break;
+
                                         case this.CHECKBOX_TYPE:
                                             this.checkboxTemplate = defaultField;
+
+                                            //if more than one option, remove the other options
+                                            if (defaultField.Options.$values.length > 1) {
+                                                //delete all other options except for first one
+                                                this.checkboxTemplate.Options.$values.splice(1, defaultField.Options.$values.length - 1);
+                                            }
 
                                             for (let languageIndex in this.checkboxTemplate.Name.Values.$values) {
                                                 this.$set(this.checkboxTemplate.Name.Values.$values[languageIndex], 'Value', '');
                                                 this.$set(this.checkboxTemplate.Description.Values.$values[languageIndex], 'Value', '');
+                                                this.$set(this.checkboxTemplate.Options.$values[0].OptionText.Values.$values[languageIndex], 'Value', '');
                                             }
                                             break;
 
                                         case this.DROPDOWN_TYPE:
                                             this.dropdownTemplate = defaultField;
 
+                                            //if more than one option, remove the other options
+                                            if (defaultField.Options.$values.length > 1) {
+                                                //delete all other options except for first one
+                                                this.dropdownTemplate.Options.$values.splice(1, defaultField.Options.$values.length - 1);
+                                            }
+
                                             for (let languageIndex in this.dropdownTemplate.Name.Values.$values) {
                                                 this.$set(this.dropdownTemplate.Name.Values.$values[languageIndex], 'Value', '');
                                                 this.$set(this.dropdownTemplate.Description.Values.$values[languageIndex], 'Value', '');
+                                                this.$set(this.dropdownTemplate.Options.$values[0].OptionText.Values.$values[languageIndex], 'Value', '');
                                             }
                                             break;
 

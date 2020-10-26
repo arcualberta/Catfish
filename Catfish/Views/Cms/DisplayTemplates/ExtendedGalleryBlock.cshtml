@@ -18,7 +18,7 @@
                         </div>
                         <div class="col-md-6" style="width:50%;">
                             <div class="EGTitle">@item.GetImageTitle()</div>
-                            <div  class="EGDescription">@item.GetDescription()</div>
+                            <div  class="EGDescription">@Html.Raw(item.GetDescription())</div>
                             <div  class="EGLink"><a href="@item.GetLinkUrl()" class="btn btn-primary EGLinkBtn">@item.GetLinkText()</a></div>
                         </div>
                     </div>
