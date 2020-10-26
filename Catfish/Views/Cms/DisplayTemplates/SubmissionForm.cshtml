@@ -1,0 +1,100 @@
+﻿@model Catfish.Models.Blocks.SubmissionForm
+
+@inject Catfish.Services.IEntityTemplateService _entityTemplateService;
+
+@{
+    string formPostUrl = "/api/items" ;
+    var templateId = Guid.Parse(Model.EntityTemplateId);
+    var collectionId = Guid.Parse(Model.CollectionId);
+    var template = _entityTemplateService.GetTemplate(templateId);
+    var Item = template.GetRootDataItem(false);
+
+}
+    <form id="submissionForm" method="post" action="@formPostUrl">
+        <input data-val="true" data-val-required="The TemplateId field is required."
+               id="templateId" name="templateId" type="hidden"
+               value="@templateId">
+        <input data-val="true" data-val-required="The ColectionId field is required."
+               id="collectionId" name="collectionId" type="hidden"
+               value="@collectionId">
+
+        @*TODO: To display the name, description, and the list of fields of the
+        form represented in the "Item" here. *@
+        @Html.EditorFor(model => Item, Item.GetType().ToString())
+
+        <input class ="btn btn-primary"name="Save" type="submit" value="Save" />
+        <input  class ="btn btn-success" name="Subit" type="submit" value="Submit" />
+    </form>
+    <script>
+    $(function () {
+        $("#submissionForm").submit(function (event) {
+
+            /* stop form from submitting normally */
+            event.preventDefault();
+
+            /* get the action attribute from the <form action=""> element */
+            var $form = $(this),
+                url = $form.attr('action');
+            console.log('Java Script started');
+            console.log('url ' +url);
+            var templateId = $('#templateId').val();
+            console.log('templateId ' + templateId);
+            /* Send the data using post with element id name and name2*/
+            var posting = $.post(url, {
+                TemplateId: templateId
+            });
+
+            /* Alerts the results */
+            //posting.done(function (data) {
+                //TODO: Check the content of the data to understand it.
+                //Iterate throgh the list of results and add them as new elements to the search-result div
+
+            //    //Clearing the existing search results, if any
+            //    $("#freeSearchBlockResults").empty();
+            //    if (data.length == 0) {
+            //        $("#freeSearchBlockResults").append($.parseHTML("<div class='alert alert-warning'>No results found</div>"));
+            //        return;
+            //    }
+
+            //    $.each(data, function (entryIndex, entry) {
+
+            //        //@* Creating the wrapper div as a DOM element for the result item *@
+                    //var entryWrapper = $.parseHTML("<div class='search-result-entry'>");
+
+                    //@* Adding the wrapper to the result - list container *@
+                    //$("#freeSearchBlockResults").append(entryWrapper);
+
+                    //@*Building a link to the detailed object if there is a permalink associated with the entry*@
+                    //var linkStart = "";
+                    //var linkEnd = "";
+                    //if (entry.permalink != undefined && entry.permalink.length > 0) {
+                    //    linkStart = "<a href='" + entry.permalink + "'>";
+                    //    linkEnd = "</a>";
+                    //}
+
+                    //@* Adding the entry title to the wrapper as a child. We need to this for each
+                        value of the title because the title can take multiple values*@
+                    //var entryTitleDiv = $.parseHTML("<div class='entry-title'>");
+                    //$(entryWrapper).append(entryTitleDiv);
+                    //$.each(entry.title, function (titleIndex, titleVal) {
+                    //    var str = "<span><b>" + linkStart + titleVal + linkEnd + "</b></span>"
+                    //    $(entryTitleDiv).append($.parseHTML(str));
+                    //});
+
+            //        //@*Go through each highlight snippet and add them to the entry-body section. We include each them
+                        in separate divs*@
+            //        var entryBodyDiv = $.parseHTML("<div class='entry-body'>");
+            //        $(entryWrapper).append(entryBodyDiv);
+            //        $.each(entry.highlights, function (highlightIndex, highlightVal) {
+            //            var str = "<div>" + highlightVal + "</div>";
+            //            $(entryBodyDiv).append($.parseHTML(str));
+            //        });
+            //    });
+            //});
+
+            //posting.fail(function () {
+            //    alert('The search failed!');
+            //});
+        });
+    });
+    </script>

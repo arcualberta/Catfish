@@ -12,16 +12,27 @@ namespace Catfish.Areas.Manager.Pages
 {
     public class GroupListModel : PageModel
     {
-        public IList<Group> Groups { get; protected set; }
-        public UserGroupService _srv { get; private set; }
+        public readonly AppDbContext _appDb;
+        public GroupService _srv;
 
-        public GroupListModel(UserGroupService srv)
+        public IList<Group> Groups { get; set; }
+        
+
+        public GroupListModel(GroupService srv, AppDbContext appDb)
         {
             _srv = srv;
+            _appDb = appDb;
         }
         public void OnGet()
         {
             Groups  = _srv.GetGroupList();
         }
+        public IActionResult OnPost(Guid groupId)
+        {
+            _srv.DeleteGroup(groupId);
+            _appDb.SaveChanges();
+            return RedirectToPage("GroupList", "Manager");
+        }
+
     }
 }

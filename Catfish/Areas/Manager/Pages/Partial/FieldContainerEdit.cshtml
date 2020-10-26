@@ -34,13 +34,13 @@
         <div class="form-group flex-full">
             <div class="section-container">
                 <label for="form-title"><h3>Title</h3></label>
-                <div v-for="(name, titleIndex) of names.values" class="form-group">
+                <div v-for="(name, titleIndex) of names.Values.$values" class="form-group">
                     <input type="text" class="form-title form-control" 
-                    v-model.trim="$v.names.values.$each[titleIndex].value.$model"
+                    v-model.trim="$v.names.Values.$values.$each[titleIndex].Value.$model"
                     :id="'form-title-' + titleIndex" placeholder="Title Your Form Here" 
-                    @@input="touchNestedItem('names', titleIndex, 'values')"
-                    :state="validateState('names', titleIndex, 'values')"
-                    :class="{ 'is-invalid': $v.names.values.$each[titleIndex].value.$error }"/> 
+                    @@input="touchNestedItem('names', titleIndex, 'Values')"
+                    :state="validateState('names', titleIndex, 'Values')"
+                    :class="{ 'is-invalid': $v.names.Values.$values.$each[titleIndex].Value.$error }"/> 
                     <!--showing validity not working as id expect, so manually controlling it with class binding ^
                     :class="{ 'is-invalid': $v.names.values.$each[titleIndex].value.$error,
                     'is-valid': !$v.names.values.$each[titleIndex].value.$error}" -->
@@ -49,13 +49,13 @@
 
             <div class="section-container">
                 <label for="form-description"><h3>Description</h3></label>
-                <div v-for="(description, descriptionIndex) of descriptions.values" class="form-group">
+                <div v-for="(description, descriptionIndex) of descriptions.Values.$values" class="form-group">
                     <textarea type="text" class="form-description form-control" 
                     :id="'form-description-' + descriptionIndex" placeholder="Description goes here" 
-                    state="validateState('descriptions', descriptionIndex, 'values')"
-                    @@input="touchNestedItem('descriptions', descriptionIndex, 'values')"
-                    :class="{ 'red-color': $v.descriptions.values.$each[descriptionIndex].value.$error }">
-                    {{description.value}}
+                    state="validateState('descriptions', descriptionIndex, 'Values')"
+                    @@input="touchNestedItem('descriptions', descriptionIndex, 'Values')"
+                    :class="{ 'red-color': $v.descriptions.Values.$values.$each[descriptionIndex].Value.$error }">
+                    {{description.Value}}
                     </textarea>
                 </div>
             </div>
@@ -74,24 +74,17 @@
 
                                 <div class="field-card-contents">
                                     <div class="sitemap-item card-header">
-                                        <a v-on:click="toggleDropdown(field.id)" class="handle-holder" :data-target="'#collapse-' + field.id " data-toggle="collapse" >
+                                        <a v-on:click="toggleDropdown(field.Id)" class="handle-holder" :data-target="'#collapse-' + field.Id " data-toggle="collapse" >
                                             <div class="handle">
-                                                <i :class="{ 'fas fa-chevron-down': !dropdowns[field.id].isCollapsed, 'fas fa-chevron-right': dropdowns[field.id].isCollapsed}"></i>
+                                                <i :class="{ 'fas fa-chevron-down': !dropdowns[field.Id].isCollapsed, 'fas fa-chevron-right': dropdowns[field.Id].isCollapsed}"></i>
                                             </div>
                                             <div v-if="field.$type" class="title-header">
-                                                <div v-if="field.name.values[0].value.length == 0">
+                                                <div v-if="field.Name.Values.$values[0].Value.length == 0">
                                                     <h2><i>Field Title</i></h2>
                                                 </div>
-                                                <h2 v-else>{{field.name.values[0].value}}</h2>
-                                                 <!--Remove the hardcodiness of this when api data is used
-                                                {{fields}}-->
-                                                <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' ">Short Answer</h5>
-                                                <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' ">Long Answer</h5>
-                                                <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">Multiple Choice</h5>
-                                                <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core' ">Checkbox</h5>
-                                                <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core' ">Dropdown</h5>
-                                                <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core' ">File Upload</h5>
-                                                <h5 v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core' ">Display Text</h5>
+                                                <h2 v-else>{{field.Name.Values.$values[0].Value}}</h2>
+                                                 
+                                                <h5>{{field.DisplayLabel}}</h5>
                                             </div>
                                             <div v-else class="title-header">
                                                 <h5>Default Item - Fix Me</h5>
@@ -99,9 +92,13 @@
                                         </a>
                                     
                                         <div class="header-tools-holder">
-                                            <div style="padding-right: 10px; width: 100%;" class="form-group field-dropdown" :id="'fieldset-' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex">
-			                                    <select class="form-control" :id="'field-dropdown-' + fieldIndex" v-model="field.selected" v-on:change="onDropdownChange(fieldIndex, field.selected)">
-                                                    <option :disabled="fieldType.value==null" v-for="fieldType of fieldTypes" :value="fieldType.value">{{fieldType.text}}</option>
+                                            <div style="padding-right: 10px; width: 100%;" class="form-group field-dropdown" 
+                                            :id="'fieldset-' + fieldIndex" :label-for="'field-dropdown-' + fieldIndex">
+			                                    <select class="form-control" :id="'field-dropdown-' + fieldIndex" 
+                                                    v-model="field.$type" v-on:change="onDropdownChange(fieldIndex, field.$type)">
+                                                    <option :disabled="fieldType.DisplayLabel==null" v-for="fieldType of fieldTypes" 
+                                                        :value="fieldType.$type">{{fieldType.DisplayLabel}}
+                                                    </option>
                                                 </select>
                                             </div>
                                         
@@ -112,7 +109,7 @@
                                     
                                     </div>
 
-                                    <div :id="'collapse-' + field.id " data-parent="#accordion" class="collapse collapsing-items">
+                                    <div :id="'collapse-' + field.Id " data-parent="#accordion" class="collapse collapsing-items">
                                         <div class="card-header" style="text-transform:none;padding-bottom: 0;">
                                             <h4>
                                                 Field Title
@@ -125,21 +122,21 @@
                                         </div>
 
 
-                                        <ul v-for="(nameValue, nameIndex) of field.name.values" class="list-group list-group-flush">
-                                            <li class="list-group-item input-group flex-li">
+                                        <ul class="list-group list-group-flush" style="border-bottom:solid grey 1px;">
+                                            <li v-for="(nameValue, nameIndex) of field.Name.Values.$values" class="list-group-item input-group flex-li" style="border:none;">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" :id="'language' + nameValue.language">{{nameValue.language}}</span>
+                                                    <span class="input-group-text" :id="'language' + nameValue.Language">{{nameValue.Language}}</span>
                                                 </div> 
-                                                <input type="text" class="field-input form-control" v-model="nameValue.value" 
-                                                :id="'field-title-' + fieldIndex + '-' + nameValue" 
-                                                placeholder="Title Your Field Here" :state="validateFieldState(fieldIndex, 'name', nameIndex)"
-                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].name.values.$each[nameIndex].value.$invalid }"
-                                                /> <!-- 
-                                                @@input="$v.fields.$each[fieldIndex].name.values.$each[nameIndex].value.$touch()" -->
+                                                <input type="text" class="field-input form-control" v-model="nameValue.Value" 
+                                                :id="'field-title-' + fieldIndex + '-' + nameValue.Language" 
+                                                placeholder="Title Your Field Here" :state="validateFieldState(fieldIndex, 'Name', nameIndex)"
+                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].Name.Values.$values.$each[nameIndex].Value.$invalid }"
+                                                />
+                                                <!-- @@input="$v.fields.$each[fieldIndex].name.values.$each[nameIndex].value.$touch()" -->
                                             </li>
                                         </ul>
 
-                                        <div v-if="dropdowns[field.id].showDescription">
+                                        <div v-if="dropdowns[field.Id].showDescription">
                                             <div class="card-header" style="text-transform:none;padding-bottom: 0;">
                                                 <h4>
                                                     Description
@@ -150,31 +147,28 @@
                                                     <i class="fas fa-info"></i>
                                                 </button>*@
                                             </div>
-                                            <ul class="list-group list-group-flush" v-for="descriptionValue of field.description.values">
-                                                <li class="list-group-item input-group" style="display:flex;">
+                                            <ul class="list-group list-group-flush" style="border-bottom:solid grey 1px;">
+                                                <li v-for="descriptionValue of field.Description.Values.$values" class="list-group-item input-group" style="display:flex; border:none;">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text" :id="'language' + descriptionValue.language">{{descriptionValue.language}}</span>
+                                                        <span class="input-group-text" :id="'language' + descriptionValue.Language">{{descriptionValue.Language}}</span>
                                                     </div>
                                                     <textarea type="text" class="field-input form-control" 
-                                                        :id="'field-description-' + fieldIndex + '-' + descriptionValue" 
+                                                        :id="'field-description-' + fieldIndex + '-' + descriptionValue.Language" 
                                                         placeholder="Describe the purpose of this field..."
-                                                        v-model="descriptionValue.value">
+                                                        v-model="descriptionValue.Value">
                                                     </textarea>
                                                 </li>
                                             </ul>
                                         </div>
-
-                                        <div v-if="(field.$type != 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core')" > <!-- && field.$type != 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' -->
+                                        
+                                        <div v-if="(field.$type != TEXTFIELD_TYPE) && (field.$type != DATE_TYPE) && (field.$type != MONOLINGUAL_TEXTFIELD_TYPE)" >
                                             <div class="card-header" style="text-transform:none;">
                                                 <h4>
                                                     Settings
                                                 </h4>
                                                 <div style="padding: .75rem 0rem;">
-                                                     @*Short Answer*@ 
-                                                    <input v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core' "
-                                                        class="form-control" readonly placeholder="Short answer"/>
                                                      @*Long Answer*@
-                                                    <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core' ">
+                                                    <div v-if="field.$type == TEXTAREA_TYPE ">
                                                         <div class="richtext-checkbox">
                                                             <input class="form-check-input" type="checkbox" v-model="field.isRichTextArea" :value="field.isRichTextArea"
                                                             :id="'richtext-checkbox-' + fieldIndex">
@@ -182,88 +176,166 @@
                                                                 <h6 style="margin-bottom:0;">Allow formatted text</h6>
                                                             </label>
                                                         </div>
-                                                        <!--<quill-editor disabled :ref="'richtext' + fieldIndex">
-                                                        </quill-editor>-->
+                                                        
                                                     </div>
                                                      @*Radio aka Multiple Choice*@ 
-                                                    <div v-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Radio, Catfish.Core' ">
-                                                        <div v-for="(radioValue, radioIndex) of field.values" class="input-group mb-3">
-                                                            @*{{$v.fields.$each[fieldIndex].values}}*@
-                                                            <div class="input-group-prepend">
-                                                                <div class="input-group-text">
-                                                                    <input disabled :id="'radio-' + radioIndex" :name="'radio-field-' + fieldIndex" type="radio" aria-label="Radio button for following text input">
-                                                                </div>
-                                                            </div>
-                                                            <input type="text" class="form-control" :disabled="radioValue.isDisabled" 
-                                                                aria-label="Text input with radio button and remove button" 
-                                                                v-model="radioValue.text" :state="validateFieldState(fieldIndex, 'values')"
-                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$each[radioIndex].text.$invalid }" > 
-                                                                <!-- 
-                                                                @@input="$v.fields.$each[fieldIndex].values.$touch()" -->
-                                                            <div class="input-group-append">
-                                                                <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, radioValue, radioIndex)" type="button">
+                                                    <div v-if="field.$type == RADIO_TYPE ">
+                                                        <hr v-if="field.Options.$values.length > 0" />
+                                                        <div v-for="(radioValueCollection, radioVCIndex) of field.Options.$values">
+                                                            <div class="option-title-holder">
+                                                                <h5>Option {{radioVCIndex + 1}}:</h5>
+                                                                <button class="btn btn-danger" 
+                                                                    v-on:click="removeOption(fieldIndex, radioVCIndex)" 
+                                                                    type="button">
                                                                     <i class="fas fa-minus"></i>
                                                                 </button>
                                                             </div>
-                                                        </div>
-                                                        <div class="add-button-holder">
-                                                            <div class="btn-group">
-                                                                <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-success">
-                                                                    <i class="fas fa-plus"></i>
-                                                                </button>
-                                                                <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                    <span class="sr-only">Toggle Dropdown</span>
-                                                                </button>
-                                                                <div class="dropdown-menu" :aria-labelledby="'add-item-button-' + fieldIndex">
-                                                                    <a class="dropdown-item" v-bind:class="{'disabled' : dropdowns[field.id].hasOtherOption}" v-on:click="addOtherOption(field)" href="javascript:void(0)">Add Blank Option</a>
+                                                            <div class="input-group mb-3" v-for="(radioOption, radioIndex) of radioValueCollection.OptionText.Values.$values">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-text">{{radioOption.Language}}</span>
+                                                                    <span class="input-group-text">
+                                                                        <input disabled :id="'radio-' + radioVCIndex + '-' + radioIndex" :name="'radio-field-' + fieldIndex" type="radio" aria-label="Radio button for following text input">
+                                                                    </span>
+                                                                </div>
+                                                                <input type="text" class="form-control" aria-label="Text input with radio button and remove button" 
+                                                                    v-model="radioOption.Value" :state="validateFieldState(fieldIndex, 'Values')"
+                                                                    :class="{ 'is-invalid': $v.fields.$each[fieldIndex].Options.$values.$each[radioVCIndex].OptionText.Values.$values.$each[radioIndex].Value.$invalid }"
+                                                                    > 
+                                                                    <!--  
+                                                                    @@input="$v.fields.$each[fieldIndex].values.$touch()" -->
+                                                            </div>
+                                                            <div class="additional-options-holder">
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" :name="'add-default-option-' + fieldIndex" 
+                                                                        :id="'add-default-option-' + fieldIndex + '-' + radioVCIndex" 
+                                                                        v-model="radioValueCollection.Selected" value="true"
+                                                                        v-on:click="selectOptionAsDefault(fieldIndex, radioVCIndex)">
+                                                                    <label class="form-check-label" style="font-weight:normal;" 
+                                                                        :for="'add-default-option-' + fieldIndex + '-' + radioVCIndex">
+                                                                        Set as Default Option
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="checkbox" :name="'additional-input-' + fieldIndex"
+                                                                    :id="'additional-input-' + fieldIndex + '-' + radioVCIndex" 
+                                                                    v-model="radioValueCollection.ExtendedOption"
+                                                                    value="true">
+                                                                    <label class="form-check-label" style="font-weight:normal;"
+                                                                    for="'additional-input-' + fieldIndex + '-' + radioVCIndex">
+                                                                        Requires Additional Input
+                                                                    </label>
                                                                 </div>
                                                             </div>
-
+                                                            <div v-if="field.Options.$values.length > 0" style="width:100%;">
+                                                                <hr />
+                                                            </div>
+                                                        </div>
+                                                        <div class="add-button-holder">
+                                                            <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-success">
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>
                                                         </div>
                                                     </div>
                                                      @*Checkbox*@ 
-                                                    <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Checkbox, Catfish.Core'">
-                                                        <div v-for="(checkValue, checkIndex) of field.values" class="input-group mb-3">
-                                                            <div class="input-group-prepend">
-                                                                <div class="input-group-text">
-                                                                    <input :id="'checkbox-' + checkIndex" disabled :name="'check-field-' + fieldIndex" 
-                                                                        type="checkbox" aria-label="Checkbox for following text input">
-                                                                </div>
-                                                            </div>
-                                                            <input type="text" class="form-control" :disabled="checkValue.isDisabled" 
-                                                                aria-label="Text input with checkbox and remove button" v-model="checkValue.text"
-                                                                :state="validateFieldState(fieldIndex, 'values')"
-                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$each[checkIndex].text.$invalid }">
-                                                            <div class="input-group-append">
-                                                                <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, checkValue, checkIndex)" type="button">
+                                                    <div v-else-if="field.$type == CHECKBOX_TYPE ">
+                                                        <hr v-if="field.Options.$values.length > 0" />
+                                                        <div v-for="(checkValueCollection, checkVCIndex) of field.Options.$values" class="input-group mb-3">
+                                                            <div class="option-title-holder">
+                                                                <h5>Option {{checkVCIndex + 1}}:</h5>
+                                                                <button class="btn btn-danger" 
+                                                                    v-on:click="removeOption(fieldIndex, checkVCIndex)" 
+                                                                    type="button">
                                                                     <i class="fas fa-minus"></i>
                                                                 </button>
+                                                            </div>
+                                                            <div class="input-group mb-3" v-for="(checkOption, checkIndex) of checkValueCollection.OptionText.Values.$values">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-text">{{checkOption.Language}}</span>
+                                                                    <span class="input-group-text">
+                                                                        <input :id="'checkbox-' + checkVCIndex + '-' + checkIndex" disabled :name="'check-field-' + fieldIndex" 
+                                                                            type="checkbox" aria-label="Checkbox for following text input">
+                                                                    </span>
+                                                                </div>
+                                                                <input type="text" class="form-control" aria-label="Text input with checkbox and remove button" 
+                                                                    v-model="checkOption.Value" :state="validateFieldState(fieldIndex, 'Values')"
+                                                                    :class="{ 'is-invalid': $v.fields.$each[fieldIndex].Options.$values.$each[checkVCIndex].OptionText.Values.$values.$each[checkIndex].Value.$invalid }">
+                                                            </div>
+                                                            <div class="additional-options-holder">
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" :name="'add-default-option-' + fieldIndex" 
+                                                                        :id="'add-default-option-' + fieldIndex + '-' + checkVCIndex" 
+                                                                        v-model="checkValueCollection.Selected" value="true"
+                                                                        v-on:click="selectOptionAsDefault(fieldIndex, checkVCIndex)">
+                                                                    <label class="form-check-label" style="font-weight:normal;" 
+                                                                        :for="'add-default-option-' + fieldIndex + '-' + checkVCIndex">
+                                                                        Set as Default Option
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="checkbox" :name="'additional-input-' + fieldIndex"
+                                                                    :id="'additional-input-' + fieldIndex + '-' + checkVCIndex" 
+                                                                    v-model="checkValueCollection.ExtendedOption"
+                                                                    value="true">
+                                                                    <label class="form-check-label" style="font-weight:normal;"
+                                                                    for="'additional-input-' + fieldIndex + '-' + checkVCIndex">
+                                                                        Requires Additional Input
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div v-if="field.Options.$values.length > 0" style="width:100%;">
+                                                                <hr />
                                                             </div>
                                                         </div>
                                                         <div class="add-button-holder">
-                                                            <div class="btn-group" class="dropdown m-2">
-                                                                <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-success">
-                                                                    <i class="fas fa-plus"></i>
-                                                                </button>
-                                                                <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                    <span class="sr-only">Toggle Dropdown</span>
-                                                                </button>
-                                                                <div class="dropdown-menu" :aria-labelledby="'add-item-button-' + fieldIndex">
-                                                                    <a class="dropdown-item" v-bind:class="{'disabled': dropdowns[field.id].hasOtherOption}" v-on:click="addOtherOption(field)" href="javascript:void(0)">Add Blank Option</a>
-                                                                </div>
-                                                            </div>
+                                                            <button v-on:click="addNewOption(field)" :id="'add-item-button-' + fieldIndex" type="button" class="btn btn-success">
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>
                                                         </div>                                               
                                                     </div>
                                                      @*Dropdown*@ 
-                                                    <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.Dropdown, Catfish.Core'">
-                                                        <div v-for="(dropdownValue, dropdownIndex) of field.values" class="input-group mb-3">
-                                                            <input type="text" class="form-control" aria-label="Text input with remove button" 
-                                                                v-model="dropdownValue.text" :state="validateFieldState(fieldIndex, 'values')"
-                                                                :class="{ 'is-invalid': $v.fields.$each[fieldIndex].values.$each[dropdownIndex].text.$invalid }">
-                                                            <div class="input-group-append">
-                                                                <button class="btn btn-danger" v-on:click="removeOption(field, fieldIndex, dropdownValue, dropdownIndex)" type="button">
+                                                    <div v-else-if="field.$type == DROPDOWN_TYPE ">
+                                                        <hr v-if="field.Options.$values.length > 0" />
+                                                        <div v-for="(dropdownValueCollection, dropdownVCIndex) of field.Options.$values" class="input-group mb-3">
+                                                            <div class="option-title-holder">
+                                                                <h5>Option {{dropdownVCIndex + 1}}:</h5>
+                                                                <button class="btn btn-danger" 
+                                                                    v-on:click="removeOption(fieldIndex, dropdownVCIndex)" 
+                                                                    type="button">
                                                                     <i class="fas fa-minus"></i>
                                                                 </button>
+                                                            </div>
+                                                            <div class="input-group mb-3" v-for="(dropdownOption, dropdownIndex) of dropdownValueCollection.OptionText.Values.$values">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-text">{{dropdownOption.Language}}</span>
+                                                                </div>
+                                                                <input type="text" class="form-control" aria-label="Text input with remove button" 
+                                                                    v-model="dropdownOption.Value" :state="validateFieldState(fieldIndex, 'Values')"
+                                                                    :class="{ 'is-invalid': $v.fields.$each[fieldIndex].Options.$values.$each[dropdownVCIndex].OptionText.Values.$values.$each[dropdownIndex].Value.$invalid }">
+                                                            </div>
+                                                            <div class="additional-options-holder">
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" :name="'add-default-option-' + fieldIndex" 
+                                                                        :id="'add-default-option-' + fieldIndex + '-' + dropdownVCIndex" 
+                                                                        v-model="dropdownValueCollection.Selected" value="true"
+                                                                        v-on:click="selectOptionAsDefault(fieldIndex, dropdownVCIndex)">
+                                                                    <label class="form-check-label" style="font-weight:normal;" 
+                                                                        :for="'add-default-option-' + fieldIndex + '-' + dropdownVCIndex">
+                                                                        Set as Default Option
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="checkbox" :name="'additional-input-' + fieldIndex"
+                                                                    :id="'additional-input-' + fieldIndex + '-' + dropdownVCIndex" 
+                                                                    v-model="dropdownValueCollection.ExtendedOption"
+                                                                    value="true">
+                                                                    <label class="form-check-label" style="font-weight:normal;"
+                                                                    for="'additional-input-' + fieldIndex + '-' + dropdownVCIndex">
+                                                                        Requires Additional Input
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div v-if="field.Options.$values.length > 0" style="width:100%;">
+                                                                <hr />
                                                             </div>
                                                         </div>
                                                         <div class="add-button-holder">
@@ -273,25 +345,25 @@
                                                         </div>
                                                     </div>
                                                      @*File attachment*@ 
-                                                    <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core'"
+                                                    <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core' "
                                                         >
-                                                        <div class="filetype-checkbox-holder" :class="{ 'red-color': $v.fields.$each[fieldIndex].values.$invalid }">
+                                                        <div class="filetype-checkbox-holder" :class="{ 'red-color': $v.fields.$each[fieldIndex].Values.$values.$invalid }">
                                                             <div class="filetype-checkbox">
-                                                                <input class="form-check-input" type="checkbox" v-model="field.values" value="any"
+                                                                <input class="form-check-input" type="checkbox" v-model="field.Values.$values" value="any"
                                                                 :id="'filetype-checkbox-' + fieldIndex + '-' + 'any'" v-on:change="checkAllFileTypes(field)" >
                                                                 <label class="form-check-label" :for="'filetype-checkbox-' + fieldIndex + '-' + 'any'">
                                                                     <h6 style="margin-bottom:0;">Any</h6>
                                                                 </label>
                                                             </div>
                                                             <div class="filetype-checkbox" v-for="(fileType, fileTypeIndex) of fileTypes">
-                                                                <input class="form-check-input" type="checkbox" v-model="field.values" :value="fileType"
+                                                                <input class="form-check-input" type="checkbox" v-model="field.Values.$values" :value="fileType"
                                                                 :id="'filetype-checkbox-' + fieldIndex + '-' + fileTypeIndex" v-on:change="checkCheckboxState(field, fieldIndex)" >
                                                                 <label class="form-check-label" :for="'filetype-checkbox-' + fieldIndex + '-' + fileTypeIndex">
                                                                     <h6 style="margin-bottom:0;">{{fileType}}</h6>
                                                                 </label>
                                                             </div>
                                                         </div>
-                                                        @*{{$v.fields.$each[fieldIndex].values}}*@
+                                                        @*{{$v.fields.$each[fieldIndex].Values.$values}}*@
 
                                                         <hr />
 
@@ -307,21 +379,37 @@
                                                         </div>-->
                                                     </div>
                                                     @*Display text*@ 
-                                                    <div v-else-if="field.$type == 'Catfish.Core.Models.Contents.Fields.DisplayField, Catfish.Core' ">
-                                                        {{$v.fields.$each[fieldIndex].values}}
-                                                        <quill-editor rows="3" :ref="'richtext' + fieldIndex" v-model="$v.fields.$each[fieldIndex].values"
-                                                            :state="validateFieldState(fieldIndex, 'values')"
-                                                            :class="{ 'red-color': $v.fields.$each[fieldIndex].values.$invalid }">
+                                                    <div v-else-if="field.$type == INFOSECTION_TYPE ">
+                                                        {{$v.fields.$each[fieldIndex].Values.$values}}
+                                                        <quill-editor rows="3" :ref="'richtext' + fieldIndex" v-model="$v.fields.$each[fieldIndex].Values.$values"
+                                                            :state="validateFieldState(fieldIndex, 'Values')"
+                                                            :class="{ 'red-color': $v.fields.$each[fieldIndex].Values.$values.$invalid }">
                                                         </quill-editor>
                                                     </div>
-                                                
+                                                    @*Date*@
+                                                    <div v-else-if="field.$type == DATE_TYPE ">
+                                                    <!--add some date restriction tools?-->
+                                                    </div>
+                                                    @*Number - has two types incoming from the back end*@
+                                                    <div v-else-if="field.$type == INTEGER_TYPE || field.$type == DECIMAL_TYPE">
+                                                        <input @@change="onNumberCheckboxChange($event, fieldIndex)" 
+                                                            class="form-check-input" type="checkbox" v-model="field.isIntegerOnly" :value="true"
+                                                            :id="'integer-only-checkbox-' + fieldIndex">
+                                                        <label class="form-check-label" :for="'multifile-checkbox-' + fieldIndex">
+                                                            <h6 style="margin-bottom:0;">Limit to whole numbers only</h6>
+                                                        </label>
+                                                    </div>
+                                                    @*Monolingual text*@
+                                                    <div v-else-if="field.$type == MONOLINGUAL_TEXTFIELD_TYPE">
+                                                    </div>
                                                 </div>
                                             </div>
-                                     
+
                                         </div>
+
                                         <div class="card-footer field-bottom">
                                             <div class="form-check" style="padding-right:10px; display: flex; flex-direction: row-reverse; align-items: flex-end;">
-                                                <input class="form-check-input" type="checkbox" v-model="field.required" 
+                                                <input class="form-check-input" type="checkbox" v-model="field.Required" 
                                                 :id="'required-checkbox-' + fieldIndex">
                                                 <label class="form-check-label" :for="'required-checkbox-' + fieldIndex">
                                                     <h6 style="margin-bottom:0;"><b>Required</b></h6>
@@ -333,8 +421,8 @@
                                                     <i class="fas fa-ellipsis-h"></i>
                                                 </button>
                                                 <div class="dropdown-menu" :aria-labelledby="'ellipsis-button-' + fieldIndex">
-                                                    <a class="dropdown-item" v-if="!dropdowns[field.id].showDescription" href="javascript:void(0)" v-on:click="addDescription(field.id)">Add Description</a>
-                                                    <a class="dropdown-item" v-if="dropdowns[field.id].showDescription" href="javascript:void(0)" v-on:click="removeDescription(field.id)">Remove Description</a>
+                                                    <a class="dropdown-item" v-if="!dropdowns[field.Id].showDescription" href="javascript:void(0)" v-on:click="addDescription(field.Id)">Add Description</a>
+                                                    <a class="dropdown-item" v-if="dropdowns[field.Id].showDescription" href="javascript:void(0)" v-on:click="removeDescription(field.Id)">Remove Description</a>
                                                 </div>
                                             </div>
 

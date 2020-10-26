@@ -9,9 +9,9 @@ namespace Catfish.Core.Models.Contents.Fields
     {
         public XmlModelList<Text> Values { get; protected set; }
 
-        public MonolingualTextField() : base() { }
-        public MonolingualTextField(XElement data) : base(data) { }
-        public MonolingualTextField(string name, string desc, string lang = null) : base(name, desc, lang) { }
+        public MonolingualTextField() : base() { DisplayLabel = "Multilingual Text"; }
+        public MonolingualTextField(XElement data) : base(data) { DisplayLabel = "Multilingual Text"; }
+        public MonolingualTextField(string name, string desc, string lang = null) : base(name, desc, lang) { DisplayLabel = "Multilingual Text"; }
 
         public override void Initialize(eGuidOption guidOption)
         {

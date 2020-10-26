@@ -55,6 +55,7 @@
 #edit-field-form-page .input-group .input-group-text {
 	background-color: #e9ecef;
 	border: 1px solid #ced4da;
+	text-transform: capitalize;
 }
 
 #edit-field-form-page .flex-li{
@@ -232,4 +233,11 @@
 #edit-field-form-page .red-color {
 	border: solid red 3px;
 	border-radius: 5.25px;
+}
+
+#edit-field-form-page .option-title-holder {
+	display: flex;
+	justify-content: space-between;
+	padding-bottom: 10px;
+	width:100%;
 }

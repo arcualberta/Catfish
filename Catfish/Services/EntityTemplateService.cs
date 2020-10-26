@@ -55,7 +55,7 @@ namespace Catfish.Services
                 return new List<ItemTemplate>();
         }
 
-        public EntityTemplate GetTemplate(Guid templateId)
+        public EntityTemplate GetTemplate(Guid? templateId)
         {
             return _db.EntityTemplates.Where(et => et.Id == templateId).FirstOrDefault();
         }

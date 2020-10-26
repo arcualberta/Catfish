@@ -10,6 +10,6 @@ namespace Catfish.Services
     public interface IEntityTemplateService
     {
         IList<ItemTemplate> GetItemTemplates(ClaimsPrincipal user);
-        EntityTemplate GetTemplate(Guid templateId);
+        EntityTemplate GetTemplate(Guid? templateId);
     }
 }
