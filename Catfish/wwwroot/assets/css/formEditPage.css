@@ -235,6 +235,10 @@
 	border-radius: 5.25px;
 }
 
+#edit-field-form-page .has-error-in-field {
+	border: solid #a94441 3px;
+}
+
 #edit-field-form-page .option-title-holder {
 	display: flex;
 	justify-content: space-between;

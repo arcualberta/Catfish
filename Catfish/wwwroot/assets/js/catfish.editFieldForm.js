@@ -31,6 +31,7 @@ if (document.getElementById("edit-field-form-page")) {
             return {
                 itemId: null,
                 finishedGET: false,
+                attemptedSave: false,
 
                 //api strings
                 getString: "manager/api/forms/",
@@ -78,41 +79,6 @@ if (document.getElementById("edit-field-form-page")) {
                 //temp, need to call an api for these
                 fieldTypes: [
                     { DisplayLabel: 'Select One', $type: null },
-                    //{
-                    //    value: "Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core",
-                    //    text: 'Short Answer',
-                    //    modelType: 'TextField'
-                    //},
-                    //{
-                    //    value: "Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core",
-                    //    text: 'Long Answer',
-                    //    modelType: 'TextArea'
-                    //},
-                    //{
-                    //    value: "Catfish.Core.Models.Contents.Fields.RadioField, Catfish.Core",
-                    //    text: 'Multiple Choice',
-                    //    modelType: 'Radio'
-                    //},
-                    //{
-                    //    value: "Catfish.Core.Models.Contents.Fields.CheckboxField, Catfish.Core",
-                    //    text: 'Check Box',
-                    //    modelType: 'Checkbox'
-                    //},
-                    //{
-                    //    value: "Catfish.Core.Models.Contents.Fields.SelectField, Catfish.Core",
-                    //    text: 'Dropdown List',
-                    //    modelType: 'Dropdown'
-                    //},
-                    //{
-                    //    value: "Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core",
-                    //    text: 'File Upload',
-                    //    modelType: 'FileAttachment'
-                    //},
-                    //{
-                    //    value: "Catfish.Core.Models.Contents.Fields.InfoSection, Catfish.Core",
-                    //    text: 'Display Text',
-                    //    modelType: 'DisplayField'
-                    //}
                 ],
 
                 rightColumnOptions: [
@@ -224,6 +190,8 @@ if (document.getElementById("edit-field-form-page")) {
             checkValidity(event) {
                 event.preventDefault();
 
+                this.attemptedSave = true;
+
                 if (this.$v.$invalid) {
                     console.log("something is invalid", this.$v);
                 } else {
@@ -311,6 +279,7 @@ if (document.getElementById("edit-field-form-page")) {
 				})
 
                 console.log("the name, description, and fields saved TBA", this.names, this.descriptions, this.fields);
+                this.attemptedSave = false;
             },
 
             /**
