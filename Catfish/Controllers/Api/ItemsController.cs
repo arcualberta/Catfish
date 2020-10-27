@@ -36,11 +36,11 @@ namespace Catfish.Controllers.Api
 
         // POST api/<ItemController>
         [HttpPost]
-        public void Post([FromForm] Item value, Guid TemplateId)
+        public void Post([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId)
         {
-            EntityTemplate template = _entityTemplateService.GetTemplate(value.TemplateId);
+            EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
             if (template == null)
-                throw new Exception("Entity template with ID = " + TemplateId + " not found.");
+                throw new Exception("Entity template with ID = " + entityTemplateId + " not found.");
 
             //When we instantantiate an instance from the template, we do not need to clone metadata sets
             Item newItem = template.Instantiate<Item>();
