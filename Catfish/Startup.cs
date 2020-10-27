@@ -11,6 +11,9 @@ using Catfish.Models.Blocks;
 using Catfish.Models.Fields;
 using Catfish.Models.SiteTypes;
 using Catfish.Services;
+using ElmahCore;
+using ElmahCore.Mvc;
+using ElmahCore.Sql;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -62,6 +65,8 @@ namespace Catfish
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            string sqlConnectionString = Configuration.GetConnectionString("catfish");
+
             //localization need to be called before MVC() or other service that need it
             services.AddLocalization(options =>
              options.ResourcesPath = "Resources"
@@ -86,9 +91,9 @@ namespace Catfish
 
             /* sql server configuration based on ==> http://piranhacms.org/blog/announcing-80-for-net-core-31    */
             services.AddPiranhaEF<SQLServerDb>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("catfish")));
+                options.UseSqlServer(sqlConnectionString));
             services.AddPiranhaIdentityWithSeed<IdentitySQLServerDb>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("catfish")));
+                options.UseSqlServer(sqlConnectionString));
 
             services.AddRazorPages()
                 .AddPiranhaManagerOptions();
@@ -147,6 +152,7 @@ namespace Catfish
             services.AddScoped<IEntityTemplateService, EntityTemplateService>();
             services.AddScoped<IFormService, FormService>();
             services.AddScoped<ICatfishInitializationService, CatfishInitializationService>();
+            services.AddScoped<ICatfishSiteService, CatfishSiteService>();
 
             // Solr services
             var configSection = Configuration.GetSection("SolarConfiguration:solrCore");
@@ -172,6 +178,12 @@ namespace Catfish
             //HangFire background processing service
             services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("catfish")));
             services.AddHangfireServer();
+
+            //ELMAH Error Logger
+            services.AddElmah<XmlFileErrorLog>(options =>
+            {
+                options.LogPath = "~/log";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -308,12 +320,15 @@ namespace Catfish
             //HangFire background processing service
             app.UseHangfireDashboard();
 
+            //Elmah error handler
+            app.UseElmah();
         }
 
         #region REGISTER CUSTOM COMPONENT
         private static void RegisterCustomFields()
         {
             Piranha.App.Fields.Register<TextAreaField>();
+            Piranha.App.Fields.Register<ControlledKeywordsField>();
         }
         private static void RegisterCustomScripts()
         {
@@ -334,7 +349,9 @@ namespace Catfish
             //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/bundle.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/vendors.bundle.js");
-            
+            App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/controlled-keywords.js");
+
         }
         private static void RegisterCustomBlocks()
         {
@@ -350,7 +367,8 @@ namespace Catfish
             App.Blocks.Register<SubmissionForm>();
             App.Blocks.Register<ExtendedImageBlock>();
             App.Blocks.Register<ExtendedGalleryBlock>();
-            
+            App.Blocks.Register<ControlledVocabularySearchBlock>();
+
         }
         private static void RegisterCustomStyles()
         {
@@ -496,11 +514,18 @@ namespace Catfish
 
         private void AddHooks(IApplicationBuilder app)
         {
-            //Hook for generating pages required by a certain type of site
+            //Hooks for:
+            //  1. Generating pages required by a certain type of site
+            //  2. Updating page and post settings
+            //
             App.Hooks.SiteContent.RegisterOnAfterSave((siteContent) => {
                 var scope = app.ApplicationServices.CreateScope();
-                var service = scope.ServiceProvider.GetService<IWorkflowService>();
-                service.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
+
+                var workflowService = scope.ServiceProvider.GetService<IWorkflowService>();
+                workflowService.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
+
+                var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
+                catfishSiteService.UpdateKeywordVocabularyAsync(siteContent).Wait();
             });
 
             //Hook for indexing contents of a page right after the page is saved.
@@ -516,7 +541,6 @@ namespace Catfish
                 var service = scope.ServiceProvider.GetService<IPageIndexingService>();
                 service.IndexPost(post);
             });
-
         }
     }
 }

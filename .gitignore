@@ -172,6 +172,7 @@ Plugins
 /Catfish/catfish-service.json
 /Catfish/appsettings.json
 /Catfish/wwwroot/uploads
+/Catfish/wwwroot/log
 
 .vs/
 /Catfish.UnitTests/appsettings.test.json

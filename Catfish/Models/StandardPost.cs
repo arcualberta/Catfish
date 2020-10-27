@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Catfish.Models.Fields;
 using Piranha.AttributeBuilder;
+using Piranha.Extend;
 using Piranha.Models;
 
 
@@ -13,5 +15,9 @@ namespace Catfish.Models
         /// have been loaded from the database.
         /// </summary>
         public IEnumerable<Comment> Comments { get; set; } = new List<Comment>();
+
+        [Region(Title = "Keywords", Display = RegionDisplayMode.Setting)]
+        public ControlledKeywordsField Keywords { get; set; }
+
     }
 }

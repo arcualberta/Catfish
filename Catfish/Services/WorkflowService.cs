@@ -29,7 +29,7 @@ namespace Catfish.Services
 
         private Item mItem;
 
-        public WorkflowService(AppDbContext db, ISiteService siteService, IPageService pageService, IApi api)
+        public WorkflowService(AppDbContext db, IApi api)
         {
             _db = db;
             _api = api;

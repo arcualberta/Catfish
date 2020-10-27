@@ -16,9 +16,11 @@ namespace Catfish.Controllers.Api
     public class ItemsController : ControllerBase
     {
         private readonly IEntityTemplateService _entityTemplateService;
-        public ItemsController(IEntityTemplateService entityTemplateService)
+        private readonly AppDbContext _appDb;
+        public ItemsController(AppDbContext db, IEntityTemplateService entityTemplateService)
         {
             _entityTemplateService = entityTemplateService;
+            _appDb = db;
         }
         // GET: api/<ItemController>
         [HttpGet]
@@ -36,25 +38,25 @@ namespace Catfish.Controllers.Api
 
         // POST api/<ItemController>
         [HttpPost]
-        public void Post([FromForm] Item value, Guid TemplateId)
+        public void Post([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId)
         {
-            EntityTemplate template = _entityTemplateService.GetTemplate(value.TemplateId);
+            EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
             if (template == null)
-                throw new Exception("Entity template with ID = " + TemplateId + " not found.");
+                throw new Exception("Entity template with ID = " + entityTemplateId + " not found.");
 
             //When we instantantiate an instance from the template, we do not need to clone metadata sets
             Item newItem = template.Instantiate<Item>();
 
-            //DataItem newDataItem = template.InstantiateDataItem(value.Id);
-            //newDataItem.UpdateFieldValues(value);
-            //newItem.DataContainer.Add(newDataItem);
-            //newDataItem.EntityId = newItem.Id;
+            DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
+            newDataItem.UpdateFieldValues(value);
+            newItem.DataContainer.Add(newDataItem);
+            newDataItem.EntityId = newItem.Id;
 
             //TODO: associated the newly createditem with the collection specified by CollectionId.
 
             //Adding the new entity to the database
-            //_db.Items.Add(newItem);
-            //_db.SaveChanges();
+            _appDb.Items.Add(newItem);
+            _appDb.SaveChanges();
         }
 
         // PUT api/<ItemController>/5

@@ -1,0 +1,137 @@
+﻿@model Catfish.Models.Blocks.ControlledVocabularySearchBlock
+@using Catfish.Services;
+
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.RazorPages;
+
+@using Catfish.Core.Models.Contents.Fields
+@using Catfish.Core.Models.Solr;
+@using Catfish.Core.Services.Solr;
+@using Catfish.Pages;
+@using System.Text.RegularExpressions;
+
+
+@{
+    //ViewBag.Title = Model.SearchPageName;
+
+    string blockname = Model.SearchPageName;
+    string vocabcssclass = Model.VocabCss;
+    string checkboxlist = Model.SelectedKeywords.Value;
+
+    string[] words = Regex.Split(checkboxlist, "[,\r\n]");
+
+    var Results = new List<SolrEntry>();
+
+}
+
+
+
+
+<div class="keywords-search-block">
+    @if (!string.IsNullOrWhiteSpace(blockname))
+    {
+        <div class="block-title">@blockname</div>
+    }
+
+    <form id="controlledVocabularySearchForm" method="post" action="/api/search/keywords">
+
+        <div>
+            <fieldset class="checkboxgroup">
+                <ul class="searchcheckbox">
+                    @foreach (var word in words)
+                    {
+                        if (!String.IsNullOrWhiteSpace(@word))
+                        {
+                            <li>
+                                <div>
+                                    <input type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
+                                </div>
+                            </li>
+                        }
+
+                    }
+                </ul>
+            </fieldset>
+        </div>
+        <input id="ControlledVocabularySearchButton" type="submit" value="Submit" />
+
+    </form>
+</div>
+
+<div id="controlledVocabularySearchResults">
+</div>
+
+
+
+<script>
+    $(function () {
+        $("#controlledVocabularySearchForm").submit(function (event)  {
+            var terms = [];
+            $.each($("input[name='searchterm']:checked"), function () {
+                terms.push($(this).val());
+            });
+
+            if (terms.length == 0) {
+                alert("choose at least one word");
+            }
+            event.preventDefault();
+
+            var $form = $(this),
+                url = $form.attr('action');
+
+            var posting = $.post(
+                url,
+                { "keySearchWords": terms }
+            );
+
+             posting.done(function (data) {
+                 $("#controlledVocabularySearchResults").empty();
+                 if (data.length == 0) {
+                     $("#controlledVocabularySearchResults").append($.parseHTML("<div class='alert alert-warning'>No results found</div>"));
+                     return;
+                 }
+
+
+                 $.each(data, function (entryIndex, entry) {
+
+                     @* Creating the wrapper div as a DOM element for the result item *@
+                    var entryWrapper = $.parseHTML("<div class='search-result-entry'>");
+
+                     @* Adding the wrapper to the result - list container *@
+                     $("#controlledVocabularySearchResults").append(entryWrapper);
+
+                     @* Building a link to the detailed object if there is a permalink associated with the entry *@
+                    var linkStart = "";
+                     var linkEnd = ""; 2
+                     if (entry.permalink != undefined && entry.permalink.length > 0) {
+                         linkStart = "<a href='" + entry.permalink + "'>";
+                         linkEnd = "</a>";
+                     }
+
+                     @* Adding the entry title to the wrapper as a child.We need to this for each
+                        value of the title because the title can take multiple values *@
+                    var entryTitleDiv = $.parseHTML("<div class='entry-title'>");
+                     $(entryWrapper).append(entryTitleDiv);
+                     $.each(entry.title, function (titleIndex, titleVal) {
+                         var str = "<span><b>" + linkStart + titleVal + linkEnd + "</b></span>"
+                         $(entryTitleDiv).append($.parseHTML(str));
+                     });
+
+                     @* Go through each highlight snippet and add them to the entry - body section.We include each them
+                         in separate divs *@
+                    var entryBodyDiv = $.parseHTML("<div class='entry-body'>");
+                     $(entryWrapper).append(entryBodyDiv);
+                     $.each(entry.highlights, function (highlightIndex, highlightVal) {
+                         var str = "<div>" + highlightVal + "</div>";
+                         $(entryBodyDiv).append($.parseHTML(str));
+                     });
+                 });
+
+
+
+            });
+        });
+    });
+
+</script>
+

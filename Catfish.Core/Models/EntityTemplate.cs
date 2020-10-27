@@ -123,5 +123,11 @@ namespace Catfish.Core.Models
 
             return dataItem;
         }
+
+        public DataItem InstantiateRootItem()
+        {
+            return InstantiateDataItem(GetRootDataItem(false).Id);
+        }
+
     }
 }

@@ -8,8 +8,12 @@ namespace Catfish.Models.SiteTypes
     [SiteType(Title = "Basic Site")]
     public class CatfishWebsite : SiteContent<CatfishWebsite>
     {
+        [Region(Title = "Keywords", Display = RegionDisplayMode.Setting)]
+        public TextField Keywords { get; set; }
+
         [Region(Title = "Footer", Display = RegionDisplayMode.Setting)]
         public Footer FooterContents { get; set; }
+
     }
 
     public class Footer
