@@ -78,17 +78,19 @@
                                             <div class="handle">
                                                 <i :class="{ 'fas fa-chevron-down': !dropdowns[field.Id].isCollapsed, 'fas fa-chevron-right': dropdowns[field.Id].isCollapsed}"></i>
                                             </div>
-                                            <div v-if="field.$type" class="title-header">
-                                                <div v-if="field.Name.Values.$values[0].Value.length == 0">
-                                                    <h2><i>Field Title</i></h2>
-                                                </div>
-                                                <h2 v-else>{{field.Name.Values.$values[0].Value}}</h2>
+                                            <transition name="refresh">
+                                                <div class="title-header" :key="field.$type">
+                                                    <div v-if="field.Name.Values.$values[0].Value.length == 0">
+                                                        <h2><i>Field Title</i></h2>
+                                                    </div>
+                                                    <h2 v-else>{{field.Name.Values.$values[0].Value}}</h2>
                                                  
-                                                <h5>{{field.DisplayLabel}}</h5>
-                                            </div>
-                                            <div v-else class="title-header">
-                                                <h5>Default Item - Fix Me</h5>
-                                            </div>
+                                                    <h5>{{field.DisplayLabel}}</h5>
+                                                </div>
+                                                <!--<div v-else class="title-header">
+                                                    <h5>Default Item - Fix Me</h5>
+                                                </div>-->
+                                            </transition>
                                         </a>
                                     
                                         <div class="header-tools-holder">

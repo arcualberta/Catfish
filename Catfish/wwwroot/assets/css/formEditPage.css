@@ -245,3 +245,16 @@
 	padding-bottom: 10px;
 	width:100%;
 }
+
+#edit-field-form-page .refresh-enter-active {
+	
+	transition: opacity 0.5s;
+}
+
+#edit-field-form-page .refresh-leave-active{
+	display: none;
+}
+
+#edit-field-form-page .refresh-enter, .refresh-leave-to /* .fade-leave-active below version 2.1.8 */ {
+	opacity: 0;
+}
