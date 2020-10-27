@@ -31,6 +31,7 @@ if (document.getElementById("edit-field-form-page")) {
             return {
                 itemId: null,
                 finishedGET: false,
+                attemptedSave: false,
 
                 //api strings
                 getString: "manager/api/forms/",
@@ -78,41 +79,6 @@ if (document.getElementById("edit-field-form-page")) {
                 //temp, need to call an api for these
                 fieldTypes: [
                     { DisplayLabel: 'Select One', $type: null },
-                    //{
-                    //    value: "Catfish.Core.Models.Contents.Fields.TextField, Catfish.Core",
-                    //    text: 'Short Answer',
-                    //    modelType: 'TextField'
-                    //},
-                    //{
-                    //    value: "Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core",
-                    //    text: 'Long Answer',
-                    //    modelType: 'TextArea'
-                    //},
-                    //{
-                    //    value: "Catfish.Core.Models.Contents.Fields.RadioField, Catfish.Core",
-                    //    text: 'Multiple Choice',
-                    //    modelType: 'Radio'
-                    //},
-                    //{
-                    //    value: "Catfish.Core.Models.Contents.Fields.CheckboxField, Catfish.Core",
-                    //    text: 'Check Box',
-                    //    modelType: 'Checkbox'
-                    //},
-                    //{
-                    //    value: "Catfish.Core.Models.Contents.Fields.SelectField, Catfish.Core",
-                    //    text: 'Dropdown List',
-                    //    modelType: 'Dropdown'
-                    //},
-                    //{
-                    //    value: "Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core",
-                    //    text: 'File Upload',
-                    //    modelType: 'FileAttachment'
-                    //},
-                    //{
-                    //    value: "Catfish.Core.Models.Contents.Fields.InfoSection, Catfish.Core",
-                    //    text: 'Display Text',
-                    //    modelType: 'DisplayField'
-                    //}
                 ],
 
                 rightColumnOptions: [
@@ -139,9 +105,11 @@ if (document.getElementById("edit-field-form-page")) {
                 saveFieldFormButtonLabel: "Save",
             }
         },
-        validations: {
-            names: {
-                required,
+        validations() {
+
+            let validationJson = {
+                names: {
+                    required,
                     Values: {
                         $values: {
                             $each: {
@@ -150,79 +118,68 @@ if (document.getElementById("edit-field-form-page")) {
                                 }
                             }
                         }
-				    }
-            },
-            descriptions: {
-                Values: {
-                    $values: {
-                        $each: {
-                            Value: {
-                            }
-                        }
                     }
-                }
-            },
-            fields: {
-                $each: {
+                },
+                descriptions: {
                     Values: {
-
-                        //currently the display text option can be submitted regardless of any text or not
-                        //it errors on reading an array instead of an empty string on creation, need different place to store it
-
-                        //all start with this value at Array(0)
-                        //want Array > 0 when the field type is radio/checkbox/dropdown/fileAttachment
-                        required: requiredIf(function (fieldModel) {
-                            return (fieldModel.$type == this.RADIO_TYPE || fieldModel.$type == this.CHECKBOX_TYPE ||
-                                fieldModel.$type == this.DROPDOWN_TYPE || fieldModel.$type ==
-                                'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
-                            )
-                        }),
-
                         $values: {
-
-                            
-
-                            //only need the object for radio/checkbox/dropdown's inner content
                             $each: {
-                                text: {
-                                    required: requiredIf(function (textModel) {
-                                        //this might not work with api update, hoping to store mc/radio/dropdown in different section from file attachment
-                                        return (textModel.text != null )  //(typeof (textModel) == 'object');
-                                    })
+                                Value: {
                                 }
                             }
                         }
-                    },
-                    Name: {
-                        Values: {
+                    }
+                },
+                fields: {
+                    $each: {
+                        Name: {
+                            Values: {
+                                $values: {
+                                    $each: {
+                                        Value: {
+                                            required
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        Options: {
                             $values: {
                                 $each: {
-                                    Value: {
-                                        required
+                                    OptionText: {
+                                        Values: {
+                                            $values: {
+                                                $each: {
+                                                    Value: {
+                                                        required
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-                    },
-                    Options: {
-                        $values: {
-                            $each: {
-                                OptionText: {
-                                    Values: {
-                                        $values: {
-                                            $each: {
-                                                Value: {
-                                                    required
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
+                    }
                 }
-            }
+            };
+
+            this.fields.forEach((field) => {
+                if (field.$type == this.RADIO_TYPE || field.$type == this.CHECKBOX_TYPE ||
+                    field.$type == this.DROPDOWN_TYPE ||
+                    field.$type == 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
+                ) {
+                    console.log("ran this");
+                    validationJson.fields.$each['Values'] = { required };
+                    validationJson.fields.$each.Values['$values'] = {};
+                    validationJson.fields.$each.Values['$values']['$each'] = {};
+                    validationJson.fields.$each.Values['$values']['$each']['Value'] = { required };
+                    return validationJson;
+                }
+            });
+
+            validationJson.fields.$each['Values'] = {};
+            return validationJson;
         },
         methods: {
 
@@ -232,6 +189,8 @@ if (document.getElementById("edit-field-form-page")) {
 			 **/
             checkValidity(event) {
                 event.preventDefault();
+
+                this.attemptedSave = true;
 
                 if (this.$v.$invalid) {
                     console.log("something is invalid", this.$v);
@@ -320,6 +279,7 @@ if (document.getElementById("edit-field-form-page")) {
 				})
 
                 console.log("the name, description, and fields saved TBA", this.names, this.descriptions, this.fields);
+                this.attemptedSave = false;
             },
 
             /**

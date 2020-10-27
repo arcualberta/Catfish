@@ -66,7 +66,7 @@
                     <draggable  @@sort="sortItem" class="flex-full col-10" id="accordion" v-model="fields" group="sharedItems" handle=".handle-drag">
                         <div v-for="(field, fieldIndex) of fields" class="card field-card-width" :key='fieldIndex'>
                         <!-- Editable fields -->
-                            <div style="display:flex;">
+                            <div style="display:flex;" :class="{'has-error-in-field': $v.fields.$each[fieldIndex].$invalid && attemptedSave}">
 
                                 <div class="handle-drag draggable">
                                     <i class="fas fa-grip-vertical"></i>
@@ -184,7 +184,7 @@
                                                         <div v-for="(radioValueCollection, radioVCIndex) of field.Options.$values">
                                                             <div class="option-title-holder">
                                                                 <h5>Option {{radioVCIndex + 1}}:</h5>
-                                                                <button class="btn btn-danger" 
+                                                                <button class="btn btn-danger" :disabled="field.Options.$values.length <=1"
                                                                     v-on:click="removeOption(fieldIndex, radioVCIndex)" 
                                                                     type="button">
                                                                     <i class="fas fa-minus"></i>
@@ -242,7 +242,7 @@
                                                         <div v-for="(checkValueCollection, checkVCIndex) of field.Options.$values" class="input-group mb-3">
                                                             <div class="option-title-holder">
                                                                 <h5>Option {{checkVCIndex + 1}}:</h5>
-                                                                <button class="btn btn-danger" 
+                                                                <button class="btn btn-danger" :disabled="field.Options.$values.length <=1"
                                                                     v-on:click="removeOption(fieldIndex, checkVCIndex)" 
                                                                     type="button">
                                                                     <i class="fas fa-minus"></i>
@@ -298,7 +298,7 @@
                                                         <div v-for="(dropdownValueCollection, dropdownVCIndex) of field.Options.$values" class="input-group mb-3">
                                                             <div class="option-title-holder">
                                                                 <h5>Option {{dropdownVCIndex + 1}}:</h5>
-                                                                <button class="btn btn-danger" 
+                                                                <button class="btn btn-danger" :disabled="field.Options.$values.length <=1"
                                                                     v-on:click="removeOption(fieldIndex, dropdownVCIndex)" 
                                                                     type="button">
                                                                     <i class="fas fa-minus"></i>
