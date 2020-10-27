@@ -152,6 +152,7 @@ namespace Catfish
             services.AddScoped<IEntityTemplateService, EntityTemplateService>();
             services.AddScoped<IFormService, FormService>();
             services.AddScoped<ICatfishInitializationService, CatfishInitializationService>();
+            services.AddScoped<ICatfishSiteService, CatfishSiteService>();
 
             // Solr services
             var configSection = Configuration.GetSection("SolarConfiguration:solrCore");
@@ -516,8 +517,13 @@ namespace Catfish
             //Hook for generating pages required by a certain type of site
             App.Hooks.SiteContent.RegisterOnAfterSave((siteContent) => {
                 var scope = app.ApplicationServices.CreateScope();
-                var service = scope.ServiceProvider.GetService<IWorkflowService>();
-                service.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
+
+                var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
+                catfishSiteService.UpdatePageSettingsAsync(siteContent.Id, siteContent.TypeId).Wait();
+              
+                var workflowService = scope.ServiceProvider.GetService<IWorkflowService>();
+                workflowService.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
+
             });
 
             //Hook for indexing contents of a page right after the page is saved.
