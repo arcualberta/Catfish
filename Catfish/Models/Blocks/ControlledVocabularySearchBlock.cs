@@ -19,7 +19,7 @@ namespace Catfish.Models.Blocks
     public class ControlledVocabularySearchBlock : Block
     {
 
-        [Field(Title = "Search Page Name", Placeholder = "The name of the type of Search Block to be created")]
+        [Field(Title = "Search Block Title", Placeholder = "The name of the type of Search Block to be created")]
         public StringField SearchPageName { get; set; }
 
 
@@ -28,13 +28,6 @@ namespace Catfish.Models.Blocks
 
         [Field(Title = "Selected Keywords")]
         public StringField SelectedKeywords { get; set; }
-
-        [Field(Title = "Vocabulary List", Placeholder = "List of vocabulary terms to be used to create a the list of checkboxes")]
-        public StringField VocabList { get; set; }
-
-
-        [Field(Title = "Designated SolrField", Placeholder = "Solr Field")]
-        public StringField DesignatedSolrField { get; set; }
 
         [Field(Title = "Vocabulary Settings")]
         public ControlledKeywordsField VocabularySettings { get; set; }
@@ -49,11 +42,5 @@ namespace Catfish.Models.Blocks
 
             return "";
         }
-        public void Init()
-        {
-            VocabList.Value = VocabularySettings.SelectedKeywords.Value;
-        }
-
-
     }
 }

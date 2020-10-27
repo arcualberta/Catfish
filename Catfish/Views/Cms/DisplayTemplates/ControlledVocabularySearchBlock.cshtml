@@ -14,10 +14,9 @@
 @{
     //ViewBag.Title = Model.SearchPageName;
 
-    string searchname = Model.SearchPageName;
+    string blockname = Model.SearchPageName;
     string vocabcssclass = Model.VocabCss;
-    string checkboxlist = Model.VocabList;
-    string designatedsolrfield = Model.DesignatedSolrField;
+    string checkboxlist = Model.SelectedKeywords.Value;
 
     string[] words = Regex.Split(checkboxlist, "[,\r\n]");
 
@@ -26,17 +25,18 @@
 }
 
 
-<h3>  Search Block: <b>@searchname</b> </h3>
 
-<div>
+
+<div class="keywords-search-block">
+    @if (!string.IsNullOrWhiteSpace(blockname))
+    {
+        <div class="block-title">@blockname</div>
+    }
 
     <form id="controlledVocabularySearchForm" method="post" action="/api/search/keywords">
 
         <div>
             <fieldset class="checkboxgroup">
-                <div>
-                    <legend class="searchcheckbox">Select terms to search on <b> @designatedsolrfield </b>  field</legend>
-                </div>
                 <ul class="searchcheckbox">
                     @foreach (var word in words)
                     {
@@ -74,8 +74,6 @@
             if (terms.length == 0) {
                 alert("choose at least one word");
             }
-            var solrfield = "@designatedsolrfield";
-
             event.preventDefault();
 
             var $form = $(this),
@@ -83,7 +81,7 @@
 
             var posting = $.post(
                 url,
-                { "keySearchWords": terms,"solrFieldName":solrfield}
+                { "keySearchWords": terms }
             );
 
              posting.done(function (data) {

@@ -30,7 +30,7 @@ namespace Catfish.Api.Controllers
         }
 
         [Route("keywords")]
-        public IList<SolrEntry> Keywords([FromForm] string[] keySearchWords, [FromForm] string solrFieldName)
+        public IList<SolrEntry> Keywords([FromForm] string[] keySearchWords)
         {
             //var parameters = new SearchParameters();
             //parameters.FreeSearch = searchTerm;
