@@ -139,9 +139,11 @@ if (document.getElementById("edit-field-form-page")) {
                 saveFieldFormButtonLabel: "Save",
             }
         },
-        validations: {
-            names: {
-                required,
+        validations() {
+
+            let validationJson = {
+                names: {
+                    required,
                     Values: {
                         $values: {
                             $each: {
@@ -150,79 +152,171 @@ if (document.getElementById("edit-field-form-page")) {
                                 }
                             }
                         }
-				    }
-            },
-            descriptions: {
-                Values: {
-                    $values: {
-                        $each: {
-                            Value: {
-                            }
-                        }
                     }
-                }
-            },
-            fields: {
-                $each: {
+                },
+                descriptions: {
                     Values: {
-
-                        //currently the display text option can be submitted regardless of any text or not
-                        //it errors on reading an array instead of an empty string on creation, need different place to store it
-
-                        //all start with this value at Array(0)
-                        //want Array > 0 when the field type is radio/checkbox/dropdown/fileAttachment
-                        required: requiredIf(function (fieldModel) {
-                            return (fieldModel.$type == this.RADIO_TYPE || fieldModel.$type == this.CHECKBOX_TYPE ||
-                                fieldModel.$type == this.DROPDOWN_TYPE || fieldModel.$type ==
-                                'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
-                            )
-                        }),
-
                         $values: {
-
-                            
-
-                            //only need the object for radio/checkbox/dropdown's inner content
                             $each: {
-                                text: {
-                                    required: requiredIf(function (textModel) {
-                                        //this might not work with api update, hoping to store mc/radio/dropdown in different section from file attachment
-                                        return (textModel.text != null )  //(typeof (textModel) == 'object');
-                                    })
+                                Value: {
                                 }
                             }
                         }
-                    },
-                    Name: {
-                        Values: {
+                    }
+                },
+                fields: {
+                    $each: {
+                        Name: {
+                            Values: {
+                                $values: {
+                                    $each: {
+                                        Value: {
+                                            required
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        Options: {
                             $values: {
                                 $each: {
-                                    Value: {
-                                        required
+                                    OptionText: {
+                                        Values: {
+                                            $values: {
+                                                $each: {
+                                                    Value: {
+                                                        required
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-                    },
-                    Options: {
+                    }
+                }
+            };
+
+            this.fields.forEach((field) => {
+                if (field.$type == this.RADIO_TYPE || field.$type == this.CHECKBOX_TYPE ||
+                    field.$type == this.DROPDOWN_TYPE ||
+                    field.$type == 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
+                ) {
+                    console.log("ran this");
+                    validationJson.fields.$each['Values'] = { required };
+                    validationJson.fields.$each.Values['$values'] = {};
+                    validationJson.fields.$each.Values['$values']['$each'] = {};
+                    validationJson.fields.$each.Values['$values']['$each']['Value'] = { required };
+                    return validationJson;
+                }
+            });
+
+            validationJson.fields.$each['Values'] = {};
+            return validationJson;
+            /*
+            return {
+                names: {
+                    required,
+                    Values: {
                         $values: {
                             $each: {
-                                OptionText: {
-                                    Values: {
-                                        $values: {
-                                            $each: {
-                                                Value: {
-                                                    required
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
+                                Value: {
+                                    required,
+                                }
+                            }
+                        }
+                    }
+                },
+                descriptions: {
+                    Values: {
+                        $values: {
+                            $each: {
+                                Value: {
+                                }
+                            }
+                        }
+                    }
+                },
+                */
+
+                //ISSUE WITH THIS: it only makes this check on initializing, it will not check again...
+                //need to add if-check here, validations is treated like computed, but not the object
+                //this.fields[].Values.$values[]
+                /*
+                 this.fields.each((field) => {
+                    if(field.$type == this.RADIO_TYPE || field.$type == this.CHECKBOX_TYPE ||
+                     field.$type == this.DROPDOWN_TYPE || 
+                     field.$type == 'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
+                     ){
+    
+                    }
+                 });
+                  
+                 */
+                /*fields: {
+                    $each: {
+                        Values: {
+
+                            //currently the display text option can be submitted regardless of any text or not
+                            //it errors on reading an array instead of an empty string on creation, need different place to store it
+
+
+                            //all start with this value at Array(0)
+                            //want Array > 0 when the field type is radio/checkbox/dropdown/fileAttachment
+                            required: requiredIf(function (fieldModel) {
+                                return (fieldModel.$type == this.RADIO_TYPE || fieldModel.$type == this.CHECKBOX_TYPE ||
+                                    fieldModel.$type == this.DROPDOWN_TYPE || fieldModel.$type ==
+                                    'Catfish.Core.Models.Contents.Fields.FileAttachment, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
+                                )
+                            }),
+
+                            $values: {
+
+
+
+                                //only need the object for radio/checkbox/dropdown's inner content
+                                $each: {
+                                    text: {
+                                        required: requiredIf(function (textModel) {
+                                            //this might not work with api update, hoping to store mc/radio/dropdown in different section from file attachment
+                                            return (textModel.text != null)  //(typeof (textModel) == 'object');
+                                        })
+                                    }
+                                }
+                            }
+                        },
+                        Name: {
+                            Values: {
+                                $values: {
+                                    $each: {
+                                        Value: {
+                                            required
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        Options: {
+                            $values: {
+                                $each: {
+                                    OptionText: {
+                                        Values: {
+                                            $values: {
+                                                $each: {
+                                                    Value: {
+                                                        required
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-            }
+            }*/
         },
         methods: {
 
