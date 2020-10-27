@@ -38,7 +38,7 @@ namespace Catfish.Controllers.Api
 
         // POST api/<ItemController>
         [HttpPost]
-        public void Post([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId)
+        public void Post([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] string actionButton)
         {
             EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
             if (template == null)

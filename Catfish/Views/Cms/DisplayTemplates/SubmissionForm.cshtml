@@ -38,16 +38,15 @@
                 form represented in the "Item" here. *@
             @Html.EditorFor(model => Item, Item.GetType().ToString())
 
-            <input class="btn btn-primary" name="Save" type="submit" value="Save" />
-            <input class="btn btn-success" name="Subit" type="submit" value="Submit" />
+            <input class="btn btn-primary" name="saveButton" type="submit" value="Save" onclick="submitForm('save'); return false;" />
+            <input class="btn btn-success" name="actionButton" type="submit" value="Submit" onclick="submitForm('submit'); return false;" />
         </form>
     }
         <script>
-    $(function () {
-        $("#submissionForm").submit(function (event) {
+    function submitForm(buttonName) {
 
             /* stop form from submitting normally */
-            event.preventDefault();
+            //event.preventDefault();
 
             //Reguar expression for matching the variable name prefix up to the item's properties.
             var prefix = /^Blocks\[[0-9]+\]\.Item\.|^block.Item\./;
@@ -58,6 +57,8 @@
                 name = field.name.replace(prefix, "");
                 values[name] = field.value;
             });
+
+        values["actionButton"] = buttonName;
 
             /* get the action attribute from the <form action=""> element */
             var $form = $(this),
@@ -116,7 +117,6 @@
             //posting.fail(function () {
             //    alert('The search failed!');
             //});
-        });
-    });
+    }
         </script>
     }
