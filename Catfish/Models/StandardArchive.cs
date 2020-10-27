@@ -1,4 +1,6 @@
-﻿using Piranha.AttributeBuilder;
+﻿using Catfish.Models.Fields;
+using Piranha.AttributeBuilder;
+using Piranha.Extend;
 using Piranha.Models;
 
 namespace Catfish.Models
@@ -10,5 +12,9 @@ namespace Catfish.Models
         /// The currently loaded post archive.
         /// </summary>
         public PostArchive<PostInfo> Archive { get; set; }
+
+        [Region(Title = "Keywords", Display = RegionDisplayMode.Setting)]
+        public ControlledKeywordsField Keywords { get; set; }
+
     }
 }

@@ -8,6 +8,8 @@ namespace Catfish.Services
 {
     interface ICatfishSiteService
     {
-        public Task UpdatePageSettingsAsync(Guid siteId, string siteTypeId);
+        public Task UpdateKeywordVocabularyAsync(SiteContentBase siteContentBase);
+        ////public Task UpdateKeywordVocabularyAsync(PageBase page);
+        ////public Task UpdateKeywordVocabularyAsync(PostBase post);
     }
 }

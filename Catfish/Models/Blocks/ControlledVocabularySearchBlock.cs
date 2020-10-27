@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Catfish.Core.Services.Solr;
 using Catfish.Core.Models.Solr;
 using SolrNet;
+using Catfish.Models.Fields;
 
 namespace Catfish.Models.Blocks
 {
@@ -25,6 +26,8 @@ namespace Catfish.Models.Blocks
         [Field(Title = "Vocab Css", Placeholder = "Css for each entry")]
         public StringField VocabCss { get; set; }
 
+        [Field(Title = "Selected Keywords")]
+        public StringField SelectedKeywords { get; set; }
 
         [Field(Title = "Vocabulary List", Placeholder = "List of vocabulary terms to be used to create a the list of checkboxes")]
         public StringField VocabList { get; set; }
@@ -33,6 +36,8 @@ namespace Catfish.Models.Blocks
         [Field(Title = "Designated SolrField", Placeholder = "Solr Field")]
         public StringField DesignatedSolrField { get; set; }
 
+        [Field(Title = "Vocabulary Settings")]
+        public ControlledKeywordsField VocabularySettings { get; set; }
 
         public TextField CssVal { get; set; }
         public string GetCss()
@@ -43,6 +48,10 @@ namespace Catfish.Models.Blocks
             }
 
             return "";
+        }
+        public void Init()
+        {
+            VocabList.Value = VocabularySettings.SelectedKeywords.Value;
         }
 
 

@@ -514,16 +514,18 @@ namespace Catfish
 
         private void AddHooks(IApplicationBuilder app)
         {
-            //Hook for generating pages required by a certain type of site
+            //Hooks for:
+            //  1. Generating pages required by a certain type of site
+            //  2. Updating page and post settings
+            //
             App.Hooks.SiteContent.RegisterOnAfterSave((siteContent) => {
                 var scope = app.ApplicationServices.CreateScope();
 
-                var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
-                catfishSiteService.UpdatePageSettingsAsync(siteContent.Id, siteContent.TypeId).Wait();
-              
                 var workflowService = scope.ServiceProvider.GetService<IWorkflowService>();
                 workflowService.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
 
+                var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
+                catfishSiteService.UpdateKeywordVocabularyAsync(siteContent).Wait();
             });
 
             //Hook for indexing contents of a page right after the page is saved.
@@ -539,7 +541,6 @@ namespace Catfish
                 var service = scope.ServiceProvider.GetService<IPageIndexingService>();
                 service.IndexPost(post);
             });
-
         }
     }
 }
