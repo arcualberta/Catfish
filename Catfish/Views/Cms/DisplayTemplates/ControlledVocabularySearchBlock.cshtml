@@ -35,22 +35,20 @@
 
     <form id="controlledVocabularySearchForm" method="post" action="/api/search/keywords">
 
-        <div>
+        <div class="container">
             <fieldset class="checkboxgroup">
-                <ul class="searchcheckbox">
+                <div class="row">
                     @foreach (var word in words)
                     {
                         if (!String.IsNullOrWhiteSpace(@word))
                         {
-                            <li>
-                                <div>
-                                    <input type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
-                                </div>
-                            </li>
+                            <div class="col-md-4">
+                                <input type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
+                            </div>
                         }
 
                     }
-                </ul>
+                </div>
             </fieldset>
         </div>
         <input id="ControlledVocabularySearchButton" type="submit" value="Submit" />

@@ -40,7 +40,6 @@ namespace Catfish.Models.Blocks
             SelectedKeywords = new StringField();
             VocabCss = new StringField();
             SearchPageName = new StringField();
-
         }
         public string GetCss()
         {
