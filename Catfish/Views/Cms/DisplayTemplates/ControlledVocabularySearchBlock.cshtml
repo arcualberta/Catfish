@@ -18,7 +18,7 @@
     string vocabcssclass = Model.VocabCss;
     string checkboxlist = Model.SelectedKeywords.Value;
 
-    string[] words = Regex.Split(checkboxlist, "[,\r\n]");
+    string[] words = checkboxlist == null ? new string[] { } : Regex.Split(checkboxlist, "[,\r\n]");
 
     var Results = new List<SolrEntry>();
 
