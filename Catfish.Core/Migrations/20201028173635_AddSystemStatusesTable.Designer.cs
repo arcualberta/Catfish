@@ -4,14 +4,16 @@ using Catfish.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Catfish.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201028173635_AddSystemStatusesTable")]
+    partial class AddSystemStatusesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,15 +64,9 @@ namespace Catfish.Core.Migrations
                         .HasColumnName("PrimaryCollectionId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("StatusId")
-                        .HasColumnName("StatusId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PrimaryCollectionId");
-
-                    b.HasIndex("StatusId");
 
                     b.ToTable("Catfish_Entities");
 
@@ -268,10 +264,6 @@ namespace Catfish.Core.Migrations
                     b.HasOne("Catfish.Core.Models.Collection", "PrimaryCollection")
                         .WithMany()
                         .HasForeignKey("PrimaryCollectionId");
-
-                    b.HasOne("Catfish.Core.Models.SystemStatus", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId");
                 });
 
             modelBuilder.Entity("Catfish.Core.Models.GroupRole", b =>

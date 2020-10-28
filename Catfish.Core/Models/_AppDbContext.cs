@@ -105,6 +105,7 @@ namespace Catfish.Core.Models
         public DbSet<UserGroupRole> UserGroupRoles { get; set; }
         public DbSet<GroupRole> GroupRoles { get; set; }
         public DbSet<GroupTemplate> GroupTemplates { get; set; }
+        public DbSet<SystemStatus> SystemStatuses { get; set; }
         public DbSet<Form> Forms { get; set; }
 
         /*
