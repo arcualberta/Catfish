@@ -14,6 +14,12 @@ namespace Catfish.Models.SiteTypes
         [Region(Title = "Footer", Display = RegionDisplayMode.Setting)]
         public Footer FooterContents { get; set; }
 
+        public CatfishWebsite()
+        {
+            Keywords = new TextField();
+            FooterContents = new Footer();
+        }
+
     }
 
     public class Footer

@@ -33,6 +33,14 @@ namespace Catfish.Models.Blocks
         public ControlledKeywordsField VocabularySettings { get; set; }
 
         public TextField CssVal { get; set; }
+
+        public ControlledVocabularySearchBlock()
+        {
+            VocabularySettings = new ControlledKeywordsField();
+            SelectedKeywords = new StringField();
+            VocabCss = new StringField();
+            SearchPageName = new StringField();
+        }
         public string GetCss()
         {
             if (CssVal != null)

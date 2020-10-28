@@ -5,6 +5,7 @@ using Catfish.Models.SiteTypes;
 using Piranha;
 using Piranha.Models;
 using Piranha.Services;
+using SolrNet.Mapping.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -101,6 +102,53 @@ namespace Catfish.Services
                     .Value = concatenatedVocabulary;
             }
         }
+
+
+        public async Task UpdateKeywordVocabularyAsync(PageBase pageBase)
+        {
+            try
+            {
+                var site = await _api.Sites.GetContentByIdAsync<CatfishWebsite>(pageBase.SiteId).ConfigureAwait(false);
+                (pageBase as DynamicPage).Regions.Keywords.Vocabulary.Value = site.Keywords.Value;
+
+                var keywordSearchBlocks = pageBase.Blocks
+                    .Where(b => typeof(ControlledVocabularySearchBlock).IsAssignableFrom(b.GetType()))
+                    .Select(b => b as ControlledVocabularySearchBlock)
+                    .ToList();
+
+                foreach (var block in keywordSearchBlocks)
+                    block.VocabularySettings.Vocabulary.Value = site.Keywords.Value;
+
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        public async Task UpdateKeywordVocabularyAsync(PostBase postBase)
+        {
+            try
+            {
+                var blog = await _api.Pages.GetByIdAsync<PageBase>(postBase.BlogId).ConfigureAwait(false);
+                var site = await _api.Sites.GetContentByIdAsync<CatfishWebsite>(blog.SiteId).ConfigureAwait(false);
+                (postBase as DynamicPost).Regions.Keywords.Vocabulary.Value = site.Keywords.Value;
+
+                var keywordSearchBlocks = postBase.Blocks
+                    .Where(b => typeof(ControlledVocabularySearchBlock).IsAssignableFrom(b.GetType()))
+                    .Select(b => b as ControlledVocabularySearchBlock)
+                    .ToList();
+
+                foreach (var block in keywordSearchBlocks)
+                    block.VocabularySettings.Vocabulary.Value = site.Keywords.Value;
+
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
 
 
     }

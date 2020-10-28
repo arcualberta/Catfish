@@ -9,7 +9,7 @@ namespace Catfish.Services
     interface ICatfishSiteService
     {
         public Task UpdateKeywordVocabularyAsync(SiteContentBase siteContentBase);
-        ////public Task UpdateKeywordVocabularyAsync(PageBase page);
-        ////public Task UpdateKeywordVocabularyAsync(PostBase post);
+        public Task UpdateKeywordVocabularyAsync(PageBase pageBase);
+        public Task UpdateKeywordVocabularyAsync(PostBase post);
     }
 }
