@@ -9,8 +9,9 @@ namespace Catfish.Core.Models
     public class SystemStatus
     {
         public Guid Id { get; set; }
-        public string SystemName { get; set; }
+        public Guid EntityTemplateId { get; set; }
         public string Status { get; set; }
+        public string NormalizedStatus { get; set; }
 
     }
 }

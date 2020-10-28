@@ -174,43 +174,43 @@ namespace Catfish.UnitTests
             Workflow workflow = ws.GetWorkflow(true);
 
             //Defininig states
-            State emptyState = workflow.AddState("");
-            State savedState = workflow.AddState("Saved");
-            State submittedState = workflow.AddState("Submitted");
-            State deleteState = workflow.AddState("Deleted");
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id,"",true));
+            State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
+            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
-            State deanOfficeRevisionState = workflow.AddState("DeanOfficeRevision");
-            State deanOfficeRevisionCompletedState = workflow.AddState("DeanOfficeRevisionCompleted");
-            State deanOfficeRevisionSaveState = workflow.AddState("SavedDeanOfficeRevision");
+            State deanOfficeRevisionState = workflow.AddState(ws.GetStatus(template.Id, "DeanOfficeRevision", true));
+            State deanOfficeRevisionCompletedState = workflow.AddState(ws.GetStatus(template.Id, "DeanOfficeRevisionCompleted", true));
+            State deanOfficeRevisionSaveState = workflow.AddState(ws.GetStatus(template.Id, "SavedDeanOfficeRevision", true));
 
-            State aacWithState = workflow.AddState("WithAAC");
-            State aacRevisionState = workflow.AddState("AACRevision");
-            State aacRevisionSaveState = workflow.AddState("SavedAACRevision");
-            State aacRevisionCompletedState = workflow.AddState("AACRevisionCompleted");
-            State aacApprovedState = workflow.AddState("AACApproved");
+            State aacWithState = workflow.AddState(ws.GetStatus(template.Id, "WithAAC", true));
+            State aacRevisionState = workflow.AddState(ws.GetStatus(template.Id, "AACRevision", true));
+            State aacRevisionSaveState = workflow.AddState(ws.GetStatus(template.Id, "SavedAACRevision", true));
+            State aacRevisionCompletedState = workflow.AddState(ws.GetStatus(template.Id, "AACRevisionCompleted", true));
+            State aacApprovedState = workflow.AddState(ws.GetStatus(template.Id, "AACApproved", true));
 
-            State aecWithState = workflow.AddState("WithAEC");
-            State aecRevisionState = workflow.AddState("AECRevision");
-            State aecRevisionSaveState = workflow.AddState("SavedAECRevision");
-            State aecRevisionCompletedState = workflow.AddState("AECRevisionCompleted");
-            State aecApprovedState = workflow.AddState("AECApproved");
-
-
-            State afcWithState = workflow.AddState("WithAFC");
-            State afcRevisionState = workflow.AddState("AFCRevision");
-            State afcRevisionSaveState = workflow.AddState("SavedAFCRevision");
-            State afcRevisionCompletedState = workflow.AddState("AFCRevisionCompleted");
-            State afcApprovedState = workflow.AddState("AFCApproved");
+            State aecWithState = workflow.AddState(ws.GetStatus(template.Id, "WithAEC", true));
+            State aecRevisionState = workflow.AddState(ws.GetStatus(template.Id, "AECRevision", true));
+            State aecRevisionSaveState = workflow.AddState(ws.GetStatus(template.Id, "SavedAECRevision", true));
+            State aecRevisionCompletedState = workflow.AddState(ws.GetStatus(template.Id, "AECRevisionCompleted", true));
+            State aecApprovedState = workflow.AddState(ws.GetStatus(template.Id, "AECApproved", true));
 
 
-            State gfcWithState = workflow.AddState("WithGFC");
-            State gfcRevisionState = workflow.AddState("GFCRevision");
-            State gfcRevisionSaveState = workflow.AddState("SavedGFCRevision");
-            State gfcRevisionCompletedState = workflow.AddState("GFCRevisionCompleted");
-            State gfcApprovedState = workflow.AddState("GFCApproved");
+            State afcWithState = workflow.AddState(ws.GetStatus(template.Id, "WithAFC", true));
+            State afcRevisionState = workflow.AddState(ws.GetStatus(template.Id, "AFCRevision", true));
+            State afcRevisionSaveState = workflow.AddState(ws.GetStatus(template.Id, "SavedAFCRevision", true));
+            State afcRevisionCompletedState = workflow.AddState(ws.GetStatus(template.Id, "AFCRevisionCompleted", true));
+            State afcApprovedState = workflow.AddState(ws.GetStatus(template.Id, "AFCApproved", true));
 
-            State moveToDraftErrorState = workflow.AddState("MoveToDraftError");
-            State moveToDraftCorrectState = workflow.AddState("MoveToDraftCorrect");
+
+            State gfcWithState = workflow.AddState(ws.GetStatus(template.Id, "WithGFC", true));
+            State gfcRevisionState = workflow.AddState(ws.GetStatus(template.Id, "GFCRevision", true));
+            State gfcRevisionSaveState = workflow.AddState(ws.GetStatus(template.Id, "SavedGFCRevision", true));
+            State gfcRevisionCompletedState = workflow.AddState(ws.GetStatus(template.Id, "GFCRevisionCompleted", true));
+            State gfcApprovedState = workflow.AddState(ws.GetStatus(template.Id, "GFCApproved", true));
+
+            State moveToDraftErrorState = workflow.AddState(ws.GetStatus(template.Id, "MoveToDraftError", true));
+            State moveToDraftCorrectState = workflow.AddState(ws.GetStatus(template.Id, "MoveToDraftCorrect", true));
 
 
 
