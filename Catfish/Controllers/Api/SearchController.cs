@@ -30,13 +30,27 @@ namespace Catfish.Api.Controllers
         }
 
         [Route("keywords")]
-        public IList<SolrEntry> Keywords([FromForm] string[] keySearchWords)
+        public IList<SolrEntry> Keywords([FromForm] string[] searchTerms, string category)
         {
             //var parameters = new SearchParameters();
             //parameters.FreeSearch = searchTerm;
             //IList<SolrEntry> result = QueryService.FreeSearch(parameters);
 
             IList<SolrEntry> result = new List<SolrEntry>();
+
+            for (int i = 0; i < 10; ++i)
+            {
+                SolrEntry entry = new SolrEntry()
+                {
+                    Permalink = "http://google.com"
+                };
+
+                entry.AddContent(Guid.NewGuid(), "Housed in the Department of Art and Design, the Research - Creation and Social Justice CoLABoratory(the CoLAB) has been championing and nurturing interdisciplinary and intersectional research - creation since 2014.The CoLAB brings together key researchers at the University of Alberta with national and international a");
+                entry.AddContent(Guid.NewGuid(), "3–91 Fine Arts Building, <br />University of Alberta");
+
+                entry.Images.Add("https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png");
+                result.Add(entry);
+            }
             return result;
         }
 
