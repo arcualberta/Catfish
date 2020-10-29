@@ -30,47 +30,44 @@ namespace Catfish.Services
             {
                 //Get the contents of the given site
                 var siteContent = await _api.Sites.GetContentByIdAsync(siteId).ConfigureAwait(false);
-                
+
                 //Gets the keywords field of the site settings
                 var keywordsField = siteContent.Regions.Keywords as Piranha.Extend.Fields.TextField;
-                if (!string.IsNullOrWhiteSpace(keywordsField.Value))
+                
+                //Keywords
+                var keywords = keywordsField.Value.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                string concatenatedKeywords = string.Join(",", keywords);
+
+                //Get all the pages of the site and update their keywords
+                var pages = await _api.Pages.GetAllAsync(siteId).ConfigureAwait(false);
+                foreach (var page in pages)
                 {
-                    //Keywords
-                    var keywords = keywordsField.Value.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                    string concatenatedKeywords = string.Join(",", keywords);
-
-                    //Get all the pages of the site and update their keywords
-                    var pages = await _api.Pages.GetAllAsync(siteId).ConfigureAwait(false);
-                    foreach(var page in pages)
+                    try
                     {
-                        try
-                        {
-                            var pageKeywords = page.Regions.Keywords as ControlledKeywordsField;
-                            pageKeywords.Vocabulary.Value = concatenatedKeywords;
-                            UpdateKeywordVocabularyAsync(page, concatenatedKeywords);
-                            await _api.Pages.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
-                        }
-                        catch (Exception)
-                        {
-                        }
+                        var pageKeywords = page.Regions.Keywords as ControlledKeywordsField;
+                        pageKeywords.Vocabulary.Value = concatenatedKeywords;
+                        UpdateKeywordVocabularyAsync(page, concatenatedKeywords);
+                        await _api.Pages.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
                     }
-
-                    //Get all posts of the site and update their keywords
-                    var posts = await _api.Posts.GetAllAsync(siteId).ConfigureAwait(false);
-                    foreach (var post in posts)
+                    catch (Exception)
                     {
-                        try
-                        {
-                            var postKeywords = post.Regions.Keywords as ControlledKeywordsField;
-                            postKeywords.Vocabulary.Value = concatenatedKeywords;
-                            UpdateKeywordVocabularyAsync(post, concatenatedKeywords);
-                            await _api.Posts.SaveAsync<DynamicPost>(post).ConfigureAwait(false);
-                        }
-                        catch (Exception)
-                        {
-                        }
                     }
+                }
 
+                //Get all posts of the site and update their keywords
+                var posts = await _api.Posts.GetAllAsync(siteId).ConfigureAwait(false);
+                foreach (var post in posts)
+                {
+                    try
+                    {
+                        var postKeywords = post.Regions.Keywords as ControlledKeywordsField;
+                        postKeywords.Vocabulary.Value = concatenatedKeywords;
+                        UpdateKeywordVocabularyAsync(post, concatenatedKeywords);
+                        await _api.Posts.SaveAsync<DynamicPost>(post).ConfigureAwait(false);
+                    }
+                    catch (Exception)
+                    {
+                    }
                 }
             }
         }

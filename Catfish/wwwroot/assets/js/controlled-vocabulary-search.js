@@ -4,8 +4,19 @@ Vue.component("controlled-vocabulary-search", {
 
     props: ["uid", "toolbar", "model"],
     data() {
-        var selectTemp = this.model.selectedKeywords.value === null ? [] : this.model.selectedKeywords.value.split(",");
-        var availableKeywords = this.model.vocabularySettings.vocabulary.value === null ? [] : this.model.vocabularySettings.vocabulary.value.split(",");
+        var selectTemp = this.model.selectedKeywords.value === null
+            ? []
+            : this.model.selectedKeywords.value
+                .split(",")
+                .map(x => x.trim())
+                .filter(x => x.length > 0);
+
+        var availableKeywords = this.model.vocabularySettings.vocabulary.value === null
+            ? []
+            : this.model.vocabularySettings.vocabulary.value
+                .split(",")
+                .map(x => x.trim())
+                .filter(x => x.length > 0);
         return {
             selectedKeywords: selectTemp,
             checkOptions: availableKeywords.map(word => ({ label: word, selected: selectTemp.includes(word) }))
@@ -89,10 +100,11 @@ Vue.component("controlled-vocabulary-search", {
                   </div>
                   <div class='lead row'> 
                     <label class = 'form-label col-md-3'> Selected Vocabulary: </label>
-                    <div class='row' id='vocabulary-check-block' style="margin-left:20px;">
-                        <div v-if='this.checkOptions.length == 0' class='alert alert-danger'>If you see no controlled-vocabulary terms
-                            here, please try saving the page and then reloading it again. If you 
-                            still don't see them, please make sure keywords are defined at the site level 
+                    <div class='row col-md-9' id='vocabulary-check-block'>
+                        <div v-if='this.checkOptions.length == 0' class='alert alert-danger'>
+                            No controlled-vocabulary terms found. Please try saving the page and 
+                            reloading it again. If you still see this message, please make sure 
+                            keywords are defined at the site level.
                         </div>
                         <div v-for='item in this.checkOptions' :key = 'item.label' class='col-md-3' >
                             <input type='checkbox' name='keywordCheckBox' :value='item.label'  v-on:blur='onBlur'  v-model="item.selected" /> {{ item.label }}
