@@ -29,10 +29,22 @@ namespace Catfish.Models.Blocks
         [Field(Title = "Selected Keywords")]
         public StringField SelectedKeywords { get; set; }
 
+        [Field(Title = "Selected Categories")]
+        public StringField SelectedCategories { get; set; }
+
         [Field(Title = "Vocabulary Settings")]
         public ControlledKeywordsField VocabularySettings { get; set; }
 
         public TextField CssVal { get; set; }
+
+        public ControlledVocabularySearchBlock()
+        {
+            VocabularySettings = new ControlledKeywordsField();
+            SelectedKeywords = new StringField();
+            SelectedCategories = new StringField();
+            VocabCss = new StringField();
+            SearchPageName = new StringField();
+        }
         public string GetCss()
         {
             if (CssVal != null)

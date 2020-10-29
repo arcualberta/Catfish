@@ -95,8 +95,12 @@ namespace Catfish.Core.Models
         public Collection PrimaryCollection { get; set; }
         [Column("PrimaryCollectionId")]
         public Guid? PrimaryCollectionId { get; set; }
-
         
+        public SystemStatus Status { get; set; }
+        [Column("StatusId")]
+        public Guid? StatusId { get; set; }
+
+
         public Entity()
         {
             SubjectRelationships = new List<Relationship>();

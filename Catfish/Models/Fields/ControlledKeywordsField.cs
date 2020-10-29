@@ -15,6 +15,12 @@ namespace Catfish.Models.Fields
         public StringField Vocabulary { get; set; } = new StringField();
         public StringField SelectedKeywords { get; set; } = new StringField();
 
+        public ControlledKeywordsField()
+        {
+            AllowedKeywords = new List<Keyword>();
+            Vocabulary = new StringField();
+            SelectedKeywords = new StringField();
+        }
         public string GetTitle()
         {
             return "";

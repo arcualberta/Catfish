@@ -38,7 +38,7 @@ namespace Catfish.Controllers.Api
 
         // POST api/<ItemController>
         [HttpPost]
-        public void Post([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId)
+        public void Post([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] string actionButton)
         {
             EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
             if (template == null)
@@ -46,6 +46,7 @@ namespace Catfish.Controllers.Api
 
             //When we instantantiate an instance from the template, we do not need to clone metadata sets
             Item newItem = template.Instantiate<Item>();
+            newItem.StatusId = _entityTemplateService.GetStatusId(entityTemplateId, actionButton);
 
             DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
             newDataItem.UpdateFieldValues(value);

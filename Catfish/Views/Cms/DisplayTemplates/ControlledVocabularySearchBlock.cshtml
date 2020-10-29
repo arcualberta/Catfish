@@ -14,11 +14,11 @@
 @{
     //ViewBag.Title = Model.SearchPageName;
 
-    string blockname = Model.SearchPageName;
-    string vocabcssclass = Model.VocabCss;
+    string blockname = Model.SearchPageName.Value;
+    string vocabcssclass = Model.VocabCss.Value;
     string checkboxlist = Model.SelectedKeywords.Value;
 
-    string[] words = Regex.Split(checkboxlist, "[,\r\n]");
+    string[] words = checkboxlist == null ? new string[] { } : Regex.Split(checkboxlist, "[,\r\n]");
 
     var Results = new List<SolrEntry>();
 
@@ -35,22 +35,20 @@
 
     <form id="controlledVocabularySearchForm" method="post" action="/api/search/keywords">
 
-        <div>
+        <div class="container">
             <fieldset class="checkboxgroup">
-                <ul class="searchcheckbox">
+                <div class="row">
                     @foreach (var word in words)
                     {
                         if (!String.IsNullOrWhiteSpace(@word))
                         {
-                            <li>
-                                <div>
-                                    <input type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
-                                </div>
-                            </li>
+                            <div class="col-md-4">
+                                <input type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
+                            </div>
                         }
 
                     }
-                </ul>
+                </div>
             </fieldset>
         </div>
         <input id="ControlledVocabularySearchButton" type="submit" value="Submit" />

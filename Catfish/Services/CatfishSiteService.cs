@@ -5,6 +5,7 @@ using Catfish.Models.SiteTypes;
 using Piranha;
 using Piranha.Models;
 using Piranha.Services;
+using SolrNet.Mapping.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,53 +30,51 @@ namespace Catfish.Services
             {
                 //Get the contents of the given site
                 var siteContent = await _api.Sites.GetContentByIdAsync(siteId).ConfigureAwait(false);
-                
+
                 //Gets the keywords field of the site settings
                 var keywordsField = siteContent.Regions.Keywords as Piranha.Extend.Fields.TextField;
-                if (!string.IsNullOrWhiteSpace(keywordsField.Value))
+                
+                //Keywords
+                var keywords = keywordsField.Value.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                string concatenatedKeywords = string.Join(",", keywords);
+
+                //Get all the pages of the site and update their keywords
+                var pages = await _api.Pages.GetAllAsync(siteId).ConfigureAwait(false);
+                foreach (var page in pages)
                 {
-                    //Keywords
-                    var keywords = keywordsField.Value.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                    string concatenatedKeywords = string.Join(",", keywords);
-
-                    //Get all the pages of the site and update their keywords
-                    var pages = await _api.Pages.GetAllAsync(siteId).ConfigureAwait(false);
-                    foreach(var page in pages)
+                    try
                     {
-                        try
-                        {
-                            var pageKeywords = page.Regions.Keywords as ControlledKeywordsField;
-                            pageKeywords.Vocabulary.Value = concatenatedKeywords;
-                            UpdateKeywordVocabularyAsync(page, concatenatedKeywords);
-                            await _api.Pages.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
-                        }
-                        catch (Exception)
-                        {
-                        }
+                        UpdateKeywordVocabularyAsync(page, concatenatedKeywords);
+                        await _api.Pages.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
                     }
-
-                    //Get all posts of the site and update their keywords
-                    var posts = await _api.Posts.GetAllAsync(siteId).ConfigureAwait(false);
-                    foreach (var post in posts)
+                    catch (Exception)
                     {
-                        try
-                        {
-                            var postKeywords = post.Regions.Keywords as ControlledKeywordsField;
-                            postKeywords.Vocabulary.Value = concatenatedKeywords;
-                            UpdateKeywordVocabularyAsync(post, concatenatedKeywords);
-                            await _api.Posts.SaveAsync<DynamicPost>(post).ConfigureAwait(false);
-                        }
-                        catch (Exception)
-                        {
-                        }
                     }
+                }
 
+                //Get all posts of the site and update their keywords
+                var posts = await _api.Posts.GetAllAsync(siteId).ConfigureAwait(false);
+                foreach (var post in posts)
+                {
+                    try
+                    {
+                        var postKeywords = post.Regions.Keywords as ControlledKeywordsField;
+                        postKeywords.Vocabulary.Value = concatenatedKeywords;
+                        UpdateKeywordVocabularyAsync(post, concatenatedKeywords);
+                        await _api.Posts.SaveAsync<DynamicPost>(post).ConfigureAwait(false);
+                    }
+                    catch (Exception)
+                    {
+                    }
                 }
             }
         }
 
         protected void UpdateKeywordVocabularyAsync(DynamicPage page, string concatenatedVocabulary)
         {
+            var pageKeywords = page.Regions.Keywords as ControlledKeywordsField;
+            pageKeywords.Vocabulary.Value = concatenatedVocabulary;
+
             var controlledVocabBlocks = page.Blocks
                 .Where(b => typeof(ControlledVocabularySearchBlock).IsAssignableFrom(b.GetType()))
                 .ToList();
@@ -101,6 +100,53 @@ namespace Catfish.Services
                     .Value = concatenatedVocabulary;
             }
         }
+
+
+        public async Task UpdateKeywordVocabularyAsync(PageBase pageBase)
+        {
+            try
+            {
+                var site = await _api.Sites.GetContentByIdAsync<CatfishWebsite>(pageBase.SiteId).ConfigureAwait(false);
+                (pageBase as DynamicPage).Regions.Keywords.Vocabulary.Value = site.Keywords.Value;
+
+                var keywordSearchBlocks = pageBase.Blocks
+                    .Where(b => typeof(ControlledVocabularySearchBlock).IsAssignableFrom(b.GetType()))
+                    .Select(b => b as ControlledVocabularySearchBlock)
+                    .ToList();
+
+                foreach (var block in keywordSearchBlocks)
+                    block.VocabularySettings.Vocabulary.Value = site.Keywords.Value;
+
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        public async Task UpdateKeywordVocabularyAsync(PostBase postBase)
+        {
+            try
+            {
+                var blog = await _api.Pages.GetByIdAsync<PageBase>(postBase.BlogId).ConfigureAwait(false);
+                var site = await _api.Sites.GetContentByIdAsync<CatfishWebsite>(blog.SiteId).ConfigureAwait(false);
+                (postBase as DynamicPost).Regions.Keywords.Vocabulary.Value = site.Keywords.Value;
+
+                var keywordSearchBlocks = postBase.Blocks
+                    .Where(b => typeof(ControlledVocabularySearchBlock).IsAssignableFrom(b.GetType()))
+                    .Select(b => b as ControlledVocabularySearchBlock)
+                    .ToList();
+
+                foreach (var block in keywordSearchBlocks)
+                    block.VocabularySettings.Vocabulary.Value = site.Keywords.Value;
+
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
 
 
     }

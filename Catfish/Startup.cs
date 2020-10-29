@@ -7,6 +7,7 @@ using Catfish.Core.Services.FormBuilder;
 using Catfish.Core.Services.Solr;
 using Catfish.Helper;
 using Catfish.ModelBinders;
+using Catfish.Models;
 using Catfish.Models.Blocks;
 using Catfish.Models.Fields;
 using Catfish.Models.SiteTypes;
@@ -267,7 +268,7 @@ namespace Catfish
                 .Build()
                 .DeleteOrphans();
 
-            AddHooks(app);
+            AddHooks(app, api);
 
             // /Register middleware
             app.UseStaticFiles();
@@ -512,7 +513,7 @@ namespace Catfish
             });
         }
 
-        private void AddHooks(IApplicationBuilder app)
+        private void AddHooks(IApplicationBuilder app, IApi api)
         {
             //Hooks for:
             //  1. Generating pages required by a certain type of site
@@ -528,19 +529,39 @@ namespace Catfish
                 catfishSiteService.UpdateKeywordVocabularyAsync(siteContent).Wait();
             });
 
-            //Hook for indexing contents of a page right after the page is saved.
+            App.Hooks.Pages.RegisterOnBeforeSave((page) => {
+                var scope = app.ApplicationServices.CreateScope();
+
+                //Updating keywords vocabulary
+                var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
+                catfishSiteService.UpdateKeywordVocabularyAsync(page).Wait();
+            });
+
             App.Hooks.Pages.RegisterOnAfterSave((page) => {
                 var scope = app.ApplicationServices.CreateScope();
+
+                //Indexing page content
                 var service = scope.ServiceProvider.GetService<IPageIndexingService>();
                 service.IndexPage(page);
             });
 
-            //Hook for indexing contents of a page right after the page is saved.
+            App.Hooks.Posts.RegisterOnBeforeSave((post) => {
+                var scope = app.ApplicationServices.CreateScope();
+
+                //Updating keywords vocabulary
+                var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
+                catfishSiteService.UpdateKeywordVocabularyAsync(post).Wait();
+            });
+
             App.Hooks.Posts.RegisterOnAfterSave((post) => {
                 var scope = app.ApplicationServices.CreateScope();
+
+                //Indexing post content
                 var service = scope.ServiceProvider.GetService<IPageIndexingService>();
                 service.IndexPost(post);
             });
+
+
         }
     }
 }

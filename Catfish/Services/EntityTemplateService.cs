@@ -60,6 +60,11 @@ namespace Catfish.Services
             return _db.EntityTemplates.Where(et => et.Id == templateId).FirstOrDefault();
         }
 
+        public Guid GetStatusId(Guid entityTemplateId, string status)
+        {
+            return _db.SystemStatuses.Where(ss => ss.NormalizedStatus == status.ToUpper() && ss.EntityTemplateId == entityTemplateId).Select(ss => ss.Id).FirstOrDefault();
+        }
+
 
     }
 }
