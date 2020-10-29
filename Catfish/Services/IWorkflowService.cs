@@ -26,5 +26,7 @@ namespace Catfish.Services
 
         public Task InitSiteStructureAsync(Guid siteId, string siteTypeId);
 
+        public string GetStatus(Guid templateId, string status, bool createIfNotExist);
+
     }
 }

@@ -191,5 +191,17 @@ namespace Catfish.Services
                 return newPage.Id;
             }
         }
+
+        public string GetStatus(Guid entityTemplateId, string status, bool createIfNotExist)
+        {
+            SystemStatus systemStatus = _db.SystemStatuses.Where(ss => ss.NormalizedStatus == status.ToUpper() && ss.EntityTemplateId == entityTemplateId).FirstOrDefault();
+            if(systemStatus == null && createIfNotExist)
+            {
+                systemStatus = new SystemStatus() { Status = status, NormalizedStatus = status.ToUpper(), Id = Guid.NewGuid() ,EntityTemplateId = entityTemplateId};
+                _db.SystemStatuses.Add(systemStatus);
+                _db.SaveChanges();
+            }
+            return systemStatus.Status;
+        }
     }
 }

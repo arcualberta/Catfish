@@ -46,6 +46,7 @@ namespace Catfish.Controllers.Api
 
             //When we instantantiate an instance from the template, we do not need to clone metadata sets
             Item newItem = template.Instantiate<Item>();
+            newItem.StatusId = _entityTemplateService.GetStatusId(entityTemplateId, actionButton);
 
             DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
             newDataItem.UpdateFieldValues(value);
