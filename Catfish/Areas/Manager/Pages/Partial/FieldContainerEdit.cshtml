@@ -384,11 +384,11 @@
                                                                 </div>-->
                                                             </div>
                                                             @*Display text*@ 
-                                                            <div v-else-if="field.$type == INFOSECTION_TYPE ">
-                                                                {{$v.fields.$each[fieldIndex].Values.$values}}
-                                                                <quill-editor rows="3" :ref="'richtext' + fieldIndex" v-model="$v.fields.$each[fieldIndex].Values.$values"
+                                                            <div v-else-if="field.$type == INFOSECTION_TYPE">
+                                                                <quill-editor rows="3" :ref="'richtext' + fieldIndex" 
+                                                                    v-model="field.Content.Values.$values"
                                                                     :state="validateFieldState(fieldIndex, 'Values')"
-                                                                    :class="{ 'red-color': $v.fields.$each[fieldIndex].Values.$values.$invalid }">
+                                                                    :class="{ 'red-color': $v.fields.$each[fieldIndex].Content.Values.$values.$invalid }">
                                                                 </quill-editor>
                                                             </div>
                                                             @*Date*@
