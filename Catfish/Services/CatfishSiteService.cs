@@ -44,8 +44,6 @@ namespace Catfish.Services
                 {
                     try
                     {
-                        var pageKeywords = page.Regions.Keywords as ControlledKeywordsField;
-                        pageKeywords.Vocabulary.Value = concatenatedKeywords;
                         UpdateKeywordVocabularyAsync(page, concatenatedKeywords);
                         await _api.Pages.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
                     }
@@ -74,6 +72,9 @@ namespace Catfish.Services
 
         protected void UpdateKeywordVocabularyAsync(DynamicPage page, string concatenatedVocabulary)
         {
+            var pageKeywords = page.Regions.Keywords as ControlledKeywordsField;
+            pageKeywords.Vocabulary.Value = concatenatedVocabulary;
+
             var controlledVocabBlocks = page.Blocks
                 .Where(b => typeof(ControlledVocabularySearchBlock).IsAssignableFrom(b.GetType()))
                 .ToList();
