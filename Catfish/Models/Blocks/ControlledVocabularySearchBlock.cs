@@ -35,6 +35,9 @@ namespace Catfish.Models.Blocks
         [Field(Title = "Vocabulary Settings")]
         public ControlledKeywordsField VocabularySettings { get; set; }
 
+        [Field(Title = "Category Settings")]
+        public ControlledCategoriesField CategorySettings { get; set; }
+
         public TextField CssVal { get; set; }
 
         public ControlledVocabularySearchBlock()
