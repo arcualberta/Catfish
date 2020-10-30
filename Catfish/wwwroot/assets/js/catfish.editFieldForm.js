@@ -159,7 +159,15 @@ if (document.getElementById("edit-field-form-page")) {
                                     }
                                 }
                             }
-                        }
+                        },
+                        //for info section - $values is an array of characters
+                        Content: {
+                            Values: {
+                                $values: {
+                                    required
+								}
+							}
+						}
                     }
                 }
             };
@@ -699,6 +707,9 @@ if (document.getElementById("edit-field-form-page")) {
 
                                         case this.INFOSECTION_TYPE:
                                             this.displayFieldTemplate = defaultField;
+                                            //temporary line to prevent an error. 
+                                            //QuillEditor expects $values to be type string, but it comes in as an array
+                                            this.displayFieldTemplate.Content.Values.$values = '';
 
                                             for (let languageIndex in this.displayFieldTemplate.Name.Values.$values) {
                                                 this.$set(this.displayFieldTemplate.Name.Values.$values[languageIndex], 'Value', '');
