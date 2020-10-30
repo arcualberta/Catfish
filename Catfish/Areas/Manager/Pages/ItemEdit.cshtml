@@ -104,9 +104,9 @@
 						     role="tabpanel" aria-labelledby="home-tab" class="tab-pane fade"
 						     :class="{active: metaIndex==0, show: metaIndex==0}">
 
-
+							 <transition-group name="refresh">
 						    <div v-for="(field, fIndex) in metadataSet.Fields.$values"
-							     class="tab-pane fade show field-section"
+							     class="tab-pane fade show field-section" :key="field.Id"
 							     id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                                 
 							    <div class="sitemap-item">
@@ -174,7 +174,7 @@
 
 							    </div>
 						    </div>
-
+							</transition-group>
 					    </div>
                     </div>
                 </div>

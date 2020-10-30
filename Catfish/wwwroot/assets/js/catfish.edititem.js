@@ -1,5 +1,5 @@
 ﻿//import { VueEditor } from "vue2-editor";
-
+import { v1 as uuidv1 } from 'uuid';
 /**
  * Javascript Vue code for creating a single item edit layout in ItemEdit.cshtml.
  */
@@ -345,6 +345,7 @@ if (document.getElementById("item-edit-page")) {
             addNewEntry(metadataSetId, fieldId) {
 
                 let newEntry = JSON.parse(JSON.stringify(this.metadataSets[metadataSetId].Fields.$values[fieldId]));
+                newEntry.Id = uuidv1();
 
                 for (let item of newEntry.Values.$values) {
                     item.Values.$values[0].Value = "";
