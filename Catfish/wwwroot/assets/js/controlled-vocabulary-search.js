@@ -21,6 +21,24 @@ Vue.component("controlled-vocabulary-search", {
             selectedKeywords: selectTemp,
             checkOptions: availableKeywords.map(word => ({ label: word, selected: selectTemp.includes(word) }))
         }
+
+        var selectCatTemp = this.model.selectedCategories.value === null
+            ? []
+            : this.model.selectedCategories.value
+                .split(",")
+                .map(x => x.trim())
+                .filter(x => x.length > 0);
+        var availableCategories = this.model.categorySettings.vocabulary.value === null
+            ? []
+            : this.model.categorySettings.vocabulary.value
+                .split(",")
+                .map(x => x.trim())
+                .filter(x => x.length > 0);
+        return {
+            selectedCategories: selectCatTemp,
+            checkOptions: availableCategories.map(word => ({ label: word, selected: selectCatTemp.includes(word) }))
+        }
+
     },
     methods: {
         onBlur: function (e) {

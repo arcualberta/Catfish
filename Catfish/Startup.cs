@@ -334,8 +334,8 @@ namespace Catfish
         {
             Piranha.App.Fields.Register<TextAreaField>();
             Piranha.App.Fields.Register<ControlledKeywordsField>();
-            
-            Piranha.App.Fields.Register<CatfishSelectList<EType> > ();
+            Piranha.App.Fields.Register<ControlledCategoriesField>();
+           // Piranha.App.Fields.Register<CatfishSelectList<EType> > ();
         }
         private static void RegisterCustomScripts()
         {
@@ -359,9 +359,10 @@ namespace Catfish
 
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
 
-            App.Modules.Manager().Scripts.Add("~/assets/js/dropdownlist-field.js");
+            //App.Modules.Manager().Scripts.Add("~/assets/js/dropdownlist-field.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-keywords.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/controlled-categories.js");
 
         }
         private static void RegisterCustomBlocks()
@@ -578,7 +579,7 @@ namespace Catfish
                 var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
                 //initialize the Kywords region on page load
                 catfishSiteService.UpdateKeywordVocabularyAsync(page).Wait();
-
+              
 
             });
 
