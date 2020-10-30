@@ -33,10 +33,17 @@ namespace Catfish.Services
 
                 //Gets the keywords field of the site settings
                 var keywordsField = siteContent.Regions.Keywords as Piranha.Extend.Fields.TextField;
-                
+
                 //Keywords
                 var keywords = keywordsField.Value.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 string concatenatedKeywords = string.Join(",", keywords);
+
+                //categories
+                //OCt 30 2020 - Gets the categories field of the site settings
+                var categoriesField = siteContent.Regions.Categories as Piranha.Extend.Fields.TextField;
+                var categories = categoriesField.Value.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                string concatenatedCategories = string.Join(",", keywords);
+
 
                 //Get all the pages of the site and update their keywords
                 var pages = await _api.Pages.GetAllAsync(siteId).ConfigureAwait(false);
@@ -44,7 +51,7 @@ namespace Catfish.Services
                 {
                     try
                     {
-                        UpdateKeywordVocabularyAsync(page, concatenatedKeywords);
+                        UpdateKeywordVocabularyAsync(page, concatenatedKeywords, concatenatedCategories);
                         await _api.Pages.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
                     }
                     catch (Exception)
@@ -60,7 +67,7 @@ namespace Catfish.Services
                     {
                         var postKeywords = post.Regions.Keywords as ControlledKeywordsField;
                         postKeywords.Vocabulary.Value = concatenatedKeywords;
-                        UpdateKeywordVocabularyAsync(post, concatenatedKeywords);
+                        UpdateKeywordVocabularyAsync(post, concatenatedKeywords, concatenatedCategories);
                         await _api.Posts.SaveAsync<DynamicPost>(post).ConfigureAwait(false);
                     }
                     catch (Exception)
@@ -70,10 +77,15 @@ namespace Catfish.Services
             }
         }
 
-        protected void UpdateKeywordVocabularyAsync(DynamicPage page, string concatenatedVocabulary)
+        protected void UpdateKeywordVocabularyAsync(DynamicPage page, string concatenatedVocabulary, string concatenatedCategories)
         {
             var pageKeywords = page.Regions.Keywords as ControlledKeywordsField;
             pageKeywords.Vocabulary.Value = concatenatedVocabulary;
+
+            //update categories Oct 30, 2020
+            var pageCategories = page.Regions.Categories as ControlledCategoriesField;
+            pageCategories.Vocabulary.Value = concatenatedCategories;
+
 
             var controlledVocabBlocks = page.Blocks
                 .Where(b => typeof(ControlledVocabularySearchBlock).IsAssignableFrom(b.GetType()))
@@ -84,10 +96,16 @@ namespace Catfish.Services
                     .VocabularySettings
                     .Vocabulary
                     .Value = concatenatedVocabulary;
+
+                (block as ControlledVocabularySearchBlock)
+                    .CategorySettings
+                    .Vocabulary
+                    .Value = concatenatedCategories;
             }
+
         }
 
-        protected void UpdateKeywordVocabularyAsync(DynamicPost post, string concatenatedVocabulary)
+        protected void UpdateKeywordVocabularyAsync(DynamicPost post, string concatenatedVocabulary, string concatenatedCategories)
         {
             var controlledVocabBlocks = post.Blocks
                 .Where(b => typeof(ControlledVocabularySearchBlock).IsAssignableFrom(base.GetType()))
@@ -98,6 +116,11 @@ namespace Catfish.Services
                     .VocabularySettings
                     .Vocabulary
                     .Value = concatenatedVocabulary;
+
+                (block as ControlledVocabularySearchBlock)
+                    .CategorySettings
+                    .Vocabulary
+                    .Value = concatenatedCategories;
             }
         }
 
@@ -107,7 +130,22 @@ namespace Catfish.Services
             try
             {
                 var site = await _api.Sites.GetContentByIdAsync<CatfishWebsite>(pageBase.SiteId).ConfigureAwait(false);
-                (pageBase as DynamicPage).Regions.Keywords.Vocabulary.Value = site.Keywords.Value;
+                if ((pageBase as DynamicPage) != null)
+                {
+                    // (pageBase as DynamicPage).Regions.Keywords.Vocabulary.Value = site.Keywords.Value;
+                    if (site.Keywords.Value != null)
+                    {
+                        ((Catfish.Models.Fields.ControlledKeywordsField)(pageBase as DynamicPage).Regions.Keywords).Vocabulary = site.Keywords.Value;
+                       // ((Catfish.Models.Fields.ControlledKeywordsField)(pageBase as DynamicPage).Regions.Keywords).AllowedKeywords = site.Keywords.Value.Split(",").Select(kw => new Keyword() { Label = kw }).ToList();
+                    }
+
+                    //update site categories -- Mr Oct 30 2020
+                    if (site.Categories.Value != null ) { 
+                        ((Catfish.Models.Fields.ControlledCategoriesField)(pageBase as DynamicPage).Regions.Categories).Vocabulary = site.Categories.Value;
+                     // ((Catfish.Models.Fields.ControlledCategoriesField)(pageBase as DynamicPage).Regions.Categories).AllowedCategories = site.Categories.Value.Split(",").Select(kw => new Keyword() { Label = kw }).ToList();
+                    }
+                }
+                    
 
                 var keywordSearchBlocks = pageBase.Blocks
                     .Where(b => typeof(ControlledVocabularySearchBlock).IsAssignableFrom(b.GetType()))
@@ -115,7 +153,10 @@ namespace Catfish.Services
                     .ToList();
 
                 foreach (var block in keywordSearchBlocks)
+                {
                     block.VocabularySettings.Vocabulary.Value = site.Keywords.Value;
+                    block.CategorySettings.Vocabulary.Value = site.Categories.Value;
+                }
 
             }
             catch (Exception)
@@ -131,6 +172,7 @@ namespace Catfish.Services
                 var blog = await _api.Pages.GetByIdAsync<PageBase>(postBase.BlogId).ConfigureAwait(false);
                 var site = await _api.Sites.GetContentByIdAsync<CatfishWebsite>(blog.SiteId).ConfigureAwait(false);
                 (postBase as DynamicPost).Regions.Keywords.Vocabulary.Value = site.Keywords.Value;
+                (postBase as DynamicPost).Regions.Categories.Vocabulary.Value = site.Categories.Value;
 
                 var keywordSearchBlocks = postBase.Blocks
                     .Where(b => typeof(ControlledVocabularySearchBlock).IsAssignableFrom(b.GetType()))
@@ -138,7 +180,10 @@ namespace Catfish.Services
                     .ToList();
 
                 foreach (var block in keywordSearchBlocks)
+                {
                     block.VocabularySettings.Vocabulary.Value = site.Keywords.Value;
+                    block.CategorySettings.Vocabulary.Value = site.Categories.Value;
+                }
 
             }
             catch (Exception)
@@ -147,7 +192,25 @@ namespace Catfish.Services
             }
         }
 
+        public async Task<string> getDefaultSiteKeywordAsync()
+        {
+            var site =  _api.Sites.GetDefaultAsync();
+         
+            var siteContent = await  _api.Sites.GetContentByIdAsync<CatfishWebsite>(site.Result.Id).ConfigureAwait(false);
+          
+            
+            return siteContent.Keywords.Value != null ? siteContent.Keywords.Value : null;
+           
+        }
+
+        public async Task<string> getDefaultSiteCategoryAsync()
+        {
+            var site = _api.Sites.GetDefaultAsync();
+
+            var siteContent = await _api.Sites.GetContentByIdAsync<CatfishWebsite>(site.Result.Id).ConfigureAwait(false);
 
 
+            return siteContent.Categories.Value != null ? siteContent.Categories.Value : null;
+        }
     }
 }

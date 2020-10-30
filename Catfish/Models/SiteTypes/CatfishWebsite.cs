@@ -11,6 +11,9 @@ namespace Catfish.Models.SiteTypes
         [Region(Title = "Keywords", Display = RegionDisplayMode.Setting)]
         public TextField Keywords { get; set; }
 
+        [Region(Title = "Categories", Display = RegionDisplayMode.Setting)]
+        public TextField Categories { get; set; }
+
         [Region(Title = "Footer", Display = RegionDisplayMode.Setting)]
         public Footer FooterContents { get; set; }
 

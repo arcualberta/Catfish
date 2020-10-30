@@ -18,6 +18,8 @@ namespace Catfish.Models
 
         [Region(Title = "Keywords", Display = RegionDisplayMode.Setting)]
         public ControlledKeywordsField Keywords { get; set; }
+        [Region(Title = "Categories", Display = RegionDisplayMode.Setting)]
+        public ControlledCategoriesField Categories { get; set; }
 
     }
 }

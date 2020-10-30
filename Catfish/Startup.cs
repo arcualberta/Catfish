@@ -19,6 +19,8 @@ using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +35,8 @@ using Piranha.Services;
 using SolrNet;
 using System;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Catfish
 {
@@ -330,6 +334,8 @@ namespace Catfish
         {
             Piranha.App.Fields.Register<TextAreaField>();
             Piranha.App.Fields.Register<ControlledKeywordsField>();
+            Piranha.App.Fields.Register<ControlledCategoriesField>();
+           // Piranha.App.Fields.Register<CatfishSelectList<EType> > ();
         }
         private static void RegisterCustomScripts()
         {
@@ -350,8 +356,13 @@ namespace Catfish
             //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/bundle.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/vendors.bundle.js");
+
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
+
+            //App.Modules.Manager().Scripts.Add("~/assets/js/dropdownlist-field.js");
+
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-keywords.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/controlled-categories.js");
 
         }
         private static void RegisterCustomBlocks()
@@ -560,6 +571,18 @@ namespace Catfish
                 var service = scope.ServiceProvider.GetService<IPageIndexingService>();
                 service.IndexPost(post);
             });
+
+            //Hook for initialize Block's variable
+            App.Hooks.Pages.RegisterOnLoad((page) =>
+            {
+                var scope = app.ApplicationServices.CreateScope();
+                var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
+                //initialize the Kywords region on page load
+                catfishSiteService.UpdateKeywordVocabularyAsync(page).Wait();
+              
+
+            });
+
 
 
         }
