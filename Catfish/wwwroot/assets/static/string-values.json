@@ -1,0 +1,39 @@
+{
+	"itemlistLabels": {
+
+	},
+
+	"editItemLabels": {
+
+	},
+
+	"editFieldFormLabels": {
+		"SAVE_SUCCESS_LABEL": "Save Successful",
+		"SAVE_FAILED_LABEL": "Failed to Save",
+		"SAVE_FIELD_FORM_BUTTON_LABEL": "Save",
+
+		"FORM_TITLE_LABEL": "Title",
+		"FORM_TITLE_PLACEHOLDER": "Title your form here",
+		"FORM_DESCRIPTION_LABEL": "Description",
+		"FORM_DESCRIPTION_PLACEHOLDER": "Add a description here",
+
+		"FORM_FIELD_LABEL": "Fields",
+		"DEFAULT_FIELD_TITLE": "Field Title",
+		"FIELD_TITLE_PLACEHOLDER": "Title your field here",
+		"FIELD_DESCRIPTION_LABEL": "Description",
+		"FIELD_DESCRIPTION_PLACEHOLDER": "Describe the purpose of this field...",
+		"SETTINGS_LABEL": "Settings",
+
+		"LONG_ANSWER_FORMAT_TEXT_LABEL": "Allow formatted text",
+		"CHOICE_OPTION_LABEL": "Option",
+		"CHOICE_DEFAULT_OPTION_LABEL": "Set as Default Option",
+		"CHOICE_ADDITIONAL_INPUT_LABEL": "Requires Additional Input",
+		"ANY_LABEL": "Any",
+		"ALLOW_MULTIPLE_FILES_LABEL": "Allow multiple files",
+		"WHOLE_NUMBERS_ONLY_LABEL": "Limit to whole numbers only",
+		"REQUIRED_LABEL": "Required",
+		"ADD_DESCRIPTION_LABEL": "Add Description",
+		"REMOVE_DESCRIPTION_LABEL": "Remove Description",
+		"LOADING_LABEL": "Loading..."
+	}
+}
