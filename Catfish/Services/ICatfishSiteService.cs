@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Catfish.Services
 {
-    interface ICatfishSiteService
+    public interface ICatfishSiteService
     {
         public Task UpdateKeywordVocabularyAsync(SiteContentBase siteContentBase);
         public Task UpdateKeywordVocabularyAsync(PageBase pageBase);
         public Task UpdateKeywordVocabularyAsync(PostBase post);
+        public Task<string> getDefaultSiteKeywordAsync();
     }
 }

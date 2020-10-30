@@ -1,9 +1,12 @@
-﻿using Piranha;
+﻿using Catfish.Core.Models;
+using Catfish.Services;
+using Piranha;
 using Piranha.Extend;
 using Piranha.Extend.Fields;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Catfish.Models.Fields
@@ -11,6 +14,7 @@ namespace Catfish.Models.Fields
     [FieldType(Name = "Controlled Keywords", Component = "controlled-keywords")]
     public class ControlledKeywordsField : IField
     {
+      
         public List<Keyword> AllowedKeywords { get; set; }
         public StringField Vocabulary { get; set; } = new StringField();
         public StringField SelectedKeywords { get; set; } = new StringField();
@@ -26,8 +30,21 @@ namespace Catfish.Models.Fields
             return "";
         }
 
-        public void Init()
+        public void Init(IApi api, ICatfishSiteService csSrv)
         {
+            if (csSrv == null)
+            {
+
+                CatfishSiteService catSrv = new CatfishSiteService(api);
+                csSrv = catSrv;
+            }
+            var siteKeyword = csSrv.getDefaultSiteKeywordAsync();
+
+            if (string.IsNullOrWhiteSpace(Vocabulary.Value))
+            {
+                if (!string.IsNullOrWhiteSpace(siteKeyword.Result))
+                    Vocabulary.Value = siteKeyword.Result;
+            }
             AllowedKeywords = string.IsNullOrWhiteSpace(Vocabulary.Value)
                 ? new List<Keyword>()
                 : Vocabulary.Value.Split(",").Select(kw => new Keyword() { Label = kw }).ToList();
@@ -41,6 +58,7 @@ namespace Catfish.Models.Fields
                 foreach (var keyword in AllowedKeywords)
                     keyword.Selected = selected.Contains(keyword.Label);
             }
+
         }
     }
 

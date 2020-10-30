@@ -107,7 +107,16 @@ namespace Catfish.Services
             try
             {
                 var site = await _api.Sites.GetContentByIdAsync<CatfishWebsite>(pageBase.SiteId).ConfigureAwait(false);
-                (pageBase as DynamicPage).Regions.Keywords.Vocabulary.Value = site.Keywords.Value;
+                if ((pageBase as DynamicPage) != null)
+                {
+                    // (pageBase as DynamicPage).Regions.Keywords.Vocabulary.Value = site.Keywords.Value;
+                    if (site.Keywords.Value != null && ((Catfish.Models.Fields.ControlledKeywordsField)(pageBase as DynamicPage).Regions.Keywords).Vocabulary == null)
+                    {
+                        ((Catfish.Models.Fields.ControlledKeywordsField)(pageBase as DynamicPage).Regions.Keywords).Vocabulary = site.Keywords.Value;
+                        ((Catfish.Models.Fields.ControlledKeywordsField)(pageBase as DynamicPage).Regions.Keywords).AllowedKeywords = site.Keywords.Value.Split(",").Select(kw => new Keyword() { Label = kw }).ToList();
+                    }
+                }
+                    
 
                 var keywordSearchBlocks = pageBase.Blocks
                     .Where(b => typeof(ControlledVocabularySearchBlock).IsAssignableFrom(b.GetType()))
@@ -147,7 +156,16 @@ namespace Catfish.Services
             }
         }
 
-
+        public async Task<string> getDefaultSiteKeywordAsync()
+        {
+            var site =  _api.Sites.GetDefaultAsync();
+         
+            var siteContent = await  _api.Sites.GetContentByIdAsync<CatfishWebsite>(site.Result.Id).ConfigureAwait(false);
+           // var siteType = await _api.SiteTypes.GetByIdAsync(site.Result.SiteTypeId).ConfigureAwait(false);
+            
+            return siteContent.Keywords.Value != null ? siteContent.Keywords.Value : null;
+           
+        }
 
     }
 }
