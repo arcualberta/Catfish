@@ -17,11 +17,6 @@ Vue.component("controlled-vocabulary-search", {
                 .split(",")
                 .map(x => x.trim())
                 .filter(x => x.length > 0);
-        return {
-            selectedKeywords: selectTemp,
-            checkOptions: availableKeywords.map(word => ({ label: word, selected: selectTemp.includes(word) }))
-        }
-
         var selectCatTemp = this.model.selectedCategories.value === null
             ? []
             : this.model.selectedCategories.value
@@ -35,10 +30,13 @@ Vue.component("controlled-vocabulary-search", {
                 .map(x => x.trim())
                 .filter(x => x.length > 0);
         return {
+            selectedKeywords: selectTemp,
+            checkOptions: availableKeywords.map(word => ({ label: word, selected: selectTemp.includes(word) })),
             selectedCategories: selectCatTemp,
-            checkOptions: availableCategories.map(word => ({ label: word, selected: selectCatTemp.includes(word) }))
+            checkCatOptions: availableCategories.map(word => ({ label: word, selected: selectCatTemp.includes(word) }))
         }
 
+      
     },
     methods: {
         onBlur: function (e) {
@@ -76,6 +74,18 @@ Vue.component("controlled-vocabulary-search", {
                     }
                 }
                 this.model.selectedKeywords.value = this.selectedKeywords.join(",");
+            }
+            else if (elName == "categoryCheckBox") {
+                if (e.target.checked) {
+                    this.selectedCategories.push(e.target.value);
+                }
+                else {
+                    var index = this.selectedCategories.indexOf(e.target.value);
+                    if (index >= 0) {
+                        this.selectedCategories.splice(index, 1);
+                    }
+                }
+                this.model.selectedCategories.value = this.selectedCategories.join(",");
             }
         }
     },
@@ -116,16 +126,22 @@ Vue.component("controlled-vocabulary-search", {
                         v-model='model.vocabCss.value' v-on:blur='onBlur'contenteditable='true'
                         value= 'vocabCssValue' />
                   </div>
-                  <div class='lead row'> 
+                  <div class='lead row' > 
                     <label class = 'form-label col-md-3'> Selected Vocabulary: </label>
-                    <div class='row col-md-9' id='vocabulary-check-block'>
-                        <div v-if='this.checkOptions.length == 0' class='alert alert-danger'>
-                            No controlled-vocabulary terms found. Please try saving the page and 
-                            reloading it again. If you still see this message, please make sure 
-                            keywords are defined at the site level.
-                        </div>
+                    <div class='row col-md-9' id='vocabulary-check-block' >
+                       
                         <div v-for='item in this.checkOptions' :key = 'item.label' class='col-md-3' >
                             <input type='checkbox' name='keywordCheckBox' :value='item.label'  v-on:blur='onBlur'  v-model="item.selected" /> {{ item.label }}
+                        </div>
+                    </div>
+                  </div>
+
+                 <div class='lead row'> 
+                    <label class = 'form-label col-md-3'> Selected Category: </label>
+                    <div class='row col-md-9' id='category-check-block'>
+                       
+                        <div v-for='item in this.checkCatOptions' :key = 'item.label' class='col-md-3' >
+                            <input type='checkbox' name='categoryCheckBox' :value='item.label'  v-on:blur='onBlur'  v-model="item.selected" /> {{ item.label }}
                         </div>
                     </div>
                   </div>

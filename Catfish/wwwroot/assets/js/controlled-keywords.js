@@ -28,8 +28,8 @@ Vue.component("controlled-keywords", {
         }
     },
     template:
-        `<ul id='example- 1'>
-            <li v-for='item in model.allowedKeywords' :key = 'item.label'>
+        `<ul class='listStyleTypeNone ul-flex'>
+            <li v-for='item in model.allowedKeywords' :key = 'item.label' class='li-flexItem'>
                 <input type='checkbox' :value='item.label'  v-on:blur='onBlur'  v-model="item.selected" /> {{ item.label }}
             </li>
         </ul >`

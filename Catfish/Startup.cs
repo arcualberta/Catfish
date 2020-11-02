@@ -536,16 +536,16 @@ namespace Catfish
                 var workflowService = scope.ServiceProvider.GetService<IWorkflowService>();
                 workflowService.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
 
-                var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
-                catfishSiteService.UpdateKeywordVocabularyAsync(siteContent).Wait();
+               // var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
+               // catfishSiteService.UpdateKeywordVocabularyAsync(siteContent).Wait();
             });
 
             App.Hooks.Pages.RegisterOnBeforeSave((page) => {
                 var scope = app.ApplicationServices.CreateScope();
 
                 //Updating keywords vocabulary
-                var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
-                catfishSiteService.UpdateKeywordVocabularyAsync(page).Wait();
+               // var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
+               // catfishSiteService.UpdateKeywordVocabularyAsync(page).Wait();
             });
 
             App.Hooks.Pages.RegisterOnAfterSave((page) => {

@@ -28,8 +28,8 @@ Vue.component("controlled-categories", {
         }
     },
     template:
-        `<ul class='controlledCategories'>
-            <li v-for='item in model.allowedCategories' :key = 'item.label'>
+            `<ul class='controlledCategories listStyleTypeNone ul-flex'>
+            <li v-for='item in model.allowedCategories' :key = 'item.label' class='li-flexItem'>
                 <input type='checkbox' :value='item.label'  v-on:blur='onBlur'  v-model="item.selected" /> {{ item.label }}
             </li>
         </ul >`
