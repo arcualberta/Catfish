@@ -17,9 +17,10 @@ namespace Catfish.Models
         public IEnumerable<Comment> Comments { get; set; } = new List<Comment>();
 
         [Region(Title = "Keywords", Display = RegionDisplayMode.Setting)]
-        public ControlledKeywordsField Keywords { get; set; }
+        public ControlledKeywordsField Keywords { get; set; } = new ControlledKeywordsField();
+
         [Region(Title = "Categories", Display = RegionDisplayMode.Setting)]
-        public ControlledCategoriesField Categories { get; set; }
+        public ControlledCategoriesField Categories { get; set; } = new ControlledCategoriesField();
 
     }
 }
