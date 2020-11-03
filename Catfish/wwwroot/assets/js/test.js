@@ -1,13 +1,6 @@
-﻿//import draggable from 'vuedraggable'
-/*
-export default {
-    components: {
-        draggable,
-    },
-    data() {
-        return {}
-    },
-    created() {
-        console.log("I am a test");
+﻿var vueApp = new Vue({
+    el: '#keywords-search-block-public',
+    data: {
+        count: 0
     }
-}*/
+})

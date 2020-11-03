@@ -5,8 +5,12 @@ const VueLoaderPlugin = require("vue-loader/lib/plugin");
 module.exports = {
     mode: "development", // "production" | "development" | "none"
     // Chosen mode tells webpack to use its built-in optimizations accordingly.
-    entry: ["./wwwroot/assets/js/catfish.editFieldForm.js", "./wwwroot/assets/js/catfish.edititem.js"], // string | object | array
-    // defaults to ./src
+    entry: {
+        editFieldFormBundle: "./wwwroot/assets/js/catfish.editFieldForm.js",
+        editItemBundle: "./wwwroot/assets/js/catfish.edititem.js"
+        //["./wwwroot/assets/js/catfish.editFieldForm.js", "./wwwroot/assets/js/catfish.edititem.js"], // string | object | array
+    },
+        // defaults to ./src
     // Here the application starts executing
     // and webpack starts bundling
     output: {
@@ -14,7 +18,7 @@ module.exports = {
         path: path.resolve(__dirname, "wwwroot/assets/dist"), // string
         // the target directory for all output files
         // must be an absolute path (use the Node.js path module)
-        filename: "bundle.js", // string
+        filename: '[name].js', //"bundle.js", // string
         // the filename template for entry chunks
     },
 

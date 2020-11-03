@@ -354,8 +354,9 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/free-search.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-form.js");
             //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
-            App.Modules.Manager().Scripts.Add("~/assets/dist/bundle.js");
-            App.Modules.Manager().Scripts.Add("~/assets/dist/vendors.bundle.js");
+            App.Modules.Manager().Scripts.Add("~/assets/dist/editFieldFormBundle.js");
+            App.Modules.Manager().Scripts.Add("~/assets/dist/editItemBundle.js");
+            App.Modules.Manager().Scripts.Add("~/assets/dist/vendors.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
 
