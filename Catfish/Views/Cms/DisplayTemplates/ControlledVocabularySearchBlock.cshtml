@@ -17,20 +17,24 @@
     string blockname = Model.SearchPageName.Value;
     string vocabcssclass = Model.VocabCss.Value;
     string checkboxlist = Model.SelectedKeywords.Value;
+    string categorieslist = Model.SelectedCategories.Value;
 
     string[] words = checkboxlist == null ? new string[] { } : Regex.Split(checkboxlist, "[,\r\n]");
+    string[] categories = categorieslist == null ? new string[] { } : Regex.Split(categorieslist, "[,\r\n]");
+    int categoryIndex = 0;
 
     var Results = new List<SolrEntry>();
 
 }
+<link href="~/assets/css/controlledVocabularySearchBlock.css" rel="stylesheet" />
 
 
 
 
-<div class="keywords-search-block">
+<div class="keywords-search-block @vocabcssclass">
     @if (!string.IsNullOrWhiteSpace(blockname))
     {
-        <div class="block-title">@blockname</div>
+        <div class="block-title block-@blockname">@blockname</div>
     }
 
     <form id="controlledVocabularySearchForm" method="post" action="/api/search/keywords">
@@ -42,16 +46,32 @@
                     {
                         if (!String.IsNullOrWhiteSpace(@word))
                         {
-                            <div class="col-md-4">
-                                <input type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
+                            <div class="col-md-4 keyword-checkbox">
+                                <input class="search-filter" type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
                             </div>
                         }
 
                     }
                 </div>
             </fieldset>
+            <div class="categories-section">
+            @foreach (var category in categories)
+			{
+                if (!String.IsNullOrWhiteSpace(@category))
+                {
+                    <button value="@(category)" id="@("category-" + categoryIndex)" type="button" class="category-button btn btn-light">@category</button>
+				}
+				else
+				{
+                    <button value="*" id="category-default" type="button" class="category-default-button btn btn-light">Search</button>
+				}
+                categoryIndex++;
+			}
+            </div>
         </div>
-        <input id="ControlledVocabularySearchButton" type="submit" value="Submit" />
+        <!--<button id="ControlledVocabularySearchButton" type="submit" value="*" class="category-default-button btn btn-primary">
+            Submit
+        </button>-->
 
     </form>
 </div>
@@ -62,6 +82,43 @@
 
 
 <script>
+    $('.search-filter').click(function () {
+        var terms = [];
+        $.each($("input[name='searchterm']:checked"), function () {
+            terms.push($(this).val());
+        });
+
+        /*var $form = $(this),
+            url = $form.attr('action');*/
+
+        if(this.checked){
+            $.ajax({
+                type: "POST",
+                url: "/api/search/keywords",
+                data: {
+                    "searchTerms": terms,
+                    "category": 'TODOPUTVARIABLEHERE'
+                },
+                success: function(data) {
+                    alert('it worked');
+                    alert(data);
+                    $('#controlledVocabularySearchResults').html(data);
+                },
+                 error: function() {
+                    alert('it broke');
+                },
+                complete: function() {
+                    alert('it completed');
+                }
+            });
+
+            }
+    });
+
+    /*function filterByCategory(event) {
+        console.log("test", event.value);
+    }*/
+
     $(function () {
         $("#controlledVocabularySearchForm").submit(function (event)  {
             var terms = [];
@@ -69,17 +126,21 @@
                 terms.push($(this).val());
             });
 
-            if (terms.length == 0) {
-                alert("choose at least one word");
-            }
             event.preventDefault();
+            if (terms.length == 0) {
+                alert("Please choose at least one word");
+                return;
+            }
 
             var $form = $(this),
                 url = $form.attr('action');
 
             var posting = $.post(
                 url,
-                { "keySearchWords": terms }
+                {
+                    "searchTerms": terms,
+                    "category": TODOPUTVARIABLEHERE
+                } //keySearchWords
             );
 
              posting.done(function (data) {
@@ -89,7 +150,7 @@
                      return;
                  }
 
-
+                 
                  $.each(data, function (entryIndex, entry) {
 
                      @* Creating the wrapper div as a DOM element for the result item *@
@@ -130,6 +191,5 @@
             });
         });
     });
-
 </script>
 
