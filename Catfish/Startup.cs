@@ -19,6 +19,7 @@ using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
@@ -188,7 +189,9 @@ namespace Catfish
             services.AddElmah<XmlFileErrorLog>(options =>
             {
                 options.LogPath = "~/log";
+                options.CheckPermissionAction = context => context.User.IsInRole("SysAdmin");
             });
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -548,7 +551,8 @@ namespace Catfish
                // catfishSiteService.UpdateKeywordVocabularyAsync(page).Wait();
             });
 
-            App.Hooks.Pages.RegisterOnAfterSave((page) => {
+            App.Hooks.Pages.RegisterOnAfterSave((page) =>
+            {
                 var scope = app.ApplicationServices.CreateScope();
 
                 //Indexing page content

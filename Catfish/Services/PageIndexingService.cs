@@ -9,6 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using ElmahCore;
+using Hangfire.Logging.LogProviders;
 
 namespace Catfish.Services
 {
@@ -17,11 +20,13 @@ namespace Catfish.Services
         private readonly IApi _api;
         private readonly ISolrIndexService<SolrEntry> _solrIndexService;
         private readonly IQueryService _solrQueryService;
-        public PageIndexingService(ISolrIndexService<SolrEntry> iSrv, IQueryService qSrv, IApi api)
+        private readonly ErrorLog _errorLog;
+        public PageIndexingService(ISolrIndexService<SolrEntry> iSrv, IQueryService qSrv, IApi api, ErrorLog errorLog)
         {
             _api = api;
             _solrIndexService = iSrv;
             _solrQueryService = qSrv;
+            _errorLog = errorLog;
         }
 
         public void IndexBlock(Block block, SolrEntry entry)
@@ -68,31 +73,40 @@ namespace Catfish.Services
 
         public void IndexPage(PageBase doc)
         {
-            if (doc == null || !doc.IsPublished)
-                return;
-
-            SolrEntry entry = new SolrEntry()
+            try
             {
-                Id = doc.Id,
-                ObjectType = SolrEntry.eEntryType.Page,
-                Permalink = string.IsNullOrWhiteSpace(doc.Permalink) ? null : doc.Permalink,
-            };
+                if (doc == null || !doc.IsPublished)
+                    return;
 
-            entry.Title.Add(doc.Title);
+                SolrEntry entry = new SolrEntry()
+                {
+                    Id = doc.Id,
+                    ObjectType = SolrEntry.eEntryType.Page,
+                    Permalink = string.IsNullOrWhiteSpace(doc.Permalink) ? null : doc.Permalink,
+                };
 
-            if (!string.IsNullOrEmpty(doc.Excerpt))
-                entry.AddContent(doc.Id, doc.Excerpt);
+                entry.Title.Add(doc.Title);
 
-            //Indexing all content blocks
-            foreach (var block in doc.Blocks)
-                IndexBlock(block, entry);
+                if (!string.IsNullOrEmpty(doc.Excerpt))
+                    entry.AddContent(doc.Id, doc.Excerpt);
 
-            IndexInSolr(entry);
+                //Indexing all content blocks
+                foreach (var block in doc.Blocks)
+                    IndexBlock(block, entry);
+
+                IndexInSolr(entry);
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
         }
 
         public void IndexPost(PostBase doc)
         {
-            if (doc == null || !doc.IsPublished)
+            try
+            {
+                if (doc == null || !doc.IsPublished)
                 return;
 
             SolrEntry entry = new SolrEntry()
@@ -112,6 +126,11 @@ namespace Catfish.Services
                 IndexBlock(block, entry);
 
             IndexInSolr(entry);
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
         }
         private void IndexInSolr(SolrEntry entry)
         {
