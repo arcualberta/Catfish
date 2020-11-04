@@ -9,9 +9,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Catfish.Models.Blocks;
 using Microsoft.AspNetCore.Http;
 using ElmahCore;
 using Hangfire.Logging.LogProviders;
+using Catfish.Models.Regions;
+using Catfish.Models;
 
 namespace Catfish.Services
 {
@@ -61,6 +64,15 @@ namespace Catfish.Services
                     entry.AddContent(block.Id, text);
             }
 
+            //For given block is an ImageBlock or any specialization of it,
+            //then we index its Url
+            if (typeof(ImageBlock).IsAssignableFrom(block.GetType()))
+            {
+                string text = (block as ImageBlock).Body.Media.PublicUrl;
+                if (!string.IsNullOrWhiteSpace(text))
+                    entry.AddImage(block.Id, text);
+            }
+
             //If the given block is an ColumnBlock or any specialization of it,
             //then we index each block inside it
             if (typeof(ColumnBlock).IsAssignableFrom(block.GetType()))
@@ -86,6 +98,23 @@ namespace Catfish.Services
                 };
 
                 entry.Title.Add(doc.Title);
+
+
+                // add keywords
+
+
+
+                if ((doc as StandardPage).Keywords != null)
+                {
+                    var kWords = (doc as StandardPage).Keywords.Vocabulary.Value.Split(
+                      ",",
+                      StringSplitOptions.RemoveEmptyEntries).ToList();
+                    foreach (var kw in kWords)
+                    {
+                        entry.Keywords.Add(kw);
+                    }
+                }
+
 
                 if (!string.IsNullOrEmpty(doc.Excerpt))
                     entry.AddContent(doc.Id, doc.Excerpt);
@@ -121,8 +150,23 @@ namespace Catfish.Services
             if (!string.IsNullOrEmpty(doc.Excerpt))
                 entry.AddContent(doc.Id, doc.Excerpt);
 
-            //Indexing all content blocks
-            foreach (var block in doc.Blocks)
+
+             // add keywords
+
+            if ((doc as StandardPost).Keywords != null)
+                {
+                    var kWords = (doc as StandardPost).Keywords.SelectedKeywords.Value.Split(
+                      ",",
+                      StringSplitOptions.RemoveEmptyEntries).ToList();
+                    foreach (var kw in kWords)
+                    {
+                        entry.Keywords.Add(kw);
+                    }
+                }
+
+
+                //Indexing all content blocks
+                foreach (var block in doc.Blocks)
                 IndexBlock(block, entry);
 
             IndexInSolr(entry);
