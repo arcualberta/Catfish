@@ -15,6 +15,7 @@ using ElmahCore;
 using Hangfire.Logging.LogProviders;
 using Catfish.Models.Regions;
 using Catfish.Models;
+using Catfish.Models.Fields;
 
 namespace Catfish.Services
 {
@@ -100,21 +101,23 @@ namespace Catfish.Services
                 entry.Title.Add(doc.Title);
 
 
-                // add keywords
-
-
-
-                if ((doc as StandardPage).Keywords != null)
+                //Index any keywords selected for the page
+                List<string> keywords = new List<string>();
+                try
                 {
-                    var kWords = (doc as StandardPage).Keywords.Vocabulary.Value.Split(
-                      ",",
-                      StringSplitOptions.RemoveEmptyEntries).ToList();
-                    foreach (var kw in kWords)
-                    {
-                        entry.Keywords.Add(kw);
-                    }
-                }
+                    keywords = ((doc as DynamicPage).Regions.Keywords as ControlledKeywordsField)
+                        .SelectedKeywords
+                        .Value
+                        .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                        .ToList();
 
+                    foreach (var kw in keywords)
+                        entry.Keywords.Add(kw);
+                }
+                catch (Exception ex)
+                {
+                    _errorLog.Log(new Error(ex));
+                }
 
                 if (!string.IsNullOrEmpty(doc.Excerpt))
                     entry.AddContent(doc.Id, doc.Excerpt);

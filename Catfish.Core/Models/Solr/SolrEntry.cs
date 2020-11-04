@@ -42,6 +42,9 @@ namespace Catfish.Core.Models.Solr
         [SolrField("keywords_ss")]
         public List<string> Keywords { get; set; } = new List<string>();
 
+        [SolrField("categories_ss")]
+        public List<string> Categories { get; set; } = new List<string>();
+
         public List<string> Highlights { get; set; } = new List<string>();
 
         public void SetTitle(Guid titleId, string titleValue)
