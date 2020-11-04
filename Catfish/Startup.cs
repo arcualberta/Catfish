@@ -387,9 +387,8 @@ namespace Catfish
         }
         private static void RegisterCustomStyles()
         {
-            
-             App.Modules.Get<Piranha.Manager.Module>()
-                .Styles.Add("~/assets/css/custom.css");
+            App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("~/assets/css/entity.css");
 
             App.Modules.Get<Piranha.Manager.Module>()
                 .Styles.Add("~/assets/css/formEditPage.css");

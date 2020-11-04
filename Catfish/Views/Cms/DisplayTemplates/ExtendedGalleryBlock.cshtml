@@ -5,7 +5,7 @@
 @{
     var unique = "gallery-" + Guid.NewGuid().ToString();
 }
-    <link href="~/assets/css/CustomComponentStyle.css" rel="stylesheet" />
+
     <div id="@unique" class="carousel slide extended-gallery-block" data-ride="carousel">
 
         <div class="carousel-inner">
@@ -17,9 +17,13 @@
                             <img src="@Url.Content(WebApp.Media.ResizeImage(((ExtendedImageBlock)item).Body.Media, 890, 482))" class="d-block w-100 col-md-6">
                         </div>
                         <div class="col-md-6" style="width:50%;">
-                            <div class="EGTitle">@item.GetImageTitle()</div>
+                            <div class="EGTitle">@Html.Raw(item.GetImageTitle())</div>
                             <div  class="EGDescription">@Html.Raw(item.GetDescription())</div>
-                            <div  class="EGLink"><a href="@item.GetLinkUrl()" class="btn btn-primary EGLinkBtn">@item.GetLinkText()</a></div>
+
+                            @if (!string.IsNullOrWhiteSpace(item.GetLinkText()))
+                            {
+                                <div  class="EGLink"><a href="@item.GetLinkUrl()" class="btn btn-primary EGLinkBtn">@item.GetLinkText()</a></div>
+                            }
                         </div>
                     </div>
                     @*<img src="@Url.Content(((ImageBlock)item).Body.Media.PublicUrl)" class="d-block">*@
