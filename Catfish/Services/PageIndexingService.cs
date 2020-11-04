@@ -29,7 +29,7 @@ namespace Catfish.Services
             _errorLog = errorLog;
         }
 
-        public void IndexBlock(Block block, SolrEntry entry)
+        protected void IndexBlock(Block block, SolrEntry entry)
         {
             if (block == null || entry == null)
                 return;
