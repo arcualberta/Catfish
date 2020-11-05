@@ -7,6 +7,8 @@
             categories: [],
             searchResults: [],
             pagesTotal: 0,
+            currentPage: 1,
+            cardsPerPage: 3
 		}
     },
     methods: {
@@ -14,7 +16,7 @@
             if (!this.categories.includes(event.target.value)) {
                 this.categories.push(event.target.value);
             } else {
-                //TODO remove the category
+                this.categories.splice(this.categories.indexOf(event.target.value), 1);
 			}
 
             this.makePostCall();
@@ -25,7 +27,7 @@
             if (!this.searchTerms.includes(event.target.value)) {
                 this.searchTerms.push(event.target.value);
             } else {
-                //TODO remove the searchTerm
+                this.searchTerms.splice(this.searchTerms.indexOf(event.target.value), 1);
             }
 
             this.makePostCall();

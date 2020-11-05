@@ -77,7 +77,7 @@
     </div>
 
     <div v-if="searchResults.length > 0" id="controlledVocabularySearchResults" class="pagination">
-        <div v-for="searchResult of searchResults" class="card">
+        <div v-for="searchResult of searchResults.slice((currentPage - 1) * cardsPerPage, (currentPage-1) * cardsPerPage + cardsPerPage)" class="card">
             <img class="card-img-top" :src="searchResult.images[0]" alt="Search result image">
             <div class="card-body">
                 <h5 class="card-title">Card title {{searchResult.title[0]}}</h5>
@@ -90,10 +90,10 @@
                 <a href="searchResult.permalink" class="btn btn-primary">View</a>
             </div>
         </div>
-
-        <div v-for="index in pagesTotal" :key="index" class="page-item">
-            <a class="page-link">{{index}}</a>
-        </div>
+    </div>
+    {{currentPage}}
+    <div v-for="index in pagesTotal" :key="index" class="page-item">
+        <a v-on:click="currentPage = index" class="page-link">{{index}}</a>
     </div>
 
 </div>
