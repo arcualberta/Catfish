@@ -3,6 +3,7 @@ using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.ViewModels;
 using Catfish.Core.Models.Contents.ViewModels.ListEntries;
+using ElmahCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,8 @@ namespace Catfish.Core.Services.FormBuilder
 {
     public class FormService : DbEntityService, IFormService
     {
-        public FormService(AppDbContext db)
-          : base(db)
+        public FormService(AppDbContext db, ErrorLog errorLog)
+          : base(db, errorLog)
         {
 
         }
