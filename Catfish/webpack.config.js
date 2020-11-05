@@ -17,7 +17,10 @@ const VueLoaderPlugin = require("vue-loader/lib/plugin");
 
  Any public-facing js should be put into the assets/js/_public-facing folder.
 
-The key's name will be what the bundle will be called when created in assets/dist
+The key's name will be what the bundle will be called when created in assets/dist.
+Put a script tag into the page's cshtml for it to run there.
+Do not put a specific page's script into the _Layout or you will get multiple Vue instances running!
+Bad stuff happens when there's duplicate Vue instances, don't do it.
  */
 
 const managerSideEntryPaths = {
@@ -26,8 +29,8 @@ const managerSideEntryPaths = {
 };
 
 const publicFacingEntryPaths = {
-    keywordsSearchBlock: "./wwwroot/assets/js/_public-facing/test.js",
-    testBlock: "./wwwroot/assets/js/_public-facing/test2.js"
+    keywordsSearchBundle: "./wwwroot/assets/js/_public-facing/keywords-search-block-public.js",
+    testBundle: "./wwwroot/assets/js/_public-facing/test2.js"
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

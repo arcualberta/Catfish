@@ -5,3 +5,13 @@
 		max-width: unset;
 	}
 }
+
+#controlledVocabularySearchResults{
+	display:flex;
+	flex-direction:row;
+	flex-wrap:wrap;
+}
+
+.card{
+	max-width:33%;
+}

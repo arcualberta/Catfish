@@ -27,61 +27,73 @@
 
 }
 <link href="~/assets/css/controlledVocabularySearchBlock.css" rel="stylesheet" />
-<script src="~/assets/dist/keywordsSearchBlock.js"></script>
+<script src="~/assets/dist/keywordsSearchBundle.js"></script>
 
+<div id="keywords-search-block-public">
 
+    <div class="keywords-search-block @vocabcssclass">
+        @if (!string.IsNullOrWhiteSpace(blockname))
+        {
+            <div class="block-title block-@blockname">@blockname</div>
+        }
 
-<div id="keywords-search-block-public" class="keywords-search-block @vocabcssclass">
-    @if (!string.IsNullOrWhiteSpace(blockname))
-    {
-        <div class="block-title block-@blockname">@blockname</div>
-    }
+        <form id="controlledVocabularySearchForm" method="post" action="/api/search/keywords">
 
-    <form id="controlledVocabularySearchForm" method="post" action="/api/search/keywords">
-
-        <div class="container">
-            <fieldset class="checkboxgroup">
-                <div class="row">
-                    @foreach (var word in words)
-                    {
-                        if (!String.IsNullOrWhiteSpace(@word))
+            <div class="container">
+                <fieldset class="checkboxgroup">
+                    <div class="row">
+                        @foreach (var word in words)
                         {
-                            <div class="col-md-4 keyword-checkbox">
-                                <input class="search-filter" type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
-                            </div>
-                        }
+                            if (!String.IsNullOrWhiteSpace(@word))
+                            {
+                                <div class="col-md-4 keyword-checkbox">
+                                    <input v-on:click="filterByCheckbox($event)" class="search-filter" type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
+                                </div>
+                            }
 
-                    }
+                        }
+                    </div>
+                </fieldset>
+                <div class="categories-section">
+                @foreach (var category in categories)
+			    {
+                    if (!String.IsNullOrWhiteSpace(@category))
+                    {
+                        <button v-on:click="filterByCategory($event)" value="@(category)" id="@("category-" + categoryIndex)" type="button" class="category-button btn btn-light">@category</button>
+				    }
+				    else
+				    {
+                        <button v-on:click="filterByCategory($event)" value="*" id="category-default" type="button" class="category-default-button btn btn-light">Search</button>
+				    }
+                    categoryIndex++;
+			    }
                 </div>
-            </fieldset>
-            <div class="categories-section">
-            @foreach (var category in categories)
-			{
-                if (!String.IsNullOrWhiteSpace(@category))
-                {
-                    <button value="@(category)" id="@("category-" + categoryIndex)" type="button" class="category-button btn btn-light">@category</button>
-				}
-				else
-				{
-                    <button value="*" id="category-default" type="button" class="category-default-button btn btn-light">Search</button>
-				}
-                categoryIndex++;
-			}
+            </div>
+            <!--<button id="ControlledVocabularySearchButton" type="submit" value="*" class="category-default-button btn btn-primary">
+                Submit
+            </button>-->
+
+        </form>
+    </div>
+
+    <div v-if="searchResults.length > 0" id="controlledVocabularySearchResults" class="pagination">
+        <div v-for="searchResult of searchResults" class="card">
+            <img class="card-img-top" :src="searchResult.images[0]" alt="Search result image">
+            <div class="card-body">
+                <h5 class="card-title">Card title {{searchResult.title[0]}}</h5>
+                <p class="card-text">
+                {{searchResult.contents[0]}}
+                </p>
+                <p class="card-text">
+                {{searchResult.contents[1]}}
+                </p>
+                <a href="searchResult.permalink" class="btn btn-primary">View</a>
             </div>
         </div>
-        <!--<button id="ControlledVocabularySearchButton" type="submit" value="*" class="category-default-button btn btn-primary">
-            Submit
-        </button>-->
 
-    </form>
+        <div v-for="index in pagesTotal" :key="index" class="page-item">
+            <a class="page-link">{{index}}</a>
+        </div>
+    </div>
+
 </div>
-
-<div id="controlledVocabularySearchResults">
-</div>
-
-
-
-<script>
-
-</script>
-
