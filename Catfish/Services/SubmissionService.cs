@@ -70,5 +70,11 @@ namespace Catfish.Services
         {
             return _db.Items.Where(it => it.Id == itemId).FirstOrDefault();
         }
+
+        public IList<Item> GetSubmissionList(Guid templateId, Guid collectionId)
+        {
+            return (collectionId == null)?_db.Items.Where(i => i.TemplateId == templateId).ToList() : _db.Items.Where(i => i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).ToList();
+         
+        }
     }
 }

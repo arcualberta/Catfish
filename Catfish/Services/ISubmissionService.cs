@@ -13,5 +13,6 @@ namespace Catfish.Services
         //string SaveSubmission(Entity submission);
         List<Item> GetSubmissionList();
         Item GetSubmissionDetails(Guid itemId);
+        IList<Item> GetSubmissionList(Guid templateId, Guid collectionId);
     }
 }

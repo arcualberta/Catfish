@@ -1,0 +1,14 @@
+﻿@model Catfish.Models.Blocks.ItemListBlock
+
+@using Catfish.Core.Authorization.Requirements;
+@using Microsoft.AspNetCore.Authorization;
+@using Catfish.Core.Models;
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
+@inject Catfish.Services.ISubmissionService _submissionService;
+
+@{
+    string formGetUrl = "/api/items";
+    var entityTemplateId = Guid.Parse(Model.EntityTemplateId);
+    var collectionId = Guid.Parse(Model.CollectionId);
+    IList<Item> itemList = _submissionService.GetSubmissionList(entityTemplateId,collectionId);
+}

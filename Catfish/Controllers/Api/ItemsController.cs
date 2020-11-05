@@ -16,10 +16,12 @@ namespace Catfish.Controllers.Api
     public class ItemsController : ControllerBase
     {
         private readonly IEntityTemplateService _entityTemplateService;
+        private readonly ISubmissionService _submissionService;
         private readonly AppDbContext _appDb;
-        public ItemsController(AppDbContext db, IEntityTemplateService entityTemplateService)
+        public ItemsController(AppDbContext db, IEntityTemplateService entityTemplateService, ISubmissionService submissionService)
         {
             _entityTemplateService = entityTemplateService;
+            _submissionService = submissionService;
             _appDb = db;
         }
         // GET: api/<ItemController>
@@ -31,9 +33,10 @@ namespace Catfish.Controllers.Api
 
         // GET api/<ItemController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IList<Item> GetItemList(Guid templateId, Guid collectionId)
         {
-            return "value";
+            IList<Item> itemList = _submissionService.GetSubmissionList(templateId,collectionId);
+            return itemList;
         }
 
         // POST api/<ItemController>
@@ -47,6 +50,8 @@ namespace Catfish.Controllers.Api
             //When we instantantiate an instance from the template, we do not need to clone metadata sets
             Item newItem = template.Instantiate<Item>();
             newItem.StatusId = _entityTemplateService.GetStatusId(entityTemplateId, actionButton);
+            newItem.PrimaryCollectionId = collectionId;
+            newItem.TemplateId = entityTemplateId;
 
             DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
             newDataItem.UpdateFieldValues(value);
