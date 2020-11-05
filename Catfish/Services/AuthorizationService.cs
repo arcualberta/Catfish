@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using ElmahCore;
 using Microsoft.AspNetCore.Http;
 using Piranha.AspNetCore.Identity.Data;
 using Piranha.AspNetCore.Identity.SQLServer;
@@ -14,14 +15,16 @@ namespace Catfish.Services
     {
         public readonly IdentitySQLServerDb _piranhaDb;
         public readonly AppDbContext _appDb;
+        private readonly ErrorLog _errorLog;
 
         public readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthorizationService(AppDbContext adb, IdentitySQLServerDb pdb, IHttpContextAccessor httpContextAccessor)
+        public AuthorizationService(AppDbContext adb, IdentitySQLServerDb pdb, IHttpContextAccessor httpContextAccessor, ErrorLog errorLog)
         {
             _appDb = adb;
             _piranhaDb = pdb;
             _httpContextAccessor = httpContextAccessor;
+            _errorLog = errorLog;
         }
 
         public bool IsAuthorize()
@@ -43,36 +46,68 @@ namespace Catfish.Services
         /// <param name="roles"></param>
         public void EnsureUserRoles(List<string> workflowRoles)
         {
-            List<string> databaseRoles = new List<string>();
-            var oldRoles = _piranhaDb.Roles.ToList();
-
-            foreach (var role in oldRoles)
-                databaseRoles.Add(role.Name);
-
-            List<string> newRoles = workflowRoles.Except(databaseRoles).ToList();
-
-            foreach (var newRole in newRoles)
+            try
             {
-                Role role = new Role();
-                role.Id = Guid.NewGuid(); 
-                role.Name = newRole;
-                role.NormalizedName = newRole.ToUpper();
-                _piranhaDb.Roles.Add(role);
-            }
+                List<string> databaseRoles = new List<string>();
+                var oldRoles = _piranhaDb.Roles.ToList();
 
-            _piranhaDb.SaveChanges();
+                foreach (var role in oldRoles)
+                    databaseRoles.Add(role.Name);
+
+                List<string> newRoles = workflowRoles.Except(databaseRoles).ToList();
+
+                foreach (var newRole in newRoles)
+                {
+                    try
+                    {
+                        Role role = new Role();
+                        role.Id = Guid.NewGuid();
+                        role.Name = newRole;
+                        role.NormalizedName = newRole.ToUpper();
+                        _piranhaDb.Roles.Add(role);
+                    }
+                    catch (Exception ex)
+                    {
+                        _errorLog.Log(new Error(ex));
+                    }
+                    
+                }
+
+                _piranhaDb.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+            
         }
 
         public Role GetRole(string roleName, bool createIfNotExist)
         {
-            Role role = _piranhaDb.Roles.Where(r => r.Name == roleName).FirstOrDefault();
-            if(role == null && createIfNotExist)
+            try
             {
-                role = new Role() { Name = roleName, NormalizedName = roleName.ToUpper(), Id = Guid.NewGuid() };
-                _piranhaDb.Roles.Add(role);
-                _piranhaDb.SaveChanges();
+                Role role = _piranhaDb.Roles.Where(r => r.Name == roleName).FirstOrDefault();
+                if (role == null && createIfNotExist)
+                {
+                    try
+                    {
+                        role = new Role() { Name = roleName, NormalizedName = roleName.ToUpper(), Id = Guid.NewGuid() };
+                        _piranhaDb.Roles.Add(role);
+                        _piranhaDb.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        _errorLog.Log(new Error(ex));
+                    }
+                }
+                return role;
             }
-            return role;
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+            
         }
 
         /// <summary>
@@ -82,47 +117,88 @@ namespace Catfish.Services
         /// <param name="groups"></param>
         public void EnsureGroups(List<string> workflowGroups, Guid templateId)
         {
-            List<string> databaseGroups = new List<string>();
-            var oldGroups = _appDb.Groups.ToList();
-
-            foreach (var group in oldGroups)
-                databaseGroups.Add(group.Name);
-
-            List<string> newGroups = workflowGroups.Except(databaseGroups).ToList();
-
-            foreach (var newGroup in newGroups)
+            try
             {
-                Group group = new Group();
-                group.Id = Guid.NewGuid();
-                group.Name = newGroup;
-                _appDb.Groups.Add(group);
+                List<string> databaseGroups = new List<string>();
+                var oldGroups = _appDb.Groups.ToList();
+
+                foreach (var group in oldGroups)
+                    databaseGroups.Add(group.Name);
+
+                List<string> newGroups = workflowGroups.Except(databaseGroups).ToList();
+
+                foreach (var newGroup in newGroups)
+                {
+                    try
+                    {
+                        Group group = new Group();
+                        group.Id = Guid.NewGuid();
+                        group.Name = newGroup;
+                        _appDb.Groups.Add(group);
+                    }
+                    catch (Exception ex)
+                    {
+                        _errorLog.Log(new Error(ex));
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+            
         }
 
         public IList<ItemTemplate> GetSubmissionTemplateList()
-        {  
-            //get current logged user
-            string loggedUserRole = GetLoggedUserRole();
-            
-            
-            IList<ItemTemplate> itemTemplates = _appDb.ItemTemplates.ToList();
+        {
+            try
+            {
+                string loggedUserRole = GetLoggedUserRole();
 
-            return itemTemplates;
+
+                IList<ItemTemplate> itemTemplates = _appDb.ItemTemplates.ToList();
+
+                return itemTemplates;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+            //get current logged user
+            
         }
 
         
         public Guid GetLoggedUserId()
         {
-            string userName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            try
+            {
+                string userName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var userDetails = _piranhaDb.Users.Where(ud => ud.UserName == userName).FirstOrDefault();
+                var userDetails = _piranhaDb.Users.Where(ud => ud.UserName == userName).FirstOrDefault();
 
-            return userDetails.Id;
+                return userDetails.Id;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return new Guid();
+            }
+            
         }
 
         public string GetLoggedUserRole()
         {
-            return _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
+            try
+            {
+                return _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return "";
+            }
         }
 
         
@@ -161,7 +237,15 @@ namespace Catfish.Services
 
         public User GetUserDetails(Guid id)
         {
-            return _piranhaDb.Users.Where(u => u.Id == id).FirstOrDefault();
+            try
+            {
+                return _piranhaDb.Users.Where(u => u.Id == id).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
         }
 
     }

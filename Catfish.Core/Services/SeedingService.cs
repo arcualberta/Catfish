@@ -8,15 +8,18 @@ using System;
 using Catfish.Core.Helpers;
 using Catfish.Core.Models.Contents.ViewModels;
 using System.Security.Cryptography;
+using ElmahCore;
 
 namespace Catfish.Core.Services
 {
     public class SeedingService
     {
         protected AppDbContext Db;
-        public SeedingService(AppDbContext db)
+        private readonly ErrorLog _errorLog;
+        public SeedingService(AppDbContext db, ErrorLog errorLog)
         {
             Db = db;
+            _errorLog = errorLog;
         }
 
         public static MetadataSet NewDublinCoreMetadataSet()
@@ -187,7 +190,7 @@ namespace Catfish.Core.Services
 
                 Db.SaveChanges();
             }
-            DbEntityService entityService = new DbEntityService(Db);
+            DbEntityService entityService = new DbEntityService(Db, _errorLog);
 
             EntityTemplate template;
 
