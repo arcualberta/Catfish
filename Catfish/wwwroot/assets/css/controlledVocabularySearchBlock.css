@@ -15,3 +15,11 @@
 .card{
 	max-width:33%;
 }
+
+.main-card-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	-webkit-line-clamp: 8;
+	-webkit-box-orient: vertical;
+	display: -webkit-box;
+}

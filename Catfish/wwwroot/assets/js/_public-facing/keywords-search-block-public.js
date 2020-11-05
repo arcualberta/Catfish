@@ -8,7 +8,8 @@
             searchResults: [],
             pagesTotal: 0,
             currentPage: 1,
-            cardsPerPage: 3
+            cardsPerPage: 3,
+            searchMade: false
 		}
     },
     methods: {
@@ -20,7 +21,7 @@
 			}
 
             this.makePostCall();
-            
+            this.searchMade = true;
         },
 
         filterByCheckbox(event) {
@@ -31,6 +32,7 @@
             }
 
             this.makePostCall();
+            this.searchMade = true;
         },
 
         makePostCall() {
