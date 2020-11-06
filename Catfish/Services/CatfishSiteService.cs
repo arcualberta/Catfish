@@ -2,6 +2,7 @@
 using Catfish.Models.Blocks;
 using Catfish.Models.Fields;
 using Catfish.Models.SiteTypes;
+using ElmahCore;
 using Piranha;
 using Piranha.Models;
 using Piranha.Services;
@@ -16,65 +17,77 @@ namespace Catfish.Services
     public class CatfishSiteService : ICatfishSiteService
     {
         private IApi _api;
-        public CatfishSiteService(IApi api)
+        private readonly ErrorLog _errorLog;
+        public CatfishSiteService(IApi api, ErrorLog errorLog)
         {
             _api = api;
+            _errorLog = errorLog;
         }
 
         public async Task UpdateKeywordVocabularyAsync(SiteContentBase siteContentBase)
         {
-            Guid siteId = siteContentBase.Id;
-            var siteTypeId = siteContentBase.TypeId;
-
-            if (siteTypeId == typeof(CatfishWebsite).Name || siteTypeId == typeof(WorkflowPortal).Name)
+            try
             {
-                //Get the contents of the given site
-                var siteContent = await _api.Sites.GetContentByIdAsync(siteId).ConfigureAwait(false);
+                Guid siteId = siteContentBase.Id;
+                var siteTypeId = siteContentBase.TypeId;
 
-                //Gets the keywords field of the site settings
-                var keywordsField = siteContent.Regions.Keywords as Piranha.Extend.Fields.TextField;
-
-                //Keywords
-                var keywords = keywordsField.Value.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                string concatenatedKeywords = string.Join(",", keywords);
-
-                //categories
-                //OCt 30 2020 - Gets the categories field of the site settings
-                var categoriesField = siteContent.Regions.Categories as Piranha.Extend.Fields.TextField;
-                var categories = categoriesField.Value.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                string concatenatedCategories = string.Join(",", keywords);
-
-
-                //Get all the pages of the site and update their keywords
-                var pages = await _api.Pages.GetAllAsync(siteId).ConfigureAwait(false);
-                foreach (var page in pages)
+                if (siteTypeId == typeof(CatfishWebsite).Name || siteTypeId == typeof(WorkflowPortal).Name)
                 {
-                    try
-                    {
-                        UpdateKeywordVocabularyAsync(page, concatenatedKeywords, concatenatedCategories);
-                        await _api.Pages.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
+                    //Get the contents of the given site
+                    var siteContent = await _api.Sites.GetContentByIdAsync(siteId).ConfigureAwait(false);
 
-                //Get all posts of the site and update their keywords
-                var posts = await _api.Posts.GetAllAsync(siteId).ConfigureAwait(false);
-                foreach (var post in posts)
-                {
-                    try
+                    //Gets the keywords field of the site settings
+                    var keywordsField = siteContent.Regions.Keywords as Piranha.Extend.Fields.TextField;
+
+                    //Keywords
+                    var keywords = keywordsField.Value.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    string concatenatedKeywords = string.Join(",", keywords);
+
+                    //categories
+                    //OCt 30 2020 - Gets the categories field of the site settings
+                    var categoriesField = siteContent.Regions.Categories as Piranha.Extend.Fields.TextField;
+                    var categories = categoriesField.Value.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    string concatenatedCategories = string.Join(",", keywords);
+
+
+                    //Get all the pages of the site and update their keywords
+                    var pages = await _api.Pages.GetAllAsync(siteId).ConfigureAwait(false);
+                    foreach (var page in pages)
                     {
-                        var postKeywords = post.Regions.Keywords as ControlledKeywordsField;
-                        postKeywords.Vocabulary.Value = concatenatedKeywords;
-                        UpdateKeywordVocabularyAsync(post, concatenatedKeywords, concatenatedCategories);
-                        await _api.Posts.SaveAsync<DynamicPost>(post).ConfigureAwait(false);
+                        try
+                        {
+                            UpdateKeywordVocabularyAsync(page, concatenatedKeywords, concatenatedCategories);
+                            await _api.Pages.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            _errorLog.Log(new Error(ex));
+                        }
                     }
-                    catch (Exception)
+
+                    //Get all posts of the site and update their keywords
+                    var posts = await _api.Posts.GetAllAsync(siteId).ConfigureAwait(false);
+                    foreach (var post in posts)
                     {
+                        try
+                        {
+                            var postKeywords = post.Regions.Keywords as ControlledKeywordsField;
+                            postKeywords.Vocabulary.Value = concatenatedKeywords;
+                            UpdateKeywordVocabularyAsync(post, concatenatedKeywords, concatenatedCategories);
+                            await _api.Posts.SaveAsync<DynamicPost>(post).ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            _errorLog.Log(new Error(ex));
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+
         }
 
         protected void UpdateKeywordVocabularyAsync(DynamicPage page, string concatenatedVocabulary, string concatenatedCategories)
@@ -159,9 +172,9 @@ namespace Catfish.Services
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                _errorLog.Log(new Error(ex));
             }
         }
 
@@ -186,31 +199,47 @@ namespace Catfish.Services
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                _errorLog.Log(new Error(ex));
             }
         }
 
         public async Task<string> getDefaultSiteKeywordAsync()
         {
-            var site =  _api.Sites.GetDefaultAsync();
-         
-            var siteContent = await  _api.Sites.GetContentByIdAsync<CatfishWebsite>(site.Result.Id).ConfigureAwait(false);
-          
-            
-            return siteContent.Keywords.Value != null ? siteContent.Keywords.Value : null;
-           
+            try
+            {
+                var site = _api.Sites.GetDefaultAsync();
+
+                var siteContent = await _api.Sites.GetContentByIdAsync<CatfishWebsite>(site.Result.Id).ConfigureAwait(false);
+
+
+                return siteContent.Keywords.Value != null ? siteContent.Keywords.Value : null;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
         }
 
         public async Task<string> getDefaultSiteCategoryAsync()
         {
-            var site = _api.Sites.GetDefaultAsync();
+            try
+            {
+                var site = _api.Sites.GetDefaultAsync();
 
-            var siteContent = await _api.Sites.GetContentByIdAsync<CatfishWebsite>(site.Result.Id).ConfigureAwait(false);
+                var siteContent = await _api.Sites.GetContentByIdAsync<CatfishWebsite>(site.Result.Id).ConfigureAwait(false);
 
 
-            return siteContent.Categories.Value != null ? siteContent.Categories.Value : null;
+                return siteContent.Categories.Value != null ? siteContent.Categories.Value : null;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+            
         }
     }
 }

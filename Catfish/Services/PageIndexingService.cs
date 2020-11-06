@@ -9,6 +9,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Catfish.Models.Blocks;
+using Microsoft.AspNetCore.Http;
+using ElmahCore;
+using Hangfire.Logging.LogProviders;
+using Catfish.Models.Regions;
+using Catfish.Models;
+using Catfish.Models.Fields;
 
 namespace Catfish.Services
 {
@@ -17,14 +24,16 @@ namespace Catfish.Services
         private readonly IApi _api;
         private readonly ISolrIndexService<SolrEntry> _solrIndexService;
         private readonly IQueryService _solrQueryService;
-        public PageIndexingService(ISolrIndexService<SolrEntry> iSrv, IQueryService qSrv, IApi api)
+        private readonly ErrorLog _errorLog;
+        public PageIndexingService(ISolrIndexService<SolrEntry> iSrv, IQueryService qSrv, IApi api, ErrorLog errorLog)
         {
             _api = api;
             _solrIndexService = iSrv;
             _solrQueryService = qSrv;
+            _errorLog = errorLog;
         }
 
-        public void IndexBlock(Block block, SolrEntry entry)
+        protected void IndexBlock(Block block, SolrEntry entry)
         {
             if (block == null || entry == null)
                 return;
@@ -56,6 +65,15 @@ namespace Catfish.Services
                     entry.AddContent(block.Id, text);
             }
 
+            //For given block is an ImageBlock or any specialization of it,
+            //then we index its Url
+            if (typeof(ImageBlock).IsAssignableFrom(block.GetType()))
+            {
+                string text = (block as ImageBlock).Body.Media.PublicUrl;
+                if (!string.IsNullOrWhiteSpace(text))
+                    entry.AddImage(block.Id, text);
+            }
+
             //If the given block is an ColumnBlock or any specialization of it,
             //then we index each block inside it
             if (typeof(ColumnBlock).IsAssignableFrom(block.GetType()))
@@ -68,31 +86,59 @@ namespace Catfish.Services
 
         public void IndexPage(PageBase doc)
         {
-            if (doc == null || !doc.IsPublished)
-                return;
-
-            SolrEntry entry = new SolrEntry()
+            try
             {
-                Id = doc.Id,
-                ObjectType = SolrEntry.eEntryType.Page,
-                Permalink = string.IsNullOrWhiteSpace(doc.Permalink) ? null : doc.Permalink,
-            };
+                if (doc == null || !doc.IsPublished)
+                    return;
 
-            entry.Title.Add(doc.Title);
+                SolrEntry entry = new SolrEntry()
+                {
+                    Id = doc.Id,
+                    ObjectType = SolrEntry.eEntryType.Page,
+                    Permalink = string.IsNullOrWhiteSpace(doc.Permalink) ? null : doc.Permalink,
+                };
 
-            if (!string.IsNullOrEmpty(doc.Excerpt))
-                entry.AddContent(doc.Id, doc.Excerpt);
+                entry.Title.Add(doc.Title);
 
-            //Indexing all content blocks
-            foreach (var block in doc.Blocks)
-                IndexBlock(block, entry);
 
-            IndexInSolr(entry);
+                //Index any keywords selected for the page
+                List<string> keywords = new List<string>();
+                try
+                {
+                    keywords = ((doc as DynamicPage).Regions.Keywords as ControlledKeywordsField)
+                        .SelectedKeywords
+                        .Value
+                        .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                        .ToList();
+
+                    foreach (var kw in keywords)
+                        entry.Keywords.Add(kw);
+                }
+                catch (Exception ex)
+                {
+                    _errorLog.Log(new Error(ex));
+                }
+
+                if (!string.IsNullOrEmpty(doc.Excerpt))
+                    entry.AddContent(doc.Id, doc.Excerpt);
+
+                //Indexing all content blocks
+                foreach (var block in doc.Blocks)
+                    IndexBlock(block, entry);
+
+                IndexInSolr(entry);
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
         }
 
         public void IndexPost(PostBase doc)
         {
-            if (doc == null || !doc.IsPublished)
+            try
+            {
+                if (doc == null || !doc.IsPublished)
                 return;
 
             SolrEntry entry = new SolrEntry()
@@ -107,11 +153,31 @@ namespace Catfish.Services
             if (!string.IsNullOrEmpty(doc.Excerpt))
                 entry.AddContent(doc.Id, doc.Excerpt);
 
-            //Indexing all content blocks
-            foreach (var block in doc.Blocks)
+
+             // add keywords
+
+            if ((doc as StandardPost).Keywords != null)
+                {
+                    var kWords = (doc as StandardPost).Keywords.SelectedKeywords.Value.Split(
+                      ",",
+                      StringSplitOptions.RemoveEmptyEntries).ToList();
+                    foreach (var kw in kWords)
+                    {
+                        entry.Keywords.Add(kw);
+                    }
+                }
+
+
+                //Indexing all content blocks
+                foreach (var block in doc.Blocks)
                 IndexBlock(block, entry);
 
             IndexInSolr(entry);
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
         }
         private void IndexInSolr(SolrEntry entry)
         {

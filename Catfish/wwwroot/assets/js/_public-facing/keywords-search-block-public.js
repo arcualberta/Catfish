@@ -18,7 +18,8 @@
                 this.categories.push(event.target.value);
             } else {
                 this.categories.splice(this.categories.indexOf(event.target.value), 1);
-			}
+            }
+            $('#' + event.target.id).button('toggle')
 
             this.makePostCall();
             this.searchMade = true;

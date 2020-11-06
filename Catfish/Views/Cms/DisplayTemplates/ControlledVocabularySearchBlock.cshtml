@@ -29,12 +29,12 @@
 <link href="~/assets/css/controlledVocabularySearchBlock.css" rel="stylesheet" />
 <script src="~/assets/dist/keywordsSearchBundle.js"></script>
 
-<div id="keywords-search-block-public">
+<div id="keywords-search-block-public" class="@vocabcssclass">
 
-    <div class="keywords-search-block @vocabcssclass">
+    <div class="keywords-search-block">
         @if (!string.IsNullOrWhiteSpace(blockname))
         {
-            <div class="block-title block-@blockname">@blockname</div>
+            <div class="block-title container block-@blockname">@blockname</div>
         }
 
         <form id="controlledVocabularySearchForm" method="post" action="/api/search/keywords">
@@ -59,16 +59,27 @@
 			    {
                     if (!String.IsNullOrWhiteSpace(@category))
                     {
-                        <button v-on:click="filterByCategory($event)" value="@(category)" id="@("category-" + categoryIndex)" type="button" class="category-button btn btn-light">@category</button>
+                        <button v-on:click="filterByCategory($event)" data-toggle="button" 
+                            aria-pressed="false" autocomplete="off" value="@(category)" 
+                            id="@("category-" + categoryIndex)" type="button" 
+                            class="category-button btn btn-light">
+                        @category
+                        </button>
 				    }
 				    else
 				    {
-                        <button v-on:click="filterByCategory($event)" value="*" id="category-default" type="button" class="category-default-button btn btn-light">Search</button>
+                        <button v-on:click="filterByCategory($event)" data-toggle="button" 
+                            aria-pressed="false" autocomplete="off" value="*" 
+                            id="category-default" type="button" 
+                            class="category-default-button btn btn-light">
+                        Search
+                        </button>
 				    }
                     categoryIndex++;
 			    }
                 </div>
             </div>
+            
             <!--<button id="ControlledVocabularySearchButton" type="submit" value="*" class="category-default-button btn btn-primary">
                 Submit
             </button>-->
@@ -76,46 +87,54 @@
         </form>
     </div>
 
-    <h4>Search Results</h4>
+    <div class="search-section container">
 
-    <div v-if="searchResults.length > 0">
+        <div class="search-header-holder">
 
-        <div class="pagination-holder">
-            <ul class="pagination">
-                <li :class="{'disabled': currentPage==1}" class="page-item">
-                    <a v-on:click="currentPage = currentPage - 1" class="page-link">Previous</a>
-                </li>
-                <li v-for="index in pagesTotal" :key="index" :class="{'active': currentPage == index}" class="page-item">
-                    <a v-on:click="currentPage = index" class="page-link">{{index}}</a>
-                </li>
-                <li :class="{'disabled': currentPage==Math.ceil(searchResults.length/cardsPerPage)}" class="page-item">
-                    <a v-on:click="currentPage = currentPage + 1" class="page-link">Next</a>
-                </li>
-            </ul>
+            <h4>Search Results</h4>
+
+            <div v-if="searchResults.length > 0" class="pagination-holder">
+                <ul class="pagination">
+                    <li :class="{'disabled': currentPage==1}" class="page-item">
+                        <a v-on:click="currentPage = currentPage - 1" class="page-link">Previous</a>
+                    </li>
+                    <li v-for="index in pagesTotal" :key="index" :class="{'active': currentPage == index}" class="page-item">
+                        <a v-on:click="currentPage = index" class="page-link">{{index}}</a>
+                    </li>
+                    <li :class="{'disabled': currentPage==Math.ceil(searchResults.length/cardsPerPage)}" class="page-item">
+                        <a v-on:click="currentPage = currentPage + 1" class="page-link">Next</a>
+                    </li>
+                </ul>
+            </div>
+
         </div>
+
+        <div v-if="searchResults.length > 0">
         
-        <div id="controlledVocabularySearchResults">
-            <div v-for="searchResult of searchResults.slice((currentPage - 1) * cardsPerPage, (currentPage-1) * cardsPerPage + cardsPerPage)" class="card">
-                <img class="card-img-top" :src="searchResult.images[0]" alt="Search result image">
-                <div class="card-body">
-                    <h5 class="card-title">{{searchResult.containerIds[0]}} | {{searchResult.title[0]}}</h5>
-                    <p class="card-text main-card-text">
-                    {{searchResult.contents[0]}}
-                    </p>
-                    <p class="card-text">
-                    {{searchResult.contents[1]}}
-                    </p>
-                    <a href="searchResult.permalink" class="btn btn-primary">View</a>
+            <div id="controlledVocabularySearchResults">
+                <div v-for="searchResult of searchResults.slice((currentPage - 1) * cardsPerPage, (currentPage-1) * cardsPerPage + cardsPerPage)" class="card">
+                    <img class="card-img-top" :src="searchResult.images[0]" alt="Search result image">
+                    <div class="card-body">
+                        <h5 class="card-title">{{searchResult.containerIds[0]}} | {{searchResult.title[0]}}</h5>
+                        <p class="card-text main-card-text">
+                        {{searchResult.contents[0]}}
+                        </p>
+                        <p class="card-text">
+                        {{searchResult.contents[1]}}
+                        </p>
+                        <a href="searchResult.permalink" class="btn btn-primary">View</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     
-    <div v-else-if="searchMade && searchResults.length == 0">
-        <h6>Sorry, no results.</h6>
-    </div>
-    <div v-else>
-        <h6>Select from the options above to search.</h6>
+        <div v-else-if="searchMade && searchResults.length == 0">
+            <h6>Sorry, no results.</h6>
+        </div>
+        <div v-else>
+            <h6>Select from the options above to search.</h6>
+        </div>
+
     </div>
 
 </div>

@@ -23,3 +23,14 @@
 	-webkit-box-orient: vertical;
 	display: -webkit-box;
 }
+
+.search-header-holder {
+	display: flex;
+	justify-content: space-between;
+	padding-top: 20px;
+	align-items: center;
+}
+
+.block-title {
+	padding-bottom: 10px;
+}

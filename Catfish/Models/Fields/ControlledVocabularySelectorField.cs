@@ -13,14 +13,14 @@ using System.Threading.Tasks;
 namespace Catfish.Models.Fields
 {
     [FieldType(Name = "Controlled Keywords", Component = "controlled-keywords")]
-    public class ControlledKeywordsField : IField
+    public class ControlledVocabularySelectorField : IField
     {
       
         public List<Keyword> AllowedKeywords { get; set; }
         public StringField Vocabulary { get; set; } = new StringField();
         public StringField SelectedKeywords { get; set; } = new StringField();
 
-        public ControlledKeywordsField()
+        public ControlledVocabularySelectorField()
         {
             AllowedKeywords = new List<Keyword>();
             Vocabulary = new StringField();
@@ -31,7 +31,7 @@ namespace Catfish.Models.Fields
             return "";
         }
 
-        public void Init(IApi api, ICatfishSiteService csSrv,ErrorLog errorLog)
+        public void Init(IApi api, ICatfishSiteService csSrv, ErrorLog errorLog)
         {
             if (csSrv == null)
             {
@@ -63,9 +63,9 @@ namespace Catfish.Models.Fields
         }
     }
 
-    public class Keyword
-    {
-        public bool Selected { get; set; }
-        public string Label { get; set; }
-    }
+    //public class Keyword
+    //{
+    //    public bool Selected { get; set; }
+    //    public string Label { get; set; }
+    //}
 }
