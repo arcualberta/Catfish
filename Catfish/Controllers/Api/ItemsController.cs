@@ -41,28 +41,43 @@ namespace Catfish.Controllers.Api
 
         // POST api/<ItemController>
         [HttpPost]
-        public void Post([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] string actionButton)
+        public ApiResult Post([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] string actionButton)
         {
-            EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
-            if (template == null)
-                throw new Exception("Entity template with ID = " + entityTemplateId + " not found.");
+            ApiResult result = new ApiResult();
+            try
+            {
+                EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
+                if (template == null)
+                    throw new Exception("Entity template with ID = " + entityTemplateId + " not found.");
 
-            //When we instantantiate an instance from the template, we do not need to clone metadata sets
-            Item newItem = template.Instantiate<Item>();
-            newItem.StatusId = _entityTemplateService.GetStatusId(entityTemplateId, actionButton);
-            newItem.PrimaryCollectionId = collectionId;
-            newItem.TemplateId = entityTemplateId;
+                //When we instantantiate an instance from the template, we do not need to clone metadata sets
+                Item newItem = template.Instantiate<Item>();
+                newItem.StatusId = _entityTemplateService.GetStatus(entityTemplateId, actionButton, true).Id;
+                newItem.PrimaryCollectionId = collectionId;
+                newItem.TemplateId = entityTemplateId;
 
-            DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
-            newDataItem.UpdateFieldValues(value);
-            newItem.DataContainer.Add(newDataItem);
-            newDataItem.EntityId = newItem.Id;
+                DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
+                newDataItem.UpdateFieldValues(value);
+                newItem.DataContainer.Add(newDataItem);
+                newDataItem.EntityId = newItem.Id;
 
-            //TODO: associated the newly createditem with the collection specified by CollectionId.
+                //TODO: associated the newly createditem with the collection specified by CollectionId.
 
-            //Adding the new entity to the database
-            _appDb.Items.Add(newItem);
-            _appDb.SaveChanges();
+                //Adding the new entity to the database
+                _appDb.Items.Add(newItem);
+                _appDb.SaveChanges();
+
+                result.Success = true;
+                result.Message = "Submission saved successfully.";
+
+            }
+            catch(Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Submission failed.";
+            }
+
+            return result;
         }
 
         // PUT api/<ItemController>/5

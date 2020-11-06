@@ -26,22 +26,25 @@
    () { TemplateOperations.Instantiate }))
    .Succeeded)
     {
-        <form id="submissionForm" method="post" action="@formPostUrl">
-            <input data-val="true" data-val-required="The TemplateId field is required."
-                   id="entityTemplateId" name="entityTemplateId" type="hidden"
-                   value="@entityTemplateId">
-            <input data-val="true" data-val-required="The ColectionId field is required."
-                   id="collectionId" name="collectionId" type="hidden"
-                   value="@collectionId">
+        <div class="submission-form-block @Model.CssClass.Value">
+            <form id="submissionForm" method="post" action="@formPostUrl">
+                <input data-val="true" data-val-required="The TemplateId field is required."
+                       id="entityTemplateId" name="entityTemplateId" type="hidden"
+                       value="@entityTemplateId">
+                <input data-val="true" data-val-required="The ColectionId field is required."
+                       id="collectionId" name="collectionId" type="hidden"
+                       value="@collectionId">
 
-            @*TODO: To display the name, description, and the list of fields of the
+                @*TODO: To display the name, description, and the list of fields of the
                 form represented in the "Item" here. *@
-            @Html.EditorFor(model => Item, Item.GetType().ToString())
-            <div id="buttonLayer">
-                <input id="saveButton" class="btn btn-primary" name="save" type="submit" value="Save" />
-                <input id ="submitButton" class="btn btn-success" name="submit" type="submit" value="Submit" />
-            </div>
-        </form>
+                @Html.EditorFor(model => Item, Item.GetType().ToString())
+                <div id="buttonLayer">
+                    @*<input id="saveButton" class="btn btn-primary" name="save" type="submit" value="Save" />*@
+                    <input id="submitButton" class="btn btn-success" name="submit" type="submit" value="Submit" />
+                </div>
+                <div class="submission-result-message" style="display:none"></div>
+            </form>
+        </div>
     }
         <script>
             var status;
@@ -74,6 +77,20 @@
                         url = $form.attr('action');
                     /* Send the data using post with element id name and name2*/
                     var posting = $.post(url, values);
+
+                    posting.done(function (data) {
+                        $(".submission-result-message").empty();
+
+                        if (data.success) {
+                            $(".submission-result-message").addClass("alert alert-success");
+                            $("#submissionForm")[0].reset();
+                        }
+                        else {
+                            $(".submission-result-message").addClass("alert alert-danger");
+                        }
+                        $(".submission-result-message").text(data.message);
+                        $(".submission-result-message").show();
+                    });
 
                     /* Alerts the results */
                     //posting.done(function (data) {

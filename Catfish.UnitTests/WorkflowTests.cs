@@ -662,6 +662,7 @@ namespace Catfish.UnitTests
             // start submission related workflow items
             //Defining actions
             GetAction startSubmissionAction = workflow.AddAction("Start Registration Submission", nameof(TemplateOperations.Instantiate), "Home");
+            startSubmissionAction.Access = GetAction.eAccess.Public;
 
             //Defining form template
             startSubmissionAction.AddTemplate(registrationForm.Id, "Start Registration Template");
