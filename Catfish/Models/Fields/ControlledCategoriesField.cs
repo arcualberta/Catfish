@@ -12,19 +12,19 @@ using System.Threading.Tasks;
 
 namespace Catfish.Models.Fields
 {
-    [FieldType(Name = "Controlled Keywords", Component = "controlled-keywords")]
-    public class ControlledKeywordsField : IField
+    [FieldType(Name = "Controlled Categories", Component = "controlled-categories")]
+    public class ControlledCategoriesField : IField
     {
-
-        public List<Keyword> AllowedKeywords { get; set; }
+      
+        public List<Keyword> AllowedCategories { get; set; }
         public StringField Vocabulary { get; set; } = new StringField();
-        public StringField SelectedKeywords { get; set; } = new StringField();
-
-        public ControlledKeywordsField()
+        public StringField SelectedCategories { get; set; } = new StringField();
+        
+        public ControlledCategoriesField()
         {
-            AllowedKeywords = new List<Keyword>();
+            AllowedCategories = new List<Keyword>();
             Vocabulary = new StringField();
-            SelectedKeywords = new StringField();
+            SelectedCategories = new StringField();
         }
         public string GetTitle()
         {
@@ -39,33 +39,29 @@ namespace Catfish.Models.Fields
                 CatfishSiteService catSrv = new CatfishSiteService(api, errorLog);
                 csSrv = catSrv;
             }
-            var siteKeyword = csSrv.getDefaultSiteKeywordAsync();
+            var siteCategory = csSrv.getDefaultSiteCategoryAsync();
 
-            // if (string.IsNullOrWhiteSpace(Vocabulary.Value))
-            // {
-            if (!string.IsNullOrWhiteSpace(siteKeyword.Result))
-                Vocabulary.Value = siteKeyword.Result;
-            // }
-            AllowedKeywords = string.IsNullOrWhiteSpace(Vocabulary.Value)
+           // if (string.IsNullOrWhiteSpace(Vocabulary.Value))
+           // {
+                if (!string.IsNullOrWhiteSpace(siteCategory.Result))
+                    Vocabulary.Value = siteCategory.Result;
+           // }
+            AllowedCategories = string.IsNullOrWhiteSpace(Vocabulary.Value)
                 ? new List<Keyword>()
                 : Vocabulary.Value.Split(",").Select(kw => new Keyword() { Label = kw }).ToList();
 
-            if (SelectedKeywords != null && !string.IsNullOrWhiteSpace(SelectedKeywords.Value))
+            if (SelectedCategories != null && !string.IsNullOrWhiteSpace(SelectedCategories.Value))
             {
-                var selected = SelectedKeywords.Value
+                var selected = SelectedCategories.Value
                     .Split(",", StringSplitOptions.RemoveEmptyEntries)
                     .ToList();
 
-                foreach (var keyword in AllowedKeywords)
+                foreach (var keyword in AllowedCategories)
                     keyword.Selected = selected.Contains(keyword.Label);
             }
 
         }
     }
 
-    public class Keyword
-    {
-        public bool Selected { get; set; }
-        public string Label { get; set; }
-    }
+   
 }

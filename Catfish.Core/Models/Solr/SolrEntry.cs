@@ -1,6 +1,9 @@
 ﻿using SolrNet.Attributes;
 using SolrNet.Impl;
 using System;
+using SolrNet.Attributes;
+using SolrNet.Impl;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,10 +16,10 @@ namespace Catfish.Core.Models.Solr
         [SolrField("id")]
         public Guid Id { get; set; }
 
-        [SolrField("title")]
+        [SolrField("title_ss")]
         public List<string> Title { get; set; } = new List<string>();
 
-        [SolrField("title_id")]
+        [SolrField("title_id_ss")]
         public List<Guid?> TitleId { get; set; } = new List<Guid?>();
 
         [SolrField("permalink_s")]
@@ -27,11 +30,23 @@ namespace Catfish.Core.Models.Solr
         [SolrField("object_type_i")]
         public int object_type_i { get { return (int)ObjectType; } set { ObjectType = (eEntryType)Enum.ToObject(typeof(eEntryType), value); } }
 
-        [SolrField("containerId")]
+        [SolrField("containerId_ss")]
         public List<Guid?> ContainerIds { get; set; } = new List<Guid?>();
 
-        [SolrField("content")]
+        [SolrField("content_ss")]
         public List<string> Contents { get; set; } = new List<string>();
+
+        [SolrField("imageContainerId_ss")]
+        public List<Guid?> ImageContainerIds { get; set; } = new List<Guid?>();
+
+        [SolrField("images_ss")]
+        public List<string> Images { get; set; } = new List<string>();
+
+        [SolrField("keywords_ss")]
+        public List<string> Keywords { get; set; } = new List<string>();
+
+        [SolrField("categories_ss")]
+        public List<string> Categories { get; set; } = new List<string>();
 
         public List<string> Highlights { get; set; } = new List<string>();
 
@@ -45,5 +60,12 @@ namespace Catfish.Core.Models.Solr
             ContainerIds.Add(containerId);
             Contents.Add(content);
         }
+
+        public void AddImage(Guid containerId, string url)
+        {
+            ImageContainerIds.Add(containerId);
+            Images.Add(url);
+        }
+
     }
 }

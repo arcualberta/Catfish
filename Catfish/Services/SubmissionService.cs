@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using ElmahCore;
 using Microsoft.AspNetCore.Identity;
 using Piranha.AspNetCore.Identity.Data;
 using System;
@@ -13,15 +14,13 @@ namespace Catfish.Services
         private readonly IAuthorizationService _authorizationService;
         protected IEmailService _emailService;
         private readonly AppDbContext _db;
-        //private readonly UserManager<IdentityUser> _userManager;
-        //private readonly RoleManager<IdentityRole> _roleManager;
-        public SubmissionService(IAuthorizationService auth, IEmailService email, AppDbContext db/*, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager*/)
+        private readonly ErrorLog _errorLog;
+        public SubmissionService(IAuthorizationService auth, IEmailService email, AppDbContext db, ErrorLog errorLog)
         {
             _authorizationService = auth;
             _emailService = email;
             _db = db;
-            //_userManager = userManager;
-            //_roleManager = roleManager;
+            _errorLog = errorLog;
         }
 
         ///// <summary>
@@ -58,7 +57,16 @@ namespace Catfish.Services
         //}
         public List<Item> GetSubmissionList()
         {
-            return _db.Items.ToList();
+            List<Item> items = new List<Item>();
+            try
+            {
+                items = _db.Items.ToList();
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+            return items;
 
         }
 
@@ -68,7 +76,40 @@ namespace Catfish.Services
         ///// <returns></returns>
         public Item GetSubmissionDetails(Guid itemId)
         {
-            return _db.Items.Where(it => it.Id == itemId).FirstOrDefault();
+            Item itemDetails = new Item();
+            try
+            {
+                itemDetails = _db.Items.Where(it => it.Id == itemId).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+            return itemDetails;
+        }
+
+        /// <summary>
+        /// Get the submission list which passing the parameters
+        /// if the collection id is null then it just return items which are belongs to the template id
+        /// otherwise that should return items which are belongs to the template id and collection id
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <param name="collectionId"></param>
+        /// <returns></returns>
+        public IList<Item> GetSubmissionList(Guid templateId, Guid collectionId)
+        {
+            IList<Item> itemList = new List<Item>();
+            try
+            {
+                itemList = (collectionId == null) ? _db.Items.Where(i => i.TemplateId == templateId).ToList() : _db.Items.Where(i => i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).ToList();
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+            return itemList;
+
+
         }
     }
 }

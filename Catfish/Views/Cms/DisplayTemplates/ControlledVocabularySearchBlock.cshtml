@@ -14,8 +14,8 @@
 @{
     //ViewBag.Title = Model.SearchPageName;
 
-    string blockname = Model.SearchPageName;
-    string vocabcssclass = Model.VocabCss;
+    string blockname = Model.SearchPageName.Value;
+    string vocabcssclass = Model.VocabCss.Value;
     string checkboxlist = Model.SelectedKeywords.Value;
 
     string[] words = checkboxlist == null ? new string[] { } : Regex.Split(checkboxlist, "[,\r\n]");

@@ -19,6 +19,9 @@ using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +36,8 @@ using Piranha.Services;
 using SolrNet;
 using System;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Catfish
 {
@@ -59,7 +64,7 @@ namespace Catfish
             .AddJsonFile("appsettings.json")
             .AddEnvironmentVariables();
             Configuration = builder.Build();
-          
+
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -86,7 +91,7 @@ namespace Catfish
                 options.UseManager();
                 options.UseTinyMCE();
                 options.UseMemoryCache();
-               
+
                 options.AddRazorRuntimeCompilation = true; //MR: Feb 11, 2020  -- Enabled run time compiler for razor, so don't need to recompile when update the view
             });
 
@@ -113,7 +118,7 @@ namespace Catfish
 
             //MR: Feb 7 2020 -- from piranha core MVCWeb example
             services.AddControllersWithViews();
-            
+
             ////services.AddControllersWithViews()
             ////    .AddNewtonsoftJson(options =>
             ////    {
@@ -138,7 +143,7 @@ namespace Catfish
             services.AddScoped<IPageService, Piranha.Services.PageService>();
             services.AddScoped<IParamService, ParamService>();
             services.AddScoped<IMediaService, Piranha.Services.MediaService>();
-            
+
             //Catfish services
             services.AddScoped<EntityTypeService>();
             services.AddScoped<GroupService>();
@@ -184,7 +189,9 @@ namespace Catfish
             services.AddElmah<XmlFileErrorLog>(options =>
             {
                 options.LogPath = "~/log";
+                options.CheckPermissionAction = context => context.User.IsInRole("SysAdmin");
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -229,22 +236,22 @@ namespace Catfish
 
             // Middleware setup
             //use localization
-           // var supportedCulture = new[]
-           //{
-           //     new CultureInfo("en"),
-           //     new CultureInfo("rus")
+            // var supportedCulture = new[]
+            //{
+            //     new CultureInfo("en"),
+            //     new CultureInfo("rus")
 
-           // };
-           // var requestLocalizationOptios = new RequestLocalizationOptions
-           // {
-           //     DefaultRequestCulture = new RequestCulture("en"),
-           //     //for formating like date, currency,etc
-           //     SupportedCultures = supportedCulture,
-           //     //UI string -- resources that we provided
-           //     SupportedUICultures = supportedCulture
+            // };
+            // var requestLocalizationOptios = new RequestLocalizationOptions
+            // {
+            //     DefaultRequestCulture = new RequestCulture("en"),
+            //     //for formating like date, currency,etc
+            //     SupportedCultures = supportedCulture,
+            //     //UI string -- resources that we provided
+            //     SupportedUICultures = supportedCulture
 
-           // };
-           // app.UseRequestLocalization(requestLocalizationOptios);
+            // };
+            // app.UseRequestLocalization(requestLocalizationOptios);
 
             app.UsePiranha();
             //MR Feb 7 2020 -- add classic MVC routing
@@ -272,10 +279,10 @@ namespace Catfish
 
             // /Register middleware
             app.UseStaticFiles();
-          
+
             app.UseRouting();
-          
-           // app.UseIntegratedPiranha();
+
+            // app.UseIntegratedPiranha();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UsePiranhaIdentity();
@@ -284,9 +291,9 @@ namespace Catfish
 
             app.UseEndpoints(endpoints =>
             {
-               
+
                 endpoints.MapDefaultControllerRoute();
-               
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -330,28 +337,36 @@ namespace Catfish
         {
             Piranha.App.Fields.Register<TextAreaField>();
             Piranha.App.Fields.Register<ControlledKeywordsField>();
+            Piranha.App.Fields.Register<ControlledCategoriesField>();
+            // Piranha.App.Fields.Register<CatfishSelectList<EType> > ();
         }
         private static void RegisterCustomScripts()
         {
             //App.Modules.Manager().Scripts.Add("~/assets/js/textarea-field.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/embed-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/catfish.itemlist.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
+            //App.Modules.Manager().Scripts.Add("~/assets/js/catfish.edititem.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/calendar-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/navigation-block.js");
-             App.Modules.Manager().Scripts.Add("~/assets/js/extended-image-block.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/extended-image-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/form.js"); 
+            App.Modules.Manager().Scripts.Add("~/assets/js/form.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/free-search.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-form.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/item-list.js");
             //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/bundle.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/vendors.bundle.js");
+
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
+
+            //App.Modules.Manager().Scripts.Add("~/assets/js/dropdownlist-field.js");
+
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-keywords.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/controlled-categories.js");
 
         }
         private static void RegisterCustomBlocks()
@@ -366,6 +381,7 @@ namespace Catfish
             App.Blocks.Register<SubmissionEntryPointList>();
             App.Blocks.Register<FreeSearchBlock>();
             App.Blocks.Register<SubmissionForm>();
+            App.Blocks.Register<ItemListBlock>();
             App.Blocks.Register<ExtendedImageBlock>();
             App.Blocks.Register<ExtendedGalleryBlock>();
             App.Blocks.Register<ControlledVocabularySearchBlock>();
@@ -373,9 +389,8 @@ namespace Catfish
         }
         private static void RegisterCustomStyles()
         {
-            
-             App.Modules.Get<Piranha.Manager.Module>()
-                .Styles.Add("~/assets/css/custom.css");
+            App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("~/assets/css/entity.css");
 
             App.Modules.Get<Piranha.Manager.Module>()
                 .Styles.Add("~/assets/css/formEditPage.css");
@@ -468,10 +483,10 @@ namespace Catfish
             menubar.Items.Insert(idx++, new MenuItem
             {
                 InternalId = "Collections",
-                Name = "Collections", 
+                Name = "Collections",
                 Route = "/manager/collections/",
                 Css = "fas fa-object-group"
-               
+
             });
 
             menubar.Items.Insert(idx++, new MenuItem
@@ -480,7 +495,7 @@ namespace Catfish
                 Name = "Items",
                 Route = "/manager/items/",
                 Css = "fas fa-object-ungroup"
-               
+
             });
 
 
@@ -525,19 +540,20 @@ namespace Catfish
                 var workflowService = scope.ServiceProvider.GetService<IWorkflowService>();
                 workflowService.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
 
-                var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
-                catfishSiteService.UpdateKeywordVocabularyAsync(siteContent).Wait();
+                // var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
+                // catfishSiteService.UpdateKeywordVocabularyAsync(siteContent).Wait();
             });
 
             App.Hooks.Pages.RegisterOnBeforeSave((page) => {
                 var scope = app.ApplicationServices.CreateScope();
 
                 //Updating keywords vocabulary
-                var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
-                catfishSiteService.UpdateKeywordVocabularyAsync(page).Wait();
+                // var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
+                // catfishSiteService.UpdateKeywordVocabularyAsync(page).Wait();
             });
 
-            App.Hooks.Pages.RegisterOnAfterSave((page) => {
+            App.Hooks.Pages.RegisterOnAfterSave((page) =>
+            {
                 var scope = app.ApplicationServices.CreateScope();
 
                 //Indexing page content
@@ -560,6 +576,18 @@ namespace Catfish
                 var service = scope.ServiceProvider.GetService<IPageIndexingService>();
                 service.IndexPost(post);
             });
+
+            //Hook for initialize Block's variable
+            //App.Hooks.Pages.RegisterOnLoad((page) =>
+            //{
+            //    var scope = app.ApplicationServices.CreateScope();
+            //    var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
+            //    //initialize the Kywords region on page load
+            //    catfishSiteService.UpdateKeywordVocabularyAsync(page).Wait();
+
+
+            //});
+
 
 
         }
