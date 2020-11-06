@@ -156,3 +156,8 @@
 .extendedMediaPicker{
     top:10% !important;
 }
+
+/* Submission Form Bloc */
+.submission-result-message{
+    margin-top: 15px;
+}

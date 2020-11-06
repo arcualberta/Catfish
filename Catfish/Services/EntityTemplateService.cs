@@ -90,16 +90,32 @@ namespace Catfish.Services
             
         }
 
-        public Guid GetStatusId(Guid entityTemplateId, string status)
+        public SystemStatus GetStatus(Guid entityTemplateId, string status, bool createIfNotExist)
         {
             try
             {
-                return _db.SystemStatuses.Where(ss => ss.NormalizedStatus == status.ToUpper() && ss.EntityTemplateId == entityTemplateId).Select(ss => ss.Id).FirstOrDefault();
+                SystemStatus sysStatus =  _db.SystemStatuses
+                    .Where(ss => ss.NormalizedStatus == status.ToUpper() && ss.EntityTemplateId == entityTemplateId)
+                    .FirstOrDefault();
+
+                if(sysStatus == null  && createIfNotExist)
+                {
+                    sysStatus = new SystemStatus()
+                    {
+                        EntityTemplateId = entityTemplateId,
+                        NormalizedStatus = status.ToUpper(),
+                        Status = status,
+                        Id = Guid.NewGuid()
+                    };
+                    _db.SystemStatuses.Add(sysStatus);
+                }
+
+                return sysStatus;
             }
             catch (Exception ex)
             {
                 _errorLog.Log(new Error(ex));
-                return new Guid();
+                return null;
             }
             
         }
