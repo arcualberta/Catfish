@@ -16,21 +16,24 @@ using Hangfire.Logging.LogProviders;
 using Catfish.Models.Regions;
 using Catfish.Models;
 using Catfish.Models.Fields;
+using Piranha.AspNetCore.Identity.SQLServer;
 
 namespace Catfish.Services
 {
     public class PageIndexingService : IPageIndexingService
     {
         private readonly IApi _api;
+        private readonly IdentitySQLServerDb _piranhaDb;
         private readonly ISolrIndexService<SolrEntry> _solrIndexService;
         private readonly IQueryService _solrQueryService;
         private readonly ErrorLog _errorLog;
-        public PageIndexingService(ISolrIndexService<SolrEntry> iSrv, IQueryService qSrv, IApi api, ErrorLog errorLog)
+        public PageIndexingService(ISolrIndexService<SolrEntry> iSrv, IQueryService qSrv, IApi api, IdentitySQLServerDb pdb, ErrorLog errorLog)
         {
             _api = api;
             _solrIndexService = iSrv;
             _solrQueryService = qSrv;
             _errorLog = errorLog;
+            _piranhaDb = pdb;
         }
 
         protected void IndexBlock(Block block, SolrEntry entry)
@@ -183,5 +186,26 @@ namespace Catfish.Services
         {
              _solrIndexService.AddUpdate(entry);
         }
+
+        public async Task<List<Site>> GetSitesList()
+        {
+            try
+            {
+                List<Site> sites = new List<Site>();
+                var siteList =await _api.Sites.GetAllAsync().ConfigureAwait(false);
+                foreach (var site in siteList)
+                {
+                    sites.Add(site);
+                }
+                return sites;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
+        
     }
 }
