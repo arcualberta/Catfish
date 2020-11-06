@@ -22,7 +22,7 @@
             $('#' + event.target.id).button('toggle')
 
             this.makePostCall();
-            this.searchMade = true;
+            
         },
 
         filterByCheckbox(event) {
@@ -31,9 +31,8 @@
             } else {
                 this.searchTerms.splice(this.searchTerms.indexOf(event.target.value), 1);
             }
-
+            
             this.makePostCall();
-            this.searchMade = true;
         },
 
         makePostCall() {
@@ -52,6 +51,7 @@
                 .then(data => {
                     this.searchResults = data;
                     this.pagesTotal = Math.ceil(this.searchResults.length / 3);
+                    this.searchMade = true;
                 });
 		}
 	},
