@@ -1,4 +1,5 @@
 ﻿using Catfish.Helper;
+using ElmahCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +15,11 @@ namespace Catfish.Services
         private ICatfishAppConfiguration _config;
         static int portNumber = 587;
         static bool enableSSL = true;
-        public EmailService(ICatfishAppConfiguration config)
+        private readonly ErrorLog _errorLog;
+        public EmailService(ICatfishAppConfiguration config, ErrorLog errorLog)
         {
             _config = config;
+            _errorLog = errorLog;
         }
         /// <summary>
         /// Sending email from contact form Block
@@ -24,19 +27,27 @@ namespace Catfish.Services
         /// <param name="email"></param>
         public void SendEmail(Email email)
         {
-            MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress(email.FromEmail);
-            mailMessage.To.Add(email.RecipientEmail);
-            mailMessage.Subject = email.Subject;
-            mailMessage.IsBodyHtml = true;
-            mailMessage.Body = "<p>From: " + email.UserName + "</p><p>Email : " + email.FromEmail + "</p><p>Message: </p><p>" + email.Body + "</p>";
-
-            using (SmtpClient client = new SmtpClient(_config.GetSmtpServer(), portNumber))
+            try
             {
-                client.UseDefaultCredentials = true;
-                client.EnableSsl = true;
-                client.Send(mailMessage);
+                MailMessage mailMessage = new MailMessage();
+                mailMessage.From = new MailAddress(email.FromEmail);
+                mailMessage.To.Add(email.RecipientEmail);
+                mailMessage.Subject = email.Subject;
+                mailMessage.IsBodyHtml = true;
+                mailMessage.Body = "<p>From: " + email.UserName + "</p><p>Email : " + email.FromEmail + "</p><p>Message: </p><p>" + email.Body + "</p>";
+
+                using (SmtpClient client = new SmtpClient(_config.GetSmtpServer(), portNumber))
+                {
+                    client.UseDefaultCredentials = true;
+                    client.EnableSsl = true;
+                    client.Send(mailMessage);
+                }
             }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+
 
         }
 

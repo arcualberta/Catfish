@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Fields;
+using ElmahCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,11 @@ namespace Catfish.Core.Services
     public class NewSeedingService
     {
         protected AppDbContext Db;
-        public NewSeedingService(AppDbContext db)
+        private readonly ErrorLog _errorLog;
+        public NewSeedingService(AppDbContext db, ErrorLog errorLog)
         {
             Db = db;
+            _errorLog = errorLog;
         }
 
         public MetadataSet NewDublinCoreMetadataSet()
@@ -155,7 +158,7 @@ namespace Catfish.Core.Services
 
         public void SeedDefaults(bool createSampleData)
         {
-            DbEntityService entityService = new DbEntityService(Db);
+            DbEntityService entityService = new DbEntityService(Db, _errorLog);
 
             EntityTemplate template;
 

@@ -19,6 +19,7 @@ using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
@@ -188,7 +189,9 @@ namespace Catfish
             services.AddElmah<XmlFileErrorLog>(options =>
             {
                 options.LogPath = "~/log";
+                options.CheckPermissionAction = context => context.User.IsInRole("SysAdmin");
             });
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -353,6 +356,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/free-search.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-form.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/item-list.js");
             //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/bundle.js");
             App.Modules.Manager().Scripts.Add("~/assets/dist/vendors.bundle.js");
@@ -377,6 +381,7 @@ namespace Catfish
             App.Blocks.Register<SubmissionEntryPointList>();
             App.Blocks.Register<FreeSearchBlock>();
             App.Blocks.Register<SubmissionForm>();
+            App.Blocks.Register<ItemListBlock>();
             App.Blocks.Register<ExtendedImageBlock>();
             App.Blocks.Register<ExtendedGalleryBlock>();
             App.Blocks.Register<ControlledVocabularySearchBlock>();
@@ -384,9 +389,8 @@ namespace Catfish
         }
         private static void RegisterCustomStyles()
         {
-            
-             App.Modules.Get<Piranha.Manager.Module>()
-                .Styles.Add("~/assets/css/custom.css");
+            App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("~/assets/css/entity.css");
 
             App.Modules.Get<Piranha.Manager.Module>()
                 .Styles.Add("~/assets/css/formEditPage.css");
@@ -548,7 +552,8 @@ namespace Catfish
                // catfishSiteService.UpdateKeywordVocabularyAsync(page).Wait();
             });
 
-            App.Hooks.Pages.RegisterOnAfterSave((page) => {
+            App.Hooks.Pages.RegisterOnAfterSave((page) =>
+            {
                 var scope = app.ApplicationServices.CreateScope();
 
                 //Indexing page content
@@ -573,15 +578,15 @@ namespace Catfish
             });
 
             //Hook for initialize Block's variable
-            App.Hooks.Pages.RegisterOnLoad((page) =>
-            {
-                var scope = app.ApplicationServices.CreateScope();
-                var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
-                //initialize the Kywords region on page load
-                catfishSiteService.UpdateKeywordVocabularyAsync(page).Wait();
+            //App.Hooks.Pages.RegisterOnLoad((page) =>
+            //{
+            //    var scope = app.ApplicationServices.CreateScope();
+            //    var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
+            //    //initialize the Kywords region on page load
+            //    catfishSiteService.UpdateKeywordVocabularyAsync(page).Wait();
               
 
-            });
+            //});
 
 
 

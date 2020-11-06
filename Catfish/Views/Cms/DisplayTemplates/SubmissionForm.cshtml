@@ -47,25 +47,20 @@
             var status;
             $(function () {
                 $(document).on('click', "#submitButton", function () {
-                    status = 'Submitted';/*$(this).val();*/
+                    status = 'Submitted';
                     console.log('Status = '+status)
                 });
                 $(document).on('click', "#saveButton", function () {
-                    status = 'Saved'/*$(this).val()*/;
+                    status = 'Saved'
                     console.log('Status = ' + status)
                 });
                 $("#submissionForm").submit(function (event) {
-                    //$("#buttonLayer button").click(function () {
-                    //    var val = $(this).val();
-                    //    console.log(val);
-                    //});
 
                     /* stop form from submitting normally */
                     event.preventDefault();
 
                     //Reguar expression for matching the variable name prefix up to the item's properties.
                     var prefix = /^Blocks\[[0-9]+\]\.Item\.|^block.Item\./;
-
 
                     var values = {};
                     $.each($('#submissionForm').serializeArray(), function (i, field) {
