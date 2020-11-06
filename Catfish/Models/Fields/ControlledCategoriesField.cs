@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Services;
+using ElmahCore;
 using Piranha;
 using Piranha.Extend;
 using Piranha.Extend.Fields;
@@ -18,7 +19,7 @@ namespace Catfish.Models.Fields
         public List<Keyword> AllowedCategories { get; set; }
         public StringField Vocabulary { get; set; } = new StringField();
         public StringField SelectedCategories { get; set; } = new StringField();
-
+        
         public ControlledCategoriesField()
         {
             AllowedCategories = new List<Keyword>();
@@ -30,12 +31,12 @@ namespace Catfish.Models.Fields
             return "";
         }
 
-        public void Init(IApi api, ICatfishSiteService csSrv)
+        public void Init(IApi api, ICatfishSiteService csSrv, ErrorLog errorLog)
         {
             if (csSrv == null)
             {
 
-                CatfishSiteService catSrv = new CatfishSiteService(api);
+                CatfishSiteService catSrv = new CatfishSiteService(api, errorLog);
                 csSrv = catSrv;
             }
             var siteCategory = csSrv.getDefaultSiteCategoryAsync();

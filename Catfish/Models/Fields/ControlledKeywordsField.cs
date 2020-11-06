@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Services;
+using ElmahCore;
 using Piranha;
 using Piranha.Extend;
 using Piranha.Extend.Fields;
@@ -30,12 +31,12 @@ namespace Catfish.Models.Fields
             return "";
         }
 
-        public void Init(IApi api, ICatfishSiteService csSrv)
+        public void Init(IApi api, ICatfishSiteService csSrv,ErrorLog errorLog)
         {
             if (csSrv == null)
             {
 
-                CatfishSiteService catSrv = new CatfishSiteService(api);
+                CatfishSiteService catSrv = new CatfishSiteService(api, errorLog);
                 csSrv = catSrv;
             }
             var siteKeyword = csSrv.getDefaultSiteKeywordAsync();

@@ -6,6 +6,7 @@ using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Models;
 using Catfish.Models.Blocks;
 using Catfish.Models.SiteTypes;
+using ElmahCore;
 using Piranha;
 using Piranha.AspNetCore.Services;
 using Piranha.Models;
@@ -21,7 +22,7 @@ namespace Catfish.Services
     public class WorkflowService : IWorkflowService
     {
         public static readonly string DefaultLanguage = "en";
-
+        private readonly ErrorLog _errorLog;
         private AppDbContext _db { get; set; }
         private IApi _api;
 
@@ -29,10 +30,11 @@ namespace Catfish.Services
 
         private Item mItem;
 
-        public WorkflowService(AppDbContext db, IApi api)
+        public WorkflowService(AppDbContext db, IApi api, ErrorLog errorLog)
         {
             _db = db;
             _api = api;
+            _errorLog = errorLog;
         }
 
         public EntityTemplate GetModel()
@@ -52,31 +54,58 @@ namespace Catfish.Services
 
         public void SetModel(Item item)
         {
-            mItem = item;
-            mEntityTemplate = _db.EntityTemplates.Where(et => et.Id == item.TemplateId).FirstOrDefault();
+            try
+            {
+                mItem = item;
+                mEntityTemplate = _db.EntityTemplates.Where(et => et.Id == item.TemplateId).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+
         }
 
         public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists)
         {
-            MetadataSet ms = GetMetadataSet(templateName, createIfNotExists, true);
-            return ms == null ? null : new EmailTemplate(ms.Data);
+            
+            try
+            {
+                MetadataSet ms = GetMetadataSet(templateName, createIfNotExists, true);
+                return ms == null ? null : new EmailTemplate(ms.Data);
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+
+            
         }
 
         protected MetadataSet GetMetadataSet(string metadataSetName, bool createIfNotExists, bool markAsTemplateMetadataSetIfCreated)
         {
-            MetadataSet ms = mEntityTemplate.MetadataSets
+            try
+            {
+                MetadataSet ms = mEntityTemplate.MetadataSets
                 .Where(ms => ms.GetName(DefaultLanguage) == metadataSetName)
                 .FirstOrDefault();
 
-            if(ms == null && createIfNotExists)
-            {
-                ms = new MetadataSet();
-                ms.SetName(metadataSetName, DefaultLanguage);
-                mEntityTemplate.MetadataSets.Add(ms);
-                if (markAsTemplateMetadataSetIfCreated)
-                    ms.IsTemplate = true;
+                if(ms == null && createIfNotExists)
+                {
+                    ms = new MetadataSet();
+                    ms.SetName(metadataSetName, DefaultLanguage);
+                    mEntityTemplate.MetadataSets.Add(ms);
+                    if (markAsTemplateMetadataSetIfCreated)
+                        ms.IsTemplate = true;
+                }
+                return ms;
             }
-            return ms;
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
         }
 
         //public DataItem GetDataItem(string dataItemName, bool createIfNotExists)
@@ -96,10 +125,18 @@ namespace Catfish.Services
 
         public Workflow GetWorkflow(bool createIfNotExists)
         {
-            XmlModel xml = new XmlModel(mEntityTemplate.Data);
-            XElement element = xml.GetElement(Workflow.TagName, createIfNotExists);
-            Workflow workflow = new Workflow(element);
-            return workflow;
+            try
+            {
+                XmlModel xml = new XmlModel(mEntityTemplate.Data);
+                XElement element = xml.GetElement(Workflow.TagName, createIfNotExists);
+                Workflow workflow = new Workflow(element);
+                return workflow;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
         }
 
         public List<string> GetEmailAddresses(EmailTrigger trigger)
@@ -119,89 +156,136 @@ namespace Catfish.Services
 
         public async Task InitSiteStructureAsync(Guid siteId, string siteTypeId)
         {
-            if(siteTypeId == typeof(WorkflowPortal).Name)
-            {
-                var site = await _api.Sites.GetByIdAsync(siteId).ConfigureAwait(false);
-
-                var siteContent = await _api.Sites.GetContentByIdAsync(siteId).ConfigureAwait(false);
-                var workflowPageSettings = siteContent.Regions.WorkflowPagesContent;
-                if (workflowPageSettings.CreateSubmissionEntryPage == true)
+            try {
+                if(siteTypeId == typeof(WorkflowPortal).Name)
                 {
-                    //Making sure the submission-entry page exists
-                    Guid? submissionEntryPageId = GetSystemPageId(siteId, "SubmissionEntryPage", true,
-                        string.IsNullOrEmpty(workflowPageSettings.SubmissionEntryPage) ? "Start a Submission" : workflowPageSettings.SubmissionEntryPage);
+                    var site = await _api.Sites.GetByIdAsync(siteId).ConfigureAwait(false);
 
-                    //Making sure this page has at least one block of SubmissionEntryList
-                    var page = await _api.Pages.GetByIdAsync(submissionEntryPageId.Value).ConfigureAwait(false);
-                    if (page.Blocks.Where(b => typeof(SubmissionEntryPointList).IsAssignableFrom(Type.GetType(b.Type))).Any() == false)
+                    var siteContent = await _api.Sites.GetContentByIdAsync(siteId).ConfigureAwait(false);
+                    var workflowPageSettings = siteContent.Regions.WorkflowPagesContent;
+                    if (workflowPageSettings.CreateSubmissionEntryPage == true)
                     {
-                        page.Blocks.Add(new SubmissionEntryPointList());
-                        await _api.Pages.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
+                        try
+                        {
+                            //Making sure the submission-entry page exists
+                            Guid? submissionEntryPageId = GetSystemPageId(siteId, "SubmissionEntryPage", true,
+                            string.IsNullOrEmpty(workflowPageSettings.SubmissionEntryPage) ? "Start a Submission" : workflowPageSettings.SubmissionEntryPage);
+
+                            //Making sure this page has at least one block of SubmissionEntryList
+                            var page = await _api.Pages.GetByIdAsync(submissionEntryPageId.Value).ConfigureAwait(false);
+                            if (page.Blocks.Where(b => typeof(SubmissionEntryPointList).IsAssignableFrom(Type.GetType(b.Type))).Any() == false)
+                            {
+                                page.Blocks.Add(new SubmissionEntryPointList());
+                                await _api.Pages.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _errorLog.Log(new Error(ex));
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
             }
         }
 
         protected Guid? GetSystemPageId(Guid siteId, string pageKey, bool createIfNotExist, string pageTitleIfShouldCreate)
         {
-            SystemPage pageInfo = _db.SystemPages
-                .Where(pg => pg.PageKey == "SubmissionEntryPage" && pg.SiteId == siteId)
-                .FirstOrDefault();
+            try { 
+                SystemPage pageInfo = _db.SystemPages
+                    .Where(pg => pg.PageKey == "SubmissionEntryPage" && pg.SiteId == siteId)
+                    .FirstOrDefault();
             
-            if (createIfNotExist == false)
-            {
-                if (pageInfo == null)
-                    return null;
+                if (createIfNotExist == false)
+                {
+                    if (pageInfo == null)
+                        return null;
+                    else
+                    {
+                        try
+                        {
+                            var t = _api.Pages.GetByIdAsync(pageInfo.PageId);
+                            t.Wait();
+                            return t.Result.Id;
+                        }
+                        catch (Exception ex)
+                        {
+                            _errorLog.Log(new Error(ex));
+                            return null;
+                        }
+
+        }
+                }
                 else
                 {
-                    var t = _api.Pages.GetByIdAsync(pageInfo.PageId);
-                    t.Wait();
-                    return t.Result.Id;
+                    if (pageInfo == null)
+                        pageInfo = new SystemPage() { PageKey = pageKey, SiteId = siteId };
+                    else
+                    {
+                        try
+                        {
+                            var t = _api.Pages.GetByIdAsync(pageInfo.PageId);
+                            t.Wait();
+                            var loadedPage = t.Result;
+
+                            if (loadedPage != null)
+                                return loadedPage.Id;
+                        }
+                        catch (Exception ex)
+                        {
+                            _errorLog.Log(new Error(ex));
+                            return null;
+                        }
+                        
+                    }
+
+                    //If the execution comes here, then we need to create a new page and update the page info entry
+                    var task = _api.Pages.CreateAsync<StandardPage>();
+                    task.Wait();
+
+                    StandardPage newPage = task.Result;
+                    newPage.SiteId = siteId;
+                    newPage.Published = DateTime.Now;
+                    newPage.Title = pageTitleIfShouldCreate;
+
+                    Task savePageTask = _api.Pages.SaveAsync<StandardPage>(newPage);
+                    savePageTask.Wait();
+
+                    pageInfo.PageId = newPage.Id;
+                    _db.SaveChanges();
+
+                    return newPage.Id;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                if (pageInfo == null)
-                    pageInfo = new SystemPage() { PageKey = pageKey, SiteId = siteId };
-                else
-                {
-                    var t = _api.Pages.GetByIdAsync(pageInfo.PageId);
-                    t.Wait();
-                    var loadedPage = t.Result;
-
-                    if (loadedPage != null)
-                        return loadedPage.Id;
-                }
-
-                //If the execution comes here, then we need to create a new page and update the page info entry
-                var task = _api.Pages.CreateAsync<StandardPage>();
-                task.Wait();
-
-                StandardPage newPage = task.Result;
-                newPage.SiteId = siteId;
-                newPage.Published = DateTime.Now;
-                newPage.Title = pageTitleIfShouldCreate;
-
-                Task savePageTask = _api.Pages.SaveAsync<StandardPage>(newPage);
-                savePageTask.Wait();
-
-                pageInfo.PageId = newPage.Id;
-                _db.SaveChanges();
-
-                return newPage.Id;
+                _errorLog.Log(new Error(ex));
+                return null;
             }
         }
 
         public string GetStatus(Guid entityTemplateId, string status, bool createIfNotExist)
         {
-            SystemStatus systemStatus = _db.SystemStatuses.Where(ss => ss.NormalizedStatus == status.ToUpper() && ss.EntityTemplateId == entityTemplateId).FirstOrDefault();
-            if(systemStatus == null && createIfNotExist)
+            try
             {
-                systemStatus = new SystemStatus() { Status = status, NormalizedStatus = status.ToUpper(), Id = Guid.NewGuid() ,EntityTemplateId = entityTemplateId};
-                _db.SystemStatuses.Add(systemStatus);
-                _db.SaveChanges();
+                SystemStatus systemStatus = _db.SystemStatuses.Where(ss => ss.NormalizedStatus == status.ToUpper() && ss.EntityTemplateId == entityTemplateId).FirstOrDefault();
+                if (systemStatus == null && createIfNotExist)
+                {
+                    systemStatus = new SystemStatus() { Status = status, NormalizedStatus = status.ToUpper(), Id = Guid.NewGuid(), EntityTemplateId = entityTemplateId };
+                    _db.SystemStatuses.Add(systemStatus);
+                    _db.SaveChanges();
+                }
+                return systemStatus.Status;
             }
-            return systemStatus.Status;
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return "";
+            }
+
         }
     }
 }

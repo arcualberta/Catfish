@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Solr;
+using ElmahCore;
 using SolrNet;
 using SolrNet.Exceptions;
 
@@ -11,9 +12,11 @@ namespace Catfish.Core.Services.Solr
     where TSolrOperations : ISolrOperations<T>
     {
 		private readonly TSolrOperations _solr;
-		public SolrIndexService(ISolrOperations<T> solr)
+		private readonly ErrorLog _errorLog;
+		public SolrIndexService(ISolrOperations<T> solr, ErrorLog errorLog)
 		{
 			_solr = (TSolrOperations)solr;
+			_errorLog = errorLog;
 		}
 
 		public bool AddUpdate(T document)
@@ -26,11 +29,11 @@ namespace Catfish.Core.Services.Solr
 				_solr.Optimize();
 				return true;
 			}
-			catch (SolrNetException ex)
+			catch ( Exception ex)
 			{
 				//Log exception
-				throw ex;
-				//return false;
+				_errorLog.Log(new Error(ex));
+				return false;
 
 			}
 		}
@@ -45,27 +48,12 @@ namespace Catfish.Core.Services.Solr
 				_solr.Optimize();
 				return true;
 			}
-			catch (SolrNetException ex)
+			catch (Exception ex)
 			{
 				//Log exception
-				throw ex;
+				_errorLog.Log(new Error(ex));
+				return false;
 			}
 		}
-
-		////public bool AddUpdate(Entity entity)
-		////{
-		////	List<SolrItemModel> entries = ExtractSolrEntries(entity);
-		////	//foreach (var entry in entries)
-		////	//	AddUpdate(entry as Item);
-		////	return true;
-		////}
-
-		////public List<SolrItemModel> ExtractSolrEntries(Entity entity)
-		////{
-		////	List<SolrItemModel> entries = new List<SolrItemModel>();
-
-
-		////	return entries;
-		////}
 	}
 }

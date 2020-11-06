@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using ElmahCore;
 using Piranha.AspNetCore.Identity.Data;
 using Piranha.AspNetCore.Identity.SQLServer;
 using System;
@@ -12,10 +13,12 @@ namespace Catfish.Services
     {
         public readonly IdentitySQLServerDb _piranhaDb;
         public readonly AppDbContext _appDb;
-        public CatfishInitializationService(AppDbContext adb, IdentitySQLServerDb pdb)
+        private readonly ErrorLog _errorLog;
+        public CatfishInitializationService(AppDbContext adb, IdentitySQLServerDb pdb, ErrorLog errorLog)
         {
             _appDb = adb;
             _piranhaDb = pdb;
+            _errorLog = errorLog;
         }
 
         /// <summary>
@@ -24,15 +27,22 @@ namespace Catfish.Services
         /// </summary>
         public void EnsureSystemRoles()
         {
-            //Ensuring that the GroupAdmin role exists
-            if (!_piranhaDb.Roles.Where(r => r.Name == GroupRole.GroupAdmin).Any())
+            try
             {
-                Role role = new Role();
-                role.Id = Guid.NewGuid();
-                role.Name = GroupRole.GroupAdmin;
-                role.NormalizedName = GroupRole.GroupAdmin.ToUpper();
-                _piranhaDb.Roles.Add(role);
-                _piranhaDb.SaveChanges();
+                //Ensuring that the GroupAdmin role exists
+                if (!_piranhaDb.Roles.Where(r => r.Name == GroupRole.GroupAdmin).Any())
+                {
+                    Role role = new Role();
+                    role.Id = Guid.NewGuid();
+                    role.Name = GroupRole.GroupAdmin;
+                    role.NormalizedName = GroupRole.GroupAdmin.ToUpper();
+                    _piranhaDb.Roles.Add(role);
+                    _piranhaDb.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
             }
         }
     }
