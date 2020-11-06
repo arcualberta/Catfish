@@ -43,70 +43,73 @@
                 <span class="title">@Localizer.General["Site Indexing"]</span>
             </div>
             <div class="card-body">
-                <form method="post">
-                    <div class="container-fluid">
-                        <table class="table table-borderless">
-                            <thead>
+                <div class="container-fluid">
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <th>@Localizer.General["Site Name"]</th>
+                                <th>@Localizer.General["Site Type"]</th>
+                                <th class="actions one"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                //TODO: initialize the offset and max using variables passed through the page model.
+                                int offset = 0;
+                                int max = 10000;
+                            }
+                            @foreach (var site in Model.Sites)
+                                {
+
                                 <tr>
-                                    <th>@Localizer.General["Site Name"]</th>
-                                    <th>@Localizer.General["Site Type"]</th>
-                                    <th class="actions one"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @{
-                                    //TODO: initialize the offset and max using variables passed through the page model.
-                                    int offset = 0;
-                                    int max = 10000;
-                                }
-                                @foreach (var site in Model.Sites)
-                                    {
-
-                                        <tr>
-                                            <td>
-                                                <span class="title">@site.Title</span>
-                                            </td>
-                                            <td>
-                                                <span class="title">@site.SiteTypeId</span>
-                                            </td>
-                                            <td class="actions one" style="width: 18rem;">
-                                                <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#userModal" onclick="addUser('@site.Id'); return false;">
-                                                    Index the Site
-                                                </button>
-                                                <div id="userModal" class="modal fade" role="dialog">
-                                                    <div class="modal-dialog">
-                                                         Modal content
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="myModalLabel">Page Index Confirmation</h5>
-                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <div class="card-body">
-                                                                    <div class="form-group">
-
-                                                                        <h5>Do you Really want to Index this Page?</h5>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                <input type="hidden" name="UserGroupRoleId" id="UserGroupRoleId" value="" />
-                                                                <button id="deleteConfirm" type="submit" class="btn btn-danger">Delete</button>
+                                    <td>
+                                        <span class="title">@site.Title</span>
+                                    </td>
+                                    <td>
+                                        <span class="title">@site.SiteTypeId</span>
+                                    </td>
+                                    <td class="actions one" style="width: 18rem;">
+                                        <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#userModal" onclick="addUser('@site.Id'); return false;">
+                                            Index the Site
+                                        </button>
+                                        <div id="userModal" class="modal fade" role="dialog">
+                                            <div class="modal-dialog">
+                                                    @*Modal content*@
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="myModalLabel">Page Index Confirmation</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="card-body">
+                                                            <div class="form-group">
+                                                                <h5>Do you Really want to Index this Page?</h5>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="modal-footer">
+                                                        <form id="indexForm" method="post" action="/api/solr/freetext">
+                                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                                            <input type="hidden" name="SiteId" id="SiteId" value="" />
+                                                            <button id="indexConfirm" type="submit" class="btn btn-success">Index</button>
+                                                        </form>
+                                                            
+                                                    </div>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    }
-                            </tbody>
-                        </table>
-                    </div>
-                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                }
+                        </tbody>
+                    </table>
+                </div>
             </div> @*Ends "card-body"*@
         </div> @*End: "cards"*@
     </div>
-
 </div>
-</div>
+<script>
+    function addUser(id) {
+        $(".modal-footer #SiteId").val(id);
+    }
+</script>

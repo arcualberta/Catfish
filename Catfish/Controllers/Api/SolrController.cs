@@ -13,10 +13,10 @@ namespace Catfish.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SearchController : ControllerBase
+    public class SolrController : ControllerBase
     {
         private readonly IQueryService QueryService;
-        public SearchController(IQueryService queryService)
+        public SolrController(IQueryService queryService)
         {
             QueryService = queryService;
         }
@@ -69,6 +69,12 @@ namespace Catfish.Api.Controllers
                 HttpContext.RiseError(ex);
                 return new List<SolrEntry>();
             }
+        }
+
+        [Route("index")]
+        public void IndexSite(Guid siteId)
+        {
+
         }
 
     }
