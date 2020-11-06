@@ -9,7 +9,10 @@
             pagesTotal: 0,
             currentPage: 1,
             cardsPerPage: 3,
-            searchMade: false
+            searchMade: false,
+            loadingSearchResults: false,
+            //for when there are a lot of pages, show '...' instead for some in the pagination
+            usePaginationEllipsis: false
 		}
     },
     methods: {
@@ -37,6 +40,7 @@
 
         makePostCall() {
             console.log(event);
+            this.loadingSearchResults = true;
             fetch(this.apiSearchUrl, {
                 method: 'POST',
                 /*headers: {
@@ -50,8 +54,17 @@
                 .then(response => response.json())
                 .then(data => {
                     this.searchResults = data;
+                    let tmp = JSON.parse(JSON.stringify(data));
+                    this.searchResults = this.searchResults.concat(tmp); //tmp
                     this.pagesTotal = Math.ceil(this.searchResults.length / 3);
+                    //check to add ellipsis to pagination if pages > 5
+                    if (this.pagesTotal > 5) {
+                        this.usePaginationEllipsis = true;
+					}
+
                     this.searchMade = true;
+                    this.loadingSearchResults = false;
+                    this.currentPage = 1;
                 });
 		}
 	},
