@@ -42,13 +42,16 @@
                     @*<input id="saveButton" class="btn btn-primary" name="save" type="submit" value="Save" />*@
                     <input id="submitButton" class="btn btn-success" name="submit" type="submit" value="Submit" />
                 </div>
-                <div class="submission-result-message" style="display:none"></div>
+                @*<div class="submission-result-message"></div>*@
             </form>
+
         </div>
     }
+<div class="submission-result-message"></div>
         <script>
             var status;
             $(function () {
+                $("submission-result-message").hide();
                 $(document).on('click', "#submitButton", function () {
                     status = 'Submitted';
                     console.log('Status = '+status)
@@ -83,7 +86,8 @@
 
                         if (data.success) {
                             $(".submission-result-message").addClass("alert alert-success");
-                            $("#submissionForm")[0].reset();
+                           
+                            $("#submissionForm").hide();//[0].reset();
                         }
                         else {
                             $(".submission-result-message").addClass("alert alert-danger");
