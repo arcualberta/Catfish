@@ -9,13 +9,43 @@
             pagesTotal: 0,
             currentPage: 1,
             cardsPerPage: 3,
+            pagesBeforeEllipsis: 5,
             searchMade: false,
             loadingSearchResults: false,
             //for when there are a lot of pages, show '...' instead for some in the pagination
-            usePaginationEllipsis: false
+            usePaginationEllipsis: false,
+            //for when there's ellipsis, need to track the position
+            pageAdvancement: 0,
 		}
     },
     methods: {
+
+        clickpreviousButton() { },
+
+        clickNextButton() { },
+
+        /**
+         * 
+         **/
+        clickPageNumber(index) {
+            this.currentPage = index;
+            if (!this.usePaginationEllipsis) {
+                return;
+            } else {
+                if (index > this.pagesBeforeEllipsis - 2) {
+                    this.pageAdvancement++;
+
+
+                } else {
+                    this.pageAdvancement--;
+				}
+			}
+        },
+
+        /**
+         * Stores/removes clicked filter button to call API again
+         * @param {any} event clickevent
+         */
         filterByCategory(event) {
             if (!this.categories.includes(event.target.value)) {
                 this.categories.push(event.target.value);
@@ -28,6 +58,10 @@
             
         },
 
+        /**
+         * Stores/removes clicked filter button to call API again
+         * @param {any} event clickevent
+         */
         filterByCheckbox(event) {
             if (!this.searchTerms.includes(event.target.value)) {
                 this.searchTerms.push(event.target.value);
@@ -58,7 +92,7 @@
                     this.searchResults = this.searchResults.concat(tmp); //tmp
                     this.pagesTotal = Math.ceil(this.searchResults.length / 3);
                     //check to add ellipsis to pagination if pages > 5
-                    if (this.pagesTotal > 5) {
+                    if (this.pagesTotal > this.pagesBeforeEllipsis) {
                         this.usePaginationEllipsis = true;
 					}
 

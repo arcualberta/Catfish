@@ -99,14 +99,15 @@
                         <a v-on:click="currentPage = currentPage - 1" class="page-link">Previous</a>
                     </li>
                     <template v-if="usePaginationEllipsis">
+                    @*Need another ellipsis here, need to figure out a condition*@
                         <li v-for="index in 3" :key="index" :class="{'active': currentPage == index}" class="page-item">
-                            <a v-on:click="currentPage = index" class="page-link">{{index}}</a>
+                            <a v-on:click="clickPageNumber(index)" class="page-link">{{index + pageAdvancement}}</a>
                         </li>
-                        <li class="page-item" disabled>
+                        <li class="page-item disabled">
                             <a class="page-link">...</a>    
                         </li>
                         <li :class="{'active': currentPage == pagesTotal}" class="page-item">
-                            <a v-on:click="currentPage = pagesTotal" class="page-link">{{pagesTotal}}</a>
+                            <a v-on:click="clickPageNumber(index)" class="page-link">{{pagesTotal}}</a>
                         </li>
                     </template>
                     
