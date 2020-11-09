@@ -19,5 +19,7 @@ namespace Catfish.Models.Blocks
 
         [Display(Name = "Collection")]
         public TextField CollectionId { get; set; }
+        [Display(Name = "Collection")]
+        public TextField SubmissionConfirmation { get; set; }
     }
 }
