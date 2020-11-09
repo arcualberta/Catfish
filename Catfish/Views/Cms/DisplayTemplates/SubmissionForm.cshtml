@@ -85,14 +85,15 @@
                         $(".submission-result-message").empty();
 
                         if (data.success) {
-                            $(".submission-result-message").addClass("alert alert-success");
-                           
+                          //  $(".submission-result-message").addClass("alert alert-success");
+                            $(".submission-result-message").append("<span class='alert alert-success' ></span>")
                             $("#submissionForm").hide();//[0].reset();
                         }
                         else {
-                            $(".submission-result-message").addClass("alert alert-danger");
+                           // $(".submission-result-message").addClass("alert alert-danger");
+                            $(".submission-result-message").append("<span class='alert alert-danger' ></span>")
                         }
-                        $(".submission-result-message").text(data.message);
+                        $(".submission-result-message span").text(data.message);
                         $(".submission-result-message").show();
                     });
 
