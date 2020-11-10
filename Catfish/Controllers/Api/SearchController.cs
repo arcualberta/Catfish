@@ -53,7 +53,8 @@ namespace Catfish.Api.Controllers
                 {
                     SolrEntry entry = new SolrEntry()
                     {
-                        Permalink = "http://google.com"
+                        Permalink = "http://google.com",
+                        Id = Guid.NewGuid()
                     };
 
                     entry.AddContent(Guid.NewGuid(), "Housed in the Department of Art and Design, the Research - Creation and Social Justice CoLABoratory(the CoLAB) has been championing and nurturing interdisciplinary and intersectional research - creation since 2014.The CoLAB brings together key researchers at the University of Alberta with national and international a");
