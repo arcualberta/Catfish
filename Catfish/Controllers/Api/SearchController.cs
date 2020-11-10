@@ -62,8 +62,6 @@ namespace Catfish.Api.Controllers
 
                     entry.SetTitle(Guid.NewGuid(), "Hello World");
 
-                    entry.Id = Guid.NewGuid();
-
                     entry.Images.Add("https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png");
                     result.Add(entry);
                 }
