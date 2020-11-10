@@ -61,7 +61,19 @@
                 .then(response => response.json())
                 .then(data => {
                     this.searchResults = data;
+                    console.log(this.searchResults);
+                    //tmp
+                    let count = 0;
+                    for (let item of this.searchResults) {
+                        item.id = count + Math.random();
+                        count++;
+					}
                     this.pagesTotal = Math.ceil(this.searchResults.length / 3);
+
+                    //tmp
+                    for (let tmp of this.searchResults) {
+                        console.log(tmp.id);
+					}
 
                     this.searchMade = true;
                     this.loadingSearchResults = false;

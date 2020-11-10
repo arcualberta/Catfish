@@ -34,3 +34,11 @@
 .block-title {
 	padding-bottom: 10px;
 }
+
+hr{
+	margin-top:0;
+}
+
+.filler-image-space{
+	height: 100%;
+}
