@@ -39,7 +39,7 @@ namespace Catfish.Api.Controllers
         }
 
         [Route("keywords")]
-        public IList<SolrEntry> Keywords([FromForm] string[] searchTerms, string category)
+        public IList<SolrEntry> Keywords([FromForm] string[] searchTerms,[FromForm] string category)
         {
             try
             {
