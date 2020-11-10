@@ -53,33 +53,17 @@
             let formData = new FormData();
             formData.append("searchTerms", this.searchTerms);
             formData.append("category", this.categories);
-            console.log("?", formData);
-
-            for (var p of formData) {
-                console.log("p", p);
-			}
-
             this.loadingSearchResults = true;
+
             fetch(this.apiSearchUrl, {
                 method: 'POST',
-                /*headers: {
-                    'Content-Type': 'application/json',
-                },*/
-                body: formData/*{
-                    searchTerms: this.searchTerms,
-                    category: this.categories
-                },*/
+                body: formData
             })
                 .then(response => response.json())
                 .then(data => {
                     this.searchResults = data;
                     console.log(this.searchResults);
-                    //tmp
-                    let count = 0;
-                    for (let item of this.searchResults) {
-                        item.id = count + Math.random();
-                        count++;
-					}
+                    
                     this.pagesTotal = Math.ceil(this.searchResults.length / 3);
 
                     this.searchMade = true;
