@@ -59,6 +59,8 @@ namespace Catfish.Api.Controllers
                     entry.AddContent(Guid.NewGuid(), "Housed in the Department of Art and Design, the Research - Creation and Social Justice CoLABoratory(the CoLAB) has been championing and nurturing interdisciplinary and intersectional research - creation since 2014.The CoLAB brings together key researchers at the University of Alberta with national and international a");
                     entry.AddContent(Guid.NewGuid(), "3–91 Fine Arts Building, <br />University of Alberta");
 
+                    entry.SetTitle(Guid.NewGuid(), "Hello World");
+
                     entry.Images.Add("https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png");
                     result.Add(entry);
                 }
