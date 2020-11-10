@@ -57,32 +57,16 @@
                 <div class="categories-section">
                 @foreach (var category in categories)
 			    {
-                    if (!String.IsNullOrWhiteSpace(@category))
-                    {
                         <button v-on:click="filterByCategory($event)" data-toggle="button" 
                             aria-pressed="false" autocomplete="off" value="@(category)" 
-                            id="@("category-" + categoryIndex)" type="button" 
+                            id="@("category-" + @category)" type="button" 
                             class="category-button btn btn-light">
                         @category
                         </button>
-				    }
-				    else
-				    {
-                        <button v-on:click="filterByCategory($event)" data-toggle="button" 
-                            aria-pressed="false" autocomplete="off" value="*" 
-                            id="category-default" type="button" 
-                            class="category-default-button btn btn-light">
-                        Search
-                        </button>
-				    }
                     categoryIndex++;
 			    }
                 </div>
             </div>
-            
-            <!--<button id="ControlledVocabularySearchButton" type="submit" value="*" class="category-default-button btn btn-primary">
-                Submit
-            </button>-->
 
         </form>
     </div>
@@ -120,12 +104,12 @@
                     <hr/>
                     <div class="card-body">
                         <a v-if="searchResult.permalink" :href="searchResult.permalink">
-                            <h5 class="card-title">{{searchResult.containerIds[0]}} | {{searchResult.title[0]}}</h5>
+                            <h5 class="card-title">{{searchResult.title[0]}}</h5>
                         </a>
-                        <h5 v-else class="card-title">{{searchResult.containerIds[0]}} | {{searchResult.title[0]}}</h5>
+                        <h5 v-else class="card-title">{{searchResult.title[0]}}</h5>
                         <div v-for="(content, index) of searchResult.contents" class="card-text main-card-text search-result-content">
                             <p v-if="index == searchResult.contents.length -1"></p>
-                            <p>{{content}}</p>
+                            <p v-html="content"></p>
                         </div>
                     </div>
                 </div>

@@ -4,7 +4,7 @@
         return {
             apiSearchUrl: "/api/search/keywords",
             searchTerms: [],
-            categories: [],
+            categories: '',
             searchResults: [],
             pagesTotal: 0,
             currentPage: 1,
@@ -20,12 +20,15 @@
          * @param {any} event clickevent
          */
         filterByCategory(event) {
-            if (!this.categories.includes(event.target.value)) {
-                this.categories.push(event.target.value);
+            if (this.categories != event.target.value) {
+                $('#category-' + this.categories).button('toggle');
+                this.categories = event.target.value;
             } else {
-                this.categories.splice(this.categories.indexOf(event.target.value), 1);
+                this.categories = '';
             }
-            $('#' + event.target.id).button('toggle')
+            $('#' + event.target.id).button('toggle');
+            
+            console.log(event.target.id);
 
             this.makePostCall();
             
@@ -47,16 +50,25 @@
 
         makePostCall() {
             console.log(event);
+            let formData = new FormData();
+            formData.append("searchTerms", this.searchTerms);
+            formData.append("category", this.categories);
+            console.log("?", formData);
+
+            for (var p of formData) {
+                console.log("p", p);
+			}
+
             this.loadingSearchResults = true;
             fetch(this.apiSearchUrl, {
                 method: 'POST',
                 /*headers: {
                     'Content-Type': 'application/json',
                 },*/
-                body: {
+                body: formData/*{
                     searchTerms: this.searchTerms,
                     category: this.categories
-                },
+                },*/
             })
                 .then(response => response.json())
                 .then(data => {
