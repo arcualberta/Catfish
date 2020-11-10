@@ -2,7 +2,7 @@
     el: '#keywords-search-block-public',
     data() {
         return {
-            apiSearchUrl: "/api/search/keywords",
+            apiSearchUrl: "/api/solr/keywords",
             searchTerms: [],
             categories: '',
             searchResults: [],
@@ -63,13 +63,16 @@
                 .then(data => {
                     this.searchResults = data;
                     console.log(this.searchResults);
-                    
+
                     this.pagesTotal = Math.ceil(this.searchResults.length / 3);
 
                     this.searchMade = true;
                     this.loadingSearchResults = false;
                     this.currentPage = 1;
-                });
+                })
+                .catch(error => {
+                    console.error("Failed to fetch: ", error);
+                })
 		}
 	},
     created() {

@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace Catfish.Services
 {
-    interface IPageIndexingService
+    public interface IPageIndexingService
     {
         public void IndexPage(PageBase page);
         public void IndexPost(PostBase post);
+        Task<List<Site>> GetSitesList();
+
     }
 }
