@@ -70,11 +70,6 @@
 					}
                     this.pagesTotal = Math.ceil(this.searchResults.length / 3);
 
-                    //tmp
-                    for (let tmp of this.searchResults) {
-                        console.log(tmp.id);
-					}
-
                     this.searchMade = true;
                     this.loadingSearchResults = false;
                     this.currentPage = 1;
