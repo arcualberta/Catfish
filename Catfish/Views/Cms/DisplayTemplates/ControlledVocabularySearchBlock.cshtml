@@ -120,6 +120,9 @@
         <div v-else-if="searchMade && searchResults.length == 0">
             <h6>Sorry, no results.</h6>
         </div>
+        <div v-else-if="hasErrorOccurred">
+            <h6>A problem has occurred completing your search. <br />Please contact ARC for further assistance.</h6>
+        </div>
         <div v-else-if="loadingSearchResults">
             <h6>Loading...</h6>
         </div>

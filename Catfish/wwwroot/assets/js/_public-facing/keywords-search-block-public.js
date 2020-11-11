@@ -11,6 +11,9 @@
             cardsPerPage: 3,
             searchMade: false,
             loadingSearchResults: false,
+            //error variable for if the fetch ever fails,
+            //will be used to show an error message to the user
+            hasErrorOccurred: false
 		}
     },
     methods: {
@@ -61,6 +64,10 @@
             })
                 .then(response => response.json())
                 .then(data => {
+                    if (!this.hasErrorOccurred) {
+                        this.hasErrorOccurred = false;
+					}
+
                     this.searchResults = data;
                     console.log(this.searchResults);
 
@@ -72,6 +79,7 @@
                 })
                 .catch(error => {
                     console.error("Failed to fetch: ", error);
+                    this.hasErrorOccurred = true;
                 })
 		}
 	},
