@@ -338,7 +338,8 @@ namespace Catfish
             Piranha.App.Fields.Register<TextAreaField>();
             Piranha.App.Fields.Register<ControlledKeywordsField>();
             Piranha.App.Fields.Register<ControlledCategoriesField>();
-           // Piranha.App.Fields.Register<CatfishSelectList<EType> > ();
+             Piranha.App.Fields.Register<CatfishSelectList<Entity>> ();
+           
         }
         private static void RegisterCustomScripts()
         {

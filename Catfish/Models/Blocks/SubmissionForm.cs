@@ -1,25 +1,29 @@
-﻿using Piranha.Extend;
+﻿
+using Catfish.Core.Models;
+using Catfish.Models.Fields;
+
+using Piranha.Extend;
 using Piranha.Extend.Fields;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Catfish.Models.Blocks
 {
+  
+    // private Enum eCollection = Enum.TryParse(EType, "Collection");
     [BlockType(Name = "Submission Form", Category = "Workflow", Component = "submission-form", Icon = "fab fa-wpforms")]
     public class SubmissionForm : Block
     {
         [Display(Name = "Css Class")]
         public StringField CssClass { get; set; }
-
-        [Display(Name = "Entity Template")]
-        public TextField EntityTemplateId { get; set; }
-
-        [Display(Name = "Collection")]
-        public TextField CollectionId { get; set; }
-        [Display(Name = "Collection")]
+ 
+        [Display(Name = "Submission Confirmation")]
         public TextField SubmissionConfirmation { get; set; }
+
+         public CatfishSelectList<Collection> Collections { get; set; }
+        public CatfishSelectList<ItemTemplate> ItemTemplates { get; set; }
+      
+        public TextField SelectedCollection { get; set; }
+     
+        public TextField SelectedItemTemplate { get; set; }
     }
 }
