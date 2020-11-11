@@ -101,8 +101,7 @@ namespace Catfish.Services
                     Permalink = string.IsNullOrWhiteSpace(doc.Permalink) ? null : doc.Permalink,
                 };
 
-                entry.Title.Add(doc.Title);
-
+                entry.SetTitle(doc.Id, doc.Title);
 
                 //Index any keywords selected for the page
                 List<string> keywords = new List<string>();
