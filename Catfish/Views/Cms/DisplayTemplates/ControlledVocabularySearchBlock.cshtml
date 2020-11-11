@@ -17,119 +17,119 @@
     string blockname = Model.SearchPageName.Value;
     string vocabcssclass = Model.VocabCss.Value;
     string checkboxlist = Model.SelectedKeywords.Value;
+    string categorieslist = Model.SelectedCategories.Value;
 
     string[] words = checkboxlist == null ? new string[] { } : Regex.Split(checkboxlist, "[,\r\n]");
+    string[] categories = categorieslist == null ? new string[] { } : Regex.Split(categorieslist, "[,\r\n]");
+    int categoryIndex = 0;
 
     var Results = new List<SolrEntry>();
 
 }
+<link href="~/assets/css/public/controlledVocabularySearchBlock.css" rel="stylesheet" />
+<script src="~/assets/dist/keywordsSearchBundle.js"></script>
 
+<div id="keywords-search-block-public" class="@vocabcssclass">
 
+    <div class="keywords-search-block">
+        @if (!string.IsNullOrWhiteSpace(blockname))
+        {
+            <div class="block-title container block-@blockname">@blockname</div>
+        }
 
+        <form id="controlledVocabularySearchForm" method="post" action="/api/search/keywords">
 
-<div class="keywords-search-block">
-    @if (!string.IsNullOrWhiteSpace(blockname))
-    {
-        <div class="block-title">@blockname</div>
-    }
-
-    <form id="controlledVocabularySearchForm" method="post" action="/api/solr/keywords">
-
-        <div class="container">
-            <fieldset class="checkboxgroup">
-                <div class="row">
-                    @foreach (var word in words)
-                    {
-                        if (!String.IsNullOrWhiteSpace(@word))
+            <div class="container">
+                <fieldset class="checkboxgroup">
+                    <div class="row">
+                        @foreach (var word in words)
                         {
-                            <div class="col-md-4">
-                                <input type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
-                            </div>
+                            if (!String.IsNullOrWhiteSpace(@word))
+                            {
+                                <div class="col-md-4 keyword-checkbox">
+                                    <input v-on:click="filterByCheckbox($event)" class="search-filter" type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
+                                </div>
+                            }
+
                         }
-
-                    }
+                    </div>
+                </fieldset>
+                <div class="categories-section">
+                @foreach (var category in categories)
+			    {
+                        <button v-on:click="filterByCategory($event)" data-toggle="button" 
+                            aria-pressed="false" autocomplete="off" value="@(category)" 
+                            id="@("category-" + @category)" type="button" 
+                            class="category-button btn btn-light">
+                        @category
+                        </button>
+                    categoryIndex++;
+			    }
                 </div>
-            </fieldset>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="search-section container">
+
+        <div class="search-header-holder">
+
+            <h4>Search Results</h4>
+
+            <div v-if="searchResults.length > 0" class="pagination-holder">
+                <ul class="pagination">
+                    <li :class="{'disabled': currentPage==1}" class="page-item">
+                        <a v-on:click="currentPage = currentPage - 1" class="page-link">Previous</a>
+                    </li>
+                    
+                    <li :class="{'disabled': currentPage==Math.ceil(searchResults.length/cardsPerPage)}" class="page-item">
+                        <a v-on:click="currentPage = currentPage + 1" class="page-link">Next</a>
+                    </li>
+                </ul>
+            </div>
+
         </div>
-        <input id="ControlledVocabularySearchButton" type="submit" value="Submit" />
+        
+        
+        <div v-if="searchResults.length > 0">
+        
+            <h6>Total Results: {{searchResults.length}}</h6>
 
-    </form>
+            <div >
+                <transition-group id="controlledVocabularySearchResults" name="refresh">
+                <div :key="searchResult.id" v-for="searchResult of searchResults.slice((currentPage - 1) * cardsPerPage, (currentPage-1) * cardsPerPage + cardsPerPage)" class="card">
+                    <img v-if="searchResult.images[0] != '' && searchResult.images[0] != null" class="card-img-top" :src="searchResult.images[0]" alt="Search result image">
+                    <div v-else class="filler-image-space"></div>
+                    <hr/>
+                    <div class="card-body">
+                        <a v-if="searchResult.permalink" :href="searchResult.permalink">
+                            <h5 class="card-title">{{searchResult.title[0]}}</h5>
+                        </a>
+                        <h5 v-else class="card-title">{{searchResult.title[0]}}</h5>
+                        <div v-for="(content, index) of searchResult.contents" class="card-text main-card-text search-result-content">
+                            <p v-if="index == searchResult.contents.length -1"></p>
+                            <p v-html="content"></p>
+                        </div>
+                    </div>
+                </div>
+                </transition-group>
+            </div>
+        </div>
+    
+        <div v-else-if="searchMade && searchResults.length == 0">
+            <h6>Sorry, no results.</h6>
+        </div>
+        <div v-else-if="hasErrorOccurred">
+            <h6>A problem has occurred completing your search. <br />Please contact ARC for further assistance.</h6>
+        </div>
+        <div v-else-if="loadingSearchResults">
+            <h6>Loading...</h6>
+        </div>
+        <div v-else>
+            <h6>Select from the options above to search.</h6>
+        </div>
+        
+    </div>
+
 </div>
-
-<div id="controlledVocabularySearchResults">
-</div>
-
-
-
-<script>
-    $(function () {
-        $("#controlledVocabularySearchForm").submit(function (event)  {
-            var terms = [];
-            $.each($("input[name='searchterm']:checked"), function () {
-                terms.push($(this).val());
-            });
-
-            if (terms.length == 0) {
-                alert("choose at least one word");
-            }
-            event.preventDefault();
-
-            var $form = $(this),
-                url = $form.attr('action');
-
-            var posting = $.post(
-                url,
-                { "keySearchWords": terms }
-            );
-
-             posting.done(function (data) {
-                 $("#controlledVocabularySearchResults").empty();
-                 if (data.length == 0) {
-                     $("#controlledVocabularySearchResults").append($.parseHTML("<div class='alert alert-warning'>No results found</div>"));
-                     return;
-                 }
-
-
-                 $.each(data, function (entryIndex, entry) {
-
-                     @* Creating the wrapper div as a DOM element for the result item *@
-                    var entryWrapper = $.parseHTML("<div class='search-result-entry'>");
-
-                     @* Adding the wrapper to the result - list container *@
-                     $("#controlledVocabularySearchResults").append(entryWrapper);
-
-                     @* Building a link to the detailed object if there is a permalink associated with the entry *@
-                    var linkStart = "";
-                     var linkEnd = ""; 2
-                     if (entry.permalink != undefined && entry.permalink.length > 0) {
-                         linkStart = "<a href='" + entry.permalink + "'>";
-                         linkEnd = "</a>";
-                     }
-
-                     @* Adding the entry title to the wrapper as a child.We need to this for each
-                        value of the title because the title can take multiple values *@
-                    var entryTitleDiv = $.parseHTML("<div class='entry-title'>");
-                     $(entryWrapper).append(entryTitleDiv);
-                     $.each(entry.title, function (titleIndex, titleVal) {
-                         var str = "<span><b>" + linkStart + titleVal + linkEnd + "</b></span>"
-                         $(entryTitleDiv).append($.parseHTML(str));
-                     });
-
-                     @* Go through each highlight snippet and add them to the entry - body section.We include each them
-                         in separate divs *@
-                    var entryBodyDiv = $.parseHTML("<div class='entry-body'>");
-                     $(entryWrapper).append(entryBodyDiv);
-                     $.each(entry.highlights, function (highlightIndex, highlightVal) {
-                         var str = "<div>" + highlightVal + "</div>";
-                         $(entryBodyDiv).append($.parseHTML(str));
-                     });
-                 });
-
-
-
-            });
-        });
-    });
-
-</script>
-
