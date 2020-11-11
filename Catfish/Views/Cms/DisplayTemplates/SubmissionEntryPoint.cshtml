@@ -4,8 +4,8 @@
 @inject IEntityTemplateService _entityTemplateService;
 
 @{
-    Guid templateId = Guid.Parse(Model.EntityTemplateId.Value);
-    string collectionId = Model.CollectionId.Value;
+    Guid templateId = Guid.Parse(Model.SelectedItemTemplate.Value);
+    string collectionId = Model.SelectedCollection.Value;
     var template = _entityTemplateService.GetTemplate(templateId);
     var url = "/entity/create/" + templateId + "?collectionId=" + collectionId;
     var startupDataItem = template.GetRootDataItem(false);

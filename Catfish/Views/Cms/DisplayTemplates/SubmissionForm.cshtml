@@ -12,9 +12,10 @@
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
 
 @{
+    string suffix = Guid.NewGuid().ToString();
     string formPostUrl = "/api/items";
-    var entityTemplateId = Guid.Parse(Model.EntityTemplateId);
-    var collectionId = Guid.Parse(Model.CollectionId);
+    var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate); 
+    var collectionId = Guid.Parse(Model.SelectedCollection);
     var template = _entityTemplateService.GetTemplate(entityTemplateId);
 
     var Item = template.InstantiateRootItem();
@@ -29,42 +30,42 @@
    .Succeeded)
     {
     <div class="submission-form-block @Model.CssClass.Value">
-        <form id="submissionForm" method="post" action="@formPostUrl">
+        <form id="submissionForm_@suffix" method="post" action="@formPostUrl">
             <input data-val="true" data-val-required="The TemplateId field is required."
-                   id="entityTemplateId" name="entityTemplateId" type="hidden"
+                   id="entityTemplateId_@suffix" name="entityTemplateId" type="hidden"
                    value="@entityTemplateId">
             <input data-val="true" data-val-required="The ColectionId field is required."
-                   id="collectionId" name="collectionId" type="hidden"
+                   id="collectionId_@suffix" name="collectionId" type="hidden"
                    value="@collectionId">
 
             @*TODO: To display the name, description, and the list of fields of the
             form represented in the "Item" here. *@
             @Html.EditorFor(model => Item, Item.GetType().ToString())
             <div id="buttonLayer">
-                @*<input id="saveButton" class="btn btn-primary" name="save" type="submit" value="Save" />*@
-                <input id="submitButton" class="btn btn-success" name="submit" type="submit" value="Submit" />
+               
+                <input id="submitButton_@suffix" class="btn btn-success" name="submit" type="submit" value="Submit" />
             </div>
-            @*<div class="submission-result-message"></div>*@
+           
         </form>
-        <div class="submission-result-message"></div>
+        <div id="submission-result-message_@suffix"></div>
     </div>
     }
 
-        <script>
-           // var successMessage=@successMessage;
+<script>
+
             var status;
             $(function () {
-                $("submission-result-message").hide();
-                
-                $(document).on('click', "#submitButton", function () {
+                $("#submission-result-message_@suffix").hide();
+
+                $(document).on('click', "#submitButton_@suffix", function () {
                     status = 'Submitted';
                     console.log('Status = '+status)
                 });
-                $(document).on('click', "#saveButton", function () {
+                $(document).on('click', "#saveButton_@suffix", function () {
                     status = 'Saved'
                     console.log('Status = ' + status)
                 });
-                $("#submissionForm").submit(function (event) {
+                $("#submissionForm_@suffix").submit(function (event) {
 
                     /* stop form from submitting normally */
                     event.preventDefault();
@@ -73,7 +74,7 @@
                     var prefix = /^Blocks\[[0-9]+\]\.Item\.|^block.Item\./;
 
                     var values = {};
-                    $.each($('#submissionForm').serializeArray(), function (i, field) {
+                    $.each($('#submissionForm_@suffix').serializeArray(), function (i, field) {
                         name = field.name.replace(prefix, "");
                         values[name] = field.value;
                     });
@@ -86,29 +87,29 @@
                     var posting = $.post(url, values);
                     var message = "";
                     posting.done(function (data) {
-                        $(".submission-result-message").empty();
+                        $("#submission-result-message_@suffix").empty();
 
                         if (data.success) {
                             //  $(".submission-result-message").addClass("alert alert-success");
                             message = "@successMessage" != "" ? "@successMessage" : data.message;
-                            $(".submission-result-message").append("<span class='alert alert-success' ></span>");
-                           
-                            $("#submissionForm").hide();//[0].reset();
+                            $("#submission-result-message_@suffix").append("<div class='alert alert-success' ></div>");
+
+                            $("#submissionForm_@suffix").hide();//[0].reset();
                         }
                         else {
-                           // $(".submission-result-message").addClass("alert alert-danger");
-                            $(".submission-result-message").append("<span class='alert alert-danger' ></span>");
+
+                            $("#submission-result-message_@suffix").append("<div class='alert alert-danger' ></div>");
                             message = data.message;
                         }
 
-                        
-                       
-                        $(".submission-result-message span").text(message);
-                        $(".submission-result-message").show();
+
+
+                        $("#submission-result-message_@suffix div").text(message);
+                        $("#submission-result-message_@suffix").show();
                     });
 
-                 
+
         });
             });
-        </script>
+</script>
     }
