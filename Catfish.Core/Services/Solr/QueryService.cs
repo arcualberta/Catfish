@@ -130,7 +130,7 @@ namespace Catfish.Core.Services.Solr
         }
 
 
-        public IList<SolrEntry> KeywordSearch(string[] keywords, string[] categories, int start = 0, int limit = 100, bool getfullContent = true)
+        public IList<SolrEntry> KeywordSearch(string[] keywords, string[] categories, int start = 0, int limit = 100)
         {
             try
             {
@@ -168,20 +168,19 @@ namespace Catfish.Core.Services.Solr
 
                 AbstractSolrQuery query = keywordSubQuery && categorySubQuery;
 
-                List<string> fieldsToRetrieve = new List<string>() { "id", "title", "object_type_i", "permalink_s", "containerId" };
-                if (getfullContent)
-                {
-                    fieldsToRetrieve.Add("content_ss");
-                    fieldsToRetrieve.Add("containerId_ss");
+                ////List<string> fieldsToRetrieve = new List<string>() { "id", "title", "object_type_i", "permalink_s", "containerId" };
+                ////if (getfullContent)
+                ////{
+                ////    fieldsToRetrieve.Add("content_ss");
+                ////    fieldsToRetrieve.Add("containerId_ss");
 
-                    fieldsToRetrieve.Add("images_ss");
-                    fieldsToRetrieve.Add("imageContainerId_ss");
-                }
+                ////    fieldsToRetrieve.Add("images_ss");
+                ////    fieldsToRetrieve.Add("imageContainerId_ss");
+                ////}
 
                 var queryResult = _solrPageQuery.Query(query,
                     new QueryOptions
                     {
-                        Fields = fieldsToRetrieve,
                         StartOrCursor = new StartOrCursor.Start(start),
                         Rows = limit
                     });
