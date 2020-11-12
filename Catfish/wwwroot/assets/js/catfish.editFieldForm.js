@@ -642,31 +642,31 @@ if (document.getElementById("edit-field-form-page")) {
              * Sets the static strings on the page 
              **/
             setStaticValues() {
-                this.saveSuccessfulLabel = StaticItems.editFieldFormLabels.SAVE_SUCCESS_LABEL;
-                this.saveFailedLabel = StaticItems.editFieldFormLabels.SAVE_FAILED_LABEL;
-                this.saveFieldFormButtonLabel = StaticItems.editFieldFormLabels.SAVE_FIELD_FORM_BUTTON_LABEL;
+                this.saveSuccessfulLabel = StaticItems.managerSideValues.editFieldFormLabels.SAVE_SUCCESS_LABEL;
+                this.saveFailedLabel = StaticItems.managerSideValues.editFieldFormLabels.SAVE_FAILED_LABEL;
+                this.saveFieldFormButtonLabel = StaticItems.managerSideValues.editFieldFormLabels.SAVE_FIELD_FORM_BUTTON_LABEL;
 
-                this.formTitleLabel = StaticItems.editFieldFormLabels.FORM_TITLE_LABEL;
-                this.formTitlePlaceholder = StaticItems.editFieldFormLabels.FORM_TITLE_PLACEHOLDER;
-                this.formDescriptionLabel = StaticItems.editFieldFormLabels.FORM_DESCRIPTION_LABEL;
-                this.formDescriptionPlaceholder = StaticItems.editFieldFormLabels.FORM_DESCRIPTION_PLACEHOLDER;
-                this.formFieldLabel = StaticItems.editFieldFormLabels.FORM_FIELD_LABEL;
-                this.defaultFieldTitle = StaticItems.editFieldFormLabels.DEFAULT_FIELD_TITLE;
-                this.fieldTitlePlaceholder = StaticItems.editFieldFormLabels.FIELD_TITLE_PLACEHOLDER;
-                this.fieldDescriptionLabel = StaticItems.editFieldFormLabels.FIELD_DESCRIPTION_LABEL;
-                this.fieldDescriptionPlaceholder = StaticItems.editFieldFormLabels.FIELD_DESCRIPTION_PLACEHOLDER;
-                this.settingsLabel = StaticItems.editFieldFormLabels.SETTINGS_LABEL;
-                this.longAnswerFormatTextLabel = StaticItems.editFieldFormLabels.LONG_ANSWER_FORMAT_TEXT_LABEL;
-                this.choiceOptionLabel = StaticItems.editFieldFormLabels.CHOICE_OPTION_LABEL;
-                this.choiceDefaultOptionLabel = StaticItems.editFieldFormLabels.CHOICE_DEFAULT_OPTION_LABEL;
-                this.choiceAdditionalInputLabel = StaticItems.editFieldFormLabels.CHOICE_ADDITIONAL_INPUT_LABEL;
-                this.anyLabel = StaticItems.editFieldFormLabels.ANY_LABEL;
-                this.allowMultipleFilesLabel = StaticItems.editFieldFormLabels.ALLOW_MULTIPLE_FILES_LABEL;
-                this.wholeNumbersOnlyLabel = StaticItems.editFieldFormLabels.WHOLE_NUMBERS_ONLY_LABEL;
-                this.requiredLabel = StaticItems.editFieldFormLabels.REQUIRED_LABEL;
-                this.addDescriptionLabel = StaticItems.editFieldFormLabels.ADD_DESCRIPTION_LABEL;
-                this.removeDescriptionLabel = StaticItems.editFieldFormLabels.REMOVE_DESCRIPTION_LABEL;
-                this.loadingLabel = StaticItems.editFieldFormLabels.LOADING_LABEL;
+                this.formTitleLabel = StaticItems.managerSideValues.editFieldFormLabels.FORM_TITLE_LABEL;
+                this.formTitlePlaceholder = StaticItems.managerSideValues.editFieldFormLabels.FORM_TITLE_PLACEHOLDER;
+                this.formDescriptionLabel = StaticItems.managerSideValues.editFieldFormLabels.FORM_DESCRIPTION_LABEL;
+                this.formDescriptionPlaceholder = StaticItems.managerSideValues.editFieldFormLabels.FORM_DESCRIPTION_PLACEHOLDER;
+                this.formFieldLabel = StaticItems.managerSideValues.editFieldFormLabels.FORM_FIELD_LABEL;
+                this.defaultFieldTitle = StaticItems.managerSideValues.editFieldFormLabels.DEFAULT_FIELD_TITLE;
+                this.fieldTitlePlaceholder = StaticItems.managerSideValues.editFieldFormLabels.FIELD_TITLE_PLACEHOLDER;
+                this.fieldDescriptionLabel = StaticItems.managerSideValues.editFieldFormLabels.FIELD_DESCRIPTION_LABEL;
+                this.fieldDescriptionPlaceholder = StaticItems.managerSideValues.editFieldFormLabels.FIELD_DESCRIPTION_PLACEHOLDER;
+                this.settingsLabel = StaticItems.managerSideValues.editFieldFormLabels.SETTINGS_LABEL;
+                this.longAnswerFormatTextLabel = StaticItems.managerSideValues.editFieldFormLabels.LONG_ANSWER_FORMAT_TEXT_LABEL;
+                this.choiceOptionLabel = StaticItems.managerSideValues.editFieldFormLabels.CHOICE_OPTION_LABEL;
+                this.choiceDefaultOptionLabel = StaticItems.managerSideValues.editFieldFormLabels.CHOICE_DEFAULT_OPTION_LABEL;
+                this.choiceAdditionalInputLabel = StaticItems.managerSideValues.editFieldFormLabels.CHOICE_ADDITIONAL_INPUT_LABEL;
+                this.anyLabel = StaticItems.managerSideValues.editFieldFormLabels.ANY_LABEL;
+                this.allowMultipleFilesLabel = StaticItems.managerSideValues.editFieldFormLabels.ALLOW_MULTIPLE_FILES_LABEL;
+                this.wholeNumbersOnlyLabel = StaticItems.managerSideValues.editFieldFormLabels.WHOLE_NUMBERS_ONLY_LABEL;
+                this.requiredLabel = StaticItems.managerSideValues.editFieldFormLabels.REQUIRED_LABEL;
+                this.addDescriptionLabel = StaticItems.managerSideValues.editFieldFormLabels.ADD_DESCRIPTION_LABEL;
+                this.removeDescriptionLabel = StaticItems.managerSideValues.editFieldFormLabels.REMOVE_DESCRIPTION_LABEL;
+                this.loadingLabel = StaticItems.managerSideValues.editFieldFormLabels.LOADING_LABEL;
             },
 
             /**

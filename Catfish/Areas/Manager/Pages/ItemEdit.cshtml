@@ -146,7 +146,7 @@
 															v-model="field.Values.$values[index].Values.$values[0].Value">
 												</vue-editor>-->
 												<div class="invalid-feedback">
-													This field is required.
+													{{fieldRequiredLabel}}
 												</div>
 											</div>
 											<span v-else>{{field.Values.$values[index].Values.$values[0].Value}}</span>
@@ -158,7 +158,7 @@
 								            <button type="button" v-on:click="addNewEntry(metaIndex, fIndex)"
 										    class="btn btn-sm btn-primary btn-labeled">
 									            <i class="fas fa-plus"></i>
-									            Value
+									            {{valueLabel}}
 								            </button>
 							            </div>
                                         <div class="btn-group new-value-button" role="group">
@@ -166,7 +166,7 @@
                                                     type="button" v-on:click="deleteField(metaIndex, fIndex)"
 										            class="btn btn-sm btn-danger btn-labeled trash-button">
 									            <i class="fas fa-trash"></i>
-									            Delete
+									            {{deleteLabel}}
 								            </button>
 							            </div>
 

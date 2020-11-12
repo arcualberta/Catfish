@@ -22,7 +22,7 @@ namespace Catfish.Core.Models
         [Key]
         public Guid Id
         {
-            get =>Guid.Parse(Data.Attribute("id").Value);
+            get => Guid.Parse(Data.Attribute("id").Value);
             set => Data.SetAttributeValue("id", value);
         }
 
@@ -33,7 +33,7 @@ namespace Catfish.Core.Models
             get => Data?.ToString();
             set
             {
-                if(!string.IsNullOrEmpty(value))
+                if (!string.IsNullOrEmpty(value))
                 {
                     Data = XElement.Parse(value);
                     Initialize(false);
@@ -61,7 +61,7 @@ namespace Catfish.Core.Models
         //[NotMapped]
         public Guid? TemplateId
         {
-            get => GetGuidAttribute("template-id"); 
+            get => GetGuidAttribute("template-id");
             set => Data.SetAttributeValue("template-id", value);
         }
 
@@ -95,7 +95,6 @@ namespace Catfish.Core.Models
         public Collection PrimaryCollection { get; set; }
         [Column("PrimaryCollectionId")]
         public Guid? PrimaryCollectionId { get; set; }
-        
         public SystemStatus Status { get; set; }
         [Column("StatusId")]
         public Guid? StatusId { get; set; }
@@ -160,7 +159,7 @@ namespace Catfish.Core.Models
 
         public T InstantiateViewModel<T>() where T : XmlModel
         {
-            var type = typeof(T); 
+            var type = typeof(T);
             T vm = Activator.CreateInstance(type, Data) as T;
             return vm;
         }

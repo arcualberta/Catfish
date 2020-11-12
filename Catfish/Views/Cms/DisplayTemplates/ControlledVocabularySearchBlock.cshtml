@@ -75,16 +75,16 @@
 
         <div class="search-header-holder">
 
-            <h4>Search Results</h4>
+            <h4>{{searchResultsLabel}}</h4>
 
             <div v-if="searchResults.length > 0" class="pagination-holder">
                 <ul class="pagination">
                     <li :class="{'disabled': currentPage==1}" class="page-item">
-                        <a v-on:click="currentPage = currentPage - 1" class="page-link">Previous</a>
+                        <a v-on:click="currentPage = currentPage - 1" class="page-link">{{previousButtonLabel}}</a>
                     </li>
                     
                     <li :class="{'disabled': currentPage==Math.ceil(searchResults.length/cardsPerPage)}" class="page-item">
-                        <a v-on:click="currentPage = currentPage + 1" class="page-link">Next</a>
+                        <a v-on:click="currentPage = currentPage + 1" class="page-link">{{nextButtonLabel}}</a>
                     </li>
                 </ul>
             </div>
@@ -94,7 +94,7 @@
         
         <div v-if="searchResults.length > 0">
         
-            <h6>Total Results: {{searchResults.length}}</h6>
+            <h6>{{totalResultsLabel}} {{searchResults.length}}</h6>
 
             <div >
                 <transition-group id="controlledVocabularySearchResults" name="refresh">
@@ -118,16 +118,16 @@
         </div>
     
         <div v-else-if="searchMade && searchResults.length == 0">
-            <h6>Sorry, no results.</h6>
+            <h6>{{noResultsLabel}}</h6>
         </div>
         <div v-else-if="hasErrorOccurred">
-            <h6>A problem has occurred completing your search. <br />Please contact ARC for further assistance.</h6>
+            <h6>{{errorMessage1Label}}<br />{{errorMessage2Label}}</h6>
         </div>
         <div v-else-if="loadingSearchResults">
-            <h6>Loading...</h6>
+            <h6>{{loadingLabel}}</h6>
         </div>
         <div v-else>
-            <h6>Select from the options above to search.</h6>
+            <h6>{{defaultSearchMessageLabel}}</h6>
         </div>
         
     </div>

@@ -41,7 +41,7 @@ namespace Catfish.Services
         {
             return mEntityTemplate;
         }
-        
+
         public EntityTemplate GetTemplate()
         {
             return mEntityTemplate;
@@ -68,7 +68,6 @@ namespace Catfish.Services
 
         public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists)
         {
-            
             try
             {
                 MetadataSet ms = GetMetadataSet(templateName, createIfNotExists, true);
@@ -79,8 +78,6 @@ namespace Catfish.Services
                 _errorLog.Log(new Error(ex));
                 return null;
             }
-
-            
         }
 
         protected MetadataSet GetMetadataSet(string metadataSetName, bool createIfNotExists, bool markAsTemplateMetadataSetIfCreated)
@@ -156,7 +153,8 @@ namespace Catfish.Services
 
         public async Task InitSiteStructureAsync(Guid siteId, string siteTypeId)
         {
-            try {
+            try 
+            {
                 if(siteTypeId == typeof(WorkflowPortal).Name)
                 {
                     var site = await _api.Sites.GetByIdAsync(siteId).ConfigureAwait(false);
@@ -194,11 +192,12 @@ namespace Catfish.Services
 
         protected Guid? GetSystemPageId(Guid siteId, string pageKey, bool createIfNotExist, string pageTitleIfShouldCreate)
         {
-            try { 
+            try
+            {
                 SystemPage pageInfo = _db.SystemPages
                     .Where(pg => pg.PageKey == "SubmissionEntryPage" && pg.SiteId == siteId)
                     .FirstOrDefault();
-            
+
                 if (createIfNotExist == false)
                 {
                     if (pageInfo == null)
@@ -217,7 +216,7 @@ namespace Catfish.Services
                             return null;
                         }
 
-        }
+                    }
                 }
                 else
                 {
@@ -239,7 +238,6 @@ namespace Catfish.Services
                             _errorLog.Log(new Error(ex));
                             return null;
                         }
-                        
                     }
 
                     //If the execution comes here, then we need to create a new page and update the page info entry
