@@ -1,6 +1,9 @@
 ﻿using SolrNet.Attributes;
 using SolrNet.Impl;
 using System;
+using SolrNet.Attributes;
+using SolrNet.Impl;
+using System;
 using System.Collections.Generic;
 using System.Text;
 

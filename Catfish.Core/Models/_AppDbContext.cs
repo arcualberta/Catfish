@@ -1,7 +1,7 @@
 ﻿using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Core.Services.Solr;
-﻿using Catfish.Core.Models.Contents;
+using Catfish.Core.Models.Contents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -35,14 +35,14 @@ namespace Catfish.Core.Models
             }
         }
 
-        
+
         public override int SaveChanges()
         {
-            foreach(var entry in ChangeTracker.Entries())
+            foreach (var entry in ChangeTracker.Entries())
             {
                 foreach (var prop in entry.Entity.GetType().GetProperties().Where(p => p.CustomAttributes.Count() > 0))
                 {
-                    if(prop.GetCustomAttributes(true).Where(att => att is ComputedAttribute).Any())
+                    if (prop.GetCustomAttributes(true).Where(att => att is ComputedAttribute).Any())
                     {
                         //This is a computed propery that we always need to save to the database irrespective of 
                         //whether the property was explicitely modified or not.

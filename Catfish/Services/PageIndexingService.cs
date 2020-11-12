@@ -27,6 +27,7 @@ namespace Catfish.Services
         private readonly ISolrIndexService<SolrEntry> _solrIndexService;
         private readonly IQueryService _solrQueryService;
         private readonly ErrorLog _errorLog;
+
         public PageIndexingService(ISolrIndexService<SolrEntry> iSrv, IQueryService qSrv, IApi api, IdentitySQLServerDb pdb, ErrorLog errorLog)
         {
             _api = api;
@@ -101,8 +102,7 @@ namespace Catfish.Services
                     Permalink = string.IsNullOrWhiteSpace(doc.Permalink) ? null : doc.Permalink,
                 };
 
-                entry.Title.Add(doc.Title);
-
+                entry.SetTitle(doc.Id, doc.Title);
 
                 //Index any keywords selected for the page
                 List<string> keywords = new List<string>();
@@ -121,6 +121,25 @@ namespace Catfish.Services
                 {
                     _errorLog.Log(new Error(ex));
                 }
+
+                //Index any categories selected for the page
+                List<string> Categories = new List<string>();
+                try
+                {
+                    Categories = ((doc as DynamicPage).Regions.Categories as ControlledCategoriesField)
+                        .SelectedCategories
+                        .Value
+                        .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                        .ToList();
+
+                    foreach (var cw in Categories)
+                        entry.Categories.Add(cw);
+                }
+                catch (Exception ex)
+                {
+                    _errorLog.Log(new Error(ex));
+                }
+
 
                 if (!string.IsNullOrEmpty(doc.Excerpt))
                     entry.AddContent(doc.Id, doc.Excerpt);
@@ -144,38 +163,59 @@ namespace Catfish.Services
                 if (doc == null || !doc.IsPublished)
                 return;
 
-            SolrEntry entry = new SolrEntry()
-            {
-                Id = doc.Id,
-                ObjectType = SolrEntry.eEntryType.Post,
-                Permalink = string.IsNullOrWhiteSpace(doc.Permalink) ? null : doc.Permalink,
-            };
-
-            entry.Title.Add(doc.Title);
-
-            if (!string.IsNullOrEmpty(doc.Excerpt))
-                entry.AddContent(doc.Id, doc.Excerpt);
-
-
-             // add keywords
-
-            if ((doc as StandardPost).Keywords != null)
+                SolrEntry entry = new SolrEntry()
                 {
-                    var kWords = (doc as StandardPost).Keywords.SelectedKeywords.Value.Split(
-                      ",",
-                      StringSplitOptions.RemoveEmptyEntries).ToList();
-                    foreach (var kw in kWords)
-                    {
+                    Id = doc.Id,
+                    ObjectType = SolrEntry.eEntryType.Post,
+                    Permalink = string.IsNullOrWhiteSpace(doc.Permalink) ? null : doc.Permalink,
+                };
+
+                entry.SetTitle(doc.Id, doc.Title);
+
+                //Index any keywords selected for the page
+                List<string> keywords = new List<string>();
+                try
+                {
+                    keywords = ((doc as DynamicPost).Regions.Keywords as ControlledKeywordsField)
+                        .SelectedKeywords
+                        .Value
+                        .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                        .ToList();
+
+                    foreach (var kw in keywords)
                         entry.Keywords.Add(kw);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    _errorLog.Log(new Error(ex));
                 }
 
+                //Index any categories selected for the page
+                List<string> Categories = new List<string>();
+                try
+                {
+                    Categories = ((doc as DynamicPost).Regions.Categories as ControlledCategoriesField)
+                        .SelectedCategories
+                        .Value
+                        .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                        .ToList();
+
+                    foreach (var cw in Categories)
+                        entry.Categories.Add(cw);
+                }
+                catch (Exception ex)
+                {
+                    _errorLog.Log(new Error(ex));
+                }
+
+                if (!string.IsNullOrEmpty(doc.Excerpt))
+                    entry.AddContent(doc.Id, doc.Excerpt);
 
                 //Indexing all content blocks
                 foreach (var block in doc.Blocks)
-                IndexBlock(block, entry);
+                    IndexBlock(block, entry);
 
-            IndexInSolr(entry);
+                IndexInSolr(entry);
             }
             catch (Exception ex)
             {
@@ -184,7 +224,7 @@ namespace Catfish.Services
         }
         private void IndexInSolr(SolrEntry entry)
         {
-             _solrIndexService.AddUpdate(entry);
+            _solrIndexService.AddUpdate(entry);
         }
 
         public async Task<List<Site>> GetSitesList()
@@ -205,7 +245,5 @@ namespace Catfish.Services
                 return null;
             }
         }
-
-        
     }
 }

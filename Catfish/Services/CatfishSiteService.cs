@@ -103,7 +103,7 @@ namespace Catfish.Services
             var controlledVocabBlocks = page.Blocks
                 .Where(b => typeof(ControlledVocabularySearchBlock).IsAssignableFrom(b.GetType()))
                 .ToList();
-            foreach(var block in controlledVocabBlocks)
+            foreach (var block in controlledVocabBlocks)
             {
                 (block as ControlledVocabularySearchBlock)
                     .VocabularySettings
@@ -159,7 +159,6 @@ namespace Catfish.Services
                     }
                 }
                     
-
                 var keywordSearchBlocks = pageBase.Blocks
                     .Where(b => typeof(ControlledVocabularySearchBlock).IsAssignableFrom(b.GetType()))
                     .Select(b => b as ControlledVocabularySearchBlock)
@@ -230,8 +229,6 @@ namespace Catfish.Services
                 var site = _api.Sites.GetDefaultAsync();
 
                 var siteContent = await _api.Sites.GetContentByIdAsync<CatfishWebsite>(site.Result.Id).ConfigureAwait(false);
-
-
                 return siteContent.Categories.Value != null ? siteContent.Categories.Value : null;
             }
             catch (Exception ex)
@@ -239,7 +236,6 @@ namespace Catfish.Services
                 _errorLog.Log(new Error(ex));
                 return null;
             }
-            
         }
     }
 }

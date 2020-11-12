@@ -87,7 +87,6 @@ namespace Catfish.Services
                 _errorLog.Log(new Error(ex));
                 return null;
             }
-            
         }
 
         public SystemStatus GetStatus(Guid entityTemplateId, string status, bool createIfNotExist)
@@ -117,9 +116,6 @@ namespace Catfish.Services
                 _errorLog.Log(new Error(ex));
                 return null;
             }
-            
         }
-
-
     }
 }

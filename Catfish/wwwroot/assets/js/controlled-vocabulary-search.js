@@ -35,8 +35,6 @@ Vue.component("controlled-vocabulary-search", {
             selectedCategories: selectCatTemp,
             checkCatOptions: availableCategories.map(word => ({ label: word, selected: selectCatTemp.includes(word) }))
         }
-
-      
     },
     methods: {
         onBlur: function (e) {
@@ -147,4 +145,3 @@ Vue.component("controlled-vocabulary-search", {
                   </div>
                </div>`
 });
-
