@@ -97,14 +97,14 @@ var vueApp = new Vue({
 	},
     created() {
         //assign static values
-        this.searchResultsLabel = StaticItems.keywordsSearchBlockPublicLabels.SEARCH_RESULTS_LABEL;
-        this.previousButtonLabel = StaticItems.keywordsSearchBlockPublicLabels.PREVIOUS_BUTTON_LABEL;
-        this.nextButtonLabel = StaticItems.keywordsSearchBlockPublicLabels.NEXT_BUTTON_LABEL;
-        this.totalResultsLabel = StaticItems.keywordsSearchBlockPublicLabels.TOTAL_RESULTS_LABEL;
-        this.noResultsLabel = StaticItems.keywordsSearchBlockPublicLabels.NO_RESULTS_LABEL;
-        this.errorMessage1Label = StaticItems.keywordsSearchBlockPublicLabels.ERROR_MESSAGE_1_LABEL;
-        this.errorMessage2Label = StaticItems.keywordsSearchBlockPublicLabels.ERROR_MESSAGE_2_LABEL;
-        this.loadingLabel = StaticItems.keywordsSearchBlockPublicLabels.LOADING_LABEL;
-        this.defaultSearchMessageLabel = StaticItems.keywordsSearchBlockPublicLabels.DEFAULT_SEARCH_MESSAGE_LABEL;
+        this.searchResultsLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.SEARCH_RESULTS_LABEL;
+        this.previousButtonLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.PREVIOUS_BUTTON_LABEL;
+        this.nextButtonLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.NEXT_BUTTON_LABEL;
+        this.totalResultsLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.TOTAL_RESULTS_LABEL;
+        this.noResultsLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.NO_RESULTS_LABEL;
+        this.errorMessage1Label = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.ERROR_MESSAGE_1_LABEL;
+        this.errorMessage2Label = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.ERROR_MESSAGE_2_LABEL;
+        this.loadingLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.LOADING_LABEL;
+        this.defaultSearchMessageLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.DEFAULT_SEARCH_MESSAGE_LABEL;
     }
 });
