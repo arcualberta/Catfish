@@ -54,9 +54,11 @@
         makePostCall() {
             console.log(event);
             let formData = new FormData();
-            this.searchTerms.forEach((item, index) => formData.append("searchTerms[" + index + "]", item));
+            this.searchTerms.forEach((item, index) => formData.append("keywords[" + index + "]", item));
             //formData.append("searchTerms", this.searchTerms);
-            formData.append("category", this.categories);
+
+            formData.append("category[0]", this.categories);
+            //this.categories.forEach((item, index) => formData.append("categories[" + index + "]", item));
             this.loadingSearchResults = true;
 
             fetch(this.apiSearchUrl, {

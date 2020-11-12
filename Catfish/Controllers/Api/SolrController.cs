@@ -39,7 +39,7 @@ namespace Catfish.Api.Controllers
         }
 
         [Route("keywords")]
-        public IList<SolrEntry> Keywords([FromForm] string[] searchTerms,[FromForm] string category)
+        public IList<SolrEntry> Keywords([FromForm] string[] keywords, [FromForm] string[] categories)
         {
             try
             {
@@ -47,25 +47,31 @@ namespace Catfish.Api.Controllers
                 //parameters.FreeSearch = searchTerm;
                 //IList<SolrEntry> result = QueryService.FreeSearch(parameters);
 
-                IList<SolrEntry> result = new List<SolrEntry>();
+                if (categories.Length == 0)
+                    categories = new string[] { "*" };
 
-                for (int i = 0; i < 2 * searchTerms.Length; ++i)
-                {
-                    SolrEntry entry = new SolrEntry()
-                    {
-                        Permalink = "http://google.com",
-                        Id = Guid.NewGuid()
-                    };
-
-                    entry.AddContent(Guid.NewGuid(), "Housed in the Department of Art and Design, the Research - Creation and Social Justice CoLABoratory(the CoLAB) has been championing and nurturing interdisciplinary and intersectional research - creation since 2014.The CoLAB brings together key researchers at the University of Alberta with national and international a");
-                    entry.AddContent(Guid.NewGuid(), "3–91 Fine Arts Building, <br />University of Alberta");
-
-                    entry.SetTitle(Guid.NewGuid(), "Hello World");
-
-                    entry.Images.Add("https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png");
-                    result.Add(entry);
-                }
+                IList<SolrEntry> result = QueryService.KeywordSearch(keywords, categories);
                 return result;
+
+                ////IList<SolrEntry> result = new List<SolrEntry>();
+
+                ////for (int i = 0; i < 2 * keywords.Length; ++i)
+                ////{
+                ////    SolrEntry entry = new SolrEntry()
+                ////    {
+                ////        Permalink = "http://google.com",
+                ////        Id = Guid.NewGuid()
+                ////    };
+
+                ////    entry.AddContent(Guid.NewGuid(), "Housed in the Department of Art and Design, the Research - Creation and Social Justice CoLABoratory(the CoLAB) has been championing and nurturing interdisciplinary and intersectional research - creation since 2014.The CoLAB brings together key researchers at the University of Alberta with national and international a");
+                ////    entry.AddContent(Guid.NewGuid(), "3–91 Fine Arts Building, <br />University of Alberta");
+
+                ////    entry.SetTitle(Guid.NewGuid(), "Hello World");
+
+                ////    entry.Images.Add("https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png");
+                ////    result.Add(entry);
+                ////}
+                ////return result;
             }
             catch (Exception ex)
             {

@@ -90,12 +90,6 @@ namespace Catfish.Core.Services.Solr
 
                 var highlights = queryResult.Highlights.ToList();
 
-                //List<SolrEntry> result = queryResult.Select(qr => new SolrEntry()
-                //{
-                //    ObjectId = qr.Id,
-                //    ObjectType = qr.ContenType.FirstOrDefault()
-                //}).ToList();
-
                 List<SolrEntry> result = new List<SolrEntry>();
                 for (int i = 0; i < queryResult.Count; ++i)
                 {
@@ -135,6 +129,72 @@ namespace Catfish.Core.Services.Solr
             
         }
 
+
+        public IList<SolrEntry> KeywordSearch(string[] keywords, string[] categories, int start = 0, int limit = 100, bool getfullContent = true)
+        {
+            try
+            {
+                //If keywords or categories are not defined, we return no results.
+                if (keywords.Length == 0 || categories.Length == 0)
+                    return new List<SolrEntry>();
+
+                AbstractSolrQuery keywordSubQuery = null;
+                if (keywords.Contains("*"))
+                    keywordSubQuery = new SolrHasValueQuery("keywords_ss");
+                else
+                {
+                    foreach (var val in keywords)
+                    {
+                        if (keywordSubQuery == null)
+                            keywordSubQuery = new SolrQuery("keywords_ss:" + val);
+                        else
+                            keywordSubQuery += new SolrQuery("keywords_ss:" + val);
+                    }
+                }
+
+                AbstractSolrQuery categorySubQuery = null;
+                if (categories.Contains("*"))
+                    categorySubQuery = new SolrHasValueQuery("categories_ss");
+                else
+                {
+                    foreach (var val in categories)
+                    {
+                        if (categorySubQuery == null)
+                            categorySubQuery = new SolrQuery("categories_ss:" + val);
+                        else
+                            categorySubQuery += new SolrQuery("categories_ss:" + val);
+                    }
+                }
+
+                AbstractSolrQuery query = keywordSubQuery && categorySubQuery;
+
+                List<string> fieldsToRetrieve = new List<string>() { "id", "title", "object_type_i", "permalink_s", "containerId" };
+                if (getfullContent)
+                {
+                    fieldsToRetrieve.Add("content_ss");
+                    fieldsToRetrieve.Add("containerId_ss");
+
+                    fieldsToRetrieve.Add("images_ss");
+                    fieldsToRetrieve.Add("imageContainerId_ss");
+                }
+
+                var queryResult = _solrPageQuery.Query(query,
+                    new QueryOptions
+                    {
+                        Fields = fieldsToRetrieve,
+                        StartOrCursor = new StartOrCursor.Start(start),
+                        Rows = limit
+                    });
+
+                return queryResult;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+
+        }
         private string HighlightSections(string snippetWithHighlights, string highlightStartTag, string highlightEndTag, string stringToBeHighlighted)
         {
             while(true)
