@@ -108,14 +108,20 @@ namespace Catfish.Services
                 List<string> keywords = new List<string>();
                 try
                 {
-                    keywords = ((doc as DynamicPage).Regions.Keywords as ControlledKeywordsField)
+                    var selectedOptionStr = ((doc as DynamicPage).Regions.Keywords as ControlledKeywordsField)
                         .SelectedKeywords
-                        .Value
-                        .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                        .ToList();
+                        .Value;
 
-                    foreach (var kw in keywords)
-                        entry.Keywords.Add(kw);
+                    if (!string.IsNullOrWhiteSpace(selectedOptionStr))
+                    {
+                        keywords = selectedOptionStr
+                            .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                            .Select(x => x.Trim())
+                            .ToList();
+
+                        foreach (var kw in keywords)
+                            entry.Keywords.Add(kw);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -123,17 +129,23 @@ namespace Catfish.Services
                 }
 
                 //Index any categories selected for the page
-                List<string> Categories = new List<string>();
+                List<string> categories = new List<string>();
                 try
                 {
-                    Categories = ((doc as DynamicPage).Regions.Categories as ControlledCategoriesField)
+                    var selectedOptionStr = ((doc as DynamicPage).Regions.Categories as ControlledCategoriesField)
                         .SelectedCategories
-                        .Value
-                        .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                        .ToList();
+                        .Value;
 
-                    foreach (var cw in Categories)
-                        entry.Categories.Add(cw);
+                    if (!string.IsNullOrWhiteSpace(selectedOptionStr))
+                    {
+                        categories = selectedOptionStr
+                            .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                            .Select(x => x.Trim())
+                            .ToList();
+
+                        foreach (var cw in categories)
+                            entry.Categories.Add(cw);
+                    }
                 }
                 catch (Exception ex)
                 {
