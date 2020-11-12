@@ -101,15 +101,18 @@ namespace Catfish.Services
             IList<Item> itemList = new List<Item>();
             try
             {
-                itemList = (collectionId == null) ? _db.Items.Where(i => i.TemplateId == templateId).ToList() : _db.Items.Where(i => i.TemplateId == templateId && i.PrimaryCollectionId == collectionId).ToList();
+                var query = _db.Items.Where(i => i.TemplateId == templateId);
+
+                if (collectionId != null)
+                    query = query.Where(i => i.PrimaryCollectionId == collectionId);
+
+                itemList = query.ToList();
             }
             catch (Exception ex)
             {
                 _errorLog.Log(new Error(ex));
             }
             return itemList;
-
-
         }
     }
 }
