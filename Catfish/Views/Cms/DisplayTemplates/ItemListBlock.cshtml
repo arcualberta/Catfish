@@ -7,8 +7,18 @@
 @inject Catfish.Services.ISubmissionService _submissionService;
 
 @{
-    string formGetUrl = "/api/items";
     var entityTemplateId = Guid.Parse(Model.EntityTemplateId);
-    var collectionId = Guid.Parse(Model.CollectionId);
+    var collectionId = string.IsNullOrEmpty(Model.CollectionId)? null as Guid? : Guid.Parse(Model.CollectionId);
     IList<Item> itemList = _submissionService.GetSubmissionList(entityTemplateId,collectionId);
+
+
+    //TODO: retrieve the item template and the data item in it with isRoot set to true.
+    // Create a tablular view with the gollowing columns:
+    // submission timestamp, status, submitted user (if exists) and the columns of the root data template.
+    //
+    //Further, please add "from" and "to" as date field filters. Pass them on to the above GetSubmissionList
+    //call. It should return items that were submitted within this period( include from but exclude to).
+    //Have an execute button and that should rettrieve the results.
+    // Please cretae a "Download or Export" button that would allow the user to download the retrieved results.
 }
+

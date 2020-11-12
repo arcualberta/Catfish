@@ -1,5 +1,6 @@
 ﻿//import { VueEditor } from "vue2-editor";
 import { v1 as uuidv1 } from 'uuid';
+import StaticItems from '../static/string-values.json';
 /**
  * Javascript Vue code for creating a single item edit layout in ItemEdit.cshtml.
  */
@@ -28,14 +29,10 @@ if (document.getElementById("item-edit-page")) {
                 itemId: null,
                 nameAttribute: null,
                 descriptionAttribute: null,
-                buttonOptions: [
-                    "Save",
-                    "Edit",
-                    "Preview"
-                ],
+                buttonOptions: [],
                 //label for multichoice dropdown button
-                mcDropdownButtonLabel: "Actions",
-                activeOption: "Edit",
+                mcDropdownButtonLabel: "",
+                activeOption: "",
 
                 //bring this in from somewhere else, will have ALL language abbreviations in it
                 languages: {
@@ -51,10 +48,10 @@ if (document.getElementById("item-edit-page")) {
 
                 sections: [
                     {
-                        title: "Name"
+                        title: ''
                     },
                     {
-                        title: "Description"
+                        title: ''
                     },
                 ],
 
@@ -78,8 +75,11 @@ if (document.getElementById("item-edit-page")) {
 
                 saveSuccessfulLabel: "Saved!",
                 saveFailedLabel: "Failed to Save",
-                saveStatus: 0
+                saveStatus: 0,
 
+                fieldRequiredLabel: '',
+                valueLabel: '',
+                deleteLabel:''
             }
         },
         computed: {
@@ -440,6 +440,21 @@ if (document.getElementById("item-edit-page")) {
             deleteField(metadataSetId, fieldId) {
                 this.metadataSets[metadataSetId].Fields.$values.splice(fieldId, 1);
                 this.setOriginalFields();
+            },
+
+            setStaticItems() {
+                this.buttonOptions = StaticItems.managerSideValues.editItemLabels.BUTTON_OPTION_LABELS;
+                this.mcDropdownButtonLabel = StaticItems.managerSideValues.editItemLabels.DROPDOWN_BUTTON_LABEL;
+                this.activeOption = StaticItems.managerSideValues.editItemLabels.ACTIVE_OPTION_LABEL;
+                this.sections[0].title = StaticItems.managerSideValues.editItemLabels.SECTION_LABEL_1;
+                this.sections[1].title = StaticItems.managerSideValues.editItemLabels.SECTION_LABEL_2;
+                this.metadataSetLabel = StaticItems.managerSideValues.editItemLabels.METADATASET_LABEL;
+                this.saveSuccessfulLabel = StaticItems.managerSideValues.editItemLabels.SAVE_SUCCESSFUL_LABEL;
+                this.saveFailedLabel = StaticItems.managerSideValues.editItemLabels.SAVE_FAILED_LABEL;
+                this.fieldRequiredLabel = StaticItems.managerSideValues.editItemLabels.FIELD_REQUIRED_LABEL;
+                this.valueLabel = StaticItems.managerSideValues.editItemLabels.VALUE_LABEL;
+                this.deleteLabel = StaticItems.managerSideValues.editItemLabels.DELETE_LABEL;
+
 			}
         },
         updated() {
@@ -452,6 +467,7 @@ if (document.getElementById("item-edit-page")) {
         },
         created() {
             this.itemId = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+            this.setStaticItems();
             //call api
             this.fetchData();
         },
