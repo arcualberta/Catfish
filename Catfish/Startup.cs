@@ -64,7 +64,7 @@ namespace Catfish
             .AddJsonFile("appsettings.json")
             .AddEnvironmentVariables();
             Configuration = builder.Build();
-          
+
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -91,7 +91,7 @@ namespace Catfish
                 options.UseManager();
                 options.UseTinyMCE();
                 options.UseMemoryCache();
-               
+
                 options.AddRazorRuntimeCompilation = true; //MR: Feb 11, 2020  -- Enabled run time compiler for razor, so don't need to recompile when update the view
             });
 
@@ -118,7 +118,7 @@ namespace Catfish
 
             //MR: Feb 7 2020 -- from piranha core MVCWeb example
             services.AddControllersWithViews();
-            
+
             ////services.AddControllersWithViews()
             ////    .AddNewtonsoftJson(options =>
             ////    {
@@ -143,7 +143,7 @@ namespace Catfish
             services.AddScoped<IPageService, Piranha.Services.PageService>();
             services.AddScoped<IParamService, ParamService>();
             services.AddScoped<IMediaService, Piranha.Services.MediaService>();
-            
+
             //Catfish services
             services.AddScoped<EntityTypeService>();
             services.AddScoped<GroupService>();
@@ -191,7 +191,6 @@ namespace Catfish
                 options.LogPath = "~/log";
                 options.CheckPermissionAction = context => context.User.IsInRole("SysAdmin");
             });
-           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -236,22 +235,22 @@ namespace Catfish
 
             // Middleware setup
             //use localization
-           // var supportedCulture = new[]
-           //{
-           //     new CultureInfo("en"),
-           //     new CultureInfo("rus")
+            // var supportedCulture = new[]
+            //{
+            //     new CultureInfo("en"),
+            //     new CultureInfo("rus")
 
-           // };
-           // var requestLocalizationOptios = new RequestLocalizationOptions
-           // {
-           //     DefaultRequestCulture = new RequestCulture("en"),
-           //     //for formating like date, currency,etc
-           //     SupportedCultures = supportedCulture,
-           //     //UI string -- resources that we provided
-           //     SupportedUICultures = supportedCulture
+            // };
+            // var requestLocalizationOptios = new RequestLocalizationOptions
+            // {
+            //     DefaultRequestCulture = new RequestCulture("en"),
+            //     //for formating like date, currency,etc
+            //     SupportedCultures = supportedCulture,
+            //     //UI string -- resources that we provided
+            //     SupportedUICultures = supportedCulture
 
-           // };
-           // app.UseRequestLocalization(requestLocalizationOptios);
+            // };
+            // app.UseRequestLocalization(requestLocalizationOptios);
 
             app.UsePiranha();
             //MR Feb 7 2020 -- add classic MVC routing
@@ -279,10 +278,10 @@ namespace Catfish
 
             // /Register middleware
             app.UseStaticFiles();
-          
+
             app.UseRouting();
-          
-           // app.UseIntegratedPiranha();
+
+            // app.UseIntegratedPiranha();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UsePiranhaIdentity();
@@ -291,9 +290,9 @@ namespace Catfish
 
             app.UseEndpoints(endpoints =>
             {
-               
+
                 endpoints.MapDefaultControllerRoute();
-               
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -338,7 +337,8 @@ namespace Catfish
             Piranha.App.Fields.Register<TextAreaField>();
             Piranha.App.Fields.Register<ControlledKeywordsField>();
             Piranha.App.Fields.Register<ControlledCategoriesField>();
-           // Piranha.App.Fields.Register<CatfishSelectList<EType> > ();
+             Piranha.App.Fields.Register<CatfishSelectList<Entity>> ();
+           
         }
         private static void RegisterCustomScripts()
         {
@@ -350,9 +350,9 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/javascript-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/css-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/navigation-block.js");
-             App.Modules.Manager().Scripts.Add("~/assets/js/extended-image-block.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/extended-image-block.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/contact-block.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/form.js"); 
+            App.Modules.Manager().Scripts.Add("~/assets/js/form.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-entry-point-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/free-search.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-form.js");
@@ -487,10 +487,10 @@ namespace Catfish
             menubar.Items.Insert(idx++, new MenuItem
             {
                 InternalId = "Collections",
-                Name = "Collections", 
+                Name = "Collections",
                 Route = "/manager/collections/",
                 Css = "fas fa-object-group"
-               
+
             });
 
             menubar.Items.Insert(idx++, new MenuItem
@@ -499,7 +499,7 @@ namespace Catfish
                 Name = "Items",
                 Route = "/manager/items/",
                 Css = "fas fa-object-ungroup"
-               
+
             });
 
 
@@ -588,8 +588,6 @@ namespace Catfish
             //    var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
             //    //initialize the Kywords region on page load
             //    catfishSiteService.UpdateKeywordVocabularyAsync(page).Wait();
-              
-
             //});
 
 

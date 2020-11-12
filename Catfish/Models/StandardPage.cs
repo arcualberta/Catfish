@@ -10,9 +10,8 @@ using System.Collections.Generic;
 namespace Catfish.Models
 {
     [PageType(Title = "Standard page")]
-    public class StandardPage  : Page<StandardPage>
+    public class StandardPage : Page<StandardPage>
     {
-      
         [Region(Title = "Keywords", Display = RegionDisplayMode.Setting)]
         public ControlledKeywordsField Keywords { get; set; } = new ControlledKeywordsField();
 

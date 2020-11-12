@@ -49,7 +49,7 @@ namespace Catfish.Api.Controllers
 
                 IList<SolrEntry> result = new List<SolrEntry>();
 
-                for (int i = 0; i < 10; ++i)
+                for (int i = 0; i < 2 * searchTerms.Length; ++i)
                 {
                     SolrEntry entry = new SolrEntry()
                     {

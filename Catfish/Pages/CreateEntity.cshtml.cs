@@ -36,7 +36,7 @@ namespace Catfish.Pages
             _entityTemplateService = temp;
             _db = db;
         }
-        
+
         public void OnGet(Guid templateId, Guid collectionId)
         {
             TemplateId = templateId;

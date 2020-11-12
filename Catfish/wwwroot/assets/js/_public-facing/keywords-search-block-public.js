@@ -66,7 +66,8 @@ var vueApp = new Vue({
         makePostCall() {
             console.log(event);
             let formData = new FormData();
-            formData.append("searchTerms", this.searchTerms);
+            this.searchTerms.forEach((item, index) => formData.append("searchTerms[" + index + "]", item));
+            //formData.append("searchTerms", this.searchTerms);
             formData.append("category", this.categories);
             this.loadingSearchResults = true;
 
