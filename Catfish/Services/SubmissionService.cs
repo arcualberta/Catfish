@@ -96,7 +96,7 @@ namespace Catfish.Services
         /// <param name="templateId"></param>
         /// <param name="collectionId"></param>
         /// <returns></returns>
-        public IList<Item> GetSubmissionList(Guid templateId, Guid collectionId)
+        public IList<Item> GetSubmissionList(Guid templateId, Guid? collectionId)
         {
             IList<Item> itemList = new List<Item>();
             try

@@ -9,6 +9,6 @@
 @{
     string formGetUrl = "/api/items";
     var entityTemplateId = Guid.Parse(Model.EntityTemplateId);
-    var collectionId = Guid.Parse(Model.CollectionId);
+    var collectionId = string.IsNullOrEmpty(Model.CollectionId)? null as Guid? : Guid.Parse(Model.CollectionId);
     IList<Item> itemList = _submissionService.GetSubmissionList(entityTemplateId,collectionId);
 }
