@@ -93,5 +93,12 @@ namespace Catfish.Areas.Manager.Controllers
         public void Delete(int id)
         {
         }
+
+        [Route("index")]
+        [HttpPost]
+        public static void IndexSite([FromForm] Guid siteId)
+        {
+            var site = siteId;
+        }
     }
 }

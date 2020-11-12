@@ -90,7 +90,7 @@ namespace Catfish.Services
 
         }
 
-        protected void UpdateKeywordVocabularyAsync(DynamicPage page, string concatenatedVocabulary, string concatenatedCategories)
+        public void UpdateKeywordVocabularyAsync(DynamicPage page, string concatenatedVocabulary, string concatenatedCategories)
         {
             var pageKeywords = page.Regions.Keywords as ControlledKeywordsField;
             pageKeywords.Vocabulary.Value = concatenatedVocabulary;
@@ -118,7 +118,7 @@ namespace Catfish.Services
 
         }
 
-        protected void UpdateKeywordVocabularyAsync(DynamicPost post, string concatenatedVocabulary, string concatenatedCategories)
+        public void UpdateKeywordVocabularyAsync(DynamicPost post, string concatenatedVocabulary, string concatenatedCategories)
         {
             var controlledVocabBlocks = post.Blocks
                 .Where(b => typeof(ControlledVocabularySearchBlock).IsAssignableFrom(base.GetType()))

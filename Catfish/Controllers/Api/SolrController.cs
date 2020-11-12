@@ -6,6 +6,7 @@ using Catfish.Core.Models.Solr;
 using Catfish.Core.Services.Solr;
 using ElmahCore;
 using Microsoft.AspNetCore.Mvc;
+using Piranha.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -75,8 +76,10 @@ namespace Catfish.Api.Controllers
         }
 
         [Route("index")]
-        public void IndexSite(Guid siteId)
+        public void IndexSite([FromForm] Guid siteId, [FromForm] string siteTypeId)
         {
+            
+
 
         }
 

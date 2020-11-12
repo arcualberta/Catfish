@@ -17,6 +17,7 @@ using Catfish.Models.Regions;
 using Catfish.Models;
 using Catfish.Models.Fields;
 using Piranha.AspNetCore.Identity.SQLServer;
+using Catfish.Models.SiteTypes;
 
 namespace Catfish.Services
 {
@@ -27,14 +28,16 @@ namespace Catfish.Services
         private readonly ISolrIndexService<SolrEntry> _solrIndexService;
         private readonly IQueryService _solrQueryService;
         private readonly ErrorLog _errorLog;
+        private readonly ICatfishSiteService _catfishSiteService;
 
-        public PageIndexingService(ISolrIndexService<SolrEntry> iSrv, IQueryService qSrv, IApi api, IdentitySQLServerDb pdb, ErrorLog errorLog)
+        public PageIndexingService(ISolrIndexService<SolrEntry> iSrv, IQueryService qSrv, ICatfishSiteService sSrv, IApi api, IdentitySQLServerDb pdb, ErrorLog errorLog)
         {
             _api = api;
             _solrIndexService = iSrv;
             _solrQueryService = qSrv;
             _errorLog = errorLog;
             _piranhaDb = pdb;
+            _catfishSiteService = sSrv;
         }
 
         protected void IndexBlock(Block block, SolrEntry entry)
@@ -243,6 +246,73 @@ namespace Catfish.Services
             {
                 _errorLog.Log(new Error(ex));
                 return null;
+            }
+        }
+
+        public async Task<bool> IndexSite(Guid siteId, string siteType)
+        {
+            try
+            {
+                if (siteType == typeof(CatfishWebsite).Name || siteType == typeof(WorkflowPortal).Name)
+                {
+                    //Get the contents of the given site
+                    var siteContent = await _api.Sites.GetContentByIdAsync(siteId).ConfigureAwait(false);
+
+                    //Gets the keywords field of the site settings
+                    var keywordsField = siteContent.Regions.Keywords as Piranha.Extend.Fields.TextField;
+
+                    //Keywords
+                    var keywords = keywordsField.Value.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    string concatenatedKeywords = string.Join(",", keywords);
+
+                    //categories
+                    //OCt 30 2020 - Gets the categories field of the site settings
+                    var categoriesField = siteContent.Regions.Categories as Piranha.Extend.Fields.TextField;
+                    var categories = categoriesField.Value.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    string concatenatedCategories = string.Join(",", keywords);
+
+
+                    //Get all the pages of the site and update their keywords
+                    var pages = await _api.Pages.GetAllAsync(siteId).ConfigureAwait(false);
+                    foreach (var page in pages)
+                    {
+                        try
+                        {
+                            //await _catfishSiteService.UpdateKeywordVocabularyAsync(page, concatenatedKeywords, concatenatedCategories);
+                            await _api.Pages.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            _errorLog.Log(new Error(ex));
+                            return false;
+                        }
+                    }
+
+                    //Get all posts of the site and update their keywords
+                    var posts = await _api.Posts.GetAllAsync(siteId).ConfigureAwait(false);
+                    foreach (var post in posts)
+                    {
+                        try
+                        {
+                            var postKeywords = post.Regions.Keywords as ControlledKeywordsField;
+                            postKeywords.Vocabulary.Value = concatenatedKeywords;
+                            //UpdateKeywordVocabularyAsync(post, concatenatedKeywords, concatenatedCategories);
+                            await _api.Posts.SaveAsync<DynamicPost>(post).ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            _errorLog.Log(new Error(ex));
+                            return false;
+                        }
+                    }
+                return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return false;
             }
         }
     }
