@@ -337,7 +337,8 @@ namespace Catfish
             Piranha.App.Fields.Register<TextAreaField>();
             Piranha.App.Fields.Register<ControlledKeywordsField>();
             Piranha.App.Fields.Register<ControlledCategoriesField>();
-           // Piranha.App.Fields.Register<CatfishSelectList<EType> > ();
+             Piranha.App.Fields.Register<CatfishSelectList<Entity>> ();
+           
         }
         private static void RegisterCustomScripts()
         {
@@ -357,8 +358,9 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/submission-form.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/item-list.js");
             //App.Modules.Manager().Scripts.Add("~/assets/js/submission-list.js");
-            App.Modules.Manager().Scripts.Add("~/assets/dist/bundle.js");
-            App.Modules.Manager().Scripts.Add("~/assets/dist/vendors.bundle.js");
+            App.Modules.Manager().Scripts.Add("~/assets/dist/editFieldFormBundle.js");
+            App.Modules.Manager().Scripts.Add("~/assets/dist/editItemBundle.js");
+            App.Modules.Manager().Scripts.Add("~/assets/dist/vendorsManagerSide.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
 
@@ -393,6 +395,9 @@ namespace Catfish
 
             App.Modules.Get<Piranha.Manager.Module>()
                 .Styles.Add("~/assets/css/formEditPage.css");
+
+            App.Modules.Get<Piranha.Manager.Module>()
+                .Styles.Add("~/assets/css/transitionAndAnimationManagerSide.css");
             /*
              These create a warning in Chrome about SameSite cookie use.
              This is not an issue for you to fix, it is for QuillJS.

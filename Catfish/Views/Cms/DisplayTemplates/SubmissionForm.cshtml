@@ -12,12 +12,15 @@
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
 
 @{
+    string suffix = Guid.NewGuid().ToString();
     string formPostUrl = "/api/items";
-    var entityTemplateId = Guid.Parse(Model.EntityTemplateId);
-    var collectionId = Guid.Parse(Model.CollectionId);
+    var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate); 
+    var collectionId = Guid.Parse(Model.SelectedCollection);
     var template = _entityTemplateService.GetTemplate(entityTemplateId);
 
     var Item = template.InstantiateRootItem();
+
+    string successMessage = string.IsNullOrEmpty(Model.SubmissionConfirmation.Value.ToString())? "" : Model.SubmissionConfirmation.Value.ToString();
 
 }
 @{
@@ -26,41 +29,43 @@
    () { TemplateOperations.Instantiate }))
    .Succeeded)
     {
-        <div class="submission-form-block @Model.CssClass.Value">
-            <form id="submissionForm" method="post" action="@formPostUrl">
-                <input data-val="true" data-val-required="The TemplateId field is required."
-                       id="entityTemplateId" name="entityTemplateId" type="hidden"
-                       value="@entityTemplateId">
-                <input data-val="true" data-val-required="The ColectionId field is required."
-                       id="collectionId" name="collectionId" type="hidden"
-                       value="@collectionId">
+    <div class="submission-form-block @Model.CssClass.Value">
+        <form id="submissionForm_@suffix" method="post" action="@formPostUrl">
+            <input data-val="true" data-val-required="The TemplateId field is required."
+                   id="entityTemplateId_@suffix" name="entityTemplateId" type="hidden"
+                   value="@entityTemplateId">
+            <input data-val="true" data-val-required="The ColectionId field is required."
+                   id="collectionId_@suffix" name="collectionId" type="hidden"
+                   value="@collectionId">
 
-                @*TODO: To display the name, description, and the list of fields of the
-                form represented in the "Item" here. *@
-                @Html.EditorFor(model => Item, Item.GetType().ToString())
-                <div id="buttonLayer">
-                    @*<input id="saveButton" class="btn btn-primary" name="save" type="submit" value="Save" />*@
-                    <input id="submitButton" class="btn btn-success" name="submit" type="submit" value="Submit" />
-                </div>
-                @*<div class="submission-result-message"></div>*@
-            </form>
-
-        </div>
+            @*TODO: To display the name, description, and the list of fields of the
+            form represented in the "Item" here. *@
+            @Html.EditorFor(model => Item, Item.GetType().ToString())
+            <div id="buttonLayer">
+               
+                <input id="submitButton_@suffix" class="btn btn-success" name="submit" type="submit" value="Submit" />
+            </div>
+           
+        </form>
+        <div id="submission-result-message_@suffix"></div>
+    </div>
     }
-<div class="submission-result-message"></div>
-        <script>
+
+<script>
+
             var status;
             $(function () {
-                $("submission-result-message").hide();
-                $(document).on('click', "#submitButton", function () {
+                $("#submission-result-message_@suffix").hide();
+
+                $(document).on('click', "#submitButton_@suffix", function () {
                     status = 'Submitted';
                     console.log('Status = '+status)
                 });
-                $(document).on('click', "#saveButton", function () {
+                $(document).on('click', "#saveButton_@suffix", function () {
                     status = 'Saved'
                     console.log('Status = ' + status)
                 });
-                $("#submissionForm").submit(function (event) {
+                $("#submissionForm_@suffix").submit(function (event) {
 
                     /* stop form from submitting normally */
                     event.preventDefault();
@@ -69,7 +74,7 @@
                     var prefix = /^Blocks\[[0-9]+\]\.Item\.|^block.Item\./;
 
                     var values = {};
-                    $.each($('#submissionForm').serializeArray(), function (i, field) {
+                    $.each($('#submissionForm_@suffix').serializeArray(), function (i, field) {
                         name = field.name.replace(prefix, "");
                         values[name] = field.value;
                     });
@@ -80,75 +85,31 @@
                         url = $form.attr('action');
                     /* Send the data using post with element id name and name2*/
                     var posting = $.post(url, values);
-
+                    var message = "";
                     posting.done(function (data) {
-                        $(".submission-result-message").empty();
+                        $("#submission-result-message_@suffix").empty();
 
                         if (data.success) {
-                          //  $(".submission-result-message").addClass("alert alert-success");
-                            $(".submission-result-message").append("<span class='alert alert-success' ></span>")
-                            $("#submissionForm").hide();//[0].reset();
+                            //  $(".submission-result-message").addClass("alert alert-success");
+                            message = "@successMessage" != "" ? "@successMessage" : data.message;
+                            $("#submission-result-message_@suffix").append("<div class='alert alert-success' ></div>");
+
+                            $("#submissionForm_@suffix").hide();//[0].reset();
                         }
                         else {
-                           // $(".submission-result-message").addClass("alert alert-danger");
-                            $(".submission-result-message").append("<span class='alert alert-danger' ></span>")
+
+                            $("#submission-result-message_@suffix").append("<div class='alert alert-danger' ></div>");
+                            message = data.message;
                         }
-                        $(".submission-result-message span").text(data.message);
-                        $(".submission-result-message").show();
+
+
+
+                        $("#submission-result-message_@suffix div").text(message);
+                        $("#submission-result-message_@suffix").show();
                     });
 
-                    /* Alerts the results */
-                    //posting.done(function (data) {
-                    //TODO: Check the content of the data to understand it.
-                    //Iterate throgh the list of results and add them as new elements to the search-result div
 
-                    //    //Clearing the existing search results, if any
-                    //    $("#freeSearchBlockResults").empty();
-                    //    if (data.length == 0) {
-                    //        $("#freeSearchBlockResults").append($.parseHTML("<div class='alert alert-warning'>No results found</div>"));
-                    //        return;
-                    //    }
-
-                    //    $.each(data, function (entryIndex, entry) {
-
-                    //        //@* Creating the wrapper div as a DOM element for the result item *@
-                    //var entryWrapper = $.parseHTML("<div class='search-result-entry'>");
-
-                    //@* Adding the wrapper to the result - list container *@
-                    //$("#freeSearchBlockResults").append(entryWrapper);
-
-                    //@*Building a link to the detailed object if there is a permalink associated with the entry*@
-                    //var linkStart = "";
-                    //var linkEnd = "";
-                    //if (entry.permalink != undefined && entry.permalink.length > 0) {
-                    //    linkStart = "<a href='" + entry.permalink + "'>";
-                    //    linkEnd = "</a>";
-                    //}
-
-                    //@* Adding the entry title to the wrapper as a child. We need to this for each
-                    value of the title because the title can take multiple values *@
-                    //var entryTitleDiv = $.parseHTML("<div class='entry-title'>");
-                    //$(entryWrapper).append(entryTitleDiv);
-                    //$.each(entry.title, function (titleIndex, titleVal) {
-                    //    var str = "<span><b>" + linkStart + titleVal + linkEnd + "</b></span>"
-                    //    $(entryTitleDiv).append($.parseHTML(str));
-                    //});
-
-            //        //@*Go through each highlight snippet and add them to the entry-body section. We include each them
-                        in separate divs *@
-            //        var entryBodyDiv = $.parseHTML("<div class='entry-body'>");
-            //        $(entryWrapper).append(entryBodyDiv);
-            //        $.each(entry.highlights, function (highlightIndex, highlightVal) {
-            //            var str = "<div>" + highlightVal + "</div>";
-            //            $(entryBodyDiv).append($.parseHTML(str));
-            //        });
-            //    });
-            //});
-
-            //posting.fail(function () {
-            //    alert('The search failed!');
-            //});
         });
             });
-        </script>
+</script>
     }

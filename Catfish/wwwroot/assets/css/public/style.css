@@ -269,12 +269,12 @@ legend.searchcheckbox {
 }
 
 fieldset.checkboxgroup {
-    border: 1px solid;
+    border: 1px solid grey;
+    border-radius: 5px;
     margin: 0;
-    padding: 0;
+    padding: 1em;
     margin-bottom: 1.25em;
-    padding: .125em;
-    background-color: antiquewhite;
+    background-color: white;
 }
 
     fieldset.checkboxgroup legend {
