@@ -290,7 +290,7 @@ namespace Catfish.Services
                     {
                         try
                         {
-                            //await _catfishSiteService.UpdateKeywordVocabularyAsync(page, concatenatedKeywords, concatenatedCategories);
+                            _catfishSiteService.UpdateKeywordVocabularyAsync(page, concatenatedKeywords, concatenatedCategories);
                             await _api.Pages.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
                         }
                         catch (Exception ex)
@@ -308,7 +308,7 @@ namespace Catfish.Services
                         {
                             var postKeywords = post.Regions.Keywords as ControlledKeywordsField;
                             postKeywords.Vocabulary.Value = concatenatedKeywords;
-                            //UpdateKeywordVocabularyAsync(post, concatenatedKeywords, concatenatedCategories);
+                            _catfishSiteService.UpdateKeywordVocabularyAsync(post, concatenatedKeywords, concatenatedCategories);
                             await _api.Posts.SaveAsync<DynamicPost>(post).ConfigureAwait(false);
                         }
                         catch (Exception ex)
