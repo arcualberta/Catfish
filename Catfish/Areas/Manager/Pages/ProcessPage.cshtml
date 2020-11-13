@@ -20,10 +20,10 @@
     <script src="@Url.Content(Piranha.Manager.Editor.EditorScripts.MainScriptUrl)"></script>
     <script src="@Url.Content(Piranha.Manager.Editor.EditorScripts.EditorScriptUrl)"></script>
     
-} <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+} @*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.min.js" integrity="sha384-3ziFidFTgxJXHMDttyPJKDuTlmxJlwbSkojudK/CkRqKDOmeSbN6KLrGdrBQnT2n" crossorigin="anonymous"></script>
-
-<div id="entityTypelist">
+  *@
+<div id="process-page-container">
     <div class="top">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -63,6 +63,8 @@
                                 //TODO: initialize the offset and max using variables passed through the page model.
                                 int offset = 0;
                                 int max = 10000;
+
+                                int indexValue = 0;
                             }
                             @foreach (var site in @Sites)
                             {
@@ -75,12 +77,13 @@
                                         <span class="title">@site.SiteTypeId</span>
                                     </td>
                                     <td class="actions one" style="width: 18rem;">
-                                        <button id="siteIndex" class="btn btn-danger" type="button" data-toggle="modal" data-target="#userModal" onclick="addUser('@site.Id', '@site.SiteTypeId'); return false;">
+                                        <button id="siteIndex-@indexValue" class="btn btn-danger" type="button" data-toggle="modal" 
+                                        data-target="#userModal" v-on:click="setCurrentSite(@indexValue)"> 
                                             Index the Site
                                         </button>
                                         <div id="userModal" class="modal fade" role="dialog">
 
-                                            <form id="indexForm" method="post" >
+                                            <div id="indexForm-@indexValue"> 
                                                 <div class="modal-dialog">
                                                     @*Modal content*@
                                                     <div class="modal-content">
@@ -96,18 +99,17 @@
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                                                            <input type="hidden" name="SiteId" id="SiteId" value="" />
-                                                            <input type="hidden" name="SiteTypeId" id="SiteTypeId" value="" />
-                                                            <button id="indexConfirm" type="submit" class="btn btn-success">Index</button>
+                                                            <button id="close-modal-button" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                                            <button v-on:click="indexTheSite('@site.Id', '@site.SiteTypeId')" id="indexConfirm" type="submit" class="btn btn-success">Index</button>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </form>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
-                            }
+								indexValue++;
+							}
                         </tbody>
                     </table>
                     <div class="submission-result-message" style="display:none"></div>
@@ -119,38 +121,39 @@
 </div>
 
 <script>
-    $(function () {
-        $("#indexForm").submit(function (event) {
 
-            /* stop form from submitting normally */
-            event.preventDefault();
+    ////$(function () {
+    ////    $("#indexForm").submit(function (event) {
+
+    ////        /* stop form from submitting normally */
+    ////        event.preventDefault();
 
 
-            /* get the action attribute from the <form action=""> element */
-            var url = "/api/solr/index";
-            var siteval = $("#SiteId").val();
-            var siteType = $("#SiteTypeId").val();
-            console.log('url : ' + url);
-            console.log('siteId : ' + siteval);
-            /* Send the data using post with element id name and name2*/
-            //var posting = $.post(url, {
-            //    siteId: siteval
-            //});
+    ////        /* get the action attribute from the <form action=""> element */
+    ////        var url = "/api/solr/index";
+    ////        var siteval = $("#SiteId").val();
+    ////        var siteType = $("#SiteTypeId").val();
+    ////        console.log('url : ' + url);
+    ////        console.log('siteId : ' + siteval);
+    ////        /* Send the data using post with element id name and name2*/
+    ////        //var posting = $.post(url, {
+    ////        //    siteId: siteval
+    ////        //});
 
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: {
-                    siteId: siteval,
-                    siteTypeId: siteType
+    ////        $.ajax({
+    ////            type: 'POST',
+    ////            url: url,
+    ////            data: {
+    ////                siteId: siteval,
+    ////                siteTypeId: siteType
 
-                },
-                success: function (response) {
-                    $(".submission-result-message").addClass("alert alert-success");
-                    $("#submissionForm")[0].reset();
-                }
-            });
-            console.log('url : ' + url);
+    ////            },
+    ////            success: function (response) {
+    ////                $(".submission-result-message").addClass("alert alert-success");
+    ////                $("#submissionForm")[0].reset();
+    ////            }
+    ////        });
+    ////        console.log('url : ' + url);
 
             //posting.done(function (data) {
             //    $(".submission-result-message").empty();
@@ -165,12 +168,12 @@
             //    $(".submission-result-message").text(data.message);
             //    $(".submission-result-message").show();
             //});
-        });
-    });
+    ////    });
+    ////});
 </script>
-<script>
+@*<script>
     function addUser(id,type) {
         $(".modal-footer #SiteId").val(id);
         $(".modal-footer #SiteTypeId").val(type);
     }
-</script>
+</script>*@

@@ -363,6 +363,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/dist/vendorsManagerSide.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/process-page.js");
 
             //App.Modules.Manager().Scripts.Add("~/assets/js/dropdownlist-field.js");
 
