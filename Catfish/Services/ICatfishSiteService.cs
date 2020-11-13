@@ -13,5 +13,7 @@ namespace Catfish.Services
         public Task UpdateKeywordVocabularyAsync(PostBase post);
         public Task<string> getDefaultSiteKeywordAsync();
         public Task<string> getDefaultSiteCategoryAsync();
+        public void UpdateKeywordVocabularyAsync(DynamicPage page, string concatenatedVocabulary, string concatenatedCategories);
+        public void UpdateKeywordVocabularyAsync(DynamicPost post, string concatenatedVocabulary, string concatenatedCategories);
     }
 }

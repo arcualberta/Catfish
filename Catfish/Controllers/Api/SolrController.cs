@@ -18,11 +18,11 @@ namespace Catfish.Api.Controllers
     public class SolrController : ControllerBase
     {
         private readonly IQueryService QueryService;
-        private readonly ICatfishSiteService _catfishSiteService;
-        public SolrController(IQueryService queryService, ICatfishSiteService catfishSiteService)
+        private readonly IPageIndexingService _pageIndexingService;
+        public SolrController(IQueryService queryService, IPageIndexingService pageIndexingService)
         {
             QueryService = queryService;
-            _catfishSiteService = catfishSiteService;
+            _pageIndexingService = pageIndexingService;
         }
 
         [Route("freetext")]
@@ -87,10 +87,8 @@ namespace Catfish.Api.Controllers
         [Route("index")]
         public void IndexSite([FromForm] Guid siteId, [FromForm] string siteTypeId)
         {
-            SiteContentBase siteContent = null;
-            siteContent.Id = siteId;
-            siteContent.TypeId = siteTypeId;
-            _catfishSiteService.UpdateKeywordVocabularyAsync(siteContent);
+
+            _pageIndexingService.IndexSite(siteId, siteTypeId);
         }
     }
 }
