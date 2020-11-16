@@ -363,11 +363,14 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/dist/vendorsManagerSide.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-vocabulary-search.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/process-page.js");
 
             //App.Modules.Manager().Scripts.Add("~/assets/js/dropdownlist-field.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-keywords.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-categories.js");
+
+            App.Modules.Manager().Scripts.Add("~/assets/js/vue-list.js");
 
         }
         private static void RegisterCustomBlocks()
@@ -386,6 +389,7 @@ namespace Catfish
             App.Blocks.Register<ExtendedImageBlock>();
             App.Blocks.Register<ExtendedGalleryBlock>();
             App.Blocks.Register<ControlledVocabularySearchBlock>();
+            App.Blocks.Register<VueList>();
 
         }
         private static void RegisterCustomStyles()

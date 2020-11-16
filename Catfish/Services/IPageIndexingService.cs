@@ -12,6 +12,7 @@ namespace Catfish.Services
         public void IndexPage(PageBase page);
         public void IndexPost(PostBase post);
         Task<List<Site>> GetSitesList();
+        Task<bool> IndexSite(Guid siteId, string siteType);
 
     }
 }
