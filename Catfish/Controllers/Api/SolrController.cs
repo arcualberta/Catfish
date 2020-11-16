@@ -87,7 +87,6 @@ namespace Catfish.Api.Controllers
         [Route("index")]
         public void IndexSite([FromForm] Guid siteId, [FromForm] string siteTypeId)
         {
-
             _pageIndexingService.IndexSite(siteId, siteTypeId);
         }
     }

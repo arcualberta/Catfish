@@ -261,63 +261,23 @@ namespace Catfish.Services
             }
         }
 
-        public async Task<bool> IndexSite(Guid siteId, string siteType)
+        public bool IndexSite(Guid siteId, string siteType)
         {
             try
             {
                 if (siteType == typeof(CatfishWebsite).Name || siteType == typeof(WorkflowPortal).Name)
                 {
-                    //Get the contents of the given site
-                    var siteContent = await _api.Sites.GetContentByIdAsync(siteId).ConfigureAwait(false);
-
-                    //Gets the keywords field of the site settings
-                    var keywordsField = siteContent.Regions.Keywords as Piranha.Extend.Fields.TextField;
-
-                    //Keywords
-                    var keywords = keywordsField.Value.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                    string concatenatedKeywords = string.Join(",", keywords);
-
-                    //categories
-                    //OCt 30 2020 - Gets the categories field of the site settings
-                    var categoriesField = siteContent.Regions.Categories as Piranha.Extend.Fields.TextField;
-                    var categories = categoriesField.Value.Split(new char[] { ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                    string concatenatedCategories = string.Join(",", keywords);
-
-
                     //Get all the pages of the site and update their keywords
-                    var pages = await _api.Pages.GetAllAsync(siteId).ConfigureAwait(false);
+                    var pages = _api.Pages.GetAllAsync(siteId).ConfigureAwait(false).GetAwaiter().GetResult();
                     foreach (var page in pages)
-                    {
-                        try
-                        {
-                            _catfishSiteService.UpdateKeywordVocabularyAsync(page, concatenatedKeywords, concatenatedCategories);
-                            await _api.Pages.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
-                        }
-                        catch (Exception ex)
-                        {
-                            _errorLog.Log(new Error(ex));
-                            return false;
-                        }
-                    }
+                        IndexPage(page);
 
                     //Get all posts of the site and update their keywords
-                    var posts = await _api.Posts.GetAllAsync(siteId).ConfigureAwait(false);
+                    var posts = _api.Posts.GetAllAsync(siteId).ConfigureAwait(false).GetAwaiter().GetResult();
                     foreach (var post in posts)
-                    {
-                        try
-                        {
-                            var postKeywords = post.Regions.Keywords as ControlledKeywordsField;
-                            postKeywords.Vocabulary.Value = concatenatedKeywords;
-                            _catfishSiteService.UpdateKeywordVocabularyAsync(post, concatenatedKeywords, concatenatedCategories);
-                            await _api.Posts.SaveAsync<DynamicPost>(post).ConfigureAwait(false);
-                        }
-                        catch (Exception ex)
-                        {
-                            _errorLog.Log(new Error(ex));
-                            return false;
-                        }
-                    }
-                return true;
+                        IndexPost(post);
+
+                    return true;
                 }
                 return false;
             }
