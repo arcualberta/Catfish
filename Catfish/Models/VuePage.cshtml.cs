@@ -10,7 +10,7 @@ using Piranha.Models;
 namespace Catfish.Models
 {
     [PageType(Title = "Vue Page")]
-    public class VuePage : Page<VuePage>
+    public class VuePage : StandardPage
     {
     }
 }

@@ -1,0 +1,35 @@
+﻿@model Catfish.Models.VuePage
+
+@using Catfish.Models.Blocks;
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+
+@{
+    var vueComponentNames = Model.Blocks
+        .Where(b => typeof(VueComponent).IsAssignableFrom(b.GetType()))
+        .Select(b => (b as VueComponent).Component)
+        .Distinct()
+        .ToList();
+
+    foreach (string compName in vueComponentNames)
+    {
+        <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
+    }
+}
+
+<div class="main">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-sm-12 page-body">
+                <h1>@Model.Title</h1>
+                <div id="blocks">
+                    @Html.DisplayFor(m => m.Blocks)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    new Vue({ el: '#blocks' })
+</script>
