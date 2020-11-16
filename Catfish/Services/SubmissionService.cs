@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Identity;
 using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Catfish.Services
 {
@@ -58,9 +61,36 @@ namespace Catfish.Services
         public List<Item> GetSubmissionList()
         {
             List<Item> items = new List<Item>();
+           
             try
             {
                 items = _db.Items.ToList();
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+            }
+            return items;
+
+        }
+
+        public List<Item> GetSubmissionList(Guid templateId, Guid collectionId, DateTime startDate, DateTime endDate)
+        {
+            List<Item> items = new List<Item>();
+           // Guid gTemplateId = !string.IsNullOrEmpty(templateId) ? Guid.Parse(templateId) : Guid.Empty;
+          
+            DateTime from = startDate ==null ? DateTime.MinValue : startDate;
+            DateTime to = endDate == null? DateTime.Now : endDate;
+            try
+            {
+                var query = _db.Items.Where(i=>i.TemplateId == templateId && (i.Created >= from && i.Created < to));
+
+                if (collectionId != Guid.Empty)
+                {
+                   
+                    query = query.Where(i => i.PrimaryCollectionId == collectionId);
+                }
+                items = query.ToList();
             }
             catch (Exception ex)
             {
@@ -101,7 +131,7 @@ namespace Catfish.Services
             IList<Item> itemList = new List<Item>();
             try
             {
-                var query = _db.Items.Where(i => i.TemplateId == templateId);
+                var query = _db.Items.Include(i=>i.Status).Where(i => i.TemplateId == templateId);
 
                 if (collectionId != null)
                     query = query.Where(i => i.PrimaryCollectionId == collectionId);
@@ -113,6 +143,44 @@ namespace Catfish.Services
                 _errorLog.Log(new Error(ex));
             }
             return itemList;
+        }
+
+        public string GetStatus(Guid? statusId)
+        {
+            return _db.SystemStatuses.Where(s => s.Id == statusId).FirstOrDefault().NormalizedStatus;
+        }
+      
+        public List<ItemField> GetAllField(string xml)
+        {
+            List<ItemField> lFields = new List<ItemField>();
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(xml);
+            XmlNodeList parentNode = doc.GetElementsByTagName("fields");
+            foreach (XmlNode childrenNode in parentNode)
+            {
+               
+                foreach (XmlNode child in childrenNode.ChildNodes)//field
+                {
+                    ItemField item = new ItemField();
+                    foreach (XmlNode c in child.ChildNodes)//field
+                    {
+
+                        if (c.Name == "name")
+                        {
+                            item.FieldName = c.InnerText;
+                        }
+                        else if (c.Name == "values")
+                        {
+                            item.FieldValue = c.FirstChild.InnerText;
+                        }
+                    }
+                    lFields.Add(item);
+                }
+              
+                
+            }
+
+            return lFields;
         }
     }
 }

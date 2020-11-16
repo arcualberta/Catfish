@@ -67,3 +67,36 @@ function updateBreadcrumb(){
     return false;
 
 }
+//title = string -- for fileName, tableId => <table id> that contain the data
+function generateCSV(title, tableId) {
+    var title = title;//$("#SelectedEventReports :selected").text().replace(/[\\\/ \.]+/g, "_");
+    var report = "";
+    var rows = $('#' + tableId +' > tbody > tr').each(function () {
+        $(this).children('th, td').each(function (index) {
+            if (index == 0) {
+                return;
+            }
+
+            var text = $(this).text().replace(/"/g, '""').replace(/\n[ \t\r\v\f]+/g, '\n');
+
+            if (index > 1) {
+                report += ',';
+            }
+
+            report += '"' + text.trim() + '"';
+        })
+
+        report += "\n";
+    })
+
+    var link = document.createElement('a');
+    link.download = title + '.csv';
+    link.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(report);
+
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    delete link;
+}

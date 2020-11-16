@@ -1,9 +1,8 @@
-﻿using Piranha.Extend;
+﻿using Catfish.Core.Models;
+using Catfish.Models.Fields;
+using Piranha.Extend;
 using Piranha.Extend.Fields;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace Catfish.Models.Blocks
 {
@@ -12,5 +11,12 @@ namespace Catfish.Models.Blocks
     {
         public TextField EntityTemplateId { get; set; }
         public TextField CollectionId { get; set; }
+        public CatfishSelectList<Collection> Collections { get; set; }
+        public CatfishSelectList<ItemTemplate> ItemTemplates { get; set; }
+
+        public TextField SelectedCollection { get; set; }
+
+        public TextField SelectedItemTemplate { get; set; }
+
     }
 }

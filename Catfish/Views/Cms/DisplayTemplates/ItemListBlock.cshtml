@@ -1,24 +1,114 @@
 ﻿@model Catfish.Models.Blocks.ItemListBlock
 
-@using Catfish.Core.Authorization.Requirements;
-@using Microsoft.AspNetCore.Authorization;
+
 @using Catfish.Core.Models;
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
 @inject Catfish.Services.ISubmissionService _submissionService;
 
 @{
-    var entityTemplateId = Guid.Parse(Model.EntityTemplateId);
-    var collectionId = string.IsNullOrEmpty(Model.CollectionId)? null as Guid? : Guid.Parse(Model.CollectionId);
-    IList<Item> itemList = _submissionService.GetSubmissionList(entityTemplateId,collectionId);
+    var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
+    var collectionId = string.IsNullOrEmpty(Model.SelectedCollection) ? null as Guid? : Guid.Parse(Model.SelectedCollection);
+    IList<Item> itemList = _submissionService.GetSubmissionList(entityTemplateId, collectionId);
 
 
-    //TODO: retrieve the item template and the data item in it with isRoot set to true.
-    // Create a tablular view with the gollowing columns:
-    // submission timestamp, status, submitted user (if exists) and the columns of the root data template.
-    //
-    //Further, please add "from" and "to" as date field filters. Pass them on to the above GetSubmissionList
-    //call. It should return items that were submitted within this period( include from but exclude to).
-    //Have an execute button and that should rettrieve the results.
-    // Please cretae a "Download or Export" button that would allow the user to download the retrieved results.
+    bool printTitle = true;
+  
+   
 }
+
+    <div class="row col-md-12">
+          <div class="col-md-5 form-group">
+                   <label>From:</label> <input type="date" name="startDate" id="startDate" class="form-control" />
+          </div>
+        <div class="col-md-5 form-group"> <label class="form-label">To:</label><input type="date" name="endDate" id="endDate" class="form-control" /></div>
+        <button  id="itemListBtnFilter" class="btn btn-default btn-primary" style="margin-top:30px; height:fit-content;" value="Filter" ><span class="fa fa-filter"  style="padding-right:5px;"></span>Filter </button>
+    </div>
+
+
+
+
+<button id="downloadCsvFile" class="btn btn-default btn-primary" onclick="generateCSV('Items_@DateTime.Now.ToShortDateString()','itemListBlockTable' )"><span class="fa fa-download" style="padding-right:5px;"></span>Download CSV</button>
+@if (itemList.Count > 0)
+{
+    <table class="table table-stripe table-border" id="itemListBlockTable">
+        <tr class="tblHeader">
+            @foreach (Item item in itemList)
+            {
+                var allFields = _submissionService.GetAllField(item.Data.ToString());
+                //table's header
+                if (printTitle)
+                {
+                    foreach (var field in allFields)
+                    {
+                        <th> @field.FieldName </th>
+                    }
+                    printTitle = false;
+                    <th> Submitted </th>
+                    <th> Status </th>
+                @:</tr>
+            }
+            <tr class="tblRowContent">
+                @foreach (var field in allFields)
+                {
+                    <td> @field.FieldValue </td>
+                }
+
+
+                <td> @item.Created </td>
+                <td> @_submissionService.GetStatus(item.StatusId) </td>
+            </tr>
+        }
+        </table>
+    }
+
+<script>
+    $("#itemListBtnFilter").click(function () {
+
+        //string templateId, string collectionId, string fromDate=null, string toDate=null
+        var templateId ="@entityTemplateId";
+        var collId = "@collectionId";
+        var fromDate = $("#startDate").val();
+        var toDate = $("#endDate").val();
+        $.ajax({
+
+            url:  '/api/items/GetItemList/',
+            type: 'GET',
+            data: {
+                'templateId': templateId, "collectionId": collId, "startDate": fromDate, "endDate": toDate
+            },
+          
+            success: function (data) {
+                var tbl = $("#itemListBlockTable");
+                //reset content table content rows
+
+                $("#itemListBlockTable tr.tblRowContent").remove();
+                $(data).each(function (index, d) {
+                    if (index > 0) {
+                        var cols = d.split(",");
+                        var row = ` <tr class="tblRowContent">`;
+                        var i;
+                        for (i = 0; i < cols.length-1; i++) {
+                            row += "<td>" + cols[i] + "</td>";
+                        }
+                        row += "</tr>";
+
+                        $("#itemListBlockTable").append(row);
+                        row = "";
+                    }
+                });
+            },
+            error: function (request, error) {
+                alert("Request: " + JSON.stringify(request));
+            }
+        });
+
+
+    });
+</script>
+<style>
+    #itemListBlockTable{
+        margin-top:15px;
+    }
+</style>
+
 

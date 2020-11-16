@@ -32,11 +32,57 @@ namespace Catfish.Controllers.Api
         }
 
         // GET api/<ItemController>/5
+        /// <summary>
+        /// get Items and only return the form fields (cuatom from form), the submitted form and the form status
+        /// </summary>
+        /// <param name="templateId">Item template id</param>
+        /// <param name="collectionId">main collection Id</param>
+        /// <param name="startDate">startDate</param>
+        /// <param name="endDate">end date</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
-        public IList<Item> GetItemList(Guid templateId, Guid collectionId)
+        public IList<string> GetItemList(Guid templateId, Guid collectionId, DateTime startDate, DateTime endDate)
         {
-            IList<Item> itemList = _submissionService.GetSubmissionList(templateId,collectionId);
-            return itemList;
+            IList<Item> itemList = _submissionService.GetSubmissionList(templateId,collectionId, startDate, endDate);
+            List<string> itemFields = new List<string>();
+            bool header = true;
+            if (itemList.Count > 0)
+            {
+                foreach (Item item in itemList) {
+                    //get all the custom fields from the form
+                    var iFields = _submissionService.GetAllField(item.Data.ToString());
+
+                    //get the date when the form is submitted
+                    iFields.Add(new ItemField { FieldName = "Created", FieldValue = item.Created.ToShortDateString() });
+                    //get the form status
+                    string status = _submissionService.GetStatus(item.StatusId);
+                    iFields.Add(new ItemField { FieldName = "Status", FieldValue = status });
+
+                    if (header)
+                    {
+                        string strHeader = "";
+                        foreach (var field in iFields)
+                        {
+                           strHeader += field.FieldName + ",";
+                        }
+                        itemFields.Add(strHeader);
+                        header = false; //only het the header once
+                    }
+
+                    //the the filed values
+                    string strValues = "";
+                    foreach (var field in iFields)
+                    {
+                        strValues += field.FieldValue + ",";
+                    }
+
+                    itemFields.Add(strValues);
+                }
+                   
+            }//if have some items
+            
+
+            return itemFields;
         }
 
         // POST api/<ItemController>
