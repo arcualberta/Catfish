@@ -1,6 +1,10 @@
 ﻿@model Catfish.Models.Blocks.VueComponent
 @using Newtonsoft.Json;
 
+@*
+    Reference: https://vuejs.org/v2/guide/components.html
+*@
+
 @{
     var jsonData = JsonConvert.SerializeObject(Model.GetData());
     var componentElementString = string.Format("<{0} v-bind:model='{1}'>", Model.Component, jsonData);

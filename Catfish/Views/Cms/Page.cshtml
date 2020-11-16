@@ -1,25 +1,45 @@
 @model StandardPage
+@using Catfish.Models.Blocks;
 
 @{
     ViewBag.Title = Model.Title;
 
-    if (typeof(VuePage).IsAssignableFrom(Model.GetType()))
+    var vueComponentNames = Model.Blocks
+        .Where(b => typeof(VueComponent).IsAssignableFrom(b.GetType()))
+        .Select(b => (b as VueComponent).Component)
+        .Distinct()
+        .ToList();
+
+    if (vueComponentNames.Count > 0)
     {
-        @Html.DisplayFor(m => m)
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+        foreach (string compName in vueComponentNames)
+        {
+            <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
+        }
     }
-    else
-    {
-        <div class="main">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-sm-12 page-body">
-                        <h1>@Model.Title</h1>
-                        @Html.DisplayFor(m => m.Blocks)
-                    </div>
+}
+
+<div class="main">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-sm-12 page-body">
+                <h1>@Model.Title</h1>
+                <div id="blocks">
+                    @Html.DisplayFor(m => m.Blocks)
                 </div>
             </div>
         </div>
-    }
+    </div>
+</div>
+
+@if (vueComponentNames.Count > 0)
+{
+    <script>
+        new Vue({ el: '#blocks' })
+    </script>
 }
+
+
 
 

@@ -260,7 +260,6 @@ namespace Catfish
                 .AddType(typeof(Models.StandardPage))
                  .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MediaPage))
-                 .AddType(typeof(Models.VuePage))
                 .Build()
                 .DeleteOrphans();
 
