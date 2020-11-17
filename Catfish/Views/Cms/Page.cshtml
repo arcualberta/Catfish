@@ -12,7 +12,7 @@
 
     if (vueComponentNames.Count > 0)
     {
-        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+        <script src="/assets/js/vue/vue-dev.js"></script>
         foreach (string compName in vueComponentNames)
         {
             <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>

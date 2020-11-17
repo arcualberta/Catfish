@@ -23,10 +23,11 @@ Vue.component("vue-list", {
         }
 
     },
-    template: "<div  class= 'block-body'>" +
-
-        " <textarea rows='4' cols='100' class='lead ' " +
-        "    v-html='model.items.value' contenteditable='true' v-on:blur='onBlur' >" +
-        "</textarea></div>"
+    template: `
+        <div >
+            <textarea rows='4' cols='100' class='lead '
+                v-html='model.items.value' contenteditable='true' v-on:blur='onBlur' >
+            </textarea>
+        </div>`
 
 });

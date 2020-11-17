@@ -7,8 +7,6 @@
 
 @{
     var jsonData = JsonConvert.SerializeObject(Model.GetData());
-    var componentElementString = string.Format("<{0} v-bind:model='{1}'>", Model.Component, jsonData);
+    var componentElementString = string.Format("<{0} v-bind:model='{1}'></{0}>", Model.Component, jsonData);
 }
-<div>
-    @Html.Raw(componentElementString)
-</div>
+@Html.Raw(componentElementString)

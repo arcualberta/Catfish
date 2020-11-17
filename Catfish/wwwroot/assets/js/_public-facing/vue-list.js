@@ -2,9 +2,6 @@
     props: ["uid", "model"],
 
     data: function () {
-        return {
-            count: 0
-        }
     },
     template: `
         <ul>
