@@ -4,15 +4,20 @@
             @*<input type="text" name="searchTerm" />
         <button type="submit"><i class="fa fa-search"></i></button>*@
             <div class="input-group md-form form-sm form-2 pl-0 portalSearch">
-                <input class="form-control my-0 py-1 amber-border" type="text" placeholder="Search" aria-label="Search" name="searchTerm">
-                <div type="submit" class="input-group-append" onclick="window.location.href = '/search'; return false;">
+                <input class="form-control my-0 py-1 amber-border" type="text" placeholder="Search" aria-label="Search" name="searchTerm" value="">
+                <div type="submit" class="input-group-append" onclick=" searchText();">
                     <span class="input-group-text amber lighten-3">
                         <i class="fa fa-search text-grey" aria-hidden="true"></i>
                     </span>
                 </div>
             </div>
         </form>
-    </div>
-
-    
+    </div> 
 </div>
+<script>
+    function searchText() {
+        var searchText = $("input[name='searchTerm']").val();
+        window.location.href = '/search?searchTerm=' + searchText;
+        return false;
+    }
+</script>
