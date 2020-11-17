@@ -38,5 +38,8 @@ namespace Catfish.Models.SiteTypes
 
         [Field(Title = "Css")]
         public TextField Css { get; set; }
+
+        [Field(Title = "Enabled SubMenu", Placeholder = "If the site will display sub menu")]
+        public CheckBoxField EnabledSubMenu { get; set; } = true;
     }
 }
