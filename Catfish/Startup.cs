@@ -426,9 +426,23 @@ namespace Catfish
 
         private static void AddManagerMenus()
         {
+            int groupId = 1;
+
+            //Entities group
+            if (Piranha.Manager.Menu.Items.Where(m => m.Name == "Entities").FirstOrDefault() == null)
+            {
+                Piranha.Manager.Menu.Items.Insert(groupId++, new MenuItem
+                {
+                    InternalId = "Entities",
+                    Name = "Entities",
+                    Css = "fas fa-object-group"
+
+                });
+            }
+            //Templates group
             if (Piranha.Manager.Menu.Items.Where(m => m.Name == "Templates").FirstOrDefault() == null)
             {
-                Piranha.Manager.Menu.Items.Insert(0, new MenuItem
+                Piranha.Manager.Menu.Items.Insert(groupId++, new MenuItem
                 {
                     InternalId = "Templates",
                     Name = "Templates",
@@ -470,17 +484,6 @@ namespace Catfish
 
             });
 
-
-            if (Piranha.Manager.Menu.Items.Where(m => m.Name == "Entities").FirstOrDefault() == null)
-            {
-                Piranha.Manager.Menu.Items.Insert(0, new MenuItem
-                {
-                    InternalId = "Entities",
-                    Name = "Entities",
-                    Css = "fas fa-object-group"
-
-                });
-            }
 
             ///
             /// Entities Group Content Menus
