@@ -51,7 +51,7 @@
                         {
                             foreach (var popup in postAction.PopUps)
                             {
-                                <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="button" value="@postAction.ButtonLabel" data-toggle="modal" data-target="#submissionModal"/>
+                                <input id="@postAction.ButtonLabel" class="btn btn-success" name="@postAction.ButtonLabel" type="button" value="@postAction.ButtonLabel" data-toggle="modal" data-target="#submissionModal"/>
                                 <div id="submissionModal" class="modal fade" role="dialog">
 
                                     <div>
@@ -70,8 +70,22 @@
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button id="close-modal-button_@suffix" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                                                    <button id="indexConfirm_@suffix" type="submit" class="btn btn-success">Submit</button>
+                                                @{
+                                                    foreach (var button in popup.Buttons)
+                                                    {
+                                                        if (button.Text == "Cancel")
+                                                        {
+                                                            <button id="close-modal-button_@suffix" type="button" class="btn btn-primary" data-dismiss="modal">@button.Text</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button id="@buttonName" type="submit" class="btn btn-success">@button.Text</button>
+                                                        }
+
+                                                    }
+                                                }
+
+
                                                 </div>
                                             </div>
                                         </div>
@@ -109,7 +123,7 @@
         });
         
         $("#submissionForm_@suffix").submit(function (event) {
-            status = $(this).attr('name');
+            
             /* stop form from submitting normally */
             event.preventDefault();
 
@@ -129,9 +143,11 @@
             /* Send the data using post with element id name and name2*/
             var posting = $.post(url, values);
             var message = "";
+
             posting.done(function (data) {
                 $("#submission-result-message_@suffix").empty();
-
+                //$("#submissionModal").empty();
+                $('.modal-backdrop').remove();
                 if (data.success) {
                     //  $(".submission-result-message").addClass("alert alert-success");
                     message = "@successMessage" != "" ? "@successMessage" : data.message;
