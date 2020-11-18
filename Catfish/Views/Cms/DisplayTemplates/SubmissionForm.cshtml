@@ -16,11 +16,13 @@
     string formPostUrl = "/api/items";
     var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
     var collectionId = Guid.Parse(Model.SelectedCollection);
+    var function = Model.WorkflowFunction;
+    var group = Model.WorkflowGroup;
     var template = _entityTemplateService.GetTemplate(entityTemplateId);
 
     var Item = template.InstantiateRootItem();
 
-    var postActions = _workflowService.GetPostActionButtons(template, "Instantiate", "Home");
+    var postActions = _workflowService.GetPostActionButtons(template, function, group);
     string successMessage = string.IsNullOrEmpty(Model.SubmissionConfirmation.Value.ToString()) ? "" : Model.SubmissionConfirmation.Value.ToString();
 
 }
@@ -146,7 +148,6 @@
 
             posting.done(function (data) {
                 $("#submission-result-message_@suffix").empty();
-                //$("#submissionModal").empty();
                 $('.modal-backdrop').remove();
                 if (data.success) {
                     //  $(".submission-result-message").addClass("alert alert-success");

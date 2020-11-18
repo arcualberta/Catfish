@@ -25,7 +25,9 @@ namespace Catfish.Models.Blocks
         public TextField SelectedCollection { get; set; }
      
         public TextField SelectedItemTemplate { get; set; }
-        public TextField Function { get; set; }
-        public TextField Group { get; set; }
+
+        public TextField WorkflowFunction { get; set; }
+
+        public TextField WorkflowGroup { get; set; }
     }
 }
