@@ -47,7 +47,7 @@ namespace Catfish.Core.Models.Contents.Workflow
 
             //Initializing the popup list
             XElement popUpListDefinition = GetElement("pop-ups", true);
-            PopUps = new XmlModelList<PopUp>(popUpListDefinition, true, "button");
+            PopUps = new XmlModelList<PopUp>(popUpListDefinition, true, "pop-up");
 
             //Initializing the triggers list
             XElement triggerRefListDefinition = GetElement("trigger-refs", true);
