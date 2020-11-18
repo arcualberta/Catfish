@@ -1,9 +1,6 @@
 using Catfish.Models.Fields;
-using Catfish.Models.Regions;
-using Catfish.Services;
 using Piranha.AttributeBuilder;
 using Piranha.Extend;
-using Piranha.Extend.Fields;
 using Piranha.Models;
 using System.Collections.Generic;
 
@@ -17,6 +14,7 @@ namespace Catfish.Models
 
         [Region(Title = "Categories", Display = RegionDisplayMode.Setting)]
         public ControlledCategoriesField Categories { get; set; } = new ControlledCategoriesField();
+        public IEnumerable<Comment> Comments { get; set; } = new List<Comment>();
 
     }
 }
