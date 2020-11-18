@@ -46,6 +46,8 @@ Vue.component("submission-form", {
             </select></div> 
       <div class='lead row'><label class='form-label col-md-3 required'>CSS Class: </label><input class='form-control col-md-8' type='text' name='cssClass' v-model='model.cssClass.value' contenteditable='true' v-on:blur='onBlur' value='cssClassValue' /></div>
       <div class='lead row'><label class='form-label col-md-3 required'>Submission Confirmation: </label><input class='form-control col-md-8' type='text' name='submissionConfirmation' v-model='model.submissionConfirmation.value' contenteditable='true' v-on:blur='onBlur' value='submissionConfirmationValue' /></div>
+<div class='lead row'><label class='form-label col-md-3 required'>Function: </label><input class='form-control col-md-8' type='text' name='Function' v-model='model.Function.value' contenteditable='true' v-on:blur='onBlur' value='Function' /></div>
+<div class='lead row'><label class='form-label col-md-3 required'>Group: </label><input class='form-control col-md-8' type='text' name='Function' v-model='model.Function.value' contenteditable='true' v-on:blur='onBlur' value='Function' /></div>
 
 </div>` 
 

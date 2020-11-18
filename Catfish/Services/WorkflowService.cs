@@ -285,5 +285,18 @@ namespace Catfish.Services
             }
 
         }
+        
+        public List<PostAction> GetPostActionButtons(EntityTemplate entityTemplate, string function, string group)
+        {
+            SetModel(entityTemplate);
+            var workflow = GetWorkflow(false);
+            if (workflow != null)
+            {
+                 var getAction = workflow.Actions.Where(ac => ac.Function == function && ac.Group == group).FirstOrDefault();
+                return getAction.PostActions.ToList();
+            }
+            return null;
+        }
+
     }
 }

@@ -10,17 +10,18 @@
 @using Microsoft.AspNetCore.Authorization;
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
-
+@inject Catfish.Services.IWorkflowService _workflowService;
 @{
     string suffix = Guid.NewGuid().ToString();
     string formPostUrl = "/api/items";
-    var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate); 
+    var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
     var collectionId = Guid.Parse(Model.SelectedCollection);
     var template = _entityTemplateService.GetTemplate(entityTemplateId);
 
     var Item = template.InstantiateRootItem();
 
-    string successMessage = string.IsNullOrEmpty(Model.SubmissionConfirmation.Value.ToString())? "" : Model.SubmissionConfirmation.Value.ToString();
+    var postActions = _workflowService.GetPostActionButtons(template, "Instantiate", "Home");
+    string successMessage = string.IsNullOrEmpty(Model.SubmissionConfirmation.Value.ToString()) ? "" : Model.SubmissionConfirmation.Value.ToString();
 
 }
 @{
@@ -29,87 +30,129 @@
    () { TemplateOperations.Instantiate }))
    .Succeeded)
     {
-    <div class="submission-form-block @Model.CssClass.Value">
-        <form id="submissionForm_@suffix" method="post" action="@formPostUrl">
-            <input data-val="true" data-val-required="The TemplateId field is required."
-                   id="entityTemplateId_@suffix" name="entityTemplateId" type="hidden"
-                   value="@entityTemplateId">
-            <input data-val="true" data-val-required="The ColectionId field is required."
-                   id="collectionId_@suffix" name="collectionId" type="hidden"
-                   value="@collectionId">
+        <div class="submission-form-block @Model.CssClass.Value">
+            <form id="submissionForm_@suffix" method="post" action="@formPostUrl">
+                <input data-val="true" data-val-required="The TemplateId field is required."
+                       id="entityTemplateId_@suffix" name="entityTemplateId" type="hidden"
+                       value="@entityTemplateId">
+                <input data-val="true" data-val-required="The ColectionId field is required."
+                       id="collectionId_@suffix" name="collectionId" type="hidden"
+                       value="@collectionId">
 
-            @*TODO: To display the name, description, and the list of fields of the
-            form represented in the "Item" here. *@
-            @Html.EditorFor(model => Item, Item.GetType().ToString())
-            <div id="buttonLayer">
                
-                <input id="submitButton_@suffix" class="btn btn-success" name="submit" type="submit" value="Submit" />
+                @Html.EditorFor(model => Item, Item.GetType().ToString())
+            <div id="buttonLayer">
+                @{
+                    foreach (var postAction in postActions)
+                    {
+                        string buttonName = @postAction.ButtonLabel+"_"+@suffix;
+
+                        if (postAction.PopUps.Any())
+                        {
+                            foreach (var popup in postAction.PopUps)
+                            {
+                                <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="button" value="@postAction.ButtonLabel" data-toggle="modal" data-target="#submissionModal"/>
+                                <div id="submissionModal" class="modal fade" role="dialog">
+
+                                    <div>
+                                        <div class="modal-dialog">
+                                            @*Modal content*@
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="myModalLabel">@popup.Title</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+                                                            <h5>@popup.Message</h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button id="close-modal-button_@suffix" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                                    <button id="indexConfirm_@suffix" type="submit" class="btn btn-success">Submit</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="submit" value="@postAction.ButtonLabel" />
+                        }
+                    }
+                }
+
             </div>
-           
-        </form>
-        <div id="submission-result-message_@suffix"></div>
-    </div>
+
+            </form>
+            <div id="submission-result-message_@suffix"></div>
+        </div>
     }
 
-<script>
+    <script>
 
-            var status;
-            $(function () {
-                $("#submission-result-message_@suffix").hide();
+    var status;
+    $(function () {
+        $("#submission-result-message_@suffix").hide();
 
-                $(document).on('click', "#submitButton_@suffix", function () {
-                    status = 'Submitted';
-                    console.log('Status = '+status)
-                });
-                $(document).on('click', "#saveButton_@suffix", function () {
-                    status = 'Saved'
-                    console.log('Status = ' + status)
-                });
-                $("#submissionForm_@suffix").submit(function (event) {
+        $(document).on('click', "#Submit_@suffix", function () {
+            status = 'Submitted';
+            console.log('Status = '+status)
+        });
+        $(document).on('click', "#Save_@suffix", function () {
+            status = 'Saved'
+            console.log('Status = ' + status)
+        });
+        
+        $("#submissionForm_@suffix").submit(function (event) {
+            status = $(this).attr('name');
+            /* stop form from submitting normally */
+            event.preventDefault();
 
-                    /* stop form from submitting normally */
-                    event.preventDefault();
+            //Reguar expression for matching the variable name prefix up to the item's properties.
+            var prefix = /^Blocks\[[0-9]+\]\.Item\.|^block.Item\./;
 
-                    //Reguar expression for matching the variable name prefix up to the item's properties.
-                    var prefix = /^Blocks\[[0-9]+\]\.Item\.|^block.Item\./;
+            var values = {};
+            $.each($('#submissionForm_@suffix').serializeArray(), function (i, field) {
+                name = field.name.replace(prefix, "");
+                values[name] = field.value;
+            });
+            values["actionButton"] = status;
 
-                    var values = {};
-                    $.each($('#submissionForm_@suffix').serializeArray(), function (i, field) {
-                        name = field.name.replace(prefix, "");
-                        values[name] = field.value;
-                    });
-                    values["actionButton"] = status;
+            /* get the action attribute from the <form action=""> element */
+            var $form = $(this),
+                url = $form.attr('action');
+            /* Send the data using post with element id name and name2*/
+            var posting = $.post(url, values);
+            var message = "";
+            posting.done(function (data) {
+                $("#submission-result-message_@suffix").empty();
 
-                    /* get the action attribute from the <form action=""> element */
-                    var $form = $(this),
-                        url = $form.attr('action');
-                    /* Send the data using post with element id name and name2*/
-                    var posting = $.post(url, values);
-                    var message = "";
-                    posting.done(function (data) {
-                        $("#submission-result-message_@suffix").empty();
+                if (data.success) {
+                    //  $(".submission-result-message").addClass("alert alert-success");
+                    message = "@successMessage" != "" ? "@successMessage" : data.message;
+                    $("#submission-result-message_@suffix").append("<div class='alert alert-success' ></div>");
 
-                        if (data.success) {
-                            //  $(".submission-result-message").addClass("alert alert-success");
-                            message = "@successMessage" != "" ? "@successMessage" : data.message;
-                            $("#submission-result-message_@suffix").append("<div class='alert alert-success' ></div>");
+                    $("#submissionForm_@suffix").hide();//[0].reset();
+                }
+                else {
 
-                            $("#submissionForm_@suffix").hide();//[0].reset();
-                        }
-                        else {
-
-                            $("#submission-result-message_@suffix").append("<div class='alert alert-danger' ></div>");
-                            message = data.message;
-                        }
+                    $("#submission-result-message_@suffix").append("<div class='alert alert-danger' ></div>");
+                    message = data.message;
+                }
 
 
 
-                        $("#submission-result-message_@suffix div").text(message);
-                        $("#submission-result-message_@suffix").show();
-                    });
+                $("#submission-result-message_@suffix div").text(message);
+                $("#submission-result-message_@suffix").show();
+            });
 
 
         });
-            });
-</script>
-    }
+    });
+    </script>
+}
