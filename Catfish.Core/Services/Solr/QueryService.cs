@@ -65,8 +65,8 @@ namespace Catfish.Core.Services.Solr
                 if (string.IsNullOrWhiteSpace(parameters.FreeSearch))
                     return new List<SolrEntry>();
 
-                var query = new SolrQuery("title:" + parameters.FreeSearch) +
-                            new SolrQuery("content:" + parameters.FreeSearch);
+                var query = new SolrQuery("title_ss:" + parameters.FreeSearch) +
+                            new SolrQuery("content_ss:" + parameters.FreeSearch);
 
                 //Result hilighting: https://lucene.apache.org/solr/guide/8_5/highlighting.html
                 string highlightStartTag = "<em class='bg-warning'>";
@@ -75,7 +75,7 @@ namespace Catfish.Core.Services.Solr
                 var queryResult = _solrPageQuery.Query(query,
                     new QueryOptions
                     {
-                        Fields = new[] { "id", "title", "object_type_i", "permalink_s", "containerId" },
+                        //Fields = new[] { "id", "title_ss", "object_type_i", "permalink_s", "containerId_ss" },
                         StartOrCursor = new StartOrCursor.Start(start),
                         Rows = limit,
                         ExtraParams = new Dictionary<string, string> {
@@ -87,6 +87,7 @@ namespace Catfish.Core.Services.Solr
                         {"hl.tag.post", highlightEndTag } //End tag for hilighting matching snippets
                         }
                     });
+
 
                 var highlights = queryResult.Highlights.ToList();
 
@@ -124,7 +125,7 @@ namespace Catfish.Core.Services.Solr
             catch (Exception ex)
             {
                 _errorLog.Log(new Error(ex));
-                return null;
+                return new List<SolrEntry>();
             }
             
         }
