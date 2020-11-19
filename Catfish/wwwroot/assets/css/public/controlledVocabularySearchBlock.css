@@ -1,12 +1,4 @@
-﻿
-@media (min-width: 768px) {
-	#controlledVocabularySearchForm .col-md-4 {
-		flex: 1 1 50%;
-		max-width: unset;
-	}
-}
-
-#controlledVocabularySearchResults{
+﻿#controlledVocabularySearchResults{
 	display:flex;
 	flex-direction:row;
 	flex-wrap:wrap;
