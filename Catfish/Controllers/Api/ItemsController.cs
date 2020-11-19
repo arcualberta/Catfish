@@ -92,29 +92,12 @@ namespace Catfish.Controllers.Api
             ApiResult result = new ApiResult();
             try
             {
-                EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
-                if (template == null)
-                    throw new Exception("Entity template with ID = " + entityTemplateId + " not found.");
-
-                //When we instantantiate an instance from the template, we do not need to clone metadata sets
-                Item newItem = template.Instantiate<Item>();
-                newItem.StatusId = _entityTemplateService.GetStatus(entityTemplateId, actionButton, true).Id;
-                newItem.PrimaryCollectionId = collectionId;
-                newItem.TemplateId = entityTemplateId;
-
-                DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
-                newDataItem.UpdateFieldValues(value);
-                newItem.DataContainer.Add(newDataItem);
-                newDataItem.EntityId = newItem.Id;
-
-                //TODO: associated the newly createditem with the collection specified by CollectionId.
-
-                //Adding the new entity to the database
+                Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, actionButton);
                 _appDb.Items.Add(newItem);
                 _appDb.SaveChanges();
 
                 result.Success = true;
-                result.Message = "Submission saved successfully.";
+                result.Message = "Application "+ actionButton+" successfully.";
 
             }
             catch(Exception ex)

@@ -47,8 +47,6 @@ namespace Catfish.Services
             {
                 _errorLog.Log(new Error(ex));
             }
-
-
         }
 
     }
