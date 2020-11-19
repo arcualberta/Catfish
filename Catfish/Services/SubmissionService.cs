@@ -20,10 +20,11 @@ namespace Catfish.Services
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly AppDbContext _db;
         private readonly ErrorLog _errorLog;
-        public SubmissionService(IAuthorizationService auth, IEmailService email, AppDbContext db, ErrorLog errorLog)
+        public SubmissionService(IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, AppDbContext db, ErrorLog errorLog)
         {
             _authorizationService = auth;
             _emailService = email;
+            _entityTemplateService = entity;
             _db = db;
             _errorLog = errorLog;
         }
