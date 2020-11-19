@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Contents.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +13,13 @@ namespace Catfish.Services
         //List<Entity> GetEntityList(Guid? templateId, Guid? stateGuid);
         //Entity GetSubmissionDetails(Guid id);
         //string SaveSubmission(Entity submission);
-        public List<Item> GetSubmissionList();
+        List<Item> GetSubmissionList();
         List<Item> GetSubmissionList(Guid templateId, Guid collectionId, DateTime startDate, DateTime endDate);
         Item GetSubmissionDetails(Guid itemId);
         IList<Item> GetSubmissionList(Guid templateId, Guid? collectionId);
-        public List<ItemField> GetAllField(string xml);
-        public string GetStatus(Guid? statusId);
+        List<ItemField> GetAllField(string xml);
+        string GetStatus(Guid? statusId);
+        Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, string actionButton);
     }
     public class ItemField
     {

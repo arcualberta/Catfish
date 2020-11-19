@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Contents.Data;
 using ElmahCore;
 using Microsoft.AspNetCore.Identity;
 using Piranha.AspNetCore.Identity.Data;
@@ -15,7 +16,8 @@ namespace Catfish.Services
     public class SubmissionService : ISubmissionService
     {
         private readonly IAuthorizationService _authorizationService;
-        protected IEmailService _emailService;
+        private readonly IEmailService _emailService;
+        private readonly IEntityTemplateService _entityTemplateService;
         private readonly AppDbContext _db;
         private readonly ErrorLog _errorLog;
         public SubmissionService(IAuthorizationService auth, IEmailService email, AppDbContext db, ErrorLog errorLog)
@@ -181,6 +183,34 @@ namespace Catfish.Services
             }
 
             return lFields;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="entityTemplateId"></param>
+        /// <param name="collectionId"></param>
+        /// <param name="actionButton"></param>
+        /// <returns></returns>
+        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, string actionButton)
+        {
+            EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
+            if (template == null)
+                throw new Exception("Entity template with ID = " + entityTemplateId + " not found.");
+
+            //When we instantantiate an instance from the template, we do not need to clone metadata sets
+            Item newItem = template.Instantiate<Item>();
+            newItem.StatusId = _entityTemplateService.GetStatus(entityTemplateId, actionButton, true).Id;
+            newItem.PrimaryCollectionId = collectionId;
+            newItem.TemplateId = entityTemplateId;
+
+            DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
+            newDataItem.UpdateFieldValues(value);
+            newItem.DataContainer.Add(newDataItem);
+            newDataItem.EntityId = newItem.Id;
+
+            return newItem;
         }
     }
 }

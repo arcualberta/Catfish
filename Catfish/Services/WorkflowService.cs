@@ -286,16 +286,31 @@ namespace Catfish.Services
 
         }
         
-        public List<PostAction> GetPostActionButtons(EntityTemplate entityTemplate, string function, string group)
+        /// <summary>
+        /// This method returns list of post actions which are belongs to the given function and group.
+        /// </summary>
+        /// <param name="entityTemplate"></param>
+        /// <param name="function"></param>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        public List<PostAction> GetPostActions(EntityTemplate entityTemplate, string function, string group)
         {
-            SetModel(entityTemplate);
-            var workflow = GetWorkflow(false);
-            if (workflow != null)
+            try
             {
-                 var getAction = workflow.Actions.Where(ac => ac.Function == function && ac.Group == group).FirstOrDefault();
-                return getAction.PostActions.ToList();
+                SetModel(entityTemplate);
+                var workflow = GetWorkflow(false);
+                if (workflow != null)
+                {
+                    var getAction = workflow.Actions.Where(ac => ac.Function == function && ac.Group == group).FirstOrDefault();
+                    return getAction.PostActions.ToList();
+                }
+                return null;
             }
-            return null;
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
         }
 
     }
