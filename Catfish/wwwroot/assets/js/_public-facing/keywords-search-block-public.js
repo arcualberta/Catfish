@@ -72,6 +72,9 @@ var vueApp = new Vue({
             formData.append("category[0]", this.categories);
             //this.categories.forEach((item, index) => formData.append("categories[" + index + "]", item));
             this.loadingSearchResults = true;
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ', ' + pair[1]);
+            }
 
             fetch(this.apiSearchUrl, {
                 method: 'POST',
