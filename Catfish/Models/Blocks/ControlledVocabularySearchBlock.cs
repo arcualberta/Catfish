@@ -23,8 +23,12 @@ namespace Catfish.Models.Blocks
         public StringField SearchPageName { get; set; }
 
 
-        [Field(Title = "Vocab Css", Placeholder = "Css for each entry")]
-        public StringField VocabCss { get; set; }
+        [Field(Title = "Block Css", Placeholder = "Css for the root element of the block")]
+        public StringField BlockCss { get; set; }
+
+        [Field(Title = "Option CSS", Placeholder = "Css for each entry")]
+        public StringField OptionCss { get; set; }
+
 
         [Field(Title = "Selected Keywords")]
         public StringField SelectedKeywords { get; set; }
@@ -45,7 +49,7 @@ namespace Catfish.Models.Blocks
             VocabularySettings = new ControlledKeywordsField();
             SelectedKeywords = new StringField();
             SelectedCategories = new StringField();
-            VocabCss = new StringField();
+            BlockCss = new StringField();
             SearchPageName = new StringField();
             CategorySettings = new ControlledCategoriesField();
         }
