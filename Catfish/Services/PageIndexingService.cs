@@ -73,13 +73,15 @@ namespace Catfish.Services
             }
 
             //For given block is an ImageBlock or any specialization of it,
-            //then we index its Url
+            //then we index its Url  
+            //  - need to remove leading tilde for now
             if (typeof(ImageBlock).IsAssignableFrom(block.GetType()))
             {
                 string text = (block as ImageBlock).Body.Media.PublicUrl;
                 if (!string.IsNullOrWhiteSpace(text))
-                    entry.AddImage(block.Id, text);
+                    entry.AddImage(block.Id, text.TrimStart('~'));
             }
+
 
             //If the given block is an ColumnBlock or any specialization of it,
             //then we index each block inside it
