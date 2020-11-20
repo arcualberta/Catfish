@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Workflow;
 using ElmahCore;
 using Microsoft.AspNetCore.Identity;
 using Piranha.AspNetCore.Identity.Data;
@@ -18,13 +19,15 @@ namespace Catfish.Services
         private readonly IAuthorizationService _authorizationService;
         private readonly IEmailService _emailService;
         private readonly IEntityTemplateService _entityTemplateService;
+        private readonly IWorkflowService _workflowService;
         private readonly AppDbContext _db;
         private readonly ErrorLog _errorLog;
-        public SubmissionService(IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, AppDbContext db, ErrorLog errorLog)
+        public SubmissionService(IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, AppDbContext db, ErrorLog errorLog)
         {
             _authorizationService = auth;
             _emailService = email;
             _entityTemplateService = entity;
+            _workflowService = workflow;
             _db = db;
             _errorLog = errorLog;
         }
@@ -227,14 +230,15 @@ namespace Catfish.Services
         {
             try
             {
-
+                EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
+                EmailTemplate emailTemplate = _workflowService.GetEmailTemplate(template.TemplateName, false);
 
                 Email email = new Email();
                 email.UserName = _authorizationService.GetLoggedUserEmail();
-                email.Subject = "Test Email";
+                email.Subject = emailTemplate.SubjectField;
                 email.FromEmail = "iwickram@ualberta.ca";
-                email.RecipientEmail = "isurupmw@gmail.com";
-                email.Body = "A @Link[calendar chane|@Model] was submitted.";
+                email.RecipientEmail = emailTemplate.RecipientsField;
+                email.Body = emailTemplate.BodyField;
                 _emailService.SendEmail(email);
                 return true;
 
