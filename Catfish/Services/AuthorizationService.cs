@@ -168,24 +168,36 @@ namespace Catfish.Services
             //get current logged user
             
         }
-
         
         public Guid GetLoggedUserId()
         {
             try
             {
                 string userName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
                 var userDetails = _piranhaDb.Users.Where(ud => ud.UserName == userName).FirstOrDefault();
 
-                return userDetails.Id;
+                return Guid.Parse(userName);
             }
             catch (Exception ex)
             {
                 _errorLog.Log(new Error(ex));
                 return new Guid();
             }
-            
+        }
+
+        public string GetLoggedUserEmail()
+        {
+            try
+            {
+                string userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var userDetails = _piranhaDb.Users.Where(ud => ud.Id == Guid.Parse(userId)).FirstOrDefault();
+                return userDetails.Email;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return "";
+            }
         }
 
         public string GetLoggedUserRole()

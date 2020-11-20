@@ -43,8 +43,9 @@ namespace Catfish.Services
         /// <returns></returns>
         Item GetItem(Guid item, AuthorizationPurpose purpose);
 
-        
-        
+        string GetLoggedUserEmail();
+
+
 
         User GetUserDetails(Guid id);
 

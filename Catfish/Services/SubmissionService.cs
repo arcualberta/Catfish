@@ -196,22 +196,55 @@ namespace Catfish.Services
         /// <returns></returns>
         public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, string actionButton)
         {
-            EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
-            if (template == null)
-                throw new Exception("Entity template with ID = " + entityTemplateId + " not found.");
+            try
+            {
+                EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
+                if (template == null)
+                    throw new Exception("Entity template with ID = " + entityTemplateId + " not found.");
 
-            //When we instantantiate an instance from the template, we do not need to clone metadata sets
-            Item newItem = template.Instantiate<Item>();
-            newItem.StatusId = _entityTemplateService.GetStatus(entityTemplateId, actionButton, true).Id;
-            newItem.PrimaryCollectionId = collectionId;
-            newItem.TemplateId = entityTemplateId;
+                //When we instantantiate an instance from the template, we do not need to clone metadata sets
+                Item newItem = template.Instantiate<Item>();
+                newItem.StatusId = _entityTemplateService.GetStatus(entityTemplateId, actionButton, true).Id;
+                newItem.PrimaryCollectionId = collectionId;
+                newItem.TemplateId = entityTemplateId;
 
-            DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
-            newDataItem.UpdateFieldValues(value);
-            newItem.DataContainer.Add(newDataItem);
-            newDataItem.EntityId = newItem.Id;
+                DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
+                newDataItem.UpdateFieldValues(value);
+                newItem.DataContainer.Add(newDataItem);
+                newDataItem.EntityId = newItem.Id;
 
-            return newItem;
+                return newItem;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+            
+        }
+
+        public bool SendEmail(Guid entityTemplateId)
+        {
+            try
+            {
+
+
+                Email email = new Email();
+                email.UserName = _authorizationService.GetLoggedUserEmail();
+                email.Subject = "Test Email";
+                email.FromEmail = "iwickram@ualberta.ca";
+                email.RecipientEmail = "isurupmw@gmail.com";
+                email.Body = "A @Link[calendar chane|@Model] was submitted.";
+                _emailService.SendEmail(email);
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return false;
+            }
+            
         }
     }
 }

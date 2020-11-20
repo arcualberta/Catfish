@@ -20,6 +20,7 @@ namespace Catfish.Services
         List<ItemField> GetAllField(string xml);
         string GetStatus(Guid? statusId);
         Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, string actionButton);
+        bool SendEmail(Guid entityTemplateId);
     }
     public class ItemField
     {
