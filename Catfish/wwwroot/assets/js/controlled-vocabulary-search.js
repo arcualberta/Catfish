@@ -116,13 +116,19 @@ Vue.component("controlled-vocabulary-search", {
                     <label class = 'form-label col-md-3'> Block Title: </label>
                     <input type='text' class= 'form-control col-md-4'  name='searchPageName'
                         v-model='model.searchPageName.value' v-on:blur='onBlur'contenteditable='true'
-                        value= 'searchPageNameValue' />
+                        value= '' />
                   </div>
                   <div class='lead row'> 
-                    <label class = 'form-label col-md-3'> Css Class: </label>
-                    <input type='text' class= 'form-control col-md-4'   name='vocabCss'
-                        v-model='model.vocabCss.value' v-on:blur='onBlur'contenteditable='true'
-                        value= 'vocabCssValue' />
+                    <label class = 'form-label col-md-3'>Block CSS Class(es): </label>
+                    <input type='text' class= 'form-control col-md-4'   name='blockCss'
+                        v-model='model.blockCss.value' v-on:blur='onBlur'contenteditable='true'
+                        value= '' />
+                  </div>
+                  <div class='lead row'> 
+                    <label class = 'form-label col-md-3'> Option CSS Class(es): </label>
+                    <input type='text' class= 'form-control col-md-4'   name='optionCss'
+                        v-model='model.optionCss.value' v-on:blur='onBlur'contenteditable='true'
+                        value= '' />
                   </div>
                   <div class='lead row' > 
                     <label class = 'form-label col-md-3'> Selected Vocabulary: </label>
