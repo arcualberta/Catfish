@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Workflow;
 using ElmahCore;
 using Microsoft.AspNetCore.Identity;
 using Piranha.AspNetCore.Identity.Data;
@@ -18,13 +19,15 @@ namespace Catfish.Services
         private readonly IAuthorizationService _authorizationService;
         private readonly IEmailService _emailService;
         private readonly IEntityTemplateService _entityTemplateService;
+        private readonly IWorkflowService _workflowService;
         private readonly AppDbContext _db;
         private readonly ErrorLog _errorLog;
-        public SubmissionService(IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, AppDbContext db, ErrorLog errorLog)
+        public SubmissionService(IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, AppDbContext db, ErrorLog errorLog)
         {
             _authorizationService = auth;
             _emailService = email;
             _entityTemplateService = entity;
+            _workflowService = workflow;
             _db = db;
             _errorLog = errorLog;
         }
@@ -196,22 +199,56 @@ namespace Catfish.Services
         /// <returns></returns>
         public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, string actionButton)
         {
-            EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
-            if (template == null)
-                throw new Exception("Entity template with ID = " + entityTemplateId + " not found.");
+            try
+            {
+                EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
+                if (template == null)
+                    throw new Exception("Entity template with ID = " + entityTemplateId + " not found.");
 
-            //When we instantantiate an instance from the template, we do not need to clone metadata sets
-            Item newItem = template.Instantiate<Item>();
-            newItem.StatusId = _entityTemplateService.GetStatus(entityTemplateId, actionButton, true).Id;
-            newItem.PrimaryCollectionId = collectionId;
-            newItem.TemplateId = entityTemplateId;
+                //When we instantantiate an instance from the template, we do not need to clone metadata sets
+                Item newItem = template.Instantiate<Item>();
+                newItem.StatusId = _entityTemplateService.GetStatus(entityTemplateId, actionButton, true).Id;
+                newItem.PrimaryCollectionId = collectionId;
+                newItem.TemplateId = entityTemplateId;
 
-            DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
-            newDataItem.UpdateFieldValues(value);
-            newItem.DataContainer.Add(newDataItem);
-            newDataItem.EntityId = newItem.Id;
+                DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
+                newDataItem.UpdateFieldValues(value);
+                newItem.DataContainer.Add(newDataItem);
+                newDataItem.EntityId = newItem.Id;
 
-            return newItem;
+                return newItem;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+            
+        }
+
+        public bool SendEmail(Guid entityTemplateId)
+        {
+            try
+            {
+                EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
+                EmailTemplate emailTemplate = _workflowService.GetEmailTemplate(template.TemplateName, false);
+
+                Email email = new Email();
+                email.UserName = _authorizationService.GetLoggedUserEmail();
+                email.Subject = emailTemplate.SubjectField;
+                email.FromEmail = "iwickram@ualberta.ca";
+                email.RecipientEmail = emailTemplate.RecipientsField;
+                email.Body = emailTemplate.BodyField;
+                _emailService.SendEmail(email);
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return false;
+            }
+            
         }
     }
 }

@@ -96,6 +96,7 @@ namespace Catfish.Controllers.Api
                 _appDb.Items.Add(newItem);
                 _appDb.SaveChanges();
 
+                //bool sendEmail = _submissionService.SendEmail(entityTemplateId);
                 result.Success = true;
                 result.Message = "Application "+ actionButton+" successfully.";
 
