@@ -51,7 +51,7 @@ namespace Catfish.Api.Controllers
                 //parameters.FreeSearch = searchTerm;
                 //IList<SolrEntry> result = QueryService.FreeSearch(parameters);
 
-                if (categories.Length == 0)
+                if (categories.Length == 0 || !categories.Where(c => !string.IsNullOrWhiteSpace(c)).Any())
                     categories = new string[] { "*" };
 
                 IList<SolrEntry> result = QueryService.KeywordSearch(keywords, categories);

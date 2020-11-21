@@ -10,7 +10,7 @@ var vueApp = new Vue({
             searchResults: [],
             pagesTotal: 0,
             currentPage: 1,
-            cardsPerPage: 3,
+            cardsPerPage: 100,
             searchMade: false,
             loadingSearchResults: false,
             //error variable for if the fetch ever fails,
@@ -69,7 +69,7 @@ var vueApp = new Vue({
             this.searchTerms.forEach((item, index) => formData.append("keywords[" + index + "]", item));
             //formData.append("searchTerms", this.searchTerms);
 
-            formData.append("category[0]", this.categories);
+            formData.append("categories[0]", this.categories);
             //this.categories.forEach((item, index) => formData.append("categories[" + index + "]", item));
             this.loadingSearchResults = true;
             for (var pair of formData.entries()) {
@@ -89,7 +89,7 @@ var vueApp = new Vue({
                     this.searchResults = data;
                     console.log(this.searchResults);
 
-                    this.pagesTotal = Math.ceil(this.searchResults.length / 3);
+                    this.pagesTotal = Math.ceil(this.searchResults.length / 100);
 
                     this.searchMade = true;
                     this.loadingSearchResults = false;
