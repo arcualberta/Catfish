@@ -3,6 +3,10 @@ using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Core.Services.Solr;
 using Catfish.Services;
+using ElmahCore;
+using ElmahCore.Mvc;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -76,7 +80,12 @@ namespace Catfish.Tests.Helpers
 
             services.AddSolrNet<SolrEntry>(solrString);
             services.AddScoped<ISolrIndexService<SolrEntry>, SolrIndexService<SolrEntry, ISolrOperations<SolrEntry>>>();
-
+            //ELMAH Error Logger
+            services.AddElmah<XmlFileErrorLog>(options =>
+            {
+                options.LogPath = "~/log";
+                options.CheckPermissionAction = context => context.User.IsInRole("SysAdmin");
+            });
             //Creating a service provider and assigning it to the member variable so that it can be used by 
             //test methods.
             Seviceprovider = services.BuildServiceProvider();

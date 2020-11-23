@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Workflow;
+using Catfish.Helper;
 using ElmahCore;
 using Microsoft.AspNetCore.Identity;
 using Piranha.AspNetCore.Identity.Data;
@@ -20,14 +21,16 @@ namespace Catfish.Services
         private readonly IEmailService _emailService;
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly IWorkflowService _workflowService;
+        private ICatfishAppConfiguration _config;
         private readonly AppDbContext _db;
         private readonly ErrorLog _errorLog;
-        public SubmissionService(IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, AppDbContext db, ErrorLog errorLog)
+        public SubmissionService(IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog)
         {
             _authorizationService = auth;
             _emailService = email;
             _entityTemplateService = entity;
             _workflowService = workflow;
+            _config = configuration;
             _db = db;
             _errorLog = errorLog;
         }
@@ -226,22 +229,18 @@ namespace Catfish.Services
             
         }
 
-        public bool SendEmail(Guid entityTemplateId)
+        public bool SendEmail(EmailTemplate emailTemplate, string recipient)
         {
             try
             {
-                EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
-                EmailTemplate emailTemplate = _workflowService.GetEmailTemplate(template.TemplateName, false);
-
                 Email email = new Email();
                 email.UserName = _authorizationService.GetLoggedUserEmail();
-                email.Subject = emailTemplate.SubjectField;
-                email.FromEmail = "iwickram@ualberta.ca";
-                email.RecipientEmail = emailTemplate.RecipientsField;
-                email.Body = emailTemplate.BodyField;
+                email.Subject = emailTemplate.GetSubject();
+                email.FromEmail = _config.GetSmtpEmail();
+                email.RecipientEmail = recipient;
+                email.Body = emailTemplate.GetBody();
                 _emailService.SendEmail(email);
-                return true;
-
+                 return true;
             }
             catch (Exception ex)
             {
@@ -250,5 +249,71 @@ namespace Catfish.Services
             }
             
         }
+
+        /// <summary>
+        /// This method used to execute all triggers in a given workflow. need to pass the entity template, function and group.
+        /// </summary>
+        /// <param name="entityTemplateId"></param>
+        /// <param name="actionButton"></param>
+        /// <param name="function"></param>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        public bool ExecuteTriggers(Guid entityTemplateId, string actionButton, string function, string group)
+        {
+            try
+            {
+                // get entity template using entityTemplateId
+                EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
+
+                // get list trigger referances of given template, function and group. 
+                List<TriggerRef> triggerRefs = _workflowService.GetPostActions(template, function, group)
+                                                .Where(pa => pa.ButtonLabel == actionButton).FirstOrDefault()
+                                                .TriggerRefs.OrderBy(tr => tr.Order).ToList();
+                //need to go through all trigger referances to execute one by one.
+                foreach (var triggerRef in triggerRefs)
+                {
+                    //get email trigger from workflow triggers using trigger referance.
+                    EmailTrigger selectedTrigger = (EmailTrigger)template.Workflow.Triggers.Where(tr => tr.Id == triggerRef.RefId).FirstOrDefault();
+
+                    //get email template from selected workflow trigger.
+                    Guid emailReferanceId = selectedTrigger.Templates.Select(t => t.RefId).FirstOrDefault();
+
+                    //get email template name from metadate set.
+                    var emailTemplateName = template.MetadataSets
+                                            .Where(ms => ms.Id == emailReferanceId)
+                                            .FirstOrDefault().Name.Values
+                                            .Select(ms => ms.Value).FirstOrDefault();
+
+                    //get email template using workflow service GetEmailTemplate. Inhere need to pass email template.
+                    EmailTemplate emailTemplate = _workflowService.GetEmailTemplate(emailTemplateName, false);
+
+                    //get all recipient in the trigger.
+                    var recipients = selectedTrigger.Recipients.ToList();
+
+                    //add recipient to the content
+                    foreach(var recipient in recipients)
+                    {
+                        string emailRecipient;
+                        if (recipient.Owner)
+                        {
+                            emailRecipient = _authorizationService.GetLoggedUserEmail();
+                        }
+                        else
+                        {
+                            emailRecipient =  recipient.Email;
+                        }
+                        //send email using email service
+                        SendEmail(emailTemplate, emailRecipient);
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return false;
+            }
+        }
+        
     }
 }
