@@ -2,6 +2,8 @@
     props: ["uid", "model"],
 
     data: function () {
+        return {
+        }
     },
     template: `
         <ul>
