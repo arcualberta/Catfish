@@ -5,8 +5,8 @@
     ViewBag.Title = Model.Title;
 
     var vueComponentNames = Model.Blocks
-        .Where(b => typeof(VueComponent).IsAssignableFrom(b.GetType()))
-        .Select(b => (b as VueComponent).Component)
+        .Where(b => typeof(VueComponent).IsAssignableFrom(b.GetType())) @*Selecting all blocks of type VueConponent or its derived type.*@
+        .Select(b => (b as VueComponent).Component) @*Selecting all those blocks as VueComponent blocks*@
         .Distinct()
         .ToList();
 
