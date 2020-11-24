@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Workflow;
+using Catfish.Core.Services;
 using Catfish.Helper;
 using ElmahCore;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +25,8 @@ namespace Catfish.Services
         private ICatfishAppConfiguration _config;
         private readonly AppDbContext _db;
         private readonly ErrorLog _errorLog;
-        public SubmissionService(IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog)
+        private readonly IServiceProvider _serviceProvider;
+        public SubmissionService(IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog, IServiceProvider serviceProvider)
         {
             _authorizationService = auth;
             _emailService = email;
@@ -33,6 +35,7 @@ namespace Catfish.Services
             _config = configuration;
             _db = db;
             _errorLog = errorLog;
+            _serviceProvider = serviceProvider;
         }
 
         ///// <summary>
@@ -229,6 +232,7 @@ namespace Catfish.Services
             
         }
 
+        /*
         public bool SendEmail(EmailTemplate emailTemplate, string recipient)
         {
             try
@@ -249,6 +253,7 @@ namespace Catfish.Services
             }
             
         }
+        */
 
         /// <summary>
         /// This method used to execute all triggers in a given workflow. need to pass the entity template, function and group.
@@ -269,9 +274,14 @@ namespace Catfish.Services
                 List<TriggerRef> triggerRefs = _workflowService.GetPostActions(template, function, group)
                                                 .Where(pa => pa.ButtonLabel == actionButton).FirstOrDefault()
                                                 .TriggerRefs.OrderBy(tr => tr.Order).ToList();
-                //need to go through all trigger referances to execute one by one.
+                //need to go through all trigger referances and execute them one by one.
+                bool triggerExecutionStatus = true;
                 foreach (var triggerRef in triggerRefs)
                 {
+                    Trigger selectedTrigger = template.Workflow.Triggers.Where(tr => tr.Id == triggerRef.RefId).FirstOrDefault();
+                    triggerExecutionStatus &= selectedTrigger.Execute(template, _serviceProvider);
+
+/*
                     //get email trigger from workflow triggers using trigger referance.
                     EmailTrigger selectedTrigger = (EmailTrigger)template.Workflow.Triggers.Where(tr => tr.Id == triggerRef.RefId).FirstOrDefault();
 
@@ -305,8 +315,9 @@ namespace Catfish.Services
                         //send email using email service
                         SendEmail(emailTemplate, emailRecipient);
                     }
+*/
                 }
-                return true;
+                return triggerExecutionStatus;
             }
             catch (Exception ex)
             {

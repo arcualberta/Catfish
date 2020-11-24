@@ -5,11 +5,13 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Workflow
 {
-    public class Trigger : XmlModel
+    public abstract class Trigger : XmlModel
     {
         public static readonly string TagName = "trigger";
         public static readonly string FunctionAtt = "function";
         public static readonly string NameAtt = "name";
+
+        public abstract bool Execute(EntityTemplate template, IServiceProvider serviceProvider);
         public string Function
         {
             get => GetAttribute(FunctionAtt, null as string);
