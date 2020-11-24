@@ -39,7 +39,7 @@
                     {
                         if (((ImageBlock)item).Body.Media == null)
                         {
-                            <div style="width:@string.Format("{0}px", slideWidth);height:@string.Format("{0}px", slideHeight);background-color:#808080"></div>
+                            <div style="width:100%;height:@string.Format("{0}px", slideHeight);background-color:#808080"></div>
                             throw new Exception("No image is specified for a carousel slide");
                         }
                         else
