@@ -4,6 +4,7 @@ using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
+using Catfish.Core.Services;
 using Catfish.Services;
 using Catfish.Tests.Helpers;
 using NUnit.Framework;

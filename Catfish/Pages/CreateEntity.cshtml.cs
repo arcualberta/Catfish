@@ -6,6 +6,7 @@ using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
+using Catfish.Core.Services;
 using Catfish.ModelBinders;
 using Catfish.Services;
 using Microsoft.AspNetCore.Authorization;

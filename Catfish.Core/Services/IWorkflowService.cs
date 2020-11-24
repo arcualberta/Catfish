@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Catfish.Services
+namespace Catfish.Core.Services
 {
     public interface IWorkflowService
     {
@@ -24,11 +24,10 @@ namespace Catfish.Services
 
         public EntityTemplate GetTemplate();
 
-        public Task InitSiteStructureAsync(Guid siteId, string siteTypeId);
-
         public string GetStatus(Guid templateId, string status, bool createIfNotExist);
 
         public List<PostAction> GetPostActions(EntityTemplate entityTemplate, string function, string group);
 
+        string GetLoggedUserEmail();
     }
 }

@@ -3,37 +3,40 @@ using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
-using Catfish.Models;
-using Catfish.Models.Blocks;
-using Catfish.Models.SiteTypes;
 using ElmahCore;
+using Microsoft.AspNetCore.Http;
 using Piranha;
+using Piranha.AspNetCore.Identity.SQLServer;
 using Piranha.AspNetCore.Services;
 using Piranha.Models;
 using Piranha.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Catfish.Services
+namespace Catfish.Core.Services
 {
     public class WorkflowService : IWorkflowService
     {
         public static readonly string DefaultLanguage = "en";
         private readonly ErrorLog _errorLog;
         private AppDbContext _db { get; set; }
+        public readonly IdentitySQLServerDb _piranhaDb;
         private IApi _api;
 
         private EntityTemplate mEntityTemplate;
-
+        public readonly IHttpContextAccessor _httpContextAccessor;
         private Item mItem;
 
-        public WorkflowService(AppDbContext db, IApi api, ErrorLog errorLog)
+        public WorkflowService(AppDbContext db, IdentitySQLServerDb pdb, IApi api, IHttpContextAccessor httpContextAccessor, ErrorLog errorLog)
         {
             _db = db;
+            _piranhaDb = pdb;
             _api = api;
+            _httpContextAccessor = httpContextAccessor;
             _errorLog = errorLog;
         }
 
@@ -150,119 +153,9 @@ namespace Catfish.Services
             throw new NotImplementedException();
         }
 
-        public async Task InitSiteStructureAsync(Guid siteId, string siteTypeId)
-        {
-            try 
-            {
-                if(siteTypeId == typeof(WorkflowPortal).Name)
-                {
-                    var site = await _api.Sites.GetByIdAsync(siteId).ConfigureAwait(false);
+        
 
-                    var siteContent = await _api.Sites.GetContentByIdAsync(siteId).ConfigureAwait(false);
-                    var workflowPageSettings = siteContent.Regions.WorkflowPagesContent;
-                    if (workflowPageSettings.CreateSubmissionEntryPage == true)
-                    {
-                        try
-                        {
-                            //Making sure the submission-entry page exists
-                            Guid? submissionEntryPageId = GetSystemPageId(siteId, "SubmissionEntryPage", true,
-                            string.IsNullOrEmpty(workflowPageSettings.SubmissionEntryPage) ? "Start a Submission" : workflowPageSettings.SubmissionEntryPage);
-
-                            //Making sure this page has at least one block of SubmissionEntryList
-                            var page = await _api.Pages.GetByIdAsync(submissionEntryPageId.Value).ConfigureAwait(false);
-                            if (page.Blocks.Where(b => typeof(SubmissionEntryPointList).IsAssignableFrom(Type.GetType(b.Type))).Any() == false)
-                            {
-                                page.Blocks.Add(new SubmissionEntryPointList());
-                                await _api.Pages.SaveAsync<DynamicPage>(page).ConfigureAwait(false);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _errorLog.Log(new Error(ex));
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _errorLog.Log(new Error(ex));
-            }
-        }
-
-        protected Guid? GetSystemPageId(Guid siteId, string pageKey, bool createIfNotExist, string pageTitleIfShouldCreate)
-        {
-            try
-            {
-                SystemPage pageInfo = _db.SystemPages
-                    .Where(pg => pg.PageKey == "SubmissionEntryPage" && pg.SiteId == siteId)
-                    .FirstOrDefault();
-
-                if (createIfNotExist == false)
-                {
-                    if (pageInfo == null)
-                        return null;
-                    else
-                    {
-                        try
-                        {
-                            var t = _api.Pages.GetByIdAsync(pageInfo.PageId);
-                            t.Wait();
-                            return t.Result.Id;
-                        }
-                        catch (Exception ex)
-                        {
-                            _errorLog.Log(new Error(ex));
-                            return null;
-                        }
-
-                    }
-                }
-                else
-                {
-                    if (pageInfo == null)
-                        pageInfo = new SystemPage() { PageKey = pageKey, SiteId = siteId };
-                    else
-                    {
-                        try
-                        {
-                            var t = _api.Pages.GetByIdAsync(pageInfo.PageId);
-                            t.Wait();
-                            var loadedPage = t.Result;
-
-                            if (loadedPage != null)
-                                return loadedPage.Id;
-                        }
-                        catch (Exception ex)
-                        {
-                            _errorLog.Log(new Error(ex));
-                            return null;
-                        }
-                    }
-
-                    //If the execution comes here, then we need to create a new page and update the page info entry
-                    var task = _api.Pages.CreateAsync<StandardPage>();
-                    task.Wait();
-
-                    StandardPage newPage = task.Result;
-                    newPage.SiteId = siteId;
-                    newPage.Published = DateTime.Now;
-                    newPage.Title = pageTitleIfShouldCreate;
-
-                    Task savePageTask = _api.Pages.SaveAsync<StandardPage>(newPage);
-                    savePageTask.Wait();
-
-                    pageInfo.PageId = newPage.Id;
-                    _db.SaveChanges();
-
-                    return newPage.Id;
-                }
-            }
-            catch (Exception ex)
-            {
-                _errorLog.Log(new Error(ex));
-                return null;
-            }
-        }
+        
 
         public string GetStatus(Guid entityTemplateId, string status, bool createIfNotExist)
         {
@@ -312,5 +205,19 @@ namespace Catfish.Services
             }
         }
 
+        public string GetLoggedUserEmail()
+        {
+            try
+            {
+                string userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var userDetails = _piranhaDb.Users.Where(ud => ud.Id == Guid.Parse(userId)).FirstOrDefault();
+                return userDetails.Email;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return "";
+            }
+        }
     }
 }
