@@ -11,7 +11,7 @@ namespace Catfish.Core.Models.Contents.Workflow
         public static readonly string FunctionAtt = "function";
         public static readonly string NameAtt = "name";
 
-        public abstract bool Execute(EntityTemplate template, IServiceProvider serviceProvider);
+        public abstract bool Execute(EntityTemplate template, TriggerRef triggerRef, IServiceProvider serviceProvider);
         public string Function
         {
             get => GetAttribute(FunctionAtt, null as string);

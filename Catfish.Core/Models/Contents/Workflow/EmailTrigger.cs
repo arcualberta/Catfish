@@ -82,10 +82,10 @@ namespace Catfish.Core.Models.Contents.Workflow
             return newRef;
         }
 
-        public override bool Execute(EntityTemplate template, IServiceProvider serviceProvider)
+        public override bool Execute(EntityTemplate template, TriggerRef triggerRef, IServiceProvider serviceProvider)
         {
             IEmailService emailService = serviceProvider.GetService<IEmailService>();
-/*
+            
 
             //get email trigger from workflow triggers using trigger referance.
             EmailTrigger selectedTrigger = (EmailTrigger)template.Workflow.Triggers.Where(tr => tr.Id == triggerRef.RefId).FirstOrDefault();
@@ -98,28 +98,28 @@ namespace Catfish.Core.Models.Contents.Workflow
                                     .Where(ms => ms.Id == emailReferanceId)
                                     .FirstOrDefault().Name.Values
                                     .Select(ms => ms.Value).FirstOrDefault();
-            //get email template using workflow service GetEmailTemplate. Inhere need to pass email template.
-            EmailTemplate emailTemplate = _workflowService.GetEmailTemplate(emailTemplateName, false);
+            ////get email template using workflow service GetEmailTemplate. Inhere need to pass email template.
+            //EmailTemplate emailTemplate = _workflowService.GetEmailTemplate(emailTemplateName, false);
 
-            //get all recipient in the trigger.
-            var recipients = selectedTrigger.Recipients.ToList();
+            ////get all recipient in the trigger.
+            //var recipients = selectedTrigger.Recipients.ToList();
 
-            //add recipient to the content
-            foreach (var recipient in recipients)
-            {
-                string emailRecipient;
-                if (recipient.Owner)
-                {
-                    emailRecipient = _authorizationService.GetLoggedUserEmail();
-                }
-                else
-                {
-                    emailRecipient = recipient.Email;
-                }
-                //send email using email service
-                SendEmail(emailTemplate, emailRecipient);
-            }
-*/
+            ////add recipient to the content
+            //foreach (var recipient in recipients)
+            //{
+            //    string emailRecipient;
+            //    if (recipient.Owner)
+            //    {
+            //        emailRecipient = _authorizationService.GetLoggedUserEmail();
+            //    }
+            //    else
+            //    {
+            //        emailRecipient = recipient.Email;
+            //    }
+            //    //send email using email service
+            //    SendEmail(emailTemplate, emailRecipient);
+            //}
+
             return true;
         }
 

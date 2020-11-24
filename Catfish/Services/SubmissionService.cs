@@ -279,7 +279,7 @@ namespace Catfish.Services
                 foreach (var triggerRef in triggerRefs)
                 {
                     Trigger selectedTrigger = template.Workflow.Triggers.Where(tr => tr.Id == triggerRef.RefId).FirstOrDefault();
-                    triggerExecutionStatus &= selectedTrigger.Execute(template, _serviceProvider);
+                    triggerExecutionStatus &= selectedTrigger.Execute(template, triggerRef, _serviceProvider);
 
 /*
                     //get email trigger from workflow triggers using trigger referance.
