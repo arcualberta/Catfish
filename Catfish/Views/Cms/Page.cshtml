@@ -1,5 +1,8 @@
 @model StandardPage
 @using Catfish.Models.Blocks;
+@using ElmahCore;
+
+@inject ErrorLog _errorLog;
 
 @{
     ViewBag.Title = Model.Title;
@@ -15,7 +18,7 @@
         <script src="/assets/js/vue/vue-dev.js"></script>
         foreach (string compName in vueComponentNames)
         {
-            <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
+        <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
         }
     }
 }
@@ -26,7 +29,14 @@
             <div class="col-sm-12 page-body">
                 <h1>@Model.Title</h1>
                 <div id="blocks">
-                    @Html.DisplayFor(m => m.Blocks)
+                    @try
+                    {
+                        @Html.DisplayFor(m => m.Blocks)
+                    }
+                     catch (Exception ex)
+                    {
+                        _errorLog.Log(new Error(ex));
+                    }
                 </div>
             </div>
         </div>
@@ -35,13 +45,15 @@
 
 @if (vueComponentNames.Count > 0)
 {
-    <script>
-        new Vue({ el: '#blocks' })
-    </script>
+<script>
+    new Vue({ el: '#blocks' })
+</script>
 }
 
-@if (Model.EnableComments)
+@try
 {
+    if (Model.EnableComments)
+    {
     <div id="comments" class="container comments">
         @if (Model.IsCommentsOpen)
         {
@@ -53,7 +65,7 @@
                     <h3 class="mb-3">Leave a comment</h3>
                     <p class="mb-4">
                         Please note that we won't show your email to others, or use it for sending
-                        unwanted emails. 
+                        unwanted emails.
                     </p>
                     <div class="row">
                         <div class="col-md-6">
@@ -79,6 +91,11 @@
         }
         @Html.DisplayFor(m => m.Comments)
     </div>
+    }
+}
+catch (Exception ex)
+{
+    _errorLog.Log(new Error(ex));
 }
 
 

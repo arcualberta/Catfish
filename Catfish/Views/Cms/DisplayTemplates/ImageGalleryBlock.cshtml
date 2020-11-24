@@ -1,12 +1,16 @@
 @model Piranha.Extend.Blocks.ImageGalleryBlock
 @using Piranha.Extend.Blocks
+@using Catfish.Helper;
+@using ElmahCore;
 
-@inject Catfish.Helper.ICatfishAppConfiguration _catfishConfig;
+@inject ICatfishAppConfiguration _catfishConfig;
+@inject ErrorLog _errorLog;
+
 @{
     var unique = "gallery-" + Guid.NewGuid().ToString();
 
-    var displayThumbnails = _catfishConfig.DisplayCarouselThumbnails();
-    int indicatorIndex = 0;
+     var displayThumbnails = _catfishConfig.DisplayCarouselThumbnails();
+     int indicatorIndex = 0;
 }
 @if (!displayThumbnails)
 { //default image gallery from piranha
@@ -20,10 +24,24 @@
         <div class="carousel-inner">
             @foreach (var item in Model.Items)
             {
-            <div class="carousel-item @(item == Model.Items.First() ? "active" : "")">
-                <img src="@Url.Content(WebApp.Media.ResizeImage(((ImageBlock)item).Body.Media, 890, 482))" class="d-block w-100">
-                @*<img src="@Url.Content(((ImageBlock)item).Body.Media.PublicUrl)" class="d-block">*@
-            </div>
+                <div class="carousel-item @(item == Model.Items.First() ? "active" : "")">
+                    @try
+                    {
+                        if (((ImageBlock)item).Body.Media == null)
+                        {
+                            throw new Exception("No image is specified for a carousel slide");
+                        }
+                        else
+                        {
+                            <img src="@Url.Content(WebApp.Media.ResizeImage(((ImageBlock)item).Body.Media, 890, 482))" class="d-block w-100">
+                            @*<img src="@Url.Content(((ImageBlock)item).Body.Media.PublicUrl)" class="d-block">*@
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _errorLog.Log(new Error(ex));
+                    }
+                </div>
             }
         </div>
         <a class="carousel-control-prev" href="#@unique" role="button" data-slide="prev">
@@ -44,10 +62,10 @@ else
         <div class="carousel-inner">
             @foreach (var item in Model.Items)
             {
-            <div class="carousel-item @(item == Model.Items.First() ? "active" : "")">
-                <img src="@Url.Content(WebApp.Media.ResizeImage(((ImageBlock)item).Body.Media, 890, 482))" class="d-block w-100">
-                @*<img src="@Url.Content(((ImageBlock)item).Body.Media.PublicUrl)" class="d-block">*@
-            </div>
+                <div class="carousel-item @(item == Model.Items.First() ? "active" : "")">
+                    <img src="@Url.Content(WebApp.Media.ResizeImage(((ImageBlock)item).Body.Media, 890, 482))" class="d-block w-100">
+                    @*<img src="@Url.Content(((ImageBlock)item).Body.Media.PublicUrl)" class="d-block">*@
+                </div>
             }
         </div>
         <a class="carousel-control-prev" href="#@unique" role="button" data-slide="prev">
@@ -62,7 +80,7 @@ else
         <ul class="carousel-indicators thumb-list-inline mx-auto border px-2">
             @foreach (var item in Model.Items)
             {
-                
+
                 <li class="list-inline-item @(item == Model.Items.First() ? "active" : "")">
                     <a id="carousel-selector-@indicatorIndex" class="@(item == Model.Items.First() ? "selected" : "")" data-slide-to="@indicatorIndex" data-target="#@unique">
                         <img src="@Url.Content(WebApp.Media.ResizeImage(((ImageBlock)item).Body.Media, 80, 60))" class="img-fluid">
@@ -84,7 +102,7 @@ else
         white-space: nowrap;
         overflow-x: auto;
     }*/
-   
+
     #@unique .carousel-indicators {
         position: static;
         left: initial;
