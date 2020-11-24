@@ -9,9 +9,19 @@
 @{
     var unique = "gallery-" + Guid.NewGuid().ToString();
 
-     var displayThumbnails = _catfishConfig.DisplayCarouselThumbnails();
-     int indicatorIndex = 0;
+    var displayThumbnails = _catfishConfig.DisplayCarouselThumbnails();
+    int indicatorIndex = 0;
+
+    //Computing the dimentions of the carousel slides based on the size of the images in the carousel
+    var media = Model.Items
+        .Where(item => typeof(ImageBlock).IsAssignableFrom(item.GetType()) && (item as ImageBlock).Body.Media != null)
+        .Select(item => (item as ImageBlock).Body.Media)
+        .FirstOrDefault();
+
+    int slideWidth = media != null && media.Width.HasValue ? media.Width.Value : 1000; //pixels
+    int slideHeight = media != null && media.Height.HasValue ? media.Height.Value : 400; //pixels
 }
+
 @if (!displayThumbnails)
 { //default image gallery from piranha
     <div id="@unique" class="carousel slide gallery-block" data-ride="carousel">
@@ -29,11 +39,12 @@
                     {
                         if (((ImageBlock)item).Body.Media == null)
                         {
+                            <div style="width:@string.Format("{0}px", slideWidth);height:@string.Format("{0}px", slideHeight);background-color:#808080"></div>
                             throw new Exception("No image is specified for a carousel slide");
                         }
                         else
                         {
-                            <img src="@Url.Content(WebApp.Media.ResizeImage(((ImageBlock)item).Body.Media, 890, 482))" class="d-block w-100">
+                            <img src="@Url.Content(WebApp.Media.ResizeImage(((ImageBlock)item).Body.Media, slideWidth, slideHeight))" class="d-block w-100">
                             @*<img src="@Url.Content(((ImageBlock)item).Body.Media.PublicUrl)" class="d-block">*@
                         }
                     }
