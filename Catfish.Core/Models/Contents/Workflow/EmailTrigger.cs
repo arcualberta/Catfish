@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Services;
+﻿using Catfish.Core.Helpers;
+using Catfish.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -86,7 +87,9 @@ namespace Catfish.Core.Models.Contents.Workflow
         {
             IEmailService emailService = serviceProvider.GetService<IEmailService>();
             IWorkflowService workflowService = serviceProvider.GetService<IWorkflowService>();
+            IConfig config = serviceProvider.GetService<IConfig>();
 
+            workflowService.SetModel(template);
             //get email trigger from workflow triggers using trigger referance.
             EmailTrigger selectedTrigger = (EmailTrigger)template.Workflow.Triggers.Where(tr => tr.Id == triggerRef.RefId).FirstOrDefault();
 
@@ -98,40 +101,40 @@ namespace Catfish.Core.Models.Contents.Workflow
                                     .Where(ms => ms.Id == emailReferanceId)
                                     .FirstOrDefault().Name.Values
                                     .Select(ms => ms.Value).FirstOrDefault();
+
             //get email template using workflow service GetEmailTemplate. Inhere need to pass email template.
             EmailTemplate emailTemplate = workflowService.GetEmailTemplate(emailTemplateName, false);
 
-            ////get all recipient in the trigger.
-            //var recipients = selectedTrigger.Recipients.ToList();
+            //get all recipient in the trigger.
+            var recipients = selectedTrigger.Recipients.ToList();
 
-            ////add recipient to the content
-            //foreach (var recipient in recipients)
-            //{
-            //    string emailRecipient;
-            //    if (recipient.Owner)
-            //    {
-            //        emailRecipient = _authorizationService.GetLoggedUserEmail();
-            //    }
-            //    else
-            //    {
-            //        emailRecipient = recipient.Email;
-            //    }
-            //    //send email using email service
-            //    SendEmail(emailTemplate, emailRecipient);
-            //}
+            //add recipient to the content
+            foreach (var recipient in recipients)
+            {
+                string emailRecipient;
+                if (recipient.Owner)
+                {
+                    emailRecipient = workflowService.GetLoggedUserEmail();
+                }
+                else
+                {
+                    emailRecipient = recipient.Email;
+                }
+                //send email using email service
+                SendEmail(emailTemplate, emailRecipient, emailService, workflowService, config);
+            }
 
             return true;
         }
 
-        protected bool SendEmail(EmailTemplate emailTemplate, string recipient, IEmailService emailService)
+        protected bool SendEmail(EmailTemplate emailTemplate, string recipient, IEmailService emailService, IWorkflowService workflowService, IConfig config)
         {
-            /*
             try
             {
                 Email email = new Email();
-                email.UserName = _authorizationService.GetLoggedUserEmail();
+                email.UserName = workflowService.GetLoggedUserEmail();
                 email.Subject = emailTemplate.GetSubject();
-                email.FromEmail = _config.GetSmtpEmail();
+                email.FromEmail = config.GetSmtpEmail();
                 email.RecipientEmail = recipient;
                 email.Body = emailTemplate.GetBody();
                 emailService.SendEmail(email);
@@ -139,12 +142,8 @@ namespace Catfish.Core.Models.Contents.Workflow
             }
             catch (Exception ex)
             {
-                _errorLog.Log(new Error(ex));
                 return false;
             }
-            */
-            return false;
-
         }
 
     }

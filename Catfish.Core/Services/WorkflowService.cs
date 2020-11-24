@@ -4,13 +4,16 @@ using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using ElmahCore;
+using Microsoft.AspNetCore.Http;
 using Piranha;
+using Piranha.AspNetCore.Identity.SQLServer;
 using Piranha.AspNetCore.Services;
 using Piranha.Models;
 using Piranha.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -21,16 +24,19 @@ namespace Catfish.Core.Services
         public static readonly string DefaultLanguage = "en";
         private readonly ErrorLog _errorLog;
         private AppDbContext _db { get; set; }
+        public readonly IdentitySQLServerDb _piranhaDb;
         private IApi _api;
 
         private EntityTemplate mEntityTemplate;
-
+        public readonly IHttpContextAccessor _httpContextAccessor;
         private Item mItem;
 
-        public WorkflowService(AppDbContext db, IApi api, ErrorLog errorLog)
+        public WorkflowService(AppDbContext db, IdentitySQLServerDb pdb, IApi api, IHttpContextAccessor httpContextAccessor, ErrorLog errorLog)
         {
             _db = db;
+            _piranhaDb = pdb;
             _api = api;
+            _httpContextAccessor = httpContextAccessor;
             _errorLog = errorLog;
         }
 
@@ -199,5 +205,19 @@ namespace Catfish.Core.Services
             }
         }
 
+        public string GetLoggedUserEmail()
+        {
+            try
+            {
+                string userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var userDetails = _piranhaDb.Users.Where(ud => ud.Id == Guid.Parse(userId)).FirstOrDefault();
+                return userDetails.Email;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return "";
+            }
+        }
     }
 }

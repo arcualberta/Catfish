@@ -1,5 +1,6 @@
 ﻿using Catfish.Areas.Manager.Access;
 using Catfish.Core.Authorization.Handlers;
+using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
@@ -150,6 +151,7 @@ namespace Catfish
             services.AddScoped<DbEntityService>();
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
+            services.AddScoped<IConfig, ReadConfiguration>();
             services.AddScoped<Catfish.Services.IAuthorizationService, AuthorizationService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IGroupService, GroupService>();

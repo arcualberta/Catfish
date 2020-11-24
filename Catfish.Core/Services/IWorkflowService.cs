@@ -28,5 +28,6 @@ namespace Catfish.Core.Services
 
         public List<PostAction> GetPostActions(EntityTemplate entityTemplate, string function, string group);
 
+        string GetLoggedUserEmail();
     }
 }
