@@ -3,8 +3,9 @@ using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
 using Catfish.Core.Services.Solr;
 using Catfish.Services;
+using ElmahCore;
+using ElmahCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,8 @@ using Piranha.Data.EF.SQLServer;
 using Piranha.Services;
 using SolrNet;
 using System;
+using Microsoft.Extensions.Hosting;
+using System.Collections.Generic;
 
 namespace Catfish.Tests.Helpers
 {
@@ -67,8 +70,7 @@ namespace Catfish.Tests.Helpers
             services.AddScoped<IEntityIndexService, EntityIndexService>();
             services.AddTransient<IWorkflowService, WorkflowService>();
             services.AddTransient<IAuthorizationService, AuthorizationService>();
-            services.AddScoped<IGroupService, GroupService>();
-            
+
 
             ////services.AddScoped<SolrService>();
             // Solr services
@@ -76,6 +78,11 @@ namespace Catfish.Tests.Helpers
 
             services.AddSolrNet<SolrEntry>(solrString);
             services.AddScoped<ISolrIndexService<SolrEntry>, SolrIndexService<SolrEntry, ISolrOperations<SolrEntry>>>();
+
+
+            //Adding an empty mock-up error logger instance to the service. This is to replace the actuall
+            //Elmah error-log functionality used in the web application.
+            services.AddScoped<ErrorLog, MockupErrorLog>();
 
             //Creating a service provider and assigning it to the member variable so that it can be used by 
             //test methods.
@@ -100,6 +107,24 @@ namespace Catfish.Tests.Helpers
         public IAuthorizationService AuthorizationService
         {
             get => Seviceprovider.GetService<IAuthorizationService>();
+        }
+    }
+
+    public class MockupErrorLog : ErrorLog
+    {
+        public override ErrorLogEntry GetError(string id)
+        {
+            return null;
+        }
+
+        public override int GetErrors(int pageIndex, int pageSize, ICollection<ErrorLogEntry> errorEntryList)
+        {
+            return 0;
+        }
+
+        public override string Log(Error error)
+        {
+            return "";
         }
     }
 }

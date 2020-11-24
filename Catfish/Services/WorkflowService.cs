@@ -79,7 +79,6 @@ namespace Catfish.Services
                 return null;
             }
         }
-
         protected MetadataSet GetMetadataSet(string metadataSetName, bool createIfNotExists, bool markAsTemplateMetadataSetIfCreated)
         {
             try
@@ -104,7 +103,7 @@ namespace Catfish.Services
                 return null;
             }
         }
-
+        
         //public DataItem GetDataItem(string dataItemName, bool createIfNotExists)
         //{
         //    DataItem dataItem = mEntityTemplate.DataContainer

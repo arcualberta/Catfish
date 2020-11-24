@@ -17,7 +17,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500">
     @*<link rel="stylesheet" href="~/css/style.min.css">*@
+
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
     @*<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>*@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.min.js" integrity="sha384-3ziFidFTgxJXHMDttyPJKDuTlmxJlwbSkojudK/CkRqKDOmeSbN6KLrGdrBQnT2n" crossorigin="anonymous"></script>
@@ -28,9 +30,14 @@
     <link href="~/assets/css/public/style.css" rel="stylesheet" />
     <link href="~/assets/css/public/componentStyles.css" rel="stylesheet" />
     @*This is ARC website's css - moved to _CustomHead file where site is being built *@
-    @*<link href="~/assets/css/public/custom.css" rel="stylesheet" />*@
     @*Transitions and animations available throughout publicfacing side*@
     <link href="~/assets/css/public/transitionAndAnimationPublicSide.css" rel="stylesheet" />
+
+    @*Styls that are common to all blocks*@
+    <link href="~/assets/css/public/commonBlockStyles.css" rel="stylesheet" />
+
+    @*A placeholder for specfying site-specific (deployment-specific) styles*@
+    <link href="~/assets/css/public/custom.css" rel="stylesheet" />
 
     <script src="~/assets/js/catfish.js"></script>
 
@@ -38,7 +45,7 @@
 
     @if (Model is Piranha.Models.IMeta)
     {
-        <partial name="Partial/_Meta.cshtml" />
+    <partial name="Partial/_Meta.cshtml" />
     }
 
     @RenderSection("head", required: false)

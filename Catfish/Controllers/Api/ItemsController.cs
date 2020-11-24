@@ -87,7 +87,7 @@ namespace Catfish.Controllers.Api
 
         // POST api/<ItemController>
         [HttpPost]
-        public ApiResult Post([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] string actionButton)
+        public ApiResult Post([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] string actionButton,  [FromForm] string function,  [FromForm] string group, [FromForm] string status)
         {
             ApiResult result = new ApiResult();
             try
@@ -96,7 +96,7 @@ namespace Catfish.Controllers.Api
                 _appDb.Items.Add(newItem);
                 _appDb.SaveChanges();
 
-                //bool sendEmail = _submissionService.SendEmail(entityTemplateId);
+                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, actionButton, function, group);
                 result.Success = true;
                 result.Message = "Application "+ actionButton+" successfully.";
 

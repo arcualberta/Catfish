@@ -143,6 +143,8 @@ namespace Catfish.UnitTests
         {
             string lang = "en";
             string templateName = "Calendar Management System Workflow";
+            string centralAdminEmail = "artsrnd@ualberta.ca";
+
 
             IWorkflowService ws = _testHelper.WorkflowService;
            AppDbContext db = _testHelper.Db;
@@ -280,7 +282,7 @@ namespace Catfish.UnitTests
 
             //Defining triggers
             EmailTrigger centralAdminNotificationEmailTrigger = workflow.AddTrigger("ToCentralAdmin", "SendEmail");
-            centralAdminNotificationEmailTrigger.AddRecipientByEmail("centraladmin@ualberta.ca");
+            centralAdminNotificationEmailTrigger.AddRecipientByEmail(centralAdminEmail);
             centralAdminNotificationEmailTrigger.AddTemplate(centralAdminNotification.Id, "Central Admin Notification");
 
             EmailTrigger ownerSubmissionNotificationEmailTrigger = workflow.AddTrigger("ToOwnerOnDocumentSubmission", "SendEmail");

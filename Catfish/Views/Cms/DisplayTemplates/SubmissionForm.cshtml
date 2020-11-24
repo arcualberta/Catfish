@@ -16,8 +16,8 @@
     string formPostUrl = "/api/items";
     var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
     var collectionId = Guid.Parse(Model.SelectedCollection);
-    var function = Model.WorkflowFunction;
-    var group = Model.WorkflowGroup;
+    string function = Model.WorkflowFunction;
+    string group = Model.WorkflowGroup;
     var template = _entityTemplateService.GetTemplate(entityTemplateId);
 
     var Item = template.InstantiateRootItem();
@@ -40,89 +40,98 @@
                 <input data-val="true" data-val-required="The ColectionId field is required."
                        id="collectionId_@suffix" name="collectionId" type="hidden"
                        value="@collectionId">
+                <input data-val="true" data-val-required="The Function field is required."
+                       id="function" name="function" type="hidden"
+                       value="@function">
+                <input data-val="true" data-val-required="The Group field is required."
+                       id="group" name="group" type="hidden"
+                       value="@group">
 
-               
+
                 @Html.EditorFor(model => Item, Item.GetType().ToString())
-            <div id="buttonLayer">
-                @{
-                    foreach (var postAction in postActions)
-                    {
-                        string buttonName = @postAction.ButtonLabel+"_"+@suffix;
-
-                        if (postAction.PopUps.Any())
+                <div id="buttonLayer">
+                    @{
+                        foreach (var postAction in postActions)
                         {
-                            foreach (var popup in postAction.PopUps)
-                            {
-                                <input id="@postAction.ButtonLabel" class="btn btn-success" name="@postAction.ButtonLabel" type="button" value="@postAction.ButtonLabel" data-toggle="modal" data-target="#submissionModal"/>
-                                <div id="submissionModal" class="modal fade" role="dialog">
+                            string buttonName = @postAction.ButtonLabel + "_" + @suffix;
 
-                                    <div>
-                                        <div class="modal-dialog">
-                                            @*Modal content*@
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="myModalLabel">@popup.Title</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="card-body">
-                                                        <div class="form-group">
-                                                            <h5>@popup.Message</h5>
+                            if (postAction.PopUps.Any())
+                            {
+                                foreach (var popup in postAction.PopUps)
+                                {
+                                    <input id="@postAction.ButtonLabel" class="btn btn-success" name="@postAction.ButtonLabel" type="button" value="@postAction.ButtonLabel" data-toggle="modal" data-target="#submissionModal" />
+                                    <div id="submissionModal" class="modal fade" role="dialog">
+
+                                        <div>
+                                            <div class="modal-dialog">
+                                                @*Modal content*@
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="myModalLabel">@popup.Title</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="card-body">
+                                                            <div class="form-group">
+                                                                <h5>@popup.Message</h5>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                @{
-                                                    foreach (var button in popup.Buttons)
-                                                    {
-                                                        if (button.Text == "Cancel")
-                                                        {
-                                                            <button id="close-modal-button_@suffix" type="button" class="btn btn-primary" data-dismiss="modal">@button.Text</button>
+                                                    <div class="modal-footer">
+                                                        @{
+                                                            foreach (var button in popup.Buttons)
+                                                            {
+                                                                if (button.Text == "Cancel")
+                                                                {
+                                                                    <button id="close-modal-button_@suffix" type="button" class="btn btn-primary" data-dismiss="modal">@button.Text</button>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <button id="@buttonName" type="submit" class="btn btn-success">@button.Text</button>
+                                                                }
+                                                            }
                                                         }
-                                                        else
-                                                        {
-                                                            <button id="@buttonName" type="submit" class="btn btn-success">@button.Text</button>
-                                                        }
-                                                    }
-                                                }
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
+                            }
+                            else
+                            {
+                                <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="submit" value="@postAction.ButtonLabel" />
                             }
                         }
-                        else
-                        {
-                            <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="submit" value="@postAction.ButtonLabel" />
-                        }
                     }
-                }
 
-            </div>
+                </div>
 
             </form>
             <div id="submission-result-message_@suffix"></div>
         </div>
     }
 
-    <script>
-
+<script>
     var status;
+    var buttonName;
+    
     $(function () {
         $("#submission-result-message_@suffix").hide();
 
         $(document).on('click', "#Submit_@suffix", function () {
             status = 'Submitted';
+            buttonName = 'Submit';
             console.log('Status = '+status)
         });
         $(document).on('click', "#Save_@suffix", function () {
-            status = 'Saved'
+            status = 'Saved';
+            buttonName = 'Submit';
             console.log('Status = ' + status)
         });
-        
+
         $("#submissionForm_@suffix").submit(function (event) {
-            
+
             /* stop form from submitting normally */
             event.preventDefault();
 
@@ -134,7 +143,8 @@
                 name = field.name.replace(prefix, "");
                 values[name] = field.value;
             });
-            values["actionButton"] = status;
+            values["actionButton"] = buttonName;
+            values["status"] = status;
 
             /* get the action attribute from the <form action=""> element */
             var $form = $(this),
@@ -168,5 +178,5 @@
 
         });
     });
-    </script>
+</script>
 }
