@@ -59,7 +59,8 @@ namespace Catfish.Core.Authorization.Handlers
 
             //At this point, the user is authenticated. If the action just requires any logged in user, then 
             //no further checking is needed.
-            if(workflowAction.Access == GetAction.eAccess.AnyLoggedIn)
+            bool isSysAdmin = context.User.IsInRole("SysAdmin");
+            if(workflowAction.Access == GetAction.eAccess.AnyLoggedIn || isSysAdmin)
             {
                 context.Succeed(requirement);
                 return Task.CompletedTask;
