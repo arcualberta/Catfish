@@ -10,7 +10,7 @@
 @using Microsoft.AspNetCore.Authorization;
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
-@inject Catfish.Services.IWorkflowService _workflowService;
+@inject Catfish.Core.Services.IWorkflowService _workflowService;
 @{
     string suffix = Guid.NewGuid().ToString();
     string formPostUrl = "/api/items";

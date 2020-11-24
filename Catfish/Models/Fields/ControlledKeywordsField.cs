@@ -30,12 +30,11 @@ namespace Catfish.Models.Fields
             return "";
         }
 
-        public void Init(IApi api, ICatfishSiteService csSrv,ErrorLog errorLog)
+        public void Init(IApi api, ICatfishSiteService csSrv, AppDbContext db, ErrorLog errorLog)
         {
             if (csSrv == null)
             {
-
-                CatfishSiteService catSrv = new CatfishSiteService(api, errorLog);
+                CatfishSiteService catSrv = new CatfishSiteService(api, db, errorLog);
                 csSrv = catSrv;
             }
             var siteKeyword = csSrv.getDefaultSiteKeywordAsync();

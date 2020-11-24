@@ -548,8 +548,8 @@ namespace Catfish
             App.Hooks.SiteContent.RegisterOnAfterSave((siteContent) => {
                 var scope = app.ApplicationServices.CreateScope();
 
-                var workflowService = scope.ServiceProvider.GetService<IWorkflowService>();
-                workflowService.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
+                var siteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
+                siteService.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
 
                // var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
                // catfishSiteService.UpdateKeywordVocabularyAsync(siteContent).Wait();

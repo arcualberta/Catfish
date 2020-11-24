@@ -85,7 +85,7 @@ namespace Catfish.Core.Models.Contents.Workflow
         public override bool Execute(EntityTemplate template, TriggerRef triggerRef, IServiceProvider serviceProvider)
         {
             IEmailService emailService = serviceProvider.GetService<IEmailService>();
-            
+            IWorkflowService workflowService = serviceProvider.GetService<IWorkflowService>();
 
             //get email trigger from workflow triggers using trigger referance.
             EmailTrigger selectedTrigger = (EmailTrigger)template.Workflow.Triggers.Where(tr => tr.Id == triggerRef.RefId).FirstOrDefault();
@@ -98,8 +98,8 @@ namespace Catfish.Core.Models.Contents.Workflow
                                     .Where(ms => ms.Id == emailReferanceId)
                                     .FirstOrDefault().Name.Values
                                     .Select(ms => ms.Value).FirstOrDefault();
-            ////get email template using workflow service GetEmailTemplate. Inhere need to pass email template.
-            //EmailTemplate emailTemplate = _workflowService.GetEmailTemplate(emailTemplateName, false);
+            //get email template using workflow service GetEmailTemplate. Inhere need to pass email template.
+            EmailTemplate emailTemplate = workflowService.GetEmailTemplate(emailTemplateName, false);
 
             ////get all recipient in the trigger.
             //var recipients = selectedTrigger.Recipients.ToList();

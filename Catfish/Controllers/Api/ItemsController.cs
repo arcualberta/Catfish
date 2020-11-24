@@ -92,7 +92,7 @@ namespace Catfish.Controllers.Api
             ApiResult result = new ApiResult();
             try
             {
-                Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, actionButton);
+                Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, status);
                 _appDb.Items.Add(newItem);
                 _appDb.SaveChanges();
 
