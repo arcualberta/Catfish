@@ -1,4 +1,6 @@
 ﻿using Piranha.Extend;
+using Piranha.Extend.Blocks;
+using Piranha.Extend.Fields;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,11 @@ namespace Catfish.Models.Blocks
 
     public class CarouselSlide
     {
+        public SelectField<ImageAspect> Aspect { get; set; } = new SelectField<ImageAspect>(); 
+        public TextField Title { get; set; } //should these be that or strings?
+        public TextField Description { get; set; }
+        public TextField LinkUrl { get; set; }
+        public TextField LinkText { get; set; }
 
     }
 }
