@@ -8,8 +8,8 @@
     ViewBag.Title = Model.Title;
 
     var vueComponentNames = Model.Blocks
-        .Where(b => typeof(VueComponent).IsAssignableFrom(b.GetType())) @*Selecting all blocks of type VueConponent or its derived type.*@
-        .Select(b => (b as VueComponent).Component) @*Selecting all those blocks as VueComponent blocks*@
+        .Where(b => typeof(IVueComponent).IsAssignableFrom(b.GetType())) @*Selecting all blocks of type IVueConponent or its derived type.*@
+        .Select(b => (b as IVueComponent).Component) @*Selecting all those blocks as IVueConponent blocks and getting their names.*@
         .Distinct()
         .ToList();
 
@@ -18,7 +18,7 @@
         <script src="/assets/js/vue/vue-dev.js"></script>
         foreach (string compName in vueComponentNames)
         {
-        <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
+            <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
         }
     }
 }
@@ -33,7 +33,7 @@
                     {
                         @Html.DisplayFor(m => m.Blocks)
                     }
-                     catch (Exception ex)
+                    catch (Exception ex)
                     {
                         _errorLog.Log(new Error(ex));
                     }
@@ -45,52 +45,52 @@
 
 @if (vueComponentNames.Count > 0)
 {
-<script>
-    new Vue({ el: '#blocks' })
-</script>
+    <script>
+        new Vue({ el: '#blocks' })
+    </script>
 }
 
 @try
 {
     if (Model.EnableComments)
     {
-    <div id="comments" class="container comments">
-        @if (Model.IsCommentsOpen)
-        {
-            <div class="alert alert-comment mt-2 mb-5">
-                <form action="@Model.Permalink/comment" method="post">
-                    @Html.AntiForgeryToken()
-                    @Html.Hidden("Id", Model.Id)
+        <div id="comments" class="container comments">
+            @if (Model.IsCommentsOpen)
+            {
+                <div class="alert alert-comment mt-2 mb-5">
+                    <form action="@Model.Permalink/comment" method="post">
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("Id", Model.Id)
 
-                    <h3 class="mb-3">Leave a comment</h3>
-                    <p class="mb-4">
-                        Please note that we won't show your email to others, or use it for sending
-                        unwanted emails.
-                    </p>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <input name="CommentAuthor" type="text" class="form-control" placeholder="Your name">
+                        <h3 class="mb-3">Leave a comment</h3>
+                        <p class="mb-4">
+                            Please note that we won't show your email to others, or use it for sending
+                            unwanted emails.
+                        </p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input name="CommentAuthor" type="text" class="form-control" placeholder="Your name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <input name="CommentEmail" type="text" class="form-control" placeholder="Your email address">
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <input name="CommentEmail" type="text" class="form-control" placeholder="Your email address">
+                        <div class="form-group">
+                            <input name="CommentUrl" type="text" class="form-control" placeholder="An (optional) URL to your website">
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <input name="CommentUrl" type="text" class="form-control" placeholder="An (optional) URL to your website">
-                    </div>
-                    <div class="form-group">
-                        <textarea name="CommentBody" rows="6" class="form-control" placeholder="Your awesome comment"></textarea>
-                    </div>
-                    <div class="form-group text-left">
-                        <button class="btn btn-success">Post Comment</button>
-                    </div>
-                </form>
-            </div>
-        }
-        @Html.DisplayFor(m => m.Comments)
-    </div>
+                        <div class="form-group">
+                            <textarea name="CommentBody" rows="6" class="form-control" placeholder="Your awesome comment"></textarea>
+                        </div>
+                        <div class="form-group text-left">
+                            <button class="btn btn-success">Post Comment</button>
+                        </div>
+                    </form>
+                </div>
+            }
+            @Html.DisplayFor(m => m.Comments)
+        </div>
     }
 }
 catch (Exception ex)
