@@ -22,7 +22,7 @@ namespace Catfish.Pages
             //TODO: retrieve the item using a service call that handles the security, meaning that it should
             //verify that the current user has access to the item
 
-            Item = _db.Items.Where(it => it.Id == id).FirstOrDefault()l
+            Item = _db.Items.Where(it => it.Id == id).FirstOrDefault();
 
         }
     }
