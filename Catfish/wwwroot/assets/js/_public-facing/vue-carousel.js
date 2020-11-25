@@ -1,17 +1,58 @@
+
 ﻿/**
  This is the public-facing carousel component.
  It is a slideshow-style set of images with text and a link (all optionally provided based on the manager side's input).
  */
 
-Vue.component('vue-list', {
+Vue.component('vue-carousel', {
     props: ["model"],
 
     data: function () {
         return {
         }
     },
+    mounted() {
+        console.log(this.model);
+    },
     template: `
-        <ul>
-            <li v-for="item in model">{{item}}</li>
-        </ul>`
+    <div :id="this.model.id" class="carousel-slide">
+        <div v-for="(item,index) in this.model.Items" class="carousel-item">
+            <img :src="item.Body.Media.PublicUrl.replace(/^~+/, '')" class="d-block w-100" alt="...">
+        </div>
+    </div>        
+    `
 })
+
+
+//﻿Vue.component('vue-carousel', {
+//    props: ["uid", "model"],
+
+//    data: function () {
+//        return {
+//            elementId: "#" + this.model.Id,
+//            width: this.model.Width !== null && this.model.Width.length > 0 ? this.model.Width : "1200",
+//            hieght: this.model.Height !== null && this.model.Height.length > 0 ? this.model.Height : "400",
+//        }
+//    },
+//    template:
+//        `<div>
+//            <div :id="this.model.Id" class="carousel slide" data-ride="carousel">
+//              <ol class="carousel-indicators">
+//                <li v-for="(item,index) in this.model.Items" :data-target="elementId" :data-slide-to="index" :class="{'active': index === 0}"></li>
+//              </ol>
+//              <div class="carousel-inner">
+//                <div v-for="(item,index) in this.model.Items" class="carousel-item" :class="{'active': index === 0}">
+//                  <img :width="width" :height="hieght" :src="item.Body.Media.PublicUrl.replace(/^~+/, '')" class="d-block w-100" alt="...">
+//                </div>
+//              </div>
+//              <a class="carousel-control-prev" :href="elementId" role="button" data-slide="prev">
+//                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+//                <span class="sr-only">Previous</span>
+//              </a>
+//              <a class="carousel-control-next" :href="elementId" role="button" data-slide="next">
+//                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+//                <span class="sr-only">Next</span>
+//              </a>
+//            </div>
+//        </div>`
+//})

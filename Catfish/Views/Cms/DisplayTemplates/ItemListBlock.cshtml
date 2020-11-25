@@ -1,10 +1,14 @@
 ﻿@model Catfish.Models.Blocks.ItemListBlock
 
-
+@using Catfish.Core.Authorization.Requirements;
+@using Microsoft.AspNetCore.Authorization;
 @using Catfish.Core.Models;
-@inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
-@inject Catfish.Services.ISubmissionService _submissionService;
 
+
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
+@inject Catfish.Services.IEntityTemplateService _entityTemplateService;
+@inject Catfish.Core.Services.IWorkflowService _workflowService;
+@inject Catfish.Services.ISubmissionService _submissionService;
 @{
     var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
     var collectionId = string.IsNullOrEmpty(Model.SelectedCollection) ? null as Guid? : Guid.Parse(Model.SelectedCollection);
@@ -12,53 +16,70 @@
 
 
     bool printTitle = true;
-  
-   
-}
+    // var templates = _entityTemplateService.GetItemTemplates(User);
+    var template = _entityTemplateService.GetTemplate(entityTemplateId);
 
+}
+@if ((await _authorizationService.AuthorizeAsync(User, template
+              , new List<IAuthorizationRequirement>
+() { TemplateOperations.Read }))
+.Succeeded)
+{
     <div class="row col-md-12">
-          <div class="col-md-5 form-group">
-                   <label>From:</label> <input type="date" name="startDate" id="startDate" class="form-control" />
-          </div>
+        <div class="col-md-5 form-group">
+            <label>From:</label> <input type="date" name="startDate" id="startDate" class="form-control" />
+        </div>
         <div class="col-md-5 form-group"> <label class="form-label">To:</label><input type="date" name="endDate" id="endDate" class="form-control" /></div>
-        <button  id="itemListBtnFilter" class="btn btn-default btn-primary" style="margin-top:30px; height:fit-content;" value="Filter" ><span class="fa fa-filter"  style="padding-right:5px;"></span>Filter </button>
+        <button id="itemListBtnFilter" class="btn btn-default btn-primary" style="margin-top:30px; height:fit-content;" value="Filter"><span class="fa fa-filter" style="padding-right:5px;"></span>Filter </button>
     </div>
 
 
 
 
-<button id="downloadCsvFile" class="btn btn-default btn-primary" onclick="generateCSV('Items_@DateTime.Now.ToShortDateString()','itemListBlockTable' )"><span class="fa fa-download" style="padding-right:5px;"></span>Download CSV</button>
-@if (itemList.Count > 0)
-{
-    <table class="table table-stripe table-border" id="itemListBlockTable">
-        <tr class="tblHeader">
-            @foreach (Item item in itemList)
-            {
-                var allFields = _submissionService.GetAllField(item.Data.ToString());
-                //table's header
-                if (printTitle)
+    <button id="downloadCsvFile" class="btn btn-default btn-primary" onclick="generateCSV('Items_@DateTime.Now.ToShortDateString()','itemListBlockTable' )"><span class="fa fa-download" style="padding-right:5px;"></span>Download CSV</button>
+    if (itemList.Count > 0)
+    {
+        <table class="table table-stripe table-border" id="itemListBlockTable">
+            <tr class="tblHeader">
+                @foreach (Item item in itemList)
                 {
-                    foreach (var field in allFields)
+                    var allFields = _submissionService.GetAllField(item.Data.ToString());
+                    //table's header
+                    if (printTitle)
                     {
-                        <th> @field.FieldName </th>
-                    }
-                    printTitle = false;
-                    <th> Submitted </th>
-                    <th> Status </th>
-                @:</tr>
-            }
-            <tr class="tblRowContent">
-                @foreach (var field in allFields)
-                {
-                    <td> @field.FieldValue </td>
+                        foreach (var field in allFields)
+                        {
+                            <th> @field.FieldName </th>
+                        }
+                        printTitle = false;
+                        <th> Submitted </th>
+                        <th> Status </th>
+                        <th>Actions</th>
+                    @:</tr>
                 }
+        <tr class="tblRowContent">
+            @foreach (var field in allFields)
+            {
+                <td> @field.FieldValue </td>
+            }
 
 
-                <td> @item.Created </td>
-                <td> @_submissionService.GetStatus(item.StatusId) </td>
-            </tr>
+            <td> @item.Created </td>
+            <td> @_submissionService.GetStatus(item.StatusId) </td>
+
+            @{
+                string viewLink = string.Format("<a href='/items/{0}'>view</a>", item.Id);
+                string editLink = string.Format("<a href='/items/edit/{0}'>edit</a>", item.Id);
+                <td>@Html.Raw(viewLink) | @Html.Raw(editLink)</td>
+            }
+        </tr>
+            }
+            </table>
         }
-        </table>
+    }
+    else
+    {
+        <div class="alert alert-warning">Sorry, you have not authorized to view this page.</div>
     }
 
 <script>
@@ -76,7 +97,7 @@
             data: {
                 'templateId': templateId, "collectionId": collId, "startDate": fromDate, "endDate": toDate
             },
-          
+
             success: function (data) {
                 var tbl = $("#itemListBlockTable");
                 //reset content table content rows
@@ -106,8 +127,8 @@
     });
 </script>
 <style>
-    #itemListBlockTable{
-        margin-top:15px;
+    #itemListBlockTable {
+        margin-top: 15px;
     }
 </style>
 

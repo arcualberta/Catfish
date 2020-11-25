@@ -1,4 +1,5 @@
-﻿using Catfish.Helper;
+﻿using Catfish.Core.Services;
+using Catfish.Helper;
 using Catfish.Models;
 
 using Microsoft.AspNetCore.Http;
@@ -16,14 +17,14 @@ namespace Catfish.Controllers
         private readonly IApi _api;
         private readonly IModelLoader _loader;
         private readonly IDb _db;
-        private readonly Catfish.Services.IEmailService _email;
+        private readonly IEmailService _email;
       
 
         /// <summary>
         /// Default constructor.
         /// </summary>
         /// <param name="api">The current api</param>
-        public CmsController(IApi api,IDb db,  IModelLoader loader, Catfish.Services.IEmailService email, IHttpContextAccessor httpContextAccessor)
+        public CmsController(IApi api,IDb db,  IModelLoader loader, IEmailService email, IHttpContextAccessor httpContextAccessor)
         {
             _api = api;
             _loader = loader;
@@ -162,7 +163,7 @@ namespace Catfish.Controllers
         //    return View(model);
         //}
 
-        public JsonResult SendEmail(Catfish.Services.Email email)
+        public JsonResult SendEmail(Email email)
         {
             try
             {

@@ -11,11 +11,5 @@ namespace Catfish.Models.Blocks
     public class VueList : VueComponent
     {
         public TextField Items { get; set; }
-
-        public override object GetData()
-        {
-            return Items.Value.Split(",", StringSplitOptions.RemoveEmptyEntries);
-        }
-
     }
 }

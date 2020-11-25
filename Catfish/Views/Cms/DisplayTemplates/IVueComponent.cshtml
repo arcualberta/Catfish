@@ -1,0 +1,24 @@
+﻿@model Catfish.Models.Blocks.IVueComponent
+@using Newtonsoft.Json;
+@using Piranha.Extend;
+@using ElmahCore;
+
+@*
+    Reference: https://vuejs.org/v2/guide/components.html
+*@
+
+@inject ErrorLog _errorLog;
+
+@{
+    try
+    {
+        var jsonData = JsonConvert.SerializeObject(Model);
+        var componentElementString = string.Format("<{0} v-bind:model='{1}'></{0}>", Model.Component, jsonData);
+
+        @Html.Raw(componentElementString)
+    }
+    catch (Exception ex)
+    {
+        _errorLog.Log(new Error(ex));
+    }
+}

@@ -1,0 +1,23 @@
+﻿@page "/items/{id:Guid}"
+@model Catfish.Pages.ItemDetailsModel
+@{
+    var item = Model.Item;
+}
+
+@*Specify the status of the submission, followed by the last updated date*@
+
+@*Display the content of the main submission (i.e. the data-item with is-root=true) *@
+
+
+@*
+    Display the contents of all associated data items, which are identified by is-rro=false.
+       
+*@
+@{ 
+    var associatedItems = item.DataContainer
+        .Where(di => di.IsRoot = false)
+        .OrderByDescending(di => di.Created)
+        .ToList();
+}
+
+@*Display each associated item in a separate element like a bootstrap panel.*@

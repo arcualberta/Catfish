@@ -1,4 +1,5 @@
-﻿using Catfish.Helper;
+﻿using Catfish.Core.Services;
+using Catfish.Helper;
 using ElmahCore;
 using System;
 using System.Collections.Generic;

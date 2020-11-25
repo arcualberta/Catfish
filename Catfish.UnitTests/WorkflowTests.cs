@@ -4,6 +4,7 @@ using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
+using Catfish.Core.Services;
 using Catfish.Services;
 using Catfish.Tests.Helpers;
 using NUnit.Framework;
@@ -143,6 +144,8 @@ namespace Catfish.UnitTests
         {
             string lang = "en";
             string templateName = "Calendar Management System Workflow";
+            string centralAdminEmail = "artsrnd@ualberta.ca";
+
 
             IWorkflowService ws = _testHelper.WorkflowService;
            AppDbContext db = _testHelper.Db;
@@ -280,7 +283,7 @@ namespace Catfish.UnitTests
 
             //Defining triggers
             EmailTrigger centralAdminNotificationEmailTrigger = workflow.AddTrigger("ToCentralAdmin", "SendEmail");
-            centralAdminNotificationEmailTrigger.AddRecipientByEmail("centraladmin@ualberta.ca");
+            centralAdminNotificationEmailTrigger.AddRecipientByEmail(centralAdminEmail);
             centralAdminNotificationEmailTrigger.AddTemplate(centralAdminNotification.Id, "Central Admin Notification");
 
             EmailTrigger ownerSubmissionNotificationEmailTrigger = workflow.AddTrigger("ToOwnerOnDocumentSubmission", "SendEmail");
@@ -599,6 +602,8 @@ namespace Catfish.UnitTests
         {
             string lang = "en";
             string templateName = "Central America Contact Form";
+          //  string centralAdminEmail = "artsrnd@ualberta.ca";
+
 
             IWorkflowService ws = _testHelper.WorkflowService;
             AppDbContext db = _testHelper.Db;
@@ -693,7 +698,7 @@ namespace Catfish.UnitTests
 
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you can't make any changes. Are you sure you want to continue?");
+            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot make any changes. Are you sure you want to continue?");
             EditSubmissionActionPopUpopUp.AddButtons("Yes, submit", "true");
             EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -725,6 +730,12 @@ namespace Catfish.UnitTests
 
             //Defining state referances
             deleteSubmissionAction.AddStateReferances(savedState.Id);
+
+            //MR Nov 23 2020
+            GetAction readSubmissionAction = workflow.AddAction("List", "Read", "List");
+           // GetAction readSubmissionAction = workflow.AddAction("List", nameof(TemplateOperations.Read), "List");
+            readSubmissionAction.Access = GetAction.eAccess.Restricted;
+            readSubmissionAction.AddAuthorizedRole(centralAdminRole.Id);
 
             db.SaveChanges();
 

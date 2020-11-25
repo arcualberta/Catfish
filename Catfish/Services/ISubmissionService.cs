@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Workflow;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,8 @@ namespace Catfish.Services
         List<ItemField> GetAllField(string xml);
         string GetStatus(Guid? statusId);
         Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, string actionButton);
-        bool SendEmail(Guid entityTemplateId);
+ //       bool SendEmail(EmailTemplate emailTemplate, string recipient);
+        bool ExecuteTriggers(Guid entityTemplateId, string actionButton, string function, string group);
     }
     public class ItemField
     {

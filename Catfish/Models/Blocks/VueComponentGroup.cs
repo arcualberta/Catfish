@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Catfish.Models.Blocks
 {
-    public class VueComponent : Block, IVueComponent
+    public class VueComponentGroup : BlockGroup, IVueComponent
     {
     }
 }

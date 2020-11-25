@@ -1,5 +1,6 @@
 ﻿using Catfish.Areas.Manager.Access;
 using Catfish.Core.Authorization.Handlers;
+using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Solr;
 using Catfish.Core.Services;
@@ -150,6 +151,7 @@ namespace Catfish
             services.AddScoped<DbEntityService>();
             services.AddScoped<ItemService>();
             services.AddScoped<ICatfishAppConfiguration, ReadAppConfiguration>();
+            services.AddScoped<IConfig, ReadConfiguration>();
             services.AddScoped<Catfish.Services.IAuthorizationService, AuthorizationService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IGroupService, GroupService>();
@@ -550,8 +552,8 @@ namespace Catfish
             App.Hooks.SiteContent.RegisterOnAfterSave((siteContent) => {
                 var scope = app.ApplicationServices.CreateScope();
 
-                var workflowService = scope.ServiceProvider.GetService<IWorkflowService>();
-                workflowService.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
+                var siteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
+                siteService.InitSiteStructureAsync(siteContent.Id, siteContent.TypeId).Wait();
 
                // var catfishSiteService = scope.ServiceProvider.GetService<ICatfishSiteService>();
                // catfishSiteService.UpdateKeywordVocabularyAsync(siteContent).Wait();
