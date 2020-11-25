@@ -7,7 +7,7 @@
 
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
-@inject Catfish.Services.IWorkflowService _workflowService;
+
 @inject Catfish.Services.ISubmissionService _submissionService;
 @{
     var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
@@ -16,7 +16,7 @@
 
 
     bool printTitle = true;
-    // var templates = _entityTemplateService.GetItemTemplates(User);
+    
     var template = _entityTemplateService.GetTemplate(entityTemplateId);
 
 }
