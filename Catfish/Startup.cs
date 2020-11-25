@@ -392,6 +392,7 @@ namespace Catfish
             App.Blocks.Register<ExtendedGalleryBlock>();
             App.Blocks.Register<ControlledVocabularySearchBlock>();
             App.Blocks.Register<VueList>();
+            App.Blocks.Register<VueCarousel>();
 
         }
         private static void RegisterCustomStyles()

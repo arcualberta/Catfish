@@ -54,6 +54,7 @@
                         printTitle = false;
                         <th> Submitted </th>
                         <th> Status </th>
+                        <th>Actions</th>
                     @:</tr>
                 }
                 <tr class="tblRowContent">
@@ -65,6 +66,12 @@
 
                     <td> @item.Created </td>
                     <td> @_submissionService.GetStatus(item.StatusId) </td>
+
+            @{
+                string viewLink = string.Format("<a href='/items/{0}'>view</a>", item.Id);
+                string editLink = string.Format("<a href='/items/edit/{0}'>edit</a>", item.Id);
+                <td>@Html.Raw(viewLink) | @Html.Raw(editLink)</td>
+            }
                 </tr>
             }
             </table>
