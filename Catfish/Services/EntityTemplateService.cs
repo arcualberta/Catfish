@@ -117,5 +117,56 @@ namespace Catfish.Services
                 return null;
             }
         }
+
+        public EntityTemplate GetTemplate(Guid? templateId, ClaimsPrincipal user)
+        {
+            try
+            {
+                EntityTemplate entityTemplate = null;
+                if (user != null)
+                {
+                    //Finding all groups where the user possess some role and then
+                    //getting all templates associated with those groups
+                    List<Guid> selectTemplateIds = new List<Guid>();
+                    
+                    var userIdStr = user.FindFirstValue(ClaimTypes.NameIdentifier);
+                    if (!string.IsNullOrEmpty(userIdStr))
+                    {
+                        var userId = Guid.Parse(userIdStr);
+                        var groupIds = _db.UserGroupRoles
+                            .Where(ugr => ugr.UserId == userId)
+                            .Select(ugr => ugr.GroupRole.GroupId)
+                            .Distinct()
+                            .ToList();
+                        var templateIds = _db.GroupTemplates
+                            .Where(gt => groupIds.Contains(gt.GroupId))
+                            .Select(gt => gt.EntityTemplateId)
+                            .Distinct();
+                        selectTemplateIds.AddRange(templateIds);
+                        if(selectTemplateIds.Count > 0)
+                        {
+                            foreach(Guid selectedId in selectTemplateIds)
+                            {
+                                if(selectedId == templateId)
+                                {
+                                    entityTemplate = _db.EntityTemplates.Where(et => et.Id == templateId).FirstOrDefault();
+                                    break;
+                                }
+                            }
+                        }
+
+                       
+                    }
+
+                }
+                return entityTemplate;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
     }
 }
