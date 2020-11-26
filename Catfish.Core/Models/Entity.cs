@@ -93,11 +93,17 @@ namespace Catfish.Core.Models
         public ICollection<Relationship> ObjectRelationships { get; set; }
 
         public Collection PrimaryCollection { get; set; }
+        
         [Column("PrimaryCollectionId")]
         public Guid? PrimaryCollectionId { get; set; }
+        
         public SystemStatus Status { get; set; }
+        
         [Column("StatusId")]
         public Guid? StatusId { get; set; }
+
+        [Column("UserEmail")]
+        public string UserEmail { get; set; }
 
 
         public Entity()
