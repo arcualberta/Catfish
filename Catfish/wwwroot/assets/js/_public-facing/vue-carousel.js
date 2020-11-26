@@ -4,8 +4,8 @@
     data: function () {
         return {
             elementId: "#" + this.model.Id,
-            width: this.model.Width !== null && this.model.Width.length > 0 ? this.model.Width : "1200",
-            hieght: this.model.Height !== null && this.model.Height.length > 0 ? this.model.Height : "400",
+            width: this.model.Width.Value !== null && this.model.Width.Value.length > 0 ? this.model.Width.Value : "1200",
+            hieght: this.model.Height.Value !== null && this.model.Height.Value.length > 0 ? this.model.Height.Value : "400"
         }
     },
     template:
@@ -16,7 +16,7 @@
               </ol>
               <div class="carousel-inner">
                 <div v-for="(item,index) in this.model.Items" class="carousel-item" :class="{'active': index === 0}">
-                  <img :width="width" :height="hieght" :src="item.Body.Media.PublicUrl.replace(/^~+/, '')" class="d-block w-100" alt="...">
+                  <img :width="width" :height="hieght" :src="item.Body.Media.PublicUrl.replace(/^~/, '')" class="d-block w-100" alt="...">
                 </div>
               </div>
               <a class="carousel-control-prev" :href="elementId" role="button" data-slide="prev">
