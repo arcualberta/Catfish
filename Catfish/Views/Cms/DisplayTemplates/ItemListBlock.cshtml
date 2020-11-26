@@ -7,7 +7,7 @@
 
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
-@inject Catfish.Core.Services.IWorkflowService _workflowService;
+
 @inject Catfish.Services.ISubmissionService _submissionService;
 @{
     var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
@@ -16,7 +16,7 @@
 
 
     bool printTitle = true;
-    // var templates = _entityTemplateService.GetItemTemplates(User);
+    
     var template = _entityTemplateService.GetTemplate(entityTemplateId);
 
 }
@@ -57,22 +57,22 @@
                         <th>Actions</th>
                     @:</tr>
                 }
-        <tr class="tblRowContent">
-            @foreach (var field in allFields)
-            {
-                <td> @field.FieldValue </td>
-            }
+                <tr class="tblRowContent">
+                    @foreach (var field in allFields)
+                    {
+                        <td> @field.FieldValue </td>
+                    }
 
 
-            <td> @item.Created </td>
-            <td> @_submissionService.GetStatus(item.StatusId) </td>
+                    <td> @item.Created </td>
+                    <td> @_submissionService.GetStatus(item.StatusId) </td>
 
             @{
                 string viewLink = string.Format("<a href='/items/{0}'>view</a>", item.Id);
                 string editLink = string.Format("<a href='/items/edit/{0}'>edit</a>", item.Id);
                 <td>@Html.Raw(viewLink) | @Html.Raw(editLink)</td>
             }
-        </tr>
+                </tr>
             }
             </table>
         }

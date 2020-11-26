@@ -15,7 +15,6 @@
     <Compile Remove="Models\MainPage.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Remove="appsettings.example.json" />
     <Content Remove="Pages\Shared\EditorTemplates\Catfish.Core.Models.Contents.Fields.InfoSection.cshtml" />
     <Content Remove="Views\Cms\Main.cshtml" />
     <Content Remove="Views\Shared\Partial\TwoColsPage.cshtml" />

@@ -43,44 +43,51 @@ namespace Catfish.Controllers.Api
         [HttpGet("{id}")]
         public IList<string> GetItemList(Guid templateId, Guid collectionId, DateTime startDate, DateTime endDate)
         {
-            IList<Item> itemList = _submissionService.GetSubmissionList(templateId,collectionId, startDate, endDate);
             List<string> itemFields = new List<string>();
-            bool header = true;
-            if (itemList.Count > 0)
+            EntityTemplate template = _entityTemplateService.GetTemplate(templateId, User);
+            if (template != null)
             {
-                foreach (Item item in itemList) {
-                    //get all the custom fields from the form
-                    var iFields = _submissionService.GetAllField(item.Data.ToString());
 
-                    //get the date when the form is submitted
-                    iFields.Add(new ItemField { FieldName = "Created", FieldValue = item.Created.ToShortDateString() });
-                    //get the form status
-                    string status = _submissionService.GetStatus(item.StatusId);
-                    iFields.Add(new ItemField { FieldName = "Status", FieldValue = status });
-
-                    if (header)
+                IList<Item> itemList = _submissionService.GetSubmissionList(templateId, collectionId, startDate, endDate);
+               
+                bool header = true;
+                if (itemList.Count > 0)
+                {
+                    foreach (Item item in itemList)
                     {
-                        string strHeader = "";
+                        //get all the custom fields from the form
+                        var iFields = _submissionService.GetAllField(item.Data.ToString());
+
+                        //get the date when the form is submitted
+                        iFields.Add(new ItemField { FieldName = "Created", FieldValue = item.Created.ToShortDateString() });
+                        //get the form status
+                        string status = _submissionService.GetStatus(item.StatusId);
+                        iFields.Add(new ItemField { FieldName = "Status", FieldValue = status });
+
+                        if (header)
+                        {
+                            string strHeader = "";
+                            foreach (var field in iFields)
+                            {
+                                strHeader += field.FieldName + ",";
+                            }
+                            itemFields.Add(strHeader);
+                            header = false; //only het the header once
+                        }
+
+                        //the the filed values
+                        string strValues = "";
                         foreach (var field in iFields)
                         {
-                           strHeader += field.FieldName + ",";
+                            strValues += field.FieldValue + ",";
                         }
-                        itemFields.Add(strHeader);
-                        header = false; //only het the header once
+
+                        itemFields.Add(strValues);
                     }
 
-                    //the the filed values
-                    string strValues = "";
-                    foreach (var field in iFields)
-                    {
-                        strValues += field.FieldValue + ",";
-                    }
-
-                    itemFields.Add(strValues);
-                }
-                   
-            }//if have some items
-            
+                }//if have some items
+               
+            }
 
             return itemFields;
         }
