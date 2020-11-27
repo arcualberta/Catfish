@@ -32,10 +32,9 @@
     if (itemList.Count > 0)
     {
         //Selecting sub set of fields that can hold user-input values
-        var userInputFields = itemList[0].GetRootDataItem(false).Fields
-                .Where(f => typeof(IValueField).IsAssignableFrom(f.GetType()))
-                .Select(f => f as IValueField)
-                .ToList();
+        var userInputFields = itemList[0].GetRootDataItem(false)
+            .GetInputFields()
+            .ToList();
         var fieldNames = userInputFields.Select(f => (f as BaseField).Name.GetConcatenatedContent(" | ")).ToList();
         var fieldIds = userInputFields.Select(f => (f as BaseField).Id).ToList();
 

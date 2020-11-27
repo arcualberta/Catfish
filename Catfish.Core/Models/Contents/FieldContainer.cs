@@ -243,6 +243,15 @@ namespace Catfish.Core.Models.Contents
             return null;
         }
 
+        public IList<IValueField> GetInputFields()
+        {
+            var inputFields = Fields.Where(f => typeof(IValueField).IsAssignableFrom(f.GetType()))
+                    .Select(f => f as IValueField)
+                    .ToList();
+
+            return inputFields;
+        }
+
         public string GetValues(Guid id, string separator, string lang = null)
         {
             IValueField valField = Fields
