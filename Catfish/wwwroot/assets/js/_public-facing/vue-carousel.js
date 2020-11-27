@@ -30,7 +30,7 @@ Vue.component('vue-carousel', {
             <div class="carousel-inner">
                 <div v-for="(item,index) in this.model.Items" class="carousel-item" :class="{'active': index === 0}">
 
-                <div class="flex-carousel-contents">    
+                <div class="flex-carousel-contents" :class="{'image-comes-second': !item.ImageComesFirst.Value}">    
                   <div v-bind:style="{ 'background-image': 'url(' + item.Body.Media.PublicUrl.replace(/^~/, '') + ')', 'flex': '1 1 0' + width + 'px' }" 
                   class="d-block image-in-carousel" alt="...">
                   </div>
