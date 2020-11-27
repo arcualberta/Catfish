@@ -54,12 +54,12 @@ namespace Catfish.Core.Models.Contents.Workflow
             return States.Where(st => st.Value == stateValue).FirstOrDefault();
         }
 
-        public State AddState(string value)
+        public State AddState(string value, bool isEditable)
         {
             if (States.Where(st => st.Value == value).Any())
                 throw new Exception(string.Format("State {0} already exists.", value));
 
-            State newState = new State() { Value = value };
+            State newState = new State() { Value = value , IsEditable = isEditable};
             States.Add(newState);
             return newState;
         }

@@ -157,14 +157,14 @@ namespace Catfish.Core.Services
 
         
 
-        public string GetStatus(Guid entityTemplateId, string status, bool createIfNotExist)
+        public string GetStatus(Guid entityTemplateId, string status, bool createIfNotExist, bool isEditable)
         {
             try
             {
                 SystemStatus systemStatus = _db.SystemStatuses.Where(ss => ss.NormalizedStatus == status.ToUpper() && ss.EntityTemplateId == entityTemplateId).FirstOrDefault();
                 if (systemStatus == null && createIfNotExist)
                 {
-                    systemStatus = new SystemStatus() { Status = status, NormalizedStatus = status.ToUpper(), Id = Guid.NewGuid(), EntityTemplateId = entityTemplateId };
+                    systemStatus = new SystemStatus() { Status = status, NormalizedStatus = status.ToUpper(), Id = Guid.NewGuid(), EntityTemplateId = entityTemplateId, IsEditable = isEditable };
                     _db.SystemStatuses.Add(systemStatus);
                     _db.SaveChanges();
                 }

@@ -11,7 +11,7 @@ namespace Catfish.Services
     {
         IList<ItemTemplate> GetItemTemplates(ClaimsPrincipal user);
         EntityTemplate GetTemplate(Guid? templateId);
-        SystemStatus GetStatus(Guid entityTemplateId, string status, bool createIfNotExist);
+        SystemStatus GetSystemStatus(Guid entityTemplateId, string status);
         EntityTemplate GetTemplate(Guid? templateId, ClaimsPrincipal user);
     }
 }

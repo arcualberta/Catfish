@@ -1,7 +1,12 @@
 ﻿@page "/items/{id:Guid}"
 @model Catfish.Pages.ItemDetailsModel
+@using Catfish.Models.Blocks
 @{
     var item = Model.Item;
+
+    var formItems = item.GetRootDataItem(false);
+
+    
 }
 
 @*Specify the status of the submission, followed by the last updated date*@
@@ -11,13 +16,17 @@
 
 @*
     Display the contents of all associated data items, which are identified by is-rro=false.
-       
+
 *@
-@{ 
+@{
     var associatedItems = item.DataContainer
-        .Where(di => di.IsRoot = false)
-        .OrderByDescending(di => di.Created)
-        .ToList();
+.Where(di => di.IsRoot = false)
+.OrderByDescending(di => di.Created)
+.ToList();
 }
 
-@*Display each associated item in a separate element like a bootstrap panel.*@
+    <div class="submission-form-block">
+        @Html.DisplayFor(model => formItems, formItems.GetType().ToString())
+    </div>
+
+        @*Display each associated item in a separate element like a bootstrap panel.*@
