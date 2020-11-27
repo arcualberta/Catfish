@@ -242,5 +242,15 @@ namespace Catfish.Core.Models.Contents
             }
             return null;
         }
+
+        public string GetValues(Guid id, string separator, string lang = null)
+        {
+            IValueField valField = Fields
+                .Where(f => typeof(IValueField).IsAssignableFrom(f.GetType()) && f.Id == id)
+                .Select(f => f as IValueField)
+                .FirstOrDefault();
+
+            return valField == null ? null : valField.GetValues(separator, lang);
+        }
     }
 }

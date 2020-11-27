@@ -3,7 +3,7 @@
 @using Catfish.Core.Authorization.Requirements;
 @using Microsoft.AspNetCore.Authorization;
 @using Catfish.Core.Models;
-
+@using Catfish.Core.Models.Contents.Fields; 
 
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
@@ -12,16 +12,11 @@
 @{
     var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
     var collectionId = string.IsNullOrEmpty(Model.SelectedCollection) ? null as Guid? : Guid.Parse(Model.SelectedCollection);
-    IList<Item> itemList = _submissionService.GetSubmissionList(entityTemplateId, collectionId);
 
-
-    bool printTitle = true;
-    
     var template = _entityTemplateService.GetTemplate(entityTemplateId);
-
 }
 @if ((await _authorizationService.AuthorizeAsync(User, template
-              , new List<IAuthorizationRequirement>
+           , new List<IAuthorizationRequirement>
 () { TemplateOperations.Read }))
 .Succeeded)
 {
@@ -33,54 +28,69 @@
         <button id="itemListBtnFilter" class="btn btn-default btn-primary" style="margin-top:30px; height:fit-content;" value="Filter"><span class="fa fa-filter" style="padding-right:5px;"></span>Filter </button>
     </div>
 
-
-
-
-    <button id="downloadCsvFile" class="btn btn-default btn-primary" onclick="generateCSV('Items_@DateTime.Now.ToShortDateString()','itemListBlockTable' )"><span class="fa fa-download" style="padding-right:5px;"></span>Download CSV</button>
+    IList<Item> itemList = _submissionService.GetSubmissionList(entityTemplateId, collectionId);
     if (itemList.Count > 0)
     {
+        //Selecting sub set of fields that can hold user-input values
+        var userInputFields = itemList[0].GetRootDataItem(false).Fields
+                .Where(f => typeof(IValueField).IsAssignableFrom(f.GetType()))
+                .Select(f => f as IValueField)
+                .ToList();
+        var fieldNames = userInputFields.Select(f => (f as BaseField).Name.GetConcatenatedContent(" | ")).ToList();
+        var fieldIds = userInputFields.Select(f => (f as BaseField).Id).ToList();
+
+        <button id="downloadCsvFile" class="btn btn-default btn-primary" onclick="generateCSV('Items_@DateTime.Now.ToShortDateString()','itemListBlockTable' )"><span class="fa fa-download" style="padding-right:5px;"></span>Download CSV</button>
+       
         <table class="table table-stripe table-border" id="itemListBlockTable">
-            <tr class="tblHeader">
-                @foreach (Item item in itemList)
-                {
-                    var allFields = _submissionService.GetAllField(item.Data.ToString());
-                    //table's header
-                    if (printTitle)
+            <thead class="thead-dark">
+                <tr class="tblHeader">
+                    <th>#</th>
+                    @foreach (var fieldName in fieldNames)
                     {
-                        foreach (var field in allFields)
-                        {
-                            <th> @field.FieldName </th>
-                        }
-                        printTitle = false;
-                        <th> Submitted </th>
-                        <th> Status </th>
-                        <th>Actions</th>
-                    @:</tr>
-                }
-                <tr class="tblRowContent">
-                    @foreach (var field in allFields)
-                    {
-                        <td> @field.FieldValue </td>
+                        <th>@fieldName</th>
                     }
-
-
-                    <td> @item.Created </td>
-                    <td> @_submissionService.GetStatus(item.StatusId) </td>
-
-            @{
-                string viewLink = string.Format("<a href='/items/{0}'>view</a>", item.Id);
-                string editLink = string.Format("<a href='/items/edit/{0}'>edit</a>", item.Id);
-                <td>@Html.Raw(viewLink) | @Html.Raw(editLink)</td>
-            }
+                    <th>Created</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
-            }
-            </table>
-        }
+            </thead>
+            <tbody>
+                @{
+                    int count = 0;
+                    foreach (Item item in itemList)
+                    {
+                        ++count;
+                        @:<tr>
+                            <td>@count</td>
+                            var rootSubmission = item.GetRootDataItem(false);
+                            foreach (var id in fieldIds)
+                            {
+                                <td>@rootSubmission.GetValues(id, " | ")</td>
+                            }
+                            
+                            <td>@item.Created</td>
+                            var status = item.Status == null ? null : item.Status.NormalizedStatus;
+                            <td>@status</td>
+
+                            string viewLink = string.Format("<a href='/items/{0}'>view</a>", item.Id);
+                            string editLink = string.Format("<a href='/items/edit/{0}'>edit</a>", item.Id);
+                            <td>@Html.Raw(viewLink) | @Html.Raw(editLink)</td>
+
+                        @:</tr>
+                    }
+                }
+            </tbody>
+        </table>
     }
     else
     {
-        <div class="alert alert-warning">Sorry, you have not authorized to view this page.</div>
+        <div class="alert alert-info">No data found.</div>
     }
+}
+else
+{
+    <div class="alert alert-warning">Authorization failed.</div>
+}
 
 <script>
     $("#itemListBtnFilter").click(function () {

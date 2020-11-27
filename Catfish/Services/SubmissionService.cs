@@ -143,10 +143,14 @@ namespace Catfish.Services
             IList<Item> itemList = new List<Item>();
             try
             {
-                var query = _db.Items.Include(i=>i.Status).Where(i => i.TemplateId == templateId);
+                var query = _db.Items
+                    .Include(i => i.Status)
+                    .Where(i => i.TemplateId == templateId);
 
                 if (collectionId != null)
                     query = query.Where(i => i.PrimaryCollectionId == collectionId);
+
+                query = query.OrderBy(i => i.Created);
 
                 itemList = query.ToList();
             }
