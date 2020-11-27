@@ -23,7 +23,7 @@ Vue.component('vue-carousel', {
     },
     template:
         `<div>
-            <div :id="this.model.Id" class="carousel slide" data-ride="carousel" v-bind:style="{'height': height + 'px'}">
+            <div :id="this.model.Id" class="carousel slide" data-ride="carousel">
                 <ol class="carousel-indicators">
                     <li v-for="(item,index) in this.model.Items" :data-target="elementId" :data-slide-to="index" :class="{'active': index === 0}"></li>
                 </ol>
@@ -31,19 +31,21 @@ Vue.component('vue-carousel', {
                 <div v-for="(item,index) in this.model.Items" class="carousel-item" :class="{'active': index === 0}">
 
                 <div class="flex-carousel-contents" :class="{'image-comes-second': !item.ImageComesFirst.Value}">    
-                  <div v-bind:style="{ 'background-image': 'url(' + item.Body.Media.PublicUrl.replace(/^~/, '') + ')', 'width': width + 'px' }" 
+                  <div v-bind:style="{ 'background-image': 'url(' + item.Body.Media.PublicUrl.replace(/^~/, '') + ')', 'height': height + 'px','width': width + 'px' }" 
                   class="d-block image-in-carousel" alt="...">
                   </div>
                   <div class="text-container">
-                    <h2 class="title-text">
+                    <div class="inner-text-container">
+                    <h1 class="title-text" v-bind:style="{'width': width + 'px'}">
                         {{item.Title.Value}}
-                    </h2>
-                    <h5>
+                    </h1>
+                    <h4 v-bind:style="{'width': width + 'px'}">
                         {{item.Description.Value}}
-                    </h5>
+                    </h4>
                     <a v-if="item.LinkText.Value" role="button" class="btn btn-primary" :href="item.LinkUrl.Value">
                         {{item.LinkText.Value}}
                     </a>
+                  </div>
                   </div>
                    </div>
 

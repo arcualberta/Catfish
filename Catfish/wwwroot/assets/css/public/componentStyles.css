@@ -186,19 +186,22 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-    /*flex: 1;*/
     flex-shrink:0;
 }
 
 .carousel-inner .text-container {
-    /*flex: 1;*/
     display: flex;
     flex-direction: column;
-    align-items: center;
+    /*align-items: center;*/
     flex-grow:1;
+    justify-content: center;
 }
 
-.carousel-inner .text-container .title-text {
-    position: absolute;
-    top: 0;
+.carousel-inner .inner-text-container {
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    height: 100%;
+    padding: 25px;
+    align-items:flex-start;
 }
