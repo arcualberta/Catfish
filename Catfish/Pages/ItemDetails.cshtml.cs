@@ -13,6 +13,8 @@ namespace Catfish.Pages
         private readonly AppDbContext _db;
 
         public Item Item { get; set; }
+        public string CurrentStatus { get; set; }
+
         public ItemDetailsModel(AppDbContext db)
         {
             _db = db;
