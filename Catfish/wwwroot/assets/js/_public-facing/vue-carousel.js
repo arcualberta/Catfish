@@ -11,18 +11,43 @@ Vue.component('vue-carousel', {
         return {
             elementId: "#" + this.model.Id,
             width: this.model.Width.Value !== null && this.model.Width.Value.length > 0 ? this.model.Width.Value : "1200",
-            hieght: this.model.Height.Value !== null && this.model.Height.Value.length > 0 ? this.model.Height.Value : "400"
+            height: this.model.Height.Value !== null && this.model.Height.Value.length > 0 ? this.model.Height.Value : "400"
         }
+    },
+    mounted() {
+        console.log(this.model);
+
+        $('.carousel').carousel({
+            interval: 20000000
+        })
     },
     template:
         `<div>
-            <div :id="this.model.Id" class="carousel slide" data-ride="carousel">
-              <ol class="carousel-indicators">
-                <li v-for="(item,index) in this.model.Items" :data-target="elementId" :data-slide-to="index" :class="{'active': index === 0}"></li>
-              </ol>
-              <div class="carousel-inner">
+            <div :id="this.model.Id" class="carousel slide" data-ride="carousel" v-bind:style="{'height': height + 'px'}">
+                <ol class="carousel-indicators">
+                    <li v-for="(item,index) in this.model.Items" :data-target="elementId" :data-slide-to="index" :class="{'active': index === 0}"></li>
+                </ol>
+            <div class="carousel-inner">
                 <div v-for="(item,index) in this.model.Items" class="carousel-item" :class="{'active': index === 0}">
-                  <img :width="width" :height="hieght" :src="item.Body.Media.PublicUrl.replace(/^~/, '')" class="d-block w-100" alt="...">
+
+                <div class="flex-carousel-contents">    
+                  <div v-bind:style="{ 'background-image': 'url(' + item.Body.Media.PublicUrl.replace(/^~/, '') + ')', 'flex': '1 1 0' + width + 'px' }" 
+                  class="d-block image-in-carousel" alt="...">
+                  </div>
+                  <div class="text-container">
+                    <h2 class="title-text">
+                        {{item.Title.Value}}
+                    </h2>
+                    <h5>
+                        {{item.Description.Value}}
+                    </h5>
+                    <a v-if="item.LinkText.Value" role="button" class="btn btn-primary" :href="item.LinkUrl.Value">
+                        {{item.LinkText.Value}}
+                    </a>
+                  </div>
+                   </div>
+
+
                 </div>
               </div>
               <a class="carousel-control-prev" :href="elementId" role="button" data-slide="prev">

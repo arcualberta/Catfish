@@ -13,10 +13,7 @@ namespace Catfish.Models.Blocks
     [BlockItemType(Type = typeof(ExtendedImageBlock))]
     public class VueCarousel : VueComponentGroup
     {
-        //public SelectField<ImageAspect> Aspect { get; set; } = new SelectField<ImageAspect>();
-        //public StringField Title { get; set; }
-        //public StringField Description { get; set; }
-        //public StringField LinkUrl { get; set; }
-        //public StringField LinkText { get; set; }
+        public StringField Width { get; set; }
+        public StringField Height { get; set; }
     }
 }
