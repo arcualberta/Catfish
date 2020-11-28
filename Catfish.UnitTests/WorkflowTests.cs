@@ -39,7 +39,7 @@ namespace Catfish.UnitTests
             var options = field.Options;
         }
 
-
+/*
         [Test]
         public void ContractLetterWorkflowBuildTest()
         {
@@ -138,6 +138,7 @@ namespace Catfish.UnitTests
             //Save the template to a file
             template.Data.Save("..\\..\\..\\..\\Examples\\ContractLetterWorkflow.xml");
         }
+*/
 
         [Test]
         public void CalendarManagementSystemWorkflowBuildTest()
@@ -321,9 +322,9 @@ namespace Catfish.UnitTests
             postActionSubmit.AddTriggerRefs("1", ownerSubmissionNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
             //Defining authorizatios
-            startSubmissionAction.AddAuthorizedRole(departmentAdmin.Id);
-            startSubmissionAction.AddAuthorizedDomain("@ualberta.ca");
-            startSubmissionAction.AddAuthorizedDomain("@ucalgary.ca");
+            startSubmissionAction.AddAuthorizedRole(emptyState.Id, departmentAdmin.Id);
+            startSubmissionAction.AddAuthorizedDomain(emptyState.Id, "@ualberta.ca");
+            startSubmissionAction.AddAuthorizedDomain(emptyState.Id, "@ucalgary.ca");
 
             // Edit submission related workflow items
             //Defining actions
@@ -380,7 +381,7 @@ namespace Catfish.UnitTests
 
 
             //Defining authorizatios
-            editSubmissionAction.AddAuthorizedRole(departmentAdmin.Id);
+            RoleReference roleRef = editSubmissionAction.AddAuthorizedRole(savedState.Id, departmentAdmin.Id);
 
 
             // Delete submission related workflow items
@@ -465,7 +466,7 @@ namespace Catfish.UnitTests
             sendForRevisionSubmissionAction.AddStateReferances(gfcRevisionCompletedState.Id);
 
             //Defining authorizatios
-            sendForRevisionSubmissionAction.AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.AddAuthorizedRole(submittedState.Id, centralAdminRole.Id);
 
             // Revision request related workflow items
             //Defining actions
@@ -525,10 +526,11 @@ namespace Catfish.UnitTests
             changeStateAction.AddStateReferances(aacApprovedState.Id);
             changeStateAction.AddStateReferances(aecApprovedState.Id);
             changeStateAction.AddStateReferances(afcApprovedState.Id);
+
             changeStateAction.AddStateReferances(gfcApprovedState.Id);
 
             //Defining authorizatios
-            changeStateAction.AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.AddAuthorizedRole(submittedState.Id, centralAdminRole.Id);
 
             // Calender request move to draft related workflow items
             //Defining actions
@@ -571,7 +573,7 @@ namespace Catfish.UnitTests
             moveToDraftAction.AddStateReferances(moveToDraftErrorState.Id);
 
             //Defining authorizatios
-            moveToDraftAction.AddAuthorizedRole(centralAdminRole.Id);
+            moveToDraftAction.AddAuthorizedRole(gfcApprovedState.Id, centralAdminRole.Id);
 
             auth.EnsureUserRoles(workflow.GetWorkflowRoles());
             auth.EnsureGroups(workflow.GetWorkflowGroups(), template.Id);
@@ -712,7 +714,7 @@ namespace Catfish.UnitTests
 
 
             //Defining authorizatios
-            editSubmissionAction.AddAuthorizedRole(centralAdminRole.Id);
+            editSubmissionAction.AddAuthorizedRole(submittedState.Id, centralAdminRole.Id);
            // editSubmissionAction.AddAuthorizedRole(supervisorRole.Id);
 
             // Delete submission related workflow items
@@ -735,7 +737,7 @@ namespace Catfish.UnitTests
             GetAction readSubmissionAction = workflow.AddAction("List", "Read", "List");
            // GetAction readSubmissionAction = workflow.AddAction("List", nameof(TemplateOperations.Read), "List");
             readSubmissionAction.Access = GetAction.eAccess.Restricted;
-            readSubmissionAction.AddAuthorizedRole(centralAdminRole.Id);
+            readSubmissionAction.AddAuthorizedRole(submittedState.Id, centralAdminRole.Id);
 
             db.SaveChanges();
 
@@ -865,7 +867,7 @@ namespace Catfish.UnitTests
 
             //Defining authorizatios
             // startSubmissionAction.AddAuthorizedRole(supervisorRole.Id);
-            startSubmissionAction.AddAuthorizedDomain("@ualberta.ca");
+            startSubmissionAction.AddAuthorizedDomain(emptyState.Id, "@ualberta.ca");
 
 
             // Edit submission related workflow items
@@ -900,8 +902,8 @@ namespace Catfish.UnitTests
 
 
             //Defining authorizatios
-            editSubmissionAction.AddAuthorizedRole(centralAdminRole.Id);
-            editSubmissionAction.AddAuthorizedRole(supervisorRole.Id);
+            editSubmissionAction.AddAuthorizedRole(submittedState.Id, centralAdminRole.Id);
+            editSubmissionAction.AddAuthorizedRole(savedState.Id, supervisorRole.Id);
 
             // Delete submission related workflow items
             //Defining actions

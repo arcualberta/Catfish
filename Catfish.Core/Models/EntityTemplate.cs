@@ -34,7 +34,7 @@ namespace Catfish.Core.Models
                     else
                     {
                         var domains = Workflow.Actions.Where(a => a.Function == nameof(TemplateOperations.Instantiate))
-                                                      .SelectMany(a => a.AuthorizedDomains)
+                                                      .SelectMany(a => a.States.SelectMany(s => s.AuthorizedDomains))
                                                       .Select(d => d.Value)
                                                       .ToList();
 

@@ -57,8 +57,9 @@ namespace Catfish.Core.Models
             get => GetDateTimeAttribute("updated");
             set => Data.SetAttributeValue("updated", value);
         }
-
-        //[NotMapped]
+        
+        [NotMapped]
+        public EntityTemplate Template { get; set; }
         public Guid? TemplateId
         {
             get => GetGuidAttribute("template-id");

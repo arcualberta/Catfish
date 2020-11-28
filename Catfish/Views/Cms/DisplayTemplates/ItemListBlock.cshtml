@@ -20,9 +20,7 @@
     var template = _entityTemplateService.GetTemplate(entityTemplateId);
 
 }
-@if ((await _authorizationService.AuthorizeAsync(User, template
-              , new List<IAuthorizationRequirement>
-() { TemplateOperations.Read }))
+@if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.ListInstances }))
 .Succeeded)
 {
     <div class="row col-md-12">
