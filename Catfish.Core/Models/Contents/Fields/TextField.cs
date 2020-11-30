@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public class TextField : BaseField
+    public class TextField : BaseField, IValueField
     {
         public static readonly string ValuesTag = "values";
         public TextField() { DisplayLabel = "Short Text"; }
@@ -72,5 +72,21 @@ namespace Catfish.Core.Models.Contents.Fields
                 }
             }
         }
+
+        public IEnumerable<Text> GetValues(string lang = null)
+        {
+            var vals = Values.SelectMany(val => val.Values);
+            if (!string.IsNullOrEmpty(lang))
+                vals = vals.Where(v => v.Language == lang);
+
+            return vals;
+        }
+
+        public string GetValues(string separator, string lang = null)
+        {
+            IEnumerable<Text> texts = GetValues(lang);
+            return string.Join(separator, texts.Select(txt => txt.Value));
+        }
+
     }
 }

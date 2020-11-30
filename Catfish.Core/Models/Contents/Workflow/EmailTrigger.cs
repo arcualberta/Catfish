@@ -100,7 +100,8 @@ namespace Catfish.Core.Models.Contents.Workflow
             var emailTemplateName = template.MetadataSets
                                     .Where(ms => ms.Id == emailReferanceId)
                                     .FirstOrDefault().Name.Values
-                                    .Select(ms => ms.Value).FirstOrDefault();
+                                    .Select(ms => ms.Value)
+                                    .FirstOrDefault();
 
             //get email template using workflow service GetEmailTemplate. Inhere need to pass email template.
             EmailTemplate emailTemplate = workflowService.GetEmailTemplate(emailTemplateName, false);

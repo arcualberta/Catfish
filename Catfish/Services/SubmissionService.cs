@@ -143,10 +143,14 @@ namespace Catfish.Services
             IList<Item> itemList = new List<Item>();
             try
             {
-                var query = _db.Items.Include(i=>i.Status).Where(i => i.TemplateId == templateId);
+                var query = _db.Items
+                    .Include(i => i.Status)
+                    .Where(i => i.TemplateId == templateId);
 
                 if (collectionId != null)
                     query = query.Where(i => i.PrimaryCollectionId == collectionId);
+
+                query = query.OrderBy(i => i.Created);
 
                 itemList = query.ToList();
             }
@@ -213,9 +217,10 @@ namespace Catfish.Services
 
                 //When we instantantiate an instance from the template, we do not need to clone metadata sets
                 Item newItem = template.Instantiate<Item>();
-                newItem.StatusId = _entityTemplateService.GetStatus(entityTemplateId, actionButton, true).Id;
+                newItem.StatusId = _entityTemplateService.GetSystemStatus(entityTemplateId, actionButton).Id;
                 newItem.PrimaryCollectionId = collectionId;
                 newItem.TemplateId = entityTemplateId;
+                newItem.UserEmail = _workflowService.GetLoggedUserEmail();
 
                 DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
                 newDataItem.UpdateFieldValues(value);
@@ -231,29 +236,6 @@ namespace Catfish.Services
             }
             
         }
-
-        /*
-        public bool SendEmail(EmailTemplate emailTemplate, string recipient)
-        {
-            try
-            {
-                Email email = new Email();
-                email.UserName = _authorizationService.GetLoggedUserEmail();
-                email.Subject = emailTemplate.GetSubject();
-                email.FromEmail = _config.GetSmtpEmail();
-                email.RecipientEmail = recipient;
-                email.Body = emailTemplate.GetBody();
-                _emailService.SendEmail(email);
-                 return true;
-            }
-            catch (Exception ex)
-            {
-                _errorLog.Log(new Error(ex));
-                return false;
-            }
-            
-        }
-        */
 
         /// <summary>
         /// This method used to execute all triggers in a given workflow. need to pass the entity template, function and group.
@@ -280,42 +262,6 @@ namespace Catfish.Services
                 {
                     Trigger selectedTrigger = template.Workflow.Triggers.Where(tr => tr.Id == triggerRef.RefId).FirstOrDefault();
                     triggerExecutionStatus &= selectedTrigger.Execute(template, triggerRef, _serviceProvider);
-
-/*
-                    //get email trigger from workflow triggers using trigger referance.
-                    EmailTrigger selectedTrigger = (EmailTrigger)template.Workflow.Triggers.Where(tr => tr.Id == triggerRef.RefId).FirstOrDefault();
-
-                    //get email template from selected workflow trigger.
-                    Guid emailReferanceId = selectedTrigger.Templates.Select(t => t.RefId).FirstOrDefault();
-
-                    //get email template name from metadate set.
-                    var emailTemplateName = template.MetadataSets
-                                            .Where(ms => ms.Id == emailReferanceId)
-                                            .FirstOrDefault().Name.Values
-                                            .Select(ms => ms.Value).FirstOrDefault();
-
-                    //get email template using workflow service GetEmailTemplate. Inhere need to pass email template.
-                    EmailTemplate emailTemplate = _workflowService.GetEmailTemplate(emailTemplateName, false);
-
-                    //get all recipient in the trigger.
-                    var recipients = selectedTrigger.Recipients.ToList();
-
-                    //add recipient to the content
-                    foreach(var recipient in recipients)
-                    {
-                        string emailRecipient;
-                        if (recipient.Owner)
-                        {
-                            emailRecipient = _authorizationService.GetLoggedUserEmail();
-                        }
-                        else
-                        {
-                            emailRecipient =  recipient.Email;
-                        }
-                        //send email using email service
-                        SendEmail(emailTemplate, emailRecipient);
-                    }
-*/
                 }
                 return triggerExecutionStatus;
             }

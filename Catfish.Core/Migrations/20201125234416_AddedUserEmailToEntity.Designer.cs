@@ -4,14 +4,16 @@ using Catfish.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Catfish.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201125234416_AddedUserEmailToEntity")]
+    partial class AddedUserEmailToEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,9 +190,6 @@ namespace Catfish.Core.Migrations
 
                     b.Property<Guid>("EntityTemplateId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsEditable")
-                        .HasColumnType("bit");
 
                     b.Property<string>("NormalizedStatus")
                         .HasColumnType("nvarchar(max)");

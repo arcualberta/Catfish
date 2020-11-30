@@ -89,26 +89,13 @@ namespace Catfish.Services
             }
         }
 
-        public SystemStatus GetStatus(Guid entityTemplateId, string status, bool createIfNotExist)
+        public SystemStatus GetSystemStatus(Guid entityTemplateId, string status)
         {
             try
             {
                 SystemStatus sysStatus =  _db.SystemStatuses
                     .Where(ss => ss.NormalizedStatus == status.ToUpper() && ss.EntityTemplateId == entityTemplateId)
                     .FirstOrDefault();
-
-                if(sysStatus == null  && createIfNotExist)
-                {
-                    sysStatus = new SystemStatus()
-                    {
-                        EntityTemplateId = entityTemplateId,
-                        NormalizedStatus = status.ToUpper(),
-                        Status = status,
-                        Id = Guid.NewGuid()
-                    };
-                    _db.SystemStatuses.Add(sysStatus);
-                }
-
                 return sysStatus;
             }
             catch (Exception ex)
@@ -125,39 +112,45 @@ namespace Catfish.Services
                 EntityTemplate entityTemplate = null;
                 if (user != null)
                 {
-                    //Finding all groups where the user possess some role and then
-                    //getting all templates associated with those groups
-                    List<Guid> selectTemplateIds = new List<Guid>();
-                    
-                    var userIdStr = user.FindFirstValue(ClaimTypes.NameIdentifier);
-                    if (!string.IsNullOrEmpty(userIdStr))
+                    if (user.IsInRole("SysAdmin"))
                     {
-                        var userId = Guid.Parse(userIdStr);
-                        var groupIds = _db.UserGroupRoles
-                            .Where(ugr => ugr.UserId == userId)
-                            .Select(ugr => ugr.GroupRole.GroupId)
-                            .Distinct()
-                            .ToList();
-                        var templateIds = _db.GroupTemplates
-                            .Where(gt => groupIds.Contains(gt.GroupId))
-                            .Select(gt => gt.EntityTemplateId)
-                            .Distinct();
-                        selectTemplateIds.AddRange(templateIds);
-                        if(selectTemplateIds.Count > 0)
+                        entityTemplate = _db.EntityTemplates.Where(et => et.Id == templateId).FirstOrDefault();
+                    }
+                    else
+                    {
+                        //Finding all groups where the user possess some role and then
+                        //getting all templates associated with those groups
+                        List<Guid> selectTemplateIds = new List<Guid>();
+
+                        var userIdStr = user.FindFirstValue(ClaimTypes.NameIdentifier);
+                        if (!string.IsNullOrEmpty(userIdStr))
                         {
-                            foreach(Guid selectedId in selectTemplateIds)
+                            var userId = Guid.Parse(userIdStr);
+                            var groupIds = _db.UserGroupRoles
+                                .Where(ugr => ugr.UserId == userId)
+                                .Select(ugr => ugr.GroupRole.GroupId)
+                                .Distinct()
+                                .ToList();
+                            var templateIds = _db.GroupTemplates
+                                .Where(gt => groupIds.Contains(gt.GroupId))
+                                .Select(gt => gt.EntityTemplateId)
+                                .Distinct();
+                            selectTemplateIds.AddRange(templateIds);
+                            if (selectTemplateIds.Count > 0)
                             {
-                                if(selectedId == templateId)
+                                foreach (Guid selectedId in selectTemplateIds)
                                 {
-                                    entityTemplate = _db.EntityTemplates.Where(et => et.Id == templateId).FirstOrDefault();
-                                    break;
+                                    if (selectedId == templateId)
+                                    {
+                                        entityTemplate = _db.EntityTemplates.Where(et => et.Id == templateId).FirstOrDefault();
+                                        break;
+                                    }
                                 }
                             }
+
+
                         }
-
-                       
                     }
-
                 }
                 return entityTemplate;
             }

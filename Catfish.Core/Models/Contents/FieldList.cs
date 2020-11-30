@@ -19,6 +19,5 @@ namespace Catfish.Core.Models.Contents
         {
 
         }
-
     }
 }

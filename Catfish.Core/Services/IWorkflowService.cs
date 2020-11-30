@@ -24,7 +24,7 @@ namespace Catfish.Core.Services
 
         public EntityTemplate GetTemplate();
 
-        public string GetStatus(Guid templateId, string status, bool createIfNotExist);
+        public string GetStatus(Guid templateId, string status, bool createIfNotExist, bool isEditable);
 
         public List<PostAction> GetPostActions(EntityTemplate entityTemplate, string function, string group);
 
