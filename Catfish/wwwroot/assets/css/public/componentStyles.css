@@ -192,16 +192,7 @@
 .carousel-inner .text-container {
     display: flex;
     flex-direction: column;
-    /*align-items: center;*/
-    flex-grow:1;
-    justify-content: center;
-}
-
-.carousel-inner .inner-text-container {
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */
-    height: 100%;
+    flex: 1;
     padding: 25px;
-    align-items:flex-start;
+    align-items: flex-start;
 }

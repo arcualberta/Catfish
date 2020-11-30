@@ -35,17 +35,15 @@ Vue.component('vue-carousel', {
                   class="d-block image-in-carousel" alt="...">
                   </div>
                   <div class="text-container">
-                    <div class="inner-text-container">
-                    <h1 class="title-text" v-bind:style="{'width': width + 'px'}">
+                    <h1 class="title-text">
                         {{item.Title.Value}}
                     </h1>
-                    <h4 v-bind:style="{'width': width + 'px'}">
+                    <h4>
                         {{item.Description.Value}}
                     </h4>
                     <a v-if="item.LinkText.Value" role="button" class="btn btn-primary" :href="item.LinkUrl.Value">
                         {{item.LinkText.Value}}
                     </a>
-                  </div>
                   </div>
                    </div>
 
