@@ -196,3 +196,11 @@
     padding: 25px;
     align-items: flex-start;
 }
+
+.time-grow {
+    transition: width 5s ease-in-out;
+}
+
+.progress {
+    height: 3px;
+}

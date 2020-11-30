@@ -11,15 +11,31 @@ Vue.component('vue-carousel', {
         return {
             elementId: "#" + this.model.Id,
             width: this.model.Width.Value !== null && this.model.Width.Value.length > 0 ? this.model.Width.Value : "1200",
-            height: this.model.Height.Value !== null && this.model.Height.Value.length > 0 ? this.model.Height.Value : "400"
+            height: this.model.Height.Value !== null && this.model.Height.Value.length > 0 ? this.model.Height.Value : "400",
+            timeValue: 0,
         }
     },
     mounted() {
+
         console.log(this.model);
 
-        $('.carousel').carousel({
-            interval: 20000000
-        })
+        $('carouel').ready(() => { this.timeValue = 100;});
+
+        $('.carousel').on('slide.bs.carousel', () => { //transition: width 5s ease-in-out;
+            if (this.timeValue == 100) {
+                this.timeValue = 0;
+                console.log('set to zero');
+            } else {
+                this.timeValue = 100;
+                console.log('set to 100');
+            }
+            //this.timeValue === 100? 0 : 100;
+        });
+
+        $('.carousel').on('slid.bs.carousel', () => {
+            console.log("fired this");
+            this.timeValue = 100;
+        });
     },
     template:
         `<div>
@@ -58,6 +74,9 @@ Vue.component('vue-carousel', {
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="sr-only">Next</span>
               </a>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" :class="{'time-grow': timeValue == 100 }" role="progressbar" v-bind:style="{'width': timeValue + '%' }" :aria-valuenow="timeValue" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
         </div>`
 })
