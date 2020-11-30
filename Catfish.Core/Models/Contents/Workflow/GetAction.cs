@@ -92,16 +92,23 @@ namespace Catfish.Core.Models.Contents.Workflow
             PostActions.Add(newPostAction);
             return newPostAction;
         }
-        public RoleReference AddAuthorizedRole(Guid stateId, Guid roleRefId)
+
+        public StateRef GetStateReference(Guid stateId, bool createIfNotExist)
         {
             StateRef stateRef = States.Where(sr => sr.RefId == stateId).FirstOrDefault();
-            if(stateRef == null)
+            if (stateRef == null && createIfNotExist)
                 stateRef = AddStateReferances(stateId);
+            return stateRef;
+        }
 
-            if (stateRef.AuthorizedRoles.Where(roleRef => roleRef.RefId == roleRefId).Any())
+        public RoleReference AddAuthorizedRole(Guid stateId, Guid roleId)
+        {
+            StateRef stateRef = GetStateReference(stateId, true);
+
+            if (stateRef.AuthorizedRoles.Where(roleRef => roleRef.RefId == roleId).Any())
                 throw new Exception(string.Format("Authorization already exists."));
 
-            RoleReference newAuthorization = new RoleReference() { RefId = roleRefId };
+            RoleReference newAuthorization = new RoleReference() { RefId = roleId };
             stateRef.AuthorizedRoles.Add(newAuthorization);
             return newAuthorization;
         }

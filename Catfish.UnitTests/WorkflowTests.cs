@@ -299,7 +299,10 @@ namespace Catfish.UnitTests
             MovedToDraftCalendarEmailTrigger.AddOwnerAsRecipient();
             MovedToDraftCalendarEmailTrigger.AddTemplate(moveToDraftCalendarNotification.Id, "Owner's moved to calendar notification");
 
+            // =======================================
             // start submission related workflow items
+            // =======================================
+           
             //Defining actions
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
 
@@ -326,7 +329,26 @@ namespace Catfish.UnitTests
             startSubmissionAction.AddAuthorizedDomain(emptyState.Id, "@ualberta.ca");
             startSubmissionAction.AddAuthorizedDomain(emptyState.Id, "@ucalgary.ca");
 
+
+            // ================================================
+            // List submission-instances related workflow items
+            // ================================================
+
+            //Defining actions
+            GetAction listSubmissionAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+
+            //Defining states and their authorizatios
+            listSubmissionAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(savedState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+
+
             // Edit submission related workflow items
+            // =======================================
             //Defining actions
             GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
 

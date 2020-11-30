@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace Catfish.Core.Models.Contents.Workflow
 {
@@ -23,7 +24,6 @@ namespace Catfish.Core.Models.Contents.Workflow
 
         }
 
-
         public override void Initialize(eGuidOption guidOption)
         {
             base.Initialize(guidOption);
@@ -33,5 +33,96 @@ namespace Catfish.Core.Models.Contents.Workflow
             AuthorizedRoles = new XmlModelList<RoleReference>(authorizationsListDefinition, true, RoleReference.TagName);
             AuthorizedDomains = new XmlModelList<EmailDomain>(authorizationsListDefinition, true, EmailDomain.TagName);
         }
+
+        #region Role-based authorization
+        public StateRef AddAuthorizedRole(Guid roleId)
+        {
+            if (AuthorizedRoles.Where(roleRef => roleRef.RefId == roleId).Any())
+                throw new Exception(string.Format("Authorization is already granted."));
+
+            RoleReference newAuthorization = new RoleReference() { RefId = roleId };
+            AuthorizedRoles.Add(newAuthorization);
+
+            return this;
+        }
+
+        public StateRef RemoveAuthorizedRole(Guid roleId)
+        {
+            var roles = AuthorizedRoles.Where(roleRef => roleRef.RefId == roleId).ToList();
+            foreach(var role in roles)
+                AuthorizedRoles.Remove(role);
+
+            return this;
+        }
+
+        public bool IsAuthorizedByRole(Guid roleId)
+        {
+            return AuthorizedRoles.Where(roleRef => roleRef.RefId == roleId).Any();
+        }
+        #endregion
+
+        #region Domain-based authorization
+        public StateRef AddAuthorizedDomain(string domain)
+        {
+            if (AuthorizedDomains.Where(d => d.Value == domain).Any())
+                throw new Exception(string.Format("Authorization is already granted."));
+
+            EmailDomain d = new EmailDomain() { Value = domain };
+            AuthorizedDomains.Add(d);
+
+            return this;
+        }
+
+        public StateRef RemoveAuthorizedDomain(string domain)
+        {
+            var domains = AuthorizedDomains.Where(d => d.Value == domain).ToList();
+            foreach (var d in domains)
+                AuthorizedDomains.Remove(d);
+
+            return this;
+        }
+
+        public bool IsAuthorizedByDomain(string domain)
+        {
+            return AuthorizedDomains.Where(d => d.Value == domain).Any();
+        }
+        #endregion
+
+        #region Authorization by ownerhip
+        protected RoleReference GetOwnerRole()
+        {
+            return AuthorizedRoles
+                .Where(roleRef => roleRef.Data.Attribute(RoleReference.OwnerAttribute) != null)
+                .FirstOrDefault();
+        }
+        public StateRef AddOwnerAuthorization()
+        {
+            RoleReference ownerRoleRef = GetOwnerRole();
+
+            if (ownerRoleRef == null)
+                AuthorizedRoles.Add(new RoleReference() { Owner = true });
+            else
+                ownerRoleRef.Owner = true;
+
+            return this;
+        }
+
+        public StateRef RemoveOwnerAuthorization()
+        {
+            RoleReference ownerRoleRef = GetOwnerRole();
+
+            if (ownerRoleRef != null)
+                AuthorizedRoles.Remove(ownerRoleRef);
+
+            return this;
+        }
+
+        public bool IsOwnerAuthorized()
+        {
+            RoleReference ownerRoleRef = GetOwnerRole();
+            return ownerRoleRef != null ? ownerRoleRef.Owner : false;
+        }
+        #endregion
+
     }
 }
