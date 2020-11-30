@@ -198,7 +198,7 @@
 }
 
 .time-grow {
-    transition: width 5s ease-in-out;
+    transition: width 5s linear;
 }
 
 .progress {

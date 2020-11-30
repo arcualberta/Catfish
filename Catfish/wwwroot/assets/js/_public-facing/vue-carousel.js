@@ -19,21 +19,17 @@ Vue.component('vue-carousel', {
 
         console.log(this.model);
 
-        $('carouel').ready(() => { this.timeValue = 100;});
+        $('carousel').ready(() => { this.timeValue = 100;});
 
-        $('.carousel').on('slide.bs.carousel', () => { //transition: width 5s ease-in-out;
+        $('.carousel').on('slide.bs.carousel', () => { 
             if (this.timeValue == 100) {
                 this.timeValue = 0;
-                console.log('set to zero');
             } else {
                 this.timeValue = 100;
-                console.log('set to 100');
             }
-            //this.timeValue === 100? 0 : 100;
         });
 
         $('.carousel').on('slid.bs.carousel', () => {
-            console.log("fired this");
             this.timeValue = 100;
         });
     },
