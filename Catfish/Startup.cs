@@ -373,7 +373,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-categories.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-list.js");
-            App.Modules.Manager().Scripts.Add("~/assets/js/vue-carousel.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/vue-header.js");
 
         }
         private static void RegisterCustomBlocks()
@@ -394,6 +394,7 @@ namespace Catfish
             App.Blocks.Register<ControlledVocabularySearchBlock>();
             App.Blocks.Register<VueList>();
             App.Blocks.Register<VueCarousel>();
+            App.Blocks.Register<VueHeader>();
 
         }
         private static void RegisterCustomStyles()
