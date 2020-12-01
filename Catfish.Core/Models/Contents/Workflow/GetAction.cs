@@ -70,7 +70,7 @@ namespace Catfish.Core.Models.Contents.Workflow
 
             //Initializing the state list
             XElement stateListDefinition = GetElement("states", true);
-            States = new XmlModelList<StateRef>(stateListDefinition, true, "state-refs");           
+            States = new XmlModelList<StateRef>(stateListDefinition, true, "state-ref");           
         }
 
         public Param AddTemplate(Guid dataItemFormTemplateId, string exceptionMessage)

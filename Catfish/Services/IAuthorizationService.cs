@@ -1,8 +1,10 @@
 ﻿using Catfish.Core.Models;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Catfish.Services
@@ -50,5 +52,6 @@ namespace Catfish.Services
         User GetUserDetails(Guid id);
 
         Role GetRole(string roleName, bool createIfNotExist);
+
     }
 }

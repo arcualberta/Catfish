@@ -49,9 +49,9 @@ namespace Catfish.Core.Models.Contents.Workflow
 
         }
 
-        public State GetState(string stateValue)
+        public State GetState(Guid stateId)
         {
-            return States.Where(st => st.Value == stateValue).FirstOrDefault();
+            return States.Where(st => st.Id == stateId).FirstOrDefault();
         }
 
         public State AddState(string value, bool isEditable)

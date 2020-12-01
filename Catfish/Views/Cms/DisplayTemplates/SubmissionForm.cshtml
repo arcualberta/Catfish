@@ -47,7 +47,15 @@
                        id="group" name="group" type="hidden"
                        value="@group">
 
+                @if (Model.LinkToGroup.Value)
+                {
+                    var groups = _workflowService.GetApplicableGroups(User, TemplateOperations.Instantiate, template, null);
 
+                    foreach(var g in groups)
+                    {
+                        <div>@g.Name</div>
+                    }
+                }
                 @Html.EditorFor(model => Item, Item.GetType().ToString())
                 <div id="buttonLayer">
                     @{
