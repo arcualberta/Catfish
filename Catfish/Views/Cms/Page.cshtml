@@ -7,20 +7,6 @@
 @{
     ViewBag.Title = Model.Title;
 
-    var vueComponentNames = Model.Blocks
-        .Where(b => typeof(IVueComponent).IsAssignableFrom(b.GetType())) @*Selecting all blocks of type IVueConponent or its derived type.*@
-        .Select(b => (b as IVueComponent).Component) @*Selecting all those blocks as IVueConponent blocks and getting their names.*@
-        .Distinct()
-        .ToList();
-
-    if (vueComponentNames.Count > 0)
-    {
-        <script src="/assets/js/vue/vue-dev.js"></script>
-        foreach (string compName in vueComponentNames)
-        {
-            <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
-        }
-    }
 }
 
 <div class="main">
@@ -43,12 +29,12 @@
     </div>
 </div>
 
-@if (vueComponentNames.Count > 0)
+@*@if (vueComponentNames.Count > 0)
 {
     <script>
         new Vue({ el: '#blocks' })
     </script>
-}
+}*@
 
 @try
 {

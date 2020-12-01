@@ -72,6 +72,7 @@
   <ItemGroup>
     <Folder Include="Areas\Manager\assets\img\" />
     <Folder Include="Areas\Manager\Pages\Partial\DisplayTemplates\" />
+    <Folder Include="Views\Shared\Partial\VueComponents\" />
   </ItemGroup>
 
   <ItemGroup>
