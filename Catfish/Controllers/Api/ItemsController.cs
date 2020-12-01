@@ -97,12 +97,12 @@ namespace Catfish.Controllers.Api
 
         // POST api/<ItemController>
         [HttpPost]
-        public ApiResult Post([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] string actionButton,  [FromForm] string function,  [FromForm] string group, [FromForm] string status)
+        public ApiResult Post([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton,  [FromForm] string function,  [FromForm] string group, [FromForm] string status)
         {
             ApiResult result = new ApiResult();
             try
             {
-                Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, status);
+                Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, groupId, status);
                 _appDb.Items.Add(newItem);
                 _appDb.SaveChanges();
 

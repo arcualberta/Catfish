@@ -294,17 +294,26 @@ namespace Catfish.Core.Services
                 //Select the list of roles that are authorzed to perform the action specified by the requirement
                 var authorizedRoleIds = GetAuthorizedRoles(requirement, entityTemplate, instance);
 
-                //Select the subset of roles out of the authorizedRoles where the user belongs to.
-                var authorizedRoles = _piranhaDb.Roles.Where(r => authorizedRoleIds.Contains(r.Id)).ToList();
-                authorizedRoles = authorizedRoles.Where(r => user.IsInRole(r.Name)).ToList();
-                var selectedAuthorizedRoleIds = authorizedRoles.Select(r => r.Id).ToList();
-
-                //Select the list of groups where the user possesses this role
+                //Select the list of groups where the user possesses any of the authorized roles
                 Guid userId = Guid.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier));
                 var groupsWhereUserHoldAuthorizedRole = _db.UserGroupRoles
-                    .Where(ugr => ugr.UserId == userId && selectedAuthorizedRoleIds.Contains(ugr.GroupRole.RoleId))
+                    .Where(ugr => ugr.UserId == userId && authorizedRoleIds.Contains(ugr.GroupRole.RoleId))
                     .Select(ugr => ugr.GroupRole.Group)
                     .ToList();
+
+
+                //////Select the subset of roles out of the authorizedRoles where the user belongs to.
+                ////var authorizedRoles = _piranhaDb.Roles.Where(r => authorizedRoleIds.Contains(r.Id)).ToList();
+
+                //////TODO: Filter the roles based on the user-group-role associations
+                ////authorizedRoles = authorizedRoles.Where(r => user.IsInRole(r.Name)).ToList();
+                ////var selectedAuthorizedRoleIds = authorizedRoles.Select(r => r.Id).ToList();
+
+                //////Select the list of groups where the user possesses this role
+                ////var groupsWhereUserHoldAuthorizedRole = _db.UserGroupRoles
+                ////    .Where(ugr => ugr.UserId == userId && selectedAuthorizedRoleIds.Contains(ugr.GroupRole.RoleId))
+                ////    .Select(ugr => ugr.GroupRole.Group)
+                ////    .ToList();
 
 
                 //Select the subset of groups with which the entity template is associated with.

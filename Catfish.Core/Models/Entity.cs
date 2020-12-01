@@ -26,6 +26,15 @@ namespace Catfish.Core.Models
             set => Data.SetAttributeValue("id", value);
         }
 
+        public Guid? GroupId
+        {
+            get => Data.Attribute("group-id") == null || string.IsNullOrWhiteSpace(Data.Attribute("group-id").Value)
+                ? null as Guid?
+                : Guid.Parse(Data.Attribute("group-id").Value);
+
+            set => Data.SetAttributeValue("group-id", value);
+        }
+
         [JsonIgnore]
         [Column(TypeName = "xml")]
         public string Content

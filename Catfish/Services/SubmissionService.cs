@@ -207,7 +207,7 @@ namespace Catfish.Services
         /// <param name="collectionId"></param>
         /// <param name="actionButton"></param>
         /// <returns></returns>
-        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, string actionButton)
+        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, string actionButton)
         {
             try
             {
@@ -226,6 +226,9 @@ namespace Catfish.Services
                 newDataItem.UpdateFieldValues(value);
                 newItem.DataContainer.Add(newDataItem);
                 newDataItem.EntityId = newItem.Id;
+
+                if (groupId.HasValue)
+                    newItem.GroupId = groupId;
 
                 return newItem;
             }
