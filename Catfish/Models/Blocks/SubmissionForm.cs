@@ -34,17 +34,8 @@ namespace Catfish.Models.Blocks
 
         public TextField WorkflowGroup { get; set; }
 
-        public IList<Group> AvailableGroups { get; set; }
-        public TextField SelectedGroupIds { get; set; }
+        public CheckBoxField LinkToGroup { get; set; }
 
-        public void Init(AppDbContext db, IdentitySQLServerDb pdb, IGroupService srv, ErrorLog errorLog)
-        {
-            if (srv == null)
-                srv = new GroupService(db, pdb, errorLog);
-
-            AvailableGroups = srv.GetGroupList();
-        }
-
-
+        public StringField GroupSelectorLabel { get; set; }
     }
 }
