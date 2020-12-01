@@ -16,6 +16,15 @@ Vue.component("submission-form", {
             }
         },
 
+        data() {
+            return {
+                //api strings
+                selectedOptions: this.model.allowedKeywords
+                    .filter(item => item.selected)
+                    .map(item => item.label)
+            }
+        },
+
         getDDLItems: function () {
             return this.model.entities.collectionNames;
         }
