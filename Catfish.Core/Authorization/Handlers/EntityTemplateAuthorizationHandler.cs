@@ -1,6 +1,7 @@
 ﻿using Catfish.Core.Authorization.Requirements;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Workflow;
+using Catfish.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using System;
@@ -15,9 +16,11 @@ namespace Catfish.Core.Authorization.Handlers
         : AuthorizationHandler<OperationAuthorizationRequirement, Entity>
     {
         public readonly IAuthorizationHelper _authHelper;
-        public EntityTemplateAuthorizationHandler(IAuthorizationHelper authHelper)
+        public readonly IWorkflowService _workflowService;
+        public EntityTemplateAuthorizationHandler(IAuthorizationHelper authHelper, IWorkflowService workflowService)
         {
             _authHelper = authHelper;
+            _workflowService = workflowService;
         }
         protected override Task HandleRequirementAsync(
             AuthorizationHandlerContext context,
@@ -88,7 +91,8 @@ namespace Catfish.Core.Authorization.Handlers
 
                 //If the workflow action is authorized for users belong to a certain domains, then
                 //check whether the signed-in user's email belongs to one of those domains.
-                string currentUserEmail = context.User.FindFirstValue(ClaimTypes.Email);
+                //string currentUserEmail = context.User.FindFirstValue(ClaimTypes.Email);
+                string currentUserEmail = _workflowService.GetLoggedUserEmail();
                 if (workflowAction.IsAuthorizedByDomain(emptyState.Id, currentUserEmail))
                 {
                     context.Succeed(requirement);
