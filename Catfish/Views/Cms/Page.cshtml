@@ -5,7 +5,7 @@
 @inject ErrorLog _errorLog;
 
 @{
-    ViewBag.Title = Model == null?"": Model.Title;
+    ViewBag.Title = Model == null ? "" : Model.Title;
 
     var vueComponentNames = Model.Blocks
         .Where(b => typeof(IVueComponent).IsAssignableFrom(b.GetType())) @*Selecting all blocks of type IVueConponent or its derived type.*@
@@ -23,117 +23,95 @@
     }
 
     //check if it's set the publishing start/end date to make  the page contain available
-    bool pageAvailable = true;
-    string notAvailableMessage = string.Empty;
-    if (Model.PublishSettings.PublishedStart.Value != null)
+    DateTime? startDateTime = Model.PublishSettings.Start;
+    DateTime? endDateTime = Model.PublishSettings.End;
+    bool pageAvailable = (!startDateTime.HasValue || startDateTime.HasValue && startDateTime.Value <= DateTime.Now)
+        && (!endDateTime.HasValue || endDateTime.HasValue && endDateTime.Value > DateTime.Now);
+
+    if (!pageAvailable)
     {
-        notAvailableMessage = "This page content will be available from " + Model.PublishSettings.PublishedStart.Value;
-        //DateTime startDate = DateTime.Parse(Model.PublishSettings.PublishedStart.Value);
-        if (DateTime.Now >= Model.PublishSettings.PublishedStart.Value)
-        {
-            pageAvailable = true;
+        string message = string.IsNullOrWhiteSpace(Model.PublishSettings.Message.Value)
+                        ? "The page is unavailable."
+                        : Model.PublishSettings.Message.Value;
 
-            if (Model.PublishSettings.PublishedEnd.Value != null)
-            {
-                notAvailableMessage += "to " + Model.PublishSettings.PublishedEnd.Value + ".";
-                if (DateTime.Now <= Model.PublishSettings.PublishedEnd.Value)
-                {
-                    pageAvailable = true;
-                }
-                else
-                {
-                    pageAvailable = false;
-                }
-            }
-        }
-        else { pageAvailable = false; }
-
+        <div class="container alert alert-danger">@Html.Raw(message)</div>
     }
-
-    notAvailableMessage = Model.PublishSettings.CustomMessage.Value != null ? Model.PublishSettings.CustomMessage.Value : notAvailableMessage;
-    }
-@if (pageAvailable)
-{
-<div class="main">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-sm-12 page-body">
-                <h1>@Model.Title</h1>
-                <div id="blocks">
-                    @try
-                    {
-                        @Html.DisplayFor(m => m.Blocks)
-                    }
-                    catch (Exception ex)
-                    {
-                        _errorLog.Log(new Error(ex));
-                    }
+    else
+    {
+        <div class="main">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-sm-12 page-body">
+                        <h1>@Model.Title</h1>
+                        <div id="blocks">
+                            @try
+                            {
+                                @Html.DisplayFor(m => m.Blocks)
+                            }
+                            catch (Exception ex)
+                            {
+                                _errorLog.Log(new Error(ex));
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-if (vueComponentNames.Count > 0)
-{
-    <script>
-        new Vue({ el: '#blocks' })
-    </script>
-}
+        if (vueComponentNames.Count > 0)
+        {
+            <script>
+                new Vue({ el: '#blocks' })
+            </script>
+        }
 
-try
-{
-    if (Model.EnableComments)
-    {
-        <div id="comments" class="container comments">
-            if (Model.IsCommentsOpen)
+        try
+        {
+            if (Model.EnableComments)
             {
-                <div class="alert alert-comment mt-2 mb-5">
-                    <form action="@Model.Permalink/comment" method="post">
-                        @Html.AntiForgeryToken()
-                        @Html.Hidden("Id", Model.Id)
+                <div id="comments" class="container comments">
+                    if (Model.IsCommentsOpen)
+                    {
+                    <div class="alert alert-comment mt-2 mb-5">
+                        <form action="@Model.Permalink/comment" method="post">
+                            @Html.AntiForgeryToken()
+                            @Html.Hidden("Id", Model.Id)
 
-                        <h3 class="mb-3">Leave a comment</h3>
-                        <p class="mb-4">
-                            Please note that we won't show your email to others, or use it for sending
-                            unwanted emails.
-                        </p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <input name="CommentAuthor" type="text" class="form-control" placeholder="Your name">
+                            <h3 class="mb-3">Leave a comment</h3>
+                            <p class="mb-4">
+                                Please note that we won't show your email to others, or use it for sending
+                                unwanted emails.
+                            </p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <input name="CommentAuthor" type="text" class="form-control" placeholder="Your name">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <input name="CommentEmail" type="text" class="form-control" placeholder="Your email address">
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <input name="CommentEmail" type="text" class="form-control" placeholder="Your email address">
+                            <div class="form-group">
+                                <input name="CommentUrl" type="text" class="form-control" placeholder="An (optional) URL to your website">
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <input name="CommentUrl" type="text" class="form-control" placeholder="An (optional) URL to your website">
-                        </div>
-                        <div class="form-group">
-                            <textarea name="CommentBody" rows="6" class="form-control" placeholder="Your awesome comment"></textarea>
-                        </div>
-                        <div class="form-group text-left">
-                            <button class="btn btn-success">Post Comment</button>
-                        </div>
-                    </form>
+                            <div class="form-group">
+                                <textarea name="CommentBody" rows="6" class="form-control" placeholder="Your awesome comment"></textarea>
+                            </div>
+                            <div class="form-group text-left">
+                                <button class="btn btn-success">Post Comment</button>
+                            </div>
+                        </form>
+                    </div>
+                    }
+                    @Html.DisplayFor(m => m.Comments)
                 </div>
             }
-            @Html.DisplayFor(m => m.Comments)
-        </div>
-    }
-}
-catch (Exception ex)
-{
-    _errorLog.Log(new Error(ex));
-}
+        }
+        catch (Exception ex)
+        {
+            _errorLog.Log(new Error(ex));
+        }
 
-} @*if page available to view*@
-else
-{
-   
-    <div class="container alert alert-warning">
-            @notAvailableMessage
-    </div>
+    } @*if page available to view*@
 }
