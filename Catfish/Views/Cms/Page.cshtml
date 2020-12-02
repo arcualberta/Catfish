@@ -34,7 +34,7 @@
                         ? "The page is unavailable."
                         : Model.PublishSettings.Message.Value;
 
-        <div class="container alert alert-danger">@Html.Raw(message)</div>
+        <div id="pagePublishMessage" class="container alert alert-danger">@Html.Raw(message)</div>
     }
     else
     {
