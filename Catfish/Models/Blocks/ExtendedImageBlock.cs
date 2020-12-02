@@ -25,6 +25,7 @@ namespace Catfish.Models.Blocks
         public TextField Description { get; set; }
         public TextField LinkText { get; set; }
         public TextField LinkUrl { get; set; }
+        public CheckBoxField ImageComesFirst { get; set; }
 
 
         public override string GetTitle()
