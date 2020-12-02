@@ -65,8 +65,8 @@ namespace Catfish.Core.Services.Solr
                 if (string.IsNullOrWhiteSpace(parameters.FreeSearch))
                     return new List<SolrEntry>();
 
-                var query = new SolrQuery("title_ss:" + parameters.FreeSearch) +
-                            new SolrQuery("content_ss:" + parameters.FreeSearch);
+                var query = new SolrQuery("title_t:" + parameters.FreeSearch) +
+                            new SolrQuery("content_t:" + parameters.FreeSearch);
 
                 //Result hilighting: https://lucene.apache.org/solr/guide/8_5/highlighting.html
                 string highlightStartTag = "<em class='bg-warning'>";
