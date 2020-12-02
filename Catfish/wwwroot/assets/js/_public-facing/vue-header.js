@@ -22,5 +22,5 @@ test = Vue.component('vue-header', {
         `
 });//.$mount();
 
-new test().$mount('#site-header-root');
+//new test().$mount('#site-header-root');
 //Vue.$mount('#site-header');
