@@ -5,7 +5,7 @@
 @inject ErrorLog _errorLog;
 
 @{
-    ViewBag.Title = Model.Title;
+    ViewBag.Title = Model == null?"": Model.Title;
 
     var vueComponentNames = Model.Blocks
         .Where(b => typeof(IVueComponent).IsAssignableFrom(b.GetType())) @*Selecting all blocks of type IVueConponent or its derived type.*@
@@ -21,8 +21,39 @@
             <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
         }
     }
-}
 
+    //check if it's set the publishing start/end date to make  the page contain available
+    bool pageAvailable = true;
+    string notAvailableMessage = string.Empty;
+    if (Model.PublishSettings.PublishedStart.Value != null)
+    {
+        notAvailableMessage = "This page content will be available from " + Model.PublishSettings.PublishedStart.Value;
+        //DateTime startDate = DateTime.Parse(Model.PublishSettings.PublishedStart.Value);
+        if (DateTime.Now >= Model.PublishSettings.PublishedStart.Value)
+        {
+            pageAvailable = true;
+
+            if (Model.PublishSettings.PublishedEnd.Value != null)
+            {
+                notAvailableMessage += "to " + Model.PublishSettings.PublishedEnd.Value + ".";
+                if (DateTime.Now <= Model.PublishSettings.PublishedEnd.Value)
+                {
+                    pageAvailable = true;
+                }
+                else
+                {
+                    pageAvailable = false;
+                }
+            }
+        }
+        else { pageAvailable = false; }
+
+    }
+
+    notAvailableMessage = Model.PublishSettings.CustomMessage.Value != null ? Model.PublishSettings.CustomMessage.Value : notAvailableMessage;
+    }
+@if (pageAvailable)
+{
 <div class="main">
     <div class="container">
         <div class="row justify-content-center">
@@ -43,19 +74,19 @@
     </div>
 </div>
 
-@if (vueComponentNames.Count > 0)
+if (vueComponentNames.Count > 0)
 {
     <script>
         new Vue({ el: '#blocks' })
     </script>
 }
 
-@try
+try
 {
     if (Model.EnableComments)
     {
         <div id="comments" class="container comments">
-            @if (Model.IsCommentsOpen)
+            if (Model.IsCommentsOpen)
             {
                 <div class="alert alert-comment mt-2 mb-5">
                     <form action="@Model.Permalink/comment" method="post">
@@ -98,4 +129,11 @@ catch (Exception ex)
     _errorLog.Log(new Error(ex));
 }
 
-
+} @*if page available to view*@
+else
+{
+   
+    <div class="container alert alert-warning">
+            @notAvailableMessage
+    </div>
+}
