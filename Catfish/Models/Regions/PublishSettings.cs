@@ -25,9 +25,9 @@ namespace Catfish.Models.Regions
         public DateTime? Start => ToDateTime(StartDate, StarTime);
         public DateTime? End => ToDateTime(EndDate, EndTime);
 
-        protected DateTime? ToDateTime(DateField date, StringField time)
+        private DateTime? ToDateTime(DateField date, StringField time)
         {
-            if (StartDate.Value.HasValue)
+            if (date.Value.HasValue)
             {
                 DateTime dateTime = date.Value.Value;
                 if (!string.IsNullOrWhiteSpace(time.Value))
