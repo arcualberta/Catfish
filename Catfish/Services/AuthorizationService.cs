@@ -1,5 +1,7 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Contents.Workflow;
 using ElmahCore;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Piranha.AspNetCore.Identity.Data;
 using Piranha.AspNetCore.Identity.SQLServer;

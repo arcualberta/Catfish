@@ -11,5 +11,8 @@ namespace Catfish.Core.Authorization.Requirements
     {
         public static readonly OperationAuthorizationRequirement Instantiate
             = new OperationAuthorizationRequirement() { Name = nameof(Instantiate) };
+
+        public static readonly OperationAuthorizationRequirement ListInstances
+         = new OperationAuthorizationRequirement() { Name = nameof(ListInstances) };
     }
 }

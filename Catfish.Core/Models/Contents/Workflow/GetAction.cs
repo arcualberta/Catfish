@@ -41,9 +41,6 @@ namespace Catfish.Core.Models.Contents.Workflow
             set => SetAttribute(AccessAtt, value.ToString());
         }
 
-
-        public XmlModelList<RoleReference> AuthorizedRoles { get; set; }
-        public XmlModelList<EmailDomain> AuthorizedDomains { get; set; }
         public XmlModelList<PostAction> PostActions { get; set; }
         public XmlModelList<Param> Params { get; set; }
         public XmlModelList<StateRef> States { get; set; }
@@ -73,13 +70,7 @@ namespace Catfish.Core.Models.Contents.Workflow
 
             //Initializing the state list
             XElement stateListDefinition = GetElement("states", true);
-            States = new XmlModelList<StateRef>(stateListDefinition, true, "state-refs");
-
-            //Initializing the authorizations lists
-            XElement authorizationsListDefinition = GetElement("authorizations", true);
-            AuthorizedRoles = new XmlModelList<RoleReference>(authorizationsListDefinition, true, RoleReference.TagName);
-            AuthorizedDomains = new XmlModelList<EmailDomain>(authorizationsListDefinition, true, EmailDomain.TagName);
-            
+            States = new XmlModelList<StateRef>(stateListDefinition, true, "state-ref");           
         }
 
         public Param AddTemplate(Guid dataItemFormTemplateId, string exceptionMessage)
@@ -101,22 +92,36 @@ namespace Catfish.Core.Models.Contents.Workflow
             PostActions.Add(newPostAction);
             return newPostAction;
         }
-        public RoleReference AddAuthorizedRole(Guid refId)
+
+        public StateRef GetStateReference(Guid stateId, bool createIfNotExist)
         {
-            if (AuthorizedRoles.Where(st => st.Id == refId).Any())
+            StateRef stateRef = States.Where(sr => sr.RefId == stateId).FirstOrDefault();
+            if (stateRef == null && createIfNotExist)
+                stateRef = AddStateReferances(stateId);
+            return stateRef;
+        }
+
+        public RoleReference AddAuthorizedRole(Guid stateId, Guid roleId)
+        {
+            StateRef stateRef = GetStateReference(stateId, true);
+
+            if (stateRef.AuthorizedRoles.Where(roleRef => roleRef.RefId == roleId).Any())
                 throw new Exception(string.Format("Authorization already exists."));
 
-            RoleReference newAuthorization = new RoleReference() { RefId = refId };
-            AuthorizedRoles.Add(newAuthorization);
+            RoleReference newAuthorization = new RoleReference() { RefId = roleId };
+            stateRef.AuthorizedRoles.Add(newAuthorization);
             return newAuthorization;
         }
 
-        public EmailDomain AddAuthorizedDomain(string domain)
+        public EmailDomain AddAuthorizedDomain(Guid stateId, string domain)
         {
-            EmailDomain d = new EmailDomain() { Value = domain };
-            AuthorizedDomains.Add(d);
-            return d;
+            StateRef stateRef = States.Where(sr => sr.RefId == stateId).FirstOrDefault();
+            if (stateRef == null)
+                stateRef = AddStateReferances(stateId);
 
+            EmailDomain d = new EmailDomain() { Value = domain };
+            stateRef.AuthorizedDomains.Add(d);
+            return d;
         }
         public StateRef AddStateReferances(Guid refId)
         {
@@ -128,12 +133,17 @@ namespace Catfish.Core.Models.Contents.Workflow
             return newState;
         }
 
-        public bool IsAuthorizedByDomain(string userEmail)
+        public bool IsAuthorizedByDomain(Guid stateId, string userEmail)
         {
-            if (!string.IsNullOrWhiteSpace(userEmail) && AuthorizedDomains.Count > 0)
+            StateRef stateRef = States.Where(st => st.RefId == stateId).FirstOrDefault();
+
+            if (stateRef == null)
+                throw new Exception(string.Format("Requested state does not exist within the GetAction."));
+
+            if (!string.IsNullOrWhiteSpace(userEmail) && stateRef.AuthorizedDomains.Count > 0)
             {
                 string emailDomain = userEmail.Substring(userEmail.IndexOf("@"));
-                return AuthorizedDomains.Where(d => d.Value == emailDomain).Any();
+                return stateRef.AuthorizedDomains.Where(d => d.Value == emailDomain).Any();
             }
             return false;
         }
