@@ -41,11 +41,14 @@ namespace Catfish.Controllers.Api
         /// <param name="endDate">end date</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public IList<string> GetItemList(Guid templateId, Guid collectionId, DateTime startDate, DateTime endDate)
+        public IList<string> GetItemList(Guid templateId, Guid? collectionId, DateTime? startDate, DateTime? endDate)
         {
             //Making sure the startDate is trimmed to the begining of the day and the endDate is bumped up to the end of the day
-            startDate = startDate.Date;
-            endDate = endDate.Date.AddDays(1);
+            if(startDate.HasValue)
+                startDate = startDate.Value.Date;
+            if (endDate.HasValue)
+                endDate = endDate.Value.Date.AddDays(1);
+
             List<string> itemFields = new List<string>();
             EntityTemplate template = _entityTemplateService.GetTemplate(templateId, User);
             if (template != null)

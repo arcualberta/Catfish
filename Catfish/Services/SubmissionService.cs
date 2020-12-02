@@ -86,13 +86,13 @@ namespace Catfish.Services
 
         }
 
-        public List<Item> GetSubmissionList(Guid templateId, Guid collectionId, DateTime startDate, DateTime endDate)
+        public List<Item> GetSubmissionList(Guid templateId, Guid? collectionId, DateTime? startDate = null, DateTime? endDate = null)
         {
             List<Item> items = new List<Item>();
            // Guid gTemplateId = !string.IsNullOrEmpty(templateId) ? Guid.Parse(templateId) : Guid.Empty;
           
-            DateTime from = startDate ==null ? DateTime.MinValue : startDate;
-            DateTime to = endDate == null? DateTime.Now : endDate;
+            DateTime from = startDate == null ? DateTime.MinValue : startDate.Value;
+            DateTime to = endDate == null? DateTime.Now : endDate.Value;
             try
             {
                 var query = _db.Items.Where(i=>i.TemplateId == templateId && (i.Created >= from && i.Created < to));
@@ -102,7 +102,7 @@ namespace Catfish.Services
                    
                     query = query.Where(i => i.PrimaryCollectionId == collectionId);
                 }
-                items = query.ToList();
+                items = query.OrderByDescending(i => i.Created).ToList();
             }
             catch (Exception ex)
             {
@@ -130,36 +130,36 @@ namespace Catfish.Services
             return itemDetails;
         }
 
-        /// <summary>
-        /// Get the submission list which passing the parameters
-        /// if the collection id is null then it just return items which are belongs to the template id
-        /// otherwise that should return items which are belongs to the template id and collection id
-        /// </summary>
-        /// <param name="templateId"></param>
-        /// <param name="collectionId"></param>
-        /// <returns></returns>
-        public IList<Item> GetSubmissionList(Guid templateId, Guid? collectionId)
-        {
-            IList<Item> itemList = new List<Item>();
-            try
-            {
-                var query = _db.Items
-                    .Include(i => i.Status)
-                    .Where(i => i.TemplateId == templateId);
+        /////// <summary>
+        /////// Get the submission list which passing the parameters
+        /////// if the collection id is null then it just return items which are belongs to the template id
+        /////// otherwise that should return items which are belongs to the template id and collection id
+        /////// </summary>
+        /////// <param name="templateId"></param>
+        /////// <param name="collectionId"></param>
+        /////// <returns></returns>
+        ////public IList<Item> GetSubmissionList(Guid templateId, Guid? collectionId)
+        ////{
+        ////    IList<Item> itemList = new List<Item>();
+        ////    try
+        ////    {
+        ////        var query = _db.Items
+        ////            .Include(i => i.Status)
+        ////            .Where(i => i.TemplateId == templateId);
 
-                if (collectionId != null)
-                    query = query.Where(i => i.PrimaryCollectionId == collectionId);
+        ////        if (collectionId != null)
+        ////            query = query.Where(i => i.PrimaryCollectionId == collectionId);
 
-                query = query.OrderBy(i => i.Created);
+        ////        query = query.OrderBy(i => i.Created);
 
-                itemList = query.ToList();
-            }
-            catch (Exception ex)
-            {
-                _errorLog.Log(new Error(ex));
-            }
-            return itemList;
-        }
+        ////        itemList = query.ToList();
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        _errorLog.Log(new Error(ex));
+        ////    }
+        ////    return itemList;
+        ////}
 
         public string GetStatus(Guid? statusId)
         {
