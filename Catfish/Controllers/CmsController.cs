@@ -67,7 +67,7 @@ namespace Catfish.Controllers
             try
             {
                 var model = await _loader.GetPageAsync<StandardPage>(id, HttpContext.User, draft).ConfigureAwait(false);
-                if (model.IsCommentsOpen)
+                if (model != null && model.IsCommentsOpen)
                 {
                     model.Comments = await _api.Pages.GetAllCommentsAsync(model.Id, true).ConfigureAwait(false);
                 }

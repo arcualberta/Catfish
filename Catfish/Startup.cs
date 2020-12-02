@@ -179,7 +179,15 @@ namespace Catfish
             services.AddScoped<IAuthorizationHelper, AuthorizationHelper>();
             services.AddScoped<IAuthorizationHandler, EntityTemplateAuthorizationHandler>();
             //services.AddSingleton<IAuthorizationHandler, DocumentAuthorizationCrudHandler>();
-
+            // Add custom policies
+            services.AddAuthorization(o =>
+            {
+                // Read secured posts
+                o.AddPolicy("ReadSecurePages", policy =>
+                {
+                    policy.RequireClaim("ReadSecurePages", "ReadSecurePages");
+                });
+            });
 
             services.AddHttpContextAccessor();
 
@@ -260,8 +268,9 @@ namespace Catfish
             var pageTypeBuilder = new Piranha.AttributeBuilder.PageTypeBuilder(api)
                  .AddType(typeof(Models.StandardArchive))
                 .AddType(typeof(Models.StandardPage))
-                 .AddType(typeof(Models.StartPage))
+                // .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MediaPage))
+               
                 .Build()
                 .DeleteOrphans();
 
