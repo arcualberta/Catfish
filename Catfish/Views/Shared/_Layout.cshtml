@@ -8,7 +8,10 @@
 @inject Piranha.IApi _piranhaApi;
 
 @{
-    ViewBag.Title = Model.Title;
+    if(ViewBag.Title == null)
+    {
+        ViewBag.Title =Model.Title;
+    }
 
     var pageModel = typeof(StandardPage).IsAssignableFrom(Model.GetType()) ? Model as StandardPage : null;
     List<string> vueComponentNames = new List<string>();
