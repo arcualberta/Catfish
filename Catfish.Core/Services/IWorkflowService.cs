@@ -1,9 +1,11 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Workflow;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Catfish.Core.Services
@@ -28,6 +30,17 @@ namespace Catfish.Core.Services
 
         public List<PostAction> GetPostActions(EntityTemplate entityTemplate, string function, string group);
 
-        string GetLoggedUserEmail();
+        public string GetLoggedUserEmail();
+
+        /// <summary>
+        /// Returns the list of Groups where the specified user is associated with a role that has 
+        /// authorization to perform the action specified by the requirement.
+        /// </summary>
+        /// <param name="entityTemplate"></param>
+        /// <param name="user"></param>
+        /// <param name="requirement"></param>
+        /// <returns></returns>
+        List<Group> GetApplicableGroups(ClaimsPrincipal user, OperationAuthorizationRequirement requirement, EntityTemplate entityTemplate, Entity instance = null);
+
     }
 }

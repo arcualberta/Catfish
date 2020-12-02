@@ -143,10 +143,14 @@ namespace Catfish.Services
             IList<Item> itemList = new List<Item>();
             try
             {
-                var query = _db.Items.Include(i=>i.Status).Where(i => i.TemplateId == templateId);
+                var query = _db.Items
+                    .Include(i => i.Status)
+                    .Where(i => i.TemplateId == templateId);
 
                 if (collectionId != null)
                     query = query.Where(i => i.PrimaryCollectionId == collectionId);
+
+                query = query.OrderBy(i => i.Created);
 
                 itemList = query.ToList();
             }
@@ -203,7 +207,7 @@ namespace Catfish.Services
         /// <param name="collectionId"></param>
         /// <param name="actionButton"></param>
         /// <returns></returns>
-        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, string actionButton)
+        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, string actionButton)
         {
             try
             {
@@ -222,6 +226,9 @@ namespace Catfish.Services
                 newDataItem.UpdateFieldValues(value);
                 newItem.DataContainer.Add(newDataItem);
                 newDataItem.EntityId = newItem.Id;
+
+                if (groupId.HasValue)
+                    newItem.GroupId = groupId;
 
                 return newItem;
             }

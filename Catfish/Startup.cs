@@ -179,7 +179,15 @@ namespace Catfish
             services.AddScoped<IAuthorizationHelper, AuthorizationHelper>();
             services.AddScoped<IAuthorizationHandler, EntityTemplateAuthorizationHandler>();
             //services.AddSingleton<IAuthorizationHandler, DocumentAuthorizationCrudHandler>();
-
+            // Add custom policies
+            services.AddAuthorization(o =>
+            {
+                // Read secured posts
+                o.AddPolicy("ReadSecurePages", policy =>
+                {
+                    policy.RequireClaim("ReadSecurePages", "ReadSecurePages");
+                });
+            });
 
             services.AddHttpContextAccessor();
 
@@ -260,8 +268,9 @@ namespace Catfish
             var pageTypeBuilder = new Piranha.AttributeBuilder.PageTypeBuilder(api)
                  .AddType(typeof(Models.StandardArchive))
                 .AddType(typeof(Models.StandardPage))
-                 .AddType(typeof(Models.StartPage))
+                // .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MediaPage))
+               
                 .Build()
                 .DeleteOrphans();
 
@@ -373,6 +382,7 @@ namespace Catfish
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-categories.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-list.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/vue-header.js");
 
         }
         private static void RegisterCustomBlocks()
@@ -393,6 +403,7 @@ namespace Catfish
             App.Blocks.Register<ControlledVocabularySearchBlock>();
             App.Blocks.Register<VueList>();
             App.Blocks.Register<VueCarousel>();
+            App.Blocks.Register<VueHeader>();
 
         }
         private static void RegisterCustomStyles()

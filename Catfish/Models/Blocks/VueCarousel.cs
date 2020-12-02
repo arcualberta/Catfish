@@ -1,4 +1,5 @@
 ﻿using Piranha.Extend;
+using Piranha.Extend.Blocks;
 using Piranha.Extend.Fields;
 using System;
 using System.Collections.Generic;
