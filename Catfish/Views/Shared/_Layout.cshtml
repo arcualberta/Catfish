@@ -8,7 +8,10 @@
 @inject Piranha.IApi _piranhaApi;
 
 @{
-    ViewBag.Title = Model.Title;
+    if(ViewBag.Title == null)
+    {
+        ViewBag.Title =Model.Title;
+    }
 
     var pageModel = typeof(StandardPage).IsAssignableFrom(Model.GetType()) ? Model as StandardPage : null;
     List<string> vueComponentNames = new List<string>();
@@ -73,7 +76,8 @@
 
     <script src="~/assets/js/_public-facing/scripts/component-scripts.js"></script>
     <script src="~/assets/js/_public-facing/scripts/submission-form-functions.js"></script>
-
+    <script src="~/assets/js/_public-facing/scripts/item-list-functions.js"></script>
+    
 
     <style>
         @foreach(var css in cssBlocks)
