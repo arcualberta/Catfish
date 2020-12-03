@@ -7,6 +7,7 @@ using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Services;
 using Catfish.Tests.Helpers;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -1293,6 +1294,9 @@ namespace Catfish.UnitTests
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.xml");
+
+            string json = JsonConvert.SerializeObject(template);
+            File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
         }
 
 
