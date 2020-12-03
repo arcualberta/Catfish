@@ -1,9 +1,42 @@
 ﻿@using Microsoft.AspNetCore.Mvc.ViewEngines
 @using Catfish.Models.SiteTypes
 @using Catfish.Helper
+@using Catfish.Models.Blocks;
+
 @inject ICompositeViewEngine _viewEngine
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
 @inject Piranha.IApi _piranhaApi;
+
+@{
+    if(ViewBag.Title == null)
+    {
+        ViewBag.Title =Model.Title;
+    }
+
+    var pageModel = typeof(StandardPage).IsAssignableFrom(Model.GetType()) ? Model as StandardPage : null;
+    List<string> vueComponentNames = new List<string>();
+    List<CssBlock> cssBlocks = new List<CssBlock>();
+    List<JavascriptBlock> javascriptBlocks = new List<JavascriptBlock>();
+
+    if (pageModel != null)
+    {
+        vueComponentNames = pageModel.Blocks
+            .Where(b => typeof(IVueComponent).IsAssignableFrom(b.GetType())) @*Selecting all blocks of type IVueConponent or its derived type.*@
+            .Select(b => (b as IVueComponent).Component) @*Selecting all those blocks as IVueConponent blocks and getting their names.*@
+            .Distinct()
+            .ToList();
+
+        cssBlocks = pageModel.Blocks
+            .Where(b => typeof(CssBlock).IsAssignableFrom(b.GetType()))
+            .Select(b => (b as CssBlock))
+            .ToList();
+
+        javascriptBlocks = pageModel.Blocks
+            .Where(b => typeof(JavascriptBlock).IsAssignableFrom(b.GetType()))
+            .Select(b => (b as JavascriptBlock))
+            .ToList();
+    }
+}
 
 <!doctype html>
 <html lang="en">
@@ -37,128 +70,172 @@
     <link href="~/assets/css/public/commonBlockStyles.css" rel="stylesheet" />
 
     @*A placeholder for specfying site-specific (deployment-specific) styles*@
-    <link href="~/assets/css/public/custom.css" rel="stylesheet" />
+    @*<link href="~/assets/css/public/custom.css" rel="stylesheet" />*@
 
     <script src="~/assets/js/catfish.js"></script>
+
+    <script src="~/assets/js/_public-facing/scripts/component-scripts.js"></script>
+    <script src="~/assets/js/_public-facing/scripts/submission-form-functions.js"></script>
+    <script src="~/assets/js/_public-facing/scripts/item-list-functions.js"></script>
+    
+
+    <style>
+        @foreach(var css in cssBlocks)
+        {
+            @Html.Raw(css.CssVal.Value);
+        }
+    </style>
+    <script>
+        @foreach(var js in javascriptBlocks)
+        {
+            @Html.Raw(js.JavascriptCode.Value);
+        }
+    </script>
 
     <title>@ViewBag.Title</title>
 
     @if (Model is Piranha.Models.IMeta)
     {
-    <partial name="Partial/_Meta.cshtml" />
+        <partial name="Partial/_Meta.cshtml" />
     }
 
     @RenderSection("head", required: false)
+
+    <script src="/assets/js/vue/vue-dev.js"></script>
+
+    @if (vueComponentNames.Count > 0)
+    {
+        foreach (string compName in vueComponentNames)
+        {
+            <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
+        }
+    }
+
+    <script>
+        let sitemap = @Json.Serialize(WebApp.Site.Sitemap);
+        $(function () {
+            updateBreadcrumb();
+        });
+    </script>
 </head>
 
 <body>
-    @{
-        var site = await _piranhaApi.Sites.GetByInternalIdAsync("Default");//"Default" is InternalId of the site
-        var logoUrl = _catfishAppConfig.GetLogoUrl();
-        string loginButtonLocation = _catfishAppConfig.GetValue("SiteConfig:LoginButtonLocation", null);
-        ICatfishAppConfiguration.ePanelLocation searchPanelLocation = _catfishAppConfig.GetDefaultSearchPanelLocation();
-        var homepage = WebApp.Site.Sitemap.FirstOrDefault();
-        string homepageUrlStartTag = "";
-        string homepageUrlEndTag = "";
-        if(homepage != null)
-        {
-            homepageUrlStartTag = string.Format("<a href='{0}'>", homepage.Permalink);
-            homepageUrlEndTag = "</a>";
-        }
+    <div id="vueApp">
+        @{
+            var site = await _piranhaApi.Sites.GetByInternalIdAsync("Default");//"Default" is InternalId of the site
+            var logoUrl = _catfishAppConfig.GetLogoUrl();
+            string loginButtonLocation = _catfishAppConfig.GetValue("SiteConfig:LoginButtonLocation", null);
+            ICatfishAppConfiguration.ePanelLocation searchPanelLocation = _catfishAppConfig.GetDefaultSearchPanelLocation();
+            var homepage = WebApp.Site.Sitemap.FirstOrDefault();
+            string homepageUrlStartTag = "";
+            string homepageUrlEndTag = "";
+            if (homepage != null)
+            {
+                homepageUrlStartTag = string.Format("<a href='{0}'>", homepage.Permalink);
+                homepageUrlEndTag = "</a>";
+            }
 
-        <div class="container">
-            <div class="row">
-                @if (!string.IsNullOrEmpty(logoUrl))
-                {
-                    <div id="site-logo">@Html.Raw(homepageUrlStartTag)<img src="@logoUrl" />@Html.Raw(homepageUrlEndTag) </div>
-                }
-                <div class="header-brand">
-                    <h1>@Html.Raw(homepageUrlStartTag)@site.Title@Html.Raw(homepageUrlEndTag) </h1>
-                    <h3>@site.Description</h3>
-                </div>
-                @if (searchPanelLocation == ICatfishAppConfiguration.ePanelLocation.Header)
-                            {
-                    <partial name="Partial/_Search.cshtml" />
-                }
-            </div>
-        </div>
-        <header class="site-header  @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm">
-                        <partial name="/Views/Shared/Partial/_Menu.cshtml" />
+                    @if (!string.IsNullOrEmpty(logoUrl))
+                    {
+                        <div id="site-logo">@Html.Raw(homepageUrlStartTag)<img src="@logoUrl" />@Html.Raw(homepageUrlEndTag) </div>
+                    }
+                    <div class="header-brand">
+                        <h1>@Html.Raw(homepageUrlStartTag)@site.Title@Html.Raw(homepageUrlEndTag) </h1>
+                        <h3>@site.Description</h3>
                     </div>
-                   @if (_catfishAppConfig.IsAllowGoogleLogin()) {
-                    <div class="signinout">
-                        @if (!User.Identity.IsAuthenticated)
-                        {
-                            <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '/login'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
-                        }
-                        else
-                        {
-                            if (User.IsInRole("SysAdmin"))
-                            {
-                                <button class="btn btn-link" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
-                            }
-                            <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-link"><span class="fa fa-sign-out"> Sign Out</span></button>
-                        }
-
-
-                    </div>
-                   }
-                </div> @* row*@
-
-                @* Bread crumb *@
-                @if (_catfishAppConfig.GetEnabledBreadcrumb())
-                {
-                    <div class="breadcrumb-container col-sm">
-                        <partial name="Partial/_Breadcrumb.cshtml" />
-                    </div>
-
-                }
-            </div> @*container*@
-        </header>
-    }
-    @if (searchPanelLocation == ICatfishAppConfiguration.ePanelLocation.Body)
-    {
-        <partial name="Partial/_Search.cshtml" />
-    }
-
-    @RenderBody()
-
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            @{
-                var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
-                var javascriptCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Javascript == null)
-                    ? "" : currentSite.FooterContents.Javascript.Value;
-                var cssCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Css == null)
-                   ? "" : currentSite.FooterContents.Css.Value;
-            }
-            @if (currentSite != null)
-            {
-                <div class="row">
-
-                    <div class="col-6 footer-arc-text">
-                        @Html.Raw(currentSite.FooterContents.Text)
-                    </div>
-                    <div class="col-6 footer-arc-logo">
-                        Designed and engineered by  <img src="@Url.Content(currentSite.FooterContents.Logo)" />
-                    </div>
-
-                    @Html.Raw(javascriptCode)
-
-                    @Html.Raw(cssCode)
-
-
+                    @if (searchPanelLocation == ICatfishAppConfiguration.ePanelLocation.Header)
+                    {
+                        <partial name="Partial/_Search.cshtml" />
+                    }
                 </div>
-            }
-        </div>
-    </footer>
+            </div>
+            <header class="site-header  @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm">
+                            <div id="site-header-root"></div>
+                            <partial name="/Views/Shared/Partial/_Menu.cshtml" />
+                        </div>
+                        @if (_catfishAppConfig.IsAllowGoogleLogin())
+                        {
+                            <div class="signinout">
+                                @if (!User.Identity.IsAuthenticated)
+                                {
+                                    <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '/login'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
+                                }
+                                else
+                                {
+                                    if (User.IsInRole("SysAdmin"))
+                                    {
+                                        <button class="btn btn-link" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                                    }
+                                    <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-link"><span class="fa fa-sign-out"> Sign Out</span></button>
+                                }
 
+
+                            </div>
+                        }
+                    </div> @* row*@
+
+                    @* Bread crumb *@
+                    @if (_catfishAppConfig.GetEnabledBreadcrumb())
+                    {
+                        <div class="breadcrumb-container col-sm">
+                            <ul class="breadcrumb"></ul>
+                        </div>
+                    }
+                </div> @*container*@
+            </header>
+        }
+        @if (searchPanelLocation == ICatfishAppConfiguration.ePanelLocation.Body)
+        {
+            <partial name="Partial/_Search.cshtml" />
+        }
+
+        @RenderBody()
+
+
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                @{
+                    var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
+                    var javascriptCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Javascript == null)
+                        ? "" : currentSite.FooterContents.Javascript.Value;
+                    var cssCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Css == null)
+                       ? "" : currentSite.FooterContents.Css.Value;
+                }
+                @if (currentSite != null)
+                {
+                    <div class="row">
+
+                        <div class="col-6 footer-arc-text">
+                            @Html.Raw(currentSite.FooterContents.Text)
+                        </div>
+                        <div class="col-6 footer-arc-logo">
+                            Designed and engineered by  <img src="@Url.Content(currentSite.FooterContents.Logo)" />
+                        </div>
+
+                        @Html.Raw(javascriptCode)
+
+                        @Html.Raw(cssCode)
+
+
+                    </div>
+                }
+            </div>
+        </footer>
+
+    </div>@*End of vueApp div *@
+
+
+    <script>
+        new Vue({ el: '#vueApp' })
+    </script>
 
     @RenderSection("script", required: false)
+
     <script>
 
         function onLoad() {
@@ -188,7 +265,7 @@
                 } catch (ex) {
                     window.location.href = "/";
                 }
-               
+
 
             });
         }

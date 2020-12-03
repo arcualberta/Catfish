@@ -184,3 +184,4 @@ Plugins
 /Catfish/wwwroot/assets/dist/*
 /Examples/CalendarManagementWorkflow_generared.xml
 /node_modules/*
+/Examples/centralAmericaRegistration_generared.xml

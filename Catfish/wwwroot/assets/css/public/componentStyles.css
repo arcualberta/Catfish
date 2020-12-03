@@ -161,3 +161,46 @@
 .submission-result-message{
     margin-top: 15px;
 }
+
+
+/********* Vue Carousel styles ********/
+
+.carousel-inner{
+    height:inherit;
+}
+.carousel-item{
+    height:inherit;
+}
+
+.carousel-item .flex-carousel-contents{
+    display:flex !important;
+    flex-wrap: wrap-reverse;
+    height:inherit;
+}
+
+.carousel-item .image-comes-second {
+    flex-direction: row-reverse;
+}
+
+.d-block.image-in-carousel {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    flex-shrink:0;
+}
+
+.carousel-inner .text-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 25px;
+    align-items: flex-start;
+}
+
+.time-grow {
+    transition: width 5s linear;
+}
+
+.progress {
+    height: 3px;
+}

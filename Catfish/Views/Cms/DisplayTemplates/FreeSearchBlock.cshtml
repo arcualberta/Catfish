@@ -15,7 +15,7 @@
     var Results = new List<SolrEntry>();
 }
 
-<script>
+@*<script>
     $(function () {
         $("#freeSearchBlockForm").submit(function (event) {
 
@@ -47,13 +47,13 @@
 
                 $.each(data, function (entryIndex, entry) {
 
-                    @* Creating the wrapper div as a DOM element for the result item *@
+                    //Creating the wrapper div as a DOM element for the result item
                     var entryWrapper = $.parseHTML("<div class='search-result-entry'>");
 
-                    @* Adding the wrapper to the result - list container *@
+                    //Adding the wrapper to the result - list container
                     $("#freeSearchBlockResults").append(entryWrapper);
 
-                    @*Building a link to the detailed object if there is a permalink associated with the entry*@
+                    //Building a link to the detailed object if there is a permalink associated with the entry
                     var linkStart = "";
                     var linkEnd = "";
                     if (entry.permalink != undefined && entry.permalink.length > 0) {
@@ -61,8 +61,8 @@
                         linkEnd = "</a>";
                     }
 
-                    @* Adding the entry title to the wrapper as a child. We need to this for each
-                        value of the title because the title can take multiple values*@
+                    //Adding the entry title to the wrapper as a child. We need to this for each
+                    //    value of the title because the title can take multiple values
                     var entryTitleDiv = $.parseHTML("<div class='entry-title'>");
                     $(entryWrapper).append(entryTitleDiv);
                     $.each(entry.title, function (titleIndex, titleVal) {
@@ -70,8 +70,8 @@
                         $(entryTitleDiv).append($.parseHTML(str));
                     });
 
-                    @*Go through each highlight snippet and add them to the entry-body section. We include each them
-                        in separate divs*@
+                    //Go through each highlight snippet and add them to the entry-body section. We include each them
+                    //    in separate divs
                     var entryBodyDiv = $.parseHTML("<div class='entry-body'>");
                     $(entryWrapper).append(entryBodyDiv);
                     $.each(entry.highlights, function (highlightIndex, highlightVal) {
@@ -86,7 +86,7 @@
             });
         });
     });
-</script>
+</script>*@
 
 
 <!-- TODO: Make the following a search form -->

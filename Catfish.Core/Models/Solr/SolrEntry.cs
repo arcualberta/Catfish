@@ -16,7 +16,7 @@ namespace Catfish.Core.Models.Solr
         [SolrField("id")]
         public Guid Id { get; set; }
 
-        [SolrField("title_ss")]
+        [SolrField("title_t")]
         public List<string> Title { get; set; } = new List<string>();
 
         [SolrField("title_id_ss")]
@@ -33,7 +33,7 @@ namespace Catfish.Core.Models.Solr
         [SolrField("containerId_ss")]
         public List<Guid?> ContainerIds { get; set; } = new List<Guid?>();
 
-        [SolrField("content_ss")]
+        [SolrField("content_t")]
         public List<string> Contents { get; set; } = new List<string>();
 
         [SolrField("imageContainerId_ss")]

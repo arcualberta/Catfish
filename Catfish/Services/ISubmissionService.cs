@@ -15,12 +15,11 @@ namespace Catfish.Services
         //Entity GetSubmissionDetails(Guid id);
         //string SaveSubmission(Entity submission);
         List<Item> GetSubmissionList();
-        List<Item> GetSubmissionList(Guid templateId, Guid collectionId, DateTime startDate, DateTime endDate);
+        List<Item> GetSubmissionList(Guid templateId, Guid? collectionId, DateTime? startDate = null, DateTime? endDate = null);
         Item GetSubmissionDetails(Guid itemId);
-        IList<Item> GetSubmissionList(Guid templateId, Guid? collectionId);
         List<ItemField> GetAllField(string xml);
         string GetStatus(Guid? statusId);
-        Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, string actionButton);
+        Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, string actionButton);
  //       bool SendEmail(EmailTemplate emailTemplate, string recipient);
         bool ExecuteTriggers(Guid entityTemplateId, string actionButton, string function, string group);
     }

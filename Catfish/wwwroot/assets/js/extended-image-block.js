@@ -45,6 +45,15 @@ Vue.component("extended-image-block", {
                         linkUrl: content
                     });
                 }
+            } else if (elName == "ImageComesFirst") {
+                this.model.linkUrl.value = e.target.value;
+                var content = this.model.imageComesFirst.value;
+                if (content.length > 0) {
+                    this.$emit('update-content', {
+                        uid: this.uid,
+                        linkUrl: content
+                    });
+                }
             }
            
         },
@@ -131,6 +140,11 @@ Vue.component("extended-image-block", {
             get: function () {
                 return this.model.linkUrl.value;
             }
+        },
+        imageComesFirstValue: {
+            get: function () {
+                return this.model.imageComesFirst.value;
+            }
         }
     },
     mounted: function () {
@@ -146,10 +160,11 @@ Vue.component("extended-image-block", {
         <div class="row">
         <img class="rounded col-md-4" :src="mediaUrl">
          <div class="form-group col-md-8">
-                 <label class="form-label">Title: </label>{{ model.title.value }}<br/>
-                 <label class="form-label">Description: </label>{{ model.description.value }}<br/>
-                 <label class="form-label">Link Text: </label>{{ model.linkText.value }}<br/>
-                 <label class="form-label">Link Url: </label>{{ model.linkUrl.value }}
+                 <label class="form-label">Title: </label> {{ model.title.value }}<br/>
+                 <label class="form-label">Description: </label> {{ model.description.value }}<br/>
+                 <label class="form-label">Link Text: </label> {{ model.linkText.value }}<br/>
+                 <label class="form-label">Link Url: </label> {{ model.linkUrl.value }}<br/>
+                <label class="form-label">Image Comes First?: </label> {{ model.imageComesFirst.value }}
           </div>
         </div>
         <div class="media-picker" style="top:10%;">
@@ -193,8 +208,9 @@ Vue.component("extended-image-block", {
                     {{ model.body.media.filename }}
                   <div class='lead row'><label class='form-label col-md-3'>Title: </label><input class='form-control col-md-8' type='text' name='title' v-model='model.title.value' contenteditable='true' v-on:blur='onBlur' value='titleValue'  /></div>
                   <div class='lead row'><label class='form-label col-md-3'>Description: </label><textarea row='4' cols='100' class='form-control col-md-8'  name='description' v-model='model.description.value' contenteditable='true' v-on:blur='onBlur' value='descriptionValue'></textarea></div>
-                  <div class='lead row' ><label class='form-label col-md-3'>Link Text:</label> <input type='text' class='form-control col-md-8' name='linkText' v-model='model.linkText.value' contenteditable='true' v-on:blur='onBlur' value='linkTextValue' /></div>
-                   <div class='lead row'><label class='form-label col-md-3'>Link Url:</label> <input type='text' class='form-control col-md-8' name='linkUrl' v-model='model.linkUrl.value' contenteditable='true' v-on:blur='onBlur' value='linkUrlValue'  /></div>
+                  <div class='lead row'><label class='form-label col-md-3'>Link Text:</label> <input type='text' class='form-control col-md-8' name='linkText' v-model='model.linkText.value' contenteditable='true' v-on:blur='onBlur' value='linkTextValue' /></div>
+                  <div class='lead row'><label class='form-label col-md-3'>Link Url:</label> <input type='text' class='form-control col-md-8' name='linkUrl' v-model='model.linkUrl.value' contenteditable='true' v-on:blur='onBlur' value='linkUrlValue'  /></div>
+                  <div class='lead row'><label class='form-label col-md-3'>Image Comes First?:</label> <input type='checkbox' class='form-control col-md-8' name='imageComesFirst' v-model='model.imageComesFirst.value' contenteditable='true' v-on:blur='onBlur' value='imageComesFirstValue'  /></div>
                 </div>
             </div>
         </div>
