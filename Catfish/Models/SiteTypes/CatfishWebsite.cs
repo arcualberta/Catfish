@@ -35,8 +35,10 @@ namespace Catfish.Models.SiteTypes
         public CheckBoxField EnabledSubMenu { get; set; } = true;
         [Field(Title = "General Header Settings", Placeholder = "Remove Default Page Titles")]
         public CheckBoxField RemovePageTitles { get; set; }
-        [Field(Title = "Header Background Color", Placeholder = "Leaving this blank results in no background color")]
+        [Field(Title = "Header Background Color", Placeholder = "Please enter a hex value, including the hashtag, or color name")]
         public StringField BackgroundColor { get; set; }
+        [Field(Title = "Header Text Color", Placeholder = "Please enter a hex value, including the hashtag, or color name")]
+        public StringField TextColor { get; set; }
 
         [Field(Title = "Header Contents")]
         public HtmlField Text { get; set; }
