@@ -790,7 +790,7 @@ namespace Catfish.UnitTests
             EmailTemplate centralAdminNotification = ws.GetEmailTemplate("Central Admin Notification", true);
             centralAdminNotification.SetDescription("This metadata set defines the email template to be sent to the central admin when a dept admin makes a submission.", lang);
             centralAdminNotification.SetSubject("Safety Inspection Submission");
-            centralAdminNotification.SetBody("A @Link[safety form|@Model] was submitted.\n\nThank you"); //???
+            centralAdminNotification.SetBody("A @Link[safety form|@Model] was submitted.\n\nThank you"); 
 
             EmailTemplate deptAdminSubmissionNotification = ws.GetEmailTemplate("User Notification", true);
             deptAdminSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when he/she submits a safety inspection form.", lang);
@@ -1102,6 +1102,225 @@ namespace Catfish.UnitTests
 
 
             template.Data.Save("..\\..\\..\\..\\Examples\\safetyInfoWorkflow_generared.xml");
+
+        }
+
+        [Test]
+        public void CovidSafetyInspectionTest()
+        {
+            string lang = "en";
+            string templateName = "Weekly Inspection Template";
+
+            IWorkflowService ws = _testHelper.WorkflowService;
+            AppDbContext db = _testHelper.Db;
+            IAuthorizationService auth = _testHelper.AuthorizationService;
+
+
+            ItemTemplate template = db.ItemTemplates
+                .Where(et => et.TemplateName == templateName)
+                .FirstOrDefault();
+
+            if (template == null)
+            {
+                template = new ItemTemplate();
+                db.ItemTemplates.Add(template);
+            }
+            else
+            {
+                ItemTemplate t = new ItemTemplate();
+                t.Id = template.Id;
+                template.Data = t.Data;
+                template.Initialize(false);
+            }
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
+
+            ws.SetModel(template);
+
+            //Get the Workflow object using the workflow service
+            Workflow workflow = ws.GetWorkflow(true);
+
+            //Defininig states
+            State emptyState = workflow.AddState("", false);
+            State savedState = workflow.AddState("Saved", true);
+            State submittedState = workflow.AddState("Submitted", false);
+            State deleteState = workflow.AddState("Deleted", false);
+
+
+
+
+            //Defining email templates
+            EmailTemplate centralAdminNotification = ws.GetEmailTemplate("Central Admin Notification", true);
+            centralAdminNotification.SetDescription("This metadata set defines the email template to be sent to the central admin when a dept admin makes a submission.", lang);
+            centralAdminNotification.SetSubject("Safety Inspection Submission");
+            centralAdminNotification.SetBody("A @Link[safety form|@Model] was submitted.\n\nThank you");
+
+            EmailTemplate deptAdminSubmissionNotification = ws.GetEmailTemplate("User Notification", true);
+            deptAdminSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when he/she submits a safety inspection form.", lang);
+            deptAdminSubmissionNotification.SetSubject("Safety Inspection Submission");
+            deptAdminSubmissionNotification.SetBody("A @Link[[safety form|@Model] was submitted.\n\nThank you");
+
+
+
+            //Defininig the Submission revision Request form
+            DataItem inspectionForm = template.GetDataItem("Weekly Inspection Form", true, lang);
+            inspectionForm.IsRoot = true;
+            inspectionForm.SetDescription("This template is designed for a weekly inspection of public health measures specific to COVID-19 and other return to campus requirements.", lang);
+            string[] optionBuilding = new string[] { "Convocation Hall", "Tory Building", "Humanities", "FAB" };
+            inspectionForm.CreateField<SelectField>("Building:", lang, optionBuilding);
+            inspectionForm.CreateField<TextField>("Inspected By:", lang, true);
+            inspectionForm.CreateField<TextField>("Room/Area:", lang, true);
+           
+
+            inspectionForm.CreateField<IntegerField>("Number of People in the Work Area:", lang, true);
+
+            inspectionForm.CreateField<InfoSection>("Physical Distancing", lang);
+            string[] optionText = new string[] { "Yes", "No", "N/A" };
+            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText);
+            inspectionForm.CreateField <RadioField> ("Where physical distancing is not possible, are occupants wearing face masks?", lang, optionText);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
+            inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
+
+            inspectionForm.CreateField<InfoSection>("Personal Hygiene", lang);  
+            inspectionForm.CreateField<RadioField>("Is a hand washing sink or hand sanitizer available?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Is the sink clean and free of contamination?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Is there an adequate supply of soap? ", lang, optionText);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
+            inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
+
+            inspectionForm.CreateField<InfoSection>("Housekeeping", lang);
+            inspectionForm.CreateField<RadioField>("Is general housekeeping and cleanliness being maintained?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Are surfaces being disinfected on a regular basis?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Are there adequate cleaning supplies for the next 2 weeks?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Are walkways clear of trip hazards?", lang, optionText);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
+            inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
+
+            inspectionForm.CreateField<InfoSection>("Training", lang);
+            inspectionForm.CreateField<RadioField>("Have all employees taken the COVID-19 Return to Campus training?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Have all employees been trained in your return to campus plan?", lang, optionText);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
+            inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
+
+            inspectionForm.CreateField<InfoSection>("Other", lang);
+            inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Have all sinks been flushed for 3 minutes?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Is all appropriate PPE being worn?", lang, optionText);
+           
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
+            inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
+
+
+            //Defining name mappings
+            //TODO: Add functionality for EntityTemplate to allow us define a sequence of metadata set fields
+            //      to be used as table headings in the list view. Use this functionality to specify the
+            //      Course Name and Course Number as the list-view table headings for this schema.
+            //      In the actual listing page, we should show the values of these set of fields and the "owner"
+            //      of the root data object, the created time-stamp of the root data object, and the satust of the
+            //      entity.
+
+
+
+            //Defininig roles
+           // WorkflowRole centralAdminRole = workflow.AddRole(auth.GetRole("Admin", true));
+           // WorkflowRole supervisorRole = workflow.AddRole(auth.GetRole("Supervisor", true));
+            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
+
+
+            // start submission related workflow items
+            //Defining actions
+            //restrict "Inspector" only to be able to submit this form
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+            startSubmissionAction.Access = GetAction.eAccess.Restricted;
+            startSubmissionAction.AddAuthorizedRole(inspectorRole.Id);
+            //Defining form template
+            startSubmissionAction.AddTemplate(inspectionForm.Id, "Start Submission Template");
+
+            //Defining post actions
+            PostAction postActionSave = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update));
+            postActionSave.AddStateMapping(emptyState.Id, savedState.Id, "Save");
+            PostAction postActionSubmit = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            postActionSubmit.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp startSubmissionActionPopUp = postActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
+            startSubmissionActionPopUp.AddButtons("Yes, submit", "true");
+            startSubmissionActionPopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs
+            //postActionSubmit.AddTriggerRefs("0", centralAdminNotificationEmailTrigger.Id, "Central Admin Notification Email Trigger");
+            //postActionSubmit.AddTriggerRefs("1", ownerSubmissionNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+
+            //Defining authorizatios
+             startSubmissionAction.AddAuthorizedRole(inspectorRole.Id);
+           // startSubmissionAction.AddAuthorizedDomain("@ualberta.ca");
+
+
+            // Edit submission related workflow items
+            //Defining actions
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+
+            //Defining post actions
+            PostAction editSubmissionPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            PostAction editSubmissionPostActionSubmit = editSubmissionAction.AddPostAction("Submit", "Save");
+
+            //Defining state mappings
+            editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
+
+
+
+            editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, submittedState.Id, "Submit");
+
+
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
+            EditSubmissionActionPopUpopUp.AddButtons("Yes, submit", "true");
+            EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs
+            //editSubmissionPostActionSubmit.AddTriggerRefs("0", centralAdminNotificationEmailTrigger.Id, "Central Admin Notification Email Trigger");
+            //editSubmissionPostActionSubmit.AddTriggerRefs("1", ownerSubmissionNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+
+            //Defining state referances
+            editSubmissionAction.AddStateReferances(savedState.Id);
+
+
+
+            //Defining authorizatios
+           // editSubmissionAction.AddAuthorizedRole(centralAdminRole.Id);
+            editSubmissionAction.AddAuthorizedRole(inspectorRole.Id);
+
+            // Delete submission related workflow items
+            //Defining actions
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
+
+            //Defining post actions
+            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.");
+            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining state referances
+            deleteSubmissionAction.AddStateReferances(savedState.Id);
+
+            //Defining authorizatios
+            deleteSubmissionAction.AddAuthorizedRole(inspectorRole.Id);
+
+            GetAction readSubmissionAction = workflow.AddAction("List", "Read", "List");
+            // GetAction readSubmissionAction = workflow.AddAction("List", nameof(TemplateOperations.Read), "List");
+            readSubmissionAction.Access = GetAction.eAccess.Restricted;
+            readSubmissionAction.AddAuthorizedRole(inspectorRole.Id);
+
+
+
+            db.SaveChanges();
+
+
+            template.Data.Save("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.xml");
 
         }
 
