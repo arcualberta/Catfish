@@ -1165,9 +1165,9 @@ namespace Catfish.UnitTests
             Workflow workflow = ws.GetWorkflow(true);
 
             //Defininig states
-            State emptyState = workflow.AddState("", false);
-            State submittedState = workflow.AddState("Submitted", false);
-            State deleteState = workflow.AddState("Deleted", false);
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true, false), false);
+            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true, false), false);
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true, false), false);
 
 
             //Defining email templates
