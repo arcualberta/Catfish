@@ -204,3 +204,11 @@
 .progress {
     height: 3px;
 }
+
+/*Contact form styling*/
+.mandatory {
+    font-weight: bold;
+    color: red;
+    padding-right: 5px;
+    margin-right: 5px;
+}
