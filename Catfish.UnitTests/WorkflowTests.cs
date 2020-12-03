@@ -149,7 +149,7 @@ namespace Catfish.UnitTests
 
 
             IWorkflowService ws = _testHelper.WorkflowService;
-           AppDbContext db = _testHelper.Db;
+            AppDbContext db = _testHelper.Db;
             IAuthorizationService auth = _testHelper.AuthorizationService;
 
 
@@ -1166,27 +1166,22 @@ namespace Catfish.UnitTests
 
             //Defininig states
             State emptyState = workflow.AddState("", false);
-            State savedState = workflow.AddState("Saved", true);
             State submittedState = workflow.AddState("Submitted", false);
             State deleteState = workflow.AddState("Deleted", false);
 
 
-
-
             //Defining email templates
-            EmailTemplate centralAdminNotification = ws.GetEmailTemplate("Central Admin Notification", true);
-            centralAdminNotification.SetDescription("This metadata set defines the email template to be sent to the central admin when a dept admin makes a submission.", lang);
-            centralAdminNotification.SetSubject("Safety Inspection Submission");
-            centralAdminNotification.SetBody("A @Link[safety form|@Model] was submitted.\n\nThank you");
+            EmailTemplate adminNotification = ws.GetEmailTemplate("Admin Notification", true);
+            adminNotification.SetDescription("This metadata set defines the email template to be sent to the admin when an inspector does not submit an inspection report timely.", lang);
+            adminNotification.SetSubject("Safety Inspection Submission");
+            adminNotification.SetBody("TBD");
 
-            EmailTemplate deptAdminSubmissionNotification = ws.GetEmailTemplate("User Notification", true);
-            deptAdminSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when he/she submits a safety inspection form.", lang);
-            deptAdminSubmissionNotification.SetSubject("Safety Inspection Submission");
-            deptAdminSubmissionNotification.SetBody("A @Link[[safety form|@Model] was submitted.\n\nThank you");
+            EmailTemplate inspectorSubmissionNotification = ws.GetEmailTemplate("Inspector Notification", true);
+            inspectorSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to an inspector when an inspection report is not submitted timely.", lang);
+            inspectorSubmissionNotification.SetSubject("Safety Inspection Reminder");
+            inspectorSubmissionNotification.SetBody("TBD");
 
-
-
-            //Defininig the Submission revision Request form
+            //Defininig the inspection form
             DataItem inspectionForm = template.GetDataItem("Weekly Inspection Form", true, lang);
             inspectionForm.IsRoot = true;
             inspectionForm.SetDescription("This template is designed for a weekly inspection of public health measures specific to COVID-19 and other return to campus requirements.", lang);
@@ -1196,7 +1191,7 @@ namespace Catfish.UnitTests
             inspectionForm.CreateField<TextField>("Room/Area:", lang, true);
            
 
-            inspectionForm.CreateField<IntegerField>("Number of People in the Work Area:", lang, true);
+            inspectionForm.CreateField<IntegerField>("Number of People in the work area:", lang, true);
 
             inspectionForm.CreateField<InfoSection>("Physical Distancing", lang);
             string[] optionText = new string[] { "Yes", "No", "N/A" };
@@ -1235,117 +1230,69 @@ namespace Catfish.UnitTests
             inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
 
 
-            //Defining name mappings
-            //TODO: Add functionality for EntityTemplate to allow us define a sequence of metadata set fields
-            //      to be used as table headings in the list view. Use this functionality to specify the
-            //      Course Name and Course Number as the list-view table headings for this schema.
-            //      In the actual listing page, we should show the values of these set of fields and the "owner"
-            //      of the root data object, the created time-stamp of the root data object, and the satust of the
-            //      entity.
-
-
-
             //Defininig roles
-           // WorkflowRole centralAdminRole = workflow.AddRole(auth.GetRole("Admin", true));
-           // WorkflowRole supervisorRole = workflow.AddRole(auth.GetRole("Supervisor", true));
+            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
             WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
 
 
-            // start submission related workflow items
-            //Defining actions
-            //restrict "Inspector" only to be able to submit this form
+            // Submitting an inspection form
+            //Only safey inspectors can submit this form
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
             startSubmissionAction.Access = GetAction.eAccess.Restricted;
-            startSubmissionAction.AddAuthorizedRole(inspectorRole.Id);
-            //Defining form template
-            startSubmissionAction.AddTemplate(inspectionForm.Id, "Start Submission Template");
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedRole(inspectorRole.Id);
 
-            //Defining post actions
-            PostAction postActionSave = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update));
-            postActionSave.AddStateMapping(emptyState.Id, savedState.Id, "Save");
-            PostAction postActionSubmit = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
-            postActionSubmit.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+            //Listing inspection forms.
+            //Inspectors can list their own submissions.
+            //Admins can list all submissions.
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
 
-            //Defining the pop-up for the above postActionSubmit action
-            PopUp startSubmissionActionPopUp = postActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
-            startSubmissionActionPopUp.AddButtons("Yes, submit", "true");
-            startSubmissionActionPopUp.AddButtons("Cancel", "false");
 
-            //Defining trigger refs
-            //postActionSubmit.AddTriggerRefs("0", centralAdminNotificationEmailTrigger.Id, "Central Admin Notification Email Trigger");
-            //postActionSubmit.AddTriggerRefs("1", ownerSubmissionNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
+            //Post action for submitting the form
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
-            //Defining authorizatios
-             startSubmissionAction.AddAuthorizedRole(inspectorRole.Id);
-           // startSubmissionAction.AddAuthorizedDomain("@ualberta.ca");
-
+            //Defining the pop-up for the above submitPostAction action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.");
+            submitActionPopUp.AddButtons("Yes, submit", "true");
+            submitActionPopUp.AddButtons("Cancel", "false");
 
             // Edit submission related workflow items
             //Defining actions
             GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
 
+            //Submissions can only be edited by admins
+            editSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
             //Defining post actions
-            PostAction editSubmissionPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
-            PostAction editSubmissionPostActionSubmit = editSubmissionAction.AddPostAction("Submit", "Save");
+            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
 
-            //Defining state mappings
-            editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
-
-
-
-            editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, submittedState.Id, "Submit");
-
-
-
-            //Defining the pop-up for the above postActionSubmit action
-            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
-            EditSubmissionActionPopUpopUp.AddButtons("Yes, submit", "true");
-            EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
-
-            //Defining trigger refs
-            //editSubmissionPostActionSubmit.AddTriggerRefs("0", centralAdminNotificationEmailTrigger.Id, "Central Admin Notification Email Trigger");
-            //editSubmissionPostActionSubmit.AddTriggerRefs("1", ownerSubmissionNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
-
-            //Defining state referances
-            editSubmissionAction.AddStateReferances(savedState.Id);
-
-
-
-            //Defining authorizatios
-           // editSubmissionAction.AddAuthorizedRole(centralAdminRole.Id);
-            editSubmissionAction.AddAuthorizedRole(inspectorRole.Id);
 
             // Delete submission related workflow items
-            //Defining actions
+            //Defining actions. Only admin can delete a submission
             GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
+            deleteSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
 
             //Defining post actions
             PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
-            deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
 
             //Defining the pop-up for the above postActionSubmit action
             PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.");
             deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
-            //Defining state referances
-            deleteSubmissionAction.AddStateReferances(savedState.Id);
-
-            //Defining authorizatios
-            deleteSubmissionAction.AddAuthorizedRole(inspectorRole.Id);
-
-            GetAction readSubmissionAction = workflow.AddAction("List", "Read", "List");
-            // GetAction readSubmissionAction = workflow.AddAction("List", nameof(TemplateOperations.Read), "List");
-            readSubmissionAction.Access = GetAction.eAccess.Restricted;
-            readSubmissionAction.AddAuthorizedRole(inspectorRole.Id);
-
-
 
             db.SaveChanges();
 
-
             template.Data.Save("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.xml");
-
         }
 
 

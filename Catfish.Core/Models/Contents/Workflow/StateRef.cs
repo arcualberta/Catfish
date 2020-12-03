@@ -100,7 +100,7 @@ namespace Catfish.Core.Models.Contents.Workflow
             RoleReference ownerRoleRef = GetOwnerRole();
 
             if (ownerRoleRef == null)
-                AuthorizedRoles.Add(new RoleReference() { Owner = true });
+                AuthorizedRoles.Add(new RoleReference() { Owner = true, RefId = Guid.Empty });
             else
                 ownerRoleRef.Owner = true;
 
