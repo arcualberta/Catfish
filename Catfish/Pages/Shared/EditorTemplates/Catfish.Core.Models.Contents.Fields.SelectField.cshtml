@@ -1,11 +1,11 @@
 ﻿@model Catfish.Core.Models.Contents.Fields.SelectField
 
 @{
-    var options = Model.Options.Select(a =>
+    var options = Model.Options.Select(op =>
             new SelectListItem
             {
-                Value = a.Id.ToString(),
-                Text = a.OptionText.GetConcatenatedContent(" | ")
+                Value = op.Id.ToString(),
+                Text = op.OptionText.GetConcatenatedContent(" | ")
             }).ToList();
 
     @Html.HiddenFor(model => model.ModelType)

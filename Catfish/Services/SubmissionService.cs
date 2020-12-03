@@ -1,15 +1,18 @@
-﻿using Catfish.Core.Models;
+﻿using Catfish.Core.Authorization.Requirements;
+using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Helper;
 using ElmahCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
@@ -26,7 +29,8 @@ namespace Catfish.Services
         private readonly AppDbContext _db;
         private readonly ErrorLog _errorLog;
         private readonly IServiceProvider _serviceProvider;
-        public SubmissionService(IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog, IServiceProvider serviceProvider)
+        private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _dotnetAuthorizationService;
+        public SubmissionService(IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog, IServiceProvider serviceProvider, Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService)
         {
             _authorizationService = auth;
             _emailService = email;
@@ -36,6 +40,7 @@ namespace Catfish.Services
             _db = db;
             _errorLog = errorLog;
             _serviceProvider = serviceProvider;
+            _dotnetAuthorizationService = dotnetAuthorizationService;
         }
 
         ///// <summary>
@@ -86,7 +91,7 @@ namespace Catfish.Services
 
         }
 
-        public List<Item> GetSubmissionList(Guid templateId, Guid? collectionId, DateTime? startDate = null, DateTime? endDate = null)
+        public List<Item> GetSubmissionList(ClaimsPrincipal user, Guid templateId, Guid? collectionId, DateTime? startDate = null, DateTime? endDate = null)
         {
             List<Item> items = new List<Item>();
            // Guid gTemplateId = !string.IsNullOrEmpty(templateId) ? Guid.Parse(templateId) : Guid.Empty;
@@ -102,7 +107,16 @@ namespace Catfish.Services
                    
                     query = query.Where(i => i.PrimaryCollectionId == collectionId);
                 }
-                items = query.OrderByDescending(i => i.Created).ToList();
+
+                var potentialItems = query.OrderByDescending(i => i.Created).ToList();
+                foreach (var item in potentialItems)
+                {
+                    var task = _dotnetAuthorizationService.AuthorizeAsync(user, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read });
+                    task.Wait();
+
+                    if (task.Result.Succeeded)
+                        items.Add(item);
+                }
             }
             catch (Exception ex)
             {

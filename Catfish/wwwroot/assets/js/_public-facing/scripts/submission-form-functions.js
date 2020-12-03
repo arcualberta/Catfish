@@ -26,11 +26,6 @@
         var values = {};
         var form = $('#submissionForm_' + suffix);
 
-        ////$.each(form.serializeArray(), function (i, field) {
-        ////    name = field.name.replace(prefix, "");
-        ////    values[name] = field.value;
-        ////});
-
         //Handling hidden fields
         $.each($('input[type=hidden]', form).serializeArray(), function (i, field) {
             name = field.name.replace(prefix, "");
@@ -49,8 +44,14 @@
             values[name] = field.value;
         });
 
-        //Handling radio button fields
+        //Handling radio-button fields
         $.each($('input[type=radio]:checked', form).serializeArray(), function (i, field) {
+            name = field.name.replace(prefix, "") + ".Selected";
+            values[name] = true;
+        });
+
+        //Handling drop-down fields
+        $.each($('select', form).serializeArray(), function (i, field) {
             name = field.name.replace(prefix, "") + ".Selected";
             values[name] = true;
         });

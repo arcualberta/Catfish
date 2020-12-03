@@ -4,6 +4,7 @@ using Catfish.Core.Models.Contents.Workflow;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -15,7 +16,7 @@ namespace Catfish.Services
         //Entity GetSubmissionDetails(Guid id);
         //string SaveSubmission(Entity submission);
         List<Item> GetSubmissionList();
-        List<Item> GetSubmissionList(Guid templateId, Guid? collectionId, DateTime? startDate = null, DateTime? endDate = null);
+        List<Item> GetSubmissionList(ClaimsPrincipal user, Guid templateId, Guid? collectionId, DateTime? startDate = null, DateTime? endDate = null);
         Item GetSubmissionDetails(Guid itemId);
         List<ItemField> GetAllField(string xml);
         string GetStatus(Guid? statusId);
