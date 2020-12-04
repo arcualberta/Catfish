@@ -31,7 +31,7 @@ namespace Catfish.Services
             try
             {
                 MailMessage mailMessage = new MailMessage();
-                mailMessage.From = new MailAddress(email.FromEmail);
+                mailMessage.From = new MailAddress(_config.GetSmtpEmail()); 
                 mailMessage.To.Add(email.RecipientEmail);
                 mailMessage.Subject = email.Subject;
                 mailMessage.IsBodyHtml = true;

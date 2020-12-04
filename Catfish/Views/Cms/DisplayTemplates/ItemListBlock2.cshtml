@@ -25,7 +25,7 @@
             <label>From:</label> <input type="date" name="startDate" id="startDate" class="form-control" />
         </div>
         <div class="col-md-5 form-group"> <label class="form-label">To:</label><input type="date" name="endDate" id="endDate" class="form-control" /></div>
-        <button id="itemListBtnFilter" class="btn btn-default btn-primary" style="margin-top:30px; height:fit-content;" value="Filter"><span class="fa fa-filter" style="padding-right:5px;"></span>Filter </button>
+        <button id="itemListBtnFilter" onclick="filterItems('@entityTemplateId', '@collectionId')" class="btn btn-default btn-primary" style="margin-top:30px; height:fit-content;" value="Filter"><span class="fa fa-filter" style="padding-right:5px;"></span>Filter </button>
     </div>
 
     IList<Item> itemList = _submissionService.GetSubmissionList(User, entityTemplateId, collectionId);
@@ -90,55 +90,5 @@ else
 {
     <div class="alert alert-warning">Authorization failed.</div>
 }
-
-<script>
-    $("#itemListBtnFilter").click(function () {
-
-        //string templateId, string collectionId, string fromDate=null, string toDate=null
-        var templateId ="@entityTemplateId";
-        var collId = "@collectionId";
-        var fromDate = $("#startDate").val();
-        var toDate = $("#endDate").val();
-        $.ajax({
-
-            url:  '/api/items/GetItemList/',
-            type: 'GET',
-            data: {
-                'templateId': templateId, "collectionId": collId, "startDate": fromDate, "endDate": toDate
-            },
-
-            success: function (data) {
-                var tbl = $("#itemListBlockTable");
-                //reset content table content rows
-
-                $("#itemListBlockTable tr.tblRowContent").remove();
-                $(data).each(function (index, d) {
-                    if (index > 0) {
-                        var cols = d.split(",");
-                        var row = ` <tr class="tblRowContent">`;
-                        var i;
-                        for (i = 0; i < cols.length-1; i++) {
-                            row += "<td>" + cols[i] + "</td>";
-                        }
-                        row += "</tr>";
-
-                        $("#itemListBlockTable").append(row);
-                        row = "";
-                    }
-                });
-            },
-            error: function (request, error) {
-                alert("Request: " + JSON.stringify(request));
-            }
-        });
-
-
-    });
-</script>
-<style>
-    #itemListBlockTable {
-        margin-top: 15px;
-    }
-</style>
 
 

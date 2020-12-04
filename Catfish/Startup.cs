@@ -403,7 +403,6 @@ namespace Catfish
             App.Blocks.Register<ControlledVocabularySearchBlock>();
             App.Blocks.Register<VueList>();
             App.Blocks.Register<VueCarousel>();
-            App.Blocks.Register<VueHeader>();
             App.Blocks.Register<VueSubmissionForm>();
         }
         private static void RegisterCustomStyles()
