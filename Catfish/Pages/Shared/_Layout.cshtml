@@ -1,7 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Mvc.ViewEngines
+@using Catfish.Helper
+@using Catfish.Models.SiteTypes
 @using Microsoft.Extensions.Hosting
 @inject IWebHostEnvironment Env
-@inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig;
+@inject ICatfishAppConfiguration _catfishAppConfig;
+
+@inject ICompositeViewEngine _viewEngine
+@inject Piranha.IApi _piranhaApi;
 
 <!doctype html>
 <html lang="en">
@@ -17,13 +23,30 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bitter:700|Open+Sans:300,400,600">
         <link rel="stylesheet" href="~/assets/css/style.min.css">*@
 
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500">
-    <link rel="stylesheet" href="~/css/style.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.min.js" integrity="sha384-3ziFidFTgxJXHMDttyPJKDuTlmxJlwbSkojudK/CkRqKDOmeSbN6KLrGdrBQnT2n" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     @*<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>*@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <link rel="stylesheet" href="~/css/style.min.css">
+    <link href="~/assets/css/public/style.css" rel="stylesheet" />
+    <link href="~/assets/css/public/componentStyles.css" rel="stylesheet" />
+    <link href="~/assets/css/public/transitionAndAnimationPublicSide.css" rel="stylesheet" />
+    <link href="~/assets/css/public/commonBlockStyles.css" rel="stylesheet" />
+    <script src="~/assets/js/catfish.js"></script>
+
+
+    <script src="~/assets/js/_public-facing/scripts/component-scripts.js"></script>
+    <script src="~/assets/js/_public-facing/scripts/submission-form-functions.js"></script>
+    <script src="~/assets/js/_public-facing/scripts/item-list-functions.js"></script>
+
+
     <!-- Google Login  -->
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <meta name="google-signin-client_id" content="@_catfishAppConfig.GetGoogleClientId()">
@@ -36,35 +59,160 @@
     }
 
     @RenderSection("head", required: false)
+    <script src="/assets/js/vue/vue-dev.js"></script>
+    <script>
+        let sitemap = @Json.Serialize(WebApp.Site.Sitemap);
+        $(function () {
+            updateBreadcrumb();
+        });
+    </script>
 </head>
 <body>
-    <header role="banner">
-        <div class="menu">
+    <div id="vueApp">
+        @{
+            var site = await _piranhaApi.Sites.GetByInternalIdAsync("Default");//"Default" is InternalId of the site
+            var logoUrl = _catfishAppConfig.GetLogoUrl();
+            string loginButtonLocation = _catfishAppConfig.GetValue("SiteConfig:LoginButtonLocation", null);
+            ICatfishAppConfiguration.ePanelLocation searchPanelLocation = _catfishAppConfig.GetDefaultSearchPanelLocation();
+            var homepage = WebApp.Site.Sitemap.FirstOrDefault();
+            string homepageUrlStartTag = "";
+            string homepageUrlEndTag = "";
+            if (homepage != null)
+            {
+                homepageUrlStartTag = string.Format("<a href='{0}'>", homepage.Permalink);
+                homepageUrlEndTag = "</a>";
+            }
+
             <div class="container">
                 <div class="row">
-                    <div class="col-sm">
-                        <partial name="/Views/Shared/Partial/_Menu.cshtml" />
+                    @if (!string.IsNullOrEmpty(logoUrl))
+                    {
+                        <div id="site-logo">@Html.Raw(homepageUrlStartTag)<img src="@logoUrl" />@Html.Raw(homepageUrlEndTag) </div>
+                    }
+                    <div class="header-brand">
+                        <h1>@Html.Raw(homepageUrlStartTag)@site.Title@Html.Raw(homepageUrlEndTag) </h1>
+                        <h3>@site.Description</h3>
                     </div>
+                    @if (searchPanelLocation == ICatfishAppConfiguration.ePanelLocation.Header)
+                    {
+                        <partial name="/Views/Shared/Partial/_Search.cshtml" />
+                    }
                 </div>
             </div>
-        </div>
-    </header>
+            <header class="site-header  @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm">
+                            <div id="site-header-root"></div>
+                            <partial name="/Views/Shared/Partial/_Menu.cshtml" />
+                        </div>
+                        @if (_catfishAppConfig.IsAllowGoogleLogin())
+                        {
+                            <div class="signinout">
+                                @if (!User.Identity.IsAuthenticated)
+                                {
+                                    <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '/login'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
+                                }
+                                else
+                                {
+                                    if (User.IsInRole("SysAdmin"))
+                                    {
+                                        <button class="btn btn-link" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                                    }
+                                    <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-link"><span class="fa fa-sign-out"> Sign Out</span></button>
+                                }
+                            </div>
+                        }
+                    </div> @* row*@
 
-    <div class="main-body">
+                    @* Bread crumb *@
+                    @if (_catfishAppConfig.GetEnabledBreadcrumb())
+                    {
+                        <div class="breadcrumb-container col-sm">
+                            <ul class="breadcrumb"></ul>
+                        </div>
+                    }
+                </div> @*container*@
+            </header>
+        }
+        @if (searchPanelLocation == ICatfishAppConfiguration.ePanelLocation.Body)
+        {
+            <partial name="/Views/Shared/Partial/_Search.cshtml" />
+        }
         @RenderBody()
 
-        <footer>
+
+        <footer class="border-top footer text-muted">
             <div class="container">
-                <div class="row">
-                    <div class="col-sm">
-                        @*Copyright &copy; 2018 Piranha CMS | <a href="https://twitter.com/piranhacms">@@piranhacms</a>*@
+                @{
+                    var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
+                    var javascriptCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Javascript == null)
+                        ? "" : currentSite.FooterContents.Javascript.Value;
+                    var cssCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Css == null)
+                       ? "" : currentSite.FooterContents.Css.Value;
+                }
+                @if (currentSite != null)
+                {
+                    <div class="row">
+
+                        <div class="col-6 footer-arc-text">
+                            @Html.Raw(currentSite.FooterContents.Text)
+                        </div>
+                        <div class="col-6 footer-arc-logo">
+                            Designed and engineered by  <img src="@Url.Content(currentSite.FooterContents.Logo)" />
+                        </div>
+
+                        @Html.Raw(javascriptCode)
+
+                        @Html.Raw(cssCode)
+
+
                     </div>
-                </div>
+                }
             </div>
         </footer>
-    </div>
-
+    </div>@*End of vueApp div *@
+    <script>
+        new Vue({ el: '#vueApp' })
+    </script>
 
     @RenderSection("script", required: false)
+
+    <script>
+
+        function onLoad() {
+            gapi.load('auth2', function () {
+                gapi.auth2.init();
+            });
+        }
+        function signOut() {
+            //signout local login
+            $.ajax({
+                type: 'GET',
+                url: "/CatfishUser",
+                headers: {
+                    RequestVerificationToken:
+                        $('input:hidden[name="__RequestVerificationToken"]').val()
+                }
+            }).done(function (result) {
+                //sign out google gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
+                try {
+                    var auth2 = gapi.auth2.getAuthInstance().currentUser.get().reloadAuthResponse();
+                    auth2.signOut().then(function () {
+                        //console.log('User signed out.');
+                        auth2.disconnect();
+                        window.location.href = "/";
+                    });
+                    auth2.disconnect();
+                } catch (ex) {
+                    window.location.href = "/";
+                }
+
+
+            });
+        }
+
+    </script>
+    <script src="~/assets/dist/vendorsPublicFacingSide.js"></script>
 </body>
 </html>
