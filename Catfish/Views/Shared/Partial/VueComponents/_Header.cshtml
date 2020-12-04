@@ -1,0 +1,97 @@
+﻿@inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
+@inject Piranha.IApi _piranhaApi;
+@using Catfish.Models.SiteTypes
+@using Catfish.Helper
+@*
+    TODO: build the header here, using Vue.
+*@
+
+@{
+    var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
+    var backgroundColor = currentSite.HeaderContents.BackgroundColor.Value;
+    //var textColor = currentSite.HeaderContents.TextColor.Value;
+    var removeWebsiteTitle = currentSite.HeaderContents.RemoveWebsiteTitle.Value;
+    ViewBag.showDefaultPageTitles = currentSite.HeaderContents.RemovePageTitles.Value;
+
+
+    var site = await _piranhaApi.Sites.GetByInternalIdAsync("Default");//"Default" is InternalId of the site
+    var logoUrl = _catfishAppConfig.GetLogoUrl();
+    string loginButtonLocation = _catfishAppConfig.GetValue("SiteConfig:LoginButtonLocation", null);
+    ICatfishAppConfiguration.ePanelLocation searchPanelLocation = _catfishAppConfig.GetDefaultSearchPanelLocation();
+    var homepage = WebApp.Site.Sitemap.FirstOrDefault();
+    string homepageUrlStartTag = "";
+    string homepageUrlEndTag = "";
+
+
+if (homepage != null)
+{
+homepageUrlStartTag = string.Format("<a href='{0}'>", homepage.Permalink);
+homepageUrlEndTag = "</a>";
+}
+<div id="entire-header" style="background-color: @backgroundColor; @*color: @textColor*@">
+    <div class="container">
+        <div class="row">
+            @if (!string.IsNullOrEmpty(logoUrl))
+            {
+                <div id="site-logo">@Html.Raw(homepageUrlStartTag)<img src="@logoUrl" />@Html.Raw(homepageUrlEndTag) </div>
+            }
+        <div class="header-brand">
+            @if(!removeWebsiteTitle){
+            <h1 @*style="color: @textColor"*@>@Html.Raw(homepageUrlStartTag)@site.Title@Html.Raw(homepageUrlEndTag) </h1>
+            }
+            @if(site.Description != null){
+            <h3 @*style="color: @textColor"*@>@site.Description</h3>
+            }
+
+            <div>
+                @Html.Raw(currentSite.HeaderContents.Text)
+            </div>
+        </div>
+            @if (searchPanelLocation == ICatfishAppConfiguration.ePanelLocation.Header)
+            {
+                <partial name="/Views/Shared/Partial/_Search.cshtml" />
+            }
+        </div>
+    </div>
+    <header class="site-header  @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">
+                    <partial name="/Views/Shared/Partial/_Menu.cshtml" />
+                </div>
+                @if (_catfishAppConfig.IsAllowGoogleLogin())
+                {
+                    <div class="signinout">
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <button id="btnSignIn" class="btn btn-link" onclick="window.location.href = '/login'; return false;"><span class="fa fa-sign-in "> Sign In</span></button>
+                        }
+                        else
+                        {
+                            if (User.IsInRole("SysAdmin"))
+                            {
+                                <button class="btn btn-link" onclick="window.location.href='/manager'"><span class="fa fa-table"> Dashboard</span></button>
+                            }
+                            <button id="btnSignOut" onclick="signOut(); return false;" class="btn btn-link"><span class="fa fa-sign-out"> Sign Out</span></button>
+                        }
+
+
+                    </div>
+                }
+            </div> @* row*@
+
+            @* Bread crumb *@
+            @if (_catfishAppConfig.GetEnabledBreadcrumb())
+            {
+                <div class="breadcrumb-container col-sm">
+                    <ul class="breadcrumb"></ul>
+                </div>
+            }
+        </div> @*container*@
+    </header>
+</div>
+}
+@if (searchPanelLocation == ICatfishAppConfiguration.ePanelLocation.Body)
+{
+    <partial name="/Views/Shared/Partial/_Search.cshtml" />
+}

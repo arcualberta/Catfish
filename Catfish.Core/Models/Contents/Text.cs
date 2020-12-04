@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml.Linq;
@@ -53,10 +54,11 @@ namespace Catfish.Core.Models.Contents
         }
 
         [JsonIgnore]
-        public DateTime DateValue
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        public DateTime? DateValue
         {
-            get => string.IsNullOrEmpty(Data.Value) ? new DateTime() : DateTime.Parse(Data.Value);
-            set => Data.Value = value.ToString();
+            get => string.IsNullOrEmpty(Data.Value) ? DateTime.Today : DateTime.Parse(Data.Value);
+            set => Data.Value = value.HasValue ? value.Value.ToString() : "";
         }
 
         [JsonIgnore]

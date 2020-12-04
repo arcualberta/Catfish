@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Contents.Fields;
+﻿using Catfish.Core.Models.Contents;
+using Catfish.Core.Models.Contents.Fields;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;

@@ -268,7 +268,7 @@ namespace Catfish
             var pageTypeBuilder = new Piranha.AttributeBuilder.PageTypeBuilder(api)
                  .AddType(typeof(Models.StandardArchive))
                 .AddType(typeof(Models.StandardPage))
-                // .AddType(typeof(Models.StartPage))
+                 .AddType(typeof(Models.StartPage))
                  .AddType(typeof(Models.MediaPage))
                
                 .Build()
@@ -403,7 +403,6 @@ namespace Catfish
             App.Blocks.Register<ControlledVocabularySearchBlock>();
             App.Blocks.Register<VueList>();
             App.Blocks.Register<VueCarousel>();
-            App.Blocks.Register<VueHeader>();
 
         }
         private static void RegisterCustomStyles()

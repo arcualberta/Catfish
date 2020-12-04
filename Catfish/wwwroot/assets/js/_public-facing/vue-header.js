@@ -8,19 +8,13 @@ test = Vue.component('vue-header', {
         }
     },
     mounted() {
-        this.entries = this.model.Items.Value
-            .split(",")
-            .filter(val => val.trim().length > 0);
+        console.log("i am a running header");
     },
-    template: `
-        <div>
-            <div>I am a test where do I show up</div>
-            <ul>
-                <li v-for="item in entries">{{item}}</li>
-            </ul>
-        </div>
-        `
-});//.$mount();
+    methods: {
 
-new test().$mount('#site-header-root');
-//Vue.$mount('#site-header');
+    }
+});
+
+window.onload = function () {
+    new test().$mount('#entire-header');
+}
