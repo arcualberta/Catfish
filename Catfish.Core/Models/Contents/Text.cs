@@ -54,12 +54,11 @@ namespace Catfish.Core.Models.Contents
         }
 
         [JsonIgnore]
-        [Required]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime DateValue
+        public DateTime? DateValue
         {
             get => string.IsNullOrEmpty(Data.Value) ? DateTime.Today : DateTime.Parse(Data.Value);
-            set => Data.Value = value.ToString();
+            set => Data.Value = value.HasValue ? value.Value.ToString() : "";
         }
 
         [JsonIgnore]

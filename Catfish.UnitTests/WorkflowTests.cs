@@ -1186,8 +1186,9 @@ namespace Catfish.UnitTests
             DataItem inspectionForm = template.GetDataItem("Weekly Inspection Form", true, lang);
             inspectionForm.IsRoot = true;
             inspectionForm.SetDescription("This template is designed for a weekly inspection of public health measures specific to COVID-19 and other return to campus requirements.", lang);
-            
-            inspectionForm.CreateField<DateField>("Inspection Date:", lang, true);
+
+            inspectionForm.CreateField<DateField>("Inspection Date:", lang, true)
+                .IncludeTime = false;
             
             string[] optionBuilding = new string[] { "Convocation Hall", "Tory Building", "Humanities", "FAB" };
             inspectionForm.CreateField<SelectField>("Building:", lang, optionBuilding);
