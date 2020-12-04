@@ -7,6 +7,7 @@ using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Services;
 using Catfish.Tests.Helpers;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -149,7 +150,7 @@ namespace Catfish.UnitTests
 
 
             IWorkflowService ws = _testHelper.WorkflowService;
-           AppDbContext db = _testHelper.Db;
+            AppDbContext db = _testHelper.Db;
             IAuthorizationService auth = _testHelper.AuthorizationService;
 
 
@@ -814,7 +815,7 @@ namespace Catfish.UnitTests
             EmailTemplate centralAdminNotification = ws.GetEmailTemplate("Central Admin Notification", true);
             centralAdminNotification.SetDescription("This metadata set defines the email template to be sent to the central admin when a dept admin makes a submission.", lang);
             centralAdminNotification.SetSubject("Safety Inspection Submission");
-            centralAdminNotification.SetBody("A @Link[safety form|@Model] was submitted.\n\nThank you"); //???
+            centralAdminNotification.SetBody("A @Link[safety form|@Model] was submitted.\n\nThank you"); 
 
             EmailTemplate deptAdminSubmissionNotification = ws.GetEmailTemplate("User Notification", true);
             deptAdminSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when he/she submits a safety inspection form.", lang);
@@ -1127,6 +1128,181 @@ namespace Catfish.UnitTests
 
             template.Data.Save("..\\..\\..\\..\\Examples\\safetyInfoWorkflow_generared.xml");
 
+        }
+
+        [Test]
+        public void CovidSafetyInspectionTest()
+        {
+            string lang = "en";
+            string templateName = "Weekly Inspection Template";
+
+            IWorkflowService ws = _testHelper.WorkflowService;
+            AppDbContext db = _testHelper.Db;
+            IAuthorizationService auth = _testHelper.AuthorizationService;
+
+
+            ItemTemplate template = db.ItemTemplates
+                .Where(et => et.TemplateName == templateName)
+                .FirstOrDefault();
+
+            if (template == null)
+            {
+                template = new ItemTemplate();
+                db.ItemTemplates.Add(template);
+            }
+            else
+            {
+                ItemTemplate t = new ItemTemplate();
+                t.Id = template.Id;
+                template.Data = t.Data;
+                template.Initialize(false);
+            }
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
+
+            ws.SetModel(template);
+
+            //Get the Workflow object using the workflow service
+            Workflow workflow = ws.GetWorkflow(true);
+
+            //Defininig states
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true, false), false);
+            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true, false), false);
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true, false), false);
+
+
+            //Defining email templates
+            EmailTemplate adminNotification = ws.GetEmailTemplate("Admin Notification", true);
+            adminNotification.SetDescription("This metadata set defines the email template to be sent to the admin when an inspector does not submit an inspection report timely.", lang);
+            adminNotification.SetSubject("Safety Inspection Submission");
+            adminNotification.SetBody("TBD");
+
+            EmailTemplate inspectorSubmissionNotification = ws.GetEmailTemplate("Inspector Notification", true);
+            inspectorSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to an inspector when an inspection report is not submitted timely.", lang);
+            inspectorSubmissionNotification.SetSubject("Safety Inspection Reminder");
+            inspectorSubmissionNotification.SetBody("TBD");
+
+            //Defininig the inspection form
+            DataItem inspectionForm = template.GetDataItem("Weekly Inspection Form", true, lang);
+            inspectionForm.IsRoot = true;
+            inspectionForm.SetDescription("This template is designed for a weekly inspection of public health measures specific to COVID-19 and other return to campus requirements.", lang);
+
+            inspectionForm.CreateField<DateField>("Inspection Date:", lang, true)
+                .IncludeTime = false;
+            
+            string[] optionBuilding = new string[] { "Convocation Hall", "Tory Building", "Humanities", "FAB" };
+            inspectionForm.CreateField<SelectField>("Building:", lang, optionBuilding);
+            inspectionForm.CreateField<TextField>("Inspected By:", lang, true, true);
+            inspectionForm.CreateField<TextField>("Room/Area:", lang, true, true);
+
+
+            inspectionForm.CreateField<CheckboxField>("Room/Area Check:", lang, optionBuilding);
+
+            inspectionForm.CreateField<IntegerField>("Number of People in the work area:", lang, true);
+
+            inspectionForm.CreateField<InfoSection>("Physical Distancing", lang);
+            string[] optionText = new string[] { "Yes", "No", "N/A" };
+            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText);
+            inspectionForm.CreateField <RadioField> ("Where physical distancing is not possible, are occupants wearing face masks?", lang, optionText);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
+            inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
+
+            inspectionForm.CreateField<InfoSection>("Personal Hygiene", lang);  
+            inspectionForm.CreateField<RadioField>("Is a hand washing sink or hand sanitizer available?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Is the sink clean and free of contamination?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Is there an adequate supply of soap? ", lang, optionText);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
+            inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
+
+            inspectionForm.CreateField<InfoSection>("Housekeeping", lang);
+            inspectionForm.CreateField<RadioField>("Is general housekeeping and cleanliness being maintained?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Are surfaces being disinfected on a regular basis?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Are there adequate cleaning supplies for the next 2 weeks?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Are walkways clear of trip hazards?", lang, optionText);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
+            inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
+
+            inspectionForm.CreateField<InfoSection>("Training", lang);
+            inspectionForm.CreateField<RadioField>("Have all employees taken the COVID-19 Return to Campus training?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Have all employees been trained in your return to campus plan?", lang, optionText);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
+            inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
+
+            inspectionForm.CreateField<InfoSection>("Other", lang);
+            inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Have all sinks been flushed for 3 minutes?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Is all appropriate PPE being worn?", lang, optionText);
+           
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
+            inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
+
+
+            //Defininig roles
+            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
+            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
+
+
+            // Submitting an inspection form
+            //Only safey inspectors can submit this form
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+            startSubmissionAction.Access = GetAction.eAccess.Restricted;
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedRole(inspectorRole.Id);
+
+            //Listing inspection forms.
+            //Inspectors can list their own submissions.
+            //Admins can list all submissions.
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
+
+            //Post action for submitting the form
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+
+            //Defining the pop-up for the above submitPostAction action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.");
+            submitActionPopUp.AddButtons("Yes, submit", "true");
+            submitActionPopUp.AddButtons("Cancel", "false");
+
+            // Edit submission related workflow items
+            //Defining actions
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+
+            //Submissions can only be edited by admins
+            editSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+
+
+            // Delete submission related workflow items
+            //Defining actions. Only admin can delete a submission
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
+            deleteSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.");
+            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+
+            db.SaveChanges();
+
+            template.Data.Save("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.xml");
+
+            string json = JsonConvert.SerializeObject(template);
+            File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
         }
 
 

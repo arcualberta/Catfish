@@ -1,0 +1,13 @@
+﻿@model Catfish.Core.Models.Contents.Fields.RadioField
+
+@{
+    @Html.HiddenFor(model => model.ModelType)
+    @Html.HiddenFor(model => model.Id)
+    @for (int i = 0; i < Model.Options.Count; ++i)
+    {
+        @Html.HiddenFor(model => model.Options[i].Id)
+        @*@Html.RadioButtonFor(model => model.Options[i], Model.Options[i].Id.ToString());*@
+        @Html.RadioButtonFor(model => model, Model.Options[i].Id.ToString());
+        @Html.Raw(string.Format("<span class='radio-option-label'>{0}</span>", Model.Options[i].OptionText.GetConcatenatedContent(" | ")));
+    }
+}

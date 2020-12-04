@@ -202,6 +202,21 @@ namespace Catfish.Services
             }
         }
 
+        public User GetLoggedUser()
+        {
+            try
+            {
+                string userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var userDetails = _piranhaDb.Users.Where(ud => ud.Id == Guid.Parse(userId)).FirstOrDefault();
+                return userDetails;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
         public string GetLoggedUserRole()
         {
             try

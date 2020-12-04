@@ -10,6 +10,8 @@ namespace Catfish.Core.Models.Contents.Fields
     {
         public static readonly string OptionContainerTag = "options";
         public static readonly string OptionTag = "option";
+
+        public Guid[] SelectedOptionGuids { get; set; }
         public OptionsField() { }
         public OptionsField(XElement data) : base(data) { }
         public OptionsField(string name, string desc, string lang = null) : base(name, desc, lang) { }
@@ -73,11 +75,11 @@ namespace Catfish.Core.Models.Contents.Fields
             if (src == null)
                 throw new Exception("The source field is null or is not an OptionsField");
 
+            var selections = src.SelectedOptionGuids == null ? new Guid[0] : src.SelectedOptionGuids;
+
             foreach (var dstOption in Options)
             {
-                var srcOption = src.Options.Where(opt => opt.Id == dstOption.Id).FirstOrDefault();
-                if (srcOption != null)
-                    dstOption.Selected = srcOption.Selected;
+                dstOption.Selected = selections.Contains(dstOption.Id);
             }
         }
     }

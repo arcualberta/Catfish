@@ -12,8 +12,6 @@
 @{
     var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
     var collectionId = string.IsNullOrEmpty(Model.SelectedCollection) ? null as Guid? : Guid.Parse(Model.SelectedCollection);
-    IList<Item> itemList = _submissionService.GetSubmissionList(entityTemplateId, collectionId);
-
 
     bool printTitle = true;
     
@@ -31,8 +29,10 @@
         <button onclick="filterItems('@entityTemplateId', '@collectionId', $('#startDate').val(), $('#endDate').val(), 'itemListBlockTable');" class="btn btn-default btn-primary" style="margin-top:30px; height:fit-content;" value="Filter"><span class="fa fa-filter" style="padding-right:5px;"></span>Filter </button>
     </div>
 
-
     <button id="downloadCsvFile" class="btn btn-default btn-primary" onclick="generateCSV('Items_@DateTime.Now.ToShortDateString()','itemListBlockTable' )"><span class="fa fa-download" style="padding-right:5px;"></span>Download CSV</button>
+
+    IList<Item> itemList = _submissionService.GetSubmissionList(User, entityTemplateId, collectionId);
+
     if (itemList.Count > 0)
     {
         <table class="table table-stripe table-border" id="itemListBlockTable">

@@ -5,5 +5,15 @@
 @for (int i = 0; i < Model.Values.Count; ++i)
 {
     @Html.HiddenFor(model => model.Values[i].Id)
-    @Html.EditorFor(model => Model.Values[i].DateValue)
+
+    var name = Html.NameFor(model => model.Values[i].DateValue);
+    var id = Html.IdFor(model => model.Values[i].DateValue);
+    var required = Model.Required ? "required" : "";
+    var fieldType = Model.IncludeTime ? "datetime-local" : "date";
+
+    <input type="@fieldType" 
+           id="@id" 
+           name="@name" 
+           value="@Model.Values[i].DateValue" 
+           @required>
 }
