@@ -26,35 +26,25 @@
         var values = {};
         var form = $('#submissionForm_' + suffix);
 
-        //Handling hidden fields
-        $.each($('input[type=hidden]', form).serializeArray(), function (i, field) {
+        //Handling text areas and input elements EXCLUDING checkboxes, radio buttons, and drop-down (select) menus
+        $.each($('input, textarea', form).not('input[type=checkbox], input[type=radio], select').serializeArray(), function (i, field) {
             name = field.name.replace(prefix, "");
             values[name] = field.value;
         });
 
-       //Handling text fields
-        $.each($('input[type=text]', form).serializeArray(), function (i, field) {
+        //Handling checkbox sets
+        $.each($('input[type=checkbox]:checked', form).serializeArray(), function (i, field) {
             name = field.name.replace(prefix, "");
-            values[name] = field.value;
-        });
-
-        //Handling textarea fields
-        $.each($('input[type=text], textarea', form).serializeArray(), function (i, field) {
-            name = field.name.replace(prefix, "");
-            values[name] = field.value;
-        });
-
-        //Handling radio-button fields
-        $.each($('input[type=radio]:checked', form).serializeArray(), function (i, field) {
-            name = field.name.replace(prefix, "") + ".Selected";
             values[name] = true;
         });
 
-        //Handling drop-down fields
-        $.each($('select', form).serializeArray(), function (i, field) {
-            name = field.name.replace(prefix, "") + ".Selected";
-            values[name] = true;
+        //Handling radio-button fields and drop-down menus
+        $.each($('input[type=radio]:checked, select', form).serializeArray(), function (i, field) {
+            name = field.name.replace(prefix, "") + ".SelectedOptionGuids";
+            values[name] = [field.value];
         });
+
+
 
         values["actionButton"] = buttonName;
         values["status"] = status;
