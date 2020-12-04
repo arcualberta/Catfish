@@ -186,3 +186,4 @@ Plugins
 /node_modules/*
 /Examples/centralAmericaRegistration_generared.xml
 /Examples/covidWeeklyInspectionWorkflow_generared.xml
+/Examples/covidWeeklyInspectionWorkflow_generared.json

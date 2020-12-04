@@ -54,7 +54,7 @@ namespace Catfish.Controllers.Api
             if (template != null)
             {
 
-                IList<Item> itemList = _submissionService.GetSubmissionList(templateId, collectionId, startDate, endDate);
+                IList<Item> itemList = _submissionService.GetSubmissionList(User, templateId, collectionId, startDate, endDate);
                
                 bool header = true;
                 if (itemList.Count > 0)

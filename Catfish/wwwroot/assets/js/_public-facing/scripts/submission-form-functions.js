@@ -22,12 +22,30 @@
 
         //Reguar expression for matching the variable name prefix up to the item's properties.
         var prefix = /^Blocks\[[0-9]+\]\.Item\.|^block.Item\./;
-
+        var name;
         var values = {};
-        $.each($('#submissionForm_'+suffix).serializeArray(), function (i, field) {
+        var form = $('#submissionForm_' + suffix);
+
+        //Handling text areas and input elements EXCLUDING checkboxes, radio buttons, and drop-down (select) menus
+        $.each($('input, textarea', form).not('input[type=checkbox], input[type=radio], select').serializeArray(), function (i, field) {
             name = field.name.replace(prefix, "");
             values[name] = field.value;
         });
+
+        //Handling checkbox sets
+        $.each($('input[type=checkbox]:checked', form).serializeArray(), function (i, field) {
+            name = field.name.replace(prefix, "");
+            values[name] = true;
+        });
+
+        //Handling radio-button fields and drop-down menus
+        $.each($('input[type=radio]:checked, select', form).serializeArray(), function (i, field) {
+            name = field.name.replace(prefix, "") + ".SelectedOptionGuids";
+            values[name] = [field.value];
+        });
+
+
+
         values["actionButton"] = buttonName;
         values["status"] = status;
 

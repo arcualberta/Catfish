@@ -7,6 +7,7 @@ using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Services;
 using Catfish.Tests.Helpers;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -1185,11 +1186,17 @@ namespace Catfish.UnitTests
             DataItem inspectionForm = template.GetDataItem("Weekly Inspection Form", true, lang);
             inspectionForm.IsRoot = true;
             inspectionForm.SetDescription("This template is designed for a weekly inspection of public health measures specific to COVID-19 and other return to campus requirements.", lang);
+
+            inspectionForm.CreateField<DateField>("Inspection Date:", lang, true)
+                .IncludeTime = false;
+            
             string[] optionBuilding = new string[] { "Convocation Hall", "Tory Building", "Humanities", "FAB" };
             inspectionForm.CreateField<SelectField>("Building:", lang, optionBuilding);
-            inspectionForm.CreateField<TextField>("Inspected By:", lang, true);
-            inspectionForm.CreateField<TextField>("Room/Area:", lang, true);
-           
+            inspectionForm.CreateField<TextField>("Inspected By:", lang, true, true);
+            inspectionForm.CreateField<TextField>("Room/Area:", lang, true, true);
+
+
+            inspectionForm.CreateField<CheckboxField>("Room/Area Check:", lang, optionBuilding);
 
             inspectionForm.CreateField<IntegerField>("Number of People in the work area:", lang, true);
 
@@ -1293,6 +1300,9 @@ namespace Catfish.UnitTests
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.xml");
+
+            string json = JsonConvert.SerializeObject(template);
+            File.WriteAllText("..\\..\\..\\..\\Examples\\covidWeeklyInspectionWorkflow_generared.json", json);
         }
 
 

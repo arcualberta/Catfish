@@ -46,10 +46,10 @@ namespace Catfish.Services
         Item GetItem(Guid item, AuthorizationPurpose purpose);
 
         string GetLoggedUserEmail();
-
-
+        User GetLoggedUser();
 
         User GetUserDetails(Guid id);
+
 
         Role GetRole(string roleName, bool createIfNotExist);
 
