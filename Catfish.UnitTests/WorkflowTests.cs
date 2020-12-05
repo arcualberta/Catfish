@@ -249,7 +249,7 @@ namespace Catfish.UnitTests
             calendarChangeForm.CreateField<TextField>("Course Name", lang, true);
             calendarChangeForm.CreateField<TextField>("Course Number", lang, true);
             calendarChangeForm.CreateField<TextArea>("Change Description", lang, true);
-            
+
             //Defininig the Submission revision Request form
             DataItem commentsForm = template.GetDataItem("Submission Revision Request", true, lang);
             commentsForm.IsRoot = false;
@@ -344,6 +344,21 @@ namespace Catfish.UnitTests
                 .AddAuthorizedRole(departmentAdmin.Id);
 
             listSubmissionAction.GetStateReference(savedState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            // ================================================
+            // Read submission-instances related workflow items
+            // ================================================
+
+            //Defining actions
+            GetAction viewDetailsSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
+
+            //Defining states and their authorizatios
+            viewDetailsSubmissionAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(savedState.Id, true)
                 .AddAuthorizedRole(departmentAdmin.Id);
 
 

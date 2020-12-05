@@ -102,6 +102,8 @@ namespace Catfish.Services
             {
                 var query = _db.Items.Where(i=>i.TemplateId == templateId && (i.Created >= from && i.Created < to));
 
+                var tmp = query.ToList();
+
                 if (collectionId != Guid.Empty)
                 {
                    

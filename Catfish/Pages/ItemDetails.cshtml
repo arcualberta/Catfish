@@ -4,9 +4,9 @@
 @{
     var item = Model.Item;
 
-    var formItems = item.GetRootDataItem(false);
+    var rootDataItem = item.GetRootDataItem(false);
 
-    
+
 }
 
 @*Specify the status of the submission, followed by the last updated date*@
@@ -20,13 +20,21 @@
 *@
 @{
     var associatedItems = item.DataContainer
-.Where(di => di.IsRoot = false)
-.OrderByDescending(di => di.Created)
-.ToList();
+        .Where(di => di.IsRoot = false)
+        .OrderByDescending(di => di.Created)
+        .ToList();
 }
 
+<div class="container">
+    <h2 class="item-heading">@Html.DisplayFor(model => rootDataItem.Name, rootDataItem.Name.GetType().ToString())</h2>
+
     <div class="submission-form-block">
-        @Html.DisplayFor(model => formItems, formItems.GetType().ToString())
+        @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString())
     </div>
 
-        @*Display each associated item in a separate element like a bootstrap panel.*@
+    @*Display each associated item in a separate element like a bootstrap panel.*@
+
+
+
+
+</div>
