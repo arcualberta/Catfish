@@ -348,8 +348,9 @@ namespace Catfish
             Piranha.App.Fields.Register<TextAreaField>();
             Piranha.App.Fields.Register<ControlledKeywordsField>();
             Piranha.App.Fields.Register<ControlledCategoriesField>();
-             Piranha.App.Fields.Register<CatfishSelectList<Entity>> ();
-           
+            Piranha.App.Fields.Register<CatfishSelectList<Entity>> ();
+            Piranha.App.Fields.Register<ColorPicker>();
+
         }
         private static void RegisterCustomScripts()
         {
@@ -380,6 +381,7 @@ namespace Catfish
 
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-keywords.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-categories.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/color-picker.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-header.js");

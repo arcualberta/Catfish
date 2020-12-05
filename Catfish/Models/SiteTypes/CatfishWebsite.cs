@@ -2,6 +2,7 @@
 using Piranha.Extend;
 using Piranha.Models;
 using Piranha.Extend.Fields;
+using Catfish.Models.Fields;
 
 namespace Catfish.Models.SiteTypes
 {
@@ -37,9 +38,9 @@ namespace Catfish.Models.SiteTypes
         [Field(Title = "General Header Settings", Placeholder = "Remove Default Page Titles")]
         public CheckBoxField RemovePageTitles { get; set; }
         [Field(Title = "Header Background Color", Placeholder = "Please enter a hex value, including the hashtag, or color name")]
-        public StringField BackgroundColor { get; set; }
-        //[Field(Title = "Header Text Color", Placeholder = "Please enter a hex value, including the hashtag, or color name")]
-        //public StringField TextColor { get; set; }
+        public ColorPicker BackgroundColor { get; set; }
+        [Field(Title = "Header Text Color", Placeholder = "Please enter a hex value, including the hashtag, or color name")]
+        public ColorPicker TextColor { get; set; }
 
         [Field(Title = "Header Contents")]
         public HtmlField Text { get; set; }
