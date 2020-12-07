@@ -7,10 +7,32 @@ Vue.component('data-item', {
         }
     },
 
-  template: `
-        <div>
-            <div v-for="field in this.model.Fields">
-                <component :is="field.ViewTag" />
+    methods: {
+        isLabelVisible: function (field) {
+            return field.VueComponent !== "Catfish.Core.Models.Contents.Fields.InfoSection";
+        },
+        fieldValueClass: function (field) {
+            return this.isLabelVisible(field) ? "col-md-9" : "col-md-12";
+        },
+        fieldNameFor(index) {
+            return "Fields[" + index + "]";
+        }
+    },
+
+    template: `
+        <div class="container">
+            <div v-for="(field, index) in this.model.Fields" class="row" :class=field.CssClass>
+                <input 
+                    type="hidden" 
+                    :name="'Fields[' + index + '].ModelType'" 
+                    :value=field.ModelType />
+                <input type="hidden" name="" :value=field.Id />
+                <div class="col-md-3 control field-label" v-if="isLabelVisible(field)">
+                    {{field.Name.ConcatenatedContent}}
+                </div>
+                <div :id=field.Id class="field-value" :class=fieldValueClass(field) >
+                    <component :is="field.VueComponent" v-bind:model=field v-bind:name=fieldNameFor(index) />
+                </div>
             </div>
         </div>`
 
@@ -28,12 +50,15 @@ Vue.component('Catfish.Core.Models.Contents.Fields.CheckboxField', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.DateField', {
-    props: ["model"],
+    props: ["model", "name"],
 
-    template: `
-        <div>
-            DateField
-        </div>`
+    data: function () {
+        return {
+            dateType: this.model.IncludeTime ? "datetime-local" : "date"
+        }
+    },
+
+    template: `<input :type=dateType  placeholder="yyyy-mm-dd" />`
 
 })
 
@@ -50,10 +75,13 @@ Vue.component('Catfish.Core.Models.Contents.Fields.DecimalField', {
 Vue.component('Catfish.Core.Models.Contents.Fields.InfoSection', {
     props: ["model"],
 
-    template: `
-        <div>
-            InfoSection
-        </div>`
+    data: function () {
+        return {
+            content: this.model.Content.ConcatenatedRichText
+        }
+    },
+
+   template: `<div v-html="content"></div>`
 
 })
 

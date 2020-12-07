@@ -1215,7 +1215,9 @@ namespace Catfish.UnitTests
 
             inspectionForm.CreateField<IntegerField>("Number of People in the work area:", lang, true);
 
-            inspectionForm.CreateField<InfoSection>("Physical Distancing", lang);
+            inspectionForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h3", "Physical Distancing", lang);
+
             string[] optionText = new string[] { "Yes", "No", "N/A" };
             inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText);
             inspectionForm.CreateField <RadioField> ("Where physical distancing is not possible, are occupants wearing face masks?", lang, optionText);
