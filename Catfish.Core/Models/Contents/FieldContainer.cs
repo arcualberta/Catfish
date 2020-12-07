@@ -212,7 +212,8 @@ namespace Catfish.Core.Models.Contents
 
             Fields.Add(field);
 
-            field.SetContent(content, lang);
+            if (!string.IsNullOrEmpty(content))
+                field.SetContent(content, lang);
 
             if (!string.IsNullOrEmpty(fieldName))
                 field.SetName(fieldName, lang);

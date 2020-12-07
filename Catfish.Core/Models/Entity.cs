@@ -67,7 +67,7 @@ namespace Catfish.Core.Models
             set => Data.SetAttributeValue("updated", value);
         }
         
-        [NotMapped]
+     //   [NotMapped]
         public EntityTemplate Template { get; set; }
         public Guid? TemplateId
         {

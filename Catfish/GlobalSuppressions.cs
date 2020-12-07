@@ -38,3 +38,5 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>", Scope = "member", Target = "~M:Catfish.Models.Regions.PublishSettings.GetStartDate~System.Nullable{System.DateTime}")]
 [assembly: SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "<Pending>", Scope = "member", Target = "~P:Catfish.Models.Blocks.SubmissionForm.SelectedGroupIds")]
 [assembly: SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>", Scope = "member", Target = "~M:Catfish.Models.Regions.PublishSettings.ToDateTime(Piranha.Extend.Fields.DateField,Piranha.Extend.Fields.StringField)~System.Nullable{System.DateTime}")]
+[assembly: SuppressMessage("Design", "CA1054:Uri parameters should not be strings", Justification = "<Pending>", Scope = "member", Target = "~M:Catfish.Services.IAppService.AddScript(System.String)")]
+[assembly: SuppressMessage("Design", "CA1054:Uri parameters should not be strings", Justification = "<Pending>", Scope = "member", Target = "~M:Catfish.Services.IAppService.AddStylesheet(System.String)")]

@@ -16,6 +16,9 @@ namespace Catfish.Core.Models.Contents
             set => Data.SetAttributeValue("id", value);
         }
 
+        public string ConcatenatedContent => GetConcatenatedContent(" | ");
+        public string ConcatenatedRichText => GetConcatenatedRichText();
+
         public XmlModelList<Text> Values { get; protected set; }
 
         public MultilingualText(string tagName) : base(tagName) { Initialize(eGuidOption.Ensure); }
@@ -30,7 +33,7 @@ namespace Catfish.Core.Models.Contents
             Values = new XmlModelList<Text>(Data, true, Text.TagName);
         }
 
-        public void SetContent(string value, string lang = null)
+        public void SetContent(string value, string lang = null, bool append = false)
         {
             if (string.IsNullOrEmpty(lang))
                 lang = ConfigHelper.DefaultLanguageCode;
@@ -39,7 +42,23 @@ namespace Catfish.Core.Models.Contents
             if (elementInGivenLanguage == null)
                 Values.Add(new Text(value, lang));
             else
-                elementInGivenLanguage.Data.Value = value;
+                if (append)
+                    elementInGivenLanguage.Data.Value += value;
+                else
+                    elementInGivenLanguage.Data.Value = value;
+        }
+
+        public void AppendElement(string elementString, string lang)
+        {
+            Text elementInGivenLanguage = Values.Where(n => n.Language == lang).FirstOrDefault();
+            if (elementInGivenLanguage == null)
+            {
+                elementInGivenLanguage = new Text(null, lang);
+                Values.Add(elementInGivenLanguage);
+            }
+
+            XElement child = XElement.Parse(elementString);
+            elementInGivenLanguage.Data.Add(child);
         }
 
         public String GetContent(string lang = null)
@@ -60,6 +79,18 @@ namespace Catfish.Core.Models.Contents
 
             return string.Join(separator, selected);
         }
+
+        public string GetConcatenatedRichText()
+        {
+            var selected = Values
+                .Where(v => !string.IsNullOrEmpty(v.Value))
+                .SelectMany(v => v.Data.Elements())
+                .ToList();
+
+            string[] str = selected.Select(v => v.ToString()).ToArray();
+            return string.Concat(str);
+        }
+
 
         public void UpdateValues(MultilingualValue srcValue)
         {

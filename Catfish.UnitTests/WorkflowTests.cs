@@ -249,7 +249,7 @@ namespace Catfish.UnitTests
             calendarChangeForm.CreateField<TextField>("Course Name", lang, true);
             calendarChangeForm.CreateField<TextField>("Course Number", lang, true);
             calendarChangeForm.CreateField<TextArea>("Change Description", lang, true);
-            
+
             //Defininig the Submission revision Request form
             DataItem commentsForm = template.GetDataItem("Submission Revision Request", true, lang);
             commentsForm.IsRoot = false;
@@ -344,6 +344,21 @@ namespace Catfish.UnitTests
                 .AddAuthorizedRole(departmentAdmin.Id);
 
             listSubmissionAction.GetStateReference(savedState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            // ================================================
+            // Read submission-instances related workflow items
+            // ================================================
+
+            //Defining actions
+            GetAction viewDetailsSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
+
+            //Defining states and their authorizatios
+            viewDetailsSubmissionAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(savedState.Id, true)
                 .AddAuthorizedRole(departmentAdmin.Id);
 
 
@@ -1200,7 +1215,9 @@ namespace Catfish.UnitTests
 
             inspectionForm.CreateField<IntegerField>("Number of People in the work area:", lang, true);
 
-            inspectionForm.CreateField<InfoSection>("Physical Distancing", lang);
+            inspectionForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h3", "Physical Distancing", lang);
+
             string[] optionText = new string[] { "Yes", "No", "N/A" };
             inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText);
             inspectionForm.CreateField <RadioField> ("Where physical distancing is not possible, are occupants wearing face masks?", lang, optionText);
@@ -1229,7 +1246,9 @@ namespace Catfish.UnitTests
             inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
 
             inspectionForm.CreateField<InfoSection>("Other", lang);
-            inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText);
+            var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText);
+
+
             inspectionForm.CreateField<RadioField>("Have all sinks been flushed for 3 minutes?", lang, optionText);
             inspectionForm.CreateField<RadioField>("Is all appropriate PPE being worn?", lang, optionText);
            

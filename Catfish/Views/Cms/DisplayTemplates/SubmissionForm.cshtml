@@ -9,12 +9,16 @@
 @using Catfish.Core.Authorization.Requirements;
 @using Microsoft.AspNetCore.Authorization;
 @using Catfish.Core.Models;
- 
+
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
 @inject Catfish.Core.Services.IWorkflowService _workflowService;
+@inject Catfish.Services.IAppService _appService;
+@inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig;
 
 @{
+    _appService.RegisterScript("/assets/js/_public-facing/scripts/submission-form-functions.js");
+
     string suffix = Guid.NewGuid().ToString();
     string formPostUrl = "/api/items";
     var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
@@ -39,19 +43,19 @@
     {
         if (Model.LinkToGroup.Value)
         {
-            //Select the list of groups where 
-            //  (a) the template is associated with, and 
+            //Select the list of groups where
+            //  (a) the template is associated with, and
             //  (b) the user is holding a role that is authorized to "instantiate" the template
             groups = _workflowService.GetApplicableGroups(User, TemplateOperations.Instantiate, template, null);
 
             //If the user does not belong to any such groups above, the user is not authorized to instantiate
-            //an entity from the template (in otherwords, the user is not authorized to submit the form.  
+            //an entity from the template (in otherwords, the user is not authorized to submit the form.
             authorizationSuccessful &= groups.Count > 0;
         }
     }
 
-    if(authorizationSuccessful)
-    { 
+    if (authorizationSuccessful)
+    {
         <div class="submission-form-block @Model.CssClass.Value">
             <form id="submissionForm_@suffix" method="post" action="@formPostUrl">
                 <input data-val="true" data-val-required="The TemplateId field is required."
@@ -67,7 +71,7 @@
                        id="group" name="group" type="hidden"
                        value="@group">
 
-                @if(groups != null)
+                @if (groups != null)
                 {
                     string groupLabelLabel = string.IsNullOrWhiteSpace(Model.GroupSelectorLabel.Value) ? "Group" : Model.GroupSelectorLabel.Value;
 
@@ -87,7 +91,14 @@
                 }
 
                 @*Render the editor for template for the root-data item of the template*@
-                @Html.EditorFor(model => Item, Item.GetType().ToString())
+                @if (_catfishAppConfig.GetValue("SiteConfig:UseVueForms", false))
+                {
+                    @Html.EditorFor(model => Item, "VueDataItem")
+                }
+                else
+                {
+                    @Html.EditorFor(model => Item, Item.GetType().ToString())
+                }
 
                 <div id="buttonLayer">
                     @foreach (var postAction in postActions)
@@ -126,7 +137,7 @@
                                                             }
                                                             else
                                                             {
-                                                                <button id="@buttonName" type="submit" class="btn btn-success" onclick="submitForm('@suffix', '@successMessage');">@button.Text</button>
+                                                                <button id="@buttonName" type="submit" class="btn btn-success" onclick="submitWorkflowForm('@suffix', '@successMessage');">@button.Text</button>
                                                             }
                                                         }
                                                     }

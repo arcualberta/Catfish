@@ -1,4 +1,4 @@
-﻿function submitForm(suffix, successMessage) {
+﻿function submitWorkflowForm(suffix, successMessage) {
     var status;
     var buttonName;
 

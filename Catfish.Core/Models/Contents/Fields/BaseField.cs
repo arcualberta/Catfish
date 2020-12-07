@@ -33,6 +33,8 @@ namespace Catfish.Core.Models.Contents.Fields
         public MultilingualName Name { get; protected set; }
 
         public MultilingualDescription Description { get; protected set; }
+
+        public string VueComponent => GetType().FullName;
        
         public BaseField() : base(FieldTagName) { }
         public BaseField(XElement data) : base(data) { }

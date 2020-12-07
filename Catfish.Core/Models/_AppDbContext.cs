@@ -89,6 +89,11 @@ namespace Catfish.Core.Models
                 .HasForeignKey(rel => rel.ObjctId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<Entity>()
+                .HasOne(en => en.Template)
+                .WithMany(et => et.Instances)
+                .HasForeignKey(en => en.TemplateId);
+
             #endregion Defining many-to-many named relationship of Aggregation with other Aggregations
 
         }

@@ -161,6 +161,7 @@ namespace Catfish
             services.AddScoped<IFormService, FormService>();
             services.AddScoped<ICatfishInitializationService, CatfishInitializationService>();
             services.AddScoped<ICatfishSiteService, CatfishSiteService>();
+            services.AddSingleton<IAppService, AppService>();
 
             // Solr services
             var configSection = Configuration.GetSection("SolarConfiguration:solrCore");
@@ -403,7 +404,6 @@ namespace Catfish
             App.Blocks.Register<ControlledVocabularySearchBlock>();
             App.Blocks.Register<VueList>();
             App.Blocks.Register<VueCarousel>();
-
         }
         private static void RegisterCustomStyles()
         {
