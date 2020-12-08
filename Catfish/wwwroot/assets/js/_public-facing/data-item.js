@@ -114,7 +114,6 @@ Vue.component('Catfish.Core.Models.Contents.Fields.DecimalField', {
 
     data: function () {
         return {
-            dateType: this.model.IncludeTime ? "datetime-local" : "date"
         }
     },
 
@@ -160,7 +159,6 @@ Vue.component('Catfish.Core.Models.Contents.Fields.IntegerField', {
 
     data: function () {
         return {
-            dateType: this.model.IncludeTime ? "datetime-local" : "date"
         }
     },
 
@@ -190,13 +188,35 @@ Vue.component('Catfish.Core.Models.Contents.Fields.IntegerField', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.MonolingualTextField', {
-    props: ["model"],
+    props: ["model", "fieldNamePrefix"],
+
+    data: function () {
+        return {
+        }
+    },
+
+    methods: {
+        fieldNameFor(prefix, index, childPropertyName) {
+            let name = prefix;
+
+            if (index !== null && index !== undefined)
+                name = name + ".Values[" + index + "]";
+
+            if (childPropertyName !== null && childPropertyName !== undefined) {
+                name = name + "." + childPropertyName;
+            }
+            return name;
+        }
+    },
 
     template: `
         <div>
-            MonolingualTextField
+            <div v-for="(val, index) in this.model.Values" >
+                <input type="hidden" :value=val.Id :name="fieldNameFor(fieldNamePrefix, index, 'Id')" />
+                <input type="hidden" :value=val.ModelType :name="fieldNameFor(fieldNamePrefix, index, 'ModelType')" />
+                <input type="text"   :name="fieldNameFor(fieldNamePrefix, index, 'Value')" />
+            </div>
         </div>`
-
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.RadioField', {
