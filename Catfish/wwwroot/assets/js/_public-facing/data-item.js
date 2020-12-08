@@ -164,13 +164,31 @@ Vue.component('Catfish.Core.Models.Contents.Fields.RadioField', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.SelectField', {
-    props: ["model"],
+    props: ["model", "fieldNamePrefix"],
+
+    methods: {
+        fieldNameFor(prefix, index, childPropertyName) {
+            let name = prefix;
+
+            if (index !== null && index !== undefined)
+                name = name + ".Options[" + index + "]";
+
+            if (childPropertyName !== null && childPropertyName !== undefined) {
+                name = name + "." + childPropertyName;
+            }
+            return name;
+        }
+    },
 
     template: `
         <div>
-            SelectField
+            <select :name=fieldNamePrefix :id=model.Id >
+                <option v-for="(opt, index) in this.model.Options" 
+                    :value=opt.Id>
+                        {{opt.OptionText.ConcatenatedContent}}
+                </option>
+            </select>
         </div>`
-
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.TextArea', {
