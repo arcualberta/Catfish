@@ -97,14 +97,6 @@ body {
     width: fit-content;
 }
 
-.arcHeader {
-    padding-left: 30px;
-}
-
-    .arcHeader > h1, h2, h3, a {
-        color: white;
-    }
-
 .headerContainer {
     height: 125px;
     background-color: #1846A0; /*dark blue */
@@ -132,10 +124,10 @@ header {
     display: none;
 }
 
-#arcLogo {
+/*#arcLogo {
     width: 90px;
     padding-right: 15px;
-}
+}*/
 
 #site-logo {
     /*site logo
@@ -155,10 +147,6 @@ header.site-header.site-header-dark .nav-site a {
 
 .dropdown-menu {
     background-color: var(--medBlue-color);
-}
-
-.header-brand > h1 {
-    display: none;
 }
 
 .page-body > h1 {
@@ -321,6 +309,18 @@ footer > .container > .row {
 
 .extended-gallery-block { /*.carousel-inner, .carousel-item, .carousel-item > .row*/
     background-color: var(--lightBlue-color);
+}
+
+/* ARC Logo in header */
+.header-brand{
+    padding-left: 25px;
+    padding-top: 25px;
+}
+
+/* Remove padding in between section in Highlights columns */
+.remove-padding-in-highlights{
+    padding-left: 0;
+    padding-right: 0;
 }
 
 @media screen and (max-width: 1100px) {
