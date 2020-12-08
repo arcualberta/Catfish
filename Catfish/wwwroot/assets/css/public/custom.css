@@ -97,11 +97,6 @@ body {
     width: fit-content;
 }
 
-.container {
-    width: 100%;
-    max-width: 100%;
-}
-
 .arcHeader {
     padding-left: 30px;
 }
