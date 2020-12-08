@@ -67,9 +67,9 @@ Vue.component('Catfish.Core.Models.Contents.Fields.CheckboxField', {
     template: `
         <div>
             <span v-for="(opt, index) in this.model.Options" >
-                <input type="hidden" :value=opt.Id :name="fieldNameFor(fieldNamePrefix, index, 'Id')" />
-                <input type="hidden" :value=opt.ModelType :name="fieldNameFor(fieldNamePrefix, index, 'ModelType')" />
-                <input type="checkbox" :name="fieldNameFor(fieldNamePrefix, index, 'Selected')" value="true" />
+                <input type="hidden"    :value=opt.Id          :name="fieldNameFor(fieldNamePrefix, index, 'Id')" />
+                <input type="hidden"    :value=opt.ModelType   :name="fieldNameFor(fieldNamePrefix, index, 'ModelType')" />
+                <input type="checkbox"   value="true"         :name="fieldNameFor(fieldNamePrefix, index, 'Selected')" />
                 <span class='radio-option-label'>{{opt.OptionText.ConcatenatedContent}}</span>
             </span>
         </div>`
@@ -172,9 +172,9 @@ Vue.component('Catfish.Core.Models.Contents.Fields.RadioField', {
     template: `
         <div>
             <span v-for="(opt, index) in this.model.Options" >
-                <input type="hidden" :value=opt.Id :name="fieldNameFor(fieldNamePrefix, index, 'Id')" />
+                <input type="hidden" :value=opt.Id        :name="fieldNameFor(fieldNamePrefix, index, 'Id')" />
                 <input type="hidden" :value=opt.ModelType :name="fieldNameFor(fieldNamePrefix, index, 'ModelType')" />
-                <input type="radio" :name="fieldNameFor(fieldNamePrefix, null, null)" :value=opt.Id />
+                <input type="radio"  :value=opt.Id        :name="fieldNameFor(fieldNamePrefix, null, null)" />
                 <span class='radio-option-label'>{{opt.OptionText.ConcatenatedContent}}</span>
             </span>
         </div>`
@@ -220,11 +220,36 @@ Vue.component('Catfish.Core.Models.Contents.Fields.TextArea', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.TextField', {
-    props: ["model"],
+    props: ["model", "fieldNamePrefix"],
+
+    methods: {
+        fieldNameFor(prefix, valIndex, textIndex, childPropertyName) {
+            let name = prefix;
+
+            if (valIndex !== null && valIndex !== undefined)
+                name = name + ".Values[" + valIndex + "]";
+
+            if (textIndex !== null && textIndex !== undefined)
+                name = name + ".Values[" + textIndex + "]";
+
+            if (childPropertyName !== null && childPropertyName !== undefined) {
+                name = name + "." + childPropertyName;
+            }
+            return name;
+        }
+    },
 
     template: `
         <div>
-            Text Field
+            <div v-for="(val, valIndex) in this.model.Values" >
+                <input type="hidden" :value=val.Id :name="fieldNameFor(fieldNamePrefix, valIndex, null, 'Id')" />
+                <input type="hidden" :value=val.ModelType :name="fieldNameFor(fieldNamePrefix, valIndex, null, 'ModelType')" />
+                <div v-for="(txt, textIndex) in val.Values">
+                    <input type="hidden" :value=txt.Id :name="fieldNameFor(fieldNamePrefix, valIndex, textIndex, 'Id')" />
+                    <input type="hidden" :value=txt.ModelType :name="fieldNameFor(fieldNamePrefix, valIndex, textIndex, 'ModelType')" />
+                    <input type="text"   :name="fieldNameFor(fieldNamePrefix, valIndex, textIndex, 'Value')" />
+                </div>
+            </div>
         </div>`
 
 })
