@@ -110,13 +110,36 @@ Vue.component('Catfish.Core.Models.Contents.Fields.DateField', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.DecimalField', {
-    props: ["model"],
+    props: ["model", "fieldNamePrefix"],
+
+    data: function () {
+        return {
+            dateType: this.model.IncludeTime ? "datetime-local" : "date"
+        }
+    },
+
+    methods: {
+        fieldNameFor(prefix, index, childPropertyName) {
+            let name = prefix;
+
+            if (index !== null && index !== undefined)
+                name = name + ".Values[" + index + "]";
+
+            if (childPropertyName !== null && childPropertyName !== undefined) {
+                name = name + "." + childPropertyName;
+            }
+            return name;
+        }
+    },
 
     template: `
         <div>
-            DecimalField
+            <div v-for="(val, index) in this.model.Values" >
+                <input type="hidden" :value=val.Id :name="fieldNameFor(fieldNamePrefix, index, 'Id')" />
+                <input type="hidden" :value=val.ModelType :name="fieldNameFor(fieldNamePrefix, index, 'ModelType')" />
+                <input type="number" step="any" :name="fieldNameFor(fieldNamePrefix, index, 'DecimalValue')" />
+            </div>
         </div>`
-
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.InfoSection', {
@@ -133,11 +156,35 @@ Vue.component('Catfish.Core.Models.Contents.Fields.InfoSection', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.IntegerField', {
-    props: ["model"],
+    props: ["model", "fieldNamePrefix"],
+
+    data: function () {
+        return {
+            dateType: this.model.IncludeTime ? "datetime-local" : "date"
+        }
+    },
+
+    methods: {
+        fieldNameFor(prefix, index, childPropertyName) {
+            let name = prefix;
+
+            if (index !== null && index !== undefined)
+                name = name + ".Values[" + index + "]";
+
+            if (childPropertyName !== null && childPropertyName !== undefined) {
+                name = name + "." + childPropertyName;
+            }
+            return name;
+        }
+    },
 
     template: `
         <div>
-            IntegerField
+            <div v-for="(val, index) in this.model.Values" >
+                <input type="hidden" :value=val.Id :name="fieldNameFor(fieldNamePrefix, index, 'Id')" />
+                <input type="hidden" :value=val.ModelType :name="fieldNameFor(fieldNamePrefix, index, 'ModelType')" />
+                <input type="number" :name="fieldNameFor(fieldNamePrefix, index, 'DecimalValue')" />
+            </div>
         </div>`
 
 })
