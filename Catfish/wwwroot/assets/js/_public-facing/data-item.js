@@ -210,11 +210,36 @@ Vue.component('Catfish.Core.Models.Contents.Fields.SelectField', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.TextArea', {
-    props: ["model"],
+    props: ["model", "fieldNamePrefix"],
+
+    methods: {
+        fieldNameFor(prefix, valIndex, textIndex, childPropertyName) {
+            let name = prefix;
+
+            if (valIndex !== null && valIndex !== undefined)
+                name = name + ".Values[" + valIndex + "]";
+
+            if (textIndex !== null && textIndex !== undefined)
+                name = name + ".Values[" + textIndex + "]";
+
+            if (childPropertyName !== null && childPropertyName !== undefined) {
+                name = name + "." + childPropertyName;
+            }
+            return name;
+        }
+    },
 
     template: `
         <div>
-            Text Area
+            <div v-for="(val, valIndex) in this.model.Values" >
+                <input type="hidden" :value=val.Id :name="fieldNameFor(fieldNamePrefix, valIndex, null, 'Id')" />
+                <input type="hidden" :value=val.ModelType :name="fieldNameFor(fieldNamePrefix, valIndex, null, 'ModelType')" />
+                <div v-for="(txt, textIndex) in val.Values">
+                    <input type="hidden" :value=txt.Id :name="fieldNameFor(fieldNamePrefix, valIndex, textIndex, 'Id')" />
+                    <input type="hidden" :value=txt.ModelType :name="fieldNameFor(fieldNamePrefix, valIndex, textIndex, 'ModelType')" />
+                    <textarea   :name="fieldNameFor(fieldNamePrefix, valIndex, textIndex, 'Value')">{{txt.Value}}</textarea>
+                </div>
+            </div>
         </div>`
 
 })
