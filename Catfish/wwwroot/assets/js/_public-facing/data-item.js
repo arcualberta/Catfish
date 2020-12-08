@@ -48,13 +48,31 @@ Vue.component('data-item', {
 
 
 Vue.component('Catfish.Core.Models.Contents.Fields.CheckboxField', {
-    props: ["model"],
+    props: ["model", "fieldNamePrefix"],
+
+    methods: {
+        fieldNameFor(prefix, index, childPropertyName) {
+            let name = prefix;
+
+            if (index !== null && index !== undefined)
+                name = name + ".Options[" + index + "]";
+
+            if (childPropertyName !== null && childPropertyName !== undefined) {
+                name = name + "." + childPropertyName;
+            }
+            return name;
+        }
+    },
 
     template: `
         <div>
-            CheckboxField
+            <span v-for="(opt, index) in this.model.Options" >
+                <input type="hidden" :value=opt.Id :name="fieldNameFor(fieldNamePrefix, index, 'Id')" />
+                <input type="hidden" :value=opt.ModelType :name="fieldNameFor(fieldNamePrefix, index, 'ModelType')" />
+                <input type="checkbox" :name="fieldNameFor(fieldNamePrefix, index, 'Selected')" value="true" />
+                <span class='radio-option-label'>{{opt.OptionText.ConcatenatedContent}}</span>
+            </span>
         </div>`
-
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.DateField', {
