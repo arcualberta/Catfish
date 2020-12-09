@@ -1,4 +1,5 @@
 ﻿using Catfish.Models.Fields;
+using Catfish.Models.Regions;
 using Piranha.AttributeBuilder;
 using Piranha.Extend;
 using Piranha.Models;
@@ -18,6 +19,9 @@ namespace Catfish.Models
 
         [Region(Title = "Categories", Display = RegionDisplayMode.Setting)]
         public ControlledCategoriesField Categories { get; set; } = new ControlledCategoriesField();
+
+        [Region(Title = "Publish Settings", Display = RegionDisplayMode.Setting)]
+        public PublishSettings PublishSettings { get; set; } = new PublishSettings();
 
     }
 }

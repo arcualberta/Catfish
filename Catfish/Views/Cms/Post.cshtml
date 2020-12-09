@@ -7,11 +7,26 @@
     ViewData["Title"] = Model.Title;
     var hasImage = Model.PrimaryImage.HasValue;
     var archive = await WebApp.Api.Pages.GetByIdAsync(Model.BlogId);
+
+    //check if it's set the publishing start/end date to make  the page contain available
+    DateTime? startDateTime = Model.PublishSettings.Start;
+    DateTime? endDateTime = Model.PublishSettings.End;
+    bool pageAvailable = (!startDateTime.HasValue || startDateTime.HasValue && startDateTime.Value <= DateTime.Now)
+        && (!endDateTime.HasValue || endDateTime.HasValue && endDateTime.Value > DateTime.Now);
 }
 
+ @if (!pageAvailable)
+ {
+     string message = string.IsNullOrWhiteSpace(Model.PublishSettings.Message.Value)
+                     ? "The page is unavailable."
+                     : Model.PublishSettings.Message.Value;
 
-@try
-{
+        <div id="postPublishMessage" class="container alert alert-danger">@Html.Raw(message)</div>
+ }
+ else
+ {
+     try
+     {
     <header @(hasImage ? "class=has-image" : "") @(hasImage ? $"style=background-image:url({ @Url.Content(WebApp.Media.ResizeImage(Model.PrimaryImage, 1920, 400)) })" : "")>
         <div class="dimmer"></div>
         <div class="container text-center">
@@ -101,9 +116,9 @@
             </div>
         }
     </main>
-}
-catch (Exception ex)
-{
-    _errorLog.Log(new Error(ex));
-}
-
+     }
+     catch (Exception ex)
+     {
+         _errorLog.Log(new Error(ex));
+     }
+ }
