@@ -127,38 +127,22 @@
 
         @RenderBody()
 
+        @{
+            var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
+            var javascriptCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Javascript == null)
+                ? "" : currentSite.FooterContents.Javascript.Value;
+            var cssCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Css == null)
+               ? "" : currentSite.FooterContents.Css.Value;
+        }
 
-        <footer class="border-top footer text-muted">
-            <div class="container">
-                @{
-                    var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
-                    var javascriptCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Javascript == null)
-                        ? "" : currentSite.FooterContents.Javascript.Value;
-                    var cssCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Css == null)
-                       ? "" : currentSite.FooterContents.Css.Value;
-                }
-                @if (currentSite != null)
-                {
-                    <div class="row">
-
-                        <div class="col-6 footer-arc-text">
-                            @Html.Raw(currentSite.FooterContents.Text)
-                        </div>
-                        <div class="col-6 footer-arc-logo">
-                            Designed and engineered by<img src="@Url.Content(currentSite.FooterContents.Logo)" />
-                        </div>
-
-
-                    </div>
-                }
-            </div>
-        </footer>
+        <partial name="/Views/Shared/Partial/VueComponents/_Footer.cshtml" />
 
     </div>@*End of vueApp div *@
 
     @* Footer additional scripts/css *@
-    @Html.Raw(javascriptCode)
-
+    <script>
+        @Html.Raw(javascriptCode)
+    </script>
     @Html.Raw(cssCode)
 
     <script>

@@ -1,0 +1,24 @@
+﻿@inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
+@using Catfish.Models.SiteTypes
+
+<footer class="border-top footer text-muted">
+    <div class="container-fluid">
+        @{
+            var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
+        }
+        @if (currentSite != null)
+        {
+            <div class="row">
+
+                <div class="col-6 footer-arc-text">
+                    @Html.Raw(currentSite.FooterContents.Text)
+                </div>
+                <div class="col-6 footer-arc-logo">
+                    Designed and engineered by<img src="@Url.Content(currentSite.FooterContents.Logo)" />
+                </div>
+
+
+            </div>
+        }
+    </div>
+</footer>
