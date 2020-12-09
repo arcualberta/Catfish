@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace Catfish.Core.Models
 {
@@ -184,6 +185,24 @@ namespace Catfish.Core.Models
         {
             Data.SetAttributeValue(attName, attValue);
         }
+
+        public Guid[] GetAttribute(string attName, Guid[] defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            return (att == null || string.IsNullOrEmpty(att.Value)) 
+                ? defaultValue 
+                : att.Value.Split(",", StringSplitOptions.RemoveEmptyEntries)
+                     .Select(val => Guid.Parse(val))
+                     .ToArray();
+        }
+        public void SetAttribute(string attName, Guid[] attValue)
+        {
+            if (attValue == null)
+                Data.SetAttributeValue(attName, "");
+            else
+                Data.SetAttributeValue(attName, string.Join(",", attValue.Select(val => val.ToString())));
+        }
+
         public T GetAttribute<T>(string attName, T defaultValue) where T : Enum
         {
             var att = Data.Attribute(attName);

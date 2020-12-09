@@ -9,12 +9,18 @@ namespace Catfish.Core.Models.Contents.Workflow
     {
         public static readonly string TagName = "pop-up";
         public static readonly string TitleAtt = "title";
+        public static readonly string BodyAtt = "body";
         public static readonly string MessageAtt = "message";
         public XmlModelList<Button> Buttons { get; set; }
         public string Title
         {
             get => GetAttribute(TitleAtt, null as string);
             set => SetAttribute(TitleAtt, value);
+        }
+        public string Body
+        {
+            get => GetAttribute(BodyAtt, null as string);
+            set => SetAttribute(BodyAtt, value);
         }
 
         public string Message
