@@ -7,6 +7,7 @@ using ElmahCore;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Piranha;
+using Piranha.AspNetCore.Identity.Data;
 using Piranha.AspNetCore.Identity.SQLServer;
 using Piranha.AspNetCore.Services;
 using Piranha.Models;
@@ -178,7 +179,24 @@ namespace Catfish.Core.Services
             }
 
         }
-        
+
+
+        public User GetLoggedUser()
+        {
+            try
+            {
+                string userName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var userDetails = _piranhaDb.Users.Where(ud => ud.UserName == userName).FirstOrDefault();
+
+                return userDetails;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
         /// <summary>
         /// This method returns list of post actions which are belongs to the given function and group.
         /// </summary>

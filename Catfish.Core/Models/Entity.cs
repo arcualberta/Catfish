@@ -17,6 +17,7 @@ namespace Catfish.Core.Models
     {
         public static readonly string Tag = "entity";
         public static readonly string MetadataSetsRootTag = "metadata-sets";
+        public static readonly string AuditTrailRootTag = "audit-trail";
         public static readonly string DataContainerRootTag = "data-container";
 
         [Key]
@@ -97,6 +98,9 @@ namespace Catfish.Core.Models
         public XmlModelList<MetadataSet> MetadataSets { get; protected set; }
 
         [NotMapped]
+        public XmlModelList<AuditTrail> AuditTrail { get; protected set; }
+
+        [NotMapped]
         public XmlModelList<DataItem> DataContainer { get; protected set; }
 
         public ICollection<Relationship> SubjectRelationships { get; set; }
@@ -168,6 +172,9 @@ namespace Catfish.Core.Models
 
             //Building the Metadata Set list
             MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement(MetadataSetsRootTag, true), true);
+
+            //Building the Audit Trail Set list
+            AuditTrail = new XmlModelList<AuditTrail>(xml.GetElement(AuditTrailRootTag, true), true);
 
             //Building the DataContainer
             DataContainer = new XmlModelList<DataItem>(xml.GetElement(DataContainerRootTag, true), true);

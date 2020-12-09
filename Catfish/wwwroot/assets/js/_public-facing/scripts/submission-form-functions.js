@@ -1,7 +1,15 @@
-﻿function submitWorkflowForm(suffix, successMessage) {
+﻿
+$(document).ready(function () {
+    $(".launch-modal").click(function () {
+        $("#submissionModal").modal({
+            backdrop: 'static'
+        });
+    });
+});
+
+function submitWorkflowForm(suffix, successMessage) {
     var status;
     var buttonName;
-
     $("#submission-result-message_" + suffix).hide();
 
     $(document).on('click', "#Submit_" + suffix, function () {

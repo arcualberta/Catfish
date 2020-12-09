@@ -317,7 +317,7 @@ namespace Catfish.UnitTests
             postActionSubmit.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp startSubmissionActionPopUp = postActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
+            PopUp startSubmissionActionPopUp = postActionSubmit.AddPopUp("Confirmation","Do you really want to submit this document?", "Once submitted, you cannot update the document.");
             startSubmissionActionPopUp.AddButtons("Yes, submit", "true");
             startSubmissionActionPopUp.AddButtons("Cancel", "false");
 
@@ -395,7 +395,7 @@ namespace Catfish.UnitTests
 
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
+            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
             EditSubmissionActionPopUpopUp.AddButtons("Yes, submit", "true");
             EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -431,7 +431,7 @@ namespace Catfish.UnitTests
             deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.");
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to delete this document?", "Once deleted, you cannot access this document.");
             deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -450,7 +450,7 @@ namespace Catfish.UnitTests
             PostAction purgeSubmissionPostAction = purgeSubmissionAction.AddPostAction("Purge", "Purge");
             deleteSubmissionPostAction.AddStateMapping(deleteState.Id, emptyState.Id, "Purge");
             //Defining the pop-up for the above postActionSubmit action
-            PopUp purgeSubmissionActionPopUpopUp = purgeSubmissionPostAction.AddPopUp("WARNING: Deleting Permanently", "When purged, the document cannot be recovered. Please confirm.");
+            PopUp purgeSubmissionActionPopUpopUp = purgeSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to purge this document ? ", "Once purged, you cannot recover this document.");
             purgeSubmissionActionPopUpopUp.AddButtons("Yes, purge", "true");
             purgeSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -484,7 +484,7 @@ namespace Catfish.UnitTests
             sendForRevisionSubmissionPostAction.AddStateMapping(gfcRevisionCompletedState.Id, gfcRevisionState.Id, "Send for Revision");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
-            PopUp sendForRevisionSubmissionActionPopUpopUp = sendForRevisionSubmissionPostAction.AddPopUp("WARNING: Revision Document", "Do you really want to revise this document?.");
+            PopUp sendForRevisionSubmissionActionPopUpopUp = sendForRevisionSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to revise this document ? ", "");
             sendForRevisionSubmissionActionPopUpopUp.AddButtons("Yes", "true");
             sendForRevisionSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -546,7 +546,7 @@ namespace Catfish.UnitTests
             changeStatePostAction.AddStateMapping(gfcRevisionCompletedState.Id, gfcWithState.Id, "With GFC");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
-            PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("WARNING: Change State", "Do you really want to change the document state?.");
+            PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to change status ? ", "Once changed, you cannot revise this document.");
             changeStateActionPopUpopUp.AddButtons("Yes", "true");
             changeStateActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -585,7 +585,7 @@ namespace Catfish.UnitTests
             moveToDraftCorrectPostAction.AddStateMapping(moveToDraftErrorState.Id, moveToDraftCorrectState.Id, "Move To Draft Correct");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
-            PopUp moveToDraftCorrctActionPopUpopUp = moveToDraftCorrectPostAction.AddPopUp("WARNING: In the Draft Calendar -  Correct", "Do you really want to change the document state?.");
+            PopUp moveToDraftCorrctActionPopUpopUp = moveToDraftCorrectPostAction.AddPopUp("Confirmation", "Do you really want to move to dreaft this document?", "Once moved, you cannot revise this document.");
             moveToDraftCorrctActionPopUpopUp.AddButtons("Yes", "true");
             moveToDraftCorrctActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -599,7 +599,7 @@ namespace Catfish.UnitTests
             moveToDraftErrorPostAction.AddStateMapping(moveToDraftErrorState.Id, moveToDraftCorrectState.Id, "Move To Draft Correct");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
-            PopUp moveToDraftErrorActionPopUpopUp = moveToDraftErrorPostAction.AddPopUp("WARNING: In the Draft Calendar -  Error", "Do you really want to change the document state?.");
+            PopUp moveToDraftErrorActionPopUpopUp = moveToDraftErrorPostAction.AddPopUp("Confirmation", "Do you really want to move to draft in error state this document?", "Once moved, you cannot access this document.");
             moveToDraftErrorActionPopUpopUp.AddButtons("Yes", "true");
             moveToDraftErrorActionPopUpopUp.AddButtons("Cancel", "false");
             
@@ -738,7 +738,7 @@ namespace Catfish.UnitTests
 
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot make any changes. Are you sure you want to continue?");
+            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot make any changes. Are you sure you want to continue?","");
             EditSubmissionActionPopUpopUp.AddButtons("Yes, submit", "true");
             EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -764,7 +764,7 @@ namespace Catfish.UnitTests
             deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Are you sure you want to delete the registration submission?");
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Are you sure you want to delete the registration submission?","");
             deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -895,7 +895,7 @@ namespace Catfish.UnitTests
             postActionSubmit.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp startSubmissionActionPopUp = postActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
+            PopUp startSubmissionActionPopUp = postActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.","");
             startSubmissionActionPopUp.AddButtons("Yes, submit", "true");
             startSubmissionActionPopUp.AddButtons("Cancel", "false");
 
@@ -926,7 +926,7 @@ namespace Catfish.UnitTests
 
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
+            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.","");
             EditSubmissionActionPopUpopUp.AddButtons("Yes, submit", "true");
             EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -952,7 +952,7 @@ namespace Catfish.UnitTests
             deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.");
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.","");
             deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -1286,7 +1286,7 @@ namespace Catfish.UnitTests
             submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
             //Defining the pop-up for the above submitPostAction action
-            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.");
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.","");
             submitActionPopUp.AddButtons("Yes, submit", "true");
             submitActionPopUp.AddButtons("Cancel", "false");
 
@@ -1314,7 +1314,7 @@ namespace Catfish.UnitTests
             deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.");
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.","");
             deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
