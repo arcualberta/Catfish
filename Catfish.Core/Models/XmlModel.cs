@@ -186,6 +186,19 @@ namespace Catfish.Core.Models
             Data.SetAttributeValue(attName, attValue);
         }
 
+        public void SetAttribute(string attName, Guid? attValue)
+        {
+            if (attValue.HasValue)
+                Data.SetAttributeValue(attName, attValue.Value);
+            else
+            {
+                var att = Data.Attribute(attName);
+                if (att != null)
+                    att.Remove();
+            }
+        }
+
+
         public Guid[] GetAttribute(string attName, Guid[] defaultValue)
         {
             var att = Data.Attribute(attName);

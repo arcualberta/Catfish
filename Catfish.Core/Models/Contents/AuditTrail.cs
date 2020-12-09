@@ -14,9 +14,9 @@ namespace Catfish.Core.Models.Contents
         public static readonly string TimeStampAtt = "timestamp";
 
 
-        public Guid UserId
+        public Guid? UserId
         {
-            get => Guid.Parse(Data.Attribute(UserAtt).Value);
+            get => GetAttribute(UserAtt, null as Guid?);
             set => SetAttribute(UserAtt, value);
         }
 
@@ -37,8 +37,8 @@ namespace Catfish.Core.Models.Contents
             set => Data.SetAttributeValue(TimeStampAtt, value);
         }
 
-        public AuditTrail() : base(TagName) { Initialize(eGuidOption.Ensure); }
-        public AuditTrail(XElement data) : base(data) { Initialize(eGuidOption.Ensure); }
+        public AuditTrail() : base(TagName) { Initialize(eGuidOption.Ensure); TimeStamp = DateTime.Now; }
+        public AuditTrail(XElement data) : base(data) { Initialize(eGuidOption.Ensure); TimeStamp = DateTime.Now; }
 
         
         public new void Initialize(eGuidOption guidOption)

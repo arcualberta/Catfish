@@ -239,13 +239,16 @@ namespace Catfish.Services
                 newItem.TemplateId = entityTemplateId;
                 newItem.UserEmail = _workflowService.GetLoggedUserEmail();
 
-               
-
                 DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
                 newDataItem.UpdateFieldValues(value);
                 newItem.DataContainer.Add(newDataItem);
                 newDataItem.EntityId = newItem.Id;
 
+                User user = _workflowService.GetLoggedUser();
+                var fromState = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
+                newItem.AddAuditEntry(user.Id,
+                    fromState,
+                    newItem.StatusId.Value);
 
                 if (groupId.HasValue)
                     newItem.GroupId = groupId;

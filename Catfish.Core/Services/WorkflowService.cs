@@ -185,8 +185,8 @@ namespace Catfish.Core.Services
         {
             try
             {
-                string userName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var userDetails = _piranhaDb.Users.Where(ud => ud.UserName == userName).FirstOrDefault();
+                string userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var userDetails = _piranhaDb.Users.Where(ud => ud.Id == Guid.Parse(userId)).FirstOrDefault();
 
                 return userDetails;
             }

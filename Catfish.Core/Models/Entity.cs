@@ -240,5 +240,16 @@ namespace Catfish.Core.Models
             }
             return dataItem;
         }
+
+        public Entity AddAuditEntry(Guid? userId, Guid statusFrom, Guid statusTo)
+        {
+            AuditTrail.Add(new AuditTrail()
+            {
+                UserId = userId,
+                StatusFrom = statusFrom,
+                StatusTo = statusTo
+            });
+            return this;
+        }
     }
 }
