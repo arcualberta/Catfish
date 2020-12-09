@@ -4,24 +4,41 @@
     var hasImage = Model.PrimaryImage.HasValue;
 
     var posts = Model.Archive.Posts.Count;
+
+    //check if it's set the publishing start/end date to make  the page contain available
+    DateTime? startDateTime = Model.PublishSettings.Start;
+    DateTime? endDateTime = Model.PublishSettings.End;
+    bool pageAvailable = (!startDateTime.HasValue || startDateTime.HasValue && startDateTime.Value <= DateTime.Now)
+        && (!endDateTime.HasValue || endDateTime.HasValue && endDateTime.Value > DateTime.Now);
 }
 
-<header @(hasImage ? "class=has-image" : "") @(hasImage ? $"style=background-image:url({ @Url.Content(WebApp.Media.ResizeImage(Model.PrimaryImage, 1920, 400)) })" : "")>
-    <div class="dimmer"></div>
-    <div class="container text-center">
-        <h1>@Model.Title</h1>
-        @if (!string.IsNullOrWhiteSpace(Model.Excerpt))
-        {
-            <div class="row justify-content-center">
-                <div class="col-lg-8 lead">
-                    @Html.Raw(Model.Excerpt)
-                </div>
-            </div>
-        }
-    </div>
-</header>
+ @if (!pageAvailable)
+ {
+     string message = string.IsNullOrWhiteSpace(Model.PublishSettings.Message.Value)
+                     ? "The page is unavailable."
+                     : Model.PublishSettings.Message.Value;
 
-<main class="archive">
+           <div id="archivedPublishMessage" class="container alert alert-danger">@Html.Raw(message)</div>
+ }
+ else
+ {
+
+    <header @(hasImage ? "class=has-image" : "") @(hasImage ? $"style=background-image:url({ @Url.Content(WebApp.Media.ResizeImage(Model.PrimaryImage, 1920, 400)) })" : "")>
+        <div class="dimmer"></div>
+        <div class="container text-center">
+            <h1>@Model.Title</h1>
+            @if (!string.IsNullOrWhiteSpace(Model.Excerpt))
+            {
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 lead">
+                        @Html.Raw(Model.Excerpt)
+                    </div>
+                </div>
+            }
+        </div>
+    </header>
+
+    <main class="archive">
     @foreach (var block in Model.Blocks)
     {
         <div class="block @block.CssName()">
@@ -87,3 +104,4 @@
         }
     </div>
 </main>
+ }
