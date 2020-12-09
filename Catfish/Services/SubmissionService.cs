@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Authorization.Requirements;
 using Catfish.Core.Models;
+using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
@@ -238,10 +239,13 @@ namespace Catfish.Services
                 newItem.TemplateId = entityTemplateId;
                 newItem.UserEmail = _workflowService.GetLoggedUserEmail();
 
+               
+
                 DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
                 newDataItem.UpdateFieldValues(value);
                 newItem.DataContainer.Add(newDataItem);
                 newDataItem.EntityId = newItem.Id;
+
 
                 if (groupId.HasValue)
                     newItem.GroupId = groupId;

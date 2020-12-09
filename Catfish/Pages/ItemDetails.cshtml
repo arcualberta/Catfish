@@ -1,12 +1,18 @@
 ﻿@page "/items/{id:Guid}"
 @model Catfish.Pages.ItemDetailsModel
-@using Catfish.Models.Blocks
+@using Catfish.Core.Authorization.Requirements;
+@using Microsoft.AspNetCore.Authorization;
+
+@inject Catfish.Services.ISubmissionService _submissionService;
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
+@inject Catfish.Services.IEntityTemplateService _entityTemplateService;
 @{
     var item = Model.Item;
 
     var rootDataItem = item.GetRootDataItem(false);
 
-
+    var currentStatus = _submissionService.GetStatus(item.StatusId);
+    var template = _entityTemplateService.GetTemplate(item.TemplateId);
 }
 
 @*Specify the status of the submission, followed by the last updated date*@
@@ -20,21 +26,29 @@
 *@
 @{
     var associatedItems = item.DataContainer
-        .Where(di => di.IsRoot = false)
-        .OrderByDescending(di => di.Created)
-        .ToList();
+.Where(di => di.IsRoot = false)
+.OrderByDescending(di => di.Created)
+.ToList();
 }
+@if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
+.Succeeded)
+{
+    <div class="container">
+        <h2 class="item-heading">@Html.DisplayFor(model => rootDataItem.Name, rootDataItem.Name.GetType().ToString())</h2>
 
-<div class="container">
-    <h2 class="item-heading">@Html.DisplayFor(model => rootDataItem.Name, rootDataItem.Name.GetType().ToString())</h2>
+        <div class="submission-form-block">
+            @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString())
+        </div>
+        <div>
+            <div class="alert alert-info">
+                <span>Current Status :</span>
+                <span>@currentStatus</span>
+            </div>
+        </div>
+        @*Display each associated item in a separate element like a bootstrap panel.*@
 
-    <div class="submission-form-block">
-        @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString())
+
+
+
     </div>
-
-    @*Display each associated item in a separate element like a bootstrap panel.*@
-
-
-
-
-</div>
+}

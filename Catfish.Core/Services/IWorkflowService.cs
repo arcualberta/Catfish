@@ -2,6 +2,7 @@
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Workflow;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,8 @@ namespace Catfish.Core.Services
         public List<PostAction> GetPostActions(EntityTemplate entityTemplate, string function, string group);
 
         public string GetLoggedUserEmail();
+
+        User GetLoggedUser();
 
         /// <summary>
         /// Returns the list of Groups where the specified user is associated with a role that has 
