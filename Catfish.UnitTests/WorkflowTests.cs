@@ -366,7 +366,7 @@ namespace Catfish.UnitTests
             // Edit submission related workflow items
             // =======================================
             //Defining actions
-            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", nameof(TemplateOperations.Update), "Details");
 
             //Defining post actions
             PostAction editSubmissionPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
@@ -404,22 +404,45 @@ namespace Catfish.UnitTests
             editSubmissionPostActionSubmit.AddTriggerRefs("1", ownerSubmissionNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
             //Defining state referances
-            editSubmissionAction.AddStateReferances(savedState.Id);
-            editSubmissionAction.AddStateReferances(deanOfficeRevisionState.Id);
-            editSubmissionAction.AddStateReferances(deanOfficeRevisionSaveState.Id);
-            editSubmissionAction.AddStateReferances(aacRevisionState.Id);
-            editSubmissionAction.AddStateReferances(aacRevisionSaveState.Id);
-            editSubmissionAction.AddStateReferances(aecRevisionState.Id);
-            editSubmissionAction.AddStateReferances(aecRevisionSaveState.Id);
-            editSubmissionAction.AddStateReferances(afcRevisionState.Id);
-            editSubmissionAction.AddStateReferances(afcRevisionSaveState.Id);
-            editSubmissionAction.AddStateReferances(gfcRevisionState.Id);
-            editSubmissionAction.AddStateReferances(gfcRevisionSaveState.Id);
+            editSubmissionAction.GetStateReference(savedState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(deanOfficeRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(deanOfficeRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(aacRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(aacRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(aecRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(aecRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(afcRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(afcRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(gfcRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(gfcRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            //editSubmissionAction.AddStateReferances(savedState.Id);
+            //editSubmissionAction.AddStateReferances(deanOfficeRevisionState.Id);
+            //editSubmissionAction.AddStateReferances(deanOfficeRevisionSaveState.Id);
+            //editSubmissionAction.AddStateReferances(aacRevisionState.Id);
+            //editSubmissionAction.AddStateReferances(aacRevisionSaveState.Id);
+            //editSubmissionAction.AddStateReferances(aecRevisionState.Id);
+            //editSubmissionAction.AddStateReferances(aecRevisionSaveState.Id);
+            //editSubmissionAction.AddStateReferances(afcRevisionState.Id);
+            //editSubmissionAction.AddStateReferances(afcRevisionSaveState.Id);
+            //editSubmissionAction.AddStateReferances(gfcRevisionState.Id);
+            //editSubmissionAction.AddStateReferances(gfcRevisionSaveState.Id);
 
 
 
             //Defining authorizatios
-            RoleReference roleRef = editSubmissionAction.AddAuthorizedRole(savedState.Id, departmentAdmin.Id);
+            //RoleReference roleRef = editSubmissionAction.AddAuthorizedRole(savedState.Id, departmentAdmin.Id);
 
 
             // Delete submission related workflow items
@@ -463,7 +486,7 @@ namespace Catfish.UnitTests
 
             // Revision request related workflow items
             //Defining actions
-            GetAction sendForRevisionSubmissionAction = workflow.AddAction("Send for Revision", "ChangeState", "Details");
+            GetAction sendForRevisionSubmissionAction = workflow.AddAction("Send for Revision", nameof(TemplateOperations.ChangeState), "Details");
 
             //Define Revision Template
             sendForRevisionSubmissionAction.AddTemplate(commentsForm.Id, "Submission Revision Template");
@@ -491,24 +514,45 @@ namespace Catfish.UnitTests
             //Defining trigger refs
             sendForRevisionSubmissionPostAction.AddTriggerRefs("0", RevisionNotificationEmailTrigger.Id, "Send for Revision Notification Email Trigger");
 
-            //Defining state referances
-            sendForRevisionSubmissionAction.AddStateReferances(submittedState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(deanOfficeRevisionCompletedState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(aacWithState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(aacRevisionCompletedState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(aecWithState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(aecRevisionCompletedState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(afcWithState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(afcRevisionCompletedState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(gfcWithState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(gfcRevisionCompletedState.Id);
+            //Defining states and their authorizatios
+            sendForRevisionSubmissionAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(deanOfficeRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(aacWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(aacRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(aecWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(aecRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(afcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(afcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(gfcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(gfcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            ////Defining state referances
+            //sendForRevisionSubmissionAction.AddStateReferances(submittedState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(deanOfficeRevisionCompletedState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(aacWithState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(aacRevisionCompletedState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(aecWithState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(aecRevisionCompletedState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(afcWithState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(afcRevisionCompletedState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(gfcWithState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(gfcRevisionCompletedState.Id);
 
-            //Defining authorizatios
-            sendForRevisionSubmissionAction.AddAuthorizedRole(submittedState.Id, centralAdminRole.Id);
+            ////Defining authorizatios
+            //sendForRevisionSubmissionAction.AddAuthorizedRole(submittedState.Id, centralAdminRole.Id);
 
             // Revision request related workflow items
             //Defining actions
-            GetAction changeStateAction = workflow.AddAction("Update Document State", "ChangeState", "Details");
+            GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
 
             //Define Revision Template
             changeStateAction.AddTemplate(commentsForm.Id, "Submission Change State");
@@ -550,25 +594,56 @@ namespace Catfish.UnitTests
             changeStateActionPopUpopUp.AddButtons("Yes", "true");
             changeStateActionPopUpopUp.AddButtons("Cancel", "false");
 
-            //Defining state referances
-            changeStateAction.AddStateReferances(submittedState.Id);
-            changeStateAction.AddStateReferances(deanOfficeRevisionCompletedState.Id);
-            changeStateAction.AddStateReferances(aacWithState.Id);
-            changeStateAction.AddStateReferances(aacRevisionCompletedState.Id);
-            changeStateAction.AddStateReferances(aecWithState.Id);
-            changeStateAction.AddStateReferances(aecRevisionCompletedState.Id);
-            changeStateAction.AddStateReferances(afcWithState.Id);
-            changeStateAction.AddStateReferances(afcRevisionCompletedState.Id);
-            changeStateAction.AddStateReferances(gfcWithState.Id);
-            changeStateAction.AddStateReferances(gfcRevisionCompletedState.Id);
-            changeStateAction.AddStateReferances(aacApprovedState.Id);
-            changeStateAction.AddStateReferances(aecApprovedState.Id);
-            changeStateAction.AddStateReferances(afcApprovedState.Id);
 
-            changeStateAction.AddStateReferances(gfcApprovedState.Id);
+            //Defining states and their authorizatios
+            changeStateAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(deanOfficeRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(aacWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(aacRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(aecWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(aecRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(afcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(afcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(gfcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(gfcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(aacApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(aecApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(afcApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(gfcApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
 
-            //Defining authorizatios
-            changeStateAction.AddAuthorizedRole(submittedState.Id, centralAdminRole.Id);
+            ////Defining state referances
+            //changeStateAction.AddStateReferances(submittedState.Id);
+            //changeStateAction.AddStateReferances(deanOfficeRevisionCompletedState.Id);
+            //changeStateAction.AddStateReferances(aacWithState.Id);
+            //changeStateAction.AddStateReferances(aacRevisionCompletedState.Id);
+            //changeStateAction.AddStateReferances(aecWithState.Id);
+            //changeStateAction.AddStateReferances(aecRevisionCompletedState.Id);
+            //changeStateAction.AddStateReferances(afcWithState.Id);
+            //changeStateAction.AddStateReferances(afcRevisionCompletedState.Id);
+            //changeStateAction.AddStateReferances(gfcWithState.Id);
+            //changeStateAction.AddStateReferances(gfcRevisionCompletedState.Id);
+            //changeStateAction.AddStateReferances(aacApprovedState.Id);
+            //changeStateAction.AddStateReferances(aecApprovedState.Id);
+            //changeStateAction.AddStateReferances(afcApprovedState.Id);
+
+            //changeStateAction.AddStateReferances(gfcApprovedState.Id);
+
+            ////Defining authorizatios
+            //changeStateAction.AddAuthorizedRole(submittedState.Id, centralAdminRole.Id);
 
             // Calender request move to draft related workflow items
             //Defining actions
@@ -606,12 +681,16 @@ namespace Catfish.UnitTests
             //Defining trigger refs
             moveToDraftErrorPostAction.AddTriggerRefs("0", MovedToDraftCalendarEmailTrigger.Id, "Moved to Draft Notification Email Trigger");
 
-            //Defining state referances
-            moveToDraftAction.AddStateReferances(gfcApprovedState.Id);
-            moveToDraftAction.AddStateReferances(moveToDraftErrorState.Id);
+            moveToDraftAction.GetStateReference(gfcApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(moveToDraftErrorState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            ////Defining state referances
+            //moveToDraftAction.AddStateReferances(gfcApprovedState.Id);
+            //moveToDraftAction.AddStateReferances(moveToDraftErrorState.Id);
 
-            //Defining authorizatios
-            moveToDraftAction.AddAuthorizedRole(gfcApprovedState.Id, centralAdminRole.Id);
+            ////Defining authorizatios
+            //moveToDraftAction.AddAuthorizedRole(gfcApprovedState.Id, centralAdminRole.Id);
 
             auth.EnsureUserRoles(workflow.GetWorkflowRoles());
             auth.EnsureGroups(workflow.GetWorkflowGroups(), template.Id);

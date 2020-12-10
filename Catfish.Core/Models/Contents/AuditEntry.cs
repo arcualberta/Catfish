@@ -5,12 +5,13 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents
 {
-    public class AuditTrail : FieldContainer
+    public class AuditEntry : FieldContainer
     {
-        public static readonly string TagName = "audit-trail";
+        public static readonly string TagName = "audit-entry";
         public static readonly string UserAtt = "user-id";
         public static readonly string FromAtt = "status-from";
         public static readonly string ToAtt = "status-to";
+        public static readonly string ActionAtt = "action";
         public static readonly string TimeStampAtt = "timestamp";
 
 
@@ -31,14 +32,19 @@ namespace Catfish.Core.Models.Contents
             get => Guid.Parse(Data.Attribute(ToAtt).Value);
             set => SetAttribute(ToAtt, value);
         }
+        public string Action
+        {
+            get => GetAttribute(ActionAtt, null as string);
+            set => SetAttribute(ActionAtt, value);
+        }
         public DateTime TimeStamp
         {
             get => GetDateTimeAttribute(TimeStampAtt).Value;
             set => Data.SetAttributeValue(TimeStampAtt, value);
         }
 
-        public AuditTrail() : base(TagName) { Initialize(eGuidOption.Ensure); TimeStamp = DateTime.Now; }
-        public AuditTrail(XElement data) : base(data) { Initialize(eGuidOption.Ensure); TimeStamp = DateTime.Now; }
+        public AuditEntry() : base(TagName) { Initialize(eGuidOption.Ensure); TimeStamp = DateTime.Now; }
+        public AuditEntry(XElement data) : base(data) { Initialize(eGuidOption.Ensure); TimeStamp = DateTime.Now; }
 
         
         public new void Initialize(eGuidOption guidOption)

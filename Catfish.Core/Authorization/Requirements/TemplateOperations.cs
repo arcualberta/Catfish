@@ -15,7 +15,13 @@ namespace Catfish.Core.Authorization.Requirements
         public static readonly OperationAuthorizationRequirement ListInstances
          = new OperationAuthorizationRequirement() { Name = nameof(ListInstances) };
 
-        public static readonly OperationAuthorizationRequirement Read
+        public static new readonly OperationAuthorizationRequirement Read
          = new OperationAuthorizationRequirement() { Name = nameof(Read) };
+
+        public static new readonly OperationAuthorizationRequirement Update
+         = new OperationAuthorizationRequirement() { Name = nameof(Update) };
+
+        public static new readonly OperationAuthorizationRequirement ChangeState
+         = new OperationAuthorizationRequirement() { Name = nameof(ChangeState) };
     }
 }

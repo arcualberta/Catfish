@@ -21,10 +21,7 @@
             }
             else
             {
-                @*<p>@Html.Raw(Model.Values[i].Value)</p>*@
-                @*@Html.DisplayFor(model => model.Values[i].Value);*@
-                @*<input type="text" readonly class="form-control-plaintext" id="staticEmail" value=@Model.Values[i].Value>*@
-                <input class="form-control" type="text" placeholder=@Model.Values[i].Value aria-label="readonly input example" readonly>
+                @Html.DisplayFor(model => model.Values[i].Value);
             }
         }
     </div>

@@ -178,9 +178,9 @@ namespace Catfish.Services
         ////    return itemList;
         ////}
 
-        public string GetStatus(Guid? statusId)
+        public SystemStatus GetStatus(Guid? statusId)
         {
-            return _db.SystemStatuses.Where(s => s.Id == statusId).FirstOrDefault().NormalizedStatus;
+            return _db.SystemStatuses.Where(s => s.Id == statusId).FirstOrDefault();
         }
       
         public List<ItemField> GetAllField(string xml)
@@ -224,7 +224,7 @@ namespace Catfish.Services
         /// <param name="collectionId"></param>
         /// <param name="actionButton"></param>
         /// <returns></returns>
-        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, string actionButton)
+        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, string status, string action)
         {
             try
             {
@@ -234,7 +234,7 @@ namespace Catfish.Services
 
                 //When we instantantiate an instance from the template, we do not need to clone metadata sets
                 Item newItem = template.Instantiate<Item>();
-                newItem.StatusId = _entityTemplateService.GetSystemStatus(entityTemplateId, actionButton).Id;
+                newItem.StatusId = _entityTemplateService.GetSystemStatus(entityTemplateId, status).Id;
                 newItem.PrimaryCollectionId = collectionId;
                 newItem.TemplateId = entityTemplateId;
                 newItem.UserEmail = _workflowService.GetLoggedUserEmail();
@@ -248,7 +248,9 @@ namespace Catfish.Services
                 var fromState = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
                 newItem.AddAuditEntry(user.Id,
                     fromState,
-                    newItem.StatusId.Value);
+                    newItem.StatusId.Value,
+                    action
+                    );
 
                 if (groupId.HasValue)
                     newItem.GroupId = groupId;

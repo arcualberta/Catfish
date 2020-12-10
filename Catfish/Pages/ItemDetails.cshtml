@@ -3,6 +3,7 @@
 @using Catfish.Core.Authorization.Requirements;
 @using Microsoft.AspNetCore.Authorization;
 
+@inject Piranha.Manager.ManagerLocalizer Localizer
 @inject Catfish.Services.ISubmissionService _submissionService;
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
@@ -11,7 +12,7 @@
 
     var rootDataItem = item.GetRootDataItem(false);
 
-    var currentStatus = _submissionService.GetStatus(item.StatusId);
+    var currentStatus = _submissionService.GetStatus(item.StatusId).Status;
     var template = _entityTemplateService.GetTemplate(item.TemplateId);
 }
 
@@ -34,21 +35,48 @@
 .Succeeded)
 {
     <div class="container">
-        <h2 class="item-heading">@Html.DisplayFor(model => rootDataItem.Name, rootDataItem.Name.GetType().ToString())</h2>
+        <div class="card">
+            <div class="card-header">
+                <h2 class="item-heading">@Html.DisplayFor(model => rootDataItem.Name, rootDataItem.Name.GetType().ToString()) @item.UserEmail</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>@Localizer.General["Status"]</label>
+                            <div class="alert alert-info">
+                                <span>@currentStatus</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="form-group">
+                            <label>@Localizer.General["Actions"]</label>
 
-        <div class="submission-form-block">
-            @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString())
+                        </div>
+                    </div>
+                </div>
+                <div class="submission-form-block">
+                    @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString())
+                </div>
+            </div>
+            
         </div>
-        <div>
+    </div>
+
+
+
+    @*<div class="container">
+        <h2 class="item-heading">@Html.DisplayFor(model => rootDataItem.Name, rootDataItem.Name.GetType().ToString())</h2>
+        <div class="well form-horizontal">
             <div class="alert alert-info">
-                <span>Current Status :</span>
+                <span>Status :</span>
                 <span>@currentStatus</span>
             </div>
         </div>
-        @*Display each associated item in a separate element like a bootstrap panel.*@
-
-
-
-
-    </div>
+        <div class="submission-form-block">
+            @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString())
+        </div>
+    </div>*@
+    @*Display each associated item in a separate element like a bootstrap panel.*@
 }

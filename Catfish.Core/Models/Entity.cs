@@ -98,7 +98,7 @@ namespace Catfish.Core.Models
         public XmlModelList<MetadataSet> MetadataSets { get; protected set; }
 
         [NotMapped]
-        public XmlModelList<AuditTrail> AuditTrail { get; protected set; }
+        public XmlModelList<AuditEntry> AuditTrail { get; protected set; }
 
         [NotMapped]
         public XmlModelList<DataItem> DataContainer { get; protected set; }
@@ -174,7 +174,7 @@ namespace Catfish.Core.Models
             MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement(MetadataSetsRootTag, true), true);
 
             //Building the Audit Trail Set list
-            AuditTrail = new XmlModelList<AuditTrail>(xml.GetElement(AuditTrailRootTag, true), true);
+            AuditTrail = new XmlModelList<AuditEntry>(xml.GetElement(AuditTrailRootTag, true), true);
 
             //Building the DataContainer
             DataContainer = new XmlModelList<DataItem>(xml.GetElement(DataContainerRootTag, true), true);
@@ -241,14 +241,15 @@ namespace Catfish.Core.Models
             return dataItem;
         }
 
-        public Entity AddAuditEntry(Guid? userId, Guid statusFrom, Guid statusTo)
+        public Entity AddAuditEntry(Guid? userId, Guid statusFrom, Guid statusTo, string action)
         {
-            AuditTrail.Add(new AuditTrail()
+            AuditTrail.Add(new AuditEntry()
             {
                 UserId = userId,
                 StatusFrom = statusFrom,
-                StatusTo = statusTo
-            });
+                StatusTo = statusTo,
+                Action = action
+            }) ;
             return this;
         }
     }
