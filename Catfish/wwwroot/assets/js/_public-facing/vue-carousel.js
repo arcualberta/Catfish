@@ -34,7 +34,7 @@ Vue.component('vue-carousel', {
         });
     },
     template:
-        `<div>
+        `<div class="row">
             <div :id="this.model.Id" class="carousel slide" data-ride="carousel">
                 <ol class="carousel-indicators">
                     <li v-for="(item,index) in this.model.Items" :data-target="elementId" :data-slide-to="index" :class="{'active': index === 0}"></li>

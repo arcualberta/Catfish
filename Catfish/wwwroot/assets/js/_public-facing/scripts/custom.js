@@ -5,8 +5,14 @@
 
 /* This is for the Arc website vvv */
 /*
-//fixes the layout of the columns in 'Highlights'
 document.addEventListener("DOMContentLoaded", function(event) {
+//adds yellow highlight to carousel titles
+let titles = document.getElementsByClassName('title-text');
+for(let title of titles){
+    title.classList.add('EGTitle');
+}
+
+//fixes the layout of the columns in 'Highlights'
 let columns = document.getElementsByClassName('row columnBlock CBflex-container');
 console.log(columns, columns.length);
 
