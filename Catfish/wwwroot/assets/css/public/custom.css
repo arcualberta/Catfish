@@ -68,16 +68,16 @@ body {
     background-position: center 39%;
     background-size: cover;
 }
-.text-container{
+.img-text-container{
     width:100%;
 }
 
-    .text-container > h1 {
+    .img-text-container > h1 {
         font-size: 4em;
         font-weight: Bold;
     }
 
-    .text-container > h2 {
+    .img-text-container > h2 {
         font-size: 2.3em;
         /*margin-left: 150px;*/
     }
