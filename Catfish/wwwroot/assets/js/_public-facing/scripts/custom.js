@@ -15,6 +15,7 @@ for(let i = 1; i < columns.length; i++){
     columns[i].children[j].children[0].classList.remove('col-md-12');
     columns[i].children[j].classList.remove('col-md-6');
     columns[i].children[j].classList.add('remove-padding-in-highlights');
+    columns[i].children[j].classList.add('added-height');
     if( (i + j) % 2 != 0){
       columns[i].children[j].classList.add('col-md-5');
     }else{
@@ -23,5 +24,13 @@ for(let i = 1; i < columns.length; i++){
   }
 }
 
+});
+
+
+//this code goes in the header of Home page
+document.addEventListener("DOMContentLoaded", function(event) {
+    document.getElementsByClassName("footer-arc-text")[0].classList.remove('col-6');
+    document.getElementsByClassName("footer-arc-text")[0].classList.add('col-md-12');
+    [...document.getElementsByClassName("footer-arc-logo")].map(n => n && n.remove());
 });
  */

@@ -112,33 +112,6 @@ body {
     width: fit-content;
 }
 
-.headerContainer {
-    height: 125px;
-    background-color: #1846A0; /*dark blue */
-    padding: 20px;
-}
-
-header {
-    height: 50px;
-    background-color: #1846A0; /*dark blue */
-}
-
-    header.site-header.site-header-dark .nav-site .active a {
-        color: White !important;
-    }
-
-.navbarContainer {
-    margin-top: -30px;
-}
-
-header {
-    border-bottom: 5px solid #40C6DD; /* med blue */
-}
-
-.search-panel {
-    display: none;
-}
-
 /*#arcLogo {
     width: 90px;
     padding-right: 15px;
@@ -154,10 +127,6 @@ header {
     margin: 20px;
     width: 200px;
     height: auto;*/
-}
-
-header.site-header.site-header-dark .nav-site a {
-    color: #fff !important;
 }
 
 .dropdown-menu {
@@ -183,13 +152,13 @@ header.site-header.site-header-dark .nav-site a {
     padding: 20px;
 }
 
-    .extended-gallery-block > .carousel-inner > .carousel-item, .carousel-indicators > li {
-        background-color: #fff;
-    }
+.extended-gallery-block > .carousel-inner > .carousel-item, .carousel-indicators > li {
+    background-color: #fff;
+}
 
-        .extended-gallery-block > .carousel-inner > .active, .carousel-indicators > li.active {
-            background-color: #9DEBF4;
-        }
+.extended-gallery-block > .carousel-inner > .active, .carousel-indicators > li.active {
+    background-color: #9DEBF4;
+}
 
 .btn-lightBlue {
     background-color: var(--lightBlue-color);
@@ -226,33 +195,6 @@ header.site-header.site-header-dark .nav-site a {
 .description {
     padding-bottom: 30px;
 }
-
-footer > .container > .row {
-    color: white;
-    background-color: #1846A0;
-}
-
-.footer-arc-text {
-    height: 300px;
-    line-height: 15px;
-    padding: 15px;
-}
-
-    .footer-arc-text img {
-        padding-left: 15px;
-        padding-right: 15px;
-        width: 110px;
-    }
-
-.footer-arc-logo {
-    text-align: right;
-    padding: 5px;
-}
-
-    .footer-arc-logo > img {
-        width: 40px;
-        height: 40px;
-    }
 
 /* Image gallery carousel */
 .img-fluid {
@@ -326,11 +268,7 @@ footer > .container > .row {
     background-color: var(--lightBlue-color);
 }
 
-/* ARC Logo in header */
-.header-brand{
-    padding-left: 25px;
-    padding-top: 25px;
-}
+/******** Highlights Section Stuff *********/
 
 /* Remove padding in between section in Highlights columns */
 .remove-padding-in-highlights{
@@ -368,8 +306,54 @@ footer > .container > .row {
     padding-bottom: 15px;
 }
 
+/******** END of Highlights Section Stuff *********/
+
 @media screen and (max-width: 1100px) {
     .EGTitle {
         /* font-size:1.6em;*/
     }
 }
+
+
+/********* Stuff for Header CSS Section *************/
+/********* Try not to put this stuff in individual page CSS blocks *************/
+
+/* ARC Logo in header */
+.header-brand {
+    padding-left: 25px;
+    padding-top: 25px;
+}
+
+header {
+    height: 50px;
+    border-bottom: 5px solid #40C6DD; /* med blue */
+}
+
+header.site-header.site-header-dark .nav-site .active a {
+    color: white !important;
+}
+
+header.site-header.site-header-dark .nav-site a {
+    color: white !important;
+}
+
+.search-panel {
+    display: none;
+}
+
+/********* END of Stuff for Header CSS Section *************/
+
+/********* Stuff for Footer CSS Section *************/
+/********* Try not to put this stuff in individual page CSS blocks *************/
+
+.footer-arc-text {
+    height: unset;
+    line-height: unset;
+    padding: 15px;
+}
+
+.footer-arc-text img {
+    width: inherit;
+}
+
+/********* END of Stuff for Footer CSS Section *************/

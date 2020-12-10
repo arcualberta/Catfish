@@ -129,9 +129,13 @@
 
         @{
             var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
-            var javascriptCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Javascript == null)
+            var javascriptCodeHeader = (currentSite == null || currentSite.HeaderContents == null || currentSite.HeaderContents.Javascript == null)
+                ? "" : currentSite.HeaderContents.Javascript.Value;
+            var cssCodeHeader = (currentSite == null || currentSite.HeaderContents == null || currentSite.HeaderContents.Css == null)
+               ? "" : currentSite.HeaderContents.Css.Value;
+            var javascriptCodeFooter = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Javascript == null)
                 ? "" : currentSite.FooterContents.Javascript.Value;
-            var cssCode = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Css == null)
+            var cssCodeFooter = (currentSite == null || currentSite.FooterContents == null || currentSite.FooterContents.Css == null)
                ? "" : currentSite.FooterContents.Css.Value;
         }
 
@@ -139,11 +143,15 @@
 
     </div>@*End of vueApp div *@
 
-    @* Footer additional scripts/css *@
-    <script>
-        @Html.Raw(javascriptCode)
-    </script>
-    @Html.Raw(cssCode)
+    @* Header/Footer additional scripts/css *@
+<script>
+    @Html.Raw(javascriptCodeHeader)
+    @Html.Raw(javascriptCodeFooter)
+</script>
+<style>
+    @Html.Raw(cssCodeHeader)
+    @Html.Raw(cssCodeFooter)
+</style>
 
     <script>
         new Vue({ el: '#vueApp' })

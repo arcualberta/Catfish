@@ -13,6 +13,10 @@ namespace Catfish.Models.Regions
     {
         [Field(Title = "Footer logo")]
         public ImageField Logo { get; set; }
+        [Field(Title = "Footer Background Color", Placeholder = "Please enter a hex value, including the hashtag, or color name")]
+        public ColorPicker BackgroundColor { get; set; }
+        [Field(Title = "Footer Text Color", Placeholder = "Please enter a hex value, including the hashtag, or color name")]
+        public ColorPicker TextColor { get; set; }
 
         [Field(Title = "Footer Contents")]
         public HtmlField Text { get; set; }

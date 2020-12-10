@@ -1,14 +1,18 @@
 ﻿@inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig
 @using Catfish.Models.SiteTypes
 
+@{
+    var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
+    var backgroundColor = currentSite.FooterContents.BackgroundColor.Value;
+    var textColor = currentSite.FooterContents.TextColor.Value;
+}
+
 <footer class="border-top footer text-muted">
-    <div class="container-fluid">
-        @{
-            var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
-        }
+    <div class="container">
+
         @if (currentSite != null)
         {
-            <div class="row">
+            <div class="row" style="background-color: @backgroundColor; color: @textColor;">
 
                 <div class="col-6 footer-arc-text">
                     @Html.Raw(currentSite.FooterContents.Text)
