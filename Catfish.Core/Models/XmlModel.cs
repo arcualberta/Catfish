@@ -202,6 +202,10 @@ namespace Catfish.Core.Models
         public Guid[] GetAttribute(string attName, Guid[] defaultValue)
         {
             var att = Data.Attribute(attName);
+            if (defaultValue == null)
+                defaultValue = new Guid[0];
+            if (att != null)
+                att = att;
             return (att == null || string.IsNullOrEmpty(att.Value)) 
                 ? defaultValue 
                 : att.Value.Split(",", StringSplitOptions.RemoveEmptyEntries)
