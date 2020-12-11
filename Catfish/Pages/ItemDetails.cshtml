@@ -13,6 +13,7 @@
 
     var rootDataItem = item.GetRootDataItem(false);
 
+    string suffix = Guid.NewGuid().ToString();
     var currentStatus = _submissionService.GetStatus(item.StatusId).Status;
     var template = _entityTemplateService.GetTemplate(item.TemplateId);
     var allPostActions = _workflowService.GetAllChangeStatePostActions(template, item.StatusId.Value);
@@ -54,7 +55,69 @@ var associatedItems = item.DataContainer
                     <div class="col-sm-8">
                         <div class="form-group">
                             <label>@Localizer.General["Actions"]</label>
+                            <div >
+                                @foreach (var postAction in allPostActions)
+                                {
+                                    if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
+                                    .Succeeded)
+                                    {
+                                        var buttonLable = postAction.StateMappings.Where(sm => sm.Current == item.StatusId).Select(sm => sm.ButtonLabel).FirstOrDefault();
+                                        if (postAction.PopUps.Any())
+                                        {
+                                            foreach (var popup in postAction.PopUps)
+                                            {
+                                                <input id="@buttonLable" class="btn btn-success launch-modal" name="@buttonLable" type="button" value="@buttonLable" data-toggle="modal" data-target="#changeStateModal" />
+                                                <div id="changeStateModal" class="modal fade" role="dialog">
 
+                                                    <div>
+                                                        <div class="modal-dialog">
+                                                            @*Modal content*@
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="myModalLabel">@popup.Title</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="card-body">
+                                                                        <div class="form-group">
+                                                                            <p>@popup.Body</p>
+                                                                            @{
+                                                                                if (popup.Message.Any())
+                                                                                {
+                                                                                    <p class="text-info"><small><strong>Note : </strong>@popup.Message</small></p>
+                                                                                }
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    @{
+                                                                        foreach (var button in popup.Buttons)
+                                                                        {
+                                                                            if (button.Text == "Cancel")
+                                                                            {
+                                                                                <button id="close-modal-button_@suffix" type="button" class="btn btn-primary" data-dismiss="modal">@button.Text</button>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <button id="@buttonLable" type="submit" class="btn btn-success" @*onclick="submitWorkflowForm('@suffix', '@successMessage');"*@>@button.Text</button>
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <input id="@buttonLable" class="btn btn-success" name="@buttonLable" type="submit" value="@buttonLable" @*onclick="submitWorkflowForm('@suffix', '@successMessage');"*@ />
+                                        }
+                                    }
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
