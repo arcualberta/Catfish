@@ -27,9 +27,11 @@ namespace Catfish.Core.Services
 
         public EntityTemplate GetTemplate();
 
-        public string GetStatus(Guid templateId, string status, bool createIfNotExist, bool isEditable);
+        public SystemStatus GetStatus(Guid templateId, string status, bool createIfNotExist);
 
         public List<PostAction> GetPostActions(EntityTemplate entityTemplate, string function, string group);
+        
+        public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid statusId);
 
         public string GetLoggedUserEmail();
 

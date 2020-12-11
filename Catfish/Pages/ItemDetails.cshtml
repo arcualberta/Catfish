@@ -5,6 +5,7 @@
 
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @inject Catfish.Services.ISubmissionService _submissionService;
+@inject Catfish.Core.Services.IWorkflowService _workflowService;
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
 @{
@@ -14,6 +15,7 @@
 
     var currentStatus = _submissionService.GetStatus(item.StatusId).Status;
     var template = _entityTemplateService.GetTemplate(item.TemplateId);
+    var allPostActions = _workflowService.GetAllChangeStatePostActions(template, item.StatusId.Value);
 }
 
 @*Specify the status of the submission, followed by the last updated date*@
@@ -26,7 +28,7 @@
 
 *@
 @{
-    var associatedItems = item.DataContainer
+var associatedItems = item.DataContainer
 .Where(di => di.IsRoot = false)
 .OrderByDescending(di => di.Created)
 .ToList();
@@ -60,23 +62,23 @@
                     @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString())
                 </div>
             </div>
-            
+
         </div>
     </div>
 
 
 
     @*<div class="container">
-        <h2 class="item-heading">@Html.DisplayFor(model => rootDataItem.Name, rootDataItem.Name.GetType().ToString())</h2>
-        <div class="well form-horizontal">
-            <div class="alert alert-info">
-                <span>Status :</span>
-                <span>@currentStatus</span>
+            <h2 class="item-heading">@Html.DisplayFor(model => rootDataItem.Name, rootDataItem.Name.GetType().ToString())</h2>
+            <div class="well form-horizontal">
+                <div class="alert alert-info">
+                    <span>Status :</span>
+                    <span>@currentStatus</span>
+                </div>
             </div>
-        </div>
-        <div class="submission-form-block">
-            @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString())
-        </div>
-    </div>*@
+            <div class="submission-form-block">
+                @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString())
+            </div>
+        </div>*@
     @*Display each associated item in a separate element like a bootstrap panel.*@
 }

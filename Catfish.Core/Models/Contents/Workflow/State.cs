@@ -8,11 +8,7 @@ namespace Catfish.Core.Models.Contents.Workflow
     public class State : XmlModel
     {
         public static readonly string TagName = "state";
-        public bool IsEditable
-        {
-            get => GetAttribute("is-editable", false);
-            set => SetAttribute("is-editable", value);
-        }
+        
         public string Value
         {
             get => Data.Value;
