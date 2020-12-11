@@ -1290,7 +1290,7 @@ namespace Catfish.UnitTests
             inspectionForm.CreateField<TextField>("Room/Area:", lang, true, true);
 
 
-            inspectionForm.CreateField<CheckboxField>("Room/Area Check:", lang, optionBuilding);
+            //inspectionForm.CreateField<CheckboxField>("Room/Area Check:", lang, optionBuilding);
 
             inspectionForm.CreateField<IntegerField>("Number of People in the work area:", lang, true);
 
