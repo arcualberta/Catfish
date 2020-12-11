@@ -108,8 +108,10 @@
     width:100%;
     height:40px;
 }
-.EGTitle {
+.EGTitle-font-size {
     font-size: 3em;
+}
+.EGTitle {
     height: auto !important;
     width: 100%;
     background: blue; /* For browsers that do not support gradients */
@@ -127,6 +129,16 @@
 .EGLinkBtn{
     border-radius:25px;
 }
+
+.carousel-control-next:hover, .carousel-control-prev:hover {
+    background: rgb(2,0,36);
+    background: radial-gradient(circle, rgba(2,0,36,0) 79%, rgba(0,0,0,0.14891894257703087) 100%);
+}
+
+.carousel-control-next, .carousel-control-prev {
+    transition: background 0.5s !important;
+}
+
 /* end of extended Gallery block*/
 
 .box-shadow {
@@ -210,6 +222,7 @@
 
 .progress {
     height: 3px;
+    width:100%;
 }
 
 /*Contact form styling*/
@@ -223,4 +236,11 @@
 /* Styling for ItemListBlock2 */
 #itemListBlockTable {
     margin-top: 15px;
+}
+
+/* Carousel: Overrides the user's set width when the screen is narrow, for mobile devices */
+@media screen and (max-width: 991px) {
+    .image-in-carousel {
+        width: 100% !important;
+    }
 }

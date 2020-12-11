@@ -12,21 +12,29 @@ for(let title of titles){
     title.classList.add('EGTitle');
 }
 
+//changes the columns under the wide image into col-md-4's, from col-md-3's
 //fixes the layout of the columns in 'Highlights'
 let columns = document.getElementsByClassName('row columnBlock CBflex-container');
 console.log(columns, columns.length);
 
-for(let i = 1; i < columns.length; i++){
+for(let i = 0; i < columns.length; i++){
+  columns[i].classList.add('grey-bg');
   for(let j = 0; j < columns[i].children.length; j++){
-    columns[i].children[j].children[0].classList.remove('col-md-12');
-    columns[i].children[j].classList.remove('col-md-6');
-    columns[i].children[j].classList.add('remove-padding-in-highlights');
-    columns[i].children[j].classList.add('added-height');
-    if( (i + j) % 2 != 0){
-      columns[i].children[j].classList.add('col-md-5');
+    if(i == 0){
+        //this is the columns section under the wide image
+        columns[i].children[j].classList.remove('col-md-3');
+        columns[i].children[j].classList.add('col-md-4');
     }else{
-      columns[i].children[j].classList.add('col-md-7');
-    }
+        columns[i].children[j].children[0].classList.remove('col-md-12');
+        columns[i].children[j].classList.remove('col-md-6');
+        columns[i].children[j].classList.add('remove-padding-in-highlights');
+        columns[i].children[j].classList.add('added-height');
+        if( (i + j) % 2 != 0){
+          columns[i].children[j].classList.add('col-md-5');
+        }else{
+          columns[i].children[j].classList.add('col-md-7');
+        }
+     }
   }
 }
 

@@ -57,7 +57,7 @@
             </div>
         </div>
         <header class="site-header  @(ViewBag.HasImage == null || !ViewBag.HasImage ? "site-header-dark" : "")">
-            <div class="container-fluid">
+            <div class="container" style="background-color: @backgroundColor; @*color: @textColor*@">
                 <div class="row">
                     <div class="col-sm">
                         <partial name="/Views/Shared/Partial/_Menu.cshtml" />
