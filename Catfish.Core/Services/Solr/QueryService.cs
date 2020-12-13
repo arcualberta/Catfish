@@ -3,7 +3,7 @@ using Catfish.Core.Models.Solr;
 using ElmahCore;
 using SolrNet;
 using SolrNet.Commands.Parameters;
-using SolrNet.DSL;
+//using SolrNet.DSL;
 using SolrNet.Mapping.Validation;
 using System;
 using System.Collections.Generic;
