@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Services;
 using Catfish.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,11 +19,13 @@ namespace Catfish.Controllers.Api
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly ISubmissionService _submissionService;
         private readonly AppDbContext _appDb;
-        public ItemsController(AppDbContext db, IEntityTemplateService entityTemplateService, ISubmissionService submissionService)
+        private readonly IJobService _jobService;
+        public ItemsController(AppDbContext db, IEntityTemplateService entityTemplateService, ISubmissionService submissionService, IJobService jobService)
         {
             _entityTemplateService = entityTemplateService;
             _submissionService = submissionService;
             _appDb = db;
+            _jobService = jobService;
         }
         // GET: api/<ItemController>
         [HttpGet]
@@ -108,6 +111,8 @@ namespace Catfish.Controllers.Api
                 Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, groupId, status, actionButton);
                 _appDb.Items.Add(newItem);
                 _appDb.SaveChanges();
+
+                bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
 
                 bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, actionButton, function, group);
                 result.Success = true;

@@ -112,6 +112,7 @@ namespace Catfish.Core.Models
         public DbSet<GroupTemplate> GroupTemplates { get; set; }
         public DbSet<SystemStatus> SystemStatuses { get; set; }
         public DbSet<Form> Forms { get; set; }
+        public DbSet<BackgroundJob> BackgroundJobs { get; set; }
 
         /*
                 public DbSet<XmlModel> XmlModels { get; set; }
