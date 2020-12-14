@@ -102,6 +102,7 @@ var vueApp = new Vue({
 		}
 	},
     created() {
+        console.log("this code is running ok");
         //assign static values
         this.searchResultsLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.SEARCH_RESULTS_LABEL;
         this.previousButtonLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.PREVIOUS_BUTTON_LABEL;

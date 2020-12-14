@@ -79,7 +79,6 @@
     <script src="~/assets/js/_public-facing/scripts/contact-form-block-functions.js"></script>
     <script src="~/assets/js/_public-facing/scripts/free-search-block-functions.js"></script>
 
-
     <style>
         @foreach(var css in cssBlocks)
         {
@@ -97,7 +96,7 @@
 
     @if (Model is Piranha.Models.IMeta)
     {
-        <partial name="Partial/_Meta.cshtml" />
+    <partial name="Partial/_Meta.cshtml" />
     }
 
     @RenderSection("head", required: false)
@@ -109,7 +108,7 @@
     {
         foreach (string compName in vueComponentNames)
         {
-            <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
+    <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
         }
     }
 
@@ -144,20 +143,24 @@
     </div>@*End of vueApp div *@
 
     @* Header/Footer additional scripts/css *@
-<script>
+    <script>
     @Html.Raw(javascriptCodeHeader)
     @Html.Raw(javascriptCodeFooter)
-</script>
-<style>
+    </script>
+    <style>
     @Html.Raw(cssCodeHeader)
     @Html.Raw(cssCodeFooter)
-</style>
+    </style>
 
     <script>
         new Vue({ el: '#vueApp' })
     </script>
 
     @RenderSection("script", required: false)
+
+    @*Scripts/styling for public side Controlled Vocab Search Block *@
+    <link href="~/assets/css/public/controlledVocabularySearchBlock.css" rel="stylesheet" />
+    <script src="~/assets/dist/keywordsSearchBundle.js"></script>
 
     <script>
 
