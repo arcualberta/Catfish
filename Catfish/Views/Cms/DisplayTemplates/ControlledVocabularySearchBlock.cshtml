@@ -32,8 +32,8 @@
 
 @*Reference for vue templates: https://vuejsdevelopers.com/2017/03/24/vue-js-component-templates/*@
 
-<controlled-vocabulary-search v-bind:model='@Html.Raw(jsonData)' inline-template class="@vocabcssclass">
-    <div>
+<controlled-vocabulary-search v-bind:model='@Html.Raw(jsonData)' inline-template>
+    <div class="@vocabcssclass">
         <div class="keywords-search-block">
             @if (!string.IsNullOrWhiteSpace(blockname))
             {
