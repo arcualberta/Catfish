@@ -160,13 +160,6 @@
     @Html.Raw(cssCodeFooter)
     </style>
 
-    <script>
-        $(document).ready(function () {
-            new Vue({ el: '#vueApp' })
-        });
-
-        //new Vue({ el: '#vueApp' })
-    </script>
     @RenderSection("script", required: false)
 
     @*Scripts/styling for public side Controlled Vocab Search Block *@

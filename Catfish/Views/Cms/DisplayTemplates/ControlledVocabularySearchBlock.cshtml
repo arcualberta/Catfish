@@ -40,38 +40,38 @@
                 <div class="block-title container block-@blockname">@blockname</div>
             }
 
-            <form id="controlledVocabularySearchForm" method="post" action="/api/search/keywords">
+        <form id="controlledVocabularySearchForm" method="post" action="/api/search/keywords">
 
-                <div class="container">
-                    <fieldset class="checkboxgroup">
-                        <div class="row">
-                            @foreach (var word in words)
-                            {
-                                if (!String.IsNullOrWhiteSpace(@word))
-                                {
-                                    <div class="@checkClass keyword-checkbox">
-                                        <input v-on:click="filterByCheckbox($event)" class="search-filter" type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
-                                    </div>
-                                }
-
-                            }
-                        </div>
-                    </fieldset>
-                    <div class="categories-section">
-                        @foreach (var category in categories)
+            <div class="container">
+                <fieldset class="checkboxgroup">
+                    <div class="row">
+                        @foreach (var word in words)
                         {
-                            <button v-on:click="filterByCategory($event)" data-toggle="button"
-                                    aria-pressed="false" autocomplete="off" value="@(category)"
-                                    id="@("category-" + @category)" type="button"
-                                    class="category-button btn btn-light">
-                                @category
-                            </button>
-                            categoryIndex++;
+                            if (!String.IsNullOrWhiteSpace(@word))
+                            {
+                                <div class="@checkClass keyword-checkbox">
+                                    <input v-on:click="filterByCheckbox($event)" class="search-filter" type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
+                                </div>
+                            }
+
                         }
                     </div>
+                </fieldset>
+                <div class="categories-section">
+                    @foreach (var category in categories)
+                    {
+                        <button v-on:click="filterByCategory($event)" data-toggle="button"
+                                aria-pressed="false" autocomplete="off" value="@(category)"
+                                id="@("category-" + @category)" type="button"
+                                class="category-button btn btn-light">
+                            @category
+                        </button>
+                        categoryIndex++;
+                    }
                 </div>
+            </div>
 
-            </form>
+        </form>
         </div>
 
         <div class="search-section container">

@@ -29,7 +29,7 @@ const managerSideEntryPaths = {
 };
 
 const publicFacingEntryPaths = {
-    keywordsSearchBundle: "./wwwroot/assets/js/_public-facing/keywords-search-block-public.js"
+    //keywordsSearchBundle: "./wwwroot/assets/js/_public-facing/keywords-search-block-public.js"
 };
 
 ///////////////////////////////////////////////////////////////////////////////////

@@ -32,7 +32,21 @@ Vue.component('controlled-vocabulary-search', {
             errorMessage1Label: '', 
             errorMessage2Label: '',
             loadingLabel: '',
-            defaultSearchMessageLabel: ''
+            defaultSearchMessageLabel: '',
+
+            //these were originally assigned in the string-values.json file, access them from there if
+            //we are capable of doing that later on in development - it will require webpack
+            keywordsSearchBlockPublicLabels: {
+                "SEARCH_RESULTS_LABEL": "Search Results",
+                "PREVIOUS_BUTTON_LABEL": "Previous",
+                "NEXT_BUTTON_LABEL": "Next",
+                "TOTAL_RESULTS_LABEL": "Total Results:",
+                "NO_RESULTS_LABEL": "Sorry, no results.",
+                "ERROR_MESSAGE_1_LABEL": "A problem has occurred completing your search.",
+                "ERROR_MESSAGE_2_LABEL": "Please contact ARC for further assistance.",
+                "LOADING_LABEL": "Loading...",
+                "DEFAULT_SEARCH_MESSAGE_LABEL": "Select from the options above to search."
+            }
 		}
     },
     methods: {
@@ -112,14 +126,14 @@ Vue.component('controlled-vocabulary-search', {
         console.log("this code is running ok");
         this.searchResults = [];
         //assign static values
-        //this.searchResultsLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.SEARCH_RESULTS_LABEL;
-        //this.previousButtonLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.PREVIOUS_BUTTON_LABEL;
-        //this.nextButtonLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.NEXT_BUTTON_LABEL;
-        //this.totalResultsLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.TOTAL_RESULTS_LABEL;
-        //this.noResultsLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.NO_RESULTS_LABEL;
-        //this.errorMessage1Label = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.ERROR_MESSAGE_1_LABEL;
-        //this.errorMessage2Label = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.ERROR_MESSAGE_2_LABEL;
-        //this.loadingLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.LOADING_LABEL;
-        //this.defaultSearchMessageLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.DEFAULT_SEARCH_MESSAGE_LABEL;
+        this.searchResultsLabel = this.keywordsSearchBlockPublicLabels.SEARCH_RESULTS_LABEL;
+        this.previousButtonLabel = this.keywordsSearchBlockPublicLabels.PREVIOUS_BUTTON_LABEL;
+        this.nextButtonLabel = this.keywordsSearchBlockPublicLabels.NEXT_BUTTON_LABEL;
+        this.totalResultsLabel = this.keywordsSearchBlockPublicLabels.TOTAL_RESULTS_LABEL;
+        this.noResultsLabel = this.keywordsSearchBlockPublicLabels.NO_RESULTS_LABEL;
+        this.errorMessage1Label = this.keywordsSearchBlockPublicLabels.ERROR_MESSAGE_1_LABEL;
+        this.errorMessage2Label = this.keywordsSearchBlockPublicLabels.ERROR_MESSAGE_2_LABEL;
+        this.loadingLabel = this.keywordsSearchBlockPublicLabels.LOADING_LABEL;
+        this.defaultSearchMessageLabel = this.keywordsSearchBlockPublicLabels.DEFAULT_SEARCH_MESSAGE_LABEL;
     }
 })

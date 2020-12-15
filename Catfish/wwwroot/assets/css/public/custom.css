@@ -284,6 +284,34 @@ body {
     box-shadow: none;
 }
 
+.column-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.image-circle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 300px;
+    border: 1px solid #dedede;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 30px;
+}
+
+.image-circle {
+    height: auto;
+    /*width: 100%;*/
+    max-width:unset !important;
+}
+
+.team-text-container {
+    padding-top: 10px;
+}
+
 .blueHr {
     border-top: 1px solid var(--darkBlue-color);
     width: 100%;
@@ -364,6 +392,7 @@ body {
 .contact-us-column, .white-background {
     padding-left: 20px;
     padding-right: 20px;
+    padding-top: 25px;
     background-color: white;
 }
 
@@ -374,6 +403,10 @@ body {
     h4 {
         font-size: 1.25rem;
     }
+    .image-circle-container{
+        height: 275px;
+        width: 275px;
+    }
 }
 
 @media screen and (max-width: 991px){
@@ -383,6 +416,10 @@ body {
 
     .img-text-container > h2 {
         font-size: 2em;
+    }
+    .image-circle-container {
+        height: 205px;
+        width: 205px;
     }
 }
 
