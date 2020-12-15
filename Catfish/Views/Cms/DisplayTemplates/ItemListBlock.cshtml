@@ -61,7 +61,7 @@
 
 
                     <td> @item.Created </td>
-                    <td> @_submissionService.GetStatus(item.StatusId) </td>
+                    <td> @_submissionService.GetStatus(item.StatusId).Status </td>
 
             @{
                 string viewLink = string.Format("<a href='/items/{0}'>view</a>", item.Id);

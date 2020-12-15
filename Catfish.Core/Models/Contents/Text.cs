@@ -80,7 +80,8 @@ namespace Catfish.Core.Models.Contents
         public Text(string value, string lang) : base(TagName)
         {
             Data.SetAttributeValue(XNamespace.Xml + "lang", lang);
-            Data.Value = value;
+            if (value != null)
+                Data.Value = value;
             SetNewGuid();
         }
     }

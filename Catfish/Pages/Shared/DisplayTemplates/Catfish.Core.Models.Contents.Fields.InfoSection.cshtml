@@ -2,5 +2,6 @@
 
 @Html.HiddenFor(model => model.ModelType)
 <div class="@Model.CssClass">
-    @Html.DisplayFor(model => Model.Content, Model.Content.GetType().ToString())
+    @*@Html.DisplayFor(model => Model.Content, Model.Content.GetType().ToString())*@
+    @Html.Raw(Model.Content.ConcatenatedRichText)
 </div>

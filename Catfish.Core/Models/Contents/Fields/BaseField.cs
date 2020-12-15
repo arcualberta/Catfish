@@ -33,6 +33,8 @@ namespace Catfish.Core.Models.Contents.Fields
         public MultilingualName Name { get; protected set; }
 
         public MultilingualDescription Description { get; protected set; }
+
+        public string VueComponent => GetType().FullName;
        
         public BaseField() : base(FieldTagName) { }
         public BaseField(XElement data) : base(data) { }
@@ -77,5 +79,28 @@ namespace Catfish.Core.Models.Contents.Fields
         {
             Description.SetContent(containerDescription, lang);
         }
+
+        #region Visible-If
+        public Guid? VisibleIfOptionFieldId 
+        {
+            get => GetAttribute("visible-if-option-field-id", null as Guid?);
+            private set => Data.SetAttributeValue("visible-if-option-field-id", value);
+        }
+        public Guid[] VisibleIfOptionIds
+        {
+            get => GetAttribute("visible-if-option-id", null as Guid[]);
+            private set => Data.SetAttributeValue("visible-if-option-id", value);
+        }
+        public BaseField SetVisibleIf(OptionsField controllerField, string triggerOptionValue)
+        {
+            VisibleIfOptionFieldId = controllerField.Id;
+            VisibleIfOptionIds = controllerField.Options
+                .Where(op => op.OptionText.Values.Select(txt => txt.Value).Contains(triggerOptionValue))
+                .Select(op => op.Id)
+                .ToArray();
+
+            return this;
+        }
+        #endregion
     }
 }

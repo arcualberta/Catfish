@@ -21,17 +21,21 @@ function switchLang(lang,  supportLang){
 
 function getBreadcrumbTrail(menuTitle, callback) {
     let bc = [];
+    
+
     sitemap.forEach(function (item) {
         if (item.items.length > 0) {
             item.items.forEach(function (subItem) {
-                //str1.toUpperCase() === str2.toUpperCase(); 
-                if (subItem.title.toUpperCase() == menuTitle.toUpperCase()) {
-                    bc = [{ label: item.title, link: item.permalink }, { label: subItem.title, link: subItem.permalink }];
+                //compare the slug instead of page title -- MR: Dec 7 2020
+                if (subItem.permalink == menuTitle) {      // (subItem.title.toUpperCase() == menuTitle.toUpperCase()) {
+                    //do not display as link when it has sub page -- because this parent page usually don't have any contain
+                   //
+                    bc = [{ label: item.title, link: "#" }, { label: subItem.title, link: subItem.permalink }];
                     callback(bc);
                 }
             });
         } else {
-            if (item.title.toUpperCase() == menuTitle.toUpperCase()) {
+            if (item.permalink == menuTitle) { //(item.title.toUpperCase() == menuTitle.toUpperCase()) {
 
                 bc = [{ label: item.title, link: item.permalink }]
                
@@ -44,7 +48,8 @@ function getBreadcrumbTrail(menuTitle, callback) {
 function updateBreadcrumb(){
     let _href = window.location.href;
     let urls = _href.split("/");
-    let $thisText = (urls[urls.length - 1]).replace(/-/g, " ");//replace "-" with " "
+    //MR Dec 7 2020 -- get the slug instead of page title
+    let $thisText = "/" + urls[urls.length - 1].trim(); // (urls[urls.length - 1]).replace(/-/g, " ");//replace "-" with " "
     let $bc = `<li class="breadcrumb-item"><a href="/" class="fa fa-home"></a></li>`;
 
     if ($thisText !== "") {

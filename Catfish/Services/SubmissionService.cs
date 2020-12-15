@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Authorization.Requirements;
 using Catfish.Core.Models;
+using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
@@ -102,6 +103,8 @@ namespace Catfish.Services
             {
                 var query = _db.Items.Where(i=>i.TemplateId == templateId && (i.Created >= from && i.Created < to));
 
+                var tmp = query.ToList();
+
                 if (collectionId != Guid.Empty)
                 {
                    
@@ -175,9 +178,9 @@ namespace Catfish.Services
         ////    return itemList;
         ////}
 
-        public string GetStatus(Guid? statusId)
+        public SystemStatus GetStatus(Guid? statusId)
         {
-            return _db.SystemStatuses.Where(s => s.Id == statusId).FirstOrDefault().NormalizedStatus;
+            return _db.SystemStatuses.Where(s => s.Id == statusId).FirstOrDefault();
         }
       
         public List<ItemField> GetAllField(string xml)
@@ -221,7 +224,7 @@ namespace Catfish.Services
         /// <param name="collectionId"></param>
         /// <param name="actionButton"></param>
         /// <returns></returns>
-        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, string actionButton)
+        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, string status, string action)
         {
             try
             {
@@ -231,7 +234,7 @@ namespace Catfish.Services
 
                 //When we instantantiate an instance from the template, we do not need to clone metadata sets
                 Item newItem = template.Instantiate<Item>();
-                newItem.StatusId = _entityTemplateService.GetSystemStatus(entityTemplateId, actionButton).Id;
+                newItem.StatusId = _entityTemplateService.GetSystemStatus(entityTemplateId, status).Id;
                 newItem.PrimaryCollectionId = collectionId;
                 newItem.TemplateId = entityTemplateId;
                 newItem.UserEmail = _workflowService.GetLoggedUserEmail();
@@ -240,6 +243,14 @@ namespace Catfish.Services
                 newDataItem.UpdateFieldValues(value);
                 newItem.DataContainer.Add(newDataItem);
                 newDataItem.EntityId = newItem.Id;
+
+                User user = _workflowService.GetLoggedUser();
+                var fromState = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
+                newItem.AddAuditEntry(user.Id,
+                    fromState,
+                    newItem.StatusId.Value,
+                    action
+                    );
 
                 if (groupId.HasValue)
                     newItem.GroupId = groupId;

@@ -19,7 +19,9 @@ header {
     background-position: 50% 50%; }
 
 .main {
-  margin: 3rem 0; }
+  margin: 3rem 0; 
+  min-height: 400px;
+}
   .main img {
     max-width: 100%; }
 

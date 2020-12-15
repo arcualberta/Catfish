@@ -2,6 +2,7 @@
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Workflow;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,11 +27,15 @@ namespace Catfish.Core.Services
 
         public EntityTemplate GetTemplate();
 
-        public string GetStatus(Guid templateId, string status, bool createIfNotExist, bool isEditable);
+        public SystemStatus GetStatus(Guid templateId, string status, bool createIfNotExist);
 
         public List<PostAction> GetPostActions(EntityTemplate entityTemplate, string function, string group);
+        
+        public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid statusId);
 
         public string GetLoggedUserEmail();
+
+        User GetLoggedUser();
 
         /// <summary>
         /// Returns the list of Groups where the specified user is associated with a role that has 

@@ -19,8 +19,8 @@ namespace Catfish.Services
         List<Item> GetSubmissionList(ClaimsPrincipal user, Guid templateId, Guid? collectionId, DateTime? startDate = null, DateTime? endDate = null);
         Item GetSubmissionDetails(Guid itemId);
         List<ItemField> GetAllField(string xml);
-        string GetStatus(Guid? statusId);
-        Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, string actionButton);
+        SystemStatus GetStatus(Guid? statusId);
+        Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, string status, string action);
  //       bool SendEmail(EmailTemplate emailTemplate, string recipient);
         bool ExecuteTriggers(Guid entityTemplateId, string actionButton, string function, string group);
     }

@@ -68,12 +68,12 @@ namespace Catfish.Core.Models.Contents.Workflow
             StateMappings.Add(newStateMaiipng);
             return newStateMaiipng;
         }
-        public PopUp AddPopUp(string title, string message)
+        public PopUp AddPopUp(string title, string body, string message)
         {
-            if (PopUps.FindByAttribute(PopUp.TitleAtt, title) != null)
-                throw new Exception(string.Format("Pop-up {0} already exists.", title));
+            if (PopUps.FindByAttribute(PopUp.BodyAtt, body) != null)
+                throw new Exception(string.Format("Pop-up {0} already exists.", body));
 
-            PopUp newPopUp = new PopUp() { Title = title, Message = message };
+            PopUp newPopUp = new PopUp() { Title = title,Body =body, Message = message };
             PopUps.Add(newPopUp);
             return newPopUp;
         }

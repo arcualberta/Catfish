@@ -17,6 +17,7 @@ namespace Catfish.Core.Models
     {
         public static readonly string Tag = "entity";
         public static readonly string MetadataSetsRootTag = "metadata-sets";
+        public static readonly string AuditTrailRootTag = "audit-trail";
         public static readonly string DataContainerRootTag = "data-container";
 
         [Key]
@@ -67,7 +68,7 @@ namespace Catfish.Core.Models
             set => Data.SetAttributeValue("updated", value);
         }
         
-        [NotMapped]
+     //   [NotMapped]
         public EntityTemplate Template { get; set; }
         public Guid? TemplateId
         {
@@ -95,6 +96,9 @@ namespace Catfish.Core.Models
 
         [NotMapped]
         public XmlModelList<MetadataSet> MetadataSets { get; protected set; }
+
+        [NotMapped]
+        public XmlModelList<AuditEntry> AuditTrail { get; protected set; }
 
         [NotMapped]
         public XmlModelList<DataItem> DataContainer { get; protected set; }
@@ -169,6 +173,9 @@ namespace Catfish.Core.Models
             //Building the Metadata Set list
             MetadataSets = new XmlModelList<MetadataSet>(xml.GetElement(MetadataSetsRootTag, true), true);
 
+            //Building the Audit Trail Set list
+            AuditTrail = new XmlModelList<AuditEntry>(xml.GetElement(AuditTrailRootTag, true), true);
+
             //Building the DataContainer
             DataContainer = new XmlModelList<DataItem>(xml.GetElement(DataContainerRootTag, true), true);
         }
@@ -232,6 +239,18 @@ namespace Catfish.Core.Models
                 DataContainer.Add(dataItem);
             }
             return dataItem;
+        }
+
+        public Entity AddAuditEntry(Guid? userId, Guid statusFrom, Guid statusTo, string action)
+        {
+            AuditTrail.Add(new AuditEntry()
+            {
+                UserId = userId,
+                StatusFrom = statusFrom,
+                StatusTo = statusTo,
+                Action = action
+            }) ;
+            return this;
         }
     }
 }

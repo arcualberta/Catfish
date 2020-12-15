@@ -67,7 +67,7 @@ namespace Catfish.Controllers.Api
                         //get the date when the form is submitted
                         iFields.Add(new ItemField { FieldName = "Created", FieldValue = item.Created.ToShortDateString() });
                         //get the form status
-                        string status = _submissionService.GetStatus(item.StatusId);
+                        string status = _submissionService.GetStatus(item.StatusId).NormalizedStatus;
                         iFields.Add(new ItemField { FieldName = "Status", FieldValue = status });
 
                         if (header)
@@ -105,7 +105,7 @@ namespace Catfish.Controllers.Api
             ApiResult result = new ApiResult();
             try
             {
-                Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, groupId, status);
+                Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, groupId, status, actionButton);
                 _appDb.Items.Add(newItem);
                 _appDb.SaveChanges();
 

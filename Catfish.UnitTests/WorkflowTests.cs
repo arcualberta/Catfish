@@ -179,43 +179,43 @@ namespace Catfish.UnitTests
             Workflow workflow = ws.GetWorkflow(true);
 
             //Defininig states
-            State emptyState = workflow.AddState(ws.GetStatus(template.Id,"",true, false), false);
-            State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true,true), true);
-            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true,false),false);
-            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true,false),false);
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id,"",true));
+            State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
+            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
-            State deanOfficeRevisionState = workflow.AddState(ws.GetStatus(template.Id, "DeanOfficeRevision", true,true), true);
-            State deanOfficeRevisionCompletedState = workflow.AddState(ws.GetStatus(template.Id, "DeanOfficeRevisionCompleted", true,false), false);
-            State deanOfficeRevisionSaveState = workflow.AddState(ws.GetStatus(template.Id, "SavedDeanOfficeRevision", true,true), true);
+            State deanOfficeRevisionState = workflow.AddState(ws.GetStatus(template.Id, "DeanOfficeRevision", true));
+            State deanOfficeRevisionCompletedState = workflow.AddState(ws.GetStatus(template.Id, "DeanOfficeRevisionCompleted", true));
+            State deanOfficeRevisionSaveState = workflow.AddState(ws.GetStatus(template.Id, "SavedDeanOfficeRevision", true));
 
-            State aacWithState = workflow.AddState(ws.GetStatus(template.Id, "WithAAC", true,false), false);
-            State aacRevisionState = workflow.AddState(ws.GetStatus(template.Id, "AACRevision", true,true), true);
-            State aacRevisionSaveState = workflow.AddState(ws.GetStatus(template.Id, "SavedAACRevision", true,true), true);
-            State aacRevisionCompletedState = workflow.AddState(ws.GetStatus(template.Id, "AACRevisionCompleted", true,false), false);
-            State aacApprovedState = workflow.AddState(ws.GetStatus(template.Id, "AACApproved", true,false), true);
+            State aacWithState = workflow.AddState(ws.GetStatus(template.Id, "WithAAC", true));
+            State aacRevisionState = workflow.AddState(ws.GetStatus(template.Id, "AACRevision", true));
+            State aacRevisionSaveState = workflow.AddState(ws.GetStatus(template.Id, "SavedAACRevision", true));
+            State aacRevisionCompletedState = workflow.AddState(ws.GetStatus(template.Id, "AACRevisionCompleted", true));
+            State aacApprovedState = workflow.AddState(ws.GetStatus(template.Id, "AACApproved", true));
 
-            State aecWithState = workflow.AddState(ws.GetStatus(template.Id, "WithAEC", true,false), false);
-            State aecRevisionState = workflow.AddState(ws.GetStatus(template.Id, "AECRevision", true,true), true);
-            State aecRevisionSaveState = workflow.AddState(ws.GetStatus(template.Id, "SavedAECRevision", true,true), true);
-            State aecRevisionCompletedState = workflow.AddState(ws.GetStatus(template.Id, "AECRevisionCompleted", true,false), false);
-            State aecApprovedState = workflow.AddState(ws.GetStatus(template.Id, "AECApproved", true,false), false);
-
-
-            State afcWithState = workflow.AddState(ws.GetStatus(template.Id, "WithAFC", true,false), false);
-            State afcRevisionState = workflow.AddState(ws.GetStatus(template.Id, "AFCRevision", true,true), true);
-            State afcRevisionSaveState = workflow.AddState(ws.GetStatus(template.Id, "SavedAFCRevision", true,true), true);
-            State afcRevisionCompletedState = workflow.AddState(ws.GetStatus(template.Id, "AFCRevisionCompleted", true,false), false);
-            State afcApprovedState = workflow.AddState(ws.GetStatus(template.Id, "AFCApproved", true,false), false);
+            State aecWithState = workflow.AddState(ws.GetStatus(template.Id, "WithAEC", true));
+            State aecRevisionState = workflow.AddState(ws.GetStatus(template.Id, "AECRevision", true));
+            State aecRevisionSaveState = workflow.AddState(ws.GetStatus(template.Id, "SavedAECRevision", true));
+            State aecRevisionCompletedState = workflow.AddState(ws.GetStatus(template.Id, "AECRevisionCompleted", true));
+            State aecApprovedState = workflow.AddState(ws.GetStatus(template.Id, "AECApproved", true));
 
 
-            State gfcWithState = workflow.AddState(ws.GetStatus(template.Id, "WithGFC", true,false), false);
-            State gfcRevisionState = workflow.AddState(ws.GetStatus(template.Id, "GFCRevision", true,true), true);
-            State gfcRevisionSaveState = workflow.AddState(ws.GetStatus(template.Id, "SavedGFCRevision", true,true), true);
-            State gfcRevisionCompletedState = workflow.AddState(ws.GetStatus(template.Id, "GFCRevisionCompleted", true,false), false);
-            State gfcApprovedState = workflow.AddState(ws.GetStatus(template.Id, "GFCApproved", true,false), false);
+            State afcWithState = workflow.AddState(ws.GetStatus(template.Id, "WithAFC", true));
+            State afcRevisionState = workflow.AddState(ws.GetStatus(template.Id, "AFCRevision", true));
+            State afcRevisionSaveState = workflow.AddState(ws.GetStatus(template.Id, "SavedAFCRevision", true));
+            State afcRevisionCompletedState = workflow.AddState(ws.GetStatus(template.Id, "AFCRevisionCompleted", true));
+            State afcApprovedState = workflow.AddState(ws.GetStatus(template.Id, "AFCApproved", true));
 
-            State moveToDraftErrorState = workflow.AddState(ws.GetStatus(template.Id, "MoveToDraftError", true,false),false);
-            State moveToDraftCorrectState = workflow.AddState(ws.GetStatus(template.Id, "MoveToDraftCorrect", true,false),false);
+
+            State gfcWithState = workflow.AddState(ws.GetStatus(template.Id, "WithGFC", true));
+            State gfcRevisionState = workflow.AddState(ws.GetStatus(template.Id, "GFCRevision", true));
+            State gfcRevisionSaveState = workflow.AddState(ws.GetStatus(template.Id, "SavedGFCRevision", true));
+            State gfcRevisionCompletedState = workflow.AddState(ws.GetStatus(template.Id, "GFCRevisionCompleted", true));
+            State gfcApprovedState = workflow.AddState(ws.GetStatus(template.Id, "GFCApproved", true));
+
+            State moveToDraftErrorState = workflow.AddState(ws.GetStatus(template.Id, "MoveToDraftError", true));
+            State moveToDraftCorrectState = workflow.AddState(ws.GetStatus(template.Id, "MoveToDraftCorrect", true));
 
 
 
@@ -249,7 +249,7 @@ namespace Catfish.UnitTests
             calendarChangeForm.CreateField<TextField>("Course Name", lang, true);
             calendarChangeForm.CreateField<TextField>("Course Number", lang, true);
             calendarChangeForm.CreateField<TextArea>("Change Description", lang, true);
-            
+
             //Defininig the Submission revision Request form
             DataItem commentsForm = template.GetDataItem("Submission Revision Request", true, lang);
             commentsForm.IsRoot = false;
@@ -317,7 +317,7 @@ namespace Catfish.UnitTests
             postActionSubmit.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp startSubmissionActionPopUp = postActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
+            PopUp startSubmissionActionPopUp = postActionSubmit.AddPopUp("Confirmation","Do you really want to submit this document?", "Once submitted, you cannot update the document.");
             startSubmissionActionPopUp.AddButtons("Yes, submit", "true");
             startSubmissionActionPopUp.AddButtons("Cancel", "false");
 
@@ -346,12 +346,27 @@ namespace Catfish.UnitTests
             listSubmissionAction.GetStateReference(savedState.Id, true)
                 .AddAuthorizedRole(departmentAdmin.Id);
 
+            // ================================================
+            // Read submission-instances related workflow items
+            // ================================================
+
+            //Defining actions
+            GetAction viewDetailsSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
+
+            //Defining states and their authorizatios
+            viewDetailsSubmissionAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(savedState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
 
 
             // Edit submission related workflow items
             // =======================================
             //Defining actions
-            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", nameof(TemplateOperations.Update), "Details");
 
             //Defining post actions
             PostAction editSubmissionPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
@@ -380,7 +395,7 @@ namespace Catfish.UnitTests
 
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
+            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
             EditSubmissionActionPopUpopUp.AddButtons("Yes, submit", "true");
             EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -389,22 +404,45 @@ namespace Catfish.UnitTests
             editSubmissionPostActionSubmit.AddTriggerRefs("1", ownerSubmissionNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
             //Defining state referances
-            editSubmissionAction.AddStateReferances(savedState.Id);
-            editSubmissionAction.AddStateReferances(deanOfficeRevisionState.Id);
-            editSubmissionAction.AddStateReferances(deanOfficeRevisionSaveState.Id);
-            editSubmissionAction.AddStateReferances(aacRevisionState.Id);
-            editSubmissionAction.AddStateReferances(aacRevisionSaveState.Id);
-            editSubmissionAction.AddStateReferances(aecRevisionState.Id);
-            editSubmissionAction.AddStateReferances(aecRevisionSaveState.Id);
-            editSubmissionAction.AddStateReferances(afcRevisionState.Id);
-            editSubmissionAction.AddStateReferances(afcRevisionSaveState.Id);
-            editSubmissionAction.AddStateReferances(gfcRevisionState.Id);
-            editSubmissionAction.AddStateReferances(gfcRevisionSaveState.Id);
+            editSubmissionAction.GetStateReference(savedState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(deanOfficeRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(deanOfficeRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(aacRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(aacRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(aecRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(aecRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(afcRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(afcRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(gfcRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(gfcRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            //editSubmissionAction.AddStateReferances(savedState.Id);
+            //editSubmissionAction.AddStateReferances(deanOfficeRevisionState.Id);
+            //editSubmissionAction.AddStateReferances(deanOfficeRevisionSaveState.Id);
+            //editSubmissionAction.AddStateReferances(aacRevisionState.Id);
+            //editSubmissionAction.AddStateReferances(aacRevisionSaveState.Id);
+            //editSubmissionAction.AddStateReferances(aecRevisionState.Id);
+            //editSubmissionAction.AddStateReferances(aecRevisionSaveState.Id);
+            //editSubmissionAction.AddStateReferances(afcRevisionState.Id);
+            //editSubmissionAction.AddStateReferances(afcRevisionSaveState.Id);
+            //editSubmissionAction.AddStateReferances(gfcRevisionState.Id);
+            //editSubmissionAction.AddStateReferances(gfcRevisionSaveState.Id);
 
 
 
             //Defining authorizatios
-            RoleReference roleRef = editSubmissionAction.AddAuthorizedRole(savedState.Id, departmentAdmin.Id);
+            //RoleReference roleRef = editSubmissionAction.AddAuthorizedRole(savedState.Id, departmentAdmin.Id);
 
 
             // Delete submission related workflow items
@@ -416,7 +454,7 @@ namespace Catfish.UnitTests
             deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.");
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to delete this document?", "Once deleted, you cannot access this document.");
             deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -435,7 +473,7 @@ namespace Catfish.UnitTests
             PostAction purgeSubmissionPostAction = purgeSubmissionAction.AddPostAction("Purge", "Purge");
             deleteSubmissionPostAction.AddStateMapping(deleteState.Id, emptyState.Id, "Purge");
             //Defining the pop-up for the above postActionSubmit action
-            PopUp purgeSubmissionActionPopUpopUp = purgeSubmissionPostAction.AddPopUp("WARNING: Deleting Permanently", "When purged, the document cannot be recovered. Please confirm.");
+            PopUp purgeSubmissionActionPopUpopUp = purgeSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to purge this document ? ", "Once purged, you cannot recover this document.");
             purgeSubmissionActionPopUpopUp.AddButtons("Yes, purge", "true");
             purgeSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -448,7 +486,7 @@ namespace Catfish.UnitTests
 
             // Revision request related workflow items
             //Defining actions
-            GetAction sendForRevisionSubmissionAction = workflow.AddAction("Send for Revision", "ChangeState", "Details");
+            GetAction sendForRevisionSubmissionAction = workflow.AddAction("Send for Revision", nameof(TemplateOperations.ChangeState), "Details");
 
             //Define Revision Template
             sendForRevisionSubmissionAction.AddTemplate(commentsForm.Id, "Submission Revision Template");
@@ -469,31 +507,52 @@ namespace Catfish.UnitTests
             sendForRevisionSubmissionPostAction.AddStateMapping(gfcRevisionCompletedState.Id, gfcRevisionState.Id, "Send for Revision");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
-            PopUp sendForRevisionSubmissionActionPopUpopUp = sendForRevisionSubmissionPostAction.AddPopUp("WARNING: Revision Document", "Do you really want to revise this document?.");
+            PopUp sendForRevisionSubmissionActionPopUpopUp = sendForRevisionSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to revise this document ? ", "");
             sendForRevisionSubmissionActionPopUpopUp.AddButtons("Yes", "true");
             sendForRevisionSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
             //Defining trigger refs
             sendForRevisionSubmissionPostAction.AddTriggerRefs("0", RevisionNotificationEmailTrigger.Id, "Send for Revision Notification Email Trigger");
 
-            //Defining state referances
-            sendForRevisionSubmissionAction.AddStateReferances(submittedState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(deanOfficeRevisionCompletedState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(aacWithState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(aacRevisionCompletedState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(aecWithState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(aecRevisionCompletedState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(afcWithState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(afcRevisionCompletedState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(gfcWithState.Id);
-            sendForRevisionSubmissionAction.AddStateReferances(gfcRevisionCompletedState.Id);
+            //Defining states and their authorizatios
+            sendForRevisionSubmissionAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(deanOfficeRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(aacWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(aacRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(aecWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(aecRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(afcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(afcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(gfcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            sendForRevisionSubmissionAction.GetStateReference(gfcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            ////Defining state referances
+            //sendForRevisionSubmissionAction.AddStateReferances(submittedState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(deanOfficeRevisionCompletedState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(aacWithState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(aacRevisionCompletedState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(aecWithState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(aecRevisionCompletedState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(afcWithState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(afcRevisionCompletedState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(gfcWithState.Id);
+            //sendForRevisionSubmissionAction.AddStateReferances(gfcRevisionCompletedState.Id);
 
-            //Defining authorizatios
-            sendForRevisionSubmissionAction.AddAuthorizedRole(submittedState.Id, centralAdminRole.Id);
+            ////Defining authorizatios
+            //sendForRevisionSubmissionAction.AddAuthorizedRole(submittedState.Id, centralAdminRole.Id);
 
             // Revision request related workflow items
             //Defining actions
-            GetAction changeStateAction = workflow.AddAction("Update Document State", "ChangeState", "Details");
+            GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
 
             //Define Revision Template
             changeStateAction.AddTemplate(commentsForm.Id, "Submission Change State");
@@ -531,29 +590,60 @@ namespace Catfish.UnitTests
             changeStatePostAction.AddStateMapping(gfcRevisionCompletedState.Id, gfcWithState.Id, "With GFC");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
-            PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("WARNING: Change State", "Do you really want to change the document state?.");
+            PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to change status ? ", "Once changed, you cannot revise this document.");
             changeStateActionPopUpopUp.AddButtons("Yes", "true");
             changeStateActionPopUpopUp.AddButtons("Cancel", "false");
 
-            //Defining state referances
-            changeStateAction.AddStateReferances(submittedState.Id);
-            changeStateAction.AddStateReferances(deanOfficeRevisionCompletedState.Id);
-            changeStateAction.AddStateReferances(aacWithState.Id);
-            changeStateAction.AddStateReferances(aacRevisionCompletedState.Id);
-            changeStateAction.AddStateReferances(aecWithState.Id);
-            changeStateAction.AddStateReferances(aecRevisionCompletedState.Id);
-            changeStateAction.AddStateReferances(afcWithState.Id);
-            changeStateAction.AddStateReferances(afcRevisionCompletedState.Id);
-            changeStateAction.AddStateReferances(gfcWithState.Id);
-            changeStateAction.AddStateReferances(gfcRevisionCompletedState.Id);
-            changeStateAction.AddStateReferances(aacApprovedState.Id);
-            changeStateAction.AddStateReferances(aecApprovedState.Id);
-            changeStateAction.AddStateReferances(afcApprovedState.Id);
 
-            changeStateAction.AddStateReferances(gfcApprovedState.Id);
+            //Defining states and their authorizatios
+            changeStateAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(deanOfficeRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(aacWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(aacRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(aecWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(aecRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(afcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(afcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(gfcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(gfcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(aacApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(aecApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(afcApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(gfcApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
 
-            //Defining authorizatios
-            changeStateAction.AddAuthorizedRole(submittedState.Id, centralAdminRole.Id);
+            ////Defining state referances
+            //changeStateAction.AddStateReferances(submittedState.Id);
+            //changeStateAction.AddStateReferances(deanOfficeRevisionCompletedState.Id);
+            //changeStateAction.AddStateReferances(aacWithState.Id);
+            //changeStateAction.AddStateReferances(aacRevisionCompletedState.Id);
+            //changeStateAction.AddStateReferances(aecWithState.Id);
+            //changeStateAction.AddStateReferances(aecRevisionCompletedState.Id);
+            //changeStateAction.AddStateReferances(afcWithState.Id);
+            //changeStateAction.AddStateReferances(afcRevisionCompletedState.Id);
+            //changeStateAction.AddStateReferances(gfcWithState.Id);
+            //changeStateAction.AddStateReferances(gfcRevisionCompletedState.Id);
+            //changeStateAction.AddStateReferances(aacApprovedState.Id);
+            //changeStateAction.AddStateReferances(aecApprovedState.Id);
+            //changeStateAction.AddStateReferances(afcApprovedState.Id);
+
+            //changeStateAction.AddStateReferances(gfcApprovedState.Id);
+
+            ////Defining authorizatios
+            //changeStateAction.AddAuthorizedRole(submittedState.Id, centralAdminRole.Id);
 
             // Calender request move to draft related workflow items
             //Defining actions
@@ -570,7 +660,7 @@ namespace Catfish.UnitTests
             moveToDraftCorrectPostAction.AddStateMapping(moveToDraftErrorState.Id, moveToDraftCorrectState.Id, "Move To Draft Correct");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
-            PopUp moveToDraftCorrctActionPopUpopUp = moveToDraftCorrectPostAction.AddPopUp("WARNING: In the Draft Calendar -  Correct", "Do you really want to change the document state?.");
+            PopUp moveToDraftCorrctActionPopUpopUp = moveToDraftCorrectPostAction.AddPopUp("Confirmation", "Do you really want to move to dreaft this document?", "Once moved, you cannot revise this document.");
             moveToDraftCorrctActionPopUpopUp.AddButtons("Yes", "true");
             moveToDraftCorrctActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -584,19 +674,23 @@ namespace Catfish.UnitTests
             moveToDraftErrorPostAction.AddStateMapping(moveToDraftErrorState.Id, moveToDraftCorrectState.Id, "Move To Draft Correct");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
-            PopUp moveToDraftErrorActionPopUpopUp = moveToDraftErrorPostAction.AddPopUp("WARNING: In the Draft Calendar -  Error", "Do you really want to change the document state?.");
+            PopUp moveToDraftErrorActionPopUpopUp = moveToDraftErrorPostAction.AddPopUp("Confirmation", "Do you really want to move to draft in error state this document?", "Once moved, you cannot access this document.");
             moveToDraftErrorActionPopUpopUp.AddButtons("Yes", "true");
             moveToDraftErrorActionPopUpopUp.AddButtons("Cancel", "false");
             
             //Defining trigger refs
             moveToDraftErrorPostAction.AddTriggerRefs("0", MovedToDraftCalendarEmailTrigger.Id, "Moved to Draft Notification Email Trigger");
 
-            //Defining state referances
-            moveToDraftAction.AddStateReferances(gfcApprovedState.Id);
-            moveToDraftAction.AddStateReferances(moveToDraftErrorState.Id);
+            moveToDraftAction.GetStateReference(gfcApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            changeStateAction.GetStateReference(moveToDraftErrorState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
+            ////Defining state referances
+            //moveToDraftAction.AddStateReferances(gfcApprovedState.Id);
+            //moveToDraftAction.AddStateReferances(moveToDraftErrorState.Id);
 
-            //Defining authorizatios
-            moveToDraftAction.AddAuthorizedRole(gfcApprovedState.Id, centralAdminRole.Id);
+            ////Defining authorizatios
+            //moveToDraftAction.AddAuthorizedRole(gfcApprovedState.Id, centralAdminRole.Id);
 
             auth.EnsureUserRoles(workflow.GetWorkflowRoles());
             auth.EnsureGroups(workflow.GetWorkflowGroups(), template.Id);
@@ -660,10 +754,10 @@ namespace Catfish.UnitTests
             Workflow workflow = ws.GetWorkflow(true);
 
             //Defininig states
-            State emptyState = workflow.AddState("",false);
-            State savedState = workflow.AddState("Saved",true);
-            State submittedState = workflow.AddState("Submitted",false);
-            State deleteState = workflow.AddState("Deleted",false);
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
+            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
 
             //Defining email templates
@@ -723,7 +817,7 @@ namespace Catfish.UnitTests
 
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot make any changes. Are you sure you want to continue?");
+            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot make any changes. Are you sure you want to continue?","");
             EditSubmissionActionPopUpopUp.AddButtons("Yes, submit", "true");
             EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -749,7 +843,7 @@ namespace Catfish.UnitTests
             deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Are you sure you want to delete the registration submission?");
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Are you sure you want to delete the registration submission?","");
             deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -803,10 +897,10 @@ namespace Catfish.UnitTests
             Workflow workflow = ws.GetWorkflow(true);
 
             //Defininig states
-            State emptyState = workflow.AddState("",false);
-            State savedState = workflow.AddState("Saved",true);
-            State submittedState = workflow.AddState("Submitted",false);
-            State deleteState = workflow.AddState("Deleted",false);
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
+            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
 
 
@@ -880,7 +974,7 @@ namespace Catfish.UnitTests
             postActionSubmit.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp startSubmissionActionPopUp = postActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
+            PopUp startSubmissionActionPopUp = postActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.","");
             startSubmissionActionPopUp.AddButtons("Yes, submit", "true");
             startSubmissionActionPopUp.AddButtons("Cancel", "false");
 
@@ -911,7 +1005,7 @@ namespace Catfish.UnitTests
 
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.");
+            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("WARNING: Submitting Document", "Once submitted, you cannot update the document.","");
             EditSubmissionActionPopUpopUp.AddButtons("Yes, submit", "true");
             EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -937,7 +1031,7 @@ namespace Catfish.UnitTests
             deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.");
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.","");
             deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
@@ -1166,9 +1260,9 @@ namespace Catfish.UnitTests
             Workflow workflow = ws.GetWorkflow(true);
 
             //Defininig states
-            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true, false), false);
-            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true, false), false);
-            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true, false), false);
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
 
             //Defining email templates
@@ -1196,11 +1290,13 @@ namespace Catfish.UnitTests
             inspectionForm.CreateField<TextField>("Room/Area:", lang, true, true);
 
 
-            inspectionForm.CreateField<CheckboxField>("Room/Area Check:", lang, optionBuilding);
+            //inspectionForm.CreateField<CheckboxField>("Room/Area Check:", lang, optionBuilding);
 
             inspectionForm.CreateField<IntegerField>("Number of People in the work area:", lang, true);
 
-            inspectionForm.CreateField<InfoSection>("Physical Distancing", lang);
+            inspectionForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h3", "Physical Distancing", lang);
+
             string[] optionText = new string[] { "Yes", "No", "N/A" };
             inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText);
             inspectionForm.CreateField <RadioField> ("Where physical distancing is not possible, are occupants wearing face masks?", lang, optionText);
@@ -1229,7 +1325,12 @@ namespace Catfish.UnitTests
             inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
 
             inspectionForm.CreateField<InfoSection>("Other", lang);
-            inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText);
+            var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText);
+
+            inspectionForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h5", "Eyewash Station Checklist", lang);
+//                .SetVisibleIf(eyeWashFlushed, optionText[0]);
+
             inspectionForm.CreateField<RadioField>("Have all sinks been flushed for 3 minutes?", lang, optionText);
             inspectionForm.CreateField<RadioField>("Is all appropriate PPE being worn?", lang, optionText);
            
@@ -1264,7 +1365,7 @@ namespace Catfish.UnitTests
             submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
             //Defining the pop-up for the above submitPostAction action
-            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.");
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.","");
             submitActionPopUp.AddButtons("Yes, submit", "true");
             submitActionPopUp.AddButtons("Cancel", "false");
 
@@ -1292,7 +1393,7 @@ namespace Catfish.UnitTests
             deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
 
             //Defining the pop-up for the above postActionSubmit action
-            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.");
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.","");
             deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 

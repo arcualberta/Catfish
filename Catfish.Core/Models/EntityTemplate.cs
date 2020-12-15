@@ -50,6 +50,8 @@ namespace Catfish.Core.Models
             }
         }
 
+        public ICollection<Entity> Instances { get; set; }
+
         [NotMapped]
         public Workflow Workflow { get; set; }
 

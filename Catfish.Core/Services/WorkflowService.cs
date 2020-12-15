@@ -7,6 +7,7 @@ using ElmahCore;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Piranha;
+using Piranha.AspNetCore.Identity.Data;
 using Piranha.AspNetCore.Identity.SQLServer;
 using Piranha.AspNetCore.Services;
 using Piranha.Models;
@@ -158,27 +159,44 @@ namespace Catfish.Core.Services
 
         
 
-        public string GetStatus(Guid entityTemplateId, string status, bool createIfNotExist, bool isEditable)
+        public SystemStatus GetStatus(Guid entityTemplateId, string status, bool createIfNotExist)
         {
             try
             {
                 SystemStatus systemStatus = _db.SystemStatuses.Where(ss => ss.NormalizedStatus == status.ToUpper() && ss.EntityTemplateId == entityTemplateId).FirstOrDefault();
                 if (systemStatus == null && createIfNotExist)
                 {
-                    systemStatus = new SystemStatus() { Status = status, NormalizedStatus = status.ToUpper(), Id = Guid.NewGuid(), EntityTemplateId = entityTemplateId, IsEditable = isEditable };
+                    systemStatus = new SystemStatus() { Status = status, NormalizedStatus = status.ToUpper(), Id = Guid.NewGuid(), EntityTemplateId = entityTemplateId };
                     _db.SystemStatuses.Add(systemStatus);
                     _db.SaveChanges();
                 }
-                return systemStatus.Status;
+                return systemStatus;
             }
             catch (Exception ex)
             {
                 _errorLog.Log(new Error(ex));
-                return "";
+                return null;
             }
 
         }
-        
+
+
+        public User GetLoggedUser()
+        {
+            try
+            {
+                string userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var userDetails = _piranhaDb.Users.Where(ud => ud.Id == Guid.Parse(userId)).FirstOrDefault();
+
+                return userDetails;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
+
         /// <summary>
         /// This method returns list of post actions which are belongs to the given function and group.
         /// </summary>
@@ -332,6 +350,40 @@ namespace Catfish.Core.Services
             {
                 _errorLog.Log(new Error(ex));
                 return new List<Group>();
+            }
+        }
+
+        public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid statusId)
+        {
+            try
+            {
+                SetModel(entityTemplate);
+                var workflow = GetWorkflow(false);
+                List<PostAction> allPostActions = new List<PostAction>();
+                if (workflow != null)
+                {
+                    var getActions = workflow.Actions.ToList();
+                    foreach(var getAction in getActions)
+                    {
+                        var action = getAction.States.Where(st => st.RefId == statusId).ToList();
+                        if (action != null)
+                        {
+                            foreach(var postAction in getAction.PostActions)
+                            {
+                                if (postAction.StateMappings.Where(sm => sm.Current == statusId).Any())
+                                    allPostActions.Add(postAction);
+                            }
+                        }
+                    }
+                    return allPostActions;
+                }
+                return null;
+
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
             }
         }
     }

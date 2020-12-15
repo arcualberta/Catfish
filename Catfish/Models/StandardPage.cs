@@ -22,21 +22,5 @@ namespace Catfish.Models
         [Region(Title = "Page Settings", Display = RegionDisplayMode.Setting)]
         public PublishSettings PublishSettings { get; set; } = new PublishSettings();
 
-        //public StandardPage()
-        //{
-        //    PublishSettings = new PublishSettings() { CustomMessage = "", PublishedEnd = null, PublishedStart = null };
-        //}
-        //[Region(Title = "Publish Settings", Display = RegionDisplayMode.Setting)]
-        //[Field(Title = "Publish Date Start")]
-        //public DateField PublishedStart { get; set; }
-
-        //[Region(Title = "Publish Settings", Display = RegionDisplayMode.Setting)]
-        //[Field(Title = "Publish Date End")]
-        //public DateField PublishedEnd { get; set; }
-
-        //[Region(Title = "Publish Settings", Display = RegionDisplayMode.Setting)]
-        //[Field(Title = "Custom Message", Placeholder = "Custom message to be displayed if the page is still not availabe.")]
-        //public StringField CustomMessage { get; set; }
-
     }
 }

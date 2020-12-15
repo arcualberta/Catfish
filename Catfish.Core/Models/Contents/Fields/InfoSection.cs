@@ -21,7 +21,7 @@ namespace Catfish.Core.Models.Contents.Fields
             Content = new MultilingualText(GetElement(ContentTag, true));
         }
 
-        public void SetContent(string content, string lang)
+        public void SetContent(string content, string lang, bool append = false)
         {
             Content.SetContent(content, lang);
         }
@@ -36,6 +36,15 @@ namespace Catfish.Core.Models.Contents.Fields
             //InforSection represents only display text and it does not 
             //accept any data through form submissions. Therefore, this method
             //does not need any implementation.
+        }
+
+        public InfoSection AppendContent(string htmlElementTag, string content, string lang, string htmlClasses = null)
+        {
+            if (htmlClasses == null)
+                htmlClasses = "";
+            string formattedContent = string.Format("<{0} class='{1}'>{2}</{0}>", htmlElementTag, htmlClasses, content);
+            Content.AppendElement(formattedContent, lang);
+            return this;
         }
     }
 }
