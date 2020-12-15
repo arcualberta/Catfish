@@ -15,7 +15,7 @@ using Catfish.Models.Fields;
 
 namespace Catfish.Models.Blocks
 {
-    [VueBlockType(Name = "Controlled Vocabulary Search", Category = "Control", Component = "controlled-vocabulary-search", UsesRazorTemplate = true, Icon = "fas fa-search")]
+    [BlockType(Name = "Controlled Vocabulary Search", Category = "Control", Component = "controlled-vocabulary-search", Icon = "fas fa-search")]
     public class ControlledVocabularySearchBlock : VueComponent
     {
 

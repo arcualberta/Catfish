@@ -8,9 +8,9 @@ namespace Catfish.Models.Blocks
 {
     public class VueComponent : Block, IVueComponent
     {
-        public string GetVueTemplateId()
-        {
-            return "id_" + Id.ToString().Replace("-", "");
-        }
+        //public string GetVueTemplateId()
+        //{
+        //    return "id_" + Id.ToString().Replace("-", "");
+        //}
     }
 }
