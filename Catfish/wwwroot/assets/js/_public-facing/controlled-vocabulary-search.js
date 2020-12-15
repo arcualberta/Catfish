@@ -1,8 +1,15 @@
-﻿import StaticItems from '../../static/string-values.json';
+﻿//import StaticItems from '../../static/string-values.json';
 
-var vueApp = new Vue({
-    el: '#keywords-search-block-public',
-    data() {
+
+Vue.component('controlled-vocabulary-search', {
+    props: ["uid", "model"],
+    ////template: 
+    ////`<div>
+    ////    <div>Hello there ... </div>
+    ////    <div v-if="searchResults.length > 0">Hello</div>
+    ////    <div v-else>World</div>
+    //// </div>`,
+    data: function ()  {
         return {
             apiSearchUrl: "/api/solr/keywords",
             searchTerms: [],
@@ -103,15 +110,16 @@ var vueApp = new Vue({
 	},
     created() {
         console.log("this code is running ok");
+        this.searchResults = [];
         //assign static values
-        this.searchResultsLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.SEARCH_RESULTS_LABEL;
-        this.previousButtonLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.PREVIOUS_BUTTON_LABEL;
-        this.nextButtonLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.NEXT_BUTTON_LABEL;
-        this.totalResultsLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.TOTAL_RESULTS_LABEL;
-        this.noResultsLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.NO_RESULTS_LABEL;
-        this.errorMessage1Label = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.ERROR_MESSAGE_1_LABEL;
-        this.errorMessage2Label = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.ERROR_MESSAGE_2_LABEL;
-        this.loadingLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.LOADING_LABEL;
-        this.defaultSearchMessageLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.DEFAULT_SEARCH_MESSAGE_LABEL;
+        //this.searchResultsLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.SEARCH_RESULTS_LABEL;
+        //this.previousButtonLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.PREVIOUS_BUTTON_LABEL;
+        //this.nextButtonLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.NEXT_BUTTON_LABEL;
+        //this.totalResultsLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.TOTAL_RESULTS_LABEL;
+        //this.noResultsLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.NO_RESULTS_LABEL;
+        //this.errorMessage1Label = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.ERROR_MESSAGE_1_LABEL;
+        //this.errorMessage2Label = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.ERROR_MESSAGE_2_LABEL;
+        //this.loadingLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.LOADING_LABEL;
+        //this.defaultSearchMessageLabel = StaticItems.publicSideValues.keywordsSearchBlockPublicLabels.DEFAULT_SEARCH_MESSAGE_LABEL;
     }
-});
+})

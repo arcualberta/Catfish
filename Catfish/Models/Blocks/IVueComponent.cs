@@ -20,5 +20,19 @@ namespace Catfish.Models.Blocks
             }
         }
 
+        public bool UsesRazorTemplate
+        {
+            get
+            {
+                var blockTypeAttribute = Attribute.GetCustomAttribute(this.GetType(), typeof(VueBlockTypeAttribute)) as VueBlockTypeAttribute;
+                if (blockTypeAttribute == null)
+                    return false;
+                else
+                    return blockTypeAttribute.UsesRazorTemplate;
+            }
+        }
+
+        public string GetVueTemplateId();
+
     }
 }

@@ -36,16 +36,16 @@
                                 <h1>@Model.Title</h1>
                             }
                             
-                            <div id="blocks">
-                                @try
-                                {
-                                    @Html.DisplayFor(m => m.Blocks)
-                                }
-                                catch (Exception ex)
-                                {
-                                    _errorLog.Log(new Error(ex));
-                                }
-                            </div>
+                        <div id="blocks">
+                            @try
+                            {
+                                @Html.DisplayFor(m => m.Blocks)
+                            }
+                            catch (Exception ex)
+                            {
+                                _errorLog.Log(new Error(ex));
+                            }
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
             {
                 <div id="comments" class="container comments">
                     @if (Model.IsCommentsOpen)
-                    {
+                                    {
                         <div class="alert alert-comment mt-2 mb-5">
                             <form action="@Model.Permalink/comment" method="post">
                                 @Html.AntiForgeryToken()
@@ -88,7 +88,7 @@
                             </form>
                         </div>
                     }
-                    @Html.DisplayFor(m => m.Comments)
+                                @Html.DisplayFor(m => m.Comments)
                 </div>
             }
 

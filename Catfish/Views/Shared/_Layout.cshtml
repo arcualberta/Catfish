@@ -96,7 +96,7 @@
 
     @if (Model is Piranha.Models.IMeta)
     {
-    <partial name="Partial/_Meta.cshtml" />
+        <partial name="Partial/_Meta.cshtml" />
     }
 
     @RenderSection("head", required: false)
@@ -104,13 +104,13 @@
     <script src="/assets/js/vue/vue-dev.js"></script>
     <script src="~/assets/js/_public-facing/vue-header.js"></script>
 
-    @if (vueComponentNames.Count > 0)
-    {
-        foreach (string compName in vueComponentNames)
+    @*@if (vueComponentNames.Count > 0)
         {
-    <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
-        }
-    }
+            foreach (string compName in vueComponentNames)
+            {
+                <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
+            }
+        }*@
 
     <script>
         let sitemap = @Json.Serialize(WebApp.Site.Sitemap);
@@ -118,6 +118,14 @@
             updateBreadcrumb();
         });
     </script>
+
+    @if (vueComponentNames.Count > 0)
+    {
+        foreach (string compName in vueComponentNames)
+        {
+            <script src="@string.Format("/assets/js/_public-facing/{0}.js", compName)"></script>
+        }
+    }
 </head>
 
 <body>
@@ -153,14 +161,17 @@
     </style>
 
     <script>
-        new Vue({ el: '#vueApp' })
-    </script>
+        $(document).ready(function () {
+            new Vue({ el: '#vueApp' })
+        });
 
+        //new Vue({ el: '#vueApp' })
+    </script>
     @RenderSection("script", required: false)
 
     @*Scripts/styling for public side Controlled Vocab Search Block *@
     <link href="~/assets/css/public/controlledVocabularySearchBlock.css" rel="stylesheet" />
-    <script src="~/assets/dist/keywordsSearchBundle.js"></script>
+    @*<script src="~/assets/dist/keywordsSearchBundle.js"></script>*@
 
     <script>
 
