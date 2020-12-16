@@ -178,7 +178,7 @@ body {
     margin-right: -15px;
 }
 
-.extended-gallery-block {
+.extended-gallery-block, .s-work-page {
     padding: 20px;
 }
 
@@ -292,9 +292,9 @@ body {
 }
 
 .search-header-holder {
-    border-bottom: solid red 3px;
+    border-bottom: solid var(--darkBlue-color) 3px;
     width: 100%;
-    display:block;
+    display: block;
     padding-top: 0px !important;
 }
 
@@ -360,6 +360,14 @@ body {
         height: 250px;
     }
 
+.search-result-container {
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+    padding: 1em;
+    height: 100%;
+    background-color: #dedede;
+}
+
 .teamMemberDescription h3 {
     color: #000;
 }
@@ -367,6 +375,28 @@ body {
 .extended-gallery-block { /*.carousel-inner, .carousel-item, .carousel-item > .row*/
     background-color: var(--lightBlue-color);
 }
+
+/******** Specific work page stuff ***********/
+
+.our-features-container {
+    border: solid #dedede 1px;
+    text-align: center;
+    width: 100%;
+}
+
+    .our-features-container > * {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .our-features-container > h2 {
+        background-color: var(--darkBlue-color);
+        color: white;
+    }
+
+/******** END of Specific work page stuff ***********/
+
+/*****************************************************************************************/
 
 /******** Highlights Section Stuff *********/
 
@@ -425,6 +455,8 @@ fieldset.checkboxgroup{
 }
 
 /******** END of Highlights Section Stuff *********/
+
+/*****************************************************************************************/
 
 .space-above{
     margin-top: 15px;

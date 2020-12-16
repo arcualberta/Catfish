@@ -95,7 +95,7 @@
                 </div>
 
 
-                <div v-if="searchResults.length > 0">
+                <div v-if="searchResults.length > 0" class="search-result-container">
 
                     <h6>{{totalResultsLabel}} {{searchResults.length}}</h6>
 
@@ -119,16 +119,16 @@
                         </transition-group>
                     </div>
                 </div>
-                <div v-else-if="searchMade && searchResults.length == 0">
+                <div v-else-if="searchMade && searchResults.length == 0" class="search-result-container">
                     <h6>{{noResultsLabel}}</h6>
                 </div>
-                <div v-else-if="hasErrorOccurred">
+                <div v-else-if="hasErrorOccurred" class="search-result-container">
                     <h6>{{errorMessage1Label}}<br />{{errorMessage2Label}}</h6>
                 </div>
-                <div v-else-if="loadingSearchResults">
+                <div v-else-if="loadingSearchResults" class="search-result-container">
                     <h6>{{loadingLabel}}</h6>
                 </div>
-                <div v-else>
+                <div v-else class="search-result-container">
                     <h6>{{defaultSearchMessageLabel}}</h6>
                 </div>
             </div>
