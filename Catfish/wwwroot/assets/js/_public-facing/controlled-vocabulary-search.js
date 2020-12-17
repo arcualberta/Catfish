@@ -109,41 +109,41 @@ Vue.component('controlled-vocabulary-search', {
 
                     this.searchResults = data;
 
-                    //temp, delete after
-                    this.searchResults = [
-                        {
-                            title: ["My Test Title 1"],
-                            id: 0,
-                            images: ["https://eskipaper.com/images/cat-sad-annoyed-1.jpg", "https://www.thehappycatsite.com/wp-content/uploads/2017/03/Why-Do-Cats-Stick-Their-Tongue-Out-HC-long.jpg", "https://twistedsifter.com/wp-content/uploads/2013/08/lil-bub-the-cat-sticks-tongue-out-1.jpg?w=640"],
-                            permalink: "google.ca",
-                            contents: ["ALDJLKADJLAJDLKADJLKADJLKADJADKJASKDJASDKJASKDJADL", "asdsadfasfasfsasafasfasfasfasfasfasfasfasfasfasfsafafsafdfa", "dajkdhsjkadhjakshdjkadhkjahdjkashjkdahasd"]
+                    ////temp, delete after
+                    //this.searchResults = [
+                    //    {
+                    //        title: ["My Test Title 1"],
+                    //        id: 0,
+                    //        images: ["https://eskipaper.com/images/cat-sad-annoyed-1.jpg", "https://www.thehappycatsite.com/wp-content/uploads/2017/03/Why-Do-Cats-Stick-Their-Tongue-Out-HC-long.jpg", "https://twistedsifter.com/wp-content/uploads/2013/08/lil-bub-the-cat-sticks-tongue-out-1.jpg?w=640"],
+                    //        permalink: "google.ca",
+                    //        contents: ["ALDJLKADJLAJDLKADJLKADJLKADJADKJASKDJASDKJASKDJADL", "asdsadfasfasfsasafasfasfasfasfasfasfasfasfasfasfsafafsafdfa", "dajkdhsjkadhjakshdjkadhkjahdjkashjkdahasd"]
 
-                        },
-                        {
-                            title: ["My Test Title 2"],
-                            id: 0,
-                            images: ["https://eskipaper.com/images/cat-sad-annoyed-1.jpg", "https://www.thehappycatsite.com/wp-content/uploads/2017/03/Why-Do-Cats-Stick-Their-Tongue-Out-HC-long.jpg", "https://twistedsifter.com/wp-content/uploads/2013/08/lil-bub-the-cat-sticks-tongue-out-1.jpg?w=640"],
-                            permalink: "google.ca",
-                            contents: ["ALDJLKADJLAJDLKADJLKADJLKADJADKJASKDJASDKJASKDJADL", "asdsadfasfasfsasafasfasfasfasfasfasfasfasfasfasfsafafsafdfa", "dajkdhsjkadhjakshdjkadhkjahdjkashjkdahasd"]
+                    //    },
+                    //    {
+                    //        title: ["My Test Title 2"],
+                    //        id: 0,
+                    //        images: ["https://eskipaper.com/images/cat-sad-annoyed-1.jpg", "https://www.thehappycatsite.com/wp-content/uploads/2017/03/Why-Do-Cats-Stick-Their-Tongue-Out-HC-long.jpg", "https://twistedsifter.com/wp-content/uploads/2013/08/lil-bub-the-cat-sticks-tongue-out-1.jpg?w=640"],
+                    //        permalink: "google.ca",
+                    //        contents: ["ALDJLKADJLAJDLKADJLKADJLKADJADKJASKDJASDKJASKDJADL", "asdsadfasfasfsasafasfasfasfasfasfasfasfasfasfasfsafafsafdfa", "dajkdhsjkadhjakshdjkadhkjahdjkashjkdahasd"]
 
-                        },
-                        {
-                            title: ["My Test Title 3"],
-                            id: 0,
-                            images: ["https://eskipaper.com/images/cat-sad-annoyed-1.jpg", "https://www.thehappycatsite.com/wp-content/uploads/2017/03/Why-Do-Cats-Stick-Their-Tongue-Out-HC-long.jpg", "https://twistedsifter.com/wp-content/uploads/2013/08/lil-bub-the-cat-sticks-tongue-out-1.jpg?w=640"],
-                            permalink: "google.ca",
-                            contents: ["ALDJLKADJLAJDLKADJLKADJLKADJADKJASKDJASDKJASKDJADL", "asdsadfasfasfsasafasfasfasfasfasfasfasfasfasfasfsafafsafdfa", "dajkdhsjkadhjakshdjkadhkjahdjkashjkdahasd"]
+                    //    },
+                    //    {
+                    //        title: ["My Test Title 3"],
+                    //        id: 0,
+                    //        images: ["https://eskipaper.com/images/cat-sad-annoyed-1.jpg", "https://www.thehappycatsite.com/wp-content/uploads/2017/03/Why-Do-Cats-Stick-Their-Tongue-Out-HC-long.jpg", "https://twistedsifter.com/wp-content/uploads/2013/08/lil-bub-the-cat-sticks-tongue-out-1.jpg?w=640"],
+                    //        permalink: "google.ca",
+                    //        contents: ["ALDJLKADJLAJDLKADJLKADJLKADJADKJASKDJASDKJASKDJADL", "asdsadfasfasfsasafasfasfasfasfasfasfasfasfasfasfsafafsafdfa", "dajkdhsjkadhjakshdjkadhkjahdjkashjkdahasd"]
 
-                        },
-                        {
-                            title: ["My Test Title 4"],
-                            id: 0,
-                            images: ["https://eskipaper.com/images/cat-sad-annoyed-1.jpg", "https://www.thehappycatsite.com/wp-content/uploads/2017/03/Why-Do-Cats-Stick-Their-Tongue-Out-HC-long.jpg", "https://twistedsifter.com/wp-content/uploads/2013/08/lil-bub-the-cat-sticks-tongue-out-1.jpg?w=640"],
-                            permalink: "google.ca",
-                            contents: ["ALDJLKADJLAJDLKADJLKADJLKADJADKJASKDJASDKJASKDJADL", "asdsadfasfasfsasafasfasfasfasfasfasfasfasfasfasfsafafsafdfa", "dajkdhsjkadhjakshdjkadhkjahdjkashjkdahasd"]
+                    //    },
+                    //    {
+                    //        title: ["My Test Title 4"],
+                    //        id: 0,
+                    //        images: ["https://eskipaper.com/images/cat-sad-annoyed-1.jpg", "https://www.thehappycatsite.com/wp-content/uploads/2017/03/Why-Do-Cats-Stick-Their-Tongue-Out-HC-long.jpg", "https://twistedsifter.com/wp-content/uploads/2013/08/lil-bub-the-cat-sticks-tongue-out-1.jpg?w=640"],
+                    //        permalink: "google.ca",
+                    //        contents: ["ALDJLKADJLAJDLKADJLKADJLKADJADKJASKDJASDKJASKDJADL", "asdsadfasfasfsasafasfasfasfasfasfasfasfasfasfasfsafafsafdfa", "dajkdhsjkadhjakshdjkadhkjahdjkashjkdahasd"]
 
-                        }
-                    ];
+                    //    }
+                    //];
 
                     console.log(this.searchResults);
 
