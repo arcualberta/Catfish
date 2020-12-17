@@ -394,6 +394,14 @@ body {
         color: white;
     }
 
+h4 > a:hover {
+    text-decoration: none;
+}
+
+.our-features-container > h4 {
+    margin-bottom: 0;
+}
+
 /******** END of Specific work page stuff ***********/
 
 /*****************************************************************************************/
@@ -472,6 +480,10 @@ fieldset.checkboxgroup{
     padding-right: 20px;
     padding-top: 25px;
     background-color: white;
+}
+
+.white-background-only{
+    background-color:white;
 }
 
 @media screen and (max-width: 1200px) {
