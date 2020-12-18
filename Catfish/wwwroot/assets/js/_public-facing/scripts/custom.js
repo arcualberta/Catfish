@@ -55,22 +55,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 //changes the columns in Meet Our Team into col-md-4's, from col-md-3's
 let columns = document.getElementsByClassName('row columnBlock CBflex-container');
 
-columns[0].classList.add('grey-bg');
-columns[0].classList.add('s-work-page');
-
 for(let i = 0; i < columns.length; i++){
   columns[i].style.marginBottom = "20px";
-  if(i > 0){
     columns[i].classList.add('box-shadow');
     columns[i].classList.add('white-background-only');
-  }else{
-    columns[i].children[1].children[0].classList.add('our-features-container');
-  }
   for(let j = 0; j < columns[i].children.length; j++){
-    //this is the columns section under the wide image
-    if(i > 0){
-      columns[i].children[j].children[0].classList.add('column-container');
-    }
     columns[i].children[j].children[0].classList.add('no-box-shadow');
     columns[i].children[j].children[0].classList.remove('col-md-12');
     columns[i].children[j].classList.add('remove-padding-in-highlights');
