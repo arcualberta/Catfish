@@ -72,7 +72,8 @@ body {
 }
 
 .pattern1BG {
-    background-image: url(/uploads/network-image.jpg);
+    /*background-image: url(/uploads/network-image.jpg); */ /* local one */
+    background-image: url(/uploads/b462d9b4-0eca-4da2-b287-40fab2712e21-network-image.jpg  network-image.jpg); /* server one */
     height: 450px;
     padding-top: 150px;
     background-repeat: no-repeat;
@@ -528,7 +529,7 @@ fieldset.checkboxgroup{
 
 @media screen and (max-width: 1200px) {
     h1.title-text.EGTitle {
-        font-size: 2rem;
+        /*font-size: 2rem;*/
     }
     h4 {
         font-size: 1.25rem;
