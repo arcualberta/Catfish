@@ -382,6 +382,7 @@ namespace Catfish.UnitTests
 
 
             editSubmissionPostActionSubmit.AddStateMapping(savedState.Id, submittedState.Id, "Submit");
+            editSubmissionPostActionSubmit.AddStateMapping(submittedState.Id, submittedState.Id, "Submit");
             editSubmissionPostActionSubmit.AddStateMapping(deanOfficeRevisionState.Id, deanOfficeRevisionCompletedState.Id, "Submit");
             editSubmissionPostActionSubmit.AddStateMapping(deanOfficeRevisionSaveState.Id, deanOfficeRevisionCompletedState.Id, "Submit");
             editSubmissionPostActionSubmit.AddStateMapping(aacRevisionState.Id, aacRevisionCompletedState.Id, "Submit");
@@ -406,6 +407,8 @@ namespace Catfish.UnitTests
             //Defining state referances
             editSubmissionAction.GetStateReference(savedState.Id, true)
                 .AddAuthorizedRole(departmentAdmin.Id);
+            editSubmissionAction.GetStateReference(submittedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id);
             editSubmissionAction.GetStateReference(deanOfficeRevisionState.Id, true)
                 .AddAuthorizedRole(departmentAdmin.Id);
             editSubmissionAction.GetStateReference(deanOfficeRevisionSaveState.Id, true)

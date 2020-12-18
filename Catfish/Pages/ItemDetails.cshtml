@@ -8,6 +8,7 @@
 @inject Catfish.Core.Services.IWorkflowService _workflowService;
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
+<link href="~/assets/css/font-awesome.min.css" rel="stylesheet" />
 @{
     var item = Model.Item;
 
@@ -26,13 +27,12 @@
 
 @*
     Display the contents of all associated data items, which are identified by is-rro=false.
-
 *@
 @{
-var associatedItems = item.DataContainer
-.Where(di => di.IsRoot = false)
-.OrderByDescending(di => di.Created)
-.ToList();
+    var associatedItems = item.DataContainer
+    .Where(di => di.IsRoot = false)
+    .OrderByDescending(di => di.Created)
+    .ToList();
 }
 @if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.Read }))
 .Succeeded)
@@ -41,6 +41,13 @@ var associatedItems = item.DataContainer
         <div class="card">
             <div class="card-header">
                 <h2 class="item-heading">@Html.DisplayFor(model => rootDataItem.Name, rootDataItem.Name.GetType().ToString()) @item.UserEmail</h2>
+                @if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.Update }))
+.Succeeded)
+                {
+                    <div class="float-right">
+                        <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("edit/{0}", item.Id)">  @Localizer.General["Edit"]</a>
+                    </div>
+                }
             </div>
             <div class="card-body">
                 <div class="row">
@@ -55,7 +62,7 @@ var associatedItems = item.DataContainer
                     <div class="col-sm-8">
                         <div class="form-group">
                             <label>@Localizer.General["Actions"]</label>
-                            <div >
+                            <div>
                                 @foreach (var postAction in allPostActions)
                                 {
                                     if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
@@ -66,8 +73,8 @@ var associatedItems = item.DataContainer
                                         {
                                             foreach (var popup in postAction.PopUps)
                                             {
-                                                <input id="@buttonLable" class="btn btn-success launch-modal" name="@buttonLable" type="button" value="@buttonLable" data-toggle="modal" data-target="#changeStateModal" />
-                                                <div id="changeStateModal" class="modal fade" role="dialog">
+                                                <input id="@buttonLable" class="btn btn-success launch-modal" name="@buttonLable" type="button" value="@buttonLable" data-toggle="modal" data-target="#@popup.Id" />
+                                                <div id="@popup.Id" class="modal fade" role="dialog">
 
                                                     <div>
                                                         <div class="modal-dialog">
