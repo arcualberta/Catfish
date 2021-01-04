@@ -72,7 +72,7 @@ body {
 }
 
 .pattern1BG {
-    /*background-image: url(/uploads/network-image.jpg); */ /* local one */
+    /*background-image: url(/uploads/b9e22a82-40b7-4099-a273-1c9bd0cb9982-network-image.jpg); */ /* local one */
     background-image: url(/uploads/b462d9b4-0eca-4da2-b287-40fab2712e21-network-image.jpg); /* server one */
     height: 450px;
     padding-top: 150px;

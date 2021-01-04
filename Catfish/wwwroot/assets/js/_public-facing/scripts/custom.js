@@ -70,9 +70,6 @@ for(let i = 0; i < columns.length; i++){
 columns[0].children[0].children[0].style.backgroundColor = "unset";
 
 });
-
-
-//this goes into the Our Team page
 document.addEventListener("DOMContentLoaded", function(event) {
 //changes the columns in Meet Our Team into col-md-4's, from col-md-3's
 let columns = document.getElementsByClassName('row columnBlock CBflex-container');
@@ -81,17 +78,36 @@ columns[0].classList.add('grey-bg');
 columns[0].classList.add('box-shadow');
 columns[0].classList.add('white-background');
 
-for(let i = 0; i < columns[0].children.length; i++){
-  //this is the columns section under the wide image
-  columns[0].children[i].classList.remove('col-md-3');
-  columns[0].children[i].classList.add('col-md-4');
-  columns[0].children[i].children[0].classList.add('no-box-shadow');
-  columns[0].children[i].children[0].classList.add('column-container');
-  columns[0].children[i].children[0].classList.remove('col-md-12');
+//for the Our Partners section
+columns[columns.length-1].classList.add('box-shadow');
+columns[columns.length-1].classList.add('white-background');
+columns[columns.length -1].style.marginTop = "20px";
+columns[columns.length -1].style.marginBottom = "20px";
+
+
+for(let i = 0; i < columns.length; i++){
+  for(let j = 0; j < columns[i].children.length; j++){
+    columns[i].children[j].classList.remove('col-md-3');
+    //if it the title is inside Our Partners, make it full-sized col-12 and remove the grey bg
+    if(i == 1 && j == 0){
+      columns[i].children[j].classList.add('col-md-12');
+      columns[i].children[j].children[0].children[0].classList.remove('grey-bg');
+    }else{
+      columns[i].children[j].classList.add('col-md-4');
+    }
+    //some custom resizing of Cybera, IST, and WestGrid
+    if( (i == 1) && (j == 2 || j ==4 || j == 6) ){
+console.log("here");
+      columns[i].children[j].children[0].children[0].style.maxWidth = "75%";
+    }
+
+    columns[i].children[j].children[0].classList.add('no-box-shadow');
+    columns[i].children[j].children[0].classList.add('column-container');
+    columns[i].children[j].children[0].classList.remove('col-md-12');
+  }
 }
 
 });
-
 
 //this is for the Our Work page
 document.addEventListener("DOMContentLoaded", function(event) {
