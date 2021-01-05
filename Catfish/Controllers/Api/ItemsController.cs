@@ -6,6 +6,7 @@ using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,11 +18,14 @@ namespace Catfish.Controllers.Api
     {
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly ISubmissionService _submissionService;
+       
         private readonly AppDbContext _appDb;
         public ItemsController(AppDbContext db, IEntityTemplateService entityTemplateService, ISubmissionService submissionService)
         {
             _entityTemplateService = entityTemplateService;
             _submissionService = submissionService;
+           
+           
             _appDb = db;
         }
         // GET: api/<ItemController>
@@ -133,6 +137,30 @@ namespace Catfish.Controllers.Api
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+
+        /// <summary>
+        /// This method's called from Submission Block to get Function/group name from selected Item Template workflow
+        /// </summary>
+        /// <param name="id">This is Item Template Id</param>
+        /// <returns></returns>
+        [HttpGet("getSelectListItem/{id}")]
+        public List<SelectListItem> GetSelectListItem(string id)
+        {
+           
+            List<SelectListItem> result = new List<SelectListItem>();
+            if (!string.IsNullOrEmpty(id))
+            {
+                var actions = _entityTemplateService.GetTemplateActions(Guid.Parse(id));
+            
+                foreach(Core.Models.Contents.Workflow.GetAction action in actions)
+                {
+                   result.Add(new SelectListItem { Text = action.Function, Value = action.Function + "|" + action.Group });
+                 
+                }
+            }
+            return result ;
         }
     }
 }
