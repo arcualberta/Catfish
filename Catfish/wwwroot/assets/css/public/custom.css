@@ -527,6 +527,15 @@ fieldset.checkboxgroup{
     background-color:white;
 }
 
+/* Contact Us Page */
+
+.contactForm tr {
+    display: flex;
+    flex-direction: column;
+}
+
+/** End of Contact Us Page */
+
 @media screen and (max-width: 1200px) {
     h1.title-text.EGTitle {
         /*font-size: 2rem;*/

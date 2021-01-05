@@ -135,4 +135,41 @@ let searchResultsParent = document.getElementsByClassName('search-header-holder'
 searchResultsParent[0].children[0].replaceWith(newDiv);
 });
 
+
+
+
+//this is for the Contact page
+document.addEventListener("DOMContentLoaded", function(event) {
+let columns = document.getElementsByClassName('row columnBlock CBflex-container');
+
+columns[0].classList.add('grey-bg');
+columns[0].classList.add('box-shadow');
+columns[0].classList.add('white-background');
+columns[0].style.marginTop = "20px";
+columns[0].style.marginBottom = "20px";
+
+for(let i = 0; i < columns.length; i++){
+  for(let j = 0; j < columns[i].children.length; j++){
+    columns[i].children[j].children[0].classList.add('no-box-shadow');
+    columns[i].children[j].children[0].classList.add('column-container');
+    if(j == 1){
+      columns[i].children[j].children[0].style.alignItems = "unset";
+    }else if(i == 1){
+      //this is for the map
+      columns[i].children[j].classList.remove('col-md-12');
+      columns[i].children[j].classList.remove('CBflex-parent');
+      columns[i].children[j].style.marginBottom = "-1px";
+      columns[i].children[j].children[0].style.paddingLeft = "0";
+      columns[i].children[j].children[0].style.paddingRight = "0";
+    }
+  }
+}
+
+//make contact form button left align, not right
+let table = document.getElementsByTagName("tbody")[0];
+table.children[4].children[1].style.textAlign = "unset";
+table.children[4].children[1].children[0].value = "Submit";
+
+});
+
  */
