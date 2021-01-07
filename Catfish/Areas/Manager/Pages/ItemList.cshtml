@@ -89,6 +89,15 @@
                             </div>
                         </li>
                     </ol>
+                    <ol v-else-if="loading">
+                        <li>
+                            <div class="sitemap-item">
+                                <div class="link">
+                                    Loading...
+                                </div>
+                            </div>
+                        </li>
+                    </ol>
                     <ol v-else>
                         <li>
                             <div class="sitemap-item">
