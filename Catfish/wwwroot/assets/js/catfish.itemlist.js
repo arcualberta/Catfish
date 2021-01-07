@@ -15,6 +15,7 @@ if (document.getElementById("itemlist-page")) {
             return {
                 loading: true,
                 updateBindings: false,
+                noResultsFound: false,
                 items: [],
                 collections: [],
                 //this is the $type value for Collections
@@ -51,18 +52,28 @@ if (document.getElementById("itemlist-page")) {
                     fetch(piranha.baseUrl + "manager/api/items")
                         .then(function (response) { return response.json(); })
                         .then(function (result) {
-                            self.collections = result.Collections.$values;
-                            self.collections_type = result.Collections.$type;
-                            self.itemTypes = result.ItemTypes.$values;
-                            self.itemTypes_type = result.ItemTypes.$type;
-                            self.collectionTypes = result.CollectionTypes;
-                            self.updateBindings = true;
+                            //check if result is null
+                            //this may need adjusting, I think it should be at least always sending some default data
+                            if (result == null) {
+                                console.log("result is null", result);
+                                //this still needs to trigger a change in Vue to run update() and finish loading
+                                self.collections = [];
+                                this.noResultsFound = true;
+                            } else {
+                                self.collections = result.Collections.$values;
+                                self.collections_type = result.Collections.$type;
+                                self.itemTypes = result.ItemTypes.$values;
+                                self.itemTypes_type = result.ItemTypes.$type;
+                                self.collectionTypes = result.CollectionTypes;
+                                self.updateBindings = true;
 
-                            self.dropdowns = new function () {
-                                for (let collection of self.collections) {
-                                    this[collection.Id] = { isCollapsed: false }
+                                self.dropdowns = new function () {
+                                    for (let collection of self.collections) {
+                                        this[collection.Id] = { isCollapsed: false }
+                                    }
                                 }
                             }
+                            
 
                         })
                         .catch(function (error) { console.log("error:", error); });
