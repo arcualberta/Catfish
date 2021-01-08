@@ -1,4 +1,6 @@
-﻿.header-bg {
+﻿@import "Style_RC.css";
+
+.header-bg {
   background-size: cover;
   background-position: 50% 50%; }
 
