@@ -50,7 +50,7 @@ Vue.component('vue-carousel', {
                     <h1 class="title-text">
                         {{item.Title.Value}}
                     </h1>
-                    <h4>
+                    <h4 class="desc-in-carousel">
                         {{item.Description.Value}}
                     </h4>
                     <a v-if="item.LinkText.Value" role="button" class="btn btn-primary" :href="item.LinkUrl.Value">

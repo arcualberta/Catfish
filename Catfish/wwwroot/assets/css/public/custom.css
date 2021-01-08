@@ -72,10 +72,10 @@ body {
 }
 
 .pattern1BG {
-    /*background-image: url(/uploads/b9e22a82-40b7-4099-a273-1c9bd0cb9982-network-image.jpg); */ /* local one */
-    background-image: url(/uploads/b462d9b4-0eca-4da2-b287-40fab2712e21-network-image.jpg); /* server one */
-    height: 450px;
-    padding-top: 150px;
+    background-image: url(/uploads/b9e22a82-40b7-4099-a273-1c9bd0cb9982-network-image.jpg); /* local one */
+    /*background-image: url(/uploads/b462d9b4-0eca-4da2-b287-40fab2712e21-network-image.jpg);*/ /* server one */
+    height: 400px;
+    padding-top: 130px;
     background-repeat: no-repeat;
     background-position: center 39%;
     background-size: cover;
@@ -86,9 +86,16 @@ body {
     min-width: 300px;
 }
 
+.small-item-block-container {
+    height: 150px;
+    padding-bottom: 30px;
+    font-size: 0.9rem;
+}
+
 .medium-button {
-    width: 50%;
-    min-width: 180px;
+    /*width: 50%;
+    min-width: 180px;*/
+    width:70%;
 }
 
 .img-text-container{
@@ -231,6 +238,11 @@ body {
 .img-fluid {
     max-width: 100%;
     height: auto;
+}
+
+.desc-in-carousel {
+    font-size: 1.25rem;
+    margin-top: .5rem;
 }
 
 .thumb-list-inline {
@@ -496,8 +508,21 @@ fieldset.checkboxgroup{
 
 .pattern1BG + .columnBlock {
     padding-top: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
     background-color: var(--lightBlue-color);
 }
+
+p.image-container {
+    display: flex;
+    justify-content: center;
+    padding-top: 1rem;
+}
+
+    p.image-container img {
+        height: auto;
+        max-width: 70%;
+    }
 
 /******** END of Highlights Section Stuff *********/
 
@@ -551,6 +576,9 @@ fieldset.checkboxgroup{
         height: 275px;
         width: 275px;
     }
+    .small-item-block-container {
+        height: 200px;
+    }
 }
 
 @media screen and (max-width: 991px){
@@ -565,8 +593,14 @@ fieldset.checkboxgroup{
         height: 205px;
         width: 205px;
     }
+    .small-item-block-container {
+        height: 270px;
+    }
 }
 
 @media screen and (max-width: 768px){
-
+    .small-item-block-container{
+        height:150px;
+        font-size: 1rem;
+    }
 }
