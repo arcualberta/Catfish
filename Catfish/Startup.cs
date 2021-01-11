@@ -467,10 +467,20 @@ namespace Catfish
                 });
             }
 
+
+            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Content").FirstOrDefault();
+            menubar.Items.Insert(menubar.Items.Count, new MenuItem
+            {
+                InternalId = "CustomStyles",
+                Name = "Custom Styles",
+                Route = "/manager/customstyles/",
+                Css = "fas fa-table"
+            });
+
             ///
             /// Templates Group Content Menus
             ///
-            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Templates").FirstOrDefault();
+            menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Templates").FirstOrDefault();
             var idx = 0;
 
             menubar.Items.Insert(idx++, new MenuItem
