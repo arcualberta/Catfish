@@ -1,4 +1,6 @@
 ﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Contents;
+using Catfish.Core.Models.Contents.Workflow;
 using ElmahCore;
 using Microsoft.AspNetCore.Identity;
 using Piranha.AspNetCore.Identity.Data;
@@ -7,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Catfish.Services
 {
@@ -161,5 +164,16 @@ namespace Catfish.Services
             }
         }
 
+        public XmlModelList<GetAction> GetTemplateActions(Guid? templateId)
+        {
+            EntityTemplate template = GetTemplate(templateId);
+
+            XmlModel xml = new XmlModel(template.Data);
+            XElement element = xml.GetElement(Workflow.TagName, false);// false -- don't cretae if not existed'
+            Workflow workflow = new Workflow(element);
+            
+            return workflow.Actions;
+         
+        }
     }
 }
