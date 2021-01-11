@@ -187,3 +187,6 @@ Plugins
 /Examples/centralAmericaRegistration_generared.xml
 /Examples/covidWeeklyInspectionWorkflow_generared.json
 /Examples/covidWeeklyInspectionWorkflow_generared.xml
+
+# ARC's custom CSS file
+/Catfish/wwwroot/assets/css/public/custom-arc.css
