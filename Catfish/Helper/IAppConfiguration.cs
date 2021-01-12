@@ -32,6 +32,7 @@ namespace Catfish.Helper
 
         bool GetValue(string key, bool defaultValue);
         string GetValue(string key, string defaultValue);
+        string[] GetValue(string key, string[] defaultValue);
         int GetValue(string key, int defaultValue);
 
     }
@@ -56,6 +57,14 @@ namespace Catfish.Helper
             string val = _configuration[key];
             return string.IsNullOrEmpty(val) ? defaultValue : val;
         }
+
+        public string[] GetValue(string key, string[] defaultValue)
+        {
+            var val = _configuration.GetSection(key).Get<string[]>();
+            return val == null ? defaultValue : val;
+        }
+
+
 
         public int GetValue(string key, int defaultValue)
         {
@@ -160,7 +169,7 @@ namespace Catfish.Helper
 
         public ICatfishAppConfiguration.ePanelLocation GetDefaultSearchPanelLocation()
         {
-            string configVal = GetValue("SiteConfig:SearchPanelLocation", null);
+            string configVal = GetValue("SiteConfig:SearchPanelLocation", null as string);
             return string.IsNullOrEmpty(configVal)
                 ? ICatfishAppConfiguration.ePanelLocation.Header
                 : (ICatfishAppConfiguration.ePanelLocation)Enum.Parse(typeof(ICatfishAppConfiguration.ePanelLocation), configVal);
