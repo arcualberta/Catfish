@@ -19,7 +19,7 @@ namespace Catfish.Models
         public ControlledCategoriesField Categories { get; set; } = new ControlledCategoriesField();
         public IEnumerable<Comment> Comments { get; set; } = new List<Comment>();
 
-        [Region(Title = "Publish Settings", Display = RegionDisplayMode.Setting)]
+        [Region(Title = "Page Settings", Display = RegionDisplayMode.Setting)]
         public PublishSettings PublishSettings { get; set; } = new PublishSettings();
 
     }

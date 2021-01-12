@@ -349,8 +349,9 @@ namespace Catfish
             Piranha.App.Fields.Register<TextAreaField>();
             Piranha.App.Fields.Register<ControlledKeywordsField>();
             Piranha.App.Fields.Register<ControlledCategoriesField>();
-             Piranha.App.Fields.Register<CatfishSelectList<Entity>> ();
-           
+            Piranha.App.Fields.Register<CatfishSelectList<Entity>> ();
+            Piranha.App.Fields.Register<ColorPicker>();
+
         }
         private static void RegisterCustomScripts()
         {
@@ -381,6 +382,7 @@ namespace Catfish
 
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-keywords.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/controlled-categories.js");
+            App.Modules.Manager().Scripts.Add("~/assets/js/color-picker.js");
 
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-list.js");
             App.Modules.Manager().Scripts.Add("~/assets/js/vue-header.js");
@@ -404,6 +406,7 @@ namespace Catfish
             App.Blocks.Register<ControlledVocabularySearchBlock>();
             App.Blocks.Register<VueList>();
             App.Blocks.Register<VueCarousel>();
+            App.Blocks.Register<ExtendedColumnBlock>();
         }
         private static void RegisterCustomStyles()
         {
@@ -464,10 +467,20 @@ namespace Catfish
                 });
             }
 
+
+            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Content").FirstOrDefault();
+            menubar.Items.Insert(menubar.Items.Count, new MenuItem
+            {
+                InternalId = "CustomStyles",
+                Name = "Custom Styles",
+                Route = "/manager/customstyles/",
+                Css = "fas fa-table"
+            });
+
             ///
             /// Templates Group Content Menus
             ///
-            var menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Templates").FirstOrDefault();
+            menubar = Piranha.Manager.Menu.Items.Where(m => m.InternalId == "Templates").FirstOrDefault();
             var idx = 0;
 
             menubar.Items.Insert(idx++, new MenuItem

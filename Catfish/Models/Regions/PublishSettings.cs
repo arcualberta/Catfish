@@ -7,6 +7,7 @@ namespace Catfish.Models.Regions
 {
     public class PublishSettings
     {
+
         [Field(Title = "Start date", Options = FieldOption.HalfWidth)]
         public DateField StartDate { get; set; }
 
@@ -22,6 +23,8 @@ namespace Catfish.Models.Regions
         [Field(Title = "Message", Placeholder ="Custom message to be displayed if the page is still not availabe.")]
         public StringField Message { get; set; }
 
+        [Field(Title = "Page Title Settings", Placeholder = "Show the title of the page as a heading")]
+        public CheckBoxField ShowTitleOfPage { get; set; }
         public DateTime? Start => ToDateTime(StartDate, StarTime);
         public DateTime? End => ToDateTime(EndDate, EndTime);
 

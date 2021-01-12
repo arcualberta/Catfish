@@ -34,7 +34,7 @@ Vue.component('vue-carousel', {
         });
     },
     template:
-        `<div>
+        `<div class="vue-carousel row">
             <div :id="this.model.Id" class="carousel slide" data-ride="carousel">
                 <ol class="carousel-indicators">
                     <li v-for="(item,index) in this.model.Items" :data-target="elementId" :data-slide-to="index" :class="{'active': index === 0}"></li>
@@ -50,7 +50,7 @@ Vue.component('vue-carousel', {
                     <h1 class="title-text">
                         {{item.Title.Value}}
                     </h1>
-                    <h4>
+                    <h4 class="desc-in-carousel">
                         {{item.Description.Value}}
                     </h4>
                     <a v-if="item.LinkText.Value" role="button" class="btn btn-primary" :href="item.LinkUrl.Value">

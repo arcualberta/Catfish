@@ -9,7 +9,8 @@
 @using Catfish.Core.Services.Solr;
 @using Catfish.Pages;
 @using System.Text.RegularExpressions;
-
+@using Catfish.Models.Blocks;
+@using Newtonsoft.Json;
 
 @{
     //ViewBag.Title = Model.SearchPageName;
@@ -26,111 +27,112 @@
 
     var Results = new List<SolrEntry>();
 
+    var jsonData = JsonConvert.SerializeObject(Model);
 }
-<link href="~/assets/css/public/controlledVocabularySearchBlock.css" rel="stylesheet" />
-<script src="~/assets/dist/keywordsSearchBundle.js"></script>
 
-<div id="keywords-search-block-public" class="@vocabcssclass">
+@*Reference for vue templates: https://vuejsdevelopers.com/2017/03/24/vue-js-component-templates/*@
 
-    <div class="keywords-search-block">
-        @if (!string.IsNullOrWhiteSpace(blockname))
-        {
-            <div class="block-title container block-@blockname">@blockname</div>
-        }
+<controlled-vocabulary-search v-bind:model='@Html.Raw(jsonData)' inline-template>
+    <div class="@vocabcssclass">
+        <div>
+            <div class="keywords-search-block" style="width:100%;">
+                @if (!string.IsNullOrWhiteSpace(blockname))
+                {
+                    <div class="block-title container block-@blockname">@blockname</div>
+                }
 
-        <form id="controlledVocabularySearchForm" method="post" action="/api/search/keywords">
+                <form id="controlledVocabularySearchForm" method="post" action="/api/search/keywords" style="width:100%;">
 
-            <div class="container">
-                <fieldset class="checkboxgroup">
-                    <div class="row">
-                        @foreach (var word in words)
-                        {
-                            if (!String.IsNullOrWhiteSpace(@word))
+                    <div class="container">
+                        <fieldset class="checkboxgroup">
+                            <div class="row">
+                                @foreach (var word in words)
+                                {
+                                    if (!String.IsNullOrWhiteSpace(@word))
+                                    {
+                                        <div class="@checkClass keyword-checkbox">
+                                            <input v-on:click="filterByCheckbox($event)" class="search-filter" type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
+                                        </div>
+                                    }
+
+                                }
+                            </div>
+                        </fieldset>
+                        <div class="categories-section">
+                            @foreach (var category in categories)
                             {
-                                <div class="@checkClass keyword-checkbox">
-                                    <input v-on:click="filterByCheckbox($event)" class="search-filter" type="checkbox" id="@word" name="searchterm" value="@word" /> @word<br>
-                                </div>
+                                <button v-on:click="filterByCategory($event)" data-toggle="button"
+                                        aria-pressed="false" autocomplete="off" value="@(category)"
+                                        id="@("category-" + @category)" type="button"
+                                        class="category-button btn btn-light">
+                                    @category
+                                </button>
+                                categoryIndex++;
                             }
-
-                        }
-                    </div>
-                </fieldset>
-                <div class="categories-section">
-                @foreach (var category in categories)
-			    {
-                        <button v-on:click="filterByCategory($event)" data-toggle="button" 
-                            aria-pressed="false" autocomplete="off" value="@(category)" 
-                            id="@("category-" + @category)" type="button" 
-                            class="category-button btn btn-light">
-                        @category
-                        </button>
-                    categoryIndex++;
-			    }
-                </div>
-            </div>
-
-        </form>
-    </div>
-
-    <div class="search-section container">
-
-        <div class="search-header-holder">
-
-            <h4>{{searchResultsLabel}}</h4>
-
-            <div v-if="searchResults.length > 0" class="pagination-holder">
-                <ul class="pagination">
-                    <li :class="{'disabled': currentPage==1}" class="page-item">
-                        <a v-on:click="currentPage = currentPage - 1" class="page-link">{{previousButtonLabel}}</a>
-                    </li>
-                    
-                    <li :class="{'disabled': currentPage==Math.ceil(searchResults.length/cardsPerPage)}" class="page-item">
-                        <a v-on:click="currentPage = currentPage + 1" class="page-link">{{nextButtonLabel}}</a>
-                    </li>
-                </ul>
-            </div>
-
-        </div>
-        
-        
-        <div v-if="searchResults.length > 0">
-        
-            <h6>{{totalResultsLabel}} {{searchResults.length}}</h6>
-
-            <div >
-                <transition-group id="controlledVocabularySearchResults" name="refresh">
-                <div :key="searchResult.id" v-for="searchResult of searchResults.slice((currentPage - 1) * cardsPerPage, (currentPage-1) * cardsPerPage + cardsPerPage)" class="card">
-                    <img v-if="searchResult.images[0] != '' && searchResult.images[0] != null" class="card-img-top" :src="searchResult.images[0]" alt="Search result image">
-                    <div v-else class="filler-image-space"></div>
-                    <hr/>
-                    <div class="card-body">
-                        <a v-if="searchResult.permalink" :href="searchResult.permalink">
-                            <h5 class="card-title">{{searchResult.title[0]}}</h5>
-                        </a>
-                        <h5 v-else class="card-title">{{searchResult.title[0]}}</h5>
-                        <div v-for="(content, index) of searchResult.contents" class="card-text main-card-text search-result-content">
-                            <p v-if="index == searchResult.contents.length -1"></p>
-                            <p v-html="content"></p>
                         </div>
                     </div>
+
+                </form>
+            </div>
+
+            <div class="search-section container">
+                <div class="search-header-holder">
+
+                    <h4>{{this.searchResultsLabel}}</h4>
+                    <div v-if="this.searchResults.length > 0" class="pagination-holder">
+
+                        <ul class="pagination">
+                            <li :class="{'disabled': currentPage==1}" class="page-item">
+                                <a v-on:click="currentPage = currentPage - 1" class="page-link">{{previousButtonLabel}}</a>
+                            </li>
+
+                            <li :class="{'disabled': currentPage==Math.ceil(searchResults.length/cardsPerPage)}" class="page-item">
+                                <a v-on:click="currentPage = currentPage + 1" class="page-link">{{nextButtonLabel}}</a>
+                            </li>
+                        </ul>
+                    </div>
+
                 </div>
-                </transition-group>
+
+
+                <div v-if="searchResults.length > 0" class="search-result-container">
+
+                    <h6>{{totalResultsLabel}} {{searchResults.length}}</h6>
+
+                    <div>
+                        <transition-group id="controlledVocabularySearchResults" name="refresh">
+                            <div :key="searchResult.id" v-for="searchResult of searchResults.slice((currentPage - 1) * cardsPerPage, (currentPage-1) * cardsPerPage + cardsPerPage)" class="card">
+                                <img v-if="searchResult.images[0] != '' && searchResult.images[0] != null" class="card-img-top" :src="searchResult.images[0]" alt="Search result image">
+                                <div v-else class="filler-image-space"></div>
+                                <hr />
+                                <div class="card-body">
+                                    <a v-if="searchResult.permalink" :href="searchResult.permalink">
+                                        <h5 class="card-title">{{searchResult.title[0]}}</h5>
+                                    </a>
+                                    <h5 v-else class="card-title">{{searchResult.title[0]}}</h5>
+                                    <div v-for="(content, index) of searchResult.contents" class="card-text main-card-text search-result-content">
+                                        <p v-if="index == searchResult.contents.length -1"></p>
+                                        <p v-html="content"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </transition-group>
+                    </div>
+                </div>
+                <div v-else-if="searchMade && searchResults.length == 0" class="search-result-container">
+                    <h6>{{noResultsLabel}}</h6>
+                </div>
+                <div v-else-if="hasErrorOccurred" class="search-result-container">
+                    <h6>{{errorMessage1Label}}<br />{{errorMessage2Label}}</h6>
+                </div>
+                <div v-else-if="loadingSearchResults" class="search-result-container">
+                    <h6>{{loadingLabel}}</h6>
+                </div>
+                <div v-else class="search-result-container">
+                    <h6>{{defaultSearchMessageLabel}}</h6>
+                </div>
             </div>
         </div>
-    
-        <div v-else-if="searchMade && searchResults.length == 0">
-            <h6>{{noResultsLabel}}</h6>
-        </div>
-        <div v-else-if="hasErrorOccurred">
-            <h6>{{errorMessage1Label}}<br />{{errorMessage2Label}}</h6>
-        </div>
-        <div v-else-if="loadingSearchResults">
-            <h6>{{loadingLabel}}</h6>
-        </div>
-        <div v-else>
-            <h6>{{defaultSearchMessageLabel}}</h6>
-        </div>
-        
     </div>
+</controlled-vocabulary-search>
 
-</div>

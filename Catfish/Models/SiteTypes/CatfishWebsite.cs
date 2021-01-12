@@ -2,6 +2,7 @@
 using Piranha.Extend;
 using Piranha.Models;
 using Piranha.Extend.Fields;
+using Catfish.Models.Regions;
 
 namespace Catfish.Models.SiteTypes
 {
@@ -25,47 +26,5 @@ namespace Catfish.Models.SiteTypes
             FooterContents = new Footer();
         }
 
-    }
-
-    public class Header
-    {
-        //TODO this one doesn't do anything yet
-        [Field(Title = "Display navigation menu", Placeholder = "If the site will display sub menu")]
-        public CheckBoxField EnabledSubMenu { get; set; } = true;
-        [Field(Title = "General Header Settings", Placeholder = "Remove the Website Title")]
-        public CheckBoxField RemoveWebsiteTitle { get; set; }
-        [Field(Title = "General Header Settings", Placeholder = "Remove Default Page Titles")]
-        public CheckBoxField RemovePageTitles { get; set; }
-        [Field(Title = "Header Background Color", Placeholder = "Please enter a hex value, including the hashtag, or color name")]
-        public StringField BackgroundColor { get; set; }
-        //[Field(Title = "Header Text Color", Placeholder = "Please enter a hex value, including the hashtag, or color name")]
-        //public StringField TextColor { get; set; }
-
-        [Field(Title = "Header Contents")]
-        public HtmlField Text { get; set; }
-
-        [Field(Title = "Javascript")]
-        public TextField Javascript { get; set; }
-
-        [Field(Title = "Css")]
-        public TextField Css { get; set; }
-    }
-
-    public class Footer
-    {
-        [Field(Title = "Footer logo")]
-        public ImageField Logo { get; set; }
-
-        [Field(Title = "Footer Contents")]
-        public HtmlField Text { get; set; }
-
-        [Field(Title = "Javascript")]
-        public TextField Javascript { get; set; }
-
-        [Field(Title = "Css")]
-        public TextField Css { get; set; }
-
-        [Field(Title = "Enabled SubMenu", Placeholder = "If the site will display sub menu")]
-        public CheckBoxField EnabledSubMenu { get; set; } = true;
     }
 }

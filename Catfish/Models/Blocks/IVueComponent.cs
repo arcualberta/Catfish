@@ -19,6 +19,7 @@ namespace Catfish.Models.Blocks
                     return blockTypeAttribute.Component;
             }
         }
+        //public string GetVueTemplateId();
 
     }
 }

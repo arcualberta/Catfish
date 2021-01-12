@@ -1,0 +1,34 @@
+﻿/********* Stuff for Header CSS Section *************/
+/********* Click on your website name in 'Pages' and go into the Header tab and paste the below into the CSS textarea *************/
+/********* Try not to put this stuff in individual page CSS blocks *************/
+
+/* ARC Logo in header */
+.header-brand {
+    padding-left: 25px;
+    padding-top: 25px;
+    padding-bottom: 12px;
+}
+
+header .row {
+    border-bottom: 5px solid #40C6DD; /* med blue */
+}
+
+header.site-header.site-header-dark .nav-site .active a {
+    color: white !important;
+}
+
+header.site-header.site-header-dark .nav-site a {
+    color: white !important;
+}
+
+.search-panel {
+    display: none;
+}
+
+.header-arc-logo {
+    max-width: 100%;
+    display: block;
+    align-self: center;
+}
+
+/********* END of Stuff for Header CSS Section *************/

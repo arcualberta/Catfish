@@ -16,7 +16,7 @@ using Catfish.Models.Fields;
 namespace Catfish.Models.Blocks
 {
     [BlockType(Name = "Controlled Vocabulary Search", Category = "Control", Component = "controlled-vocabulary-search", Icon = "fas fa-search")]
-    public class ControlledVocabularySearchBlock : Block
+    public class ControlledVocabularySearchBlock : VueComponent
     {
 
         [Field(Title = "Search Block Title", Placeholder = "The name of the type of Search Block to be created")]
