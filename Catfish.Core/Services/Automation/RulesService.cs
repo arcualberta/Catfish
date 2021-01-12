@@ -14,6 +14,18 @@ namespace Catfish.Core.Services.Automation
 
         }
 
-        public 
+        public bool ProcessItem(Guid id)
+        {
+            try
+            {
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return false;
+            }
+        }
     }
 }
