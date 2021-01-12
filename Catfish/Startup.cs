@@ -8,21 +8,16 @@ using Catfish.Core.Services.FormBuilder;
 using Catfish.Core.Services.Solr;
 using Catfish.Helper;
 using Catfish.ModelBinders;
-using Catfish.Models;
 using Catfish.Models.Blocks;
 using Catfish.Models.Fields;
 using Catfish.Models.SiteTypes;
 using Catfish.Services;
 using ElmahCore;
 using ElmahCore.Mvc;
-using ElmahCore.Sql;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -351,6 +346,8 @@ namespace Catfish
             Piranha.App.Fields.Register<ControlledCategoriesField>();
             Piranha.App.Fields.Register<CatfishSelectList<Entity>> ();
             Piranha.App.Fields.Register<ColorPicker>();
+
+            Piranha.App.MediaTypes.Images.Add(".svg", "image/svg+xml", false);
 
         }
         private static void RegisterCustomScripts()
