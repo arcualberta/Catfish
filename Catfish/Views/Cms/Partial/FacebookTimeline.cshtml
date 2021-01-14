@@ -4,14 +4,16 @@
     ViewBag.Tile = "Facebook timeline";
     int width = Model.Width == null ? 300 : Convert.ToInt32(Model.Width.Value);
     int height = Model.Height == null ? 400 : Convert.ToInt32(Model.Height.Value);
+
+
+    string fbUrl = "https://www.facebook.com/plugins/page.php?href=" + Model.FacebookUrl.Value + "&tabs=timeline&width=" + width + "&height=" + height + "&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId";
 }
 
-    <div class="fbtimeline container container-fluid">
-        <h4>@Model.Title</h4>
-        <div id="fb-root"></div>
-        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.3"></script>
-        <div class="fb-page" data-href="@Model.FacebookUrl.Value" data-tabs="timeline" data-width="@width" data-height="@height" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/cbcnews" class="fb-xfbml-parse-ignore"><a href="@Model.FacebookUrl.Value  "></a></blockquote></div>
-    </div>
+<div class="fbtimeline container container-fluid">
+    <h4>@Model.Title</h4>
+   
+    <iframe src="@fbUrl" width="@width" height="@height" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+</div>
 
 <style>
     .fbtimeline{
