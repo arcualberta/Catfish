@@ -1,0 +1,37 @@
+﻿@page "~/manager/entitytypes/schema/{id:Guid?}"
+@model Catfish.Areas.Manager.Pages.EntityTypeSchemaPageModel
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<h3>Entity Type Schema</h3>
+
+<div>
+    <div class="top">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">@Localizer.Menu["ENTITIES"]</li>
+                <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["ENTITY TYPES"]</li>
+                <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Schema"]</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="container-fluid">
+        <h2>Schema</h2>
+
+        <form method="post">
+            @Html.EditorFor(model => model.SchemaXml, new { htmlAttributes = new { @class = "col-md-12", style = "Width:100%,", rows = "20" } })
+            <input type="submit" value="Update" class="btn btn-primary" />
+        </form>
+    </div>
+</div>

@@ -75,9 +75,10 @@ namespace Catfish.Core.Models.Contents.Fields
             return val != null ? val.Value : null;
         }
 
-        public void SetDescription(string containerDescription, string lang)
+        public BaseField SetDescription(string containerDescription, string lang)
         {
             Description.SetContent(containerDescription, lang);
+            return this;
         }
 
         #region Visible-If
@@ -102,5 +103,27 @@ namespace Catfish.Core.Models.Contents.Fields
             return this;
         }
         #endregion
+
+        public string FieldCssClass
+        {
+            get => GetAttribute("field-css", "");
+            private set => Data.SetAttributeValue("field-css", value);
+        }
+        public BaseField SetFieldCssClass(string value) { FieldCssClass = value; return this; }
+        public string FieldLabelCssClass
+        {
+            get => GetAttribute("label-css", "col-md-4");
+            private set => Data.SetAttributeValue("label-css", value);
+        }
+        public BaseField SetFieldLabelCssClass(string value) { FieldLabelCssClass = value; return this; }
+
+        public string FieldValueCssClass
+        {
+            get => GetAttribute("value-css", "col-md-8");
+            private set => Data.SetAttributeValue("value-css", value);
+        }
+        public BaseField SetFieldValueCssClass(string value) { FieldValueCssClass = value; return this; }
+
+
     }
 }
