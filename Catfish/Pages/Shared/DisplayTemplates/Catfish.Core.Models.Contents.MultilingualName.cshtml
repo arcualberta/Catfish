@@ -3,6 +3,8 @@
 @{
     var text = string.Join(" | ", Model.Values.Select(txt => txt.Value));
 }
-<div class="ml-name" style="padding-right:10pt">
+@Html.Raw(text)
+
+@*<div class="ml-name" style="padding-right:10pt">
     @Html.Raw(text)
-</div>
+</div>*@

@@ -19,6 +19,7 @@
             string fieldId = Html.IdFor(model => Model.Fields[i]);
             <div class="control field-label @Model.Fields[i].FieldLabelCssClass">
                 @Html.DisplayFor(model => Model.Fields[i].Name, Model.Fields[i].Name.GetType().ToString())
+                @if (Model.Fields[i].Required) { <span class="required"></span> }
             </div>
             <div id="@fieldId" class="@Model.Fields[i].CssClass field-value @Model.Fields[i].FieldValueCssClass">
                 @Html.DisplayFor(mode => Model.Fields[i].Description, Model.Fields[i].Description.GetType().ToString())

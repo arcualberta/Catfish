@@ -1285,10 +1285,10 @@ namespace Catfish.UnitTests
             inspectionForm.SetDescription("This template is designed for a weekly inspection of public health measures specific to COVID-19 and other return to campus requirements.", lang);
 
             inspectionForm.CreateField<DateField>("Inspection Date", lang, true)
-                .IncludeTime = false;
+                .IncludeTime =  false;
             
-            string[] optionBuilding = new string[] { "Arts and Convocation Hall", "Assiniboia Hall", "Fine Arts Building", "HM Tory Building", "HUB", "Humanities Centre", "Industrial Design Studio", "North Power Plant", "South Academic Building", "Timms Centre for the Arts", "Varsity Trailer" };
-            inspectionForm.CreateField<SelectField>("Building", lang, optionBuilding);
+            string[] optionBuilding = new string[] { "", "Arts and Convocation Hall", "Assiniboia Hall", "Fine Arts Building", "HM Tory Building", "HUB", "Humanities Centre", "Industrial Design Studio", "North Power Plant", "South Academic Building", "Timms Centre for the Arts", "Varsity Trailer" };
+            inspectionForm.CreateField<SelectField>("Building", lang, optionBuilding, true);
             inspectionForm.CreateField<TextField>("Inspected By", lang, true, true);
             inspectionForm.CreateField<TextField>("Room/Area", lang, true, true);
 
@@ -1301,34 +1301,34 @@ namespace Catfish.UnitTests
                 .AppendContent("h4", "Physical Distancing", lang);
 
             string[] optionText = new string[] { "Yes", "No", "N/A" };
-            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText);
-            inspectionForm.CreateField<RadioField>("Where physical distancing is not possible, are occupants wearing face masks?", lang, optionText);
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
-            inspectionForm.CreateField<TextField>("Assigned to", lang, true);
+            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText, true );
+            inspectionForm.CreateField<RadioField>("Where physical distancing is not possible, are occupants wearing face masks?", lang, optionText, true);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
                 .AppendContent("h4", "Personal Hygiene", lang);
-            inspectionForm.CreateField<RadioField>("Is a hand washing sink or hand sanitizer available?", lang, optionText);
-            inspectionForm.CreateField<RadioField>("Is the sink clean and free of contamination?", lang, optionText);
-            inspectionForm.CreateField<RadioField>("Is there an adequate supply of soap? ", lang, optionText);
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
-            inspectionForm.CreateField<TextField>("Assigned to", lang, true);
+            inspectionForm.CreateField<RadioField>("Is a hand washing sink or hand sanitizer available?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Is the sink clean and free of contamination?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Is there an adequate supply of soap? ", lang, optionText, true);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
                .AppendContent("h4", "Housekeeping", lang);
-            inspectionForm.CreateField<RadioField>("Is general housekeeping and cleanliness being maintained?", lang, optionText);
-            inspectionForm.CreateField<RadioField>("Are surfaces being disinfected on a regular basis?", lang, optionText);
-            inspectionForm.CreateField<RadioField>("Are there adequate cleaning supplies for the next 2 weeks?", lang, optionText);
-            inspectionForm.CreateField<RadioField>("Are walkways clear of trip hazards?", lang, optionText);
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
-            inspectionForm.CreateField<TextField>("Assigned to", lang, true);
+            inspectionForm.CreateField<RadioField>("Is general housekeeping and cleanliness being maintained?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Are surfaces being disinfected on a regular basis?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Are there adequate cleaning supplies for the next 2 weeks?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Are walkways clear of trip hazards?", lang, optionText, true);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
                .AppendContent("h4", "Training", lang);
-            inspectionForm.CreateField<RadioField>("Have all employees taken the COVID-19 Return to Campus training?", lang, optionText);
-            inspectionForm.CreateField<RadioField>("Have all employees been trained in your return to campus plan?", lang, optionText);
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
-            inspectionForm.CreateField<TextField>("Assigned to", lang, true);
+            inspectionForm.CreateField<RadioField>("Have all employees taken the COVID-19 Return to Campus training?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Have all employees been trained in your return to campus plan?", lang, optionText, true);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
                 .AppendContent("h4", "Eyewash Stations", lang)
@@ -1346,18 +1346,18 @@ namespace Catfish.UnitTests
                     lang,
                     "alert alert-info");
 
-            var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText);
-            inspectionForm.CreateField<TextArea>("Eyewash station info", lang, true)
+            var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText, true);
+            inspectionForm.CreateField<TextArea>("Eyewash station info", lang, false)
                 .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang);
             //                .SetVisibleIf(eyeWashFlushed, optionText[0]);
             
             inspectionForm.CreateField<InfoSection>(null, null)
                .AppendContent("h4", "Other", lang);
-            inspectionForm.CreateField<RadioField>("Have all sinks been flushed for 3 minutes?", lang, optionText);
-            inspectionForm.CreateField<RadioField>("Is all appropriate PPE being worn?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Have all sinks been flushed for 3 minutes?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Is all appropriate PPE being worn?", lang, optionText, true);
           
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
-            inspectionForm.CreateField<TextField>("Assigned to", lang, true);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
 
             //Defininig roles
