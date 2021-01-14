@@ -1341,12 +1341,14 @@ namespace Catfish.UnitTests
     <li><em>Activate the station for a minimum of 3-minutes.</em></li>
     <li><em>The protective cap(s) should come off automatically and the water temperature should stabilize. A 3-minute flush allows for the removal of any build-up in the system.</em></li>
     <li><em>After 3-minutes, deactivate the unit, clean-up any spilled water, and initial the test below.</em></li>
-</ol>",
+</ol>
+<p>If there are any deficiencies found in the weekly test, contact the maintenance desk at 780-492-4833.</p>",
                     lang,
                     "alert alert-info");
+
             var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText);
             inspectionForm.CreateField<TextArea>("Eyewash station info", lang, true)
-                .SetDescription("Please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang);
+                .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang);
             //                .SetVisibleIf(eyeWashFlushed, optionText[0]);
             
             inspectionForm.CreateField<InfoSection>(null, null)
