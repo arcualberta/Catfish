@@ -7,7 +7,7 @@
 
 @for (int i = 0; i < Model.Fields.Count; ++i)
 {
-    <div class="row field-row">
+    <div class="row field-row @Model.Fields[i].FieldCssClass">
         @if (typeof(InfoSection).IsAssignableFrom(Model.Fields[i].GetType()))
         {
             <div class="col-md-12">
@@ -17,11 +17,12 @@
         else
         {
             string fieldId = Html.IdFor(model => Model.Fields[i]);
-            <div class="col-md-3 control field-label">
+            <div class="control field-label @Model.Fields[i].FieldLabelCssClass">
                 @Html.DisplayFor(model => Model.Fields[i].Name, Model.Fields[i].Name.GetType().ToString())
+                @if (Model.Fields[i].Required) { <span class="required"></span> }
             </div>
-            <div id="@fieldId" class="col-md-9 @Model.Fields[i].CssClass field-value">
-                @*@Html.DisplayFor(mode => Model.Item.Fields[i].Description, Model.Item.Fields[i].Description.GetType().ToString())*@
+            <div id="@fieldId" class="@Model.Fields[i].CssClass field-value @Model.Fields[i].FieldValueCssClass">
+                @Html.DisplayFor(mode => Model.Fields[i].Description, Model.Fields[i].Description.GetType().ToString())
                 @Html.EditorFor(model => model.Fields[i], Model.Fields[i].GetType().ToString())
             </div>
         }

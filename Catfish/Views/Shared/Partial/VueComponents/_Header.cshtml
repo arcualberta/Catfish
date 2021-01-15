@@ -18,7 +18,7 @@
 
     var site = await _piranhaApi.Sites.GetByInternalIdAsync("Default");//"Default" is InternalId of the site
     var logoUrl = _catfishAppConfig.GetLogoUrl();
-    string loginButtonLocation = _catfishAppConfig.GetValue("SiteConfig:LoginButtonLocation", null);
+    string loginButtonLocation = _catfishAppConfig.GetValue("SiteConfig:LoginButtonLocation", null as string);
     ICatfishAppConfiguration.ePanelLocation searchPanelLocation = _catfishAppConfig.GetDefaultSearchPanelLocation();
     var homepage = WebApp.Site.Sitemap.FirstOrDefault();
     string homepageUrlStartTag = "";

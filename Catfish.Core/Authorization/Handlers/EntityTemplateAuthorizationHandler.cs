@@ -57,8 +57,13 @@ namespace Catfish.Core.Authorization.Handlers
             }
 
             GetAction workflowAction = template.Workflow.Actions.Where(ac => ac.Function == requirement.Name).FirstOrDefault();
-            if(workflowAction == null)
+            if (workflowAction == null)
+            {
+                //TODO: Log an error stating that the operation identified by the requirement.Name is
+                //      not defined in the workflow.
+
                 return Task.CompletedTask; //Cannot proceed on without a get action that matches the action identified in the requirement
+            }
 
             //If this is a pulicly accessible action, no further checking is needed.
             if (workflowAction.Access == GetAction.eAccess.Public)

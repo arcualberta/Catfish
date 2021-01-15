@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public class OptionsField : BaseField
+    public class OptionsField : BaseField, IValueField
     {
         public static readonly string OptionContainerTag = "options";
         public static readonly string OptionTag = "option";
@@ -82,5 +82,22 @@ namespace Catfish.Core.Models.Contents.Fields
                 dstOption.Selected = selections.Contains(dstOption.Id);
             }
         }
+
+        public IEnumerable<Text> GetValues(string lang = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetValues(string separator, string lang = null)
+        {
+            var selectedOption = this.Options.Where(op => op.Selected).FirstOrDefault();
+
+            if (selectedOption == null)
+                return "";
+            else
+                return selectedOption.OptionText.GetConcatenatedContent(separator);
+        }
+
+
     }
 }

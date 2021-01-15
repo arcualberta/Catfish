@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Catfish.Core.Models;
+using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Fields;
 using Catfish.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -45,62 +48,81 @@ namespace Catfish.Controllers.Api
         /// <param name="endDate">end date</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public IList<string> GetItemList(Guid templateId, Guid? collectionId, DateTime? startDate, DateTime? endDate)
+        public string GetItemList(Guid templateId, Guid? collectionId, DateTime? startDate, DateTime? endDate)
         {
             //Making sure the startDate is trimmed to the begining of the day and the endDate is bumped up to the end of the day
-            if(startDate.HasValue)
+            if (startDate.HasValue)
                 startDate = startDate.Value.Date;
             if (endDate.HasValue)
                 endDate = endDate.Value.Date.AddDays(1);
 
-            List<string> itemFields = new List<string>();
             EntityTemplate template = _entityTemplateService.GetTemplate(templateId, User);
             if (template != null)
             {
+                XElement result = new XElement("table");
+                result.SetAttributeValue("class", "table");
 
-                IList<Item> itemList = _submissionService.GetSubmissionList(User, templateId, collectionId, startDate, endDate);
-               
-                bool header = true;
-                if (itemList.Count > 0)
+                XElement thead = new XElement("thead");
+                result.Add(thead);
+
+                XElement headRow = new XElement("tr");
+                thead.Add(headRow);
+
+                DataItem root = template.GetRootDataItem(false);
+                if (root != null)
                 {
+                    var fieldList = root.GetValueFields();
+
+                    headRow.Add(XElement.Parse("<th>Submission Date</th>"));
+
+                    foreach (var field in fieldList)
+                        headRow.Add(XElement.Parse(string.Format("<th>{0}</th>", field.Name.GetConcatenatedContent(" | "))));
+                    
+                    headRow.Add(XElement.Parse("<th>Status</th>"));
+
+                    XElement tbody = new XElement("tbody");
+                    result.Add(tbody);
+
+                    var fieldGuids = fieldList.Select(field => field.Id).ToList();
+
+                    List<Item> itemList = _submissionService.GetSubmissionList(User, templateId, collectionId, startDate, endDate);
+                    
+                    //Arrays to store already loaded status values instead of having to load them repeatedly from the database
+                    List<Guid?> statusIds = new List<Guid?>();
+                    List<string> statusVals = new List<string>();
+
                     foreach (Item item in itemList)
                     {
-                        //get all the custom fields from the form
-                        var iFields = _submissionService.GetAllField(item.Data.ToString());
+                        XElement bodyRow = new XElement("tr");
+                        tbody.Add(bodyRow);
 
-                        //get the date when the form is submitted
-                        iFields.Add(new ItemField { FieldName = "Created", FieldValue = item.Created.ToShortDateString() });
-                        //get the form status
-                        string status = _submissionService.GetStatus(item.StatusId).NormalizedStatus;
-                        iFields.Add(new ItemField { FieldName = "Status", FieldValue = status });
+                        bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", item.Created.ToString("yyyy-MM-dd"))));
 
-                        if (header)
+                        DataItem dataItem = item.GetRootDataItem(false);
+                        List<string> fieldValues = dataItem.GetConcatenatedFieldValues(fieldGuids, " |");
+                        foreach (var val in fieldValues)
+                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", val)));
+
+                        int statusIdx = statusIds.IndexOf(item.StatusId);
+                        string status;
+                        if (statusIdx < 0)
                         {
-                            string strHeader = "";
-                            foreach (var field in iFields)
-                            {
-                                strHeader += field.FieldName + ",";
-                            }
-                            itemFields.Add(strHeader);
-                            header = false; //only het the header once
+                            status = _submissionService.GetStatus(item.StatusId).NormalizedStatus;
+                            statusIds.Add(item.StatusId);
+                            statusVals.Add(status);
                         }
+                        else
+                            status = statusVals[statusIdx];
 
-                        //the the filed values
-                        string strValues = "";
-                        foreach (var field in iFields)
-                        {
-                            strValues += field.FieldValue + ",";
-                        }
-
-                        itemFields.Add(strValues);
+                        bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", status)));
                     }
+                }
 
-                }//if have some items
-               
+                return result.ToString();
             }
-
-            return itemFields;
+            return "";
         }
+
 
         // POST api/<ItemController>
         [HttpPost]

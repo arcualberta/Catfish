@@ -190,3 +190,5 @@ Plugins
 
 # ARC's custom CSS file
 /Catfish/wwwroot/assets/css/public/custom-arc.css
+/Catfish/wwwroot/assets/css/public/custom.css.bak
+/Catfish/wwwroot/assets/css/public/custom-forms-central.css

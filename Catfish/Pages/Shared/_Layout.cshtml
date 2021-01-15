@@ -46,6 +46,14 @@
     <script src="~/assets/js/_public-facing/scripts/submission-form-functions.js"></script>
     <script src="~/assets/js/_public-facing/scripts/item-list-functions.js"></script>
 
+    @{
+        //Inserting custom CSS files
+        string[] customStyles = _catfishAppConfig.GetValue("SiteConfig:PublicCss", new string[0]);
+        foreach (var file in customStyles)
+        {
+            <link href="@file" rel="stylesheet" />
+        }
+    }
 
     <!-- Google Login  -->
     <script src="https://apis.google.com/js/platform.js" async defer></script>
@@ -72,7 +80,7 @@
         @{
             var site = await _piranhaApi.Sites.GetByInternalIdAsync("Default");//"Default" is InternalId of the site
             var logoUrl = _catfishAppConfig.GetLogoUrl();
-            string loginButtonLocation = _catfishAppConfig.GetValue("SiteConfig:LoginButtonLocation", null);
+            string loginButtonLocation = _catfishAppConfig.GetValue("SiteConfig:LoginButtonLocation", null as string);
             ICatfishAppConfiguration.ePanelLocation searchPanelLocation = _catfishAppConfig.GetDefaultSearchPanelLocation();
             var homepage = WebApp.Site.Sitemap.FirstOrDefault();
             string homepageUrlStartTag = "";
