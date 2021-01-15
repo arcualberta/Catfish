@@ -31,57 +31,15 @@
 
     <button id="downloadCsvFile" class="btn btn-default btn-primary" onclick="generateCSV('Items_@DateTime.Now.ToShortDateString()','itemListBlockTable' )"><span class="fa fa-download" style="padding-right:5px;"></span>Download CSV</button>
 
-    IList<Item> itemList = _submissionService.GetSubmissionList(User, entityTemplateId, collectionId);
+    <div id="itemListResultBlock" class="table-responsive">
 
-    if (itemList.Count > 0)
-    {
-        <table class="table table-stripe table-border" id="itemListBlockTable">
-            <tr class="tblHeader">
-                @foreach (Item item in itemList)
-                {
-                    var allFields = _submissionService.GetAllField(item.Data.ToString());
-                    //table's header
-                    if (printTitle)
-                    {
-                        foreach (var field in allFields)
-                        {
-                            <th> @field.FieldName </th>
-                        }
-                        printTitle = false;
-                        <th> Submitted </th>
-                        <th> Status </th>
-                        <th>Actions</th>
-                    @:</tr>
-                }
-                <tr class="tblRowContent">
-                    @foreach (var field in allFields)
-                    {
-                        <td> @field.FieldValue </td>
-                    }
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">Authorization Failed.</div>
+}
 
 
-                    <td> @item.Created </td>
-                    <td> @_submissionService.GetStatus(item.StatusId).Status </td>
-
-            @{
-                string viewLink = string.Format("<a href='/items/{0}'>view</a>", item.Id);
-                string editLink = string.Format("<a href='/items/edit/{0}'>edit</a>", item.Id);
-                <td>@Html.Raw(viewLink) | @Html.Raw(editLink)</td>
-            }
-                </tr>
-            }
-            </table>
-        }
-    }
-    else
-    {
-        <div class="alert alert-warning">Authorization Failed.</div>
-    }
-
-@*<style>
-    #itemListBlockTable {
-        margin-top: 15px;
-    }
-</style>*@
 
 
