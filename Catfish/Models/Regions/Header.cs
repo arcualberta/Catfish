@@ -13,8 +13,8 @@ namespace Catfish.Models.Regions
     public class Header
     {
         //TODO this one doesn't do anything yet
-        [Field(Title = "Display navigation menu", Placeholder = "If the site will display sub menu")]
-        public CheckBoxField EnabledSubMenu { get; set; } = true;
+        [Field(Title = "Hide navigation menu", Placeholder = "Remove the submenu at the top of the site")]
+        public CheckBoxField RemoveSubMenu { get; set; } = false;
         [Field(Title = "General Header Settings", Placeholder = "Remove the Website Title")]
         public CheckBoxField RemoveWebsiteTitle { get; set; }
         [Field(Title = "General Header Settings", Placeholder = "Remove Default Page Titles")]
