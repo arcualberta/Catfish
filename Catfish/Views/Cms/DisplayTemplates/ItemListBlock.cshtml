@@ -12,9 +12,7 @@
 @{
     var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
     var collectionId = string.IsNullOrEmpty(Model.SelectedCollection) ? null as Guid? : Guid.Parse(Model.SelectedCollection);
-
-    bool printTitle = true;
-    
+ 
     var template = _entityTemplateService.GetTemplate(entityTemplateId);
 
 }
