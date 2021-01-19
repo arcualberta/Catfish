@@ -82,7 +82,7 @@ namespace Catfish.Core.Models.Contents.Fields
         }
 
         #region Visible-If
-        public Guid? VisibleIfOptionFieldId 
+        public Guid? VisibleIfOptionFieldId
         {
             get => GetAttribute("visible-if-option-field-id", null as Guid?);
             private set => Data.SetAttributeValue("visible-if-option-field-id", value);
@@ -90,7 +90,7 @@ namespace Catfish.Core.Models.Contents.Fields
         public Guid[] VisibleIfOptionIds
         {
             get => GetAttribute("visible-if-option-id", null as Guid[]);
-            private set => Data.SetAttributeValue("visible-if-option-id", value);
+            private set => Data.SetAttributeValue("visible-if-option-id", value == null ? "" : string.Join(",", value.Select(v => v.ToString())));
         }
         public BaseField SetVisibleIf(OptionsField controllerField, string triggerOptionValue)
         {

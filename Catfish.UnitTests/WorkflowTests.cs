@@ -1348,8 +1348,8 @@ namespace Catfish.UnitTests
 
             var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText, true);
             inspectionForm.CreateField<TextArea>("Eyewash station info", lang, false)
-                .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang);
-            //                .SetVisibleIf(eyeWashFlushed, optionText[0]);
+                .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang)
+                .SetVisibleIf(eyeWashFlushed, optionText[0]);
             
             inspectionForm.CreateField<InfoSection>(null, null)
                .AppendContent("h4", "Other", lang);
