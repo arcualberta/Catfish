@@ -3,8 +3,6 @@
 
 @{
     var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
-    var backgroundColor = currentSite.FooterContents.BackgroundColor.Value;
-    var textColor = currentSite.FooterContents.TextColor.Value;
 }
 
 <footer class="border-top footer text-muted">
@@ -12,6 +10,8 @@
 
         @if (currentSite != null)
         {
+            var backgroundColor = currentSite.FooterContents.BackgroundColor.Value;
+            var textColor = currentSite.FooterContents.TextColor.Value;
             <div class="row" style="background-color: @backgroundColor; color: @textColor;">
 
                 <div class="col-6 footer-arc-text">

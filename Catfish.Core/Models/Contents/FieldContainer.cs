@@ -262,5 +262,21 @@ namespace Catfish.Core.Models.Contents
 
             return valField == null ? null : valField.GetValues(separator, lang);
         }
+
+        public List<BaseField> GetValueFields()
+        {
+            return Fields.Where(field => typeof(IValueField).IsAssignableFrom(field.GetType())).ToList();
+        }
+
+        public List<string> GetConcatenatedFieldValues(IList<Guid> fieldIds, string separator)
+        {
+            List<string> result = new List<string>();
+            foreach(var id in fieldIds)
+            {
+                var dataField = Fields.Where(f => f.Id == id).FirstOrDefault() as IValueField;
+                result.Add(dataField == null ? "" : (dataField as IValueField).GetValues(" | ", null));
+            }
+            return result;
+        }
     }
 }

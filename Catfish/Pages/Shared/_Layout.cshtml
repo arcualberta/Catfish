@@ -46,6 +46,14 @@
     <script src="~/assets/js/_public-facing/scripts/submission-form-functions.js"></script>
     <script src="~/assets/js/_public-facing/scripts/item-list-functions.js"></script>
 
+    @{
+        //Inserting custom CSS files
+        string[] customStyles = _catfishAppConfig.GetValue("SiteConfig:PublicCss", new string[0]);
+        foreach (var file in customStyles)
+        {
+            <link href="@file" rel="stylesheet" />
+        }
+    }
 
     <!-- Google Login  -->
     <script src="https://apis.google.com/js/platform.js" async defer></script>

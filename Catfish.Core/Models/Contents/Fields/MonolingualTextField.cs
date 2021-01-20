@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public class MonolingualTextField : BaseField
+    public class MonolingualTextField : BaseField, IValueField
     {
         public XmlModelList<Text> Values { get; protected set; }
 
@@ -74,6 +75,16 @@ namespace Catfish.Core.Models.Contents.Fields
                 if (Values.Find(srcVal.Id) == null)
                     Values.Add(new Text(new XElement(srcVal.Data)));
             }
+        }
+
+        public IEnumerable<Text> GetValues(string lang = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual string GetValues(string separator, string lang = null)
+        {
+            return string.Join(separator, Values.Select(txt => txt.Value));
         }
     }
 }

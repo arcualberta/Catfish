@@ -1231,7 +1231,7 @@ namespace Catfish.UnitTests
         public void CovidSafetyInspectionTest()
         {
             string lang = "en";
-            string templateName = "Weekly Inspection Template";
+            string templateName = "COVID-19 Inspection Template";
 
             IWorkflowService ws = _testHelper.WorkflowService;
             AppDbContext db = _testHelper.Db;
@@ -1280,65 +1280,84 @@ namespace Catfish.UnitTests
             inspectorSubmissionNotification.SetBody("TBD");
 
             //Defininig the inspection form
-            DataItem inspectionForm = template.GetDataItem("Weekly Inspection Form", true, lang);
+            DataItem inspectionForm = template.GetDataItem("COVID-19 Inspection Form", true, lang);
             inspectionForm.IsRoot = true;
             inspectionForm.SetDescription("This template is designed for a weekly inspection of public health measures specific to COVID-19 and other return to campus requirements.", lang);
 
-            inspectionForm.CreateField<DateField>("Inspection Date:", lang, true)
-                .IncludeTime = false;
+            inspectionForm.CreateField<DateField>("Inspection Date", lang, true)
+                .IncludeTime =  false;
             
-            string[] optionBuilding = new string[] { "Convocation Hall", "Tory Building", "Humanities", "FAB" };
-            inspectionForm.CreateField<SelectField>("Building:", lang, optionBuilding);
-            inspectionForm.CreateField<TextField>("Inspected By:", lang, true, true);
-            inspectionForm.CreateField<TextField>("Room/Area:", lang, true, true);
+            string[] optionBuilding = new string[] { "", "Arts and Convocation Hall", "Assiniboia Hall", "Fine Arts Building", "HM Tory Building", "HUB", "Humanities Centre", "Industrial Design Studio", "North Power Plant", "South Academic Building", "Timms Centre for the Arts", "Varsity Trailer" };
+            inspectionForm.CreateField<SelectField>("Building", lang, optionBuilding, true);
+            inspectionForm.CreateField<TextField>("Inspected By", lang, true, true);
+            inspectionForm.CreateField<TextField>("Room/Area", lang, true, true);
 
 
             //inspectionForm.CreateField<CheckboxField>("Room/Area Check:", lang, optionBuilding);
 
-            inspectionForm.CreateField<IntegerField>("Number of People in the work area:", lang, true);
+            inspectionForm.CreateField<IntegerField>("Number of People in the work area", lang, true);
 
             inspectionForm.CreateField<InfoSection>(null, null)
-                .AppendContent("h3", "Physical Distancing", lang);
+                .AppendContent("h4", "Physical Distancing", lang);
 
             string[] optionText = new string[] { "Yes", "No", "N/A" };
-            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText);
-            inspectionForm.CreateField <RadioField> ("Where physical distancing is not possible, are occupants wearing face masks?", lang, optionText);
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
-            inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
-
-            inspectionForm.CreateField<InfoSection>("Personal Hygiene", lang);  
-            inspectionForm.CreateField<RadioField>("Is a hand washing sink or hand sanitizer available?", lang, optionText);
-            inspectionForm.CreateField<RadioField>("Is the sink clean and free of contamination?", lang, optionText);
-            inspectionForm.CreateField<RadioField>("Is there an adequate supply of soap? ", lang, optionText);
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
-            inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
-
-            inspectionForm.CreateField<InfoSection>("Housekeeping", lang);
-            inspectionForm.CreateField<RadioField>("Is general housekeeping and cleanliness being maintained?", lang, optionText);
-            inspectionForm.CreateField<RadioField>("Are surfaces being disinfected on a regular basis?", lang, optionText);
-            inspectionForm.CreateField<RadioField>("Are there adequate cleaning supplies for the next 2 weeks?", lang, optionText);
-            inspectionForm.CreateField<RadioField>("Are walkways clear of trip hazards?", lang, optionText);
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
-            inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
-
-            inspectionForm.CreateField<InfoSection>("Training", lang);
-            inspectionForm.CreateField<RadioField>("Have all employees taken the COVID-19 Return to Campus training?", lang, optionText);
-            inspectionForm.CreateField<RadioField>("Have all employees been trained in your return to campus plan?", lang, optionText);
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
-            inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
-
-            inspectionForm.CreateField<InfoSection>("Other", lang);
-            var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText);
+            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText, true );
+            inspectionForm.CreateField<RadioField>("Where physical distancing is not possible, are occupants wearing face masks?", lang, optionText, true);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
-                .AppendContent("h5", "Eyewash Station Checklist", lang);
-//                .SetVisibleIf(eyeWashFlushed, optionText[0]);
+                .AppendContent("h4", "Personal Hygiene", lang);
+            inspectionForm.CreateField<RadioField>("Is a hand washing sink or hand sanitizer available?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Is the sink clean and free of contamination?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Is there an adequate supply of soap? ", lang, optionText, true);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
-            inspectionForm.CreateField<RadioField>("Have all sinks been flushed for 3 minutes?", lang, optionText);
-            inspectionForm.CreateField<RadioField>("Is all appropriate PPE being worn?", lang, optionText);
-           
-            inspectionForm.CreateField<TextArea>("Notes/Action", lang, true);
-            inspectionForm.CreateField<TextField>("Assigned to:", lang, true);
+            inspectionForm.CreateField<InfoSection>(null, null)
+               .AppendContent("h4", "Housekeeping", lang);
+            inspectionForm.CreateField<RadioField>("Is general housekeeping and cleanliness being maintained?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Are surfaces being disinfected on a regular basis?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Are there adequate cleaning supplies for the next 2 weeks?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Are walkways clear of trip hazards?", lang, optionText, true);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            inspectionForm.CreateField<TextField>("Assigned to", lang, false);
+
+            inspectionForm.CreateField<InfoSection>(null, null)
+               .AppendContent("h4", "Training", lang);
+            inspectionForm.CreateField<RadioField>("Have all employees taken the COVID-19 Return to Campus training?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Have all employees been trained in your return to campus plan?", lang, optionText, true);
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            inspectionForm.CreateField<TextField>("Assigned to", lang, false);
+
+            inspectionForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h4", "Eyewash Stations", lang)
+                .AppendContent("div",
+                    @"
+<b>Instructions</b>
+<ol>
+    <li><em>Ensure the eyewash station is readily accessible. Move all obstructions away from the station.</em></li>
+    <li><em>Most stations will be installed above a sink/drain. If there is no sink/drain, obtain a bucket/pan to capture the water from the test, or funnel it into the sink.</em></li>
+    <li><em>Activate the station for a minimum of 3-minutes.</em></li>
+    <li><em>The protective cap(s) should come off automatically and the water temperature should stabilize. A 3-minute flush allows for the removal of any build-up in the system.</em></li>
+    <li><em>After 3-minutes, deactivate the unit, clean-up any spilled water, and initial the test below.</em></li>
+</ol>
+<p>If there are any deficiencies found in the weekly test, contact the maintenance desk at 780-492-4833.</p>",
+                    lang,
+                    "alert alert-info");
+
+            var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText, true);
+            inspectionForm.CreateField<TextArea>("Eyewash station info", lang, false)
+                .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang)
+                .SetVisibleIf(eyeWashFlushed, optionText[0]);
+            
+            inspectionForm.CreateField<InfoSection>(null, null)
+               .AppendContent("h4", "Other", lang);
+            inspectionForm.CreateField<RadioField>("Have all sinks been flushed for 3 minutes?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Is all appropriate PPE being worn?", lang, optionText, true);
+          
+            inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
+            inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
 
             //Defininig roles

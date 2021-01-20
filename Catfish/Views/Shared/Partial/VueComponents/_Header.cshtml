@@ -12,9 +12,10 @@
 
 @{
     var currentSite = await WebApp.Site.GetContentAsync<CatfishWebsite>();
-    var backgroundColor = currentSite.HeaderContents.BackgroundColor.Value;
+    var backgroundColor = currentSite == null ? "white" : currentSite.HeaderContents.BackgroundColor.Value;
     //var textColor = currentSite.HeaderContents.TextColor.Value;
-    var removeWebsiteTitle = currentSite.HeaderContents.RemoveWebsiteTitle.Value;
+    var removeWebsiteTitle = currentSite == null ? false : currentSite.HeaderContents.RemoveWebsiteTitle.Value;
+    var removeSubMenu = currentSite == null ? false : currentSite.HeaderContents.RemoveSubMenu.Value;
 
     var site = await _piranhaApi.Sites.GetByInternalIdAsync("Default");//"Default" is InternalId of the site
     var logoUrl = _catfishAppConfig.GetLogoUrl();
@@ -47,7 +48,9 @@
             }
 
                     <div>
-                        @Html.Raw(currentSite.HeaderContents.Text)
+                        @if(currentSite != null){ 
+                            @Html.Raw(currentSite.HeaderContents.Text)
+                        }
                     </div>
                 </div>
                 @if (searchPanelLocation == ICatfishAppConfiguration.ePanelLocation.Header)
@@ -83,13 +86,16 @@
                 }
                 </div> @* row*@
 
-                @* Bread crumb *@
+                @* Bread crumb - controlled in appsettings, but gave the user the ability to control it as well *@
                 @if (_catfishAppConfig.GetEnabledBreadcrumb())
-            {
+                {
+                    if (!removeSubMenu) 
+                    {
                 <div class="breadcrumb-container col-sm">
                     <ul class="breadcrumb"></ul>
                 </div>
-            }
+                    }
+                }
             </div> @*container*@
         </header>
     </div>
