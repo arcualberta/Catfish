@@ -17,7 +17,20 @@
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig;
 
 @{
-    _appService.RegisterScript("/assets/js/_public-facing/scripts/submission-form-functions.js");
+    bool useVueForms = _catfishAppConfig.GetValue("SiteConfig:UseVueForms", false);
+
+    if (useVueForms)
+    {
+        //TODO: register appropriate javascript files to be used with VueJS based forms.
+        _appService.RegisterScript("/assets/js/_public-facing/scripts/submission-form-functions.js");
+    }
+    else
+    {
+        //JQuery based javascript form need by CSHTML based standard implementation of HTML forms.
+        _appService.RegisterScript("/assets/js/_public-facing/scripts/submission-form-functions.js");
+    }
+
+
 
     string suffix = Guid.NewGuid().ToString();
     string formPostUrl = "/api/items";
@@ -91,7 +104,7 @@
                 }
 
                 @*Render the editor for template for the root-data item of the template*@
-                @if (_catfishAppConfig.GetValue("SiteConfig:UseVueForms", false))
+                @if (useVueForms)
                 {
                     @Html.EditorFor(model => Item, "VueDataItem")
                 }
@@ -110,7 +123,7 @@
                             foreach (var popup in postAction.PopUps)
                             {
                                 <input id="@postAction.ButtonLabel" class="btn btn-success launch-modal" name="@postAction.ButtonLabel" type="button" value="@postAction.ButtonLabel" data-toggle="modal" data-target="#submissionModal" />
-                                <div id="submissionModal" class="modal fade" role="dialog" >
+                                <div id="submissionModal" class="modal fade" role="dialog">
 
                                     <div>
                                         <div class="modal-dialog">
