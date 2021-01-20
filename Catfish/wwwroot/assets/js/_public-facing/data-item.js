@@ -44,7 +44,9 @@ Vue.component('data-item', {
                 console.log(err);
             }
         },
-        optionchanged: function(event) {
+        optionchanged: function (event) {
+            console.log("received change?", this.model.Fields);
+            //console.log("option received:", event); //event is the one you care about, it is the recorded Id sent
             this.model.Fields.forEach(field => {
                 var val = event;
             })
@@ -54,6 +56,7 @@ Vue.component('data-item', {
     computed: {
         visibleFields: function () {
             let visible = this.model.Fields.filter(field => this.visibleIf(field));
+            console.log("visible computed!! here you go", visible);
             return visible;
         }
     },
@@ -75,8 +78,8 @@ Vue.component('data-item', {
                 <div :id=field.Id class="field-value" :class="fieldValueClass(field)" >
                     <component 
                         :is="field.VueComponent" 
-                        v-bind:model=field 
-                        v-bind:fieldNamePrefix="fieldNameFor(index)" 
+                        :model="field" 
+                        :fieldNamePrefix="fieldNameFor(index)" 
                         @option-changed="optionchanged($event)"/>
                 </div>
             </div>
@@ -88,6 +91,11 @@ Vue.component('Catfish.Core.Models.Contents.Fields.RadioField', {
     props: ["model", "fieldNamePrefix"],
     emits: ['option-changed'],
 
+    data: function () {
+        return {
+            
+        }
+    },
     methods: {
         fieldNameFor(prefix, index, childPropertyName) {
             let name = prefix;
@@ -116,6 +124,18 @@ Vue.component('Catfish.Core.Models.Contents.Fields.RadioField', {
             //    });
             //}
 
+        },
+
+        mounted() {
+            //radio shouldnt have more than 1, but this may need to be changed to match expectations of back end stuff
+            //this.model.Options.SelectedOptionGuids = "";
+            this.$set(this.model, 'SelectedOptionGuids', "");
+        },
+
+        testFunction(radioId) {
+            console.log("click occurred", radioId, this.model);
+            
+            this.model.Options = radioId;
         }
     },
 
@@ -124,7 +144,7 @@ Vue.component('Catfish.Core.Models.Contents.Fields.RadioField', {
             <span v-for="(opt, index) in this.model.Options" >
                 <input type="hidden" :value=opt.Id        :name="fieldNameFor(fieldNamePrefix, index, 'Id')" />
                 <input type="hidden" :value=opt.ModelType :name="fieldNameFor(fieldNamePrefix, index, 'ModelType')" />
-                <input v-on:blur="onBlur" type="radio"  :value=opt.Id        :name="fieldNameFor(fieldNamePrefix, null, null)" />
+                <input v-on:blur="onBlur" type="radio" @change="testFunction(opt.Id)" :value=opt.Id :name="fieldNameFor(fieldNamePrefix, null, null)" />
                 <span class='radio-option-label'>{{opt.OptionText.ConcatenatedContent}}</span>
             </span>
         </div>`

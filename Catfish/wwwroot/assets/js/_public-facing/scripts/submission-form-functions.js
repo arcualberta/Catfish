@@ -24,7 +24,6 @@ function submitWorkflowForm(suffix, successMessage) {
     });
 
     $("#submissionForm_" + suffix).submit(function (event) {
-
         /* stop form from submitting normally */
         event.preventDefault();
 
