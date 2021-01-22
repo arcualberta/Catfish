@@ -299,6 +299,19 @@ namespace Catfish.Services
                 return false;
             }
         }
-        
+
+        public Item StatusChange(Guid entityId, Guid currentStatusId, Guid nextStatusId, string action)
+        {
+            Item item = _db.Items.Where(i => i.Id == entityId).FirstOrDefault();
+            item.StatusId = nextStatusId;
+            item.Updated = DateTime.Now;
+            User user = _workflowService.GetLoggedUser();
+            item.AddAuditEntry(user.Id,
+                currentStatusId,
+                nextStatusId,
+                action);
+            return item;
+        }
+
     }
 }
