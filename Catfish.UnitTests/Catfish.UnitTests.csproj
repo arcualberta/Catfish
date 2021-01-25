@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="WorkflowTestsMelania.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="appsettings.test.example.json" />
   </ItemGroup>
 

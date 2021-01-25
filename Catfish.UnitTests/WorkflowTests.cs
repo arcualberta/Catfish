@@ -1825,7 +1825,8 @@ namespace Catfish.UnitTests
             //====================================================================== EQUIPMENT AND MATERIAL
             sasForm.CreateField<InfoSection>(null, null)
               .AppendContent("h3", "Equipment and Materials", lang)
-              .AppendContent("<div>", @"<i>Failure to provide a written estimate will result in automatic disqualification of this part of the application.</i>", lang);
+              .AppendContent("div", @"<i>Failure to provide a written estimate will result in automatic disqualification of this part of the application.</i>", lang);
+
             sasForm.CreateField<TextArea>("Equipment and Material Justification", lang).SetDescription("Provide a description of the materials and equipment you plan to purchase and outline why they are essential to your research project at this time. Maximum 250 words.", lang);
 
             sasForm.CreateField<InfoSection>(null, null)
@@ -1839,7 +1840,7 @@ namespace Catfish.UnitTests
             // =============================================  TEACHING RELEASE
             sasForm.CreateField<InfoSection>(null, null)
              .AppendContent("h3", "Teaching Release", lang)
-             .AppendContent("<div>", @"<i>Failure to provide a written estimate will result in automatic disqualification of this part of the application.</i>", lang);
+             .AppendContent("div", @"<i>Failure to provide a written estimate will result in automatic disqualification of this part of the application.</i>", lang);
 
             //=============================================================================             Defininig roles
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
@@ -1919,7 +1920,139 @@ namespace Catfish.UnitTests
             pBudgetForm.CreateField<DecimalField>("Estimate Cost", lang, true);
             return pBudgetForm;
         }
+        [Test]
+        public void TestFileUpload()
+        {
+            string lang = "en";
+            string templateName = "SAS Application Winter 2021";
 
+            IWorkflowService ws = _testHelper.WorkflowService;
+            AppDbContext db = _testHelper.Db;
+            IAuthorizationService auth = _testHelper.AuthorizationService;
+
+
+            ItemTemplate template = db.ItemTemplates
+                .Where(et => et.TemplateName == templateName)
+                .FirstOrDefault();
+
+            if (template == null)
+            {
+                template = new ItemTemplate();
+                db.ItemTemplates.Add(template);
+            }
+            else
+            {
+                ItemTemplate t = new ItemTemplate();
+                t.Id = template.Id;
+                template.Data = t.Data;
+                template.Initialize(false);
+            }
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
+
+            ws.SetModel(template);
+
+            //Get the Workflow object using the workflow service
+            Workflow workflow = ws.GetWorkflow(true);
+
+            //Defininig states
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
+
+
+            //Defining email templates
+            EmailTemplate adminNotification = ws.GetEmailTemplate("Admin Notification", true);
+            adminNotification.SetDescription("This metadata set defines the email template to be sent to the admin when an inspector does not submit an inspection report timely.", lang);
+            adminNotification.SetSubject("Safety Inspection Submission");
+            adminNotification.SetBody("TBD");
+
+            EmailTemplate inspectorSubmissionNotification = ws.GetEmailTemplate("Inspector Notification", true);
+            inspectorSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to an inspector when an inspection report is not submitted timely.", lang);
+            inspectorSubmissionNotification.SetSubject("Safety Inspection Reminder");
+            inspectorSubmissionNotification.SetBody("TBD");
+
+            //=============================================================================== Defininig SAS form
+            DataItem sasForm = template.GetDataItem("SAS Application Form", true, lang);
+            sasForm.IsRoot = true;
+            
+            sasForm.SetDescription("This template is designed for SAS Application Grant", lang);
+
+            // ====================================================== APLICANT INFORMATION
+            sasForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h1", "Applicant Information", lang);
+            sasForm.CreateField<InfoSection>(null, null)
+               .AppendContent("div", "The Adjudication committee is a multi-disciplinary committee. Please write for someone who does not understand your work and/or field.<br/>Be clear and concise in your explanations, and make sure your justifications are detailed.", lang);
+
+            sasForm.CreateField<TextField>("Applicant Name:", lang, true);
+            sasForm.CreateField<TextField>("Email Address:", lang, true)
+                .SetDescription("Please use your UAlberta CCID email address.", lang);
+            sasForm.CreateField<AttachmentField>("Supported Documentation", lang).SetDescription(@"Please attach the required travel and conference supporting documentation here as <span style='color: Red;'>a <b>single PDF document</b>. [Be sure to review the section of the Policies and Procedures on required supporting documentation]</span>", lang);
+           
+            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
+            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
+            //WorkflowRole chairRole = workflow.AddRole(auth.GetRole("Chair", true));
+
+            // Submitting an inspection form
+            //Only safey inspectors can submit this form
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+            startSubmissionAction.Access = GetAction.eAccess.Public;
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedRole(inspectorRole.Id);
+
+            //Listing inspection forms.
+            //Inspectors can list their own submissions.
+            //Admins can list all submissions.
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
+
+            //Post action for submitting the form
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+
+            //Defining the pop-up for the above submitPostAction action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
+            submitActionPopUp.AddButtons("Yes, submit", "true");
+            submitActionPopUp.AddButtons("Cancel", "false");
+
+            // Edit submission related workflow items
+            //Defining actions
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+
+            //Submissions can only be edited by admins
+            editSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+
+
+            // Delete submission related workflow items
+            //Defining actions. Only admin can delete a submission
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
+            deleteSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.", "");
+            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+
+            db.SaveChanges();
+
+            template.Data.Save("..\\..\\..\\..\\Examples\\TestFileUpload_generared.xml");
+
+        }
 
         [Test]
         public void TestEntityTemplateLoad()

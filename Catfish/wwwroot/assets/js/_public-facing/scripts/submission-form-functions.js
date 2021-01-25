@@ -34,10 +34,17 @@ function submitWorkflowForm(suffix, successMessage) {
         var values = {};
         var form = $('#submissionForm_' + suffix);
 
+       
         //Handling text areas and input elements EXCLUDING checkboxes, radio buttons, and drop-down (select) menus
-        $.each($('input, textarea', form).not('input[type=checkbox], input[type=radio], select').serializeArray(), function (i, field) {
+        $.each($('input, textarea', form).not('input[type=checkbox], input[type=radio], select').serializeArray(), function (i, field) {     
             name = field.name.replace(prefix, "");
             values[name] = field.value;
+
+            //get the uploaded file
+            if (field.Id != undefined) {
+                if ($("#" + field.id)[0].files != null)
+                    values[name] = ($("#" + field.id)[0].files[0]).name;
+            }
         });
 
         //Handling checkbox sets
@@ -52,10 +59,30 @@ function submitWorkflowForm(suffix, successMessage) {
             values[name] = [field.value];
         });
 
+        //Handling file upload == not get in here!!!
+        $.each($('input[type=file]', form).serializeArray(), function (i, field) {
+            alert("input type file");
+            name = field.name.replace(prefix, "");
+            values[name] = field.value;
+        });
+
 
 
         values["actionButton"] = buttonName;
         values["status"] = status;
+
+        //get the attachmentFiles -- MR Jan 23 2021 attemp to attach file upload
+        var Files = new FormData();
+        $.each($("input[type=file]"), function (i, field) {
+            if ($("#" + field.id)[0].files != null) {
+                let file = $("#" + field.id)[0].files[0];
+                Files.append("Files", file);
+              
+            }
+        });
+
+        values["files"] = $(Files).serializeArray();
+
 
         /* get the action attribute from the <form action=""> element */
         var $form = $(this),

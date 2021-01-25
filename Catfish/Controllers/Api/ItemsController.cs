@@ -8,6 +8,7 @@ using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -127,7 +128,7 @@ namespace Catfish.Controllers.Api
         // POST api/<ItemController>
         [Route("SubmitForm")]
         [HttpPost]
-        public ApiResult SubmitForm([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] string function, [FromForm] string group, [FromForm] string status)
+        public ApiResult SubmitForm([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] string function, [FromForm] string group, [FromForm] string status, IFormFile[] files)
         {
             ApiResult result = new ApiResult();
             try

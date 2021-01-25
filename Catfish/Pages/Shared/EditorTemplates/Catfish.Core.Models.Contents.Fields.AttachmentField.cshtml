@@ -1,0 +1,15 @@
+﻿@model Catfish.Core.Models.Contents.Fields.AttachmentField
+@{
+    ViewBag.Title = "Attachment Field";
+}
+
+@Html.HiddenFor(model => model.ModelType)
+@Html.HiddenFor(model => model.Id)
+
+
+@Html.LabelFor(m => m.AttachmentFile)
+
+@*@Html.EditorFor(m => m.AttachmentFile)   id="attachmentFile_@Model.Id" *@
+<input type="file" id="attachmentFile_@Model.Id" name="files" multiple />
+
+@*<input asp-for="@Model.AttachmentFile" />*@
