@@ -33,7 +33,7 @@
 
 
     string suffix = Guid.NewGuid().ToString();
-    string formPostUrl = "/api/items";
+    string formPostUrl = "/api/items/SubmitForm";
     var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
     var collectionId = Guid.Parse(Model.SelectedCollection);
     string function = Model.WorkflowFunction;

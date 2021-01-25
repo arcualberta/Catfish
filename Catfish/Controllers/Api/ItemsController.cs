@@ -123,10 +123,11 @@ namespace Catfish.Controllers.Api
             return "";
         }
 
-
+     
         // POST api/<ItemController>
+        [Route("SubmitForm")]
         [HttpPost]
-        public ApiResult Post([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton,  [FromForm] string function,  [FromForm] string group, [FromForm] string status)
+        public ApiResult SubmitForm([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] string function, [FromForm] string group, [FromForm] string status)
         {
             ApiResult result = new ApiResult();
             try
@@ -137,10 +138,10 @@ namespace Catfish.Controllers.Api
 
                 bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, actionButton, function, group);
                 result.Success = true;
-                result.Message = "Application "+ actionButton+" successfully.";
+                result.Message = "Application " + actionButton + " successfully.";
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 result.Success = false;
                 result.Message = "Submission failed.";
@@ -148,6 +149,18 @@ namespace Catfish.Controllers.Api
 
             return result;
         }
+
+        [Route("DetailsUpdate")]
+        [HttpPost]
+        public ApiResult DetailsUpdate([FromForm] Guid entityId, [FromForm] Guid currentStatus, [FromForm] Guid status, [FromForm] string buttonName)
+        {
+            ApiResult result = new ApiResult();
+            Item item = _submissionService.StatusChange(entityId, currentStatus, status, buttonName);
+            _appDb.Items.Update(item);
+            _appDb.SaveChanges();
+            return result;
+        }
+
 
         // PUT api/<ItemController>/5
         [HttpPut("{id}")]
