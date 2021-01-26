@@ -206,7 +206,7 @@ Vue.component('data-item', {
             console.log("received change", event, this.model);
             //if any others for this id are Selected = true, need to set them to false bc this is a radio button
             this.model.Fields[event.indexNum].Options.forEach((option) => {
-                if (option.Id != event.radioGuid) {
+                if (option.Id != event.optionGuid) {
                     option.Selected = false;
                 } else {
                     option.Selected = true;
@@ -261,7 +261,6 @@ Vue.component('Catfish.Core.Models.Contents.Fields.RadioField', {
 
     data: function () {
         return {
-            radioButtonPicked: null
         }
     },
     methods: {
@@ -279,19 +278,8 @@ Vue.component('Catfish.Core.Models.Contents.Fields.RadioField', {
         onOptionPicked: function (e) {
             this.$emit('option-changed', {
                 indexNum: this.fieldIndex, //need to check if, if it skips a field due to invisibility, does it use the right id?
-                radioGuid: e.target.value //guid of option
+                optionGuid: e.target.value //guid of option
             });
-            //console.log("optiontext", this.options);
-            //this.model.cssVal.value = e.target.value;
-
-            //var content = this.model.cssVal.value;
-            //if (content.length > 0) {
-            //    this.$emit('update-content', {
-            //        uid: this.uid,
-            //        cssVal: content
-            //    });
-            //}
-
         },
 
     },
@@ -315,7 +303,7 @@ Vue.component('Catfish.Core.Models.Contents.Fields.RadioField', {
 
 
 Vue.component('Catfish.Core.Models.Contents.Fields.CheckboxField', {
-    props: ["model", "fieldNamePrefix"],
+    props: ["model", "fieldNamePrefix", "fieldIndex"],
 
     methods: {
         fieldNameFor(prefix, index, childPropertyName) {
@@ -328,9 +316,15 @@ Vue.component('Catfish.Core.Models.Contents.Fields.CheckboxField', {
                 name = name + "." + childPropertyName;
             }
             return name;
-        }
+        },
+        onOptionPicked: function (e) {
+            this.$emit('option-changed', {
+                indexNum: this.fieldIndex, //need to check if, if it skips a field due to invisibility, does it use the right id?
+                optionGuid: e.target.value //guids of option
+            });
+        },
     },
-
+    //TODO come back to work on this one when you add one to the test form
     template: `
         <div>
             <span v-for="(opt, index) in this.model.Options" >
@@ -343,7 +337,7 @@ Vue.component('Catfish.Core.Models.Contents.Fields.CheckboxField', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.DateField', {
-    props: ["model", "fieldNamePrefix"],
+    props: ["model", "fieldNamePrefix", "fieldIndex"],
 
     data: function () {
         return {
@@ -377,7 +371,7 @@ Vue.component('Catfish.Core.Models.Contents.Fields.DateField', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.DecimalField', {
-    props: ["model", "fieldNamePrefix"],
+    props: ["model", "fieldNamePrefix", "fieldIndex"],
 
     data: function () {
         return {
@@ -455,7 +449,7 @@ Vue.component('Catfish.Core.Models.Contents.Fields.IntegerField', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.MonolingualTextField', {
-    props: ["model", "fieldNamePrefix"],
+    props: ["model", "fieldNamePrefix", "fieldIndex"],
 
     data: function () {
         return {
@@ -488,7 +482,7 @@ Vue.component('Catfish.Core.Models.Contents.Fields.MonolingualTextField', {
 
 
 Vue.component('Catfish.Core.Models.Contents.Fields.SelectField', {
-    props: ["model", "fieldNamePrefix"],
+    props: ["model", "fieldNamePrefix", "fieldIndex"],
 
     methods: {
         fieldNameFor(prefix, index, childPropertyName) {
@@ -501,13 +495,19 @@ Vue.component('Catfish.Core.Models.Contents.Fields.SelectField', {
                 name = name + "." + childPropertyName;
             }
             return name;
-        }
+        },
+        onOptionPicked: function (e) {
+            this.$emit('option-changed', {
+                indexNum: this.fieldIndex, //need to check if, if it skips a field due to invisibility, does it use the right id?
+                optionGuid: e.target.value //guid of option
+            });
+        },
     },
 
     template: `
         <div>
-            <select :name=fieldNamePrefix :id=model.Id >
-                <option v-for="(opt, index) in this.model.Options" 
+            <select :name=fieldNamePrefix :id=model.Id @change="onOptionPicked">
+                <option v-for="(opt, index) in this.model.Options"
                     :value=opt.Id>
                         {{opt.OptionText.ConcatenatedContent}}
                 </option>
@@ -516,7 +516,7 @@ Vue.component('Catfish.Core.Models.Contents.Fields.SelectField', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.TextArea', {
-    props: ["model", "fieldNamePrefix"],
+    props: ["model", "fieldNamePrefix", "fieldIndex"],
 
     methods: {
         fieldNameFor(prefix, valIndex, textIndex, childPropertyName) {
@@ -551,7 +551,7 @@ Vue.component('Catfish.Core.Models.Contents.Fields.TextArea', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.TextField', {
-    props: ["model", "fieldNamePrefix"],
+    props: ["model", "fieldNamePrefix", "fieldIndex"],
 
     methods: {
         fieldNameFor(prefix, valIndex, textIndex, childPropertyName) {
