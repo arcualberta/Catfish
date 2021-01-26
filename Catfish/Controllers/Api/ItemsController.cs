@@ -158,6 +158,8 @@ namespace Catfish.Controllers.Api
             Item item = _submissionService.StatusChange(entityId, currentStatus, status, buttonName);
             _appDb.Items.Update(item);
             _appDb.SaveChanges();
+            result.Success = true;
+            result.Message = "Application " + buttonName + " successfully.";
             return result;
         }
 
