@@ -1494,6 +1494,9 @@ namespace Catfish.UnitTests
             inspectionForm.CreateField<TextField>("Inspected By", lang, true, true);
             inspectionForm.CreateField<IntegerField>("Number of People in the work area", lang, true);
 
+            //Jill added this one
+            inspectionForm.CreateField<CheckboxField>("Room/Area Check:", lang, optionBuilding);
+
             string[] optionText = new string[] { "Yes", "No", "N/A" };
             inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText, true);
 

@@ -5,162 +5,6 @@ Vue.component('data-item', {
     data: function () {
         return {
             visibleFields: []
-            //testObject:[
-            //    {
-            //    AllowMultipleValues: false,
-            //    Created: "0001-01-01T00:00:00",
-            //    CssClass: null,
-            //    Description: {
-            //            ConcatenatedContent: "",
-            //            ConcatenatedRichText: "",
-            //            Created: "0001-01-01T00:00:00",
-            //            CssClass: null,
-            //            Id: "9109991d-1949-4093-80bf-b9a2e8f4d231",
-            //            ModelType: "Catfish.Core.Models.Contents.MultilingualDescription, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-            //            Updated: null,
-            //            Values: []
-            //        },
-            //    DisplayLabel: "Choices",
-            //    FieldCssClass: "",
-            //    FieldLabelCssClass: "col-md-4",
-            //    FieldValueCssClass: "col-md-8",
-            //    Id: "f2e43c96-45be-4b54-944a-fec020e1ad79",
-            //    ModelType: "Catfish.Core.Models.Contents.Fields.RadioField, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-            //    Name: {
-            //        ConcatenatedContent: "Is there 2m (6.5 ft) of distance between all occupants?",
-            //        ConcatenatedRichText: "",
-            //        Created: "0001-01-01T00:00:00",
-            //        CssClass: null,
-            //        Id: "bb864056-161f-44d3-862f-e63e13a9e590",
-            //        ModelType: "Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-            //        Updated: null,
-            //        Values: [
-            //            {
-            //                Created: "0001-01-01T00:00:00",
-            //                CssClass: null,
-            //                Format: "plain",
-            //                Id: "7fcc5d1a-3d7b-4630-85f5-2718f68d2b62",
-            //                Language: "en",
-            //                ModelType: "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-            //                Rank: 0,
-            //                Updated: null,
-            //                Value: "Is there 2m (6.5 ft) of distance between all occupants?"
-            //            }
-            //        ]
-            //    },
-            //    Options: ["74595a6d-dae8-469b-9934-e1b608049aae", "0e98d938-bfdf-46e4-8c02-63f0583d205d", "84852f9f-59b2-4b8e-aef7-1c4f44b7b287"],
-            //    Required: true,
-            //    SelectedOptionGuids: null,
-            //    Updated: null,
-            //    VisibleIfOptionFieldId: null,
-            //    VisibleIfOptionIds: [],
-            //    VueComponent: "Catfish.Core.Models.Contents.Fields.RadioField"
-            //    },
-            //],
-            //OptionText: {
-            //    "74595a6d-dae8-469b-9934-e1b608049aae": {
-            //            Created: "0001-01-01T00:00:00",
-            //            CssClass: null,
-            //            ExtendedOption: false,
-            //            //Id: "74595a6d-dae8-469b-9934-e1b608049aae",
-            //            ModelType: "Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-            //            OptionText: {
-            //                ConcatenatedContent: "Yes",
-            //                ConcatenatedRichText: "",
-            //                Created: "0001-01-01T00:00:00",
-            //                CssClass: null,
-            //                Id: "66195f43-b578-4ca4-88da-846e7db7c589",
-            //                ModelType: "Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-            //                Updated: null,
-            //                Values: [
-            //                    {
-            //                        Created: "0001-01-01T00:00:00",
-            //                        CssClass: null,
-            //                        Format: "plain",
-            //                        Id: "4278565e-11ee-417f-9bda-b18682173e4f",
-            //                        Language: "en",
-            //                        ModelType: "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-            //                        Rank: 0,
-            //                        Updated: null,
-            //                        Value: "Yes"
-            //                    }
-            //                ]
-            //            },
-            //            Selected: false,
-            //            Updated: null,
-            //    },
-            //    "0e98d938-bfdf-46e4-8c02-63f0583d205d": {
-            //        Created: "0001-01-01T00:00:00",
-            //        CssClass: null,
-            //        ExtendedOption: false,
-            //        Id: "0e98d938-bfdf-46e4-8c02-63f0583d205d",
-            //        ModelType: "Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-            //        OptionText: {
-            //            ConcatenatedContent: "No",
-            //            ConcatenatedRichText: "",
-            //            Created: "0001-01-01T00:00:00",
-            //            CssClass: null,
-            //            Id: "3727cefe-13d7-401c-8d3e-5a2440632cdb",
-            //            ModelType: "Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-            //            Updated: null,
-            //            Values: [
-            //                {
-            //                    Created: "0001-01-01T00:00:00",
-            //                    CssClass: null,
-            //                    Format: "plain",
-            //                    Id: "4977ba5c-1ca9-4eff-8ea5-7a08410f9ee6",
-            //                    Language: "en",
-            //                    ModelType: "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-            //                    Rank: 0,
-            //                    Updated: null,
-            //                    Value: "No"
-            //                }
-            //            ]
-            //        },
-            //        Selected: false,
-            //        Updated: null
-            //    },
-            //    "84852f9f-59b2-4b8e-aef7-1c4f44b7b287": {
-            //        Created: "0001-01-01T00:00:00",
-            //        CssClass: null,
-            //        ExtendedOption: false,
-            //        Id: "84852f9f-59b2-4b8e-aef7-1c4f44b7b287",
-            //        ModelType: "Catfish.Core.Models.Contents.Fields.Option, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-            //        OptionText: {
-            //            ConcatenatedContent: "N/A",
-            //            ConcatenatedRichText: "",
-            //            Created: "0001-01-01T00:00:00",
-            //            CssClass: null,
-            //            Id: "cce7f780-6497-4777-b979-e6626e97dd4b",
-            //            ModelType: "Catfish.Core.Models.Contents.MultilingualName, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-            //            Updated: null,
-            //            Values: [{
-            //                Created: "0001-01-01T00:00:00",
-            //                CssClass: null,
-            //                Format: "plain",
-            //                Id: "7d1a35dc-8f62-4edf-a146-f36f42ae6b3c",
-            //                Language: "en",
-            //                ModelType: "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
-            //                Rank: 0,
-            //                Updated: null,
-            //                Value: "N/A"
-            //            }]
-            //        },
-            //        Selected: false
-            //    }
-            //},
-            //deadSimpleArray: [0, 1, 2, 3, 4, 5],
-            //deadSimpleObject: [{ "a": "Ahh", "b": "Bee", "c": "Cee", "SelectedOptionGuids": "Not set"}], //, 
-            //theseOptions: 
-            //    {
-            //        0: "Zero",
-            //        1: "One",
-            //        2: "Two",
-            //        3: "Three",
-            //        4: "Four",
-            //        5: "Five"
-            //    }
-            
         }
     },
 
@@ -202,15 +46,22 @@ Vue.component('data-item', {
                 console.log(err);
             }
         },
+        /**
+         * Receives the emit from the child field of the choice the user made.
+         * @param {any} event an array of options the user chose. It is an array for single-input fields too.
+         */
         optionchanged: function (event) {
             console.log("received change", event, this.model);
             //if any others for this id are Selected = true, need to set them to false bc this is a radio button
             this.model.Fields[event.indexNum].Options.forEach((option) => {
-                if (option.Id != event.optionGuid) {
-                    option.Selected = false;
-                } else {
-                    option.Selected = true;
-                }
+                event.optionGuid.forEach((chosenOption) => {
+                    if (option.Id != chosenOption) {
+                        option.Selected = false;
+                    } else {
+                        option.Selected = true;
+                    }
+                });
+                
             });
 
             this.visibleFields = this.findVisibleFields();
@@ -278,7 +129,7 @@ Vue.component('Catfish.Core.Models.Contents.Fields.RadioField', {
         onOptionPicked: function (e) {
             this.$emit('option-changed', {
                 indexNum: this.fieldIndex, //need to check if, if it skips a field due to invisibility, does it use the right id?
-                optionGuid: e.target.value //guid of option
+                optionGuid: [e.target.value] //guid of option
             });
         },
 
@@ -304,7 +155,11 @@ Vue.component('Catfish.Core.Models.Contents.Fields.RadioField', {
 
 Vue.component('Catfish.Core.Models.Contents.Fields.CheckboxField', {
     props: ["model", "fieldNamePrefix", "fieldIndex"],
-
+    data: function () {
+        return {
+            checklist: []
+        }
+    },
     methods: {
         fieldNameFor(prefix, index, childPropertyName) {
             let name = prefix;
@@ -318,20 +173,23 @@ Vue.component('Catfish.Core.Models.Contents.Fields.CheckboxField', {
             return name;
         },
         onOptionPicked: function (e) {
+            console.log('checklist', this.checklist);
             this.$emit('option-changed', {
                 indexNum: this.fieldIndex, //need to check if, if it skips a field due to invisibility, does it use the right id?
-                optionGuid: e.target.value //guids of option
+                optionGuid: this.checklist //guids of option
             });
         },
     },
-    //TODO come back to work on this one when you add one to the test form
+
     template: `
         <div>
             <span v-for="(opt, index) in this.model.Options" >
                 <input type="hidden"    :value=opt.Id          :name="fieldNameFor(fieldNamePrefix, index, 'Id')" />
                 <input type="hidden"    :value=opt.ModelType   :name="fieldNameFor(fieldNamePrefix, index, 'ModelType')" />
-                <input type="checkbox"   value="true"         :name="fieldNameFor(fieldNamePrefix, index, 'Selected')" />
-                <span class='radio-option-label'>{{opt.OptionText.ConcatenatedContent}}</span>
+                <div>
+                    <input type="checkbox"   :value="opt.Id" v-model="checklist" @change="onOptionPicked" :name="fieldNameFor(fieldNamePrefix, index, 'Selected')" />
+                    <span class='radio-option-label'>{{opt.OptionText.ConcatenatedContent}}</span>
+                </div>
             </span>
         </div>`
 })
@@ -499,7 +357,7 @@ Vue.component('Catfish.Core.Models.Contents.Fields.SelectField', {
         onOptionPicked: function (e) {
             this.$emit('option-changed', {
                 indexNum: this.fieldIndex, //need to check if, if it skips a field due to invisibility, does it use the right id?
-                optionGuid: e.target.value //guid of option
+                optionGuid: [e.target.value] //guid of option
             });
         },
     },
