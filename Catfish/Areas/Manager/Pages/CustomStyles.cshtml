@@ -3,7 +3,7 @@
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<div id="entityTypelist">
+<div>
     <div class="top">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -11,15 +11,6 @@
                 <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Custom Styles"]</li>
             </ol>
         </nav>
-
-        <div class="container-fluid">
-            <div class="top-nav">
-                @*@foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.EntityTypeList)
-                    {
-                        <partial name="@action.ActionView" />
-                    }*@
-            </div>
-        </div>
     </div>
 
     <div class="container-fluid">

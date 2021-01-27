@@ -14,3 +14,6 @@ dotnet_diagnostic.CA1062.severity = none
 
 # CS0109: Member does not hide an inherited member; new keyword is not required
 dotnet_diagnostic.CS0109.severity = none
+
+# CA1303: Do not pass literals as localized parameters
+dotnet_diagnostic.CA1303.severity = silent

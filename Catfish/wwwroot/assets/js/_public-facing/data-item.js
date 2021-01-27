@@ -4,6 +4,7 @@ Vue.component('data-item', {
 
     data: function () {
         return {
+            visibleFields: []
         }
     },
 
@@ -23,6 +24,7 @@ Vue.component('data-item', {
             return name;
         },
         visibleIf(field) {
+            console.log("visibility check");
             try {
                 if (field.VisibleIfOptionFieldId && field.VisibleIfOptionIds) {
                     let isVisible = false;
@@ -44,40 +46,60 @@ Vue.component('data-item', {
                 console.log(err);
             }
         },
-        optionchanged: function(event) {
-            this.model.Fields.forEach(field => {
-                var val = event;
-            })
-        }
-    },
+        /**
+         * Receives the emit from the child field of the choice the user made.
+         * @param {any} event an array of options the user chose. It is an array for single-input fields too.
+         */
+        optionchanged: function (event) {
+            console.log("received change", event, this.model);
+            //if any others for this id are Selected = true, need to set them to false bc this is a radio button
+            this.model.Fields[event.indexNum].Options.forEach((option) => {
+                event.optionGuid.forEach((chosenOption) => {
+                    if (option.Id != chosenOption) {
+                        option.Selected = false;
+                    } else {
+                        option.Selected = true;
+                    }
+                });
+                
+            });
 
-    computed: {
-        visibleFields: function () {
-            let visible = this.model.Fields.filter(field => this.visibleIf(field));
+            this.visibleFields = this.findVisibleFields();
+        },
+
+        findVisibleFields() {
+            let visible = this.model.Fields.filter(field => this.visibleIf(field)); //this.model.Fields
+            console.log("visible computed!! here you go", visible);
             return visible;
         }
+
+    },
+
+    mounted() {
+        this.visibleFields = this.findVisibleFields();
+        console.log(this.visibleFields, this.model);
     },
 
     template: `
         <div class="container">
-
             <input type="hidden" name="Id" :value=this.model.Id />
             <input type="hidden" name="EntityId" :value=this.model.EntityId />
             <input type="hidden" name="TemplateId" :value=this.model.TemplateId />
 
-            <div v-for="(field, index) in this.visibleFields" class="row field-row" :class=field.CssClass >
+            <div v-for="(field, index) in visibleFields" class="row field-row" :class=field.CssClass >
                 <input type="hidden" :value=field.Id :name="fieldNameFor(index, 'Id')" />
                 <input type="hidden" :value=field.ModelType :name="fieldNameFor(index, 'ModelType')" />
 
                 <div class="col-md-3 control field-label" v-if="isLabelVisible(field)">
-                    {{field.Name.ConcatenatedContent}}
+                    {{field.Name.ConcatenatedContent}} 
                 </div>
                 <div :id=field.Id class="field-value" :class="fieldValueClass(field)" >
                     <component 
                         :is="field.VueComponent" 
-                        v-bind:model=field 
-                        v-bind:fieldNamePrefix="fieldNameFor(index)" 
-                        @option-changed="optionchanged($event)"/>
+                        :model="field"
+                        :fieldIndex="index"
+                        :fieldNamePrefix="fieldNameFor(index)" 
+                        v-on:option-changed="optionchanged($event)"/>
                 </div>
             </div>
         </div>`
@@ -85,9 +107,13 @@ Vue.component('data-item', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.RadioField', {
-    props: ["model", "fieldNamePrefix"],
+    props: ["model", "fieldNamePrefix", "fieldIndex"],
     emits: ['option-changed'],
 
+    data: function () {
+        return {
+        }
+    },
     methods: {
         fieldNameFor(prefix, index, childPropertyName) {
             let name = prefix;
@@ -100,40 +126,40 @@ Vue.component('Catfish.Core.Models.Contents.Fields.RadioField', {
             }
             return name;
         },
-        onBlur: function (e) {
+        onOptionPicked: function (e) {
             this.$emit('option-changed', {
-                name: e.target.name,
-                id: e.target.value
+                indexNum: this.fieldIndex, //need to check if, if it skips a field due to invisibility, does it use the right id?
+                optionGuid: [e.target.value] //guid of option
             });
+        },
 
-            //this.model.cssVal.value = e.target.value;
-
-            //var content = this.model.cssVal.value;
-            //if (content.length > 0) {
-            //    this.$emit('update-content', {
-            //        uid: this.uid,
-            //        cssVal: content
-            //    });
-            //}
-
-        }
     },
-
+    /*
+     <input type="hidden" :value=opt.Id        :name="fieldNameFor(fieldNamePrefix, index, 'Id')" />
+                <input type="hidden" :value=opt.ModelType :name="fieldNameFor(fieldNamePrefix, index, 'ModelType')" />
+     */
     template: `
         <div>
-            <span v-for="(opt, index) in this.model.Options" >
-                <input type="hidden" :value=opt.Id        :name="fieldNameFor(fieldNamePrefix, index, 'Id')" />
-                <input type="hidden" :value=opt.ModelType :name="fieldNameFor(fieldNamePrefix, index, 'ModelType')" />
-                <input v-on:blur="onBlur" type="radio"  :value=opt.Id        :name="fieldNameFor(fieldNamePrefix, null, null)" />
+            <span v-for="(opt, index) in model.Options" >
+                <input @click="onOptionPicked" type="radio" :value="opt.Id" :name="fieldNameFor(fieldNamePrefix, null, null)" />
                 <span class='radio-option-label'>{{opt.OptionText.ConcatenatedContent}}</span>
             </span>
         </div>`
     //          <input v-on:blur="$emit('options-changed')" type="radio"  :value=opt.Id        :name="fieldNameFor(fieldNamePrefix, null, null)" />
 })
 
-Vue.component('Catfish.Core.Models.Contents.Fields.CheckboxField', {
-    props: ["model", "fieldNamePrefix"],
 
+
+
+
+
+Vue.component('Catfish.Core.Models.Contents.Fields.CheckboxField', {
+    props: ["model", "fieldNamePrefix", "fieldIndex"],
+    data: function () {
+        return {
+            checklist: []
+        }
+    },
     methods: {
         fieldNameFor(prefix, index, childPropertyName) {
             let name = prefix;
@@ -145,7 +171,14 @@ Vue.component('Catfish.Core.Models.Contents.Fields.CheckboxField', {
                 name = name + "." + childPropertyName;
             }
             return name;
-        }
+        },
+        onOptionPicked: function (e) {
+            console.log('checklist', this.checklist);
+            this.$emit('option-changed', {
+                indexNum: this.fieldIndex, //need to check if, if it skips a field due to invisibility, does it use the right id?
+                optionGuid: this.checklist //guids of option
+            });
+        },
     },
 
     template: `
@@ -153,14 +186,16 @@ Vue.component('Catfish.Core.Models.Contents.Fields.CheckboxField', {
             <span v-for="(opt, index) in this.model.Options" >
                 <input type="hidden"    :value=opt.Id          :name="fieldNameFor(fieldNamePrefix, index, 'Id')" />
                 <input type="hidden"    :value=opt.ModelType   :name="fieldNameFor(fieldNamePrefix, index, 'ModelType')" />
-                <input type="checkbox"   value="true"         :name="fieldNameFor(fieldNamePrefix, index, 'Selected')" />
-                <span class='radio-option-label'>{{opt.OptionText.ConcatenatedContent}}</span>
+                <div>
+                    <input type="checkbox"   :value="opt.Id" v-model="checklist" @change="onOptionPicked" :name="fieldNameFor(fieldNamePrefix, index, 'Selected')" />
+                    <span class='radio-option-label'>{{opt.OptionText.ConcatenatedContent}}</span>
+                </div>
             </span>
         </div>`
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.DateField', {
-    props: ["model", "fieldNamePrefix"],
+    props: ["model", "fieldNamePrefix", "fieldIndex"],
 
     data: function () {
         return {
@@ -194,7 +229,7 @@ Vue.component('Catfish.Core.Models.Contents.Fields.DateField', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.DecimalField', {
-    props: ["model", "fieldNamePrefix"],
+    props: ["model", "fieldNamePrefix", "fieldIndex"],
 
     data: function () {
         return {
@@ -272,7 +307,7 @@ Vue.component('Catfish.Core.Models.Contents.Fields.IntegerField', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.MonolingualTextField', {
-    props: ["model", "fieldNamePrefix"],
+    props: ["model", "fieldNamePrefix", "fieldIndex"],
 
     data: function () {
         return {
@@ -305,7 +340,7 @@ Vue.component('Catfish.Core.Models.Contents.Fields.MonolingualTextField', {
 
 
 Vue.component('Catfish.Core.Models.Contents.Fields.SelectField', {
-    props: ["model", "fieldNamePrefix"],
+    props: ["model", "fieldNamePrefix", "fieldIndex"],
 
     methods: {
         fieldNameFor(prefix, index, childPropertyName) {
@@ -318,13 +353,19 @@ Vue.component('Catfish.Core.Models.Contents.Fields.SelectField', {
                 name = name + "." + childPropertyName;
             }
             return name;
-        }
+        },
+        onOptionPicked: function (e) {
+            this.$emit('option-changed', {
+                indexNum: this.fieldIndex, //need to check if, if it skips a field due to invisibility, does it use the right id?
+                optionGuid: [e.target.value] //guid of option
+            });
+        },
     },
 
     template: `
         <div>
-            <select :name=fieldNamePrefix :id=model.Id >
-                <option v-for="(opt, index) in this.model.Options" 
+            <select :name=fieldNamePrefix :id=model.Id @change="onOptionPicked">
+                <option v-for="(opt, index) in this.model.Options"
                     :value=opt.Id>
                         {{opt.OptionText.ConcatenatedContent}}
                 </option>
@@ -333,7 +374,7 @@ Vue.component('Catfish.Core.Models.Contents.Fields.SelectField', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.TextArea', {
-    props: ["model", "fieldNamePrefix"],
+    props: ["model", "fieldNamePrefix", "fieldIndex"],
 
     methods: {
         fieldNameFor(prefix, valIndex, textIndex, childPropertyName) {
@@ -368,7 +409,7 @@ Vue.component('Catfish.Core.Models.Contents.Fields.TextArea', {
 })
 
 Vue.component('Catfish.Core.Models.Contents.Fields.TextField', {
-    props: ["model", "fieldNamePrefix"],
+    props: ["model", "fieldNamePrefix", "fieldIndex"],
 
     methods: {
         fieldNameFor(prefix, valIndex, textIndex, childPropertyName) {

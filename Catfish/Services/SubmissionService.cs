@@ -114,7 +114,7 @@ namespace Catfish.Services
                 var potentialItems = query.OrderByDescending(i => i.Created).ToList();
                 foreach (var item in potentialItems)
                 {
-                    var task = _dotnetAuthorizationService.AuthorizeAsync(user, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read });
+                    var task = _dotnetAuthorizationService.AuthorizeAsync(user, item, new List<IAuthorizationRequirement>() { TemplateOperations.ListInstances });
                     task.Wait();
 
                     if (task.Result.Succeeded)
@@ -299,6 +299,19 @@ namespace Catfish.Services
                 return false;
             }
         }
-        
+
+        public Item StatusChange(Guid entityId, Guid currentStatusId, Guid nextStatusId, string action)
+        {
+            Item item = _db.Items.Where(i => i.Id == entityId).FirstOrDefault();
+            item.StatusId = nextStatusId;
+            item.Updated = DateTime.Now;
+            User user = _workflowService.GetLoggedUser();
+            item.AddAuditEntry(user.Id,
+                currentStatusId,
+                nextStatusId,
+                action);
+            return item;
+        }
+
     }
 }

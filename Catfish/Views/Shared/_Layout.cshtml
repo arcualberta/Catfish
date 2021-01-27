@@ -8,12 +8,12 @@
 @inject Catfish.Services.IAppService _appService;
 
 @{
-    if(ViewBag.Title == null)
+    if (ViewBag.Title == null)
     {
-        ViewBag.Title =Model.Title;
+        ViewBag.Title = Model.Title;
     }
 
-    var pageModel = typeof(StandardPage).IsAssignableFrom(Model.GetType()) ? Model as StandardPage : null;
+    var pageModel = Model == null ? null : typeof(StandardPage).IsAssignableFrom(Model.GetType()) ? Model as StandardPage : null;
     List<string> vueComponentNames = new List<string>();
     List<CssBlock> cssBlocks = new List<CssBlock>();
     List<JavascriptBlock> javascriptBlocks = new List<JavascriptBlock>();
@@ -22,9 +22,9 @@
     {
         vueComponentNames = pageModel.Blocks
             .Where(b => typeof(IVueComponent).IsAssignableFrom(b.GetType())) @*Selecting all blocks of type IVueConponent or its derived type.*@
-            .Select(b => (b as IVueComponent).Component) @*Selecting all those blocks as IVueConponent blocks and getting their names.*@
-            .Distinct()
-            .ToList();
+        .Select(b => (b as IVueComponent).Component) @*Selecting all those blocks as IVueConponent blocks and getting their names.*@
+        .Distinct()
+        .ToList();
 
         cssBlocks = pageModel.Blocks
             .Where(b => typeof(CssBlock).IsAssignableFrom(b.GetType()))
@@ -92,7 +92,7 @@
         }
     </style>
     <script>
-        @foreach(var js in javascriptBlocks)
+        @foreach (var js in javascriptBlocks)
         {
             @Html.Raw(js.JavascriptCode.Value);
         }
@@ -137,7 +137,6 @@
 <body>
     <div id="vueApp">
         <partial name="/Views/Shared/Partial/VueComponents/_Header.cshtml" />
-
         @RenderBody()
 
         @{
@@ -152,6 +151,7 @@
                ? "" : currentSite.FooterContents.Css.Value;
         }
         <partial name="/Views/Shared/Partial/VueComponents/_Footer.cshtml" />
+        
 
     </div>@*End of vueApp div *@
 
