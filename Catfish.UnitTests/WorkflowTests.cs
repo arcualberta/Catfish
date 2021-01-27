@@ -1295,7 +1295,11 @@ namespace Catfish.UnitTests
 
             //inspectionForm.CreateField<CheckboxField>("Room/Area Check:", lang, optionBuilding);
 
-            inspectionForm.CreateField<IntegerField>("Number of People in the work area", lang, true);
+            inspectionForm.CreateField<IntegerField>("Number of Approved People", lang, true)
+                .SetDescription("Refer to the number indicated in your Return to Campus Plan", lang);
+
+            inspectionForm.CreateField<IntegerField>("Number of People in the Work Area", lang, true)
+                .SetDescription("Provide the number of people actually working in the space during the inspection", lang);
 
             inspectionForm.CreateField<InfoSection>(null, null)
                 .AppendContent("h4", "Physical Distancing", lang);

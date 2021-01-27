@@ -10,5 +10,5 @@
 
     @Html.HiddenFor(model => model.ModelType)
     @Html.HiddenFor(model => model.Id)
-    @Html.DropDownListFor(model => model, options)
+    @Html.DropDownListFor(model => model, options, new { required = default(string) })
 }
