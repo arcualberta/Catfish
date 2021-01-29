@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
@@ -224,16 +225,123 @@ namespace Catfish.Core.Models.Contents
             return field;
         }
 
-        public void UpdateFieldValues(FieldContainer dataSrc)
+        public void UpdateFieldValues(FieldContainer dataSrc, string itemId=null)
         {
             foreach(var dst in Fields)
             {
                 var srcField = dataSrc.Fields.Where(f => f.Id == dst.Id).FirstOrDefault();
-                if (srcField != null)
-                    dst.UpdateValues(srcField);
+
+                //MR -- Jan 26 2021 try to get attachment file
+                if (dst.GetType().Name.Contains("AttachmentField"))
+                {
+                    string tempFolder = "wwwroot/uploads/temp";
+                    string[] attachFiles = GetAttachmentFile(srcField.Id.ToString(), tempFolder);
+                    if (attachFiles.Length > 0)
+                    {
+                        //1.create directory for the item in wwwroot/uploads by GUID of the Item
+                        //split them 1st create a subfolder inside the upload folder and names it by GUID of the new item
+                        string subDir = CreateDirectory("wwwroot/uploads/", itemId);
+                        List<string> attchFilesPath = new List<string>();
+                       // string subSubDir = "";
+                        foreach (string af in attachFiles)
+                        {
+                            //2.create another sub folder by GUID of the field
+                            //subSubDir = CreateDirectory(subDir, dst.Id.ToString());//it create one if none existed 
+
+                           //move the file from temp to this folder
+                            MoveFile(af, subDir);
+                           
+                          
+                        }
+                        // if(!string.IsNullOrWhiteSpace((srcField as AttachmentField).FileNames)) == can't cast down scrField is MonolingualTextField -- AttachmentField derived from it
+                        // {
+
+
+                        // }
+                        string[] mfiles = GetAttachmentFile(srcField.Id.ToString(), subDir);
+                        if (mfiles.Length > 0)
+                        {
+                            string relativeTo = Environment.CurrentDirectory;//get base Directory
+                            foreach (string f in mfiles)
+                            {  
+                                string relativePath = System.IO.Path.GetRelativePath(relativeTo, f);
+                                attchFilesPath.Add(relativePath);
+                            }
+                        }
+                       
+                        if (srcField != null)
+                            ((MonolingualTextField)dst).UpdateValues(srcField, string.Join(",", attchFilesPath)); // ((MonolingualTextField)dst).UpdateValues(srcField, (srcField as AttachmentField).FileNames);
+
+                    }
+
+
+                }
+                else
+                {
+
+                    if (srcField != null)
+                        dst.UpdateValues(srcField);
+                }
+
+              
+
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file">C:\somefolder\somefile.txt</param>
 
+        /// <param name="ToDir">wwwroot/uploads/*/*</param>
+        private void MoveFile(string filePath, string ToDir)
+        {
+            string toPath = Path.Combine(
+                   Directory.GetCurrentDirectory(),
+                   ToDir);
+          
+            string directory = Path.GetDirectoryName(filePath);
+
+            foreach (string file in Directory.GetFiles(directory))
+            {
+                //get the filename
+                string[] tempf = file.Split('\\');
+                tempf = tempf[tempf.Length - 1].Split("__");
+                string fn = tempf[0] + tempf[tempf.Length - 1];
+
+                string destinationFile = ToDir + fn;
+               
+                if (File.Exists(destinationFile))
+                    File.Delete(destinationFile);
+
+                File.Move(file, destinationFile);
+            }
+        }
+        private string CreateDirectory(string parentDirectory, string subDirectory)
+        {
+            //create temp directory for login user
+            string directory = parentDirectory + subDirectory;
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+
+            return directory + "/";
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name">field GUID id</param>
+        /// <param name="fromDir">"wwwroot/uploads/temp"</param>
+        /// <returns></returns>
+        private string[] GetAttachmentFile(string name, string fromDir)
+        {
+            string path = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    fromDir);
+            string[] files = Directory.GetFiles(path, "*" + name + "_*.*");
+            if (files.Length > 0)
+                return files;
+
+            return null;
+        }
         public BaseField GetFieldByName(string fieldName, string lang)
         {
             foreach (var field in Fields)

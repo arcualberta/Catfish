@@ -224,7 +224,7 @@ namespace Catfish.Services
         /// <param name="collectionId"></param>
         /// <param name="actionButton"></param>
         /// <returns></returns>
-        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, string status, string action)
+        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, string status, string action, string fileNames=null)
         {
             try
             {
@@ -240,9 +240,11 @@ namespace Catfish.Services
                 newItem.UserEmail = _workflowService.GetLoggedUserEmail();
 
                 DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
-                newDataItem.UpdateFieldValues(value);
+                //MR -- Jan 27 2020 add passing itemId for creating subfolder for attachment file if any
+                newDataItem.UpdateFieldValues(value, newDataItem.Id.ToString());
                 newItem.DataContainer.Add(newDataItem);
                 newDataItem.EntityId = newItem.Id;
+
 
                 User user = _workflowService.GetLoggedUser();
                 var fromState = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();

@@ -11,64 +11,53 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public class AttachmentField : MonolingualTextField, IFormFile
+    public class AttachmentField : MonolingualTextField//, IFormFile
     {
       
-        public IFormFile AttachmentFile { get; set; }
+       // public IFormFile AttachmentFile { get; set; }
 
-        //public List<MonolingualTextField> Values {
-        //    get;
-        //    set; }
-
+       public string FileNames { get; set; }
         public List<string> AcceptExtensions { get; set; } = new List<string>();
         public int MaxFileUploadLimit { get; set; }
 
-        public string ContentDisposition => AttachmentFile.ContentDisposition;  //throw new NotImplementedException();
+       // public string ContentDisposition => AttachmentFile.ContentDisposition;  //throw new NotImplementedException();
 
-        public string ContentType => AttachmentFile.ContentType; //throw new NotImplementedException();
+      //  public string ContentType => AttachmentFile.ContentType; //throw new NotImplementedException();
 
-        public string FileName => AttachmentFile.FileName;
-
-
-        public IHeaderDictionary Headers => AttachmentFile.Headers; //throw new NotImplementedException();
-
-        public long Length => AttachmentFile.Length;// throw new NotImplementedException();
-
-        string IFormFile.Name => AttachmentFile.Name; //throw new NotImplementedException();
+      //  public string FileName => AttachmentFile.FileName;
 
 
-        public int SetValue(object val, int valueIndex = 0)
-        {
-            if (Values.Count <= valueIndex)
-            {
-                Values.Add(new Text());
-                valueIndex = Values.Count - 1;
-            }
-            Values[valueIndex].Value = val == null ? FileName : val.ToString();
-            return valueIndex;
-        }
+     //   public IHeaderDictionary Headers => AttachmentFile.Headers; //throw new NotImplementedException();
 
-        //public List<string> GetValues()
+      //  public long Length => AttachmentFile.Length;// throw new NotImplementedException();
+
+     //   string IFormFile.Name => AttachmentFile.Name; //throw new NotImplementedException();
+
+        //public int SetValue(object val, int valueIndex = 0)
         //{
-        //    return Values;
+        //    if (Values.Count <= valueIndex)
+        //    {
+        //        Values.Add(new Text());
+        //        valueIndex = Values.Count - 1;
+        //    }
+        //    Values[valueIndex].Value = val == null ? FileName : val.ToString();
+        //    return valueIndex;
         //}
-        //[JsonIgnore]
-        //[NotMapped]
-        //public XElement Data { get; protected set; }
-        public void CopyTo(Stream target)
-        {
-            throw new NotImplementedException();
-        }
+      
+        //public void CopyTo(Stream target)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Task CopyToAsync(Stream target, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task CopyToAsync(Stream target, CancellationToken cancellationToken = default)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Stream OpenReadStream()
-        {
-            throw new NotImplementedException();
-        }
+        //public Stream OpenReadStream()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public AttachmentField() {
             DisplayLabel = "Attachment Field";

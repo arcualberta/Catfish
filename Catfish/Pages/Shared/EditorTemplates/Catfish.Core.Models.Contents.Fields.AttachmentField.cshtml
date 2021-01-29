@@ -6,10 +6,14 @@
 @Html.HiddenFor(model => model.ModelType)
 @Html.HiddenFor(model => model.Id)
 
+@Html.AntiForgeryToken()
+@*@Html.LabelFor(m => m.AttachmentFile)
 
-@Html.LabelFor(m => m.AttachmentFile)
-
-@*@Html.EditorFor(m => m.AttachmentFile)   id="attachmentFile_@Model.Id" *@
-<input type="file" id="attachmentFile_@Model.Id" name="files" multiple />
-
-@*<input asp-for="@Model.AttachmentFile" />*@
+@Html.HiddenFor(m=>m.AttachmentFile)
+@Html.EditorFor(m => m.AttachmentFile)*@
+@Html.HiddenFor(m=>m.FileNames)
+@{ 
+    var name = Html.NameFor(m => m.FileNames) + "_file";
+    var id = Html.IdFor(m => m.FileNames) + "_" + Model.Id +"_file";
+}
+<input type="file" id="@id" name="@name" />

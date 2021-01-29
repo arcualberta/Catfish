@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -128,7 +129,7 @@ namespace Catfish.Controllers.Api
         // POST api/<ItemController>
         [Route("SubmitForm")]
         [HttpPost]
-        public ApiResult SubmitForm([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] string function, [FromForm] string group, [FromForm] string status, IFormFile[] files)
+        public ApiResult SubmitForm([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] string function, [FromForm] string group, [FromForm] string status, [FromForm] string fileNames=null)
         {
             ApiResult result = new ApiResult();
             try
@@ -197,6 +198,49 @@ namespace Catfish.Controllers.Api
                 }
             }
             return result ;
+        }
+
+        [Route("SaveFiles")]
+        [HttpPost]
+        public IActionResult SaveFiles(ICollection<IFormFile> files)
+        {
+            //Dictionary<string, List<string>> dictFileNames = new Dictionary<string, List<string>>();
+            string dictFileNames = ""; //"key1:file1,file2 | key2:file1,file2"
+            foreach (IFormFile f in files)
+            {
+                string newGuid = System.Text.RegularExpressions.Regex.Replace(Convert.ToBase64String(Guid.NewGuid().ToByteArray()), "[/+=]", "");
+                //create temp directory for login user
+                if (!Directory.Exists("wwwroot/uploads/temp"))
+                    Directory.CreateDirectory("wwwroot/uploads/temp");
+
+                string fileN = newGuid + "_" + f.FileName;
+                string path = Path.Combine(
+                  Directory.GetCurrentDirectory(), "wwwroot/uploads/temp",
+                  fileN);
+
+                string[] _fileNames = f.FileName.Split("__"); //this will get the field index ==> filed_4, this will be the key for the file name(s) of this field
+                string key = "";
+                string names = "";
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    f.CopyTo(stream);
+                    List<string> listfnames;
+                    //fileNames.Add(fileN);
+                    if(!dictFileNames.Contains(_fileNames[1],StringComparison.OrdinalIgnoreCase))
+                    {
+                        if(string.IsNullOrWhiteSpace(dictFileNames))
+                            dictFileNames = _fileNames[1] + ":" + fileN; //still empty
+                        else
+                            dictFileNames += "|" + _fileNames[1] + ":" + fileN;
+                    }
+                    else
+                    {
+                        dictFileNames += "," + fileN;
+                    }
+                   // dictFileNames.Add(_fileNames[1], new List<string>(listfnames));
+                }
+            }
+            return Ok(dictFileNames);
         }
     }
 }
