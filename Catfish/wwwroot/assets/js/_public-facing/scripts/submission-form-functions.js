@@ -71,14 +71,12 @@ function submitWorkflowForm(suffix, successMessage) {
                  //set the hidden field value
                 hiddenFiles = fname;
                 $(AttachmentHidden[i]).val(fname);
-                // name = field.name.replace(prefix, "");
-                //values[name] = file.name;
             }
            
            
         });
 
-        var savedFiles;
+        let savedFiles="";
         let urlstr = "/api/items/SaveFiles";
         //should be called only if there's (are) attachment file(s).
         if (!!Files.entries().next().value) {
@@ -93,18 +91,24 @@ function submitWorkflowForm(suffix, successMessage) {
                 contentType: false,
                 processData: false,
                 success: function (response) {
-                    savedFiles = response;
+                    alert("sukses " + response);
                     if (response.includes("|")) {
                         //contain more than 1 field attachment that has file
                         let elms = response.split("|");
-                        $.each(elms, function (i, elm) {
+                       
+                        $.each(AttachmentHidden, function (i, el) {
                             let names = elm.split(":");
-                            $.each(AttachmentHidden, function (i, el) {
+                            savedFiles = "";
+                            $.each(elms, function (i, elm) {//$.each(AttachmentHidden, function (i, el) {
                                 if (el.id.includes(names[0])) {
-                                    //update the hidden value of the field
-                                    $("#" + el.id).val(names[1]);
+                                   
+                                    savedFiles += names[1] + "|";
                                 }
                             });
+                            //update the hidden value of the field
+                            $("#" + el.id).val(savedFiles);
+                            name = el.name.replace(prefix, "");
+                            values[name] = savedFiles;
                         });
                     }
                     else {
@@ -115,6 +119,9 @@ function submitWorkflowForm(suffix, successMessage) {
                             if (el.id.includes(names[0])) {
                                 //update the hidden value of the field
                                 $("#" + el.id).val(names[1]);
+                                savedFiles = names[1];
+                                name = el.name.replace(prefix, "");
+                                values[name] = names[1];
                             }
                         });
 
@@ -123,11 +130,11 @@ function submitWorkflowForm(suffix, successMessage) {
 
                 },
                 error: function (error) {
-
                     $("#submission-result-message_" + suffix + " div").text("Error try saving file(s)");
                     $("#submission-result-message_" + suffix).show();
                     return;
-                }
+                },
+                async: false
             });
         }
 
