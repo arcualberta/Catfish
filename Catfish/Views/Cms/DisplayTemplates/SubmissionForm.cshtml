@@ -22,7 +22,7 @@
     if (useVueForms)
     {
         //TODO: register appropriate javascript files to be used with VueJS based forms.
-        _appService.RegisterScript("/assets/js/_public-facing/scripts/submission-form-functions.js");
+        _appService.RegisterScript("/assets/js/_public-facing/vue-submission-form.js");
     }
     else
     {
@@ -74,7 +74,7 @@
                 <input data-val="true" data-val-required="The TemplateId field is required."
                        id="entityTemplateId_@suffix" name="entityTemplateId" type="hidden"
                        value="@entityTemplateId">
-                <input data-val="true" data-val-required="The ColectionId field is required."
+                <input data-val="true" data-val-required="The CollectionId field is required."
                        id="collectionId_@suffix" name="collectionId" type="hidden"
                        value="@collectionId">
                 <input data-val="true" data-val-required="The Function field is required."

@@ -1494,13 +1494,17 @@ namespace Catfish.UnitTests
             inspectionForm.CreateField<TextField>("Inspected By", lang, true, true);
             inspectionForm.CreateField<IntegerField>("Number of People in the work area", lang, true);
 
+            //Jill added this one
+            var testCheckbox = inspectionForm.CreateField<CheckboxField>("Room/Area Check:", lang, optionBuilding);
+
             string[] optionText = new string[] { "Yes", "No", "N/A" };
             inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText, true);
 
             var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText, true);
             inspectionForm.CreateField<TextArea>("Eyewash station info", lang, false)
                 .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang)
-                .SetVisibleIf(eyeWashFlushed, optionText[0]);
+                //.SetVisibleIf(eyeWashFlushed, optionText[0]);
+                .SetVisibleIf(testCheckbox, optionBuilding[5]);
 
 
             //Defininig roles
