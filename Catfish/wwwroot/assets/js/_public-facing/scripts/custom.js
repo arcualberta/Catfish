@@ -17,8 +17,12 @@ for(let title of titles){
 let columns = document.getElementsByClassName('row columnBlock CBflex-container');
 console.log(columns, columns.length);
 
-for(let i = 0; i < columns.length; i++){
+for(let i = 0; i < columns.length - 1; i++){
   columns[i].classList.add('grey-bg');
+  if(i == 2){
+    //last columns get reversal class for mobile views
+    columns[i].classList.add('reverse-columns-mobile');
+  }
   for(let j = 0; j < columns[i].children.length; j++){
     if(i == 0){
         //this is the columns section under the wide image
@@ -29,14 +33,24 @@ for(let i = 0; i < columns.length; i++){
         columns[i].children[j].classList.remove('col-md-6');
         columns[i].children[j].classList.add('remove-padding-in-highlights');
         columns[i].children[j].classList.add('added-height');
+        if(j == 0){
+          //on mobile views, remove the space between the image and the text
+
+        }
+
         if( (i + j) % 2 != 0){
           columns[i].children[j].classList.add('col-md-5');
+          columns[i].children[j].classList.add('no-bottom-padding');
         }else{
           columns[i].children[j].classList.add('col-md-7');
         }
      }
   }
 }
+//for Contact Us section
+columns[columns.length - 1].classList.add('space-above');
+columns[columns.length - 1].children[0].classList.add('no-padding');
+columns[columns.length - 1].children[0].children[0].classList.add('contact-us-column');
 
 });
 
