@@ -84,6 +84,8 @@ namespace Catfish.Tests.Helpers
             //Elmah error-log functionality used in the web application.
             services.AddScoped<ErrorLog, MockupErrorLog>();
 
+            services.AddScoped<IJobService, JobService>();
+
             //Creating a service provider and assigning it to the member variable so that it can be used by 
             //test methods.
             Seviceprovider = services.BuildServiceProvider();
