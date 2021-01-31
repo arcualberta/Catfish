@@ -1237,7 +1237,6 @@ namespace Catfish.UnitTests
             AppDbContext db = _testHelper.Db;
             IAuthorizationService auth = _testHelper.AuthorizationService;
 
-
             ItemTemplate template = db.ItemTemplates
                 .Where(et => et.TemplateName == templateName)
                 .FirstOrDefault();
@@ -1385,6 +1384,15 @@ namespace Catfish.UnitTests
                 .AddOwnerAuthorization()
                 .AddAuthorizedRole(adminRole.Id);
 
+            //Detailed submission inspection forms.
+            //Inspectors can view their own submissions.
+            //Admins can view all submissions.
+            GetAction viewSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
+            viewSubmissionAction.Access = GetAction.eAccess.Restricted;
+            viewSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
 
             //Post action for submitting the form
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
@@ -1493,7 +1501,7 @@ namespace Catfish.UnitTests
             inspectionForm.CreateField<DateField>("Inspection Date", lang, true)
                 .IncludeTime = false;
 
-            string[] optionBuilding = new string[] { "", "Arts and Convocation Hall", "Assiniboia Hall", "Fine Arts Building", "HM Tory Building", "HUB", "Humanities Centre", "Industrial Design Studio", "North Power Plant", "South Academic Building", "Timms Centre for the Arts", "Varsity Trailer" };
+            string[] optionBuilding = new string[] { "Arts and Convocation Hall", "Assiniboia Hall", "Fine Arts Building", "HM Tory Building", "HUB", "Humanities Centre", "Industrial Design Studio", "North Power Plant", "South Academic Building", "Timms Centre for the Arts", "Varsity Trailer" };
             inspectionForm.CreateField<SelectField>("Building", lang, optionBuilding, true);
             inspectionForm.CreateField<TextField>("Inspected By", lang, true, true);
             inspectionForm.CreateField<IntegerField>("Number of People in the work area", lang, true);
@@ -1523,7 +1531,7 @@ namespace Catfish.UnitTests
             startSubmissionAction.AddStateReferances(emptyState.Id)
                 .AddAuthorizedRole(inspectorRole.Id);
 
-            //Listing inspection forms.
+            //Listing inspection form submissions.
             //Inspectors can list their own submissions.
             //Admins can list all submissions.
             GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
@@ -1532,6 +1540,14 @@ namespace Catfish.UnitTests
                 .AddOwnerAuthorization()
                 .AddAuthorizedRole(adminRole.Id);
 
+            //Detailed submission inspection forms.
+            //Inspectors can view their own submissions.
+            //Admins can view all submissions.
+            GetAction viewSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
+            viewSubmissionAction.Access = GetAction.eAccess.Restricted;
+            viewSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
 
             //Post action for submitting the form
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));

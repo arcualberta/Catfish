@@ -76,6 +76,8 @@ namespace Catfish.Controllers.Api
                 {
                     var fieldList = root.GetValueFields();
 
+                    headRow.Add(XElement.Parse("<th></th>"));
+
                     headRow.Add(XElement.Parse("<th>Submission Date</th>"));
 
                     foreach (var field in fieldList)
@@ -98,6 +100,11 @@ namespace Catfish.Controllers.Api
                     {
                         XElement bodyRow = new XElement("tr");
                         tbody.Add(bodyRow);
+
+                        //TODO: check if the currently logged in user to perform the following actions
+                        bool viewPermitted = true;
+                        string viewLink = viewPermitted ? string.Format("<a href='/items/{0}' class='fa fa-eye' target='_blank'></a>", item.Id) : "";
+                        bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", viewLink)));
 
                         bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", item.Created.ToString("yyyy-MM-dd"))));
 
