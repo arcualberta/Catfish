@@ -3,8 +3,9 @@
 <div class="multilingual-input-block">
     @Html.HiddenFor(model => model.ModelType)
     @Html.HiddenFor(model => model.Id)
-    @{ 
+    @{
         var isMultiline = ViewData["multiline"] != null && (bool)ViewData["multiline"];
+        var required = ViewData["required"] != null && (bool)ViewData["required"];
     }
     @for (int i = 0; i < Model.Values.Count; ++i)
     {
@@ -17,11 +18,25 @@
 
         if (isMultiline)
         {
-            @Html.TextAreaFor(model => model.Values[i].Value)
+            if (required)
+            {
+                @Html.TextAreaFor(model => model.Values[i].Value, new { required = "required" })
+            }
+            else
+            {
+                @Html.TextAreaFor(model => model.Values[i].Value)
+            }
         }
         else
         {
-            @Html.EditorFor(model => model.Values[i].Value)
+            if (required)
+            {
+                @Html.TextBoxFor(model => model.Values[i].Value, new { required = "required" })
+            }
+            else
+            {
+                @Html.TextBoxFor(model => model.Values[i].Value)
+            }
         }
     }
 </div>

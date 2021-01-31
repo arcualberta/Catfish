@@ -1287,7 +1287,7 @@ namespace Catfish.UnitTests
             inspectionForm.CreateField<DateField>("Inspection Date", lang, true)
                 .IncludeTime =  false;
             
-            string[] optionBuilding = new string[] { "", "Arts and Convocation Hall", "Assiniboia Hall", "Fine Arts Building", "HM Tory Building", "HUB", "Humanities Centre", "Industrial Design Studio", "North Power Plant", "South Academic Building", "Timms Centre for the Arts", "Varsity Trailer" };
+            string[] optionBuilding = new string[] {"Arts and Convocation Hall", "Assiniboia Hall", "Fine Arts Building", "HM Tory Building", "HUB", "Humanities Centre", "Industrial Design Studio", "North Power Plant", "South Academic Building", "Timms Centre for the Arts", "Varsity Trailer" };
             inspectionForm.CreateField<SelectField>("Building", lang, optionBuilding, true);
             inspectionForm.CreateField<TextField>("Inspected By", lang, true, true);
             inspectionForm.CreateField<TextField>("Room/Area", lang, true, true);
