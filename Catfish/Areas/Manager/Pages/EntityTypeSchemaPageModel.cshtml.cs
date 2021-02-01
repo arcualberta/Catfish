@@ -35,7 +35,7 @@ namespace Catfish.Areas.Manager.Pages
             SchemaXml = template != null ? template.Content : "";
         }
 
-        public void OnPost(Guid id)
+        public IActionResult OnPost(Guid id)
         {
             try
             {
@@ -44,14 +44,22 @@ namespace Catfish.Areas.Manager.Pages
 
                 //Make sure the schemaXML represents a valid xml string
                 XElement xml = XElement.Parse(SchemaXml);
-
                 EntityTemplate template = _db.EntityTemplates.Where(et => et.Id == id).FirstOrDefault();
                 if (template == null)
                 {
-                    template = new EntityTemplate();
+                    string typeString = xml.Attribute("model-type").Value;
+                    var type = Type.GetType(typeString);
+                    template = Entity.Parse(xml, true) as EntityTemplate;
                     _db.EntityTemplates.Add(template);
+                    id = template.Id;
                 }
-                template.Content = SchemaXml;
+                else
+                {
+                    template.Content = SchemaXml;
+                    template.TemplateName = template.Name.GetConcatenatedContent(" | ");
+                    template.Updated = DateTime.Now;
+                }
+
                 _db.SaveChanges();
 
                 SuccessMessage = "Schema saved successfully.";
@@ -61,6 +69,8 @@ namespace Catfish.Areas.Manager.Pages
                 _errorLog.Log(new Error(ex));
                 ErrorMessage = ex.Message;
             }
+
+            return RedirectToPage(new { id });
         }
 
     }

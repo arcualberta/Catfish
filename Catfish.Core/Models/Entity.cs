@@ -252,5 +252,25 @@ namespace Catfish.Core.Models
             }) ;
             return this;
         }
+
+        public static Entity Parse(XElement xml, bool clone = false)
+        {
+            string typeString = xml.Attribute("model-type").Value;
+            var type = Type.GetType(typeString);
+            Entity template = Activator.CreateInstance(type) as Entity;
+
+            template.Content = xml.ToString();
+            if(clone)
+            {
+                template.Id = Guid.NewGuid();
+                template.Created = DateTime.Now;
+            }
+
+            if (typeof(EntityTemplate).IsAssignableFrom(type))
+                (template as EntityTemplate).TemplateName = template.Name.GetConcatenatedContent(" | ");
+
+            return template;
+        }
+
     }
 }

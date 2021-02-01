@@ -1,0 +1,7 @@
+﻿.section-heading {
+    margin: 10px;
+}
+    .section-heading .label {
+        font-size: large;
+        font-weight: bold;
+    }
