@@ -156,6 +156,7 @@ namespace Catfish
             services.AddScoped<IFormService, FormService>();
             services.AddScoped<ICatfishInitializationService, CatfishInitializationService>();
             services.AddScoped<ICatfishSiteService, CatfishSiteService>();
+            services.AddScoped<IJobService, JobService>();
             services.AddSingleton<IAppService, AppService>();
 
             // Solr services

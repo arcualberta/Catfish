@@ -7,8 +7,17 @@
                 Value = op.Id.ToString(),
                 Text = op.OptionText.GetConcatenatedContent(" | ")
             }).ToList();
+    options.Insert(0, new SelectListItem());
 
     @Html.HiddenFor(model => model.ModelType)
     @Html.HiddenFor(model => model.Id)
-    @Html.DropDownListFor(model => model, options)
+
+    if (Model.Required)
+    {
+        @Html.DropDownListFor(model => model, options, new { required = (string) null })
+    }
+    else
+    {
+        @Html.DropDownListFor(model => model, options)
+    }
 }

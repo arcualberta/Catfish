@@ -74,7 +74,7 @@ namespace Catfish.Tests.Helpers
 
             ////services.AddScoped<SolrService>();
             // Solr services
-            string solrString = configuration.GetSection("SolarConfiguration:solrItemURL").Value;
+            string solrString = configuration.GetSection("SolarConfiguration:solrCore").Value;
 
             services.AddSolrNet<SolrEntry>(solrString);
             services.AddScoped<ISolrIndexService<SolrEntry>, SolrIndexService<SolrEntry, ISolrOperations<SolrEntry>>>();
@@ -83,6 +83,8 @@ namespace Catfish.Tests.Helpers
             //Adding an empty mock-up error logger instance to the service. This is to replace the actuall
             //Elmah error-log functionality used in the web application.
             services.AddScoped<ErrorLog, MockupErrorLog>();
+
+            services.AddScoped<IJobService, JobService>();
 
             //Creating a service provider and assigning it to the member variable so that it can be used by 
             //test methods.

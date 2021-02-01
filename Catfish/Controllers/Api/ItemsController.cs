@@ -8,6 +8,7 @@ using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
+using Catfish.Core.Services;
 using Catfish.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,13 +26,15 @@ namespace Catfish.Controllers.Api
         private readonly ISubmissionService _submissionService;
        
         private readonly AppDbContext _appDb;
-        public ItemsController(AppDbContext db, IEntityTemplateService entityTemplateService, ISubmissionService submissionService)
+        private readonly IJobService _jobService;
+        public ItemsController(AppDbContext db, IEntityTemplateService entityTemplateService, ISubmissionService submissionService, IJobService jobService)
         {
             _entityTemplateService = entityTemplateService;
             _submissionService = submissionService;
            
            
             _appDb = db;
+            _jobService = jobService;
         }
         // GET: api/<ItemController>
         [HttpGet]
@@ -75,6 +78,8 @@ namespace Catfish.Controllers.Api
                 {
                     var fieldList = root.GetValueFields();
 
+                    headRow.Add(XElement.Parse("<th></th>"));
+
                     headRow.Add(XElement.Parse("<th>Submission Date</th>"));
 
                     foreach (var field in fieldList)
@@ -97,6 +102,11 @@ namespace Catfish.Controllers.Api
                     {
                         XElement bodyRow = new XElement("tr");
                         tbody.Add(bodyRow);
+
+                        //TODO: check if the currently logged in user to perform the following actions
+                        bool viewPermitted = true;
+                        string viewLink = viewPermitted ? string.Format("<a href='/items/{0}' class='fa fa-eye' target='_blank'></a>", item.Id) : "";
+                        bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", viewLink)));
 
                         bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", item.Created.ToString("yyyy-MM-dd"))));
 
@@ -137,6 +147,8 @@ namespace Catfish.Controllers.Api
                 Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, groupId, status, actionButton);
                 _appDb.Items.Add(newItem);
                 _appDb.SaveChanges();
+
+                bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
 
                 bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, actionButton, function, group);
                 result.Success = true;
