@@ -241,7 +241,7 @@ namespace Catfish.Core.Models.Contents
         }
 
 
-        public void UpdateFieldValues(FieldContainer dataSrc)
+        public void UpdateFieldValues(FieldContainer dataSrc, string itemId=null)
         {
             foreach(var dst in Fields)
             {
