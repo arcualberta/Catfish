@@ -5,19 +5,8 @@
 @{
     var id = Model.Id;
     var modelType = Model.ModelType;
-    string detailsPage = null;
-    string editorPage = null;
-    if (Model.ModelType.StartsWith(typeof(Item).FullName))
-    {
-        detailsPage = Model.Id.ToString();
-        editorPage = "schema/" + Model.Id;
-    }
-    else if (Model.ModelType.StartsWith(typeof(Collection).FullName))
-    {
-        detailsPage = Model.Id.ToString();
-        editorPage = "schema/" + Model.Id;
-    }
-
+    string detailsPage = "/manager/schema/" + Model.Id;
+    string editorPage = "/manager/schema/edit/" + Model.Id;
 }
 <li class="dd-item expanded">
     <div class="sitemap-item">
@@ -30,8 +19,7 @@
                     <a href="@detailsPage">@Model.TypeName</a>
                 </div>
                 <div class=" col-md-2">
-                    <a href="@editorPage">Schema</a>
-
+                    <a href="@editorPage">Edit</a>
                 </div>
             </div>
         </div>

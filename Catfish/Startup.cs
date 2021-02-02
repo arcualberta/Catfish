@@ -416,6 +416,10 @@ namespace Catfish
 
             App.Modules.Get<Piranha.Manager.Module>()
                 .Styles.Add("~/assets/css/transitionAndAnimationManagerSide.css");
+
+            App.Modules.Get<Piranha.Manager.Module>()
+               .Styles.Add("~/assets/css/manager-styles.css");
+            
             /*
              These create a warning in Chrome about SameSite cookie use.
              This is not an issue for you to fix, it is for QuillJS.

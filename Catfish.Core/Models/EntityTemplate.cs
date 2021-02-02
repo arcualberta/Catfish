@@ -59,7 +59,6 @@ namespace Catfish.Core.Models
         {
             Initialize(false);
         }
-
         public override void Initialize(bool regenerateId)
         {
             base.Initialize(regenerateId);

@@ -1,5 +1,5 @@
-﻿@page "~/manager/entitytypes/{id:Guid?}"
-@model Catfish.Areas.Manager.Pages.EntityTypeSchemaPageModel
+﻿@page "/manager/schema/{id:Guid?}"
+@model Catfish.Areas.Manager.Pages.SchemaPageModel
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
@@ -25,9 +25,8 @@
     <div class="top">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item">@Localizer.Menu["ENTITIES"]</li>
-                <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["ENTITY TYPES"]</li>
-                <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Schema"]</li>
+                <li class="breadcrumb-item">@Localizer.Menu["Schema"]</li>
+                <li class="breadcrumb-item active" aria-current="page">@Localizer.Menu["Details"]</li>
             </ol>
         </nav>
     </div>

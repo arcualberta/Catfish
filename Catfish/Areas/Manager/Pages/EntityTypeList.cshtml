@@ -36,21 +36,28 @@
 
         <div class="container-fluid">
             <div class="top-nav">
-                @foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.EntityTypeList)
+                @*@foreach (var action in Catfish.Areas.Manager.Actions.Toolbars.EntityTypeList)
                 {
                     <partial name="@action.ActionView" />
-                }
+                }*@
+
+                <a href="/manager/schema/edit" class="btn btn-primary btn-labeled"><i class="fas fa-plus"></i>Add Schema</a>
+
             </div>
         </div>
     </div>
 
-    <h2>Collection Types</h2>
+    <div class="row section-heading" style="margin-top:-10px;">
+        <div class="label">Collection Types</div>
+    </div>
     @foreach (var child in Model.Collections)
     {
         <partial name="partial/@child.GetType().Name" model="@child" />
     }
 
-    <h2>Item Types</h2>
+    <div class="row section-heading">
+        <div class="label">Item Types</div>
+    </div>
     @foreach (var child in Model.Items)
     {
         <partial name="partial/@child.GetType().Name" model="@child" />
