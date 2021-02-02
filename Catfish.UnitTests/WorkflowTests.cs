@@ -1597,6 +1597,147 @@ namespace Catfish.UnitTests
 
 
         [Test]
+        public void CompositeFormFieldTest()
+        {
+            string lang = "en";
+            string templateName = "Composite Field Test Form Template";
+
+            IWorkflowService ws = _testHelper.WorkflowService;
+            AppDbContext db = _testHelper.Db;
+            IAuthorizationService auth = _testHelper.AuthorizationService;
+
+
+            ItemTemplate template = db.ItemTemplates
+                .Where(et => et.TemplateName == templateName)
+                .FirstOrDefault();
+
+            if (template == null)
+            {
+                template = new ItemTemplate();
+                db.ItemTemplates.Add(template);
+            }
+            else
+            {
+                ItemTemplate t = new ItemTemplate();
+                t.Id = template.Id;
+                template.Data = t.Data;
+                template.Initialize(false);
+            }
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
+
+            ws.SetModel(template);
+
+            //Get the Workflow object using the workflow service
+            Workflow workflow = ws.GetWorkflow(true);
+
+            //Defininig states
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
+
+
+            //Defininig the inspection form
+            DataItem inspectionForm = template.GetDataItem("Composite Field Test Form", true, lang);
+            inspectionForm.IsRoot = true;
+
+            inspectionForm.CreateField<DateField>("Date Date", lang, true)
+                .IncludeTime = false;
+
+            CompositeField authors = inspectionForm.CreateField<CompositeField>("Authors", lang, true);
+            authors.CreateChildTemplate("Author", "Author information", lang);
+            authors.ChildTemplate.CreateField<TextField>("Name", lang, true);
+            authors.ChildTemplate.CreateField<TextField>("Email", lang, true);
+            authors.ChildTemplate.CreateField<TextField>("Phone", lang, false);
+
+
+            //string[] optionBuilding = new string[] { "Arts and Convocation Hall", "Assiniboia Hall", "Fine Arts Building", "HM Tory Building", "HUB", "Humanities Centre", "Industrial Design Studio", "North Power Plant", "South Academic Building", "Timms Centre for the Arts", "Varsity Trailer" };
+            //inspectionForm.CreateField<SelectField>("Building", lang, optionBuilding, true);
+            //inspectionForm.CreateField<TextField>("Inspected By", lang, true, true);
+            //inspectionForm.CreateField<IntegerField>("Number of People in the work area", lang, true);
+
+
+            string[] optionText = new string[] { "Yes", "No", "N/A" };
+            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText, true);
+
+
+            //Defininig roles
+            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
+            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
+
+
+            // Submitting an inspection form
+            //Only safey inspectors can submit this form
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+            startSubmissionAction.Access = GetAction.eAccess.Restricted;
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedRole(inspectorRole.Id);
+
+            //Listing inspection form submissions.
+            //Inspectors can list their own submissions.
+            //Admins can list all submissions.
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Detailed submission inspection forms.
+            //Inspectors can view their own submissions.
+            //Admins can view all submissions.
+            GetAction viewSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
+            viewSubmissionAction.Access = GetAction.eAccess.Restricted;
+            viewSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Post action for submitting the form
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+
+            //Defining the pop-up for the above submitPostAction action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
+            submitActionPopUp.AddButtons("Yes, submit", "true");
+            submitActionPopUp.AddButtons("Cancel", "false");
+
+            // Edit submission related workflow items
+            //Defining actions
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+
+            //Submissions can only be edited by admins
+            editSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+
+
+            // Delete submission related workflow items
+            //Defining actions. Only admin can delete a submission
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
+            deleteSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.", "");
+            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+
+            db.SaveChanges();
+
+            template.Data.Save("..\\..\\..\\..\\Examples\\compositeFormFieldTest_generared.xml");
+
+            string json = JsonConvert.SerializeObject(template);
+            File.WriteAllText("..\\..\\..\\..\\Examples\\compositeFormFieldTest_generared.json", json);
+        }
+
+        [Test]
         public void TestEntityTemplateLoad()
         {
             string filename = "..\\..\\..\\..\\Examples\\CalendarManagementWorkflow_generared.xml";

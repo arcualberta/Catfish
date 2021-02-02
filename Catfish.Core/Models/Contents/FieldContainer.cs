@@ -224,6 +224,22 @@ namespace Catfish.Core.Models.Contents
             return field;
         }
 
+
+        public T CreateField<T>(string fieldName, string lang, bool? isRequired = null)
+            where T : CompositeField
+        {
+            T field = Activator.CreateInstance(typeof(T)) as T;
+
+            Fields.Add(field);
+            field.SetName(fieldName, lang);
+
+            if (isRequired.HasValue)
+                field.Required = isRequired.Value;
+
+            return field;
+        }
+
+
         public void UpdateFieldValues(FieldContainer dataSrc)
         {
             foreach(var dst in Fields)
