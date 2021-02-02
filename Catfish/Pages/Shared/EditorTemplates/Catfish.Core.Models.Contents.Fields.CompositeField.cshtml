@@ -1,0 +1,12 @@
+﻿@model Catfish.Core.Models.Contents.Fields.CompositeField
+
+<div class="composite-field-template" style="display:none">
+    @Html.EditorFor(model => model.ChildTemplate, Model.ChildTemplate.GetType().ToString())
+</div>
+
+@foreach (var child in Model.Children)
+{
+    <div class="row composite-field-child">
+        @Html.EditorFor(model => child, child.GetType().ToString())
+    </div>
+}
