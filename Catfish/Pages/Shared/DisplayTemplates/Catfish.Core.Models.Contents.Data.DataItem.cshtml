@@ -3,7 +3,6 @@
 <div class="container">
     @foreach (var field in Model.Fields)
     {
-        var templateName = field.GetType().ToString();
         <div class="row">
             @Html.DisplayFor(model => field, field.GetType().ToString())
         </div>

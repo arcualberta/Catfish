@@ -2217,6 +2217,8 @@ namespace Catfish.UnitTests
             authors.ChildTemplate.CreateField<TextField>("Email", lang, true);
             authors.ChildTemplate.CreateField<TextField>("Phone", lang, false);
 
+            authors.Min = 3;
+            authors.InsertChildren();
 
             //string[] optionBuilding = new string[] { "Arts and Convocation Hall", "Assiniboia Hall", "Fine Arts Building", "HM Tory Building", "HUB", "Humanities Centre", "Industrial Design Studio", "North Power Plant", "South Academic Building", "Timms Centre for the Arts", "Varsity Trailer" };
             //inspectionForm.CreateField<SelectField>("Building", lang, optionBuilding, true);

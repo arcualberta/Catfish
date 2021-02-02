@@ -34,7 +34,14 @@ namespace Catfish.Core.Models.Contents.Fields
                 childTemplateContainer.Add(value.Data);
             }
         }
+        
         public XmlModelList<DataItem> Children { get; set; }
+
+        public int Min 
+        {
+            get => GetAttribute("min", 1);
+            set => SetAttribute("min", value);
+        }
 
         public CompositeField() { DisplayLabel = "Composite Field"; }
         public CompositeField(XElement data) : base(data) { DisplayLabel = "Composite Field"; }
@@ -46,6 +53,39 @@ namespace Catfish.Core.Models.Contents.Fields
             ChildTemplate = new DataItem();
             ChildTemplate.SetName(name, lang);
             ChildTemplate.SetDescription(description, lang);
+
+            Initialize(eGuidOption.Ignore);
         }
+        public override void Initialize(eGuidOption guidOption)
+        {
+            base.Initialize(guidOption);
+
+            //Building the values
+            Children = new XmlModelList<DataItem>(GetElement("children", true), true, DataItem.TagName);
+        }
+
+        public DataItem AddChild()
+        {
+            DataItem clone = ChildTemplate.Clone() as DataItem;
+            clone.TemplateId = ChildTemplate.Id;
+            clone.Id = Guid.NewGuid();
+            Children.Add(clone);
+            return clone;
+        }
+        public void RemoveChild(Guid childId)
+        {
+            var child = Children.Find(childId);
+            Children.Remove(child);
+        }
+
+        public void InsertChildren()
+        {
+            for (var i = Children.Count; i < Min; ++i)
+                AddChild();
+        }
+
+
+
+
     }
 }
