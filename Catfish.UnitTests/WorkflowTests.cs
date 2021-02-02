@@ -1828,7 +1828,7 @@ namespace Catfish.UnitTests
                .AppendContent("div", @"<i>For each student to be hired, click 'Add' and indicate whether the student will be an undergraduate, MA, or PhD student, and specify the period for which they will be hired, the number of hours to be worked, and related calculations.
                      Applicants are expected to adhere to the Collective Agreement when calculating salaries for graduate students. Research budgets for casual student labour must reflect the minimum rate (award + salary + benefits)
                     for Doctoral and Masters students.</i>", lang);
-            //Allow adding multiple PersonnelBudgetItem Form
+            //Allow adding multiple PersonnelBudgetItem Form == TODO
             // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
 
 
@@ -1836,7 +1836,7 @@ namespace Catfish.UnitTests
                .AppendContent("h3", "Estimates for Contracted Services", lang)
                .AppendContent("div", @"For each contracted service, click 'Add' and then provide the requested information. Please describe the services to be provided. Note that you must also attach written estimates for all contracted services. Estimates should be combined into one single PDF document.", lang);
 
-            //Allow adding multiple PersonnelBudgetItem Form
+            //Allow adding multiple PersonnelBudgetItem Form TODO
             // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
 
             sasForm.CreateField<AttachmentField>("Contractor Cost Estimates", lang).SetDescription(@"<i>Attach written estimate for contracted services as <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
@@ -1856,7 +1856,7 @@ namespace Catfish.UnitTests
             sasForm.CreateField<InfoSection>(null, null)
              .AppendContent("h3", "Estimates for Equipment and Material", lang);
 
-            // allow to add 1 or more Personnel budget Item Form here
+            // allow to add 1 or more Personnel budget Item Form here TODO
             // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
             sasForm.CreateField<AttachmentField>("Vendor Cost Estimates", lang).SetDescription(@"<i>Please submit documentation as a <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
 [Required if funding requested for equipment and materials]</span>", lang);
@@ -1864,7 +1864,67 @@ namespace Catfish.UnitTests
             // =============================================  TEACHING RELEASE
             sasForm.CreateField<InfoSection>(null, null)
              .AppendContent("h3", "Teaching Release", lang)
-             .AppendContent("div", @"<i>Failure to provide a written estimate will result in automatic disqualification of this part of the application.</i>", lang);
+             .AppendContent("div", @"<i>List the courses you are scheduled to teach in the academic year for which release time is requested, indicating in which of these courses you wish to be released from teaching. Use the + button to add courses.</i>", lang);
+            sasForm.CreateField<InfoSection>(null, null)
+            .AppendContent("h5", "1st Term", lang);
+            //TODO: add sub Form here
+
+            sasForm.CreateField<InfoSection>(null, null)
+           .AppendContent("h5", "2nd Term", lang);
+            //TODO: add sub Form here
+
+            sasForm.CreateField<TextArea>("Justification", lang)
+                .SetDescription("<i>Explain why release time is urgent and necessary at this moment. Maximum 250 words.</i>", lang);
+
+            //==================================================== OVERVIEW OF FUND REQUESTED =======================================================================
+            sasForm.CreateField<InfoSection>(null, null)
+            .AppendContent("h1", "Overview of Funds Requested", lang)
+            .AppendContent("div", "This section auto - populates once you have entered your budget details under the appropriate section(s).", lang, "alert alert-info");
+
+            sasForm.CreateField<DecimalField>("Conference Travel Amount Requested", lang);
+            sasForm.CreateField<DecimalField>("Research / Creativity Activity Travel Amount Requested", lang);
+            sasForm.CreateField<DecimalField>("Support for Research and Creative Activity Equipment and Materials", lang);
+            sasForm.CreateField<IntegerField>("Teaching release time", lang);
+            sasForm.CreateField<DecimalField>("Personnel and Services", lang);
+            sasForm.CreateField<DecimalField>("TOTAL ASK OF GRANT", lang);
+
+
+            // ====================================================== Other and Previous Funding ========================================================================
+            sasForm.CreateField<InfoSection>(null, null)
+           .AppendContent("h1", "Other and Previous Funding", lang);
+
+            sasForm.CreateField<RadioField>("Have you received any SAS funding in the past 5 years?", lang, optionText, true);
+            sasForm.CreateField<RadioField>("Previous SAS Funding for this Project", lang, optionText, true)
+                .SetDescription("Have you previously received SAS funding in regard to this project?", lang);
+
+            sasForm.CreateField<RadioField>("Other Funding", lang, optionText, true)
+                .SetDescription("Have you sought support for this project from SSHRC, the Canada Council for the Arts, the Killam Fund, or any other agency, internal, or external sources of funding?", lang);
+
+            sasForm.CreateField<TextArea>("Other Support Sources", lang)
+               .SetDescription("Please identify additional sources of support for this project, if applicable. (Such as honoraria, sales revenues, commissions, etc.). Maximum 250 words.", lang);
+
+            // ====================================================== Scholarly Publications ========================================================================
+            sasForm.CreateField<InfoSection>(null, null)
+           .AppendContent("h1", "Scholarly Publications", lang);
+
+            sasForm.CreateField<TextArea>("Publications over the past 5 years.", lang)
+             .SetDescription("Please list your scholarly and/or creative publications over the past 5 years. Include conference presentations, displays, and exhibits or performances. Complete CVs will not be accepted.", lang);
+
+            sasForm.CreateField<InfoSection>(null, null)
+          .AppendContent("h3", "Collaborators", lang)
+          .AppendContent("div", "Required only if collaborator is a Faculty of Arts faculty member.", lang,"alert alert-info");
+            // TO DO -- Add Collaborator(s) below
+
+            //================================================ Submit form ===============================
+            sasForm.CreateField<InfoSection>(null, null)
+                .AppendContent("div", @"<h1>Save or Submit Your Application</h1>
+                                       <div>To complete the application later, please click on the Save button below. You will be given a randomly generated reference number for which you need to submit a password. You can retrieve 
+                                      the application using this reference number and the password and complete it later. Unfortunately if you misplace the reference number or forget the password, 
+                                       you will have to start over a new application.</div>
+
+                                      <div>If you have completed your application, please use the Submit button below. Submitted applications cannot be modified. 
+                                            <span style='color: Red'>If your submission is successful, you should get a confirmation email</span>. Please check for this email <span style='color:Red'>before</span> you close your browser. 
+                                If you don't see the email, <span style='color: Red'>your application may not have been submitted</span>, so please contact Nancie Hodgson, Research Coordinator (resarts@ualberta.ca).</div>", lang, "alert alert-info");
 
             //=============================================================================             Defininig roles
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
@@ -1944,6 +2004,31 @@ namespace Catfish.UnitTests
             pBudgetForm.CreateField<DecimalField>("Estimate Cost", lang, true);
             return pBudgetForm;
         }
+
+        private DataItem CreateTeachingReleaseForm(ItemTemplate template)
+        {
+            string lang = "en";
+            string[] optionText = new string[] { "Yes", "No" };
+          
+            DataItem courseReleaseForm = template.GetDataItem("Course Release Form", true, lang);
+            courseReleaseForm.IsRoot = false;
+            courseReleaseForm.CreateField<TextField>("Couse Name", lang, true);
+            courseReleaseForm.CreateField<RadioField>("Release Required?", lang, optionText, true);
+          
+            courseReleaseForm.CreateField<DecimalField>("Amount Requested ($)", lang, true);
+            return courseReleaseForm;
+        }
+        private DataItem CreateCollaboratorForm(ItemTemplate template)
+        {
+            string lang = "en";
+            
+            DataItem collaboratorForm = template.GetDataItem("Collaborator Information", true, lang);
+            collaboratorForm.IsRoot = false;
+            collaboratorForm.CreateField<TextField>("Full Name", lang, true);
+            collaboratorForm.CreateField<TextField>("Email Address", lang, true);
+            return collaboratorForm;
+        }
+
         [Test]
         public void TestFileUpload()
         {
