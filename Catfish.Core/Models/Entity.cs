@@ -119,6 +119,9 @@ namespace Catfish.Core.Models
         [Column("UserEmail")]
         public string UserEmail { get; set; }
 
+        [NotMapped]
+        public string ConcatenatedName { get { return Name.GetConcatenatedContent(" | "); } }
+
 
         public Entity()
         {

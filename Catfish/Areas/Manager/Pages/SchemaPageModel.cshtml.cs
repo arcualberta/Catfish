@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Catfish.Areas.Manager.Pages
 {
-    public class EntityTypeSchemaPageModel : PageModel
+    public class SchemaPageModel : PageModel
     {
         [BindProperty]
         [DataType(DataType.MultilineText)]
@@ -23,20 +23,22 @@ namespace Catfish.Areas.Manager.Pages
         private AppDbContext _db;
         private ErrorLog _errorLog;
 
-        public EntityTypeSchemaPageModel(AppDbContext db, ErrorLog errorLog)
+        public SchemaPageModel(AppDbContext db, ErrorLog errorLog)
         {
             _db = db;
             _errorLog = errorLog;
         }
 
-        public void OnGet(Guid id)
+        public void OnGet(Guid id, string successMessage)
         {
-            EntityTemplate template = _db.EntityTemplates.Where(et => et.Id == id).FirstOrDefault();
-            SchemaXml = template != null ? template.Content : "";
+            Entity entity = _db.Entities.Where(et => et.Id == id).FirstOrDefault();
+            SchemaXml = entity != null ? entity.Content : "";
+            SuccessMessage = successMessage;
         }
 
         public IActionResult OnPost(Guid id)
         {
+            string successMessage = null;
             try
             {
                 if (string.IsNullOrWhiteSpace(SchemaXml))
@@ -44,33 +46,34 @@ namespace Catfish.Areas.Manager.Pages
 
                 //Make sure the schemaXML represents a valid xml string
                 XElement xml = XElement.Parse(SchemaXml);
-                EntityTemplate template = _db.EntityTemplates.Where(et => et.Id == id).FirstOrDefault();
-                if (template == null)
+                Entity entity = _db.Entities.Where(et => et.Id == id).FirstOrDefault();
+                if (entity == null)
                 {
                     string typeString = xml.Attribute("model-type").Value;
                     var type = Type.GetType(typeString);
-                    template = Entity.Parse(xml, true) as EntityTemplate;
-                    _db.EntityTemplates.Add(template);
-                    id = template.Id;
+                    entity = Entity.Parse(xml, true) as Entity;
+                    _db.Entities.Add(entity);
+                    id = entity.Id;
                 }
                 else
                 {
-                    template.Content = SchemaXml;
-                    template.TemplateName = template.Name.GetConcatenatedContent(" | ");
-                    template.Updated = DateTime.Now;
+                    entity.Content = SchemaXml;
+                    if(typeof(EntityTemplate).IsAssignableFrom(entity.GetType()))
+                        (entity as EntityTemplate).TemplateName = (entity as EntityTemplate).Name.GetConcatenatedContent(" | ");
+                    entity.Updated = DateTime.Now;
                 }
 
                 _db.SaveChanges();
 
-                SuccessMessage = "Schema saved successfully.";
+                successMessage = "Schema saved successfully.";
+                return RedirectToPage(new { id, successMessage });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _errorLog.Log(new Error(ex));
                 ErrorMessage = ex.Message;
+                return null;
             }
-
-            return RedirectToPage(new { id });
         }
 
     }
