@@ -1376,12 +1376,13 @@ namespace Catfish.UnitTests
                 .AddAuthorizedRole(inspectorRole.Id);
 
             //Listing inspection forms.
-            //Inspectors can list their own submissions.
-            //Admins can list all submissions.
+            //Admins and Inspectors can run the item-list report to list instances.
+            //Note that the visibility of individual list entries is depend on the
+            //Read permission on individual submissions.
             GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
             listSubmissionsAction.Access = GetAction.eAccess.Restricted;
             listSubmissionsAction.AddStateReferances(submittedState.Id)
-                .AddOwnerAuthorization()
+                .AddAuthorizedRole(inspectorRole.Id)
                 .AddAuthorizedRole(adminRole.Id);
 
             //Detailed submission inspection forms.
