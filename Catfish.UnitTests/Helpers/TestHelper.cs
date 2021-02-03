@@ -74,7 +74,7 @@ namespace Catfish.Tests.Helpers
 
             ////services.AddScoped<SolrService>();
             // Solr services
-            string solrString = configuration.GetSection("SolarConfiguration:solrCore").Value;
+            string solrString = configuration.GetSection("SolarConfiguration:solrURL").Value;
 
             services.AddSolrNet<SolrEntry>(solrString);
             services.AddScoped<ISolrIndexService<SolrEntry>, SolrIndexService<SolrEntry, ISolrOperations<SolrEntry>>>();

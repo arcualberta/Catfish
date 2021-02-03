@@ -80,11 +80,14 @@
                                             var buttonLable = postActionData.ButtonLabel;
                                             var currentStatusId = postActionData.Current;
                                             var nextStatusId = postActionData.Next;
+                                            var childFormId = _workflowService.GetChildFormId(template, postAction.Id);
 
                                             if (postAction.PopUps.Any())
                                             {
                                                 foreach (var popup in postAction.PopUps)
                                                 {
+                                                    
+
                                                     string buttonName = postAction.ButtonLabel.Trim().Replace(" ", "") + "_" + @suffix;
                                                     <input id="@buttonLable" class="btn btn-success launch-modal" name="@buttonLable" type="button" value="@buttonLable" data-toggle="modal" data-target="#@buttonName" />
                                                     <div id="@buttonName" class="modal fade" role="dialog">
@@ -99,6 +102,13 @@
                                                                     <div class="modal-body">
                                                                         <div class="card-body">
                                                                             <div class="form-group">
+                                                                                @*@{
+                                                                                    if (childFormId != Guid.Empty)
+                                                                                    {
+                                                                                        var childForm = template.InstantiateDataItem(childFormId);
+                                                                                        @Html.EditorFor(model => childForm, childForm.GetType().ToString())
+                                                                                    }
+                                                                                }*@
                                                                                 <p>@popup.Body</p>
                                                                                 @{
                                                                                     if (popup.Message.Any())
