@@ -134,31 +134,57 @@ namespace Catfish.Core.Authorization.Handlers
             {
                 //Here, we are working with an instantiated object.
 
-                ////If the workflow action is authorized for users belong to a certain domains, then
-                ////check whether the signed-in user's email belongs to one of those domains.
-                //string currentUserEmail = context.User.FindFirstValue(ClaimTypes.Email);
-                //if (workflowAction.IsAuthorizedByDomain(currentUserEmail))
-                //{
-                //    context.Succeed(requirement);
-                //    return Task.CompletedTask;
-                //}
+                var entityStatusId = entity.StatusId;
+                if (!entityStatusId.HasValue)
+                    return Task.CompletedTask; //Cannot evaluate authorization for objects with no status value
 
-                ////At this point, the user is authenticated and the workflow access is restricted to specific user roles.
-                ////Therefore, we need to check whether the user possesses one of those roles within a group where the
-                ////entity template is associated with.
 
-                //List<Guid> groupdsAssociatedWithTemplate = _authHelper.GetGroupsAssociatedWithTemplate(resource.Id).ToList();
-                //List<Guid> authorizedRoles = workflowAction.AuthorizedRoles.Select(roleRef => roleRef.RefId).ToList();
-                //string currentUserIdStr = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                //Guid currentUserId = Guid.Parse(currentUserIdStr);
+                //Select the state reference defined in the workflow to perform the specified action on 
+                // entities with the above status
+                var stateReference = workflowAction.States.Where(sr => sr.RefId == entityStatusId).FirstOrDefault();
 
-                //bool hasRoleInGroup = _authHelper.HasRoleInGroup(
-                //    currentUserId,
-                //    groupdsAssociatedWithTemplate,
-                //    authorizedRoles);
+                //Authorization successful if the current user is the owner of the entity AND
+                //the requested action is authorized to the owner
+                string currentUserEmail = _workflowService.GetLoggedUserEmail();
+                if (entity.UserEmail == currentUserEmail && stateReference.IsOwnerAuthorized())
+                {
+                    context.Succeed(requirement);
+                    return Task.CompletedTask;
+                }
 
-                //if (hasRoleInGroup)
-                //    context.Succeed(requirement);
+                //Authorization successful if the current user belongs to an authorized domain for
+                //the requested action is authorized to the owner
+                if (workflowAction.IsAuthorizedByDomain(entityStatusId.Value, currentUserEmail))
+                {
+                    context.Succeed(requirement);
+                    return Task.CompletedTask;
+                }
+
+
+                //At this point, the user is authenticated and the permission-requested GetAction is restricted to 
+                //specific user roles.
+                //Therefore, we need to check whether the user possesses one of those roles within a group where the
+                //entity template is associated with.
+
+                //Take the list of IDs of groups where the template is associated with.
+                List<Guid> groupdsAssociatedWithTemplate = _authHelper.GetGroupsAssociatedWithTemplate(resource.Id).ToList();
+
+                //Take the list of IDs of the roels where the current state in this iterayion is authotized with.
+                List<Guid> authorizedRoles = stateReference.AuthorizedRoles.Select(roleRef => roleRef.RefId).ToList();
+
+                string currentUserIdStr = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                Guid currentUserId = Guid.Parse(currentUserIdStr);
+
+                bool hasRoleInGroup = _authHelper.HasRoleInGroup(
+                    currentUserId,
+                    groupdsAssociatedWithTemplate,
+                    authorizedRoles);
+
+                if (hasRoleInGroup)
+                {
+                    context.Succeed(requirement);
+                    return Task.CompletedTask;
+                }
 
                 return Task.CompletedTask;
             }

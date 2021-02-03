@@ -77,13 +77,6 @@ namespace Catfish.Core.Models
         }
 
         [NotMapped]
-        public Guid? StateId
-        {
-            get => GetGuidAttribute("state-id");
-            set => Data.SetAttributeValue("state-id", value);
-        }
-
-        [NotMapped]
         public string ModelType
         {
             get => Data.Attribute("model-type").Value;
@@ -114,7 +107,11 @@ namespace Catfish.Core.Models
         public SystemStatus Status { get; set; }
         
         [Column("StatusId")]
-        public Guid? StatusId { get; set; }
+        public Guid? StatusId 
+        {
+            get => GetGuidAttribute("status-id");
+            set => Data.SetAttributeValue("status-id", value);
+        }
 
         [Column("UserEmail")]
         public string UserEmail { get; set; }
