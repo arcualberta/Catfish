@@ -1,0 +1,19 @@
+﻿@model Catfish.Core.Models.Contents.Fields.AttachmentField
+@{
+    ViewBag.Title = "Attachment Field";
+}
+
+@Html.HiddenFor(model => model.ModelType)
+@Html.HiddenFor(model => model.Id)
+
+@Html.AntiForgeryToken()
+@*@Html.LabelFor(m => m.AttachmentFile)
+
+@Html.HiddenFor(m=>m.AttachmentFile)
+@Html.EditorFor(m => m.AttachmentFile)*@
+@Html.HiddenFor(m=>m.FileNames)
+@{ 
+    var name = Html.NameFor(m => m.FileNames) + "_file";
+    var id = Html.IdFor(m => m.FileNames) + "_" + Model.Id +"_file";
+}
+<input type="file" id="@id" name="@name" />

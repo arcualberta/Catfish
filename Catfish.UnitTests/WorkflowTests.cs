@@ -1598,6 +1598,573 @@ namespace Catfish.UnitTests
 
 
         [Test]
+        public void GapSasTest()
+        {
+            string lang = "en";
+            string templateName = "SAS Application Winter 2021";
+
+            IWorkflowService ws = _testHelper.WorkflowService;
+            AppDbContext db = _testHelper.Db;
+            IAuthorizationService auth = _testHelper.AuthorizationService;
+
+
+            ItemTemplate template = db.ItemTemplates
+                .Where(et => et.TemplateName == templateName)
+                .FirstOrDefault();
+
+            if (template == null)
+            {
+                template = new ItemTemplate();
+                db.ItemTemplates.Add(template);
+            }
+            else
+            {
+                ItemTemplate t = new ItemTemplate();
+                t.Id = template.Id;
+                template.Data = t.Data;
+                template.Initialize(false);
+            }
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
+
+            ws.SetModel(template);
+
+            //Get the Workflow object using the workflow service
+            Workflow workflow = ws.GetWorkflow(true);
+
+            //Defininig states
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
+
+
+            //Defining email templates
+            EmailTemplate adminNotification = ws.GetEmailTemplate("Admin Notification", true);
+            adminNotification.SetDescription("This metadata set defines the email template to be sent to the admin when an inspector does not submit an inspection report timely.", lang);
+            adminNotification.SetSubject("Safety Inspection Submission");
+            adminNotification.SetBody("TBD");
+
+            EmailTemplate inspectorSubmissionNotification = ws.GetEmailTemplate("Inspector Notification", true);
+            inspectorSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to an inspector when an inspection report is not submitted timely.", lang);
+            inspectorSubmissionNotification.SetSubject("Safety Inspection Reminder");
+            inspectorSubmissionNotification.SetBody("TBD");
+
+            //=============================================================================== Defininig SAS form
+            DataItem sasForm = template.GetDataItem("SAS Application Form", true, lang);
+            sasForm.IsRoot = true;
+            sasForm.SetDescription("This template is designed for SAS Application Grant", lang);
+
+            // ====================================================== APLICANT INFORMATION
+            sasForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h1", "Applicant Information", lang);
+            sasForm.CreateField<InfoSection>(null, null)
+               .AppendContent("div", "The Adjudication committee is a multi-disciplinary committee. Please write for someone who does not understand your work and/or field.<br/>Be clear and concise in your explanations, and make sure your justifications are detailed.", lang);
+
+            sasForm.CreateField<TextField>("Applicant Name:", lang, true, true);
+            sasForm.CreateField<TextField>("Email Address:", lang, true, true)
+                .SetDescription("Please use your UAlberta CCID email address.", lang);
+
+            string[] departmentList = new string[] { "Anthropology",
+                                                "Art & Design",
+                                                "Drama",
+                                                "East Asian Studies",
+                                                "Economics",
+                                                "English and Film Studies",
+                                                "History and Classics",
+                                                "Linguistics",
+                                                "Modern Languages and Cultural Studies (MLCS)",
+                                                "Music",
+                                                "Philosophy",
+                                                "Political Science",
+                                                "Psychology",
+                                                "Sociology",
+                                                "Women's and Gender Studies",
+                                                "Media and Technology Studies",
+                                                "Arts Resources Centre" };
+            var dept = sasForm.CreateField<SelectField>("Department:", lang, departmentList, true);
+
+            string[] rank = new string[]{ "Assistant Professor",
+                                "Associate Professor",
+                                "Professor",
+                                "FSO",
+                                "Other"};
+            sasForm.CreateField<SelectField>("Rank:", lang, rank, true);
+
+            //==============================================================================CHAIR's Contact Information
+            sasForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h1", "Chair’s Contact Information", lang)
+                .AppendContent("div", "<i>When the applicant is a Department Chair, the Dean's information must be provided.</i>", lang);
+
+            string[] optionText = new string[] { "Yes", "No" };
+            var isChair = sasForm.CreateField<RadioField>("Are you the Department Chair?", lang, optionText, true);
+            //if department Chair  -- the chair will be the dean
+            //the order of the department chair list have to be in the same order of the list Department above
+            // the first one is the Dean ==> no association with the department -- exception
+            string[] chairDept = new string[] { "Dean: Steve Patten : spatten@ualberta.ca",
+                                                "Anthropology : Pamela Willoughby: pwilloug @ualberta.ca",
+                                                "Art & Design : Aidan Rowe: rowe1@ualberta.ca",
+                                                "Drama: Melanie Dreyer-Lude : dreyerlu@ualberta.ca",
+                                                "East Asian Studies: Christopher Lupke: lupke@ualberta.ca",
+                                                 "Economics : Rick Szostak: rszostak@ualberta.ca",
+                                                 "English and Film Studies: Cecily Devereux: devereux@ualberta.ca",
+                                                 "History and Classics : Ryan Dunch: rdunch@ualberta.ca",
+                                                 "Linguistics: Herb Colston: colston@ualberta.ca",
+                                                 "Modern Languages and Cultural Studies (MLCS): Alla Nedashkiviska: allan@ualberta.ca",
+                                                 "Music: Patricia Tao: ptao@ualberta.ca",
+                                                 "Philosophy: Marie-Eve Morin: mmorin1@ualberta.ca",
+                                                 "Political Science: Catherine Kellogg: ckellogg@ualberta.ca",
+                                                 "Psychology: Anthony Singhal: asinghal@ualberta.ca",
+                                                 "Sociology: Sara Dorow: sdorow@ualberta.ca",
+                                                 "Women's and Gender Studies: Michelle Meagher: mmmeaghe@ualberta.ca",
+                                                 "Media and Technology Studies: Astrid Ensslin: ensslin@ualberta.ca",
+                                                 "Arts Resources Centre: arcAdmin : kamal@ranaweera.ca" };
+
+            string optValues = "1," + optionText[0] + "," + "&&"; //index  => of the fields in the list of 1st input parameter of SetOptionIf -- this refer to "isChair" radioButtonList, 
+                                                                  //optionText[0] ==> option value that is to trigger the operator if the list of fields are more than 1
+
+
+            var chair = sasForm.CreateField<SelectField>("Chair:", lang, chairDept, true).SetOptionIf(new List<OptionsField> { dept, isChair }, chairDept, optValues);//chairDept =>string[]
+
+            string delimiter = ":";
+
+            sasForm.CreateField<TextField>("Chair's Name:", lang, true, true).SetDefaultReferenceValue(chair, delimiter, 1);
+            sasForm.CreateField<TextField>("Chair's Email:", lang, true, true).SetDefaultReferenceValue(chair, delimiter, 2);
+
+            //========================================================================PROJECT DETAILS
+
+            sasForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h1", "Project Details", lang);
+
+            sasForm.CreateField<TextField>("Project Title:", lang, true, true);
+            sasForm.CreateField<TextArea>("Project Description:", lang, true, true).SetDescription("Describe your research project and explain why this is a necessary and urgent application for funding. Maximum 250 words.", lang);
+            sasForm.CreateField<RadioField>("Does this project involve human or animal subjects?", lang, optionText, true);
+
+
+            //========================================================================BUDGET DETAILS
+
+            sasForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h1", "Budget Details", lang)
+                .AppendContent("h2", "Conference Travel", lang)
+                .AppendContent("p", "<i>All travel expenses are reimbursed in compliance with the UAPPOL Travel Expense Policies</i>", lang)
+                .AppendContent("div",
+                    @"<p>
+                    <ul>
+                         <li> For conference travel, EFF SAS allows one night before and one night after a conference to a maximum of 7 days.</li>
+                                    <li> Applicants must include detailed estimates of their transportation and hotel costs.These should be from travel agents, hotels, and / or travel booking websites.Combined travel and hotel estimates are not accepted.</li>
+                                    <li> Limits:
+                                    <ul>
+                                    <li> Conference travel in Canada / US maximum - $2, 250.00 </li>
+                                    <li> Conference travel to all other destinations maximum - $3, 350.00 </li>
+                                    </ul>
+                                    </li>
+                                    </ul></p>",
+                    lang,
+                    "alert alert-info")
+
+              .AppendContent("div", "Please specify the travel cost breakdown and attach supporting documentation below.Please enter numerical values only.Do not use $ or, when entering your dollar values.", lang, "alert alert-warning");
+            sasForm.CreateField<TextField>("Name of Conference", lang);
+            sasForm.CreateField<DateField>("Date of Conference", lang);
+            sasForm.CreateField<TextField>("Destination", lang);
+            sasForm.CreateField<DateField>("Departure Date", lang);
+            sasForm.CreateField<DateField>("Return Date", lang);
+
+            string[] participationRoles = new string[] { "Invited Speaker", "Panel Member", "Refereed Paper Presentation", "Poster Presentation", "Other" };
+            var confParticipation = sasForm.CreateField<CheckboxField>("Conference Participation", lang, participationRoles);
+            sasForm.CreateField<TextField>("Other - please specify", lang).SetOptionIf(confParticipation, "Other");
+            sasForm.CreateField<DecimalField>("Airfare", lang).SetDescription("Includes: Airfare, trip cancellation insurance, seat selection and baggage fees", lang);
+            sasForm.CreateField<DecimalField>("Accomodation", lang);
+            sasForm.CreateField<DecimalField>("Per Diem / Meals", lang).SetDescription(@"<p>See UAPPOL <a href='https://policiesonline.ualberta.ca/PoliciesProcedures/Procedures/Travel-Expense-Procedure-Appendix-A-Schedule-of-Allowable-Expenses.pdf' target='_blank'>Travel Expense Procedure, Appendix A: Schedule of Allowable Travel Expenses</a> for allowable amounts and breakdown.</p>", lang);
+            sasForm.CreateField<DecimalField>("Ground Transportation", lang).SetDescription("Transportation to/from airport/home only", lang);
+            sasForm.CreateField<DecimalField>("Conference Registration", lang);
+            sasForm.CreateField<DecimalField>("Additional Expenses", lang).SetDescription("Includes bus, train, car rental, travel insurance, visas, incidentals NOT already included in Airfare, Accommodation or Ground Transportation", lang);
+            sasForm.CreateField<TextArea>("Details Additional Expenses", lang);
+            //attachment field
+            //Supported Documentation -
+            sasForm.CreateField<AttachmentField>("Supported Documentation", lang).SetDescription(@"Please attach the required travel and conference supporting documentation here as <span style='color: Red;'>a <b>single PDF document</b>. [Be sure to review the section of the Policies and Procedures on required supporting documentation]</span>", lang);
+
+            sasForm.CreateField<TextArea>("Justification", lang).SetDescription("Explain the significance of this conference to your research and scholarly career. Maximum 250 words.", lang);
+
+
+            // =================================================================================  RESEARCH AND CREATIVE ACTIVITY
+            sasForm.CreateField<InfoSection>(null, null)
+
+                .AppendContent("h2", "Research and Creative Activity", lang)
+                .AppendContent("h3", "Travel", lang)
+                .AppendContent("div",
+                    @"<p>
+                    <ul>
+                         <li>Research travel has no time limit, but will be funded to a maximum of $5,000.00</li>
+                         <li>Applicants must include detailed estimates of their transportation and hotel costs. These should be from travel agents, hotels, and/or travel booking websites. Combined travel and hotel estimates are not accepted.</li>    
+                           </ul></p>",
+                    lang,
+                    "alert alert-info")
+                .AppendContent("div", "Please specify the travel cost breakdown and attach supporting documentation below. Please enter numerical values only. Do not use $ or , when entering your dollar values.", lang, "alert alert-warning");
+
+
+
+            sasForm.CreateField<TextField>("Destination", lang);
+            sasForm.CreateField<DateField>("Departure Date", lang);
+            sasForm.CreateField<DateField>("Return Date", lang);
+            sasForm.CreateField<DecimalField>("Airfare", lang).SetDescription("Includes: Airfare, trip cancellation insurance, seat selection and baggage fees", lang);
+            sasForm.CreateField<DecimalField>("Accomodation", lang);
+            sasForm.CreateField<DecimalField>("Per Diem / Meals", lang).SetDescription(@"<p>See UAPPOL <a href='https://policiesonline.ualberta.ca/PoliciesProcedures/Procedures/Travel-Expense-Procedure-Appendix-A-Schedule-of-Allowable-Expenses.pdf' target='_blank'>Travel Expense Procedure, Appendix A: Schedule of Allowable Travel Expenses</a> for allowable amounts and breakdown.</p>", lang);
+            sasForm.CreateField<DecimalField>("Ground Transportation", lang).SetDescription("Transportation to/from airport/home only", lang);
+            sasForm.CreateField<DecimalField>("Conference Registration", lang);
+            sasForm.CreateField<DecimalField>("Additional Expenses", lang).SetDescription("Includes bus, train, car rental, travel insurance, visas, incidentals NOT already included in Airfare, Accommodation or Ground Transportation", lang);
+            sasForm.CreateField<TextArea>("Details of Additional Expenses", lang);
+
+            sasForm.CreateField<AttachmentField>("Supported Documentation", lang).SetDescription(@"Please attach the required travel and conference supporting documentation here as <span style='color: Red;'>a <b>single PDF document</b>. [Be sure to review the section of the Policies and Procedures on required supporting documentation]</span>", lang);
+
+            sasForm.CreateField<TextArea>("Justification", lang).SetDescription("<i>Explain how this travel is essential to advancing your research. Maximum 250 words.</i>", lang);
+
+
+            //=============================================================================== Personnel and Services
+            sasForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h1", "Personnel and Services", lang)
+                .AppendContent("div", "Failure to provide a detailed estimate will result in automatic disqualification of this part of the application.", lang, "alert alert-warning");
+
+            sasForm.CreateField<TextArea>("Description of personnel to be hired or services to be purchased", lang).SetDescription(@"<i>Provide and outline of the type of work to be undertaken, the expected time frame for completing that work, and a comment on why it is essential to your research. Maximum 250 words.</ i>", lang);
+            sasForm.CreateField<InfoSection>(null, null)
+               .AppendContent("h3", "Estimate for Hiring Students", lang)
+               .AppendContent("div", @"<i>For each student to be hired, click 'Add' and indicate whether the student will be an undergraduate, MA, or PhD student, and specify the period for which they will be hired, the number of hours to be worked, and related calculations.
+                     Applicants are expected to adhere to the Collective Agreement when calculating salaries for graduate students. Research budgets for casual student labour must reflect the minimum rate (award + salary + benefits)
+                    for Doctoral and Masters students.</i>", lang);
+            //Allow adding multiple PersonnelBudgetItem Form == TODO
+            // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
+
+
+            sasForm.CreateField<InfoSection>(null, null)
+               .AppendContent("h3", "Estimates for Contracted Services", lang)
+               .AppendContent("div", @"For each contracted service, click 'Add' and then provide the requested information. Please describe the services to be provided. Note that you must also attach written estimates for all contracted services. Estimates should be combined into one single PDF document.", lang);
+
+            //Allow adding multiple PersonnelBudgetItem Form TODO
+            // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
+
+            sasForm.CreateField<AttachmentField>("Contractor Cost Estimates", lang).SetDescription(@"<i>Attach written estimate for contracted services as <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
+[Required if funding requested for professional services]</span>", lang);
+            sasForm.CreateField<TextArea>("Justification", lang).SetDescription("Why are these services required for this project at this time? [Maximum 250 words]", lang);
+
+
+
+
+            //====================================================================== EQUIPMENT AND MATERIAL
+            sasForm.CreateField<InfoSection>(null, null)
+              .AppendContent("h3", "Equipment and Materials", lang)
+              .AppendContent("div", @"<i>Failure to provide a written estimate will result in automatic disqualification of this part of the application.</i>", lang);
+
+            sasForm.CreateField<TextArea>("Equipment and Material Justification", lang).SetDescription("Provide a description of the materials and equipment you plan to purchase and outline why they are essential to your research project at this time. Maximum 250 words.", lang);
+
+            sasForm.CreateField<InfoSection>(null, null)
+             .AppendContent("h3", "Estimates for Equipment and Material", lang);
+
+            // allow to add 1 or more Personnel budget Item Form here TODO
+            // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
+            sasForm.CreateField<AttachmentField>("Vendor Cost Estimates", lang).SetDescription(@"<i>Please submit documentation as a <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
+[Required if funding requested for equipment and materials]</span>", lang);
+
+            // =============================================  TEACHING RELEASE
+            sasForm.CreateField<InfoSection>(null, null)
+             .AppendContent("h3", "Teaching Release", lang)
+             .AppendContent("div", @"<i>List the courses you are scheduled to teach in the academic year for which release time is requested, indicating in which of these courses you wish to be released from teaching. Use the + button to add courses.</i>", lang);
+            sasForm.CreateField<InfoSection>(null, null)
+            .AppendContent("h5", "1st Term", lang);
+            //TODO: add sub Form here
+
+            sasForm.CreateField<InfoSection>(null, null)
+           .AppendContent("h5", "2nd Term", lang);
+            //TODO: add sub Form here
+
+            sasForm.CreateField<TextArea>("Justification", lang)
+                .SetDescription("<i>Explain why release time is urgent and necessary at this moment. Maximum 250 words.</i>", lang);
+
+            //==================================================== OVERVIEW OF FUND REQUESTED =======================================================================
+            sasForm.CreateField<InfoSection>(null, null)
+            .AppendContent("h1", "Overview of Funds Requested", lang)
+            .AppendContent("div", "This section auto - populates once you have entered your budget details under the appropriate section(s).", lang, "alert alert-info");
+
+            sasForm.CreateField<DecimalField>("Conference Travel Amount Requested", lang);
+            sasForm.CreateField<DecimalField>("Research / Creativity Activity Travel Amount Requested", lang);
+            sasForm.CreateField<DecimalField>("Support for Research and Creative Activity Equipment and Materials", lang);
+            sasForm.CreateField<IntegerField>("Teaching release time", lang);
+            sasForm.CreateField<DecimalField>("Personnel and Services", lang);
+            sasForm.CreateField<DecimalField>("TOTAL ASK OF GRANT", lang);
+
+
+            // ====================================================== Other and Previous Funding ========================================================================
+            sasForm.CreateField<InfoSection>(null, null)
+           .AppendContent("h1", "Other and Previous Funding", lang);
+
+            sasForm.CreateField<RadioField>("Have you received any SAS funding in the past 5 years?", lang, optionText, true);
+            sasForm.CreateField<RadioField>("Previous SAS Funding for this Project", lang, optionText, true)
+                .SetDescription("Have you previously received SAS funding in regard to this project?", lang);
+
+            sasForm.CreateField<RadioField>("Other Funding", lang, optionText, true)
+                .SetDescription("Have you sought support for this project from SSHRC, the Canada Council for the Arts, the Killam Fund, or any other agency, internal, or external sources of funding?", lang);
+
+            sasForm.CreateField<TextArea>("Other Support Sources", lang)
+               .SetDescription("Please identify additional sources of support for this project, if applicable. (Such as honoraria, sales revenues, commissions, etc.). Maximum 250 words.", lang);
+
+            // ====================================================== Scholarly Publications ========================================================================
+            sasForm.CreateField<InfoSection>(null, null)
+           .AppendContent("h1", "Scholarly Publications", lang);
+
+            sasForm.CreateField<TextArea>("Publications over the past 5 years.", lang)
+             .SetDescription("Please list your scholarly and/or creative publications over the past 5 years. Include conference presentations, displays, and exhibits or performances. Complete CVs will not be accepted.", lang);
+
+            sasForm.CreateField<InfoSection>(null, null)
+          .AppendContent("h3", "Collaborators", lang)
+          .AppendContent("div", "Required only if collaborator is a Faculty of Arts faculty member.", lang,"alert alert-info");
+            // TO DO -- Add Collaborator(s) below
+
+            //================================================ Submit form ===============================
+            sasForm.CreateField<InfoSection>(null, null)
+                .AppendContent("div", @"<h1>Save or Submit Your Application</h1>
+                                       <div>To complete the application later, please click on the Save button below. You will be given a randomly generated reference number for which you need to submit a password. You can retrieve 
+                                      the application using this reference number and the password and complete it later. Unfortunately if you misplace the reference number or forget the password, 
+                                       you will have to start over a new application.</div>
+
+                                      <div>If you have completed your application, please use the Submit button below. Submitted applications cannot be modified. 
+                                            <span style='color: Red'>If your submission is successful, you should get a confirmation email</span>. Please check for this email <span style='color:Red'>before</span> you close your browser. 
+                                If you don't see the email, <span style='color: Red'>your application may not have been submitted</span>, so please contact Nancie Hodgson, Research Coordinator (resarts@ualberta.ca).</div>", lang, "alert alert-info");
+
+            //=============================================================================             Defininig roles
+            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
+            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
+            WorkflowRole chairRole = workflow.AddRole(auth.GetRole("Chair", true));
+
+            // Submitting an inspection form
+            //Only safey inspectors can submit this form
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+            startSubmissionAction.Access = GetAction.eAccess.Restricted;
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedRole(inspectorRole.Id);
+
+            //Listing inspection forms.
+            //Inspectors can list their own submissions.
+            //Admins can list all submissions.
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
+
+            //Post action for submitting the form
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+
+            //Defining the pop-up for the above submitPostAction action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
+            submitActionPopUp.AddButtons("Yes, submit", "true");
+            submitActionPopUp.AddButtons("Cancel", "false");
+
+            // Edit submission related workflow items
+            //Defining actions
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+
+            //Submissions can only be edited by admins
+            editSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+
+
+            // Delete submission related workflow items
+            //Defining actions. Only admin can delete a submission
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
+            deleteSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.", "");
+            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+
+            db.SaveChanges();
+
+            template.Data.Save("..\\..\\..\\..\\Examples\\SASform_generared.xml");
+
+            // string json = JsonConvert.SerializeObject(template);
+            // File.WriteAllText("..\\..\\..\\..\\Examples\\SASform_generared.json", json);
+        }
+
+        private DataItem CreatePersonnelBudgetItemForm(ItemTemplate template)
+        {
+            string lang = "en";
+            DataItem pBudgetForm = template.GetDataItem("Personnel Budget Item", true, lang);
+            pBudgetForm.IsRoot = false;
+            pBudgetForm.SetDescription("Personnel Budget Item Form", lang);
+            pBudgetForm.CreateField<TextArea>("Provide details and calculations as specified above", lang, true);
+            pBudgetForm.CreateField<DecimalField>("Estimate Cost", lang, true);
+            return pBudgetForm;
+        }
+
+        private DataItem CreateTeachingReleaseForm(ItemTemplate template)
+        {
+            string lang = "en";
+            string[] optionText = new string[] { "Yes", "No" };
+          
+            DataItem courseReleaseForm = template.GetDataItem("Course Release Form", true, lang);
+            courseReleaseForm.IsRoot = false;
+            courseReleaseForm.CreateField<TextField>("Couse Name", lang, true);
+            courseReleaseForm.CreateField<RadioField>("Release Required?", lang, optionText, true);
+          
+            courseReleaseForm.CreateField<DecimalField>("Amount Requested ($)", lang, true);
+            return courseReleaseForm;
+        }
+        private DataItem CreateCollaboratorForm(ItemTemplate template)
+        {
+            string lang = "en";
+            
+            DataItem collaboratorForm = template.GetDataItem("Collaborator Information", true, lang);
+            collaboratorForm.IsRoot = false;
+            collaboratorForm.CreateField<TextField>("Full Name", lang, true);
+            collaboratorForm.CreateField<TextField>("Email Address", lang, true);
+            return collaboratorForm;
+        }
+
+        [Test]
+        public void TestFileUpload()
+        {
+            string lang = "en";
+            string templateName = "SAS Application Winter 2021";
+
+            IWorkflowService ws = _testHelper.WorkflowService;
+            AppDbContext db = _testHelper.Db;
+            IAuthorizationService auth = _testHelper.AuthorizationService;
+
+
+            ItemTemplate template = db.ItemTemplates
+                .Where(et => et.TemplateName == templateName)
+                .FirstOrDefault();
+
+            if (template == null)
+            {
+                template = new ItemTemplate();
+                db.ItemTemplates.Add(template);
+            }
+            else
+            {
+                ItemTemplate t = new ItemTemplate();
+                t.Id = template.Id;
+                template.Data = t.Data;
+                template.Initialize(false);
+            }
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
+
+            ws.SetModel(template);
+
+            //Get the Workflow object using the workflow service
+            Workflow workflow = ws.GetWorkflow(true);
+
+            //Defininig states
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
+
+
+            //Defining email templates
+            EmailTemplate adminNotification = ws.GetEmailTemplate("Admin Notification", true);
+            adminNotification.SetDescription("This metadata set defines the email template to be sent to the admin when an inspector does not submit an inspection report timely.", lang);
+            adminNotification.SetSubject("Safety Inspection Submission");
+            adminNotification.SetBody("TBD");
+
+            EmailTemplate inspectorSubmissionNotification = ws.GetEmailTemplate("Inspector Notification", true);
+            inspectorSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to an inspector when an inspection report is not submitted timely.", lang);
+            inspectorSubmissionNotification.SetSubject("Safety Inspection Reminder");
+            inspectorSubmissionNotification.SetBody("TBD");
+
+            //=============================================================================== Defininig SAS form
+            DataItem sasForm = template.GetDataItem("SAS Application Form", true, lang);
+            sasForm.IsRoot = true;
+            
+            sasForm.SetDescription("This template is designed for SAS Application Grant", lang);
+
+            // ====================================================== APLICANT INFORMATION
+            sasForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h1", "Applicant Information", lang);
+            sasForm.CreateField<InfoSection>(null, null)
+               .AppendContent("div", "The Adjudication committee is a multi-disciplinary committee. Please write for someone who does not understand your work and/or field.<br/>Be clear and concise in your explanations, and make sure your justifications are detailed.", lang);
+
+            sasForm.CreateField<TextField>("Applicant Name:", lang, true);
+            sasForm.CreateField<TextField>("Email Address:", lang, true)
+                .SetDescription("Please use your UAlberta CCID email address.", lang);
+            sasForm.CreateField<AttachmentField>("Supported Documentation", lang).SetDescription(@"Please attach the required travel and conference supporting documentation here as <span style='color: Red;'>a <b>single PDF document</b>. [Be sure to review the section of the Policies and Procedures on required supporting documentation]</span>", lang);
+           
+            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
+            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
+            //WorkflowRole chairRole = workflow.AddRole(auth.GetRole("Chair", true));
+
+            // Submitting an inspection form
+            //Only safey inspectors can submit this form
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+            startSubmissionAction.Access = GetAction.eAccess.Public;
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedRole(inspectorRole.Id);
+
+            //Listing inspection forms.
+            //Inspectors can list their own submissions.
+            //Admins can list all submissions.
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
+
+            //Post action for submitting the form
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+
+            //Defining the pop-up for the above submitPostAction action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
+            submitActionPopUp.AddButtons("Yes, submit", "true");
+            submitActionPopUp.AddButtons("Cancel", "false");
+
+            // Edit submission related workflow items
+            //Defining actions
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+
+            //Submissions can only be edited by admins
+            editSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+
+
+            // Delete submission related workflow items
+            //Defining actions. Only admin can delete a submission
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
+            deleteSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.", "");
+            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+
+            db.SaveChanges();
+
+            template.Data.Save("..\\..\\..\\..\\Examples\\TestFileUpload_generared.xml");
+
+        }
+
+        [Test]
         public void CompositeFormFieldTest()
         {
             string lang = "en";
