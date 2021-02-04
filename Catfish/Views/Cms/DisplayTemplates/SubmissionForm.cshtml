@@ -181,6 +181,7 @@
     }
     else
     {
-        <div class="alert alert-danger">Authorization failed.</div>
+        var errorMessage = string.IsNullOrWhiteSpace(Model.AuthorizationFailureMessage.Value) ? "Authorization failed." : Model.AuthorizationFailureMessage.Value;
+        <div class="alert alert-danger">@Html.Raw(errorMessage)</div>
     }
 }

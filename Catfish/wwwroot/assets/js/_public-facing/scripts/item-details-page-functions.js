@@ -11,6 +11,7 @@
         var form = $('#submissionDetailsForm_' + suffix);
 
         //Handling text areas and input elements EXCLUDING checkboxes, radio buttons, and drop-down (select) menus
+        
         values["entityId"] = entityId;
         values["buttonName"] = buttonName;
         values["currentStatus"] = currentStatus;

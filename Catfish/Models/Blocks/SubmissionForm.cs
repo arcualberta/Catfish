@@ -23,6 +23,9 @@ namespace Catfish.Models.Blocks
         [Display(Name = "Submission Confirmation")]
         public TextField SubmissionConfirmation { get; set; }
 
+        [Display(Name = "Authorization Failure Message")]
+        public TextField AuthorizationFailureMessage { get; set; }
+
         public CatfishSelectList<Collection> Collections { get; set; }
         public CatfishSelectList<ItemTemplate> ItemTemplates { get; set; }
 

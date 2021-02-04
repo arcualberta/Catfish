@@ -47,5 +47,6 @@ namespace Catfish.Core.Services
         /// <returns></returns>
         List<Group> GetApplicableGroups(ClaimsPrincipal user, OperationAuthorizationRequirement requirement, EntityTemplate entityTemplate, Entity instance = null);
 
+        Guid GetChildFormId(EntityTemplate entityTemplate, Guid postActionId);
     }
 }
