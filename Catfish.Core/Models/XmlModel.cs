@@ -59,6 +59,14 @@ namespace Catfish.Core.Models
             set => SetAttribute("css-class", value);
         }
 
+        public XmlModel Clone()
+        {
+            var type = Type.GetType(ModelType);
+            XmlModel model = Activator.CreateInstance(type, new XElement(Data)) as XmlModel;
+            return model;
+        }
+        
+
         public static XmlModel InstantiateContentModel(XElement data)
         {
             string typeString = data.Attribute("model-type").Value;
@@ -136,14 +144,6 @@ namespace Catfish.Core.Models
         public XElement GetElement(string tagName, bool createIfNotExist)
         {
             return XmlHelper.GetElement(Data, tagName, createIfNotExist);
-        }
-
-        public XmlModel Clone()
-        {
-            var type = Type.GetType(ModelType);
-            XmlModel model = Activator.CreateInstance(type) as XmlModel;
-            model.Data = new XElement(Data);
-            return model;
         }
 
         public bool GetAttribute(string attName, bool defaultValue)
