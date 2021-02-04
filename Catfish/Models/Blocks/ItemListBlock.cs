@@ -18,5 +18,6 @@ namespace Catfish.Models.Blocks
 
         public TextField SelectedItemTemplate { get; set; }
 
+        public TextField AuthorizationFailureMessage { get; set; }
     }
 }

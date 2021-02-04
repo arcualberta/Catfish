@@ -12,7 +12,7 @@
 @{
     var entityTemplateId = Guid.Parse(Model.SelectedItemTemplate);
     var collectionId = string.IsNullOrEmpty(Model.SelectedCollection) ? null as Guid? : Guid.Parse(Model.SelectedCollection);
- 
+
     var template = _entityTemplateService.GetTemplate(entityTemplateId);
 
 }
@@ -35,7 +35,8 @@
 }
 else
 {
-    <div class="alert alert-danger">Authorization Failed.</div>
+    var errorMessage = string.IsNullOrWhiteSpace(Model.AuthorizationFailureMessage.Value) ? "Authorization failed." : Model.AuthorizationFailureMessage.Value;
+    <div class="alert alert-danger">@Html.Raw(errorMessage)</div>
 }
 
 
