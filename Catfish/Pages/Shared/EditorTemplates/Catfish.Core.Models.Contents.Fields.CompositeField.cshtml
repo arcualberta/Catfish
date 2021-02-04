@@ -1,7 +1,7 @@
 ﻿@model Catfish.Core.Models.Contents.Fields.CompositeField
 
 @Html.HiddenFor(model => model.Id)
-@*@Html.HiddenFor(model => model.ModelType)*@
+@Html.HiddenFor(model => model.ModelType)
 
 @*<div class="composite-field-template" style="display:none">
         @Html.EditorFor(model => model.ChildTemplate, Model.ChildTemplate.GetType().ToString())

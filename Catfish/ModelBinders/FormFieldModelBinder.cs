@@ -77,6 +77,10 @@ namespace Catfish.ModelBinders
             {
                 (modelMetadata, modelBinder) = binders[typeof(InfoSection)];
             }
+            else if (typeof(CompositeField).IsAssignableFrom(modelType))
+            {
+                (modelMetadata, modelBinder) = binders[typeof(CompositeField)];
+            }
             else
             {
                 (modelMetadata, modelBinder) = binders[typeof(BaseField)];

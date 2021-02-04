@@ -84,8 +84,21 @@ namespace Catfish.Core.Models.Contents.Fields
                 AddChild();
         }
 
+        public override void UpdateValues(BaseField srcField)
+        {
+            CompositeField src = srcField as CompositeField;
+            if (src == null)
+                throw new Exception("The source field is null or is not a CompositeField");
 
-
-
+            //Clearing all children exist in the destination, if any
+            Children.Clear();
+            foreach (var srcChild in src.Children)
+            {
+                var dstChild = ChildTemplate.Clone() as DataItem;
+                dstChild.Id = srcChild.Id;
+                dstChild.UpdateFieldValues(srcChild);
+                Children.Add(dstChild);
+            }
+        }
     }
 }

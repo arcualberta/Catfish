@@ -27,7 +27,8 @@ namespace Catfish.ModelBinders
                 typeof(RadioField), 
                 typeof(SelectField), 
                 typeof(TextArea), 
-                typeof(TextField) 
+                typeof(TextField),
+                typeof(CompositeField) 
             };
 
             var binders = new Dictionary<Type, (ModelMetadata, IModelBinder)>();
