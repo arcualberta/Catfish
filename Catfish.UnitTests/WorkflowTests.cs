@@ -2212,23 +2212,23 @@ namespace Catfish.UnitTests
             inspectionForm.CreateField<DateField>("Date Date", lang, true)
                 .IncludeTime = false;
 
+            string[] optionText = new string[] { "Yes", "No", "N/A" };
+            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText, true);
+
+
             CompositeField authors = inspectionForm.CreateField<CompositeField>("Authors", lang, true);
             authors.CreateChildTemplate("Author", "Author information", lang);
             authors.ChildTemplate.CreateField<TextField>("Name", lang, true);
             authors.ChildTemplate.CreateField<TextField>("Email", lang, true);
-            authors.ChildTemplate.CreateField<TextField>("Phone", lang, false);
+           // authors.ChildTemplate.CreateField<TextField>("Phone", lang, false);
 
-            authors.Min = 3;
+            authors.Min = 2;
             authors.InsertChildren();
 
             //string[] optionBuilding = new string[] { "Arts and Convocation Hall", "Assiniboia Hall", "Fine Arts Building", "HM Tory Building", "HUB", "Humanities Centre", "Industrial Design Studio", "North Power Plant", "South Academic Building", "Timms Centre for the Arts", "Varsity Trailer" };
             //inspectionForm.CreateField<SelectField>("Building", lang, optionBuilding, true);
             //inspectionForm.CreateField<TextField>("Inspected By", lang, true, true);
             //inspectionForm.CreateField<IntegerField>("Number of People in the work area", lang, true);
-
-
-            string[] optionText = new string[] { "Yes", "No", "N/A" };
-            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText, true);
 
 
             //Defininig roles
@@ -2303,8 +2303,8 @@ namespace Catfish.UnitTests
 
             template.Data.Save("..\\..\\..\\..\\Examples\\compositeFormFieldTest_generared.xml");
 
-            string json = JsonConvert.SerializeObject(template);
-            File.WriteAllText("..\\..\\..\\..\\Examples\\compositeFormFieldTest_generared.json", json);
+          //  string json = JsonConvert.SerializeObject(template);
+          //  File.WriteAllText("..\\..\\..\\..\\Examples\\compositeFormFieldTest_generared.json", json);
         }
 
         [Test]

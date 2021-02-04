@@ -1,12 +1,15 @@
 ﻿@model Catfish.Core.Models.Contents.Fields.CompositeField
 
-<div class="composite-field-template" style="display:none">
-    @Html.EditorFor(model => model.ChildTemplate, Model.ChildTemplate.GetType().ToString())
-</div>
+@Html.HiddenFor(model => model.Id)
+@*@Html.HiddenFor(model => model.ModelType)*@
 
-@foreach (var child in Model.Children)
-{
-    <div class="row composite-field-child">
-        @Html.EditorFor(model => child, child.GetType().ToString())
-    </div>
-}
+@*<div class="composite-field-template" style="display:none">
+        @Html.EditorFor(model => model.ChildTemplate, Model.ChildTemplate.GetType().ToString())
+    </div>*@
+
+    @for (int i = 0; i < Model.Children.Count; i++)
+    {
+        <div class="row composite-field-child">
+            @Html.EditorFor(model => Model.Children[i], Model.Children[i].GetType().ToString())
+        </div>
+    }
