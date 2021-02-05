@@ -349,7 +349,11 @@ namespace Catfish
             Piranha.App.Fields.Register<ColorPicker>();
 
             Piranha.App.MediaTypes.Images.Add(".svg", "image/svg+xml", false);
-
+            Piranha.App.MediaTypes.Documents.Add(".xls", "application/vnd.ms-excel", false);
+            Piranha.App.MediaTypes.Documents.Add(".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", false);
+            Piranha.App.MediaTypes.Documents.Add(".csv", "text/csv", false);
+            Piranha.App.MediaTypes.Documents.Add(".doc", "application/msword", false);
+            Piranha.App.MediaTypes.Documents.Add(".docx", "application/vnd.openxmlformats-officedocument.wordprocessingm", false);
         }
         private static void RegisterCustomScripts()
         {
