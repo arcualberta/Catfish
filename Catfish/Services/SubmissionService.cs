@@ -114,7 +114,8 @@ namespace Catfish.Services
                 var potentialItems = query.OrderByDescending(i => i.Created).ToList();
                 foreach (var item in potentialItems)
                 {
-                    var task = _dotnetAuthorizationService.AuthorizeAsync(user, item, new List<IAuthorizationRequirement>() { TemplateOperations.ListInstances });
+                    //The user needs Read permission to view this item both in the item-details form and as a list entry
+                    var task = _dotnetAuthorizationService.AuthorizeAsync(user, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read });
                     task.Wait();
 
                     if (task.Result.Succeeded)

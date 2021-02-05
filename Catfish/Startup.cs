@@ -160,7 +160,7 @@ namespace Catfish
             services.AddSingleton<IAppService, AppService>();
 
             // Solr services
-            var configSection = Configuration.GetSection("SolarConfiguration:solrCore");
+            var configSection = Configuration.GetSection("SolarConfiguration:solrURL");
             if (configSection != null && !string.IsNullOrEmpty(configSection.Value))
                 services.AddSolrNet<SolrEntry>(configSection.Value);
 
