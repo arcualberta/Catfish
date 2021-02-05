@@ -43,6 +43,12 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("min", value);
         }
 
+        public int Max
+        {
+            get => GetAttribute("max", 0); // if it's 0 that means unlimited
+            set => SetAttribute("max", value);
+        }
+
         public CompositeField() { DisplayLabel = "Composite Field"; }
         public CompositeField(XElement data) : base(data) { DisplayLabel = "Composite Field"; }
         public CompositeField(string name, string desc, string lang = null) : base(name, desc, lang) { DisplayLabel = "Composite Field"; }

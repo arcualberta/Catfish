@@ -2223,6 +2223,7 @@ namespace Catfish.UnitTests
            // authors.ChildTemplate.CreateField<TextField>("Phone", lang, false);
 
             authors.Min = 1;
+            authors.Max = 3;//0 means unlimited
             authors.AllowMultipleValues = true;
             authors.InsertChildren();
 

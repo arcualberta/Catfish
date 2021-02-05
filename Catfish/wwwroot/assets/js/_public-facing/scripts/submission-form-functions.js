@@ -178,9 +178,14 @@ function submitWorkflowForm(suffix, successMessage) {
     });
 }
 
-function addDataItem(templateId, min) {
+function addDataItem(templateId, min, max) {
    
     let numItems = $(".composite-field-child").length; // number of item in the list
+    if (numItems == max) {
+        alert("Sorry, you can't add more item into the list.");
+        return false;
+    }
+
     let chilItemId = "composite-field-child-" + numItems;
     let dataItm = $("#" + templateId).clone().addClass("row composite-field-child").removeAttr('style').attr("id", chilItemId);
     let newGuid = createGuid();

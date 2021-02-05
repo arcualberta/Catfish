@@ -4,6 +4,7 @@
 @Html.HiddenFor(model => model.ModelType)
 @{
     string templateId = "composite-field-template-" + Model.Id;
+    
 }
 
 
@@ -31,7 +32,7 @@
     {
         <div id="addNewdataItem" style="float:right;">
        
-            <input type="button" class="btn btn-default btn-primary" id="cf_addDataItemBtn" onClick="addDataItem('@templateId', '@Model.Min'); return false;" value="Add" />
+            <input type="button" class="btn btn-default btn-primary" id="cf_addDataItemBtn" onClick="addDataItem('@templateId', '@Model.Min', '@Model.Max'); return false;" value="Add" />
 
         </div>
     }
