@@ -2,14 +2,40 @@
 
 @Html.HiddenFor(model => model.Id)
 @Html.HiddenFor(model => model.ModelType)
+@{
+    string templateId = "composite-field-template-" + Model.Id;
+}
 
-@*<div class="composite-field-template" style="display:none">
+
+<div id="@templateId" style="display: none;">
+    <div class="col-10">
         @Html.EditorFor(model => model.ChildTemplate, Model.ChildTemplate.GetType().ToString())
-    </div>*@
+        </div>
+    <div class="textAlignRight col-2"> <span class="fa fa-trash"></span></div>
+    </div>
 
     @for (int i = 0; i < Model.Children.Count; i++)
     {
-        <div class="row composite-field-child">
-            @Html.EditorFor(model => Model.Children[i], Model.Children[i].GetType().ToString())
+        string childDivId = "composite-field-child-" + i;
+        <div class="row composite-field-child" id="@childDivId">
+            <div class="col-10">
+                @Html.EditorFor(model => Model.Children[i], Model.Children[i].GetType().ToString())
+            </div>
+            <div class="textAlignRight col-2">
+                <span class="fa fa-trash" onclick="removeDataItem('@childDivId', '@Model.Min'); return false;"></span>
+            </div>
         </div>
     }
+
+    @if (Model.AllowMultipleValues)
+    {
+        <div id="addNewdataItem" style="float:right;">
+       
+            <input type="button" class="btn btn-default btn-primary" id="cf_addDataItemBtn" onClick="addDataItem('@templateId', '@Model.Min'); return false;" value="Add" />
+
+        </div>
+    }
+
+
+
+

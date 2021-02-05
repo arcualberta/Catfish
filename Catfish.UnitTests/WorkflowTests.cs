@@ -2218,11 +2218,12 @@ namespace Catfish.UnitTests
 
             CompositeField authors = inspectionForm.CreateField<CompositeField>("Authors", lang, true);
             authors.CreateChildTemplate("Author", "Author information", lang);
-            authors.ChildTemplate.CreateField<TextField>("Name", lang, true);
-            authors.ChildTemplate.CreateField<TextField>("Email", lang, true);
-            authors.ChildTemplate.CreateField<TextField>("Phone", lang, false);
+            authors.ChildTemplate.CreateField<TextField>("Name", lang, false);
+            authors.ChildTemplate.CreateField<TextField>("Email", lang, false);
+           // authors.ChildTemplate.CreateField<TextField>("Phone", lang, false);
 
-            authors.Min = 3;
+            authors.Min = 1;
+            authors.AllowMultipleValues = true;
             authors.InsertChildren();
 
             //string[] optionBuilding = new string[] { "Arts and Convocation Hall", "Assiniboia Hall", "Fine Arts Building", "HM Tory Building", "HUB", "Humanities Centre", "Industrial Design Studio", "North Power Plant", "South Academic Building", "Timms Centre for the Arts", "Varsity Trailer" };

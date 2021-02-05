@@ -287,3 +287,13 @@ ul.checkboxgroup li {
     margin-left: 8px;
     margin-right: 20px;
 }
+
+/* composite Field*/
+.composite-field-child {
+    border: 1px solid lightGrey;
+    padding: 15px;
+    margin:15px;
+}
+.textAlignRight{
+    text-align: right;
+}
