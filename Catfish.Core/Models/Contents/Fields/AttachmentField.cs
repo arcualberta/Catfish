@@ -11,27 +11,62 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Fields
 {
-    public class AttachmentField : MonolingualTextField//, IFormFile
+    public class AttachmentField : BaseField
     {
-      
-       // public IFormFile AttachmentFile { get; set; }
+        public static string FileContainerTag = "files";
+        public XmlModelList<FileReference> Files { get; set; }
 
-       public string FileNames { get; set; }
-        public List<string> AcceptExtensions { get; set; } = new List<string>();
-        public int MaxFileUploadLimit { get; set; }
+        public string[] AllowedExtensions 
+        { 
+            get => GetAttribute("extensions", new string[0]); 
+            set => SetAttribute("extensions", value); 
+        }
+        public int MaxFileSize
+        {
+            get => GetAttribute("maxFileSize", 0);
+            set => SetAttribute("maxFileSize", value);
+        }
 
-       // public string ContentDisposition => AttachmentFile.ContentDisposition;  //throw new NotImplementedException();
+        public AttachmentField() { DisplayLabel = "Attachment Field"; }
+        public AttachmentField(XElement data) : base(data) { DisplayLabel = "Attachment Field"; }
+        public AttachmentField(string name, string desc, string lang = null) : base(name, desc, lang) { DisplayLabel = "Attachment Field"; }
 
-      //  public string ContentType => AttachmentFile.ContentType; //throw new NotImplementedException();
+        public override void Initialize(eGuidOption guidOption)
+        {
+            base.Initialize(guidOption);
 
-      //  public string FileName => AttachmentFile.FileName;
+            //Building the values
+            XmlModel xml = new XmlModel(Data);
+            Files = new XmlModelList<FileReference>(xml.GetElement(FileContainerTag, true), true, FileReference.TagName);
+        }
+
+        public override void UpdateValues(BaseField srcField)
+        {
+            AttachmentField src = srcField as AttachmentField;
+
+            //Removing existing file references
+            Files.Clear();
+
+            //Inserting the new file references
+            foreach(var file in src.Files)
+                Files.Add(new FileReference(new XElement(file.Data)));
+        }
 
 
-     //   public IHeaderDictionary Headers => AttachmentFile.Headers; //throw new NotImplementedException();
+        public string FileNames { get; set; }
 
-      //  public long Length => AttachmentFile.Length;// throw new NotImplementedException();
+        // public string ContentDisposition => AttachmentFile.ContentDisposition;  //throw new NotImplementedException();
 
-     //   string IFormFile.Name => AttachmentFile.Name; //throw new NotImplementedException();
+        //  public string ContentType => AttachmentFile.ContentType; //throw new NotImplementedException();
+
+        //  public string FileName => AttachmentFile.FileName;
+
+
+        //   public IHeaderDictionary Headers => AttachmentFile.Headers; //throw new NotImplementedException();
+
+        //  public long Length => AttachmentFile.Length;// throw new NotImplementedException();
+
+        //   string IFormFile.Name => AttachmentFile.Name; //throw new NotImplementedException();
 
         //public int SetValue(object val, int valueIndex = 0)
         //{
@@ -43,7 +78,7 @@ namespace Catfish.Core.Models.Contents.Fields
         //    Values[valueIndex].Value = val == null ? FileName : val.ToString();
         //    return valueIndex;
         //}
-      
+
         //public void CopyTo(Stream target)
         //{
         //    throw new NotImplementedException();
@@ -59,11 +94,13 @@ namespace Catfish.Core.Models.Contents.Fields
         //    throw new NotImplementedException();
         //}
 
-        public AttachmentField() {
-            DisplayLabel = "Attachment Field";
-           // Values = new List<string>(); 
-        }
-        public AttachmentField(XElement data) : base(data) { DisplayLabel = "Attachment Field"; }
-        public AttachmentField(string name, string desc, string lang = null) : base(name, desc, lang) { DisplayLabel = "Attachment Field"; }
+        ////public AttachmentField()
+        ////{
+        ////    DisplayLabel = "Attachment Field";
+        ////    // Values = new List<string>(); 
+        ////}
+        ////public AttachmentField(XElement data) : base(data) { DisplayLabel = "Attachment Field"; }
+        ////public AttachmentField(string name, string desc, string lang = null) : base(name, desc, lang) { DisplayLabel = "Attachment Field"; }
+
     }
 }

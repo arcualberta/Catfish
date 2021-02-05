@@ -219,6 +219,25 @@ namespace Catfish.Core.Models
                 Data.SetAttributeValue(attName, string.Join(",", attValue.Select(val => val.ToString())));
         }
 
+        public string[] GetAttribute(string attName, string[] defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            if (defaultValue == null)
+                defaultValue = new string[0];
+
+            return (att == null || string.IsNullOrEmpty(att.Value))
+                ? defaultValue
+                : att.Value.Split(",", StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public void SetAttribute(string attName, string[] attValue)
+        {
+            if (attValue == null)
+                Data.SetAttributeValue(attName, "");
+            else
+                Data.SetAttributeValue(attName, string.Join(",", attValue));
+        }
+
         public T GetAttribute<T>(string attName, T defaultValue) where T : Enum
         {
             var att = Data.Attribute(attName);
