@@ -53,8 +53,6 @@ function submitWorkflowForm(suffix, successMessage) {
             values[name] = [field.value];
         });
 
-       
-
 
         //========================= process attached files first =====================================
         //get the attachmentFiles -- MR Jan 23 2021 attemp to attach file upload
@@ -92,7 +90,7 @@ function submitWorkflowForm(suffix, successMessage) {
                 contentType: false,
                 processData: false,
                 success: function (response) {
-                    alert("sukses " + response);
+                    alert("succes " + response);
                     if (response.includes("|")) {
                         //contain more than 1 field attachment that has file
                         let elms = response.split("|");

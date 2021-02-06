@@ -38,6 +38,9 @@ namespace Catfish.Core.Models.Contents.Fields
             //Building the values
             XmlModel xml = new XmlModel(Data);
             Files = new XmlModelList<FileReference>(xml.GetElement(FileContainerTag, true), true, FileReference.TagName);
+
+            if (Files.Count == 0)
+                Files.Add(new FileReference());
         }
 
         public override void UpdateValues(BaseField srcField)
@@ -51,7 +54,6 @@ namespace Catfish.Core.Models.Contents.Fields
             foreach(var file in src.Files)
                 Files.Add(new FileReference(new XElement(file.Data)));
         }
-
 
         public string FileNames { get; set; }
 

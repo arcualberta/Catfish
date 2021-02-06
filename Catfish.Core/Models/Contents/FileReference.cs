@@ -20,12 +20,31 @@ namespace Catfish.Core.Models.Contents
             get => GetAttribute("url", null as string);
             set => SetAttribute("url", value);
         }
+        public string Thumbnail
+        {
+            get => GetAttribute("thumbnail", null as string);
+            set => SetAttribute("thumbnail", value);
+        }
+
+        public string ContentType
+        {
+            get => GetAttribute("content-type", null as string);
+            set => SetAttribute("content-type", value);
+        }
+
+        public long Size
+        {
+            get => GetAttribute("size", 0);
+            set => SetAttribute("size", value);
+        }
+
 
         public string OriginalName
         {
             get => GetAttribute("original-name", null as string);
             set => SetAttribute("original-name", value);
         }
+
 
         public FileReference() : base(TagName) { SetNewGuid(); }
         public FileReference(XElement data) : base(data) { }

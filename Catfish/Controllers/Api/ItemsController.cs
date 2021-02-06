@@ -201,7 +201,7 @@ namespace Catfish.Controllers.Api
         {
            
             List<SelectListItem> result = new List<SelectListItem>();
-            if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(id) && id.ToLower() != "null")
             {
                 var actions = _entityTemplateService.GetTemplateActions(Guid.Parse(id));
             
@@ -211,6 +211,8 @@ namespace Catfish.Controllers.Api
                  
                 }
             }
+
+            result = result.OrderBy(li => li.Text).ToList();
             return result ;
         }
 
@@ -222,23 +224,18 @@ namespace Catfish.Controllers.Api
             string dictFileNames = ""; //"key1:file1,file2 | key2:file1,file2"
             foreach (IFormFile f in files)
             {
-                string newGuid = System.Text.RegularExpressions.Regex.Replace(Convert.ToBase64String(Guid.NewGuid().ToByteArray()), "[/+=]", "");
+                string newGuid = Guid.NewGuid().ToString(); //System.Text.RegularExpressions.Regex.Replace(Convert.ToBase64String(Guid.NewGuid().ToByteArray()), "[/+=]", "");
                 //create temp directory for login user
                 if (!Directory.Exists("wwwroot/uploads/temp"))
                     Directory.CreateDirectory("wwwroot/uploads/temp");
 
                 string fileN = newGuid + "_" + f.FileName;
-                string path = Path.Combine(
-                  Directory.GetCurrentDirectory(), "wwwroot/uploads/temp",
-                  fileN);
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/temp", fileN);
 
                 string[] _fileNames = f.FileName.Split("__"); //this will get the field index ==> filed_4, this will be the key for the file name(s) of this field
-                string key = "";
-                string names = "";
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
                     f.CopyTo(stream);
-                    List<string> listfnames;
                     //fileNames.Add(fileN);
                     if(!dictFileNames.Contains(_fileNames[1],StringComparison.OrdinalIgnoreCase))
                     {

@@ -2034,7 +2034,7 @@ namespace Catfish.UnitTests
         public void TestFileUpload()
         {
             string lang = "en";
-            string templateName = "SAS Application Winter 2021";
+            string templateName = "Attachment Test";
 
             IWorkflowService ws = _testHelper.WorkflowService;
             AppDbContext db = _testHelper.Db;
@@ -2070,48 +2070,26 @@ namespace Catfish.UnitTests
             State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
-
-            //Defining email templates
-            EmailTemplate adminNotification = ws.GetEmailTemplate("Admin Notification", true);
-            adminNotification.SetDescription("This metadata set defines the email template to be sent to the admin when an inspector does not submit an inspection report timely.", lang);
-            adminNotification.SetSubject("Safety Inspection Submission");
-            adminNotification.SetBody("TBD");
-
-            EmailTemplate inspectorSubmissionNotification = ws.GetEmailTemplate("Inspector Notification", true);
-            inspectorSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to an inspector when an inspection report is not submitted timely.", lang);
-            inspectorSubmissionNotification.SetSubject("Safety Inspection Reminder");
-            inspectorSubmissionNotification.SetBody("TBD");
-
             //=============================================================================== Defininig SAS form
-            DataItem sasForm = template.GetDataItem("SAS Application Form", true, lang);
+            DataItem sasForm = template.GetDataItem("Submission Form", true, lang);
             sasForm.IsRoot = true;
             
             sasForm.SetDescription("This template is designed for SAS Application Grant", lang);
 
-            // ====================================================== APLICANT INFORMATION
-            sasForm.CreateField<InfoSection>(null, null)
-                .AppendContent("h1", "Applicant Information", lang);
-            sasForm.CreateField<InfoSection>(null, null)
-               .AppendContent("div", "The Adjudication committee is a multi-disciplinary committee. Please write for someone who does not understand your work and/or field.<br/>Be clear and concise in your explanations, and make sure your justifications are detailed.", lang);
 
             sasForm.CreateField<TextField>("Applicant Name:", lang, true);
-            sasForm.CreateField<TextField>("Email Address:", lang, true)
-                .SetDescription("Please use your UAlberta CCID email address.", lang);
             sasForm.CreateField<AttachmentField>("Supported Documentation", lang).SetDescription(@"Please attach the required travel and conference supporting documentation here as <span style='color: Red;'>a <b>single PDF document</b>. [Be sure to review the section of the Policies and Procedures on required supporting documentation]</span>", lang);
            
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
-            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
-            //WorkflowRole chairRole = workflow.AddRole(auth.GetRole("Chair", true));
+            WorkflowRole chairRole = workflow.AddRole(auth.GetRole("Chair", true));
 
             // Submitting an inspection form
             //Only safey inspectors can submit this form
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
             startSubmissionAction.Access = GetAction.eAccess.Public;
-            startSubmissionAction.AddStateReferances(emptyState.Id)
-                .AddAuthorizedRole(inspectorRole.Id);
 
-            //Listing inspection forms.
-            //Inspectors can list their own submissions.
+            //Listing forms.
+            //Applicants can list their own submissions.
             //Admins can list all submissions.
             GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
             listSubmissionsAction.Access = GetAction.eAccess.Restricted;
@@ -2160,7 +2138,7 @@ namespace Catfish.UnitTests
 
             db.SaveChanges();
 
-            template.Data.Save("..\\..\\..\\..\\Examples\\TestFileUpload_generared.xml");
+            template.Data.Save("..\\..\\..\\..\\Examples\\AttachmentTest_generared.xml");
 
         }
 

@@ -3,14 +3,21 @@
 @Html.HiddenFor(model => model.ModelType)
 @Html.HiddenFor(model => model.Id)
 
-@Html.AntiForgeryToken()
+@Html.EditorFor(model => model.Files)
+
 @*@Html.LabelFor(m => m.AttachmentFile)
 
-@Html.HiddenFor(m=>m.AttachmentFile)
-@Html.EditorFor(m => m.AttachmentFile)*@
-@Html.HiddenFor(m=>m.FileNames)
-@{ 
+    @Html.HiddenFor(m=>m.AttachmentFile)
+    @Html.EditorFor(m => m.AttachmentFile)*@
+@Html.HiddenFor(m => m.Files)
+
+@{
     var name = Html.NameFor(m => m.FileNames) + "_file";
-    var id = Html.IdFor(m => m.FileNames) + "_" + Model.Id +"_file";
+    var id = Html.IdFor(m => m.FileNames) + "_" + Model.Id + "_file";
 }
-<input type="file" id="@id" name="@name" />
+
+<div class="thumbnail-panel"></div>
+
+<input type="file" id="@id" name="@name" onchange="uploadFiles(this);" multiple />
+
+<div class="message-block"></div>
