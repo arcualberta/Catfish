@@ -1,5 +1,5 @@
 ﻿
-function uploadFiles(ele) {
+function uploadFiles(fieldId, ele) {
     var parent = $(ele).parent();
     var thumbnailPanel = $(parent).find('.thumbnail-panel');
     var messageBlock = $(parent).find('.message-block');
@@ -10,7 +10,7 @@ function uploadFiles(ele) {
     });
 
 
-    let uploadApiUrl = "/api/files/";
+    let uploadApiUrl = "/api/files/" + fieldId;
     if (Files.entries().next().value) {
         $.ajax({
             type: "POST",
@@ -24,7 +24,11 @@ function uploadFiles(ele) {
             processData: false,
             success: function (response) {
                 $(thumbnailPanel).html(response);
+                let thumbnailHtml = "";
+                response.forEach(fileRef, function (i, fileRef) {
+                    //thumbnailHtml = "<div class='col-md-2"
 
+                });
                 //if (response.includes("|")) {
                 //    //contain more than 1 field attachment that has file
                 //    let elms = response.split("|");
@@ -62,7 +66,7 @@ function uploadFiles(ele) {
 
             },
             error: function (error) {
-                $(messageBlock).html("File(s) uploading failed");
+                $(messageBlock).html("File uploading failed");
                 $(messageBlock).show();
                 return;
             },

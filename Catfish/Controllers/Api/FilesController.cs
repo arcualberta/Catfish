@@ -1,4 +1,5 @@
-﻿using Catfish.Core.Models.Contents;
+﻿using Catfish.Core.Models;
+using Catfish.Core.Models.Contents;
 using Catfish.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,17 +16,34 @@ namespace Catfish.Controllers.Api
     public class FilesController : ControllerBase
     {
         private readonly ItemService _itemService;
-        public FilesController(ItemService itemService)
+        private readonly AppDbContext _db;
+        public FilesController(AppDbContext db, ItemService itemService)
         {
             _itemService = itemService;
+            _db = db;
         }
-        public IActionResult OnPost(Guid id, ICollection<IFormFile> files)
+
+        [HttpGet("{fieldId}")]
+        public IActionResult Get(Guid fieldId)
         {
-            string dictFileNames = "";
+            List<FileReference> fileRefs = _db.FileReferences
+                .Where(fr => fr.FieldId == fieldId)
+                .ToList();
 
-            var fileReferences = _itemService.UploadFiles(id, files);
+            return Ok(fileRefs);
+        }
 
-            return Ok(dictFileNames);
+        [HttpPost("{fieldId}")]
+        public IActionResult Post(Guid fieldId, ICollection<IFormFile> files)
+        {
+            if (files.Count > 0)
+                _itemService.UploadFiles(fieldId, files);
+
+            List<FileReference> fileRefs = _db.FileReferences
+                .Where(fr => fr.FieldId == fieldId)
+                .ToList();
+
+            return Ok(fileRefs);
         }
     }
 }
