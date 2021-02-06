@@ -389,16 +389,50 @@ namespace Catfish.Core.Services
 
         public Guid GetChildFormId(EntityTemplate entityTemplate, Guid postActionId)
         {
-            SetModel(entityTemplate);
-            var workflow = GetWorkflow(false);
-            foreach(var action in workflow.Actions)
+            try
             {
-                if(action.PostActions.Where(pa => pa.Id == postActionId).Any())
+                SetModel(entityTemplate);
+                var workflow = GetWorkflow(false);
+                foreach (var action in workflow.Actions)
                 {
-                    return action.Params.Select(p => p.TemplateId).FirstOrDefault();
+                    if (action.PostActions.Where(pa => pa.Id == postActionId).Any())
+                    {
+                        return action.Params.Select(p => p.TemplateId).FirstOrDefault();
+                    }
                 }
+                return Guid.Empty;
             }
-            return Guid.Empty;
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return Guid.Empty;
+            }
+            
+        }
+
+        public PostAction GetPostActionByButtonId(EntityTemplate entityTemplate, Guid buttonId)
+        {
+            try
+            {
+                SetModel(entityTemplate);
+                var workflow = GetWorkflow(false);
+                foreach(var action in workflow.Actions)
+                {
+                    foreach(var postAction in action.PostActions)
+                    {
+                        if(postAction.StateMappings.Where(sm => sm.Id == buttonId).Any())
+                        {
+                            return postAction;
+                        }
+                    }
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
         }
     }
 }

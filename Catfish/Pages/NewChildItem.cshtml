@@ -1,0 +1,96 @@
+﻿@page "~/entity/{id:Guid}/addchild/{childTemplateId:Guid}/ButtonId/{buttonId:Guid}"
+@model Catfish.Pages.NewChildItemModel
+@using Catfish.Core.Authorization.Requirements;
+@using Microsoft.AspNetCore.Authorization;
+
+@inject Piranha.Manager.ManagerLocalizer Localizer
+@inject Catfish.Core.Services.IWorkflowService _workflowService;
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
+
+
+@{
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    }
+    @{
+        var postAction = _workflowService.GetPostActionByButtonId(Model.Template, Model.ButtonId);
+        var stateMapping = postAction.StateMappings.Where(sm => sm.Id == Model.ButtonId).FirstOrDefault();
+        var buttonLable = stateMapping.ButtonLabel;
+        var nextStatus = stateMapping.Next;
+        string suffix = Guid.NewGuid().ToString();
+    }
+
+    <h1>@buttonLable</h1>
+    @{
+        if ((await _authorizationService.AuthorizeAsync(User, Model.Template, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
+        .Succeeded)
+        {
+            <form method="post">
+
+                @Html.HiddenFor(model => model.ChildTemplateId)
+                @Html.HiddenFor(model => model.ParentId)
+
+
+                <div class="container">
+                    @Html.EditorFor(model => model.Child, Model.Child.GetType().ToString())
+                    @{
+                        string buttonName = postAction.ButtonLabel.Trim().Replace(" ", "") + "_" + @suffix;
+                        if (postAction.PopUps.Any())
+                        {
+                            foreach (var popup in postAction.PopUps)
+                            {
+                                <input id="@buttonLable" class="btn btn-success launch-modal" name="buttonName" type="button" value="@buttonLable" data-toggle="modal" data-target="#@buttonName" />
+                                <div id="@buttonName" class="modal fade" role="dialog">
+                                    <div>
+                                        <div class="modal-dialog">
+
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="myModalLabel">@popup.Title</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="card-body">
+                                                        <div class="form-group">
+
+                                                            <p>@popup.Body</p>
+                                                            @{
+                                                                if (popup.Message.Any())
+                                                                {
+                                                                    <p class="text-info"><small><strong>Note : </strong>@popup.Message</small></p>
+                                                                }
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    @{
+                                                        foreach (var button in popup.Buttons)
+                                                        {
+                                                            if (button.Text == "Cancel")
+                                                            {
+                                                                <button id="close-modal-button_@suffix" type="button" class="btn btn-primary" data-dismiss="modal">@button.Text</button>
+                                                            }
+                                                            else
+                                                            {
+                                                                <button id="@buttonLable" type="submit" class="btn btn-success">@button.Text</button>
+                                                            }
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        @*<input name="Save" type="submit" value="Save" />
+                            <input name="Subit" type="submit" value="Submit" />*@
+                    }
+
+                </div>
+            </form>
+        }
+    }
