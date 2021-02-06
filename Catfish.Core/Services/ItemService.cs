@@ -9,16 +9,20 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using ElmahCore;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace Catfish.Core.Services
 {
     public class ItemService : DbEntityService
     {
+        private readonly IConfiguration _configuration;
 
-        public ItemService(AppDbContext db, ErrorLog errorLog)
+        public ItemService(AppDbContext db, ErrorLog errorLog, IConfiguration configuration)
             : base(db, errorLog)
         {
-
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -128,6 +132,49 @@ namespace Catfish.Core.Services
             {
                 _errorLog.Log(new Error(ex));
             }
+        }
+
+        public string GetUploadRoot(Guid? itemId)
+        {
+            var configSection = _configuration.GetSection("SiteConfig:UploadRoot");
+            string path =  (configSection == null || string.IsNullOrEmpty(configSection.Value))
+                ? "wwwroot/uploads/item-data-files/"
+                : configSection.Value;
+
+            if (itemId.HasValue)
+                path = Path.Combine(Directory.GetCurrentDirectory(), path, itemId.Value.ToString());
+            else
+                path = Path.Combine(Directory.GetCurrentDirectory(), path);
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            return path;
+        }
+
+        public List<FileReference> UploadFiles(Guid itemId, ICollection<IFormFile> files)
+        {
+            List <FileReference> uploadedFileReferences = new List<FileReference>();
+            string uploadRoot = GetUploadRoot(itemId);
+
+            foreach (IFormFile file in files)
+            {
+                FileReference fileRef = new FileReference();
+                fileRef.Size = file.Length;
+                fileRef.OriginalFileName = file.FileName;
+                fileRef.FileName = fileRef.Id + "_" + file.FileName;
+                fileRef.ContentType = file.ContentType;
+                fileRef.ItemId = itemId;
+
+                //Destination absolute path name
+                string pathName = Path.Combine(uploadRoot, fileRef.FileName);
+                using (var stream = new FileStream(pathName, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+            }
+
+            return uploadedFileReferences;
         }
     }
 }

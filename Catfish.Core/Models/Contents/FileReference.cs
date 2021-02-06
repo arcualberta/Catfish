@@ -9,22 +9,32 @@ namespace Catfish.Core.Models.Contents
     {
         public const string TagName = "file";
 
-        public string Path
+        public string FileName
         {
-            get => GetAttribute("path", null as string);
-            set => SetAttribute("path", value);
+            get => GetAttribute("file", null as string);
+            set => SetAttribute("file", value);
+        }
+        public string OriginalFileName
+        {
+            get => GetAttribute("original-file", null as string);
+            set => SetAttribute("original-file", value);
         }
 
-        public string Url
-        {
-            get => GetAttribute("url", null as string);
-            set => SetAttribute("url", value);
-        }
         public string Thumbnail
         {
             get => GetAttribute("thumbnail", null as string);
             set => SetAttribute("thumbnail", value);
         }
+
+        public Guid? ItemId
+        {
+            get => GetAttribute("item-id", null as Guid?);
+            set => SetAttribute("item-id", value);
+        }
+
+        //No need to store this in the XML object. This should be computed
+        //and initilized before the file is sent to the front end.
+        public string Url { get; set; }
 
         public string ContentType
         {
@@ -37,14 +47,6 @@ namespace Catfish.Core.Models.Contents
             get => GetAttribute("size", 0);
             set => SetAttribute("size", value);
         }
-
-
-        public string OriginalName
-        {
-            get => GetAttribute("original-name", null as string);
-            set => SetAttribute("original-name", value);
-        }
-
 
         public FileReference() : base(TagName) { SetNewGuid(); }
         public FileReference(XElement data) : base(data) { }
