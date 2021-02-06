@@ -674,7 +674,7 @@ namespace Catfish.UnitTests
             PostAction moveToDraftErrorPostAction = moveToDraftAction.AddPostAction("With Error", "Comment");
 
             //Defining state mappings
-            moveToDraftErrorPostAction.AddStateMapping(moveToDraftErrorState.Id, moveToDraftCorrectState.Id, "Move To Draft Correct");
+            moveToDraftCorrectPostAction.AddStateMapping(gfcApprovedState.Id, moveToDraftErrorState.Id, "Move To Draft Error");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
             PopUp moveToDraftErrorActionPopUpopUp = moveToDraftErrorPostAction.AddPopUp("Confirmation", "Do you really want to move to draft in error state this document?", "Once moved, you cannot access this document.");
