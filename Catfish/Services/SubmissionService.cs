@@ -246,7 +246,6 @@ namespace Catfish.Services
                 newItem.DataContainer.Add(newDataItem);
                 newDataItem.EntityId = newItem.Id;
 
-
                 User user = _workflowService.GetLoggedUser();
                 var fromState = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
                 newItem.AddAuditEntry(user.Id,

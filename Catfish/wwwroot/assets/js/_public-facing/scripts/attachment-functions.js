@@ -25,16 +25,20 @@
                 let thumbnailHtml = $(thumbnailPanel).html();
                 let index = $('#' + fieldId + ' .data-panel').length;
                 for (i = 0; i < response.length; ++i) {
-                    d = response[i]; 
+                    d = response[i];
                     dataPanel = createSubmitDataFileds(d, fieldId, fieldName, index, fileModelType);
                     $('#' + fieldId).append(dataPanel);
-                    ++index;
 
                     thumbnailHtml += "\
-                    <div class='thumbnail ' style=''>\
-                        <div style='background-image: url(\"" + d.thumbnail + "\");'></div>\
-                        <div>" + d.originalFileName + "</div>\
+                    <div class='thumbnail ' style='position: relative;'>\
+                        <div style='background-image: url(\"" + d.thumbnail + "\");' class='text-right'> \
+                            <button type='button' class='btn btn-danger btn-circle btn-xm' onclick='deleteFile(this, " + index + ");'>X</button> \
+                        </div>\
+                        <div style='' class='label text-center'>" + d.originalFileName + "</div>\
+                        <div style='' class='label-active text-center'>" + d.originalFileName + "</div>\
                     </div>";
+
+                    ++index;
                 }
                 $(thumbnailPanel).html(thumbnailHtml);
             },
@@ -51,8 +55,8 @@
 function createSubmitDataFileds(data, fieldId, fieldName, index, fileModelType) {
     var idPrefix = fieldId + "_Files_" + index + "__";
     var namePrefix = fieldName + ".Files[" + index + "].";
-
-    var dataPanel = $('<div class="data-panel">');
+    
+    var dataPanel = $('<div class="data-panel panel-' + index + '">');
 
     dataPanel.append($('<input>', {
         id: idPrefix + 'Id',
@@ -114,6 +118,8 @@ function createSubmitDataFileds(data, fieldId, fieldName, index, fileModelType) 
     return dataPanel;    
 }
 
-function createHiddenFileDataField(id, name, value) {
-    value
+function deleteFile(ele, index) {
+    var parent = $(ele).parent();
+    var thumbnailPanel = $(parent).find('.thumbnail-panel');
+    alert()
 }
