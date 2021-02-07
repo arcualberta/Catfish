@@ -23,26 +23,10 @@ namespace Catfish.Controllers.Api
             _db = db;
         }
 
-        [HttpGet("{fieldId}")]
-        public IActionResult Get(Guid fieldId)
+        [HttpPost]
+        public IActionResult Post(ICollection<IFormFile> files)
         {
-            List<FileReference> fileRefs = _db.FileReferences
-                .Where(fr => fr.FieldId == fieldId)
-                .ToList();
-
-            return Ok(fileRefs);
-        }
-
-        [HttpPost("{fieldId}")]
-        public IActionResult Post(Guid fieldId, ICollection<IFormFile> files)
-        {
-            if (files.Count > 0)
-                _itemService.UploadFiles(fieldId, files);
-
-            List<FileReference> fileRefs = _db.FileReferences
-                .Where(fr => fr.FieldId == fieldId)
-                .ToList();
-
+            List<FileReference> fileRefs = _itemService.UploadFiles(files);
             return Ok(fileRefs);
         }
     }

@@ -287,3 +287,12 @@ ul.checkboxgroup li {
     margin-left: 8px;
     margin-right: 20px;
 }
+
+/* Attachment Field Styles */
+.thumbnail-panel .thumbnail {
+    width: 120px;
+    height: 160px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    margin:5px;
+}

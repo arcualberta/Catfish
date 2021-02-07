@@ -15,7 +15,6 @@ namespace Catfish.Core.Models.Contents.Fields
     {
         public static string FileContainerTag = "files";
         public XmlModelList<FileReference> Files { get; set; }
-
         public string[] AllowedExtensions 
         { 
             get => GetAttribute("extensions", new string[0]); 
@@ -38,9 +37,6 @@ namespace Catfish.Core.Models.Contents.Fields
             //Building the values
             XmlModel xml = new XmlModel(Data);
             Files = new XmlModelList<FileReference>(xml.GetElement(FileContainerTag, true), true, FileReference.TagName);
-
-            if (Files.Count == 0)
-                Files.Add(new FileReference());
         }
 
         public override void UpdateValues(BaseField srcField)

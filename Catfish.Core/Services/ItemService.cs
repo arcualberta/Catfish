@@ -144,7 +144,7 @@ namespace Catfish.Core.Services
             if (itemId.HasValue)
                 path = Path.Combine(Directory.GetCurrentDirectory(), path, itemId.Value.ToString());
             else
-                path = Path.Combine(Directory.GetCurrentDirectory(), path, "no-item");
+                path = Path.Combine(Directory.GetCurrentDirectory(), path);
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -152,10 +152,10 @@ namespace Catfish.Core.Services
             return path;
         }
 
-        public void UploadFiles(Guid fieldId, ICollection<IFormFile> files)
+        public List<FileReference> UploadFiles(ICollection<IFormFile> files)
         {
             string uploadRoot = GetUploadRoot(null as Guid?);
-
+            List<FileReference> fileReferences = new List<FileReference>();
             foreach (IFormFile file in files)
             {
                 FileReference fileRef = new FileReference();
@@ -163,7 +163,6 @@ namespace Catfish.Core.Services
                 fileRef.OriginalFileName = file.FileName;
                 fileRef.FileName = fileRef.Id + "_" + file.FileName;
                 fileRef.ContentType = file.ContentType;
-                fileRef.FieldId = fieldId;
 
                 //Destination absolute path name
                 string pathName = Path.Combine(uploadRoot, fileRef.FileName);
@@ -172,10 +171,10 @@ namespace Catfish.Core.Services
                     file.CopyTo(stream);
                 }
 
-                Db.FileReferences.Add(fileRef);
+                fileReferences.Add(fileRef);
             }
 
-            Db.SaveChanges();
+            return fileReferences;
         }
     }
 }
