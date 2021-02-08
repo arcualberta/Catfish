@@ -33,8 +33,8 @@
 
                     let thumbnail = $("\
                     <div class='thumbnail ' style='position: relative;'>\
-                        <div style='background-image: url(\"" + d.thumbnail + "\");' class='text-right'> \
-                            <button type='button' class='btn btn-danger btn-circle btn-xm' onclick='deleteFile(\"" + entryId + "\", \"" + fieldId + "\", \"" + fieldName + "\");'>X</button> \
+                        <button type='button' class='btn btn-danger btn-circle btn-xm delete-btn' onclick='deleteFile(\"" + entryId + "\", \"" + fieldId + "\", \"" + fieldName + "\");'>X</button> \
+                        <div class='icon' style='background-image: url(\"" + d.thumbnail + "\");' class='text-right'> \
                         </div>\
                         <div style='' class='label text-center'>" + d.originalFileName + "</div>\
                         <div style='' class='label-active text-center'>" + d.originalFileName + "</div>\

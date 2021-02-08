@@ -33,5 +33,6 @@ namespace Catfish.Controllers.Api
             List<FileReference> fileRefs = _itemService.UploadFiles(files);
             return Ok(fileRefs);
         }
+
     }
 }

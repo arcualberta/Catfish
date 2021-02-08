@@ -146,6 +146,7 @@ namespace Catfish.Core.Services
                 fileRef.OriginalFileName = file.FileName;
                 fileRef.FileName = fileRef.Id + "_" + file.FileName.Replace(" ", "_");
                 fileRef.ContentType = file.ContentType;
+                fileRef.Thumbnail = GetThumbnail(file.ContentType);
 
                 //Destination absolute path name
                 string pathName = Path.Combine(uploadRoot, fileRef.FileName);
@@ -158,6 +159,43 @@ namespace Catfish.Core.Services
             }
 
             return fileReferences;
+        }
+
+        public string GetThumbnail(string contentType)
+        {
+            string icon_path = "/assets/images/icons/";
+
+            if (contentType == "application/pdf")
+                return Path.Combine(icon_path, "pdf.png");
+
+            if (contentType == "application/msword")
+                return Path.Combine(icon_path, "doc.png");
+
+            if (contentType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+                return Path.Combine(icon_path, "docx.png");
+
+            if (contentType == "application/vnd.ms-excel")
+                return Path.Combine(icon_path, "xls.png");
+
+            if (contentType == "application/x-zip-compressed")
+                return Path.Combine(icon_path, "zip.png");
+
+            if (contentType == "image/jpeg")
+                return Path.Combine(icon_path, "jpg.png");
+
+            if (contentType == "image/png")
+                return Path.Combine(icon_path, "png.png");
+
+            if (contentType == "image/tiff")
+                return Path.Combine(icon_path, "tiff.png");
+
+            if (contentType == "text/html")
+                return Path.Combine(icon_path, "html.png");
+
+            if (contentType == "text/xml")
+                return Path.Combine(icon_path, "xml.png");
+
+            return Path.Combine(icon_path, "other.png");
         }
     }
 }
