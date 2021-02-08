@@ -80,7 +80,7 @@ function createSubmitDataFileds(data, fieldId, fieldName, index, fileModelType) 
         class: "file-ref-data"
     }));
 
-    dataPanel.append($('<input type="hidden", class="file-ref-data">', {
+    dataPanel.append($('<input>', {
         id: idPrefix + 'FileName',
         name: namePrefix + 'FileName',
         value: data.fileName,
