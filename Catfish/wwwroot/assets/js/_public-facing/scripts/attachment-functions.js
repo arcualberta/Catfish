@@ -147,9 +147,9 @@ function deleteFile(entryId, fieldId, fieldName) {
             }
 
             if (ele.name) {
-                if (ele.id.startsWith(namePrefix)) {
+                if (ele.name.startsWith(namePrefix)) {
                     let nameSuffix = ele.name.substr(namePrefix.length);
-                    idSuffix = idSuffix.substr(idSuffix.indexOf("]"));
+                    nameSuffix = nameSuffix.substr(nameSuffix.indexOf("]"));
                     ele.name = namePrefix + n + nameSuffix;
                 }
             }
