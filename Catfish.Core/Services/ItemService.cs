@@ -12,6 +12,7 @@ using ElmahCore;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.Extensions.Configuration;
+using Catfish.Core.Helpers;
 
 namespace Catfish.Core.Services
 {
@@ -134,34 +135,16 @@ namespace Catfish.Core.Services
             }
         }
 
-        public string GetUploadRoot(Guid? itemId)
-        {
-            var configSection = _configuration.GetSection("SiteConfig:UploadRoot");
-            string path =  (configSection == null || string.IsNullOrEmpty(configSection.Value))
-                ? "wwwroot/uploads/item-data-files/"
-                : configSection.Value;
-
-            if (itemId.HasValue)
-                path = Path.Combine(Directory.GetCurrentDirectory(), path, itemId.Value.ToString());
-            else
-                path = Path.Combine(Directory.GetCurrentDirectory(), path);
-
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            return path;
-        }
-
         public List<FileReference> UploadFiles(ICollection<IFormFile> files)
         {
-            string uploadRoot = GetUploadRoot(null as Guid?);
+            string uploadRoot = ConfigHelper.GetUploadTempFolder(true);
             List<FileReference> fileReferences = new List<FileReference>();
             foreach (IFormFile file in files)
             {
                 FileReference fileRef = new FileReference();
                 fileRef.Size = file.Length;
                 fileRef.OriginalFileName = file.FileName;
-                fileRef.FileName = fileRef.Id + "_" + file.FileName;
+                fileRef.FileName = fileRef.Id + "_" + file.FileName.Replace(" ", "_");
                 fileRef.ContentType = file.ContentType;
 
                 //Destination absolute path name

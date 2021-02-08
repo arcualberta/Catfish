@@ -255,7 +255,7 @@ namespace Catfish.Core.Models.Contents
         }
 
 
-        public void UpdateFieldValues(FieldContainer dataSrc, string itemId=null)
+        public void UpdateFieldValues(FieldContainer dataSrc)
         {
             foreach(var dst in Fields)
             {
@@ -263,61 +263,6 @@ namespace Catfish.Core.Models.Contents
 
                 if (srcField != null)
                     dst.UpdateValues(srcField);
-
-                //////MR -- Jan 26 2021 try to get attachment file
-                ////if (dst.GetType().Name.Contains("AttachmentField"))
-                ////{
-                ////    string tempFolder = "wwwroot/uploads/temp";
-                ////    string[] attachFiles = GetAttachmentFile(srcField.Id.ToString(), tempFolder);
-                ////    if (attachFiles.Length > 0)
-                ////    {
-                ////        //1.create directory for the item in wwwroot/uploads by GUID of the Item
-                ////        //split them 1st create a subfolder inside the upload folder and names it by GUID of the new item
-                ////        string subDir = CreateDirectory("wwwroot/uploads/", itemId);
-                ////        List<string> attchFilesPath = new List<string>();
-                ////       // string subSubDir = "";
-                ////        foreach (string af in attachFiles)
-                ////        {
-                ////            //2.create another sub folder by GUID of the field
-                ////            //subSubDir = CreateDirectory(subDir, dst.Id.ToString());//it create one if none existed 
-
-                ////           //move the file from temp to this folder
-                ////            MoveFile(af, subDir);
-
-
-                ////        }
-                ////        // if(!string.IsNullOrWhiteSpace((srcField as AttachmentField).FileNames)) == can't cast down scrField is MonolingualTextField -- AttachmentField derived from it
-                ////        // {
-
-
-                ////        // }
-                ////        string[] mfiles = GetAttachmentFile(srcField.Id.ToString(), subDir);
-                ////        if (mfiles.Length > 0)
-                ////        {
-                ////            string relativeTo = Environment.CurrentDirectory;//get base Directory
-                ////            foreach (string f in mfiles)
-                ////            {  
-                ////                string relativePath = System.IO.Path.GetRelativePath(relativeTo, f);
-                ////                attchFilesPath.Add(relativePath);
-                ////            }
-                ////        }
-
-                ////        if (srcField != null)
-                ////            ((MonolingualTextField)dst).UpdateValues(srcField, string.Join(",", attchFilesPath)); // ((MonolingualTextField)dst).UpdateValues(srcField, (srcField as AttachmentField).FileNames);
-
-                ////    }
-
-
-                ////}
-                ////else
-                ////{
-
-                ////    if (srcField != null)
-                ////        dst.UpdateValues(srcField);
-                ////}
-
-
-
             }
         }
         /// <summary>

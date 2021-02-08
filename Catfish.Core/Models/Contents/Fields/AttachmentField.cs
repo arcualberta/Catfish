@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Catfish.Core.Helpers;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -47,8 +48,18 @@ namespace Catfish.Core.Models.Contents.Fields
             Files.Clear();
 
             //Inserting the new file references
-            foreach(var file in src.Files)
+            foreach (var file in src.Files)
+            {
                 Files.Add(new FileReference(new XElement(file.Data)));
+
+                //If the file is in the temporary folder, move it to the attachment-files folder
+                string tmpFile = Path.Combine(ConfigHelper.GetUploadTempFolder(false), file.FileName);
+                if(File.Exists(tmpFile))
+                {
+                    string finalFile = Path.Combine(ConfigHelper.GetAttachmentsFolder(true), file.FileName);
+                    File.Move(tmpFile, finalFile);
+                }
+            }
         }
 
         public string FileNames { get; set; }
