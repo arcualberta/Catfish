@@ -1,13 +1,12 @@
 ﻿function uploadFiles(ele, fieldId, fieldName, fileModelType) {
     var parent = $(ele).parent();
-    var thumbnailPanel = $(parent).find('.thumbnail-panel');
+    var fileContainer = $(parent).find('.file-container');
     var messageBlock = $(parent).find('.message-block');
     var Files = new FormData();
 
     $.each(ele.files, function (i, file) {
         Files.append("files", file);
     });
-
 
     let uploadApiUrl = "/api/files/";
     if (Files.entries().next().value) {
@@ -22,25 +21,32 @@
             contentType: false,
             processData: false,
             success: function (response) {
-                let thumbnailHtml = $(thumbnailPanel).html();
-                let index = $('#' + fieldId + ' .data-panel').length;
+                let index = $(fileContainer).find('.file-entry').length;
                 for (i = 0; i < response.length; ++i) {
-                    d = response[i];
-                    dataPanel = createSubmitDataFileds(d, fieldId, fieldName, index, fileModelType);
-                    $('#' + fieldId).append(dataPanel);
+                    let d = response[i];
+                    let entryId = 'file-entry-' + d.id;
+                    let fileEntry = $('<div>', {
+                        id: entryId,
+                        class: 'file-entry'
+                    });
+                    $(fileContainer).append(fileEntry);
 
-                    thumbnailHtml += "\
+                    let thumbnail = $("\
                     <div class='thumbnail ' style='position: relative;'>\
                         <div style='background-image: url(\"" + d.thumbnail + "\");' class='text-right'> \
-                            <button type='button' class='btn btn-danger btn-circle btn-xm' onclick='deleteFile(this, " + index + ");'>X</button> \
+                            <button type='button' class='btn btn-danger btn-circle btn-xm' onclick='deleteFile(\"" + entryId + "\", \"" + fieldId + "\", \"" + fieldName + "\");'>X</button> \
                         </div>\
                         <div style='' class='label text-center'>" + d.originalFileName + "</div>\
                         <div style='' class='label-active text-center'>" + d.originalFileName + "</div>\
-                    </div>";
+                    </div>");
+                    $(fileEntry).append(thumbnail);
+
+                    let dataPanel = createSubmitDataFileds(d, fieldId, fieldName, index, fileModelType);
+                    $(fileEntry).append(dataPanel);
+
 
                     ++index;
                 }
-                $(thumbnailPanel).html(thumbnailHtml);
             },
             error: function (error) {
                 $(messageBlock).html("File uploading failed");
@@ -118,8 +124,35 @@ function createSubmitDataFileds(data, fieldId, fieldName, index, fileModelType) 
     return dataPanel;    
 }
 
-function deleteFile(ele, index) {
-    var parent = $(ele).parent();
-    var thumbnailPanel = $(parent).find('.thumbnail-panel');
-    alert()
+function deleteFile(entryId, fieldId, fieldName) {
+
+    //Deleting the entry, including its interface elements and the data values
+    $("#" + entryId).remove();
+
+    //Reindexing the entry list
+    let entries = $("#" + fieldId).find('.file-entry');
+    let idPrefix = fieldId + "_Files_";
+    let namePrefix = fieldName + ".Files[";
+    for (n = 0; n < entries.length; ++n) {
+        let entry = entries[n];
+        let inputs = $(entry).find('input');
+        for (k = 0; k < inputs.length; ++k) {
+            ele = inputs[k];
+            if (ele.id) {
+                if (ele.id.startsWith(idPrefix)) {
+                    let idSuffix = ele.id.substr(idPrefix.length);
+                    idSuffix = idSuffix.substr(idSuffix.indexOf("__"));
+                    ele.id = idPrefix + n + idSuffix;
+                }
+            }
+
+            if (ele.name) {
+                if (ele.id.startsWith(namePrefix)) {
+                    let nameSuffix = ele.name.substr(namePrefix.length);
+                    idSuffix = idSuffix.substr(idSuffix.indexOf("]"));
+                    ele.name = namePrefix + n + nameSuffix;
+                }
+            }
+        }
+    }
 }

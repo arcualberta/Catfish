@@ -326,34 +326,40 @@ ul.checkboxgroup li {
     font-size: 12px;
     text-align: center;
 } 
+
 /* Attachment Field Styles */
-.thumbnail-panel .thumbnail {
+.file-container .file-entry {
     width: 120px;
     height: 160px;
     border: 1px solid grey;
     border-radius: 5px;
-    margin:5px;
-}
-
-.thumbnail-panel .label, .label-active {
-    position: absolute;
-    width: 100%;
-    white-space: nowrap;
     margin: 5px;
 }
 
-.thumbnail-panel .label {
-    bottom: 5px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+    .file-container .file-entry .thumbnail {
+        position: absolute;
+        height: 160px;
+        margin: 0px;
+    }
+    .file-container .file-entry .label, .label-active {
+        position: absolute;
+        width: 100%;
+        white-space: nowrap;
+        margin: 5px;
+    }
 
-.thumbnail-panel .label-active {
-    bottom: 80px;
-    visibility: hidden;
-    font-weight: bold;
-}
+    .file-container .file-entry .label {
+        bottom: 5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-    .thumbnail-panel .label:hover ~ .label-active {
+    .file-container .file-entry .label-active {
+        bottom: 80px;
+        visibility: hidden;
+        font-weight: bold;
+    }
+
+    .file-container .file-entry .label:hover ~ .label-active {
         visibility: visible;
     }
