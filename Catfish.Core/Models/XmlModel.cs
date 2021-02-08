@@ -161,10 +161,22 @@ namespace Catfish.Core.Models
             var att = Data.Attribute(attName);
             return (att == null || string.IsNullOrEmpty(att.Value)) ? defaultValue : int.Parse(att.Value);
         }
+
         public void SetAttribute(string attName, int attValue)
         {
             Data.SetAttributeValue(attName, attValue);
         }
+
+        public long GetAttribute(string attName, long defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            return (att == null || string.IsNullOrEmpty(att.Value)) ? defaultValue : long.Parse(att.Value);
+        }
+        public void SetAttribute(string attName, long attValue)
+        {
+            Data.SetAttributeValue(attName, attValue);
+        }
+
 
         public string GetAttribute(string attName, string defaultValue)
         {
@@ -217,6 +229,25 @@ namespace Catfish.Core.Models
                 Data.SetAttributeValue(attName, "");
             else
                 Data.SetAttributeValue(attName, string.Join(",", attValue.Select(val => val.ToString())));
+        }
+
+        public string[] GetAttribute(string attName, string[] defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            if (defaultValue == null)
+                defaultValue = new string[0];
+
+            return (att == null || string.IsNullOrEmpty(att.Value))
+                ? defaultValue
+                : att.Value.Split(",", StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public void SetAttribute(string attName, string[] attValue)
+        {
+            if (attValue == null)
+                Data.SetAttributeValue(attName, "");
+            else
+                Data.SetAttributeValue(attName, string.Join(",", attValue));
         }
 
         public T GetAttribute<T>(string attName, T defaultValue) where T : Enum

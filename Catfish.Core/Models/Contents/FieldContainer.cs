@@ -240,67 +240,29 @@ namespace Catfish.Core.Models.Contents
             return field;
         }
 
+        public T CreateField<T>(string fieldName, string lang, bool? isRequired = null, int? maxFileSize = null)
+            where T : AttachmentField
+        {
+            T field = Activator.CreateInstance(typeof(T)) as T;
 
-        public void UpdateFieldValues(FieldContainer dataSrc, string itemId=null)
+            Fields.Add(field);
+            field.SetName(fieldName, lang);
+
+            if (isRequired.HasValue)
+                field.Required = isRequired.Value;
+
+            return field;
+        }
+
+
+        public void UpdateFieldValues(FieldContainer dataSrc)
         {
             foreach(var dst in Fields)
             {
                 var srcField = dataSrc.Fields.Where(f => f.Id == dst.Id).FirstOrDefault();
 
-                //MR -- Jan 26 2021 try to get attachment file
-                if (dst.GetType().Name.Contains("AttachmentField"))
-                {
-                    string tempFolder = "wwwroot/uploads/temp";
-                    string[] attachFiles = GetAttachmentFile(srcField.Id.ToString(), tempFolder);
-                    if (attachFiles.Length > 0)
-                    {
-                        //1.create directory for the item in wwwroot/uploads by GUID of the Item
-                        //split them 1st create a subfolder inside the upload folder and names it by GUID of the new item
-                        string subDir = CreateDirectory("wwwroot/uploads/", itemId);
-                        List<string> attchFilesPath = new List<string>();
-                       // string subSubDir = "";
-                        foreach (string af in attachFiles)
-                        {
-                            //2.create another sub folder by GUID of the field
-                            //subSubDir = CreateDirectory(subDir, dst.Id.ToString());//it create one if none existed 
-
-                           //move the file from temp to this folder
-                            MoveFile(af, subDir);
-                           
-                          
-                        }
-                        // if(!string.IsNullOrWhiteSpace((srcField as AttachmentField).FileNames)) == can't cast down scrField is MonolingualTextField -- AttachmentField derived from it
-                        // {
-
-
-                        // }
-                        string[] mfiles = GetAttachmentFile(srcField.Id.ToString(), subDir);
-                        if (mfiles.Length > 0)
-                        {
-                            string relativeTo = Environment.CurrentDirectory;//get base Directory
-                            foreach (string f in mfiles)
-                            {  
-                                string relativePath = System.IO.Path.GetRelativePath(relativeTo, f);
-                                attchFilesPath.Add(relativePath);
-                            }
-                        }
-                       
-                        if (srcField != null)
-                            ((MonolingualTextField)dst).UpdateValues(srcField, string.Join(",", attchFilesPath)); // ((MonolingualTextField)dst).UpdateValues(srcField, (srcField as AttachmentField).FileNames);
-
-                    }
-
-
-                }
-                else
-                {
-
-                    if (srcField != null)
-                        dst.UpdateValues(srcField);
-                }
-
-              
-
+                if (srcField != null)
+                    dst.UpdateValues(srcField);
             }
         }
         /// <summary>

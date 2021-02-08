@@ -1,19 +1,29 @@
 ﻿@model Catfish.Core.Models.Contents.Fields.AttachmentField
+@using Catfish.Core.Models.Contents
+
 @{
-    ViewBag.Title = "Attachment Field";
+    var fieldId = Html.IdFor(model => model);
+    var fieldName = Html.NameFor(model => model);
+
+    var containerId = fieldId + "_container";
+
+    var btnId = fieldId + "_btn";
+    var btnName = fieldName + "_btn";
+
+    var fileModelType = typeof(FileReference).AssemblyQualifiedName;
 }
 
+@*<div id="@containerId">*@
 @Html.HiddenFor(model => model.ModelType)
 @Html.HiddenFor(model => model.Id)
 
-@Html.AntiForgeryToken()
-@*@Html.LabelFor(m => m.AttachmentFile)
+@Html.EditorFor(m => m.Files)
 
-@Html.HiddenFor(m=>m.AttachmentFile)
-@Html.EditorFor(m => m.AttachmentFile)*@
-@Html.HiddenFor(m=>m.FileNames)
-@{ 
-    var name = Html.NameFor(m => m.FileNames) + "_file";
-    var id = Html.IdFor(m => m.FileNames) + "_" + Model.Id +"_file";
-}
-<input type="file" id="@id" name="@name" />
+<div class="file-container row">
+    @Html.DisplayFor(m => m.Files)
+</div>
+
+<input type="file" id="@btnId" name="@btnName" onchange="uploadFiles(this, '@fieldId', '@fieldName', '@fileModelType');" multiple />
+
+<div class="message-block"></div>
+@*</div>*@
