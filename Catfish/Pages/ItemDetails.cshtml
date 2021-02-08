@@ -39,6 +39,7 @@
 .Where(di => di.IsRoot == false)
 .OrderByDescending(di => di.Created)
 .ToList();
+    var auditEntry = item.AuditTrail.OrderByDescending(ae => ae.Created);
 }
 @if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)
 {
@@ -97,8 +98,10 @@
                             @{
                                 foreach (var associateItem in associatedItems)
                                 {
-                                    <div class="row">
-                                        @Html.DisplayFor(model => associateItem, associateItem.GetType().ToString())
+                                    <div class="card">
+                                        <div class="row">
+                                            @Html.DisplayFor(model => associateItem, associateItem.GetType().ToString())
+                                        </div>
                                     </div>
                                 }
                             }
