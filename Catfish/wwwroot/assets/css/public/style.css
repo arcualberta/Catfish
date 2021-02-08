@@ -297,3 +297,98 @@ ul.checkboxgroup li {
 .textAlignRight{
     text-align: right;
 }
+
+/* Circular Buttons */
+.btn-circle.btn-xm {
+    width: 16px;
+    height: 16px;
+    /*margin: 5px;*/
+    padding: 0px;
+    border-radius: 8px;
+    font-size: 10px;
+    text-align: center;
+}
+
+.btn-circle.btn-sm {
+    width: 30px;
+    height: 30px;
+    padding: 6px 0px;
+    border-radius: 15px;
+    font-size: 8px;
+    text-align: center;
+}
+
+.btn-circle.btn-md {
+    width: 50px;
+    height: 50px;
+    padding: 7px 10px;
+    border-radius: 25px;
+    font-size: 10px;
+    text-align: center;
+}
+
+.btn-circle.btn-xl {
+    width: 70px;
+    height: 70px;
+    padding: 10px 16px;
+    border-radius: 35px;
+    font-size: 12px;
+    text-align: center;
+} 
+
+/* Attachment Field Styles */
+.file-container {
+    margin-top: 15px;
+}
+
+    .file-container .file-entry {
+        width: 110px;
+        height: 160px;
+        /*border: 1px solid grey;*/
+        border-radius: 5px;
+        margin: 5px 5px 50px 5px;
+    }
+
+        .file-container .file-entry .delete-btn {
+            float: right;
+            margin-right: 15px;
+        }
+
+        .file-container .file-entry .thumbnail {
+            position: relative;
+            width: 120px;
+            height: 180px;
+            margin: 0px;
+            background-size: contain;
+        }
+
+            .file-container .file-entry .thumbnail .icon {
+                width: 100px;
+                height: 142px;
+                margin: 0px;
+                background-size: contain;
+                background-repeat: no-repeat;
+                text-align: right;
+            }
+
+        .file-container .file-entry .label, .file-container .file-entry .label-active {
+            /*position: absolute;*/
+            width: 100%;
+            white-space: nowrap;
+            margin: 5px;
+        }
+
+        .file-container .file-entry .label {
+            bottom: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-container .file-entry .label-active {
+            visibility: hidden;
+            font-weight: bold;
+        }
+
+        .file-container .file-entry .label:hover ~ .label-active {
+            visibility: visible;
+        }

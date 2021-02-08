@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Catfish.Core.Helpers;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
@@ -13,6 +14,7 @@ using Catfish.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,14 +29,15 @@ namespace Catfish.Controllers.Api
        
         private readonly AppDbContext _appDb;
         private readonly IJobService _jobService;
-        public ItemsController(AppDbContext db, IEntityTemplateService entityTemplateService, ISubmissionService submissionService, IJobService jobService)
+        public ItemsController(AppDbContext db, IEntityTemplateService entityTemplateService, ISubmissionService submissionService, IJobService jobService, IConfiguration configuration)
         {
             _entityTemplateService = entityTemplateService;
             _submissionService = submissionService;
-           
-           
+
             _appDb = db;
             _jobService = jobService;
+
+            ConfigHelper.Configuration = configuration;
         }
         // GET: api/<ItemController>
         [HttpGet]
@@ -201,7 +204,7 @@ namespace Catfish.Controllers.Api
         {
            
             List<SelectListItem> result = new List<SelectListItem>();
-            if (!string.IsNullOrEmpty(id))
+            if (!string.IsNullOrEmpty(id) && id.ToLower() != "null")
             {
                 var actions = _entityTemplateService.GetTemplateActions(Guid.Parse(id));
             
@@ -211,6 +214,8 @@ namespace Catfish.Controllers.Api
                  
                 }
             }
+
+            result = result.OrderBy(li => li.Text).ToList();
             return result ;
         }
 
@@ -222,23 +227,18 @@ namespace Catfish.Controllers.Api
             string dictFileNames = ""; //"key1:file1,file2 | key2:file1,file2"
             foreach (IFormFile f in files)
             {
-                string newGuid = System.Text.RegularExpressions.Regex.Replace(Convert.ToBase64String(Guid.NewGuid().ToByteArray()), "[/+=]", "");
+                string newGuid = Guid.NewGuid().ToString(); //System.Text.RegularExpressions.Regex.Replace(Convert.ToBase64String(Guid.NewGuid().ToByteArray()), "[/+=]", "");
                 //create temp directory for login user
                 if (!Directory.Exists("wwwroot/uploads/temp"))
                     Directory.CreateDirectory("wwwroot/uploads/temp");
 
                 string fileN = newGuid + "_" + f.FileName;
-                string path = Path.Combine(
-                  Directory.GetCurrentDirectory(), "wwwroot/uploads/temp",
-                  fileN);
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/temp", fileN);
 
                 string[] _fileNames = f.FileName.Split("__"); //this will get the field index ==> filed_4, this will be the key for the file name(s) of this field
-                string key = "";
-                string names = "";
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
                     f.CopyTo(stream);
-                    List<string> listfnames;
                     //fileNames.Add(fileN);
                     if(!dictFileNames.Contains(_fileNames[1],StringComparison.OrdinalIgnoreCase))
                     {

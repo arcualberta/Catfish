@@ -1,22 +1,23 @@
-﻿ using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Services;
 using Catfish.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Piranha.AspNetCore.Identity.Data;
 
 namespace Catfish.Pages
 {
-    public class CreateChildPageModel : CatfishPageModelModel
+    public class NewChildItemModel : CatfishPageModelModel
     {
         private readonly IEntityTemplateService _entityTemplateService;
+        private readonly IWorkflowService _workflowService;
         private readonly AppDbContext _db;
-
-
+        
         [BindProperty]
         public DataItem Child { get; set; }
 
@@ -25,15 +26,22 @@ namespace Catfish.Pages
 
         [BindProperty]
         public Guid ParentId { get; set; }
+        
+        [BindProperty]
+        public Guid ButtonId { get; set; }
+        
+        [BindProperty]
+        public Guid NextStatus { get; set; }
 
-        public CreateChildPageModel(IAuthorizationService auth, IEntityTemplateService temp, ISubmissionService serv, AppDbContext db) : base(auth, serv)
+        public EntityTemplate Template { get; set; }
+
+        public NewChildItemModel(IAuthorizationService auth, IEntityTemplateService temp, IWorkflowService workf, ISubmissionService serv, AppDbContext db) : base(auth, serv)
         {
             _entityTemplateService = temp;
+            _workflowService = workf;
             _db = db;
         }
-
-
-        public void OnGet(Guid id, Guid childTemplateId)
+        public void OnGet(Guid id, Guid childTemplateId, Guid buttonId)
         {
             ParentId = id;
             ChildTemplateId = childTemplateId;
@@ -42,13 +50,13 @@ namespace Catfish.Pages
             Item item = _submissionService.GetSubmissionDetails(id);
 
             // Get the entity template which has its ID to be the above loaded item's TemplateId
-            EntityTemplate template = _entityTemplateService.GetTemplate(item.TemplateId.Value);
+            Template = _entityTemplateService.GetTemplate(item.TemplateId.Value);
 
             // Get the data item that is referred by the given childTemplateId from the template
-            Child = template.GetDataItem(childTemplateId);
+            Child = Template.GetDataItem(childTemplateId);
+
+            ButtonId = buttonId;
         }
-
-
         public IActionResult OnPost()
         {
             //Creating a clone of the child entity
@@ -67,46 +75,27 @@ namespace Catfish.Pages
             //get template from parent
             EntityTemplate template = _entityTemplateService.GetTemplate(parentItem.TemplateId.Value);
 
+            var postAction = _workflowService.GetPostActionByButtonId(template, ButtonId);
+            var stateMapping = postAction.StateMappings.Where(sm => sm.Id == ButtonId).FirstOrDefault();
+            var nextStatus = stateMapping.Next;
 
-
+            User user = _workflowService.GetLoggedUser();
             //When we instantantiate an instance from the template, we do not need to clone metadata sets
             //Item newItem = template.Instantiate<Item>();
+            parentItem.StatusId = nextStatus;
+            parentItem.Updated = DateTime.Now;
+            parentItem.AddAuditEntry(user.Id, stateMapping.Current, stateMapping.Next, stateMapping.ButtonLabel);
 
             // instantantiate a version of the child and update it
 
             DataItem newChildItem = template.InstantiateDataItem(this.Child.Id);
             newChildItem.UpdateFieldValues(this.Child);
-
-
-
-
-
-            //parentItem.DataContainer.Append(newChildItem); 
-
-            //parentItem.DataContainer.Add(newChildItem);
             parentItem.DataContainer.Add(newChildItem);
 
-            //parentItem.DataContainer.Insert(newChildItem);
-
-
-            // ?newDataItem.EntityId = newItem.Id;
-
-
-
-
-
-
-            //Upadet the revised  entity in the database
-            //_db.Items.Add(parentItem);
             _db.Items.Update(parentItem);
             _db.SaveChanges();
 
-            return RedirectToPage("EntityDetailsPage", new { id = parentItem.Id });
+            return RedirectToPage("ItemDetails", new { id = parentItem.Id });
         }
-
-
-
-
-
     }
 }

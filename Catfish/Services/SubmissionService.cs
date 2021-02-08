@@ -241,11 +241,9 @@ namespace Catfish.Services
                 newItem.UserEmail = _workflowService.GetLoggedUserEmail();
 
                 DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
-                //MR -- Jan 27 2020 add passing itemId for creating subfolder for attachment file if any
-                newDataItem.UpdateFieldValues(value, newDataItem.Id.ToString());
+                newDataItem.UpdateFieldValues(value);
                 newItem.DataContainer.Add(newDataItem);
                 newDataItem.EntityId = newItem.Id;
-
 
                 User user = _workflowService.GetLoggedUser();
                 var fromState = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();

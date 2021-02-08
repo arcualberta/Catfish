@@ -1,0 +1,11 @@
+﻿@model Catfish.Core.Models.Contents.FileReference
+
+<div class="data-panel">
+    @Html.HiddenFor(model => model.Id, new { @class = "file-ref-data" })
+    @Html.HiddenFor(model => model.ModelType, new { @class = "file-ref-data" })
+    @Html.HiddenFor(model => model.FileName, new { @class = "file-ref-data" })
+    @Html.HiddenFor(model => model.OriginalFileName, new { @class = "file-ref-data" })
+    @Html.HiddenFor(model => model.Thumbnail, new { @class = "file-ref-data" })
+    @Html.HiddenFor(model => model.ContentType, new { @class = "file-ref-data" })
+    @Html.HiddenFor(model => model.Size, new { @class = "file-ref-data" })
+</div>

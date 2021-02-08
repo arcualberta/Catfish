@@ -36,9 +36,10 @@
 *@
 @{
     var associatedItems = item.DataContainer
-.Where(di => di.IsRoot = false)
+.Where(di => di.IsRoot == false)
 .OrderByDescending(di => di.Created)
 .ToList();
+    var auditEntry = item.AuditTrail.OrderByDescending(ae => ae.Created);
 }
 @if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)
 {
@@ -75,75 +76,11 @@
                                         if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
                                         .Succeeded)
                                         {
-                                            //var buttonLable = postAction.StateMappings.Where(sm => sm.Current == item.StatusId).Select(sm => sm.ButtonLabel).FirstOrDefault();
                                             var postActionData = postAction.StateMappings.Where(sm => sm.Current == item.StatusId).FirstOrDefault();
                                             var buttonLable = postActionData.ButtonLabel;
-                                            var currentStatusId = postActionData.Current;
-                                            var nextStatusId = postActionData.Next;
                                             var childFormId = _workflowService.GetChildFormId(template, postAction.Id);
 
-                                            if (postAction.PopUps.Any())
-                                            {
-                                                foreach (var popup in postAction.PopUps)
-                                                {
-                                                    
-
-                                                    string buttonName = postAction.ButtonLabel.Trim().Replace(" ", "") + "_" + @suffix;
-                                                    <input id="@buttonLable" class="btn btn-success launch-modal" name="@buttonLable" type="button" value="@buttonLable" data-toggle="modal" data-target="#@buttonName" />
-                                                    <div id="@buttonName" class="modal fade" role="dialog">
-                                                        <div>
-                                                            <div class="modal-dialog">
-                                                                @*Modal content*@
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title" id="myModalLabel">@popup.Title</h5>
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <div class="card-body">
-                                                                            <div class="form-group">
-                                                                                @*@{
-                                                                                    if (childFormId != Guid.Empty)
-                                                                                    {
-                                                                                        var childForm = template.InstantiateDataItem(childFormId);
-                                                                                        @Html.EditorFor(model => childForm, childForm.GetType().ToString())
-                                                                                    }
-                                                                                }*@
-                                                                                <p>@popup.Body</p>
-                                                                                @{
-                                                                                    if (popup.Message.Any())
-                                                                                    {
-                                                                                        <p class="text-info"><small><strong>Note : </strong>@popup.Message</small></p>
-                                                                                    }
-                                                                                }
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        @{
-                                                                            foreach (var button in popup.Buttons)
-                                                                            {
-                                                                                if (button.Text == "Cancel")
-                                                                                {
-                                                                                    <button id="close-modal-button_@suffix" type="button" class="btn btn-primary" data-dismiss="modal">@button.Text</button>
-                                                                                }
-                                                                                else
-                                                                                {
-                                                                                    <button id="@buttonLable" type="submit" class="btn btn-success" onclick="submitDetailsWorkflowForm('@suffix', '@successMessage','@item.Id', '@currentStatusId', '@nextStatusId','@buttonLable');">@button.Text</button>
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                }
-                                            }
-                                            else
-                                            {
-                                                <input id="@buttonLable" class="btn btn-success" name="@buttonLable" type="submit" value="@buttonLable" onclick="submitDetailsWorkflowForm('@suffix', '@successMessage', '@item.Id', '@currentStatusId', '@nextStatusId','@buttonLable');" />
-                                            }
+                                            <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("../entity/{0}/addchild/{1}/ButtonId/{2}", Model.Item.Id, @childFormId, @postActionData.Id)">  @Localizer.General[@postActionData.ButtonLabel]</a>
                                         }
                                     }
                                 </div>
@@ -153,6 +90,25 @@
                     <div class="submission-form-block">
                         @Html.DisplayFor(model => rootDataItem, rootDataItem.GetType().ToString())
                     </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="title">@Localizer.General["History"]</span>
+                        </div>
+                        <div class="card-body">
+                            @{
+                                foreach (var associateItem in associatedItems)
+                                {
+                                    <div class="card">
+                                        <div class="row">
+                                            @Html.DisplayFor(model => associateItem, associateItem.GetType().ToString())
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                    
                 </div>
             </form>
             <div id="item-details-result-message_@suffix"></div>
