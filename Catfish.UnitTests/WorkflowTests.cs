@@ -1495,6 +1495,10 @@ namespace Catfish.UnitTests
             textbox1.RequiredCondition
                 .Append(dd1, dd1.GetOption("Option 2", lang));                
 
+            var textarea1 = inspectionForm.CreateField<TextArea>("Visible if Dropdown 1 = Option 3", lang, false, false);
+            textarea1.VisibilityCondition
+              .Append(dd1, dd1.GetOption("Option 3", lang));
+
             //Defininig roles
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
             WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));

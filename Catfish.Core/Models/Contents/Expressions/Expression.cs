@@ -10,7 +10,7 @@ namespace Catfish.Core.Models.Contents.Expressions
     {
         public Expression(string tagName) : base(tagName) { }
         public Expression(XElement data) : base(data) { }
-
+        public string Value { get { return Data.Value; } }
         public Expression Clear()
         {
             Data.Value = "";
