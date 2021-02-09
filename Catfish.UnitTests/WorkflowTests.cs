@@ -1452,7 +1452,6 @@ namespace Catfish.UnitTests
             AppDbContext db = _testHelper.Db;
             IAuthorizationService auth = _testHelper.AuthorizationService;
 
-
             ItemTemplate template = db.ItemTemplates
                 .Where(et => et.TemplateName == templateName)
                 .FirstOrDefault();
@@ -1482,43 +1481,19 @@ namespace Catfish.UnitTests
             State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
-
-            //Defining email templates
-            EmailTemplate adminNotification = ws.GetEmailTemplate("Admin Notification", true);
-            adminNotification.SetDescription("This metadata set defines the email template to be sent to the admin when an inspector does not submit an inspection report timely.", lang);
-            adminNotification.SetSubject("Safety Inspection Submission");
-            adminNotification.SetBody("TBD");
-
-            EmailTemplate inspectorSubmissionNotification = ws.GetEmailTemplate("Inspector Notification", true);
-            inspectorSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to an inspector when an inspection report is not submitted timely.", lang);
-            inspectorSubmissionNotification.SetSubject("Safety Inspection Reminder");
-            inspectorSubmissionNotification.SetBody("TBD");
-
-            //Defininig the inspection form
-            DataItem inspectionForm = template.GetDataItem("COVID-19 Inspection Form", true, lang);
+            //Defininig the form
+            DataItem inspectionForm = template.GetDataItem("Small Test Form", true, lang);
             inspectionForm.IsRoot = true;
-            inspectionForm.SetDescription("This template is designed for a weekly inspection of public health measures specific to COVID-19 and other return to campus requirements.", lang);
+            inspectionForm.SetDescription("This template is designed testing visible-if, required-if, and computed fields", lang);
 
-            inspectionForm.CreateField<DateField>("Inspection Date", lang, true)
-                .IncludeTime = false;
+            string[] options = new string[] { "Option 1", "Option 2", "Option 3", "Option 4" };
+            var dd1 = inspectionForm.CreateField<SelectField>("Dropdown 1", lang, options, true);
+            var radio1 = inspectionForm.CreateField<RadioField>("Radio Button Set 1", lang, options, true);
+            var checkbox1 = inspectionForm.CreateField<CheckboxField>("Checkbox Set 1", lang, options, true);
 
-            string[] optionBuilding = new string[] { "Arts and Convocation Hall", "Assiniboia Hall", "Fine Arts Building", "HM Tory Building", "HUB", "Humanities Centre", "Industrial Design Studio", "North Power Plant", "South Academic Building", "Timms Centre for the Arts", "Varsity Trailer" };
-            inspectionForm.CreateField<SelectField>("Building", lang, optionBuilding, true);
-            inspectionForm.CreateField<TextField>("Inspected By", lang, true, true);
-            inspectionForm.CreateField<IntegerField>("Number of People in the work area", lang, true);
-
-            //Jill added this one
-            var testCheckbox = inspectionForm.CreateField<CheckboxField>("Room/Area Check:", lang, optionBuilding);
-
-            string[] optionText = new string[] { "Yes", "No", "N/A" };
-            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText, true);
-
-            var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText, true);
-            inspectionForm.CreateField<TextArea>("Eyewash station info", lang, false)
-                .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang)
-                //.SetVisibleIf(eyeWashFlushed, optionText[0]);
-                .SetVisibleIf(testCheckbox, optionBuilding[5]);
-
+            var textbox1 = inspectionForm.CreateField<TextField>("Required if Dropdown 1 = Option 2", lang, false, false);
+            textbox1.RequiredCondition
+                .Append(dd1, dd1.GetOption("Option 2", lang));                
 
             //Defininig roles
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));

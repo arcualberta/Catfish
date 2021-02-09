@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Helpers;
+using Catfish.Core.Models.Contents.Expressions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -37,6 +38,12 @@ namespace Catfish.Core.Models.Contents.Fields
         public MultilingualDescription Description { get; protected set; }
 
         public string VueComponent => GetType().FullName;
+
+        private VisibilityCondition mVisibilityCondition;
+        public VisibilityCondition VisibilityCondition { get { if(mVisibilityCondition == null) mVisibilityCondition = new VisibilityCondition(GetElement(VisibilityCondition.TagName, true)); return mVisibilityCondition; } }
+        
+        private RequiredCondition mRequiredCondition;
+        public RequiredCondition RequiredCondition { get { if(mRequiredCondition == null) mRequiredCondition = new RequiredCondition(GetElement(RequiredCondition.TagName, true)); return mRequiredCondition; } }
        
         public BaseField() : base(FieldTagName) { }
         public BaseField(XElement data) : base(data) { }

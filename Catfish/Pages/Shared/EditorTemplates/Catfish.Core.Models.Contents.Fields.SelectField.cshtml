@@ -11,13 +11,15 @@
 
     @Html.HiddenFor(model => model.ModelType)
     @Html.HiddenFor(model => model.Id)
+    var htmlFieldId = Html.IdFor(model => model.Id);
 
+    string onChangeTrigger = string.Format("updateFields('{0}', this);", @htmlFieldId);
     if (Model.Required)
     {
-        @Html.DropDownListFor(model => model, options, new { required = (string) null })
+        @Html.DropDownListFor(model => model, options, new { required = (string) null, onchange = @onChangeTrigger })
     }
     else
     {
-        @Html.DropDownListFor(model => model, options)
+        @Html.DropDownListFor(model => model, options, new { onchange = @onChangeTrigger })
     }
 }

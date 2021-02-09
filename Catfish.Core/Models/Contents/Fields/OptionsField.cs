@@ -98,6 +98,11 @@ namespace Catfish.Core.Models.Contents.Fields
                 return selectedOption.OptionText.GetConcatenatedContent(separator);
         }
 
+        public Option GetOption(string optionText, string lang)
+        {
+            return Options.Where(op => op.OptionText.GetContent(lang) == optionText).FirstOrDefault();
+        }
+
 
     }
 }
