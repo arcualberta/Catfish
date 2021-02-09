@@ -11,15 +11,49 @@
 
     @Html.HiddenFor(model => model.ModelType)
     @Html.HiddenFor(model => model.Id)
-    var htmlFieldId = Html.IdFor(model => model.Id);
 
-    string onChangeTrigger = string.Format("updateFields('{0}', this);", @htmlFieldId);
-    if (Model.Required)
+    //string onChangeTrigger = string.Format("updateFields('{0}', this);", Html.IdFor(model => model));
+    //object viewData;
+    //if (Model.Required)
+    //{
+    //    viewData = new
+    //    {
+    //        required = (string) null,
+    //        onchange = onChangeTrigger
+    //    };
+    //}
+    //else
+    //{
+    //    viewData = new
+    //    {
+    //        data_visible_if = Model.VisibilityCondition.Value,
+    //        data_required_if = Model.RequiredCondition.Value,
+    //        onchange = onChangeTrigger
+    //    };
+    //}
+
+    ////string onChangeTrigger = string.Format("updateFields('{0}', this);", Html.IdFor(model => model));
+    ////Dictionary<string, object> viewData = new Dictionary<string, object>(); ;
+    ////if (Model.Required)
+    ////{
+    ////    viewData.Add("required", (string)null);
+    ////    viewData.Add("onchange", onChangeTrigger);
+    ////}
+    ////else
+    ////{
+    ////    viewData.Add("data_visible_if", Model.VisibilityCondition.Value);
+    ////    viewData.Add("data_required_if", Model.RequiredCondition.Value);
+    ////    viewData.Add("onchange", onChangeTrigger);
+    ////}
+
+    @Html.DropDownListFor(model => model, options, ViewData)
+
+    @*if (Model.Required)
     {
-        @Html.DropDownListFor(model => model, options, new { required = (string) null, onchange = @onChangeTrigger })
-    }
+        @Html.DropDownListFor(model => model, options, new { required = (string)null, onchange = @onChangeTrigger })
+        }
     else
     {
         @Html.DropDownListFor(model => model, options, new { onchange = @onChangeTrigger })
-    }
+        }*@
 }

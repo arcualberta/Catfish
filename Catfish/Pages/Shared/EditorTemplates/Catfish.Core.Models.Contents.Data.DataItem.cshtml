@@ -19,7 +19,8 @@
 
 @for (int i = 0; i < Model.Fields.Count; ++i)
 {
-    <div class="row field-row @Model.Fields[i].FieldCssClass">
+    var fieldRootId = Html.IdFor(model => Model.Fields[i]) + "_row";
+    <div class="row field-row @Model.Fields[i].FieldCssClass" id="@fieldRootId">
         @if (typeof(InfoSection).IsAssignableFrom(Model.Fields[i].GetType()))
         {
             <div class="col-md-12">
@@ -28,6 +29,21 @@
         }
         else
         {
+            Dictionary<string, object> viewData = new Dictionary<string, object>(); ;
+            string onChangeTrigger = string.Format("updateFields('{0}', this);", Model.Fields[i].Id);
+            if (Model.Fields[i].Required)
+            {
+                viewData.Add("required", (string)null);
+                viewData.Add("onchange", onChangeTrigger);
+            }
+            else
+            {
+                viewData.Add("data_visible_if", Model.Fields[i].VisibilityCondition.Value);
+                viewData.Add("data_required_if", Model.Fields[i].RequiredCondition.Value);
+                viewData.Add("data_field_id", fieldRootId);
+                viewData.Add("onchange", onChangeTrigger);
+            }
+
             string fieldId = Html.IdFor(model => Model.Fields[i]);
             <div class="control field-label @Model.Fields[i].FieldLabelCssClass">
                 @Html.DisplayFor(model => Model.Fields[i].Name, Model.Fields[i].Name.GetType().ToString())
@@ -36,8 +52,19 @@
             </div>
             <div id="@fieldId" class="field-value @Model.Fields[i].CssClass @Model.Fields[i].FieldValueCssClass">
                 @Html.DisplayFor(mode => Model.Fields[i].Description, Model.Fields[i].Description.GetType().ToString())
-                @Html.EditorFor(model => model.Fields[i], Model.Fields[i].GetType().ToString())
+                @Html.EditorFor(model => model.Fields[i], Model.Fields[i].GetType().ToString(), viewData)
             </div>
+
+            @*string fieldId = Html.IdFor(model => Model.Fields[i]);
+                <div class="control field-label @Model.Fields[i].FieldLabelCssClass">
+                    @Html.DisplayFor(model => Model.Fields[i].Name, Model.Fields[i].Name.GetType().ToString())
+                    @if (Model.Fields[i].Required)
+                    {<span class="required"></span>}
+                </div>
+                <div id="@fieldId" class="field-value @Model.Fields[i].CssClass @Model.Fields[i].FieldValueCssClass">
+                    @Html.DisplayFor(mode => Model.Fields[i].Description, Model.Fields[i].Description.GetType().ToString())
+                    @Html.EditorFor(model => model.Fields[i], Model.Fields[i].GetType().ToString())
+                </div>*@
         }
     </div>
 }
