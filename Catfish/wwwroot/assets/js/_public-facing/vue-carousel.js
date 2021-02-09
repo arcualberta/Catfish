@@ -17,8 +17,6 @@ Vue.component('vue-carousel', {
     },
     mounted() {
 
-        console.log(this.model);
-
         $('carousel').ready(() => { this.timeValue = 100;});
 
         $('.carousel').on('slide.bs.carousel', () => { 
