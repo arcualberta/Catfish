@@ -4,7 +4,7 @@ $(document).ready(function () {
         $("#submissionModal").modal({
             backdrop: 'static'
         });
-    });
+    });  
 });
 
 function submitWorkflowForm(suffix, successMessage) {
@@ -175,3 +175,66 @@ function submitWorkflowForm(suffix, successMessage) {
 
     });
 }
+
+function addDataItem(templateId, min, max) {
+   
+    let numItems = $(".composite-field-child").length; // number of item in the list
+    if (numItems == max) {
+        alert("Sorry, you can't add more item into the list.");
+        return false;
+    }
+
+    let chilItemId = "composite-field-child-" + numItems;
+    let dataItm = $("#" + templateId).clone().addClass("row composite-field-child").removeAttr('style').attr("id", chilItemId);
+    let newGuid = createGuid();
+
+    //replace names/ids of input field
+    $(dataItm).find("input").map(function () {
+        let divId = this.id;
+        //replace "ChilTemplate" => Children_@numItems
+        divId = divId.replace('ChildTemplate', 'Children_' + numItems +"_");
+        $(this).attr("id", divId);
+
+        let divName = this.name;
+        divName = divName.replace('ChildTemplate', 'Children[' + numItems + ']');
+        $(this).attr("name", divName);
+    });
+
+     //replace id of child div
+    $(dataItm).find("div").map(function () {
+        let divId = this.id;
+        //replace "ChilTemplate" => Children_@numItems
+        divId = divId.replace('ChildTemplate', 'Children_' + numItems);
+        $(this).attr("id", divId);
+    });
+
+    //insert removeDataItem()
+    $(dataItm).find("span.fa-trash").map(function () {
+        let deleteFunc = "removeDataItem('" + chilItemId + "','" + min + "'); return false;";
+        $(this).attr("onclick", deleteFunc);
+    });
+
+    let newItm = dataItm[0];
+    $("#addNewdataItem").before(newItm);
+
+    
+}
+
+function removeDataItem(dataItemDivId, min) {
+    let numItems = $(".composite-field-child").length;
+    if (numItems == min) {
+        alert("You can't remove this item.")
+        return false;
+    }
+
+    if (numItems > parseInt(min, 10)) {
+        $("#" + dataItemDivId).remove();
+    }
+}
+
+function createGuid() {
+    function S4() {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    }
+    return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+} 

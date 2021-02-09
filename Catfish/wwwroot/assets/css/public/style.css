@@ -347,6 +347,9 @@ ul.checkboxgroup li {
 .composite-field-child {
     border: 1px solid lightGrey;
     padding: 15px;
+    margin:15px;
+}
+.textAlignRight{
     margin: 15px;
 }
 
