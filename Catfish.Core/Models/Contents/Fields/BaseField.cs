@@ -44,7 +44,10 @@ namespace Catfish.Core.Models.Contents.Fields
         
         private RequiredCondition mRequiredCondition;
         public RequiredCondition RequiredCondition { get { if(mRequiredCondition == null) mRequiredCondition = new RequiredCondition(GetElement(RequiredCondition.TagName, true)); return mRequiredCondition; } }
-       
+
+        private ValueExpression mValueExpression;
+        public ValueExpression ValueExpression { get { if (mValueExpression == null) mValueExpression = new ValueExpression(GetElement(ValueExpression.TagName, true)); return mValueExpression; } }
+
         public BaseField() : base(FieldTagName) { }
         public BaseField(XElement data) : base(data) { }
 

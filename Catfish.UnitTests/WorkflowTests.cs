@@ -2,6 +2,7 @@
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Expressions;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
@@ -1494,23 +1495,34 @@ namespace Catfish.UnitTests
 
             var textbox1 = inspectionForm.CreateField<TextField>("Text 1", lang, false, false);
             textbox1.RequiredCondition
-                .Append(dd1, dd1.GetOption("Option 2", lang));
+                .Append(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 2", lang));
             textbox1.SetDescription("Required if DD 1 = Option 2", lang);
 
             var textbox2 = inspectionForm.CreateField<TextField>("Text 2", lang, false, false);
             textbox2.RequiredCondition
-                .Append(radio1, new Option[2] { radio1.GetOption("Option 1", lang), radio1.GetOption("Option 2", lang) }, Core.Models.Contents.Expressions.Expression.eLogical.OR);
+                .AppendMatch(radio1, new Option[2] { radio1.GetOption("Option 1", lang), radio1.GetOption("Option 2", lang) }, ComputationExpression.eLogical.OR);
             textbox2.SetDescription("Required if RB 1 = Option 1 OR Option 2", lang);
 
             var textbox3 = inspectionForm.CreateField<TextField>("Text 3", lang, false, false);
             textbox3.RequiredCondition
-                .Append(checkbox1, new Option[2] { checkbox1.GetOption("Option 1", lang), checkbox1.GetOption("Option 3", lang) }, Core.Models.Contents.Expressions.Expression.eLogical.AND);
+                .AppendMatch(checkbox1, new Option[2] { checkbox1.GetOption("Option 1", lang), checkbox1.GetOption("Option 3", lang) }, Core.Models.Contents.Expressions.ComputationExpression.eLogical.AND);
             textbox3.SetDescription("Required if CB 1 = Option 1 AND Option 3", lang);
             
             var textarea1 = inspectionForm.CreateField<TextArea>("Text 4", lang, false, false);
             textarea1.VisibilityCondition
-              .Append(dd1, dd1.GetOption("Option 3", lang));
-            textarea1.SetDescription("Required if DD 1 = Option 3", lang);
+              .Append(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+            textarea1.SetDescription("Visible if DD 1 = Option 3", lang);
+
+
+            ////var x = inspectionForm.CreateField<DecimalField>("x", lang, false, false);
+            ////var y = inspectionForm.CreateField<DecimalField>("y", lang, false, false);
+            ////var z = inspectionForm.CreateField<DecimalField>("z", lang, false, false);
+
+            ////var a = inspectionForm.CreateField<DecimalField>("a = x", lang, false, false);
+            //////a.ValueExpression.Append(x)
+            ////var b = inspectionForm.CreateField<DecimalField>("b = x + y", lang, false, false);
+            ////var c = inspectionForm.CreateField<DecimalField>("c = x * (y + z)", lang, false, false);
+
 
             //Defininig roles
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));

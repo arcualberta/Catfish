@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Expressions
 {
-    public class RequiredCondition : Expression
+    public class RequiredCondition : ComputationExpression
     {
         public const string TagName = "required-if";
 

@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace Catfish.Core.Models.Contents.Expressions
 {
-    public class VisibilityCondition : Expression
+    public class VisibilityCondition : ComputationExpression
     {
         public const string TagName = "visible-if";
 

@@ -16,7 +16,6 @@
                 $("#" + fieldId).hide()
             }
         }
-        console.log("Expression: " + expression);
     }
 
 
@@ -26,7 +25,8 @@
         let expression = $(field).attr("data-required-if");
         if (expression) {
             let fieldId = $(field).attr("data-field-id");
-            //let result = evaluateExprssion(expression, element);
+
+            console.log(expression)
             let result = eval(expression);
            if (result) {
                 $("#" + fieldId + " span.required").show();
@@ -37,7 +37,6 @@
                 $("#" + fieldId + " input[data-required-if]").prop('required', false);
             }
         }
-        console.log("Expression: " + expression);
     }
 }
 
@@ -69,6 +68,6 @@ function RadioValue(fieldModelId) {
     return $("[data-model-id='" + fieldModelId + "']:checked").val();
 }
 
-function CheckboxValue(fieldModelId) {
-    return false;
+function CheckboxValue(fieldId, optionId) {
+    return $("[data-option-id='" + optionId + "']:checked").val() === "true";
 }
