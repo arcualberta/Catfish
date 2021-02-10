@@ -29,19 +29,19 @@
         }
         else
         {
-            Dictionary<string, object> viewData = new Dictionary<string, object>(); ;
-            string onChangeTrigger = string.Format("updateFields('{0}', this);", Model.Fields[i].Id);
+            Dictionary<string, object> viewData = new Dictionary<string, object>();
+            viewData.Add("data-model-id", Model.Fields[i].Id);
+            viewData.Add("onchange", "updateFields(this);");
+
             if (Model.Fields[i].Required)
             {
                 viewData.Add("required", (string)null);
-                viewData.Add("onchange", onChangeTrigger);
             }
             else
             {
-                viewData.Add("data_visible_if", Model.Fields[i].VisibilityCondition.Value);
-                viewData.Add("data_required_if", Model.Fields[i].RequiredCondition.Value);
-                viewData.Add("data_field_id", fieldRootId);
-                viewData.Add("onchange", onChangeTrigger);
+                viewData.Add("data-visible-if", Model.Fields[i].VisibilityCondition.Value);
+                viewData.Add("data-required-if", Model.Fields[i].RequiredCondition.Value);
+                viewData.Add("data-field-id", fieldRootId);
             }
 
             string fieldId = Html.IdFor(model => Model.Fields[i]);
