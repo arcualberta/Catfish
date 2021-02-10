@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Xml.Linq;
 
@@ -1487,17 +1488,29 @@ namespace Catfish.UnitTests
             inspectionForm.SetDescription("This template is designed testing visible-if, required-if, and computed fields", lang);
 
             string[] options = new string[] { "Option 1", "Option 2", "Option 3", "Option 4" };
-            var dd1 = inspectionForm.CreateField<SelectField>("Dropdown 1", lang, options, true);
-            var radio1 = inspectionForm.CreateField<RadioField>("Radio Button Set 1", lang, options, true);
-            var checkbox1 = inspectionForm.CreateField<CheckboxField>("Checkbox Set 1", lang, options, true);
+            var dd1 = inspectionForm.CreateField<SelectField>("DD 1", lang, options, true);
+            var radio1 = inspectionForm.CreateField<RadioField>("RB 1", lang, options, true);
+            var checkbox1 = inspectionForm.CreateField<CheckboxField>("CB 1", lang, options, true);
 
-            var textbox1 = inspectionForm.CreateField<TextField>("Required if Dropdown 1 = Option 2", lang, false, false);
+            var textbox1 = inspectionForm.CreateField<TextField>("Text 1", lang, false, false);
             textbox1.RequiredCondition
-                .Append(dd1, dd1.GetOption("Option 2", lang));                
+                .Append(dd1, dd1.GetOption("Option 2", lang));
+            textbox1.SetDescription("Required if DD 1 = Option 2", lang);
 
-            var textarea1 = inspectionForm.CreateField<TextArea>("Visible if Dropdown 1 = Option 3", lang, false, false);
+            var textbox2 = inspectionForm.CreateField<TextField>("Text 2", lang, false, false);
+            textbox2.RequiredCondition
+                .Append(dd1, new Option[2] { dd1.GetOption("Option 1", lang), dd1.GetOption("Option 2", lang) }, Core.Models.Contents.Expressions.Expression.eLogical.OR);
+            textbox2.SetDescription("Required if DD 1 = Option 1 OR Option 2", lang);
+
+            var textbox3 = inspectionForm.CreateField<TextField>("Text 3", lang, false, false);
+            textbox3.RequiredCondition
+                .Append(checkbox1, new Option[2] { checkbox1.GetOption("Option 1", lang), checkbox1.GetOption("Option 3", lang) }, Core.Models.Contents.Expressions.Expression.eLogical.AND);
+            textbox3.SetDescription("Required if CB 1 = Option 1 AND Option 3", lang);
+            
+            var textarea1 = inspectionForm.CreateField<TextArea>("Text 4", lang, false, false);
             textarea1.VisibilityCondition
               .Append(dd1, dd1.GetOption("Option 3", lang));
+            textarea1.SetDescription("Required if DD 1 = Option 3", lang);
 
             //Defininig roles
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));

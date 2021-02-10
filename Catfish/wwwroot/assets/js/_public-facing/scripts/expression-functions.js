@@ -1,4 +1,4 @@
-﻿function updateFields(element) {
+﻿function updateFields() {
 
     //let triggeredFieldValue = $(element).val();
     var visibleIfFields = $("input[data-visible-if], textarea[data-visible-if], select[data-visible-if]");
@@ -7,7 +7,8 @@
         let expression = $(field).attr("data-visible-if");
         if (expression) {
             let fieldId = $(field).attr("data-field-id");
-            let result = evaluateExprssion(expression, element);
+            //let result = evaluateExprssion(expression, element);
+            let result = eval(expression);
             if (result) {
                 $("#" + fieldId).show()
             }
@@ -25,8 +26,9 @@
         let expression = $(field).attr("data-required-if");
         if (expression) {
             let fieldId = $(field).attr("data-field-id");
-            let result = evaluateExprssion(expression, element);
-            if (result) {
+            //let result = evaluateExprssion(expression, element);
+            let result = eval(expression);
+           if (result) {
                 $("#" + fieldId + " span.required").show();
                 $("#" + fieldId + " input[data-required-if]").prop('required', true);
             }
@@ -39,12 +41,26 @@
     }
 }
 
-function evaluateExprssion(exp, element) {
-    let modelId = $(element).data("model-id");
-    if (modelId + ":" + element.value === exp) {
-        //This is a simple matching to a option selected and the match is successful
-        return true;
-    }
+function StrValue(fieldModelId) {
+    return $("[data-model-id='" + fieldModelId + "']").val();
+}
 
-    return false;
+function IntValue(fieldModelId) {
+    let val = GetStrValue(fieldModelId);
+    return parseInt(val);
+}
+
+function DoubleValue(fieldModelId) {
+    let val = GetStrValue(fieldModelId);
+    return parseFloat(val);
+}
+
+function FloatValue(fieldModelId) {
+    let val = GetStrValue(fieldModelId);
+    return parseFloat(val);
+}
+
+function DecimalValue(fieldModelId) {
+    let val = GetStrValue(fieldModelId);
+    return parseFloat(val);
 }
