@@ -75,30 +75,6 @@ namespace Catfish.Core.Models.Contents.Expressions
             return this;
         }
 
-        //public ComputationExpression Append(IntegerField field, string @operator, int val)
-        //{
-        //    Data.Value += string.Format("IntValue('{0}'){1}{2}", field.Id, @operator, val);
-        //    return this;
-        //}
-
-        //public ComputationExpression Append(DecimalField field, string @operator, double val)
-        //{
-        //    Data.Value += string.Format("DoubleValue('{0}'){1}{2}", field.Id, @operator, val);
-        //    return this;
-        //}
-
-        //public Expression Append(IntegerField field, string @operator, float val)
-        //{
-        //    Data.Value += string.Format("FloatValue('{0}'){1}{2}", field.Id, @operator, val);
-        //    return this;
-        //}
-
-        //public Expression Append(IntegerField field, string @operator, decimal val)
-        //{
-        //    Data.Value += string.Format("DecimalValue('{0}'){1}{2}", field.Id, @operator, val);
-        //    return this;
-        //}
-
         public static string Str(eRelational val)
         {
             switch (val)
