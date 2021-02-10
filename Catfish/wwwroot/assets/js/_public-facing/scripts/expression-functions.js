@@ -64,3 +64,11 @@ function DecimalValue(fieldModelId) {
     let val = GetStrValue(fieldModelId);
     return parseFloat(val);
 }
+
+function RadioValue(fieldModelId) {
+    return $("[data-model-id='" + fieldModelId + "']:checked").val();
+}
+
+function CheckboxValue(fieldModelId) {
+    return false;
+}

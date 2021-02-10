@@ -29,7 +29,7 @@ namespace Catfish.Core.Models.Contents.Expressions
 
         public Expression Append(OptionsField field, Option val)
         {
-            Data.Value += string.Format("StrValue('{0}') === '{1}'", field.Id, val.Id);
+            Data.Value += string.Format("{0}('{1}') === '{2}'", GetValueGetterFunction(field),  field.Id, val.Id);
             return this;
         }
 
@@ -37,7 +37,7 @@ namespace Catfish.Core.Models.Contents.Expressions
         {
             List<string> fragments = new List<string>();
             for (int i = 0; i < vals.Length; ++i)
-                fragments.Add(string.Format("StrValue('{0}') === '{1}'", field.Id, vals[i].Id));
+                fragments.Add(string.Format("{0}('{1}') === '{2}'", GetValueGetterFunction(field), field.Id, vals[i].Id));
 
             string op = aggregatorOperator == eLogical.AND ? " && " : " || ";
             Data.Value += string.Format("({0})", string.Join(op, fragments));
@@ -66,6 +66,17 @@ namespace Catfish.Core.Models.Contents.Expressions
         {
             Data.Value += string.Format("DecimalValue('{0}'){1}{2}", field.Id, @operator, val);
             return this;
+        }
+
+        private string GetValueGetterFunction(OptionsField field)
+        {
+            if (typeof(RadioField).IsAssignableFrom(field.GetType()))
+                return "RadioValue";
+
+            if (typeof(CheckboxField).IsAssignableFrom(field.GetType()))
+                return "CheckboxValue";
+
+            return "StrValue";
         }
     }
 }

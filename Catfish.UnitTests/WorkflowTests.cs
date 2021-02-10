@@ -1499,8 +1499,8 @@ namespace Catfish.UnitTests
 
             var textbox2 = inspectionForm.CreateField<TextField>("Text 2", lang, false, false);
             textbox2.RequiredCondition
-                .Append(dd1, new Option[2] { dd1.GetOption("Option 1", lang), dd1.GetOption("Option 2", lang) }, Core.Models.Contents.Expressions.Expression.eLogical.OR);
-            textbox2.SetDescription("Required if DD 1 = Option 1 OR Option 2", lang);
+                .Append(radio1, new Option[2] { radio1.GetOption("Option 1", lang), radio1.GetOption("Option 2", lang) }, Core.Models.Contents.Expressions.Expression.eLogical.OR);
+            textbox2.SetDescription("Required if RB 1 = Option 1 OR Option 2", lang);
 
             var textbox3 = inspectionForm.CreateField<TextField>("Text 3", lang, false, false);
             textbox3.RequiredCondition

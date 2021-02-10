@@ -7,7 +7,7 @@
     {
         @Html.HiddenFor(model => model.Options[i].Id)
         @*@Html.RadioButtonFor(model => model.Options[i], Model.Options[i].Id.ToString());*@
-        @Html.CheckBoxFor(model => model.Options[i].Selected);
+        @Html.CheckBoxFor(model => model.Options[i].Selected, ViewData);
         @Html.Raw(string.Format("<span class='radio-option-label'>{0}</span>", Model.Options[i].OptionText.GetConcatenatedContent(" | ")));
     }
 }
