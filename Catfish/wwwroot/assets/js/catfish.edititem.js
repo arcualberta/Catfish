@@ -35,7 +35,7 @@ if (document.getElementById("item-edit-page")) {
              * @param {any} metadataSetId metadataset index
              * @param {any} fieldId field index
              */
-            addNewEntry() {
+            addNewValue() {
 
                 let newEntry = JSON.parse( JSON.stringify(this.fieldData.Values.$values[0]) );
                 newEntry.Id = uuidv1();
@@ -124,7 +124,7 @@ if (document.getElementById("item-edit-page")) {
 
                                         <div v-if="piranha.permissions.pages.add" class="add-value-container">
                                             <div class="btn-group new-value-button" role="group">
-                                                <button type="button" v-on:click="addNewEntry()"
+                                                <button type="button" v-on:click="addNewValue()"
                                                         class="btn btn-sm btn-primary btn-labeled">
                                                     <i class="fas fa-plus"></i>
                                                     {{valueLabel}}
