@@ -1668,7 +1668,7 @@ namespace Catfish.UnitTests
             string[] options = new string[] { "Option 1", "Option 2", "Option 3", "Option 4" };
             var dd1 = inspectionForm.CreateField<SelectField>("DD 1", lang, options, true);
             var radio1 = inspectionForm.CreateField<RadioField>("RB 1", lang, options, true);
-            var checkbox1 = inspectionForm.CreateField<CheckboxField>("CB 1", lang, options, true);
+            var checkbox1 = inspectionForm.CreateField<CheckboxField>("CB 1", lang, options, false);
 
             var textbox1 = inspectionForm.CreateField<TextField>("Text 1", lang, false, false);
             textbox1.RequiredCondition
@@ -1714,11 +1714,12 @@ namespace Catfish.UnitTests
             var departmentChairs = new string[] { "Chair 1", "Chair 2", "Chair 3", "Chair 4", "Chair 5", "Chair 6", "Dean" };
     
             var departmentsDropDown = inspectionForm.CreateField<SelectField>("Departments", lang, departmentNames, true);
-            var chairsDropDown = inspectionForm.CreateField<SelectField>("Departments", lang, departmentChairs, true);
 
             var areYouChairOptions = new string[] { "Yes", "No" };
             var areYouChair = inspectionForm.CreateField<RadioField>("Are you the chair", lang, areYouChairOptions, true);
             
+            var chairsDropDown = inspectionForm.CreateField<SelectField>("Departments", lang, departmentChairs, true);
+
             //Iterating through all chair options except for the last one, which is the Dean
             for(var i=0; i< chairsDropDown.Options.Count-1; ++i) 
             {
@@ -1739,20 +1740,33 @@ namespace Catfish.UnitTests
             //what department is selected in the departmentsDropDown
             chairsDropDown.Options[chairsDropDown.Options.Count - 1].VisibilityCondition
                 .Append(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[0]);
-            
+
             //END: SAS Chair Functionality
             //==============================
 
 
-            //var x = inspectionForm.CreateField<DecimalField>("x", lang, false, false);
-            //var y = inspectionForm.CreateField<DecimalField>("y", lang, false, false);
-            //var z = inspectionForm.CreateField<DecimalField>("z", lang, false, false);
+            var x = inspectionForm.CreateField<DecimalField>("x", lang, false, false);
+            var y = inspectionForm.CreateField<DecimalField>("y", lang, false, false);
+            var z = inspectionForm.CreateField<DecimalField>("z", lang, false, false);
 
-            //var a = inspectionForm.CreateField<DecimalField>("a = x", lang, false, false);
-            ////a.ValueExpression.Append(x)
-            //var b = inspectionForm.CreateField<DecimalField>("b = x + y", lang, false, false);
-            //var c = inspectionForm.CreateField<DecimalField>("c = x * (y + z)", lang, false, false);
+            var a = inspectionForm.CreateField<DecimalField>("a = x", lang, false, false);
+            a.ValueExpression.AppendValue(x);
 
+            var b = inspectionForm.CreateField<DecimalField>("b = x + y", lang, false, false);
+            b.ValueExpression
+                .AppendValue(x)
+                .Append(ComputationExpression.eMath.PLUS)
+                .AppendValue(y);
+
+            var c = inspectionForm.CreateField<DecimalField>("c = x * (y + z)", lang, false, false);
+            c.ValueExpression
+                .AppendValue(x)
+                .Append(ComputationExpression.eMath.MULT)
+                .AppendOpenBrace()
+                .AppendValue(y)
+                .Append(ComputationExpression.eMath.PLUS)
+                .AppendValue(z)
+                .AppendClosedBrace();
 
             //Defininig roles
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
