@@ -31,6 +31,9 @@
                             <span class="title">@user.User.Email</span>
                         </td>
                         <td class="actions one">
+
+                            @if(!(UserGroupService.CheckLoggedUser(user.UserId, Model.RoleGroupId.Value)))
+                            {
                             <a class="danger" href="#" data-toggle="modal" data-target="#userModal" data-content="@user.Id" onclick="addUser('@user.Id'); return false;">
                                 <span class="fas fa-trash"></span>
                             </a>
@@ -39,7 +42,7 @@
                                 <div class="modal-dialog">
                                     <!-- Modal content-->
                                     <div class="modal-content">
-                                        <div class="modal-header"> 
+                                        <div class="modal-header">
                                             <h5 class="modal-title" id="myModalLabel">User Delete Confirmation</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                         </div>
@@ -54,11 +57,14 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                             <input type="hidden" name="UserGroupRoleId" id="UserGroupRoleId" value="" />
-                                            <button  id="deleteConfirm" type="submit" class="btn btn-danger">Delete</button>
+                                            <button id="deleteConfirm" type="submit" class="btn btn-danger">Delete</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            }
+
+
                         </td>
                     </tr>
                 }

@@ -29,5 +29,6 @@ namespace Catfish.Core.Services
         void DeleteGroup(Guid groupId);
         bool CheckUserGroupRole(Guid groupId);
         void DeleteUserGroupRole(Guid userGroupRoleId);
+        bool CheckLoggedUser(Guid userId, Guid groupRoleId);
     }
 }

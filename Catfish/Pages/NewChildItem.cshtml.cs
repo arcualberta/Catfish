@@ -59,14 +59,6 @@ namespace Catfish.Pages
         }
         public IActionResult OnPost()
         {
-            //Creating a clone of the child entity
-
-
-            // not a root entity??
-            //EntityTemplate template = _entityTemplateService.GetTemplate(ChildTemplateId);
-            //if (template == null)
-            //    throw new Exception("Entity template with ID = " + ChildTemplateId + " not found.");
-
             // Get Parent Item to which Child will be added
             Item parentItem = _submissionService.GetSubmissionDetails(ParentId);
             if (parentItem == null)
@@ -78,7 +70,7 @@ namespace Catfish.Pages
             var postAction = _workflowService.GetPostActionByButtonId(template, ButtonId);
             var stateMapping = postAction.StateMappings.Where(sm => sm.Id == ButtonId).FirstOrDefault();
             var nextStatus = stateMapping.Next;
-
+            var action = _workflowService.GetGetActionByPostActionID(template, postAction.Id);
             User user = _workflowService.GetLoggedUser();
             //When we instantantiate an instance from the template, we do not need to clone metadata sets
             //Item newItem = template.Instantiate<Item>();
@@ -94,7 +86,7 @@ namespace Catfish.Pages
 
             _db.Items.Update(parentItem);
             _db.SaveChanges();
-
+            bool triggerExecute = _submissionService.ExecuteTriggers(parentItem.TemplateId.Value, stateMapping.ButtonLabel, action.Function, action.Group);
             return RedirectToPage("ItemDetails", new { id = parentItem.Id });
         }
     }
