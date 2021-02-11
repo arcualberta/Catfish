@@ -29,6 +29,30 @@ if (document.getElementById("item-edit-page")) {
                 deleteLabel: ''
             }
         },
+        methods: {
+            /**
+             * Adds another entry set to the field
+             * @param {any} metadataSetId metadataset index
+             * @param {any} fieldId field index
+             */
+            addNewEntry() {
+
+                let newEntry = JSON.parse( JSON.stringify(this.fieldData.Values.$values[0]) );
+                newEntry.Id = uuidv1();
+
+                //TODO need to check this for Date, Integer, etc, the structure is different
+                for (let item of newEntry.Values.$values) {
+                    item.Value = "";
+                }
+
+                this.fieldData.Values.$values.splice(this.fieldData.Values.$values.length, 0, newEntry);
+                //this.metadataSets[metadataSetId].Fields.$values.splice(fieldId + 1, 0, newEntry);
+                //console.log("metadata sets", this.metadataSets, metadataSetId);
+                //console.log("originalFieldIndexMaster", this.originalFieldIndexMaster);;
+                //this.setOriginalFields();
+
+            },
+        },
         created() {
             this.fieldRequiredLabel = StaticItems.managerSideValues.editItemLabels.FIELD_REQUIRED_LABEL;
             this.valueLabel = StaticItems.managerSideValues.editItemLabels.VALUE_LABEL;
@@ -100,7 +124,7 @@ if (document.getElementById("item-edit-page")) {
 
                                         <div v-if="piranha.permissions.pages.add" class="add-value-container">
                                             <div class="btn-group new-value-button" role="group">
-                                                <button type="button" v-on:click="addNewEntry(metaIndex, fIndex)"
+                                                <button type="button" v-on:click="addNewEntry()"
                                                         class="btn btn-sm btn-primary btn-labeled">
                                                     <i class="fas fa-plus"></i>
                                                     {{valueLabel}}
@@ -348,32 +372,6 @@ if (document.getElementById("item-edit-page")) {
                 });
             },
 
-            /**
-             * Adds another entry set to the field
-             * @param {any} metadataSetId metadataset index
-             * @param {any} fieldId field index
-             */
-            addNewEntry(metadataSetId, fieldId) {
-
-                let newEntry = JSON.parse(JSON.stringify(this.metadataSets[metadataSetId].Fields.$values[fieldId]));
-                newEntry.Id = uuidv1();
-
-                for (let item of newEntry.Values.$values) {
-                    item.Values.$values[0].Value = "";
-                }
-
-                //this.$set(this.originalFieldIndexMaster[metadataSetId], fieldId, {
-                //    field: newEntry.Id,
-                //    count: 1,
-                //    startingIndex: null
-                //});
-
-                this.metadataSets[metadataSetId].Fields.$values.splice(fieldId + 1, 0, newEntry);
-                console.log("metadata sets", this.metadataSets, metadataSetId);
-                console.log("originalFieldIndexMaster", this.originalFieldIndexMaster);;
-                this.setOriginalFields();
-
-            },
             /**
              * Sets the initial language labels youll need for the item.
              * @param {any} sections
