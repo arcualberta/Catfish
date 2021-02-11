@@ -121,6 +121,15 @@ namespace Catfish.Core.Models.Contents.Expressions
             }
         }
 
+        public static string Str(eLogical val)
+        {
+            switch (val)
+            {
+                case eLogical.AND: return "&&";
+                case eLogical.OR: return "||";
+                default: throw new Exception("Unknow logical operator");
+            }
+        }
         public static string Str(eRelational val)
         {
             switch (val)
@@ -135,15 +144,6 @@ namespace Catfish.Core.Models.Contents.Expressions
             }
         }
 
-        public static string Str(eLogical val)
-        {
-            switch (val)
-            {
-                case eLogical.AND: return "&&";
-                case eLogical.OR: return "||";
-                default: throw new Exception("Unknow logical operator");
-            }
-        }
         
     }
 }
