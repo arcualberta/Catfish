@@ -273,7 +273,7 @@ namespace Catfish.UnitTests
 
 
             //Defininig roles
-            WorkflowRole centralAdminRole = workflow.AddRole(auth.GetRole("Admin", true));
+            WorkflowRole centralAdminRole = workflow.AddRole(auth.GetRole("CentralAdmin", true));
             WorkflowRole departmentAdmin = workflow.AddRole(auth.GetRole("DepartmentAdmin", true));
 
 
@@ -348,6 +348,96 @@ namespace Catfish.UnitTests
             listSubmissionAction.GetStateReference(savedState.Id, true)
                 .AddAuthorizedRole(departmentAdmin.Id);
 
+            listSubmissionAction.GetStateReference(deanOfficeRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(deanOfficeRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(deanOfficeRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aacWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aacRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aacRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aacRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aacApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aecWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aecRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aecRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aecRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aecApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(afcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(afcRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(afcRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(afcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(afcApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(gfcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(gfcRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(gfcRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(gfcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(gfcApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(moveToDraftCorrectState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(moveToDraftErrorState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+
             // ================================================
             // Read submission-instances related workflow items
             // ================================================
@@ -363,7 +453,94 @@ namespace Catfish.UnitTests
             viewDetailsSubmissionAction.GetStateReference(savedState.Id, true)
                 .AddAuthorizedRole(departmentAdmin.Id);
 
+            viewDetailsSubmissionAction.GetStateReference(deanOfficeRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
 
+            viewDetailsSubmissionAction.GetStateReference(deanOfficeRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(deanOfficeRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aacWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aacRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aacRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aacRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aacApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aecWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aecRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aecRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aecRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aecApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(afcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(afcRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(afcRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(afcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(afcApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(gfcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(gfcRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(gfcRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(gfcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(gfcApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(moveToDraftCorrectState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(moveToDraftErrorState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
 
             // Edit submission related workflow items
             // =======================================
@@ -676,7 +853,7 @@ namespace Catfish.UnitTests
             PostAction moveToDraftErrorPostAction = moveToDraftAction.AddPostAction("With Error", "Comment");
 
             //Defining state mappings
-            moveToDraftCorrectPostAction.AddStateMapping(gfcApprovedState.Id, moveToDraftErrorState.Id, "Move To Draft Error");
+            moveToDraftErrorPostAction.AddStateMapping(gfcApprovedState.Id, moveToDraftErrorState.Id, "Move To Draft Error");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
             PopUp moveToDraftErrorActionPopUpopUp = moveToDraftErrorPostAction.AddPopUp("Confirmation", "Do you really want to move to draft in error state this document?", "Once moved, you cannot access this document.");
@@ -1512,6 +1689,20 @@ namespace Catfish.UnitTests
             textarea1.VisibilityCondition
               .Append(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
             textarea1.SetDescription("Visible if DD 1 = Option 3", lang);
+
+            //Drop-down menu with conditional options
+            var dd2OOptions = new string[] { "A1", "A2", "B1", "B2", "B3", "B4" };
+            var dd2 = inspectionForm.CreateField<SelectField>("DD 2", lang, dd2OOptions, true);
+            dd2.SetDescription("The option group \"A\" should appear when Option 1 is selected for DD 1 and the option group \"B\" should appear other times.", lang);
+            foreach(var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("A")))
+                option.VisibilityCondition.Append(dd1, 
+                    ComputationExpression.eRelational.EQUAL, 
+                    dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
+
+            foreach (var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("B")))
+                option.VisibilityCondition.Append(dd1,
+                    ComputationExpression.eRelational.NOT_EQ,
+                    dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
 
 
             ////var x = inspectionForm.CreateField<DecimalField>("x", lang, false, false);

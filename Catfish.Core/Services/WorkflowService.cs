@@ -434,5 +434,26 @@ namespace Catfish.Core.Services
                 return null;
             }
         }
+
+        public GetAction GetGetActionByPostActionID(EntityTemplate entityTemplate, Guid postActionId)
+        {
+            try
+            {
+                SetModel(entityTemplate);
+                var workflow = GetWorkflow(false);
+                foreach (var action in workflow.Actions)
+                {
+                    if (action.PostActions.Where(pa => pa.Id == postActionId).Any())
+                        return action;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+
+                _errorLog.Log(new Error(ex));
+                return null;
+            } 
+        }
     }
 }

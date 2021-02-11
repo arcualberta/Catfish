@@ -1,9 +1,10 @@
 ﻿function updateFields() {
 
     //let triggeredFieldValue = $(element).val();
-    var visibleIfFields = $("input[data-visible-if], textarea[data-visible-if], select[data-visible-if]");
+    var visibleIfFields = $("input[data-visible-if], textarea[data-visible-if], select[data-visible-if], option[data-visible-if]");
     for (i = 0; i < visibleIfFields.length; ++i) {
         let field = visibleIfFields[i];
+        console.log(field);
         let expression = $(field).attr("data-visible-if");
         if (expression) {
             let fieldId = $(field).attr("data-field-id");
