@@ -1907,7 +1907,103 @@ namespace Catfish.UnitTests
                                                                   //optionText[0] ==> option value that is to trigger the operator if the list of fields are more than 1
 
 
-            var chair = sasForm.CreateField<SelectField>("Chair:", lang, chairDept, true).SetOptionIf(new List<OptionsField> { dept, isChair }, chairDept, optValues);//chairDept =>string[]
+            var chair = sasForm.CreateField<SelectField>("Chair:", lang, chairDept, true);//.SetOptionIf(new List<OptionsField> { dept, isChair }, chairDept, optValues);//chairDept =>string[]
+
+            for (int i = 0; i < departmentList.Length; i++)
+            {
+
+                if (isChair.GetValues(";", lang) == "Yes")
+                {
+                    foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Dean")))
+                        option.VisibilityCondition.Append(isChair,
+                            ComputationExpression.eRelational.EQUAL,
+                            isChair.Options.Where(op => op.OptionText.GetContent(lang) == optionText[0]).First());
+                }
+                else
+                {
+                    string department = departmentList[i];
+                    foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith(department)))
+                        option.VisibilityCondition.Append(dept,
+                            ComputationExpression.eRelational.EQUAL,
+                            dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[i]).First());
+                }
+
+            }
+
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Dean")))
+            //    option.VisibilityCondition.Append(isChair,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        isChair.Options.Where(op => op.OptionText.GetContent(lang) == optionText[0]).First());
+
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Anthropology")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[0]).First());
+
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Art & Design")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[1]).First());
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Drama")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[2]).First());
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("East")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[3]).First());
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Economics")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[4]).First());
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("English")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[5]).First());
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("History")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[6]).First());
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Ling")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[7]).First());
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Modern")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[8]).First());
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Music")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[9]).First());
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Phil")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[10]).First());
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Pol")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[11]).First());
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Psy")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[12]).First());
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Sos")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[13]).First());
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Women")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[14]).First());
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Med")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[15]).First());
+            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Arts Resources")))
+            //    option.VisibilityCondition.Append(dept,
+            //        ComputationExpression.eRelational.EQUAL,
+            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[16]).First());
 
             string delimiter = ":";
 
@@ -2199,7 +2295,7 @@ namespace Catfish.UnitTests
 
 
             //Defining triggers
-            char[] delim = { ';' };
+           
             EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
             applicantNotificationEmailTrigger.AddRecipientByEmail(((TextField)applicantEmail).GetValue("en"));
             applicantNotificationEmailTrigger.AddTemplate(applicantSubmissionNotification.Id, "Applicant Email Notification");
