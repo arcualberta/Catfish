@@ -167,7 +167,7 @@ namespace Catfish.Core.Authorization.Handlers
                 //entity template is associated with.
 
                 //Take the list of IDs of groups where the template is associated with.
-                List<Guid> groupdsAssociatedWithTemplate = _authHelper.GetGroupsAssociatedWithTemplate(resource.Id).ToList();
+                List<Guid> groupdsAssociatedWithTemplate = _authHelper.GetGroupsAssociatedWithTemplate(resource.TemplateId.Value).ToList();
 
                 //Take the list of IDs of the roels where the current state in this iterayion is authotized with.
                 List<Guid> authorizedRoles = stateReference.AuthorizedRoles.Select(roleRef => roleRef.RefId).ToList();

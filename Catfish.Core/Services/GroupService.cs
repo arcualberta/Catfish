@@ -2,6 +2,7 @@
 using Catfish.Core.Models.ViewModels;
 using ElmahCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
@@ -10,6 +11,7 @@ using Piranha.AspNetCore.Identity.SQLServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Catfish.Core.Services
 {
@@ -18,11 +20,13 @@ namespace Catfish.Core.Services
         private readonly AppDbContext _appDb;
         private readonly IdentitySQLServerDb _piranhaDb;
         private readonly ErrorLog _errorLog;
-        public GroupService(AppDbContext db, IdentitySQLServerDb pdb, ErrorLog errorLog)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public GroupService(AppDbContext db, IdentitySQLServerDb pdb, IHttpContextAccessor httpContextAccessor, ErrorLog errorLog)
         {
             _appDb = db;
             _piranhaDb = pdb;
             _errorLog = errorLog;
+            _httpContextAccessor = httpContextAccessor;
         }
         /// <summary>
         /// This will return all groups except which groups have there status as deleted.
@@ -620,6 +624,27 @@ namespace Catfish.Core.Services
             catch (Exception ex)
             {
                 _errorLog.Log(new Error(ex));
+            }
+        }
+
+        public bool CheckLoggedUser(Guid userId, Guid groupRoleId)
+        {
+            try
+            {
+                string loggedUserId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                UserGroupRole usergroupRole = _appDb.UserGroupRoles
+                                            .Include(gr => gr.GroupRole)
+                                            .Where(gr => gr.GroupRoleId == groupRoleId && gr.UserId == userId).FirstOrDefault();
+                if (_piranhaDb.Roles.Where(r => r.Id == usergroupRole.GroupRole.RoleId && r.NormalizedName == "GROUPADMIN").Any() && usergroupRole.UserId == Guid.Parse(loggedUserId))
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return false;
             }
         }
     }
