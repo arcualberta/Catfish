@@ -1513,6 +1513,20 @@ namespace Catfish.UnitTests
               .Append(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
             textarea1.SetDescription("Visible if DD 1 = Option 3", lang);
 
+            //Drop-down menu with conditional options
+            var dd2OOptions = new string[] { "A1", "A2", "B1", "B2", "B3", "B4" };
+            var dd2 = inspectionForm.CreateField<SelectField>("DD 2", lang, dd2OOptions, true);
+            dd2.SetDescription("The option group \"A\" should appear when Option 1 is selected for DD 1 and the option group \"B\" should appear other times.", lang);
+            foreach(var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("A")))
+                option.VisibilityCondition.Append(dd1, 
+                    ComputationExpression.eRelational.EQUAL, 
+                    dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
+
+            foreach (var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("B")))
+                option.VisibilityCondition.Append(dd1,
+                    ComputationExpression.eRelational.NOT_EQ,
+                    dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
+
 
             ////var x = inspectionForm.CreateField<DecimalField>("x", lang, false, false);
             ////var y = inspectionForm.CreateField<DecimalField>("y", lang, false, false);
