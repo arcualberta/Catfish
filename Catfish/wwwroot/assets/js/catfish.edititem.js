@@ -63,6 +63,9 @@ if (document.getElementById("item-edit-page")) {
                 inputTypes: {
                     "text": "Catfish.Core.Models.Contents.Fields.TextField",
                     "textarea": "Catfish.Core.Models.Contents.Fields.TextArea",
+                    "date": "Catfish.Core.Models.Contents.Fields.DateField",
+                    "integer": "Catfish.Core.Models.Contents.Fields.IntegerField",
+                    "decimal": "Catfish.Core.Models.Contents.Fields.DecimalField",
                 },
 
                 //stores the first time a field appears in the fields of a metadata set
@@ -107,99 +110,6 @@ if (document.getElementById("item-edit-page")) {
                             self.metadataSets = result.MetadataSets.$values;
                             self.metadataSets_type = result.MetadataSets.$type;
                             self.updateBindings = true;
-
-                            //for testing purposes, remove after
-                            /*result.metadataSets[0].fields[0].name.values.push({
-
-                                "format": "plain",
-                                "language": "fr",
-                                "rank": 0,
-                                "value": "Nom",
-                                "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-
-                            });
-
-                            result.metadataSets[0].fields[0].values.push({
-                                "values": [{
-                                    "format": "plain",
-                                    "language": "fr",
-                                    "rank": 0,
-                                    "value": "I am writing in french",
-                                    "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-								}]
-                                
-
-                            });
-
-                            result.metadataSets[0].fields[0].description.values.push({
-
-                                "format": "plain",
-                                "language": "fr",
-                                "rank": 0,
-                                "value": "French description goes here",
-                                "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-
-                            });
-
-
-                            //for testing purposes, remove after v2
-                            result.metadataSets[0].fields.push({
-                                "$type": "Catfish.Core.Models.Contents.TextArea",
-                                "values": [],
-                                "name": {
-                                    "values": []
-                                },
-                                "description": {
-                                    "values": []
-                                },
-                                "modelType": "Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-                            });
-
-                            result.metadataSets[0].fields[2].name.values.push({
-
-                                "format": "plain",
-                                "language": "en",
-                                "rank": 0,
-                                "value": "Some cool textarea stuff",
-                                "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-
-                            });
-
-                            result.metadataSets[0].fields[2].values.push({
-                                "values": [{
-                                    "format": "plain",
-                                    "language": "en",
-                                    "rank": 0,
-                                    "value": "I am some heckin neat text",
-                                    "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-                                }],
-                                "modelType": "Catfish.Core.Models.Contents.MultilingualText"
-
-                            });
-
-                            result.metadataSets[0].fields[2].description.values.push({
-
-                                "format": "plain",
-                                "language": "en",
-                                "rank": 0,
-                                "value": "A description to surpass the century",
-                                "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-
-                            });*/
-
-                            /*result.metadataSets.push({
-                                name: {
-                                    values: [
-                                        {
-                                            "format": "plain",
-                                            "language": "en",
-                                            "rank": 0,
-                                            "value": "I am a test",
-                                            "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-                                        }
-                                    ]
-                                }
-                            });*/
 
                             self.sections[0].values = self.nameAttribute.Values.$values;
                             self.sections[1].values = self.descriptionAttribute.Values.$values;
@@ -349,9 +259,17 @@ if (document.getElementById("item-edit-page")) {
 
                 for (let item of newEntry.Values.$values) {
                     item.Values.$values[0].Value = "";
-				}
+                }
+
+                //this.$set(this.originalFieldIndexMaster[metadataSetId], fieldId, {
+                //    field: newEntry.Id,
+                //    count: 1,
+                //    startingIndex: null
+                //});
 
                 this.metadataSets[metadataSetId].Fields.$values.splice(fieldId + 1, 0, newEntry);
+                console.log("metadata sets", this.metadataSets, metadataSetId);
+                console.log("originalFieldIndexMaster", this.originalFieldIndexMaster);;
                 this.setOriginalFields();
 
             },
@@ -425,7 +343,7 @@ if (document.getElementById("item-edit-page")) {
                                 this.originalFieldIndexMaster[index][matched[0]].count + 1);
 	                    }
 					}
-                    console.log("originalFields:", this.originalFieldIndexMaster);
+                    console.log("originalFieldIndexMaster:", this.originalFieldIndexMaster);
                     console.log("indices: ", this.originalFields);
                 }
 
