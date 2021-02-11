@@ -5,12 +5,126 @@ import StaticItems from '../static/string-values.json';
  * Javascript Vue code for creating a single item edit layout in ItemEdit.cshtml.
  */
 
-
 /**
  * This check makes sure the file is only run on the page with
  * the element. Not a huge deal, can be removed if it's causing issues.
  */
 if (document.getElementById("item-edit-page")) {
+
+    Vue.component('item-field-component', {
+        props: ['fieldData', 'isInPreviewMode'],
+        data() {
+            return {
+                //key-value pairs of input types from the database and their associated
+                //input type
+                inputTypes: {
+                    "text": "Catfish.Core.Models.Contents.Fields.TextField",
+                    "textarea": "Catfish.Core.Models.Contents.Fields.TextArea",
+                    "date": "Catfish.Core.Models.Contents.Fields.DateField",
+                    "integer": "Catfish.Core.Models.Contents.Fields.IntegerField",
+                    "decimal": "Catfish.Core.Models.Contents.Fields.DecimalField",
+                },
+                fieldRequiredLabel: '',
+                valueLabel: '',
+                deleteLabel: ''
+            }
+        },
+        created() {
+            this.fieldRequiredLabel = StaticItems.managerSideValues.editItemLabels.FIELD_REQUIRED_LABEL;
+            this.valueLabel = StaticItems.managerSideValues.editItemLabels.VALUE_LABEL;
+            this.deleteLabel = StaticItems.managerSideValues.editItemLabels.DELETE_LABEL;
+        },
+        template: `
+        <div class="sitemap-item">
+            <div class="link">
+                <div class="flexer">
+                    <div class="flexer" v-for="(val, index) in fieldData.Name.Values.$values">
+                        <h3 v-if="index >0 && index < fieldData.Name.Values.$values.length" style="white-space: pre"> | </h3>
+                        <h3>{{fieldData.Name.Values.$values[index].Value}}</h3>
+                    </div>
+                </div>
+                <div class="flex-row" v-for="(val, index) in fieldData.Name.Values.$values">
+                    <div class="label-holder">
+                        <!--<div>{{languageLabels[index]}}/{{fieldData.Name.Values.$values[index].Language}}:</div>-->
+                        <button v-if="!isInPreviewMode" type="button" class="btn-sm btn-primary btn-circle"
+                        data-toggle="tooltip" data-placement="top"
+                        :title="fieldData.Description.Values.$values[index].Value">
+                            <i class="fas fa-question"></i>
+                        </button>
+                                                </div>
+                                                <!--
+                    Note to self about the value in this element:
+                    field.values[index].values[0].value
+                   - The first values is an array of objects. Those objects are for
+                     each field's language.
+                   - The next values is an array of that field language, but there seems to
+                     be no way this would ever increase past 1 item in the array. So therefore,
+                     the index is always set to 0.
+                -->
+                                                <div v-if="!isInPreviewMode" class="col-md-4 mb-3 metadata-input">
+                                                    <input v-if="fieldData.$type.includes(inputTypes.text)"
+                                                           required type="text" class="form-control"
+                                                           v-model="fieldData.Values.$values[index].Values.$values[0].Value">
+                                                    <textarea v-else-if="fieldData.$type.includes(inputTypes.textarea)"
+                                                              required class="form-control" rows="3"
+                                                              v-model="fieldData.Values.$values[index].Values.$values[0].Value"></textarea>
+                                                    <input type="date" v-else-if="fieldData.$type.includes(inputTypes.date)"
+                                                           v-model="fieldData.Values.$values[index].Value"
+                                                           required class="form-control">
+                                                    <input type="number" v-else-if="fieldData.$type.includes(inputTypes.integer)"
+                                                           v-model="fieldData.Values.$values[index].Value"
+                                                           required class="form-control">
+                                                    <!--TODO need to come back and adjust this for better decimal functionality -->
+                                                    <input type="number" step=".01" v-else-if="fieldData.$type.includes(inputTypes.decimal)"
+                                                           required class="form-control" v-model="fieldData.Values.$values[index].Value">
+                                                    <!--<vue-editor v-else-if="fieldData.$type.includes(inputTypes.textarea)
+                                v-model="fieldData.Values.$values[index].Values.$values[0].Value">
+                    </vue-editor>-->
+                                                    <div class="invalid-feedback">
+                                                        <!--{{fieldRequiredLabel}}-->
+                                                    </div>
+                                                </div>
+                                                <div v-else>
+                                                    <div v-if="fieldData.Values.$values[index].hasOwnProperty('Values')">
+                                                        {{fieldData.Values.$values[index].Values.$values[0].Value}}
+                                                    </div>
+                                                    <div v-else>
+                                                        <span>
+                                                            {{fieldData.Values.$values[index].Value}} <!--.Values.$values[0].Value-->
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div v-if="piranha.permissions.pages.add" class="add-value-container">
+                                            <div class="btn-group new-value-button" role="group">
+                                                <button type="button" v-on:click="addNewEntry(metaIndex, fIndex)"
+                                                        class="btn btn-sm btn-primary btn-labeled">
+                                                    <i class="fas fa-plus"></i>
+                                                    {{valueLabel}}
+                                                </button>
+                                            </div>
+                                            <div class="btn-group new-value-button" role="group">
+                                                <!--<div v-if="fieldData.Values.$values[0].hasOwnProperty('Values')">
+                                                    {{fIndex}} | {{fieldData.Id}} |
+                                                    {{originalFields[metaIndex].includes(fIndex)}} ||| {{originalFieldIndexMaster[metaIndex][fieldData.Id].count <=1}}
+                                                </div>-->
+                                                <!--<button :disabled="originalFields[metaIndex].includes(fIndex) && originalFieldIndexMaster[metaIndex][field.Id].count <=1"
+                                                        type="button" v-on:click="deleteField(metaIndex, fIndex)"
+                                                        class="btn btn-sm btn-danger btn-labeled trash-button">
+                                                    <i class="fas fa-trash"></i>
+                                                    {{deleteLabel}}
+                                                </button>-->
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+    `
+    });
+
     piranha.itemlist = new Vue({
         el: '#item-edit-page',
         /*components: {
@@ -58,15 +172,6 @@ if (document.getElementById("item-edit-page")) {
                 metadataSets: [],
                 metadataSets_type: null,
                 metadataSetLabel: "Metadata Sets",
-                //key-value pairs of input types from the database and their associated
-                //input type
-                inputTypes: {
-                    "text": "Catfish.Core.Models.Contents.Fields.TextField",
-                    "textarea": "Catfish.Core.Models.Contents.Fields.TextArea",
-                    "date": "Catfish.Core.Models.Contents.Fields.DateField",
-                    "integer": "Catfish.Core.Models.Contents.Fields.IntegerField",
-                    "decimal": "Catfish.Core.Models.Contents.Fields.DecimalField",
-                },
 
                 //stores the first time a field appears in the fields of a metadata set
                 //this would be better handled by using child components but 
@@ -79,10 +184,6 @@ if (document.getElementById("item-edit-page")) {
                 saveSuccessfulLabel: "Saved!",
                 saveFailedLabel: "Failed to Save",
                 saveStatus: 0,
-
-                fieldRequiredLabel: '',
-                valueLabel: '',
-                deleteLabel:''
             }
         },
         computed: {
@@ -369,9 +470,6 @@ if (document.getElementById("item-edit-page")) {
                 this.metadataSetLabel = StaticItems.managerSideValues.editItemLabels.METADATASET_LABEL;
                 this.saveSuccessfulLabel = StaticItems.managerSideValues.editItemLabels.SAVE_SUCCESSFUL_LABEL;
                 this.saveFailedLabel = StaticItems.managerSideValues.editItemLabels.SAVE_FAILED_LABEL;
-                this.fieldRequiredLabel = StaticItems.managerSideValues.editItemLabels.FIELD_REQUIRED_LABEL;
-                this.valueLabel = StaticItems.managerSideValues.editItemLabels.VALUE_LABEL;
-                this.deleteLabel = StaticItems.managerSideValues.editItemLabels.DELETE_LABEL;
 
 			}
         },
