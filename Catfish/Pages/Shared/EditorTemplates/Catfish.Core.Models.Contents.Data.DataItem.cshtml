@@ -6,9 +6,22 @@
 @Html.HiddenFor(model => model.TemplateId)
 @Html.HiddenFor(model => model.ModelType)
 
+@{
+    @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig;
+    @inject Catfish.Services.IAppService _appService;
+
+    bool useVueForms = _catfishAppConfig.GetValue("SiteConfig:UseVueForms", false);
+    if (!useVueForms)
+    {
+        _appService.RegisterScript("/assets/js/_public-facing/scripts/expression-functions.js");
+        _appService.RegisterOnLoadFunction("updateFields();");
+    }
+}
+
 @for (int i = 0; i < Model.Fields.Count; ++i)
 {
-    <div class="row field-row @Model.Fields[i].FieldCssClass">
+    var fieldRootId = Html.IdFor(model => Model.Fields[i]) + "_row";
+    <div class="row field-row @Model.Fields[i].FieldCssClass" id="@fieldRootId">
         @if (typeof(InfoSection).IsAssignableFrom(Model.Fields[i].GetType()))
         {
             <div class="col-md-12">
@@ -17,16 +30,44 @@
         }
         else
         {
+            Dictionary<string, object> viewData = new Dictionary<string, object>();
+            viewData.Add("data-model-id", Model.Fields[i].Id);
+            viewData.Add("onchange", "updateFields();");
+
+            if (Model.Fields[i].Required)
+            {
+                viewData.Add("required", (string)null);
+            }
+            else
+            {
+                viewData.Add("data-visible-if", Model.Fields[i].VisibilityCondition.Value);
+                viewData.Add("data-required-if", Model.Fields[i].RequiredCondition.Value);
+                viewData.Add("data-field-id", fieldRootId);
+            }
+
             string fieldId = Html.IdFor(model => Model.Fields[i]);
             <div class="control field-label @Model.Fields[i].FieldLabelCssClass">
                 @Html.DisplayFor(model => Model.Fields[i].Name, Model.Fields[i].Name.GetType().ToString())
                 @if (Model.Fields[i].Required)
                 {<span class="required"></span>}
+                else
+                {<span class="required" style="display:none"></span>}
             </div>
             <div id="@fieldId" class="field-value @Model.Fields[i].CssClass @Model.Fields[i].FieldValueCssClass">
                 @Html.DisplayFor(mode => Model.Fields[i].Description, Model.Fields[i].Description.GetType().ToString())
-                @Html.EditorFor(model => model.Fields[i], Model.Fields[i].GetType().ToString())
+                @Html.EditorFor(model => model.Fields[i], Model.Fields[i].GetType().ToString(), viewData)
             </div>
+
+            @*string fieldId = Html.IdFor(model => Model.Fields[i]);
+                <div class="control field-label @Model.Fields[i].FieldLabelCssClass">
+                    @Html.DisplayFor(model => Model.Fields[i].Name, Model.Fields[i].Name.GetType().ToString())
+                    @if (Model.Fields[i].Required)
+                    {<span class="required"></span>}
+                </div>
+                <div id="@fieldId" class="field-value @Model.Fields[i].CssClass @Model.Fields[i].FieldValueCssClass">
+                    @Html.DisplayFor(mode => Model.Fields[i].Description, Model.Fields[i].Description.GetType().ToString())
+                    @Html.EditorFor(model => model.Fields[i], Model.Fields[i].GetType().ToString())
+                </div>*@
         }
     </div>
 }

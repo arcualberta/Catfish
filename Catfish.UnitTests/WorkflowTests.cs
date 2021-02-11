@@ -2,6 +2,7 @@
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Expressions;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
@@ -13,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Xml.Linq;
 
@@ -1629,7 +1631,6 @@ namespace Catfish.UnitTests
             AppDbContext db = _testHelper.Db;
             IAuthorizationService auth = _testHelper.AuthorizationService;
 
-
             ItemTemplate template = db.ItemTemplates
                 .Where(et => et.TemplateName == templateName)
                 .FirstOrDefault();
@@ -1659,42 +1660,45 @@ namespace Catfish.UnitTests
             State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
-
-            //Defining email templates
-            EmailTemplate adminNotification = ws.GetEmailTemplate("Admin Notification", true);
-            adminNotification.SetDescription("This metadata set defines the email template to be sent to the admin when an inspector does not submit an inspection report timely.", lang);
-            adminNotification.SetSubject("Safety Inspection Submission");
-            adminNotification.SetBody("TBD");
-
-            EmailTemplate inspectorSubmissionNotification = ws.GetEmailTemplate("Inspector Notification", true);
-            inspectorSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to an inspector when an inspection report is not submitted timely.", lang);
-            inspectorSubmissionNotification.SetSubject("Safety Inspection Reminder");
-            inspectorSubmissionNotification.SetBody("TBD");
-
-            //Defininig the inspection form
-            DataItem inspectionForm = template.GetDataItem("COVID-19 Inspection Form", true, lang);
+            //Defininig the form
+            DataItem inspectionForm = template.GetDataItem("Small Test Form", true, lang);
             inspectionForm.IsRoot = true;
-            inspectionForm.SetDescription("This template is designed for a weekly inspection of public health measures specific to COVID-19 and other return to campus requirements.", lang);
+            inspectionForm.SetDescription("This template is designed testing visible-if, required-if, and computed fields", lang);
 
-            inspectionForm.CreateField<DateField>("Inspection Date", lang, true)
-                .IncludeTime = false;
+            string[] options = new string[] { "Option 1", "Option 2", "Option 3", "Option 4" };
+            var dd1 = inspectionForm.CreateField<SelectField>("DD 1", lang, options, true);
+            var radio1 = inspectionForm.CreateField<RadioField>("RB 1", lang, options, true);
+            var checkbox1 = inspectionForm.CreateField<CheckboxField>("CB 1", lang, options, true);
 
-            string[] optionBuilding = new string[] { "Arts and Convocation Hall", "Assiniboia Hall", "Fine Arts Building", "HM Tory Building", "HUB", "Humanities Centre", "Industrial Design Studio", "North Power Plant", "South Academic Building", "Timms Centre for the Arts", "Varsity Trailer" };
-            inspectionForm.CreateField<SelectField>("Building", lang, optionBuilding, true);
-            inspectionForm.CreateField<TextField>("Inspected By", lang, true, true);
-            inspectionForm.CreateField<IntegerField>("Number of People in the work area", lang, true);
+            var textbox1 = inspectionForm.CreateField<TextField>("Text 1", lang, false, false);
+            textbox1.RequiredCondition
+                .Append(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 2", lang));
+            textbox1.SetDescription("Required if DD 1 = Option 2", lang);
 
-            //Jill added this one
-            var testCheckbox = inspectionForm.CreateField<CheckboxField>("Room/Area Check:", lang, optionBuilding);
+            var textbox2 = inspectionForm.CreateField<TextField>("Text 2", lang, false, false);
+            textbox2.RequiredCondition
+                .AppendMatch(radio1, new Option[2] { radio1.GetOption("Option 1", lang), radio1.GetOption("Option 2", lang) }, ComputationExpression.eLogical.OR);
+            textbox2.SetDescription("Required if RB 1 = Option 1 OR Option 2", lang);
 
-            string[] optionText = new string[] { "Yes", "No", "N/A" };
-            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText, true);
+            var textbox3 = inspectionForm.CreateField<TextField>("Text 3", lang, false, false);
+            textbox3.RequiredCondition
+                .AppendMatch(checkbox1, new Option[2] { checkbox1.GetOption("Option 1", lang), checkbox1.GetOption("Option 3", lang) }, Core.Models.Contents.Expressions.ComputationExpression.eLogical.AND);
+            textbox3.SetDescription("Required if CB 1 = Option 1 AND Option 3", lang);
+            
+            var textarea1 = inspectionForm.CreateField<TextArea>("Text 4", lang, false, false);
+            textarea1.VisibilityCondition
+              .Append(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+            textarea1.SetDescription("Visible if DD 1 = Option 3", lang);
 
-            var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText, true);
-            inspectionForm.CreateField<TextArea>("Eyewash station info", lang, false)
-                .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang)
-                //.SetVisibleIf(eyeWashFlushed, optionText[0]);
-                .SetVisibleIf(testCheckbox, optionBuilding[5]);
+
+            ////var x = inspectionForm.CreateField<DecimalField>("x", lang, false, false);
+            ////var y = inspectionForm.CreateField<DecimalField>("y", lang, false, false);
+            ////var z = inspectionForm.CreateField<DecimalField>("z", lang, false, false);
+
+            ////var a = inspectionForm.CreateField<DecimalField>("a = x", lang, false, false);
+            //////a.ValueExpression.Append(x)
+            ////var b = inspectionForm.CreateField<DecimalField>("b = x + y", lang, false, false);
+            ////var c = inspectionForm.CreateField<DecimalField>("c = x * (y + z)", lang, false, false);
 
 
             //Defininig roles

@@ -9,8 +9,10 @@ namespace Catfish.Services
     {
         public void RegisterScript(string url);
         public void RegisterStylesheet(string url);
+        public void RegisterOnLoadFunction(string fucntionCall);
 
         public List<string> GetScriptUrls();
         public List<string> GetStylesheetUrls();
+        public List<string> GetOnLoadFunctionCalls();
     }
 }
