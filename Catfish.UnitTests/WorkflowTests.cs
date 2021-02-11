@@ -1921,131 +1921,56 @@ namespace Catfish.UnitTests
             //if department Chair  -- the chair will be the dean
             //the order of the department chair list have to be in the same order of the list Department above
             // the first one is the Dean ==> no association with the department -- exception
-            string[] chairDept = new string[] { "Dean: Steve Patten : spatten@ualberta.ca",
-                                                "Anthropology : Pamela Willoughby: pwilloug @ualberta.ca",
-                                                "Art & Design : Aidan Rowe: rowe1@ualberta.ca",
-                                                "Drama: Melanie Dreyer-Lude : dreyerlu@ualberta.ca",
-                                                "East Asian Studies: Christopher Lupke: lupke@ualberta.ca",
-                                                 "Economics : Rick Szostak: rszostak@ualberta.ca",
-                                                 "English and Film Studies: Cecily Devereux: devereux@ualberta.ca",
-                                                 "History and Classics : Ryan Dunch: rdunch@ualberta.ca",
-                                                 "Linguistics: Herb Colston: colston@ualberta.ca",
-                                                 "Modern Languages and Cultural Studies (MLCS): Alla Nedashkiviska: allan@ualberta.ca",
-                                                 "Music: Patricia Tao: ptao@ualberta.ca",
-                                                 "Philosophy: Marie-Eve Morin: mmorin1@ualberta.ca",
-                                                 "Political Science: Catherine Kellogg: ckellogg@ualberta.ca",
-                                                 "Psychology: Anthony Singhal: asinghal@ualberta.ca",
-                                                 "Sociology: Sara Dorow: sdorow@ualberta.ca",
-                                                 "Women's and Gender Studies: Michelle Meagher: mmmeaghe@ualberta.ca",
-                                                 "Media and Technology Studies: Astrid Ensslin: ensslin@ualberta.ca",
-                                                 "Arts Resources Centre: arcAdmin : kamal@ranaweera.ca" };
+            string[] chairDept = new string[] { 
+                                                "Pamela Willoughby: pwilloug @ualberta.ca",
+                                                "Aidan Rowe: rowe1@ualberta.ca",
+                                                "Melanie Dreyer-Lude : dreyerlu@ualberta.ca",
+                                                "Christopher Lupke: lupke@ualberta.ca",
+                                                 "Rick Szostak: rszostak@ualberta.ca",
+                                                 "Cecily Devereux: devereux@ualberta.ca",
+                                                 "Ryan Dunch: rdunch@ualberta.ca",
+                                                 "Herb Colston: colston@ualberta.ca",
+                                                 "Alla Nedashkiviska: allan@ualberta.ca",
+                                                 "Patricia Tao: ptao@ualberta.ca",
+                                                 "Marie-Eve Morin: mmorin1@ualberta.ca",
+                                                 "Catherine Kellogg: ckellogg@ualberta.ca",
+                                                 "Anthony Singhal: asinghal@ualberta.ca",
+                                                 "Sara Dorow: sdorow@ualberta.ca",
+                                                 "Michelle Meagher: mmmeaghe@ualberta.ca",
+                                                 "Astrid Ensslin: ensslin@ualberta.ca",
+                                                 "arcAdmin : mruaini@ualberta.ca",
+                                                "Dean: Steve Patten : spatten@ualberta.ca",};
 
             string optValues = "1," + optionText[0] + "," + "&&"; //index  => of the fields in the list of 1st input parameter of SetOptionIf -- this refer to "isChair" radioButtonList, 
                                                                   //optionText[0] ==> option value that is to trigger the operator if the list of fields are more than 1
 
 
             var chair = sasForm.CreateField<SelectField>("Chair:", lang, chairDept, true);//.SetOptionIf(new List<OptionsField> { dept, isChair }, chairDept, optValues);//chairDept =>string[]
+           
 
-            for (int i = 0; i < departmentList.Length; i++)
+            //Iterating through all chair options except for the last one, which is the Dean
+            for (var i = 0; i < chair.Options.Count-1; ++i)
             {
+                var selectedChair = chair.Options[i];
 
-                if (isChair.GetValues(";", lang) == "Yes")
-                {
-                    foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Dean")))
-                        option.VisibilityCondition.Append(isChair,
-                            ComputationExpression.eRelational.EQUAL,
-                            isChair.Options.Where(op => op.OptionText.GetContent(lang) == optionText[0]).First());
-                }
-                else
-                {
-                    string department = departmentList[i];
-                    foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith(department)))
-                        option.VisibilityCondition.Append(dept,
-                            ComputationExpression.eRelational.EQUAL,
-                            dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[i]).First());
-                }
-
+                selectedChair.VisibilityCondition
+                    .Append(dept, ComputationExpression.eRelational.EQUAL, dept.Options[i])
+                    .Append(ComputationExpression.eLogical.AND)
+                    .Append(isChair, ComputationExpression.eRelational.EQUAL, isChair.Options[1]);
+                //.Where(op => op.OptionText.GetContent(lang).StartsWith("B")))
             }
 
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Dean")))
-            //    option.VisibilityCondition.Append(isChair,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        isChair.Options.Where(op => op.OptionText.GetContent(lang) == optionText[0]).First());
+            //Setting the visibility of the last chairs option ("Dean"). This option should be 
+            //visible if and only if "Yes" is selected for the areYouChair radio field.
+            chair.Options[chair.Options.Count - 1].VisibilityCondition
+                .Append(isChair, ComputationExpression.eRelational.EQUAL, isChair.Options[0]);
 
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Anthropology")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[0]).First());
-
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Art & Design")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[1]).First());
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Drama")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[2]).First());
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("East")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[3]).First());
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Economics")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[4]).First());
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("English")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[5]).First());
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("History")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[6]).First());
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Ling")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[7]).First());
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Modern")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[8]).First());
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Music")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[9]).First());
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Phil")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[10]).First());
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Pol")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[11]).First());
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Psy")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[12]).First());
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Sos")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[13]).First());
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Women")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[14]).First());
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Med")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[15]).First());
-            //foreach (var option in chair.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("Arts Resources")))
-            //    option.VisibilityCondition.Append(dept,
-            //        ComputationExpression.eRelational.EQUAL,
-            //        dept.Options.Where(op => op.OptionText.GetContent(lang) == departmentList[16]).First());
+          
 
             string delimiter = ":";
 
-            var chairName = sasForm.CreateField<TextField>("Chair's Name:", lang, true, true).SetDefaultReferenceValue(chair, delimiter, 1);
-            var chairEmail = sasForm.CreateField<TextField>("Chair's Email:", lang, true, true).SetDefaultReferenceValue(chair, delimiter, 2);
+            var chairName = sasForm.CreateField<TextField>("Chair's Name:", lang, true).SetDefaultReferenceValue(chair, delimiter, 0);
+            var chairEmail = sasForm.CreateField<TextField>("Chair's Email:", lang, true).SetDefaultReferenceValue(chair, delimiter, 1);
 
             //========================================================================PROJECT DETAILS
 
