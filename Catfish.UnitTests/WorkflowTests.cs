@@ -1712,12 +1712,13 @@ namespace Catfish.UnitTests
             //      the departmentChairs array should have one option at the end, which represents the Dean
             var departmentNames = new string[]  { "Dept 1",  "Dept 2",  "Dept 3",  "Dept 4",  "Dept 5",  "Dept 6" };
             var departmentChairs = new string[] { "Chair 1", "Chair 2", "Chair 3", "Chair 4", "Chair 5", "Chair 6", "Dean" };
+    
             var departmentsDropDown = inspectionForm.CreateField<SelectField>("Departments", lang, departmentNames, true);
+            var chairsDropDown = inspectionForm.CreateField<SelectField>("Departments", lang, departmentChairs, true);
 
             var areYouChairOptions = new string[] { "Yes", "No" };
             var areYouChair = inspectionForm.CreateField<RadioField>("Are you the chair", lang, areYouChairOptions, true);
-
-            var chairsDropDown = inspectionForm.CreateField<SelectField>("Departments", lang, departmentChairs, true);
+            
             //Iterating through all chair options except for the last one, which is the Dean
             for(var i=0; i< chairsDropDown.Options.Count-1; ++i) 
             {
@@ -1731,13 +1732,14 @@ namespace Catfish.UnitTests
                     .Append(departmentsDropDown, ComputationExpression.eRelational.EQUAL, departmentsDropDown.Options[i])
                     .Append(ComputationExpression.eLogical.AND)
                     .Append(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[1]);
-                //.Where(op => op.OptionText.GetContent(lang).StartsWith("B")))
             }
 
             //Setting the visibility of the last chairs option ("Dean"). This option should be 
-            //visible if and only if "Yes" is selected for the areYouChair radio field.
+            //visible if and only if "Yes" is selected for the areYouChair radio field irrespective of
+            //what department is selected in the departmentsDropDown
             chairsDropDown.Options[chairsDropDown.Options.Count - 1].VisibilityCondition
                 .Append(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[0]);
+            
             //END: SAS Chair Functionality
             //==============================
 
