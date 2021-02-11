@@ -1684,7 +1684,7 @@ namespace Catfish.UnitTests
             textbox3.RequiredCondition
                 .AppendMatch(checkbox1, new Option[2] { checkbox1.GetOption("Option 1", lang), checkbox1.GetOption("Option 3", lang) }, Core.Models.Contents.Expressions.ComputationExpression.eLogical.AND);
             textbox3.SetDescription("Required if CB 1 = Option 1 AND Option 3", lang);
-            
+
             var textarea1 = inspectionForm.CreateField<TextArea>("Text 4", lang, false, false);
             textarea1.VisibilityCondition
               .Append(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
@@ -1694,9 +1694,9 @@ namespace Catfish.UnitTests
             var dd2OOptions = new string[] { "A1", "A2", "B1", "B2", "B3", "B4" };
             var dd2 = inspectionForm.CreateField<SelectField>("DD 2", lang, dd2OOptions, true);
             dd2.SetDescription("The option group \"A\" should appear when Option 1 is selected for DD 1 and the option group \"B\" should appear other times.", lang);
-            foreach(var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("A")))
-                option.VisibilityCondition.Append(dd1, 
-                    ComputationExpression.eRelational.EQUAL, 
+            foreach (var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("A")))
+                option.VisibilityCondition.Append(dd1,
+                    ComputationExpression.eRelational.EQUAL,
                     dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
 
             foreach (var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("B")))
@@ -1705,14 +1705,51 @@ namespace Catfish.UnitTests
                     dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
 
 
-            ////var x = inspectionForm.CreateField<DecimalField>("x", lang, false, false);
-            ////var y = inspectionForm.CreateField<DecimalField>("y", lang, false, false);
-            ////var z = inspectionForm.CreateField<DecimalField>("z", lang, false, false);
+            //BEGIN: SAS Chair Functionality
+            //==============================
+            //Note: for every index in the departmentNames array, the corresponding index in the 
+            //      departmentChairs array should specify the chair of that department. However,
+            //      the departmentChairs array should have one option at the end, which represents the Dean
+            var departmentNames = new string[]  { "Dept 1",  "Dept 2",  "Dept 3",  "Dept 4",  "Dept 5",  "Dept 6" };
+            var departmentChairs = new string[] { "Chair 1", "Chair 2", "Chair 3", "Chair 4", "Chair 5", "Chair 6", "Dean" };
+            var departmentsDropDown = inspectionForm.CreateField<SelectField>("Departments", lang, departmentNames, true);
 
-            ////var a = inspectionForm.CreateField<DecimalField>("a = x", lang, false, false);
-            //////a.ValueExpression.Append(x)
-            ////var b = inspectionForm.CreateField<DecimalField>("b = x + y", lang, false, false);
-            ////var c = inspectionForm.CreateField<DecimalField>("c = x * (y + z)", lang, false, false);
+            var areYouChairOptions = new string[] { "Yes", "No" };
+            var areYouChair = inspectionForm.CreateField<RadioField>("Are you the chair", lang, areYouChairOptions, true);
+
+            var chairsDropDown = inspectionForm.CreateField<SelectField>("Departments", lang, departmentChairs, true);
+            //Iterating through all chair options except for the last one, which is the Dean
+            for(var i=0; i< chairsDropDown.Options.Count-1; ++i) 
+            {
+                var chair = chairsDropDown.Options[i];
+
+                //This shair should be visible only if the corresponding departmet
+                //has been selected for the departmentsDropDown AND the second 
+                //option (i.e. index = 1, or in other wards, the value of "No") 
+                //has been selected for the areYouChair radio button
+                chair.VisibilityCondition
+                    .Append(departmentsDropDown, ComputationExpression.eRelational.EQUAL, departmentsDropDown.Options[i])
+                    .Append(ComputationExpression.eLogical.AND)
+                    .Append(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[1]);
+                //.Where(op => op.OptionText.GetContent(lang).StartsWith("B")))
+            }
+
+            //Setting the visibility of the last chairs option ("Dean"). This option should be 
+            //visible if and only if "Yes" is selected for the areYouChair radio field.
+            chairsDropDown.Options[chairsDropDown.Options.Count - 1].VisibilityCondition
+                .Append(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[0]);
+            //END: SAS Chair Functionality
+            //==============================
+
+
+            //var x = inspectionForm.CreateField<DecimalField>("x", lang, false, false);
+            //var y = inspectionForm.CreateField<DecimalField>("y", lang, false, false);
+            //var z = inspectionForm.CreateField<DecimalField>("z", lang, false, false);
+
+            //var a = inspectionForm.CreateField<DecimalField>("a = x", lang, false, false);
+            ////a.ValueExpression.Append(x)
+            //var b = inspectionForm.CreateField<DecimalField>("b = x + y", lang, false, false);
+            //var c = inspectionForm.CreateField<DecimalField>("c = x * (y + z)", lang, false, false);
 
 
             //Defininig roles
