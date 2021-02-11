@@ -35,9 +35,43 @@ namespace Catfish.Core.Models.Contents.Expressions
         {
             return string.Format("CheckboxValue('{0}', '{1}') === {2}", field.Id, val.Id, isChecked ? "true" : "false");
         }
-        public ComputationExpression Append(string val)
+
+        //public static string Expression(IntegerField field, Option val, bool isChecked)
+        //{
+        //    return string.Format("CheckboxValue('{0}', '{1}') === {2}", field.Id, val.Id, isChecked ? "true" : "false");
+        //}
+        //public static string Expression(Decimal field, Option val, bool isChecked)
+        //{
+        //    return string.Format("CheckboxValue('{0}', '{1}') === {2}", field.Id, val.Id, isChecked ? "true" : "false");
+        //}
+
+        public ComputationExpression Append(eMath @operator)
         {
-            Data.Value += val;
+            Data.Value += Str(@operator);
+            return this;
+        }
+
+        public ComputationExpression Append(eLogical @operator)
+        {
+            Data.Value += Str(@operator);
+            return this;
+        }
+
+        public ComputationExpression Append(eRelational @operator)
+        {
+            Data.Value += Str(@operator);
+            return this;
+        }
+
+        public ComputationExpression AppendOpenBrace()
+        {
+            Data.Value += "(";
+            return this;
+        }
+
+        public ComputationExpression AppendClosedBrace()
+        {
+            Data.Value += ")";
             return this;
         }
 
@@ -73,6 +107,18 @@ namespace Catfish.Core.Models.Contents.Expressions
             }
             Data.Value += string.Format("({0})", string.Join(Str(aggregatorOperator), fragments));
             return this;
+        }
+
+        public static string Str(eMath val)
+        {
+            switch (val)
+            {
+                case eMath.PLUS: return "+";
+                case eMath.MINUS: return "-";
+                case eMath.MULT: return "*";
+                case eMath.DIV: return "/";
+                default: throw new Exception("Unknow mathematical operator");
+            }
         }
 
         public static string Str(eRelational val)
