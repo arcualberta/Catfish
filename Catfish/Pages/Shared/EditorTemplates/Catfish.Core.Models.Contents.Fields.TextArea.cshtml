@@ -3,7 +3,18 @@
 
 @Html.HiddenFor(model => model.ModelType)
 @Html.HiddenFor(model => model.Id)
+
+@{ 
+    var viewData = new Dictionary<string, object>(); ;
+
+    foreach (var key in ViewData.Keys)
+    {
+        viewData.Add(key, ViewData[key]);
+    }
+    viewData.Add("multiline", true);
+}
+
 @for (int i = 0; i < Model.Values.Count; ++i)
     @Html.EditorFor(model => Model.Values[i],
                              Model.Values[i].GetType().ToString(),
-                             new { multiline = true, required = Model.Required })
+                             viewData)

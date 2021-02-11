@@ -1,23 +1,98 @@
 ﻿@model Catfish.Core.Models.Contents.Fields.SelectField
+@using System.Text.Encodings.Web
+@using System.Xml.Linq
 
 @{
     var options = Model.Options.Select(op =>
             new SelectListItem
             {
                 Value = op.Id.ToString(),
-                Text = op.OptionText.GetConcatenatedContent(" | ")
+                Text = op.OptionText.GetConcatenatedContent(" | "),
             }).ToList();
     options.Insert(0, new SelectListItem());
 
     @Html.HiddenFor(model => model.ModelType)
     @Html.HiddenFor(model => model.Id)
 
-    if (Model.Required)
+
+    //Incorporating the visible-if data attributes for the options if needed
+    if (Model.Options.Where(op => !string.IsNullOrWhiteSpace(op.VisibilityCondition.Value)).Any())
     {
-        @Html.DropDownListFor(model => model, options, new { required = (string) null })
+        var selectHtmlContent = Html.DropDownListFor(model => model, options, ViewData);
+        string selectHtmlString = "";
+        using (var writer = new System.IO.StringWriter())
+        {
+            selectHtmlContent.WriteTo(writer, HtmlEncoder.Default);
+            selectHtmlString = writer.ToString();
+            XElement xml = XElement.Parse(selectHtmlString);
+            foreach (var op in Model.Options)
+            {
+                var visibleIfValue = op.VisibilityCondition.Value;
+                if (!string.IsNullOrWhiteSpace(visibleIfValue))
+                {
+                    XElement optionElement = xml.Elements("option")
+                        .Where(ele => ele.Attribute("value") != null && ele.Attribute("value").Value == op.Id.ToString())
+                        .FirstOrDefault();
+
+                    if (optionElement != null)
+                    {
+                        optionElement.SetAttributeValue("data-visible-if", visibleIfValue);
+                        optionElement.SetAttributeValue("id", op.Id);
+                        optionElement.SetAttributeValue("data-field-id", op.Id);
+                    }
+                }
+            }
+            selectHtmlString = xml.ToString();
+        }
+
+
+        @Html.Raw(selectHtmlString)
     }
     else
     {
-        @Html.DropDownListFor(model => model, options)
+        @Html.DropDownListFor(model => model, options, ViewData)
     }
+
+    //string onChangeTrigger = string.Format("updateFields('{0}', this);", Html.IdFor(model => model));
+    //object viewData;
+    //if (Model.Required)
+    //{
+    //    viewData = new
+    //    {
+    //        required = (string) null,
+    //        onchange = onChangeTrigger
+    //    };
+    //}
+    //else
+    //{
+    //    viewData = new
+    //    {
+    //        data_visible_if = Model.VisibilityCondition.Value,
+    //        data_required_if = Model.RequiredCondition.Value,
+    //        onchange = onChangeTrigger
+    //    };
+    //}
+
+    ////string onChangeTrigger = string.Format("updateFields('{0}', this);", Html.IdFor(model => model));
+    ////Dictionary<string, object> viewData = new Dictionary<string, object>(); ;
+    ////if (Model.Required)
+    ////{
+    ////    viewData.Add("required", (string)null);
+    ////    viewData.Add("onchange", onChangeTrigger);
+    ////}
+    ////else
+    ////{
+    ////    viewData.Add("data_visible_if", Model.VisibilityCondition.Value);
+    ////    viewData.Add("data_required_if", Model.RequiredCondition.Value);
+    ////    viewData.Add("onchange", onChangeTrigger);
+    ////}
+
+    @*if (Model.Required)
+        {
+            @Html.DropDownListFor(model => model, options, new { required = (string)null, onchange = @onChangeTrigger })
+                }
+        else
+        {
+            @Html.DropDownListFor(model => model, options, new { onchange = @onChangeTrigger })
+                }*@
 }

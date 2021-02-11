@@ -2,6 +2,7 @@
 using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Expressions;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
@@ -13,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Xml.Linq;
 
@@ -271,7 +273,7 @@ namespace Catfish.UnitTests
 
 
             //Defininig roles
-            WorkflowRole centralAdminRole = workflow.AddRole(auth.GetRole("Admin", true));
+            WorkflowRole centralAdminRole = workflow.AddRole(auth.GetRole("CentralAdmin", true));
             WorkflowRole departmentAdmin = workflow.AddRole(auth.GetRole("DepartmentAdmin", true));
 
 
@@ -346,6 +348,96 @@ namespace Catfish.UnitTests
             listSubmissionAction.GetStateReference(savedState.Id, true)
                 .AddAuthorizedRole(departmentAdmin.Id);
 
+            listSubmissionAction.GetStateReference(deanOfficeRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(deanOfficeRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(deanOfficeRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aacWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aacRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aacRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aacRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aacApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aecWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aecRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aecRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aecRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(aecApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(afcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(afcRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(afcRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(afcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(afcApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(gfcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(gfcRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(gfcRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(gfcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(gfcApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(moveToDraftCorrectState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            listSubmissionAction.GetStateReference(moveToDraftErrorState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+
             // ================================================
             // Read submission-instances related workflow items
             // ================================================
@@ -361,7 +453,94 @@ namespace Catfish.UnitTests
             viewDetailsSubmissionAction.GetStateReference(savedState.Id, true)
                 .AddAuthorizedRole(departmentAdmin.Id);
 
+            viewDetailsSubmissionAction.GetStateReference(deanOfficeRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
 
+            viewDetailsSubmissionAction.GetStateReference(deanOfficeRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(deanOfficeRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aacWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aacRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aacRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aacRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aacApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aecWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aecRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aecRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aecRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(aecApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(afcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(afcRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(afcRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(afcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(afcApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(gfcWithState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(gfcRevisionState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(gfcRevisionSaveState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(gfcRevisionCompletedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(gfcApprovedState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(moveToDraftCorrectState.Id, true)
+                .AddAuthorizedRole(departmentAdmin.Id);
+
+            viewDetailsSubmissionAction.GetStateReference(moveToDraftErrorState.Id, true)
+                .AddAuthorizedRole(centralAdminRole.Id)
+                .AddAuthorizedRole(departmentAdmin.Id);
 
             // Edit submission related workflow items
             // =======================================
@@ -674,7 +853,7 @@ namespace Catfish.UnitTests
             PostAction moveToDraftErrorPostAction = moveToDraftAction.AddPostAction("With Error", "Comment");
 
             //Defining state mappings
-            moveToDraftCorrectPostAction.AddStateMapping(gfcApprovedState.Id, moveToDraftErrorState.Id, "Move To Draft Error");
+            moveToDraftErrorPostAction.AddStateMapping(gfcApprovedState.Id, moveToDraftErrorState.Id, "Move To Draft Error");
 
             //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
             PopUp moveToDraftErrorActionPopUpopUp = moveToDraftErrorPostAction.AddPopUp("Confirmation", "Do you really want to move to draft in error state this document?", "Once moved, you cannot access this document.");
@@ -1452,7 +1631,6 @@ namespace Catfish.UnitTests
             AppDbContext db = _testHelper.Db;
             IAuthorizationService auth = _testHelper.AuthorizationService;
 
-
             ItemTemplate template = db.ItemTemplates
                 .Where(et => et.TemplateName == templateName)
                 .FirstOrDefault();
@@ -1482,42 +1660,98 @@ namespace Catfish.UnitTests
             State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
-
-            //Defining email templates
-            EmailTemplate adminNotification = ws.GetEmailTemplate("Admin Notification", true);
-            adminNotification.SetDescription("This metadata set defines the email template to be sent to the admin when an inspector does not submit an inspection report timely.", lang);
-            adminNotification.SetSubject("Safety Inspection Submission");
-            adminNotification.SetBody("TBD");
-
-            EmailTemplate inspectorSubmissionNotification = ws.GetEmailTemplate("Inspector Notification", true);
-            inspectorSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to an inspector when an inspection report is not submitted timely.", lang);
-            inspectorSubmissionNotification.SetSubject("Safety Inspection Reminder");
-            inspectorSubmissionNotification.SetBody("TBD");
-
-            //Defininig the inspection form
-            DataItem inspectionForm = template.GetDataItem("COVID-19 Inspection Form", true, lang);
+            //Defininig the form
+            DataItem inspectionForm = template.GetDataItem("Small Test Form", true, lang);
             inspectionForm.IsRoot = true;
-            inspectionForm.SetDescription("This template is designed for a weekly inspection of public health measures specific to COVID-19 and other return to campus requirements.", lang);
+            inspectionForm.SetDescription("This template is designed testing visible-if, required-if, and computed fields", lang);
 
-            inspectionForm.CreateField<DateField>("Inspection Date", lang, true)
-                .IncludeTime = false;
+            string[] options = new string[] { "Option 1", "Option 2", "Option 3", "Option 4" };
+            var dd1 = inspectionForm.CreateField<SelectField>("DD 1", lang, options, true);
+            var radio1 = inspectionForm.CreateField<RadioField>("RB 1", lang, options, true);
+            var checkbox1 = inspectionForm.CreateField<CheckboxField>("CB 1", lang, options, true);
 
-            string[] optionBuilding = new string[] { "Arts and Convocation Hall", "Assiniboia Hall", "Fine Arts Building", "HM Tory Building", "HUB", "Humanities Centre", "Industrial Design Studio", "North Power Plant", "South Academic Building", "Timms Centre for the Arts", "Varsity Trailer" };
-            inspectionForm.CreateField<SelectField>("Building", lang, optionBuilding, true);
-            inspectionForm.CreateField<TextField>("Inspected By", lang, true, true);
-            inspectionForm.CreateField<IntegerField>("Number of People in the work area", lang, true);
+            var textbox1 = inspectionForm.CreateField<TextField>("Text 1", lang, false, false);
+            textbox1.RequiredCondition
+                .Append(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 2", lang));
+            textbox1.SetDescription("Required if DD 1 = Option 2", lang);
 
-            //Jill added this one
-            var testCheckbox = inspectionForm.CreateField<CheckboxField>("Room/Area Check:", lang, optionBuilding);
+            var textbox2 = inspectionForm.CreateField<TextField>("Text 2", lang, false, false);
+            textbox2.RequiredCondition
+                .AppendMatch(radio1, new Option[2] { radio1.GetOption("Option 1", lang), radio1.GetOption("Option 2", lang) }, ComputationExpression.eLogical.OR);
+            textbox2.SetDescription("Required if RB 1 = Option 1 OR Option 2", lang);
 
-            string[] optionText = new string[] { "Yes", "No", "N/A" };
-            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText, true);
+            var textbox3 = inspectionForm.CreateField<TextField>("Text 3", lang, false, false);
+            textbox3.RequiredCondition
+                .AppendMatch(checkbox1, new Option[2] { checkbox1.GetOption("Option 1", lang), checkbox1.GetOption("Option 3", lang) }, Core.Models.Contents.Expressions.ComputationExpression.eLogical.AND);
+            textbox3.SetDescription("Required if CB 1 = Option 1 AND Option 3", lang);
 
-            var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText, true);
-            inspectionForm.CreateField<TextArea>("Eyewash station info", lang, false)
-                .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang)
-                //.SetVisibleIf(eyeWashFlushed, optionText[0]);
-                .SetVisibleIf(testCheckbox, optionBuilding[5]);
+            var textarea1 = inspectionForm.CreateField<TextArea>("Text 4", lang, false, false);
+            textarea1.VisibilityCondition
+              .Append(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+            textarea1.SetDescription("Visible if DD 1 = Option 3", lang);
+
+            //Drop-down menu with conditional options
+            var dd2OOptions = new string[] { "A1", "A2", "B1", "B2", "B3", "B4" };
+            var dd2 = inspectionForm.CreateField<SelectField>("DD 2", lang, dd2OOptions, true);
+            dd2.SetDescription("The option group \"A\" should appear when Option 1 is selected for DD 1 and the option group \"B\" should appear other times.", lang);
+            foreach (var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("A")))
+                option.VisibilityCondition.Append(dd1,
+                    ComputationExpression.eRelational.EQUAL,
+                    dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
+
+            foreach (var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("B")))
+                option.VisibilityCondition.Append(dd1,
+                    ComputationExpression.eRelational.NOT_EQ,
+                    dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
+
+
+            //BEGIN: SAS Chair Functionality
+            //==============================
+            //Note: for every index in the departmentNames array, the corresponding index in the 
+            //      departmentChairs array should specify the chair of that department. However,
+            //      the departmentChairs array should have one option at the end, which represents the Dean
+            var departmentNames = new string[]  { "Dept 1",  "Dept 2",  "Dept 3",  "Dept 4",  "Dept 5",  "Dept 6" };
+            var departmentChairs = new string[] { "Chair 1", "Chair 2", "Chair 3", "Chair 4", "Chair 5", "Chair 6", "Dean" };
+    
+            var departmentsDropDown = inspectionForm.CreateField<SelectField>("Departments", lang, departmentNames, true);
+            var chairsDropDown = inspectionForm.CreateField<SelectField>("Departments", lang, departmentChairs, true);
+
+            var areYouChairOptions = new string[] { "Yes", "No" };
+            var areYouChair = inspectionForm.CreateField<RadioField>("Are you the chair", lang, areYouChairOptions, true);
+            
+            //Iterating through all chair options except for the last one, which is the Dean
+            for(var i=0; i< chairsDropDown.Options.Count-1; ++i) 
+            {
+                var chair = chairsDropDown.Options[i];
+
+                //This shair should be visible only if the corresponding departmet
+                //has been selected for the departmentsDropDown AND the second 
+                //option (i.e. index = 1, or in other wards, the value of "No") 
+                //has been selected for the areYouChair radio button
+                chair.VisibilityCondition
+                    .Append(departmentsDropDown, ComputationExpression.eRelational.EQUAL, departmentsDropDown.Options[i])
+                    .Append(ComputationExpression.eLogical.AND)
+                    .Append(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[1]);
+            }
+
+            //Setting the visibility of the last chairs option ("Dean"). This option should be 
+            //visible if and only if "Yes" is selected for the areYouChair radio field irrespective of
+            //what department is selected in the departmentsDropDown
+            chairsDropDown.Options[chairsDropDown.Options.Count - 1].VisibilityCondition
+                .Append(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[0]);
+            
+            //END: SAS Chair Functionality
+            //==============================
+
+
+            //var x = inspectionForm.CreateField<DecimalField>("x", lang, false, false);
+            //var y = inspectionForm.CreateField<DecimalField>("y", lang, false, false);
+            //var z = inspectionForm.CreateField<DecimalField>("z", lang, false, false);
+
+            //var a = inspectionForm.CreateField<DecimalField>("a = x", lang, false, false);
+            ////a.ValueExpression.Append(x)
+            //var b = inspectionForm.CreateField<DecimalField>("b = x + y", lang, false, false);
+            //var c = inspectionForm.CreateField<DecimalField>("c = x * (y + z)", lang, false, false);
 
 
             //Defininig roles
