@@ -286,6 +286,8 @@ namespace Catfish.Core.Models.Contents.Fields
          return strVal;
         }
 
+      
+
         /// <summary>
         /// Set the value based on the FieldId reference: ie: if a text box should be prefilled based on selected value or part of selected value from previous Field
         /// </summary>
