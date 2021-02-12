@@ -93,6 +93,15 @@ namespace Catfish.Core.Models.Contents.Expressions
             return this;
         }
 
+        /// <summary>
+        /// Test the value selected for the "field" against each value in the "vals" to find which 
+        /// element in "vals" matches with the selection and then agregates these matches based on
+        /// the operator defined by "aggregatorOperator".
+        /// </summary>
+        /// <param name="field"></param>
+        /// <param name="vals"></param>
+        /// <param name="aggregatorOperator"></param>
+        /// <returns></returns>
         public ComputationExpression AppendMatch(OptionsField field, Option[] vals, eLogical aggregatorOperator)
         {
             List<string> fragments = new List<string>();
@@ -106,6 +115,61 @@ namespace Catfish.Core.Models.Contents.Expressions
                     fragments.Add(Expression(field as SelectField, eRelational.EQUAL, vals[i]));
             }
             Data.Value += string.Format("({0})", string.Join(Str(aggregatorOperator), fragments));
+            return this;
+        }
+
+        /// <summary>
+        /// Appends the value of a field to the expression.
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public ComputationExpression AppendValue(DateField field)
+        {
+            Data.Value += string.Format("DateValue('{0}')", field.Id);
+            return this;
+        }
+
+        /// <summary>
+        /// Appends the value of a field to the expression.
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public ComputationExpression AppendValue(DecimalField field)
+        {
+            Data.Value += string.Format("DecimalValue('{0}')", field.Id);
+            return this;
+        }
+
+        /// <summary>
+        /// Appends the value of a field to the expression.
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public ComputationExpression AppendValue(IntegerField field)
+        {
+            Data.Value += string.Format("IntValue('{0}')", field.Id);
+            return this;
+        }
+
+        /// <summary>
+        /// Appends the value of a field to the expression.
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public ComputationExpression AppendValue(RadioField field)
+        {
+            Data.Value += string.Format("RadioValue('{0}')", field.Id);
+            return this;
+        }
+
+        /// <summary>
+        /// Appends the value of a field to the expression.
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public ComputationExpression AppendValue(SelectField field)
+        {
+            Data.Value += string.Format("StrValue('{0}')", field.Id);
             return this;
         }
 
