@@ -1735,6 +1735,7 @@ namespace Catfish.UnitTests
                     .Append(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[1]);
             }
 
+
             //Setting the visibility of the last chairs option ("Dean"). This option should be 
             //visible if and only if "Yes" is selected for the areYouChair radio field irrespective of
             //what department is selected in the departmentsDropDown
@@ -1745,6 +1746,8 @@ namespace Catfish.UnitTests
             //==============================
 
 
+            //Fields for testing Computed Fields
+            //==================================
             var x = inspectionForm.CreateField<DecimalField>("x", lang, false, false);
             var y = inspectionForm.CreateField<DecimalField>("y", lang, false, false);
             var z = inspectionForm.CreateField<DecimalField>("z", lang, false, false);
@@ -1767,6 +1770,9 @@ namespace Catfish.UnitTests
                 .Append(ComputationExpression.eMath.PLUS)
                 .AppendValue(z)
                 .AppendClosedBrace();
+
+            //END: Fields for testing Computed Fields
+            //=======================================
 
             //Defininig roles
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
