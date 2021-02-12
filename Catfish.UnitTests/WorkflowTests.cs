@@ -1672,22 +1672,22 @@ namespace Catfish.UnitTests
 
             var textbox1 = inspectionForm.CreateField<TextField>("Text 1", lang, false, false);
             textbox1.RequiredCondition
-                .Append(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 2", lang));
+                .AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 2", lang));
             textbox1.SetDescription("Required if DD 1 = Option 2", lang);
 
             var textbox2 = inspectionForm.CreateField<TextField>("Text 2", lang, false, false);
             textbox2.RequiredCondition
-                .AppendMatch(radio1, new Option[2] { radio1.GetOption("Option 1", lang), radio1.GetOption("Option 2", lang) }, ComputationExpression.eLogical.OR);
+                .AppendLogicalExpression(radio1, new Option[2] { radio1.GetOption("Option 1", lang), radio1.GetOption("Option 2", lang) }, ComputationExpression.eLogical.OR);
             textbox2.SetDescription("Required if RB 1 = Option 1 OR Option 2", lang);
 
             var textbox3 = inspectionForm.CreateField<TextField>("Text 3", lang, false, false);
             textbox3.RequiredCondition
-                .AppendMatch(checkbox1, new Option[2] { checkbox1.GetOption("Option 1", lang), checkbox1.GetOption("Option 3", lang) }, Core.Models.Contents.Expressions.ComputationExpression.eLogical.AND);
+                .AppendLogicalExpression(checkbox1, new Option[2] { checkbox1.GetOption("Option 1", lang), checkbox1.GetOption("Option 3", lang) }, Core.Models.Contents.Expressions.ComputationExpression.eLogical.AND);
             textbox3.SetDescription("Required if CB 1 = Option 1 AND Option 3", lang);
 
             var textarea1 = inspectionForm.CreateField<TextArea>("Text 4", lang, false, false);
             textarea1.VisibilityCondition
-              .Append(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+              .AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
             textarea1.SetDescription("Visible if DD 1 = Option 3", lang);
 
             //Drop-down menu with conditional options
@@ -1695,12 +1695,12 @@ namespace Catfish.UnitTests
             var dd2 = inspectionForm.CreateField<SelectField>("DD 2", lang, dd2OOptions, true);
             dd2.SetDescription("The option group \"A\" should appear when Option 1 is selected for DD 1 and the option group \"B\" should appear other times.", lang);
             foreach (var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("A")))
-                option.VisibilityCondition.Append(dd1,
+                option.VisibilityCondition.AppendLogicalExpression(dd1,
                     ComputationExpression.eRelational.EQUAL,
                     dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
 
             foreach (var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("B")))
-                option.VisibilityCondition.Append(dd1,
+                option.VisibilityCondition.AppendLogicalExpression(dd1,
                     ComputationExpression.eRelational.NOT_EQ,
                     dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
 
@@ -1730,9 +1730,9 @@ namespace Catfish.UnitTests
                 //option (i.e. index = 1, or in other wards, the value of "No") 
                 //has been selected for the areYouChair radio button
                 chair.VisibilityCondition
-                    .Append(departmentsDropDown, ComputationExpression.eRelational.EQUAL, departmentsDropDown.Options[i])
-                    .Append(ComputationExpression.eLogical.AND)
-                    .Append(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[1]);
+                    .AppendLogicalExpression(departmentsDropDown, ComputationExpression.eRelational.EQUAL, departmentsDropDown.Options[i])
+                    .AppendOperator(ComputationExpression.eLogical.AND)
+                    .AppendLogicalExpression(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[1]);
             }
 
 
@@ -1740,7 +1740,7 @@ namespace Catfish.UnitTests
             //visible if and only if "Yes" is selected for the areYouChair radio field irrespective of
             //what department is selected in the departmentsDropDown
             chairsDropDown.Options[chairsDropDown.Options.Count - 1].VisibilityCondition
-                .Append(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[0]);
+                .AppendLogicalExpression(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[0]);
 
             //END: SAS Chair Functionality
             //==============================
@@ -1758,16 +1758,16 @@ namespace Catfish.UnitTests
             var b = inspectionForm.CreateField<DecimalField>("b = x + y", lang, false, false);
             b.ValueExpression
                 .AppendValue(x)
-                .Append(ComputationExpression.eMath.PLUS)
+                .AppendOperator(ComputationExpression.eMath.PLUS)
                 .AppendValue(y);
 
             var c = inspectionForm.CreateField<DecimalField>("c = x * (y + z)", lang, false, false);
             c.ValueExpression
                 .AppendValue(x)
-                .Append(ComputationExpression.eMath.MULT)
+                .AppendOperator(ComputationExpression.eMath.MULT)
                 .AppendOpenBrace()
                 .AppendValue(y)
-                .Append(ComputationExpression.eMath.PLUS)
+                .AppendOperator(ComputationExpression.eMath.PLUS)
                 .AppendValue(z)
                 .AppendClosedBrace();
 
@@ -1941,16 +1941,16 @@ namespace Catfish.UnitTests
                 var selectedChair = chair.Options[i];
 
                 selectedChair.VisibilityCondition
-                    .Append(dept, ComputationExpression.eRelational.EQUAL, dept.Options[i])
-                    .Append(ComputationExpression.eLogical.AND)
-                    .Append(isChair, ComputationExpression.eRelational.EQUAL, isChair.Options[1]);
+                    .AppendLogicalExpression(dept, ComputationExpression.eRelational.EQUAL, dept.Options[i])
+                    .AppendOperator(ComputationExpression.eLogical.AND)
+                    .AppendLogicalExpression(isChair, ComputationExpression.eRelational.EQUAL, isChair.Options[1]);
                
             }
 
             //Setting the visibility of the last chairs option ("Dean"). This option should be 
             //visible if and only if "Yes" is selected for the areYouChair radio field.
             chair.Options[chair.Options.Count - 1].VisibilityCondition
-                .Append(isChair, ComputationExpression.eRelational.EQUAL, isChair.Options[0]);
+                .AppendLogicalExpression(isChair, ComputationExpression.eRelational.EQUAL, isChair.Options[0]);
 
             string delimiter = ":";
 
@@ -1968,17 +1968,17 @@ namespace Catfish.UnitTests
            
             sasForm.CreateField<InfoSection>(null, null)
                  .AppendContent("div", @"<i>Please note that proof of ethics approval may be required before any grant awarded will be released. For more information concerning ethics clearance, 
-                    please refer to the Research Ethics Office website.</i>", lang).VisibilityCondition.Append(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.GetOption("Yes", lang));
+                    please refer to the Research Ethics Office website.</i>", lang).VisibilityCondition.AppendLogicalExpression(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.GetOption("Yes", lang));
             var ethicApproval = sasForm.CreateField<RadioField>("Has Ethics approval already been obtained for this project?", lang, optionText, false);      
-            ethicApproval.VisibilityCondition.Append(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.GetOption("Yes", lang));
+            ethicApproval.VisibilityCondition.AppendLogicalExpression(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.GetOption("Yes", lang));
 
             //this kind of chaining.append not working
           
             sasForm.CreateField<DateField>("Ethics Expiry Date:", lang, false)
                         .VisibilityCondition
-                        .Append(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.Options[0])
-                        .Append(ComputationExpression.eLogical.AND)
-                       .Append(ethicApproval, ComputationExpression.eRelational.EQUAL, ethicApproval.Options[0]); ;
+                        .AppendLogicalExpression(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.Options[0])
+                        .AppendOperator(ComputationExpression.eLogical.AND)
+                       .AppendLogicalExpression(ethicApproval, ComputationExpression.eRelational.EQUAL, ethicApproval.Options[0]); ;
 
 
             //========================================================================BUDGET DETAILS
@@ -2015,7 +2015,7 @@ namespace Catfish.UnitTests
              var otherParticipationRole = sasForm.CreateField<TextField>("Other - please specify", lang).SetOptionIf(confParticipation, "Other");
 
             otherParticipationRole.VisibilityCondition
-              .Append(confParticipation, confParticipation.GetOption("Other", lang), true); 
+              .AppendLogicalExpression(confParticipation, confParticipation.GetOption("Other", lang), true); 
 
 
             sasForm.CreateField<DecimalField>("Airfare", lang).SetDescription("Includes: Airfare, trip cancellation insurance, seat selection and baggage fees", lang);
@@ -2154,7 +2154,7 @@ namespace Catfish.UnitTests
 
             CompositeField summaryFund = sasForm.CreateField<CompositeField>("", lang, false);
             summaryFund.VisibilityCondition
-              .Append(otherFunding, ComputationExpression.eRelational.EQUAL, otherFunding.GetOption("Yes", lang));
+              .AppendLogicalExpression(otherFunding, ComputationExpression.eRelational.EQUAL, otherFunding.GetOption("Yes", lang));
             summaryFund = CreateFundingSummaryForm(summaryFund, lang, 1);
 
 
@@ -2163,18 +2163,18 @@ namespace Catfish.UnitTests
 
             var previousTA = sasForm.CreateField<TextArea>("How Past SAS Funding Relates to?", lang)
               .SetDescription("How is the current application related to or different from the previous application already funded? Maximum 250 words.", lang);
-              previousTA.VisibilityCondition.Append(previousFundRB, ComputationExpression.eRelational.EQUAL, previousFundRB.GetOption("Yes", lang));
+              previousTA.VisibilityCondition.AppendLogicalExpression(previousFundRB, ComputationExpression.eRelational.EQUAL, previousFundRB.GetOption("Yes", lang));
 
 
             var otherFundingBefore = sasForm.CreateField<RadioField>("Other Funding", lang, optionText, true);
             otherFundingBefore.SetDescription("Have you sought support for this project from SSHRC, the Canada Council for the Arts, the Killam Fund, or any other agency, internal, or external sources of funding?", lang);
             sasForm.CreateField<TextArea>("Other Sources of Funding", lang)
              .SetDescription(@"Please identify other sources of funding for this project, and explain how and why these multiple sources of funding are essential to your research. Why, for example, are you applying for SAS funding if you have a related SSHRC or Killam research grant? Maximum 250 words.", lang)
-             .VisibilityCondition.Append(otherFundingBefore, ComputationExpression.eRelational.EQUAL, otherFundingBefore.GetOption("Yes", lang));
+             .VisibilityCondition.AppendLogicalExpression(otherFundingBefore, ComputationExpression.eRelational.EQUAL, otherFundingBefore.GetOption("Yes", lang));
 
             sasForm.CreateField<TextArea>("Why not, or do you intend to do so?", lang)
             .SetDescription(@"Maximum 250 words.", lang)
-            .VisibilityCondition.Append(otherFundingBefore, ComputationExpression.eRelational.EQUAL, otherFundingBefore.GetOption("No", lang));
+            .VisibilityCondition.AppendLogicalExpression(otherFundingBefore, ComputationExpression.eRelational.EQUAL, otherFundingBefore.GetOption("No", lang));
 
 
             sasForm.CreateField<TextArea>("Other Support Sources", lang)

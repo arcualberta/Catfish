@@ -45,19 +45,19 @@ namespace Catfish.Core.Models.Contents.Expressions
         //    return string.Format("CheckboxValue('{0}', '{1}') === {2}", field.Id, val.Id, isChecked ? "true" : "false");
         //}
 
-        public ComputationExpression Append(eMath @operator)
+        public ComputationExpression AppendOperator(eMath @operator)
         {
             Data.Value += Str(@operator);
             return this;
         }
 
-        public ComputationExpression Append(eLogical @operator)
+        public ComputationExpression AppendOperator(eLogical @operator)
         {
             Data.Value += Str(@operator);
             return this;
         }
 
-        public ComputationExpression Append(eRelational @operator)
+        public ComputationExpression AppendOperator(eRelational @operator)
         {
             Data.Value += Str(@operator);
             return this;
@@ -75,19 +75,19 @@ namespace Catfish.Core.Models.Contents.Expressions
             return this;
         }
 
-        public ComputationExpression Append(SelectField field, eRelational @operator, Option val)
+        public ComputationExpression AppendLogicalExpression(SelectField field, eRelational @operator, Option val)
         {
             Data.Value += Expression(field, @operator, val);
             return this;
         }
 
-        public ComputationExpression Append(RadioField field, eRelational @operator, Option val)
+        public ComputationExpression AppendLogicalExpression(RadioField field, eRelational @operator, Option val)
         {
             Data.Value += Expression(field, @operator, val);
             return this;
         }
 
-        public ComputationExpression Append(CheckboxField field, Option val, bool isChecked)
+        public ComputationExpression AppendLogicalExpression(CheckboxField field, Option val, bool isChecked)
         {
             Data.Value += Expression(field, val, isChecked);
             return this;
@@ -96,13 +96,15 @@ namespace Catfish.Core.Models.Contents.Expressions
         /// <summary>
         /// Test the value selected for the "field" against each value in the "vals" to find which 
         /// element in "vals" matches with the selection and then agregates these matches based on
-        /// the operator defined by "aggregatorOperator".
+        /// the operator defined by "aggregatorOperator". IMPORTANT: that all elements in "vals"
+        /// MUST BE part of option elements retrieved from the specified "field" (i.e. their id's 
+        /// should match in addition to display labels.
         /// </summary>
         /// <param name="field"></param>
         /// <param name="vals"></param>
         /// <param name="aggregatorOperator"></param>
         /// <returns></returns>
-        public ComputationExpression AppendMatch(OptionsField field, Option[] vals, eLogical aggregatorOperator)
+        public ComputationExpression AppendLogicalExpression(OptionsField field, Option[] vals, eLogical aggregatorOperator)
         {
             List<string> fragments = new List<string>();
             for (int i = 0; i < vals.Length; ++i)
