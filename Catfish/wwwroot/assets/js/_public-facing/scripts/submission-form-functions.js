@@ -176,9 +176,9 @@ function submitWorkflowForm(suffix, successMessage) {
     });
 }
 
-function addDataItem(templateId, min, max) {
+function addDataItem(fieldId,templateId, min, max) {
    
-    let numItems = $(".composite-field-child").length; // number of item in the list
+    let numItems = $(".composite-field-child-" + fieldId).length; // number of item in the list
     if (numItems == max) {
         alert("Sorry, you can't add more item into the list.");
         return false;
@@ -215,7 +215,7 @@ function addDataItem(templateId, min, max) {
     });
 
     let newItm = dataItm[0];
-    $("#addNewdataItem").before(newItm);
+    $("#addNewdataItem-" + fieldId).before(newItm);
 
     
 }
