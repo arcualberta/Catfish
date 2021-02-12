@@ -1887,23 +1887,8 @@ namespace Catfish.UnitTests
             var applicantEmail = sasForm.CreateField<TextField>("Email Address:", lang, true, true)
                 .SetDescription("Please use your UAlberta CCID email address.", lang);
 
-            string[] departmentList = new string[] { "Anthropology",
-                                                "Art & Design",
-                                                "Drama",
-                                                "East Asian Studies",
-                                                "Economics",
-                                                "English and Film Studies",
-                                                "History and Classics",
-                                                "Linguistics",
-                                                "Modern Languages and Cultural Studies (MLCS)",
-                                                "Music",
-                                                "Philosophy",
-                                                "Political Science",
-                                                "Psychology",
-                                                "Sociology",
-                                                "Women's and Gender Studies",
-                                                "Media and Technology Studies",
-                                                "Arts Resources Centre" };
+            string[] departmentList = GetDepartmentList(); 
+           
             var dept = sasForm.CreateField<SelectField>("Department:", lang, departmentList, true);
 
             string[] rank = new string[]{ "Assistant Professor",
@@ -1923,31 +1908,11 @@ namespace Catfish.UnitTests
             //if department Chair  -- the chair will be the dean
             //the order of the department chair list have to be in the same order of the list Department above
             // the first one is the Dean ==> no association with the department -- exception
-            string[] chairDept = new string[] { 
-                                                "Pamela Willoughby: pwilloug @ualberta.ca",
-                                                "Aidan Rowe: rowe1@ualberta.ca",
-                                                "Melanie Dreyer-Lude : dreyerlu@ualberta.ca",
-                                                "Christopher Lupke: lupke@ualberta.ca",
-                                                 "Rick Szostak: rszostak@ualberta.ca",
-                                                 "Cecily Devereux: devereux@ualberta.ca",
-                                                 "Ryan Dunch: rdunch@ualberta.ca",
-                                                 "Herb Colston: colston@ualberta.ca",
-                                                 "Alla Nedashkiviska: allan@ualberta.ca",
-                                                 "Patricia Tao: ptao@ualberta.ca",
-                                                 "Marie-Eve Morin: mmorin1@ualberta.ca",
-                                                 "Catherine Kellogg: ckellogg@ualberta.ca",
-                                                 "Anthony Singhal: asinghal@ualberta.ca",
-                                                 "Sara Dorow: sdorow@ualberta.ca",
-                                                 "Michelle Meagher: mmmeaghe@ualberta.ca",
-                                                 "Astrid Ensslin: ensslin@ualberta.ca",
-                                                 "arcAdmin : mruaini@ualberta.ca",
-                                                "Dean: Steve Patten : spatten@ualberta.ca",};
+            string[] chairDept = GetDepartmentChair();
+           
 
-            string optValues = "1," + optionText[0] + "," + "&&"; //index  => of the fields in the list of 1st input parameter of SetOptionIf -- this refer to "isChair" radioButtonList, 
-                                                                  //optionText[0] ==> option value that is to trigger the operator if the list of fields are more than 1
-
-
-            var chair = sasForm.CreateField<SelectField>("Chair:", lang, chairDept, true);//.SetOptionIf(new List<OptionsField> { dept, isChair }, chairDept, optValues);//chairDept =>string[]
+          
+            var chair = sasForm.CreateField<SelectField>("Chair:", lang, chairDept, true);
            
 
             //Iterating through all chair options except for the last one, which is the Dean
@@ -1959,15 +1924,13 @@ namespace Catfish.UnitTests
                     .Append(dept, ComputationExpression.eRelational.EQUAL, dept.Options[i])
                     .Append(ComputationExpression.eLogical.AND)
                     .Append(isChair, ComputationExpression.eRelational.EQUAL, isChair.Options[1]);
-                //.Where(op => op.OptionText.GetContent(lang).StartsWith("B")))
+               
             }
 
             //Setting the visibility of the last chairs option ("Dean"). This option should be 
             //visible if and only if "Yes" is selected for the areYouChair radio field.
             chair.Options[chair.Options.Count - 1].VisibilityCondition
                 .Append(isChair, ComputationExpression.eRelational.EQUAL, isChair.Options[0]);
-
-          
 
             string delimiter = ":";
 
@@ -1990,8 +1953,12 @@ namespace Catfish.UnitTests
             ethicApproval.VisibilityCondition.Append(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.GetOption("Yes", lang));
 
             //this kind of chaining.append not working
-            sasForm.CreateField<DateField>("Ethics Expiry Date:", lang, false).VisibilityCondition.Append(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.GetOption("Yes", lang))
-                   .Append(ethicApproval, ComputationExpression.eRelational.EQUAL, ethicApproval.GetOption("Yes", lang)); ;
+          
+            sasForm.CreateField<DateField>("Ethics Expiry Date:", lang, false)
+                        .VisibilityCondition
+                        .Append(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.Options[0])
+                        .Append(ComputationExpression.eLogical.AND)
+                       .Append(ethicApproval, ComputationExpression.eRelational.EQUAL, ethicApproval.Options[0]); ;
 
 
             //========================================================================BUDGET DETAILS
@@ -2227,46 +2194,49 @@ namespace Catfish.UnitTests
 
 
             //Defining email templates
-            string emailBody = "<p>Dear" +((TextField)chairName).GetValue(lang) + ",</p><br/>" +
-                                    "<p>A faculty member from your department has applied for a SAS grant.Please click on this link: @Link[Sas Application|@Model] to provide your assessment about this application."+
-                                    "You will be required to log in with your CCID email.</p> <br/>" +
-                                    "<p>Thank you.</p>";
+           // string emailBody = "";
+            //emailBody = "<p>Dear" +((TextField)chairName).GetValue(lang) + ",</p><br/>" +
+            //                        "<p>A faculty member from your department has applied for a SAS grant.Please click on this link: @Link[Sas Application|@Model] to provide your assessment about this application."+
+            //                        "You will be required to log in with your CCID email.</p> <br/>" +
+            //                        "<p>Thank you.</p>";
 
             EmailTemplate chairEmailTemplate = ws.GetEmailTemplate("Chair Email Template", true);
             chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
             chairEmailTemplate.SetSubject("SAS Application");
-            chairEmailTemplate.SetBody(emailBody);
+            chairEmailTemplate.SetBody("emailBody");
 
 
             EmailTemplate applicantSubmissionNotification = ws.GetEmailTemplate("Applicant Notification", true);
             applicantSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the applicant when application's submitted.", lang);
             applicantSubmissionNotification.SetSubject("SAS Application Submission");
-            emailBody = @"<p>Dear Colleague,</p>
-                                <p>
-                                Thank you for submitting your SAS grant application. 
-                                Your chair has been automatically notified to provide an assessment about your application. 
-                                We will inform you of the decision when the application review process is completed. 
-                                </p>
-                                <p>
-                                Thank you.
-                                </p>
-                                <p>
-                                Steve Patten <br />
-                                Associate Dean (Research)
-                                </p>";
+            //emailBody = @"<p>Dear Colleague,</p>
+            //                    <p>
+            //                    Thank you for submitting your SAS grant application. 
+            //                    Your chair has been automatically notified to provide an assessment about your application. 
+            //                    We will inform you of the decision when the application review process is completed. 
+            //                    </p>
+            //                    <p>
+            //                    Thank you.
+            //                    </p>
+            //                    <p>
+            //                    Steve Patten <br />
+            //                    Associate Dean (Research)
+            //                    </p>";
 
-            applicantSubmissionNotification.SetBody(emailBody);
+            applicantSubmissionNotification.SetBody("emailBody");
 
 
             //Defining triggers
-           
-            EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
-            applicantNotificationEmailTrigger.AddRecipientByEmail(((TextField)applicantEmail).GetValue("en"));
-            applicantNotificationEmailTrigger.AddTemplate(applicantSubmissionNotification.Id, "Applicant Email Notification");
+             //Feb 12 2021
+            //EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
+            //applicantNotificationEmailTrigger.AddRecipientByEmail(((TextField)applicantEmail).GetValue("en"));
+            //applicantNotificationEmailTrigger.AddTemplate(applicantSubmissionNotification.Id, "Applicant Email Notification");
 
-            EmailTrigger chairNotificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
-            chairNotificationEmailTrigger.AddRecipientByEmail(((TextField)chairEmail).GetValue("en"));
-            chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
+            //EmailTrigger chairNotificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
+            //chairNotificationEmailTrigger.AddRecipientByEmail(((TextField)chairEmail).GetValue("en"));
+            //chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
+
+
 
             // Submitting an inspection form
             //Only safey inspectors can submit this form
@@ -2294,9 +2264,9 @@ namespace Catfish.UnitTests
             submitActionPopUp.AddButtons("Yes, submit", "true");
             submitActionPopUp.AddButtons("Cancel", "false");
 
-            //Defining trigger refs
-            submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant Submission Notification Email Trigger");
-            submitPostAction.AddTriggerRefs("1", chairNotificationEmailTrigger.Id, "Chair Submission-notification Email Trigger");
+            //Defining trigger refs -- added Feb 12 2021
+          //  submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant Submission Notification Email Trigger");
+          //  submitPostAction.AddTriggerRefs("1", chairNotificationEmailTrigger.Id, "Chair Submission-notification Email Trigger");
 
             // Edit submission related workflow items
             //Defining actions
@@ -2333,6 +2303,52 @@ namespace Catfish.UnitTests
 
             // string json = JsonConvert.SerializeObject(template);
             // File.WriteAllText("..\\..\\..\\..\\Examples\\SASform_generared.json", json);
+        }
+        private string[] GetDepartmentList()
+        {
+            string[] dept =new string[] { "Anthropology",
+                                                "Art & Design",
+                                                "Drama",
+                                                "East Asian Studies",
+                                                "Economics",
+                                                "English and Film Studies",
+                                                "History and Classics",
+                                                "Linguistics",
+                                                "Modern Languages and Cultural Studies (MLCS)",
+                                                "Music",
+                                                "Philosophy",
+                                                "Political Science",
+                                                "Psychology",
+                                                "Sociology",
+                                                "Women's and Gender Studies",
+                                                "Media and Technology Studies",
+                                                "Arts Resources Centre" };
+
+            return dept;
+        }
+
+        private string[] GetDepartmentChair()
+        {
+            string[] chairDept = new string[] {
+                                                "Pamela Willoughby: pwilloug @ualberta.ca",
+                                                "Aidan Rowe: rowe1@ualberta.ca",
+                                                "Melanie Dreyer-Lude : dreyerlu@ualberta.ca",
+                                                "Christopher Lupke: lupke@ualberta.ca",
+                                                 "Rick Szostak: rszostak@ualberta.ca",
+                                                 "Cecily Devereux: devereux@ualberta.ca",
+                                                 "Ryan Dunch: rdunch@ualberta.ca",
+                                                 "Herb Colston: colston@ualberta.ca",
+                                                 "Alla Nedashkiviska: allan@ualberta.ca",
+                                                 "Patricia Tao: ptao@ualberta.ca",
+                                                 "Marie-Eve Morin: mmorin1@ualberta.ca",
+                                                 "Catherine Kellogg: ckellogg@ualberta.ca",
+                                                 "Anthony Singhal: asinghal@ualberta.ca",
+                                                 "Sara Dorow: sdorow@ualberta.ca",
+                                                 "Michelle Meagher: mmmeaghe@ualberta.ca",
+                                                 "Astrid Ensslin: ensslin@ualberta.ca",
+                                                 "arcAdmin : mruaini@ualberta.ca",
+                                                "Dean: Steve Patten : spatten@ualberta.ca"};
+            return chairDept;
         }
 
         private CompositeField CreatePersonnelBudgetItemForm(CompositeField comField, string lang="en", int min=0, int max=0)
