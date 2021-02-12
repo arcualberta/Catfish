@@ -32,8 +32,6 @@ if (document.getElementById("item-edit-page")) {
         methods: {
             /**
              * Adds another entry set to the field
-             * @param {any} metadataSetId metadataset index
-             * @param {any} fieldId field index
              */
             addNewValue() {
 
@@ -46,11 +44,14 @@ if (document.getElementById("item-edit-page")) {
                 }
 
                 this.fieldData.Values.$values.splice(this.fieldData.Values.$values.length, 0, newEntry);
-                //this.metadataSets[metadataSetId].Fields.$values.splice(fieldId + 1, 0, newEntry);
-                //console.log("metadata sets", this.metadataSets, metadataSetId);
-                //console.log("originalFieldIndexMaster", this.originalFieldIndexMaster);;
-                //this.setOriginalFields();
+            },
 
+            /**
+             * Deletes the field from the item
+             */
+            deleteField() {
+                //this.metadataSets[metadataSetId].Fields.$values.splice(fieldId, 1);
+                //this.setOriginalFields();
             },
         },
         created() {
@@ -75,77 +76,73 @@ if (document.getElementById("item-edit-page")) {
                         :title="fieldData.Description.Values.$values[index].Value">
                             <i class="fas fa-question"></i>
                         </button>
-                                                </div>
-                                                <!--
-                    Note to self about the value in this element:
-                    field.values[index].values[0].value
+                     </div>
+                     <!--
+                     Note to self about the value in this element:
+                     field.values[index].values[0].value
                    - The first values is an array of objects. Those objects are for
                      each field's language.
                    - The next values is an array of that field language, but there seems to
                      be no way this would ever increase past 1 item in the array. So therefore,
                      the index is always set to 0.
-                -->
-                                                <div v-if="!isInPreviewMode" class="col-md-4 mb-3 metadata-input">
-                                                    <input v-if="fieldData.$type.includes(inputTypes.text)"
-                                                           required type="text" class="form-control"
-                                                           v-model="fieldData.Values.$values[index].Values.$values[0].Value">
-                                                    <textarea v-else-if="fieldData.$type.includes(inputTypes.textarea)"
-                                                              required class="form-control" rows="3"
-                                                              v-model="fieldData.Values.$values[index].Values.$values[0].Value"></textarea>
-                                                    <input type="date" v-else-if="fieldData.$type.includes(inputTypes.date)"
-                                                           v-model="fieldData.Values.$values[index].Value"
-                                                           required class="form-control">
-                                                    <input type="number" v-else-if="fieldData.$type.includes(inputTypes.integer)"
-                                                           v-model="fieldData.Values.$values[index].Value"
-                                                           required class="form-control">
-                                                    <!--TODO need to come back and adjust this for better decimal functionality -->
-                                                    <input type="number" step=".01" v-else-if="fieldData.$type.includes(inputTypes.decimal)"
-                                                           required class="form-control" v-model="fieldData.Values.$values[index].Value">
-                                                    <!--<vue-editor v-else-if="fieldData.$type.includes(inputTypes.textarea)
+                     -->
+                     <div v-if="!isInPreviewMode" class="col-md-4 mb-3 metadata-input">
+                        <input v-if="fieldData.$type.includes(inputTypes.text)"
+                        required type="text" class="form-control"
+                        v-model="fieldData.Values.$values[index].Values.$values[0].Value">
+                        <textarea v-else-if="fieldData.$type.includes(inputTypes.textarea)"
+                        required class="form-control" rows="3"
+                        v-model="fieldData.Values.$values[index].Values.$values[0].Value"></textarea>
+                        <input type="date" v-else-if="fieldData.$type.includes(inputTypes.date)"
+                        v-model="fieldData.Values.$values[index].Value"
+                        required class="form-control">
+                        <input type="number" v-else-if="fieldData.$type.includes(inputTypes.integer)"
+                        v-model="fieldData.Values.$values[index].Value"
+                        required class="form-control">
+                        <!--TODO need to come back and adjust this for better decimal functionality -->
+                        <input type="number" step=".01" v-else-if="fieldData.$type.includes(inputTypes.decimal)"
+                        required class="form-control" v-model="fieldData.Values.$values[index].Value">
+                        <!--<vue-editor v-else-if="fieldData.$type.includes(inputTypes.textarea)
                                 v-model="fieldData.Values.$values[index].Values.$values[0].Value">
-                    </vue-editor>-->
-                                                    <div class="invalid-feedback">
-                                                        <!--{{fieldRequiredLabel}}-->
-                                                    </div>
-                                                </div>
-                                                <div v-else>
-                                                    <div v-if="fieldData.Values.$values[index].hasOwnProperty('Values')">
-                                                        {{fieldData.Values.$values[index].Values.$values[0].Value}}
-                                                    </div>
-                                                    <div v-else>
-                                                        <span>
-                                                            {{fieldData.Values.$values[index].Value}} <!--.Values.$values[0].Value-->
-                                                        </span>
-                                                    </div>
+                        </vue-editor>-->
+                            <div class="invalid-feedback">
+                                {{fieldRequiredLabel}}
+                            </div>
+                        </div>
+                        <div v-else>
+                            <div v-if="fieldData.Values.$values[index].hasOwnProperty('Values')">
+                                {{fieldData.Values.$values[index].Values.$values[0].Value}}
+                            </div>
+                            <div v-else>
+                                <span>
+                                    {{fieldData.Values.$values[index].Value}} <!--.Values.$values[0].Value-->
+                                </span>
+                            </div>
 
-                                                </div>
-                                            </div>
-                                        </div>
+                        </div>
+                    </div>
+                </div>
 
-                                        <div v-if="piranha.permissions.pages.add" class="add-value-container">
-                                            <div class="btn-group new-value-button" role="group">
-                                                <button type="button" v-on:click="addNewValue()"
-                                                        class="btn btn-sm btn-primary btn-labeled">
-                                                    <i class="fas fa-plus"></i>
-                                                    {{valueLabel}}
-                                                </button>
-                                            </div>
-                                            <div class="btn-group new-value-button" role="group">
-                                                <!--<div v-if="fieldData.Values.$values[0].hasOwnProperty('Values')">
-                                                    {{fIndex}} | {{fieldData.Id}} |
-                                                    {{originalFields[metaIndex].includes(fIndex)}} ||| {{originalFieldIndexMaster[metaIndex][fieldData.Id].count <=1}}
-                                                </div>-->
-                                                <!--<button :disabled="originalFields[metaIndex].includes(fIndex) && originalFieldIndexMaster[metaIndex][field.Id].count <=1"
-                                                        type="button" v-on:click="deleteField(metaIndex, fIndex)"
-                                                        class="btn btn-sm btn-danger btn-labeled trash-button">
-                                                    <i class="fas fa-trash"></i>
-                                                    {{deleteLabel}}
-                                                </button>-->
-                                            </div>
+                <div v-if="piranha.permissions.pages.add" class="add-value-container">
+                    <div class="btn-group new-value-button" role="group">
+                        <button type="button" v-on:click="addNewValue()"
+                                class="btn btn-sm btn-primary btn-labeled">
+                            <i class="fas fa-plus"></i>
+                            {{valueLabel}}
+                        </button>
+                    </div>
+                    <div class="btn-group new-value-button" role="group">
+                        <button :disabled="fieldData.Values.$values.length <= 1"
+                                type="button" v-on:click="deleteField()"
+                                class="btn btn-sm btn-danger btn-labeled trash-button">
+                            <i class="fas fa-trash"></i>
+                            {{deleteLabel}}
+                        </button>
+                    </div>
 
-                                        </div>
+                </div>
 
-                                    </div>
+            </div>
     `
     });
 
@@ -446,17 +443,6 @@ if (document.getElementById("item-edit-page")) {
                     console.log("indices: ", this.originalFields);
                 }
 
-            },
-
-
-            /**
-             * Deletes the field from the item
-             * @param {any} metadataSetId
-             * @param {any} fieldId
-             */
-            deleteField(metadataSetId, fieldId) {
-                this.metadataSets[metadataSetId].Fields.$values.splice(fieldId, 1);
-                this.setOriginalFields();
             },
 
             setStaticItems() {
