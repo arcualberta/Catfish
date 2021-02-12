@@ -1954,8 +1954,8 @@ namespace Catfish.UnitTests
 
             string delimiter = ":";
 
-            var chairName = sasForm.CreateField<TextField>("Chair's Name:", lang, true).SetDefaultReferenceValue(chair, delimiter, 0);
-            var chairEmail = sasForm.CreateField<TextField>("Chair's Email:", lang, true).SetDefaultReferenceValue(chair, delimiter, 1);
+            var chairName = sasForm.CreateField<TextField>("Chair's Name:", lang, true);//.SetDefaultReferenceValue(chair, delimiter, 0);
+            var chairEmail = sasForm.CreateField<TextField>("Chair's Email:", lang, true);//.SetDefaultReferenceValue(chair, delimiter, 1);
 
             //========================================================================PROJECT DETAILS
 
@@ -1968,22 +1968,22 @@ namespace Catfish.UnitTests
            
             sasForm.CreateField<InfoSection>(null, null)
                  .AppendContent("div", @"<i>Please note that proof of ethics approval may be required before any grant awarded will be released. For more information concerning ethics clearance, 
-                    please refer to the Research Ethics Office website.</i>", lang).VisibilityCondition.AppendLogicalExpression(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.GetOption("Yes", lang));
+                    please refer to the Research Ethics Office website.</i>", lang).VisibilityCondition.AppendLogicalExpression(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.Options[0]);
             var ethicApproval = sasForm.CreateField<RadioField>("Has Ethics approval already been obtained for this project?", lang, optionText, false);      
-            ethicApproval.VisibilityCondition.AppendLogicalExpression(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.GetOption("Yes", lang));
+            ethicApproval.VisibilityCondition.AppendLogicalExpression(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.Options[0]);
 
             //this kind of chaining.append not working
-          
-            sasForm.CreateField<DateField>("Ethics Expiry Date:", lang, false)
-                        .VisibilityCondition
+
+            var ethicalExpDate = sasForm.CreateField<TextField>("Ethics Expiry Date:", lang, false); //change Datefiled to textField
+            ethicalExpDate.VisibilityCondition
                         .AppendLogicalExpression(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.Options[0])
                         .AppendOperator(ComputationExpression.eLogical.AND)
-                       .AppendLogicalExpression(ethicApproval, ComputationExpression.eRelational.EQUAL, ethicApproval.Options[0]); ;
+                      .AppendLogicalExpression(ethicApproval, ComputationExpression.eRelational.EQUAL, ethicApproval.Options[0]); ;
 
 
             //========================================================================BUDGET DETAILS
 
-            sasForm.CreateField<InfoSection>(null, null)
+          sasForm.CreateField<InfoSection>(null, null)
                 .AppendContent("h1", "Budget Details", lang)
                 .AppendContent("h2", "Conference Travel", lang)
                 .AppendContent("p", "<i>All travel expenses are reimbursed in compliance with the UAPPOL Travel Expense Policies</i>", lang)
@@ -2015,15 +2015,19 @@ namespace Catfish.UnitTests
              var otherParticipationRole = sasForm.CreateField<TextField>("Other - please specify", lang).SetOptionIf(confParticipation, "Other");
 
             otherParticipationRole.VisibilityCondition
-              .AppendLogicalExpression(confParticipation, confParticipation.GetOption("Other", lang), true); 
+              .AppendLogicalExpression(confParticipation, confParticipation.Options[4], true);
 
 
-            sasForm.CreateField<DecimalField>("Airfare", lang).SetDescription("Includes: Airfare, trip cancellation insurance, seat selection and baggage fees", lang);
-            sasForm.CreateField<DecimalField>("Accomodation", lang);
-            sasForm.CreateField<DecimalField>("Per Diem / Meals", lang).SetDescription(@"<p>See UAPPOL <a href='https://policiesonline.ualberta.ca/PoliciesProcedures/Procedures/Travel-Expense-Procedure-Appendix-A-Schedule-of-Allowable-Expenses.pdf' target='_blank'>Travel Expense Procedure, Appendix A: Schedule of Allowable Travel Expenses</a> for allowable amounts and breakdown.</p>", lang);
-            sasForm.CreateField<DecimalField>("Ground Transportation", lang).SetDescription("Transportation to/from airport/home only", lang);
-            sasForm.CreateField<DecimalField>("Conference Registration", lang);
-            sasForm.CreateField<DecimalField>("Additional Expenses", lang).SetDescription("Includes bus, train, car rental, travel insurance, visas, incidentals NOT already included in Airfare, Accommodation or Ground Transportation", lang);
+            var confAirticket = sasForm.CreateField<DecimalField>("Airfare", lang);
+            confAirticket.SetDescription("Includes: Airfare, trip cancellation insurance, seat selection and baggage fees", lang);
+            var confAccomodation =sasForm.CreateField<DecimalField>("Accomodation", lang);
+            var confPerdiem = sasForm.CreateField<DecimalField>("Per Diem / Meals", lang);
+            confPerdiem.SetDescription(@"<p>See UAPPOL <a href='https://policiesonline.ualberta.ca/PoliciesProcedures/Procedures/Travel-Expense-Procedure-Appendix-A-Schedule-of-Allowable-Expenses.pdf' target='_blank'>Travel Expense Procedure, Appendix A: Schedule of Allowable Travel Expenses</a> for allowable amounts and breakdown.</p>", lang);
+            var confGroundTrans = sasForm.CreateField<DecimalField>("Ground Transportation", lang);
+            confGroundTrans.SetDescription("Transportation to/from airport/home only", lang);
+            var confReg = sasForm.CreateField<DecimalField>("Conference Registration", lang);
+            var confOtherExp = sasForm.CreateField<DecimalField>("Additional Expenses", lang);
+            confOtherExp.SetDescription("Includes bus, train, car rental, travel insurance, visas, incidentals NOT already included in Airfare, Accommodation or Ground Transportation", lang);
             sasForm.CreateField<TextArea>("Details Additional Expenses", lang);
             //attachment field
             //Supported Documentation -
@@ -2031,170 +2035,208 @@ namespace Catfish.UnitTests
 
             sasForm.CreateField<TextArea>("Justification", lang).SetDescription("Explain the significance of this conference to your research and scholarly career. Maximum 250 words.", lang);
 
+     
+                       // =================================================================================  RESEARCH AND CREATIVE ACTIVITY
+                       sasForm.CreateField<InfoSection>(null, null)
 
-            // =================================================================================  RESEARCH AND CREATIVE ACTIVITY
-            sasForm.CreateField<InfoSection>(null, null)
-
-                .AppendContent("h2", "Research and Creative Activity", lang)
-                .AppendContent("h3", "Travel", lang)
-                .AppendContent("div",
-                    @"<p>
-                    <ul>
-                         <li>Research travel has no time limit, but will be funded to a maximum of $5,000.00</li>
-                         <li>Applicants must include detailed estimates of their transportation and hotel costs. These should be from travel agents, hotels, and/or travel booking websites. Combined travel and hotel estimates are not accepted.</li>    
-                           </ul></p>",
-                    lang,
-                    "alert alert-info")
-                .AppendContent("div", "Please specify the travel cost breakdown and attach supporting documentation below. Please enter numerical values only. Do not use $ or , when entering your dollar values.", lang, "alert alert-warning");
-
-
-
-            sasForm.CreateField<TextField>("Destination", lang);
-            sasForm.CreateField<DateField>("Departure Date", lang);
-            sasForm.CreateField<DateField>("Return Date", lang);
-            sasForm.CreateField<DecimalField>("Airfare", lang).SetDescription("Includes: Airfare, trip cancellation insurance, seat selection and baggage fees", lang);
-            sasForm.CreateField<DecimalField>("Accomodation", lang);
-            sasForm.CreateField<DecimalField>("Per Diem / Meals", lang).SetDescription(@"<p>See UAPPOL <a href='https://policiesonline.ualberta.ca/PoliciesProcedures/Procedures/Travel-Expense-Procedure-Appendix-A-Schedule-of-Allowable-Expenses.pdf' target='_blank'>Travel Expense Procedure, Appendix A: Schedule of Allowable Travel Expenses</a> for allowable amounts and breakdown.</p>", lang);
-            sasForm.CreateField<DecimalField>("Ground Transportation", lang).SetDescription("Transportation to/from airport/home only", lang);
-            sasForm.CreateField<DecimalField>("Conference Registration", lang);
-            sasForm.CreateField<DecimalField>("Additional Expenses", lang).SetDescription("Includes bus, train, car rental, travel insurance, visas, incidentals NOT already included in Airfare, Accommodation or Ground Transportation", lang);
-            sasForm.CreateField<TextArea>("Details of Additional Expenses", lang);
-
-            sasForm.CreateField<AttachmentField>("Supported Documentation", lang).SetDescription(@"Please attach the required travel and conference supporting documentation here as <span style='color: Red;'>a <b>single PDF document</b>. [Be sure to review the section of the Policies and Procedures on required supporting documentation]</span>", lang);
-
-            sasForm.CreateField<TextArea>("Justification", lang).SetDescription("<i>Explain how this travel is essential to advancing your research. Maximum 250 words.</i>", lang);
+                           .AppendContent("h2", "Research and Creative Activity", lang)
+                           .AppendContent("h3", "Travel", lang)
+                           .AppendContent("div",
+                               @"<p>
+                               <ul>
+                                    <li>Research travel has no time limit, but will be funded to a maximum of $5,000.00</li>
+                                    <li>Applicants must include detailed estimates of their transportation and hotel costs. These should be from travel agents, hotels, and/or travel booking websites. Combined travel and hotel estimates are not accepted.</li>    
+                                      </ul></p>",
+                               lang,
+                               "alert alert-info")
+                           .AppendContent("div", "Please specify the travel cost breakdown and attach supporting documentation below. Please enter numerical values only. Do not use $ or , when entering your dollar values.", lang, "alert alert-warning");
 
 
-            //=============================================================================== Personnel and Services
-            sasForm.CreateField<InfoSection>(null, null)
-                .AppendContent("h1", "Personnel and Services", lang)
-                .AppendContent("div", "Failure to provide a detailed estimate will result in automatic disqualification of this part of the application.", lang, "alert alert-warning");
 
-            sasForm.CreateField<TextArea>("Description of personnel to be hired or services to be purchased", lang).SetDescription(@"<i>Provide and outline of the type of work to be undertaken, the expected time frame for completing that work, and a comment on why it is essential to your research. Maximum 250 words.</ i>", lang);
-            sasForm.CreateField<InfoSection>(null, null)
-               .AppendContent("h3", "Estimate for Hiring Students", lang)
-               .AppendContent("div", @"<i>For each student to be hired, click 'Add' and indicate whether the student will be an undergraduate, MA, or PhD student, and specify the period for which they will be hired, the number of hours to be worked, and related calculations.
-                     Applicants are expected to adhere to the Collective Agreement when calculating salaries for graduate students. Research budgets for casual student labour must reflect the minimum rate (award + salary + benefits)
-                    for Doctoral and Masters students.</i>", lang);
-           
-            // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
-            CompositeField personnelBudget = sasForm.CreateField<CompositeField>("", lang, false);
-            personnelBudget = CreatePersonnelBudgetItemForm(personnelBudget,lang, 0);
+                       sasForm.CreateField<TextField>("Destination", lang);
+                       sasForm.CreateField<DateField>("Departure Date", lang);
+                       sasForm.CreateField<DateField>("Return Date", lang);
+                    var researchAirticket = sasForm.CreateField<DecimalField>("Airfare", lang);
+                        researchAirticket.SetDescription("Includes: Airfare, trip cancellation insurance, seat selection and baggage fees", lang);
+            var researchAccomodation =sasForm.CreateField<DecimalField>("Accomodation", lang);
+            var researchPerdiem =sasForm.CreateField<DecimalField>("Per Diem / Meals", lang);
+            researchPerdiem.SetDescription(@"<p>See UAPPOL <a href='https://policiesonline.ualberta.ca/PoliciesProcedures/Procedures/Travel-Expense-Procedure-Appendix-A-Schedule-of-Allowable-Expenses.pdf' target='_blank'>Travel Expense Procedure, Appendix A: Schedule of Allowable Travel Expenses</a> for allowable amounts and breakdown.</p>", lang);
+            var researchGround = sasForm.CreateField<DecimalField>("Ground Transportation", lang);
+            researchGround.SetDescription("Transportation to/from airport/home only", lang);
 
+            var researchOtherExp = sasForm.CreateField<DecimalField>("Additional Expenses", lang);
+            researchOtherExp.SetDescription("Includes bus, train, car rental, travel insurance, visas, incidentals NOT already included in Airfare, Accommodation or Ground Transportation", lang);
+                       sasForm.CreateField<TextArea>("Details of Additional Expenses", lang);
 
-            sasForm.CreateField<InfoSection>(null, null)
-               .AppendContent("h3", "Estimates for Contracted Services", lang)
-               .AppendContent("div", @"For each contracted service, click 'Add' and then provide the requested information. Please describe the services to be provided. Note that you must also attach written estimates for all contracted services. Estimates should be combined into one single PDF document.", lang);
+                       sasForm.CreateField<AttachmentField>("Supported Documentation", lang).SetDescription(@"Please attach the required travel and conference supporting documentation here as <span style='color: Red;'>a <b>single PDF document</b>. [Be sure to review the section of the Policies and Procedures on required supporting documentation]</span>", lang);
 
-            //Allow adding multiple PersonnelBudgetItem Form TODO
-            // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
-            CompositeField contractServ = sasForm.CreateField<CompositeField>("", lang, false);
-            contractServ = CreatePersonnelBudgetItemForm(contractServ, lang, 0);
-
-            sasForm.CreateField<AttachmentField>("Contractor Cost Estimates", lang).SetDescription(@"<i>Attach written estimate for contracted services as <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
-[Required if funding requested for professional services]</span>", lang);
-            sasForm.CreateField<TextArea>("Justification", lang).SetDescription("Why are these services required for this project at this time? [Maximum 250 words]", lang);
-
-            //====================================================================== EQUIPMENT AND MATERIAL
-            sasForm.CreateField<InfoSection>(null, null)
-              .AppendContent("h3", "Equipment and Materials", lang)
-              .AppendContent("div", @"<i>Failure to provide a written estimate will result in automatic disqualification of this part of the application.</i>", lang);
-
-            sasForm.CreateField<TextArea>("Equipment and Material Justification", lang).SetDescription("Provide a description of the materials and equipment you plan to purchase and outline why they are essential to your research project at this time. Maximum 250 words.", lang);
-
-            sasForm.CreateField<InfoSection>(null, null)
-             .AppendContent("h3", "Estimates for Equipment and Material", lang);
-
-            // allow to add 1 or more Personnel budget Item Form here TODO
-            // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
-            CompositeField estimateEquip = sasForm.CreateField<CompositeField>("", lang, false);
-            estimateEquip = CreatePersonnelBudgetItemForm(estimateEquip, lang, 0);
+                       sasForm.CreateField<TextArea>("Justification", lang).SetDescription("<i>Explain how this travel is essential to advancing your research. Maximum 250 words.</i>", lang);
 
 
-            sasForm.CreateField<AttachmentField>("Vendor Cost Estimates", lang).SetDescription(@"<i>Please submit documentation as a <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
-[Required if funding requested for equipment and materials]</span>", lang);
+                       //=============================================================================== Personnel and Services
+                       sasForm.CreateField<InfoSection>(null, null)
+                           .AppendContent("h1", "Personnel and Services", lang)
+                           .AppendContent("div", "Failure to provide a detailed estimate will result in automatic disqualification of this part of the application.", lang, "alert alert-warning");
 
-            // =============================================  TEACHING RELEASE
-            sasForm.CreateField<InfoSection>(null, null)
-             .AppendContent("h3", "Teaching Release", lang)
-             .AppendContent("div", @"<i>List the courses you are scheduled to teach in the academic year for which release time is requested, indicating in which of these courses you wish to be released from teaching. Use the + button to add courses.</i>", lang);
-            sasForm.CreateField<InfoSection>(null, null)
-            .AppendContent("h5", "1st Term", lang);
-            //TODO: add sub Form here
-            CompositeField firstTerm = sasForm.CreateField<CompositeField>("", lang, false);
-            firstTerm = CreateTeachingReleaseForm(firstTerm, lang, 1);
+                       sasForm.CreateField<TextArea>("Description of personnel to be hired or services to be purchased", lang).SetDescription(@"<i>Provide and outline of the type of work to be undertaken, the expected time frame for completing that work, and a comment on why it is essential to your research. Maximum 250 words.</ i>", lang);
+                       sasForm.CreateField<InfoSection>(null, null)
+                          .AppendContent("h3", "Estimate for Hiring Students", lang)
+                          .AppendContent("div", @"<i>For each student to be hired, click 'Add' and indicate whether the student will be an undergraduate, MA, or PhD student, and specify the period for which they will be hired, the number of hours to be worked, and related calculations.
+                                Applicants are expected to adhere to the Collective Agreement when calculating salaries for graduate students. Research budgets for casual student labour must reflect the minimum rate (award + salary + benefits)
+                               for Doctoral and Masters students.</i>", lang);
 
-            sasForm.CreateField<InfoSection>(null, null)
-           .AppendContent("h5", "2nd Term", lang);
-            //TODO: add sub Form here
-            CompositeField secTerm = sasForm.CreateField<CompositeField>("", lang, false);
-            secTerm = CreateTeachingReleaseForm(secTerm, lang, 0);
-
-            sasForm.CreateField<TextArea>("Justification", lang)
-                .SetDescription("<i>Explain why release time is urgent and necessary at this moment. Maximum 250 words.</i>", lang);
-
-            //==================================================== OVERVIEW OF FUND REQUESTED =======================================================================
-            sasForm.CreateField<InfoSection>(null, null)
-            .AppendContent("h1", "Overview of Funds Requested", lang)
-            .AppendContent("div", "This section auto - populates once you have entered your budget details under the appropriate section(s).", lang, "alert alert-info");
-
-            sasForm.CreateField<DecimalField>("Conference Travel Amount Requested", lang);
-            sasForm.CreateField<DecimalField>("Research / Creativity Activity Travel Amount Requested", lang);
-            sasForm.CreateField<DecimalField>("Support for Research and Creative Activity Equipment and Materials", lang);
-            sasForm.CreateField<IntegerField>("Teaching release time", lang);
-            sasForm.CreateField<DecimalField>("Personnel and Services", lang);
-            sasForm.CreateField<DecimalField>("TOTAL ASK OF GRANT", lang);
+                       // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
+                       CompositeField personnelBudget = sasForm.CreateField<CompositeField>("", lang, false);
+                       personnelBudget = CreatePersonnelBudgetItemForm(personnelBudget,lang, 1);
 
 
+                       sasForm.CreateField<InfoSection>(null, null)
+                          .AppendContent("h3", "Estimates for Contracted Services", lang)
+                          .AppendContent("div", @"For each contracted service, click 'Add' and then provide the requested information. Please describe the services to be provided. Note that you must also attach written estimates for all contracted services. Estimates should be combined into one single PDF document.", lang);
+
+                       //Allow adding multiple PersonnelBudgetItem Form TODO
+                       // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
+                       CompositeField contractServ = sasForm.CreateField<CompositeField>("", lang, false);
+                       contractServ = CreatePersonnelBudgetItemForm(contractServ, lang, 1);
+
+                       sasForm.CreateField<AttachmentField>("Contractor Cost Estimates", lang).SetDescription(@"<i>Attach written estimate for contracted services as <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
+           [Required if funding requested for professional services]</span>", lang);
+                       sasForm.CreateField<TextArea>("Justification", lang).SetDescription("Why are these services required for this project at this time? [Maximum 250 words]", lang);
+            
+                            //====================================================================== EQUIPMENT AND MATERIAL
+                            sasForm.CreateField<InfoSection>(null, null)
+                              .AppendContent("h3", "Equipment and Materials", lang)
+                              .AppendContent("div", @"<i>Failure to provide a written estimate will result in automatic disqualification of this part of the application.</i>", lang);
+
+                            sasForm.CreateField<TextArea>("Equipment and Material Justification", lang).SetDescription("Provide a description of the materials and equipment you plan to purchase and outline why they are essential to your research project at this time. Maximum 250 words.", lang);
+
+                            sasForm.CreateField<InfoSection>(null, null)
+                             .AppendContent("h3", "Estimates for Equipment and Material", lang);
+
+                            // allow to add 1 or more Personnel budget Item Form here TODO
+                            // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
+                            CompositeField estimateEquip = sasForm.CreateField<CompositeField>("", lang, false);
+                            estimateEquip = CreatePersonnelBudgetItemForm(estimateEquip, lang, 0);
+
+
+                            sasForm.CreateField<AttachmentField>("Vendor Cost Estimates", lang).SetDescription(@"<i>Please submit documentation as a <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
+                [Required if funding requested for equipment and materials]</span>", lang);
+
+                                 // =============================================  TEACHING RELEASE
+                                   sasForm.CreateField<InfoSection>(null, null)
+                                    .AppendContent("h3", "Teaching Release", lang)
+                                    .AppendContent("div", @"<i>List the courses you are scheduled to teach in the academic year for which release time is requested, indicating in which of these courses you wish to be released from teaching. Use the + button to add courses.</i>", lang);
+                                   sasForm.CreateField<InfoSection>(null, null)
+                                   .AppendContent("h5", "1st Term", lang);
+                                   //TODO: add sub Form here
+                                   CompositeField firstTerm = sasForm.CreateField<CompositeField>("", lang, false);
+                                   firstTerm = CreateTeachingReleaseForm(firstTerm, lang, 1);
+
+                                   sasForm.CreateField<InfoSection>(null, null)
+                                  .AppendContent("h5", "2nd Term", lang);
+                                   //TODO: add sub Form here
+                                   CompositeField secTerm = sasForm.CreateField<CompositeField>("", lang, false);
+                                   secTerm = CreateTeachingReleaseForm(secTerm, lang, 0);
+
+                                   sasForm.CreateField<TextArea>("Justification", lang)
+                                       .SetDescription("<i>Explain why release time is urgent and necessary at this moment. Maximum 250 words.</i>", lang);
+
+                                   //==================================================== OVERVIEW OF FUND REQUESTED =======================================================================
+                                   sasForm.CreateField<InfoSection>(null, null)
+                                   .AppendContent("h1", "Overview of Funds Requested", lang)
+                                   .AppendContent("div", "This section auto - populates once you have entered your budget details under the appropriate section(s).", lang, "alert alert-info");
+
+                                  var confTotal = sasForm.CreateField<DecimalField>("Conference Travel Amount Requested", lang);
+                                                  confTotal.ValueExpression
+                                                  .AppendValue(confAirticket)
+                                                  .AppendOperator(ComputationExpression.eMath.PLUS)
+                                                  .AppendValue(confAccomodation)
+                                                  .AppendOperator(ComputationExpression.eMath.PLUS)
+                                                  .AppendValue(confPerdiem)
+                                                  .AppendOperator(ComputationExpression.eMath.PLUS)
+                                                  .AppendValue(confGroundTrans)
+                                                  .AppendOperator(ComputationExpression.eMath.PLUS)
+                                                  .AppendValue(confReg)
+                                                  .AppendOperator(ComputationExpression.eMath.PLUS)
+                                                  .AppendValue(confOtherExp)
+                                                  ;
+            var researchTot = sasForm.CreateField<DecimalField>("Research / Creativity Activity Travel Amount Requested", lang);
+            researchTot.ValueExpression
+                                              .AppendValue(researchAirticket)
+                                              .AppendOperator(ComputationExpression.eMath.PLUS)
+                                              .AppendValue(researchAccomodation)
+                                              .AppendOperator(ComputationExpression.eMath.PLUS)
+                                              .AppendValue(researchPerdiem)
+                                              .AppendOperator(ComputationExpression.eMath.PLUS)
+                                              .AppendValue(researchGround)      
+                                              .AppendOperator(ComputationExpression.eMath.PLUS)
+                                              .AppendValue(researchOtherExp)
+                                              ;
+                     var EqandMatTot =sasForm.CreateField<DecimalField>("Support for Research and Creative Activity Equipment and Materials", lang);
+                      var TRTot = sasForm.CreateField<DecimalField>("Teaching release time", lang);
+                       var PersonnelServiceTot = sasForm.CreateField<DecimalField>("Personnel and Services", lang);
+                            var grandTot = sasForm.CreateField<DecimalField>("TOTAL ASK OF GRANT", lang);
+                        grandTot.ValueExpression
+                                .AppendValue(confTotal)
+                                .AppendOperator(ComputationExpression.eMath.PLUS)
+                                .AppendValue(researchTot)
+                                .AppendOperator(ComputationExpression.eMath.PLUS)
+                                .AppendValue(EqandMatTot)
+                                .AppendOperator(ComputationExpression.eMath.PLUS)
+                                .AppendValue(TRTot)
+                                .AppendOperator(ComputationExpression.eMath.PLUS)
+                                .AppendValue(PersonnelServiceTot);
+          
             // ====================================================== Other and Previous Funding ========================================================================
-            sasForm.CreateField<InfoSection>(null, null)
-           .AppendContent("h1", "Other and Previous Funding", lang);
+                                     sasForm.CreateField<InfoSection>(null, null)
+                                  .AppendContent("h1", "Other and Previous Funding", lang);
 
-            var otherFunding = sasForm.CreateField<RadioField>("Have you received any SAS funding in the past 5 years?", lang, optionText, true);
+                                   var otherFunding = sasForm.CreateField<RadioField>("Have you received any SAS funding in the past 5 years?", lang, optionText, true);
 
-            CompositeField summaryFund = sasForm.CreateField<CompositeField>("", lang, false);
-            summaryFund.VisibilityCondition
-              .AppendLogicalExpression(otherFunding, ComputationExpression.eRelational.EQUAL, otherFunding.GetOption("Yes", lang));
-            summaryFund = CreateFundingSummaryForm(summaryFund, lang, 1);
+                                  CompositeField summaryFund = sasForm.CreateField<CompositeField>("", lang, false);
+                                    summaryFund = CreateFundingSummaryForm(summaryFund, lang, 0);
+                                summaryFund.VisibilityCondition
+                            .AppendLogicalExpression(otherFunding, ComputationExpression.eRelational.EQUAL, otherFunding.Options[0]);
 
+            
 
             var previousFundRB = sasForm.CreateField<RadioField>("Previous SAS Funding for <i>this</i> Project", lang, optionText, true);
-            previousFundRB.SetDescription("Have you previously received SAS funding in regard to this project?", lang);
+                              previousFundRB.SetDescription("Have you previously received SAS funding in regard to this project?", lang);
 
-            var previousTA = sasForm.CreateField<TextArea>("How Past SAS Funding Relates to?", lang)
-              .SetDescription("How is the current application related to or different from the previous application already funded? Maximum 250 words.", lang);
-              previousTA.VisibilityCondition.AppendLogicalExpression(previousFundRB, ComputationExpression.eRelational.EQUAL, previousFundRB.GetOption("Yes", lang));
+                              var previousTA = sasForm.CreateField<TextArea>("How Past SAS Funding Relates to?", lang)
+                                .SetDescription("How is the current application related to or different from the previous application already funded? Maximum 250 words.", lang);
+                                previousTA.VisibilityCondition.AppendLogicalExpression(previousFundRB, ComputationExpression.eRelational.EQUAL, previousFundRB.Options[0]);
 
 
-            var otherFundingBefore = sasForm.CreateField<RadioField>("Other Funding", lang, optionText, true);
-            otherFundingBefore.SetDescription("Have you sought support for this project from SSHRC, the Canada Council for the Arts, the Killam Fund, or any other agency, internal, or external sources of funding?", lang);
-            sasForm.CreateField<TextArea>("Other Sources of Funding", lang)
-             .SetDescription(@"Please identify other sources of funding for this project, and explain how and why these multiple sources of funding are essential to your research. Why, for example, are you applying for SAS funding if you have a related SSHRC or Killam research grant? Maximum 250 words.", lang)
-             .VisibilityCondition.AppendLogicalExpression(otherFundingBefore, ComputationExpression.eRelational.EQUAL, otherFundingBefore.GetOption("Yes", lang));
+                              var otherFundingBefore = sasForm.CreateField<RadioField>("Other Funding", lang, optionText, true);
+                              otherFundingBefore.SetDescription("Have you sought support for this project from SSHRC, the Canada Council for the Arts, the Killam Fund, or any other agency, internal, or external sources of funding?", lang);
+                           var otherFundSource = sasForm.CreateField<TextArea>("Other Sources of Funding", lang);
+                               otherFundSource.SetDescription(@"Please identify other sources of funding for this project, and explain how and why these multiple sources of funding are essential to your research. Why, for example, are you applying for SAS funding if you have a related SSHRC or Killam research grant? Maximum 250 words.", lang);
+                               otherFundSource.VisibilityCondition.AppendLogicalExpression(otherFundingBefore, ComputationExpression.eRelational.EQUAL, otherFundingBefore.Options[0]);
 
-            sasForm.CreateField<TextArea>("Why not, or do you intend to do so?", lang)
-            .SetDescription(@"Maximum 250 words.", lang)
-            .VisibilityCondition.AppendLogicalExpression(otherFundingBefore, ComputationExpression.eRelational.EQUAL, otherFundingBefore.GetOption("No", lang));
-
+                           var theReason = sasForm.CreateField<TextArea>("Why not, or do you intend to do so?", lang);
+                             theReason.SetDescription(@"Maximum 250 words.", lang);
+                              theReason.VisibilityCondition.AppendLogicalExpression(otherFundingBefore, ComputationExpression.eRelational.EQUAL, otherFundingBefore.Options[1]);
+           
 
             sasForm.CreateField<TextArea>("Other Support Sources", lang)
-               .SetDescription("Please identify additional sources of support for this project, if applicable. (Such as honoraria, sales revenues, commissions, etc.). Maximum 250 words.", lang);
-
+                                 .SetDescription("Please identify additional sources of support for this project, if applicable. (Such as honoraria, sales revenues, commissions, etc.). Maximum 250 words.", lang);
+ 
             // ====================================================== Scholarly Publications ========================================================================
             sasForm.CreateField<InfoSection>(null, null)
-           .AppendContent("h1", "Scholarly Publications", lang);
+                             .AppendContent("h1", "Scholarly Publications", lang);
 
-            sasForm.CreateField<TextArea>("Publications over the past 5 years.", lang)
-             .SetDescription("Please list your scholarly and/or creative publications over the past 5 years. Include conference presentations, displays, and exhibits or performances. Complete CVs will not be accepted.", lang);
+                              sasForm.CreateField<TextArea>("Publications over the past 5 years.", lang)
+                               .SetDescription("Please list your scholarly and/or creative publications over the past 5 years. Include conference presentations, displays, and exhibits or performances. Complete CVs will not be accepted.", lang);
 
-            sasForm.CreateField<InfoSection>(null, null)
-          .AppendContent("h3", "Collaborators", lang)
-          .AppendContent("div", "Required only if collaborator is a Faculty of Arts faculty member.", lang,"alert alert-info");
-            // TO DO -- Add Collaborator(s) below
-            CompositeField collaborator = sasForm.CreateField<CompositeField>("", lang, false);
+                              sasForm.CreateField<InfoSection>(null, null)
+                            .AppendContent("h3", "Collaborators", lang)
+                            .AppendContent("div", "Required only if collaborator is a Faculty of Arts faculty member.", lang,"alert alert-info");
+                              // TO DO -- Add Collaborator(s) below
+                              CompositeField collaborator = sasForm.CreateField<CompositeField>("", lang, false);
 
-            collaborator = CreateCollaboratorForm(collaborator, lang, 0);
-
+                              collaborator = CreateCollaboratorForm(collaborator, lang, 0);
+          
             //================================================ Submit form ===============================
             sasForm.CreateField<InfoSection>(null, null)
                 .AppendContent("div", @"<h1>Save or Submit Your Application</h1>
@@ -2371,7 +2413,7 @@ namespace Catfish.UnitTests
             return chairDept;
         }
 
-        private CompositeField CreatePersonnelBudgetItemForm(CompositeField comField, string lang="en", int min=0, int max=0)
+        private CompositeField CreatePersonnelBudgetItemForm(CompositeField comField, string lang="en", int min=0, int max=100)
         {
 
             comField.CreateChildTemplate("PersonnelBugdet", "Personnel Budget Item", lang);
@@ -2384,7 +2426,7 @@ namespace Catfish.UnitTests
             return comField;
         }
 
-        private CompositeField CreateTeachingReleaseForm(CompositeField comField, string lang= "en", int min = 0, int max = 0)
+        private CompositeField CreateTeachingReleaseForm(CompositeField comField, string lang= "en", int min = 0, int max = 100)
         {
           
             comField.CreateChildTemplate("Teaching Release", "Teaching Release", lang);
@@ -2397,7 +2439,7 @@ namespace Catfish.UnitTests
             comField.InsertChildren();
             return comField;
         }
-        private CompositeField CreateCollaboratorForm(CompositeField comField, string lang = "en", int min = 0, int max = 0)
+        private CompositeField CreateCollaboratorForm(CompositeField comField, string lang = "en", int min = 0, int max = 100)
         {
             comField.CreateChildTemplate("Collaborator", "Collaborator Information", lang);
 
@@ -2410,7 +2452,7 @@ namespace Catfish.UnitTests
             return comField;
         }
 
-        private CompositeField CreateFundingSummaryForm(CompositeField comField, string lang = "en", int min = 0, int max = 0)
+        private CompositeField CreateFundingSummaryForm(CompositeField comField, string lang = "en", int min = 0, int max = 100)
         {
             
             string[] optionText = new string[] {"Spring", "Fall" };
@@ -2418,8 +2460,8 @@ namespace Catfish.UnitTests
 
             comField.ChildTemplate.CreateField<TextField>("Type of Funding", lang, false);
             comField.ChildTemplate.CreateField<DecimalField>("Value of Award", lang, false);
-            comField.ChildTemplate.CreateField<IntegerField>("Year of Application", lang, false);
-            comField.ChildTemplate.CreateField<SelectField>("Competition Applied To", lang,optionText, false);
+            comField.ChildTemplate.CreateField<DecimalField>("Year of Application", lang, false);
+            comField.ChildTemplate.CreateField<RadioField>("Competition Applied To", lang,optionText, false);
             comField.ChildTemplate.CreateField<TextField>("Title of Project", lang, false);
             comField.ChildTemplate.CreateField<TextArea>("Brief Description of project", lang, false).SetDescription("Maximum 100 words.", lang);
             comField.Min = min;
