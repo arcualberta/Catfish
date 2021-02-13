@@ -1530,8 +1530,7 @@ namespace Catfish.UnitTests
 
             var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText, true);
             inspectionForm.CreateField<TextArea>("Eyewash station info", lang, false)
-                .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang)
-                .SetVisibleIf(eyeWashFlushed, optionText[0]);
+                .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang);
             
             inspectionForm.CreateField<InfoSection>(null, null)
                .AppendContent("h4", "Other", lang);
@@ -2012,8 +2011,7 @@ namespace Catfish.UnitTests
             string[] participationRoles = new string[] { "Invited Speaker", "Panel Member", "Refereed Paper Presentation", "Poster Presentation", "Other" };
             var confParticipation = sasForm.CreateField<CheckboxField>("Conference Participation", lang, participationRoles);
 
-             var otherParticipationRole = sasForm.CreateField<TextField>("Other - please specify", lang).SetOptionIf(confParticipation, "Other");
-
+            var otherParticipationRole = sasForm.CreateField<TextField>("Other - please specify", lang);
             otherParticipationRole.VisibilityCondition
               .AppendLogicalExpression(confParticipation, confParticipation.GetOption("Other", lang), true); 
 
