@@ -102,14 +102,14 @@ namespace Catfish.Core.Models.Contents.Fields
         public string FieldLabelCssClass
         {
             get => GetAttribute("label-css", "col-md-4");
-            private set => Data.SetAttributeValue("label-css", value);
+            set => Data.SetAttributeValue("label-css", value);
         }
         public BaseField SetFieldLabelCssClass(string value) { FieldLabelCssClass = value; return this; }
 
         public string FieldValueCssClass
         {
             get => GetAttribute("value-css", "col-md-8");
-            private set => Data.SetAttributeValue("value-css", value);
+            set => Data.SetAttributeValue("value-css", value);
         }
         public BaseField SetFieldValueCssClass(string value) { FieldValueCssClass = value; return this; }
 

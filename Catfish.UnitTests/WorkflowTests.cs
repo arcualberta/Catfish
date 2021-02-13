@@ -1773,6 +1773,34 @@ namespace Catfish.UnitTests
             //END: Fields for testing Computed Fields
             //=======================================
 
+            //Full width text area
+            inspectionForm.CreateField<TextArea>("This is field with a long field name displayed at full width", lang, false, false)
+                .SetSize(10, 60)
+                .SetFieldLabelCssClass("col-md-12")
+                .SetFieldValueCssClass("col-md-12");
+
+
+            //Setting the default value of a text field
+            inspectionForm.CreateField<TextField>("Institution", lang, false, false, "University of Alberta");
+
+            var dd3 = inspectionForm.CreateField<SelectField>("DD 3", lang, new string[] { 
+                "user 1 : email_1@example.org $ Postal Address 1", 
+                "user 2 : email_2@example.org $ Postal Address 2", 
+                "user 3 : email_3@example.org $ Postal Address 3" });
+
+            //Setting the default value of a text field dynamically to a value selected by a dropdown menu
+            inspectionForm.CreateField<TextField>("DD3 Value", lang, false, false, "University of Alberta")
+                .ValueExpression.AppendReadableValue(dd3);
+
+            inspectionForm.CreateField<TextField>("DD3 User", lang, false, false, "University of Alberta")
+                .ValueExpression.AppendReadableValue(dd3, null, ":", true);
+
+            inspectionForm.CreateField<TextField>("DD3 Email", lang, false, false, "University of Alberta")
+                .ValueExpression.AppendReadableValue(dd3, ":", "$", true);
+
+            inspectionForm.CreateField<TextField>("DD3 Postal Address", lang, false, false, "University of Alberta")
+                .ValueExpression.AppendReadableValue(dd3, "$", null, true);
+
             //Defininig roles
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
             WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));

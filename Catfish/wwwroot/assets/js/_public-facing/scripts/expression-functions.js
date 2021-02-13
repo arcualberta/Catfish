@@ -91,3 +91,29 @@ function RadioValue(fieldModelId) {
 function CheckboxValue(fieldId, optionId) {
     return $("[data-option-id='" + optionId + "']:checked").val() === "true";
 }
+
+function SelectFieldReadableValue(fieldModelId) {
+    var field = $("[data-model-id='" + fieldModelId + "']");
+    return $(field).children("option[value='" + field.val() + "']").text();
+}
+
+function Extract(str, beginDelimiter, endDelimiter, trimEnds) {
+    var value = str;
+
+    if (beginDelimiter) {
+        let index = value.indexOf(beginDelimiter);
+        if (index >= 0)
+            value = value.substring(index + 1);
+    }
+
+    if (endDelimiter) {
+        let index = value.indexOf(endDelimiter);
+        if (index >= 0)
+            value = value.substring(0, index);
+    }
+
+    if (trimEnds)
+        value = value.trim();
+
+    return value;
+}
