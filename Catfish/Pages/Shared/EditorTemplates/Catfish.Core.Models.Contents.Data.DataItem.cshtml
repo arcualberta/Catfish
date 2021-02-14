@@ -32,6 +32,8 @@
                 Dictionary<string, object> viewData = new Dictionary<string, object>();
                 viewData.Add("data-model-id", Model.Fields[i].Id);
                 viewData.Add("onchange", "updateFields();");
+                if (Model.Fields[i].Readonly)
+                    viewData.Add("readonly", null as string);
 
                 if (Model.Fields[i].Required)
                 {

@@ -33,6 +33,12 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("multiple", value);
         }
 
+        public bool Readonly
+        {
+            get => GetAttribute("readonly", false);
+            set => SetAttribute("readonly", value);
+        }
+
         public MultilingualName Name { get; protected set; }
 
         public MultilingualDescription Description { get; protected set; }

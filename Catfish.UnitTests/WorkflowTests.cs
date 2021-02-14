@@ -1689,6 +1689,18 @@ namespace Catfish.UnitTests
               .AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
             textarea1.SetDescription("Visible if DD 1 = Option 3", lang);
 
+            inspectionForm.CreateField<DateField>("Date 1", lang)
+                .SetDescription("Visible if DD 1 = Option 3", lang)
+                .VisibilityCondition.AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+
+            inspectionForm.CreateField<IntegerField>("Integer 1", lang)
+                .SetDescription("Visible if DD 1 = Option 3", lang)
+                .VisibilityCondition.AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+
+            inspectionForm.CreateField<DecimalField>("Decimal 1", lang)
+                .SetDescription("Visible if DD 1 = Option 3", lang)
+                .VisibilityCondition.AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+
             //Drop-down menu with conditional options
             var dd2OOptions = new string[] { "A1", "A2", "B1", "B2", "B3", "B4" };
             var dd2 = inspectionForm.CreateField<SelectField>("DD 2", lang, dd2OOptions, true);
@@ -1783,14 +1795,17 @@ namespace Catfish.UnitTests
             //Setting the default value of a text field
             inspectionForm.CreateField<TextField>("Institution", lang, false, false, "University of Alberta");
 
-            var dd3 = inspectionForm.CreateField<SelectField>("DD 3", lang, new string[] { 
-                "user 1 : email_1@example.org : Postal Address 1", 
-                "user 2 : email_2@example.org : Postal Address 2", 
-                "user 3 : email_3@example.org : Postal Address 3" });
+            var complexOptionVals = new string[] {
+                "user 1 : email_1@example.org : Postal Address 1",
+                "user 2 : email_2@example.org : Postal Address 2",
+                "user 3 : email_3@example.org : Postal Address 3" };
+
+            var dd3 = inspectionForm.CreateField<SelectField>("DD 3", lang, complexOptionVals);
 
             //Setting the default value of a text field dynamically to a value selected by a dropdown menu
-            inspectionForm.CreateField<TextField>("DD3 Value", lang)
-                .ValueExpression.AppendReadableValue(dd3);
+            var dd3Val = inspectionForm.CreateField<TextField>("DD3 Value", lang);
+            dd3Val.Readonly = true;
+            dd3Val.ValueExpression.AppendReadableValue(dd3);
 
             inspectionForm.CreateField<TextField>("DD3 User", lang)
                 .ValueExpression.AppendReadableValue(dd3, ":", 0);
@@ -1800,6 +1815,24 @@ namespace Catfish.UnitTests
 
             inspectionForm.CreateField<TextField>("DD3 Postal Address", lang)
                 .ValueExpression.AppendReadableValue(dd3, ":", 2);
+
+
+            var rb3 = inspectionForm.CreateField<RadioField>("RB 3", lang, complexOptionVals);
+
+            //Setting the default value of a text field dynamically to a value selected by a dropdown menu
+            inspectionForm.CreateField<TextField>("RB Value", lang)
+                .ValueExpression.AppendReadableValue(rb3);
+
+            inspectionForm.CreateField<TextField>("RB User", lang)
+                .ValueExpression.AppendReadableValue(rb3, ":", 0);
+
+            inspectionForm.CreateField<TextField>("RB Email", lang)
+                .ValueExpression.AppendReadableValue(rb3, ":", 1);
+
+            inspectionForm.CreateField<TextField>("RB Postal Address", lang)
+                .ValueExpression.AppendReadableValue(rb3, ":", 2);
+
+
 
             //Defininig roles
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
