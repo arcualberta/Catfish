@@ -1784,22 +1784,22 @@ namespace Catfish.UnitTests
             inspectionForm.CreateField<TextField>("Institution", lang, false, false, "University of Alberta");
 
             var dd3 = inspectionForm.CreateField<SelectField>("DD 3", lang, new string[] { 
-                "user 1 : email_1@example.org $ Postal Address 1", 
-                "user 2 : email_2@example.org $ Postal Address 2", 
-                "user 3 : email_3@example.org $ Postal Address 3" });
+                "user 1 : email_1@example.org : Postal Address 1", 
+                "user 2 : email_2@example.org : Postal Address 2", 
+                "user 3 : email_3@example.org : Postal Address 3" });
 
             //Setting the default value of a text field dynamically to a value selected by a dropdown menu
-            inspectionForm.CreateField<TextField>("DD3 Value", lang, false, false, "University of Alberta")
+            inspectionForm.CreateField<TextField>("DD3 Value", lang)
                 .ValueExpression.AppendReadableValue(dd3);
 
-            inspectionForm.CreateField<TextField>("DD3 User", lang, false, false, "University of Alberta")
-                .ValueExpression.AppendReadableValue(dd3, null, ":", true);
+            inspectionForm.CreateField<TextField>("DD3 User", lang)
+                .ValueExpression.AppendReadableValue(dd3, ":", 0);
 
-            inspectionForm.CreateField<TextField>("DD3 Email", lang, false, false, "University of Alberta")
-                .ValueExpression.AppendReadableValue(dd3, ":", "$", true);
+            inspectionForm.CreateField<TextField>("DD3 Email", lang)
+                .ValueExpression.AppendReadableValue(dd3, ":", 1);
 
-            inspectionForm.CreateField<TextField>("DD3 Postal Address", lang, false, false, "University of Alberta")
-                .ValueExpression.AppendReadableValue(dd3, "$", null, true);
+            inspectionForm.CreateField<TextField>("DD3 Postal Address", lang)
+                .ValueExpression.AppendReadableValue(dd3, ":", 2);
 
             //Defininig roles
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));

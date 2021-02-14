@@ -175,21 +175,38 @@ namespace Catfish.Core.Models.Contents.Expressions
             return this;
         }
 
+        ////public ComputationExpression AppendReadableValue(SelectField field,
+        ////    string beginDelimiter = null,
+        ////    string endDelimiter = null,
+        ////    bool trim = true)
+        ////{
+        ////    var valueString = string.Format("SelectFieldReadableValue('{0}')", field.Id);
+
+        ////    if (!string.IsNullOrEmpty(beginDelimiter) || !string.IsNullOrEmpty(endDelimiter) || trim)
+        ////        valueString = string.Format("Extract({0}, '{1}', '{2}', {3})", 
+        ////            valueString, beginDelimiter, endDelimiter, trim.ToString().ToLower());
+           
+        ////    Data.Value += valueString;
+
+        ////    return this;
+        ////}
+
         public ComputationExpression AppendReadableValue(SelectField field,
-            string beginDelimiter = null,
-            string endDelimiter = null,
+            string delimiter = null,
+            int selectItemIndex = 0,
             bool trim = true)
         {
             var valueString = string.Format("SelectFieldReadableValue('{0}')", field.Id);
 
-            if (!string.IsNullOrEmpty(beginDelimiter) || !string.IsNullOrEmpty(endDelimiter) || trim)
-                valueString = string.Format("Extract({0}, '{1}', '{2}', {3})", 
-                    valueString, beginDelimiter, endDelimiter, trim.ToString().ToLower());
-           
+            if (!string.IsNullOrEmpty(delimiter) || trim)
+                valueString = string.Format("Extract({0}, '{1}', {2}, {3})",
+                    valueString, delimiter, selectItemIndex, trim.ToString().ToLower());
+
             Data.Value += valueString;
 
             return this;
         }
+
 
         public static string Str(eMath val)
         {

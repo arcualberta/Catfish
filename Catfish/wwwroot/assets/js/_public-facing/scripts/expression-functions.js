@@ -97,22 +97,36 @@ function SelectFieldReadableValue(fieldModelId) {
     return $(field).children("option[value='" + field.val() + "']").text();
 }
 
-function Extract(str, beginDelimiter, endDelimiter, trimEnds) {
+////function Extract(str, beginDelimiter, endDelimiter, trimEnds) {
+////    var value = str;
+
+////    if (beginDelimiter) {
+////        let index = value.indexOf(beginDelimiter);
+////        if (index >= 0)
+////            value = value.substring(index + 1);
+////    }
+
+////    if (endDelimiter) {
+////        let index = value.indexOf(endDelimiter);
+////        if (index >= 0)
+////            value = value.substring(0, index);
+////    }
+
+////    if (trimEnds)
+////        value = value.trim();
+
+////    return value;
+////}
+
+function Extract(str, delimiter, selectItemIndex, trimEnds) {
+
     var value = str;
-
-    if (beginDelimiter) {
-        let index = value.indexOf(beginDelimiter);
-        if (index >= 0)
-            value = value.substring(index + 1);
+    if (delimiter && value) {
+        value = value.split(delimiter);
+        value = value[selectItemIndex];
     }
 
-    if (endDelimiter) {
-        let index = value.indexOf(endDelimiter);
-        if (index >= 0)
-            value = value.substring(0, index);
-    }
-
-    if (trimEnds)
+    if (trimEnds && value)
         value = value.trim();
 
     return value;
