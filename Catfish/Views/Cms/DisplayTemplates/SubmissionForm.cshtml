@@ -72,113 +72,114 @@
 
     if (authorizationSuccessful)
     {
-        <div class="submission-form-block @Model.CssClass.Value">
-            <form id="submissionForm_@suffix" method="post" action="@formPostUrl" enctype="multipart/form-data">
-                <input data-val="true" data-val-required="The TemplateId field is required."
-                       id="entityTemplateId_@suffix" name="entityTemplateId" type="hidden"
-                       value="@entityTemplateId">
-                <input data-val="true" data-val-required="The CollectionId field is required."
-                       id="collectionId_@suffix" name="collectionId" type="hidden"
-                       value="@collectionId">
-                <input data-val="true" data-val-required="The Function field is required."
-                       id="function" name="function" type="hidden"
-                       value="@function">
-                <input data-val="true" data-val-required="The Group field is required."
-                       id="group" name="group" type="hidden"
-                       value="@group">
+    <div class="submission-form-block @Model.CssClass.Value">
+        <form id="submissionForm_@suffix" method="post" action="@formPostUrl" enctype="multipart/form-data">
+            <input data-val="true" data-val-required="The TemplateId field is required."
+                   id="entityTemplateId_@suffix" name="entityTemplateId" type="hidden"
+                   value="@entityTemplateId">
+            <input data-val="true" data-val-required="The CollectionId field is required."
+                   id="collectionId_@suffix" name="collectionId" type="hidden"
+                   value="@collectionId">
+            <input data-val="true" data-val-required="The Function field is required."
+                   id="function" name="function" type="hidden"
+                   value="@function">
+            <input data-val="true" data-val-required="The Group field is required."
+                   id="group" name="group" type="hidden"
+                   value="@group">
 
-                @if (groups != null)
-                {
-                    string groupLabelLabel = string.IsNullOrWhiteSpace(Model.GroupSelectorLabel.Value) ? "Group" : Model.GroupSelectorLabel.Value;
+            @if (groups != null)
+            {
+                string groupLabelLabel = string.IsNullOrWhiteSpace(Model.GroupSelectorLabel.Value) ? "Group" : Model.GroupSelectorLabel.Value;
 
-                    //Displaying a drop-down menu to select the group.
-                    <div class="row field-row group-selector">
-                        <div class="col-md-3 control field-label">@groupLabelLabel:<sup style="color:red">*</sup></div>
-                        <div class="col-md-9 field-value">
-                            <select name="groupId" data-val-required="Please identify the group." required>
-                                <option value="">Please select </option>
-                                @foreach (var gr in groups)
-                                {
-                                    <option value="@gr.Id">@gr.Name</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                }
-
-                @*Render the editor for template for the root-data item of the template*@
-                @if (useVueForms)
-                {
-                    @Html.EditorFor(model => Item, "VueDataItem")
-                }
-                else
-                {
-                    @Html.EditorFor(model => Item, Item.GetType().ToString())
-                }
-
-                <div id="buttonLayer">
-                    @foreach (var postAction in postActions)
-                    {
-                        string buttonName = @postAction.ButtonLabel + "_" + @suffix;
-
-                        if (postAction.PopUps.Any())
-                        {
-                            foreach (var popup in postAction.PopUps)
+                //Displaying a drop-down menu to select the group.
+                <div class="row field-row group-selector">
+                    <div class="col-md-3 control field-label">@groupLabelLabel:<sup style="color:red">*</sup></div>
+                    <div class="col-md-9 field-value">
+                        <select name="groupId" data-val-required="Please identify the group." required>
+                            <option value="">Please select </option>
+                            @foreach (var gr in groups)
                             {
-                                <input id="@postAction.ButtonLabel" class="btn btn-success launch-modal" name="@postAction.ButtonLabel" type="button" value="@postAction.ButtonLabel" data-toggle="modal" data-target="#submissionModal" />
-                                <div id="submissionModal" class="modal fade" role="dialog">
+                                <option value="@gr.Id">@gr.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            }
 
-                                    <div>
-                                        <div class="modal-dialog">
-                                            @*Modal content*@
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="myModalLabel">@popup.Title</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="card-body">
-                                                        <div class="form-group">
-                                                            <p>@popup.Body</p>
-                                                            @{
-                                                                if (popup.Message.Any())
-                                                                {
-                                                                    <p class="text-info"><small><strong>Note : </strong>@popup.Message</small></p>
-                                                                }
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    @{
-                                                        foreach (var button in popup.Buttons)
-                                                        {
-                                                            if (button.Text == "Cancel")
+            @*Render the editor for template for the root-data item of the template*@
+            @if (useVueForms)
+            {
+                @Html.EditorFor(model => Item, "VueDataItem")
+            }
+            else
+            {
+                @Html.EditorFor(model => Item, Item.GetType().ToString())
+            }
+
+            <div id="buttonLayer">
+                @foreach (var postAction in postActions)
+                {
+                    string buttonName = @postAction.ButtonLabel + "_" + @suffix;
+
+                    if (postAction.PopUps.Any())
+                    {
+                        foreach (var popup in postAction.PopUps)
+                        {
+                            <input id="@postAction.ButtonLabel" class="btn btn-success launch-modal" name="@postAction.ButtonLabel" type="button" value="@postAction.ButtonLabel" data-toggle="modal" data-target="#submissionModal" />
+                            <div id="submissionModal" class="modal fade" role="dialog">
+
+                                <div>
+                                    <div class="modal-dialog">
+                                        @*Modal content*@
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="myModalLabel">@popup.Title</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        <p>@popup.Body</p>
+                                                        @{
+                                                            if (popup.Message.Any())
                                                             {
-                                                                <button id="close-modal-button_@suffix" type="button" class="btn btn-primary" data-dismiss="modal">@button.Text</button>
-                                                            }
-                                                            else
-                                                            {
-                                                                <button id="@buttonName" type="submit" class="btn btn-success" onclick="submitWorkflowForm('@suffix', '@successMessage');">@button.Text</button>
+                                                                <p class="text-info"><small><strong>Note : </strong>@popup.Message</small></p>
                                                             }
                                                         }
-                                                    }
+                                                    </div>
                                                 </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                @{
+                                                    foreach (var button in popup.Buttons)
+                                                    {
+                                                        if (button.Text == "Cancel")
+                                                        {
+                                                            <button id="close-modal-button_@suffix" type="button" class="btn btn-primary" data-dismiss="modal">@button.Text</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button id="@buttonName" type="submit" class="btn btn-success" onclick="submitWorkflowForm('@suffix', '@successMessage');">@button.Text</button>
+                                                        }
+                                                    }
+                                                }
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            }
-                        }
-                        else
-                        {
-                            <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="submit" value="@postAction.ButtonLabel" onclick="submitWorkflowForm('@suffix', '@successMessage');" />
+                            </div>
                         }
                     }
-                </div>
-            </form>
-            <div id="submission-result-message_@suffix"></div>
-        </div>
+                    else
+                    {
+                        <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="submit" value="@postAction.ButtonLabel" onclick="submitWorkflowForm('@suffix', '@successMessage');" />
+                    }
+                }
+            </div>
+        </form>
+        @*<div id="submission-result-message_@suffix"></div>*@
+    </div>
+        <div id="submission-result-message_@suffix"></div>
     }
     else
     {

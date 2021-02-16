@@ -73,8 +73,7 @@ function submitWorkflowForm(suffix, successMessage) {
                 //  $(".submission-result-message").addClass("alert alert-success");
                 message = successMessage !== "" ? successMessage : data.message;
                 $("#submission-result-message_" + suffix).append("<div class='alert alert-success' ></div>");
-                $("#submission-result-message_" + suffix + " div").text(message);
-                $("#submission-result-message_" + suffix).show();
+            
                 $("#submissionForm_" + suffix).hide();//[0].reset();
             }
             else {
@@ -82,8 +81,6 @@ function submitWorkflowForm(suffix, successMessage) {
                 $("#submission-result-message_" + suffix).append("<div class='alert alert-danger' ></div>");
                 message = data.message;
             }
-
-
 
             $("#submission-result-message_" + suffix + " div").text(message);
             $("#submission-result-message_" + suffix).show();
