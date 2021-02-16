@@ -23,7 +23,7 @@ namespace Catfish.UnitTests
     public class WorkdlowTests
     {
         private protected AppDbContext _db;
-       private protected TestHelper _testHelper;
+        private protected TestHelper _testHelper;
 
         [SetUp]
         public void Setup()
@@ -1655,11 +1655,6 @@ namespace Catfish.UnitTests
             //Get the Workflow object using the workflow service
             Workflow workflow = template.Workflow;
 
-            //////////Defininig states
-            ////////State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
-            ////////State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
-            ////////State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
-
             //Defininig the form
             DataItem inspectionForm = template.GetDataItem(submissionFormName, true, lang);
             inspectionForm.IsRoot = true;
@@ -1840,74 +1835,6 @@ namespace Catfish.UnitTests
             //Table field
             //var tbl1 = inspectionForm.CreateField<TableField>("Table 1", lang);
 
-            ////////////////Defininig roles
-            //////////////WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
-            //////////////WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
-
-
-            //////////////// Submitting an inspection form
-            ////////////////Only safey inspectors can submit this form
-            //////////////GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
-            //////////////startSubmissionAction.Access = GetAction.eAccess.Restricted;
-            //////////////startSubmissionAction.AddStateReferances(emptyState.Id)
-            //////////////    .AddAuthorizedRole(inspectorRole.Id);
-
-            ////////////////Listing inspection form submissions.
-            ////////////////Inspectors can list their own submissions.
-            ////////////////Admins can list all submissions.
-            //////////////GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
-            //////////////listSubmissionsAction.Access = GetAction.eAccess.Restricted;
-            //////////////listSubmissionsAction.AddStateReferances(submittedState.Id)
-            //////////////    .AddOwnerAuthorization()
-            //////////////    .AddAuthorizedRole(adminRole.Id);
-
-            ////////////////Detailed submission inspection forms.
-            ////////////////Inspectors can view their own submissions.
-            ////////////////Admins can view all submissions.
-            //////////////GetAction viewSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
-            //////////////viewSubmissionAction.Access = GetAction.eAccess.Restricted;
-            //////////////viewSubmissionAction.AddStateReferances(submittedState.Id)
-            //////////////    .AddOwnerAuthorization()
-            //////////////    .AddAuthorizedRole(adminRole.Id);
-
-            ////////////////Post action for submitting the form
-            //////////////PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
-            //////////////submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
-
-            ////////////////Defining the pop-up for the above submitPostAction action
-            //////////////PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
-            //////////////submitActionPopUp.AddButtons("Yes, submit", "true");
-            //////////////submitActionPopUp.AddButtons("Cancel", "false");
-
-            //////////////// Edit submission related workflow items
-            ////////////////Defining actions
-            //////////////GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
-
-            ////////////////Submissions can only be edited by admins
-            //////////////editSubmissionAction.AddStateReferances(submittedState.Id)
-            //////////////    .AddAuthorizedRole(adminRole.Id);
-
-            ////////////////Defining post actions
-            //////////////PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
-            //////////////editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
-
-
-            //////////////// Delete submission related workflow items
-            ////////////////Defining actions. Only admin can delete a submission
-            //////////////GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
-            //////////////deleteSubmissionAction.AddStateReferances(submittedState.Id)
-            //////////////    .AddAuthorizedRole(adminRole.Id);
-
-            ////////////////Defining post actions
-            //////////////PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
-            //////////////deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
-
-            ////////////////Defining the pop-up for the above postActionSubmit action
-            //////////////PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.", "");
-            //////////////deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
-            //////////////deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
-
-
             db.SaveChanges();
 
             template.Data.Save("..\\..\\..\\..\\Examples\\smallTestFormWorkflow_generared.xml");
@@ -1915,7 +1842,6 @@ namespace Catfish.UnitTests
             string json = JsonConvert.SerializeObject(template);
             File.WriteAllText("..\\..\\..\\..\\Examples\\smallTestFormWorkflow_generared.json", json);
         }
-
 
         [Test]
         public void GapSasTest()
