@@ -51,9 +51,7 @@ namespace Catfish.Core.Authorization.Handlers
 
             if (template.Workflow == null)
             {
-                template.InitializeWorkflow();
-                if (template.Workflow == null)
-                    return Task.CompletedTask; //Cannot proceed on without a workflow
+                return Task.CompletedTask; //Cannot proceed on without a workflow
             }
 
             GetAction workflowAction = template.Workflow.Actions.Where(ac => ac.Function == requirement.Name).FirstOrDefault();
@@ -219,9 +217,7 @@ namespace Catfish.Core.Authorization.Handlers
 
             if (template.Workflow == null)
             {
-                template.InitializeWorkflow();
-                if (template.Workflow == null)
-                    return Task.CompletedTask; //Cannot proceed on without a workflow
+                return Task.CompletedTask; //Cannot proceed on without a workflow
             }
 
             GetAction workflowAction = template.Workflow.Actions.Where(ac => ac.Function == requirement.Name).FirstOrDefault();

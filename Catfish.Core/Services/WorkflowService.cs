@@ -124,21 +124,21 @@ namespace Catfish.Core.Services
         //    return dataItem;
         //}
 
-        public Workflow GetWorkflow(bool createIfNotExists)
-        {
-            try
-            {
-                XmlModel xml = new XmlModel(mEntityTemplate.Data);
-                XElement element = xml.GetElement(Workflow.TagName, createIfNotExists);
-                Workflow workflow = new Workflow(element);
-                return workflow;
-            }
-            catch (Exception ex)
-            {
-                _errorLog.Log(new Error(ex));
-                return null;
-            }
-        }
+        ////public Workflow GetWorkflow(bool createIfNotExists)
+        ////{
+        ////    try
+        ////    {
+        ////        XmlModel xml = new XmlModel(mEntityTemplate.Data);
+        ////        XElement element = xml.GetElement(Workflow.TagName, createIfNotExists);
+        ////        Workflow workflow = new Workflow(element);
+        ////        return workflow;
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        _errorLog.Log(new Error(ex));
+        ////        return null;
+        ////    }
+        ////}
 
         public List<string> GetEmailAddresses(EmailTrigger trigger)
         {
@@ -208,8 +208,8 @@ namespace Catfish.Core.Services
         {
             try
             {
-                SetModel(entityTemplate);
-                var workflow = GetWorkflow(false);
+                //SetModel(entityTemplate);
+                var workflow = entityTemplate.Workflow;
                 if (workflow != null)
                 {
                     var getAction = workflow.Actions.Where(ac => ac.Function == function && ac.Group == group).FirstOrDefault();
@@ -357,8 +357,8 @@ namespace Catfish.Core.Services
         {
             try
             {
-                SetModel(entityTemplate);
-                var workflow = GetWorkflow(false);
+                //SetModel(entityTemplate);
+                var workflow = entityTemplate.Workflow;
                 List<PostAction> allPostActions = new List<PostAction>();
                 if (workflow != null)
                 {
@@ -391,8 +391,8 @@ namespace Catfish.Core.Services
         {
             try
             {
-                SetModel(entityTemplate);
-                var workflow = GetWorkflow(false);
+                //SetModel(entityTemplate);
+                var workflow = entityTemplate.Workflow;
                 foreach (var action in workflow.Actions)
                 {
                     if (action.PostActions.Where(pa => pa.Id == postActionId).Any())
@@ -414,9 +414,9 @@ namespace Catfish.Core.Services
         {
             try
             {
-                SetModel(entityTemplate);
-                var workflow = GetWorkflow(false);
-                foreach(var action in workflow.Actions)
+                //SetModel(entityTemplate);
+                var workflow = entityTemplate.Workflow;
+                foreach (var action in workflow.Actions)
                 {
                     foreach(var postAction in action.PostActions)
                     {
@@ -439,8 +439,8 @@ namespace Catfish.Core.Services
         {
             try
             {
-                SetModel(entityTemplate);
-                var workflow = GetWorkflow(false);
+                //SetModel(entityTemplate);
+                var workflow = entityTemplate.Workflow;
                 foreach (var action in workflow.Actions)
                 {
                     if (action.PostActions.Where(pa => pa.Id == postActionId).Any())
@@ -454,6 +454,18 @@ namespace Catfish.Core.Services
                 _errorLog.Log(new Error(ex));
                 return null;
             } 
+        }
+
+        public ItemTemplate CreateBasicSubmissionTemplate(string templateName, string lang)
+        {
+            ItemTemplate template = new ItemTemplate();
+
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
+
+            //template.getwo
+
+            return template;
         }
     }
 }
