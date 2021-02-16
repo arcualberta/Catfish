@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Data;
+using Catfish.Core.Models.Contents.Expressions;
 using Catfish.Core.Models.Contents.Fields;
 using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
@@ -68,14 +69,110 @@ namespace Catfish.UnitTests
             form.CreateField<RadioField>("RB 1", lang, options, false);
             form.CreateField<CheckboxField>("CB 1", lang, options, false);
 
-            //Get the Workflow object using the workflow service
-            Workflow workflow = template.Workflow;
-
-
             _db.SaveChanges();
             template.Data.Save("..\\..\\..\\..\\Examples\\simpleFormWorkflow_generared.xml");
 
         }
 
+        [Test]
+        public void VisibleIf_RequiredIf_Fields_Test()
+        {
+            string lang = "en";
+            string templateName = "Visible-if Requiref-if Form Template";
+            string submissionFormName = "Visible-if / Requiref-if Form";
+
+            ItemTemplate template = SubmissionItemTemplate(templateName, submissionFormName, lang);
+            DataItem form = template.GetRootDataItem(false);
+            Assert.IsNotNull(form);
+
+            string[] options = new string[] { "Option 1", "Option 2", "Option 3", "Option 4" };
+            var dd1 = form.CreateField<SelectField>("DD 1", lang, options, false);
+            var rb1 = form.CreateField<RadioField>("RB 1", lang, options, false);
+            var cb1 = form.CreateField<CheckboxField>("CB 1", lang, options, false);
+
+
+            var textbox1 = form.CreateField<TextField>("Text 1", lang, false, false);
+            textbox1.RequiredCondition
+                .AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 2", lang));
+            textbox1.SetDescription("Required if DD 1 = Option 2", lang);
+
+            var textbox2 = form.CreateField<TextField>("Text 2", lang, false, false);
+            textbox2.RequiredCondition
+                .AppendLogicalExpression(rb1, new Option[2] { rb1.GetOption("Option 1", lang), rb1.GetOption("Option 2", lang) }, ComputationExpression.eLogical.OR);
+            textbox2.SetDescription("Required if RB 1 = Option 1 OR Option 2", lang);
+
+            var textbox3 = form.CreateField<TextField>("Text 3", lang, false, false);
+            textbox3.RequiredCondition
+                .AppendLogicalExpression(cb1, new Option[2] { cb1.GetOption("Option 1", lang), cb1.GetOption("Option 3", lang) }, Core.Models.Contents.Expressions.ComputationExpression.eLogical.AND);
+            textbox3.SetDescription("Required if CB 1 = Option 1 AND Option 3", lang);
+
+            var textarea1 = form.CreateField<TextArea>("Text 4", lang, false, false);
+            textarea1.VisibilityCondition
+              .AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+            textarea1.SetDescription("Visible if DD 1 = Option 3", lang);
+
+            form.CreateField<DateField>("Date 1", lang)
+                .SetDescription("Visible if DD 1 = Option 3", lang)
+                .VisibilityCondition.AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+
+            form.CreateField<IntegerField>("Integer 1", lang)
+                .SetDescription("Visible if DD 1 = Option 3", lang)
+                .VisibilityCondition.AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+
+            form.CreateField<DecimalField>("Decimal 1", lang)
+                .SetDescription("Visible if DD 1 = Option 3", lang)
+                .VisibilityCondition.AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+
+            //Drop-down menu with conditional options
+            var dd2Options = new string[] { "A1", "A2", "B1", "B2", "B3", "B4" };
+            var dd2 = form.CreateField<SelectField>("DD 2", lang, dd2Options, true);
+            dd2.SetDescription("The option group \"A\" should appear when Option 1 is selected for DD 1 and the option group \"B\" should appear other times.", lang);
+            foreach (var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("A")))
+                option.VisibilityCondition.AppendLogicalExpression(dd1,
+                    ComputationExpression.eRelational.EQUAL,
+                    dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
+
+            foreach (var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("B")))
+                option.VisibilityCondition.AppendLogicalExpression(dd1,
+                    ComputationExpression.eRelational.NOT_EQ,
+                    dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
+
+            _db.SaveChanges();
+            template.Data.Save("..\\..\\..\\..\\Examples\\visibleIf_RequiredIf_Fields_Workflow_generared.xml");
+
+        }
+
+        [Test]
+        public void VisibleIf_RequiredIf_Options_Test()
+        {
+            string lang = "en";
+            string templateName = "Visible-if Options Form Template";
+            string submissionFormName = "Visible-if Options Form";
+
+            ItemTemplate template = SubmissionItemTemplate(templateName, submissionFormName, lang);
+            DataItem form = template.GetRootDataItem(false);
+            Assert.IsNotNull(form);
+
+            string[] options = new string[] { "Option 1", "Option 2", "Option 3", "Option 4" };
+            var dd1 = form.CreateField<SelectField>("DD 1", lang, options, false);
+
+            //Drop-down menu with conditional options
+            var dd2Options = new string[] { "A1", "A2", "B1", "B2", "B3", "B4" };
+            var dd2 = form.CreateField<SelectField>("DD 2", lang, dd2Options, true);
+            dd2.SetDescription("The option group \"A\" should appear when Option 1 is selected for DD 1 and the option group \"B\" should appear other times.", lang);
+            foreach (var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("A")))
+                option.VisibilityCondition.AppendLogicalExpression(dd1,
+                    ComputationExpression.eRelational.EQUAL,
+                    dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
+
+            foreach (var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("B")))
+                option.VisibilityCondition.AppendLogicalExpression(dd1,
+                    ComputationExpression.eRelational.NOT_EQ,
+                    dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
+
+            _db.SaveChanges();
+            template.Data.Save("..\\..\\..\\..\\Examples\\visibleIf_RequiredIf_Options_Workflow_generared.xml");
+
+        }
     }
 }
