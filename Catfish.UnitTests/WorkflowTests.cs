@@ -2883,10 +2883,7 @@ namespace Catfish.UnitTests
             var applicantCat = confForm.CreateField<RadioField>("Applicant Category:", lang, appCat, true);
 
             //==============================================================================CHAIR's Contact Information
-            //confForm.CreateField<InfoSection>(null, null)
-            //    .AppendContent("h1", "Chair’s Contact Information", lang)
-            //    .AppendContent("div", "<i>When the applicant is a Department Chair, the Dean's information must be provided.</i>", lang);
-
+          
             string[] optionText = new string[] { "Yes", "No" };
             var isChair = confForm.CreateField<RadioField>("Are you the Department Chair?", lang, optionText, true);
             isChair.VisibilityCondition.AppendLogicalExpression(applicantCat, ComputationExpression.eRelational.EQUAL, applicantCat.Options[0]);
@@ -3000,15 +2997,39 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //Defining email templates
             // string emailBody = "";
-            //emailBody = "<p>Dear" +((TextField)chairName).GetValue(lang) + ",</p><br/>" +
-            //                        "<p>A faculty member from your department has applied for a SAS grant.Please click on this link: @Link[Sas Application|@Model] to provide your assessment about this application."+
-            //                        "You will be required to log in with your CCID email.</p> <br/>" +
-            //                        "<p>Thank you.</p>";
+            //emailBody =	
+            
+				//<p>Dear @chairName</p>
+				//<br/>
+				//<p>A @applicant from your department has applied for  grant funding. Please click on this link: @LinkUrl to provide your assessment about this application.
+    //            You will be required to log in with your CCID email.</p> 
+				
+				
+				//<br/>
+				//<p>Thank you.</p>";
 
             EmailTemplate chairEmailTemplate = ws.GetEmailTemplate("Chair Email Template", true);
             chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
             chairEmailTemplate.SetSubject("SAS Application");
             chairEmailTemplate.SetBody("emailBody");
+
+            EmailTemplate advisorEmailTemplate = ws.GetEmailTemplate("Advisor Email Template", true);
+            advisorEmailTemplate.SetSubject("SAS Application");
+            advisorEmailTemplate.SetBody("emailBody");
+
+            //emailBody= "<p>Dear @advisorName</p>
+            //    < br />
+
+            //    < p > A student from your department has applied for  grant funding. Please click on this link: @LinkUrl to provide your assessment about this application.
+
+            //       You will be required to log in with your CCID email.</ p >
+
+
+
+            //       < br />
+
+            //       < p > Thank you.</ p > "
+
 
 
             EmailTemplate applicantSubmissionNotification = ws.GetEmailTemplate("Applicant Notification", true);
