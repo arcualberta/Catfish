@@ -7,7 +7,7 @@ using Catfish.Core.Services;
 using Catfish.Helper;
 using ElmahCore;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+//using Microsoft.AspNetCore.Authorization;
 using Piranha.AspNetCore.Identity.Data;
 using System;
 using System.Collections.Generic;
@@ -22,7 +22,7 @@ namespace Catfish.Services
 {
     public class SubmissionService : ISubmissionService
     {
-        private readonly IAuthorizationService _authorizationService;
+        private readonly Catfish.Core.Services.IAuthorizationService _authorizationService;
         private readonly IEmailService _emailService;
         private readonly IEntityTemplateService _entityTemplateService;
         private readonly IWorkflowService _workflowService;
@@ -31,7 +31,7 @@ namespace Catfish.Services
         private readonly ErrorLog _errorLog;
         private readonly IServiceProvider _serviceProvider;
         private readonly Microsoft.AspNetCore.Authorization.IAuthorizationService _dotnetAuthorizationService;
-        public SubmissionService(IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog, IServiceProvider serviceProvider, Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService)
+        public SubmissionService(Catfish.Core.Services.IAuthorizationService auth, IEmailService email, IEntityTemplateService entity, IWorkflowService workflow, ICatfishAppConfiguration configuration, AppDbContext db, ErrorLog errorLog, IServiceProvider serviceProvider, Microsoft.AspNetCore.Authorization.IAuthorizationService dotnetAuthorizationService)
         {
             _authorizationService = auth;
             _emailService = email;

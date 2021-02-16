@@ -1625,6 +1625,7 @@ namespace Catfish.UnitTests
         {
             string lang = "en";
             string templateName = "Small Test Form Template";
+            string submissionFormName = "Test Form";
 
             IWorkflowService ws = _testHelper.WorkflowService;
             AppDbContext db = _testHelper.Db;
@@ -1634,16 +1635,16 @@ namespace Catfish.UnitTests
                 .Where(et => et.TemplateName == templateName)
                 .FirstOrDefault();
 
+            ItemTemplate t_new = ws.CreateBasicSubmissionTemplate(templateName, submissionFormName, lang);
             if (template == null)
             {
-                template = new ItemTemplate();
+                template = t_new;
                 db.ItemTemplates.Add(template);
             }
             else
             {
-                ItemTemplate t = new ItemTemplate();
-                t.Id = template.Id;
-                template.Data = t.Data;
+                t_new.Id = template.Id;
+                template.Data = t_new.Data;
                 template.Initialize(false);
             }
             template.TemplateName = templateName;
@@ -1654,13 +1655,13 @@ namespace Catfish.UnitTests
             //Get the Workflow object using the workflow service
             Workflow workflow = template.Workflow;
 
-            //Defininig states
-            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
-            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
-            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
+            //////////Defininig states
+            ////////State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            ////////State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            ////////State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
             //Defininig the form
-            DataItem inspectionForm = template.GetDataItem("Small Test Form", true, lang);
+            DataItem inspectionForm = template.GetDataItem(submissionFormName, true, lang);
             inspectionForm.IsRoot = true;
             inspectionForm.SetDescription("This template is designed testing visible-if, required-if, and computed fields", lang);
 
@@ -1839,72 +1840,72 @@ namespace Catfish.UnitTests
             //Table field
             //var tbl1 = inspectionForm.CreateField<TableField>("Table 1", lang);
 
-            //Defininig roles
-            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
-            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
+            ////////////////Defininig roles
+            //////////////WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
+            //////////////WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
 
 
-            // Submitting an inspection form
-            //Only safey inspectors can submit this form
-            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
-            startSubmissionAction.Access = GetAction.eAccess.Restricted;
-            startSubmissionAction.AddStateReferances(emptyState.Id)
-                .AddAuthorizedRole(inspectorRole.Id);
+            //////////////// Submitting an inspection form
+            ////////////////Only safey inspectors can submit this form
+            //////////////GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+            //////////////startSubmissionAction.Access = GetAction.eAccess.Restricted;
+            //////////////startSubmissionAction.AddStateReferances(emptyState.Id)
+            //////////////    .AddAuthorizedRole(inspectorRole.Id);
 
-            //Listing inspection form submissions.
-            //Inspectors can list their own submissions.
-            //Admins can list all submissions.
-            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
-            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
-            listSubmissionsAction.AddStateReferances(submittedState.Id)
-                .AddOwnerAuthorization()
-                .AddAuthorizedRole(adminRole.Id);
+            ////////////////Listing inspection form submissions.
+            ////////////////Inspectors can list their own submissions.
+            ////////////////Admins can list all submissions.
+            //////////////GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            //////////////listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            //////////////listSubmissionsAction.AddStateReferances(submittedState.Id)
+            //////////////    .AddOwnerAuthorization()
+            //////////////    .AddAuthorizedRole(adminRole.Id);
 
-            //Detailed submission inspection forms.
-            //Inspectors can view their own submissions.
-            //Admins can view all submissions.
-            GetAction viewSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
-            viewSubmissionAction.Access = GetAction.eAccess.Restricted;
-            viewSubmissionAction.AddStateReferances(submittedState.Id)
-                .AddOwnerAuthorization()
-                .AddAuthorizedRole(adminRole.Id);
+            ////////////////Detailed submission inspection forms.
+            ////////////////Inspectors can view their own submissions.
+            ////////////////Admins can view all submissions.
+            //////////////GetAction viewSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
+            //////////////viewSubmissionAction.Access = GetAction.eAccess.Restricted;
+            //////////////viewSubmissionAction.AddStateReferances(submittedState.Id)
+            //////////////    .AddOwnerAuthorization()
+            //////////////    .AddAuthorizedRole(adminRole.Id);
 
-            //Post action for submitting the form
-            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
-            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+            ////////////////Post action for submitting the form
+            //////////////PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            //////////////submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
 
-            //Defining the pop-up for the above submitPostAction action
-            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
-            submitActionPopUp.AddButtons("Yes, submit", "true");
-            submitActionPopUp.AddButtons("Cancel", "false");
+            ////////////////Defining the pop-up for the above submitPostAction action
+            //////////////PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
+            //////////////submitActionPopUp.AddButtons("Yes, submit", "true");
+            //////////////submitActionPopUp.AddButtons("Cancel", "false");
 
-            // Edit submission related workflow items
-            //Defining actions
-            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+            //////////////// Edit submission related workflow items
+            ////////////////Defining actions
+            //////////////GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
 
-            //Submissions can only be edited by admins
-            editSubmissionAction.AddStateReferances(submittedState.Id)
-                .AddAuthorizedRole(adminRole.Id);
+            ////////////////Submissions can only be edited by admins
+            //////////////editSubmissionAction.AddStateReferances(submittedState.Id)
+            //////////////    .AddAuthorizedRole(adminRole.Id);
 
-            //Defining post actions
-            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
-            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+            ////////////////Defining post actions
+            //////////////PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            //////////////editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
 
 
-            // Delete submission related workflow items
-            //Defining actions. Only admin can delete a submission
-            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
-            deleteSubmissionAction.AddStateReferances(submittedState.Id)
-                .AddAuthorizedRole(adminRole.Id);
+            //////////////// Delete submission related workflow items
+            ////////////////Defining actions. Only admin can delete a submission
+            //////////////GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
+            //////////////deleteSubmissionAction.AddStateReferances(submittedState.Id)
+            //////////////    .AddAuthorizedRole(adminRole.Id);
 
-            //Defining post actions
-            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
-            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+            ////////////////Defining post actions
+            //////////////PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            //////////////deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
 
-            //Defining the pop-up for the above postActionSubmit action
-            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.", "");
-            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
-            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+            ////////////////Defining the pop-up for the above postActionSubmit action
+            //////////////PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.", "");
+            //////////////deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            //////////////deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
 
             db.SaveChanges();

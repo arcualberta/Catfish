@@ -33,7 +33,7 @@ namespace Catfish.Core.Services
         
         public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid statusId);
 
-        public ItemTemplate CreateBasicSubmissionTemplate(string templateName, string lang);
+        public ItemTemplate CreateBasicSubmissionTemplate(string templateName, string submissionFormName, string lang);
 
         public string GetLoggedUserEmail();
 

@@ -75,6 +75,7 @@ namespace Catfish.Core.Models
         public override void Initialize(bool regenerateId)
         {
             base.Initialize(regenerateId);
+            mWorkflow = null;
             ////InitializeWorkflow();
         }
 
