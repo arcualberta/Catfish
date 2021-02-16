@@ -175,6 +175,37 @@ namespace Catfish.Core.Models.Contents.Expressions
             return this;
         }
 
+        public ComputationExpression AppendReadableValue(SelectField field,
+            string delimiter = null,
+            int selectItemIndex = 0,
+            bool trim = true)
+        {
+            var valueString = string.Format("SelectFieldReadableValue('{0}')", field.Id);
+
+            if (!string.IsNullOrEmpty(delimiter) || trim)
+                valueString = string.Format("Extract({0}, '{1}', {2}, {3})",
+                    valueString, delimiter, selectItemIndex, trim.ToString().ToLower());
+
+            Data.Value += valueString;
+
+            return this;
+        }
+
+        public ComputationExpression AppendReadableValue(RadioField field,
+            string delimiter = null,
+            int selectItemIndex = 0,
+            bool trim = true)
+        {
+            var valueString = string.Format("RadioFieldReadableValue('{0}')", field.Id);
+
+            if (!string.IsNullOrEmpty(delimiter) || trim)
+                valueString = string.Format("Extract({0}, '{1}', {2}, {3})",
+                    valueString, delimiter, selectItemIndex, trim.ToString().ToLower());
+
+            Data.Value += valueString;
+
+            return this;
+        }
         public static string Str(eMath val)
         {
             switch (val)

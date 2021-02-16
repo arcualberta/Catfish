@@ -457,6 +457,7 @@ namespace Catfish
                 {
                     InternalId = "Entities",
                     Name = "Entities",
+                    Policy = AppSecurity.AccessEntities,
                     Css = "fas fa-object-group"
 
                 });
@@ -468,6 +469,7 @@ namespace Catfish
                 {
                     InternalId = "Templates",
                     Name = "Templates",
+                    Policy = AppSecurity.AccessTemplates,
                     Css = "fas fa-clone"
 
                 });
@@ -480,6 +482,7 @@ namespace Catfish
                 InternalId = "CustomStyles",
                 Name = "Custom Styles",
                 Route = "/manager/customstyles/",
+                Policy = AppSecurity.EditTheme,
                 Css = "fas fa-table"
             });
 

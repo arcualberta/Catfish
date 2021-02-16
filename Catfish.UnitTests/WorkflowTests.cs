@@ -1530,8 +1530,7 @@ namespace Catfish.UnitTests
 
             var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText, true);
             inspectionForm.CreateField<TextArea>("Eyewash station info", lang, false)
-                .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang)
-                .SetVisibleIf(eyeWashFlushed, optionText[0]);
+                .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang);
             
             inspectionForm.CreateField<InfoSection>(null, null)
                .AppendContent("h4", "Other", lang);
@@ -1690,6 +1689,18 @@ namespace Catfish.UnitTests
               .AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
             textarea1.SetDescription("Visible if DD 1 = Option 3", lang);
 
+            inspectionForm.CreateField<DateField>("Date 1", lang)
+                .SetDescription("Visible if DD 1 = Option 3", lang)
+                .VisibilityCondition.AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+
+            inspectionForm.CreateField<IntegerField>("Integer 1", lang)
+                .SetDescription("Visible if DD 1 = Option 3", lang)
+                .VisibilityCondition.AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+
+            inspectionForm.CreateField<DecimalField>("Decimal 1", lang)
+                .SetDescription("Visible if DD 1 = Option 3", lang)
+                .VisibilityCondition.AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+
             //Drop-down menu with conditional options
             var dd2OOptions = new string[] { "A1", "A2", "B1", "B2", "B3", "B4" };
             var dd2 = inspectionForm.CreateField<SelectField>("DD 2", lang, dd2OOptions, true);
@@ -1773,6 +1784,55 @@ namespace Catfish.UnitTests
 
             //END: Fields for testing Computed Fields
             //=======================================
+
+            //Full width text area
+            inspectionForm.CreateField<TextArea>("This is field with a long field name displayed at full width", lang, false, false)
+                .SetSize(10, 60)
+                .SetFieldLabelCssClass("col-md-12")
+                .SetFieldValueCssClass("col-md-12");
+
+
+            //Setting the default value of a text field
+            inspectionForm.CreateField<TextField>("Institution", lang, false, false, "University of Alberta");
+
+            var complexOptionVals = new string[] {
+                "user 1 : email_1@example.org : Postal Address 1",
+                "user 2 : email_2@example.org : Postal Address 2",
+                "user 3 : email_3@example.org : Postal Address 3" };
+
+            var dd3 = inspectionForm.CreateField<SelectField>("DD 3", lang, complexOptionVals);
+
+            //Setting the default value of a text field dynamically to a value selected by a dropdown menu
+            var dd3Val = inspectionForm.CreateField<TextField>("DD3 Value", lang);
+            dd3Val.Readonly = true;
+            dd3Val.ValueExpression.AppendReadableValue(dd3);
+
+            inspectionForm.CreateField<TextField>("DD3 User", lang)
+                .ValueExpression.AppendReadableValue(dd3, ":", 0);
+
+            inspectionForm.CreateField<TextField>("DD3 Email", lang)
+                .ValueExpression.AppendReadableValue(dd3, ":", 1);
+
+            inspectionForm.CreateField<TextField>("DD3 Postal Address", lang)
+                .ValueExpression.AppendReadableValue(dd3, ":", 2);
+
+
+            var rb3 = inspectionForm.CreateField<RadioField>("RB 3", lang, complexOptionVals);
+
+            //Setting the default value of a text field dynamically to a value selected by a dropdown menu
+            inspectionForm.CreateField<TextField>("RB Value", lang)
+                .ValueExpression.AppendReadableValue(rb3);
+
+            inspectionForm.CreateField<TextField>("RB User", lang)
+                .ValueExpression.AppendReadableValue(rb3, ":", 0);
+
+            inspectionForm.CreateField<TextField>("RB Email", lang)
+                .ValueExpression.AppendReadableValue(rb3, ":", 1);
+
+            inspectionForm.CreateField<TextField>("RB Postal Address", lang)
+                .ValueExpression.AppendReadableValue(rb3, ":", 2);
+
+
 
             //Defininig roles
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
@@ -2012,8 +2072,7 @@ namespace Catfish.UnitTests
             string[] participationRoles = new string[] { "Invited Speaker", "Panel Member", "Refereed Paper Presentation", "Poster Presentation", "Other" };
             var confParticipation = sasForm.CreateField<CheckboxField>("Conference Participation", lang, participationRoles);
 
-             var otherParticipationRole = sasForm.CreateField<TextField>("Other - please specify", lang).SetOptionIf(confParticipation, "Other");
-
+            var otherParticipationRole = sasForm.CreateField<TextField>("Other - please specify", lang);
             otherParticipationRole.VisibilityCondition
               .AppendLogicalExpression(confParticipation, confParticipation.Options[4], true);
 
