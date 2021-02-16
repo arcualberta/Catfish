@@ -175,10 +175,10 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id,"",true));
@@ -930,10 +930,10 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
@@ -1073,10 +1073,10 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
@@ -1435,10 +1435,10 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
@@ -1530,8 +1530,7 @@ namespace Catfish.UnitTests
 
             var eyeWashFlushed = inspectionForm.CreateField<RadioField>("Have eyewash stations been flushed in the last week?", lang, optionText, true);
             inspectionForm.CreateField<TextArea>("Eyewash station info", lang, false)
-                .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang)
-                .SetVisibleIf(eyeWashFlushed, optionText[0]);
+                .SetDescription("If you answer Yes to the above question, please provide the room number, date of the last annual test, and the year built for each eyewash station you flushed.", lang);
             
             inspectionForm.CreateField<InfoSection>(null, null)
                .AppendContent("h4", "Other", lang);
@@ -1650,10 +1649,10 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
@@ -1668,39 +1667,51 @@ namespace Catfish.UnitTests
             string[] options = new string[] { "Option 1", "Option 2", "Option 3", "Option 4" };
             var dd1 = inspectionForm.CreateField<SelectField>("DD 1", lang, options, true);
             var radio1 = inspectionForm.CreateField<RadioField>("RB 1", lang, options, true);
-            var checkbox1 = inspectionForm.CreateField<CheckboxField>("CB 1", lang, options, true);
+            var checkbox1 = inspectionForm.CreateField<CheckboxField>("CB 1", lang, options, false);
 
             var textbox1 = inspectionForm.CreateField<TextField>("Text 1", lang, false, false);
             textbox1.RequiredCondition
-                .Append(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 2", lang));
+                .AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 2", lang));
             textbox1.SetDescription("Required if DD 1 = Option 2", lang);
 
             var textbox2 = inspectionForm.CreateField<TextField>("Text 2", lang, false, false);
             textbox2.RequiredCondition
-                .AppendMatch(radio1, new Option[2] { radio1.GetOption("Option 1", lang), radio1.GetOption("Option 2", lang) }, ComputationExpression.eLogical.OR);
+                .AppendLogicalExpression(radio1, new Option[2] { radio1.GetOption("Option 1", lang), radio1.GetOption("Option 2", lang) }, ComputationExpression.eLogical.OR);
             textbox2.SetDescription("Required if RB 1 = Option 1 OR Option 2", lang);
 
             var textbox3 = inspectionForm.CreateField<TextField>("Text 3", lang, false, false);
             textbox3.RequiredCondition
-                .AppendMatch(checkbox1, new Option[2] { checkbox1.GetOption("Option 1", lang), checkbox1.GetOption("Option 3", lang) }, Core.Models.Contents.Expressions.ComputationExpression.eLogical.AND);
+                .AppendLogicalExpression(checkbox1, new Option[2] { checkbox1.GetOption("Option 1", lang), checkbox1.GetOption("Option 3", lang) }, Core.Models.Contents.Expressions.ComputationExpression.eLogical.AND);
             textbox3.SetDescription("Required if CB 1 = Option 1 AND Option 3", lang);
 
             var textarea1 = inspectionForm.CreateField<TextArea>("Text 4", lang, false, false);
             textarea1.VisibilityCondition
-              .Append(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+              .AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
             textarea1.SetDescription("Visible if DD 1 = Option 3", lang);
+
+            inspectionForm.CreateField<DateField>("Date 1", lang)
+                .SetDescription("Visible if DD 1 = Option 3", lang)
+                .VisibilityCondition.AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+
+            inspectionForm.CreateField<IntegerField>("Integer 1", lang)
+                .SetDescription("Visible if DD 1 = Option 3", lang)
+                .VisibilityCondition.AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
+
+            inspectionForm.CreateField<DecimalField>("Decimal 1", lang)
+                .SetDescription("Visible if DD 1 = Option 3", lang)
+                .VisibilityCondition.AppendLogicalExpression(dd1, ComputationExpression.eRelational.EQUAL, dd1.GetOption("Option 3", lang));
 
             //Drop-down menu with conditional options
             var dd2OOptions = new string[] { "A1", "A2", "B1", "B2", "B3", "B4" };
             var dd2 = inspectionForm.CreateField<SelectField>("DD 2", lang, dd2OOptions, true);
             dd2.SetDescription("The option group \"A\" should appear when Option 1 is selected for DD 1 and the option group \"B\" should appear other times.", lang);
             foreach (var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("A")))
-                option.VisibilityCondition.Append(dd1,
+                option.VisibilityCondition.AppendLogicalExpression(dd1,
                     ComputationExpression.eRelational.EQUAL,
                     dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
 
             foreach (var option in dd2.Options.Where(op => op.OptionText.GetContent(lang).StartsWith("B")))
-                option.VisibilityCondition.Append(dd1,
+                option.VisibilityCondition.AppendLogicalExpression(dd1,
                     ComputationExpression.eRelational.NOT_EQ,
                     dd1.Options.Where(op => op.OptionText.GetContent(lang) == options[0]).First());
 
@@ -1714,11 +1725,12 @@ namespace Catfish.UnitTests
             var departmentChairs = new string[] { "Chair 1", "Chair 2", "Chair 3", "Chair 4", "Chair 5", "Chair 6", "Dean" };
     
             var departmentsDropDown = inspectionForm.CreateField<SelectField>("Departments", lang, departmentNames, true);
-            var chairsDropDown = inspectionForm.CreateField<SelectField>("Departments", lang, departmentChairs, true);
 
             var areYouChairOptions = new string[] { "Yes", "No" };
             var areYouChair = inspectionForm.CreateField<RadioField>("Are you the chair", lang, areYouChairOptions, true);
             
+            var chairsDropDown = inspectionForm.CreateField<SelectField>("Departments", lang, departmentChairs, true);
+
             //Iterating through all chair options except for the last one, which is the Dean
             for(var i=0; i< chairsDropDown.Options.Count-1; ++i) 
             {
@@ -1729,30 +1741,103 @@ namespace Catfish.UnitTests
                 //option (i.e. index = 1, or in other wards, the value of "No") 
                 //has been selected for the areYouChair radio button
                 chair.VisibilityCondition
-                    .Append(departmentsDropDown, ComputationExpression.eRelational.EQUAL, departmentsDropDown.Options[i])
-                    .Append(ComputationExpression.eLogical.AND)
-                    .Append(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[1]);
+                    .AppendLogicalExpression(departmentsDropDown, ComputationExpression.eRelational.EQUAL, departmentsDropDown.Options[i])
+                    .AppendOperator(ComputationExpression.eLogical.AND)
+                    .AppendLogicalExpression(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[1]);
             }
+
 
             //Setting the visibility of the last chairs option ("Dean"). This option should be 
             //visible if and only if "Yes" is selected for the areYouChair radio field irrespective of
             //what department is selected in the departmentsDropDown
             chairsDropDown.Options[chairsDropDown.Options.Count - 1].VisibilityCondition
-                .Append(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[0]);
-            
+                .AppendLogicalExpression(areYouChair, ComputationExpression.eRelational.EQUAL, areYouChair.Options[0]);
+
             //END: SAS Chair Functionality
             //==============================
 
 
-            //var x = inspectionForm.CreateField<DecimalField>("x", lang, false, false);
-            //var y = inspectionForm.CreateField<DecimalField>("y", lang, false, false);
-            //var z = inspectionForm.CreateField<DecimalField>("z", lang, false, false);
+            //Fields for testing Computed Fields
+            //==================================
+            var x = inspectionForm.CreateField<DecimalField>("x", lang, false, false);
+            var y = inspectionForm.CreateField<DecimalField>("y", lang, false, false);
+            var z = inspectionForm.CreateField<DecimalField>("z", lang, false, false);
 
-            //var a = inspectionForm.CreateField<DecimalField>("a = x", lang, false, false);
-            ////a.ValueExpression.Append(x)
-            //var b = inspectionForm.CreateField<DecimalField>("b = x + y", lang, false, false);
-            //var c = inspectionForm.CreateField<DecimalField>("c = x * (y + z)", lang, false, false);
+            var a = inspectionForm.CreateField<DecimalField>("a = x", lang, false, false);
+            a.ValueExpression.AppendValue(x);
 
+            var b = inspectionForm.CreateField<DecimalField>("b = x + y", lang, false, false);
+            b.ValueExpression
+                .AppendValue(x)
+                .AppendOperator(ComputationExpression.eMath.PLUS)
+                .AppendValue(y);
+
+            var c = inspectionForm.CreateField<DecimalField>("c = x * (y + z)", lang, false, false);
+            c.ValueExpression
+                .AppendValue(x)
+                .AppendOperator(ComputationExpression.eMath.MULT)
+                .AppendOpenBrace()
+                .AppendValue(y)
+                .AppendOperator(ComputationExpression.eMath.PLUS)
+                .AppendValue(z)
+                .AppendClosedBrace();
+
+            //END: Fields for testing Computed Fields
+            //=======================================
+
+            //Full width text area
+            inspectionForm.CreateField<TextArea>("This is field with a long field name displayed at full width", lang, false, false)
+                .SetSize(10, 60)
+                .SetFieldLabelCssClass("col-md-12")
+                .SetFieldValueCssClass("col-md-12");
+
+
+            //Setting the default value of a text field
+            inspectionForm.CreateField<TextField>("Institution", lang, false, false, "University of Alberta");
+
+            var complexOptionVals = new string[] {
+                "user 1 : email_1@example.org : Postal Address 1",
+                "user 2 : email_2@example.org : Postal Address 2",
+                "user 3 : email_3@example.org : Postal Address 3" };
+
+            var dd3 = inspectionForm.CreateField<SelectField>("DD 3", lang, complexOptionVals);
+
+            //Setting the default value of a text field dynamically to a value selected by a dropdown menu
+            ////////var dd3Val = inspectionForm.CreateField<TextField>("DD3 Value", lang);
+            ////////dd3Val.Readonly = true;
+            ////////dd3Val.ValueExpression.AppendReadableValue(dd3);
+
+            ////////inspectionForm.CreateField<TextField>("DD3 User", lang)
+            ////////    .ValueExpression.AppendReadableValue(dd3, ":", 0);
+
+            ////////inspectionForm.CreateField<TextField>("DD3 Email", lang)
+            ////////    .ValueExpression.AppendReadableValue(dd3, ":", 1);
+
+            ////////inspectionForm.CreateField<TextField>("DD3 Postal Address", lang)
+            ////////    .ValueExpression.AppendReadableValue(dd3, ":", 2);
+
+
+            ////////var rb3 = inspectionForm.CreateField<RadioField>("RB 3", lang, complexOptionVals);
+
+            //////////Setting the default value of a text field dynamically to a value selected by a dropdown menu
+            ////////inspectionForm.CreateField<TextField>("RB Value", lang)
+            ////////    .ValueExpression.AppendReadableValue(rb3);
+
+            ////////inspectionForm.CreateField<TextField>("RB User", lang)
+            ////////    .ValueExpression.AppendReadableValue(rb3, ":", 0);
+
+            ////////inspectionForm.CreateField<TextField>("RB Email", lang)
+            ////////    .ValueExpression.AppendReadableValue(rb3, ":", 1);
+
+            ////////inspectionForm.CreateField<TextField>("RB Postal Address", lang)
+            ////////    .ValueExpression.AppendReadableValue(rb3, ":", 2);
+
+
+            //Email field
+            var email1 = inspectionForm.CreateField<EmailField>("Email 1", lang);
+
+            //Table field
+            //var tbl1 = inspectionForm.CreateField<TableField>("Table 1", lang);
 
             //Defininig roles
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
@@ -1861,27 +1946,16 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
             State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
-
-            //Defining email templates
-            EmailTemplate adminNotification = ws.GetEmailTemplate("Admin Notification", true);
-            adminNotification.SetDescription("This metadata set defines the email template to be sent to the admin when an inspector does not submit an inspection report timely.", lang);
-            adminNotification.SetSubject("Safety Inspection Submission");
-            adminNotification.SetBody("TBD");
-
-            EmailTemplate inspectorSubmissionNotification = ws.GetEmailTemplate("Inspector Notification", true);
-            inspectorSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to an inspector when an inspection report is not submitted timely.", lang);
-            inspectorSubmissionNotification.SetSubject("Safety Inspection Reminder");
-            inspectorSubmissionNotification.SetBody("TBD");
 
             //=============================================================================== Defininig SAS form
             DataItem sasForm = template.GetDataItem("SAS Application Form", true, lang);
@@ -1895,26 +1969,11 @@ namespace Catfish.UnitTests
                .AppendContent("div", "The Adjudication committee is a multi-disciplinary committee. Please write for someone who does not understand your work and/or field.<br/>Be clear and concise in your explanations, and make sure your justifications are detailed.", lang);
 
             sasForm.CreateField<TextField>("Applicant Name:", lang, true, true);
-            sasForm.CreateField<TextField>("Email Address:", lang, true, true)
+            var applicantEmail = sasForm.CreateField<TextField>("Email Address:", lang, true, true)
                 .SetDescription("Please use your UAlberta CCID email address.", lang);
 
-            string[] departmentList = new string[] { "Anthropology",
-                                                "Art & Design",
-                                                "Drama",
-                                                "East Asian Studies",
-                                                "Economics",
-                                                "English and Film Studies",
-                                                "History and Classics",
-                                                "Linguistics",
-                                                "Modern Languages and Cultural Studies (MLCS)",
-                                                "Music",
-                                                "Philosophy",
-                                                "Political Science",
-                                                "Psychology",
-                                                "Sociology",
-                                                "Women's and Gender Studies",
-                                                "Media and Technology Studies",
-                                                "Arts Resources Centre" };
+            string[] departmentList = GetDepartmentList(); 
+           
             var dept = sasForm.CreateField<SelectField>("Department:", lang, departmentList, true);
 
             string[] rank = new string[]{ "Assistant Professor",
@@ -1934,35 +1993,34 @@ namespace Catfish.UnitTests
             //if department Chair  -- the chair will be the dean
             //the order of the department chair list have to be in the same order of the list Department above
             // the first one is the Dean ==> no association with the department -- exception
-            string[] chairDept = new string[] { "Dean: Steve Patten : spatten@ualberta.ca",
-                                                "Anthropology : Pamela Willoughby: pwilloug @ualberta.ca",
-                                                "Art & Design : Aidan Rowe: rowe1@ualberta.ca",
-                                                "Drama: Melanie Dreyer-Lude : dreyerlu@ualberta.ca",
-                                                "East Asian Studies: Christopher Lupke: lupke@ualberta.ca",
-                                                 "Economics : Rick Szostak: rszostak@ualberta.ca",
-                                                 "English and Film Studies: Cecily Devereux: devereux@ualberta.ca",
-                                                 "History and Classics : Ryan Dunch: rdunch@ualberta.ca",
-                                                 "Linguistics: Herb Colston: colston@ualberta.ca",
-                                                 "Modern Languages and Cultural Studies (MLCS): Alla Nedashkiviska: allan@ualberta.ca",
-                                                 "Music: Patricia Tao: ptao@ualberta.ca",
-                                                 "Philosophy: Marie-Eve Morin: mmorin1@ualberta.ca",
-                                                 "Political Science: Catherine Kellogg: ckellogg@ualberta.ca",
-                                                 "Psychology: Anthony Singhal: asinghal@ualberta.ca",
-                                                 "Sociology: Sara Dorow: sdorow@ualberta.ca",
-                                                 "Women's and Gender Studies: Michelle Meagher: mmmeaghe@ualberta.ca",
-                                                 "Media and Technology Studies: Astrid Ensslin: ensslin@ualberta.ca",
-                                                 "Arts Resources Centre: arcAdmin : kamal@ranaweera.ca" };
+            string[] chairDept = GetDepartmentChair();
+           
 
-            string optValues = "1," + optionText[0] + "," + "&&"; //index  => of the fields in the list of 1st input parameter of SetOptionIf -- this refer to "isChair" radioButtonList, 
-                                                                  //optionText[0] ==> option value that is to trigger the operator if the list of fields are more than 1
+          
+            var chair = sasForm.CreateField<SelectField>("Chair:", lang, chairDept, true);
+           
 
+            //Iterating through all chair options except for the last one, which is the Dean
+            for (var i = 0; i < chair.Options.Count-1; ++i)
+            {
+                var selectedChair = chair.Options[i];
 
-            var chair = sasForm.CreateField<SelectField>("Chair:", lang, chairDept, true).SetOptionIf(new List<OptionsField> { dept, isChair }, chairDept, optValues);//chairDept =>string[]
+                selectedChair.VisibilityCondition
+                    .AppendLogicalExpression(dept, ComputationExpression.eRelational.EQUAL, dept.Options[i])
+                    .AppendOperator(ComputationExpression.eLogical.AND)
+                    .AppendLogicalExpression(isChair, ComputationExpression.eRelational.EQUAL, isChair.Options[1]);
+               
+            }
+
+            //Setting the visibility of the last chairs option ("Dean"). This option should be 
+            //visible if and only if "Yes" is selected for the areYouChair radio field.
+            chair.Options[chair.Options.Count - 1].VisibilityCondition
+                .AppendLogicalExpression(isChair, ComputationExpression.eRelational.EQUAL, isChair.Options[0]);
 
             string delimiter = ":";
 
-            sasForm.CreateField<TextField>("Chair's Name:", lang, true, true).SetDefaultReferenceValue(chair, delimiter, 1);
-            sasForm.CreateField<TextField>("Chair's Email:", lang, true, true).SetDefaultReferenceValue(chair, delimiter, 2);
+            var chairName = sasForm.CreateField<TextField>("Chair's Name:", lang, true).SetDefaultReferenceValue(chair, delimiter, 0);
+            var chairEmail = sasForm.CreateField<TextField>("Chair's Email:", lang, true).SetDefaultReferenceValue(chair, delimiter, 1);
 
             //========================================================================PROJECT DETAILS
 
@@ -1971,7 +2029,21 @@ namespace Catfish.UnitTests
 
             sasForm.CreateField<TextField>("Project Title:", lang, true, true);
             sasForm.CreateField<TextArea>("Project Description:", lang, true, true).SetDescription("Describe your research project and explain why this is a necessary and urgent application for funding. Maximum 250 words.", lang);
-            sasForm.CreateField<RadioField>("Does this project involve human or animal subjects?", lang, optionText, true);
+           var isInvolveAnimal = sasForm.CreateField<RadioField>("Does this project involve human or animal subjects?", lang, optionText, true);
+           
+            sasForm.CreateField<InfoSection>(null, null)
+                 .AppendContent("div", @"<i>Please note that proof of ethics approval may be required before any grant awarded will be released. For more information concerning ethics clearance, 
+                    please refer to the Research Ethics Office website.</i>", lang).VisibilityCondition.AppendLogicalExpression(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.GetOption("Yes", lang));
+            var ethicApproval = sasForm.CreateField<RadioField>("Has Ethics approval already been obtained for this project?", lang, optionText, false);      
+            ethicApproval.VisibilityCondition.AppendLogicalExpression(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.GetOption("Yes", lang));
+
+            //this kind of chaining.append not working
+          
+            sasForm.CreateField<DateField>("Ethics Expiry Date:", lang, false)
+                        .VisibilityCondition
+                        .AppendLogicalExpression(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.Options[0])
+                        .AppendOperator(ComputationExpression.eLogical.AND)
+                       .AppendLogicalExpression(ethicApproval, ComputationExpression.eRelational.EQUAL, ethicApproval.Options[0]); ;
 
 
             //========================================================================BUDGET DETAILS
@@ -2004,7 +2076,12 @@ namespace Catfish.UnitTests
 
             string[] participationRoles = new string[] { "Invited Speaker", "Panel Member", "Refereed Paper Presentation", "Poster Presentation", "Other" };
             var confParticipation = sasForm.CreateField<CheckboxField>("Conference Participation", lang, participationRoles);
-            sasForm.CreateField<TextField>("Other - please specify", lang).SetOptionIf(confParticipation, "Other");
+
+            var otherParticipationRole = sasForm.CreateField<TextField>("Other - please specify", lang);
+            otherParticipationRole.VisibilityCondition
+              .AppendLogicalExpression(confParticipation, confParticipation.GetOption("Other", lang), true); 
+
+
             sasForm.CreateField<DecimalField>("Airfare", lang).SetDescription("Includes: Airfare, trip cancellation insurance, seat selection and baggage fees", lang);
             sasForm.CreateField<DecimalField>("Accomodation", lang);
             sasForm.CreateField<DecimalField>("Per Diem / Meals", lang).SetDescription(@"<p>See UAPPOL <a href='https://policiesonline.ualberta.ca/PoliciesProcedures/Procedures/Travel-Expense-Procedure-Appendix-A-Schedule-of-Allowable-Expenses.pdf' target='_blank'>Travel Expense Procedure, Appendix A: Schedule of Allowable Travel Expenses</a> for allowable amounts and breakdown.</p>", lang);
@@ -2063,8 +2140,10 @@ namespace Catfish.UnitTests
                .AppendContent("div", @"<i>For each student to be hired, click 'Add' and indicate whether the student will be an undergraduate, MA, or PhD student, and specify the period for which they will be hired, the number of hours to be worked, and related calculations.
                      Applicants are expected to adhere to the Collective Agreement when calculating salaries for graduate students. Research budgets for casual student labour must reflect the minimum rate (award + salary + benefits)
                     for Doctoral and Masters students.</i>", lang);
-            //Allow adding multiple PersonnelBudgetItem Form == TODO
+           
             // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
+            CompositeField personnelBudget = sasForm.CreateField<CompositeField>("", lang, false);
+            personnelBudget = CreatePersonnelBudgetItemForm(personnelBudget,lang, 0);
 
 
             sasForm.CreateField<InfoSection>(null, null)
@@ -2073,13 +2152,12 @@ namespace Catfish.UnitTests
 
             //Allow adding multiple PersonnelBudgetItem Form TODO
             // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
+            CompositeField contractServ = sasForm.CreateField<CompositeField>("", lang, false);
+            contractServ = CreatePersonnelBudgetItemForm(contractServ, lang, 0);
 
             sasForm.CreateField<AttachmentField>("Contractor Cost Estimates", lang).SetDescription(@"<i>Attach written estimate for contracted services as <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
 [Required if funding requested for professional services]</span>", lang);
             sasForm.CreateField<TextArea>("Justification", lang).SetDescription("Why are these services required for this project at this time? [Maximum 250 words]", lang);
-
-
-
 
             //====================================================================== EQUIPMENT AND MATERIAL
             sasForm.CreateField<InfoSection>(null, null)
@@ -2093,6 +2171,10 @@ namespace Catfish.UnitTests
 
             // allow to add 1 or more Personnel budget Item Form here TODO
             // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
+            CompositeField estimateEquip = sasForm.CreateField<CompositeField>("", lang, false);
+            estimateEquip = CreatePersonnelBudgetItemForm(estimateEquip, lang, 0);
+
+
             sasForm.CreateField<AttachmentField>("Vendor Cost Estimates", lang).SetDescription(@"<i>Please submit documentation as a <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
 [Required if funding requested for equipment and materials]</span>", lang);
 
@@ -2103,10 +2185,14 @@ namespace Catfish.UnitTests
             sasForm.CreateField<InfoSection>(null, null)
             .AppendContent("h5", "1st Term", lang);
             //TODO: add sub Form here
+            CompositeField firstTerm = sasForm.CreateField<CompositeField>("", lang, false);
+            firstTerm = CreateTeachingReleaseForm(firstTerm, lang, 1);
 
             sasForm.CreateField<InfoSection>(null, null)
            .AppendContent("h5", "2nd Term", lang);
             //TODO: add sub Form here
+            CompositeField secTerm = sasForm.CreateField<CompositeField>("", lang, false);
+            secTerm = CreateTeachingReleaseForm(secTerm, lang, 0);
 
             sasForm.CreateField<TextArea>("Justification", lang)
                 .SetDescription("<i>Explain why release time is urgent and necessary at this moment. Maximum 250 words.</i>", lang);
@@ -2128,12 +2214,32 @@ namespace Catfish.UnitTests
             sasForm.CreateField<InfoSection>(null, null)
            .AppendContent("h1", "Other and Previous Funding", lang);
 
-            sasForm.CreateField<RadioField>("Have you received any SAS funding in the past 5 years?", lang, optionText, true);
-            sasForm.CreateField<RadioField>("Previous SAS Funding for this Project", lang, optionText, true)
-                .SetDescription("Have you previously received SAS funding in regard to this project?", lang);
+            var otherFunding = sasForm.CreateField<RadioField>("Have you received any SAS funding in the past 5 years?", lang, optionText, true);
 
-            sasForm.CreateField<RadioField>("Other Funding", lang, optionText, true)
-                .SetDescription("Have you sought support for this project from SSHRC, the Canada Council for the Arts, the Killam Fund, or any other agency, internal, or external sources of funding?", lang);
+            CompositeField summaryFund = sasForm.CreateField<CompositeField>("", lang, false);
+            summaryFund.VisibilityCondition
+              .AppendLogicalExpression(otherFunding, ComputationExpression.eRelational.EQUAL, otherFunding.GetOption("Yes", lang));
+            summaryFund = CreateFundingSummaryForm(summaryFund, lang, 1);
+
+
+            var previousFundRB = sasForm.CreateField<RadioField>("Previous SAS Funding for <i>this</i> Project", lang, optionText, true);
+            previousFundRB.SetDescription("Have you previously received SAS funding in regard to this project?", lang);
+
+            var previousTA = sasForm.CreateField<TextArea>("How Past SAS Funding Relates to?", lang)
+              .SetDescription("How is the current application related to or different from the previous application already funded? Maximum 250 words.", lang);
+              previousTA.VisibilityCondition.AppendLogicalExpression(previousFundRB, ComputationExpression.eRelational.EQUAL, previousFundRB.GetOption("Yes", lang));
+
+
+            var otherFundingBefore = sasForm.CreateField<RadioField>("Other Funding", lang, optionText, true);
+            otherFundingBefore.SetDescription("Have you sought support for this project from SSHRC, the Canada Council for the Arts, the Killam Fund, or any other agency, internal, or external sources of funding?", lang);
+            sasForm.CreateField<TextArea>("Other Sources of Funding", lang)
+             .SetDescription(@"Please identify other sources of funding for this project, and explain how and why these multiple sources of funding are essential to your research. Why, for example, are you applying for SAS funding if you have a related SSHRC or Killam research grant? Maximum 250 words.", lang)
+             .VisibilityCondition.AppendLogicalExpression(otherFundingBefore, ComputationExpression.eRelational.EQUAL, otherFundingBefore.GetOption("Yes", lang));
+
+            sasForm.CreateField<TextArea>("Why not, or do you intend to do so?", lang)
+            .SetDescription(@"Maximum 250 words.", lang)
+            .VisibilityCondition.AppendLogicalExpression(otherFundingBefore, ComputationExpression.eRelational.EQUAL, otherFundingBefore.GetOption("No", lang));
+
 
             sasForm.CreateField<TextArea>("Other Support Sources", lang)
                .SetDescription("Please identify additional sources of support for this project, if applicable. (Such as honoraria, sales revenues, commissions, etc.). Maximum 250 words.", lang);
@@ -2149,6 +2255,9 @@ namespace Catfish.UnitTests
           .AppendContent("h3", "Collaborators", lang)
           .AppendContent("div", "Required only if collaborator is a Faculty of Arts faculty member.", lang,"alert alert-info");
             // TO DO -- Add Collaborator(s) below
+            CompositeField collaborator = sasForm.CreateField<CompositeField>("", lang, false);
+
+            collaborator = CreateCollaboratorForm(collaborator, lang, 0);
 
             //================================================ Submit form ===============================
             sasForm.CreateField<InfoSection>(null, null)
@@ -2165,6 +2274,53 @@ namespace Catfish.UnitTests
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
             WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
             WorkflowRole chairRole = workflow.AddRole(auth.GetRole("Chair", true));
+
+
+
+            //Defining email templates
+           // string emailBody = "";
+            //emailBody = "<p>Dear" +((TextField)chairName).GetValue(lang) + ",</p><br/>" +
+            //                        "<p>A faculty member from your department has applied for a SAS grant.Please click on this link: @Link[Sas Application|@Model] to provide your assessment about this application."+
+            //                        "You will be required to log in with your CCID email.</p> <br/>" +
+            //                        "<p>Thank you.</p>";
+
+            EmailTemplate chairEmailTemplate = ws.GetEmailTemplate("Chair Email Template", true);
+            chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
+            chairEmailTemplate.SetSubject("SAS Application");
+            chairEmailTemplate.SetBody("emailBody");
+
+
+            EmailTemplate applicantSubmissionNotification = ws.GetEmailTemplate("Applicant Notification", true);
+            applicantSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the applicant when application's submitted.", lang);
+            applicantSubmissionNotification.SetSubject("SAS Application Submission");
+            //emailBody = @"<p>Dear Colleague,</p>
+            //                    <p>
+            //                    Thank you for submitting your SAS grant application. 
+            //                    Your chair has been automatically notified to provide an assessment about your application. 
+            //                    We will inform you of the decision when the application review process is completed. 
+            //                    </p>
+            //                    <p>
+            //                    Thank you.
+            //                    </p>
+            //                    <p>
+            //                    Steve Patten <br />
+            //                    Associate Dean (Research)
+            //                    </p>";
+
+            applicantSubmissionNotification.SetBody("emailBody");
+
+
+            //Defining triggers
+             //Feb 12 2021
+            //EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
+            //applicantNotificationEmailTrigger.AddRecipientByEmail(((TextField)applicantEmail).GetValue("en"));
+            //applicantNotificationEmailTrigger.AddTemplate(applicantSubmissionNotification.Id, "Applicant Email Notification");
+
+            //EmailTrigger chairNotificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
+            //chairNotificationEmailTrigger.AddRecipientByEmail(((TextField)chairEmail).GetValue("en"));
+            //chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
+
+
 
             // Submitting an inspection form
             //Only safey inspectors can submit this form
@@ -2191,6 +2347,10 @@ namespace Catfish.UnitTests
             PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
             submitActionPopUp.AddButtons("Yes, submit", "true");
             submitActionPopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs -- added Feb 12 2021
+          //  submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant Submission Notification Email Trigger");
+          //  submitPostAction.AddTriggerRefs("1", chairNotificationEmailTrigger.Id, "Chair Submission-notification Email Trigger");
 
             // Edit submission related workflow items
             //Defining actions
@@ -2228,40 +2388,109 @@ namespace Catfish.UnitTests
             // string json = JsonConvert.SerializeObject(template);
             // File.WriteAllText("..\\..\\..\\..\\Examples\\SASform_generared.json", json);
         }
-
-        private DataItem CreatePersonnelBudgetItemForm(ItemTemplate template)
+        private string[] GetDepartmentList()
         {
-            string lang = "en";
-            DataItem pBudgetForm = template.GetDataItem("Personnel Budget Item", true, lang);
-            pBudgetForm.IsRoot = false;
-            pBudgetForm.SetDescription("Personnel Budget Item Form", lang);
-            pBudgetForm.CreateField<TextArea>("Provide details and calculations as specified above", lang, true);
-            pBudgetForm.CreateField<DecimalField>("Estimate Cost", lang, true);
-            return pBudgetForm;
+            string[] dept =new string[] { "Anthropology",
+                                                "Art & Design",
+                                                "Drama",
+                                                "East Asian Studies",
+                                                "Economics",
+                                                "English and Film Studies",
+                                                "History and Classics",
+                                                "Linguistics",
+                                                "Modern Languages and Cultural Studies (MLCS)",
+                                                "Music",
+                                                "Philosophy",
+                                                "Political Science",
+                                                "Psychology",
+                                                "Sociology",
+                                                "Women's and Gender Studies",
+                                                "Media and Technology Studies",
+                                                "Arts Resources Centre" };
+
+            return dept;
         }
 
-        private DataItem CreateTeachingReleaseForm(ItemTemplate template)
+        private string[] GetDepartmentChair()
         {
-            string lang = "en";
-            string[] optionText = new string[] { "Yes", "No" };
-          
-            DataItem courseReleaseForm = template.GetDataItem("Course Release Form", true, lang);
-            courseReleaseForm.IsRoot = false;
-            courseReleaseForm.CreateField<TextField>("Couse Name", lang, true);
-            courseReleaseForm.CreateField<RadioField>("Release Required?", lang, optionText, true);
-          
-            courseReleaseForm.CreateField<DecimalField>("Amount Requested ($)", lang, true);
-            return courseReleaseForm;
+            string[] chairDept = new string[] {
+                                                "Pamela Willoughby: pwilloug @ualberta.ca",
+                                                "Aidan Rowe: rowe1@ualberta.ca",
+                                                "Melanie Dreyer-Lude : dreyerlu@ualberta.ca",
+                                                "Christopher Lupke: lupke@ualberta.ca",
+                                                 "Rick Szostak: rszostak@ualberta.ca",
+                                                 "Cecily Devereux: devereux@ualberta.ca",
+                                                 "Ryan Dunch: rdunch@ualberta.ca",
+                                                 "Herb Colston: colston@ualberta.ca",
+                                                 "Alla Nedashkiviska: allan@ualberta.ca",
+                                                 "Patricia Tao: ptao@ualberta.ca",
+                                                 "Marie-Eve Morin: mmorin1@ualberta.ca",
+                                                 "Catherine Kellogg: ckellogg@ualberta.ca",
+                                                 "Anthony Singhal: asinghal@ualberta.ca",
+                                                 "Sara Dorow: sdorow@ualberta.ca",
+                                                 "Michelle Meagher: mmmeaghe@ualberta.ca",
+                                                 "Astrid Ensslin: ensslin@ualberta.ca",
+                                                 "arcAdmin : mruaini@ualberta.ca",
+                                                "Dean: Steve Patten : spatten@ualberta.ca"};
+            return chairDept;
         }
-        private DataItem CreateCollaboratorForm(ItemTemplate template)
+
+        private CompositeField CreatePersonnelBudgetItemForm(CompositeField comField, string lang="en", int min=0, int max=0)
         {
-            string lang = "en";
+
+            comField.CreateChildTemplate("PersonnelBugdet", "Personnel Budget Item", lang);
+            comField.ChildTemplate.CreateField<TextArea>("Provide details and calculations as specified above", lang, false);
+            comField.ChildTemplate.CreateField<DecimalField>("Estimated Cost", lang, false);
+            comField.Min = min;
+            comField.Max = max;//0 means unlimited
+            comField.AllowMultipleValues = true;
+            comField.InsertChildren();
+            return comField;
+        }
+
+        private CompositeField CreateTeachingReleaseForm(CompositeField comField, string lang= "en", int min = 0, int max = 0)
+        {
+          
+            comField.CreateChildTemplate("Teaching Release", "Teaching Release", lang);
+            comField.ChildTemplate.CreateField<TextField>("Couse Name", lang, false);
+            comField.ChildTemplate.CreateField<TextField>("Release Required?", lang, false);
+            comField.ChildTemplate.CreateField<DecimalField>("Amount Requested ($)", lang, false);
+            comField.Min = min;
+            comField.Max = max;//0 means unlimited
+            comField.AllowMultipleValues = true;
+            comField.InsertChildren();
+            return comField;
+        }
+        private CompositeField CreateCollaboratorForm(CompositeField comField, string lang = "en", int min = 0, int max = 0)
+        {
+            comField.CreateChildTemplate("Collaborator", "Collaborator Information", lang);
+
+            comField.ChildTemplate.CreateField<TextField>("Full Name", lang, false);
+            comField.ChildTemplate.CreateField<TextField>("Email Address", lang, false);
+            comField.Min = min;
+            comField.Max = max;//0 means unlimited
+            comField.AllowMultipleValues = true;
+            comField.InsertChildren();
+            return comField;
+        }
+
+        private CompositeField CreateFundingSummaryForm(CompositeField comField, string lang = "en", int min = 0, int max = 0)
+        {
             
-            DataItem collaboratorForm = template.GetDataItem("Collaborator Information", true, lang);
-            collaboratorForm.IsRoot = false;
-            collaboratorForm.CreateField<TextField>("Full Name", lang, true);
-            collaboratorForm.CreateField<TextField>("Email Address", lang, true);
-            return collaboratorForm;
+            string[] optionText = new string[] {"Spring", "Fall" };
+            comField.CreateChildTemplate("Funding Summary", "SAS Funding Summary", lang);
+
+            comField.ChildTemplate.CreateField<TextField>("Type of Funding", lang, false);
+            comField.ChildTemplate.CreateField<DecimalField>("Value of Award", lang, false);
+            comField.ChildTemplate.CreateField<IntegerField>("Year of Application", lang, false);
+            comField.ChildTemplate.CreateField<SelectField>("Competition Applied To", lang,optionText, false);
+            comField.ChildTemplate.CreateField<TextField>("Title of Project", lang, false);
+            comField.ChildTemplate.CreateField<TextArea>("Brief Description of project", lang, false).SetDescription("Maximum 100 words.", lang);
+            comField.Min = min;
+            comField.Max = max;//0 means unlimited
+            comField.AllowMultipleValues = true;
+            comField.InsertChildren();
+            return comField;
         }
 
         [Test]
@@ -2294,10 +2523,10 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
@@ -2406,10 +2635,10 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));

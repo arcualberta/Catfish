@@ -451,3 +451,9 @@ ul.checkboxgroup li {
         .file-container .file-entry .label:hover ~ .label-active {
             visibility: visible;
         }
+
+
+input[readonly] {
+    background: #ddd;
+    border: solid 1px #888;
+}

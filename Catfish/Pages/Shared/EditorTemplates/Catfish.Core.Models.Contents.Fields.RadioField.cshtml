@@ -18,6 +18,6 @@
         {
             @Html.RadioButtonFor(model => model, Model.Options[i].Id.ToString());
         }*@
-        @Html.Raw(string.Format("<span class='radio-option-label'>{0}</span>", Model.Options[i].OptionText.GetConcatenatedContent(" | ")));
+        @Html.Raw(string.Format("<span class='radio-option-label' data-option-id='{0}'>{1}</span>", Model.Options[i].Id, Model.Options[i].OptionText.GetConcatenatedContent(" | ")));
     }
 }

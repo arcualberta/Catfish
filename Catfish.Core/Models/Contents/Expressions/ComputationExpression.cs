@@ -45,19 +45,19 @@ namespace Catfish.Core.Models.Contents.Expressions
         //    return string.Format("CheckboxValue('{0}', '{1}') === {2}", field.Id, val.Id, isChecked ? "true" : "false");
         //}
 
-        public ComputationExpression Append(eMath @operator)
+        public ComputationExpression AppendOperator(eMath @operator)
         {
             Data.Value += Str(@operator);
             return this;
         }
 
-        public ComputationExpression Append(eLogical @operator)
+        public ComputationExpression AppendOperator(eLogical @operator)
         {
             Data.Value += Str(@operator);
             return this;
         }
 
-        public ComputationExpression Append(eRelational @operator)
+        public ComputationExpression AppendOperator(eRelational @operator)
         {
             Data.Value += Str(@operator);
             return this;
@@ -75,25 +75,36 @@ namespace Catfish.Core.Models.Contents.Expressions
             return this;
         }
 
-        public ComputationExpression Append(SelectField field, eRelational @operator, Option val)
+        public ComputationExpression AppendLogicalExpression(SelectField field, eRelational @operator, Option val)
         {
             Data.Value += Expression(field, @operator, val);
             return this;
         }
 
-        public ComputationExpression Append(RadioField field, eRelational @operator, Option val)
+        public ComputationExpression AppendLogicalExpression(RadioField field, eRelational @operator, Option val)
         {
             Data.Value += Expression(field, @operator, val);
             return this;
         }
 
-        public ComputationExpression Append(CheckboxField field, Option val, bool isChecked)
+        public ComputationExpression AppendLogicalExpression(CheckboxField field, Option val, bool isChecked)
         {
             Data.Value += Expression(field, val, isChecked);
             return this;
         }
 
-        public ComputationExpression AppendMatch(OptionsField field, Option[] vals, eLogical aggregatorOperator)
+        /// <summary>
+        /// Test the value selected for the "field" against each value in the "vals" to find which 
+        /// element in "vals" matches with the selection and then agregates these matches based on
+        /// the operator defined by "aggregatorOperator". IMPORTANT: that all elements in "vals"
+        /// MUST BE part of option elements retrieved from the specified "field" (i.e. their id's 
+        /// should match in addition to display labels.
+        /// </summary>
+        /// <param name="field"></param>
+        /// <param name="vals"></param>
+        /// <param name="aggregatorOperator"></param>
+        /// <returns></returns>
+        public ComputationExpression AppendLogicalExpression(OptionsField field, Option[] vals, eLogical aggregatorOperator)
         {
             List<string> fragments = new List<string>();
             for (int i = 0; i < vals.Length; ++i)
@@ -109,6 +120,92 @@ namespace Catfish.Core.Models.Contents.Expressions
             return this;
         }
 
+        /// <summary>
+        /// Appends the value of a field to the expression.
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public ComputationExpression AppendValue(DateField field)
+        {
+            Data.Value += string.Format("DateValue('{0}')", field.Id);
+            return this;
+        }
+
+        /// <summary>
+        /// Appends the value of a field to the expression.
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public ComputationExpression AppendValue(DecimalField field)
+        {
+            Data.Value += string.Format("DecimalValue('{0}')", field.Id);
+            return this;
+        }
+
+        /// <summary>
+        /// Appends the value of a field to the expression.
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public ComputationExpression AppendValue(IntegerField field)
+        {
+            Data.Value += string.Format("IntValue('{0}')", field.Id);
+            return this;
+        }
+
+        /// <summary>
+        /// Appends the value of a field to the expression.
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public ComputationExpression AppendValue(RadioField field)
+        {
+            Data.Value += string.Format("RadioValue('{0}')", field.Id);
+            return this;
+        }
+
+        /// <summary>
+        /// Appends the value of a field to the expression.
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public ComputationExpression AppendValue(SelectField field)
+        {
+            Data.Value += string.Format("StrValue('{0}')", field.Id);
+            return this;
+        }
+
+        public ComputationExpression AppendReadableValue(SelectField field,
+            string delimiter = null,
+            int selectItemIndex = 0,
+            bool trim = true)
+        {
+            var valueString = string.Format("SelectFieldReadableValue('{0}')", field.Id);
+
+            if (!string.IsNullOrEmpty(delimiter) || trim)
+                valueString = string.Format("Extract({0}, '{1}', {2}, {3})",
+                    valueString, delimiter, selectItemIndex, trim.ToString().ToLower());
+
+            Data.Value += valueString;
+
+            return this;
+        }
+
+        public ComputationExpression AppendReadableValue(RadioField field,
+            string delimiter = null,
+            int selectItemIndex = 0,
+            bool trim = true)
+        {
+            var valueString = string.Format("RadioFieldReadableValue('{0}')", field.Id);
+
+            if (!string.IsNullOrEmpty(delimiter) || trim)
+                valueString = string.Format("Extract({0}, '{1}', {2}, {3})",
+                    valueString, delimiter, selectItemIndex, trim.ToString().ToLower());
+
+            Data.Value += valueString;
+
+            return this;
+        }
         public static string Str(eMath val)
         {
             switch (val)

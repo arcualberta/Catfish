@@ -167,6 +167,17 @@ namespace Catfish.Core.Models
             Data.SetAttributeValue(attName, attValue);
         }
 
+        public int? GetAttribute(string attName, int? defaultValue)
+        {
+            var att = Data.Attribute(attName);
+            return (att == null || string.IsNullOrEmpty(att.Value)) ? defaultValue : int.Parse(att.Value);
+        }
+
+        public void SetAttribute(string attName, int? attValue)
+        {
+            Data.SetAttributeValue(attName, attValue);
+        }
+
         public long GetAttribute(string attName, long defaultValue)
         {
             var att = Data.Attribute(attName);

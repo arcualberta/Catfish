@@ -85,6 +85,14 @@ namespace Catfish.ModelBinders
             {
                 (modelMetadata, modelBinder) = binders[typeof(AttachmentField)];
             }
+            else if (typeof(EmailField).IsAssignableFrom(modelType))
+            {
+                (modelMetadata, modelBinder) = binders[typeof(EmailField)];
+            }
+            else if (typeof(TableField).IsAssignableFrom(modelType))
+            {
+                (modelMetadata, modelBinder) = binders[typeof(TableField)];
+            }
             else
             {
                 (modelMetadata, modelBinder) = binders[typeof(BaseField)];
