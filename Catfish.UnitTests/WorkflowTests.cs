@@ -175,10 +175,10 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id,"",true));
@@ -930,10 +930,10 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
@@ -1073,10 +1073,10 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
@@ -1435,10 +1435,10 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
@@ -1649,10 +1649,10 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
@@ -1803,36 +1803,41 @@ namespace Catfish.UnitTests
             var dd3 = inspectionForm.CreateField<SelectField>("DD 3", lang, complexOptionVals);
 
             //Setting the default value of a text field dynamically to a value selected by a dropdown menu
-            var dd3Val = inspectionForm.CreateField<TextField>("DD3 Value", lang);
-            dd3Val.Readonly = true;
-            dd3Val.ValueExpression.AppendReadableValue(dd3);
+            ////////var dd3Val = inspectionForm.CreateField<TextField>("DD3 Value", lang);
+            ////////dd3Val.Readonly = true;
+            ////////dd3Val.ValueExpression.AppendReadableValue(dd3);
 
-            inspectionForm.CreateField<TextField>("DD3 User", lang)
-                .ValueExpression.AppendReadableValue(dd3, ":", 0);
+            ////////inspectionForm.CreateField<TextField>("DD3 User", lang)
+            ////////    .ValueExpression.AppendReadableValue(dd3, ":", 0);
 
-            inspectionForm.CreateField<TextField>("DD3 Email", lang)
-                .ValueExpression.AppendReadableValue(dd3, ":", 1);
+            ////////inspectionForm.CreateField<TextField>("DD3 Email", lang)
+            ////////    .ValueExpression.AppendReadableValue(dd3, ":", 1);
 
-            inspectionForm.CreateField<TextField>("DD3 Postal Address", lang)
-                .ValueExpression.AppendReadableValue(dd3, ":", 2);
-
-
-            var rb3 = inspectionForm.CreateField<RadioField>("RB 3", lang, complexOptionVals);
-
-            //Setting the default value of a text field dynamically to a value selected by a dropdown menu
-            inspectionForm.CreateField<TextField>("RB Value", lang)
-                .ValueExpression.AppendReadableValue(rb3);
-
-            inspectionForm.CreateField<TextField>("RB User", lang)
-                .ValueExpression.AppendReadableValue(rb3, ":", 0);
-
-            inspectionForm.CreateField<TextField>("RB Email", lang)
-                .ValueExpression.AppendReadableValue(rb3, ":", 1);
-
-            inspectionForm.CreateField<TextField>("RB Postal Address", lang)
-                .ValueExpression.AppendReadableValue(rb3, ":", 2);
+            ////////inspectionForm.CreateField<TextField>("DD3 Postal Address", lang)
+            ////////    .ValueExpression.AppendReadableValue(dd3, ":", 2);
 
 
+            ////////var rb3 = inspectionForm.CreateField<RadioField>("RB 3", lang, complexOptionVals);
+
+            //////////Setting the default value of a text field dynamically to a value selected by a dropdown menu
+            ////////inspectionForm.CreateField<TextField>("RB Value", lang)
+            ////////    .ValueExpression.AppendReadableValue(rb3);
+
+            ////////inspectionForm.CreateField<TextField>("RB User", lang)
+            ////////    .ValueExpression.AppendReadableValue(rb3, ":", 0);
+
+            ////////inspectionForm.CreateField<TextField>("RB Email", lang)
+            ////////    .ValueExpression.AppendReadableValue(rb3, ":", 1);
+
+            ////////inspectionForm.CreateField<TextField>("RB Postal Address", lang)
+            ////////    .ValueExpression.AppendReadableValue(rb3, ":", 2);
+
+
+            //Email field
+            var email1 = inspectionForm.CreateField<EmailField>("Email 1", lang);
+
+            //Table field
+            //var tbl1 = inspectionForm.CreateField<TableField>("Table 1", lang);
 
             //Defininig roles
             WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
@@ -1941,10 +1946,10 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
@@ -2518,10 +2523,10 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
@@ -2630,10 +2635,10 @@ namespace Catfish.UnitTests
             template.TemplateName = templateName;
             template.Name.SetContent(templateName);
 
-            ws.SetModel(template);
+            //ws.SetModel(template);
 
             //Get the Workflow object using the workflow service
-            Workflow workflow = ws.GetWorkflow(true);
+            Workflow workflow = template.Workflow;
 
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));

@@ -127,7 +127,7 @@ namespace Catfish.Core.Models.Contents
                 if (typeof(DateField).IsAssignableFrom(typeof(T)))
                     field.SetValue(new DateTime());
                 else
-                    field.SetValue(0);
+                    field.SetValue("");
             }
 
             return field;
@@ -247,6 +247,23 @@ namespace Catfish.Core.Models.Contents
 
             Fields.Add(field);
             field.SetName(fieldName, lang);
+
+            if (isRequired.HasValue)
+                field.Required = isRequired.Value;
+
+            return field;
+        }
+
+        public T CreateField<T>(string fieldName, string lang, bool? isRequired = null, int minRows = 0, int? maxRows = null)
+            where T : TableField
+        {
+            T field = Activator.CreateInstance(typeof(T)) as T;
+
+            Fields.Add(field);
+            field.SetName(fieldName, lang);
+            field.MinRows = minRows;
+            if (maxRows.HasValue)
+                field.MaxRows = maxRows;
 
             if (isRequired.HasValue)
                 field.Required = isRequired.Value;

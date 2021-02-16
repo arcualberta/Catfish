@@ -52,8 +52,21 @@ namespace Catfish.Core.Models
 
         public ICollection<Entity> Instances { get; set; }
 
+        private Workflow mWorkflow;
         [NotMapped]
-        public Workflow Workflow { get; set; }
+        public Workflow Workflow
+        {
+            get
+            {
+                if (mWorkflow == null)
+                {
+                    XmlModel xml = new XmlModel(Data);
+                    mWorkflow = new Workflow(xml.GetElement(Workflow.TagName, true));
+                }
+                return mWorkflow;
+
+            }
+        }
 
         public EntityTemplate()
         {
@@ -62,18 +75,18 @@ namespace Catfish.Core.Models
         public override void Initialize(bool regenerateId)
         {
             base.Initialize(regenerateId);
-            InitializeWorkflow();
+            ////InitializeWorkflow();
         }
 
-        public void InitializeWorkflow()
-        {
-            XElement workflowDef = Data.Element("workflow");
-            if (workflowDef != null)
-            {
-                Workflow = new Workflow(workflowDef);
-                //Workflow.Initialize(XmlModel.eGuidOption.Ignore);
-            }
-        }
+        ////public void InitializeWorkflow()
+        ////{
+        ////    XElement workflowDef = Data.Element("workflow");
+        ////    if (workflowDef != null)
+        ////    {
+        ////        Workflow = new Workflow(workflowDef);
+        ////        //Workflow.Initialize(XmlModel.eGuidOption.Ignore);
+        ////    }
+        ////}
 
         public EntityTemplate Clone()
         {
@@ -129,6 +142,5 @@ namespace Catfish.Core.Models
         {
             return InstantiateDataItem(GetRootDataItem(false).Id);
         }
-
     }
 }

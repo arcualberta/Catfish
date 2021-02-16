@@ -130,7 +130,6 @@ namespace Catfish.UnitTests
             var templates = appdb.ItemTemplates.ToList();
             foreach(var template in templates)
             {
-                template.InitializeWorkflow();
                 if (template.Workflow != null)
                 {
                     foreach (var group in appdb.Groups.ToList())
