@@ -2013,9 +2013,12 @@ namespace Catfish.UnitTests
                 .AppendLogicalExpression(isChair, ComputationExpression.eRelational.EQUAL, isChair.Options[0]);
 
             string delimiter = ":";
-
-            var chairName = sasForm.CreateField<TextField>("Chair's Name:", lang, true);//.SetDefaultReferenceValue(chair, delimiter, 0);
-            var chairEmail = sasForm.CreateField<TextField>("Chair's Email:", lang, true);//.SetDefaultReferenceValue(chair, delimiter, 1);
+            var chairName = sasForm.CreateField<TextField>("Chair's Name:", lang, true);
+            chairName.Readonly = true;
+             chairName.ValueExpression.AppendReadableValue(chair, delimiter, 0);
+            var chairEmail = sasForm.CreateField<TextField>("Chair's Email:", lang, true);
+            chairEmail.Readonly = true;
+            chairEmail.ValueExpression.AppendReadableValue(chair, delimiter, 1);
 
             //========================================================================PROJECT DETAILS
 
@@ -2023,7 +2026,8 @@ namespace Catfish.UnitTests
                 .AppendContent("h1", "Project Details", lang);
 
             sasForm.CreateField<TextField>("Project Title:", lang, true, true);
-            sasForm.CreateField<TextArea>("Project Description:", lang, true, true).SetDescription("Describe your research project and explain why this is a necessary and urgent application for funding. Maximum 250 words.", lang);
+            var projDes = sasForm.CreateField<TextArea>("Project Description:", lang, true, true).SetDescription("Describe your research project and explain why this is a necessary and urgent application for funding. Maximum 250 words.", lang);
+            projDes.SetAttribute("cols", 50);
            var isInvolveAnimal = sasForm.CreateField<RadioField>("Does this project involve human or animal subjects?", lang, optionText, true);
            
             sasForm.CreateField<InfoSection>(null, null)
@@ -2034,7 +2038,7 @@ namespace Catfish.UnitTests
 
             //this kind of chaining.append not working
 
-            var ethicalExpDate = sasForm.CreateField<TextField>("Ethics Expiry Date:", lang, false); //change Datefiled to textField
+            var ethicalExpDate = sasForm.CreateField<DateField>("Ethics Expiry Date:", lang, false); //change Datefiled to textField
             ethicalExpDate.VisibilityCondition
                         .AppendLogicalExpression(isInvolveAnimal, ComputationExpression.eRelational.EQUAL, isInvolveAnimal.Options[0])
                         .AppendOperator(ComputationExpression.eLogical.AND)
@@ -2087,18 +2091,17 @@ namespace Catfish.UnitTests
             var confReg = sasForm.CreateField<DecimalField>("Conference Registration", lang);
             var confOtherExp = sasForm.CreateField<DecimalField>("Additional Expenses", lang);
             confOtherExp.SetDescription("Includes bus, train, car rental, travel insurance, visas, incidentals NOT already included in Airfare, Accommodation or Ground Transportation", lang);
-            sasForm.CreateField<TextArea>("Details Additional Expenses", lang);
+            sasForm.CreateField<TextArea>("Details Additional Expenses", lang).SetAttribute("cols", 50); ;
             //attachment field
             //Supported Documentation -
             sasForm.CreateField<AttachmentField>("Supporting Documentation", lang).SetDescription(@"Please attach the required travel and conference supporting documentation here as <span style='color: Red;'>a <b>single PDF document</b>. [Be sure to review the section of the Policies and Procedures on required supporting documentation]</span>", lang);
 
-            sasForm.CreateField<TextArea>("Justification", lang).SetDescription("Explain the significance of this conference to your research and scholarly career. Maximum 250 words.", lang);
+            sasForm.CreateField<TextArea>("Justification", lang).SetDescription("Explain the significance of this conference to your research and scholarly career. Maximum 250 words.", lang).SetAttribute("cols", 50); ;
 
      
                        // =================================================================================  RESEARCH AND CREATIVE ACTIVITY
-                       sasForm.CreateField<InfoSection>(null, null)
-
-                           .AppendContent("h2", "Research and Creative Activity", lang)
+            sasForm.CreateField<InfoSection>(null, null)
+                     .AppendContent("h2", "Research and Creative Activity", lang)
                            .AppendContent("h3", "Travel", lang)
                            .AppendContent("div",
                                @"<p>
@@ -2125,11 +2128,11 @@ namespace Catfish.UnitTests
 
             var researchOtherExp = sasForm.CreateField<DecimalField>("Additional Expenses", lang);
             researchOtherExp.SetDescription("Includes bus, train, car rental, travel insurance, visas, incidentals NOT already included in Airfare, Accommodation or Ground Transportation", lang);
-                       sasForm.CreateField<TextArea>("Details of Additional Expenses", lang);
+                       sasForm.CreateField<TextArea>("Details of Additional Expenses", lang).SetAttribute("cols", 50); ;
 
                        sasForm.CreateField<AttachmentField>("Supported Documentation", lang).SetDescription(@"Please attach the required travel and conference supporting documentation here as <span style='color: Red;'>a <b>single PDF document</b>. [Be sure to review the section of the Policies and Procedures on required supporting documentation]</span>", lang);
 
-                       sasForm.CreateField<TextArea>("Justification", lang).SetDescription("<i>Explain how this travel is essential to advancing your research. Maximum 250 words.</i>", lang);
+                       sasForm.CreateField<TextArea>("Justification", lang).SetDescription("<i>Explain how this travel is essential to advancing your research. Maximum 250 words.</i>", lang).SetAttribute("cols", 50); ;
 
 
                        //=============================================================================== Personnel and Services
@@ -2137,7 +2140,9 @@ namespace Catfish.UnitTests
                            .AppendContent("h1", "Personnel and Services", lang)
                            .AppendContent("div", "Failure to provide a detailed estimate will result in automatic disqualification of this part of the application.", lang, "alert alert-warning");
 
-                       sasForm.CreateField<TextArea>("Description of personnel to be hired or services to be purchased", lang).SetDescription(@"<i>Provide and outline of the type of work to be undertaken, the expected time frame for completing that work, and a comment on why it is essential to your research. Maximum 250 words.</ i>", lang);
+                       sasForm.CreateField<TextArea>("Description of personnel to be hired or services to be purchased", lang)
+                                          .SetDescription(@"<i>Provide and outline of the type of work to be undertaken, the expected time frame for completing that work, and a comment on why it is essential to your research. Maximum 250 words.</ i>", lang)
+                                          .SetAttribute("cols", 50);
                        sasForm.CreateField<InfoSection>(null, null)
                           .AppendContent("h3", "Estimate for Hiring Students", lang)
                           .AppendContent("div", @"<i>For each student to be hired, click 'Add' and indicate whether the student will be an undergraduate, MA, or PhD student, and specify the period for which they will be hired, the number of hours to be worked, and related calculations.
@@ -2146,28 +2151,34 @@ namespace Catfish.UnitTests
 
                        // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
                        CompositeField personnelBudget = sasForm.CreateField<CompositeField>("", lang, false);
-                       personnelBudget = CreatePersonnelBudgetItemForm(personnelBudget,lang, 1);
+                       personnelBudget = CreatePersonnelBudgetItemForm(personnelBudget,lang, 0);
+                       personnelBudget.SetFieldLabelCssClass("col-md-12")
+                            .SetFieldValueCssClass("col-md-12");
 
 
-                       sasForm.CreateField<InfoSection>(null, null)
+
+            sasForm.CreateField<InfoSection>(null, null)
                           .AppendContent("h3", "Estimates for Contracted Services", lang)
                           .AppendContent("div", @"For each contracted service, click 'Add' and then provide the requested information. Please describe the services to be provided. Note that you must also attach written estimates for all contracted services. Estimates should be combined into one single PDF document.", lang);
 
                        //Allow adding multiple PersonnelBudgetItem Form TODO
                        // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
                        CompositeField contractServ = sasForm.CreateField<CompositeField>("", lang, false);
-                       contractServ = CreatePersonnelBudgetItemForm(contractServ, lang, 1);
+                       contractServ = CreatePersonnelBudgetItemForm(contractServ, lang, 0);
+                        contractServ.SetFieldLabelCssClass("col-md-12")
+                            .SetFieldValueCssClass("col-md-12"); 
 
                        sasForm.CreateField<AttachmentField>("Contractor Cost Estimates", lang).SetDescription(@"<i>Attach written estimate for contracted services as <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
            [Required if funding requested for professional services]</span>", lang);
-                       sasForm.CreateField<TextArea>("Justification", lang).SetDescription("Why are these services required for this project at this time? [Maximum 250 words]", lang);
+                       sasForm.CreateField<TextArea>("Justification", lang).SetDescription("Why are these services required for this project at this time? [Maximum 250 words]", lang).SetAttribute("cols", 50); ;
             
                             //====================================================================== EQUIPMENT AND MATERIAL
                             sasForm.CreateField<InfoSection>(null, null)
                               .AppendContent("h3", "Equipment and Materials", lang)
                               .AppendContent("div", @"<i>Failure to provide a written estimate will result in automatic disqualification of this part of the application.</i>", lang);
 
-                            sasForm.CreateField<TextArea>("Equipment and Material Justification", lang).SetDescription("Provide a description of the materials and equipment you plan to purchase and outline why they are essential to your research project at this time. Maximum 250 words.", lang);
+                            sasForm.CreateField<TextArea>("Equipment and Material Justification", lang).SetDescription("Provide a description of the materials and equipment you plan to purchase and outline why they are essential to your research project at this time. Maximum 250 words.", lang)
+                               .SetAttribute("cols", 50); 
 
                             sasForm.CreateField<InfoSection>(null, null)
                              .AppendContent("h3", "Estimates for Equipment and Material", lang);
@@ -2176,9 +2187,10 @@ namespace Catfish.UnitTests
                             // DataItem personnelBudgetForm = CreatePersonnelBudgetForm(template)
                             CompositeField estimateEquip = sasForm.CreateField<CompositeField>("", lang, false);
                             estimateEquip = CreatePersonnelBudgetItemForm(estimateEquip, lang, 0);
+                            estimateEquip.SetFieldLabelCssClass("col-md-12")
+                            .SetFieldValueCssClass("col-md-12");
 
-
-                            sasForm.CreateField<AttachmentField>("Vendor Cost Estimates", lang).SetDescription(@"<i>Please submit documentation as a <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
+            sasForm.CreateField<AttachmentField>("Vendor Cost Estimates", lang).SetDescription(@"<i>Please submit documentation as a <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
                 [Required if funding requested for equipment and materials]</span>", lang);
 
                                  // =============================================  TEACHING RELEASE
@@ -2189,16 +2201,20 @@ namespace Catfish.UnitTests
                                    .AppendContent("h5", "1st Term", lang);
                                    //TODO: add sub Form here
                                    CompositeField firstTerm = sasForm.CreateField<CompositeField>("", lang, false);
-                                   firstTerm = CreateTeachingReleaseForm(firstTerm, lang, 1);
+                                   firstTerm = CreateTeachingReleaseForm(firstTerm, lang, 0);
+                                   firstTerm.SetFieldLabelCssClass("col-md-12")
+                                            .SetFieldValueCssClass("col-md-12");
 
-                                   sasForm.CreateField<InfoSection>(null, null)
+                            sasForm.CreateField<InfoSection>(null, null)
                                   .AppendContent("h5", "2nd Term", lang);
                                    //TODO: add sub Form here
                                    CompositeField secTerm = sasForm.CreateField<CompositeField>("", lang, false);
                                    secTerm = CreateTeachingReleaseForm(secTerm, lang, 0);
+                                    secTerm.SetFieldLabelCssClass("col-md-12")
+                            .SetFieldValueCssClass("col-md-12");
 
-                                   sasForm.CreateField<TextArea>("Justification", lang)
-                                       .SetDescription("<i>Explain why release time is urgent and necessary at this moment. Maximum 250 words.</i>", lang);
+            sasForm.CreateField<TextArea>("Justification", lang)
+                                       .SetDescription("<i>Explain why release time is urgent and necessary at this moment. Maximum 250 words.</i>", lang).SetAttribute("cols", 50);
 
                                    //==================================================== OVERVIEW OF FUND REQUESTED =======================================================================
                                    sasForm.CreateField<InfoSection>(null, null)
@@ -2219,6 +2235,7 @@ namespace Catfish.UnitTests
                                                   .AppendOperator(ComputationExpression.eMath.PLUS)
                                                   .AppendValue(confOtherExp)
                                                   ;
+                                confTotal.Readonly = true;
             var researchTot = sasForm.CreateField<DecimalField>("Research / Creativity Activity Travel Amount Requested", lang);
             researchTot.ValueExpression
                                               .AppendValue(researchAirticket)
@@ -2231,6 +2248,8 @@ namespace Catfish.UnitTests
                                               .AppendOperator(ComputationExpression.eMath.PLUS)
                                               .AppendValue(researchOtherExp)
                                               ;
+            researchTot.Readonly = true;
+
                      var EqandMatTot =sasForm.CreateField<DecimalField>("Support for Research and Creative Activity Equipment and Materials", lang);
                       var TRTot = sasForm.CreateField<DecimalField>("Teaching release time", lang);
                        var PersonnelServiceTot = sasForm.CreateField<DecimalField>("Personnel and Services", lang);
@@ -2245,7 +2264,7 @@ namespace Catfish.UnitTests
                                 .AppendValue(TRTot)
                                 .AppendOperator(ComputationExpression.eMath.PLUS)
                                 .AppendValue(PersonnelServiceTot);
-          
+            grandTot.Readonly = true;
             // ====================================================== Other and Previous Funding ========================================================================
                                      sasForm.CreateField<InfoSection>(null, null)
                                   .AppendContent("h1", "Other and Previous Funding", lang);
@@ -2254,6 +2273,8 @@ namespace Catfish.UnitTests
 
                                   CompositeField summaryFund = sasForm.CreateField<CompositeField>("", lang, false);
                                     summaryFund = CreateFundingSummaryForm(summaryFund, lang, 0);
+                                    summaryFund.SetFieldLabelCssClass("col-md-12")
+                                        .SetFieldValueCssClass("col-md-12");
                                 summaryFund.VisibilityCondition
                             .AppendLogicalExpression(otherFunding, ComputationExpression.eRelational.EQUAL, otherFunding.Options[0]);
 
@@ -2264,6 +2285,7 @@ namespace Catfish.UnitTests
 
                               var previousTA = sasForm.CreateField<TextArea>("How Past SAS Funding Relates to?", lang)
                                 .SetDescription("How is the current application related to or different from the previous application already funded? Maximum 250 words.", lang);
+                                previousTA.SetAttribute("cols", 50);
                                 previousTA.VisibilityCondition.AppendLogicalExpression(previousFundRB, ComputationExpression.eRelational.EQUAL, previousFundRB.Options[0]);
 
 
@@ -2271,22 +2293,25 @@ namespace Catfish.UnitTests
                               otherFundingBefore.SetDescription("Have you sought support for this project from SSHRC, the Canada Council for the Arts, the Killam Fund, or any other agency, internal, or external sources of funding?", lang);
                            var otherFundSource = sasForm.CreateField<TextArea>("Other Sources of Funding", lang);
                                otherFundSource.SetDescription(@"Please identify other sources of funding for this project, and explain how and why these multiple sources of funding are essential to your research. Why, for example, are you applying for SAS funding if you have a related SSHRC or Killam research grant? Maximum 250 words.", lang);
-                               otherFundSource.VisibilityCondition.AppendLogicalExpression(otherFundingBefore, ComputationExpression.eRelational.EQUAL, otherFundingBefore.Options[0]);
+                            otherFundSource.VisibilityCondition.AppendLogicalExpression(otherFundingBefore, ComputationExpression.eRelational.EQUAL, otherFundingBefore.Options[0]);
+                               otherFundSource.SetAttribute("cols", 50); 
 
                            var theReason = sasForm.CreateField<TextArea>("Why not, or do you intend to do so?", lang);
-                             theReason.SetDescription(@"Maximum 250 words.", lang);
+                             theReason.SetDescription(@"Maximum 250 words.", lang).SetAttribute("cols", 50); 
                               theReason.VisibilityCondition.AppendLogicalExpression(otherFundingBefore, ComputationExpression.eRelational.EQUAL, otherFundingBefore.Options[1]);
            
 
             sasForm.CreateField<TextArea>("Other Support Sources", lang)
-                                 .SetDescription("Please identify additional sources of support for this project, if applicable. (Such as honoraria, sales revenues, commissions, etc.). Maximum 250 words.", lang);
+                                 .SetDescription("Please identify additional sources of support for this project, if applicable. (Such as honoraria, sales revenues, commissions, etc.). Maximum 250 words.", lang)
+                                 .SetAttribute("cols", 50); 
  
             // ====================================================== Scholarly Publications ========================================================================
             sasForm.CreateField<InfoSection>(null, null)
                              .AppendContent("h1", "Scholarly Publications", lang);
 
                               sasForm.CreateField<TextArea>("Publications over the past 5 years.", lang)
-                               .SetDescription("Please list your scholarly and/or creative publications over the past 5 years. Include conference presentations, displays, and exhibits or performances. Complete CVs will not be accepted.", lang);
+                               .SetDescription("Please list your scholarly and/or creative publications over the past 5 years. Include conference presentations, displays, and exhibits or performances. Complete CVs will not be accepted.", lang)
+                               .SetAttribute("cols", 50);
 
                               sasForm.CreateField<InfoSection>(null, null)
                             .AppendContent("h3", "Collaborators", lang)
@@ -2295,7 +2320,9 @@ namespace Catfish.UnitTests
                               CompositeField collaborator = sasForm.CreateField<CompositeField>("", lang, false);
 
                               collaborator = CreateCollaboratorForm(collaborator, lang, 0);
-          
+                              collaborator.SetFieldLabelCssClass("col-md-12")
+                            .SetFieldValueCssClass("col-md-12");
+
             //================================================ Submit form ===============================
             sasForm.CreateField<InfoSection>(null, null)
                 .AppendContent("div", @"<h1>Save or Submit Your Application</h1>
@@ -2451,7 +2478,7 @@ namespace Catfish.UnitTests
         private string[] GetDepartmentChair()
         {
             string[] chairDept = new string[] {
-                                                "Pamela Willoughby: pwilloug @ualberta.ca",
+                                                "Pamela Willoughby: pwilloug@ualberta.ca",
                                                 "Aidan Rowe: rowe1@ualberta.ca",
                                                 "Melanie Dreyer-Lude : dreyerlu@ualberta.ca",
                                                 "Christopher Lupke: lupke@ualberta.ca",
@@ -2468,7 +2495,7 @@ namespace Catfish.UnitTests
                                                  "Michelle Meagher: mmmeaghe@ualberta.ca",
                                                  "Astrid Ensslin: ensslin@ualberta.ca",
                                                  "arcAdmin : mruaini@ualberta.ca",
-                                                "Dean: Steve Patten : spatten@ualberta.ca"};
+                                                "Steve Patten : spatten@ualberta.ca"};//Dean have to be at the end!!
             return chairDept;
         }
 
@@ -2476,7 +2503,7 @@ namespace Catfish.UnitTests
         {
 
             comField.CreateChildTemplate("PersonnelBugdet", "Personnel Budget Item", lang);
-            comField.ChildTemplate.CreateField<TextArea>("Provide details and calculations as specified above", lang, false);
+            comField.ChildTemplate.CreateField<TextArea>("Provide details and calculations as specified above", lang, false).SetAttribute("cols", 50);
             comField.ChildTemplate.CreateField<DecimalField>("Estimated Cost", lang, false);
             comField.Min = min;
             comField.Max = max;//0 means unlimited
@@ -2522,7 +2549,7 @@ namespace Catfish.UnitTests
             comField.ChildTemplate.CreateField<DecimalField>("Year of Application", lang, false);
             comField.ChildTemplate.CreateField<RadioField>("Competition Applied To", lang,optionText, false);
             comField.ChildTemplate.CreateField<TextField>("Title of Project", lang, false);
-            comField.ChildTemplate.CreateField<TextArea>("Brief Description of project", lang, false).SetDescription("Maximum 100 words.", lang);
+            comField.ChildTemplate.CreateField<TextArea>("Brief Description of project", lang, false).SetDescription("Maximum 100 words.", lang).SetAttribute("cols", 50); 
             comField.Min = min;
             comField.Max = max;//0 means unlimited
             comField.AllowMultipleValues = true;
