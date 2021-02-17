@@ -31,9 +31,9 @@
 
     @if (Model.AllowMultipleValues)
     {
-        <div id="addNewdataItem-@Model.Id" style="float:right;">
+        <div id="addNewdataItem-@Model.Id" class="compositeFieldAddItem">
        
-            <input type="button" class="btn btn-default btn-primary" id="cf_addDataItemBtn" onClick="addDataItem('@Model.Id', '@templateId', '@Model.Min', '@Model.Max'); return false;" value="Add" />
+            <input type="button" class="btn btn-default btn-success" id="cf_addDataItemBtn" onClick="addDataItem('@Model.Id', '@templateId', '@Model.Min', '@Model.Max'); return false;" value="Add" />
 
         </div>
     }

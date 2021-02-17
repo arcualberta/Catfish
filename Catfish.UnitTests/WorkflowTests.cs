@@ -1879,7 +1879,7 @@ namespace Catfish.UnitTests
             Workflow workflow = template.Workflow;
 
             //Defininig states
-            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
