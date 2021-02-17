@@ -50,7 +50,7 @@ function submitWorkflowForm(suffix, successMessage) {
         //Handling radio-button fields and drop-down menus
         $.each($('input[type=radio]:checked, select', form).serializeArray(), function (i, field) {
             name = field.name.replace(prefix, "") + ".SelectedOptionGuids";
-            values[name] = [field.value];
+            values[name] = field.value ? [field.value] : [];
         });
 
         //===================================end processed files ======================================
