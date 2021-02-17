@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Catfish.Core.Authorization.Handlers
 {
-    public class EntityAuthorizationHandler 
-        : AuthorizationHandler<OperationAuthorizationRequirement, Entity>
+    public class GroupAuthorizationHandler 
+        : AuthorizationHandler<OperationAuthorizationRequirement, Group>
     {
         public readonly IAuthorizationHelper _authHelper;
-        public EntityAuthorizationHandler(IAuthorizationHelper authHelper)
+        public GroupAuthorizationHandler(IAuthorizationHelper authHelper)
         {
             _authHelper = authHelper;
         }
@@ -20,7 +20,7 @@ namespace Catfish.Core.Authorization.Handlers
         protected override Task HandleRequirementAsync(
             AuthorizationHandlerContext context,
             OperationAuthorizationRequirement requirement,
-            Entity resource)
+            Group resource)
         {
             //The authorization is evaluated using the following criteria.
             //
