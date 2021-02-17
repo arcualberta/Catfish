@@ -2274,16 +2274,16 @@ namespace Catfish.UnitTests
 
 
             //Defining email templates
-           // string emailBody = "";
-            //emailBody = "<p>Dear" +((TextField)chairName).GetValue(lang) + ",</p><br/>" +
-            //                        "<p>A faculty member from your department has applied for a SAS grant.Please click on this link: @Link[Sas Application|@Model] to provide your assessment about this application."+
-            //                        "You will be required to log in with your CCID email.</p> <br/>" +
-            //                        "<p>Thank you.</p>";
+            string emailBody = "";
+            emailBody = "<p>Dear" + ((TextField)chairName).GetValue(lang) + ",</p><br/>" +
+                                    "<p>A faculty member from your department has applied for a SAS grant.Please click on this link: @Link[Sas Application|@Model] to provide your assessment about this application." +
+                                    "You will be required to log in with your CCID email.</p> <br/>" +
+                                    "<p>Thank you.</p>";
 
-            //EmailTemplate chairEmailTemplate = ws.GetEmailTemplate("Chair Email Template", true);
-            //chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
-            //chairEmailTemplate.SetSubject("SAS Application");
-            //chairEmailTemplate.SetBody("emailBody");
+            EmailTemplate chairEmailTemplate = ws.GetEmailTemplate("Chair Email Template", true);
+            chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
+            chairEmailTemplate.SetSubject("SAS Application");
+            chairEmailTemplate.SetBody(emailBody);
 
 
             //EmailTemplate applicantSubmissionNotification = ws.GetEmailTemplate("Applicant Notification", true);
@@ -2303,11 +2303,11 @@ namespace Catfish.UnitTests
             //                    Associate Dean (Research)
             //                    </p>";
 
-           // applicantSubmissionNotification.SetBody("emailBody");
+            // applicantSubmissionNotification.SetBody("emailBody");
 
 
             //Defining triggers
-             //Feb 12 2021
+            //Feb 12 2021
             //EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
             //applicantNotificationEmailTrigger.AddRecipientByEmail(((TextField)applicantEmail).GetValue("en"));
             //applicantNotificationEmailTrigger.AddTemplate(applicantSubmissionNotification.Id, "Applicant Email Notification");

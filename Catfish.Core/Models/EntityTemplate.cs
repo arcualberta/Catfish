@@ -89,6 +89,13 @@ namespace Catfish.Core.Models
         ////    }
         ////}
 
+
+        public EmailTemplate GetEmailTemplate(string templateName, string lang, bool createIfNotExists)
+        {
+            MetadataSet ms = GetMetadataSet(templateName, lang, createIfNotExists, true);
+            return ms == null ? null : new EmailTemplate(ms.Data);
+        }
+
         public EntityTemplate Clone()
         {
             Type type = GetType();
