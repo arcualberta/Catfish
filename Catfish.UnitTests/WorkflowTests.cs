@@ -1888,7 +1888,8 @@ namespace Catfish.UnitTests
             State rejectedState = workflow.AddState(ws.GetStatus(template.Id, "Rejected", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
-
+            // Defining roles
+            WorkflowRole sasAdmin = workflow.AddRole(auth.GetRole("SAS_Admin", true));
             //=============================================================================== Defininig SAS form
             DataItem sasForm = template.GetDataItem("SAS Application Form", true, lang);
             sasForm.IsRoot = true;
@@ -1957,7 +1958,7 @@ namespace Catfish.UnitTests
             chairEmail.Readonly = true;
             chairEmail.ValueExpression.AppendReadableValue(chair, delimiter, 1);
 
-            //========================================================================PROJECT DETAILS
+            //PROJECT DETAILS
 
             sasForm.CreateField<InfoSection>(null, null)
                 .AppendContent("h1", "Project Details", lang);
@@ -1982,7 +1983,7 @@ namespace Catfish.UnitTests
                       .AppendLogicalExpression(ethicApproval, ComputationExpression.eRelational.EQUAL, ethicApproval.Options[0]); ;
 
 
-            //========================================================================BUDGET DETAILS
+            //===BUDGET DETAILS
 
           sasForm.CreateField<InfoSection>(null, null)
                 .AppendContent("h1", "Budget Details", lang)
@@ -2036,7 +2037,7 @@ namespace Catfish.UnitTests
             sasForm.CreateField<TextArea>("Justification", lang).SetDescription("Explain the significance of this conference to your research and scholarly career. Maximum 250 words.", lang).SetAttribute("cols", 50); ;
 
      
-                       // =================================================================================  RESEARCH AND CREATIVE ACTIVITY
+                       // === RESEARCH AND CREATIVE ACTIVITY
             sasForm.CreateField<InfoSection>(null, null)
                      .AppendContent("h2", "Research and Creative Activity", lang)
                            .AppendContent("h3", "Travel", lang)
@@ -2072,7 +2073,7 @@ namespace Catfish.UnitTests
                        sasForm.CreateField<TextArea>("Justification", lang).SetDescription("<i>Explain how this travel is essential to advancing your research. Maximum 250 words.</i>", lang).SetAttribute("cols", 50); ;
 
 
-                       //=============================================================================== Personnel and Services
+                       //=== Personnel and Services
                        sasForm.CreateField<InfoSection>(null, null)
                            .AppendContent("h1", "Personnel and Services", lang)
                            .AppendContent("div", "Failure to provide a detailed estimate will result in automatic disqualification of this part of the application.", lang, "alert alert-warning");
@@ -2109,7 +2110,7 @@ namespace Catfish.UnitTests
            [Required if funding requested for professional services]</span>", lang);
                        sasForm.CreateField<TextArea>("Justification", lang).SetDescription("Why are these services required for this project at this time? [Maximum 250 words]", lang).SetAttribute("cols", 50); ;
             
-                            //====================================================================== EQUIPMENT AND MATERIAL
+                            //==== EQUIPMENT AND MATERIAL
                             sasForm.CreateField<InfoSection>(null, null)
                               .AppendContent("h3", "Equipment and Materials", lang)
                               .AppendContent("div", @"<i>Failure to provide a written estimate will result in automatic disqualification of this part of the application.</i>", lang);
@@ -2130,7 +2131,7 @@ namespace Catfish.UnitTests
             sasForm.CreateField<AttachmentField>("Vendor Cost Estimates", lang).SetDescription(@"<i>Please submit documentation as a <span style='color: Red;'> <b>single PDF document</b></i>.<br/>
                 [Required if funding requested for equipment and materials]</span>", lang);
 
-                                 // =============================================  TEACHING RELEASE
+                                 // ==== TEACHING RELEASE
                                    sasForm.CreateField<InfoSection>(null, null)
                                     .AppendContent("h3", "Teaching Release", lang)
                                     .AppendContent("div", @"<i>List the courses you are scheduled to teach in the academic year for which release time is requested, indicating in which of these courses you wish to be released from teaching. Use the + button to add courses.</i>", lang);
@@ -2271,12 +2272,7 @@ namespace Catfish.UnitTests
                                             <span style='color: Red'>If your submission is successful, you should get a confirmation email</span>. Please check for this email <span style='color:Red'>before</span> you close your browser. 
                                 If you don't see the email, <span style='color: Red'>your application may not have been submitted</span>, so please contact Nancie Hodgson, Research Coordinator (resarts@ualberta.ca).</div>", lang, "alert alert-info");
 
-            //=============================================================================             Defininig roles
-            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
-            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
-            WorkflowRole chairRole = workflow.AddRole(auth.GetRole("Chair", true));
-
-
+           
 
             //Defining email templates
             string emailBody = "";
@@ -2325,9 +2321,39 @@ namespace Catfish.UnitTests
             // Submitting an inspection form
             //Only safey inspectors can submit this form
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
-            startSubmissionAction.Access = GetAction.eAccess.Restricted;
-            startSubmissionAction.AddStateReferances(emptyState.Id)
-                .AddAuthorizedRole(inspectorRole.Id);
+            
+            startSubmissionAction.Access = GetAction.eAccess.Public;
+
+            //Defining form template
+            startSubmissionAction.AddTemplate(sasForm.Id, "Start Submission Template");
+
+            //Defining post actions
+            PostAction savePostAction = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update));
+            savePostAction.AddStateMapping(emptyState.Id, savedState.Id, "Save");
+            
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            submitPostAction.AddStateMapping(emptyState.Id, inReviewState.Id, "Submit");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
+            submitActionPopUp.AddButtons("Yes, submit", "true");
+            submitActionPopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs
+            submitPostAction.AddTriggerRefs("0", chairEmailTemplate.Id, "Chair's Notification Email Trigger");
+            submitPostAction.AddTriggerRefs("1", applicantSubmissionNotification.Id, "Owner Submission-notification Email Trigger");
+            
+            // Added state referances
+            startSubmissionAction.AddStateReferances(emptyState.Id);
+                
+
+
+
+
+
+
+
+
 
             //Listing inspection forms.
             //Inspectors can list their own submissions.
@@ -2336,17 +2362,17 @@ namespace Catfish.UnitTests
             listSubmissionsAction.Access = GetAction.eAccess.Restricted;
             listSubmissionsAction.AddStateReferances(inReviewState.Id)
                 .AddOwnerAuthorization()
-                .AddAuthorizedRole(adminRole.Id);
+                .AddAuthorizedRole(sasAdmin.Id);
 
 
             //Post action for submitting the form
-            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
-            submitPostAction.AddStateMapping(emptyState.Id, inReviewState.Id, "Submit");
+           // PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            //submitPostAction.AddStateMapping(emptyState.Id, inReviewState.Id, "Submit");
 
             //Defining the pop-up for the above submitPostAction action
-            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
-            submitActionPopUp.AddButtons("Yes, submit", "true");
-            submitActionPopUp.AddButtons("Cancel", "false");
+            //PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
+            //submitActionPopUp.AddButtons("Yes, submit", "true");
+            //submitActionPopUp.AddButtons("Cancel", "false");
 
             //Defining trigger refs -- added Feb 12 2021
           //  submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant Submission Notification Email Trigger");
@@ -2358,7 +2384,7 @@ namespace Catfish.UnitTests
 
             //Submissions can only be edited by admins
             editSubmissionAction.AddStateReferances(inReviewState.Id)
-                .AddAuthorizedRole(adminRole.Id);
+                .AddAuthorizedRole(sasAdmin.Id);
 
             //Defining post actions
             PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
@@ -2369,7 +2395,7 @@ namespace Catfish.UnitTests
             //Defining actions. Only admin can delete a submission
             GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
             deleteSubmissionAction.AddStateReferances(inReviewState.Id)
-                .AddAuthorizedRole(adminRole.Id);
+                .AddAuthorizedRole(sasAdmin.Id);
 
             //Defining post actions
             PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
