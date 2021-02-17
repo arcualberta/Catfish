@@ -31,8 +31,15 @@ namespace Catfish.Core.Authorization.Handlers
             //  3. If the current user holds at least one of those roles within a group where the
             //     entity template identified by the "resource" input-argument is associated with.
 
+            if (context == null || requirement == null || resource == null)
+                throw new Exception("AuthorizationHandlerContext, Requirement, and EntityTemplate cannot be null.");
 
-            throw new NotImplementedException();
+            if(resource == null)
+            {
+                return Task.CompletedTask; //Cannot proceed on without a group
+            }
+            context.Succeed(requirement);
+            return Task.CompletedTask;
         }
     }
 }
