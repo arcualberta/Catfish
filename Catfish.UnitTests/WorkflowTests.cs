@@ -2334,14 +2334,14 @@ namespace Catfish.UnitTests
             //Admins can list all submissions.
             GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
             listSubmissionsAction.Access = GetAction.eAccess.Restricted;
-            listSubmissionsAction.AddStateReferances(submittedState.Id)
+            listSubmissionsAction.AddStateReferances(inReviewState.Id)
                 .AddOwnerAuthorization()
                 .AddAuthorizedRole(adminRole.Id);
 
 
             //Post action for submitting the form
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
-            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+            submitPostAction.AddStateMapping(emptyState.Id, inReviewState.Id, "Submit");
 
             //Defining the pop-up for the above submitPostAction action
             PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
@@ -2357,23 +2357,23 @@ namespace Catfish.UnitTests
             GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
 
             //Submissions can only be edited by admins
-            editSubmissionAction.AddStateReferances(submittedState.Id)
+            editSubmissionAction.AddStateReferances(inReviewState.Id)
                 .AddAuthorizedRole(adminRole.Id);
 
             //Defining post actions
             PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
-            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+            editPostActionSave.AddStateMapping(inReviewState.Id, inReviewState.Id, "Save");
 
 
             // Delete submission related workflow items
             //Defining actions. Only admin can delete a submission
             GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
-            deleteSubmissionAction.AddStateReferances(submittedState.Id)
+            deleteSubmissionAction.AddStateReferances(inReviewState.Id)
                 .AddAuthorizedRole(adminRole.Id);
 
             //Defining post actions
             PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
-            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.AddStateMapping(inReviewState.Id, deleteState.Id, "Delete");
 
             //Defining the pop-up for the above postActionSubmit action
             PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.", "");
