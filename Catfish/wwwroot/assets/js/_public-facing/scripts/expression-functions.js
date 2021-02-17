@@ -33,8 +33,6 @@
                 //If this is a radio button
                 if ($(field).is(':radio')) {
                     $(field).prop('checked', false);
-                    let parent = $(field).parent();
-                    $(parent).hide();
                 }
 
             }
