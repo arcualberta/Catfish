@@ -1879,8 +1879,13 @@ namespace Catfish.UnitTests
             Workflow workflow = template.Workflow;
 
             //Defininig states
-             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
-           State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
+            State inReviewState = workflow.AddState(ws.GetStatus(template.Id, "InReview", true));
+            State reviewCompletedState = workflow.AddState(ws.GetStatus(template.Id, "ReviewCompleted", true));
+            State inAdjudicationState = workflow.AddState(ws.GetStatus(template.Id, "InAdjudication", true));
+            State acceptedState = workflow.AddState(ws.GetStatus(template.Id, "Accepted", true));
+            State rejectedState = workflow.AddState(ws.GetStatus(template.Id, "Rejected", true));
             State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
 
