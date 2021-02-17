@@ -2321,8 +2321,29 @@ namespace Catfish.UnitTests
             // Submitting an inspection form
             //Only safey inspectors can submit this form
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+            
             startSubmissionAction.Access = GetAction.eAccess.Public;
 
+            //Defining form template
+            startSubmissionAction.AddTemplate(sasForm.Id, "Start Submission Template");
+
+            //Defining post actions
+            PostAction savePostAction = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update));
+            savePostAction.AddStateMapping(emptyState.Id, savedState.Id, "Save");
+            
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            submitPostAction.AddStateMapping(emptyState.Id, inReviewState.Id, "Submit");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
+            submitActionPopUp.AddButtons("Yes, submit", "true");
+            submitActionPopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs
+            submitPostAction.AddTriggerRefs("0", chairEmailTemplate.Id, "Chair's Notification Email Trigger");
+            submitPostAction.AddTriggerRefs("1", applicantSubmissionNotification.Id, "Owner Submission-notification Email Trigger");
+            
+            // Added state referances
             startSubmissionAction.AddStateReferances(emptyState.Id);
                 
 
@@ -2345,13 +2366,13 @@ namespace Catfish.UnitTests
 
 
             //Post action for submitting the form
-            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
-            submitPostAction.AddStateMapping(emptyState.Id, inReviewState.Id, "Submit");
+           // PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            //submitPostAction.AddStateMapping(emptyState.Id, inReviewState.Id, "Submit");
 
             //Defining the pop-up for the above submitPostAction action
-            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
-            submitActionPopUp.AddButtons("Yes, submit", "true");
-            submitActionPopUp.AddButtons("Cancel", "false");
+            //PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
+            //submitActionPopUp.AddButtons("Yes, submit", "true");
+            //submitActionPopUp.AddButtons("Cancel", "false");
 
             //Defining trigger refs -- added Feb 12 2021
           //  submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant Submission Notification Email Trigger");
