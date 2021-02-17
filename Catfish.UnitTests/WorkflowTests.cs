@@ -2280,15 +2280,15 @@ namespace Catfish.UnitTests
             //                        "You will be required to log in with your CCID email.</p> <br/>" +
             //                        "<p>Thank you.</p>";
 
-            EmailTemplate chairEmailTemplate = ws.GetEmailTemplate("Chair Email Template", true);
-            chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
-            chairEmailTemplate.SetSubject("SAS Application");
-            chairEmailTemplate.SetBody("emailBody");
+            //EmailTemplate chairEmailTemplate = ws.GetEmailTemplate("Chair Email Template", true);
+            //chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
+            //chairEmailTemplate.SetSubject("SAS Application");
+            //chairEmailTemplate.SetBody("emailBody");
 
 
-            EmailTemplate applicantSubmissionNotification = ws.GetEmailTemplate("Applicant Notification", true);
-            applicantSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the applicant when application's submitted.", lang);
-            applicantSubmissionNotification.SetSubject("SAS Application Submission");
+            //EmailTemplate applicantSubmissionNotification = ws.GetEmailTemplate("Applicant Notification", true);
+            //applicantSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the applicant when application's submitted.", lang);
+            //applicantSubmissionNotification.SetSubject("SAS Application Submission");
             //emailBody = @"<p>Dear Colleague,</p>
             //                    <p>
             //                    Thank you for submitting your SAS grant application. 
@@ -2303,7 +2303,7 @@ namespace Catfish.UnitTests
             //                    Associate Dean (Research)
             //                    </p>";
 
-            applicantSubmissionNotification.SetBody("emailBody");
+           // applicantSubmissionNotification.SetBody("emailBody");
 
 
             //Defining triggers
