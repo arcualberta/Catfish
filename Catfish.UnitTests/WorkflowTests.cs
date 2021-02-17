@@ -2488,6 +2488,89 @@ namespace Catfish.UnitTests
             return comField;
         }
 
+        private DataItem CreateChairAssessmentForm(ItemTemplate template)
+        {
+            string lang = "en";
+            DataItem form = template.GetDataItem("Chair's Assessment Form", true, lang);
+            form.IsRoot = false;
+            form.SetDescription("This template is designed for Chair's Assessment", lang);
+
+            form.CreateField<TextField>("Applicant Name", lang, true); //ideally this field will be automatically filled from the "Applicant Name" field on the main form
+            form.CreateField<TextField>("Applicant Email", lang, true);//ideally this field will be automatically filled from the "Applicant Email" field on the main form
+            string[] departmentList = GetDepartmentList();
+
+            form.CreateField<SelectField>("Department:", lang, departmentList, true);
+
+            string[] rank = new string[]{ "Assistant Professor",
+                                "Associate Professor",
+                                "Professor",
+                                "FSO",
+                                "Other"};
+            form.CreateField<SelectField>("Rank:", lang, rank, true);
+            form.CreateField<TextArea>("Comment on the feasibility of the project and its importance at this time in the applicant’s career.", lang, true).SetAttribute("cols", 50);
+
+            string[] priorities = new string[]{ "Top Priority",
+                                "High Priority",
+                                "Moderate Priority",
+                                "Low Priority",
+                                "Should Not Be Funded"};
+            form.CreateField<RadioField>("Please rank the importance of the research or conference travel to the applicant’s career.", lang, priorities, true);
+            form.CreateField<RadioField>("Please rank the importance of the venue (for conference travel only).", lang, priorities, true);
+            string[] YNOptions = new string[]{ "Yes",
+                                "No"};
+
+            form.CreateField<RadioField>("Has the applicant requested a teaching release?", lang, YNOptions, true);
+            return form;
+        }
+
+        private DataItem CreateAddNotesForm(ItemTemplate template)
+        {
+            string lang = "en";
+            DataItem form = template.GetDataItem("SAS Notes Form", true, lang);
+            form.IsRoot = false;
+            form.SetDescription("This template is designed for SAS Notes Form", lang);
+
+            
+            form.CreateField<TextArea>("Notes", lang, false).SetAttribute("cols", 50);
+
+           
+            return form;
+        }
+
+        private DataItem CreateAdjudicationForm(ItemTemplate template)
+        {
+            string lang = "en";
+            DataItem form = template.GetDataItem("SAS Adjudication Result", true, lang);
+            form.IsRoot = false;
+            form.SetDescription("This template is designed for Adjudication Result Form", lang);
+
+            string[] decisions = new string[]{ "Approved",
+                                "Declined"};
+
+            form.CreateField<RadioField>("Decision", lang, decisions, true);
+            form.CreateField<DecimalField>("Total Awarded", lang, false);
+            form.CreateField<TextArea>("Comments", lang, true).SetAttribute("cols", 50);
+
+
+            return form;
+        }
+        private DataItem CreateAddRankingForm(ItemTemplate template)
+        {
+            string lang = "en";
+            DataItem form = template.GetDataItem("Ranking", true, lang);
+            form.IsRoot = false;
+            form.SetDescription("This template is designed for SAS Ranking Form", lang);
+
+          
+            form.CreateField<TextField>("Reviewer Email", lang, true);
+            form.CreateField<IntegerField>("Ranking", lang, true).SetDescription("Please score this submission with a value between 0 and 100", lang);
+            form.CreateField<TextArea>("Comments", lang, true).SetAttribute("cols", 50);
+
+
+            return form;
+        }
+
+
         [Test]
         public void TestFileUpload()
         {
