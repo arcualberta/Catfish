@@ -2322,7 +2322,8 @@ namespace Catfish.UnitTests
             //Only safey inspectors can submit this form
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
             startSubmissionAction.Access = GetAction.eAccess.Public;
-            startSubmissionAction.AddStateReferances(emptyState.Id)
+
+            startSubmissionAction.AddStateReferances(emptyState.Id);
                 
 
 
