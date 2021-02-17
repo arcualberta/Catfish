@@ -50,94 +50,9 @@ function submitWorkflowForm(suffix, successMessage) {
         //Handling radio-button fields and drop-down menus
         $.each($('input[type=radio]:checked, select', form).serializeArray(), function (i, field) {
             name = field.name.replace(prefix, "") + ".SelectedOptionGuids";
-            values[name] = [field.value];
+            values[name] = field.value ? [field.value] : [];
         });
 
-
-        //========================= process attached files first =====================================
-        //get the attachmentFiles -- MR Jan 23 2021 attemp to attach file upload
-        ////////var Files = new FormData();
-        //////////get all corresponde of the hiiden field for each of the AttachmentField on the form
-        ////////var AttachmentHidden = $("input[name$='FileNames']");
-        ////////var hiddenFiles = "";
-        ////////$.each($("input[type=file]"), function (i, field) {
-
-        ////////    if ($(field)[0].files.length > 0) {
-        ////////        let file = $(field)[0].files[0];
-        ////////        let fname = field.id + "_" + file.name;
-        ////////        Files.append("files", file, fname);
-
-        ////////         //set the hidden field value
-        ////////        hiddenFiles = fname;
-        ////////        $(AttachmentHidden[i]).val(fname);
-        ////////    }
-           
-           
-        ////////});
-
-        ////////let savedFiles="";
-        ////////let urlstr = "/api/items/SaveFiles";
-        //////////should be called only if there's (are) attachment file(s).
-        ////////if (!!Files.entries().next().value) {
-        ////////    $.ajax({
-        ////////        type: "POST",
-        ////////        url: "/api/items/SaveFiles",
-        ////////        beforeSend: function (xhr) {
-        ////////            xhr.setRequestHeader("XSRF-TOKEN",
-        ////////                $('input:hidden[name="__RequestVerificationToken"]').val());
-        ////////        },
-        ////////        data: Files,
-        ////////        contentType: false,
-        ////////        processData: false,
-        ////////        success: function (response) {
-        ////////            alert("succes " + response);
-        ////////            if (response.includes("|")) {
-        ////////                //contain more than 1 field attachment that has file
-        ////////                let elms = response.split("|");
-                       
-        ////////                $.each(AttachmentHidden, function (i, el) {
-        ////////                    let names = elm.split(":");
-        ////////                    savedFiles = "";
-        ////////                    $.each(elms, function (i, elm) {//$.each(AttachmentHidden, function (i, el) {
-        ////////                        if (el.id.includes(names[0])) {
-                                   
-        ////////                            savedFiles += names[1] + "|";
-        ////////                        }
-        ////////                    });
-        ////////                    //update the hidden value of the field
-        ////////                    $("#" + el.id).val(savedFiles);
-        ////////                    name = el.name.replace(prefix, "");
-        ////////                    values[name] = savedFiles;
-        ////////                });
-        ////////            }
-        ////////            else {
-        ////////                //only single attachment field
-        ////////                let names = response.split(":"); //[0] + Field_4 ==> Field index and [1]: the fileName
-        ////////                //update the correspondense hidden field
-        ////////                $.each(AttachmentHidden, function (i, el) {
-        ////////                    if (el.id.includes(names[0])) {
-        ////////                        //update the hidden value of the field
-        ////////                        $("#" + el.id).val(names[1]);
-        ////////                        savedFiles = names[1];
-        ////////                        name = el.name.replace(prefix, "");
-        ////////                        values[name] = names[1];
-        ////////                    }
-        ////////                });
-
-        ////////            }
-
-
-        ////////        },
-        ////////        error: function (error) {
-        ////////            $("#submission-result-message_" + suffix + " div").text("Error try saving file(s)");
-        ////////            $("#submission-result-message_" + suffix).show();
-        ////////            return;
-        ////////        },
-        ////////        async: false
-        ////////    });
-        ////////}
-
-        ////////values["fileNames"] = savedFiles;
         //===================================end processed files ======================================
 
         values["actionButton"] = buttonName;
@@ -158,7 +73,7 @@ function submitWorkflowForm(suffix, successMessage) {
                 //  $(".submission-result-message").addClass("alert alert-success");
                 message = successMessage !== "" ? successMessage : data.message;
                 $("#submission-result-message_" + suffix).append("<div class='alert alert-success' ></div>");
-
+            
                 $("#submissionForm_" + suffix).hide();//[0].reset();
             }
             else {
@@ -166,8 +81,6 @@ function submitWorkflowForm(suffix, successMessage) {
                 $("#submission-result-message_" + suffix).append("<div class='alert alert-danger' ></div>");
                 message = data.message;
             }
-
-
 
             $("#submission-result-message_" + suffix + " div").text(message);
             $("#submission-result-message_" + suffix).show();

@@ -16,7 +16,7 @@ namespace Catfish.Core.Services
         public void SetModel(EntityTemplate entityTemplate);
         public void SetModel(Item item);
         public EntityTemplate GetModel();
-        public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists);
+        ////public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists);
         //public DataItem GetDataItem(string dataItemName, bool createIfNotExists);
 
         ////public Workflow GetWorkflow(bool createIfNotExist);
@@ -33,7 +33,7 @@ namespace Catfish.Core.Services
         
         public List<PostAction> GetAllChangeStatePostActions(EntityTemplate entityTemplate, Guid statusId);
 
-        public ItemTemplate CreateBasicSubmissionTemplate(string templateName, string lang);
+        public ItemTemplate CreateBasicSubmissionTemplate(string templateName, string submissionFormName, string lang);
 
         public string GetLoggedUserEmail();
 

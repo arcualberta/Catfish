@@ -75,6 +75,7 @@ namespace Catfish.Core.Models
         public override void Initialize(bool regenerateId)
         {
             base.Initialize(regenerateId);
+            mWorkflow = null;
             ////InitializeWorkflow();
         }
 
@@ -87,6 +88,13 @@ namespace Catfish.Core.Models
         ////        //Workflow.Initialize(XmlModel.eGuidOption.Ignore);
         ////    }
         ////}
+
+
+        public EmailTemplate GetEmailTemplate(string templateName, string lang, bool createIfNotExists)
+        {
+            MetadataSet ms = GetMetadataSet(templateName, lang, createIfNotExists, true);
+            return ms == null ? null : new EmailTemplate(ms.Data);
+        }
 
         public EntityTemplate Clone()
         {

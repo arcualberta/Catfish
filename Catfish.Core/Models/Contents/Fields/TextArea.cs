@@ -10,7 +10,7 @@ namespace Catfish.Core.Models.Contents.Fields
         public int Rows
         {
             get => GetAttribute("rows", 5);
-            set => SetAttribute("rows", 5);
+            set => SetAttribute("rows", value);
         }
 
         public int Cols

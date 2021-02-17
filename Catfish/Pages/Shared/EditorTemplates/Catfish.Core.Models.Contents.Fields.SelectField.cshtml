@@ -15,9 +15,14 @@
     @Html.HiddenFor(model => model.Id)
 
 
-    //Incorporating the visible-if data attributes for the options if needed
-    if (Model.Options.Where(op => !string.IsNullOrWhiteSpace(op.VisibilityCondition.Value)).Any())
+    if (Model.Options.Where(op => !string.IsNullOrWhiteSpace(op.VisibilityCondition.Value)).Any() == false)
     {
+        @Html.DropDownListFor(model => model, options, ViewData)
+    }
+    else
+    {
+        //Incorporating the visible-if data attributes for the options if needed
+
         var selectHtmlContent = Html.DropDownListFor(model => model, options, ViewData);
         string selectHtmlString = "";
         using (var writer = new System.IO.StringWriter())
@@ -48,51 +53,4 @@
 
         @Html.Raw(selectHtmlString)
     }
-    else
-    {
-        @Html.DropDownListFor(model => model, options, ViewData)
-    }
-
-    //string onChangeTrigger = string.Format("updateFields('{0}', this);", Html.IdFor(model => model));
-    //object viewData;
-    //if (Model.Required)
-    //{
-    //    viewData = new
-    //    {
-    //        required = (string) null,
-    //        onchange = onChangeTrigger
-    //    };
-    //}
-    //else
-    //{
-    //    viewData = new
-    //    {
-    //        data_visible_if = Model.VisibilityCondition.Value,
-    //        data_required_if = Model.RequiredCondition.Value,
-    //        onchange = onChangeTrigger
-    //    };
-    //}
-
-    ////string onChangeTrigger = string.Format("updateFields('{0}', this);", Html.IdFor(model => model));
-    ////Dictionary<string, object> viewData = new Dictionary<string, object>(); ;
-    ////if (Model.Required)
-    ////{
-    ////    viewData.Add("required", (string)null);
-    ////    viewData.Add("onchange", onChangeTrigger);
-    ////}
-    ////else
-    ////{
-    ////    viewData.Add("data_visible_if", Model.VisibilityCondition.Value);
-    ////    viewData.Add("data_required_if", Model.RequiredCondition.Value);
-    ////    viewData.Add("onchange", onChangeTrigger);
-    ////}
-
-    @*if (Model.Required)
-        {
-            @Html.DropDownListFor(model => model, options, new { required = (string)null, onchange = @onChangeTrigger })
-                }
-        else
-        {
-            @Html.DropDownListFor(model => model, options, new { onchange = @onChangeTrigger })
-                }*@
 }

@@ -1,5 +1,6 @@
 ﻿using Catfish.Core.Models;
 using Catfish.Core.Models.Contents.Workflow;
+using Catfish.Core.Services;
 using ElmahCore;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;

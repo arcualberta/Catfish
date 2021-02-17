@@ -14,6 +14,27 @@
             }
             else {
                 $("#" + fieldId).hide()
+
+                //If this is an option
+                if ($(field).prop("tagName").toLowerCase() === "option") {
+                    let parent = $(field).parent();
+                    //If this is a drop-down menu
+                    if ($(parent).prop("tagName").toLowerCase() === "select") {
+                        //We need to check whether the currently selected
+                        //value is equal to the current field that is made hidden and if so, reset 
+                        //the selected field.
+
+                        if ($(parent).val() === $(field).val()) {
+                            $(parent).val("")
+                        }
+                    }
+                }
+
+                //If this is a radio button
+                if ($(field).is(':radio')) {
+                    $(field).prop('checked', false);
+                }
+
             }
         }
     }
