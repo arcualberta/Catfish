@@ -2570,6 +2570,34 @@ namespace Catfish.UnitTests
             return form;
         }
 
+        private DataItem CreateSASFinalReportForm(ItemTemplate template)
+        {
+            string lang = "en";
+            DataItem form = template.GetDataItem("Final Report Form", true, lang);
+            form.IsRoot = false;
+            form.SetDescription("This template is designed for SAS Final report", lang);
+
+            form.CreateField<InfoSection>(null, null)
+                .AppendContent("div", "Once your SAS or Conference Fund grant has been exhausted, and no later than the final report due date indicated in your notice of award, you must submit a final report to the Associate Dean, Research.", lang)
+                .AppendContent("div", "Faculty members will not be eligible for further SAS or Conference Fund grants if there are outstanding final reports from previous grants.", lang);
+
+            form.CreateField<TextField>("Name", lang, true);
+            form.CreateField<TextField>("Email", lang, false);
+            string[] departmentList = GetDepartmentList();
+
+            form.CreateField<SelectField>("Department:", lang, departmentList, false);
+
+            form.CreateField<InfoSection>(null, null)
+                .AppendContent("div", "Your report should briefly outline how the funding received benefitted the project for which funding was granted.", lang);
+
+
+            form.CreateField<TextArea>("Report Notes", lang, true).SetAttribute("cols", 50);
+
+
+            form.CreateField<AttachmentField>("Attachment", lang).SetDescription("Maximum file size: 50 MB", lang);
+           
+            return form;
+        }
 
         [Test]
         public void TestFileUpload()
