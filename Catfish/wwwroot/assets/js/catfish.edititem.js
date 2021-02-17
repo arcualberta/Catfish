@@ -26,7 +26,11 @@ if (document.getElementById("item-edit-page")) {
                 },
                 fieldRequiredLabel: '',
                 valueLabel: '',
-                deleteLabel: ''
+                deleteLabel: '',
+                testField: {
+                    Values: [],
+                    Type: ''
+                }
             }
         },
         methods: {
@@ -35,15 +39,24 @@ if (document.getElementById("item-edit-page")) {
              */
             addNewValue() {
 
-                let newEntry = JSON.parse( JSON.stringify(this.fieldData.Values.$values[0]) );
+                //let newEntry = JSON.parse( JSON.stringify(this.fieldData.Values.$values[0]) );
+                //newEntry.Id = uuidv1();
+
+                ////TODO need to check this for Date, Integer, etc, the structure is different
+                //for (let item of newEntry.Values.$values) {
+                //    item.Value = "";
+                //}
+
+                //this.fieldData.Values.$values.splice(this.fieldData.Values.$values.length, 0, newEntry);
+
+                let newEntry = JSON.parse(JSON.stringify(this.testField.Values[0]));
                 newEntry.Id = uuidv1();
 
-                //TODO need to check this for Date, Integer, etc, the structure is different
-                for (let item of newEntry.Values.$values) {
-                    item.Value = "";
-                }
+                //TODO need to check this for Date, Integer, etc, the sfor (let item of newEntry.Values.$values) {
+                newEntry.Value = "";
 
-                this.fieldData.Values.$values.splice(this.fieldData.Values.$values.length, 0, newEntry);
+                this.testField.Values.splice(this.testField.Values.length, 0, newEntry);
+
             },
 
             /**
@@ -54,6 +67,20 @@ if (document.getElementById("item-edit-page")) {
                 //this.setOriginalFields();
             },
         },
+
+        mounted() {
+            //first index request is for language, second is values per language
+            //so therefore, this is the values for a single language
+
+            //therefore, to handle multiple languages - each one flattened?
+            //some variable need to hold the keys for each language - maybe is just indices though?
+            //
+            if (this.testField.Values.length <= 0 && this.fieldData.Values.$values[0].hasOwnProperty('Values')) {
+                this.testField.Values = this.fieldData.Values.$values[0].Values.$values;
+                this.testField.Type = this.fieldData.$type;
+            }
+        },
+
         created() {
             this.fieldRequiredLabel = StaticItems.managerSideValues.editItemLabels.FIELD_REQUIRED_LABEL;
             this.valueLabel = StaticItems.managerSideValues.editItemLabels.VALUE_LABEL;
@@ -87,9 +114,22 @@ if (document.getElementById("item-edit-page")) {
                      the index is always set to 0.
                      -->
                      <div v-if="!isInPreviewMode" class="col-md-4 mb-3 metadata-input">
-                        <input v-if="fieldData.$type.includes(inputTypes.text)"
+<div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of testField.Values"> <!-- fieldData.Values.$values[index].Values.$values[0].Value -->
+                        <input
                         required type="text" class="form-control"
-                        v-model="fieldData.Values.$values[index].Values.$values[0].Value">
+                        v-model="testField.Values[fieldValueIndex].Value"
+                        >
+                        <div class="btn-group new-value-button" role="group">
+                            <button :disabled="testField.Values.length <= 1"
+                                type="button" v-on:click="deleteField()"
+                                class="btn btn-sm btn-danger btn-labeled trash-button">
+                                <i class="fas fa-trash"></i>
+                                {{deleteLabel}}
+                            </button>
+                        </div>
+</div>
+<div>{{testField}}</div>
+<!--
                         <textarea v-else-if="fieldData.$type.includes(inputTypes.textarea)"
                         required class="form-control" rows="3"
                         v-model="fieldData.Values.$values[index].Values.$values[0].Value"></textarea>
@@ -98,10 +138,10 @@ if (document.getElementById("item-edit-page")) {
                         required class="form-control">
                         <input type="number" v-else-if="fieldData.$type.includes(inputTypes.integer)"
                         v-model="fieldData.Values.$values[index].Value"
-                        required class="form-control">
+                        required class="form-control">-->
                         <!--TODO need to come back and adjust this for better decimal functionality -->
-                        <input type="number" step=".01" v-else-if="fieldData.$type.includes(inputTypes.decimal)"
-                        required class="form-control" v-model="fieldData.Values.$values[index].Value">
+                        <!--<input type="number" step=".01" v-else-if="fieldData.$type.includes(inputTypes.decimal)"
+                        required class="form-control" v-model="fieldData.Values.$values[index].Value">-->
                         <!--<vue-editor v-else-if="fieldData.$type.includes(inputTypes.textarea)
                                 v-model="fieldData.Values.$values[index].Values.$values[0].Value">
                         </vue-editor>-->
@@ -131,14 +171,7 @@ if (document.getElementById("item-edit-page")) {
                             {{valueLabel}}
                         </button>
                     </div>
-                    <div class="btn-group new-value-button" role="group">
-                        <button :disabled="fieldData.Values.$values.length <= 1"
-                                type="button" v-on:click="deleteField()"
-                                class="btn btn-sm btn-danger btn-labeled trash-button">
-                            <i class="fas fa-trash"></i>
-                            {{deleteLabel}}
-                        </button>
-                    </div>
+                    
 
                 </div>
 
