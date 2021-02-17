@@ -188,5 +188,32 @@ namespace Catfish.UnitTests
             template.Data.Save("..\\..\\..\\..\\Examples\\visibleIf_Options_Workflow_generared.xml");
 
         }
+
+        [Test]
+        public void CompisiteFieldTest()
+        {
+            string lang = "en";
+            string templateName = "Composite-field Form Template";
+            string submissionFormName = "Composite-field Form";
+
+            ItemTemplate template = SubmissionItemTemplate(templateName, submissionFormName, lang);
+
+            DataItem childForm = template.GetDataItem("Child Form", true, lang);
+            childForm.CreateField<TextField>("Name", lang);
+            childForm.CreateField<DateField>("DOB", lang);
+            childForm.CreateField<EmailField>("Email", lang);
+            childForm.CreateField<TextArea>("Address", lang);
+            childForm.CreateField<RadioField>("Status", lang, new string[] { "Citizen", "Permenant Resident", "Visitor" });
+
+            DataItem form = template.GetRootDataItem(false);
+            Assert.IsNotNull(form);
+            CompositeField cf = childForm.CreateField<CompositeField>("Person Info", lang);
+            cf.ChildTemplate = childForm;
+
+            _db.SaveChanges();
+            template.Data.Save("..\\..\\..\\..\\Examples\\compositeField_Workflow_generared.xml");
+
+
+        }
     }
 }
