@@ -88,6 +88,7 @@ namespace Catfish.Core.Models.Contents.Workflow
             IEmailService emailService = serviceProvider.GetService<IEmailService>();
             IWorkflowService workflowService = serviceProvider.GetService<IWorkflowService>();
             IConfig config = serviceProvider.GetService<IConfig>();
+            string lang = "en";
 
             workflowService.SetModel(template);
             //get email trigger from workflow triggers using trigger referance.
@@ -104,7 +105,7 @@ namespace Catfish.Core.Models.Contents.Workflow
                                     .FirstOrDefault();
 
             //get email template using workflow service GetEmailTemplate. Inhere need to pass email template.
-            EmailTemplate emailTemplate = workflowService.GetEmailTemplate(emailTemplateName, false);
+            EmailTemplate emailTemplate = template.GetEmailTemplate(emailTemplateName, lang, false);
 
             //get all recipient in the trigger.
             var recipients = selectedTrigger.Recipients.ToList();

@@ -224,22 +224,22 @@ namespace Catfish.UnitTests
 
 
             //Defining email templates
-            EmailTemplate centralAdminNotification = ws.GetEmailTemplate("Central Admin Notification", true);
+            EmailTemplate centralAdminNotification = template.GetEmailTemplate("Central Admin Notification", lang, true);
             centralAdminNotification.SetDescription("This metadata set defines the email template to be sent to the central admin when a dept admin makes a submission.", lang);
             centralAdminNotification.SetSubject("Calendar Change Submission");
             centralAdminNotification.SetBody("A @Link[calendar chane|@Model] was submitted.\n\nThank you");
 
-            EmailTemplate deptAdminSubmissionNotification = ws.GetEmailTemplate("Dept. Admin Submission Admin Notification", true);
+            EmailTemplate deptAdminSubmissionNotification = template.GetEmailTemplate("Dept. Admin Submission Admin Notification", lang, true);
             deptAdminSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when he/she submits a new or revised calendar change.", lang);
             deptAdminSubmissionNotification.SetSubject("Calendar Change Submission");
             deptAdminSubmissionNotification.SetBody("A @Link[calendar change|@Model] was submitted.\n\nThank you");
 
-            EmailTemplate revisionNotification = ws.GetEmailTemplate("Central Admin Revision Notification", true);
+            EmailTemplate revisionNotification = template.GetEmailTemplate("Central Admin Revision Notification", lang, true);
             revisionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when central admin make a revision request.", lang);
             revisionNotification.SetSubject("Calendar Change Submission Need to Revise");
             revisionNotification.SetBody("A @Link[calendar change|@Model] need to revise.\n\nThank you");
 
-            EmailTemplate moveToDraftCalendarNotification = ws.GetEmailTemplate("Move to Draft Calendar Notification", true);
+            EmailTemplate moveToDraftCalendarNotification = template.GetEmailTemplate("Move to Draft Calendar Notification", lang, true);
             moveToDraftCalendarNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when the submission request move to the draft calendar.", lang);
             moveToDraftCalendarNotification.SetSubject("Calendar Change Submission moved to the draft calendar");
             moveToDraftCalendarNotification.SetBody("A @Link[calendar change|@Model] moved to the draft calendar.\n\nThank you");
@@ -943,7 +943,7 @@ namespace Catfish.UnitTests
 
 
             //Defining email templates
-            EmailTemplate centralAdminNotification = ws.GetEmailTemplate("Event Admin Notification", true);
+            EmailTemplate centralAdminNotification = template.GetEmailTemplate("Event Admin Notification", lang, true);
             centralAdminNotification.SetDescription("This metadata set defines the email template to be sent to the event admin when a user register.", lang);
             centralAdminNotification.SetSubject("Central America Conference");
             centralAdminNotification.SetBody("A @Link[registration form|@Model] was submitted.\n\nThank you"); //???
@@ -1088,12 +1088,12 @@ namespace Catfish.UnitTests
 
 
             //Defining email templates
-            EmailTemplate centralAdminNotification = ws.GetEmailTemplate("Central Admin Notification", true);
+            EmailTemplate centralAdminNotification = template.GetEmailTemplate("Central Admin Notification", lang, true);
             centralAdminNotification.SetDescription("This metadata set defines the email template to be sent to the central admin when a dept admin makes a submission.", lang);
             centralAdminNotification.SetSubject("Safety Inspection Submission");
             centralAdminNotification.SetBody("A @Link[safety form|@Model] was submitted.\n\nThank you"); 
 
-            EmailTemplate deptAdminSubmissionNotification = ws.GetEmailTemplate("User Notification", true);
+            EmailTemplate deptAdminSubmissionNotification = template.GetEmailTemplate("User Notification", lang, true);
             deptAdminSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when he/she submits a safety inspection form.", lang);
             deptAdminSubmissionNotification.SetSubject("Safety Inspection Submission");
             deptAdminSubmissionNotification.SetBody("A @Link[[safety form|@Model] was submitted.\n\nThank you");
@@ -1447,12 +1447,12 @@ namespace Catfish.UnitTests
 
 
             //Defining email templates
-            EmailTemplate adminNotification = ws.GetEmailTemplate("Admin Notification", true);
+            EmailTemplate adminNotification = template.GetEmailTemplate("Admin Notification", lang, true);
             adminNotification.SetDescription("This metadata set defines the email template to be sent to the admin when an inspector does not submit an inspection report timely.", lang);
             adminNotification.SetSubject("Safety Inspection Submission");
             adminNotification.SetBody("TBD");
 
-            EmailTemplate inspectorSubmissionNotification = ws.GetEmailTemplate("Inspector Notification", true);
+            EmailTemplate inspectorSubmissionNotification = template.GetEmailTemplate("Inspector Notification", lang, true);
             inspectorSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to an inspector when an inspection report is not submitted timely.", lang);
             inspectorSubmissionNotification.SetSubject("Safety Inspection Reminder");
             inspectorSubmissionNotification.SetBody("TBD");
@@ -2280,30 +2280,29 @@ namespace Catfish.UnitTests
                                     "You will be required to log in with your CCID email.</p> <br/>" +
                                     "<p>Thank you.</p>";
 
-            EmailTemplate chairEmailTemplate = ws.GetEmailTemplate("Chair Email Template", true);
+            EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
             chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
             chairEmailTemplate.SetSubject("SAS Application");
             chairEmailTemplate.SetBody(emailBody);
 
 
-            //EmailTemplate applicantSubmissionNotification = ws.GetEmailTemplate("Applicant Notification", true);
-            //applicantSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the applicant when application's submitted.", lang);
-            //applicantSubmissionNotification.SetSubject("SAS Application Submission");
-            //emailBody = @"<p>Dear Colleague,</p>
-            //                    <p>
-            //                    Thank you for submitting your SAS grant application. 
-            //                    Your chair has been automatically notified to provide an assessment about your application. 
-            //                    We will inform you of the decision when the application review process is completed. 
-            //                    </p>
-            //                    <p>
-            //                    Thank you.
-            //                    </p>
-            //                    <p>
-            //                    Steve Patten <br />
-            //                    Associate Dean (Research)
-            //                    </p>";
-
-            // applicantSubmissionNotification.SetBody("emailBody");
+            EmailTemplate applicantSubmissionNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
+            applicantSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the applicant when application's submitted.", lang);
+            applicantSubmissionNotification.SetSubject("SAS Application Submission");
+            emailBody = @"<p>Dear Colleague,</p>
+                                <p>
+                                Thank you for submitting your SAS grant application. 
+                                Your chair has been automatically notified to provide an assessment about your application. 
+                                We will inform you of the decision when the application review process is completed. 
+                                </p>
+                                <p>
+                                Thank you.
+                                </p>
+                                <p>
+                                Steve Patten <br />
+                                Associate Dean (Research)
+                                </p>";
+            applicantSubmissionNotification.SetBody(emailBody);
 
 
             //Defining triggers
@@ -2935,12 +2934,12 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 				//<br/>
 				//<p>Thank you.</p>";
 
-            EmailTemplate chairEmailTemplate = ws.GetEmailTemplate("Chair Email Template", true);
+            EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
             chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
             chairEmailTemplate.SetSubject("SAS Application");
             chairEmailTemplate.SetBody("emailBody");
 
-            EmailTemplate advisorEmailTemplate = ws.GetEmailTemplate("Advisor Email Template", true);
+            EmailTemplate advisorEmailTemplate = template.GetEmailTemplate("Advisor Email Template", lang, true);
             advisorEmailTemplate.SetSubject("SAS Application");
             advisorEmailTemplate.SetBody("emailBody");
 
@@ -2959,7 +2958,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
 
 
-            EmailTemplate applicantSubmissionNotification = ws.GetEmailTemplate("Applicant Notification", true);
+            EmailTemplate applicantSubmissionNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
             applicantSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the applicant when application's submitted.", lang);
             applicantSubmissionNotification.SetSubject("SAS Application Submission");
             //emailBody = @"<p>Dear Colleague,</p>

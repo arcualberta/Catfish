@@ -74,19 +74,20 @@ namespace Catfish.Core.Services
 
         }
 
-        public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists)
-        {
-            try
-            {
-                MetadataSet ms = GetMetadataSet(templateName, createIfNotExists, true);
-                return ms == null ? null : new EmailTemplate(ms.Data);
-            }
-            catch (Exception ex)
-            {
-                _errorLog.Log(new Error(ex));
-                return null;
-            }
-        }
+        ////public EmailTemplate GetEmailTemplate(string templateName, bool createIfNotExists)
+        ////{
+        ////    try
+        ////    {
+        ////        MetadataSet ms = GetMetadataSet(templateName, createIfNotExists, true);
+        ////        return ms == null ? null : new EmailTemplate(ms.Data);
+        ////    }
+        ////    catch (Exception ex)
+        ////    {
+        ////        _errorLog.Log(new Error(ex));
+        ////        return null;
+        ////    }
+        ////}
+        
         protected MetadataSet GetMetadataSet(string metadataSetName, bool createIfNotExists, bool markAsTemplateMetadataSetIfCreated)
         {
             try
