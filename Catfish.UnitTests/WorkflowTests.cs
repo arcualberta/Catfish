@@ -1878,18 +1878,7 @@ namespace Catfish.UnitTests
             //Get the Workflow object using the workflow service
             Workflow workflow = template.Workflow;
 
-            //Defininig states
-            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
-            State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
-            State inReviewState = workflow.AddState(ws.GetStatus(template.Id, "InReview", true));
-            State reviewCompletedState = workflow.AddState(ws.GetStatus(template.Id, "ReviewCompleted", true));
-            State inAdjudicationState = workflow.AddState(ws.GetStatus(template.Id, "InAdjudication", true));
-            State acceptedState = workflow.AddState(ws.GetStatus(template.Id, "Accepted", true));
-            State rejectedState = workflow.AddState(ws.GetStatus(template.Id, "Rejected", true));
-            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
-
-            // Defining roles
-            WorkflowRole sasAdmin = workflow.AddRole(auth.GetRole("SAS_Admin", true));
+            
             //=============================================================================== Defininig SAS form
             DataItem sasForm = template.GetDataItem("SAS Application Form", true, lang);
             sasForm.IsRoot = true;
@@ -2316,10 +2305,20 @@ namespace Catfish.UnitTests
             //chairNotificationEmailTrigger.AddRecipientByEmail(((TextField)chairEmail).GetValue("en"));
             //chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
 
+            //Defininig states
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
+            State inReviewState = workflow.AddState(ws.GetStatus(template.Id, "InReview", true));
+            State reviewCompletedState = workflow.AddState(ws.GetStatus(template.Id, "ReviewCompleted", true));
+            State inAdjudicationState = workflow.AddState(ws.GetStatus(template.Id, "InAdjudication", true));
+            State acceptedState = workflow.AddState(ws.GetStatus(template.Id, "Accepted", true));
+            State rejectedState = workflow.AddState(ws.GetStatus(template.Id, "Rejected", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
+            // Defining roles
+            WorkflowRole sasAdmin = workflow.AddRole(auth.GetRole("SAS_Admin", true));
 
-            // Submitting an inspection form
-            //Only safey inspectors can submit this form
+            // Submitting an SAS form
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
             
             startSubmissionAction.Access = GetAction.eAccess.Public;
@@ -2348,25 +2347,32 @@ namespace Catfish.UnitTests
                 
 
 
-
-
-
-
-
-
-
-            //Listing inspection forms.
-            //Inspectors can list their own submissions.
-            //Admins can list all submissions.
+            // Listing SAS forms.
+            
             GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
             listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            
+            listSubmissionsAction.AddStateReferances(savedState.Id)
+                .AddOwnerAuthorization();
             listSubmissionsAction.AddStateReferances(inReviewState.Id)
-                .AddOwnerAuthorization()
-                .AddAuthorizedRole(sasAdmin.Id);
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(reviewCompletedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(inAdjudicationState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(acceptedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddOwnerAuthorization();
 
 
             //Post action for submitting the form
-           // PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            // PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
             //submitPostAction.AddStateMapping(emptyState.Id, inReviewState.Id, "Submit");
 
             //Defining the pop-up for the above submitPostAction action
@@ -2375,8 +2381,8 @@ namespace Catfish.UnitTests
             //submitActionPopUp.AddButtons("Cancel", "false");
 
             //Defining trigger refs -- added Feb 12 2021
-          //  submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant Submission Notification Email Trigger");
-          //  submitPostAction.AddTriggerRefs("1", chairNotificationEmailTrigger.Id, "Chair Submission-notification Email Trigger");
+            //  submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant Submission Notification Email Trigger");
+            //  submitPostAction.AddTriggerRefs("1", chairNotificationEmailTrigger.Id, "Chair Submission-notification Email Trigger");
 
             // Edit submission related workflow items
             //Defining actions
