@@ -17,21 +17,24 @@ $(function () {
         }
         var body = $("textarea[name='cf-body']").val();
 
+        var subject = document.getElementById('subject-value').innerText;
+        var recipient = document.getElementById('recipient-value').innerText;
+
         var Email = { FromEmail: email, Body: body, UserName: cfName, Subject: subject, RecipientEmail: recipient }
 
-        //var url = "../../Cms/SendEmail";
-        //$.ajax({
-        //    type: "POST",
-        //    url: url,
-        //    data: { email: Email },
-        //    success: function (e) {
-        //        alert("Thank you for contacting us.");
-        //    },
-        //    error: function (e) {
-        //        alert("Error while sending email.");
-        //    }
-        //});
-        e.preventDefault();
+        var url = "../../Cms/SendEmail";
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: { email: Email },
+            success: function (e) {
+                alert("Thank you for contacting us.");
+            },
+            error: function (e) {
+                alert("Error while sending email.");
+            }
+        });
+        //e.preventDefault();
     });
 });
 
