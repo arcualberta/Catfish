@@ -2340,7 +2340,7 @@ namespace Catfish.UnitTests
             listSubmissionsAction.Access = GetAction.eAccess.Restricted;
             listSubmissionsAction.AddStateReferances(inReviewState.Id)
                 .AddOwnerAuthorization()
-                .AddAuthorizedRole(sasA.Id);
+                .AddAuthorizedRole(sasAdmin.Id);
 
 
             //Post action for submitting the form
@@ -2362,7 +2362,7 @@ namespace Catfish.UnitTests
 
             //Submissions can only be edited by admins
             editSubmissionAction.AddStateReferances(inReviewState.Id)
-                .AddAuthorizedRole(adminRole.Id);
+                .AddAuthorizedRole(sasAdmin.Id);
 
             //Defining post actions
             PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
@@ -2373,7 +2373,7 @@ namespace Catfish.UnitTests
             //Defining actions. Only admin can delete a submission
             GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
             deleteSubmissionAction.AddStateReferances(inReviewState.Id)
-                .AddAuthorizedRole(adminRole.Id);
+                .AddAuthorizedRole(sasAdmin.Id);
 
             //Defining post actions
             PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
