@@ -1901,7 +1901,7 @@ namespace Catfish.UnitTests
                .AppendContent("div", "The Adjudication committee is a multi-disciplinary committee. Please write for someone who does not understand your work and/or field.<br/>Be clear and concise in your explanations, and make sure your justifications are detailed.", lang);
 
             sasForm.CreateField<TextField>("Applicant Name:", lang, true, true);
-            var applicantEmail = sasForm.CreateField<TextField>("Email Address:", lang, true, true)
+            var applicantEmail = sasForm.CreateField<EmailField>("Email Address:", lang, true, true)
                 .SetDescription("Please use your UAlberta CCID email address.", lang);
 
             string[] departmentList = GetDepartmentList(); 
@@ -1953,7 +1953,7 @@ namespace Catfish.UnitTests
             var chairName = sasForm.CreateField<TextField>("Chair's Name:", lang, true);
             chairName.Readonly = true;
              chairName.ValueExpression.AppendReadableValue(chair, delimiter, 0);
-            var chairEmail = sasForm.CreateField<TextField>("Chair's Email:", lang, true);
+            var chairEmail = sasForm.CreateField<EmailField>("Chair's Email:", lang, true);
             chairEmail.Readonly = true;
             chairEmail.ValueExpression.AppendReadableValue(chair, delimiter, 1);
 
@@ -2466,7 +2466,7 @@ namespace Catfish.UnitTests
             comField.CreateChildTemplate("Collaborator", "Collaborator Information", lang);
 
             comField.ChildTemplate.CreateField<TextField>("Full Name", lang, false);
-            comField.ChildTemplate.CreateField<TextField>("Email Address", lang, false);
+            comField.ChildTemplate.CreateField<EmailField>("Email Address", lang, false);
             comField.Min = min;
             comField.Max = max;//0 means unlimited
             comField.AllowMultipleValues = true;
@@ -2501,7 +2501,7 @@ namespace Catfish.UnitTests
             form.SetDescription("This template is designed for Chair's Assessment", lang);
 
             form.CreateField<TextField>("Applicant Name", lang, true); //ideally this field will be automatically filled from the "Applicant Name" field on the main form
-            form.CreateField<TextField>("Applicant Email", lang, true);//ideally this field will be automatically filled from the "Applicant Email" field on the main form
+            form.CreateField<EmailField>("Applicant Email", lang, true);//ideally this field will be automatically filled from the "Applicant Email" field on the main form
             string[] departmentList = GetDepartmentList();
 
             form.CreateField<SelectField>("Department:", lang, departmentList, true);
@@ -2567,7 +2567,7 @@ namespace Catfish.UnitTests
             form.SetDescription("This template is designed for SAS Ranking Form", lang);
 
           
-            form.CreateField<TextField>("Reviewer Email", lang, true);
+            form.CreateField<EmailField>("Reviewer Email", lang, true);
             form.CreateField<IntegerField>("Ranking", lang, true).SetDescription("Please score this submission with a value between 0 and 100", lang);
             form.CreateField<TextArea>("Comments", lang, true).SetAttribute("cols", 50);
 
@@ -2587,7 +2587,7 @@ namespace Catfish.UnitTests
                 .AppendContent("div", "Faculty members will not be eligible for further SAS or Conference Fund grants if there are outstanding final reports from previous grants.", lang);
 
             form.CreateField<TextField>("Name", lang, true);
-            form.CreateField<TextField>("Email", lang, false);
+            form.CreateField<EmailField>("Email", lang, false);
             string[] departmentList = GetDepartmentList();
 
             form.CreateField<SelectField>("Department:", lang, departmentList, false);
