@@ -142,7 +142,7 @@ namespace Catfish.Controllers.Api
         // POST api/<ItemController>
         [Route("SubmitForm")]
         [HttpPost]
-        public ApiResult SubmitForm([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] string function, [FromForm] string group, [FromForm] string status, [FromForm] string fileNames=null)
+        public ApiResult SubmitForm([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] string function, [FromForm] string group, [FromForm] Guid status, [FromForm] string fileNames=null)
         {
             ApiResult result = new ApiResult();
             try

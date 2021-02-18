@@ -120,6 +120,7 @@
                 @foreach (var postAction in postActions)
                 {
                     string buttonName = @postAction.ButtonLabel + "_" + @suffix;
+                    var state = postAction.StateMappings.Where(sm => sm.ButtonLabel == postAction.ButtonLabel).FirstOrDefault();
 
                     if (postAction.PopUps.Any())
                     {
@@ -159,7 +160,7 @@
                                                         }
                                                         else
                                                         {
-                                                            <button id="@buttonName" type="submit" class="btn btn-success" onclick="submitWorkflowForm('@suffix', '@successMessage');">@button.Text</button>
+                                                            <button id="@buttonName" type="submit" class="btn btn-success" onclick="submitWorkflowForm('@state.Next','@state.ButtonLabel','@suffix', '@successMessage');">@button.Text</button>
                                                         }
                                                     }
                                                 }
@@ -172,7 +173,7 @@
                     }
                     else
                     {
-                        <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="submit" value="@postAction.ButtonLabel" onclick="submitWorkflowForm('@suffix', '@successMessage');" />
+                        <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="submit" value="@postAction.ButtonLabel" onclick="submitWorkflowForm('@state.Next', '@state.ButtonLabel', '@suffix', '@successMessage');" />
                     }
                 }
             </div>

@@ -76,11 +76,14 @@
                                         if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
                                         .Succeeded)
                                         {
-                                            var postActionData = postAction.StateMappings.Where(sm => sm.Current == item.StatusId).FirstOrDefault();
-                                            var buttonLable = postActionData.ButtonLabel;
-                                            var childFormId = _workflowService.GetChildFormId(template, postAction.Id);
+                                            var stateMappings = postAction.StateMappings.Where(sm => sm.Current == item.StatusId).ToList();
+                                            foreach (var stateMapping in stateMappings)
+                                            {
+                                                var childFormId = _workflowService.GetChildFormId(template, postAction.Id);
 
-                                            <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("../entity/{0}/addchild/{1}/ButtonId/{2}", Model.Item.Id, @childFormId, @postActionData.Id)">  @Localizer.General[@postActionData.ButtonLabel]</a>
+                                                <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("../entity/{0}/addchild/{1}/ButtonId/{2}", Model.Item.Id, @childFormId, @stateMapping.Id)">  @Localizer.General[@stateMapping.ButtonLabel]</a>
+                                            }
+
                                         }
                                     }
                                 </div>

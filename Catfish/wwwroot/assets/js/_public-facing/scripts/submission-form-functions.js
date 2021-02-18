@@ -7,22 +7,10 @@ $(document).ready(function () {
     });  
 });
 
-function submitWorkflowForm(suffix, successMessage) {
-    var status;
-    var buttonName;
+function submitWorkflowForm(status, button, suffix, successMessage) {
     $("#submission-result-message_" + suffix).hide();
 
-    $(document).on('click', "#Submit_" + suffix, function () {
-        status = 'Submitted';
-        buttonName = 'Submit';
-        console.log('Status = ' + status)
-    });
-    $(document).on('click', "#Save_" + suffix, function () {
-        status = 'Saved';
-        buttonName = 'Submit';
-        console.log('Status = ' + status)
-    });
-
+    
     $("#submissionForm_" + suffix).submit(function (event) {
         /* stop form from submitting normally */
         event.preventDefault();
@@ -55,7 +43,7 @@ function submitWorkflowForm(suffix, successMessage) {
 
         //===================================end processed files ======================================
 
-        values["actionButton"] = buttonName;
+        values["actionButton"] = button;
         values["status"] = status;
 
        

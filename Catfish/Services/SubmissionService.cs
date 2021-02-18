@@ -225,7 +225,7 @@ namespace Catfish.Services
         /// <param name="collectionId"></param>
         /// <param name="actionButton"></param>
         /// <returns></returns>
-        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, string status, string action, string fileNames=null)
+        public Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid status, string action, string fileNames=null)
         {
             try
             {
@@ -235,7 +235,7 @@ namespace Catfish.Services
 
                 //When we instantantiate an instance from the template, we do not need to clone metadata sets
                 Item newItem = template.Instantiate<Item>();
-                newItem.StatusId = _entityTemplateService.GetSystemStatus(entityTemplateId, status).Id;
+                newItem.StatusId = status;
                 newItem.PrimaryCollectionId = collectionId;
                 newItem.TemplateId = entityTemplateId;
                 newItem.UserEmail = _workflowService.GetLoggedUserEmail();
