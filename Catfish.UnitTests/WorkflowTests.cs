@@ -24,6 +24,7 @@ namespace Catfish.UnitTests
     {
         private protected AppDbContext _db;
         private protected TestHelper _testHelper;
+        string[] YesNoOptionsText = new string[] { "Yes", "No" };
 
         [SetUp]
         public void Setup()
@@ -3043,6 +3044,8 @@ namespace Catfish.UnitTests
         [Test]
         public void GapConferenceTest()
         {
+            //OTHER EXTRA FORMS : "Add Notes", "Adjudication" and "Ranking" forms same with SAS ones
+            // cahirAssesment and adviser assessment form
             string lang = "en";
             string templateName = "Conference Fund Application - Winter 2021";
 
@@ -3350,6 +3353,39 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             // string json = JsonConvert.SerializeObject(template);
             // File.WriteAllText("..\\..\\..\\..\\Examples\\confForm_generared.json", json);
+        }
+
+        private DataItem CreateConferenceChairAssesmentForm(ItemTemplate template)
+        {
+            string lang = "en";
+            DataItem form = template.GetDataItem("GAP Conference Chair's Assessment", true, lang);
+            form.IsRoot = false;
+            form.SetDescription("This template is designed for GAP Chair's Assessment", lang);
+
+           
+            form.CreateField<TextField>("Applicant Name", lang, true);//if it's possible prefilled from the main form
+            form.CreateField<EmailField>("Email Address", lang, true);//if it's possible prefilled from the main form
+            form.CreateField<RadioField>("Does your department support this application?", lang, YesNoOptionsText, true);
+
+            return form;
+        }
+        private DataItem CreateConferenceAdviserAssesmentForm(ItemTemplate template)
+        {
+            string lang = "en";
+            DataItem form = template.GetDataItem("GAP Conference Adviser's Assessment", true, lang);
+            form.IsRoot = false;
+            form.SetDescription("This template is designed for GAP Conference Adviser's Assessment", lang);
+
+
+            form.CreateField<TextField>("Applicant Name", lang, true);//if it's possible prefilled from the main form
+            form.CreateField<EmailField>("Email Address", lang, true);//if it's possible prefilled from the main form
+            string[] depts = GetDepartmentList();
+            form.CreateField<SelectField>("Department", lang, depts, true);
+            form.CreateField<RadioField>("Do you approve the application?", lang, YesNoOptionsText, true);
+
+            form.CreateField<TextArea>("Comments", lang, false).SetAttribute("cols", 50);
+
+            return form;
         }
 
 
