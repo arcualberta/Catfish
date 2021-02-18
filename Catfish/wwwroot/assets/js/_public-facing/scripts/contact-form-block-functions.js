@@ -6,7 +6,6 @@
 
 $(function () {
     $("#contact-form").on("submit", function (e) {
-        console.log("runs?");
         var cfName = $("input[name='cf-name']").val();
         var email = $("input[name='cf-email']").val();
         if (!ValidateEmail(email)) {
@@ -28,13 +27,18 @@ $(function () {
             url: url,
             data: { email: Email },
             success: function (e) {
-                alert("Thank you for contacting us.");
+                $("#contact-form").remove();
+                $('.contactForm').parent().css('align-items', 'unset');
+                $('.contactForm').append("<p>Thank you for contacting us.</p>")
+                    .append("<p>Your message has been sent.</p>");
+                $('.contactForm').children().first().css({ 'margin-bottom': 'unset', 'font-weight': 'bold' });
+    
+
             },
             error: function (e) {
-                alert("Error while sending email.");
+                alert("Error while sending message.");
             }
         });
-        //e.preventDefault();
     });
 });
 
