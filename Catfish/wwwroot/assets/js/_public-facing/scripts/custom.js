@@ -81,7 +81,12 @@ for(let i = 0; i < columns.length; i++){
     columns[i].children[j].children[0].classList.remove('col-md-12');
     columns[i].children[j].classList.add('remove-padding-in-highlights');
     columns[i].children[j].classList.add('remove-bottom-padding');
-    columns[i].children[j].classList.add('added-height');
+    if( (j != columns[i].children.length -1) ){
+      columns[i].children[j].classList.add('added-height');
+    }
+    if( (i == columns.length - 1) ){
+      columns[i].children[j].children[0].classList.add('contact-us-column');
+    }
   }
 }
 
