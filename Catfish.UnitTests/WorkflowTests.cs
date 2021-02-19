@@ -1799,6 +1799,8 @@ namespace Catfish.UnitTests
 
             var dd3 = inspectionForm.CreateField<SelectField>("DD 3", lang, complexOptionVals);
 
+            inspectionForm.CreateField<TextArea>("Testing max chars", lang).SetAttribute("max-words", 5);
+
             //Setting the default value of a text field dynamically to a value selected by a dropdown menu
             ////////var dd3Val = inspectionForm.CreateField<TextField>("DD3 Value", lang);
             ////////dd3Val.Readonly = true;
