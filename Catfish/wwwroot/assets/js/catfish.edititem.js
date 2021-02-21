@@ -5,12 +5,180 @@ import StaticItems from '../static/string-values.json';
  * Javascript Vue code for creating a single item edit layout in ItemEdit.cshtml.
  */
 
-
 /**
  * This check makes sure the file is only run on the page with
  * the element. Not a huge deal, can be removed if it's causing issues.
  */
 if (document.getElementById("item-edit-page")) {
+
+    Vue.component('item-field-component', {
+        props: ['fieldData', 'isInPreviewMode'],
+        data() {
+            return {
+                //key-value pairs of input types from the database and their associated
+                //input type
+                inputTypes: {
+                    "text": "Catfish.Core.Models.Contents.Fields.TextField",
+                    "textarea": "Catfish.Core.Models.Contents.Fields.TextArea",
+                    "date": "Catfish.Core.Models.Contents.Fields.DateField",
+                    "integer": "Catfish.Core.Models.Contents.Fields.IntegerField",
+                    "decimal": "Catfish.Core.Models.Contents.Fields.DecimalField",
+                },
+                fieldRequiredLabel: '',
+                valueLabel: '',
+                deleteLabel: '',
+                testField: {
+                    Values: [],
+                    Type: ''
+                }
+            }
+        },
+        methods: {
+            /**
+             * Adds another entry set to the field
+             */
+            addNewValue() {
+
+                //let newEntry = JSON.parse( JSON.stringify(this.fieldData.Values.$values[0]) );
+                //newEntry.Id = uuidv1();
+
+                ////TODO need to check this for Date, Integer, etc, the structure is different
+                //for (let item of newEntry.Values.$values) {
+                //    item.Value = "";
+                //}
+
+                //this.fieldData.Values.$values.splice(this.fieldData.Values.$values.length, 0, newEntry);
+
+                let newEntry = JSON.parse(JSON.stringify(this.testField.Values[0]));
+                newEntry.Id = uuidv1();
+
+                //TODO need to check this for Date, Integer, etc, the sfor (let item of newEntry.Values.$values) {
+                newEntry.Value = "";
+
+                this.testField.Values.splice(this.testField.Values.length, 0, newEntry);
+
+            },
+
+            /**
+             * Deletes the field from the item
+             */
+            deleteField() {
+                //this.metadataSets[metadataSetId].Fields.$values.splice(fieldId, 1);
+                //this.setOriginalFields();
+            },
+        },
+
+        mounted() {
+            //first index request is for language, second is values per language
+            //so therefore, this is the values for a single language
+
+            //therefore, to handle multiple languages - each one flattened?
+            //some variable need to hold the keys for each language - maybe is just indices though?
+            //
+            if (this.testField.Values.length <= 0 && this.fieldData.Values.$values[0].hasOwnProperty('Values')) {
+                this.testField.Values = this.fieldData.Values.$values[0].Values.$values;
+                this.testField.Type = this.fieldData.$type;
+            }
+        },
+
+        created() {
+            this.fieldRequiredLabel = StaticItems.managerSideValues.editItemLabels.FIELD_REQUIRED_LABEL;
+            this.valueLabel = StaticItems.managerSideValues.editItemLabels.VALUE_LABEL;
+            this.deleteLabel = StaticItems.managerSideValues.editItemLabels.DELETE_LABEL;
+        },
+        template: `
+        <div class="sitemap-item">
+            <div class="link">
+                <div class="flexer">
+                    <div class="flexer" v-for="(val, index) in fieldData.Name.Values.$values">
+                        <h3 v-if="index >0 && index < fieldData.Name.Values.$values.length" style="white-space: pre"> | </h3>
+                        <h3>{{fieldData.Name.Values.$values[index].Value}}</h3>
+                    </div>
+                </div>
+                <div class="flex-row" v-for="(val, index) in fieldData.Name.Values.$values">
+                    <div class="label-holder">
+                        <!--<div>{{languageLabels[index]}}/{{fieldData.Name.Values.$values[index].Language}}:</div>-->
+                        <button v-if="!isInPreviewMode" type="button" class="btn-sm btn-primary btn-circle"
+                        data-toggle="tooltip" data-placement="top"
+                        :title="fieldData.Description.Values.$values[index].Value">
+                            <i class="fas fa-question"></i>
+                        </button>
+                     </div>
+                     <!--
+                     Note to self about the value in this element:
+                     field.values[index].values[0].value
+                   - The first values is an array of objects. Those objects are for
+                     each field's language.
+                   - The next values is an array of that field language, but there seems to
+                     be no way this would ever increase past 1 item in the array. So therefore,
+                     the index is always set to 0.
+                     -->
+                     <div v-if="!isInPreviewMode" class="col-md-4 mb-3 metadata-input">
+<div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of testField.Values"> <!-- fieldData.Values.$values[index].Values.$values[0].Value -->
+                        <input
+                        required type="text" class="form-control"
+                        v-model="testField.Values[fieldValueIndex].Value"
+                        >
+                        <div class="btn-group new-value-button" role="group">
+                            <button :disabled="testField.Values.length <= 1"
+                                type="button" v-on:click="deleteField()"
+                                class="btn btn-sm btn-danger btn-labeled trash-button">
+                                <i class="fas fa-trash"></i>
+                                {{deleteLabel}}
+                            </button>
+                        </div>
+</div>
+<div>{{testField}}</div>
+<!--
+                        <textarea v-else-if="fieldData.$type.includes(inputTypes.textarea)"
+                        required class="form-control" rows="3"
+                        v-model="fieldData.Values.$values[index].Values.$values[0].Value"></textarea>
+                        <input type="date" v-else-if="fieldData.$type.includes(inputTypes.date)"
+                        v-model="fieldData.Values.$values[index].Value"
+                        required class="form-control">
+                        <input type="number" v-else-if="fieldData.$type.includes(inputTypes.integer)"
+                        v-model="fieldData.Values.$values[index].Value"
+                        required class="form-control">-->
+                        <!--TODO need to come back and adjust this for better decimal functionality -->
+                        <!--<input type="number" step=".01" v-else-if="fieldData.$type.includes(inputTypes.decimal)"
+                        required class="form-control" v-model="fieldData.Values.$values[index].Value">-->
+                        <!--<vue-editor v-else-if="fieldData.$type.includes(inputTypes.textarea)
+                                v-model="fieldData.Values.$values[index].Values.$values[0].Value">
+                        </vue-editor>-->
+                            <div class="invalid-feedback">
+                                {{fieldRequiredLabel}}
+                            </div>
+                        </div>
+                        <div v-else>
+                            <div v-if="fieldData.Values.$values[index].hasOwnProperty('Values')">
+                                {{fieldData.Values.$values[index].Values.$values[0].Value}}
+                            </div>
+                            <div v-else>
+                                <span>
+                                    {{fieldData.Values.$values[index].Value}} <!--.Values.$values[0].Value-->
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="piranha.permissions.pages.add" class="add-value-container">
+                    <div class="btn-group new-value-button" role="group">
+                        <button type="button" v-on:click="addNewValue()"
+                                class="btn btn-sm btn-primary btn-labeled">
+                            <i class="fas fa-plus"></i>
+                            {{valueLabel}}
+                        </button>
+                    </div>
+                    
+
+                </div>
+
+            </div>
+    `
+    });
+
     piranha.itemlist = new Vue({
         el: '#item-edit-page',
         /*components: {
@@ -58,12 +226,6 @@ if (document.getElementById("item-edit-page")) {
                 metadataSets: [],
                 metadataSets_type: null,
                 metadataSetLabel: "Metadata Sets",
-                //key-value pairs of input types from the database and their associated
-                //input type
-                inputTypes: {
-                    "text": "Catfish.Core.Models.Contents.Fields.TextField",
-                    "textarea": "Catfish.Core.Models.Contents.Fields.TextArea",
-                },
 
                 //stores the first time a field appears in the fields of a metadata set
                 //this would be better handled by using child components but 
@@ -76,10 +238,6 @@ if (document.getElementById("item-edit-page")) {
                 saveSuccessfulLabel: "Saved!",
                 saveFailedLabel: "Failed to Save",
                 saveStatus: 0,
-
-                fieldRequiredLabel: '',
-                valueLabel: '',
-                deleteLabel:''
             }
         },
         computed: {
@@ -107,99 +265,6 @@ if (document.getElementById("item-edit-page")) {
                             self.metadataSets = result.MetadataSets.$values;
                             self.metadataSets_type = result.MetadataSets.$type;
                             self.updateBindings = true;
-
-                            //for testing purposes, remove after
-                            /*result.metadataSets[0].fields[0].name.values.push({
-
-                                "format": "plain",
-                                "language": "fr",
-                                "rank": 0,
-                                "value": "Nom",
-                                "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-
-                            });
-
-                            result.metadataSets[0].fields[0].values.push({
-                                "values": [{
-                                    "format": "plain",
-                                    "language": "fr",
-                                    "rank": 0,
-                                    "value": "I am writing in french",
-                                    "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-								}]
-                                
-
-                            });
-
-                            result.metadataSets[0].fields[0].description.values.push({
-
-                                "format": "plain",
-                                "language": "fr",
-                                "rank": 0,
-                                "value": "French description goes here",
-                                "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-
-                            });
-
-
-                            //for testing purposes, remove after v2
-                            result.metadataSets[0].fields.push({
-                                "$type": "Catfish.Core.Models.Contents.TextArea",
-                                "values": [],
-                                "name": {
-                                    "values": []
-                                },
-                                "description": {
-                                    "values": []
-                                },
-                                "modelType": "Catfish.Core.Models.Contents.Fields.TextArea, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-                            });
-
-                            result.metadataSets[0].fields[2].name.values.push({
-
-                                "format": "plain",
-                                "language": "en",
-                                "rank": 0,
-                                "value": "Some cool textarea stuff",
-                                "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-
-                            });
-
-                            result.metadataSets[0].fields[2].values.push({
-                                "values": [{
-                                    "format": "plain",
-                                    "language": "en",
-                                    "rank": 0,
-                                    "value": "I am some heckin neat text",
-                                    "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-                                }],
-                                "modelType": "Catfish.Core.Models.Contents.MultilingualText"
-
-                            });
-
-                            result.metadataSets[0].fields[2].description.values.push({
-
-                                "format": "plain",
-                                "language": "en",
-                                "rank": 0,
-                                "value": "A description to surpass the century",
-                                "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-
-                            });*/
-
-                            /*result.metadataSets.push({
-                                name: {
-                                    values: [
-                                        {
-                                            "format": "plain",
-                                            "language": "en",
-                                            "rank": 0,
-                                            "value": "I am a test",
-                                            "modelType": "Catfish.Core.Models.Contents.Text, Catfish.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-                                        }
-                                    ]
-                                }
-                            });*/
 
                             self.sections[0].values = self.nameAttribute.Values.$values;
                             self.sections[1].values = self.descriptionAttribute.Values.$values;
@@ -338,24 +403,6 @@ if (document.getElementById("item-edit-page")) {
             },
 
             /**
-             * Adds another entry set to the field
-             * @param {any} metadataSetId metadataset index
-             * @param {any} fieldId field index
-             */
-            addNewEntry(metadataSetId, fieldId) {
-
-                let newEntry = JSON.parse(JSON.stringify(this.metadataSets[metadataSetId].Fields.$values[fieldId]));
-                newEntry.Id = uuidv1();
-
-                for (let item of newEntry.Values.$values) {
-                    item.Values.$values[0].Value = "";
-				}
-
-                this.metadataSets[metadataSetId].Fields.$values.splice(fieldId + 1, 0, newEntry);
-                this.setOriginalFields();
-
-            },
-            /**
              * Sets the initial language labels youll need for the item.
              * @param {any} sections
              */
@@ -425,21 +472,10 @@ if (document.getElementById("item-edit-page")) {
                                 this.originalFieldIndexMaster[index][matched[0]].count + 1);
 	                    }
 					}
-                    console.log("originalFields:", this.originalFieldIndexMaster);
+                    console.log("originalFieldIndexMaster:", this.originalFieldIndexMaster);
                     console.log("indices: ", this.originalFields);
                 }
 
-            },
-
-
-            /**
-             * Deletes the field from the item
-             * @param {any} metadataSetId
-             * @param {any} fieldId
-             */
-            deleteField(metadataSetId, fieldId) {
-                this.metadataSets[metadataSetId].Fields.$values.splice(fieldId, 1);
-                this.setOriginalFields();
             },
 
             setStaticItems() {
@@ -451,9 +487,6 @@ if (document.getElementById("item-edit-page")) {
                 this.metadataSetLabel = StaticItems.managerSideValues.editItemLabels.METADATASET_LABEL;
                 this.saveSuccessfulLabel = StaticItems.managerSideValues.editItemLabels.SAVE_SUCCESSFUL_LABEL;
                 this.saveFailedLabel = StaticItems.managerSideValues.editItemLabels.SAVE_FAILED_LABEL;
-                this.fieldRequiredLabel = StaticItems.managerSideValues.editItemLabels.FIELD_REQUIRED_LABEL;
-                this.valueLabel = StaticItems.managerSideValues.editItemLabels.VALUE_LABEL;
-                this.deleteLabel = StaticItems.managerSideValues.editItemLabels.DELETE_LABEL;
 
 			}
         },

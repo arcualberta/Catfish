@@ -3,7 +3,7 @@
  * This file is dedicated to put any site-specific javascript codes.
  */
 
-/* This is for the Arc website vvv */
+/* This is for the Arc website HOME PAGE */
 /*
 document.addEventListener("DOMContentLoaded", function(event) {
 //adds yellow highlight to carousel titles
@@ -55,7 +55,7 @@ columns[columns.length - 1].children[0].children[0].classList.add('contact-us-co
 });
 
 
-//this code goes in the header of Home page
+//this code goes in the HEADER of Home page
 document.addEventListener("DOMContentLoaded", function(event) {
     document.getElementsByClassName("footer-arc-text")[0].classList.remove('col-6');
     document.getElementsByClassName("footer-arc-text")[0].classList.add('col-md-12');
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 
 
-//this code is for the example Work page ie Subline
+//this code is for the EXAMPLE WORK PAGE ie Research Computing
 document.addEventListener("DOMContentLoaded", function(event) {
 //changes the columns in Meet Our Team into col-md-4's, from col-md-3's
 let columns = document.getElementsByClassName('row columnBlock CBflex-container');
@@ -73,17 +73,29 @@ for(let i = 0; i < columns.length; i++){
   columns[i].style.marginBottom = "20px";
     columns[i].classList.add('box-shadow');
     columns[i].classList.add('white-background-only');
+    if(i % 2 == 0){
+          columns[i].classList.add('reverse-columns-mobile');
+    }
   for(let j = 0; j < columns[i].children.length; j++){
     columns[i].children[j].children[0].classList.add('no-box-shadow');
     columns[i].children[j].children[0].classList.remove('col-md-12');
     columns[i].children[j].classList.add('remove-padding-in-highlights');
     columns[i].children[j].classList.add('remove-bottom-padding');
+    if( (j != columns[i].children.length -1) ){
+      columns[i].children[j].classList.add('added-height');
+    }
+    if( (i == columns.length - 1) ){
+      columns[i].children[j].children[0].classList.add('contact-us-column');
+    }
   }
 }
 
 columns[0].children[0].children[0].style.backgroundColor = "unset";
 
 });
+
+/* For the OUR TEAM page */
+/*
 document.addEventListener("DOMContentLoaded", function(event) {
 //changes the columns in Meet Our Team into col-md-4's, from col-md-3's
 let columns = document.getElementsByClassName('row columnBlock CBflex-container');
@@ -123,7 +135,7 @@ console.log("here");
 
 });
 
-//this is for the Our Work page
+//this is for the OUR WORK page
 document.addEventListener("DOMContentLoaded", function(event) {
 //changes the background of the keywords block to grey
 let keywordParent = document.getElementsByClassName('row custom-keywords');
@@ -152,7 +164,7 @@ searchResultsParent[0].children[0].replaceWith(newDiv);
 
 
 
-//this is for the Contact page
+//this is for the CONTACT US page
 document.addEventListener("DOMContentLoaded", function(event) {
 let columns = document.getElementsByClassName('row columnBlock CBflex-container');
 
