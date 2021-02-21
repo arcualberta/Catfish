@@ -200,12 +200,12 @@ namespace Catfish.UnitTests
 
             DataItem childForm = template.GetDataItem("Child Form", true, lang);
             childForm.CreateField<TextField>("Name", lang);
-            childForm.CreateField<DateField>("DOB", lang);
-            //childForm.CreateField<EmailField>("Email", lang);
+            childForm.CreateField<DateField>("DOB", lang, false);
+            childForm.CreateField<EmailField>("Email", lang);
             childForm.CreateField<TextArea>("Address", lang);
             childForm.CreateField<RadioField>("Status", lang, new string[] { "Citizen", "Permenant Resident", "Visitor" });
             childForm.CreateField<CheckboxField>("Languages", lang, new string[] { "English", "French", "Spanish" });
-
+            
             DataItem form = template.GetRootDataItem(true);
             Assert.IsNotNull(form);
             CompositeField cf = form.CreateField<CompositeField>("Person Info", lang);

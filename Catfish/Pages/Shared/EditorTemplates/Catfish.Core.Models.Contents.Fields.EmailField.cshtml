@@ -3,7 +3,7 @@
 @Html.HiddenFor(model => model.ModelType)
 @Html.HiddenFor(model => model.Id)
 @{
-    var viewData = new Dictionary<string, object>(); ;
+    var viewData = new Dictionary<string, object>();
     foreach (var key in ViewData.Keys)
         viewData.Add(key, ViewData[key]);
 
