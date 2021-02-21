@@ -457,3 +457,10 @@ input[readonly] {
 .compositeFieldAddItem > input[type="button"]{
     width:150px;
 }
+
+.composite-field .child {
+    border: solid 1px #ddd;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

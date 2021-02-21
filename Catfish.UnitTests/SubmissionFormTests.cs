@@ -199,11 +199,12 @@ namespace Catfish.UnitTests
             ItemTemplate template = SubmissionItemTemplate(templateName, submissionFormName, lang);
 
             DataItem childForm = template.GetDataItem("Child Form", true, lang);
-            //childForm.CreateField<TextField>("Name", lang);
-            //childForm.CreateField<DateField>("DOB", lang);
+            childForm.CreateField<TextField>("Name", lang);
+            childForm.CreateField<DateField>("DOB", lang);
             //childForm.CreateField<EmailField>("Email", lang);
             childForm.CreateField<TextArea>("Address", lang);
-            //childForm.CreateField<RadioField>("Status", lang, new string[] { "Citizen", "Permenant Resident", "Visitor" });
+            childForm.CreateField<RadioField>("Status", lang, new string[] { "Citizen", "Permenant Resident", "Visitor" });
+            childForm.CreateField<CheckboxField>("Languages", lang, new string[] { "English", "French", "Spanish" });
 
             DataItem form = template.GetRootDataItem(true);
             Assert.IsNotNull(form);
