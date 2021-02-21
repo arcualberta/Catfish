@@ -9,14 +9,18 @@
 
     //making sure the minimum unumber of children are present
     for (var i = Model.Children.Count; i < Model.Min; ++i)
-        Model.Children.Add(Model.ChildTemplate.Clone() as DataItem);
+    {
+        var clone = Model.ChildTemplate.Clone() as DataItem;
+        clone.Id = Guid.NewGuid();
+        Model.Children.Add(clone);
+    }
 
     var modelIdPrefix = Html.IdFor(model => model);
     var modelNamePrefix = Html.NameFor(model => model);
 }
 
 <div class="container">
-    <div id="@templateId" data-id-prefix="@modelIdPrefix" data-name-prefix="@modelNamePrefix" class="row composite-field-child" style="display: none;">
+    <div id="@templateId" data-template-id="@Model.ChildTemplate.Id" data-name-prefix="@modelNamePrefix" class="row composite-field-child" style="display: none;">
         <div class="col-10">
             @Html.EditorFor(model => model.ChildTemplate, Model.ChildTemplate.GetType().ToString())
         </div>

@@ -8,6 +8,7 @@
     }
 
     let templateClone = $("#" + templateId).clone();
+
     $(childListContainer).append(templateClone);
 
     let newChildGuid = createGuid();
@@ -26,6 +27,9 @@
         let id = name.split(/\[/).join('_').split(/\]/).join('_').split(/\./).join('_');
         $(ele).attr("id", id);
     });
+
+    // Setting the newChildGuid as the ID of the DataItem of the templateClone
+    $(`input[name='${elementNamePrefix + ".Id"}']`).val(newChildGuid);
 
     //Specifying the onclick event of the delete button
     let delBtn = $(templateClone).find(".deleteButton");

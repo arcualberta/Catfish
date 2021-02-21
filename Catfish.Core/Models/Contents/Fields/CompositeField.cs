@@ -101,6 +101,7 @@ namespace Catfish.Core.Models.Contents.Fields
             foreach (var srcChild in src.Children)
             {
                 var dstChild = ChildTemplate.Clone() as DataItem;
+                dstChild.TemplateId = ChildTemplate.Id;
                 dstChild.Id = srcChild.Id;
                 dstChild.UpdateFieldValues(srcChild);
                 Children.Add(dstChild);
