@@ -199,15 +199,18 @@ namespace Catfish.UnitTests
             ItemTemplate template = SubmissionItemTemplate(templateName, submissionFormName, lang);
 
             DataItem childForm = template.GetDataItem("Child Form", true, lang);
-            childForm.CreateField<TextField>("Name", lang);
-            childForm.CreateField<DateField>("DOB", lang);
-            childForm.CreateField<EmailField>("Email", lang);
+            //childForm.CreateField<TextField>("Name", lang);
+            //childForm.CreateField<DateField>("DOB", lang);
+            //childForm.CreateField<EmailField>("Email", lang);
             childForm.CreateField<TextArea>("Address", lang);
-            childForm.CreateField<RadioField>("Status", lang, new string[] { "Citizen", "Permenant Resident", "Visitor" });
+            //childForm.CreateField<RadioField>("Status", lang, new string[] { "Citizen", "Permenant Resident", "Visitor" });
 
-            DataItem form = template.GetRootDataItem(false);
+            DataItem form = template.GetRootDataItem(true);
             Assert.IsNotNull(form);
-            CompositeField cf = childForm.CreateField<CompositeField>("Person Info", lang);
+            CompositeField cf = form.CreateField<CompositeField>("Person Info", lang);
+            cf.Min = 1;
+            cf.Max = 4;
+            cf.AllowMultipleValues = true;
             cf.ChildTemplate = childForm;
 
             _db.SaveChanges();
