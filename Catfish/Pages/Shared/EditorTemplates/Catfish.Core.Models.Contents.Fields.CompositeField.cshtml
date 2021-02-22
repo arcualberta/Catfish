@@ -18,10 +18,6 @@
 
     var modelIdPrefix = Html.IdFor(model => model);
     var modelNamePrefix = Html.NameFor(model => model);
-
-    var childTemplateHtmlContent = Html.EditorFor(model => model.ChildTemplate, Model.ChildTemplate.GetType().ToString());
-    string childTemplateString = childTemplateHtmlContent.ToString();
-
 }
 
 <div class="container">
