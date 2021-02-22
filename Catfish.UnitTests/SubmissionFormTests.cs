@@ -216,8 +216,35 @@ namespace Catfish.UnitTests
 
             _db.SaveChanges();
             template.Data.Save("..\\..\\..\\..\\Examples\\compositeField_Workflow_generared.xml");
+        }
 
+        [Test]
+        public void TableFieldTest()
+        {
+            string lang = "en";
+            string templateName = "Table-field Form Template";
+            string submissionFormName = "Table-field Form";
+
+            ItemTemplate template = SubmissionItemTemplate(templateName, submissionFormName, lang);
+
+            DataItem form = template.GetRootDataItem(true);
+            Assert.IsNotNull(form);
+
+            TableField tf = form.CreateField<TableField>("Table", lang, false, 3, 5)
+                .AppendColumn<DateField>("Date", lang)
+                .AppendColumn<TextField>("Item", lang)
+                .AppendColumn<DecimalField>("UnitPrice", lang)
+                .AppendColumn<IntegerField>("Quantity", lang)
+                .AppendColumn<DecimalField>("Total", lang)
+                .AppendRows(4);
+
+
+
+
+            _db.SaveChanges();
+            template.Data.Save("..\\..\\..\\..\\Examples\\tableField_Workflow_generared.xml");
 
         }
+
     }
 }
