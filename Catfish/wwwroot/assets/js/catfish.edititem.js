@@ -30,6 +30,10 @@ if (document.getElementById("item-edit-page")) {
                 testField: {
                     Values: [],
                     Type: ''
+                },
+                threeLayerTest: {
+                    Values: [],
+                    Type: ''
                 }
             }
         },
@@ -39,23 +43,40 @@ if (document.getElementById("item-edit-page")) {
              */
             addNewValue() {
 
-                //let newEntry = JSON.parse( JSON.stringify(this.fieldData.Values.$values[0]) );
-                //newEntry.Id = uuidv1();
-
-                ////TODO need to check this for Date, Integer, etc, the structure is different
-                //for (let item of newEntry.Values.$values) {
-                //    item.Value = "";
-                //}
-
-                //this.fieldData.Values.$values.splice(this.fieldData.Values.$values.length, 0, newEntry);
-
-                let newEntry = JSON.parse(JSON.stringify(this.testField.Values[0]));
+                //regular object method. this does not work because the object is too embedded to be reactive.
+                //Vue cannot detect the new value added and so a new input is not added
+                let newEntry = JSON.parse( JSON.stringify(this.fieldData.Values.$values[0]) );
                 newEntry.Id = uuidv1();
 
-                //TODO need to check this for Date, Integer, etc, the sfor (let item of newEntry.Values.$values) {
-                newEntry.Value = "";
+                //TODO need to check this for Date, Integer, etc, the structure is different
+                for (let item of newEntry.Values.$values) {
+                    item.Value = "";
+                }
 
-                this.testField.Values.splice(this.testField.Values.length, 0, newEntry);
+                this.fieldData.Values.$values.splice(this.fieldData.Values.$values.length, 0, newEntry);
+                console.log(this.fieldData.Values.$values);
+                /////////////////////////////////////////////////////////////
+
+                //testField is simplified to two layers, so the reactivity works
+                //Vue can make a new input from this change
+                let newEntry2 = JSON.parse(JSON.stringify(this.testField.Values[0]));
+                newEntry2.Id = uuidv1();
+
+                //TODO need to check this for Date, Integer, etc, the sfor (let item of newEntry.Values.$values) {
+                newEntry2.Value = "";
+
+                this.testField.Values.splice(this.testField.Values.length, 0, newEntry2);
+
+                //////////////////////////////////////////////////////////////
+
+                //three layer object
+                let newEntry3 = JSON.parse(JSON.stringify(this.threeLayerTest.Values[0].$values[0]));
+                newEntry3.Id = uuidv1();
+
+                //TODO need to check this for Date, Integer, etc, the sfor (let item of newEntry.Values.$values) {
+                newEntry3.Value = "";
+
+                this.threeLayerTest.Values[0].$values.splice(this.threeLayerTest.Values[0].$values.length, 0, newEntry3);
 
             },
 
@@ -74,11 +95,16 @@ if (document.getElementById("item-edit-page")) {
 
             //therefore, to handle multiple languages - each one flattened?
             //some variable need to hold the keys for each language - maybe is just indices though?
-            //
+            //testField only one language supported as-is, but its a good test to see if simplified works
             if (this.testField.Values.length <= 0 && this.fieldData.Values.$values[0].hasOwnProperty('Values')) {
-                this.testField.Values = this.fieldData.Values.$values[0].Values.$values;
-                this.testField.Type = this.fieldData.$type;
+                this.testField.Values = JSON.parse(JSON.stringify( this.fieldData.Values.$values[0].Values.$values));
+                this.testField.Type = JSON.parse(JSON.stringify( this.fieldData.$type ));
+
+                //three layer test
+                this.threeLayerTest.Values[0] = JSON.parse(JSON.stringify(this.fieldData.Values.$values[0].Values));
+                this.threeLayerTest.Type = JSON.parse(JSON.stringify( this.fieldData.$type ));
             }
+
         },
 
         created() {
@@ -114,21 +140,59 @@ if (document.getElementById("item-edit-page")) {
                      the index is always set to 0.
                      -->
                      <div v-if="!isInPreviewMode" class="col-md-4 mb-3 metadata-input">
-<div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of testField.Values"> <!-- fieldData.Values.$values[index].Values.$values[0].Value -->
-                        <input
-                        required type="text" class="form-control"
-                        v-model="testField.Values[fieldValueIndex].Value"
-                        >
-                        <div class="btn-group new-value-button" role="group">
-                            <button :disabled="testField.Values.length <= 1"
-                                type="button" v-on:click="deleteField()"
-                                class="btn btn-sm btn-danger btn-labeled trash-button">
-                                <i class="fas fa-trash"></i>
-                                {{deleteLabel}}
-                            </button>
+                        <h3>Simplified, 2 layer object, reacts to added value</h3>
+                        <div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of testField.Values"> <!-- fieldData.Values.$values[index].Values.$values[0].Value -->
+                            <input
+                            required type="text" class="form-control"
+                            v-model="testField.Values[fieldValueIndex].Value"
+                            >
+                            <div class="btn-group new-value-button" role="group">
+                                <button :disabled="testField.Values.length <= 1"
+                                    type="button" v-on:click="deleteField()"
+                                    class="btn btn-sm btn-danger btn-labeled trash-button">
+                                    <i class="fas fa-trash"></i>
+                                    {{deleteLabel}}
+                                </button>
+                            </div>
                         </div>
-</div>
 <div>{{testField}}</div>
+<hr>
+<h3>Object with three layers, reacts to added value(?)</h3>
+                        <div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of threeLayerTest.Values[0].$values"> <!-- fieldData.Values.$values[index].Values.$values[0].Value -->
+                            <input
+                            required type="text" class="form-control"
+                            v-model="threeLayerTest.Values[0].$values[fieldValueIndex].Value"
+                            >
+                            <div class="btn-group new-value-button" role="group">
+                                <button :disabled="threeLayerTest.Values[0].$values.length <= 1"
+                                    type="button" v-on:click="deleteField()"
+                                    class="btn btn-sm btn-danger btn-labeled trash-button">
+                                    <i class="fas fa-trash"></i>
+                                    {{deleteLabel}}
+                                </button>
+                            </div>
+                        </div>
+<div>{{threeLayerTest}}</div>
+<hr>
+
+<h3>Regular object, will not react to added value</h3>
+<div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of fieldData.Values.$values[index].Values.$values"> <!-- fieldData.Values.$values[index].Values.$values[0].Value -->
+                            <input
+                            required type="text" class="form-control"
+                            v-model="fieldData.Values.$values[index].Values.$values[fieldValueIndex].Value"
+                            >
+                            <div class="btn-group new-value-button" role="group">
+                                <button :disabled="fieldData.Values.$values[index].Values.$values.length <= 1"
+                                    type="button" v-on:click="deleteField()"
+                                    class="btn btn-sm btn-danger btn-labeled trash-button">
+                                    <i class="fas fa-trash"></i>
+                                    {{deleteLabel}}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>{{fieldData.Values.$values[index].Values.$values}}</div>
+
 <!--
                         <textarea v-else-if="fieldData.$type.includes(inputTypes.textarea)"
                         required class="form-control" rows="3"
