@@ -1,5 +1,6 @@
 ﻿@model Catfish.Core.Models.Contents.Fields.CompositeField
 @using Catfish.Core.Models.Contents.Data
+@using System.IO;
 
 @Html.HiddenFor(model => model.Id)
 @Html.HiddenFor(model => model.ModelType)
@@ -17,10 +18,14 @@
 
     var modelIdPrefix = Html.IdFor(model => model);
     var modelNamePrefix = Html.NameFor(model => model);
+
+    var childTemplateHtmlContent = Html.EditorFor(model => model.ChildTemplate, Model.ChildTemplate.GetType().ToString());
+    string childTemplateString = childTemplateHtmlContent.ToString();
+
 }
 
 <div class="container">
-    <div id="@templateId" data-template-id="@Model.ChildTemplate.Id" data-name-prefix="@modelNamePrefix" class="row composite-field-child" style="display: none;">
+    <div id="@templateId" data-template-id="@Model.ChildTemplate.Id" data-name-prefix="@modelNamePrefix" class="row composite-field-template" style="display: none;">
         <div class="col-10">
             @Html.EditorFor(model => model.ChildTemplate, Model.ChildTemplate.GetType().ToString())
         </div>

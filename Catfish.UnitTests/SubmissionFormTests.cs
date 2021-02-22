@@ -199,7 +199,7 @@ namespace Catfish.UnitTests
             ItemTemplate template = SubmissionItemTemplate(templateName, submissionFormName, lang);
 
             DataItem childForm = template.GetDataItem("Child Form", true, lang);
-            childForm.CreateField<TextField>("Name", lang);
+            childForm.CreateField<TextField>("Name", lang, true);
             childForm.CreateField<DateField>("DOB", lang, false);
             childForm.CreateField<EmailField>("Email", lang);
             childForm.CreateField<TextArea>("Address", lang);

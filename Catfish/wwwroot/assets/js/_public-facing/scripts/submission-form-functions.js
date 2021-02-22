@@ -1,10 +1,17 @@
 ﻿
 $(document).ready(function () {
+    //Encoding inner-HTML of composite field templates into base 64 strings
+    $.each($("form .composite-field-template"), function (idx, template) {
+        let html = $(template).html();
+        let encodedHtml = btoa(html);
+        $(template).html(encodedHtml);
+    });
+
     $(".launch-modal").click(function () {
         $("#submissionModal").modal({
             backdrop: 'static'
         });
-    });  
+    });
 });
 
 function submitWorkflowForm(suffix, successMessage) {

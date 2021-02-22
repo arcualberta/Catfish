@@ -9,6 +9,14 @@
 
     let templateClone = $("#" + templateId).clone();
 
+    //Decoding the encoded child content of the template clone
+    let encodedHtml = $(templateClone).html();
+    let decodedHtml = atob(encodedHtml);
+    $(templateClone).html(decodedHtml);
+
+    $(templateClone).removeClass("composite-field-template");
+    $(templateClone).addClass("composite-field-child");
+    
     $(childListContainer).append(templateClone);
 
     let newChildGuid = createGuid();
