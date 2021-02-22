@@ -34,6 +34,8 @@
                 viewData.Add("onchange", "updateFields();");
                 if (Model.Fields[i].Readonly)
                     viewData.Add("readonly", null as string);
+                if(Model.Fields[i].RefId.HasValue)
+                    viewData.Add("data-ref-id", Model.Fields[i].RefId.Value);
 
                 if (Model.Fields[i].Required)
                 {

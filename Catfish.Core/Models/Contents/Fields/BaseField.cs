@@ -39,6 +39,14 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("readonly", value);
         }
 
+        public Guid? RefId
+        {
+            get => GetAttribute("ref-id", null as Guid?);
+            set => SetAttribute("ref-id", value);
+        }
+
+
+
         public MultilingualName Name { get; protected set; }
 
         public MultilingualDescription Description { get; protected set; }

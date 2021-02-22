@@ -3,6 +3,8 @@
 @Html.HiddenFor(model => model.ModelType)
 @Html.HiddenFor(model => model.Id)
 
+<div class="h4 title">@Html.Raw(Model.Name.GetConcatenatedContent(" | "))</div>
+
 <table class="table @Model.CssClass">
     <thead>
         <tr>
@@ -17,10 +19,11 @@
         {
             var row = Model.TableData[r];
             <tr>
-                @for (var c=0; c< row.Fields.Count; ++c)
+                @for (var c = 0; c < row.Fields.Count; ++c)
                 {
+                    string templateName = "Values/" + Model.TableData[r].Fields[c].GetType().ToString();
                     <td>
-                        @Html.EditorFor(model => Model.TableData[r].Fields[c], Model.TableData[r].Fields[c].GetType().ToString())
+                        @Html.DisplayFor(model => Model.TableData[r].Fields[c], templateName)
                     </td>
                 }
             </tr>

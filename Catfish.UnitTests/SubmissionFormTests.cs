@@ -231,15 +231,17 @@ namespace Catfish.UnitTests
             DataItem form = template.GetRootDataItem(true);
             Assert.IsNotNull(form);
 
-            TableField tf = form.CreateField<TableField>("Table", lang, false, 3, 5)
-                .AppendColumn<DateField>("Date", lang)
-                .AppendColumn<TextField>("Item", lang)
-                .AppendColumn<DecimalField>("UnitPrice", lang)
-                .AppendColumn<IntegerField>("Quantity", lang)
-                .AppendColumn<DecimalField>("Total", lang)
-                .AppendRows(4);
+            TableField tf = form.CreateField<TableField>("Product List", lang, false, 2, 10);
+            tf.TableHead.CreateField<DateField>("Date", lang);
+            tf.TableHead.CreateField<TextField>("Product", lang);
+            tf.TableHead.CreateField<TextArea>("Description", lang);
+            tf.TableHead.CreateField<DecimalField>("Unit Price", lang);
+            tf.TableHead.CreateField<IntegerField>("Quantity", lang);
+            tf.TableHead.CreateField<DecimalField>("Total", lang);
+            tf.TableHead.CreateField<RadioField>("Availability", lang, new string[] { "Available", "Not available" });
+            tf.TableHead.CreateField<CheckboxField>("Category", lang, new string[] { "Health", "Prescription", "Beauty", "Nutrition" });
 
-
+            tf.AppendRows(4);
 
 
             _db.SaveChanges();

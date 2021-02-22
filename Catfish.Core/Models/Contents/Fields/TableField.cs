@@ -35,22 +35,51 @@ namespace Catfish.Core.Models.Contents.Fields
         }
         public override void UpdateValues(BaseField srcField)
         {
-            throw new NotImplementedException();
+            TableField src = srcField as TableField;
+            if (src == null)
+                throw new Exception("The source field is null or is not a TableField");
+
+            //Clearing all children exist in the destination, if any
+            TableData.Clear();
+            foreach (var row in src.TableData)
+                InsertValues(row);
+
+            //foreach (var srcChild in src.Children)
+            //{
+            //    var dstChild = ChildTemplate.Clone() as DataItem;
+            //    dstChild.TemplateId = ChildTemplate.Id;
+            //    dstChild.Id = srcChild.Id;
+            //    dstChild.UpdateFieldValues(srcChild);
+            //    Children.Add(dstChild);
+            //}
         }
 
-        public TableField AppendColumn<T>(string columnName, string lang) where T : BaseField
+        public TableRow InsertValues(TableRow srcValues)
         {
-            BaseField cell = Activator.CreateInstance(typeof(T)) as BaseField;
-            cell.SetName(columnName, lang);
-            TableHead.AppendCell(cell);
-            return this;
-        }
+            TableRow dstRow = new TableRow();
+            for(int i=0; i<srcValues.Fields.Count; ++i)
+            {
+                BaseField src = srcValues.Fields[i];
+                BaseField clone = TableHead.Fields[i].Clone() as BaseField;
+                clone.RefId = TableHead.Fields[i].Id;
+                clone.Id = src.Id;
+                clone.UpdateValues(src);
+                dstRow.Fields.Add(clone);
+            }
 
+            TableData.Add(dstRow);
+            return dstRow;
+        }
         public TableRow AppendRow()
         {
             TableRow row = new TableRow();
-            foreach (var cell in TableHead.Cells)
-                row.AppendCell<BaseField>(cell.Clone() as BaseField);
+            foreach (var cell in TableHead.Fields)
+            {
+                BaseField clone = cell.Clone() as BaseField;
+                clone.Id = Guid.NewGuid();
+                clone.RefId = cell.Id;
+                row.AppendCell<BaseField>(clone);
+            }
             TableData.Add(row);
             return row;
         }
@@ -63,12 +92,12 @@ namespace Catfish.Core.Models.Contents.Fields
         }
     }
 
-    public class TableRow : XmlModel
+    public class TableRow : FieldContainerBase
     {
         public static readonly string TagName = "table-row";
-        public XmlModelList<BaseField> Cells { get; set; }
+        //public XmlModelList<BaseField> Cells { get; set; }
 
-        public TableRow() : base() { }
+        public TableRow() : base(TagName) { }
         public TableRow(XElement data) : base(data) { }
 
         public override void Initialize(eGuidOption guidOption)
@@ -76,12 +105,13 @@ namespace Catfish.Core.Models.Contents.Fields
             base.Initialize(guidOption);
 
             //Building the values
-            Cells = new XmlModelList<BaseField>(GetElement("cells", true), true, null);
+            //Cells = new XmlModelList<BaseField>(GetElement("cells", true), true, null);
         }
 
         public TableRow AppendCell<T>(T cellContent) where T : BaseField
         {
-            Cells.Add(cellContent);
+            Fields.Add(cellContent);
+            //Cells.Add(cellContent);
             return this;
         }
 
