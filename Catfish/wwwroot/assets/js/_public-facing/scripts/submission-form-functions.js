@@ -95,3 +95,14 @@ function submitWorkflowForm(suffix, successMessage) {
 
     });
 }
+
+function validateEmail(element) {
+    let val = $(element).val();
+    let p = $(element).parent();
+    let messageElement = $(p).find("span.validation-message");
+
+    if (val && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) === false)
+        $(messageElement).show();
+    else
+        $(messageElement).hide();
+}
