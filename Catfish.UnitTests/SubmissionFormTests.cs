@@ -202,7 +202,8 @@ namespace Catfish.UnitTests
             childForm.CreateField<TextField>("Name", lang, true);
             childForm.CreateField<DateField>("DOB", lang, false);
             childForm.CreateField<EmailField>("Email", lang);
-            childForm.CreateField<TextArea>("Address", lang);
+            var ta = childForm.CreateField<TextArea>("Address", lang);
+            ta.Cols = 40;
             childForm.CreateField<RadioField>("Status", lang, new string[] { "Citizen", "Permenant Resident", "Visitor" });
             childForm.CreateField<CheckboxField>("Languages", lang, new string[] { "English", "French", "Spanish" });
             
