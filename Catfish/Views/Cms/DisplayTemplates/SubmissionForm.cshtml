@@ -30,6 +30,8 @@
         //JQuery based javascript form need by CSHTML based standard implementation of HTML forms.
         _appService.RegisterScript("/assets/js/_public-facing/scripts/submission-form-functions.js");
         _appService.RegisterScript("/assets/js/_public-facing/scripts/attachment-functions.js");
+        _appService.RegisterScript("/assets/js/_public-facing/scripts/composite-field-functions.js");
+        _appService.RegisterScript("/assets/js/_public-facing/scripts/table-field-functions.js");
         _appService.RegisterScript("/assets/js/vendor/jquery.validate.js");
     }
 
@@ -72,63 +74,64 @@
 
     if (authorizationSuccessful)
     {
-    <div class="submission-form-block @Model.CssClass.Value">
-        <form id="submissionForm_@suffix" method="post" action="@formPostUrl" enctype="multipart/form-data">
-            <input data-val="true" data-val-required="The TemplateId field is required."
-                   id="entityTemplateId_@suffix" name="entityTemplateId" type="hidden"
-                   value="@entityTemplateId">
-            <input data-val="true" data-val-required="The CollectionId field is required."
-                   id="collectionId_@suffix" name="collectionId" type="hidden"
-                   value="@collectionId">
-            <input data-val="true" data-val-required="The Function field is required."
-                   id="function" name="function" type="hidden"
-                   value="@function">
-            <input data-val="true" data-val-required="The Group field is required."
-                   id="group" name="group" type="hidden"
-                   value="@group">
+        <div class="submission-form-block @Model.CssClass.Value">
+            <form id="submissionForm_@suffix" method="post" action="@formPostUrl" enctype="multipart/form-data">
+                <input data-val="true" data-val-required="The TemplateId field is required."
+                       id="entityTemplateId_@suffix" name="entityTemplateId" type="hidden"
+                       value="@entityTemplateId">
+                <input data-val="true" data-val-required="The CollectionId field is required."
+                       id="collectionId_@suffix" name="collectionId" type="hidden"
+                       value="@collectionId">
+                <input data-val="true" data-val-required="The Function field is required."
+                       id="function" name="function" type="hidden"
+                       value="@function">
+                <input data-val="true" data-val-required="The Group field is required."
+                       id="group" name="group" type="hidden"
+                       value="@group">
 
-            @if (groups != null)
-            {
-                string groupLabelLabel = string.IsNullOrWhiteSpace(Model.GroupSelectorLabel.Value) ? "Group" : Model.GroupSelectorLabel.Value;
+                @if (groups != null)
+                {
+                    string groupLabelLabel = string.IsNullOrWhiteSpace(Model.GroupSelectorLabel.Value) ? "Group" : Model.GroupSelectorLabel.Value;
 
-                //Displaying a drop-down menu to select the group.
-                <div class="row field-row group-selector">
-                    <div class="col-md-3 control field-label">@groupLabelLabel:<sup style="color:red">*</sup></div>
-                    <div class="col-md-9 field-value">
-                        <select name="groupId" data-val-required="Please identify the group." required>
-                            <option value="">Please select </option>
-                            @foreach (var gr in groups)
-                            {
-                                <option value="@gr.Id">@gr.Name</option>
-                            }
-                        </select>
+                    //Displaying a drop-down menu to select the group.
+                    <div class="row field-row group-selector">
+                        <div class="col-md-3 control field-label">@groupLabelLabel:<sup style="color:red">*</sup></div>
+                        <div class="col-md-9 field-value">
+                            <select name="groupId" data-val-required="Please identify the group." required>
+                                <option value="">Please select </option>
+                                @foreach (var gr in groups)
+                                {
+                                    <option value="@gr.Id">@gr.Name</option>
+                                }
+                            </select>
+                        </div>
                     </div>
-                </div>
-            }
+                }
 
-            @*Render the editor for template for the root-data item of the template*@
-            @if (useVueForms)
-            {
-                @Html.EditorFor(model => Item, "VueDataItem")
-            }
-            else
-            {
-                @Html.EditorFor(model => Item, Item.GetType().ToString())
-            }
+                @*Render the editor for template for the root-data item of the template*@
+                @if (useVueForms)
+                {
+                    @Html.EditorFor(model => Item, "VueDataItem")
+                }
+                else
+                {
+                    @Html.EditorFor(model => Item, Item.GetType().ToString())
+                }
+                    var state = postAction.StateMappings.Where(sm => sm.ButtonLabel == postAction.ButtonLabel).FirstOrDefault();
 
             <div id="buttonLayer">
                 @foreach (var postAction in postActions)
                 {
                     string buttonName = @postAction.ButtonLabel + "_" + @suffix;
                     var state = postAction.StateMappings.Where(sm => sm.ButtonLabel == postAction.ButtonLabel).FirstOrDefault();
-
                     if (postAction.PopUps.Any())
                     {
+
                         foreach (var popup in postAction.PopUps)
                         {
                             <input id="@postAction.ButtonLabel" class="btn btn-success launch-modal" name="@postAction.ButtonLabel" type="button" value="@postAction.ButtonLabel" data-toggle="modal" data-target="#submissionModal_@suffix" />
+                            
                             <div id="submissionModal_@suffix" class="modal fade" role="dialog">
-
                                 <div>
                                     <div class="modal-dialog">
                                         @*Modal content*@
@@ -173,14 +176,16 @@
                     }
                     else
                     {
-                        <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="submit" value="@postAction.ButtonLabel" onclick="submitWorkflowForm('@state.Next', '@state.ButtonLabel', '@suffix', '@successMessage');" />
+                        <input id="@buttonName" class="btn btn-success" name="@postAction.ButtonLabel" type="submit" value="@postAction.ButtonLabel" onclick="submitWorkflowForm('@suffix', '@successMessage');" />
                     }
+                }
+                
                 }
             </div>
         </form>
         @*<div id="submission-result-message_@suffix"></div>*@
     </div>
-        <div id="submission-result-message_@suffix"></div>
+    <div id="submission-result-message_@suffix"></div>
     }
     else
     {

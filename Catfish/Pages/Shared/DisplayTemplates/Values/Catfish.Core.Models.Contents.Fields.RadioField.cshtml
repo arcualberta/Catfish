@@ -1,0 +1,14 @@
+﻿@model Catfish.Core.Models.Contents.Fields.RadioField
+
+@{
+    var selectedOptionNames = Model.Options.Where(op => op.Selected).Select(op => op.OptionText).FirstOrDefault();
+
+    if (selectedOptionNames == null)
+    {
+        @Html.Raw("Not selected")
+    }
+    else
+    {
+        @selectedOptionNames.GetConcatenatedContent(" | ")
+    }
+}

@@ -1,13 +1,25 @@
 ﻿
 $(document).ready(function () {
+    //Encoding inner-HTML of composite field templates into base 64 strings
+    $.each($("form .composite-field-template"), function (idx, template) {
+        let html = $(template).html();
+        let encodedHtml = btoa(html);
+        $(template).html(encodedHtml);
+    });
+
+    //Encoding inner-HTML of table field templates into base 64 strings
+    $.each($("form .tf-template"), function (idx, template) {
+        let html = $(template).html();
+        let encodedHtml = btoa(html);
+        $(template).html(encodedHtml);
+    });
+
     $(".launch-modal").click(function () {
         $("#submissionModal").modal({
             backdrop: 'static'
         });
-    }); 
 
-   
-
+    });
 });
 
 function submitWorkflowForm(status, button, suffix, successMessage) {
@@ -80,13 +92,11 @@ function submitWorkflowForm(status, button, suffix, successMessage) {
     });
 }
 
-function addDataItem(fieldId,templateId, min, max) {
-   
-    let numItems = $(".composite-field-child-" + fieldId).length; // number of item in the list
-    if (numItems == max) {
-        alert("Sorry, you can't add more item into the list.");
-        return false;
-    }
+function validateEmail(element) {
+    let val = $(element).val();
+    let p = $(element).parent();
+    let messageElement = $(p).find("span.validation-message");
+
 
     let chilItemId = "composite-field-child-" + numItems;
     let dataItm = $("#" + templateId).clone().addClass("row composite-field-child").removeAttr('style').attr("id", chilItemId);
@@ -166,3 +176,82 @@ function countWords(fieldModelId) {
         }
     }   
 }
+    if (val && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) === false)
+        $(messageElement).show();
+    else
+        $(messageElement).hide();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> .theirs

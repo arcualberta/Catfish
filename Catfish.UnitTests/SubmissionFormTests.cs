@@ -188,5 +188,68 @@ namespace Catfish.UnitTests
             template.Data.Save("..\\..\\..\\..\\Examples\\visibleIf_Options_Workflow_generared.xml");
 
         }
+
+        [Test]
+        public void CompisiteFieldTest()
+        {
+            string lang = "en";
+            string templateName = "Composite-field Form Template";
+            string submissionFormName = "Composite-field Form";
+
+            ItemTemplate template = SubmissionItemTemplate(templateName, submissionFormName, lang);
+
+            DataItem childForm = template.GetDataItem("Child Form", true, lang);
+            childForm.CreateField<TextField>("Name", lang, true);
+            childForm.CreateField<DateField>("DOB", lang, false);
+            childForm.CreateField<EmailField>("Email", lang);
+            var ta = childForm.CreateField<TextArea>("Address", lang);
+            ta.Cols = 40;
+            childForm.CreateField<RadioField>("Status", lang, new string[] { "Citizen", "Permenant Resident", "Visitor" });
+            childForm.CreateField<CheckboxField>("Languages", lang, new string[] { "English", "French", "Spanish" });
+            
+            DataItem form = template.GetRootDataItem(true);
+            Assert.IsNotNull(form);
+            CompositeField cf = form.CreateField<CompositeField>("Person Info", lang);
+            cf.Min = 1;
+            cf.Max = 4;
+            cf.AllowMultipleValues = true;
+            cf.ChildTemplate = childForm;
+
+            _db.SaveChanges();
+            template.Data.Save("..\\..\\..\\..\\Examples\\compositeField_Workflow_generared.xml");
+        }
+
+        [Test]
+        public void TableFieldTest()
+        {
+            string lang = "en";
+            string templateName = "Table-field Form Template";
+            string submissionFormName = "Table-field Form";
+
+            ItemTemplate template = SubmissionItemTemplate(templateName, submissionFormName, lang);
+
+            DataItem form = template.GetRootDataItem(true);
+            Assert.IsNotNull(form);
+
+            TableField tf = form.CreateField<TableField>("Product List", lang, false, 2, 10);
+            tf.FieldLabelCssClass = "col-md-12";
+            tf.FieldValueCssClass = "col-md-12";
+            tf.TableHead.CreateField<DateField>("Date", lang);
+            tf.TableHead.CreateField<TextField>("Product", lang, true);
+            tf.TableHead.CreateField<TextArea>("Description", lang);
+            tf.TableHead.CreateField<DecimalField>("Unit Price", lang);
+            tf.TableHead.CreateField<IntegerField>("Quantity", lang);
+            tf.TableHead.CreateField<DecimalField>("Total", lang);
+            tf.TableHead.CreateField<RadioField>("Availability", lang, new string[] { "Available", "Not available" }, true);
+            tf.TableHead.CreateField<CheckboxField>("Category", lang, new string[] { "Health", "Prescription", "Beauty", "Nutrition" });
+
+            tf.AppendRows(4);
+
+
+            _db.SaveChanges();
+            template.Data.Save("..\\..\\..\\..\\Examples\\tableField_Workflow_generared.xml");
+
+        }
+
     }
 }
