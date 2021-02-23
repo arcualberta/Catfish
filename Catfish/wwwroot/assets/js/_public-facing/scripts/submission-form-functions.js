@@ -4,7 +4,10 @@ $(document).ready(function () {
         $("#submissionModal").modal({
             backdrop: 'static'
         });
-    });  
+    }); 
+
+   
+
 });
 
 function submitWorkflowForm(status, button, suffix, successMessage) {
@@ -139,3 +142,27 @@ function createGuid() {
     }
     return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
 } 
+
+function countWords(fieldModelId) {
+    
+    let thisField = $("textarea[data-model-id='" + fieldModelId + "']");
+    let maxwords = $(thisField).data('max-words');
+
+    if (maxwords > 0) {
+        let count = $(thisField).val().trim().split(' ');
+       
+        if (count.length > maxwords) {    
+            let thisVal = (count.slice(0, maxwords)).join(" ");
+            $(thisField).val(thisVal);
+            let message = "<span class='exceedWords' style='color: red;'>Maximum " + maxwords + " words have been reached! </span>";
+            if ($("span.exceedWords").length == 0)
+                $(thisField).after(message);
+            else
+                $("span.exceedWords").show();
+            return;
+        } else {
+            //remove exceed message
+            $("span.exceedWords").hide();
+        }
+    }   
+}
