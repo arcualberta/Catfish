@@ -1,5 +1,6 @@
 ﻿@model Catfish.Core.Models.Contents.Data.DataItem
 @using Catfish.Core.Models.Contents.Fields;
+@using Catfish.Helper;
 
 @inject Catfish.Helper.ICatfishAppConfiguration _catfishAppConfig;
 @inject Catfish.Services.IAppService _appService;
@@ -29,33 +30,7 @@
             }
             else
             {
-                Dictionary<string, object> viewData = new Dictionary<string, object>();
-                viewData.Add("data-model-id", Model.Fields[i].Id);
-                viewData.Add("onchange", "updateFields();");
-                if (Model.Fields[i].Readonly)
-                    viewData.Add("readonly", null as string);
-                if(Model.Fields[i].RefId.HasValue)
-                    viewData.Add("data-ref-id", Model.Fields[i].RefId.Value);
-
-                if (Model.Fields[i].Required)
-                {
-                    viewData.Add("required", (string)null);
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(Model.Fields[i].VisibilityCondition.Value))
-                        viewData.Add("data-visible-if", Model.Fields[i].VisibilityCondition.Value);
-
-                    if (!string.IsNullOrEmpty(Model.Fields[i].RequiredCondition.Value))
-                        viewData.Add("data-required-if", Model.Fields[i].RequiredCondition.Value);
-
-                    viewData.Add("data-field-id", fieldRootId);
-                }
-
-                //Computed properties
-                if (!string.IsNullOrEmpty(Model.Fields[i].ValueExpression.Value))
-                    viewData.Add("data-value-expression", Model.Fields[i].ValueExpression.Value);
-
+                Dictionary<string, object> viewData = FieldRenderingHelper.CreateViewData(Model.Fields[i], fieldRootId);
 
                 string fieldId = Html.IdFor(model => Model.Fields[i]);
 
