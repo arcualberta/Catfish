@@ -21,7 +21,7 @@
                 {
                     BaseField field = Model.TableHead.Fields[i];
 
-                    //Set RefId as the Id so that we don't need to do this initializaiton 
+                    //Set RefId as the Id so that we don't need to do this initializaiton
                     //in the front end when the field is cloned when adding a row
                     field.RefId = field.Id;
 
@@ -31,6 +31,11 @@
                         @Html.EditorFor(model => model.TableHead.Fields[i], Model.TableHead.Fields[i].GetType().ToString(), viewData)
                     </td>
                 }
+                <th>
+                    <div class="col-1 text-right">
+                        <span class="fa fa-trash delete-btn" onclick="deleteRow('@tableFieldContainerId', 0); return false;"></span>
+                    </div>
+                </th>
             </tr>
         </tbody>
     </table>
@@ -50,9 +55,9 @@
                         {<span class="required"></span>}
                         else
                         {<span class="required" style="display:none"></span>}
-
                     </th>
                 }
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -69,6 +74,11 @@
                             @Html.EditorFor(model => Model.TableData[r].Fields[c], Model.TableData[r].Fields[c].GetType().ToString(), viewData)
                         </td>
                     }
+                    <th>
+                        <div class="col-1 text-right">
+                            <span class="fa fa-trash delete-btn" onclick="deleteRow('@tableFieldContainerId', @r); return false;"></span>
+                        </div>
+                    </th>
                 </tr>
             }
 

@@ -464,3 +464,7 @@ input[readonly] {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+.fa-trash {
+    color: red;
+}
