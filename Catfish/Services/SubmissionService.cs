@@ -265,7 +265,46 @@ namespace Catfish.Services
             }
             
         }
+        public Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid status, string action, string fileNames = null)
+        {
+            try
+            {
+                EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
+                if (template == null)
+                    throw new Exception("Entity template with ID = " + entityTemplateId + " not found.");
 
+                //When we instantantiate an instance from the template, we do not need to clone metadata sets
+                Item item = _db.Items.Where(i => i.Id == value.Id).FirstOrDefault();
+                item.StatusId = status;
+                item.PrimaryCollectionId = collectionId;
+                item.TemplateId = entityTemplateId;
+                item.UserEmail = _workflowService.GetLoggedUserEmail();
+
+                DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
+                newDataItem.UpdateFieldValues(value);
+                item.DataContainer.Add(newDataItem);
+                newDataItem.EntityId = item.Id;
+
+                User user = _workflowService.GetLoggedUser();
+                var fromState = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
+                item.AddAuditEntry(user.Id,
+                    fromState,
+                    item.StatusId.Value,
+                    action
+                    );
+
+                if (groupId.HasValue)
+                    item.GroupId = groupId;
+
+                return item;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+
+        }
         /// <summary>
         /// This method used to execute all triggers in a given workflow. need to pass the entity template, function and group.
         /// </summary>
@@ -274,7 +313,7 @@ namespace Catfish.Services
         /// <param name="function"></param>
         /// <param name="group"></param>
         /// <returns></returns>
-        public bool ExecuteTriggers(Guid entityTemplateId, string actionButton, string function, string group)
+        public bool ExecuteTriggers(Guid entityTemplateId, DataItem dataItem, string actionButton, string function, string group)
         {
             try
             {
@@ -290,7 +329,7 @@ namespace Catfish.Services
                 foreach (var triggerRef in triggerRefs)
                 {
                     Trigger selectedTrigger = template.Workflow.Triggers.Where(tr => tr.Id == triggerRef.RefId).FirstOrDefault();
-                    triggerExecutionStatus &= selectedTrigger.Execute(template, triggerRef, _serviceProvider);
+                    triggerExecutionStatus &= selectedTrigger.Execute(template, dataItem, triggerRef, _serviceProvider);
                 }
                 return triggerExecutionStatus;
             }

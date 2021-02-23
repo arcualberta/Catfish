@@ -2300,11 +2300,11 @@ namespace Catfish.UnitTests
             //Defining triggers
             //Feb 12 2021
             EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
-            applicantNotificationEmailTrigger.AddRecipientByEmail(((EmailField)applicantEmail).GetValue());
+            applicantNotificationEmailTrigger.AddRecipientByDataField(sasForm.Id, applicantEmail.Id);
             applicantNotificationEmailTrigger.AddTemplate(applicantSubmissionNotification.Id, "Applicant Email Notification");
 
             EmailTrigger chairNotificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
-            chairNotificationEmailTrigger.AddRecipientByEmail(((EmailField)chairEmail).GetValue());
+            chairNotificationEmailTrigger.AddRecipientByDataField(sasForm.Id, chairEmail.Id);
             chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
 
             //Defininig states
@@ -2325,7 +2325,7 @@ namespace Catfish.UnitTests
             // ================================================
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
             
-            startSubmissionAction.Access = GetAction.eAccess.Public;
+            startSubmissionAction.Access = GetAction.eAccess.Restricted;
 
             //Defining form template
             startSubmissionAction.AddTemplate(sasForm.Id, "Start Submission Template");
@@ -2343,11 +2343,12 @@ namespace Catfish.UnitTests
             submitActionPopUp.AddButtons("Cancel", "false");
 
             //Defining trigger refs
-            submitPostAction.AddTriggerRefs("0", chairEmailTemplate.Id, "Chair's Notification Email Trigger");
-            submitPostAction.AddTriggerRefs("1", applicantSubmissionNotification.Id, "Owner Submission-notification Email Trigger");
+            submitPostAction.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger");
+            submitPostAction.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
             
             // Added state referances
-            startSubmissionAction.AddStateReferances(emptyState.Id);
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedDomain("@ualberta.ca");
 
 
             // ================================================
@@ -2427,8 +2428,8 @@ namespace Catfish.UnitTests
             //Defining trigger refs
             //*******To Do*******
             // Implement a function to restrict the e-mail triggers when SAS Admin updated the document
-            editSubmissionPostActionSubmit.AddTriggerRefs("0", chairEmailTemplate.Id, "Chair's Notification Email Trigger");
-            editSubmissionPostActionSubmit.AddTriggerRefs("1", applicantSubmissionNotification.Id, "Owner Submission-notification Email Trigger");
+            editSubmissionPostActionSubmit.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger");
+            editSubmissionPostActionSubmit.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
 
             //Defining state referances

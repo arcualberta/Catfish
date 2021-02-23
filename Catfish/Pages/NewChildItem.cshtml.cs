@@ -83,10 +83,10 @@ namespace Catfish.Pages
             DataItem newChildItem = template.InstantiateDataItem(this.Child.Id);
             newChildItem.UpdateFieldValues(this.Child);
             parentItem.DataContainer.Add(newChildItem);
-
+            
             _db.Items.Update(parentItem);
             _db.SaveChanges();
-            bool triggerExecute = _submissionService.ExecuteTriggers(parentItem.TemplateId.Value, stateMapping.ButtonLabel, action.Function, action.Group);
+            bool triggerExecute = _submissionService.ExecuteTriggers(parentItem.TemplateId.Value, parentItem.DataContainer.FirstOrDefault(), stateMapping.ButtonLabel, action.Function, action.Group);
             return RedirectToPage("ItemDetails", new { id = parentItem.Id });
         }
     }

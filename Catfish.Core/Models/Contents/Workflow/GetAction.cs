@@ -142,8 +142,8 @@ namespace Catfish.Core.Models.Contents.Workflow
 
             if (!string.IsNullOrWhiteSpace(userEmail) && stateRef.AuthorizedDomains.Count > 0)
             {
-                string emailDomain = userEmail.Substring(userEmail.IndexOf("@"));
-                return stateRef.AuthorizedDomains.Where(d => d.Value == emailDomain).Any();
+                string emailDomain = userEmail.Substring(userEmail.IndexOf("@"));                 
+                return stateRef.AuthorizedDomains.Where(d => d.Value == emailDomain).Any(); ;
             }
             return false;
         }

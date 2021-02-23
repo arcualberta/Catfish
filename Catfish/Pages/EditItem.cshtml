@@ -9,29 +9,42 @@
 @inject Catfish.Core.Services.IWorkflowService _workflowService;
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService;
 @inject Catfish.Services.IEntityTemplateService _entityTemplateService;
-
+@{
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+}
 @{
     var item = Model.Item;
 
     var rootDataItem = item.GetRootDataItem(false);
-
+    string formPostUrl = "/api/items/EditSubmissionForm";
     string suffix = Guid.NewGuid().ToString();
     var currentStatus = _submissionService.GetStatus(item.StatusId).Status;
     var template = _entityTemplateService.GetTemplate(item.TemplateId);
     var allPostActions = _workflowService.GetPostActions(template, "Update", "Details");
+    string successMessage = "";// string.IsNullOrEmpty(Model.SubmissionConfirmation.Value) ? "" : Model.SubmissionConfirmation.Value.ToString();
+   
 }
 
 @{
     var associatedItems = item.DataContainer
-    .Where(di => di.IsRoot = false)
-    .OrderByDescending(di => di.Created)
-    .ToList();
+.Where(di => di.IsRoot = false)
+.OrderByDescending(di => di.Created)
+.ToList();
 }
 
 @if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.Update }))
 .Succeeded)
 {
-
+<form id="submissionEditForm_@suffix" method="post" action="@formPostUrl" enctype="multipart/form-data">
+    <input data-val="true" data-val-required="The TemplateId field is required."
+           id="templateId_@suffix" name="entityTemplateId" type="hidden"
+           value="@item.TemplateId">
+    <input data-val="true" data-val-required="The CollectionId field is required."
+           id="primaryCollectionId_@suffix" name="collectionId" type="hidden"
+           value="@item.PrimaryCollectionId">
     <div class="container">
         <div class="card">
             <div class="card-header">
@@ -57,14 +70,15 @@
                                     .Succeeded)
                                     {
                                         var buttonLable = postAction.StateMappings.Where(sm => sm.Current == item.StatusId).Select(sm => sm.ButtonLabel).FirstOrDefault();
-                                        if (buttonLable!=null)
+                                        var state = postAction.StateMappings.Where(sm => sm.ButtonLabel == postAction.ButtonLabel).FirstOrDefault();
+                                        if (buttonLable != null)
                                         {
                                             if (postAction.PopUps.Any())
                                             {
                                                 foreach (var popup in postAction.PopUps)
                                                 {
-                                                    <input id="@buttonLable" class="btn btn-success launch-modal" name="@buttonLable" type="button" value="@buttonLable" data-toggle="modal" data-target="#@popup.Id" />
-                                                    <div id="@popup.Id" class="modal fade" role="dialog">
+                                                    <input id="@buttonLable" class="btn btn-success launch-modal" name="@postAction.ButtonLabel" type="button" value="@postAction.ButtonLabel" data-toggle="modal" data-target="submissionEditModal_@suffix" />
+                                                    <div id="submissionEditModal_@suffix" class="modal fade" role="dialog">
 
                                                         <div>
                                                             <div class="modal-dialog">
@@ -97,7 +111,7 @@
                                                                                 }
                                                                                 else
                                                                                 {
-                                                                                    <button id="@buttonLable" type="submit" class="btn btn-success" @*onclick="submitWorkflowForm('@suffix', '@successMessage');"*@>@button.Text</button>
+                                                                                    <button id="@buttonLable" type="submit" class="btn btn-success" onclick="submitEditWorkflowForm('@state.Next','@state.ButtonLabel','@suffix', '@successMessage');">@button.Text</button>
                                                                                 }
                                                                             }
                                                                         }
@@ -110,7 +124,7 @@
                                             }
                                             else
                                             {
-                                                <input id="@buttonLable" class="btn btn-success" name="@buttonLable" type="submit" value="@buttonLable" @*onclick="submitWorkflowForm('@suffix', '@successMessage');"*@ />
+                                                <input id="@buttonLable" class="btn btn-success" name="@buttonLable" type="submit" value="@buttonLable" onclick="submitEditWorkflowForm('@state.Next','@state.ButtonLabel','@suffix', '@successMessage');" />
                                             }
 
                                         }
@@ -121,11 +135,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="submission-form-block">
+                <div class="submission-edit-form-block">
                     @Html.EditorFor(model => rootDataItem, rootDataItem.GetType().ToString())
                 </div>
             </div>
 
         </div>
     </div>
+</form>
+    <div id="submission-result-message_@suffix"></div>
+}
+else
+{
+    var errorMessage = string.IsNullOrWhiteSpace(Model.AuthorizationFailureMessage.Value) ? "Authorization failed." : Model.AuthorizationFailureMessage.Value;
+    <div class="alert alert-danger">@Html.Raw(errorMessage)</div>
 }

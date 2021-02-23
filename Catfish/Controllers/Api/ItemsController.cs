@@ -148,12 +148,45 @@ namespace Catfish.Controllers.Api
             try
             {
                 Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, groupId, status, actionButton);
-                _appDb.Items.Add(newItem);
-                _appDb.SaveChanges();
+                //_appDb.Items.Add(newItem);
+                //_appDb.SaveChanges();
 
                 bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
 
-                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, actionButton, function, group);
+                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem.DataContainer.FirstOrDefault(), actionButton, function, group);
+
+                _appDb.Items.Add(newItem);
+                _appDb.SaveChanges();
+                result.Success = true;
+                result.Message = "Application " + actionButton + " successfully.";
+
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Submission failed.";
+            }
+
+            return result;
+        }
+        // POST api/<ItemController>
+        [Route("EditSubmissionForm")]
+        [HttpPost]
+        public ApiResult EditSubmission([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] Guid status, [FromForm] string fileNames = null)
+        {
+            ApiResult result = new ApiResult();
+            try
+            {
+                Item newItem = _submissionService.EditSubmission(value, entityTemplateId, collectionId, groupId, status, actionButton);
+                //_appDb.Items.Add(newItem);
+                //_appDb.SaveChanges();
+
+                bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
+
+               // bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem.DataContainer.FirstOrDefault(), actionButton, function, group);
+
+                _appDb.Items.Add(newItem);
+                _appDb.SaveChanges();
                 result.Success = true;
                 result.Message = "Application " + actionButton + " successfully.";
 
@@ -175,6 +208,8 @@ namespace Catfish.Controllers.Api
             Item item = _submissionService.StatusChange(entityId, currentStatus, status, buttonName);
             _appDb.Items.Update(item);
             _appDb.SaveChanges();
+
+            //bool triggerExecute = _submissionService.ExecuteTriggers(entityId, buttonName, function, group);
             result.Success = true;
             result.Message = "Application " + buttonName + " successfully.";
             return result;

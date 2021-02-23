@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Helpers;
+using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -53,8 +54,14 @@ namespace Catfish.Core.Models.Contents.Workflow
             return newRecipient;
         }
 
-        public void AddRecipientByDataField(Guid dataItemId, Guid fieldId)
+        public EmailRecipient AddRecipientByDataField(Guid dataItemId, Guid fieldId)
         {
+            if(Recipients.Where(r=>r.DataContainerId == dataItemId && r.FieldId == fieldId).Any())          
+                throw new Exception(string.Format("Email recipient DataItem {0} and Feild {1} already exists.", dataItemId,fieldId));
+
+            EmailRecipient newRecipient = new EmailRecipient() { DataContainerId = dataItemId, FieldId = fieldId };
+            Recipients.Add(newRecipient);
+            return newRecipient;
 
         }
 
@@ -83,7 +90,7 @@ namespace Catfish.Core.Models.Contents.Workflow
             return newRef;
         }
 
-        public override bool Execute(EntityTemplate template, TriggerRef triggerRef, IServiceProvider serviceProvider)
+        public override bool Execute(EntityTemplate template, DataItem dataItem,TriggerRef triggerRef, IServiceProvider serviceProvider)
         {
             IEmailService emailService = serviceProvider.GetService<IEmailService>();
             IWorkflowService workflowService = serviceProvider.GetService<IWorkflowService>();
@@ -120,6 +127,12 @@ namespace Catfish.Core.Models.Contents.Workflow
                 }
                 else
                 {
+                    if (recipient.FieldId != Guid.Empty)
+                    {
+                        var field = dataItem.Fields.Where(di => di.Id == recipient.FieldId).Select(di => di.Data).FirstOrDefault().Value;
+                        emailRecipient = field;
+                       // emailRecipient = field.val
+                    }
                     emailRecipient = recipient.Email;
                 }
                 //send email using email service

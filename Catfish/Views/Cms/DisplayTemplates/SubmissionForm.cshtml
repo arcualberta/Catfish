@@ -126,8 +126,8 @@
                     {
                         foreach (var popup in postAction.PopUps)
                         {
-                            <input id="@postAction.ButtonLabel" class="btn btn-success launch-modal" name="@postAction.ButtonLabel" type="button" value="@postAction.ButtonLabel" data-toggle="modal" data-target="#submissionModal" />
-                            <div id="submissionModal" class="modal fade" role="dialog">
+                            <input id="@postAction.ButtonLabel" class="btn btn-success launch-modal" name="@postAction.ButtonLabel" type="button" value="@postAction.ButtonLabel" data-toggle="modal" data-target="#submissionModal_@suffix" />
+                            <div id="submissionModal_@suffix" class="modal fade" role="dialog">
 
                                 <div>
                                     <div class="modal-dialog">
