@@ -129,6 +129,9 @@ namespace Catfish.Core.Models.Contents.Workflow
                 {
                     if (recipient.FieldId != Guid.Empty)
                     {
+                        //This means, we should retrieve the email from a data field in the passed data item
+                        var recipientEmails = dataItem.GetValues(recipient.FieldId.Value, ",").Split(",");
+
                         var field = dataItem.Fields.Where(di => di.Id == recipient.FieldId).Select(di => di.Data).FirstOrDefault().Value;
                         emailRecipient = field;
                        // emailRecipient = field.val
