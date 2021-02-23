@@ -21,7 +21,12 @@
 }
 
 <div class="container">
-    <div id="@templateId" data-template-id="@Model.ChildTemplate.Id" data-name-prefix="@modelNamePrefix" class="row composite-field-template" style="display: none;">
+    <div id="@templateId" 
+         data-template-id="@Model.ChildTemplate.Id" 
+         data-name-prefix="@modelNamePrefix" 
+         class="row composite-field-template" 
+         style="display: none;">
+
         <div class="col-10">
             @Html.EditorFor(model => model.ChildTemplate, Model.ChildTemplate.GetType().ToString())
         </div>

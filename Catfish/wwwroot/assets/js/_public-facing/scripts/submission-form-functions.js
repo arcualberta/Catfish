@@ -7,6 +7,13 @@ $(document).ready(function () {
         $(template).html(encodedHtml);
     });
 
+    //Encoding inner-HTML of table field templates into base 64 strings
+    $.each($("form .tf-template"), function (idx, template) {
+        let html = $(template).html();
+        let encodedHtml = btoa(html);
+        $(template).html(encodedHtml);
+    });
+
     $(".launch-modal").click(function () {
         $("#submissionModal").modal({
             backdrop: 'static'

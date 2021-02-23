@@ -1,10 +1,34 @@
 ﻿@model Catfish.Core.Models.Contents.Fields.TableField
 @using Catfish.Helper;
+@using Catfish.Core.Models.Contents.Fields;
 
 @Html.HiddenFor(model => model.ModelType)
 @Html.HiddenFor(model => model.Id)
 
-<table class="table @Model.CssClass">
+@{ 
+    string templateId = "tf-template-" + Model.Id;
+    var modelNamePrefix = Html.NameFor(model => model);
+}
+
+<table id="@templateId"
+       data-name-prefix="@modelNamePrefix"
+       class="tf-template" 
+       style="display:none">
+
+    <tr>
+        @for (int i = 0; i < Model.TableHead.Fields.Count; ++i)
+        {
+            BaseField field = Model.TableHead.Fields[i];
+            Dictionary<string, object> viewData = FieldRenderingHelper.CreateViewData(field, null);
+
+           <td data-ref-id="@field.Id">
+                @Html.EditorFor(model => model.TableHead.Fields[i], Model.TableHead.Fields[i].GetType().ToString(), viewData)
+            </td>
+        }
+    </tr>
+</table>
+
+<table class="table table-field @Model.CssClass">
     <thead>
         <tr>
             @foreach (var cell in Model.TableHead.Fields)

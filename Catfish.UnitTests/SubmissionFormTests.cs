@@ -232,6 +232,8 @@ namespace Catfish.UnitTests
             Assert.IsNotNull(form);
 
             TableField tf = form.CreateField<TableField>("Product List", lang, false, 2, 10);
+            tf.FieldLabelCssClass = "col-md-12";
+            tf.FieldValueCssClass = "col-md-12";
             tf.TableHead.CreateField<DateField>("Date", lang);
             tf.TableHead.CreateField<TextField>("Product", lang, true);
             tf.TableHead.CreateField<TextArea>("Description", lang);

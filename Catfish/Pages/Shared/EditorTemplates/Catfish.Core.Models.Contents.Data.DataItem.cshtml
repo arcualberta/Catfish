@@ -45,17 +45,6 @@
                     @Html.DisplayFor(mode => Model.Fields[i].Description, Model.Fields[i].Description.GetType().ToString())
                     @Html.EditorFor(model => model.Fields[i], Model.Fields[i].GetType().ToString(), viewData)
                 </div>
-
-                @*string fieldId = Html.IdFor(model => Model.Fields[i]);
-                    <div class="control field-label @Model.Fields[i].FieldLabelCssClass">
-                        @Html.DisplayFor(model => Model.Fields[i].Name, Model.Fields[i].Name.GetType().ToString())
-                        @if (Model.Fields[i].Required)
-                        {<span class="required"></span>}
-                    </div>
-                    <div id="@fieldId" class="field-value @Model.Fields[i].CssClass @Model.Fields[i].FieldValueCssClass">
-                        @Html.DisplayFor(mode => Model.Fields[i].Description, Model.Fields[i].Description.GetType().ToString())
-                        @Html.EditorFor(model => model.Fields[i], Model.Fields[i].GetType().ToString())
-                    </div>*@
             }
         </div>
     }
