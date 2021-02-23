@@ -46,6 +46,7 @@
 
     $(templateClone).show();
 
+    return true;
 }
 
 function removeDataItem(childListContainerId, wrappperId, min, childrenNamePrefix) {
@@ -73,6 +74,8 @@ function removeDataItem(childListContainerId, wrappperId, min, childrenNamePrefi
             $(ele).attr("id", id);
         });
     });
+
+    return true;
 }
 
 function createGuid() {

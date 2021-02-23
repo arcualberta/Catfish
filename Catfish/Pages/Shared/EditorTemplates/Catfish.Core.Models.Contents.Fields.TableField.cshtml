@@ -5,62 +5,85 @@
 @Html.HiddenFor(model => model.ModelType)
 @Html.HiddenFor(model => model.Id)
 
-@{ 
+@{
     string templateId = "tf-template-" + Model.Id;
     var modelNamePrefix = Html.NameFor(model => model);
+    var tableFieldContainerId = "tf-container-" + Model.Id;
 }
 
-<table id="@templateId"
-       data-name-prefix="@modelNamePrefix"
-       class="tf-template" 
-       style="display:none">
-
-    <tr>
-        @for (int i = 0; i < Model.TableHead.Fields.Count; ++i)
-        {
-            BaseField field = Model.TableHead.Fields[i];
-            Dictionary<string, object> viewData = FieldRenderingHelper.CreateViewData(field, null);
-
-           <td data-ref-id="@field.Id">
-                @Html.EditorFor(model => model.TableHead.Fields[i], Model.TableHead.Fields[i].GetType().ToString(), viewData)
-            </td>
-        }
-    </tr>
-</table>
-
-<table class="table table-field @Model.CssClass">
-    <thead>
-        <tr>
-            @foreach (var cell in Model.TableHead.Fields)
-            {
-                <th>
-                    @Html.Raw(cell.Name.ConcatenatedContent)
-
-                    @if (cell.Required)
-                    {<span class="required"></span>}
-                    else
-                    {<span class="required" style="display:none"></span>}
-
-                </th>
-            }
-        </tr>
-    </thead>
-    <tbody>
-        @for (var r = 0; r < Model.TableData.Count; ++r)
-        {
-            var row = Model.TableData[r];
+<div id ="@tableFieldContainerId" class="container">
+    <table id="@templateId"
+           class="tf-template"
+           style="display:none">
+        <tbody>
             <tr>
-                @for (var c = 0; c < row.Fields.Count; ++c)
+                @for (int i = 0; i < Model.TableHead.Fields.Count; ++i)
                 {
-                    string fieldRootId = null;
-                    Dictionary<string, object> viewData = FieldRenderingHelper.CreateViewData(Model.TableData[r].Fields[c], fieldRootId);
+                    BaseField field = Model.TableHead.Fields[i];
 
-                    <td>
-                        @Html.EditorFor(model => Model.TableData[r].Fields[c], Model.TableData[r].Fields[c].GetType().ToString(), viewData)
+                    //Set RefId as the Id so that we don't need to do this initializaiton 
+                    //in the front end when the field is cloned when adding a row
+                    field.RefId = field.Id;
+
+                    Dictionary<string, object> viewData = FieldRenderingHelper.CreateViewData(field, null);
+
+                    <td data-ref-id="@field.Id">
+                        @Html.EditorFor(model => model.TableHead.Fields[i], Model.TableHead.Fields[i].GetType().ToString(), viewData)
                     </td>
                 }
             </tr>
-        }
+        </tbody>
+    </table>
 
-    </tbody>
-</table>
+    <table class="table table-field tf-data @Model.CssClass" 
+           data-name-prefix="@modelNamePrefix"
+           data-min-rows="@Model.MinRows" 
+           data-max-rows="@Model.MaxRows">
+        <thead>
+            <tr>
+                @foreach (var cell in Model.TableHead.Fields)
+                {
+                    <th>
+                        @Html.Raw(cell.Name.ConcatenatedContent)
+
+                        @if (cell.Required)
+                        {<span class="required"></span>}
+                        else
+                        {<span class="required" style="display:none"></span>}
+
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (var r = 0; r < Model.TableData.Count; ++r)
+            {
+                var row = Model.TableData[r];
+                <tr>
+                    @for (var c = 0; c < row.Fields.Count; ++c)
+                    {
+                        string fieldRootId = null;
+                        Dictionary<string, object> viewData = FieldRenderingHelper.CreateViewData(Model.TableData[r].Fields[c], fieldRootId);
+
+                        <td>
+                            @Html.EditorFor(model => Model.TableData[r].Fields[c], Model.TableData[r].Fields[c].GetType().ToString(), viewData)
+                        </td>
+                    }
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+    @if (Model.TableData.Count < Model.MaxRows)
+    {
+        string addButtonContainerId = Html.IdFor(model => model) + "_addRowButton";
+
+        <div id="@addButtonContainerId" class="compositeFieldAddItem">
+
+            <input type="button" class="btn btn-default btn-success" onClick="addRow('@tableFieldContainerId'); return false;" value="+ Row" />
+
+        </div>
+    }
+
+</div>
