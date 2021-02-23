@@ -1,5 +1,4 @@
-﻿
-$(document).ready(function () {
+﻿$(document).ready(function () {
     //Encoding inner-HTML of composite field templates into base 64 strings
     $.each($("form .composite-field-template"), function (idx, template) {
         let html = $(template).html();
@@ -97,61 +96,11 @@ function validateEmail(element) {
     let p = $(element).parent();
     let messageElement = $(p).find("span.validation-message");
 
-
-    let chilItemId = "composite-field-child-" + numItems;
-    let dataItm = $("#" + templateId).clone().addClass("row composite-field-child").removeAttr('style').attr("id", chilItemId);
-    let newGuid = createGuid();
-
-    //replace names/ids of input field
-    $(dataItm).find("input").map(function () {
-        let divId = this.id;
-        //replace "ChilTemplate" => Children_@numItems
-        divId = divId.replace('ChildTemplate', 'Children_' + numItems +"_");
-        $(this).attr("id", divId);
-
-        let divName = this.name;
-        divName = divName.replace('ChildTemplate', 'Children[' + numItems + ']');
-        $(this).attr("name", divName);
-    });
-
-     //replace id of child div
-    $(dataItm).find("div").map(function () {
-        let divId = this.id;
-        //replace "ChilTemplate" => Children_@numItems
-        divId = divId.replace('ChildTemplate', 'Children_' + numItems);
-        $(this).attr("id", divId);
-    });
-
-    //insert removeDataItem()
-    $(dataItm).find("span.fa-trash").map(function () {
-        let deleteFunc = "removeDataItem('" + chilItemId + "','" + min + "'); return false;";
-        $(this).attr("onclick", deleteFunc);
-    });
-
-    let newItm = dataItm[0];
-    $("#addNewdataItem-" + fieldId).before(newItm);
-
-    
+    if (val && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) === false)
+        $(messageElement).show();
+    else
+        $(messageElement).hide();
 }
-
-function removeDataItem(dataItemDivId, min) {
-    let numItems = $(".composite-field-child").length;
-    if (numItems == min) {
-        alert("You can't remove this item.")
-        return false;
-    }
-
-    if (numItems > parseInt(min, 10)) {
-        $("#" + dataItemDivId).remove();
-    }
-}
-
-function createGuid() {
-    function S4() {
-        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-    }
-    return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
-} 
 
 function countWords(fieldModelId) {
     
@@ -176,82 +125,3 @@ function countWords(fieldModelId) {
         }
     }   
 }
-    if (val && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) === false)
-        $(messageElement).show();
-    else
-        $(messageElement).hide();
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> .theirs
