@@ -86,7 +86,7 @@ namespace Catfish.Pages
             
             _db.Items.Update(parentItem);
             _db.SaveChanges();
-            bool triggerExecute = _submissionService.ExecuteTriggers(parentItem.TemplateId.Value, parentItem.DataContainer.FirstOrDefault(), postAction.Id);
+            bool triggerExecute = _submissionService.ExecuteTriggers(parentItem.TemplateId.Value, parentItem, postAction.Id);
             return RedirectToPage("ItemDetails", new { id = parentItem.Id });
         }
     }

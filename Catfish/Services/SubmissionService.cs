@@ -238,6 +238,7 @@ namespace Catfish.Services
                 newItem.StatusId = status;
                 newItem.PrimaryCollectionId = collectionId;
                 newItem.TemplateId = entityTemplateId;
+                newItem.GroupId = groupId;
                 newItem.UserEmail = _workflowService.GetLoggedUserEmail();
 
                 DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
@@ -312,7 +313,7 @@ namespace Catfish.Services
         /// <param name="function"></param>
         /// <param name="group"></param>
         /// <returns></returns>
-        public bool ExecuteTriggers(Guid entityTemplateId, DataItem dataItem, Guid postActionId)
+        public bool ExecuteTriggers(Guid entityTemplateId, Item item, Guid postActionId)
         {
             try
             {
@@ -326,7 +327,7 @@ namespace Catfish.Services
                 foreach (var triggerRef in triggerRefs)
                 {
                     Trigger selectedTrigger = template.Workflow.Triggers.Where(tr => tr.Id == triggerRef.RefId).FirstOrDefault();
-                    triggerExecutionStatus &= selectedTrigger.Execute(template, dataItem, triggerRef, _serviceProvider);
+                    triggerExecutionStatus &= selectedTrigger.Execute(template, item, triggerRef, _serviceProvider);
                 }
                 return triggerExecutionStatus;
             }

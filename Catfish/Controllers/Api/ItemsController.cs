@@ -153,7 +153,7 @@ namespace Catfish.Controllers.Api
 
                 bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
 
-                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem.DataContainer.FirstOrDefault(), postActionId);
+                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem, postActionId);
 
                 
                 result.Success = true;
@@ -182,7 +182,7 @@ namespace Catfish.Controllers.Api
 
                 bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
 
-                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem.DataContainer.FirstOrDefault(), postActionId);
+                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem, postActionId);
 
                 _appDb.Items.Update(newItem);
                 _appDb.SaveChanges();

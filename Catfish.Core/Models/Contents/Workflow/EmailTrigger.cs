@@ -90,10 +90,11 @@ namespace Catfish.Core.Models.Contents.Workflow
             return newRef;
         }
 
-        public override bool Execute(EntityTemplate template, DataItem dataItem,TriggerRef triggerRef, IServiceProvider serviceProvider)
+        public override bool Execute(EntityTemplate template, Item item,TriggerRef triggerRef, IServiceProvider serviceProvider)
         {
             IEmailService emailService = serviceProvider.GetService<IEmailService>();
             IWorkflowService workflowService = serviceProvider.GetService<IWorkflowService>();
+            IGroupService groupService = serviceProvider.GetService<IGroupService>();
             IConfig config = serviceProvider.GetService<IConfig>();
             string lang = "en";
 
@@ -127,10 +128,14 @@ namespace Catfish.Core.Models.Contents.Workflow
                 List<string> emailRecipients = new List<string>();
                 if (recipient.Owner)
                 {
-                    emailRecipients.Add(workflowService.GetLoggedUserEmail());
+                    if (item.UserEmail != null)
+                        emailRecipients.Add(item.UserEmail);
+                    else
+                        emailRecipients.Add(workflowService.GetLoggedUserEmail());
                 }
                 else if (recipient.FieldId.HasValue && recipient.FieldId != Guid.Empty)
                 {
+                    DataItem dataItem = item.DataContainer.Where(dc => dc.IsRoot == true).FirstOrDefault();
                     //This means, we should retrieve the email from a data field in the passed data item
                     var recipientEmails = dataItem.GetValues(recipient.FieldId.Value);
                     emailRecipients.AddRange(recipientEmails);
@@ -141,6 +146,7 @@ namespace Catfish.Core.Models.Contents.Workflow
                     //the role identified by the recipient.RoleId within the group under
                     //which this submission has been made.
                     //Add each such email address to the emailRecipients array.
+                    emailRecipients.AddRange(groupService.GetUserEmailListByRole((Guid)recipient.RoleId, (Guid)item.GroupId));
                 }
                 else 
                 {
