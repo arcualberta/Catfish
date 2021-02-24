@@ -106,7 +106,7 @@ namespace Catfish.Core.Models.Contents.Fields
         }
         public IEnumerable<Text> GetValues(string lang = null)
         {
-            throw new NotImplementedException();
+            return Values;
         }
 
         public virtual string GetValues(string separator, string lang = null)

@@ -221,6 +221,9 @@ namespace Catfish.UnitTests
             State moveToDraftCorrectState = workflow.AddState(ws.GetStatus(template.Id, "MoveToDraftCorrect", true));
 
 
+            //Defininig roles
+            WorkflowRole centralAdminRole = workflow.AddRole(auth.GetRole("CentralAdmin", true));
+            WorkflowRole departmentAdmin = workflow.AddRole(auth.GetRole("DepartmentAdmin", true));
 
 
 
@@ -228,22 +231,22 @@ namespace Catfish.UnitTests
             EmailTemplate centralAdminNotification = template.GetEmailTemplate("Central Admin Notification", lang, true);
             centralAdminNotification.SetDescription("This metadata set defines the email template to be sent to the central admin when a dept admin makes a submission.", lang);
             centralAdminNotification.SetSubject("Calendar Change Submission");
-            centralAdminNotification.SetBody("A @Link[calendar chane|@Model] was submitted.\n\nThank you");
+            centralAdminNotification.SetBody("A @Link[calendar chane|Submission] was submitted.\n\nThank you");
 
             EmailTemplate deptAdminSubmissionNotification = template.GetEmailTemplate("Dept. Admin Submission Admin Notification", lang, true);
             deptAdminSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when he/she submits a new or revised calendar change.", lang);
             deptAdminSubmissionNotification.SetSubject("Calendar Change Submission");
-            deptAdminSubmissionNotification.SetBody("A @Link[calendar change|@Model] was submitted.\n\nThank you");
+            deptAdminSubmissionNotification.SetBody("A @Link[calendar change|Submission] was submitted.\n\nThank you");
 
             EmailTemplate revisionNotification = template.GetEmailTemplate("Central Admin Revision Notification", lang, true);
             revisionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when central admin make a revision request.", lang);
             revisionNotification.SetSubject("Calendar Change Submission Need to Revise");
-            revisionNotification.SetBody("A @Link[calendar change|@Model] need to revise.\n\nThank you");
+            revisionNotification.SetBody("A @Link[calendar change|Submission] need to revise.\n\nThank you");
 
             EmailTemplate moveToDraftCalendarNotification = template.GetEmailTemplate("Move to Draft Calendar Notification", lang, true);
             moveToDraftCalendarNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when the submission request move to the draft calendar.", lang);
             moveToDraftCalendarNotification.SetSubject("Calendar Change Submission moved to the draft calendar");
-            moveToDraftCalendarNotification.SetBody("A @Link[calendar change|@Model] moved to the draft calendar.\n\nThank you");
+            moveToDraftCalendarNotification.SetBody("A @Link[calendar change|Submission] moved to the draft calendar.\n\nThank you");
 
             //Defininig the Calendar Change Request form
             DataItem calendarChangeForm = template.GetDataItem("Calendar Change Request", true, lang);
@@ -273,10 +276,6 @@ namespace Catfish.UnitTests
             //WorkflowGroup arcGroup = workflow.AddGroup("ARC");
 
 
-            //Defininig roles
-            WorkflowRole centralAdminRole = workflow.AddRole(auth.GetRole("CentralAdmin", true));
-            WorkflowRole departmentAdmin = workflow.AddRole(auth.GetRole("DepartmentAdmin", true));
-
 
             ////Defining users
             //WorkflowUser centralAdminUser = workflow.AddUser("centraladmin@ualberta.ca");
@@ -288,7 +287,7 @@ namespace Catfish.UnitTests
 
             //Defining triggers
             EmailTrigger centralAdminNotificationEmailTrigger = workflow.AddTrigger("ToCentralAdmin", "SendEmail");
-            centralAdminNotificationEmailTrigger.AddRecipientByEmail(centralAdminEmail);
+            centralAdminNotificationEmailTrigger.AddRecipientByRole(centralAdminRole.Id, centralAdminRole.Value);
             centralAdminNotificationEmailTrigger.AddTemplate(centralAdminNotification.Id, "Central Admin Notification");
 
             EmailTrigger ownerSubmissionNotificationEmailTrigger = workflow.AddTrigger("ToOwnerOnDocumentSubmission", "SendEmail");

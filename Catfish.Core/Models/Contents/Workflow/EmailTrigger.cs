@@ -44,12 +44,12 @@ namespace Catfish.Core.Models.Contents.Workflow
             return newRecipient;
         }
 
-        public EmailRecipient AddRecipientByRole(string role)
+        public EmailRecipient AddRecipientByRole(Guid roleId, string roleName)
         {
-            if (Recipients.Where(x => x.Role == role).Any())
-                throw new Exception(string.Format("Email recipient role {0} already exists.", role));
+            if (Recipients.Where(x => x.RoleId == roleId).Any())
+                throw new Exception(string.Format("Email recipient role {0} already exists.", roleName));
 
-            EmailRecipient newRecipient = new EmailRecipient() { Role = role };
+            EmailRecipient newRecipient = new EmailRecipient() { RoleId = roleId };
             Recipients.Add(newRecipient);
             return newRecipient;
         }
@@ -115,28 +115,40 @@ namespace Catfish.Core.Models.Contents.Workflow
             EmailTemplate emailTemplate = template.GetEmailTemplate(emailTemplateName, lang, false);
 
             //get all recipient in the trigger.
+            //Each recipient is identified in one of the following ways:
+            //  * recipient's email (which includes a role identified within the workflow)
+            //  * owner
+            //  * by the content of a field in a data-item
             var recipients = selectedTrigger.Recipients.ToList();
 
             //add recipient to the content
             foreach (var recipient in recipients)
             {
-                string emailRecipient;
+                List<string> emailRecipients = new List<string>();
                 if (recipient.Owner)
                 {
-                    emailRecipient = workflowService.GetLoggedUserEmail();
+                    emailRecipients.Add(workflowService.GetLoggedUserEmail());
                 }
-                else if (recipient.FieldId != Guid.Empty)
-                    {
-                        //This means, we should retrieve the email from a data field in the passed data item
-                        var recipientEmails = dataItem.GetValues(recipient.FieldId.Value, ",").Split(",");
-                        emailRecipient = recipientEmails.FirstOrDefault();
-                    }
+                else if (recipient.FieldId.HasValue && recipient.FieldId != Guid.Empty)
+                {
+                    //This means, we should retrieve the email from a data field in the passed data item
+                    var recipientEmails = dataItem.GetValues(recipient.FieldId.Value);
+                    emailRecipients.AddRange(recipientEmails);
+                }
+                else if(recipient.RoleId.HasValue && recipient.RoleId != Guid.Empty)
+                {
+                    //Retrieve the list of email addresses of all recipients that hold
+                    //the role identified by the recipient.RoleId within the group under
+                    //which this submission has been made.
+                    //Add each such email address to the emailRecipients array.
+                }
                 else 
                 {
-                    emailRecipient = recipient.Email;
+                    emailRecipients.Add(recipient.Email);
                 }
                 //send email using email service
-                SendEmail(emailTemplate, emailRecipient, emailService, workflowService, config);
+                foreach(var emailRecipient in emailRecipients)
+                    SendEmail(emailTemplate, emailRecipient, emailService, workflowService, config);
             }
 
             return true;

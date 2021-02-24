@@ -322,6 +322,22 @@ namespace Catfish.Core.Models.Contents
             return inputFields;
         }
 
+        public List<string> GetValues(Guid id, string lang = null)
+        {
+            IValueField valField = Fields
+                .Where(f => typeof(IValueField).IsAssignableFrom(f.GetType()) && f.Id == id)
+                .Select(f => f as IValueField)
+                .FirstOrDefault();
+
+            return valField == null 
+                ? new List<string>() 
+                : valField
+                    .GetValues(lang) //This is a list of Text elements, optionally filtered based on the specified language
+                    .Select(txt => txt.Value) //Extract the literal text string encapsulated in the Text element
+                    .ToList();
+
+        }
+
         public string GetValues(Guid id, string separator, string lang = null)
         {
             IValueField valField = Fields
