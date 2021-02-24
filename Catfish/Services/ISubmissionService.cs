@@ -23,7 +23,7 @@ namespace Catfish.Services
         Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid status, string action, string fileNames=null);
         Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid status, string action, string fileNames = null);
  //       bool SendEmail(EmailTemplate emailTemplate, string recipient);
-        bool ExecuteTriggers(Guid entityTemplateId,DataItem dataItem, string actionButton, string function, string group);
+        bool ExecuteTriggers(Guid entityTemplateId,DataItem dataItem, Guid postActionId);
         Item StatusChange(Guid entityId, Guid currentStatusId, Guid nextStatusId, string action);
     }
     public class ItemField

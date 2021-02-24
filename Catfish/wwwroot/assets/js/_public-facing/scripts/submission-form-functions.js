@@ -21,7 +21,7 @@
     });
 });
 
-function submitWorkflowForm(status, button, suffix, successMessage) {
+function submitWorkflowForm(status, button, postActionId, suffix, successMessage) {
     $("#submission-result-message_" + suffix).hide();
 
     
@@ -59,6 +59,7 @@ function submitWorkflowForm(status, button, suffix, successMessage) {
 
         values["actionButton"] = button;
         values["status"] = status;
+        values["postActionId"] = postActionId;
 
        
         /* get the action attribute from the <form action=""> element */

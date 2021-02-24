@@ -142,7 +142,7 @@ namespace Catfish.Controllers.Api
         // POST api/<ItemController>
         [Route("SubmitForm")]
         [HttpPost]
-        public ApiResult SubmitForm([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] string function, [FromForm] string group, [FromForm] Guid status, [FromForm] string fileNames=null)
+        public ApiResult SubmitForm([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] Guid status, [FromForm] Guid postActionId, [FromForm] string fileNames=null)
         {
             ApiResult result = new ApiResult();
             try
@@ -153,7 +153,7 @@ namespace Catfish.Controllers.Api
 
                 bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
 
-                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem.DataContainer.FirstOrDefault(), actionButton, function, group);
+                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem.DataContainer.FirstOrDefault(), postActionId);
 
                 _appDb.Items.Add(newItem);
                 _appDb.SaveChanges();

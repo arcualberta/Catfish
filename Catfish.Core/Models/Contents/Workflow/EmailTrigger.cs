@@ -125,17 +125,14 @@ namespace Catfish.Core.Models.Contents.Workflow
                 {
                     emailRecipient = workflowService.GetLoggedUserEmail();
                 }
-                else
-                {
-                    if (recipient.FieldId != Guid.Empty)
+                else if (recipient.FieldId != Guid.Empty)
                     {
                         //This means, we should retrieve the email from a data field in the passed data item
                         var recipientEmails = dataItem.GetValues(recipient.FieldId.Value, ",").Split(",");
-
-                        var field = dataItem.Fields.Where(di => di.Id == recipient.FieldId).Select(di => di.Data).FirstOrDefault().Value;
-                        emailRecipient = field;
-                       // emailRecipient = field.val
+                        emailRecipient = recipientEmails.FirstOrDefault();
                     }
+                else 
+                {
                     emailRecipient = recipient.Email;
                 }
                 //send email using email service

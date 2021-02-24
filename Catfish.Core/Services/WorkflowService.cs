@@ -459,6 +459,26 @@ namespace Catfish.Core.Services
                 return null;
             } 
         }
+        public List<TriggerRef> GetTriggersByPostActionID(EntityTemplate entityTemplate, Guid postActionId)
+        {
+            try
+            {
+                //SetModel(entityTemplate);
+                var action = GetGetActionByPostActionID(entityTemplate, postActionId);
+                foreach (var postAction in action.PostActions)
+                {
+                    if (postAction.Id.Equals(postActionId))
+                        return postAction.TriggerRefs.OrderBy(tr => tr.Order).ToList();
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
 
         public ItemTemplate CreateBasicSubmissionTemplate(string templateName, string submissionFormName, string lang)
         {

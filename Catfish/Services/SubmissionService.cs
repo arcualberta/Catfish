@@ -313,7 +313,7 @@ namespace Catfish.Services
         /// <param name="function"></param>
         /// <param name="group"></param>
         /// <returns></returns>
-        public bool ExecuteTriggers(Guid entityTemplateId, DataItem dataItem, string actionButton, string function, string group)
+        public bool ExecuteTriggers(Guid entityTemplateId, DataItem dataItem, Guid postActionId)
         {
             try
             {
@@ -321,9 +321,7 @@ namespace Catfish.Services
                 EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
 
                 // get list trigger referances of given template, function and group. 
-                List<TriggerRef> triggerRefs = _workflowService.GetPostActions(template, function, group)
-                                                .Where(pa => pa.ButtonLabel == actionButton).FirstOrDefault()
-                                                .TriggerRefs.OrderBy(tr => tr.Order).ToList();
+                List<TriggerRef> triggerRefs = _workflowService.GetTriggersByPostActionID(template, postActionId);
                 //need to go through all trigger referances and execute them one by one.
                 bool triggerExecutionStatus = true;
                 foreach (var triggerRef in triggerRefs)

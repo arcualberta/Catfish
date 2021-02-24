@@ -52,5 +52,6 @@ namespace Catfish.Core.Services
         Guid GetChildFormId(EntityTemplate entityTemplate, Guid postActionId);
         PostAction GetPostActionByButtonId(EntityTemplate entityTemplate, Guid buttonId);
         GetAction GetGetActionByPostActionID(EntityTemplate entityTemplate, Guid postActionId);
+        List<TriggerRef> GetTriggersByPostActionID(EntityTemplate entityTemplate, Guid postActionId);
     }
 }
