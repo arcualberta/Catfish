@@ -231,22 +231,22 @@ namespace Catfish.UnitTests
             EmailTemplate centralAdminNotification = template.GetEmailTemplate("Central Admin Notification", lang, true);
             centralAdminNotification.SetDescription("This metadata set defines the email template to be sent to the central admin when a dept admin makes a submission.", lang);
             centralAdminNotification.SetSubject("Calendar Change Submission");
-            centralAdminNotification.SetBody("A @Link[calendar chane|Submission] was submitted.\n\nThank you");
+            centralAdminNotification.SetBody("A <a href='@SiteUrl/items/@Item.Id'>calendar change</a> was submitted.\n\nThank you");
 
             EmailTemplate deptAdminSubmissionNotification = template.GetEmailTemplate("Dept. Admin Submission Admin Notification", lang, true);
             deptAdminSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when he/she submits a new or revised calendar change.", lang);
             deptAdminSubmissionNotification.SetSubject("Calendar Change Submission");
-            deptAdminSubmissionNotification.SetBody("A @Link[calendar change|Submission] was submitted.\n\nThank you");
+            deptAdminSubmissionNotification.SetBody("A <a href='@SiteUrl/items/@Item.Id'>calendar change</a> was submitted.\n\nThank you");
 
             EmailTemplate revisionNotification = template.GetEmailTemplate("Central Admin Revision Notification", lang, true);
             revisionNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when central admin make a revision request.", lang);
             revisionNotification.SetSubject("Calendar Change Submission Need to Revise");
-            revisionNotification.SetBody("A @Link[calendar change|Submission] need to revise.\n\nThank you");
+            revisionNotification.SetBody("A <a href='@SiteUrl/items/@Item.Id'>calendar change</a> needs to be revises.\n\nThank you");
 
             EmailTemplate moveToDraftCalendarNotification = template.GetEmailTemplate("Move to Draft Calendar Notification", lang, true);
             moveToDraftCalendarNotification.SetDescription("This metadata set defines the email template to be sent to the dept admin when the submission request move to the draft calendar.", lang);
             moveToDraftCalendarNotification.SetSubject("Calendar Change Submission moved to the draft calendar");
-            moveToDraftCalendarNotification.SetBody("A @Link[calendar change|Submission] moved to the draft calendar.\n\nThank you");
+            moveToDraftCalendarNotification.SetBody("A <a href='@SiteUrl/items/@Item.Id'>calendar change</a> has been moved to the draft calendar.\n\nThank you");
 
             //Defininig the Calendar Change Request form
             DataItem calendarChangeForm = template.GetDataItem("Calendar Change Request", true, lang);

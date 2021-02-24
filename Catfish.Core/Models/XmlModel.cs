@@ -65,7 +65,14 @@ namespace Catfish.Core.Models
             XmlModel model = Activator.CreateInstance(type, new XElement(Data)) as XmlModel;
             return model;
         }
-        
+        public T Clone<T>() where T : XmlModel
+        {
+            var type = typeof(T);
+            T model = Activator.CreateInstance(type, new XElement(Data)) as T;
+            return model;
+        }
+
+
 
         public static XmlModel InstantiateContentModel(XElement data)
         {

@@ -112,8 +112,15 @@ namespace Catfish.Core.Models.Contents.Workflow
                                     .Select(ms => ms.Value)
                                     .FirstOrDefault();
 
-            //get email template using workflow service GetEmailTemplate. Inhere need to pass email template.
-            EmailTemplate emailTemplate = template.GetEmailTemplate(emailTemplateName, lang, false);
+            //get email template using workflow service GetEmailTemplate
+            EmailTemplate emailMessage = template.GetEmailTemplate(emailTemplateName, lang, false);
+            if (emailMessage == null)
+                return false;
+
+            //Make a clone and update references in the email body
+            emailMessage = emailMessage.Clone<EmailTemplate>();
+            emailMessage.UpdateRerefences("@SiteUrl", ConfigHelper.SiteUrl);
+            emailMessage.UpdateRerefences("@Item.Id", item.Id.ToString());
 
             //get all recipient in the trigger.
             //Each recipient is identified in one of the following ways:
@@ -154,7 +161,7 @@ namespace Catfish.Core.Models.Contents.Workflow
                 }
                 //send email using email service
                 foreach(var emailRecipient in emailRecipients)
-                    SendEmail(emailTemplate, emailRecipient, emailService, workflowService, config);
+                    SendEmail(emailMessage, emailRecipient, emailService, workflowService, config);
             }
 
             return true;
