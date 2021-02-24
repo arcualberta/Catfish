@@ -2613,7 +2613,7 @@ namespace Catfish.UnitTests
                                                  "Sara Dorow: sdorow@ualberta.ca",
                                                  "Michelle Meagher: mmmeaghe@ualberta.ca",
                                                  "Astrid Ensslin: ensslin@ualberta.ca",
-                                                 "arcAdmin : mruaini@ualberta.ca",
+                                                 "arcAdmin : iwickram@ualberta.ca",
                                                 "Steve Patten : spatten@ualberta.ca"};//Dean have to be at the end!!
             return chairDept;
         }

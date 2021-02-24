@@ -81,7 +81,10 @@
                                             {
                                                 var childFormId = _workflowService.GetChildFormId(template, postAction.Id);
 
-                                                <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("../entity/{0}/addchild/{1}/ButtonId/{2}", Model.Item.Id, @childFormId, @stateMapping.Id)">  @Localizer.General[@stateMapping.ButtonLabel]</a>
+                                                if (childFormId == null)
+                                                {
+                                                    <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("../entity/{0}/addchild/{1}/ButtonId/{2}", Model.Item.Id, @childFormId, @stateMapping.Id)">  @Localizer.General[@stateMapping.ButtonLabel]</a>
+                                                }
                                             }
 
                                         }
