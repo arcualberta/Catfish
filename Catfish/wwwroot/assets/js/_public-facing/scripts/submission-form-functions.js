@@ -28,8 +28,12 @@ function submitWorkflowForm(status, button, postActionId, suffix, successMessage
     $("#submissionForm_" + suffix).submit(function (event) {
         /* stop form from submitting normally */
         event.preventDefault();
+        var groupId = null;
         var e = document.getElementById("groupId");
-        var groupId = e.options[e.selectedIndex].value;
+        if (e != null) {
+             groupId = e.options[e.selectedIndex].value;
+        }
+        
         //Reguar expression for matching the variable name prefix up to the item's properties.
         var prefix = /^Blocks\[[0-9]+\]\.Item\.|^block.Item\./;
         var name;

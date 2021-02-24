@@ -2268,7 +2268,7 @@ namespace Catfish.UnitTests
             //Defining email templates
             string emailBody = "";
             emailBody = "<p>Dear" + ((TextField)chairName).GetValue(lang) + ",</p><br/>" +
-                                    "<p>A faculty member from your department has applied for a SAS grant.Please click on this link: @Link[Sas Application|@Model] to provide your assessment about this application." +
+                                    "<p>A faculty member from your department has applied for a SAS grant.Please click on this link: <a href='@SiteUrl/items/@Item.Id'>Sas Application</a> to provide your assessment about this application." +
                                     "You will be required to log in with your CCID email.</p> <br/>" +
                                     "<p>Thank you.</p>";
 
@@ -3224,15 +3224,15 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             //Defining email templates
             // string emailBody = "";
             //emailBody =	
-            
-				//<p>Dear @chairName</p>
-				//<br/>
-				//<p>A @applicant from your department has applied for  grant funding. Please click on this link: @LinkUrl to provide your assessment about this application.
-    //            You will be required to log in with your CCID email.</p> 
-				
-				
-				//<br/>
-				//<p>Thank you.</p>";
+
+            //<p>Dear @chairName</p>
+            //<br/>
+            //<p>A @applicant from your department has applied for  grant funding. Please click on this link: <a href='@SiteUrl/items/@Item.Id'>Sas Application</a> to provide your assessment about this application.
+            //            You will be required to log in with your CCID email.</p> 
+
+
+            //<br/>
+            //<p>Thank you.</p>";
 
             EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
             chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
