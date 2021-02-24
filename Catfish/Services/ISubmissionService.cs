@@ -21,7 +21,7 @@ namespace Catfish.Services
         List<ItemField> GetAllField(string xml);
         SystemStatus GetStatus(Guid? statusId);
         Item SetSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid status, string action, string fileNames=null);
-        Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid status, string action, string fileNames = null);
+        Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid itemId, Guid? groupId, Guid status, string action, string fileNames = null);
  //       bool SendEmail(EmailTemplate emailTemplate, string recipient);
         bool ExecuteTriggers(Guid entityTemplateId,DataItem dataItem, Guid postActionId);
         Item StatusChange(Guid entityId, Guid currentStatusId, Guid nextStatusId, string action);

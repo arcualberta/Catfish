@@ -26,12 +26,6 @@ namespace Catfish.Pages
         [Display(Name = "Authorization Failure Message")]
         public TextField AuthorizationFailureMessage { get; set; }
 
-        public TextField SelectedCollection { get; set; }
-        
-        public TextField WorkflowFunction { get; set; }
-
-        public TextField WorkflowGroup { get; set; }
-
         public ItemDetailsModel(AppDbContext db)
         {
             _db = db;

@@ -30,7 +30,7 @@
 
 @{
     var associatedItems = item.DataContainer
-.Where(di => di.IsRoot = false)
+.Where(di => di.IsRoot == false)
 .OrderByDescending(di => di.Created)
 .ToList();
 }
@@ -45,10 +45,13 @@
     <input data-val="true" data-val-required="The CollectionId field is required."
            id="primaryCollectionId_@suffix" name="collectionId" type="hidden"
            value="@item.PrimaryCollectionId">
+    <input data-val="true" data-val-required="The ItemId field is required."
+           id="itemId_@suffix" name="itemId" type="hidden"
+           value="@item.Id">
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h2 class="item-heading">@Html.DisplayFor(model => rootDataItem.Name, rootDataItem.Name.GetType().ToString()) @item.UserEmail</h2>
+                @*<h2 class="item-heading">@Html.DisplayFor(model => rootDataItem.Name, rootDataItem.Name.GetType().ToString()) @item.UserEmail</h2>*@
             </div>
             <div class="card-body">
                 <div class="row">
@@ -77,7 +80,7 @@
                                             {
                                                 foreach (var popup in postAction.PopUps)
                                                 {
-                                                    <input id="@buttonLable" class="btn btn-success launch-modal" name="@postAction.ButtonLabel" type="button" value="@postAction.ButtonLabel" data-toggle="modal" data-target="submissionEditModal_@suffix" />
+                                                    <input id="@buttonLable" class="btn btn-success launch-modal" name="@postAction.ButtonLabel" type="button" value="@postAction.ButtonLabel" data-toggle="modal" data-target="#submissionEditModal_@suffix" />
                                                     <div id="submissionEditModal_@suffix" class="modal fade" role="dialog">
 
                                                         <div>
@@ -111,7 +114,7 @@
                                                                                 }
                                                                                 else
                                                                                 {
-                                                                                    <button id="@buttonLable" type="submit" class="btn btn-success" onclick="submitEditWorkflowForm('@state.Next','@state.ButtonLabel','@suffix', '@successMessage');">@button.Text</button>
+                                                                                    <button id="@buttonLable" type="submit" class="btn btn-success" onclick="submitEditWorkflowForm('@state.Next','@state.ButtonLabel','@postAction.Id','@suffix', '@successMessage');">@button.Text</button>
                                                                                 }
                                                                             }
                                                                         }
@@ -124,7 +127,7 @@
                                             }
                                             else
                                             {
-                                                <input id="@buttonLable" class="btn btn-success" name="@buttonLable" type="submit" value="@buttonLable" onclick="submitEditWorkflowForm('@state.Next','@state.ButtonLabel','@suffix', '@successMessage');" />
+                                                <input id="@buttonLable" class="btn btn-success" name="@buttonLable" type="submit" value="@buttonLable" onclick="submitEditWorkflowForm('@state.Next','@state.ButtonLabel','@postAction.Id','@suffix', '@successMessage');" />
                                             }
 
                                         }
@@ -135,7 +138,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="submission-edit-form-block">
+                <div>
                     @Html.EditorFor(model => rootDataItem, rootDataItem.GetType().ToString())
                 </div>
             </div>
@@ -143,7 +146,7 @@
         </div>
     </div>
 </form>
-    <div id="submission-result-message_@suffix"></div>
+    <div id="submission-edit-result-message_@suffix"></div>
 }
 else
 {

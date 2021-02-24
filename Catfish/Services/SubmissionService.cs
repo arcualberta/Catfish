@@ -265,7 +265,7 @@ namespace Catfish.Services
             }
             
         }
-        public Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid? groupId, Guid status, string action, string fileNames = null)
+        public Item EditSubmission(DataItem value, Guid entityTemplateId, Guid collectionId, Guid itemId, Guid? groupId, Guid status, string action, string fileNames = null)
         {
             try
             {
@@ -274,21 +274,20 @@ namespace Catfish.Services
                     throw new Exception("Entity template with ID = " + entityTemplateId + " not found.");
 
                 //When we instantantiate an instance from the template, we do not need to clone metadata sets
-                Item item = _db.Items.Where(i => i.Id == value.Id).FirstOrDefault();
+                Item item = _db.Items.Where(i => i.Id == itemId).FirstOrDefault();
+                Guid oldStatus = (Guid)item.StatusId;
                 item.StatusId = status;
-                item.PrimaryCollectionId = collectionId;
-                item.TemplateId = entityTemplateId;
-                item.UserEmail = _workflowService.GetLoggedUserEmail();
+                item.Updated = DateTime.Now;
 
-                DataItem newDataItem = template.InstantiateDataItem((Guid)value.TemplateId);
-                newDataItem.UpdateFieldValues(value);
-                item.DataContainer.Add(newDataItem);
-                newDataItem.EntityId = item.Id;
+                DataItem dataItem = item.DataContainer
+                                        .Where(di => di.IsRoot == true).FirstOrDefault();
+                item.DataContainer.Remove(dataItem);
+                dataItem.UpdateFieldValues(value);
+                item.DataContainer.Add(dataItem);
 
                 User user = _workflowService.GetLoggedUser();
-                var fromState = template.Workflow.States.Where(st => st.Value == "").Select(st => st.Id).FirstOrDefault();
                 item.AddAuditEntry(user.Id,
-                    fromState,
+                    oldStatus,
                     item.StatusId.Value,
                     action
                     );

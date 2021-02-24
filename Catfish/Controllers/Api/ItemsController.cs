@@ -148,15 +148,14 @@ namespace Catfish.Controllers.Api
             try
             {
                 Item newItem = _submissionService.SetSubmission(value, entityTemplateId, collectionId, groupId, status, actionButton);
-                //_appDb.Items.Add(newItem);
-                //_appDb.SaveChanges();
+                _appDb.Items.Add(newItem);
+                _appDb.SaveChanges();
 
                 bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
 
                 bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem.DataContainer.FirstOrDefault(), postActionId);
 
-                _appDb.Items.Add(newItem);
-                _appDb.SaveChanges();
+                
                 result.Success = true;
                 result.Message = "Application " + actionButton + " successfully.";
 
@@ -172,20 +171,20 @@ namespace Catfish.Controllers.Api
         // POST api/<ItemController>
         [Route("EditSubmissionForm")]
         [HttpPost]
-        public ApiResult EditSubmission([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] Guid status, [FromForm] string fileNames = null)
+        public ApiResult EditSubmission([FromForm] DataItem value, [FromForm] Guid entityTemplateId, [FromForm] Guid collectionId, [FromForm] Guid itemId, [FromForm] Guid? groupId, [FromForm] string actionButton, [FromForm] Guid status, [FromForm] Guid postActionId, [FromForm] string fileNames = null)
         {
             ApiResult result = new ApiResult();
             try
             {
-                Item newItem = _submissionService.EditSubmission(value, entityTemplateId, collectionId, groupId, status, actionButton);
+                Item newItem = _submissionService.EditSubmission(value, entityTemplateId, collectionId,itemId, groupId, status, actionButton);
                 //_appDb.Items.Add(newItem);
                 //_appDb.SaveChanges();
 
                 bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
 
-               // bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem.DataContainer.FirstOrDefault(), actionButton, function, group);
+                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem.DataContainer.FirstOrDefault(), postActionId);
 
-                _appDb.Items.Add(newItem);
+                _appDb.Items.Update(newItem);
                 _appDb.SaveChanges();
                 result.Success = true;
                 result.Message = "Application " + actionButton + " successfully.";
