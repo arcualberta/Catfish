@@ -25,7 +25,12 @@ namespace Catfish.Core.Models.Contents.Fields
             Values = new XmlModelList<MultilingualValue>(xml.GetElement(ValuesTag, true), true, MultilingualValue.TagName);
         }
 
-        public int SetValue(string val, string lang, int valueIndex = 0)
+        public override void SetValue(string value, string lang)
+        {
+            SetValue(value, lang, 0);
+        }
+
+        public int SetValue(string val, string lang, int valueIndex)
         {
             if(Values.Count <= valueIndex)
             {

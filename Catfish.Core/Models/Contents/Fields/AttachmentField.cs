@@ -62,6 +62,12 @@ namespace Catfish.Core.Models.Contents.Fields
             }
         }
 
+        /// <summary>
+        /// This method has no meaning for the Attachment class.
+        /// </summary>
+        /// <param name="value"></param>
+        public override void SetValue(string value, string lang) { }
+
         public string FileNames { get; set; }
 
         // public string ContentDisposition => AttachmentFile.ContentDisposition;  //throw new NotImplementedException();

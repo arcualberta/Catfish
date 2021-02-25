@@ -11,7 +11,7 @@
     var tableFieldContainerId = "tf-container-" + Model.Id;
 }
 
-<div id ="@tableFieldContainerId" class="container">
+<div id="@tableFieldContainerId" class="container">
     <table id="@templateId"
            class="tf-template"
            style="display:none">
@@ -32,17 +32,17 @@
                     </td>
                 }
                 <th>
-                    <div class="col-1 text-right">
+                    @*<div class="col-1 text-right" style="@deleteBtnVisibility">
                         <span class="fa fa-trash delete-btn" onclick="deleteRow('@tableFieldContainerId', 0); return false;"></span>
-                    </div>
+                    </div>*@
                 </th>
             </tr>
         </tbody>
     </table>
 
-    <table class="table table-field tf-data @Model.CssClass" 
+    <table class="table table-field tf-data @Model.CssClass"
            data-name-prefix="@modelNamePrefix"
-           data-min-rows="@Model.MinRows" 
+           data-min-rows="@Model.MinRows"
            data-max-rows="@Model.MaxRows">
         <thead>
             <tr>
@@ -57,7 +57,10 @@
                         {<span class="required" style="display:none"></span>}
                     </th>
                 }
-                <th></th>
+                @if (Model.AllowAddRows)
+                {
+                    <th></th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -74,22 +77,24 @@
                             @Html.EditorFor(model => Model.TableData[r].Fields[c], Model.TableData[r].Fields[c].GetType().ToString(), viewData)
                         </td>
                     }
+                    @if (Model.AllowAddRows)
+                    {
                     <th>
-                        <div class="col-1 text-right">
+                        <div class="col-1 text-right tableDeleteRowBtn">
                             <span class="fa fa-trash delete-btn" onclick="deleteRow('@tableFieldContainerId', @r); return false;"></span>
                         </div>
                     </th>
+                    }
                 </tr>
             }
 
         </tbody>
     </table>
 
-    @if (Model.TableData.Count < Model.MaxRows)
-    {
+    @if(Model.AllowAddRows){
         string addButtonContainerId = Html.IdFor(model => model) + "_addRowButton";
 
-        <div id="@addButtonContainerId" class="compositeFieldAddItem">
+        <div id="@addButtonContainerId" class="tableAddRowBtn">
 
             <input type="button" class="btn btn-default btn-success" onClick="addRow('@tableFieldContainerId'); return false;" value="+ Row" />
 

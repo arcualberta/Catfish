@@ -83,6 +83,18 @@ namespace Catfish.Core.Models.Contents.Fields
             }
         }
 
+        public override void SetValue(string value, string lang)
+        {
+            foreach (var op in Options)
+            {
+                if (op.OptionText.Values.Where(txt => txt.Language == lang && txt.Value == value).Any())
+                {
+                    op.Selected = true;
+                    break;
+                }
+            }
+        }
+
         public IEnumerable<Text> GetValues(string lang = null)
         {
             throw new NotImplementedException();

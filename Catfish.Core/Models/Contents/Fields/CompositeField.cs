@@ -107,5 +107,13 @@ namespace Catfish.Core.Models.Contents.Fields
                 Children.Add(dstChild);
             }
         }
+
+        /// <summary>
+        /// This method has no meaning for the composite field
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="lang"></param>
+        public override void SetValue(string value, string lang) { }
+
     }
 }

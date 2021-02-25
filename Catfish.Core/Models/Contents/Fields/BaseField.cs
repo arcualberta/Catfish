@@ -19,7 +19,8 @@ namespace Catfish.Core.Models.Contents.Fields
         //{
         //    throw new Exception("This method must be overridden by sub classes");
         //}
-        public abstract void UpdateValues(BaseField srcField); 
+        public abstract void UpdateValues(BaseField srcField);
+        public abstract void SetValue(string values, string lang); 
 
         public bool Required
         {

@@ -38,6 +38,12 @@ namespace Catfish.Core.Models.Contents.Fields
             //does not need any implementation.
         }
 
+        //This is a short-cut for setting the contents of the info field
+        public override void SetValue(string value, string lang)
+        {
+            Content.SetContent(value, lang);
+        }
+
         public InfoSection AppendContent(string htmlElementTag, string content, string lang, string htmlClasses = null)
         {
             if (htmlClasses == null)

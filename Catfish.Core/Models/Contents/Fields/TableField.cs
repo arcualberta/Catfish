@@ -18,6 +18,11 @@ namespace Catfish.Core.Models.Contents.Fields
             get => GetAttribute("max-rows", null as int?);
             set => SetAttribute("max-rows", value);
         }
+        public bool AllowAddRows
+        {
+            get => GetAttribute("allow-add-rows", true);
+            set => SetAttribute("allow-add-rows", value);
+        }
 
         public TableRow TableHead { get; set; }
         public XmlModelList<TableRow> TableData { get; set; }
@@ -54,6 +59,13 @@ namespace Catfish.Core.Models.Contents.Fields
             //}
         }
 
+        /// <summary>
+        /// This method has no meaning for the table field.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="lang"></param>
+        public override void SetValue(string value, string lang) { }
+
         public TableRow InsertValues(TableRow srcValues)
         {
             TableRow dstRow = new TableRow();
@@ -89,6 +101,19 @@ namespace Catfish.Core.Models.Contents.Fields
                 AppendRow();
 
             return this;
+        }
+
+        public void SetColumnValues(int columnIndex, string[] values, string lang, bool markReadOnly = false)
+        {
+            //Make sure we have at least number of rows equal to the nimber of values
+            if (TableData.Count < values.Length)
+                AppendRows(values.Length - TableData.Count);
+
+            for (int i = 0; i < values.Length; ++i)
+            {
+                TableData[i].Fields[columnIndex].SetValue(values[i], lang);
+                TableData[i].Fields[columnIndex].Readonly = markReadOnly;
+            }
         }
     }
 

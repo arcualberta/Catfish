@@ -22,6 +22,11 @@ namespace Catfish.Core.Models.Contents.Fields
             Values = new XmlModelList<Text>(Data, true, Text.TagName);
         }
 
+        public override void SetValue(string value, string lang)
+        {
+            SetValue(value, 0);
+        }
+
         /// <summary>
         /// Sets the value at the given index
         /// </summary>

@@ -243,11 +243,48 @@ namespace Catfish.UnitTests
             tf.TableHead.CreateField<RadioField>("Availability", lang, new string[] { "Available", "Not available" }, true);
             tf.TableHead.CreateField<CheckboxField>("Category", lang, new string[] { "Health", "Prescription", "Beauty", "Nutrition" });
 
+
+            
             tf.AppendRows(4);
 
 
             _db.SaveChanges();
             template.Data.Save("..\\..\\..\\..\\Examples\\tableField_Workflow_generared.xml");
+
+        }
+
+        [Test]
+        public void GridTableFieldTest()
+        {
+            string lang = "en";
+            string templateName = "Grid table-field Form Template";
+            string submissionFormName = "Grid Table-field Form";
+
+            ItemTemplate template = SubmissionItemTemplate(templateName, submissionFormName, lang);
+
+            DataItem form = template.GetRootDataItem(true);
+            Assert.IsNotNull(form);
+
+            string[] categories = new string[] { "Faculty", "Students", "Other" };
+
+            TableField tf = form.CreateField<TableField>("Attendees", lang, false, categories.Length, categories.Length);
+            tf.FieldLabelCssClass = "col-md-12";
+            tf.FieldValueCssClass = "col-md-12";
+            tf.TableHead.CreateField<InfoSection>("", lang); 
+            tf.TableHead.CreateField<IntegerField>("U of A", lang);
+            tf.TableHead.CreateField<IntegerField>("Other Canada", lang);
+            tf.TableHead.CreateField<IntegerField>("Other Countries", lang);
+            tf.TableHead.CreateField<IntegerField>("Total # of People", lang);
+            tf.TableHead.CreateField<DecimalField>("Registration Fee per Person", lang);
+            tf.TableHead.CreateField<DecimalField>("Total Registration Fee", lang);
+
+            //NOTE: we MUST finish defining all columns before setting any column values.
+            tf.SetColumnValues(0, categories, lang);
+
+            tf.AllowAddRows = false;
+
+            _db.SaveChanges();
+            template.Data.Save("..\\..\\..\\..\\Examples\\gridTableField_Workflow_generared.xml");
 
         }
 

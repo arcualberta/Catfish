@@ -38,6 +38,9 @@
     //Inserting the row to the tbody section of the data table
     let tbody = $(dataTable).find("tbody");
     $(tbody).append(row);
+
+    updateButtonVisibility(tableFieldId);
+
 }
 
 function deleteRow(tableFieldId, index) {
@@ -71,7 +74,25 @@ function deleteRow(tableFieldId, index) {
 
         //Updating the delete button onclick action
         $(rows[i]).find(".delete-btn").attr("onclick", `deleteRow('${tableFieldId}', ${i}); return false;`);
+
+        updateButtonVisibility(tableFieldId);
     }
+}
+
+function updateButtonVisibility(tableFieldId) {
+    let container = $("#" + tableFieldId);
+    let dataTable = $(container).find("table.tf-data");
+    let n = $(dataTable).find("tbody tr").length;
+
+    if (n >= $(dataTable).data("max-rows")) 
+        $(dataTable).find(".tableAddRowBtn").hide();
+    else
+        $(dataTable).find(".tableAddRowBtn").show();
+
+    if (n <= $(dataTable).data("min-rows"))
+        $(dataTable).find(".tableDeleteRowBtn").hide();
+    else
+        $(dataTable).find(".tableDeleteRowBtn").show();
 
 }
 
