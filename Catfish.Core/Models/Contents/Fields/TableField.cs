@@ -24,10 +24,46 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("allow-add-rows", value);
         }
 
+        //private VisibilityCondition mVisibilityCondition;
+        //public VisibilityCondition VisibilityCondition { get { if (mVisibilityCondition == null) mVisibilityCondition = new VisibilityCondition(GetElement(VisibilityCondition.TagName, true)); return mVisibilityCondition; } }
+
         public TableRow TableHead { get; set; }
         public XmlModelList<TableRow> TableData { get; set; }
 
-        public TableField() : base() { DisplayLabel = "Table"; }
+        public bool ShowRowSum
+        {
+            get => GetAttribute("show-row-sum", false);
+            set => SetAttribute("show-row-sum", value);
+        }
+
+        public bool ShowColSum
+        {
+            get => GetAttribute("show-col-sum", false);
+            set => SetAttribute("show-col-sum", value);
+        }
+
+        private TableRow mRowSum;
+        public TableRow RowSum 
+        { 
+            get 
+            { 
+                if(mRowSum == null) 
+                    mRowSum = new TableRow(GetElement("row-sum", true));
+                return mRowSum;
+            } 
+        }
+        private TableRow mColSum;
+        public TableRow ColSum
+        {
+            get
+            {
+                if (mColSum == null)
+                    mColSum = new TableRow(GetElement("col-sum", true));
+                return mColSum;
+            }
+        }
+
+    public TableField() : base() { DisplayLabel = "Table"; }
         public TableField(XElement data) : base(data) { DisplayLabel = "Table"; }
         public TableField(string name, string desc, string lang = null) : base(name, desc, lang) { DisplayLabel = "Table"; }
 
@@ -36,6 +72,8 @@ namespace Catfish.Core.Models.Contents.Fields
             base.Initialize(guidOption);
 
             TableHead = new TableRow(GetElement("table-head", true));
+            
+            ColSum = new TableRow(GetElement("col-sum", true));
             TableData = new XmlModelList<TableRow>(GetElement("table-data", true), true, TableRow.TagName);
         }
         public override void UpdateValues(BaseField srcField)
