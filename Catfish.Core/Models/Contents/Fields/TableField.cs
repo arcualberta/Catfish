@@ -71,9 +71,7 @@ namespace Catfish.Core.Models.Contents.Fields
         {
             base.Initialize(guidOption);
 
-            TableHead = new TableRow(GetElement("table-head", true));
-            
-            ColSum = new TableRow(GetElement("col-sum", true));
+            TableHead = new TableRow(GetElement("table-head", true));         
             TableData = new XmlModelList<TableRow>(GetElement("table-data", true), true, TableRow.TagName);
         }
         public override void UpdateValues(BaseField srcField)
