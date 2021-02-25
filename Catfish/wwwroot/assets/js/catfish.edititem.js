@@ -43,6 +43,8 @@ if (document.getElementById("item-edit-page")) {
                     ValueIds: []
                 },
                 userInputs: {},
+                //temp so ids are unique per field, they will be with real data
+                uniqueIdForField: '',
 
                 //the better idea stuff - 100% flattened
                 newFieldDataFlattened: {
@@ -140,25 +142,27 @@ if (document.getElementById("item-edit-page")) {
 
                 //slightly not 100% flattened object - easier to display
                 //main object holds value-group ids
-                //TODO try this out in the template first before committing to it
                 this.newFieldData.Name = [
                     {
                         id: '0',
-                        Value: 'Something to fill out',
+                        Value: 'Name',
                         Language: 'English',
                     },
                     {
                         id: '1',
-                        Value: 'French Translation Here',
+                        Value: 'Nom',
                         Language: 'French'
                     }
                 ];
 
                 this.newFieldData.Description = [
                     {
-                        id: 0,
+                        id: '00',
                         Value: "I am a description for this item",
-
+                    },
+                    {
+                        id: '01',
+                        Value: "French description for the item",
                     },
                 ];
 
@@ -206,6 +210,8 @@ if (document.getElementById("item-edit-page")) {
                         ],
                 };
 
+                this.uniqueIdForField = uuidv1();
+
                 //final one - completely flattened
                 //similar to the above but will require more loops, might not be as easy to use
                 //but it is 'correct' irt flattening
@@ -245,35 +251,15 @@ if (document.getElementById("item-edit-page")) {
         },
         template: `
         <div class="sitemap-item">
-            <div class="link">
-                <div class="flexer">
-                    <div class="flexer" v-for="(val, index) of newFieldData.Name">
-                        <h3 v-if="index >0 && index < newFieldData.Name.length" style="white-space: pre"> | </h3>
-                        <h3>{{val.Value}}</h3>
-                    </div>
-                </div>
-                <div class="flex-row" v-for="(val, index) of newFieldData.Name">
-                    <div class="label-holder">
-                        <div>{{languageLabels[index]}}/{{val.Language}}:</div>
-                        <button v-if="!isInPreviewMode" type="button" class="btn-sm btn-primary btn-circle"
-                        data-toggle="tooltip" data-placement="top"
-                        :title="fieldData.Description.Values.$values[index].Value">
-                            <i class="fas fa-question"></i>
-                        </button>
-                     </div>
-                     <!--
-                     Note to self about the value in this element:
-                     field.values[index].values[0].value
-                   - The first values is an array of objects. Those objects are for
-                     each field's language.
-                   - The next values is an array of that field language, but there seems to
-                     be no way this would ever increase past 1 item in the array. So therefore,
-                     the index is always set to 0.
-                     -->
+            <div class="link">{{fieldData.$type}}
+                <div class="flex-row" v-for="(val, index) of newFieldData.ValueIds">
+                    
                      <div v-if="!isInPreviewMode" class="col-md-4 mb-3 metadata-input">
 
+<!-- fieldData.Values.$values[index].Values.$values[0].Value -->
+<!--
                         <h3>Simplified, 2 layer object, reacts to added value</h3>
-                        <div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of testField.Values"> <!-- fieldData.Values.$values[index].Values.$values[0].Value -->
+                        <div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of testField.Values"> 
                             <input
                             required type="text" class="form-control"
                             v-model="testField.Values[fieldValueIndex].Value"
@@ -292,7 +278,7 @@ if (document.getElementById("item-edit-page")) {
 <hr>
 
 <h3>Object with three layers, reacts to added value(?)</h3>
-                        <div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of threeLayerTest.Values[0].$values"> <!-- fieldData.Values.$values[index].Values.$values[0].Value -->
+                        <div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of threeLayerTest.Values[0].$values"> 
                             <input
                             required type="text" class="form-control"
                             v-model="threeLayerTest.Values[0].$values[fieldValueIndex].Value"
@@ -310,9 +296,9 @@ if (document.getElementById("item-edit-page")) {
 
 <hr>
 
-<h3>Regular object, will not react to added value</h3>
-<div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of fieldData.Values.$values[index].Values.$values"> <!-- fieldData.Values.$values[index].Values.$values[0].Value -->
-                            <input
+<h3>Regular object, will not react to added value</h3> <b>{{fieldData.Values.$values[index]}}</b>
+        <div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of fieldData.Values.$values[index].Values.$values">
+                            <!--<input
                             required type="text" class="form-control"
                             v-model="fieldData.Values.$values[index].Values.$values[fieldValueIndex].Value"
                             >
@@ -328,15 +314,17 @@ if (document.getElementById("item-edit-page")) {
 
                         <div>{{fieldData.Values.$values[index]}}</div>
 
-<hr>
+<hr>-->
 
-<h3>Semi-flattened object, reacts to added value</h3>
-<div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of newFieldData.ValueIds"> <!-- fieldData.Values.$values[index].Values.$values[0].Value -->
-                            <div v-for="userInput of userInputs[fieldValue]">
-                                <input
-                                required type="text" class="form-control"
-                                v-model="userInput.Value"
-                                >
+<!-- <h3>Semi-flattened object, reacts to added value</h3> -->
+<div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of userInputs[val]"> <!-- fieldData.Values.$values[index].Values.$values[0].Value -->
+                                <div>
+                                    <label :for="fieldValue.id + '-index-' + fieldValueIndex + '-' + index + uniqueIdForField"><h4>{{newFieldData.Name[fieldValueIndex].Value}} ({{newFieldData.Name[fieldValueIndex].Language}}): </h4></label>
+                                    <input :id="fieldValue.id + '-index-' + fieldValueIndex + '-' + index + uniqueIdForField"
+                                    required type="text" class="form-control"
+                                    v-model="fieldValue.Value"
+                                    >
+                                </div>
                                 <div class="btn-group new-value-button" role="group">
                                     <button :disabled="newFieldData.ValueIds.length <= 1"
                                         type="button" v-on:click="deleteField()"
@@ -346,13 +334,11 @@ if (document.getElementById("item-edit-page")) {
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                        <div>{{newFieldData}}</div>
-                        <div>{{userInputs}}</div>
+                        
 
-
+<!--
 <h3>Flattened object, should react to added value... but it is too complex to easily display</h3>
-<div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of Object.values(newFieldDataFlattened.ValueIds)"> <!-- fieldData.Values.$values[index].Values.$values[0].Value -->
+<div v-if="fieldData.$type.includes(inputTypes.text)" v-for="(fieldValue, fieldValueIndex) of Object.values(newFieldDataFlattened.ValueIds)">
                         <div v-for="val of fieldValue">|{{val}}|
                             <div v-for="userInput of userInputsFlattened[val]">
                                 <input
@@ -372,7 +358,7 @@ if (document.getElementById("item-edit-page")) {
                         </div>
                         <div>{{newFieldDataFlattened}}</div>
                         <div>{{userInputsFlattened}}</div>
-
+-->
 
 <!--
                         <textarea v-else-if="fieldData.$type.includes(inputTypes.textarea)"
@@ -407,6 +393,8 @@ if (document.getElementById("item-edit-page")) {
                         </div>
                     </div>
                 </div>
+                <div>{{newFieldData}}</div>
+                <div>{{userInputs}}</div>
 
                 <div v-if="piranha.permissions.pages.add" class="add-value-container">
                     <div class="btn-group new-value-button" role="group">
