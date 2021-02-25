@@ -116,7 +116,11 @@ namespace Catfish.Controllers.Api
                         DataItem dataItem = item.GetRootDataItem(false);
                         List<string> fieldValues = dataItem.GetConcatenatedFieldValues(fieldGuids, " |");
                         foreach (var val in fieldValues)
-                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", val)));
+                        {
+                            //Replacing "&" characters with " and ";
+                            var sanitizedVal = val.Replace("&", " and ");
+                            bodyRow.Add(XElement.Parse(string.Format("<td >{0}</td>", sanitizedVal)));
+                        }
 
                         int statusIdx = statusIds.IndexOf(item.StatusId);
                         string status;

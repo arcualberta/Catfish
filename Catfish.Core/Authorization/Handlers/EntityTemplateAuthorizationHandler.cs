@@ -141,6 +141,9 @@ namespace Catfish.Core.Authorization.Handlers
                 // entities with the above status
                 var stateReference = workflowAction.States.Where(sr => sr.RefId == entityStatusId).FirstOrDefault();
 
+                if(stateReference == null)
+                    return Task.CompletedTask; //If no state reference is found, we cannot continue the authorization beyond this point
+
                 //Authorization successful if the current user is the owner of the entity AND
                 //the requested action is authorized to the owner
                 string currentUserEmail = _workflowService.GetLoggedUserEmail();

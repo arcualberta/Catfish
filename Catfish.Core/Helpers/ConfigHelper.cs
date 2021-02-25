@@ -29,7 +29,8 @@ namespace Catfish.Core.Helpers
         {
             get
             {
-                return Configuration.GetSection("SiteConfig:SiteUrl").Value;
+                string val = Configuration.GetSection("SiteConfig:SiteUrl").Value;
+                return string.IsNullOrEmpty(val) ? null : val.TrimEnd('/');
             }
         }
 

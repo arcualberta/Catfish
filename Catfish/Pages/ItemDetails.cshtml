@@ -41,13 +41,15 @@
 .ToList();
     var auditEntrys = item.AuditTrail.OrderByDescending(ae => ae.Created);
 }
-@if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)
+@*@if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)*@
+@if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Read })).Succeeded)
 {
     <div class="container">
         <div class="card">
             <div class="card-header">
                 <h2 class="item-heading">@Html.DisplayFor(model => rootDataItem.Name, rootDataItem.Name.GetType().ToString()) @item.UserEmail</h2>
-                @if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.Update })).Succeeded)
+                @*@if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.Update })).Succeeded)*@
+                @if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.Update })).Succeeded)
                 {
                     <div class="float-right">
                         <a class="btn btn-labeled btn-primary pull-right" href="@string.Format("edit/{0}", item.Id)">  @Localizer.General["Edit"]</a>
@@ -73,8 +75,10 @@
                                 <div>
                                     @foreach (var postAction in allPostActions)
                                     {
-                                        if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
-                                        .Succeeded)
+                                        //if ((await _authorizationService.AuthorizeAsync(User, template, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
+                                        //  .Succeeded)
+                                        if ((await _authorizationService.AuthorizeAsync(User, item, new List<IAuthorizationRequirement>() { TemplateOperations.ChangeState }))
+                                            .Succeeded)
                                         {
                                             var stateMappings = postAction.StateMappings.Where(sm => sm.Current == item.StatusId).ToList();
                                             foreach (var stateMapping in stateMappings)

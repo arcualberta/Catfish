@@ -2320,6 +2320,7 @@ namespace Catfish.UnitTests
 
             // Defining roles
             WorkflowRole sasAdmin = workflow.AddRole(auth.GetRole("SAS_Admin", true));
+            WorkflowRole sasChair = workflow.AddRole(auth.GetRole("SAS_Chair", true));
 
             // ================================================
             // Create submission-instances related workflow items
@@ -2360,24 +2361,27 @@ namespace Catfish.UnitTests
 
             // Added state referances
             listSubmissionsAction.AddStateReferances(savedState.Id)
-                .AddOwnerAuthorization();
-            listSubmissionsAction.AddStateReferances(inReviewState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
-                .AddOwnerAuthorization();
+                .AddAuthorizedDomain("@ualberta.ca");
+
+            ////listSubmissionsAction.AddStateReferances(inReviewState.Id)
+            ////    .AddAuthorizedRole(sasAdmin.Id)
+            ////    .AddOwnerAuthorization();
             listSubmissionsAction.AddStateReferances(reviewCompletedState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
-                .AddOwnerAuthorization();
-            listSubmissionsAction.AddStateReferances(inAdjudicationState.Id)
-                .AddAuthorizedRole(sasAdmin.Id)
-                .AddOwnerAuthorization();
-            listSubmissionsAction.AddStateReferances(acceptedState.Id)
-                .AddAuthorizedRole(sasAdmin.Id)
-                .AddOwnerAuthorization();
-            listSubmissionsAction.AddStateReferances(rejectedState.Id)
-                .AddAuthorizedRole(sasAdmin.Id)
-                .AddOwnerAuthorization();
+                .AddAuthorizedDomain("@ualberta.ca");
             
-            
+            ////listSubmissionsAction.AddStateReferances(inAdjudicationState.Id)
+            ////    .AddAuthorizedRole(sasAdmin.Id)
+            ////    .AddOwnerAuthorization();
+            ////listSubmissionsAction.AddStateReferances(acceptedState.Id)
+            ////    .AddAuthorizedRole(sasAdmin.Id)
+            ////    .AddOwnerAuthorization();
+            ////listSubmissionsAction.AddStateReferances(rejectedState.Id)
+            ////    .AddAuthorizedRole(sasAdmin.Id)
+            ////    .AddOwnerAuthorization();
+
+
             // ================================================
             // Read submission-instances related workflow items
             // ================================================
@@ -2392,13 +2396,18 @@ namespace Catfish.UnitTests
                 .AddOwnerAuthorization();
             viewDetailsSubmissionAction.AddStateReferances(inReviewState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
-                .AddOwnerAuthorization();
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(sasChair.Id);
+
             viewDetailsSubmissionAction.AddStateReferances(reviewCompletedState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
-                .AddOwnerAuthorization();
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(sasChair.Id);
+
             viewDetailsSubmissionAction.AddStateReferances(inAdjudicationState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
                 .AddOwnerAuthorization();
+
             viewDetailsSubmissionAction.AddStateReferances(acceptedState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
                 .AddOwnerAuthorization();
@@ -2480,15 +2489,16 @@ namespace Catfish.UnitTests
             PostAction ReviewSubmissionPostAction = reviewSubmissionAction.AddPostAction("Start Review", "Save");
 
             //Defining state mappings
-            ReviewSubmissionPostAction.AddStateMapping(inReviewState.Id, reviewCompletedState.Id, "Review Complete");
+            ReviewSubmissionPostAction.AddStateMapping(inReviewState.Id, reviewCompletedState.Id, "Submit Assessment");
 
             //Defining the pop-up for the above postAction action
-            PopUp reviewSubmissionActionPopUpopUp = ReviewSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to review complete this document?", "Once cpmpleted, you cannot access this document.");
+            PopUp reviewSubmissionActionPopUpopUp = ReviewSubmissionPostAction.AddPopUp("Confirmation", "Confirm the submission?", "Once submitted, you cannot resubmit an assessment.");
             reviewSubmissionActionPopUpopUp.AddButtons("Yes, complete", "true");
             reviewSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
 
-            deleteSubmissionAction.GetStateReference(inReviewState.Id, true)
-                .AddAuthorizedDomain("ualberta.ca");
+
+            reviewSubmissionAction.GetStateReference(inReviewState.Id, true)
+                .AddAuthorizedRole(sasChair.Id);
 
 
             // ================================================
@@ -2514,6 +2524,8 @@ namespace Catfish.UnitTests
             changeStateActionPopUpopUp.AddButtons("Cancel", "false");
 
             //Defining states and their authorizatios
+            changeStateAction.GetStateReference(inReviewState.Id, true)
+                .AddAuthorizedRole(sasChair.Id);
             changeStateAction.GetStateReference(reviewCompletedState.Id, true)
                 .AddAuthorizedRole(sasAdmin.Id);
             changeStateAction.GetStateReference(inAdjudicationState.Id, true)
@@ -2573,47 +2585,77 @@ namespace Catfish.UnitTests
         private string[] GetDepartmentList()
         {
             string[] dept =new string[] { "Anthropology",
-                                                "Art & Design",
-                                                "Drama",
-                                                "East Asian Studies",
-                                                "Economics",
-                                                "English and Film Studies",
-                                                "History and Classics",
-                                                "Linguistics",
-                                                "Modern Languages and Cultural Studies (MLCS)",
-                                                "Music",
-                                                "Philosophy",
-                                                "Political Science",
-                                                "Psychology",
-                                                "Sociology",
-                                                "Women's and Gender Studies",
-                                                "Media and Technology Studies",
-                                                "Arts Resources Centre" };
+                                            "Art & Design",
+                                            "Drama",
+                                            "East Asian Studies",
+                                            "Economics",
+                                            "English and Film Studies",
+                                            "History and Classics",
+                                            "Linguistics",
+                                            "Modern Languages and Cultural Studies (MLCS)",
+                                            "Music",
+                                            "Philosophy",
+                                            "Political Science",
+                                            "Psychology",
+                                            "Sociology",
+                                            "Women's and Gender Studies",
+                                            "Media and Technology Studies",
+                                            "Arts Resources Centre"
+                                        };
 
             return dept;
         }
 
-        private string[] GetDepartmentChair()
+        private string[] GetDepartmentChair(bool test = true)
         {
-            string[] chairDept = new string[] {
-                                                "Pamela Willoughby: pwilloug@ualberta.ca",
-                                                "Aidan Rowe: rowe1@ualberta.ca",
-                                                "Melanie Dreyer-Lude : dreyerlu@ualberta.ca",
-                                                "Christopher Lupke: lupke@ualberta.ca",
-                                                 "Rick Szostak: rszostak@ualberta.ca",
-                                                 "Cecily Devereux: devereux@ualberta.ca",
-                                                 "Ryan Dunch: rdunch@ualberta.ca",
-                                                 "Herb Colston: colston@ualberta.ca",
-                                                 "Alla Nedashkiviska: allan@ualberta.ca",
-                                                 "Patricia Tao: ptao@ualberta.ca",
-                                                 "Marie-Eve Morin: mmorin1@ualberta.ca",
-                                                 "Catherine Kellogg: ckellogg@ualberta.ca",
-                                                 "Anthony Singhal: asinghal@ualberta.ca",
-                                                 "Sara Dorow: sdorow@ualberta.ca",
-                                                 "Michelle Meagher: mmmeaghe@ualberta.ca",
-                                                 "Astrid Ensslin: ensslin@ualberta.ca",
-                                                 "arcAdmin : iwickram@ualberta.ca",
-                                                "Steve Patten : spatten@ualberta.ca"};//Dean have to be at the end!!
+            string[] chairDept;
+
+            if (test)
+            {
+                chairDept = new string[] {
+                                            "Pamela Willoughby: arctech@ualberta.ca",
+                                            "Aidan Rowe: arctech@ualberta.ca",
+                                            "Melanie Dreyer-Lude : arctech@ualberta.ca",
+                                            "Christopher Lupke: arctech@ualberta.ca",
+                                            "Rick Szostak: arctech@ualberta.ca",
+                                            "Cecily Devereux: arctech@ualberta.ca",
+                                            "Ryan Dunch: arctech@ualberta.ca",
+                                            "Herb Colston: arctech@ualberta.ca",
+                                            "Alla Nedashkiviska: arctech@ualberta.ca",
+                                            "Patricia Tao: arctech@ualberta.ca",
+                                            "Marie-Eve Morin: arctech@ualberta.ca",
+                                            "Catherine Kellogg: arctech@ualberta.ca",
+                                            "Anthony Singhal: arctech@ualberta.ca",
+                                            "Sara Dorow: arctech@ualberta.ca",
+                                            "Michelle Meagher: arctech@ualberta.ca",
+                                            "Kamal at Ranaweera (Chair): kamal@ranaweera.ca",
+                                            "arcAdmin : iwickram@ualberta.ca",
+                                            "Kamal at Gmail (Dean) : kamal.ranaweera@gmail.com"};//Dean have to be at the end!!
+            }
+            else
+            {
+                chairDept = new string[] {
+                                            "Pamela Willoughby: pwilloug@ualberta.ca",
+                                            "Aidan Rowe: rowe1@ualberta.ca",
+                                            "Melanie Dreyer-Lude : dreyerlu@ualberta.ca",
+                                            "Christopher Lupke: lupke@ualberta.ca",
+                                                "Rick Szostak: rszostak@ualberta.ca",
+                                                "Cecily Devereux: devereux@ualberta.ca",
+                                                "Ryan Dunch: rdunch@ualberta.ca",
+                                                "Herb Colston: colston@ualberta.ca",
+                                                "Alla Nedashkiviska: allan@ualberta.ca",
+                                                "Patricia Tao: ptao@ualberta.ca",
+                                                "Marie-Eve Morin: mmorin1@ualberta.ca",
+                                                "Catherine Kellogg: ckellogg@ualberta.ca",
+                                                "Anthony Singhal: asinghal@ualberta.ca",
+                                                "Sara Dorow: sdorow@ualberta.ca",
+                                                "Michelle Meagher: mmmeaghe@ualberta.ca",
+                                                "Astrid Ensslin: ensslin@ualberta.ca",
+                                                "arcAdmin : iwickram@ualberta.ca",
+                                            "Steve Patten : spatten@ualberta.ca" //Dean have to be at the end!!
+                                        };
+            }
+
             return chairDept;
         }
 
