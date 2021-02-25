@@ -2362,24 +2362,30 @@ namespace Catfish.UnitTests
             // Added state referances
             listSubmissionsAction.AddStateReferances(savedState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
-                .AddAuthorizedDomain("@ualberta.ca");
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddOwnerAuthorization();
 
-            ////listSubmissionsAction.AddStateReferances(inReviewState.Id)
-            ////    .AddAuthorizedRole(sasAdmin.Id)
-            ////    .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(inReviewState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddOwnerAuthorization();
+
             listSubmissionsAction.AddStateReferances(reviewCompletedState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
                 .AddAuthorizedDomain("@ualberta.ca");
-            
-            ////listSubmissionsAction.AddStateReferances(inAdjudicationState.Id)
-            ////    .AddAuthorizedRole(sasAdmin.Id)
-            ////    .AddOwnerAuthorization();
-            ////listSubmissionsAction.AddStateReferances(acceptedState.Id)
-            ////    .AddAuthorizedRole(sasAdmin.Id)
-            ////    .AddOwnerAuthorization();
-            ////listSubmissionsAction.AddStateReferances(rejectedState.Id)
-            ////    .AddAuthorizedRole(sasAdmin.Id)
-            ////    .AddOwnerAuthorization();
+
+            listSubmissionsAction.AddStateReferances(inAdjudicationState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(acceptedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddOwnerAuthorization();
 
 
             // ================================================
@@ -2524,12 +2530,12 @@ namespace Catfish.UnitTests
             changeStateActionPopUpopUp.AddButtons("Cancel", "false");
 
             //Defining states and their authorizatios
-            changeStateAction.GetStateReference(inReviewState.Id, true)
-                .AddAuthorizedRole(sasChair.Id);
             changeStateAction.GetStateReference(reviewCompletedState.Id, true)
                 .AddAuthorizedRole(sasAdmin.Id);
             changeStateAction.GetStateReference(inAdjudicationState.Id, true)
                 .AddAuthorizedRole(sasAdmin.Id);
+            changeStateAction.GetStateReference(inReviewState.Id, true)
+                .AddAuthorizedRole(sasChair.Id);
 
 
 
@@ -2629,7 +2635,7 @@ namespace Catfish.UnitTests
                                             "Sara Dorow: arctech@ualberta.ca",
                                             "Michelle Meagher: arctech@ualberta.ca",
                                             "Kamal at Ranaweera (Chair): kamal@ranaweera.ca",
-                                            "arcAdmin : iwickram@ualberta.ca",
+                                            "arcAdmin : ouslsaba@gmail.com",
                                             "Kamal at Gmail (Dean) : kamal.ranaweera@gmail.com"};//Dean have to be at the end!!
             }
             else

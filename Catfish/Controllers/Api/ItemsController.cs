@@ -64,7 +64,7 @@ namespace Catfish.Controllers.Api
             if (endDate.HasValue)
                 endDate = endDate.Value.Date.AddDays(1);
 
-            EntityTemplate template = _entityTemplateService.GetTemplate(templateId, User);
+            EntityTemplate template = _entityTemplateService.GetTemplate(templateId);
             if (template != null)
             {
                 XElement result = new XElement("table");
