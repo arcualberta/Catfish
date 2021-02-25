@@ -1,5 +1,6 @@
 ﻿@model Catfish.Core.Models.Contents.Fields.InfoSection
 
+@Html.HiddenFor(model => model.ModelType)
 <div class="@Model.CssClass">
     @Html.Raw(Model.Content.ConcatenatedRichText)
 </div>
