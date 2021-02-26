@@ -123,7 +123,6 @@ function RadioFieldReadableValue(fieldModelId) {
     return $("span[data-option-id='" + fieldVal + "']").text();
 }
 
-
 function Extract(str, delimiter, selectItemIndex, trimEnds) {
 
     var value = str;
@@ -136,4 +135,14 @@ function Extract(str, delimiter, selectItemIndex, trimEnds) {
         value = value.trim();
 
     return value;
+}
+
+function TableColumnSum(fieldModelId, columnIndex) {
+    let table = $("table[data-model-id='" + fieldModelId + "']")
+    let result = 0;
+    $(table).find("input[data-c=" + columnIndex + "]").each(function () {
+        result += parseInt($(this).val(), 10);
+    });
+
+    return result;
 }

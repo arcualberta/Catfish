@@ -7,6 +7,7 @@ namespace Catfish.Core.Models.Contents.Fields
 {
     public class TableField : BaseField
     {
+        public enum eRowTarget { Data, Footer }
         public int MinRows
         {
             get => GetAttribute("min-rows", 0);
@@ -24,44 +25,42 @@ namespace Catfish.Core.Models.Contents.Fields
             set => SetAttribute("allow-add-rows", value);
         }
 
-        //private VisibilityCondition mVisibilityCondition;
-        //public VisibilityCondition VisibilityCondition { get { if (mVisibilityCondition == null) mVisibilityCondition = new VisibilityCondition(GetElement(VisibilityCondition.TagName, true)); return mVisibilityCondition; } }
-
         public TableRow TableHead { get; set; }
         public XmlModelList<TableRow> TableData { get; set; }
+        public XmlModelList<TableRow> TableFooter { get; set; }
 
-        public bool ShowRowSum
-        {
-            get => GetAttribute("show-row-sum", false);
-            set => SetAttribute("show-row-sum", value);
-        }
+        //public bool ShowRowSum
+        //{
+        //    get => GetAttribute("show-row-sum", false);
+        //    set => SetAttribute("show-row-sum", value);
+        //}
 
-        public bool ShowColSum
-        {
-            get => GetAttribute("show-col-sum", false);
-            set => SetAttribute("show-col-sum", value);
-        }
+        //public bool ShowColSum
+        //{
+        //    get => GetAttribute("show-col-sum", false);
+        //    set => SetAttribute("show-col-sum", value);
+        //}
 
-        private TableRow mRowSum;
-        public TableRow RowSum 
-        { 
-            get 
-            { 
-                if(mRowSum == null) 
-                    mRowSum = new TableRow(GetElement("row-sum", true));
-                return mRowSum;
-            } 
-        }
-        private TableRow mColSum;
-        public TableRow ColSum
-        {
-            get
-            {
-                if (mColSum == null)
-                    mColSum = new TableRow(GetElement("col-sum", true));
-                return mColSum;
-            }
-        }
+        //private TableRow mRowSum;
+        //public TableRow RowSum 
+        //{ 
+        //    get 
+        //    { 
+        //        if(mRowSum == null) 
+        //            mRowSum = new TableRow(GetElement("row-sum", true));
+        //        return mRowSum;
+        //    } 
+        //}
+        //private TableRow mColSum;
+        //public TableRow ColSum
+        //{
+        //    get
+        //    {
+        //        if (mColSum == null)
+        //            mColSum = new TableRow(GetElement("col-sum", true));
+        //        return mColSum;
+        //    }
+        //}
 
     public TableField() : base() { DisplayLabel = "Table"; }
         public TableField(XElement data) : base(data) { DisplayLabel = "Table"; }
@@ -73,6 +72,7 @@ namespace Catfish.Core.Models.Contents.Fields
 
             TableHead = new TableRow(GetElement("table-head", true));         
             TableData = new XmlModelList<TableRow>(GetElement("table-data", true), true, TableRow.TagName);
+            TableFooter = new XmlModelList<TableRow>(GetElement("table-footer", true), true, TableRow.TagName);
         }
         public override void UpdateValues(BaseField srcField)
         {
@@ -118,7 +118,7 @@ namespace Catfish.Core.Models.Contents.Fields
             TableData.Add(dstRow);
             return dstRow;
         }
-        public TableRow AppendRow()
+        public TableRow AppendRow(eRowTarget target = eRowTarget.Data)
         {
             TableRow row = new TableRow();
             foreach (var cell in TableHead.Fields)
@@ -128,13 +128,22 @@ namespace Catfish.Core.Models.Contents.Fields
                 clone.RefId = cell.Id;
                 row.AppendCell<BaseField>(clone);
             }
-            TableData.Add(row);
+            switch(target)
+            {
+                case eRowTarget.Data:
+                    TableData.Add(row);
+                    break;
+                case eRowTarget.Footer:
+                    TableFooter.Add(row);
+                    break;
+            }
+
             return row;
         }
-        public TableField AppendRows(int count)
+        public TableField AppendRows(int count, eRowTarget target = eRowTarget.Data)
         {
             for (int i = 0; i < count; ++i)
-                AppendRow();
+                AppendRow(target);
 
             return this;
         }
@@ -176,5 +185,14 @@ namespace Catfish.Core.Models.Contents.Fields
             return this;
         }
 
+        public void SetReadOnly(bool val = true, int[] cellIndices = null)
+        {
+            if (cellIndices == null)
+                foreach (var field in Fields)
+                    field.Readonly = val;
+            else
+                foreach (var idx in cellIndices)
+                    Fields[idx].Readonly = val;
+        }
     }
 }

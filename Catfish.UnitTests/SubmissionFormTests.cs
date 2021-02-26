@@ -281,6 +281,14 @@ namespace Catfish.UnitTests
             //NOTE: we MUST finish defining all columns before setting any column values.
             tf.SetColumnValues(0, categories, lang);
 
+            //Inseting the footer row and setting its elements to 
+            //sum of respective columns
+            TableRow footer = tf.AppendRow(TableField.eRowTarget.Footer);
+            footer.Fields[0].SetValue("Total", lang);
+            footer.SetReadOnly();
+            for(var i=1; i<footer.Fields.Count; ++i)
+                footer.Fields[i].ValueExpression.AppendColumnSum(tf, i);
+
             tf.AllowAddRows = false;
 
             _db.SaveChanges();
