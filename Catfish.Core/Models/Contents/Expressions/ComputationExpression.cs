@@ -206,6 +206,12 @@ namespace Catfish.Core.Models.Contents.Expressions
 
             return this;
         }
+
+        public ComputationExpression AppendColumnSum(TableField field, int columnIndex)
+        {
+            Data.Value += string.Format("TableColumnSum('{0}', {1})", field.Id, columnIndex);
+            return this;
+        }
         public static string Str(eMath val)
         {
             switch (val)

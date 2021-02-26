@@ -95,4 +95,3 @@ function updateButtonVisibility(tableFieldId) {
         $(dataTable).find(".tableDeleteRowBtn").show();
 
 }
-
