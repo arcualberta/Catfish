@@ -146,3 +146,18 @@ function TableColumnSum(fieldModelId, columnIndex) {
 
     return result;
 }
+
+function TableRowSum(fieldModelId, srcColumns) {
+    let dstField = $("input[data-model-id='" + fieldModelId + "']");
+    let td = $(dstField).parent();
+    let tr = $(td).parent();
+    let result = 0;
+    $.each(srcColumns, function (idx, col) {
+        val = $(tr).find(`[data-c=${col}]:visible`).val();
+        if (val)
+            result += parseInt(val);
+    });
+
+    return result;
+}
+

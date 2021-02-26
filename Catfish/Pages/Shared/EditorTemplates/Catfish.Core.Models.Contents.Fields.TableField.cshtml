@@ -68,26 +68,26 @@
             @for (var r = 0; r < Model.TableData.Count; ++r)
             {
                 var row = Model.TableData[r];
-            <tr>
-                @for (var c = 0; c < row.Fields.Count; ++c)
-                {
-                    string fieldRootId = null;
-                    Dictionary<string, object> viewData = FieldRenderingHelper.CreateViewData(Model.TableData[r].Fields[c], fieldRootId);
-                    viewData.Add("data-r", r);
-                    viewData.Add("data-c", c);
-                    <td>
-                        @Html.EditorFor(model => Model.TableData[r].Fields[c], Model.TableData[r].Fields[c].GetType().ToString(), viewData)
-                    </td>
-                }
-                @if (Model.AllowAddRows)
-                {
-                    <th>
-                        <div class="col-1 text-right tableDeleteRowBtn">
-                            <span class="fa fa-trash delete-btn" onclick="deleteRow('@tableFieldContainerId', @r); return false;"></span>
-                        </div>
-                    </th>
-                }
-            </tr>
+                <tr data-r="@r">
+                    @for (var c = 0; c < row.Fields.Count; ++c)
+                    {
+                        string fieldRootId = null;
+                        Dictionary<string, object> viewData = FieldRenderingHelper.CreateViewData(Model.TableData[r].Fields[c], fieldRootId);
+                        viewData.Add("data-r", r);
+                        viewData.Add("data-c", c);
+                        <td>
+                            @Html.EditorFor(model => Model.TableData[r].Fields[c], Model.TableData[r].Fields[c].GetType().ToString(), viewData)
+                        </td>
+                    }
+                    @if (Model.AllowAddRows)
+                    {
+                        <th>
+                            <div class="col-1 text-right tableDeleteRowBtn">
+                                <span class="fa fa-trash delete-btn" onclick="deleteRow('@tableFieldContainerId', @r); return false;"></span>
+                            </div>
+                        </th>
+                    }
+                </tr>
             }
 
             @for (var r = 0; r < Model.TableFooter.Count; ++r)

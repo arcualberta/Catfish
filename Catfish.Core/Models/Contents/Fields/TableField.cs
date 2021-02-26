@@ -125,7 +125,13 @@ namespace Catfish.Core.Models.Contents.Fields
             {
                 BaseField clone = cell.Clone() as BaseField;
                 clone.Id = Guid.NewGuid();
+
+                // Set the reference ID of the clone to the corresponding cells in the header
                 clone.RefId = cell.Id;
+
+                //Updating row-model references in value expressions with the new ID
+                clone.ValueExpression.ResolveDataModelIdReferences(clone.Id);
+
                 row.AppendCell<BaseField>(clone);
             }
             switch(target)

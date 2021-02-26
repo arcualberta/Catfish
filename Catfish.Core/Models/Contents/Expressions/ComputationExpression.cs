@@ -1,4 +1,5 @@
 ﻿using Catfish.Core.Models.Contents.Fields;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -212,6 +213,18 @@ namespace Catfish.Core.Models.Contents.Expressions
             Data.Value += string.Format("TableColumnSum('{0}', {1})", field.Id, columnIndex);
             return this;
         }
+
+        public ComputationExpression AppendRowSum(int[] srcColumns)
+        {
+            Data.Value += string.Format("TableRowSum('{{data-model-id}}', {0})", JsonConvert.SerializeObject(srcColumns));
+            return this;
+        }
+
+        public void ResolveDataModelIdReferences(Guid id)
+        {
+            Data.Value = Data.Value.Replace("{data-model-id}", id.ToString());
+        }
+
         public static string Str(eMath val)
         {
             switch (val)

@@ -12,25 +12,60 @@
     row = $(row).find("tr");
 
 
-    //Updating ids and names of elements in the new row
+    //Updating ids, names, and data-r attribute of elements in the new row
     let namePrefix = $(dataTable).data("name-prefix")
     let oldNamePrefix = namePrefix + ".TableHead";
     let newNamePrefix = namePrefix + ".TableData[" + n + "]";
+
+    $(row).attr("data-r", n);
 
     //Example:
     //Blocks[1].Item.Fields[0]  <== example namePrefix
     //Blocks[1].Item.Fields[0].TableHead.Fields[1].Values[0].Values[0].Value <== example name before updating
     //Blocks[1].Item.Fields[0].TableData[4].Fields[1].Values[0].Values[0].Value <== example name after updating for a table which already has 4 rows
 
-    let elements = $(row).find("input, select, textarea");
-    $.each(elements, function (idx, ele) {
-        let name = newNamePrefix + $(ele).attr("name").substr(oldNamePrefix.length);
-        $(ele).attr("name", name);
+    cols = $(row).find("td");
+    $.each(cols, function (c, cell) {
 
-        let id = name.split(/\[/).join('_').split(/\]/).join('_').split(/\./).join('_');
-        $(ele).attr("id", id);
+        let elements = $(cell).find("input, select, textarea");
+        $.each(elements, function (idx, ele) {
+            let name = newNamePrefix + $(ele).attr("name").substr(oldNamePrefix.length);
+            $(ele).attr("name", name);
+
+            let id = name.split(/\[/).join('_').split(/\]/).join('_').split(/\./).join('_');
+            $(ele).attr("id", id);
+
+            $(ele).attr("data-r", n);
+            $(ele).attr("data-c", c);
+
+        });
+
+        //Creating a new Guid for the field represented in the cell and setting it as the ID
+        let guid = createGuid();
+        $("input[name$='.Id']").val(guid);
+
+        //Resolving all data model references in computation expressions
+        let computedFields = $(cell).find("[data-value-expression!=''][data-value-expression]");
+        if (computedFields) {
+            $.each(computedFields, function (idx, compField) {
+                //setting the new Guid as the data-model-id to the element
+                $(compField).attr("data-model-id", guid);
+
+                //updating references in the value expression
+                let val = $(compField).attr("data-value-expression");
+                val = val.replace('{data-model-id}', guid);
+                $(compField).attr("data-value-expression", val);
+            });
+        }
+
+        //   let valExpression = $(ele).data("value-expression");
+        //if (valExpression) {
+        //    valExpression.replace("{{data-model-id}}", )
+        //}
+        //Data.Value = Data.Value.Replace("{{data-model-id}}", id.ToString());
+
+
     });
-
 
     //Updating the delete button onclick action
     $(row).find(".delete-btn").attr("onclick", `deleteRow('${tableFieldId}', ${n}); return false;`);

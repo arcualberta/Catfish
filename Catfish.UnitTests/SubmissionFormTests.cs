@@ -238,7 +238,13 @@ namespace Catfish.UnitTests
             tf.TableHead.CreateField<TextField>("Product", lang, true);
             tf.TableHead.CreateField<TextArea>("Description", lang);
             tf.TableHead.CreateField<DecimalField>("Unit Price", lang);
-            tf.TableHead.CreateField<IntegerField>("Quantity", lang);
+            tf.TableHead.CreateField<IntegerField>("Quantity 1", lang);
+            tf.TableHead.CreateField<IntegerField>("Quantity 2", lang);
+
+            var totQty = tf.TableHead.CreateField<IntegerField>("Total Qty", lang);
+            totQty.ValueExpression.AppendRowSum(new int[] { 4, 5 });
+            totQty.Readonly = true;
+
             tf.TableHead.CreateField<DecimalField>("Total", lang);
             tf.TableHead.CreateField<RadioField>("Availability", lang, new string[] { "Available", "Not available" }, true);
             tf.TableHead.CreateField<CheckboxField>("Category", lang, new string[] { "Health", "Prescription", "Beauty", "Nutrition" });
@@ -274,7 +280,11 @@ namespace Catfish.UnitTests
             tf.TableHead.CreateField<IntegerField>("U of A", lang);
             tf.TableHead.CreateField<IntegerField>("Other Canada", lang);
             tf.TableHead.CreateField<IntegerField>("Other Countries", lang);
-            tf.TableHead.CreateField<IntegerField>("Total # of People", lang);
+
+            var totPeople = tf.TableHead.CreateField<IntegerField>("Total # of People", lang);
+            totPeople.ValueExpression.AppendRowSum(new int[] { 1, 2, 3 });
+            totPeople.Readonly = true;
+            
             tf.TableHead.CreateField<DecimalField>("Registration Fee per Person", lang);
             tf.TableHead.CreateField<DecimalField>("Total Registration Fee", lang);
 
@@ -286,8 +296,15 @@ namespace Catfish.UnitTests
             TableRow footer = tf.AppendRow(TableField.eRowTarget.Footer);
             footer.Fields[0].SetValue("Total", lang);
             footer.SetReadOnly();
-            for(var i=1; i<footer.Fields.Count; ++i)
+            for (var i = 1; i < footer.Fields.Count; ++i)
+            {
+                //The footer doesn't need value expressions inherited 
+                //from the header elements, so we clear them first
+                footer.Fields[i].ValueExpression.Clear();
+
+                //Set the column-sum as the value expression.
                 footer.Fields[i].ValueExpression.AppendColumnSum(tf, i);
+            }
 
             tf.AllowAddRows = false;
 
