@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Catfish.Core.Models;
@@ -9,6 +10,7 @@ using Catfish.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Piranha.AspNetCore.Identity.Data;
+using Piranha.Extend.Fields;
 
 namespace Catfish.Pages
 {
@@ -34,6 +36,14 @@ namespace Catfish.Pages
         public Guid NextStatus { get; set; }
 
         public EntityTemplate Template { get; set; }
+        [Display(Name = "Css Class")]
+        public StringField CssClass { get; set; }
+
+        [Display(Name = "Submission Confirmation")]
+        public TextField SubmissionConfirmation { get; set; }
+
+        [Display(Name = "Authorization Failure Message")]
+        public TextField AuthorizationFailureMessage { get; set; }
 
         public NewChildItemModel(IAuthorizationService auth, IEntityTemplateService temp, IWorkflowService workf, ISubmissionService serv, AppDbContext db) : base(auth, serv)
         {
@@ -57,37 +67,37 @@ namespace Catfish.Pages
 
             ButtonId = buttonId;
         }
-        public IActionResult OnPost()
-        {
-            // Get Parent Item to which Child will be added
-            Item parentItem = _submissionService.GetSubmissionDetails(ParentId);
-            if (parentItem == null)
-                throw new Exception("Entity template with ID = " + ParentId + " not found.");
+        //////public IActionResult OnPost()
+        //////{
+        //////    // Get Parent Item to which Child will be added
+        //////    Item parentItem = _submissionService.GetSubmissionDetails(ParentId);
+        //////    if (parentItem == null)
+        //////        throw new Exception("Entity template with ID = " + ParentId + " not found.");
 
-            //get template from parent
-            EntityTemplate template = _entityTemplateService.GetTemplate(parentItem.TemplateId.Value);
+        //////    //get template from parent
+        //////    EntityTemplate template = _entityTemplateService.GetTemplate(parentItem.TemplateId.Value);
 
-            var postAction = _workflowService.GetPostActionByButtonId(template, ButtonId);
-            var stateMapping = postAction.StateMappings.Where(sm => sm.Id == ButtonId).FirstOrDefault();
-            var nextStatus = stateMapping.Next;
-            var action = _workflowService.GetGetActionByPostActionID(template, postAction.Id);
-            User user = _workflowService.GetLoggedUser();
-            //When we instantantiate an instance from the template, we do not need to clone metadata sets
-            //Item newItem = template.Instantiate<Item>();
-            parentItem.StatusId = nextStatus;
-            parentItem.Updated = DateTime.Now;
-            parentItem.AddAuditEntry(user.Id, stateMapping.Current, stateMapping.Next, stateMapping.ButtonLabel);
+        //////    var postAction = _workflowService.GetPostActionByButtonId(template, ButtonId);
+        //////    var stateMapping = postAction.StateMappings.Where(sm => sm.Id == ButtonId).FirstOrDefault();
+        //////    var nextStatus = stateMapping.Next;
+        //////    var action = _workflowService.GetGetActionByPostActionID(template, postAction.Id);
+        //////    User user = _workflowService.GetLoggedUser();
+        //////    //When we instantantiate an instance from the template, we do not need to clone metadata sets
+        //////    //Item newItem = template.Instantiate<Item>();
+        //////    parentItem.StatusId = nextStatus;
+        //////    parentItem.Updated = DateTime.Now;
+        //////    parentItem.AddAuditEntry(user.Id, stateMapping.Current, stateMapping.Next, stateMapping.ButtonLabel);
 
-            // instantantiate a version of the child and update it
+        //////    // instantantiate a version of the child and update it
 
-            DataItem newChildItem = template.InstantiateDataItem(this.Child.Id);
-            newChildItem.UpdateFieldValues(this.Child);
-            parentItem.DataContainer.Add(newChildItem);
+        //////    DataItem newChildItem = template.InstantiateDataItem(this.Child.Id);
+        //////    newChildItem.UpdateFieldValues(this.Child);
+        //////    parentItem.DataContainer.Add(newChildItem);
             
-            _db.Items.Update(parentItem);
-            _db.SaveChanges();
-            bool triggerExecute = _submissionService.ExecuteTriggers(parentItem.TemplateId.Value, parentItem, postAction.Id);
-            return RedirectToPage("ItemDetails", new { id = parentItem.Id });
-        }
+        //////    _db.Items.Update(parentItem);
+        //////    _db.SaveChanges();
+        //////    bool triggerExecute = _submissionService.ExecuteTriggers(parentItem.TemplateId.Value, parentItem, postAction.Id);
+        //////    return RedirectToPage("ItemDetails", new { id = parentItem.Id });
+        //////}
     }
 }
