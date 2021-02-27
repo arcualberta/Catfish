@@ -285,8 +285,14 @@ namespace Catfish.UnitTests
             totPeople.ValueExpression.AppendRowSum(new int[] { 1, 2, 3 });
             totPeople.Readonly = true;
             
-            tf.TableHead.CreateField<DecimalField>("Registration Fee per Person", lang);
-            tf.TableHead.CreateField<DecimalField>("Total Registration Fee", lang);
+            var regRate = tf.TableHead.CreateField<DecimalField>("Registration Fee per Person", lang);
+
+            var totRegFee = tf.TableHead.CreateField<DecimalField>("Total Registration Fee", lang);
+            totRegFee.ValueExpression
+                .AppendValue(totPeople)
+                .AppendOperator(ComputationExpression.eMath.MULT)
+                .AppendValue(regRate);
+            totRegFee.Readonly = true;
 
             //NOTE: we MUST finish defining all columns before setting any column values.
             tf.SetColumnValues(0, categories, lang);
@@ -306,6 +312,7 @@ namespace Catfish.UnitTests
                 footer.Fields[i].ValueExpression.AppendColumnSum(tf, i);
             }
 
+            //Don't allow adding more rows.
             tf.AllowAddRows = false;
 
             _db.SaveChanges();

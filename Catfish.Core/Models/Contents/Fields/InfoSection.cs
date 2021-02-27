@@ -33,9 +33,11 @@ namespace Catfish.Core.Models.Contents.Fields
 
         public override void UpdateValues(BaseField srcField)
         {
-            //InforSection represents only display text and it does not 
-            //accept any data through form submissions. Therefore, this method
-            //does not need any implementation.
+            InfoSection src = srcField as InfoSection;
+
+            Content.Values.Clear();
+            foreach(var txt in src.Content.Values)
+                Content.Values.Add(txt.Clone() as Text);
         }
 
         //This is a short-cut for setting the contents of the info field

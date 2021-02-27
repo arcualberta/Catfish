@@ -80,10 +80,13 @@ namespace Catfish.Core.Models.Contents.Fields
             if (src == null)
                 throw new Exception("The source field is null or is not a TableField");
 
-            //Clearing all children exist in the destination, if any
             TableData.Clear();
             foreach (var row in src.TableData)
-                InsertValues(row);
+                InsertValues(row, eRowTarget.Data);
+
+            TableFooter.Clear();
+            foreach (var row in src.TableFooter)
+                InsertValues(row, eRowTarget.Footer);
 
             //foreach (var srcChild in src.Children)
             //{
@@ -102,7 +105,7 @@ namespace Catfish.Core.Models.Contents.Fields
         /// <param name="lang"></param>
         public override void SetValue(string value, string lang) { }
 
-        public TableRow InsertValues(TableRow srcValues)
+        public TableRow InsertValues(TableRow srcValues, eRowTarget target = eRowTarget.Data)
         {
             TableRow dstRow = new TableRow();
             for(int i=0; i<srcValues.Fields.Count; ++i)
@@ -115,7 +118,11 @@ namespace Catfish.Core.Models.Contents.Fields
                 dstRow.Fields.Add(clone);
             }
 
-            TableData.Add(dstRow);
+            if (target == eRowTarget.Data)
+                TableData.Add(dstRow);
+            else if (target == eRowTarget.Footer)
+                TableFooter.Add(dstRow);
+
             return dstRow;
         }
         public TableRow AppendRow(eRowTarget target = eRowTarget.Data)

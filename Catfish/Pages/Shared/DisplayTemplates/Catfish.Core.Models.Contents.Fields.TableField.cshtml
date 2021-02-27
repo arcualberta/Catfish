@@ -29,5 +29,19 @@
             </tr>
         }
 
+        @for (var r = 0; r < Model.TableFooter.Count; ++r)
+        {
+            var row = Model.TableFooter[r];
+            <tr>
+                @for (var c = 0; c < row.Fields.Count; ++c)
+                {
+                    string templateName = "Values/" + Model.TableFooter[r].Fields[c].GetType().ToString();
+                    <td>
+                        @Html.DisplayFor(model => Model.TableFooter[r].Fields[c], templateName)
+                    </td>
+                }
+            </tr>
+        }
+
     </tbody>
 </table>
