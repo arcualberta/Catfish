@@ -340,16 +340,57 @@ namespace Catfish.Services
 
         public Item StatusChange(Guid entityId, Guid currentStatusId, Guid nextStatusId, string action)
         {
-            Item item = _db.Items.Where(i => i.Id == entityId).FirstOrDefault();
-            item.StatusId = nextStatusId;
-            item.Updated = DateTime.Now;
-            User user = _workflowService.GetLoggedUser();
-            item.AddAuditEntry(user.Id,
-                currentStatusId,
-                nextStatusId,
-                action);
-            return item;
+            try
+            {
+                Item item = _db.Items.Where(i => i.Id == entityId).FirstOrDefault();
+                item.StatusId = nextStatusId;
+                item.Updated = DateTime.Now;
+                User user = _workflowService.GetLoggedUser();
+                item.AddAuditEntry(user.Id,
+                    currentStatusId,
+                    nextStatusId,
+                    action);
+                return item;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
         }
 
+        public Item AddChild(DataItem value, Guid entityTemplateId, Guid itemId, Guid stateId, Guid buttonId, string fileNames = null)
+        {
+            try
+            {
+                // Get Parent Item to which Child will be added
+                Item parentItem = GetSubmissionDetails(itemId);
+                if (parentItem == null)
+                    throw new Exception("Entity template with ID = " + itemId + " not found.");
+
+                //get template from parent
+                EntityTemplate template = _entityTemplateService.GetTemplate(entityTemplateId);
+                User user = _workflowService.GetLoggedUser();
+
+                //Update the parent item with new status
+                var postAction = _workflowService.GetPostActionByButtonId(template, buttonId);
+                var state = postAction.StateMappings.Where(sm => sm.Id == buttonId).FirstOrDefault();
+                parentItem.StatusId = state.Next;
+                parentItem.Updated = DateTime.Now;
+                parentItem.AddAuditEntry(user.Id, state.Current, state.Next, state.ButtonLabel);
+
+                // instantantiate a version of the child and update it
+                DataItem newChildItem = template.InstantiateDataItem(value.Id);
+                newChildItem.UpdateFieldValues(value);
+                parentItem.DataContainer.Add(newChildItem);
+
+                return parentItem;
+            }
+            catch (Exception ex)
+            {
+                _errorLog.Log(new Error(ex));
+                return null;
+            }
+        }
     }
 }

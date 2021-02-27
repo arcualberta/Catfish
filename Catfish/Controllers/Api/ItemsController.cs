@@ -9,6 +9,7 @@ using Catfish.Core.Models;
 using Catfish.Core.Models.Contents;
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Fields;
+using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Services;
 using Microsoft.AspNetCore.Http;
@@ -203,18 +204,33 @@ namespace Catfish.Controllers.Api
             return result;
         }
 
-        [Route("DetailsUpdate")]
+        // POST api/<ItemController>
+        [Route("AddChild")]
         [HttpPost]
-        public ApiResult DetailsUpdate([FromForm] Guid entityId, [FromForm] Guid currentStatus, [FromForm] Guid status, [FromForm] string buttonName)
+        public ApiResult AddChild([FromForm] DataItem value, [FromForm] Guid entityTemplateId,  [FromForm] Guid itemId, [FromForm] Guid postActionId,  [FromForm] Guid stateId, [FromForm] Guid buttonId, [FromForm] string fileNames = null)
         {
             ApiResult result = new ApiResult();
-            Item item = _submissionService.StatusChange(entityId, currentStatus, status, buttonName);
-            _appDb.Items.Update(item);
-            _appDb.SaveChanges();
+            try
+            {
+                Item newItem = _submissionService.AddChild(value, entityTemplateId, itemId, stateId, buttonId);
+                _appDb.Items.Update(newItem);
+                _appDb.SaveChanges();
 
-            //bool triggerExecute = _submissionService.ExecuteTriggers(entityId, buttonName, function, group);
-            result.Success = true;
-            result.Message = "Application " + buttonName + " successfully.";
+                bool triggerStatus = _jobService.ProcessTriggers(newItem.Id);
+
+                bool triggerExecute = _submissionService.ExecuteTriggers(entityTemplateId, newItem, postActionId);
+
+
+                result.Success = true;
+                result.Message = "Your change successfully done.";
+
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Submission failed.";
+            }
+
             return result;
         }
 
