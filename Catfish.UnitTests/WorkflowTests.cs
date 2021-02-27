@@ -3211,7 +3211,16 @@ namespace Catfish.UnitTests
 
             confForm.CreateField<RadioField>("Is this a regularly held conference?", lang, optionText, true);
 
-            //TODO -- TABLE FIELD
+            //TABLE FIELD
+            TableField tf = confForm.CreateField<TableField>("Past Occurrences", lang, false, 1, 3);
+            tf.SetDescription("Where have the last 3 occurrences of this conference been held?", lang);
+            tf.FieldLabelCssClass = "col-md-12";
+            tf.FieldValueCssClass = "col-md-12";
+
+            tf.TableHead.CreateField<TextField>("City, Country", lang);
+            tf.TableHead.CreateField<IntegerField>("Year of Conference", lang);
+            tf.TableHead.CreateField<DecimalField>("Total Conference Budget", lang);
+            tf.AppendRows(1);
 
             confForm.CreateField<TextArea>("Conference Description:", lang, true, true)
               .SetDescription(@"Describe your conference and explain the nature, purpose, and importance of the conference, topics to be addressed at the conference, relation to UAlberta, role of trainees, how the Faculty of Arts will be recognized, and how these conference funds will be used to support your activities and enhance your conference. (Maximum 250 words)", lang);
@@ -3221,22 +3230,122 @@ namespace Catfish.UnitTests
             confForm.CreateField<InfoSection>(null, null)
               .AppendContent("h1", "Anticipated Attendance", lang);
 
-            //TODO TABLE FIELD -- ATTENDEE
+            // ATTENDEE  
+            string[] attendeeCat = new string[] { "Faculty", "Students", "Other" };
+
+            TableField atf = confForm.CreateField<TableField>("Attendees", lang, true, attendeeCat.Length, attendeeCat.Length);
+            atf.FieldLabelCssClass = "col-md-12";
+            atf.FieldValueCssClass = "col-md-12";
+            atf.TableHead.CreateField<InfoSection>("", lang);
+            atf.TableHead.CreateField<IntegerField>("U of A", lang);
+            atf.TableHead.CreateField<IntegerField>("Other Canada", lang);
+            atf.TableHead.CreateField<IntegerField>("Other Countries", lang);
+            atf.TableHead.CreateField<IntegerField>("Total # of People", lang);
+            atf.TableHead.CreateField<DecimalField>("Registration Fee per Person", lang);
+            atf.TableHead.CreateField<DecimalField>("Total Registration Fee", lang);
+
+            //NOTE: we MUST finish defining all columns before setting any column values.
+            atf.SetColumnValues(0, attendeeCat, lang);
+            atf.AllowAddRows = false;
 
             //TODO TABLE FIELD  -- SPEAKERS and PRESENTERS
+            string[] speakerCat = new string[] { "Keynote Speakers", "Paper Presenters"};
+
+            TableField stf = confForm.CreateField<TableField>("Speakers and Presenters*", lang, true, speakerCat.Length, speakerCat.Length);
+            stf.FieldLabelCssClass = "col-md-12";
+            stf.FieldValueCssClass = "col-md-12";
+            stf.TableHead.CreateField<InfoSection>("", lang);
+            stf.TableHead.CreateField<IntegerField>("U of A", lang);
+            stf.TableHead.CreateField<IntegerField>("Other Canada", lang);
+            stf.TableHead.CreateField<IntegerField>("Other Countries", lang);
+            stf.TableHead.CreateField<IntegerField>("Total", lang);
+
+            //NOTE: we MUST finish defining all columns before setting any column values.
+            stf.SetColumnValues(0, speakerCat, lang);
+            stf.AllowAddRows = false;
+
+            TableRow stfooter = stf.AppendRow(TableField.eRowTarget.Footer);
+            stfooter.Fields[0].SetValue("Total", lang);
+            stfooter.SetReadOnly();
+            for (var i = 1; i < stfooter.Fields.Count; ++i)
+                stfooter.Fields[i].ValueExpression.AppendColumnSum(stf, i);
+
+            stf.AllowAddRows = false;
+
+
 
             // ====================================     OTHER FUNDING SUPORT
             confForm.CreateField<InfoSection>(null, null)
               .AppendContent("h1", "Other Funding Support For This Conference", lang)
              .AppendContent("div", "<i>(Provide details of other funding applied for and/or confirmed.)</i>", lang);
 
-            //TODO TABLE FIELD -- GRAND TOTAL
+            // TABLE FIELD -- GRAND TOTAL   TODO : NEED TO REVISIT!!!!!!!!
+
+            TableField ftf = confForm.CreateField<TableField>("", lang, true, 1, 10);
+            ftf.FieldLabelCssClass = "col-md-12";
+            ftf.FieldValueCssClass = "col-md-12";
+
+            ftf.TableHead.CreateField<TextField>("Source of Funding", lang);
+            ftf.TableHead.CreateField<RadioField>("IsConfirmed?", lang, new string[] { "Yes", "No" });
+
+            ftf.TableHead.CreateField<DecimalField>("Amount Requested", lang);
+            ftf.TableHead.CreateField<DecimalField>("Amount Confirmed", lang);
+            ftf.TableHead.CreateField<DecimalField>("Total", lang);
+
+            TableRow ffooter = ftf.AppendRow(TableField.eRowTarget.Footer);
+            ffooter.Fields[0].SetValue("Grand Total", lang);
+            ffooter.SetReadOnly();
+            int lastColInd = ffooter.Fields.Count - 1;
+            // for (var i = 1; i < ffooter.Fields.Count; ++i)
+            ffooter.Fields[4].ValueExpression.AppendColumnSum(ftf, 4);  //THIS IS NOT QUITE WORKING YET!!!!!!!!
+
+            ftf.AppendRows(1);
+            ftf.AllowAddRows = true;
 
             // ====================================     ESTIMATED CONFERENCE BUDGET
             confForm.CreateField<InfoSection>(null, null)
-              .AppendContent("h1", "ESTIMATED CONFERENCE BUDGET", lang)
-             .AppendContent("div", "<i>(Please add more lines if necessary)</i>", lang);
+              .AppendContent("h1", "ESTIMATED CONFERENCE BUDGET", lang);
+            confForm.CreateField<InfoSection>(null, null).AppendContent("div", "<i>(Please add more lines if necessary)</i>", lang);
 
+
+            string[] estConfBud = new string[] { "Total Funding From Other Sources", "Registration Fees" };
+
+            TableField ctf = confForm.CreateField<TableField>("", lang, true, estConfBud.Length, estConfBud.Length);
+            ctf.FieldLabelCssClass = "col-md-12";
+            ctf.FieldValueCssClass = "col-md-12";
+
+            ctf.TableHead.CreateField<InfoSection>("Revenue", lang);
+
+            ctf.TableHead.CreateField<DecimalField>("Estimated ($)", lang);
+
+
+            TableRow cfooter = ctf.AppendRow(TableField.eRowTarget.Footer);
+            cfooter.Fields[0].SetValue("Total Revenue", lang);
+            cfooter.SetReadOnly();
+            for (var i = 1; i < cfooter.Fields.Count; ++i)
+                cfooter.Fields[i].ValueExpression.AppendColumnSum(ctf, i);
+
+            ctf.SetColumnValues(0, estConfBud, lang);
+            ctf.AllowAddRows = false;
+
+            ////
+            TableField cctf = confForm.CreateField<TableField>("", lang, true, 1, 10);
+            cctf.FieldLabelCssClass = "col-md-12";
+            cctf.FieldValueCssClass = "col-md-12";
+            cctf.TableHead.CreateField<InfoSection>("", lang);
+            cctf.TableHead.CreateField<DecimalField>("Itemized Costs", lang);
+
+            cctf.TableHead.CreateField<DecimalField>("Estimated Cost ($)", lang);
+
+
+            TableRow ccfooter = cctf.AppendRow(TableField.eRowTarget.Footer);
+            ccfooter.Fields[0].SetValue("Total Cost", lang);
+            ccfooter.SetReadOnly();
+            for (var i = 1; i < ccfooter.Fields.Count; ++i)
+                ccfooter.Fields[i].ValueExpression.AppendColumnSum(cctf, i);
+
+            cctf.AllowAddRows = true;
+            cctf.AppendRows(1);
             //TODO TABLE FIELD -- GRAND TOTAL
 
             // ====================================     FUNDING REQUESTED
