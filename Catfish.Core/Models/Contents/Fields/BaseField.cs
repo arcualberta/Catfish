@@ -62,7 +62,7 @@ namespace Catfish.Core.Models.Contents.Fields
 
         private ValueExpression mValueExpression;
         public ValueExpression ValueExpression { get { if (mValueExpression == null) mValueExpression = new ValueExpression(GetElement(ValueExpression.TagName, true)); return mValueExpression; } }
-
+        public bool HasValueExpression { get => mValueExpression != null || GetElement(ValueExpression.TagName, false) != null; }
         public BaseField() : base(FieldTagName) { }
         public BaseField(XElement data) : base(data) { }
 

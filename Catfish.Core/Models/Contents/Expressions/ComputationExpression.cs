@@ -214,15 +214,9 @@ namespace Catfish.Core.Models.Contents.Expressions
             return this;
         }
 
-        public ComputationExpression AppendRowSum(int[] srcColumns)
+        public void ReplaceReferences(Guid oldId, Guid newId)
         {
-            Data.Value += string.Format("TableRowSum('{{data-model-id}}', {0})", JsonConvert.SerializeObject(srcColumns));
-            return this;
-        }
-
-        public void ResolveDataModelIdReferences(Guid id)
-        {
-            Data.Value = Data.Value.Replace("{data-model-id}", id.ToString());
+            Data.Value = Data.Value.Replace(oldId.ToString(), newId.ToString());
         }
 
         public static string Str(eMath val)

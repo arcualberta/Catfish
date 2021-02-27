@@ -38,34 +38,45 @@
             $(ele).attr("data-r", n);
             $(ele).attr("data-c", c);
 
-        });
 
-        //Creating a new Guid for the field represented in the cell and setting it as the ID
-        let guid = createGuid();
-        $("input[name$='.Id']").val(guid);
+            //If this element contains a data-model-id, then assign a new GUID to it
+            let oldModelId = $(ele).attr("data-model-id");
+            if (oldModelId) {
+                let newGuid = createGuid();
+                $(ele).attr("data-model-id", newGuid);
 
-        //Resolving all data model references in computation expressions
-        let computedFields = $(cell).find("[data-value-expression!=''][data-value-expression]");
-        if (computedFields) {
-            $.each(computedFields, function (idx, compField) {
-                //setting the new Guid as the data-model-id to the element
-                $(compField).attr("data-model-id", guid);
+                //If the current row contains any elements with value expressions 
+                //that refer to the oldModelGuid, then replace them with the new one
+                let computedFields = $(row).find("[data-value-expression!=''][data-value-expression]");
+                if (computedFields) {
+                    $.each(computedFields, function (idx, compField) {
+                        let val = $(compField).attr("data-value-expression");
+                        val = val.replace('{data-model-id}', newGuid);
+                        val = val.replace(oldModelId, newGuid);
+                        $(compField).attr("data-value-expression", val);
+                    });
+                }
+            }
 
-                //updating references in the value expression
-                let val = $(compField).attr("data-value-expression");
-                val = val.replace('{data-model-id}', guid);
-                $(compField).attr("data-value-expression", val);
-            });
-        }
+            //////Creating a new Guid for the field represented in the cell and setting it as the ID
+            ////let guid = createGuid();
+            ////$("input[name$='.Id']").val(guid);
 
-        //   let valExpression = $(ele).data("value-expression");
-        //if (valExpression) {
-        //    valExpression.replace("{{data-model-id}}", )
-        //}
-        //Data.Value = Data.Value.Replace("{{data-model-id}}", id.ToString());
+            //////Resolving all data model references in computation expressions
+            ////let computedFields = $(cell).find("[data-value-expression!=''][data-value-expression]");
+            ////if (computedFields) {
+            ////    $.each(computedFields, function (idx, compField) {
+            ////        //setting the new Guid as the data-model-id to the element
+            ////        $(compField).attr("data-model-id", guid);
 
-
-    });
+            ////        //updating references in the value expression
+            ////        let val = $(compField).attr("data-value-expression");
+            ////        val = val.replace('{data-model-id}', guid);
+            ////        $(compField).attr("data-value-expression", val);
+            ////    });
+            ////}
+        }); //END: $.each(elements, function (idx, ele)
+    }); //END: $.each(cols, function (c, cell)
 
     //Updating the delete button onclick action
     $(row).find(".delete-btn").attr("onclick", `deleteRow('${tableFieldId}', ${n}); return false;`);

@@ -136,11 +136,28 @@ namespace Catfish.Core.Models.Contents.Fields
                 // Set the reference ID of the clone to the corresponding cells in the header
                 clone.RefId = cell.Id;
 
-                //Updating row-model references in value expressions with the new ID
-                clone.ValueExpression.ResolveDataModelIdReferences(clone.Id);
+                //////Updating row-model references in value expressions with the new ID
+                ////clone.ValueExpression.ResolveDataModelIdReferences(clone.Id);
 
                 row.AppendCell<BaseField>(clone);
             }
+
+            //Updating all references to table header's model IDs in value expressions
+            //in the row with the new GUIDs of corresponding cells
+            for (int i = 0; i < row.Fields.Count; ++i)
+            {
+                var cell = row.Fields[i];
+                if (cell.HasValueExpression)
+                {
+                    for(int h = 0; h<TableHead.Fields.Count; ++h)
+                    {
+                        var oldGuid = TableHead.Fields[h].Id;
+                        var newGuid = row.Fields[h].Id;
+                        cell.ValueExpression.ReplaceReferences(oldGuid, newGuid);
+                    }
+                }
+            }
+
             switch(target)
             {
                 case eRowTarget.Data:

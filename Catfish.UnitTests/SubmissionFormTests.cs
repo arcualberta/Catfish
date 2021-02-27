@@ -231,27 +231,36 @@ namespace Catfish.UnitTests
             DataItem form = template.GetRootDataItem(true);
             Assert.IsNotNull(form);
 
-            TableField tf = form.CreateField<TableField>("Product List", lang, false, 2, 10);
+            TableField tf = form.CreateField<TableField>("Product List", lang, false, 1, 10);
             tf.FieldLabelCssClass = "col-md-12";
             tf.FieldValueCssClass = "col-md-12";
             tf.TableHead.CreateField<DateField>("Date", lang);
-            tf.TableHead.CreateField<TextField>("Product", lang, true);
+            tf.TableHead.CreateField<TextField>("Product", lang, false);
             tf.TableHead.CreateField<TextArea>("Description", lang);
-            tf.TableHead.CreateField<DecimalField>("Unit Price", lang);
-            tf.TableHead.CreateField<IntegerField>("Quantity 1", lang);
-            tf.TableHead.CreateField<IntegerField>("Quantity 2", lang);
+            var unitPrice = tf.TableHead.CreateField<DecimalField>("Unit Price", lang);
+            var qty1 = tf.TableHead.CreateField<IntegerField>("Quantity 1", lang);
+            var qty2 = tf.TableHead.CreateField<IntegerField>("Quantity 2", lang);
 
             var totQty = tf.TableHead.CreateField<IntegerField>("Total Qty", lang);
-            totQty.ValueExpression.AppendRowSum(new int[] { 4, 5 });
+            totQty.ValueExpression
+                .AppendValue(qty1)
+                .AppendOperator(ComputationExpression.eMath.PLUS)
+                .AppendValue(qty2);
             totQty.Readonly = true;
 
-            tf.TableHead.CreateField<DecimalField>("Total", lang);
-            tf.TableHead.CreateField<RadioField>("Availability", lang, new string[] { "Available", "Not available" }, true);
+            var totalCost = tf.TableHead.CreateField<DecimalField>("Total", lang);
+            totalCost.ValueExpression
+                .AppendValue(unitPrice)
+                .AppendOperator(ComputationExpression.eMath.MULT)
+                .AppendValue(totQty);
+            totalCost.Readonly = true;
+
+            tf.TableHead.CreateField<RadioField>("Availability", lang, new string[] { "Available", "Not available" }, false);
             tf.TableHead.CreateField<CheckboxField>("Category", lang, new string[] { "Health", "Prescription", "Beauty", "Nutrition" });
 
 
             
-            tf.AppendRows(4);
+            tf.AppendRows(1);
 
 
             _db.SaveChanges();
@@ -277,19 +286,24 @@ namespace Catfish.UnitTests
             tf.FieldLabelCssClass = "col-md-12";
             tf.FieldValueCssClass = "col-md-12";
             tf.TableHead.CreateField<InfoSection>("", lang); 
-            tf.TableHead.CreateField<IntegerField>("U of A", lang);
-            tf.TableHead.CreateField<IntegerField>("Other Canada", lang);
-            tf.TableHead.CreateField<IntegerField>("Other Countries", lang);
+            var uofaPeople = tf.TableHead.CreateField<IntegerField>("U of A", lang);
+            var otherCanada = tf.TableHead.CreateField<IntegerField>("Other Canada", lang);
+            var other = tf.TableHead.CreateField<IntegerField>("Other Countries", lang);
 
-            var totPeople = tf.TableHead.CreateField<IntegerField>("Total # of People", lang);
-            totPeople.ValueExpression.AppendRowSum(new int[] { 1, 2, 3 });
-            totPeople.Readonly = true;
-            
+            var totalPeople = tf.TableHead.CreateField<IntegerField>("Total # of People", lang);
+            totalPeople.ValueExpression
+                .AppendValue(uofaPeople)
+                .AppendOperator(ComputationExpression.eMath.PLUS)
+                .AppendValue(otherCanada)
+                .AppendOperator(ComputationExpression.eMath.PLUS)
+                .AppendValue(other);
+            totalPeople.Readonly = true;
+
             var regRate = tf.TableHead.CreateField<DecimalField>("Registration Fee per Person", lang);
 
             var totRegFee = tf.TableHead.CreateField<DecimalField>("Total Registration Fee", lang);
             totRegFee.ValueExpression
-                .AppendValue(totPeople)
+                .AppendValue(totalPeople)
                 .AppendOperator(ComputationExpression.eMath.MULT)
                 .AppendValue(regRate);
             totRegFee.Readonly = true;
