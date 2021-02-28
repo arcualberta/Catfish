@@ -31,11 +31,14 @@
                         @Html.EditorFor(model => model.TableHead.Fields[i], Model.TableHead.Fields[i].GetType().ToString(), viewData)
                     </td>
                 }
-                <th>
-                    @*<div class="col-1 text-right" style="@deleteBtnVisibility">
-                        <span class="fa fa-trash delete-btn" onclick="deleteRow('@tableFieldContainerId', 0); return false;"></span>
-                    </div>*@
-                </th>
+                @if (Model.AllowAddRows)
+                {
+                    <th>
+                        <div class="col-1 text-right">
+                            <span class="fa fa-trash delete-btn" onclick="deleteRow('@tableFieldContainerId', 0); return false;"></span>
+                        </div>
+                    </th>
+                }
             </tr>
         </tbody>
     </table>
@@ -68,7 +71,7 @@
             @for (var r = 0; r < Model.TableData.Count; ++r)
             {
                 var row = Model.TableData[r];
-                <tr data-r="@r">
+                <tr data-r="@r" class="data-row">
                     @for (var c = 0; c < row.Fields.Count; ++c)
                     {
                         string fieldRootId = null;
@@ -93,7 +96,8 @@
             @for (var r = 0; r < Model.TableFooter.Count; ++r)
             {
                 var row = Model.TableFooter[r];
-                <tr>
+                var firstFooterRow = r == 0 ? "first-footer-row" : "";
+                <tr class="footer-row @firstFooterRow">
                     @for (var c = 0; c < row.Fields.Count; ++c)
                     {
                         string fieldRootId = null;
@@ -104,9 +108,9 @@
                         </td>
                     }
                 </tr>
-            }
+                }
 
-        </tbody>
+            </tbody>
     </table>
 
     @if(Model.AllowAddRows){

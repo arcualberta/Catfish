@@ -2,6 +2,10 @@
 
 @Html.HiddenFor(model => model.ModelType)
 @Html.HiddenFor(model => model.Id)
+
+@if (Model.Exclude)
+    return;
+
 @{
     var viewData = new Dictionary<string, object>();
     foreach (var key in ViewData.Keys)
@@ -9,7 +13,7 @@
 
     //viewData.Add("pattern", ".+@*.*");
 
-    
+
     viewData.Add("onblur", "return validateEmail(this); return false;");
     //viewData.Add("type", "email");
     //viewData.Add("pattern", @"/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/");

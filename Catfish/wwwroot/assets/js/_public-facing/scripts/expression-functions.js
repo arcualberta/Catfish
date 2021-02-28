@@ -140,7 +140,7 @@ function Extract(str, delimiter, selectItemIndex, trimEnds) {
 function TableColumnSum(fieldModelId, columnIndex) {
     let table = $("table[data-model-id='" + fieldModelId + "']")
     let result = 0;
-    $(table).find("input[data-c=" + columnIndex + "]").each(function () {
+    $(table).find("input[data-c=" + columnIndex + "]:visible").each(function () {
         result += parseInt($(this).val(), 10);
     });
 

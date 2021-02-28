@@ -2,7 +2,14 @@
 @using System.Text.Encodings.Web
 @using System.Xml.Linq
 
+@Html.HiddenFor(model => model.ModelType)
+@Html.HiddenFor(model => model.Id)
+
+@if (Model.Exclude)
+    return;
+
 @{
+
     var options = Model.Options.Select(op =>
             new SelectListItem
             {
@@ -10,9 +17,6 @@
                 Text = op.OptionText.GetConcatenatedContent(" | "),
             }).ToList();
     options.Insert(0, new SelectListItem());
-
-    @Html.HiddenFor(model => model.ModelType)
-    @Html.HiddenFor(model => model.Id)
 
 
     if (Model.Options.Where(op => !string.IsNullOrWhiteSpace(op.VisibilityCondition.Value)).Any() == false)

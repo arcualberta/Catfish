@@ -1,6 +1,12 @@
 ﻿@model Catfish.Core.Models.Contents.Fields.AttachmentField
 @using Catfish.Core.Models.Contents
 
+@Html.HiddenFor(model => model.ModelType)
+@Html.HiddenFor(model => model.Id)
+
+@if (Model.Exclude)
+    return;
+
 @{
     var fieldId = Html.IdFor(model => model);
     var fieldName = Html.NameFor(model => model);
@@ -12,10 +18,6 @@
 
     var fileModelType = typeof(FileReference).AssemblyQualifiedName;
 }
-
-@*<div id="@containerId">*@
-@Html.HiddenFor(model => model.ModelType)
-@Html.HiddenFor(model => model.Id)
 
 @Html.EditorFor(m => m.Files)
 

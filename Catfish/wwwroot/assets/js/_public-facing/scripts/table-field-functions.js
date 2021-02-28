@@ -1,7 +1,7 @@
 ﻿function addRow(tableFieldId) {
     let container = $("#" + tableFieldId);
     let dataTable = $(container).find("table.tf-data");
-    let n = $(dataTable).find("tbody tr").length;
+    let n = $(dataTable).find("tbody tr.data-row").length;
 
     if (n >= $(dataTable).data("max-rows")) {
         alert("Sorry, you can't add more rows to this table.");
@@ -83,7 +83,16 @@
 
     //Inserting the row to the tbody section of the data table
     let tbody = $(dataTable).find("tbody");
-    $(tbody).append(row);
+
+    //If there is a footer, then insert the new row above the first footer row
+    if ($(tbody).find("tr.first-footer-row")) {
+        $(row).insertBefore("tr.first-footer-row", tbody);
+        //$(tbody).append(row);
+    }
+    else {
+        $(tbody).append(row);
+    }
+
 
     updateButtonVisibility(tableFieldId);
 

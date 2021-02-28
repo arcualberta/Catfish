@@ -1850,7 +1850,7 @@ namespace Catfish.UnitTests
         {
             string lang = "en";
             string templateName = "SAS Application Winter 2021";
-
+            
             IWorkflowService ws = _testHelper.WorkflowService;
             AppDbContext db = _testHelper.Db;
             IAuthorizationService auth = _testHelper.AuthorizationService;
@@ -3295,9 +3295,20 @@ namespace Catfish.UnitTests
             TableRow ffooter = ftf.AppendRow(TableField.eRowTarget.Footer);
             ffooter.Fields[0].SetValue("Grand Total", lang);
             ffooter.SetReadOnly();
-            int lastColInd = ffooter.Fields.Count - 1;
-            // for (var i = 1; i < ffooter.Fields.Count; ++i)
-            ffooter.Fields[4].ValueExpression.AppendColumnSum(ftf, 4);  //THIS IS NOT QUITE WORKING YET!!!!!!!!
+            for (var i = 2; i < ffooter.Fields.Count; ++i)
+            {
+                //The footer doesn't need value expressions inherited 
+                //from the header elements, so we clear them first
+                ffooter.Fields[i].ValueExpression.Clear();
+
+                //Set the column-sum as the value expression.
+                ffooter.Fields[i].ValueExpression.AppendColumnSum(ftf, i);
+            }
+
+            //The third column in the footer is meaningless, so we exclude it from rendering
+            ffooter.Fields[1].Exclude = true;
+
+
 
             ftf.AppendRows(1);
             ftf.AllowAddRows = true;

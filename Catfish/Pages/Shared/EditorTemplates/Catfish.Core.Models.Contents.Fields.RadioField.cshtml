@@ -1,9 +1,12 @@
 ﻿@model Catfish.Core.Models.Contents.Fields.RadioField
 
-@{
-    @Html.HiddenFor(model => model.ModelType)
-    @Html.HiddenFor(model => model.Id)
+@Html.HiddenFor(model => model.ModelType)
+@Html.HiddenFor(model => model.Id)
 
+@if (Model.Exclude)
+    return;
+
+@{
     string visibleIfKey = "data-visible-if";
     string dataFieldIdKey = "data-field-id";
 

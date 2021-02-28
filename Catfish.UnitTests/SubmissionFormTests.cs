@@ -2,14 +2,10 @@
 using Catfish.Core.Models.Contents.Data;
 using Catfish.Core.Models.Contents.Expressions;
 using Catfish.Core.Models.Contents.Fields;
-using Catfish.Core.Models.Contents.Workflow;
 using Catfish.Core.Services;
 using Catfish.Tests.Helpers;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Catfish.UnitTests
 {
@@ -258,13 +254,87 @@ namespace Catfish.UnitTests
             tf.TableHead.CreateField<RadioField>("Availability", lang, new string[] { "Available", "Not available" }, false);
             tf.TableHead.CreateField<CheckboxField>("Category", lang, new string[] { "Health", "Prescription", "Beauty", "Nutrition" });
 
-
-            
             tf.AppendRows(1);
+
+
+            TableRow footer = tf.AppendRow(TableField.eRowTarget.Footer);
+            footer.SetReadOnly();
+
+            //The first 4 fields and the last two fields in the footer are meaningless so 
+            //we exclude them from rendering
+            foreach (var i in new int[] { 0, 1, 2, 3, 8, 9 })
+                footer.Fields[i].Exclude = true;
+
+            for (var i = 4; i <= 7; ++i)
+            {
+                //The footer doesn't need value expressions inherited 
+                //from the header elements, so we clear them first
+                footer.Fields[i].ValueExpression.Clear();
+
+                //Set the column-sum as the value expression.
+                footer.Fields[i].ValueExpression.AppendColumnSum(tf, i);
+            }
 
 
             _db.SaveChanges();
             template.Data.Save("..\\..\\..\\..\\Examples\\tableField_Workflow_generared.xml");
+
+        }
+
+        [Test]
+        public void TableField2Test()
+        {
+            string lang = "en";
+            string templateName = "Table-field Form Template 2";
+            string submissionFormName = "Table-field Form 2";
+
+            ItemTemplate template = SubmissionItemTemplate(templateName, submissionFormName, lang);
+
+            DataItem form = template.GetRootDataItem(true);
+            Assert.IsNotNull(form);
+
+            string[] estConfBud = new string[] { "Total Funding From Other Sources", "Registration Fees" };
+
+            TableField ctf = form.CreateField<TableField>("", lang, true, estConfBud.Length, estConfBud.Length);
+            ctf.FieldLabelCssClass = "col-md-12";
+            ctf.FieldValueCssClass = "col-md-12";
+
+            ctf.TableHead.CreateField<InfoSection>("Revenue", lang);
+
+            ctf.TableHead.CreateField<DecimalField>("Estimated ($)", lang);
+
+
+            TableRow cfooter = ctf.AppendRow(TableField.eRowTarget.Footer);
+            cfooter.Fields[0].SetValue("Total Revenue", lang);
+            cfooter.SetReadOnly();
+            for (var i = 1; i < cfooter.Fields.Count; ++i)
+                cfooter.Fields[i].ValueExpression.AppendColumnSum(ctf, i);
+
+            ctf.SetColumnValues(0, estConfBud, lang);
+            ctf.AllowAddRows = false;
+
+            ////
+            TableField cctf = form.CreateField<TableField>("", lang, true, 1, 10);
+            cctf.FieldLabelCssClass = "col-md-12";
+            cctf.FieldValueCssClass = "col-md-12";
+            cctf.TableHead.CreateField<InfoSection>("", lang);
+            cctf.TableHead.CreateField<DecimalField>("Itemized Costs", lang);
+
+            cctf.TableHead.CreateField<DecimalField>("Estimated Cost ($)", lang);
+
+
+            TableRow ccfooter = cctf.AppendRow(TableField.eRowTarget.Footer);
+            ccfooter.Fields[0].SetValue("Total Cost", lang);
+            ccfooter.SetReadOnly();
+            for (var i = 1; i < ccfooter.Fields.Count; ++i)
+                ccfooter.Fields[i].ValueExpression.AppendColumnSum(cctf, i);
+
+            cctf.AllowAddRows = true;
+            cctf.AppendRows(1);
+            //TODO TABLE FIELD -- GRAND TOTAL
+
+            _db.SaveChanges();
+            template.Data.Save("..\\..\\..\\..\\Examples\\tableField2_Workflow_generared.xml");
 
         }
 

@@ -3,6 +3,7 @@
 <div class="multilingual-input-block">
     @Html.HiddenFor(model => model.ModelType)
     @Html.HiddenFor(model => model.Id)
+
     @{
         var isMultiline = ViewData["multiline"] != null && (bool)ViewData["multiline"];
     }
@@ -32,13 +33,13 @@
         {
             @Html.TextBoxFor(model => model.Values[i].Value, ViewData)
             @*if (required)
-            {
-                @Html.TextBoxFor(model => model.Values[i].Value, new { required = "required" })
-            }
-            else
-            {
-                @Html.TextBoxFor(model => model.Values[i].Value)
-            }*@
+                {
+                    @Html.TextBoxFor(model => model.Values[i].Value, new { required = "required" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.Values[i].Value)
+                }*@
         }
     }
 </div>
