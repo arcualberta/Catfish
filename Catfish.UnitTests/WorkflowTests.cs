@@ -3144,7 +3144,7 @@ namespace Catfish.UnitTests
                 .AppendContent("h1", "Host", lang);
            
             confForm.CreateField<TextField>("Applicant Name:", lang, true, true);
-            var applicantEmail = confForm.CreateField<TextField>("Email Address:", lang, true, true)
+            var applicantEmail = confForm.CreateField<EmailField>("Email Address:", lang, true, true)
                 .SetDescription("Please use your UAlberta CCID email address.", lang);
 
             string[] departmentList = GetDepartmentList();
@@ -3314,18 +3314,19 @@ namespace Catfish.UnitTests
             ftf.AllowAddRows = true;
 
             // ====================================     ESTIMATED CONFERENCE BUDGET
-            confForm.CreateField<InfoSection>(null, null)
-              .AppendContent("h1", "ESTIMATED CONFERENCE BUDGET", lang);
-            confForm.CreateField<InfoSection>(null, null).AppendContent("div", "<i>(Please add more lines if necessary)</i>", lang);
-
+            ////KR commened the following and added it as the table name and description
+            //confForm.CreateField<InfoSection>(null, null)
+            //  .AppendContent("h1", "ESTIMATED CONFERENCE BUDGET", lang);
+            //confForm.CreateField<InfoSection>(null, null).AppendContent("div", "<i>(Please add more lines if necessary)</i>", lang);
 
             string[] estConfBud = new string[] { "Total Funding From Other Sources", "Registration Fees" };
 
-            TableField ctf = confForm.CreateField<TableField>("", lang, true, estConfBud.Length, estConfBud.Length);
+            TableField ctf = confForm.CreateField<TableField>("ESTIMATED CONFERENCE BUDGET", lang, true, estConfBud.Length, estConfBud.Length);
+            ctf.Description.SetContent("Please add more lines if necessary");
             ctf.FieldLabelCssClass = "col-md-12";
             ctf.FieldValueCssClass = "col-md-12";
 
-            ctf.TableHead.CreateField<InfoSection>("Revenue", lang);
+            ctf.TableHead.CreateField<InfoSection>("", lang, "", "Revenue");
 
             ctf.TableHead.CreateField<DecimalField>("Estimated ($)", lang);
 

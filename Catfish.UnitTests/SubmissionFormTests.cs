@@ -299,7 +299,7 @@ namespace Catfish.UnitTests
             ctf.FieldLabelCssClass = "col-md-12";
             ctf.FieldValueCssClass = "col-md-12";
 
-            ctf.TableHead.CreateField<InfoSection>("Revenue", lang);
+            ctf.TableHead.CreateField<InfoSection>("", lang, "", "Revenue");
 
             ctf.TableHead.CreateField<DecimalField>("Estimated ($)", lang);
 
@@ -314,24 +314,24 @@ namespace Catfish.UnitTests
             ctf.AllowAddRows = false;
 
             ////
-            TableField cctf = form.CreateField<TableField>("", lang, true, 1, 10);
-            cctf.FieldLabelCssClass = "col-md-12";
-            cctf.FieldValueCssClass = "col-md-12";
-            cctf.TableHead.CreateField<InfoSection>("", lang);
-            cctf.TableHead.CreateField<DecimalField>("Itemized Costs", lang);
+            ////TableField cctf = form.CreateField<TableField>("", lang, true, 1, 10);
+            ////cctf.FieldLabelCssClass = "col-md-12";
+            ////cctf.FieldValueCssClass = "col-md-12";
+            ////cctf.TableHead.CreateField<InfoSection>("", lang);
+            ////cctf.TableHead.CreateField<DecimalField>("Itemized Costs", lang);
 
-            cctf.TableHead.CreateField<DecimalField>("Estimated Cost ($)", lang);
+            ////cctf.TableHead.CreateField<DecimalField>("Estimated Cost ($)", lang);
 
 
-            TableRow ccfooter = cctf.AppendRow(TableField.eRowTarget.Footer);
-            ccfooter.Fields[0].SetValue("Total Cost", lang);
-            ccfooter.SetReadOnly();
-            for (var i = 1; i < ccfooter.Fields.Count; ++i)
-                ccfooter.Fields[i].ValueExpression.AppendColumnSum(cctf, i);
+            ////TableRow ccfooter = cctf.AppendRow(TableField.eRowTarget.Footer);
+            ////ccfooter.Fields[0].SetValue("Total Cost", lang);
+            ////ccfooter.SetReadOnly();
+            ////for (var i = 1; i < ccfooter.Fields.Count; ++i)
+            ////    ccfooter.Fields[i].ValueExpression.AppendColumnSum(cctf, i);
 
-            cctf.AllowAddRows = true;
-            cctf.AppendRows(1);
-            //TODO TABLE FIELD -- GRAND TOTAL
+            ////cctf.AllowAddRows = true;
+            ////cctf.AppendRows(1);
+            //////TODO TABLE FIELD -- GRAND TOTAL
 
             _db.SaveChanges();
             template.Data.Save("..\\..\\..\\..\\Examples\\tableField2_Workflow_generared.xml");
