@@ -59,6 +59,27 @@ namespace Catfish.Core.Models.Contents.Workflow
         {
             return StateMappings.Where(m => m.Current == current && m.Next == next).FirstOrDefault();
         }
+
+        string EncodeStateMappingCondition(Guid dataItemId, Guid controlOptionFieldId, Guid optionId)
+        {
+            return string.Format("{0}:{1}:{2}", dataItemId.ToString(), controlOptionFieldId.ToString(), optionId.ToString());
+        }
+        void DecodeStateMappingCondition(string condition, out Guid dataItemId, out Guid controlOptionFieldId, out Guid optionId)
+        {
+            string[] components = condition.Split(":");
+            dataItemId = Guid.Parse(components[0].Trim());
+            controlOptionFieldId = Guid.Parse(components[1].Trim());
+            optionId = Guid.Parse(components[2].Trim());
+        }
+
+        public Mapping GetMapping(Guid currentStateId, Guid dataItemId, Guid controlOptionFieldId, Guid optionId)
+        {
+            string condition = EncodeStateMappingCondition(dataItemId, controlOptionFieldId, optionId);
+            return StateMappings.Where(m => m.Current == currentStateId && m.Condition == condition).FirstOrDefault();
+        }
+
+
+        
         public Mapping AddStateMapping(Guid current, Guid next, string button)
         {
             if (GetMapping(current, next) != null)
@@ -68,6 +89,18 @@ namespace Catfish.Core.Models.Contents.Workflow
             StateMappings.Add(newStateMaiipng);
             return newStateMaiipng;
         }
+
+        public Mapping AddStateMapping(Guid currentStateId, Guid nextStateId, string buttonLabel, Guid dataItemId, Guid controlOptionFieldId, Guid optionId)
+        {
+            if (GetMapping(currentStateId, dataItemId, controlOptionFieldId, optionId) != null)
+                throw new Exception(string.Format("Post action already exists."));
+
+            string condition = EncodeStateMappingCondition(dataItemId, controlOptionFieldId, optionId);
+            Mapping newStateMaiipng = new Mapping() { Current = currentStateId, Next = nextStateId, ButtonLabel = buttonLabel, Condition = condition };
+            StateMappings.Add(newStateMaiipng);
+            return newStateMaiipng;
+        }
+
         public PopUp AddPopUp(string title, string body, string message)
         {
             if (PopUps.FindByAttribute(PopUp.BodyAtt, body) != null)
