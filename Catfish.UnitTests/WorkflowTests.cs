@@ -3148,16 +3148,31 @@ namespace Catfish.UnitTests
                 .SetDescription("Please use your UAlberta CCID email address.", lang);
 
             string[] departmentList = GetDepartmentList();
-
             var dept = confForm.CreateField<SelectField>("Department:", lang, departmentList, true);
 
-            string[] appCat = new string[]{ "Faculty",
-                               
-                                "Student"};
+            string[] appCat = new string[]{ "Faculty", "Student"};
             var applicantCat = confForm.CreateField<RadioField>("Applicant Category:", lang, appCat, true);
 
+            //Additional student info, if appCat is Student
+            var supervisor = confForm.CreateField<TextField>("Supervisor", lang, false);
+            supervisor.VisibilityCondition
+                .AppendLogicalExpression(applicantCat, ComputationExpression.eRelational.EQUAL,
+                    applicantCat.Options.Where(op => op.OptionText.GetContent(lang) == appCat[1]).First());
+            supervisor.RequiredCondition
+                .AppendLogicalExpression(applicantCat, ComputationExpression.eRelational.EQUAL,
+                    applicantCat.Options.Where(op => op.OptionText.GetContent(lang) == appCat[1]).First());
+
+            var supervisorEmail = confForm.CreateField<EmailField>("Supervisor's Email", lang, false);
+            supervisorEmail.VisibilityCondition
+                .AppendLogicalExpression(applicantCat, ComputationExpression.eRelational.EQUAL,
+                    applicantCat.Options.Where(op => op.OptionText.GetContent(lang) == appCat[1]).First());
+            supervisorEmail.RequiredCondition
+                .AppendLogicalExpression(applicantCat, ComputationExpression.eRelational.EQUAL,
+                    applicantCat.Options.Where(op => op.OptionText.GetContent(lang) == appCat[1]).First());
+
+
             //==============================================================================CHAIR's Contact Information
-          
+
             string[] optionText = new string[] { "Yes", "No" };
             var isChair = confForm.CreateField<RadioField>("Are you the Department Chair?", lang, optionText, true);
             isChair.VisibilityCondition.AppendLogicalExpression(applicantCat, ComputationExpression.eRelational.EQUAL, applicantCat.Options[0]);

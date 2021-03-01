@@ -28,7 +28,6 @@
                     Dictionary<string, object> viewData = FieldRenderingHelper.CreateViewData(field, null);
 
                     <td data-ref-id="@field.Id">
-                        Hello
                         @Html.EditorFor(model => model.TableHead.Fields[i], Model.TableHead.Fields[i].GetType().ToString(), viewData)
                     </td>
                 }
