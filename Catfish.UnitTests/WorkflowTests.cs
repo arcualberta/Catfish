@@ -3327,7 +3327,8 @@ namespace Catfish.UnitTests
 
             //The third column in the footer is meaningless, so we exclude it from rendering
             ffooter.Fields[1].Exclude = true;
-
+            ffooter.Fields[2].Exclude = true;
+            ffooter.Fields[3].Exclude = true;
 
 
             ftf.AppendRows(1);
