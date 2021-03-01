@@ -184,6 +184,9 @@ for(let i = 0; i < columns.length; i++){
       //this is for the map
       columns[i].children[j].classList.remove('col-md-12');
       columns[i].children[j].classList.remove('CBflex-parent');
+      //for scaling up the map for mobile view
+      columns[i].classList.add('map-container');
+      columns[i].children[j].children[0].children[0].classList.add('map-image');
       columns[i].children[j].style.marginBottom = "-1px";
       columns[i].children[j].children[0].style.paddingLeft = "0";
       columns[i].children[j].children[0].style.paddingRight = "0";
