@@ -3314,13 +3314,14 @@ namespace Catfish.UnitTests
             TableRow ffooter = ftf.AppendRow(TableField.eRowTarget.Footer);
             ffooter.Fields[0].SetValue("Grand Total", lang);
             ffooter.SetReadOnly();
-            for (var i = 2; i < ffooter.Fields.Count; ++i)
+            //only to target last col for Grand Total
+            for (var i = ffooter.Fields.Count-1; i < ffooter.Fields.Count; ++i)
             {
-                //The footer doesn't need value expressions inherited 
-                //from the header elements, so we clear them first
+             //   The footer doesn't need value expressions inherited 
+              //  from the header elements, so we clear them first
                 ffooter.Fields[i].ValueExpression.Clear();
 
-                //Set the column-sum as the value expression.
+              //  Set the column - sum as the value expression.
                 ffooter.Fields[i].ValueExpression.AppendColumnSum(ftf, i);
             }
 
