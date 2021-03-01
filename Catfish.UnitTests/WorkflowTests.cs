@@ -1483,32 +1483,43 @@ namespace Catfish.UnitTests
                 .AppendContent("h4", "Physical Distancing", lang);
 
             string[] optionText = new string[] { "Yes", "No", "N/A" };
-            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText, true );
-            inspectionForm.CreateField<RadioField>("Where physical distancing is not possible, are occupants wearing face masks?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Is there 2m (6.5 ft) of distance between all occupants?", lang, optionText, true )
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Where physical distancing is not possible, are occupants wearing face masks?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
             inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
                 .AppendContent("h4", "Personal Hygiene", lang);
-            inspectionForm.CreateField<RadioField>("Is a hand washing sink or hand sanitizer available?", lang, optionText, true);
-            inspectionForm.CreateField<RadioField>("Is the sink clean and free of contamination?", lang, optionText, true);
-            inspectionForm.CreateField<RadioField>("Is there an adequate supply of soap? ", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Is a hand washing sink or hand sanitizer available?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Is the sink clean and free of contamination?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Is there an adequate supply of soap? ", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
             inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
                .AppendContent("h4", "Housekeeping", lang);
-            inspectionForm.CreateField<RadioField>("Is general housekeeping and cleanliness being maintained?", lang, optionText, true);
-            inspectionForm.CreateField<RadioField>("Are surfaces being disinfected on a regular basis?", lang, optionText, true);
-            inspectionForm.CreateField<RadioField>("Are there adequate cleaning supplies for the next 2 weeks?", lang, optionText, true);
-            inspectionForm.CreateField<RadioField>("Are walkways clear of trip hazards?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Is general housekeeping and cleanliness being maintained?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Are surfaces being disinfected on a regular basis?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Are there adequate cleaning supplies for the next 2 weeks?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Are walkways clear of trip hazards?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
             inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
             inspectionForm.CreateField<InfoSection>(null, null)
                .AppendContent("h4", "Training", lang);
-            inspectionForm.CreateField<RadioField>("Have all employees taken the COVID-19 Return to Campus training?", lang, optionText, true);
-            inspectionForm.CreateField<RadioField>("Have all employees been trained in your return to campus plan?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Have all employees taken the COVID-19 Return to Campus training?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Have all employees been trained in your return to campus plan?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
             inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
 
@@ -1534,8 +1545,10 @@ namespace Catfish.UnitTests
             
             inspectionForm.CreateField<InfoSection>(null, null)
                .AppendContent("h4", "Other", lang);
-            inspectionForm.CreateField<RadioField>("Have all sinks been flushed for 3 minutes?", lang, optionText, true);
-            inspectionForm.CreateField<RadioField>("Is all appropriate PPE being worn?", lang, optionText, true);
+            inspectionForm.CreateField<RadioField>("Have all sinks been flushed for 3 minutes?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
+            inspectionForm.CreateField<RadioField>("Is all appropriate PPE being worn?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline"; ;
           
             inspectionForm.CreateField<TextArea>("Notes/Action", lang, false);
             inspectionForm.CreateField<TextField>("Assigned to", lang, false);
