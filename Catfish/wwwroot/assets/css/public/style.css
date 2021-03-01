@@ -468,3 +468,7 @@ input[readonly] {
 .fa-trash {
     color: red;
 }
+
+.radio-inline > div{
+    display:inline;
+}

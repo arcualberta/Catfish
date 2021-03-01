@@ -3152,6 +3152,7 @@ namespace Catfish.UnitTests
 
             string[] appCat = new string[]{ "Faculty", "Student"};
             var applicantCat = confForm.CreateField<RadioField>("Applicant Category:", lang, appCat, true);
+            applicantCat.FieldValueCssClass = "radio-inline";
 
             //Additional student info, if appCat is Student
             var supervisor = confForm.CreateField<TextField>("Supervisor", lang, false);
@@ -3176,6 +3177,7 @@ namespace Catfish.UnitTests
             string[] optionText = new string[] { "Yes", "No" };
             var isChair = confForm.CreateField<RadioField>("Are you the Department Chair?", lang, optionText, true);
             isChair.VisibilityCondition.AppendLogicalExpression(applicantCat, ComputationExpression.eRelational.EQUAL, applicantCat.Options[0]);
+            isChair.FieldValueCssClass = "radio-inline";
             //if department Chair  -- the chair will be the dean
             //the order of the department chair list have to be in the same order of the list Department above
 
@@ -3224,7 +3226,8 @@ namespace Catfish.UnitTests
             confForm.CreateField<DateField>("End Date:", lang, true);
             confForm.CreateField<TextField>("Sponsor:", lang, true, true).SetDescription("What is the sponsoring organization?", lang);
 
-            confForm.CreateField<RadioField>("Is this a regularly held conference?", lang, optionText, true);
+            confForm.CreateField<RadioField>("Is this a regularly held conference?", lang, optionText, true)
+                .FieldValueCssClass = "radio-inline";
 
             //TABLE FIELD
             TableField tf = confForm.CreateField<TableField>("Past Occurrences", lang, false, 1, 3);
@@ -3237,9 +3240,9 @@ namespace Catfish.UnitTests
             tf.TableHead.CreateField<DecimalField>("Total Conference Budget", lang);
             tf.AppendRows(1);
 
-            confForm.CreateField<TextArea>("Conference Description:", lang, true, true)
-              .SetDescription(@"Describe your conference and explain the nature, purpose, and importance of the conference, topics to be addressed at the conference, relation to UAlberta, role of trainees, how the Faculty of Arts will be recognized, and how these conference funds will be used to support your activities and enhance your conference. (Maximum 250 words)", lang);
-
+            var confDescField = confForm.CreateField<TextArea>("Conference Description:", lang, true, true);
+            confDescField.SetDescription(@"Describe your conference and explain the nature, purpose, and importance of the conference, topics to be addressed at the conference, relation to UAlberta, role of trainees, how the Faculty of Arts will be recognized, and how these conference funds will be used to support your activities and enhance your conference. (Maximum 250 words)", lang);
+            confDescField.Cols = 75;
 
             // ====================================     ANTICIPATE ATTENDANCES 
             confForm.CreateField<InfoSection>(null, null)
@@ -3301,7 +3304,8 @@ namespace Catfish.UnitTests
             ftf.FieldValueCssClass = "col-md-12";
 
             ftf.TableHead.CreateField<TextField>("Source of Funding", lang);
-            ftf.TableHead.CreateField<RadioField>("IsConfirmed?", lang, new string[] { "Yes", "No" });
+            ftf.TableHead.CreateField<RadioField>("Is Confirmed?", lang, new string[] { "Yes", "No" })
+                .FieldValueCssClass = "";
 
             ftf.TableHead.CreateField<DecimalField>("Amount Requested", lang);
             ftf.TableHead.CreateField<DecimalField>("Amount Confirmed", lang);

@@ -85,13 +85,12 @@
     let tbody = $(dataTable).find("tbody");
 
     //If there is a footer, then insert the new row above the first footer row
-    if ($(tbody).find("tr.first-footer-row") > 0) {
-        $(row).insertBefore("tr.first-footer-row", tbody);
+    if ($(tbody).find("tr.first-footer-row").length > 0) {
+        $(row).insertBefore(`#${tableFieldId} tbody tr.first-footer-row`)
     }
     else {
         $(tbody).append(row);
     }
-
 
     updateButtonVisibility(tableFieldId);
 

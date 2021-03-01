@@ -51,7 +51,7 @@ namespace Catfish.Core.Models.Contents.Fields
             if (htmlClasses == null)
                 htmlClasses = "";
             string formattedContent = string.Format("<{0} class='{1}'>{2}</{0}>", htmlElementTag, htmlClasses, content);
-            Content.AppendElement(formattedContent, lang);
+            Content.SetContent(formattedContent, lang, true);
             return this;
         }
     }
