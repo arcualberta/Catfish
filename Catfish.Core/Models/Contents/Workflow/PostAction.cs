@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Catfish.Core.Models.Contents.Fields;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
@@ -60,23 +61,23 @@ namespace Catfish.Core.Models.Contents.Workflow
             return StateMappings.Where(m => m.Current == current && m.Next == next).FirstOrDefault();
         }
 
-        string EncodeStateMappingCondition(Guid dataItemId, Guid controlOptionFieldId, Guid optionId)
-        {
-            return string.Format("{0}:{1}:{2}", dataItemId.ToString(), controlOptionFieldId.ToString(), optionId.ToString());
-        }
-        void DecodeStateMappingCondition(string condition, out Guid dataItemId, out Guid controlOptionFieldId, out Guid optionId)
-        {
-            string[] components = condition.Split(":");
-            dataItemId = Guid.Parse(components[0].Trim());
-            controlOptionFieldId = Guid.Parse(components[1].Trim());
-            optionId = Guid.Parse(components[2].Trim());
-        }
+        ////string EncodeStateMappingCondition(Guid dataItemId, Guid controlOptionFieldId, Guid optionId)
+        ////{
+        ////    return string.Format("{0}:{1}:{2}", dataItemId.ToString(), controlOptionFieldId.ToString(), optionId.ToString());
+        ////}
+        ////void DecodeStateMappingCondition(string condition, out Guid dataItemId, out Guid controlOptionFieldId, out Guid optionId)
+        ////{
+        ////    string[] components = condition.Split(":");
+        ////    dataItemId = Guid.Parse(components[0].Trim());
+        ////    controlOptionFieldId = Guid.Parse(components[1].Trim());
+        ////    optionId = Guid.Parse(components[2].Trim());
+        ////}
 
-        public Mapping GetMapping(Guid currentStateId, Guid dataItemId, Guid controlOptionFieldId, Guid optionId)
-        {
-            string condition = EncodeStateMappingCondition(dataItemId, controlOptionFieldId, optionId);
-            return StateMappings.Where(m => m.Current == currentStateId && m.Condition == condition).FirstOrDefault();
-        }
+        ////public Mapping GetMapping(Guid currentStateId, Guid dataItemId, Guid controlOptionFieldId, Guid optionId)
+        ////{
+        ////    string condition = EncodeStateMappingCondition(dataItemId, controlOptionFieldId, optionId);
+        ////    return StateMappings.Where(m => m.Current == currentStateId && m.Condition == condition).FirstOrDefault();
+        ////}
 
 
         
@@ -90,12 +91,22 @@ namespace Catfish.Core.Models.Contents.Workflow
             return newStateMaiipng;
         }
 
-        public Mapping AddStateMapping(Guid currentStateId, Guid nextStateId, string buttonLabel, Guid dataItemId, Guid controlOptionFieldId, Guid optionId)
+        public Mapping AddStateMapping(Guid currentStateId, Guid nextStateId, string buttonLabel, OptionsField controlOptionFieldId, Option optionValue)
         {
-            if (GetMapping(currentStateId, dataItemId, controlOptionFieldId, optionId) != null)
-                throw new Exception(string.Format("Post action already exists."));
+            ////if (GetMapping(currentStateId, dataItemId, controlOptionFieldId, optionId) != null)
+            ////    throw new Exception(string.Format("Post action already exists."));
 
-            string condition = EncodeStateMappingCondition(dataItemId, controlOptionFieldId, optionId);
+            string function = "";
+            if (typeof(RadioField).IsAssignableFrom(controlOptionFieldId.GetType()))
+                function = "RadioValue";
+            else if (typeof(SelectField).IsAssignableFrom(controlOptionFieldId.GetType()))
+                function = "StrValue";
+            //else if (typeof(CheckboxField).IsAssignableFrom(controlOptionFieldId.GetType()))
+            //    function = "CheckboxValue";
+            else
+                throw new Exception("Unknown option filed.");
+
+            string condition = string.Format("{0}('{1}') === '{2}'", function, controlOptionFieldId.Id.ToString(), optionValue.Id.ToString());
             Mapping newStateMaiipng = new Mapping() { Current = currentStateId, Next = nextStateId, ButtonLabel = buttonLabel, Condition = condition };
             StateMappings.Add(newStateMaiipng);
             return newStateMaiipng;

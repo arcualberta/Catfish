@@ -3493,6 +3493,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             WorkflowRole sasAdmin = workflow.AddRole(auth.GetRole("GAP_Admin", true));
             WorkflowRole sasChair = workflow.AddRole(auth.GetRole("GAP_Chair", true));
             WorkflowRole sasSupervisour = workflow.AddRole(auth.GetRole("GAP_Supervisour", true));
+
             // ================================================
             // Create submission-instances related workflow items
             // ================================================
@@ -3508,7 +3509,22 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             savePostAction.AddStateMapping(emptyState.Id, savedState.Id, "Save");
 
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
-            submitPostAction.AddStateMapping(emptyState.Id, inReviewState.Id, "Submit",confForm.Id, applicantCat.Id, applicantCat.Id);
+            submitPostAction.AddStateMapping(
+                emptyState.Id, //Current state
+                inReviewState.Id, //New state
+                "Submit", //Button text
+                applicantCat,
+                applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[0]).First()
+                );
+
+            submitPostAction.AddStateMapping(
+                emptyState.Id, //Current state
+                inSupervisorReviewState.Id, //New state
+                "Submit", //Button text
+                applicantCat, //data field ID for the conditional mapping
+                applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[1]).First() //ID of the "Student" option 
+                );
+
 
             //Defining the pop-up for the above postActionSubmit action
             PopUp submitActionPopUp = submitPostAction.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");

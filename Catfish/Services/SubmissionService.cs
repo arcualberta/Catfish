@@ -237,20 +237,25 @@ namespace Catfish.Services
                 Item newItem = template.Instantiate<Item>();
                 Mapping stateMapping = _workflowService.GetStateMappingByStateMappingId(template, stateMappingId);
                 Guid statusId = Guid.Empty;
-                if(!stateMapping.Condition.Any())
+                if(string.IsNullOrWhiteSpace(stateMapping.Condition))
                 {
                     statusId = stateMapping.Next;
                 }
-                //TODO: Get all state mappings represented by the stateMappingId from the workflow.
-                //      Check if there are one or more state mappings of which the "Condition" is empty.
-                //          If only one mapping if found with empty condition, then the "next" state specified by
-                //          this condition should be used as the next state. If multiple such states found, throw an error.
-                //
-                //      If not states with empty condition is found, then see if there are at least one state mapping
-                //      that matchs with the current state and the condition. If found, then use the state of that mapping
-                //      as the new state. If multiple conditions satisfy, then throw an error.
+                else
+                {
 
-                //Guid stateId = Guid.Empty; //TODO: find this as described above.
+                    //TODO: Get all state mappings represented by the stateMappingId from the workflow.
+                    //      Check if there are one or more state mappings of which the "Condition" is empty.
+                    //          If only one mapping if found with empty condition, then the "next" state specified by
+                    //          this condition should be used as the next state. If multiple such states found, throw an error.
+                    //
+                    //      If not states with empty condition is found, then see if there are at least one state mapping
+                    //      that matchs with the current state and the condition. If found, then use the state of that mapping
+                    //      as the new state. If multiple conditions satisfy, then throw an error.
+
+                    //Guid stateId = Guid.Empty; //TODO: find this as described above.
+
+                }
 
                 newItem.StatusId = statusId;
                 newItem.PrimaryCollectionId = collectionId;
