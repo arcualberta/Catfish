@@ -3128,10 +3128,10 @@ namespace Catfish.UnitTests
             //Get the Workflow object using the workflow service
             Workflow workflow = template.Workflow;
 
-            //Defininig states
-            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
-            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
-            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
+            ////Defininig states
+            //State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            //State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            //State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
 
             //=============================================================================== Defininig SAS form
@@ -3404,10 +3404,10 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
                                             <span style='color: Red'>If your submission is successful, you should get a confirmation email</span>. Please check for this email <span style='color:Red'>before</span> you close your browser. 
                                 If you don't see the email, <span style='color: Red'>your application may not have been submitted</span>, so please contact Nancie Hodgson, Research Coordinator (resarts@ualberta.ca).</div>", lang, "alert alert-info");
 
-            //=============================================================================             Defininig roles
-            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
-            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
-            WorkflowRole chairRole = workflow.AddRole(auth.GetRole("Chair", true));
+            ////=============================================================================             Defininig roles
+            //WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
+            //WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
+            //WorkflowRole chairRole = workflow.AddRole(auth.GetRole("Chair", true));
 
 
 
@@ -3468,75 +3468,245 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             applicantSubmissionNotification.SetBody("emailBody");
 
 
-            //Defining triggers
             //Feb 12 2021
-            //EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
-            //applicantNotificationEmailTrigger.AddRecipientByEmail(((TextField)applicantEmail).GetValue("en"));
-            //applicantNotificationEmailTrigger.AddTemplate(applicantSubmissionNotification.Id, "Applicant Email Notification");
+            EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
+            applicantNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, applicantEmail.Id);
+            applicantNotificationEmailTrigger.AddTemplate(applicantSubmissionNotification.Id, "Applicant Email Notification");
 
-            //EmailTrigger chairNotificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
-            //chairNotificationEmailTrigger.AddRecipientByEmail(((TextField)chairEmail).GetValue("en"));
-            //chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
+            EmailTrigger chairNotificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
+            chairNotificationEmailTrigger.AddRecipientByDataField(confForm.Id, chairEmail.Id);
+            chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
 
+            //Defininig states
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
+            State inReviewState = workflow.AddState(ws.GetStatus(template.Id, "InReview", true));
+            State inSupervisorReviewState = workflow.AddState(ws.GetStatus(template.Id, "InSupervisourReview", true));
+            State inChairReviewState = workflow.AddState(ws.GetStatus(template.Id, "InChairReview", true));
+            State reviewCompletedState = workflow.AddState(ws.GetStatus(template.Id, "ReviewCompleted", true));
+            State inAdjudicationState = workflow.AddState(ws.GetStatus(template.Id, "InAdjudication", true));
+            State acceptedState = workflow.AddState(ws.GetStatus(template.Id, "Accepted", true));
+            State rejectedState = workflow.AddState(ws.GetStatus(template.Id, "Rejected", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
 
-
-            // Submitting an inspection form
-            //Only safey inspectors can submit this form
+            // Defining roles
+            WorkflowRole sasAdmin = workflow.AddRole(auth.GetRole("GAP_Admin", true));
+            WorkflowRole sasChair = workflow.AddRole(auth.GetRole("GAP_Chair", true));
+            WorkflowRole sasSupervisour = workflow.AddRole(auth.GetRole("GAP_Supervisour", true));
+            // ================================================
+            // Create submission-instances related workflow items
+            // ================================================
             GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+
             startSubmissionAction.Access = GetAction.eAccess.Restricted;
-            startSubmissionAction.AddStateReferances(emptyState.Id)
-                .AddAuthorizedRole(inspectorRole.Id);
 
-            //Listing inspection forms.
-            //Inspectors can list their own submissions.
-            //Admins can list all submissions.
-            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
-            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
-            listSubmissionsAction.AddStateReferances(submittedState.Id)
-                .AddOwnerAuthorization()
-                .AddAuthorizedRole(adminRole.Id);
+            //Defining form template
+            startSubmissionAction.AddTemplate(confForm.Id, "Start Submission Template");
 
+            //Defining post actions
+            PostAction savePostAction = startSubmissionAction.AddPostAction("Save", nameof(TemplateOperations.Update));
+            savePostAction.AddStateMapping(emptyState.Id, savedState.Id, "Save");
 
-            //Post action for submitting the form
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
-            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+            submitPostAction.AddStateMapping(emptyState.Id, inReviewState.Id, "Submit",confForm.Id, applicantCat.Id, applicantCat.Id);
 
-            //Defining the pop-up for the above submitPostAction action
-            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
             submitActionPopUp.AddButtons("Yes, submit", "true");
             submitActionPopUp.AddButtons("Cancel", "false");
 
-            //Defining trigger refs -- added Feb 12 2021
-            //  submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant Submission Notification Email Trigger");
-            //  submitPostAction.AddTriggerRefs("1", chairNotificationEmailTrigger.Id, "Chair Submission-notification Email Trigger");
+            //Defining trigger refs
+            submitPostAction.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger");
+            submitPostAction.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
-            // Edit submission related workflow items
+            // Added state referances
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedDomain("@ualberta.ca");
+
+
+            // ================================================
+            // List submission-instances related workflow items
+            // ================================================
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+
+            // Added state referances
+            listSubmissionsAction.AddStateReferances(savedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddOwnerAuthorization();
+
+            listSubmissionsAction.AddStateReferances(inReviewState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddOwnerAuthorization();
+
+            listSubmissionsAction.AddStateReferances(reviewCompletedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca");
+
+            listSubmissionsAction.AddStateReferances(inAdjudicationState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(acceptedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddOwnerAuthorization();
+
+
+            // ================================================
+            // Read submission-instances related workflow items
+            // ================================================
+
             //Defining actions
-            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+            GetAction viewDetailsSubmissionAction = workflow.AddAction("Details", nameof(TemplateOperations.Read), "List");
 
-            //Submissions can only be edited by admins
-            editSubmissionAction.AddStateReferances(submittedState.Id)
-                .AddAuthorizedRole(adminRole.Id);
+            viewDetailsSubmissionAction.Access = GetAction.eAccess.Restricted;
 
+            // Added state referances
+            viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
+                .AddOwnerAuthorization();
+            viewDetailsSubmissionAction.AddStateReferances(inReviewState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(sasChair.Id);
+
+            viewDetailsSubmissionAction.AddStateReferances(reviewCompletedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(sasChair.Id);
+
+            viewDetailsSubmissionAction.AddStateReferances(inAdjudicationState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddOwnerAuthorization();
+
+            viewDetailsSubmissionAction.AddStateReferances(acceptedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddOwnerAuthorization();
+            viewDetailsSubmissionAction.AddStateReferances(rejectedState.Id)
+                .AddAuthorizedRole(sasAdmin.Id)
+                .AddOwnerAuthorization();
+
+            // ================================================
+            // Edit submission-instances related workflow items
+            // ================================================
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", nameof(TemplateOperations.Update), "Details");
+            editSubmissionAction.Access = GetAction.eAccess.Restricted;
             //Defining post actions
-            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
-            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+            PostAction editSubmissionPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            PostAction editSubmissionPostActionSubmit = editSubmissionAction.AddPostAction("Submit", "Save");
+
+            //Defining state mappings
+            editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
+            editSubmissionPostActionSave.AddStateMapping(savedState.Id, inReviewState.Id, "Submit");
+            //editSubmissionPostActionSave.AddStateMapping(inReviewState.Id, savedState.Id, "Save");
+            editSubmissionPostActionSave.AddStateMapping(inReviewState.Id, inReviewState.Id, "Submit");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
+            EditSubmissionActionPopUpopUp.AddButtons("Yes, submit", "true");
+            EditSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs
+            //*******To Do*******
+            // Implement a function to restrict the e-mail triggers when SAS Admin updated the document
+            editSubmissionPostActionSubmit.AddTriggerRefs("0", chairNotificationEmailTrigger.Id, "Chair's Notification Email Trigger");
+            editSubmissionPostActionSubmit.AddTriggerRefs("1", applicantNotificationEmailTrigger.Id, "Owner Submission-notification Email Trigger");
 
 
-            // Delete submission related workflow items
-            //Defining actions. Only admin can delete a submission
-            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
-            deleteSubmissionAction.AddStateReferances(submittedState.Id)
-                .AddAuthorizedRole(adminRole.Id);
+            //Defining state referances
+            editSubmissionAction.GetStateReference(savedState.Id, true)
+                .AddOwnerAuthorization();
+            editSubmissionAction.GetStateReference(inReviewState.Id, true)
+                .AddAuthorizedRole(sasAdmin.Id);
+
+
+            // ================================================
+            // Delete submission-instances related workflow items
+            // ================================================
+
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", nameof(CrudOperations.Delete), "Details");
+            deleteSubmissionAction.Access = GetAction.eAccess.Restricted;
 
             //Defining post actions
             PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
-            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
 
-            //Defining the pop-up for the above postActionSubmit action
-            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.", "");
+            //Defining state mappings
+            deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.AddStateMapping(inReviewState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postAction action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to delete this document?", "Once deleted, you cannot access this document.");
             deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
             deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining state referances
+            deleteSubmissionAction.GetStateReference(savedState.Id, true)
+                .AddOwnerAuthorization();
+            deleteSubmissionAction.GetStateReference(inReviewState.Id, true)
+                .AddAuthorizedRole(sasAdmin.Id);
+
+
+            // ================================================
+            // Review submission-instances related workflow items
+            // ================================================
+
+            GetAction reviewSubmissionAction = workflow.AddAction("Review Submission", nameof(TemplateOperations.Review), "Details");
+            reviewSubmissionAction.Access = GetAction.eAccess.Restricted;
+
+            //Defining form template
+            //reviewSubmissionAction.AddTemplate(chairAssessmentForm.Id, "Start Review Submission");
+
+            //Defining post actions
+            PostAction ReviewSubmissionPostAction = reviewSubmissionAction.AddPostAction("Start Review", "Save");
+
+            //Defining state mappings
+            ReviewSubmissionPostAction.AddStateMapping(inReviewState.Id, reviewCompletedState.Id, "Submit Assessment");
+
+            //Defining the pop-up for the above postAction action
+            PopUp reviewSubmissionActionPopUpopUp = ReviewSubmissionPostAction.AddPopUp("Confirmation", "Confirm the submission?", "Once submitted, you cannot resubmit an assessment.");
+            reviewSubmissionActionPopUpopUp.AddButtons("Yes, complete", "true");
+            reviewSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+
+            reviewSubmissionAction.GetStateReference(inReviewState.Id, true)
+                .AddAuthorizedRole(sasChair.Id);
+
+
+            // ================================================
+            // Change State submission-instances related workflow items
+            // ================================================
+
+            GetAction changeStateAction = workflow.AddAction("Update Document State", nameof(TemplateOperations.ChangeState), "Details");
+            changeStateAction.Access = GetAction.eAccess.Restricted;
+
+            //Define Revision Template
+            //changeStateAction.AddTemplate(additionalNoteForm.Id, "Submission Change State");
+            //Defining post actions
+            PostAction changeStatePostAction = changeStateAction.AddPostAction("Change State", "Save");
+
+            //Defining state mappings
+            changeStatePostAction.AddStateMapping(reviewCompletedState.Id, inAdjudicationState.Id, "With Adjudication");
+            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, acceptedState.Id, "Accepte");
+            changeStatePostAction.AddStateMapping(inAdjudicationState.Id, rejectedState.Id, "Rejecte");
+
+            //Defining the pop-up for the above sendForRevisionSubmissionPostAction action
+            PopUp changeStateActionPopUpopUp = changeStatePostAction.AddPopUp("Confirmation", "Do you really want to change status ? ", "Once changed, you cannot revise this document.");
+            changeStateActionPopUpopUp.AddButtons("Yes", "true");
+            changeStateActionPopUpopUp.AddButtons("Cancel", "false");
+
+            //Defining states and their authorizatios
+            changeStateAction.GetStateReference(reviewCompletedState.Id, true)
+                .AddAuthorizedRole(sasAdmin.Id);
+            changeStateAction.GetStateReference(inAdjudicationState.Id, true)
+                .AddAuthorizedRole(sasAdmin.Id);
+            changeStateAction.GetStateReference(inReviewState.Id, true)
+                .AddAuthorizedRole(sasChair.Id);
 
 
             db.SaveChanges();

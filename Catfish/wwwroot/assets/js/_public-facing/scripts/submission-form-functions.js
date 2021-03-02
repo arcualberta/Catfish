@@ -21,7 +21,7 @@
     });
 });
 
-function submitWorkflowForm(status, button, postActionId, suffix, successMessage) {
+function submitWorkflowForm(stateId, button, postActionId, suffix, successMessage) {
     $("#submission-result-message_" + suffix).hide();
 
     
@@ -64,7 +64,7 @@ function submitWorkflowForm(status, button, postActionId, suffix, successMessage
 
         values["groupId"] = groupId;
         values["actionButton"] = button;
-        values["status"] = status;
+        values["stateId"] = stateId;
         values["postActionId"] = postActionId;
 
        

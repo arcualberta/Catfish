@@ -235,7 +235,12 @@ namespace Catfish.Services
 
                 //When we instantantiate an instance from the template, we do not need to clone metadata sets
                 Item newItem = template.Instantiate<Item>();
-
+                Mapping stateMapping = _workflowService.GetStateMappingByStateMappingId(template, stateMappingId);
+                Guid statusId = Guid.Empty;
+                if(!stateMapping.Condition.Any())
+                {
+                    statusId = stateMapping.Next;
+                }
                 //TODO: Get all state mappings represented by the stateMappingId from the workflow.
                 //      Check if there are one or more state mappings of which the "Condition" is empty.
                 //          If only one mapping if found with empty condition, then the "next" state specified by
@@ -245,9 +250,9 @@ namespace Catfish.Services
                 //      that matchs with the current state and the condition. If found, then use the state of that mapping
                 //      as the new state. If multiple conditions satisfy, then throw an error.
 
-                Guid stateId = Guid.Empty; //TODO: find this as described above.
+                //Guid stateId = Guid.Empty; //TODO: find this as described above.
 
-                newItem.StatusId = stateId;
+                newItem.StatusId = statusId;
                 newItem.PrimaryCollectionId = collectionId;
                 newItem.TemplateId = entityTemplateId;
                 newItem.GroupId = groupId;

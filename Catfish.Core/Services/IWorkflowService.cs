@@ -53,5 +53,6 @@ namespace Catfish.Core.Services
         PostAction GetPostActionByButtonId(EntityTemplate entityTemplate, Guid buttonId);
         GetAction GetGetActionByPostActionID(EntityTemplate entityTemplate, Guid postActionId);
         List<TriggerRef> GetTriggersByPostActionID(EntityTemplate entityTemplate, Guid postActionId);
+        Mapping GetStateMappingByStateMappingId(EntityTemplate entityTemplate, Guid stateMappingId);
     }
 }
