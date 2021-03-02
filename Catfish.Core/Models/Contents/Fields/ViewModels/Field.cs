@@ -23,7 +23,7 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
         public Field(TextField src)
         {
             Init(src);
-            UpdateTextValyes(src);
+            UpdateTextValues(src);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
             AllowMultipleValues = src.AllowMultipleValues;
         }
 
-        public void UpdateTextValyes(TextField src)
+        public void UpdateTextValues(TextField src)
         {
             ValueIds = new List<Guid>();
             ValueGroups = new Dictionary<Guid, List<FieldValue>>();
@@ -53,16 +53,24 @@ namespace Catfish.Core.Models.Contents.Fields.ViewModels
             foreach(MultilingualValue multiLingualVal in src.Values)
             {
                 //Add the ID of the multiLingualVal to ValueIds
-
+                ValueIds.Add(multiLingualVal.Id);
 
                 //Create a new list of FieldValue objects
+                var tmp = new List<FieldValue>();
 
                 //Iterate throuh all individual languages in multiLingualVal and
-                //create a new field value object for that langiage and add it to the
+                //create a new field value object for that language and add it to the
                 //above list of FieldValue objects
+                foreach(Text text in multiLingualVal.Values)
+                {
+                    var userInput = new FieldValue(text);
+                    tmp.Add(userInput);
+                }
 
 
-                //Inser the list of field value objects into the dictionary
+                //Insert the list of field value objects into the dictionary
+                ValueGroups.Add(multiLingualVal.Id, tmp);
+                ValueIds.Add(multiLingualVal.Id);
             }
         }
 
