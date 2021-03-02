@@ -92,9 +92,6 @@ namespace Catfish.Areas.Manager.Pages
                     }
                 }
 
-
-
-
                 _db.SaveChanges();
 
                 successMessage = "Schema saved successfully.";
