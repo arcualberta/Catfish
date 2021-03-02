@@ -24,12 +24,14 @@ namespace Catfish.Areas.Manager.Pages
         private AppDbContext _db;
         private ErrorLog _errorLog;
         private IWorkflowService _workflowService;
+        private IAuthorizationService _authorizationService;
 
-        public SchemaPageModel(AppDbContext db, ErrorLog errorLog, IWorkflowService workflowService)
+        public SchemaPageModel(AppDbContext db, ErrorLog errorLog, IWorkflowService workflowService, IAuthorizationService authorizationService)
         {
             _db = db;
             _errorLog = errorLog;
             _workflowService = workflowService;
+            _authorizationService = authorizationService;
         }
 
         public void OnGet(Guid id, string successMessage)
@@ -64,21 +66,34 @@ namespace Catfish.Areas.Manager.Pages
                     entity.Updated = DateTime.Now;
                 }
 
-                //Making sure the state values defined in the workflow matches with state values stored in 
-                //the database (and creating new database state values if matching ones are not available.
                 if (typeof(EntityTemplate).IsAssignableFrom(entity.GetType()))
                 {
                     EntityTemplate template = entity as EntityTemplate;
                     template.TemplateName = (entity as EntityTemplate).Name.GetConcatenatedContent(" | ");
                     if (template.Workflow != null)
                     {
-                        foreach(var state in template.Workflow.States)
+
+                        //Making sure the state values defined in the workflow matches with state values stored in 
+                        //the database (and creating new state values in the database if matching ones are not available.
+                        foreach (var state in template.Workflow.States)
                         {
                             var dbState = _workflowService.GetStatus(template.Id, state.Value, true);
                             state.Id = dbState.Id;
                         }
+
+                        //Making sure the roles defined in the workflow matches with roles stored in 
+                        //the database (and creating new roles in the database if matching ones are not available.
+                        foreach(var role in template.Workflow.Roles)
+                        {
+                            var dbRole = _authorizationService.GetRole(role.Value, true);
+                            role.Id = dbRole.Id;
+                        }
+
                     }
                 }
+
+
+
 
                 _db.SaveChanges();
 
