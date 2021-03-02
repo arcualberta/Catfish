@@ -141,7 +141,17 @@ function TableColumnSum(fieldModelId, columnIndex) {
     let table = $("table[data-model-id='" + fieldModelId + "']")
     let result = 0;
     $(table).find("input[data-c=" + columnIndex + "]:visible").each(function () {
-        result += parseInt($(this).val(), 10);
+        result += parseFloat($(this).val(), 10);
+    });
+
+    return result;
+}
+
+function CompositeFieldSum(fieldModelId, childFieldIndex) {
+    let container = $("div[data-model-id='" + fieldModelId + "']")
+    let result = 0;
+    $(container).find("input[data-field-index=" + childFieldIndex + "]:visible").each(function () {
+        result += parseFloat($(this).val(), 10);
     });
 
     return result;

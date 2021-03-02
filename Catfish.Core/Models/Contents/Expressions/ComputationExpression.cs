@@ -214,6 +214,14 @@ namespace Catfish.Core.Models.Contents.Expressions
             return this;
         }
 
+        public ComputationExpression AppendCompositeFieldSum(CompositeField field, int childFieldIndex)
+        {
+            Data.Value += string.Format("CompositeFieldSum('{0}', {1})", field.Id, childFieldIndex);
+            return this;
+        }
+
+
+
         public void ReplaceReferences(Guid oldId, Guid newId)
         {
             Data.Value = Data.Value.Replace(oldId.ToString(), newId.ToString());
