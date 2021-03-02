@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Catfish.Core.Models;
+using Catfish.Core.Services;
 using ElmahCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -22,11 +23,13 @@ namespace Catfish.Areas.Manager.Pages
 
         private AppDbContext _db;
         private ErrorLog _errorLog;
+        private IWorkflowService _workflowService;
 
-        public SchemaPageModel(AppDbContext db, ErrorLog errorLog)
+        public SchemaPageModel(AppDbContext db, ErrorLog errorLog, IWorkflowService workflowService)
         {
             _db = db;
             _errorLog = errorLog;
+            _workflowService = workflowService;
         }
 
         public void OnGet(Guid id, string successMessage)
@@ -58,9 +61,23 @@ namespace Catfish.Areas.Manager.Pages
                 else
                 {
                     entity.Content = SchemaXml;
-                    if(typeof(EntityTemplate).IsAssignableFrom(entity.GetType()))
-                        (entity as EntityTemplate).TemplateName = (entity as EntityTemplate).Name.GetConcatenatedContent(" | ");
                     entity.Updated = DateTime.Now;
+                }
+
+                //Making sure the state values defined in the workflow matches with state values stored in 
+                //the database (and creating new database state values if matching ones are not available.
+                if (typeof(EntityTemplate).IsAssignableFrom(entity.GetType()))
+                {
+                    EntityTemplate template = entity as EntityTemplate;
+                    template.TemplateName = (entity as EntityTemplate).Name.GetConcatenatedContent(" | ");
+                    if (template.Workflow != null)
+                    {
+                        foreach(var state in template.Workflow.States)
+                        {
+                            var dbState = _workflowService.GetStatus(template.Id, state.Value, true);
+                            state.Id = dbState.Id;
+                        }
+                    }
                 }
 
                 _db.SaveChanges();
