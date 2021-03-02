@@ -66,6 +66,8 @@ namespace Catfish.Areas.Manager.Pages
                     entity.Updated = DateTime.Now;
                 }
 
+                List<string> oldGuids = new List<string>();
+                List<string> newGuids = new List<string>();
                 if (typeof(EntityTemplate).IsAssignableFrom(entity.GetType()))
                 {
                     EntityTemplate template = entity as EntityTemplate;
@@ -78,7 +80,11 @@ namespace Catfish.Areas.Manager.Pages
                         foreach (var state in template.Workflow.States)
                         {
                             var dbState = _workflowService.GetStatus(template.Id, state.Value, true);
-                            state.Id = dbState.Id;
+                            if(state.Id != dbState.Id)
+                            {
+                                oldGuids.Add(state.Id.ToString());
+                                newGuids.Add(dbState.Id.ToString());
+                            }
                         }
 
                         //Making sure the roles defined in the workflow matches with roles stored in 
@@ -86,12 +92,18 @@ namespace Catfish.Areas.Manager.Pages
                         foreach(var role in template.Workflow.Roles)
                         {
                             var dbRole = _authorizationService.GetRole(role.Value, true);
-                            role.Id = dbRole.Id;
+                            if(role.Id != dbRole.Id)
+                            {
+                                oldGuids.Add(role.Id.ToString());
+                                newGuids.Add(dbRole.Id.ToString());
+                            }
                         }
-
                     }
                 }
 
+                //Globally replace all oldGuids in the schema content with the corresponding newGuids.
+                for (int i = 0; i < oldGuids.Count; ++i)
+                    entity.Content = entity.Content.Replace(oldGuids[i], newGuids[i], StringComparison.InvariantCultureIgnoreCase);
                 _db.SaveChanges();
 
                 successMessage = "Schema saved successfully.";
