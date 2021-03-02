@@ -3,10 +3,17 @@
 @inject Piranha.Manager.ManagerLocalizer Localizer
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
+@inject Catfish.Helper.ICatfishAppConfiguration _catfishConfig;
+
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @using Catfish.Core.Models
 
+@{ 
+    string addUserDescription = _catfishConfig.GetValue("SiteConfig:AddingUserDescription","");
 
+    if (string.IsNullOrWhiteSpace(addUserDescription))
+        addUserDescription = "Please enter user email address(es) one line per email (please use UAlberta CCID email whenever applicable)!";
+}
     @*@Html.HiddenFor(m => m.Group.Id)*@
     <div class="top">
         <nav aria-label="breadcrumb">
@@ -74,6 +81,9 @@
                                     }
                                 </tbody>
                             </table>
+                            <h5>Add Additional User(s)</h5>
+                            <div class="alert alert-info"></div>
+                            @Html.TextAreaFor(m=>m.AdditinalUsers, new { @cols = 30, @rows = 5 })
                             @*</form>*@
                         </div>
                     </div>
