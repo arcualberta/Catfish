@@ -3613,6 +3613,225 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             return form;
         }
 
+        [Test]
+        public void GapFinalReportTest()
+        {
+            //OTHER EXTRA FORMS : "Add Notes", "Adjudication" and "Ranking" forms same with SAS ones
+            // cahirAssesment and adviser assessment form
+            string lang = "en";
+            string templateName = "GAP Final Report";
+
+            IWorkflowService ws = _testHelper.WorkflowService;
+            AppDbContext db = _testHelper.Db;
+            IAuthorizationService auth = _testHelper.AuthorizationService;
+
+
+            ItemTemplate template = db.ItemTemplates
+                .Where(et => et.TemplateName == templateName)
+                .FirstOrDefault();
+
+            if (template == null)
+            {
+                template = new ItemTemplate();
+                db.ItemTemplates.Add(template);
+            }
+            else
+            {
+                ItemTemplate t = new ItemTemplate();
+                t.Id = template.Id;
+                template.Data = t.Data;
+                template.Initialize(false);
+            }
+            template.TemplateName = templateName;
+            template.Name.SetContent(templateName);
+
+            //ws.SetModel(template);
+
+            //Get the Workflow object using the workflow service
+            Workflow workflow = template.Workflow;
+
+            //Defininig states
+
+            //Defininig states
+            State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
+            State submittedState = workflow.AddState(ws.GetStatus(template.Id, "Submitted", true));
+            State deleteState = workflow.AddState(ws.GetStatus(template.Id, "Deleted", true));
+
+
+            //=============================================================================== Defininig SAS form
+            DataItem confForm = template.GetDataItem("GAP Final Report", true, lang);
+            confForm.IsRoot = true;
+            confForm.SetDescription("This template is designed for Gap Final Report", lang);
+
+            // ====================================================== HOST
+            confForm.CreateField<InfoSection>(null, null)
+                .AppendContent("h3", "Instructions", lang);
+            confForm.CreateField<InfoSection>(null, null)
+               .AppendContent("div", "Briefly outline how the funding received benefited the project for which funding was granted.", lang, "alert alert-info");
+            confForm.CreateField<InfoSection>(null, null)
+               .AppendContent("h3", "Demographics", lang);
+
+            confForm.CreateField<TextField>("Name:", lang, true);
+            var applicantEmail = confForm.CreateField<EmailField>("Email:", lang, true)
+                .SetDescription("Please use your UAlberta CCID email address.", lang);
+
+            string[] departmentList = GetDepartmentList();
+            var dept = confForm.CreateField<SelectField>("Department:", lang, departmentList, true);
+
+            string[] appCat = new string[] { "SAS Grant", "Conference Fund Grant" };
+            var applicantCat = confForm.CreateField<SelectField>("Grant Name:", lang, appCat, true);
+
+            confForm.CreateField<DateField>("Date of Award:", lang, true);
+            confForm.CreateField<DateField>("Report Due Date:", lang, true);
+            var notes = confForm.CreateField<TextArea>("Report Notes:", lang,true);
+
+            notes.Rows = 5;
+            notes.Cols = 50;
+
+
+            //=============================================================================             Defininig roles
+            WorkflowRole adminRole = workflow.AddRole(auth.GetRole("Admin", true));
+            WorkflowRole inspectorRole = workflow.AddRole(auth.GetRole("Inspector", true));
+            WorkflowRole chairRole = workflow.AddRole(auth.GetRole("Chair", true));
+
+
+
+            //Defining email templates
+            // string emailBody = "";
+            //emailBody =	
+
+            //<p>Dear @chairName</p>
+            //<br/>
+            //<p>A @applicant from your department has applied for  grant funding. Please click on this link: <a href='@SiteUrl/items/@Item.Id'>Sas Application</a> to provide your assessment about this application.
+            //            You will be required to log in with your CCID email.</p> 
+
+
+            //<br/>
+            //<p>Thank you.</p>";
+
+          //  EmailTemplate chairEmailTemplate = template.GetEmailTemplate("Chair Email Template", lang, true);
+          //  chairEmailTemplate.SetDescription("This metadata set defines the email template to be sent to chair of the department or Dean when user apply for the grant.", lang);
+          //  chairEmailTemplate.SetSubject("SAS Application");
+          //  chairEmailTemplate.SetBody("emailBody");
+
+          //  EmailTemplate advisorEmailTemplate = template.GetEmailTemplate("Advisor Email Template", lang, true);
+           // advisorEmailTemplate.SetSubject("SAS Application");
+           // advisorEmailTemplate.SetBody("emailBody");
+
+            //emailBody= "<p>Dear @advisorName</p>
+            //    < br />
+
+            //    < p > A student from your department has applied for  grant funding. Please click on this link: @LinkUrl to provide your assessment about this application.
+
+            //       You will be required to log in with your CCID email.</ p >
+
+
+
+            //       < br />
+
+            //       < p > Thank you.</ p > "
+
+
+
+          //  EmailTemplate applicantSubmissionNotification = template.GetEmailTemplate("Applicant Notification", lang, true);
+          //  applicantSubmissionNotification.SetDescription("This metadata set defines the email template to be sent to the applicant when application's submitted.", lang);
+          //  applicantSubmissionNotification.SetSubject("SAS Application Submission");
+            //emailBody = @"<p>Dear Colleague,</p>
+            //                    <p>
+            //                    Thank you for submitting your SAS grant application. 
+            //                    Your chair has been automatically notified to provide an assessment about your application. 
+            //                    We will inform you of the decision when the application review process is completed. 
+            //                    </p>
+            //                    <p>
+            //                    Thank you.
+            //                    </p>
+            //                    <p>
+            //                    Steve Patten <br />
+            //                    Associate Dean (Research)
+            //                    </p>";
+
+           // applicantSubmissionNotification.SetBody("emailBody");
+
+
+            //Defining triggers
+            //Feb 12 2021
+            //EmailTrigger applicantNotificationEmailTrigger = workflow.AddTrigger("ToApplicant", "SendEmail");
+            //applicantNotificationEmailTrigger.AddRecipientByEmail(((TextField)applicantEmail).GetValue("en"));
+            //applicantNotificationEmailTrigger.AddTemplate(applicantSubmissionNotification.Id, "Applicant Email Notification");
+
+            //EmailTrigger chairNotificationEmailTrigger = workflow.AddTrigger("ToChair", "SendEmail");
+            //chairNotificationEmailTrigger.AddRecipientByEmail(((TextField)chairEmail).GetValue("en"));
+            //chairNotificationEmailTrigger.AddTemplate(chairEmailTemplate.Id, "Chair Email Notification");
+
+
+
+            // Submitting an inspection form
+            //Only safey inspectors can submit this form
+            GetAction startSubmissionAction = workflow.AddAction("Start Submission", nameof(TemplateOperations.Instantiate), "Home");
+            startSubmissionAction.Access = GetAction.eAccess.Restricted;
+            startSubmissionAction.AddStateReferances(emptyState.Id)
+                .AddAuthorizedRole(inspectorRole.Id);
+
+            //Listing inspection forms.
+            //Inspectors can list their own submissions.
+            //Admins can list all submissions.
+            GetAction listSubmissionsAction = workflow.AddAction("List Submissions", nameof(TemplateOperations.ListInstances), "Home");
+            listSubmissionsAction.Access = GetAction.eAccess.Restricted;
+            listSubmissionsAction.AddStateReferances(submittedState.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(adminRole.Id);
+
+
+            //Post action for submitting the form
+            PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
+            submitPostAction.AddStateMapping(emptyState.Id, submittedState.Id, "Submit");
+
+            //Defining the pop-up for the above submitPostAction action
+            PopUp submitActionPopUp = submitPostAction.AddPopUp("WARNING: Submitting the Form", "Once submitted, you cannot update the form.", "");
+            submitActionPopUp.AddButtons("Yes, submit", "true");
+            submitActionPopUp.AddButtons("Cancel", "false");
+
+            //Defining trigger refs -- added Feb 12 2021
+            //  submitPostAction.AddTriggerRefs("0", applicantNotificationEmailTrigger.Id, "Applicant Submission Notification Email Trigger");
+            //  submitPostAction.AddTriggerRefs("1", chairNotificationEmailTrigger.Id, "Chair Submission-notification Email Trigger");
+
+            // Edit submission related workflow items
+            //Defining actions
+            GetAction editSubmissionAction = workflow.AddAction("Edit Submission", "Edit", "Details");
+
+            //Submissions can only be edited by admins
+            editSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction editPostActionSave = editSubmissionAction.AddPostAction("Save", "Save");
+            editPostActionSave.AddStateMapping(submittedState.Id, submittedState.Id, "Save");
+
+
+            // Delete submission related workflow items
+            //Defining actions. Only admin can delete a submission
+            GetAction deleteSubmissionAction = workflow.AddAction("Delete Submission", "Delete", "Details");
+            deleteSubmissionAction.AddStateReferances(submittedState.Id)
+                .AddAuthorizedRole(adminRole.Id);
+
+            //Defining post actions
+            PostAction deleteSubmissionPostAction = deleteSubmissionAction.AddPostAction("Delete", "Save");
+            deleteSubmissionPostAction.AddStateMapping(submittedState.Id, deleteState.Id, "Delete");
+
+            //Defining the pop-up for the above postActionSubmit action
+            PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("WARNING: Delete", "Deleting the submission. Please confirm.", "");
+            deleteSubmissionActionPopUpopUp.AddButtons("Yes, delete", "true");
+            deleteSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+
+
+            db.SaveChanges();
+
+            template.Data.Save("..\\..\\..\\..\\Examples\\gapFinalReportForm_generared.xml");
+
+            // string json = JsonConvert.SerializeObject(template);
+            // File.WriteAllText("..\\..\\..\\..\\Examples\\gapFinalReportForm_generared.json", json);
+        }
+
 
         [Test]
         public void TestEntityTemplateLoad()
