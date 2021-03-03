@@ -216,6 +216,45 @@ namespace Catfish.UnitTests
         }
 
         [Test]
+        public void CompisiteFieldComputedExpressionTest()
+        {
+            string lang = "en";
+            string templateName = "Composite-field Child-field Sum Form Template";
+            string submissionFormName = "Composite-field Child-field Sum Form";
+
+            ItemTemplate template = SubmissionItemTemplate(templateName, submissionFormName, lang);
+
+            DataItem childForm = template.GetDataItem("Child Form", true, lang);
+            childForm.CreateField<TextField>("Name", lang, false);
+            childForm.CreateField<IntegerField>("Employee Count", lang, true);
+            childForm.CreateField<DecimalField>("Salary", lang, true);
+            childForm.CreateField<DecimalField>("Budget", lang, true);
+
+            DataItem form = template.GetRootDataItem(true);
+            Assert.IsNotNull(form);
+            CompositeField cf = form.CreateField<CompositeField>("Organization", lang);
+            cf.Min = 2;
+            cf.Max = 4;
+            cf.AllowMultipleValues = true;
+            cf.ChildTemplate = childForm;
+
+            var totalEmployeeCount = form.CreateField<IntegerField>("Total Employee Count", lang);
+            totalEmployeeCount.Readonly = true;
+            totalEmployeeCount.ValueExpression.AppendCompositeFieldSum(cf, 1);
+
+            var totalSalary = form.CreateField<IntegerField>("Total Salary", lang);
+            totalSalary.Readonly = true;
+            totalSalary.ValueExpression.AppendCompositeFieldSum(cf, 2);
+
+            var totalBudget = form.CreateField<IntegerField>("Total Budget", lang);
+            totalBudget.Readonly = true;
+            totalBudget.ValueExpression.AppendCompositeFieldSum(cf, 3);
+
+            _db.SaveChanges();
+            template.Data.Save("..\\..\\..\\..\\Examples\\compositeFieldChildFieldSum_Workflow_generared.xml");
+        }
+
+        [Test]
         public void TableFieldTest()
         {
             string lang = "en";

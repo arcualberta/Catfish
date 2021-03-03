@@ -39,7 +39,7 @@
 
             string childDivId = Model.Children[i].Id + "_wrapper";
 
-            <div class="row composite-field-child" id="@childDivId">
+            <div class="row composite-field-child" id="@childDivId" data-cf-item-index="@i">
                 <div class="col-10">
                     @Html.EditorFor(model => Model.Children[i], Model.Children[i].GetType().ToString())
                 </div>
