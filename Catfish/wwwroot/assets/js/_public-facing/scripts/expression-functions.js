@@ -11,9 +11,21 @@
             let result = eval(expression);
             if (result) {
                 $("#" + fieldId).show()
+
+                //MR - March 03 2021: set disabled attribute for safari/IE
+                if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document.documentMode == true) || (navigator.userAgent.indexOf("Safari") != -1)) //IF IE or SAFARI
+                {
+                    $("#" + fieldId).prop("disabled", false);
+                } 
             }
             else {
                 $("#" + fieldId).hide()
+                 //MR - March 03 2021: set disabled attribute for safari/IE
+                if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document.documentMode == true) || (navigator.userAgent.indexOf("Safari") != -1)) //IF IE or SAFARI
+                {
+                    $("#" + fieldId).prop("disabled", true);
+                }  
+              
 
                 //If this is an option
                 if ($(field).prop("tagName").toLowerCase() === "option") {
