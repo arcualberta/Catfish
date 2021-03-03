@@ -3269,13 +3269,22 @@ namespace Catfish.UnitTests
             atf.FieldLabelCssClass = "col-md-12";
             atf.FieldValueCssClass = "col-md-12";
             atf.TableHead.CreateField<InfoSection>("", lang);
-            atf.TableHead.CreateField<IntegerField>("U of A", lang);
-            atf.TableHead.CreateField<IntegerField>("Other Canada", lang);
-            atf.TableHead.CreateField<IntegerField>("Other Countries", lang);
-            atf.TableHead.CreateField<IntegerField>("Total # of People", lang);
-            atf.TableHead.CreateField<DecimalField>("Registration Fee per Person", lang);
-            atf.TableHead.CreateField<DecimalField>("Total Registration Fee", lang);
-
+            var fromUofA =atf.TableHead.CreateField<IntegerField>("U of A", lang);
+            var fromCanada = atf.TableHead.CreateField<IntegerField>("Other Canada", lang);
+            var fromOtherCountries =atf.TableHead.CreateField<IntegerField>("Other Countries", lang);
+            var totPeople = atf.TableHead.CreateField<IntegerField>("Total # of People", lang);
+            totPeople.Readonly = true;
+            totPeople.ValueExpression.AppendValue(fromUofA)
+            .AppendOperator(ComputationExpression.eMath.PLUS)
+            .AppendValue(fromCanada)
+            .AppendOperator(ComputationExpression.eMath.PLUS)
+            .AppendValue(fromOtherCountries);
+            var regFee =  atf.TableHead.CreateField<DecimalField>("Registration Fee per Person", lang);
+            var totRegFee = atf.TableHead.CreateField<DecimalField>("Total Registration Fee", lang);
+            totRegFee.ValueExpression.AppendValue(totPeople)
+                .AppendOperator(ComputationExpression.eMath.MULT)
+                .AppendValue(regFee);
+            totRegFee.Readonly = true;
             //NOTE: we MUST finish defining all columns before setting any column values.
             atf.SetColumnValues(0, attendeeCat, lang);
             atf.AllowAddRows = false;
@@ -3287,10 +3296,16 @@ namespace Catfish.UnitTests
             stf.FieldLabelCssClass = "col-md-12";
             stf.FieldValueCssClass = "col-md-12";
             stf.TableHead.CreateField<InfoSection>("", lang);
-            stf.TableHead.CreateField<IntegerField>("U of A", lang);
-            stf.TableHead.CreateField<IntegerField>("Other Canada", lang);
-            stf.TableHead.CreateField<IntegerField>("Other Countries", lang);
-            stf.TableHead.CreateField<IntegerField>("Total", lang);
+           var uofaSpeakers =  stf.TableHead.CreateField<IntegerField>("U of A", lang);
+            var canadaSpeakers = stf.TableHead.CreateField<IntegerField>("Other Canada", lang);
+            var otherSpeakers = stf.TableHead.CreateField<IntegerField>("Other Countries", lang);
+            var totSpeakers = stf.TableHead.CreateField<IntegerField>("Total", lang);
+            //totSpeakers.ValueExpression.AppendValue(uofaSpeakers)
+            //    .AppendOperator(ComputationExpression.eMath.PLUS)
+            //    .AppendValue(canadaSpeakers)
+            //     .AppendOperator(ComputationExpression.eMath.PLUS)
+            //     .AppendValue(otherSpeakers);
+            //totSpeakers.Readonly = true;
 
             //NOTE: we MUST finish defining all columns before setting any column values.
             stf.SetColumnValues(0, speakerCat, lang);
@@ -3302,7 +3317,7 @@ namespace Catfish.UnitTests
             for (var i = 1; i < stfooter.Fields.Count; ++i)
                 stfooter.Fields[i].ValueExpression.AppendColumnSum(stf, i);
 
-            stf.AllowAddRows = false;
+          
 
 
 
@@ -3321,9 +3336,13 @@ namespace Catfish.UnitTests
             ftf.TableHead.CreateField<RadioField>("Is Confirmed?", lang, new string[] { "Yes", "No" })
                 .FieldValueCssClass = "";
 
-            ftf.TableHead.CreateField<DecimalField>("Amount Requested", lang);
-            ftf.TableHead.CreateField<DecimalField>("Amount Confirmed", lang);
-            ftf.TableHead.CreateField<DecimalField>("Total", lang);
+           var amountReq =  ftf.TableHead.CreateField<DecimalField>("Amount Requested", lang);
+           var amountConfirm =  ftf.TableHead.CreateField<DecimalField>("Amount Confirmed", lang);
+           var totAmount =  ftf.TableHead.CreateField<DecimalField>("Total", lang);
+           // totAmount.Readonly = true;
+            //totAmount.ValueExpression.AppendValue(amountReq)
+            //    .AppendOperator(ComputationExpression.eMath.PLUS)
+            //    .AppendValue(amountConfirm);
 
             TableRow ffooter = ftf.AppendRow(TableField.eRowTarget.Footer);
             ffooter.Fields[0].SetValue("Grand Total", lang);
