@@ -20,7 +20,7 @@
     var modelNamePrefix = Html.NameFor(model => model);
 }
 
-<div class="container">
+<div class="container" data-model-id="@Model.Id">
     <div id="@templateId" 
          data-template-id="@Model.ChildTemplate.Id" 
          data-name-prefix="@modelNamePrefix" 
