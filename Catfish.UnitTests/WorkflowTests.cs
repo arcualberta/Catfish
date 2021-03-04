@@ -3342,17 +3342,24 @@ namespace Catfish.UnitTests
 
            var amountReq =  ftf.TableHead.CreateField<DecimalField>("Amount Requested", lang);
            var amountConfirm =  ftf.TableHead.CreateField<DecimalField>("Amount Confirmed", lang);
-           var totAmount =  ftf.TableHead.CreateField<DecimalField>("Total", lang);
-            totAmount.Readonly = true;
-            totAmount.ValueExpression.AppendValue(amountReq)
+           var totAmountReq =  ftf.TableHead.CreateField<DecimalField>("Total Requested", lang);
+            totAmountReq.Readonly = true;
+            totAmountReq.ValueExpression.AppendValue(amountReq)
                 .AppendOperator(ComputationExpression.eMath.PLUS)
-                .AppendValue(amountConfirm);
+                .AppendValue(0);
+
+           // .AppendValue(amountConfirm);
+            var totAmountConfirmed = ftf.TableHead.CreateField<DecimalField>("Total Confirmed", lang);
+            totAmountConfirmed.Readonly = true;
+            totAmountConfirmed.ValueExpression.AppendValue(amountConfirm)
+                .AppendOperator(ComputationExpression.eMath.PLUS)
+                .AppendValue(0);
 
             TableRow ffooter = ftf.AppendRow(TableField.eRowTarget.Footer);
             ffooter.Fields[0].SetValue("Grand Total", lang);
             ffooter.SetReadOnly();
             //only to target last col for Grand Total
-            for (var i = ffooter.Fields.Count-1; i < ffooter.Fields.Count; ++i)
+            for (var i = ffooter.Fields.Count-2; i < ffooter.Fields.Count; ++i)
             {
              //   The footer doesn't need value expressions inherited 
               //  from the header elements, so we clear them first

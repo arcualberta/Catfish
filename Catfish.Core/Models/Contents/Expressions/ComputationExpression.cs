@@ -262,6 +262,18 @@ namespace Catfish.Core.Models.Contents.Expressions
             }
         }
 
-        
+        /// <summary>
+        /// Appends the value of a field to the expression.
+        /// </summary>
+        /// <param name="intValue"></param>
+        /// <returns></returns>
+        public ComputationExpression AppendValue(int intValue)
+        {
+            Data.Value += string.Format("IntValue('{0}')", intValue);
+            return this;
+        }
+
+
+
     }
 }
