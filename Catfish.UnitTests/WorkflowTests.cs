@@ -3480,7 +3480,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             //Defininig states
             State emptyState = workflow.AddState(ws.GetStatus(template.Id, "", true));
             State savedState = workflow.AddState(ws.GetStatus(template.Id, "Saved", true));
-            State inReviewState = workflow.AddState(ws.GetStatus(template.Id, "InReview", true));
+            //State inReviewState = workflow.AddState(ws.GetStatus(template.Id, "InReview", true));
             State inSupervisorReviewState = workflow.AddState(ws.GetStatus(template.Id, "InSupervisourReview", true));
             State inChairReviewState = workflow.AddState(ws.GetStatus(template.Id, "InChairReview", true));
             State reviewCompletedState = workflow.AddState(ws.GetStatus(template.Id, "ReviewCompleted", true));
@@ -3511,7 +3511,7 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             PostAction submitPostAction = startSubmissionAction.AddPostAction("Submit", nameof(TemplateOperations.Update));
             submitPostAction.AddStateMapping(
                 emptyState.Id, //Current state
-                inReviewState.Id, //New state
+                inChairReviewState.Id, //New state
                 "Submit", //Button text
                 applicantCat,
                 applicantCat.Options.Where(op => op.OptionText.ConcatenatedContent == appCat[0]).First()
@@ -3552,7 +3552,11 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
                 .AddAuthorizedDomain("@ualberta.ca")
                 .AddOwnerAuthorization();
 
-            listSubmissionsAction.AddStateReferances(inReviewState.Id)
+            listSubmissionsAction.AddStateReferances(inSupervisorReviewState.Id)
+                .AddAuthorizedRole(sasSupervisour.Id)
+                .AddAuthorizedDomain("@ualberta.ca")
+                .AddOwnerAuthorization();
+            listSubmissionsAction.AddStateReferances(inChairReviewState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
                 .AddAuthorizedDomain("@ualberta.ca")
                 .AddOwnerAuthorization();
@@ -3587,9 +3591,14 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             // Added state referances
             viewDetailsSubmissionAction.AddStateReferances(savedState.Id)
                 .AddOwnerAuthorization();
-            viewDetailsSubmissionAction.AddStateReferances(inReviewState.Id)
+            viewDetailsSubmissionAction.AddStateReferances(inSupervisorReviewState.Id)
+                .AddAuthorizedRole(sasSupervisour.Id)
+                .AddOwnerAuthorization()
+                .AddAuthorizedRole(sasChair.Id);
+            viewDetailsSubmissionAction.AddStateReferances(inChairReviewState.Id)
                 .AddAuthorizedRole(sasAdmin.Id)
                 .AddOwnerAuthorization()
+                .AddAuthorizedRole(sasSupervisour.Id)
                 .AddAuthorizedRole(sasChair.Id);
 
             viewDetailsSubmissionAction.AddStateReferances(reviewCompletedState.Id)
@@ -3619,9 +3628,11 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //Defining state mappings
             editSubmissionPostActionSave.AddStateMapping(savedState.Id, savedState.Id, "Save");
-            editSubmissionPostActionSave.AddStateMapping(savedState.Id, inReviewState.Id, "Submit");
-            //editSubmissionPostActionSave.AddStateMapping(inReviewState.Id, savedState.Id, "Save");
-            editSubmissionPostActionSave.AddStateMapping(inReviewState.Id, inReviewState.Id, "Submit");
+            editSubmissionPostActionSave.AddStateMapping(savedState.Id, inSupervisorReviewState.Id, "Submit");
+            editSubmissionPostActionSave.AddStateMapping(inSupervisorReviewState.Id, inSupervisorReviewState.Id, "Save");
+            editSubmissionPostActionSave.AddStateMapping(savedState.Id, inChairReviewState.Id, "Submit");
+            editSubmissionPostActionSave.AddStateMapping(inChairReviewState.Id, inChairReviewState.Id, "Submit");
+
 
             //Defining the pop-up for the above postActionSubmit action
             PopUp EditSubmissionActionPopUpopUp = editSubmissionPostActionSubmit.AddPopUp("Confirmation", "Do you really want to submit this document?", "Once submitted, you cannot update the document.");
@@ -3638,7 +3649,9 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             //Defining state referances
             editSubmissionAction.GetStateReference(savedState.Id, true)
                 .AddOwnerAuthorization();
-            editSubmissionAction.GetStateReference(inReviewState.Id, true)
+            editSubmissionAction.GetStateReference(inChairReviewState.Id, true)
+                .AddAuthorizedRole(sasAdmin.Id);
+            editSubmissionAction.GetStateReference(inSupervisorReviewState.Id, true)
                 .AddAuthorizedRole(sasAdmin.Id);
 
 
@@ -3654,7 +3667,8 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
 
             //Defining state mappings
             deleteSubmissionPostAction.AddStateMapping(savedState.Id, deleteState.Id, "Delete");
-            deleteSubmissionPostAction.AddStateMapping(inReviewState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.AddStateMapping(inSupervisorReviewState.Id, deleteState.Id, "Delete");
+            deleteSubmissionPostAction.AddStateMapping(inChairReviewState.Id, deleteState.Id, "Delete");
 
             //Defining the pop-up for the above postAction action
             PopUp deleteSubmissionActionPopUpopUp = deleteSubmissionPostAction.AddPopUp("Confirmation", "Do you really want to delete this document?", "Once deleted, you cannot access this document.");
@@ -3664,35 +3678,61 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
             //Defining state referances
             deleteSubmissionAction.GetStateReference(savedState.Id, true)
                 .AddOwnerAuthorization();
-            deleteSubmissionAction.GetStateReference(inReviewState.Id, true)
-                .AddAuthorizedRole(sasAdmin.Id);
+            deleteSubmissionAction.GetStateReference(inSupervisorReviewState.Id, true)
+                .AddAuthorizedRole(sasAdmin.Id); 
+            deleteSubmissionAction.GetStateReference(inChairReviewState.Id, true)
+                 .AddAuthorizedRole(sasAdmin.Id);
 
 
             // ================================================
-            // Review submission-instances related workflow items
+            // Review submission-instances by supervisour related workflow items
             // ================================================
 
-            GetAction reviewSubmissionAction = workflow.AddAction("Review Submission", nameof(TemplateOperations.Review), "Details");
-            reviewSubmissionAction.Access = GetAction.eAccess.Restricted;
+            GetAction supervisourReviewAction = workflow.AddAction("Review Supervisor Submission", nameof(TemplateOperations.Review), "Details");
+            supervisourReviewAction.Access = GetAction.eAccess.Restricted;
 
             //Defining form template
-            //reviewSubmissionAction.AddTemplate(chairAssessmentForm.Id, "Start Review Submission");
+            //supervisourReviewAction.AddTemplate(chairAssessmentForm.Id, "Start Review Submission");
 
             //Defining post actions
-            PostAction ReviewSubmissionPostAction = reviewSubmissionAction.AddPostAction("Start Review", "Save");
+            PostAction supervisorReviewPostAction = supervisourReviewAction.AddPostAction("Start Review", "Save");
 
             //Defining state mappings
-            ReviewSubmissionPostAction.AddStateMapping(inReviewState.Id, reviewCompletedState.Id, "Submit Assessment");
+            supervisorReviewPostAction.AddStateMapping(inSupervisorReviewState.Id, inChairReviewState.Id, "Submit Assessment");
 
             //Defining the pop-up for the above postAction action
-            PopUp reviewSubmissionActionPopUpopUp = ReviewSubmissionPostAction.AddPopUp("Confirmation", "Confirm the submission?", "Once submitted, you cannot resubmit an assessment.");
-            reviewSubmissionActionPopUpopUp.AddButtons("Yes, complete", "true");
-            reviewSubmissionActionPopUpopUp.AddButtons("Cancel", "false");
+            PopUp supervisorReviewActionPopUpopUp = supervisorReviewPostAction.AddPopUp("Confirmation", "Confirm the submission?", "Once submitted, you cannot resubmit an assessment.");
+            supervisorReviewActionPopUpopUp.AddButtons("Yes, complete", "true");
+            supervisorReviewActionPopUpopUp.AddButtons("Cancel", "false");
 
 
-            reviewSubmissionAction.GetStateReference(inReviewState.Id, true)
+            supervisourReviewAction.GetStateReference(inSupervisorReviewState.Id, true)
+                .AddAuthorizedRole(sasSupervisour.Id);
+
+            // ================================================
+            // Review submission-instances by chair related workflow items
+            // ================================================
+
+            GetAction chairReviewAction = workflow.AddAction("Review Chair Submission", nameof(TemplateOperations.Review), "Details");
+            chairReviewAction.Access = GetAction.eAccess.Restricted;
+
+            //Defining form template
+            //chairReviewAction.AddTemplate(chairAssessmentForm.Id, "Start Review Submission");
+
+            //Defining post actions
+            PostAction chairReviewPostAction = chairReviewAction.AddPostAction("Start Review", "Save");
+
+            //Defining state mappings
+            chairReviewPostAction.AddStateMapping(inChairReviewState.Id, reviewCompletedState.Id, "Submit Assessment");
+
+            //Defining the pop-up for the above postAction action
+            PopUp chairReviewPopUpopUp = chairReviewPostAction.AddPopUp("Confirmation", "Confirm the submission?", "Once submitted, you cannot resubmit an assessment.");
+            chairReviewPopUpopUp.AddButtons("Yes, complete", "true");
+            chairReviewPopUpopUp.AddButtons("Cancel", "false");
+
+
+            chairReviewAction.GetStateReference(inChairReviewState.Id, true)
                 .AddAuthorizedRole(sasChair.Id);
-
 
             // ================================================
             // Change State submission-instances related workflow items
@@ -3721,7 +3761,9 @@ All required supporting documentation must be <span style='color: Red;'><b>combi
                 .AddAuthorizedRole(sasAdmin.Id);
             changeStateAction.GetStateReference(inAdjudicationState.Id, true)
                 .AddAuthorizedRole(sasAdmin.Id);
-            changeStateAction.GetStateReference(inReviewState.Id, true)
+            changeStateAction.GetStateReference(inSupervisorReviewState.Id, true)
+                .AddAuthorizedRole(sasSupervisour.Id);
+            changeStateAction.GetStateReference(inChairReviewState.Id, true)
                 .AddAuthorizedRole(sasChair.Id);
 
 
